@@ -46,7 +46,7 @@ Hopsworks is available under the AGPL-V3 license. In plain English this means th
 
 
 ## Contribute
-We are building the most complete and modular ML platform available in the market and we count on your support to continuously improve Hopsworks. Feel free to [give us suggestions](https://github.com/logicalclocks/feature-store-api), [report bugs](https://github.com/logicalclocks/feature-store-api/issues) and [add features to our library](https://github.com/logicalclocks/feature-store-api) anytime.
+We are building the most complete and modular ML platform available in the market and we count on your support to continuously improve Hopsworks. Feel free to [give us suggestions](https://github.com/logicalclocks/hopsworks), [report bugs](https://github.com/logicalclocks/hopsworks/issues) and [add features to our library](https://github.com/logicalclocks/feature-store-api) anytime.
 
 We’re the best in what we do and want our community to succeed as well.  
 Our many thanks to the top contributors of Hopsworks!
