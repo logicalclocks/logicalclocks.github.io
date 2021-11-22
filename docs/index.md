@@ -10,7 +10,7 @@ Hopsworks and its [Feature Store](https://docs.hopsworks.ai/feature-store-api/la
 <img src="assets/images/architecture.svg">
 
 <a name="quick"></a>
-### Installer - On-premise
+## Installer - On-premise
 
 Follow the [installation instructions](https://hopsworks.readthedocs.io/en/stable/getting_started/installation_guide/platforms/hopsworks-installer.html).
 
@@ -18,7 +18,7 @@ Follow the [installation instructions](https://hopsworks.readthedocs.io/en/stabl
 The installation takes roughly 1-2 hrs to complete, depending on your bandwidth.
 
 
-### Installer - Azure CLI or GCP CLI
+## Installer - Azure CLI or GCP CLI
 
 Follow the [installation instructions](https://hopsworks.readthedocs.io/en/stable/getting_started/installation_guide/platforms/hopsworks-cloud-installer.html).
 
