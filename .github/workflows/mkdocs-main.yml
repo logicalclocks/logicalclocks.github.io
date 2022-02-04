@@ -18,7 +18,7 @@ jobs:
           python-version: '3.8'
 
       - name: install doc deps
-        run: pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
+        run: pip install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
 
       - name: setup git
         run: |
