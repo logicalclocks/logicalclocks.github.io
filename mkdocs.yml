@@ -9,14 +9,22 @@ repo_url: https://github.com/logicalclocks/hopsworks
 edit_uri: ""
 
 nav:
-  - Feature Store: https://docs.hopsworks.ai/feature-store-api/latest/
-  - Model Management: https://docs.hopsworks.ai/machine-learning-api/latest/
-  - Compute Management: https://docs.hopsworks.ai/hopsworks/latest/compute/
-  - Administration: https://docs.hopsworks.ai/hopsworks/latest/admin/
-  - Hopsworks.ai: https://docs.hopsworks.ai/hopsworks-cloud/latest/
-  - Examples: https://examples.hopsworks.ai/
+  - Home: index.md
+  - Getting Started:
+    - Setup: setup_gs.md
+    - Feature Store: fs_gs.md
+    - Machine Learning: ml_gs.md
+  - Concepts:
+    - Feature Store: fs_concepts.md
+  - User Guides: actual_index.md
+  - Administration: actual_index.md
+  - Setup:
+      - AWS: compute/jobs.md
+      - Azure: compute/python.md
+      - GCP: copute/alerts.md
+      - On-Prem: compute/auth/login.md
+  - Reference Guides: reference_guides.md
   - Community: https://community.hopsworks.ai/
-  - Old Documentation: https://hopsworks.readthedocs.io/en/stable/index.html
 
 theme:
   name: material
@@ -32,6 +40,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.tabs.sticky
+    # - navigation.sections
 
 extra:
   generator: false
@@ -44,11 +53,16 @@ extra:
       link: https://community.hopsworks.ai/
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/logicalclocks/
+  analytics:
+    provider: google
+    # switch for new token
+    property: UA-85730257-4
 
 extra_css:
     - css/custom.css
 
-plugins: []
+plugins:
+    - search
 
 markdown_extensions:
     - admonition
@@ -68,7 +82,3 @@ markdown_extensions:
         custom_checkbox: true
     - markdown_include.include:
         base_path: docs
-
-google_analytics:
-    - UA-85730257-4
-    - auto
