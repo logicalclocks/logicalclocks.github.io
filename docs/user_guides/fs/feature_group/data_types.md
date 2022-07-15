@@ -2,92 +2,146 @@
 
 ### Introduction
 
-In this guide you will learn how to manage the feature group schema and control the data type of the features in a feature group.
+In this guide, you will learn how to manage the feature group schema and control the data type of the features in a feature group.
 
 ## Prerequisites
 
 Before you begin this guide we suggest you read the [Feature Group](../../../concepts/fs/feature_group/fg_overview.md) concept page to understand what a feature group is and how it fits in the ML pipeline. 
-We also suggest you familiarize with the APIs to [create a feature group](./create.md).
+We also suggest you familiarize yourself with the APIs to [create a feature group](./create.md).
 
 ## Feature group schema 
 
-When a feature is stored in the both the online and offline feature stores, it will be stored in a data type native to each store.
+When a feature is stored in both the online and offline feature stores, it will be stored in a data type native to each store.
 
-* **Offline data type**: The data type of the feature when stored on the offline feature store
-* **Online data type**: The data type of the feature when stored on the online feature store.
+* **[Offline data type](#offline-data-types)**: The data type of the feature when stored on the offline feature store. The offline feature store is based on Apache Hudi and Hive Metastore, as such,
+  [Hive Data Types](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types) can be leveraged.
+* **[Online data type](#online-data-types)**: The data type of the feature when stored on the online feature store. The online storage is based on RonDB and hence,
+  [MySQL Data Types](https://dev.mysql.com/doc/refman/8.0/en/data-types.html) can be leveraged. 
 
 The offline data type is always required, even if the feature group is stored only online. On the other hand, if the feature group is not *online_enabled*, its features will not have an online data type.
 
-The offline and online types for each feature are identified based on the types of the columns in the Spark or Pandas DataFrame, and those types are then mapped to the online and offline data types.
+The offline and online types for each feature are automatically inferred from the Spark or Pandas types of the input DataFrame as outlined in the following two sections.
+The default mapping, however, can be overwritten by using an [explicit schema definition](#explicit-schema-definition).
 
-In the case of a Spark DataFrame, the [Spark types](https://spark.apache.org/docs/latest/sql-ref-datatypes.html) will be mapped to the corresponding Hive Metastore type and used as offline data type. 
+### Offline data types 
 
-When registering a [Pandas](https://pandas.pydata.org/) DataFrame as a feature group, the following mapping rules are applied:
+When registering a [Spark](https://spark.apache.org/docs/latest/sql-ref-datatypes.html) DataFrame in a PySpark environment (S),
+or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment (PO) the following default mapping to offline feature types applies:
 
-| Pandas Type        | Offline Feature Type|
-| ------------------ | ------------------- |
-| int32              | INT                 |
-| int64              | BIGINT              |
-| float32            | FLOAT               |
-| float64            | DOUBLE              |
-| datetime64[ns]     | TIMESTAMP           
-| object             | STRING              |
+| Spark Type (S) | Pandas Type (PO)                   | Offline Feature Type          | Remarks                                                        |
+|----------------|------------------------------------|-------------------------------|----------------------------------------------------------------|
+| BooleanType    | bool                               | BOOLEAN                       |                                                                |
+| ByteType       | int8                               | TINYINT or INT                | INT when time_travel_type="HUDI"                               |
+| ShortType      | uint8, int16                       | SMALLINT or INT               | INT when time_travel_type="HUDI"                               |
+| IntegerType    | uint16, int32                      | INT                           |                                                                |
+| LongType       | int, uint32, int64                 | BIGINT                        |                                                                |
+| FloatType      | float, float16, float32            | FLOAT                         |                                                                |
+| DoubleType     | float64                            | DOUBLE                        |                                                                |
+| DecimalType    | decimal.decimal                    | DECIMAL(PREC, SCALE)          | Not supported in PO env. when time_travel_type="HUDI"          |
+| TimestampType  | datetime64[ns]                     | TIMESTAMP                     |                                                                |
+| DateType       | object (datetime.date)             | DATE                          |                                                                |
+| StringType     | object (str), object(np.unicode)   | STRING                        |                                                                |
+| ArrayType      | object (list), object (np.ndarray) | ARRAY&lt;TYPE&gt;             |                                                                |
+| StructType     | object (dict)                      | STRUCT&lt;NAME: TYPE, ...&gt; |                                                                |
+| BinaryType     | object (binary)                    | BINARY                        |                                                                |
+| MapType        | -                                  | MAP&lt;String,TYPE&gt;        | Only when time_travel_type!="HUDI"; Only string keys permitted |
 
-If the feature group is online enabled, Hopsworks will then map the offline data type to the corresponding online data type. The mapping is based on the following rules:
+When registering a Pandas DataFrame in a PySpark environment (S) the Pandas DataFrame is first converted to a Spark DataFrame, using Spark's [default conversion](https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.sql.SparkSession.createDataFrame.html).
+It results in a less fine-grained mapping between Python and Spark types:
 
-* If the offline data type is also supported on the online feature store (e.g. INT, FLOAT, DATE, TIMESTAMP), the online data type will be the same as the offline data type
-* If the offline data type is *boolean*, the online data type is going to be set as *tinyint*
-* If the offline data type is *string*, the online data type is going to be set as *varchar(100)*
-* If the offline data type is not supported by the online feature store and it is not one of the above exception, the online data type will be set as *varbinary(100)* to handle complex types.
+| Pandas Type (S)                                       | Spark Type    | Remarks       |
+|-------------------------------------------------------|---------------|---------------|
+| bool                                                  | BooleanType   |               |
+| int8, uint8, int16, uint16, int32, int, uint32, int64 | LongType      |               |
+| float, float16, float32, float64                      | DoubleType    |               |
+| object (decimal.decimal)                              | DecimalType   |               |
+| datetime64[ns]                                        | TimestampType |               |
+| object (datetime.date)                                | DateType      |               |
+| object (str), object(np.unicode)                      | StringType    |               |
+| object (list), object (np.ndarray)                    | -             | Not supported |
+| object (dict)                                         | StructType    |               |
+| object (binary)                                       | BinaryType    |               |
 
-### Offline data types
+### Online data types 
 
-The offline feature store is based on Apache Hudi and Hive Metastore, as such, any
-[Hive Data Type](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types)
-can be leveraged.
+The online data type is determined based on the offline type according to the following mapping, regardless of which environment the data originated from. 
+Only a subset of the data types can be used as primary key, as indicated in the table as well:
 
-Potential *offline* types are:
+| Offline Feature Type          | Online Feature Type  | Primary Key | Remarks                          | 
+|-------------------------------|----------------------|-------------|----------------------------------|
+| BOOLEAN                       | TINYINT              | x           |                                  | 
+| TINYINT                       | TINYINT              | x           |                                  | 
+| SMALLINT                      | SMALLINT             | x           |                                  | 
+| INT                           | INT                  | x           | Also supports: TINYINT, SMALLINT | 
+| BIGINT                        | BIGINT               | x           |                                  | 
+| FLOAT                         | FLOAT                |             |                                  | 
+| DOUBLE                        | DOUBLE               |             |                                  | 
+| DECIMAL(PREC, SCALE)          | DECIMAL(PREC, SCALE) |             | e.g. DECIMAL(38, 18)             | 
+| TIMESTAMP                     | TIMESTAMP            |             |                                  | 
+| DATE                          | DATE                 |             |                                  | 
+| STRING                        | VARCHAR(100)         | x           | Also supports: TEXT              | 
+| ARRAY&lt;TYPE&gt;             | VARBINARY(100)       | x           | Also supports: BLOB              | 
+| STRUCT&lt;NAME: TYPE, ...&gt; | VARBINARY(100)       | x           | Also supports: BLOB              | 
+| BINARY                        | VARBINARY(100)       | x           | Also supports: BLOB              | 
+| MAP&lt;String,TYPE&gt;        | VARBINARY(100)       | x           | Also supports: BLOB              | 
 
-```SQL
-"TINYINT", "SMALLINT", "INT", "BIGINT", "FLOAT", "DOUBLE",
-"DECIMAL", "TIMESTAMP", "DATE", "STRING", "BOOLEAN", "BINARY",
-"ARRAY <TINYINT>", "ARRAY <SMALLINT>", "ARRAY <INT>", "ARRAY <BIGINT>",
-"ARRAY <FLOAT>", "ARRAY <DOUBLE>", "ARRAY <DECIMAL>", "ARRAY <TIMESTAMP>",
-"ARRAY <DATE>", "ARRAY <STRING>",
-"ARRAY <BOOLEAN>", "ARRAY <BINARY>", "ARRAY <ARRAY <FLOAT> >",
-"ARRAY <ARRAY <INT> >", "ARRAY <ARRAY <STRING> >",
-"MAP <FLOAT, FLOAT>", "MAP <FLOAT, STRING>", "MAP <FLOAT, INT>",
-"MAP <FLOAT, BINARY>", "MAP <INT, INT>", "MAP <INT, STRING>",
-"MAP <INT, BINARY>", "MAP <INT, FLOAT>", "MAP <INT, ARRAY <FLOAT> >",
-"STRUCT < label: STRING, index: INT >", "UNIONTYPE < STRING, INT>"
-```
+More on how Hopsworks handles [string types](#string-online-data-types),  [complex data types](#complex-online-data-types) and the online restrictions for [primary keys](#online-restrictions-for-primary-key-data-types) and [row size](#online-restrictions-for-row-size) in the following sections.
 
-### Online data types
+#### String online data types
 
-The online storage is based on RonDB and hence, any
-[MySQL Data Type](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
-can be leveraged.
+String types are stored as *VARCHAR(100)* by default. This type is fixed-size, meaning it can only hold as many characters as specified in the argument (e.g. VARCHAR(100) can hold up to 100 unicode characters).
+The size should thus be within the maximum string length of the input data. Furthermore, the VARCHAR size has to be in line with the [online restrictions for row size](#online-restrictions-for-row-size).
 
-Potential *online* types are:
+If the string size exceeds 100 characters, a larger type (e.g. VARCHAR(500)) can be specified via an [explicit schema definition](#explicit-schema-definition). 
+If the string size is unknown or if it exceeds the maximum row size, then the [TEXT type](https://docs.rondb.com/blobs/) can be used instead.
 
-```SQL
-"None", "INT(11)", "TINYINT(1)", "SMALLINT(5)", "MEDIUMINT(7)", "BIGINT(20)",
-"FLOAT", "DOUBLE", "DECIMAL", "DATE", "DATETIME", "TIMESTAMP", "TIME", "YEAR",
-"CHAR", "VARCHAR(n)", "BINARY", "VARBINARY(n)", "BLOB", "TEXT", "TINYBLOB",
-"TINYTEXT", "MEDIUMBLOB", "MEDIUMTEXT", "LONGBLOB", "LONGTEXT", "JSON"
-```
+String data that exceeds the specified VARCHAR size will lead to an error when data gets written to the online feature store.
+When in doubt, use the TEXT type instead, but note that it comes with a potential performance overhead.
 
 #### Complex online data types
 
-Additionally to the *online* types above, Hopsworks allows users to store complex types (e.g. *ARRAY<INT>*) on the online feature store.
-Hopsworks serializes the complex features transparently and stores them as VARBINARY in the online feature store. The serialization happens when calling the [save()](https://docs.hopsworks.ai/feature-store-api/3.0/generated/api/feature_group_api/#save), [insert()](https://docs.hopsworks.ai/feature-store-api/3.0/generated/api/feature_group_api/#insert) or [insert_stream()](https://docs.hopsworks.ai/feature-store-api/3.0/generated/api/feature_group_api/#insert_stream) methods. The deserialization will be executed when calling the [get_serving_vector()](https://docs.hopsworks.ai/feature-store-api/3.0/generated/api/training_dataset_api/#get_serving_vector) method to retrieve data from the online feature store.
-If users query directly the online feature store, for instance using the `fs.sql("SELECT ...", online=True)` statement, it will return a binary blob.
+Hopsworks allows users to store complex types (e.g. *ARRAY<INT>*) in the online feature store. Hopsworks serializes the complex features transparently and stores them as VARBINARY in the online feature store.
+The serialization happens when calling the [save()](https://docs.hopsworks.ai/feature-store-api/3.0/generated/api/feature_group_api/#save), 
+[insert()](https://docs.hopsworks.ai/feature-store-api/3.0/generated/api/feature_group_api/#insert) or [insert_stream()](https://docs.hopsworks.ai/feature-store-api/3.0/generated/api/feature_group_api/#insert_stream) methods. 
+The deserialization will be executed when calling the [get_serving_vector()](https://docs.hopsworks.ai/feature-store-api/3.0/generated/api/training_dataset_api/#get_serving_vector) method to retrieve data from the online feature store.
+If users query directly the online feature store, for instance using the `fs.sql("SELECT ...", online=True)` statement, it will return a binary blob. 
 
 On the feature store UI, the online feature type for complex features will be reported as *VARBINARY*.
 
-#### Online restrictions for primary key data types:
+If the binary size exceeds 100 bytes, a larger type (e.g. VARBINARY(500)) can be specified via an [explicit schema definition](#explicit-schema-definition).
+If the binary size is unknown of if it exceeds the maximum row size, then the [BLOB type](https://docs.rondb.com/blobs/) can be used instead.
 
-When a feature is being used as a primary key, certain types are not allowed. Examples of such types are *Float*, *Double*, *Date*, *Text*, *Blob* and *Complex Types*  (e.g. Array<>). Additionally the size of the sum of the primary key online data types storage requirements should not exceed 3KB.
+Binary data that exceeds the specified VARBINARY size will lead to an error when data gets written to the online feature store.
+When in doubt, use the BLOB type instead, but note that it comes with a potential performance overhead.
+
+#### Online restrictions for primary key data types
+
+When a feature is being used as a primary key, certain types are not allowed. 
+Examples of such types are *FLOAT*, *DOUBLE*, *DATE*, *TEXT* and *BLOB*. 
+Additionally, the size of the sum of the primary key online data types storage requirements **should not exceed 4KB**.
+
+#### Online restrictions for row size
+
+The online feature store supports **up to 500 columns** and all column types combined **should not exceed 30000 Bytes**. 
+The byte size of each column is determined by its data type and calculated as follows: 
+
+| Online Data Type                | Byte Size    |
+|---------------------------------|--------------|
+| TINYINT                         | 1            |
+| SMALLINT                        | 2            |
+| INT                             | 4            |
+| BIGINT                          | 8            |
+| FLOAT                           | 4            |
+| DOUBLE                          | 8            |
+| DECIMAL(PREC, SCALE)            | 16           |
+| TIMESTAMP                       | 8            |
+| DATE                            | 8            |
+| VARCHAR(LENGTH)                 | LENGTH * 4   |
+| VARCHAR(LENGTH) charset latin1; | LENGTH * 1   |
+| TEXT                            | 256          |
+| VARBINARY(LENGTH)               | LENGTH / 1.4 |
+| BLOB                            | 256          |
+| other                           | 8            |
 
 ## Explicit schema definition
 
