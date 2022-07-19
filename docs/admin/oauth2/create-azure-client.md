@@ -127,8 +127,8 @@ Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORK
 
 !!! note
 
-    If your hopsworks cluster is created on the cloud (hopsworks.ai),
-    you can find your *HOPSWORKS-URI* by going to the [hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) 
+    If your hopsworks cluster is created on the cloud (managed.hopsworks.ai),
+    you can find your *HOPSWORKS-URI* by going to the [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) 
     in the *General* tab of your cluster and copying the URI.
 
 

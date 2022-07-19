@@ -1,12 +1,12 @@
 # Hopsworks.ai Terraform Provider
 
-Hopsworks.ai allows users to create and manage their clusters using the [Hopsworks.ai terraform provider](https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest). In this guide, we first provide brief description on how to get started on AWS and AZURE, then we show how to import an existing cluster to be managed by terraform.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) allows users to create and manage their clusters using the [Hopsworks.ai terraform provider](https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest). In this guide, we first provide brief description on how to get started on AWS and AZURE, then we show how to import an existing cluster to be managed by terraform.
 
 ## Getting Started with AWS
 
 Complete the following steps to start using Hopsworks.ai Terraform Provider on AWS.
 
-1. Create a Hopsworks.ai API KEY as described in details [here](api_key.md), and export the API KEY as follows 
+1. Create a [managed.hopsworks.ai](https://managed.hopsworks.ai) API KEY as described in details [here](api_key.md), and export the API KEY as follows 
 ```bash
 export HOPSWORKSAI_API_KEY=<YOUR_API_KEY>
 ```
@@ -91,7 +91,7 @@ terraform init
 ```bash
 terraform apply 
 ```
-5. Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your [Hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) to get your login credentials.
+5. Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) to get your login credentials.
 
 6. After you finish working with the cluster, you can terminate it along with the other AWS resources using the following command
 ```bash
@@ -103,7 +103,7 @@ terraform destroy
 
 Complete the following steps to start using Hopsworks.ai Terraform Provider on AZURE.
 
-1. Create a Hopsworks.ai API KEY as described in details [here](api_key.md), and export the API KEY as follows 
+1. Create a [managed.hopsworks.ai](https://managed.hopsworks.ai) API KEY as described in details [here](api_key.md), and export the API KEY as follows 
 ```bash
 export HOPSWORKSAI_API_KEY=<YOUR_API_KEY>
 ```
@@ -193,7 +193,7 @@ terraform init
 ```bash
 terraform apply 
 ```
-5. Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your [Hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) to get your login credentials.
+5. Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) to get your login credentials.
 
 6. After you finish working with the cluster, you can terminate it along with the other AZURE resources using the following command
 ```bash
@@ -204,7 +204,7 @@ terraform destroy
 
 In this section, we show how to use `terraform import` to manage your existing Hopsworks cluster. 
 
-* **Step 1**: In your [Hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard), choose the cluster you want to import to terraform, then go to the *Details* tab and copy the *Id* as shown in the figure below 
+* **Step 1**: In your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard), choose the cluster you want to import to terraform, then go to the *Details* tab and copy the *Id* as shown in the figure below 
 
 <p align="center">
   <figure>

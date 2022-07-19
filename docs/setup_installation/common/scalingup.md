@@ -48,7 +48,7 @@ This will open a new window. Select the type of instance you want to change to a
 Verify your choice and click on *Modify*
 
 !!! note
-    If you set up your account with AWS in a period predating the introduction of this feature you may need to add the indicated permission to your hopsworks.ai role.
+    If you set up your account with AWS in a period predating the introduction of this feature you may need to add the indicated permission to your [managed.hopsworks.ai](https://managed.hopsworks.ai) role.
 
 <p align="center">
   <figure>
@@ -102,7 +102,7 @@ This will open a new window. Select the type of instance you want to change to a
 Verify your choice and click on *Modify*
 
 !!! note
-    If you set up your account with AWS in a period predating the introduction of this feature you may need to add the indicated permission to your hopsworks.ai role.
+    If you set up your account with AWS in a period predating the introduction of this feature you may need to add the indicated permission to your [managed.hopsworks.ai](https://managed.hopsworks.ai) role.
 
 <p align="center">
   <figure>

@@ -1,4 +1,4 @@
-# Upgrade existing clusters on Hopsworks.ai from version 2.4 or newer (Azure)
+# Upgrade existing clusters on managed.hopsworks.ai from version 2.4 or newer (Azure)
 This guide shows you how to upgrade your existing Hopsworks cluster to a newer version of Hopsworks.
 
 ## Step 1: Make sure your cluster is running
@@ -14,9 +14,9 @@ It is important that your cluster is **Running**. Otherwise you will not be able
   </figure>
 </p>
 
-## Step 2: Add backup permissions to your role connected to Hopsworks.ai
+## Step 2: Add backup permissions to your role connected to managed.hopsworks.ai
 
-We require extra permission to be added to the role you used to connect to Hopsworks.ai, the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai).  These permissions are required to create a snapshot of your cluster before proceeding with the upgrade. 
+We require extra permission to be added to the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai).  These permissions are required to create a snapshot of your cluster before proceeding with the upgrade. 
 
 ```json
 "actions": [
@@ -27,14 +27,14 @@ We require extra permission to be added to the role you used to connect to Hopsw
   ]
 ```
 
-If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to hopsworks.ai. 
+If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
 
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/azure-get-connected-hopswork.ai-role.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-get-connected-hopswork.ai-role.png" alt="Get your connected role to hopsworks.ai">
+      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-get-connected-hopswork.ai-role.png" alt="Get your connected role to managed.hopsworks.ai">
     </a>
-    <figcaption>Get your role connected to hopsworks.ai</figcaption>
+    <figcaption>Get your role connected to managed.hopsworks.ai</figcaption>
   </figure>
 </p>
 
@@ -44,9 +44,9 @@ To edit the permissions associated with your role, stay on the same *Access Cont
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role.png" alt="Edit your connected role to hopsworks.ai">
+      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role.png" alt="Edit your connected role to managed.hopsworks.ai">
     </a>
-    <figcaption>Edit your role connected to hopsworks.ai</figcaption>
+    <figcaption>Edit your role connected to managed.hopsworks.ai</figcaption>
   </figure>
 </p>
 
@@ -55,9 +55,9 @@ You will arrive at the *Update a custom role* page as shown below:
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-1.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-1.png" alt="Edit your connected role to hopsworks.ai 1">
+      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-1.png" alt="Edit your connected role to managed.hopsworks.ai 1">
     </a>
-    <figcaption>Edit your role connected to hopsworks.ai</figcaption>
+    <figcaption>Edit your role connected to managed.hopsworks.ai</figcaption>
   </figure>
 </p>
 
@@ -66,9 +66,9 @@ Navigate to the *JSON* tab, then click on *Edit*, as shown below:
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-2.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-2.png" alt="Edit your connected role to hopsworks.ai 2">
+      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-2.png" alt="Edit your connected role to managed.hopsworks.ai 2">
     </a>
-    <figcaption>Edit your role connected to hopsworks.ai</figcaption>
+    <figcaption>Edit your role connected to managed.hopsworks.ai</figcaption>
   </figure>
 </p>
 
@@ -84,9 +84,9 @@ Now, add the following permissions to the list of actions, then click on *Save*,
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-3-2.4.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-3-2.4.png" alt="Edit your connected role to hopsworks.ai 3">
+      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-edit-connected-hopsworks.ai-role-3-2.4.png" alt="Edit your connected role to managed.hopsworks.ai 3">
     </a>
-    <figcaption>Add missing permissions to your role connected to hopsworks.ai</figcaption>
+    <figcaption>Add missing permissions to your role connected to managed.hopsworks.ai</figcaption>
   </figure>
 </p>
 
@@ -97,7 +97,7 @@ You need to click on *Upgrade* to start the upgrade process. You will be prompte
 !!! note
     No need to worry about the following message since this is done already in [Step 2](#step-2-add-backup-permissions-to-your-role-connected-to-hopsworksai)
 
-    **Make sure that your custom role which you have connected to Hopsworks.ai has the following permissions:
+    **Make sure that your custom role which you have connected to [managed.hopsworks.ai](https://managed.hopsworks.ai) has the following permissions:
     [ "Microsoft.Compute/snapshots/write", "Microsoft.Compute/snapshots/read", "Microsoft.Compute/snapshots/delete", "Microsoft.Compute/disks/beginGetAccess/action", ]**
 
 <p align="center">
@@ -143,7 +143,7 @@ Depending on how big your current cluster is, the upgrade process may take from 
 Once the upgrade is completed, you can confirm that you have the new Hopsworks version by checking the version number on the *Details* tab of your cluster.
 
 ## Error handling
-There are two categories of errors that you may encounter during an upgrade. First, a permission error due to a missing permission in your role connected to Hopsworks.ai, see [Error 1](#error-1-missing-permissions-error). Second, an error during the upgrade process running on your cluster, see [Error 2](#error-2-upgrade-process-error).
+There are two categories of errors that you may encounter during an upgrade. First, a permission error due to a missing permission in your role connected to [managed.hopsworks.ai](https://managed.hopsworks.ai), see [Error 1](#error-1-missing-permissions-error). Second, an error during the upgrade process running on your cluster, see [Error 2](#error-2-upgrade-process-error).
 
 ### Error 1: Missing permissions error
 

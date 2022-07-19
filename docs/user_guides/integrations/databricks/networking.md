@@ -27,15 +27,15 @@ Identify your Databricks VPC by searching for VPCs containing Databricks in thei
 !!! info "Hopsworks installer"
     If you are performing an installation using the [Hopsworks installer script](https://hopsworks.readthedocs.io/en/stable/getting_started/installation_guide/platforms/hopsworks-installer.html), ensure that the virtual machines you install Hopsworks on are deployed in the EMR VPC.
 
-!!! info "Hopsworks.ai"
-    If you are working on **Hopsworks.ai**, you can directly deploy the Hopsworks instance to the Databricks VPC, by simply selecting it at the [VPC selection step during cluster creation](https://docs.hopsworks.ai/hopsworks-cloud/latest/aws/cluster_creation/#step-8-vpc-selection).
+!!! info "managed.hopsworks.ai"
+    If you are working on **[managed.hopsworks.ai](https://managed.hopsworks.ai)**, you can directly deploy the Hopsworks instance to the Databricks VPC, by simply selecting it at the [VPC selection step during cluster creation](https://docs.hopsworks.ai/hopsworks-cloud/latest/aws/cluster_creation/#step-8-vpc-selection).
 
 **Option 2: Set up VPC peering**
 
 Follow the guide [VPC Peering](https://docs.databricks.com/administration-guide/cloud-configurations/aws/vpc-peering.html) to set up VPC peering between the Feature Store cluster and Databricks. Get your Feature Store *VPC ID* and *CIDR* by searching for thr Feature Store VPC in the AWS Management Console:
 
-!!! info "Hopsworks.ai"
-    On **Hopsworks.ai**, the VPC is shown in the cluster details.
+!!! info "managed.hopsworks.ai"
+    On **[managed.hopsworks.ai](https://managed.hopsworks.ai)**, the VPC is shown in the cluster details.
 
 <p align="center">
   <figure>
@@ -50,8 +50,8 @@ Follow the guide [VPC Peering](https://docs.databricks.com/administration-guide/
 
 The Feature Store *Security Group* needs to be configured to allow traffic from your Databricks clusters to be able to connect to the Feature Store.
 
-!!! note "Hopsworks.ai"
-    If you deployed your Hopsworks Feature Store with Hopsworks.ai, you only need to enable [outside access of the Feature Store, Online Feature Store, and Kafka services](https://docs.hopsworks.ai/hopsworks-cloud/latest/services/#outside-access-to-the-feature-store).
+!!! note "managed.hopsworks.ai"
+    If you deployed your Hopsworks Feature Store with [managed.hopsworks.ai](https://managed.hopsworks.ai), you only need to enable [outside access of the Feature Store, Online Feature Store, and Kafka services](https://docs.hopsworks.ai/hopsworks-cloud/latest/services/#outside-access-to-the-feature-store).
 
 Open your feature store instance under EC2 in the AWS Management Console and ensure that ports *443*, *3306*, *9083*, *9085*, *8020*, *50010*, and *9092* are reachable from the Databricks Security Group:
 
@@ -105,7 +105,7 @@ Select *Add Peering*:
 </p>
 
 Name the peering and select the virtual network used by your Hopsworks cluster. The virtual network
-is shown in the cluster details on Hopsworks.ai (see the next picture). Ensure to press the copy button
+is shown in the cluster details on [managed.hopsworks.ai](https://managed.hopsworks.ai) (see the next picture). Ensure to press the copy button
 on the bottom of the page and save the value somewhere. Press *Add* and create the peering:
 
 <p align="center">
@@ -214,8 +214,8 @@ The virtual network peering will allow full access between the Hopsworks virtual
 
 Ensure that ports *443*, *9083*, *9085*, *8020*, *50010*, and *9092* are reachable from the Databricks cluster *Network Security Group*.
 
-!!! note "Hopsworks.ai"
-    If you deployed your Hopsworks Feature Store instance with Hopsworks.ai, it suffices to enable [outside access of the Feature Store, Online Feature Store, and Kafka services](https://docs.hopsworks.ai/hopsworks-cloud/latest/services/#outside-access-to-the-feature-store).
+!!! note "managed.hopsworks.ai"
+    If you deployed your Hopsworks Feature Store instance with [managed.hopsworks.ai](https://managed.hopsworks.ai), it suffices to enable [outside access of the Feature Store, Online Feature Store, and Kafka services](https://docs.hopsworks.ai/hopsworks-cloud/latest/services/#outside-access-to-the-feature-store).
 
 ## Next Steps
 

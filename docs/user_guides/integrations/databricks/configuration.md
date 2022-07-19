@@ -9,7 +9,7 @@ In order to be able to configure a Databricks cluster to use the Feature Store o
 
 ### Networking
 
-If you haven't done so already, follow the networking guides for either [AWS](networking.md#aws) or [Azure](networking.md#azure) for instructions on how to configure networking properly between Databricks' VPC (or Virtual Network on Azure) and the Hopsworks.ai VPC/VNet.
+If you haven't done so already, follow the networking guides for either [AWS](networking.md#aws) or [Azure](networking.md#azure) for instructions on how to configure networking properly between Databricks' VPC (or Virtual Network on Azure) and the [managed.hopsworks.ai](https://managed.hopsworks.ai) VPC/VNet.
 
 ### Hopsworks API key
 

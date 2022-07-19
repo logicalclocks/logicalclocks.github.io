@@ -1,4 +1,4 @@
-# Upgrade existing clusters on Hopsworks.ai from version 2.2 or older (Azure) 
+# Upgrade existing clusters on managed.hopsworks.ai from version 2.2 or older (Azure) 
 This guide shows you how to upgrade your existing Hopsworks cluster to a newer version of Hopsworks.
 
 ## Step 1: Make sure your cluster is running
@@ -144,10 +144,10 @@ Navigate back to the your Resource group home page at [Azure portal](https://por
 !!! warning
     [When you assign roles or remove role assignments, it can take up to 30 minutes for changes to take effect.](https://docs.microsoft.com/en-us/azure/role-based-access-control/troubleshooting#role-assignment-changes-are-not-being-detected)
 
-## Step 3: Add disk read permissions to your role connected to Hopsworks.ai
+## Step 3: Add disk read permissions to your role connected to managed.hopsworks.ai
 
-We require extra permission ("Microsoft.Compute/disks/read") to be added to the role you used to connect to Hopsworks.ai, the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai). 
-If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to hopsworks.ai. 
+We require extra permission ("Microsoft.Compute/disks/read") to be added to the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai). 
+If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
 
 <p align="center">
   <figure>
@@ -265,10 +265,10 @@ Once the upgrade is completed, you can confirm that you have the new Hopsworks v
 </p>
 
 ## Error handling
-There are two categories of errors that you may encounter during an upgrade. First, a permission error due to a missing permission in your role connected to Hopsworks.ai, see [Error 1](#error-1-missing-permissions-error). Second, an error during the upgrade process running on your cluster, see [Error 2](#error-2-upgrade-process-error).
+There are two categories of errors that you may encounter during an upgrade. First, a permission error due to a missing permission in your role connected to [managed.hopsworks.ai](https://managed.hopsworks.ai), see [Error 1](#error-1-missing-permissions-error). Second, an error during the upgrade process running on your cluster, see [Error 2](#error-2-upgrade-process-error).
 
 ### Error 1: Missing permissions error
-If you encounter the following permission error right after starting an upgrade, then you need to make sure that the role you used to connect to Hopsworks.ai, the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), have permissions to read and write disks
+If you encounter the following permission error right after starting an upgrade, then you need to make sure that the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), have permissions to read and write disks
 *("Microsoft.Compute/disks/read", "Microsoft.Compute/disks/write")*. 
 
 <p align="center">
@@ -281,7 +281,7 @@ If you encounter the following permission error right after starting an upgrade,
 </p>
 
 
-If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to hopsworks.ai. 
+If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
 
 <p align="center">
   <figure>
