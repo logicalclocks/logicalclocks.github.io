@@ -186,6 +186,7 @@ nav:
           - Services: setup_installation/common/services.md
           - Adding and Removing workers: setup_installation/common/adding_removing_workers.md
           - Autoscaling: setup_installation/common/autoscaling.md
+          - Backup: setup_installation/common/backup.md
           - Scaling up: setup_installation/common/scalingup.md
           - GPU support: setup_installation/common/gpu_support.md
           - User management: setup_installation/common/user_management.md
