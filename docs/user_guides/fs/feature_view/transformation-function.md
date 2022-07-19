@@ -2,7 +2,7 @@
 
 HSFS provides functionality to attach transformation functions to [feature views](./overview.md).
 
-User defined, custom transformation functions need to be registered in the feature store to make them accessible for feature view creation. To register them in the feature store, they either have to be part of the library [installed](https://hopsworks.readthedocs.io/en/stable/user_guide/hopsworks/python.html?highlight=install#installing-libraries) in Hopsworks or attached when starting a [Jupyter notebook](https://hopsworks.readthedocs.io/en/stable/user_guide/hopsworks/jupyter.html?highlight=jupyter) or [Hopsworks job](https://hopsworks.readthedocs.io/en/stable/user_guide/hopsworks/jobs.html).
+User defined, custom transformation functions need to be registered in the feature store to make them accessible for feature view creation. To register them in the feature store, they either have to be part of the library [installed](../../../user_guides/projects/python/python_install.md) in Hopsworks or attached when starting a [Jupyter notebook](../../../user_guides/projects/jupyter/python_notebook.md) or [Hopsworks job](../../../user_guides/projects/jobs/spark_job.md).
 
 !!! warning "Pyspark decorators"
 
