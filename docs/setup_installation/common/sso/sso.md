@@ -1,5 +1,5 @@
-# Hopsworks.ai Single Sign-On
-We will see here how to set up Single Sign-On for Hopsworks.ai. Once this is set up users from your organization will be able to directly sign in to Hopsworks.ai using your identity provider and without the need to manually create an account.
+# Managed.hopsworks.ai Single Sign-On
+We will see here how to set up Single Sign-On for [managed.hopsworks.ai](https://managed.hopsworks.ai). Once this is set up users from your organization will be able to directly sign in to [managed.hopsworks.ai](https://managed.hopsworks.ai) using your identity provider and without the need to manually create an account.
 They will then be able to manage the clusters of your organization and if you set up [user management](../user_management.md) on your clusters an account will automatically be created for them in the clusters.
 
 !!! Note
@@ -9,7 +9,7 @@ They will then be able to manage the clusters of your organization and if you se
 We will give here the examples of Azure Active Directory and AWS Single Sign-On but a similar setup can be done with any identity provider supporting SAML.
 
 ### Azure Active Directory
-Go to your [hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard). Click on *Settings*. Click on *SSO*. Click on *Setup SSO*.
+Go to your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard). Click on *Settings*. Click on *SSO*. Click on *Setup SSO*.
 
 <p align="center">
   <figure>
@@ -64,7 +64,7 @@ Click on *Single sign-on*. Then click on *SAML*.
   </figure>
 </p>
 
-Click on *Edit* in the *Basic SAML Configuration* section. Paste the *Identifier (Entity ID)* and *Reply URL* that you copied from the Hopsworks.ai setup page. 
+Click on *Edit* in the *Basic SAML Configuration* section. Paste the *Identifier (Entity ID)* and *Reply URL* that you copied from the [managed.hopsworks.ai](https://managed.hopsworks.ai) setup page. 
 Delete the wild card *Identifier (Entity ID)* that is already set.
 
 For the *Sign on URL* copy the provided pattern (*https://managed.hopsworks.ai/sso-open/<ORGANIZATION>*) and replace *ORGANIZATION* by the name of your organization.
@@ -91,9 +91,9 @@ In the *SAML Signing Certificate* section copy the *App Federation Metadata URL*
   </figure>
 </p>
 
-Click on *Users and groups*, in the left column, and add the users and groups you want to have access to hopsworks.ai.
+Click on *Users and groups*, in the left column, and add the users and groups you want to have access to [managed.hopsworks.ai](https://managed.hopsworks.ai).
 
-Go back to Hopsworks.ai. Click on *Next step* and keep following the documentation at [Configure Hopsworks.ai](#configure-hopsworksai).
+Go back to [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Next step* and keep following the documentation at [Configure managed.hopsworks.ai](#configure-hopsworksai).
 
 <p align="center">
   <figure>
@@ -111,28 +111,28 @@ Paste the *Metadata URL* you copied above and click *Finish*.
 <p align="center">
   <figure>
     <a  href="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png" alt="Configure Hopsworks.ai">
+      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png" alt="Configure managed.hopsworks.ai">
     </a>
-    <figcaption>Configure Hopsworks.ai</figcaption>
+    <figcaption>Configure managed.hopsworks.ai</figcaption>
   </figure>
 </p>
 
 !!!Note
     if the organization name you chose is already used you will need to set a new one and to update the *Sign on URL* in Azure.
 
-If you go back to the *SSO* tab of *Settings* you will get a *logging page* link. By using this link you will automatically be redirected to your identity provider to login. An account will automatically be created in hopsworks.ai for users of your organization when they log in for the first time.
+If you go back to the *SSO* tab of *Settings* you will get a *logging page* link. By using this link you will automatically be redirected to your identity provider to login. An account will automatically be created in [managed.hopsworks.ai](https://managed.hopsworks.ai) for users of your organization when they log in for the first time.
 
 <p align="center">
   <figure>
     <a  href="../../../../assets/images/setup_installation/managed/common/sso/login_url.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/login_url.png" alt="Configure Hopsworks.ai">
+      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/login_url.png" alt="Configure managed.hopsworks.ai">
     </a>
-    <figcaption>Configure Hopsworks.ai</figcaption>
+    <figcaption>Configure managed.hopsworks.ai</figcaption>
   </figure>
 </p>
 
 ### AWS Single Sign-On
-Go to your [hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard). Click on *Settings*. Click on *SSO*. Click on *Setup SSO*.
+Go to your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard). Click on *Settings*. Click on *SSO*. Click on *Setup SSO*.
 
 <p align="center">
   <figure>
@@ -187,7 +187,7 @@ Give a name to your application, for example, *hopsworks_sso*. Scroll to the bot
   </figure>
 </p>
 
-Paste the *Application ACS URL* and *Application SAML audience* that you copy from the Hopsworks.ai setup page. Click on *Save changes*.
+Paste the *Application ACS URL* and *Application SAML audience* that you copy from the [managed.hopsworks.ai](https://managed.hopsworks.ai) setup page. Click on *Save changes*.
 
 <p align="center">
   <figure>
@@ -248,7 +248,7 @@ Click on Copy URL on the *AWS SSO SAML metadata file* line. We will call this UR
   </figure>
 </p>
 
-Go back to Hopsworks.ai. Click on *Next step*.
+Go back to [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Next step*.
 
 <p align="center">
   <figure>
@@ -266,19 +266,19 @@ Paste the *Metadata URL* you copied above and click *Finish*.
 <p align="center">
   <figure>
     <a  href="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png" alt="Configure Hopsworks.ai">
+      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png" alt="Configure managed.hopsworks.ai">
     </a>
-    <figcaption>Configure Hopsworks.ai</figcaption>
+    <figcaption>Configure managed.hopsworks.ai</figcaption>
   </figure>
 </p>
 
-If you go back to the *SSO* tab of *Settings* you will get a *logging page* link. By using this link you will automatically be redirected to your identity provider to login. An account will automatically be created in hopsworks.ai for users of your organization when they log in for the first time.
+If you go back to the *SSO* tab of *Settings* you will get a *logging page* link. By using this link you will automatically be redirected to your identity provider to login. An account will automatically be created in [managed.hopsworks.ai](https://managed.hopsworks.ai) for users of your organization when they log in for the first time.
 
 <p align="center">
   <figure>
     <a  href="../../../../assets/images/setup_installation/managed/common/sso/login_url.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/login_url.png" alt="Configure Hopsworks.ai">
+      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/login_url.png" alt="Configure managed.hopsworks.ai">
     </a>
-    <figcaption>Configure Hopsworks.ai</figcaption>
+    <figcaption>Configure managed.hopsworks.ai</figcaption>
   </figure>
 </p>

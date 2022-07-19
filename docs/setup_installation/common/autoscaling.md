@@ -1,5 +1,5 @@
 # Autoscaling
-If you run a Hopsworks cluster version 2.2 or above you can enable autoscaling to let hopsworks.ai start and stop workers depending on the demand.
+If you run a Hopsworks cluster version 2.2 or above you can enable autoscaling to let [managed.hopsworks.ai](https://managed.hopsworks.ai) start and stop workers depending on the demand.
 
 ## Enabling and configuring the autoscaling
 Once you have created a cluster you can enable autoscaling by going to the *Details* tab and clicking on *Configure autoscale*.

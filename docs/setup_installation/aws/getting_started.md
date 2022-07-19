@@ -1,12 +1,12 @@
-# Getting started with Hopsworks.ai (AWS)
+# Getting started with managed.hopsworks.ai (AWS)
 
-Hopsworks.ai is our managed platform for running Hopsworks and the Feature Store
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) is our managed platform for running Hopsworks and the Feature Store
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
-SageMaker and KubeFlow. This guide shows how to set up Hopsworks.ai with your organization's AWS account.
+SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai) with your organization's AWS account.
 
 ## Step 1: Connecting your AWS account
 
-Hopsworks.ai deploys Hopsworks clusters to your AWS account. To enable this you have to
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your AWS account. To enable this you have to
 permit us to do so. This can be either achieved by using AWS cross-account roles or
 AWS access keys. We strongly recommend the usage of cross-account roles whenever possible due
 to security reasons.
@@ -25,7 +25,7 @@ to security reasons.
   </iframe>
 </p>
 
-To create a cross-account role for Hopsworks.ai, you need our AWS account id and the external
+To create a cross-account role for [managed.hopsworks.ai](https://managed.hopsworks.ai), you need our AWS account id and the external
 id we created for you. You can find this information on the first screen of the cross-account
 configuration flow. Take note of the account id and external id and go to the *Roles* section
 of the *IAM* service in the AWS Management Console and select *Create role*.
@@ -62,8 +62,8 @@ Go to the last step of the wizard, name the role and create it:
   </figure>
 </p>
 
-As a next step, you need to create an access policy to give Hopsworks.ai permissions to manage
-clusters in your organization's AWS account. By default, Hopsworks.ai is automating all steps required to launch
+As a next step, you need to create an access policy to give [managed.hopsworks.ai](https://managed.hopsworks.ai) permissions to manage
+clusters in your organization's AWS account. By default, [managed.hopsworks.ai](https://managed.hopsworks.ai) is automating all steps required to launch
 a new Hopsworks cluster. If you want to limit the required AWS permissions, see [restrictive-permissions](restrictive_permissions.md).
 
 Copy the permission JSON from the instructions:
@@ -122,7 +122,7 @@ Copy the *Role ARN* from the summary of your cross-account role:
   </figure>
 </p>
 
-Paste the *Role ARN* into Hopsworks.ai and click on *Finish*:
+Paste the *Role ARN* into [managed.hopsworks.ai](https://managed.hopsworks.ai) and click on *Finish*:
 
 <p align="center">
   <figure>
@@ -135,16 +135,16 @@ Paste the *Role ARN* into Hopsworks.ai and click on *Finish*:
 
 ### Option 2: Using AWS Access Keys
 
-You can either create a new IAM user or use an existing IAM user to create access keys for Hopsworks.ai.
+You can either create a new IAM user or use an existing IAM user to create access keys for [managed.hopsworks.ai](https://managed.hopsworks.ai).
 If you want to create a new IAM user, see [Creating an IAM User in Your AWS Account](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html).
 
 !!! warning
 
     We recommend using Cross-Account Roles instead of Access Keys whenever possible, see [Option 1: Using AWS Cross-Account Roles](#option-1-using-aws-cross-account-roles).
 
-Hopsworks.ai requires a set of permissions to be able to launch clusters in your AWS account.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) requires a set of permissions to be able to launch clusters in your AWS account.
 The permissions can be granted by attaching an access policy to your IAM user.
-By default, Hopsworks.ai is automating all steps required to launch a new Hopsworks cluster.
+By default, [managed.hopsworks.ai](https://managed.hopsworks.ai) is automating all steps required to launch a new Hopsworks cluster.
 If you want to limit the required AWS permissions, see [restrictive-permissions](restrictive_permissions.md).
 
 The required permissions are shown in the instructions. Copy them if you want to create a new access policy:
@@ -213,7 +213,7 @@ Copy the *Access Key ID* and the *Secret Access Key*:
   </figure>
 </p>
 
-Paste the *Access Key ID* and the *Secret Access Key* into Hopsworks.ai and click on *Finish*:
+Paste the *Access Key ID* and the *Secret Access Key* into [managed.hopsworks.ai](https://managed.hopsworks.ai) and click on *Finish*:
 
 <p align="center">
   <figure>
@@ -238,7 +238,7 @@ When creating the policy, paste the following in the JSON tab.
 
 ## Step 3: Creating storage
 
-The Hopsworks clusters deployed by hopsworks.ai store their data in an S3 bucket in your AWS account.
+The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in an S3 bucket in your AWS account.
 To enable this you need to create an S3 bucket and an instance profile to give cluster nodes access to the bucket.
 
 Proceed to the [S3 Management Console](https://s3.console.aws.amazon.com/s3/home) and click on *Create bucket*:
@@ -263,7 +263,7 @@ Name your bucket and select the region where your Hopsworks cluster will run. Cl
 </p>
 
 ## Step 4: Create an SSH key
-When deploying clusters, Hopsworks.ai installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: [creating a new key pair](#step-31-create-a-new-key-pair) or [importing an existing key pair](#step-32-import-a-key-pair).
+When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: [creating a new key pair](#step-31-create-a-new-key-pair) or [importing an existing key pair](#step-32-import-a-key-pair).
 
 ### Step 4.1: Create a new key pair
 
@@ -310,7 +310,7 @@ Name your key pair, upload your public key and click on *Import key pair*.
 
 ## Step 5: Deploying a Hopsworks cluster
 
-In Hopsworks.ai, select *Create cluster*:
+In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*:
 
 <p align="center">
   <figure>

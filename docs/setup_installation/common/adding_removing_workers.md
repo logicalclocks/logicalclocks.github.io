@@ -36,14 +36,14 @@ Review your request and click *Add*.
   </figure>
 </p>
 
-Hopsworks.ai will start the new workers and you will be able to use them in your cluster as soon as they have finished starting.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) will start the new workers and you will be able to use them in your cluster as soon as they have finished starting.
 
 ## Removing workers
 
 If the load on your Hopsworks cluster is low, you can decide to remove worker nodes from your cluster.
 
 !!! warning
-    When removing workers Hopsworks.ai will try to select workers that can be removed while interfering as little as possible with any ongoing computation. It will also wait for the workers to be done with their computation before stopping them. But, if this computation lasts too long, the worker may get stopped before the computation properly finish. This could interfere with your ongoing computation.
+    When removing workers [managed.hopsworks.ai](https://managed.hopsworks.ai) will try to select workers that can be removed while interfering as little as possible with any ongoing computation. It will also wait for the workers to be done with their computation before stopping them. But, if this computation lasts too long, the worker may get stopped before the computation properly finish. This could interfere with your ongoing computation.
 
 !!! note
     You can remove all the workers of your cluster. If you do so the cluster will be able to store data but not run any computations. This may affect feature store functionality.
@@ -81,4 +81,4 @@ Review your request and click *Remove*.
   </figure>
 </p>
 
-Hopsworks.ai will select the workers corresponding to your criteria which can be stopped with as little interferences as possible with any ongoing computation. It will set them to decommission and stop them when they have finished decommissioning.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) will select the workers corresponding to your criteria which can be stopped with as little interferences as possible with any ongoing computation. It will set them to decommission and stop them when they have finished decommissioning.

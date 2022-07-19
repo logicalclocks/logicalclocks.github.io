@@ -1,8 +1,8 @@
-# Getting started with Hopsworks.ai (Google Cloud Platform)
+# Getting started with managed.hopsworks.ai (Google Cloud Platform)
 
-[Hopsworks.ai](https://managed.hopsworks.ai/) is our managed platform for running Hopsworks and the Feature Store
+[Managed.hopsworks.ai](https://managed.hopsworks.ai/) is our managed platform for running Hopsworks and the Feature Store
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
-SageMaker and KubeFlow. This guide shows how to set up [Hopsworks.ai](https://managed.hopsworks.ai/) with your organization's Google Cloud Platform's (GCP) account.
+SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai/) with your organization's Google Cloud Platform's (GCP) account.
 
 ## Prerequisite
 
@@ -14,9 +14,9 @@ To follow the instruction of this page you will need the following:
 
 ## Step 1: Connecting your GCP account
 
-[Hopsworks.ai](https://managed.hopsworks.ai/) deploys Hopsworks clusters to a project in your GCP account. [Hopsworks.ai](https://managed.hopsworks.ai/) uses service account keys to connect to your GCP project. To enable this, you need to create a service account in your GCP project. Assign to the service account the required permissions. And, create a service account key JSON. For more details about creating and managing service accounts steps in GCP, see [documentation](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
+[Managed.hopsworks.ai](https://managed.hopsworks.ai/) deploys Hopsworks clusters to a project in your GCP account. [Managed.hopsworks.ai](https://managed.hopsworks.ai/) uses service account keys to connect to your GCP project. To enable this, you need to create a service account in your GCP project. Assign to the service account the required permissions. And, create a service account key JSON. For more details about creating and managing service accounts steps in GCP, see [documentation](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
 
-In [Hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to GCP* or go to *Settings* and click on *Configure* next to *GCP*. This will direct you to a page with the instructions needed to create the service account and set up the connection. Follow the instructions.
+In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to GCP* or go to *Settings* and click on *Configure* next to *GCP*. This will direct you to a page with the instructions needed to create the service account and set up the connection. Follow the instructions.
 
 !!! note 
     it is possible to limit the permissions that step up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md).
@@ -33,7 +33,7 @@ In [Hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to GCP* or go
 
 ## Step 2: Creating and configuring a storage
 
-The Hopsworks clusters deployed by [Hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. To enable this you need to create a bucket and to create a service account with permissions to access the storage.
+The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. To enable this you need to create a bucket and to create a service account with permissions to access the storage.
 
 ### Step 2.1: Creating a custom role for accessing storage 
 
@@ -96,11 +96,11 @@ gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
 ```
 
 !!! note 
-    The hopsworks cluster created by [Hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the *-l* option of *gsutil md*. For more detail about creating buckets with gsutil see the [documentation](https://cloud.google.com/storage/docs/creating-buckets)
+    The hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the *-l* option of *gsutil md*. For more detail about creating buckets with gsutil see the [documentation](https://cloud.google.com/storage/docs/creating-buckets)
 
 ## Step 4: Deploying a Hopsworks cluster
 
-In [Hopsworks.ai](https://managed.hopsworks.ai/), select *Create cluster*:
+In [managed.hopsworks.ai](https://managed.hopsworks.ai/), select *Create cluster*:
 
 <p align="center">
   <figure>

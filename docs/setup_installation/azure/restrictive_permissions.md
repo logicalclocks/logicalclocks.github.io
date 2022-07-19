@@ -1,6 +1,6 @@
 # Limiting Azure permissions
 
-Hopsworks.ai requires a set of permissions to be able to manage resources in the user’s Azure resource group.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) requires a set of permissions to be able to manage resources in the user’s Azure resource group.
 By default, these permissions are set to easily allow a wide range of different configurations and allow
 us to automate as many steps as possible. While we ensure to never access resources we shouldn’t,
 we do understand that this might not be enough for your organization or security policy.
@@ -10,20 +10,20 @@ This guide explains how to lock down access permissions following the IT securit
 
 ### Step 1: Create a virtual network and subnet
 
-To restrict Hopsworks.ai from having write and delete access on virtual networks and subnet you need to create them manually.
+To restrict [managed.hopsworks.ai](https://managed.hopsworks.ai) from having write and delete access on virtual networks and subnet you need to create them manually.
 This can be achieved in the Azure portal following this guide: [Create a virtual network](https://docs.microsoft.com/en-us/azure/virtual-network/quick-create-portal).
 Make sure to use the resource group and location in which you intend to deploy your Hopsworks cluster. For the remaining of the configuration, the default options proposed by the portal should work out of the box.
 Note the names of the virtual network and subnet you want to use for the following steps.
 
 ### Step 2: Create a network security group
 
-To restrict Hopsworks.ai from having write and delete access on network security groups you need to create it manually.
+To restrict [managed.hopsworks.ai](https://managed.hopsworks.ai) from having write and delete access on network security groups you need to create it manually.
 This can be achieved in the Azure portal following this guide: [Create a network security group](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group#create-a-network-security-group).
 Make sure to use the resource group and location in which you intend to deploy your Hopsworks cluster.
 
 #### Inbound traffic 
 
-For Hopsworks.ai to create the SSL certificates the network security group needs to allow inbound traffic on port 80.
+For [managed.hopsworks.ai](https://managed.hopsworks.ai) to create the SSL certificates the network security group needs to allow inbound traffic on port 80.
 For this, you need to add an inbound security rule to your network security group.
 This can be achieved in the Azure portal following this guide: [Create a security rule](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group#create-a-security-rule>).
 Setting the destination port ranges to 80 and letting the default values for the other fields should work out of the box.
@@ -33,13 +33,13 @@ Setting the destination port ranges to 80 and letting the default values for the
 
 #### Outbound traffic 
 
-Clusters created on Hopsworks.ai need to be able to send http requests to *api.hopsworks.ai*. The *api.hopsworks.ai* domain use a content delivery network for better performance. This result in the impossibility to predict which IP the request will be sent to. If you require a list of static IPs to allow outbound traffic from your security group, use the *static IPs* option during [cluster creation](../cluster_creation/#limiting-outbound-traffic-to-hopsworksai).
+Clusters created on [managed.hopsworks.ai](https://managed.hopsworks.ai) need to be able to send http requests to *api.hopsworks.ai*. The *api.hopsworks.ai* domain use a content delivery network for better performance. This result in the impossibility to predict which IP the request will be sent to. If you require a list of static IPs to allow outbound traffic from your security group, use the *static IPs* option during [cluster creation](../cluster_creation/#limiting-outbound-traffic-to-hopsworksai).
 
 !!! note
     If you intend to use the managed users option on your Hopsworks cluster you should also allow outbound traffic to [cognito-idp.us-east-2.amazonaws.com](https://cognito-idp.us-east-2.amazonaws.com) and [managedhopsworks-prod.auth.us-east-2.amazoncognito.com](https://managedhopsworks-prod.auth.us-east-2.amazoncognito.com).
 
 ### Step 3: Set permissions of the cross-account role
-During the account setup for Hopsworks.ai, you were asked to create create a custom role for your resource group.
+During the account setup for [managed.hopsworks.ai](https://managed.hopsworks.ai), you were asked to create create a custom role for your resource group.
 Edit this role in the Azure portal by going to your resource group, clicking on *Access control (IAM)*, opening the tab *Roles*, searching for the role you created, clicking on the three dots at the end of the role line and clicking on edit.
 You can then navigate to the JSON tab and overwrite the "action" field with the following:
 
@@ -87,7 +87,7 @@ You can then navigate to the JSON tab and overwrite the "action" field with the 
 
 ### Step 4: Create your Hopsworks instance
 
-You can now create a new Hopsworks instance in Hopsworks.ai by selecting the virtual network, subnet, and network security group during the instance configuration.
+You can now create a new Hopsworks instance in [managed.hopsworks.ai](https://managed.hopsworks.ai) by selecting the virtual network, subnet, and network security group during the instance configuration.
 
 ### Backup permissions
 

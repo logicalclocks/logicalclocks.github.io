@@ -1,9 +1,9 @@
-# Getting started with Hopsworks.ai (AWS)
-This guide goes into detail for each of the steps of the cluster creation in Hopsworks.ai
+# Getting started with managed.hopsworks.ai (AWS)
+This guide goes into detail for each of the steps of the cluster creation in [managed.hopsworks.ai](https://managed.hopsworks.ai)
 
 ### Step 1 starting to create a cluster
 
-In Hopsworks.ai, select *Create cluster*:
+In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*:
 
 <p align="center">
   <figure>
@@ -59,7 +59,7 @@ Users can also select an AWS *canned* **ACLs** for the objects:
 
 
 
-On the main page, you can also choose to aggregate logs in CloudWatch and to opt out of hopsworks.ai log collection. The first one is to aggregate the logs of services running in your cluster in CloudWatch service in your configured AWS account. This can be useful if you want to understand what is happening on your cluster, without having to ssh into the instances. The second one is for hopsworks.ai to collect logs about the services running in your cluster. These logs will help us improve our system and provide support. If you choose to opt-out from the log collection and need support you will have to provide us the log by yourself, which will slow down the support process.
+On the main page, you can also choose to aggregate logs in CloudWatch and to opt out of [managed.hopsworks.ai](https://managed.hopsworks.ai) log collection. The first one is to aggregate the logs of services running in your cluster in CloudWatch service in your configured AWS account. This can be useful if you want to understand what is happening on your cluster, without having to ssh into the instances. The second one is for [managed.hopsworks.ai](https://managed.hopsworks.ai) to collect logs about the services running in your cluster. These logs will help us improve our system and provide support. If you choose to opt-out from the log collection and need support you will have to provide us the log by yourself, which will slow down the support process.
 
 ### Step 3 workers configuration
 
@@ -101,7 +101,7 @@ You can set the autoscaling configuration by selecting enabled in the first drop
 
 ### Step 4 select an SSH key
 
-When deploying clusters, Hopsworks.ai installs an ssh key on the cluster's instances so that you can access them if necessary.
+When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs an ssh key on the cluster's instances so that you can access them if necessary.
 Select the *SSH key* that you want to use to access cluster instances. For more detail on how to add a shh key in AWS refer to [Create an ssh key](getting_started.md#step-4-create-an-ssh-key)
 
 <p align="center">
@@ -151,7 +151,7 @@ Hopsworks can integrate with Amazon Elastic Kubernetes Service (EKS) and Amazon 
 </p>
 
 ### Step 8 VPC selection
-In this step, you can select the VPC which will be used by the Hopsworks cluster. You can either select an existing VPC or let Hopsworks.ai create one for you. If you decide to let Hopsworks.ai create the VPC for you, you can choose the CIDR block for this virtual network. 
+In this step, you can select the VPC which will be used by the Hopsworks cluster. You can either select an existing VPC or let [managed.hopsworks.ai](https://managed.hopsworks.ai) create one for you. If you decide to let [managed.hopsworks.ai](https://managed.hopsworks.ai) create the VPC for you, you can choose the CIDR block for this virtual network. 
 Refer to [Create a VPC](restrictive_permissions.md#step-1-create-a-vpc) for more details on how to create your own VPC in AWS.
 
 <p align="center">
@@ -169,7 +169,7 @@ Refer to [Create a VPC](restrictive_permissions.md#step-1-create-a-vpc) for more
 ### Step 9 Availability Zone selection
 If you selected an existing VPC in the previous step, this step lets you select which availability zone of this VPC to use.
 
-If you did not select an existing virtual network in the previous step Hopsworks.ai will create an availability zone for you. You can choose the CIDR block this subnet will use.
+If you did not select an existing virtual network in the previous step [managed.hopsworks.ai](https://managed.hopsworks.ai) will create an availability zone for you. You can choose the CIDR block this subnet will use.
 
 <p align="center">
   <figure>
@@ -184,10 +184,10 @@ If you did not select an existing virtual network in the previous step Hopsworks
 If you selected an existing VPC in the previous step, this step lets you select which security group to use.
 
 !!! note
-    Hopsworks.ai require some rules for inbound and outbound traffic in your security group, for more details refer to [inbound traffic rules](restrictive_permissions.md#inbound-traffic) and [outbound traffic rules](restrictive_permissions.md#outbound-traffic).
+    [Managed.hopsworks.ai](https://managed.hopsworks.ai) require some rules for inbound and outbound traffic in your security group, for more details refer to [inbound traffic rules](restrictive_permissions.md#inbound-traffic) and [outbound traffic rules](restrictive_permissions.md#outbound-traffic).
 
 !!! note
-    Hopsworks.ai attaches a public ip to your cluster by default. However, you can disable this behavior by unchecking the *Attach Public IP* checkbox.
+    [Managed.hopsworks.ai](https://managed.hopsworks.ai) attaches a public ip to your cluster by default. However, you can disable this behavior by unchecking the *Attach Public IP* checkbox.
 
 <p align="center">
   <figure>
@@ -198,9 +198,9 @@ If you selected an existing VPC in the previous step, this step lets you select 
   </figure>
 </p>
 
-#### Limiting outbound traffic to Hopsworks.ai
+#### Limiting outbound traffic to managed.hopsworks.ai
 
-Clusters created on Hopsworks.ai need to be able to send http requests to api.hopsworks.ai. If you have strict regulation regarding outbound traffic, you can enable the *Use static IPs to communicate with Hopsworks.ai* checkbox to get a list of IPs to be allowed as shown below:
+Clusters created on [managed.hopsworks.ai](https://managed.hopsworks.ai) need to be able to send http requests to api.hopsworks.ai. If you have strict regulation regarding outbound traffic, you can enable the *Use static IPs to communicate with [managed.hopsworks.ai](https://managed.hopsworks.ai)* checkbox to get a list of IPs to be allowed as shown below:
 
 <p align="center">
   <figure>
@@ -214,7 +214,7 @@ Clusters created on Hopsworks.ai need to be able to send http requests to api.ho
 ### Step 11 User management selection
 In this step, you can choose which user management system to use. You have four choices: 
 
-* *Managed*: Hopsworks.ai automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization (more details [here](../common/user_management.md)).
+* *Managed*: [Managed.hopsworks.ai](https://managed.hopsworks.ai) automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization (more details [here](../common/user_management.md)).
 * *OAuth2*: integrate the cluster with your organization's OAuth2 identity provider. See [Use OAuth2 for user management](../common/sso/oauth.md) for more detail.
 * *LDAP*: integrate the cluster with your organization's LDAP/ActiveDirectory server. See [Use LDAP for user management](../common/sso/ldap.md) for more detail.
 * *Disabled*: let you manage users manually from within Hopsworks.

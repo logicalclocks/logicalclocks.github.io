@@ -38,15 +38,15 @@ If you want to be able to SSH into the virtual machines running the Hopsworks cl
 
 Port: 22.
 
-## Limiting outbound traffic to Hopsworks.ai
+## Limiting outbound traffic to managed.hopsworks.ai
 
-If you have enabled the use of static IPs to communicate with Hopsworks.ai as described in [AWS](../../aws/cluster_creation/#limiting-outbound-traffic-to-hopsworksai) and [AZURE](../../azure/cluster_creation/#limiting-outbound-traffic-to-hopsworksai), you need to ensure that your security group allow outbound traffic to the two IPs indicated in the service page.
+If you have enabled the use of static IPs to communicate with [managed.hopsworks.ai](https://managed.hopsworks.ai) as described in [AWS](../../aws/cluster_creation/#limiting-outbound-traffic-to-hopsworksai) and [AZURE](../../azure/cluster_creation/#limiting-outbound-traffic-to-hopsworksai), you need to ensure that your security group allow outbound traffic to the two IPs indicated in the service page.
 
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/common/limit-outbound-traffic-hopsworksai.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/limit-outbound-traffic-hopsworksai.png" alt="Limiting outbound traffic to Hopsworks.ai">
+      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/limit-outbound-traffic-hopsworksai.png" alt="Limiting outbound traffic to managed.hopsworks.ai">
     </a>
-    <figcaption>Limiting outbound traffic to Hopsworks.ai</figcaption>
+    <figcaption>Limiting outbound traffic to managed.hopsworks.ai</figcaption>
   </figure>
 </p>
