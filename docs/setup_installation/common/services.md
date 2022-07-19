@@ -19,17 +19,17 @@ Open ports by going to the *Services* tab, selecting a service, and pressing *Up
 If you do not want the ports to be open to the internet you can set up VPC peering between the Hopsworks VPC and your client VPC. You then need to make sure that the ports associated with the services you want to use are open between the two VPCs. The ports associated with each of the services are indicated in the descriptions of the services below.
 
 ## Feature store
-The Feature Store is a data management system for managing machine learning features, including the feature engineering code and the feature data. The Feature Store helps ensure that features used during training and serving are consistent and that features are documented and reused within enterprises. You can find the full feature store documentation [here](https://docs.hopsworks.ai/feature-store-api/latest) and information about how to connect to the Feature Store from different external services [here](https://docs.hopsworks.ai/feature-store-api/latest/setup/)
+The Feature Store is a data management system for managing machine learning features, including the feature engineering code and the feature data. The Feature Store helps ensure that features used during training and serving are consistent and that features are documented and reused within enterprises. You can find more about the feature store [here](../../concepts/fs/index.md) and information about how to connect to the Feature Store from different external services [here](../../user_guides/fs/storage_connector/index.md)
 
 Ports: 8020, 30010, 9083 and 9085
 
 ## Online Feature store
-The online Feature store is required for online applications, where the goal is to retrieve a single feature vector with low latency and the same logic as was applied to generate the training dataset, such that the vector can subsequently be passed to a machine learning model in production to compute a prediction. You can find a more detailed explanation of the difference between Online and Offline Feature Store [here](https://docs.hopsworks.ai/feature-store-api/latest/overview/#offline-vs-online-feature-store). Once you have opened the ports, the Online Feature store can be used with the same library as the offline feature store. You can find the full documentation [here](https://docs.hopsworks.ai/feature-store-api/latest).
+The online Feature store is required for online applications, where the goal is to retrieve a single feature vector with low latency and the same logic as was applied to generate the training dataset, such that the vector can subsequently be passed to a machine learning model in production to compute a prediction. You can find a more detailed explanation of the difference between Online and Offline Feature Store [here](../../concepts/fs/feature_group/fg_overview.md#online-and-offline-storage). Once you have opened the ports, the Online Feature store can be used with the same library as the offline feature store. You can find more in the [user guildes](../../user_guides/index.md).
 
 Port: 3306
 
 ## Kafka
-Hopsworks provides Kafka-as-a-Service for streaming applications and to ingest data. You can find more information about how to use Kafka in Hopsworks in this [documentation](https://hopsworks.readthedocs.io/en/stable/user_guide/hopsworks/kafka.html)
+Hopsworks provides Kafka-as-a-Service for streaming applications and to ingest data. You can find more information about how to use Kafka in Hopsworks in this [documentation](../../user_guides/projects/kafka/create_schema.md)
 
 Port: 9092
 

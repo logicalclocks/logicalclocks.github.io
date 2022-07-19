@@ -25,25 +25,5 @@ When [adding workers](adding_removing_workers.md#adding-workers) to a cluster, y
   </figure>
 </p>
 
-## Using the GPUs
-Once workers with GPUs have been added to your cluster you can use them by allocating GPUs to JupyterLab or Jobs.
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/gpu-jupyter.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/gpu-jupyter.png" alt="Using GPUs in JupyterLab">
-    </a>
-    <figcaption>Using GPUs in JupyterLab</figcaption>
-  </figure>
-</p>
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/gpu-jobs.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/gpu-jobs.png" alt="Using GPUs in jobs">
-    </a>
-    <figcaption>Using GPUs in jobs</figcaption>
-  </figure>
-</p>
-
-For more information about using GPUs in Hopsworks you can consult Hopsworks [Experiments documentation](https://hopsworks.readthedocs.io/en/stable/hopsml/experiment.html).
+## Conclusion
+You now know how to add GPU workers in your hopsworks cluster.
