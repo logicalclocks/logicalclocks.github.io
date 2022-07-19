@@ -1,6 +1,6 @@
 # Integration with Azure AKS and ACR
 
-This guide shows how to create a cluster in hopsworks.ai with integrated support for Azure Kubernetes Service (AKS) and Azure Container Registry (ACR). This enables Hopsworks to launch Python jobs, Jupyter servers, and serve models on top of AKS.
+This guide shows how to create a cluster in [managed.hopsworks.ai](https://managed.hopsworks.ai) with integrated support for Azure Kubernetes Service (AKS) and Azure Container Registry (ACR). This enables Hopsworks to launch Python jobs, Jupyter servers, and serve models on top of AKS.
 
 Hopsworks AKS and ACR integration have four requirements:
 
@@ -238,7 +238,7 @@ Press *+ Subnet*. Choose a name for the subnet, for example, "hopsworks" and an 
 
 ## Create the Hopsworks cluster
 
-This step assumes you are creating your Hopsworks cluster using hopsworks.ai. The AKS configuration can be set under the *Managed containers* tab. Set *Use Azure AKS and Azure ACR* as enabled. Two new fields will pop up. Fill them with the name of the container registry and the AKS you created above. In the previous example, we created an ACR with the name *hopsworksaks* and an AKS cluster with the name *hopsaks-cluster*. Hence, the configuration should look similar to the picture below
+This step assumes you are creating your Hopsworks cluster using [managed.hopsworks.ai](https://managed.hopsworks.ai). The AKS configuration can be set under the *Managed containers* tab. Set *Use Azure AKS and Azure ACR* as enabled. Two new fields will pop up. Fill them with the name of the container registry and the AKS you created above. In the previous example, we created an ACR with the name *hopsworksaks* and an AKS cluster with the name *hopsaks-cluster*. Hence, the configuration should look similar to the picture below
 
 <p align="center">
   <figure>

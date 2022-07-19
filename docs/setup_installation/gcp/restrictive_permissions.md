@@ -1,6 +1,6 @@
 # Limiting GCP permissions
 
-Hopsworks.ai requires a set of permissions to be able to manage resources in the user’s GCP project.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) requires a set of permissions to be able to manage resources in the user’s GCP project.
 By default, these permissions are set to easily allow a wide range of different configurations and allow
 us to automate as many steps as possible. While we ensure to never access resources we shouldn’t,
 we do understand that this might not be enough for your organization or security policy.
@@ -8,7 +8,7 @@ This guide explains how to lock down access permissions following the IT securit
 
 ## Limiting the Account Service Account permissions
 
-Some of the permissions set up when connection your GCP account to Hopsworks.ai ([here](getting_started.md#step-1-connecting-your-gcp-account)) can be removed under certain conditions.
+Some of the permissions set up when connection your GCP account to [managed.hopsworks.ai](https://managed.hopsworks.ai) ([here](getting_started.md#step-1-connecting-your-gcp-account)) can be removed under certain conditions.
 
 ### Backup permissions
 
@@ -31,7 +31,7 @@ The following permission is only needed to be able to change the head node and R
 - compute.instances.setMachineType
 ```
 ### Create a VPC permissions
-The following permissions are only needed if you want Hopsworks.ai to create VPC and subnet for you.
+The following permissions are only needed if you want [managed.hopsworks.ai](https://managed.hopsworks.ai) to create VPC and subnet for you.
 If you choose an existing VPC and subnet, you can limit the permission of the Service Account by removing them. 
 
 ```yaml

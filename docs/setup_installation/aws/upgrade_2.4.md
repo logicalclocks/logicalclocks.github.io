@@ -1,4 +1,4 @@
-# Upgrade existing clusters on Hopsworks.ai from version 2.4 or newer (AWS) 
+# Upgrade existing clusters on managed.hopsworks.ai from version 2.4 or newer (AWS) 
 
 This guide shows you how to upgrade your existing Hopsworks cluster to a newer version of Hopsworks.
 
@@ -28,7 +28,7 @@ You can proceed by clicking the *Upgrade* button.
 We require some extra permissions to be added to the role you have created when connecting your AWS account as described in [getting started guide](../getting_started/#step-1-connecting-your-aws-account). These permissions are required to create a snapshot of your cluster before proceeding with the upgrade. 
 
 
-First, check which role or access key you have added to Hopsworks.ai, you can go to the *Settings* tab, and then click *Edit* next to the AWS cloud account
+First, check which role or access key you have added to managed.hopsworks.ai, you can go to the *Settings* tab, and then click *Edit* next to the AWS cloud account
 
 <p align="center">
   <figure>
@@ -80,7 +80,7 @@ You need to click on *Upgrade* to start the upgrade process. You will be prompte
 !!! note
     No need to worry about the following message since this is done already in [Step 2](#step-2-add-backup-permissions-to-your-cross-account-role)
 
-    **Make sure that your cross-account role which you have connected to Hopsworks.ai has the following permissions:
+    **Make sure that your cross-account role which you have connected to managed.hopsworks.ai has the following permissions:
     [ "ec2:RegisterImage", "ec2:DeregisterImage", "ec2:DescribeImages", "ec2:CreateSnapshot", "ec2:DeleteSnapshot", "ec2:DescribeSnapshots"]**
 
 <p align="center">

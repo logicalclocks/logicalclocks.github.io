@@ -1,4 +1,4 @@
-# Upgrade existing clusters on Hopsworks.ai from version 2.2 or older (AWS)
+# Upgrade existing clusters on managed.hopsworks.ai from version 2.2 or older (AWS)
 
 This guide shows you how to upgrade your existing Hopsworks cluster to a newer version of Hopsworks.
 
@@ -126,7 +126,7 @@ There are two categories of errors that you may encounter during an upgrade. Fir
 
 ### Error 1: Misconfigured upgrade permissions
 
-During the upgrade process, Hopsworks.ai starts by validating your instance profile permissions to ensure that it includes the required upgrade permissions. If one or more permissions are missing, or if the resource is not set correctly, you will be notified with an error message and a *Retry* button will appear as shown below:
+During the upgrade process, [managed.hopsworks.ai](https://managed.hopsworks.ai) starts by validating your instance profile permissions to ensure that it includes the required upgrade permissions. If one or more permissions are missing, or if the resource is not set correctly, you will be notified with an error message and a *Retry* button will appear as shown below:
 
 <p align="center">
   <figure>

@@ -3,7 +3,7 @@
 Some organizations follow network patterns which impose a specific domain
 name for Instances. In that case, the instance's hostname instead of `ip-10-0-0-175.us-east-2.compute.internal` would be `ip-10-0-0-175.bar.foo`
 
-The control plane at [hopsworks.ai](https://www.hopsworks.ai/) needs to be
+The control plane at [managed.hopsworks.ai](https://managed.hopsworks.ai) needs to be
 aware of such case in order to properly initialize the Cluster.
 
 !!! note
@@ -43,7 +43,7 @@ name registration in Amazon Route 53
 ## Auto registration with Amazon Route 53
 
 It is quite common for organizations in AWS to use Route 53 for DNS or for hosted zones.
-You can configure a cluster in _hopsworks.ai_ to execute some custom
+You can configure a cluster in [managed.hopsworks.ai](https://managed.hopsworks.ai) to execute some custom
 initialization script **before** any other action. This script will
 be executed on all nodes of the cluster.
 
