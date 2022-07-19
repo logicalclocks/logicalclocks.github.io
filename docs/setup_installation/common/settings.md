@@ -17,7 +17,7 @@ The settings page contains a menu on the left. The remaining of the page display
   </figure>
 </p>
 
-## Manage the connection to your cloud accounts in Cloud Accounts
+## Manage the connection to your cloud accounts under Cloud Accounts
 The landing section of the settings page is the __Cloud Accounts__ section. On this page you can edit the link between [managed.hopsworks.ai](https://managed.hopsworks.ai) and your cloud provider by clicking on the __Edit__ button (1). You can delete the link and remove any access from [managed.hopsworks.ai](https://managed.hopsworks.ai) to your cloud manager by clicking on the __Delete__ button (2). Or, you can configure a new connection with a cloud provider by clicking on the __Configure__ button (3).
 
 For more details about setting up a connection with a cloud provider see the getting started pages for:
@@ -35,7 +35,7 @@ For more details about setting up a connection with a cloud provider see the get
   </figure>
 </p>
 
-## Manage your personal information in Profile
+## Manage your personal information under Profile
 The __Profile__ section is where you can edit your personal information such as name, phone number, company, etc.
 
 <p align="center">
@@ -47,7 +47,7 @@ The __Profile__ section is where you can edit your personal information such as 
   </figure>
 </p>
 
-## Change your password and configure multi-factor authentication in the Security section
+## Change your password and configure multi-factor authentication under the Security section
 ### Change your password
 To change your password, go to the security section, enter your current password in the __Current password__ field (1), enter the new password in the __New password__ field (2), and click on __Save__ (3).
 
@@ -72,7 +72,7 @@ To set up multi-factor authentication, go to the security section, scan the QR c
   </figure>
 </p>
 
-## Create and manage API keys in the API keys section
+## Create and manage API keys under the API keys section
 The API key section is where you create or delete your [managed.hopsworks.ai](https://managed.hopsworks.ai) API keys. More details about the API keys can be found in the [API keys documentation](./api_key.md)
 
 <p align="center">

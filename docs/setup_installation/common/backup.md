@@ -65,7 +65,7 @@ You can then wait until the backup is complete. The backup process being underwa
 Once the backup is taken your cluster will be back up and running and ready to use.
 
 ## Restoring a backup
-Go to the Backup tab of the dashboard (left menu (1)) to the list of all the backups. This list is organized by clusters. For each of the clusters, you can see the state of the cluster (2) and the list of backups for this cluster (3). 
+Go to the Backup tab of the dashboard (left menu (1)) to the list of all the backups. This list is organized by cluster. For each of the clusters, you can see the state of the cluster (2) and the list of backups for this cluster (3). 
 
 To be able to restore a backup the corresponding cluster needs to be [terminated](./dashboard.md#terminate-the-cluster). If your cluster is not terminated go and terminate it. Once the cluster is terminated you restore a backup by clicking on the _Restore_ button (4) of the backup you want to restore.
 
@@ -166,6 +166,6 @@ Once you have clicked on the _Delete_ button, you will be asked to confirm that 
 The backup will then be deleted.
 
 ## Conclusion
-During this tutorial, you have created a backup, restored a cluster from this backup, checked the information about this backup, and finaly deleted the backup.
+During this tutorial, you have created a backup, restored a cluster from this backup, checked the information about this backup, and finally deleted the backup.
 
 Now that you have restored a cluster you can [add workers](./adding_removing_workers.md) or set up [autoscale](./autoscaling.md) on it.

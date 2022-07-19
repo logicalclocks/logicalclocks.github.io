@@ -88,7 +88,7 @@ The General tab gives you the basic information about your cluster. If you have 
 </p>
 
 ### Manage the services in the services tab
-The services tab shows which services ports are open to the internet on your cluster. More details can be found in the [services documentation](./services.md).
+The services tab shows which service ports are open to the internet on your cluster. More details can be found in the [services documentation](./services.md).
 
 <p align="center">
   <figure>
@@ -99,7 +99,7 @@ The services tab shows which services ports are open to the internet on your clu
   </figure>
 </p>
 
-### Get information about your cluster status in the Console tab
+### Get information about your cluster state in the Console tab
 The console tab display more detailed information about the current state of your cluster. If your cluster is running and everything is as planned it will only say "everything is ok". But, if something failed, this is where you will find more details about the error.
 
 <p align="center">
