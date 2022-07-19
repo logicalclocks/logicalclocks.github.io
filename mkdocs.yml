@@ -181,6 +181,7 @@ nav:
           - Cluster Creation: setup_installation/gcp/cluster_creation.md
           - Limiting Permissions: setup_installation/gcp/restrictive_permissions.md
       - Common:
+          - The dashboard: setup_installation/common/dashboard.md
           - Services: setup_installation/common/services.md
           - Adding and Removing workers: setup_installation/common/adding_removing_workers.md
           - Autoscaling: setup_installation/common/autoscaling.md
