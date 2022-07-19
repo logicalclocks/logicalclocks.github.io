@@ -32,7 +32,7 @@ Identify your EMR VPC in the Summary of your EMR cluster:
 </p>
 
 !!! info "Hopsworks installer"
-    If you are performing an installation using the [Hopsworks installer script](https://hopsworks.readthedocs.io/en/stable/getting_started/installation_guide/platforms/hopsworks-installer.html), ensure that the virtual machines you install Hopsworks on are deployed in the EMR VPC.
+    If you are performing an installation using the [Hopsworks installer script](../../../setup_installation/on_prem/hopsworks_installer.md), ensure that the virtual machines you install Hopsworks on are deployed in the EMR VPC.
 
 !!! info "Hopsworks.ai"
     If you are on **Hopsworks.ai**, you can directly deploy Hopsworks to the EMR VPC, by simply selecting it at the [VPC selection step during cluster creation](https://docs.hopsworks.ai/hopsworks-cloud/latest/aws/cluster_creation/#step-8-vpc-selection).
