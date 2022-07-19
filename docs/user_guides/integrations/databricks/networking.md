@@ -25,7 +25,7 @@ Identify your Databricks VPC by searching for VPCs containing Databricks in thei
 </p>
 
 !!! info "Hopsworks installer"
-    If you are performing an installation using the [Hopsworks installer script](https://hopsworks.readthedocs.io/en/stable/getting_started/installation_guide/platforms/hopsworks-installer.html), ensure that the virtual machines you install Hopsworks on are deployed in the EMR VPC.
+    If you are performing an installation using the [Hopsworks installer script](../../../setup_installation/on_prem/hopsworks_installer.md), ensure that the virtual machines you install Hopsworks on are deployed in the EMR VPC.
 
 !!! info "Hopsworks.ai"
     If you are working on **Hopsworks.ai**, you can directly deploy the Hopsworks instance to the Databricks VPC, by simply selecting it at the [VPC selection step during cluster creation](https://docs.hopsworks.ai/hopsworks-cloud/latest/aws/cluster_creation/#step-8-vpc-selection).
