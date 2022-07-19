@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started-with-hopsworksai-aws" class="md-skip">
+        <a href="#getting-started-with-managedhopsworksai-aws" class="md-skip">
           Skip to content
         </a>
       
@@ -4110,6 +4110,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4123,6 +4129,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4160,6 +4194,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4231,7 +4279,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4240,13 +4288,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4261,7 +4309,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4272,13 +4320,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -4996,12 +5044,12 @@
                 
 
 
-<h1 id="getting-started-with-hopsworksai-aws">Getting started with Hopsworks.ai (AWS)<a class="headerlink" href="#getting-started-with-hopsworksai-aws" title="Permanent link">#</a></h1>
-<p>Hopsworks.ai is our managed platform for running Hopsworks and the Feature Store
+<h1 id="getting-started-with-managedhopsworksai-aws">Getting started with managed.hopsworks.ai (AWS)<a class="headerlink" href="#getting-started-with-managedhopsworksai-aws" title="Permanent link">#</a></h1>
+<p><a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> is our managed platform for running Hopsworks and the Feature Store
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
-SageMaker and KubeFlow. This guide shows how to set up Hopsworks.ai with your organization's AWS account.</p>
+SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> with your organization's AWS account.</p>
 <h2 id="step-1-connecting-your-aws-account">Step 1: Connecting your AWS account<a class="headerlink" href="#step-1-connecting-your-aws-account" title="Permanent link">#</a></h2>
-<p>Hopsworks.ai deploys Hopsworks clusters to your AWS account. To enable this you have to
+<p><a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> deploys Hopsworks clusters to your AWS account. To enable this you have to
 permit us to do so. This can be either achieved by using AWS cross-account roles or
 AWS access keys. We strongly recommend the usage of cross-account roles whenever possible due
 to security reasons.</p>
@@ -5018,7 +5066,7 @@ to security reasons.</p>
   </iframe>
 </p>
 
-<p>To create a cross-account role for Hopsworks.ai, you need our AWS account id and the external
+<p>To create a cross-account role for <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, you need our AWS account id and the external
 id we created for you. You can find this information on the first screen of the cross-account
 configuration flow. Take note of the account id and external id and go to the <em>Roles</em> section
 of the <em>IAM</em> service in the AWS Management Console and select <em>Create role</em>.</p>
@@ -5052,8 +5100,8 @@ id generated for you:</p>
   </figure>
 </p>
 
-<p>As a next step, you need to create an access policy to give Hopsworks.ai permissions to manage
-clusters in your organization's AWS account. By default, Hopsworks.ai is automating all steps required to launch
+<p>As a next step, you need to create an access policy to give <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> permissions to manage
+clusters in your organization's AWS account. By default, <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> is automating all steps required to launch
 a new Hopsworks cluster. If you want to limit the required AWS permissions, see <a href="../restrictive_permissions/">restrictive-permissions</a>.</p>
 <p>Copy the permission JSON from the instructions:</p>
 <p align="center">
@@ -5106,7 +5154,7 @@ AWS Management Console and select <em>Add inline policy</em>:</p>
   </figure>
 </p>
 
-<p>Paste the <em>Role ARN</em> into Hopsworks.ai and click on <em>Finish</em>:</p>
+<p>Paste the <em>Role ARN</em> into <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> and click on <em>Finish</em>:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/aws/save-role.png">
@@ -5117,15 +5165,15 @@ AWS Management Console and select <em>Add inline policy</em>:</p>
 </p>
 
 <h3 id="option-2-using-aws-access-keys">Option 2: Using AWS Access Keys<a class="headerlink" href="#option-2-using-aws-access-keys" title="Permanent link">#</a></h3>
-<p>You can either create a new IAM user or use an existing IAM user to create access keys for Hopsworks.ai.
+<p>You can either create a new IAM user or use an existing IAM user to create access keys for <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>.
 If you want to create a new IAM user, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html">Creating an IAM User in Your AWS Account</a>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>We recommend using Cross-Account Roles instead of Access Keys whenever possible, see <a href="#option-1-using-aws-cross-account-roles">Option 1: Using AWS Cross-Account Roles</a>.</p>
 </div>
-<p>Hopsworks.ai requires a set of permissions to be able to launch clusters in your AWS account.
+<p><a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> requires a set of permissions to be able to launch clusters in your AWS account.
 The permissions can be granted by attaching an access policy to your IAM user.
-By default, Hopsworks.ai is automating all steps required to launch a new Hopsworks cluster.
+By default, <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> is automating all steps required to launch a new Hopsworks cluster.
 If you want to limit the required AWS permissions, see <a href="../restrictive_permissions/">restrictive-permissions</a>.</p>
 <p>The required permissions are shown in the instructions. Copy them if you want to create a new access policy:</p>
 <p align="center">
@@ -5187,7 +5235,7 @@ If you want to limit the required AWS permissions, see <a href="../restrictive_p
   </figure>
 </p>
 
-<p>Paste the <em>Access Key ID</em> and the <em>Secret Access Key</em> into Hopsworks.ai and click on <em>Finish</em>:</p>
+<p>Paste the <em>Access Key ID</em> and the <em>Secret Access Key</em> into <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> and click on <em>Finish</em>:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/aws/save-access-key.png">
@@ -5272,7 +5320,7 @@ If you want to limit the required AWS permissions, see <a href="../restrictive_p
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="step-3-creating-storage">Step 3: Creating storage<a class="headerlink" href="#step-3-creating-storage" title="Permanent link">#</a></h2>
-<p>The Hopsworks clusters deployed by hopsworks.ai store their data in an S3 bucket in your AWS account.
+<p>The Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> store their data in an S3 bucket in your AWS account.
 To enable this you need to create an S3 bucket and an instance profile to give cluster nodes access to the bucket.</p>
 <p>Proceed to the <a href="https://s3.console.aws.amazon.com/s3/home">S3 Management Console</a> and click on <em>Create bucket</em>:</p>
 <p align="center">
@@ -5295,7 +5343,7 @@ To enable this you need to create an S3 bucket and an instance profile to give c
 </p>
 
 <h2 id="step-4-create-an-ssh-key">Step 4: Create an SSH key<a class="headerlink" href="#step-4-create-an-ssh-key" title="Permanent link">#</a></h2>
-<p>When deploying clusters, Hopsworks.ai installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: <a href="#step-31-create-a-new-key-pair">creating a new key pair</a> or <a href="#step-32-import-a-key-pair">importing an existing key pair</a>.</p>
+<p>When deploying clusters, <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: <a href="#step-31-create-a-new-key-pair">creating a new key pair</a> or <a href="#step-32-import-a-key-pair">importing an existing key pair</a>.</p>
 <h3 id="step-41-create-a-new-key-pair">Step 4.1: Create a new key pair<a class="headerlink" href="#step-41-create-a-new-key-pair" title="Permanent link">#</a></h3>
 <p>Proceed to <a href="https://us-east-2.console.aws.amazon.com/ec2/v2/home?#KeyPairs">Key pairs in the EC2 console</a> and click on <em>Create key pair</em></p>
 <p align="center">
@@ -5339,7 +5387,7 @@ To enable this you need to create an S3 bucket and an instance profile to give c
 </p>
 
 <h2 id="step-5-deploying-a-hopsworks-cluster">Step 5: Deploying a Hopsworks cluster<a class="headerlink" href="#step-5-deploying-a-hopsworks-cluster" title="Permanent link">#</a></h2>
-<p>In Hopsworks.ai, select <em>Create cluster</em>:</p>
+<p>In <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, select <em>Create cluster</em>:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
@@ -5446,9 +5494,9 @@ Select the <em>Instance type</em> (3) and <em>Local storage</em> size (4) for th
 <p>Check out our other guides for how to get started with Hopsworks and the Feature Store:</p>
 <ul>
 <li>Make Hopsworks services <a href="../../common/services/">accessible from outside services</a></li>
-<li>Get started with the <a href="https://docs.hopsworks.ai/feature-store-api/latest/quickstart">Hopsworks Feature Store</a></li>
-<li>Get started with Machine Learning on Hopsworks: <a href="https://hopsworks.readthedocs.io/en/stable/hopsml/index.html#hops-ml">HopsML</a></li>
-<li>Get started with Hopsworks: <a href="https://hopsworks.readthedocs.io/en/stable/user_guide/user_guide.html#userguide">User Guide</a></li>
+<li>Get started with the <a href="../../../getting_started/quickstart/">Hopsworks Feature Store</a></li>
+<li>Follow one of our <a href="../../../tutorials/fraud_batch/1_feature_groups/">tutorials</a></li>
+<li>Follow one of our <a href="../../../user_guides/">Guide</a></li>
 <li>Code examples and notebooks: <a href="https://github.com/logicalclocks/hops-examples">hops-examples</a></li>
 </ul>
 

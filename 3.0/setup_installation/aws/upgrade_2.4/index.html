@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#upgrade-existing-clusters-on-hopsworksai-from-version-24-or-newer-aws" class="md-skip">
+        <a href="#upgrade-existing-clusters-on-managedhopsworksai-from-version-24-or-newer-aws" class="md-skip">
           Skip to content
         </a>
       
@@ -4078,6 +4078,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4091,6 +4097,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4128,6 +4162,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4199,7 +4247,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4208,13 +4256,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4229,7 +4277,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4240,13 +4288,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -4930,7 +4978,7 @@
                 
 
 
-<h1 id="upgrade-existing-clusters-on-hopsworksai-from-version-24-or-newer-aws">Upgrade existing clusters on Hopsworks.ai from version 2.4 or newer (AWS)<a class="headerlink" href="#upgrade-existing-clusters-on-hopsworksai-from-version-24-or-newer-aws" title="Permanent link">#</a></h1>
+<h1 id="upgrade-existing-clusters-on-managedhopsworksai-from-version-24-or-newer-aws">Upgrade existing clusters on managed.hopsworks.ai from version 2.4 or newer (AWS)<a class="headerlink" href="#upgrade-existing-clusters-on-managedhopsworksai-from-version-24-or-newer-aws" title="Permanent link">#</a></h1>
 <p>This guide shows you how to upgrade your existing Hopsworks cluster to a newer version of Hopsworks.</p>
 <h2 id="step-1-make-sure-your-cluster-is-running">Step 1: Make sure your cluster is running<a class="headerlink" href="#step-1-make-sure-your-cluster-is-running" title="Permanent link">#</a></h2>
 <p>It is important that your cluster is <strong>Running</strong>. Otherwise you will not be able to upgrade. As soon as a new version is available an upgrade notification will appear.</p>
@@ -4952,7 +5000,7 @@
 </code></pre></div></p>
 </div>
 <p>We require some extra permissions to be added to the role you have created when connecting your AWS account as described in <a href="../getting_started/#step-1-connecting-your-aws-account">getting started guide</a>. These permissions are required to create a snapshot of your cluster before proceeding with the upgrade. </p>
-<p>First, check which role or access key you have added to Hopsworks.ai, you can go to the <em>Settings</em> tab, and then click <em>Edit</em> next to the AWS cloud account</p>
+<p>First, check which role or access key you have added to managed.hopsworks.ai, you can go to the <em>Settings</em> tab, and then click <em>Edit</em> next to the AWS cloud account</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/aws/aws-account-settings.png">
@@ -4997,7 +5045,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>No need to worry about the following message since this is done already in <a href="#step-2-add-backup-permissions-to-your-cross-account-role">Step 2</a></p>
-<p><strong>Make sure that your cross-account role which you have connected to Hopsworks.ai has the following permissions:
+<p><strong>Make sure that your cross-account role which you have connected to managed.hopsworks.ai has the following permissions:
 [ "ec2:RegisterImage", "ec2:DeregisterImage", "ec2:DescribeImages", "ec2:CreateSnapshot", "ec2:DeleteSnapshot", "ec2:DescribeSnapshots"]</strong></p>
 </div>
 <p align="center">

@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started-with-hopsworksai-google-cloud-platform" class="md-skip">
+        <a href="#getting-started-with-managedhopsworksai-google-cloud-platform" class="md-skip">
           Skip to content
         </a>
       
@@ -4090,6 +4090,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4103,6 +4109,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4140,6 +4174,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4211,7 +4259,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4220,13 +4268,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4241,7 +4289,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4252,13 +4300,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -4956,18 +5004,18 @@
                 
 
 
-<h1 id="getting-started-with-hopsworksai-google-cloud-platform">Getting started with Hopsworks.ai (Google Cloud Platform)<a class="headerlink" href="#getting-started-with-hopsworksai-google-cloud-platform" title="Permanent link">#</a></h1>
-<p><a href="https://managed.hopsworks.ai/">Hopsworks.ai</a> is our managed platform for running Hopsworks and the Feature Store
+<h1 id="getting-started-with-managedhopsworksai-google-cloud-platform">Getting started with managed.hopsworks.ai (Google Cloud Platform)<a class="headerlink" href="#getting-started-with-managedhopsworksai-google-cloud-platform" title="Permanent link">#</a></h1>
+<p><a href="https://managed.hopsworks.ai/">Managed.hopsworks.ai</a> is our managed platform for running Hopsworks and the Feature Store
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
-SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.hopsworks.ai/">Hopsworks.ai</a> with your organization's Google Cloud Platform's (GCP) account.</p>
+SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> with your organization's Google Cloud Platform's (GCP) account.</p>
 <h2 id="prerequisite">Prerequisite<a class="headerlink" href="#prerequisite" title="Permanent link">#</a></h2>
 <p>To follow the instruction of this page you will need the following:
 - A GCP project in which the hopsworks cluster will be deployed.
 - The <a href="https://cloud.google.com/sdk/gcloud">gcloud CLI</a>
 - The <a href="https://cloud.google.com/storage/docs/gsutil">gsutil tool</a></p>
 <h2 id="step-1-connecting-your-gcp-account">Step 1: Connecting your GCP account<a class="headerlink" href="#step-1-connecting-your-gcp-account" title="Permanent link">#</a></h2>
-<p><a href="https://managed.hopsworks.ai/">Hopsworks.ai</a> deploys Hopsworks clusters to a project in your GCP account. <a href="https://managed.hopsworks.ai/">Hopsworks.ai</a> uses service account keys to connect to your GCP project. To enable this, you need to create a service account in your GCP project. Assign to the service account the required permissions. And, create a service account key JSON. For more details about creating and managing service accounts steps in GCP, see <a href="https://cloud.google.com/iam/docs/creating-managing-service-accounts">documentation</a>.</p>
-<p>In <a href="https://managed.hopsworks.ai/">Hopsworks.ai</a> click on <em>Connect to GCP</em> or go to <em>Settings</em> and click on <em>Configure</em> next to <em>GCP</em>. This will direct you to a page with the instructions needed to create the service account and set up the connection. Follow the instructions.</p>
+<p><a href="https://managed.hopsworks.ai/">Managed.hopsworks.ai</a> deploys Hopsworks clusters to a project in your GCP account. <a href="https://managed.hopsworks.ai/">Managed.hopsworks.ai</a> uses service account keys to connect to your GCP project. To enable this, you need to create a service account in your GCP project. Assign to the service account the required permissions. And, create a service account key JSON. For more details about creating and managing service accounts steps in GCP, see <a href="https://cloud.google.com/iam/docs/creating-managing-service-accounts">documentation</a>.</p>
+<p>In <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> click on <em>Connect to GCP</em> or go to <em>Settings</em> and click on <em>Configure</em> next to <em>GCP</em>. This will direct you to a page with the instructions needed to create the service account and set up the connection. Follow the instructions.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>it is possible to limit the permissions that step up during this phase. For more details see <a href="../restrictive_permissions/">restrictive-permissions</a>.</p>
@@ -4982,7 +5030,7 @@ SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.
 </p>
 
 <h2 id="step-2-creating-and-configuring-a-storage">Step 2: Creating and configuring a storage<a class="headerlink" href="#step-2-creating-and-configuring-a-storage" title="Permanent link">#</a></h2>
-<p>The Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai/">Hopsworks.ai</a> store their data in a bucket in your GCP account. To enable this you need to create a bucket and to create a service account with permissions to access the storage.</p>
+<p>The Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> store their data in a bucket in your GCP account. To enable this you need to create a bucket and to create a service account with permissions to access the storage.</p>
 <h3 id="step-21-creating-a-custom-role-for-accessing-storage">Step 2.1: Creating a custom role for accessing storage<a class="headerlink" href="#step-21-creating-a-custom-role-for-accessing-storage" title="Permanent link">#</a></h3>
 <p>Create a file named <em>hopsworksai_instances_role.yaml</em> with the following content:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hopsworks AI Instances</span><span class="w"></span>
@@ -5028,10 +5076,10 @@ SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The hopsworks cluster created by <a href="https://managed.hopsworks.ai/">Hopsworks.ai</a> must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the <em>-l</em> option of <em>gsutil md</em>. For more detail about creating buckets with gsutil see the <a href="https://cloud.google.com/storage/docs/creating-buckets">documentation</a></p>
+<p>The hopsworks cluster created by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the <em>-l</em> option of <em>gsutil md</em>. For more detail about creating buckets with gsutil see the <a href="https://cloud.google.com/storage/docs/creating-buckets">documentation</a></p>
 </div>
 <h2 id="step-4-deploying-a-hopsworks-cluster">Step 4: Deploying a Hopsworks cluster<a class="headerlink" href="#step-4-deploying-a-hopsworks-cluster" title="Permanent link">#</a></h2>
-<p>In <a href="https://managed.hopsworks.ai/">Hopsworks.ai</a>, select <em>Create cluster</em>:</p>
+<p>In <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a>, select <em>Create cluster</em>:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/common//create-instance.png">
@@ -5137,9 +5185,9 @@ Select the <em>Instance type</em> (3) and <em>Local storage</em> size (4) for th
 <p>Check out our other guides for how to get started with Hopsworks and the Feature Store:</p>
 <ul>
 <li>Make Hopsworks services <a href="../../common/services/">accessible from outside services</a></li>
-<li>Get started with the <a href="https://docs.hopsworks.ai/feature-store-api/latest/quickstart">Hopsworks Feature Store</a></li>
-<li>Get started with Machine Learning on Hopsworks: <a href="https://hopsworks.readthedocs.io/en/stable/hopsml/index.html#hops-ml">HopsML</a></li>
-<li>Get started with Hopsworks: <a href="https://hopsworks.readthedocs.io/en/stable/user_guide/user_guide.html#userguide">User Guide</a></li>
+<li>Get started with the <a href="../../../getting_started/quickstart/">Hopsworks Feature Store</a></li>
+<li>Follow one of our <a href="../../../tutorials/fraud_batch/1_feature_groups/">tutorials</a></li>
+<li>Follow one of our <a href="../../../user_guides/">Guide</a></li>
 <li>Code examples and notebooks: <a href="https://github.com/logicalclocks/hops-examples">hops-examples</a></li>
 </ul>
 

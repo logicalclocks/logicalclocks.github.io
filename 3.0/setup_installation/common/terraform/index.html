@@ -3994,6 +3994,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4007,6 +4013,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4044,6 +4078,20 @@
     <li class="md-nav__item">
       <a href="../autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4115,7 +4163,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4124,13 +4172,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4145,7 +4193,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4156,13 +4204,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -4941,11 +4989,11 @@
 
 
 <h1 id="hopsworksai-terraform-provider">Hopsworks.ai Terraform Provider<a class="headerlink" href="#hopsworksai-terraform-provider" title="Permanent link">#</a></h1>
-<p>Hopsworks.ai allows users to create and manage their clusters using the <a href="https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest">Hopsworks.ai terraform provider</a>. In this guide, we first provide brief description on how to get started on AWS and AZURE, then we show how to import an existing cluster to be managed by terraform.</p>
+<p><a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> allows users to create and manage their clusters using the <a href="https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest">Hopsworks.ai terraform provider</a>. In this guide, we first provide brief description on how to get started on AWS and AZURE, then we show how to import an existing cluster to be managed by terraform.</p>
 <h2 id="getting-started-with-aws">Getting Started with AWS<a class="headerlink" href="#getting-started-with-aws" title="Permanent link">#</a></h2>
 <p>Complete the following steps to start using Hopsworks.ai Terraform Provider on AWS.</p>
 <ol>
-<li>Create a Hopsworks.ai API KEY as described in details <a href="../api_key/">here</a>, and export the API KEY as follows 
+<li>Create a <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> API KEY as described in details <a href="../api_key/">here</a>, and export the API KEY as follows 
 <div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">HOPSWORKSAI_API_KEY</span><span class="o">=</span>&lt;YOUR_API_KEY&gt;
 </code></pre></div></li>
 <li>Download the proper Terraform CLI for your os from <a href="https://www.terraform.io/downloads.html">here</a>.</li>
@@ -5026,7 +5074,7 @@ output &quot;hopsworks_cluster_url&quot; {
 <div class="highlight"><pre><span></span><code>terraform apply 
 </code></pre></div></li>
 <li>
-<p>Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your <a href="https://managed.hopsworks.ai/dashboard">Hopsworks.ai dashboard</a> to get your login credentials.</p>
+<p>Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your <a href="https://managed.hopsworks.ai/dashboard">managed.hopsworks.ai dashboard</a> to get your login credentials.</p>
 </li>
 <li>
 <p>After you finish working with the cluster, you can terminate it along with the other AWS resources using the following command
@@ -5037,7 +5085,7 @@ output &quot;hopsworks_cluster_url&quot; {
 <h2 id="getting-started-with-azure">Getting Started with AZURE<a class="headerlink" href="#getting-started-with-azure" title="Permanent link">#</a></h2>
 <p>Complete the following steps to start using Hopsworks.ai Terraform Provider on AZURE.</p>
 <ol>
-<li>Create a Hopsworks.ai API KEY as described in details <a href="../api_key/">here</a>, and export the API KEY as follows 
+<li>Create a <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> API KEY as described in details <a href="../api_key/">here</a>, and export the API KEY as follows 
 <div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">HOPSWORKSAI_API_KEY</span><span class="o">=</span>&lt;YOUR_API_KEY&gt;
 </code></pre></div></li>
 <li>Download the proper Terraform CLI for your os from <a href="https://www.terraform.io/downloads.html">here</a>.</li>
@@ -5123,7 +5171,7 @@ output &quot;hopsworks_cluster_url&quot; {
 <div class="highlight"><pre><span></span><code>terraform apply 
 </code></pre></div></li>
 <li>
-<p>Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your <a href="https://managed.hopsworks.ai/dashboard">Hopsworks.ai dashboard</a> to get your login credentials.</p>
+<p>Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your <a href="https://managed.hopsworks.ai/dashboard">managed.hopsworks.ai dashboard</a> to get your login credentials.</p>
 </li>
 <li>
 <p>After you finish working with the cluster, you can terminate it along with the other AZURE resources using the following command
@@ -5134,7 +5182,7 @@ output &quot;hopsworks_cluster_url&quot; {
 <h2 id="importing-an-existing-cluster-to-terraform">Importing an existing cluster to terraform<a class="headerlink" href="#importing-an-existing-cluster-to-terraform" title="Permanent link">#</a></h2>
 <p>In this section, we show how to use <code>terraform import</code> to manage your existing Hopsworks cluster. </p>
 <ul>
-<li><strong>Step 1</strong>: In your <a href="https://managed.hopsworks.ai/dashboard">Hopsworks.ai dashboard</a>, choose the cluster you want to import to terraform, then go to the <em>Details</em> tab and copy the <em>Id</em> as shown in the figure below </li>
+<li><strong>Step 1</strong>: In your <a href="https://managed.hopsworks.ai/dashboard">managed.hopsworks.ai dashboard</a>, choose the cluster you want to import to terraform, then go to the <em>Details</em> tab and copy the <em>Id</em> as shown in the figure below </li>
 </ul>
 <p align="center">
   <figure>

@@ -4102,6 +4102,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4115,6 +4121,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4152,6 +4186,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4223,7 +4271,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4232,13 +4280,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4253,7 +4301,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4264,13 +4312,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -4981,7 +5029,7 @@
 
 
 <h1 id="integration-with-azure-aks-and-acr">Integration with Azure AKS and ACR<a class="headerlink" href="#integration-with-azure-aks-and-acr" title="Permanent link">#</a></h1>
-<p>This guide shows how to create a cluster in hopsworks.ai with integrated support for Azure Kubernetes Service (AKS) and Azure Container Registry (ACR). This enables Hopsworks to launch Python jobs, Jupyter servers, and serve models on top of AKS.</p>
+<p>This guide shows how to create a cluster in <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> with integrated support for Azure Kubernetes Service (AKS) and Azure Container Registry (ACR). This enables Hopsworks to launch Python jobs, Jupyter servers, and serve models on top of AKS.</p>
 <p>Hopsworks AKS and ACR integration have four requirements:</p>
 <ol>
 <li>A virtual network with access to AKS pods and the AKS API servers </li>
@@ -5189,7 +5237,7 @@ Choose a name for the new virtual network and select the same resource group you
 </p>
 
 <h2 id="create-the-hopsworks-cluster">Create the Hopsworks cluster<a class="headerlink" href="#create-the-hopsworks-cluster" title="Permanent link">#</a></h2>
-<p>This step assumes you are creating your Hopsworks cluster using hopsworks.ai. The AKS configuration can be set under the <em>Managed containers</em> tab. Set <em>Use Azure AKS and Azure ACR</em> as enabled. Two new fields will pop up. Fill them with the name of the container registry and the AKS you created above. In the previous example, we created an ACR with the name <em>hopsworksaks</em> and an AKS cluster with the name <em>hopsaks-cluster</em>. Hence, the configuration should look similar to the picture below</p>
+<p>This step assumes you are creating your Hopsworks cluster using <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. The AKS configuration can be set under the <em>Managed containers</em> tab. Set <em>Use Azure AKS and Azure ACR</em> as enabled. Two new fields will pop up. Fill them with the name of the container registry and the AKS you created above. In the previous example, we created an ACR with the name <em>hopsworksaks</em> and an AKS cluster with the name <em>hopsaks-cluster</em>. Hence, the configuration should look similar to the picture below</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/aks-hops-config.png">

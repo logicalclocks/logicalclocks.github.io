@@ -4164,6 +4164,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4177,6 +4183,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4214,6 +4248,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4285,7 +4333,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4294,13 +4342,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4315,7 +4363,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4326,13 +4374,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -5105,19 +5153,19 @@
 
 
 <h1 id="limiting-aws-permissions">Limiting AWS permissions<a class="headerlink" href="#limiting-aws-permissions" title="Permanent link">#</a></h1>
-<p>Hopsworks.ai requires a set of permissions to be able to manage resources in the user’s AWS account.
+<p><a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> requires a set of permissions to be able to manage resources in the user’s AWS account.
 By default, these permissions are set to easily allow a wide range of different configurations and allow
 us to automate as many steps as possible. While we ensure to never access resources we shouldn’t,
 we do understand that this might not be enough for your organization or security policy.
 This guide explains how to lock down AWS permissions following the IT security policy principle of least privilege allowing
-Hopsworks.ai to only access resources in a specific VPC.</p>
+<a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> to only access resources in a specific VPC.</p>
 <h2 id="limiting-the-cross-account-role-permissions">Limiting the cross-account role permissions<a class="headerlink" href="#limiting-the-cross-account-role-permissions" title="Permanent link">#</a></h2>
 <h3 id="step-1-create-a-vpc">Step 1: Create a VPC<a class="headerlink" href="#step-1-create-a-vpc" title="Permanent link">#</a></h3>
-<p>To restrict Hopsworks.ai from accessing resources outside of a specific VPC, you need to create a new VPC
+<p>To restrict <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> from accessing resources outside of a specific VPC, you need to create a new VPC
 connected to an Internet Gateway. This can be achieved in the AWS Management Console following this guide:
 <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-getting-started.html#getting-started-create-vpc">Create the VPC</a>.
 The option VPC with a <code>Single Public Subnet</code> from the Launch VPC Wizard should work out of the box.
-Alternatively, an existing VPC such as the default VPC can be used and Hopsworks.ai will be restricted to this VPC.
+Alternatively, an existing VPC such as the default VPC can be used and <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> will be restricted to this VPC.
 Note the VPC ID of the VPC you want to use for the following steps.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -5129,22 +5177,22 @@ Note the VPC ID of the VPC you want to use for the following steps.</p>
 need to be configured so that at least port <code>80</code> is reachable from the internet otherwise you will have to use self signed certificate in your Hopsworks cluster.</p>
 <p>It is <em><strong>imperative</strong></em> the Security Group allows Inbound traffic from any Instance within the same Security Group in any (TCP) port. All VMs of the Cluster should be able to communicate with each other.</p>
 <h4 id="outbound-traffic">Outbound traffic<a class="headerlink" href="#outbound-traffic" title="Permanent link">#</a></h4>
-<p>Clusters created on Hopsworks.ai need to be able to send http requests to <em>api.hopsworks.ai</em>. The <em>api.hopsworks.ai</em> domain use a content delivery network for better performance. This result in the impossibility to predict which IP the request will be sent to. If you require a list of static IPs to allow outbound traffic from your security group, use the <em>static IPs</em> option during <a href="../cluster_creation/#limiting-outbound-traffic-to-hopsworksai">cluster creation</a>.</p>
+<p>Clusters created on <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> need to be able to send http requests to <em>api.hopsworks.ai</em>. The <em>api.hopsworks.ai</em> domain use a content delivery network for better performance. This result in the impossibility to predict which IP the request will be sent to. If you require a list of static IPs to allow outbound traffic from your security group, use the <em>static IPs</em> option during <a href="../cluster_creation/#limiting-outbound-traffic-to-hopsworksai">cluster creation</a>.</p>
 <p>Similar to Inbound traffic, the Security Group in place <em><strong>must</strong></em> allow Outbound traffic in any (TCP) port towards any VM withing the same Security Group.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you intend to use the managed users option on your Hopsworks cluster you should also allow outbound traffic to <a href="https://cognito-idp.us-east-2.amazonaws.com">cognito-idp.us-east-2.amazonaws.com</a> and <a href="https://managedhopsworks-prod.auth.us-east-2.amazoncognito.com">managedhopsworks-prod.auth.us-east-2.amazoncognito.com</a>.</p>
 </div>
 <h3 id="step-2-create-an-instance-profile">Step 2: Create an instance profile<a class="headerlink" href="#step-2-create-an-instance-profile" title="Permanent link">#</a></h3>
-<p>You need to create an instance profile that will identify all instances started by Hopsworks.ai.
+<p>You need to create an instance profile that will identify all instances started by <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>.
 Follow this guide to create a role to be used by EC2 with no permissions attached:
 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html">Creating a Role for an AWS Service (Console)</a>.
 Take note of the ARN of the role you just created.</p>
 <p>You will need to add permissions to the instance profile to give access to the S3 bucket where Hopsworks will store its data. For more details about these permissions check <a href="../getting_started/#step-2-creating-instance-profile">our guide here</a>.
 Check <a href="#limiting-the-instance-profile-permissions">bellow</a> for more information on restricting the permissions given the instance profile.</p>
 <h3 id="step-3-set-permissions-of-the-cross-account-role">Step 3: Set permissions of the cross-account role<a class="headerlink" href="#step-3-set-permissions-of-the-cross-account-role" title="Permanent link">#</a></h3>
-<p>During the account setup for Hopsworks.ai, you were asked to create and provide a cross-account role.
-If you don’t remember which role you used then you can find it in Settings/Account Settings in Hopsworks.ai.
+<p>During the account setup for <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, you were asked to create and provide a cross-account role.
+If you don’t remember which role you used then you can find it in Settings/Account Settings in <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>.
 Edit this role in the AWS Management Console and overwrite the existing inline policy with the following policy.</p>
 <p>Note that you have to replace <code>[INSTANCE_PROFILE_NAME]</code> and <code>[VPC_ID]</code> for multiple occurrences in the given policy.</p>
 <p>If you want to learn more about how this policy works check out:
@@ -5259,10 +5307,10 @@ Edit this role in the AWS Management Console and overwrite the existing inline p
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h3 id="step-4-create-your-hopsworks-instance">Step 4: Create your Hopsworks instance<a class="headerlink" href="#step-4-create-your-hopsworks-instance" title="Permanent link">#</a></h3>
-<p>You can now create a new Hopsworks instance in Hopsworks.ai by selecting the configured instance profile,
+<p>You can now create a new Hopsworks instance in <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> by selecting the configured instance profile,
 VPC and security group during instance configuration. Selecting any other VPCs or instance profiles will result in permissions errors.</p>
 <h3 id="step-5-supporting-multiple-vpcs">Step 5: Supporting multiple VPCs<a class="headerlink" href="#step-5-supporting-multiple-vpcs" title="Permanent link">#</a></h3>
-<p>The policy can be extended to give Hopsworks.ai access to multiple VPCs.
+<p>The policy can be extended to give <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> access to multiple VPCs.
 See: <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_multi-value-conditions.html">Creating a Condition with Multiple Keys or Values</a>.</p>
 <h3 id="backup-permissions">Backup permissions<a class="headerlink" href="#backup-permissions" title="Permanent link">#</a></h3>
 <p>The following permissions are only needed for the backup feature. You can remove them if you are not going to create backups or if you do not have access to this Enterprise feature.</p>

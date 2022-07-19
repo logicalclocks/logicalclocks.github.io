@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started-with-hopsworksai-azure" class="md-skip">
+        <a href="#getting-started-with-managedhopsworksai-azure" class="md-skip">
           Skip to content
         </a>
       
@@ -3881,8 +3881,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#limiting-outbound-traffic-to-hopsworksai" class="md-nav__link">
-    Limiting outbound traffic to Hopsworks.ai
+  <a href="#limiting-outbound-traffic-to-managedhopsworksai" class="md-nav__link">
+    Limiting outbound traffic to managed.hopsworks.ai
   </a>
   
 </li>
@@ -4159,6 +4159,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4172,6 +4178,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4209,6 +4243,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4280,7 +4328,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4289,13 +4337,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4310,7 +4358,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4321,13 +4369,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -5034,8 +5082,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#limiting-outbound-traffic-to-hopsworksai" class="md-nav__link">
-    Limiting outbound traffic to Hopsworks.ai
+  <a href="#limiting-outbound-traffic-to-managedhopsworksai" class="md-nav__link">
+    Limiting outbound traffic to managed.hopsworks.ai
   </a>
   
 </li>
@@ -5094,10 +5142,10 @@
                 
 
 
-<h1 id="getting-started-with-hopsworksai-azure">Getting started with Hopsworks.ai (Azure)<a class="headerlink" href="#getting-started-with-hopsworksai-azure" title="Permanent link">#</a></h1>
-<p>This guide goes into detail for each of the steps of the cluster creation in Hopsworks.ai</p>
+<h1 id="getting-started-with-managedhopsworksai-azure">Getting started with managed.hopsworks.ai (Azure)<a class="headerlink" href="#getting-started-with-managedhopsworksai-azure" title="Permanent link">#</a></h1>
+<p>This guide goes into detail for each of the steps of the cluster creation in <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a></p>
 <h3 id="step-1-starting-to-create-a-cluster">Step 1 starting to create a cluster<a class="headerlink" href="#step-1-starting-to-create-a-cluster" title="Permanent link">#</a></h3>
-<p>In Hopsworks.ai, select <em>Create cluster</em>:</p>
+<p>In <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, select <em>Create cluster</em>:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
@@ -5115,7 +5163,7 @@
 </div>
 <p>Name your cluster (2). Your cluster will be deployed in the <em>Location</em> of your <em>Resource Group</em> (3).</p>
 <p>Select the <em>Instance type</em> (4) and <em>Local storage</em> (5) size for the cluster <em>Head node</em>.</p>
-<p>To provide the capacity of adding and removing workers on demand, the Hopsworks clusters deployed by Hopsworks.ai store their data in an Azure storage container. In this step, you select which storage account and container to use for this purpose. Select the <em>storage account</em> (6) you want to use in <em>Azure Storage account name</em>. The name of the container in which the data will be stored is displayed in <em>Azure Container name</em> (7). You can change this name. For more details on how to create and configure a storage in Azure refer to <a href="../getting_started/#step-2-creating-and-configuring-a-storage">Creating and configuring a storage</a></p>
+<p>To provide the capacity of adding and removing workers on demand, the Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> store their data in an Azure storage container. In this step, you select which storage account and container to use for this purpose. Select the <em>storage account</em> (6) you want to use in <em>Azure Storage account name</em>. The name of the container in which the data will be stored is displayed in <em>Azure Container name</em> (7). You can change this name. For more details on how to create and configure a storage in Azure refer to <a href="../getting_started/#step-2-creating-and-configuring-a-storage">Creating and configuring a storage</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can choose to use a container already existing in your <em>storage account</em> by using the name of this container, but you need to first make sure that this container is empty.</p>
@@ -5129,7 +5177,7 @@
   </figure>
 </p>
 
-<p>On this page, you can also choose to opt out of hopsworks.ai log collection. Hopsworks.ai collects logs about the services running in your cluster to help us improve our system and to provide support. If you choose to opt-out from the log collection and need support you will have to provide us the log by yourself, which will slow down the support process.</p>
+<p>On this page, you can also choose to opt out of <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> log collection. <a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> collects logs about the services running in your cluster to help us improve our system and to provide support. If you choose to opt-out from the log collection and need support you will have to provide us the log by yourself, which will slow down the support process.</p>
 <h3 id="step-3-workers-configuration">Step 3 workers configuration<a class="headerlink" href="#step-3-workers-configuration" title="Permanent link">#</a></h3>
 <p>In this step, you configure the workers. There are two possible setups static or autoscaling. In the static setup, the cluster has a fixed number of workers that you decide. You can then add and remove workers manually, for more details: <a href="../../common/adding_removing_workers/">the documentation</a>. In the autoscaling setup, you configure conditions to add and remove workers and the cluster will automatically add and remove workers depending on the demand.</p>
 <h4 id="static-workers-configuration">Static workers configuration<a class="headerlink" href="#static-workers-configuration" title="Permanent link">#</a></h4>
@@ -5167,7 +5215,7 @@
 </p>
 
 <h3 id="step-4-select-a-ssh-key">Step 4 select a SSH key<a class="headerlink" href="#step-4-select-a-ssh-key" title="Permanent link">#</a></h3>
-<p>When deploying clusters, Hopsworks.ai installs a ssh key on the cluster's instances so that you can access them if necessary.
+<p>When deploying clusters, <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> installs a ssh key on the cluster's instances so that you can access them if necessary.
 Select the <em>SSH key</em> that you want to use to access cluster instances. For more detail on how to add a shh key in Azure refer to <a href="../getting_started/#step-3-adding-a-ssh-key-to-your-resource-group">Adding a ssh key to your resource group</a></p>
 <p align="center">
   <figure>
@@ -5201,7 +5249,7 @@ Select the <em>SSH key</em> that you want to use to access cluster instances. Fo
 </p>
 
 <h3 id="step-7-virtual-network-selection">Step 7 Virtual network selection<a class="headerlink" href="#step-7-virtual-network-selection" title="Permanent link">#</a></h3>
-<p>In this step, you can select the virtual network which will be used by the Hopsworks cluster. You can either select an existing virtual network or let Hopsworks.ai create one for you. If you decide to let Hopsworks.ai create the virtual network for you, you can choose the CIDR block for this virtual network. 
+<p>In this step, you can select the virtual network which will be used by the Hopsworks cluster. You can either select an existing virtual network or let <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> create one for you. If you decide to let <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> create the virtual network for you, you can choose the CIDR block for this virtual network. 
 Refer to <a href="../restrictive_permissions/#step-1-create-a-virtual-network-and-subnet">Create a virtual network and subnet</a> for more details on how to create your own virtual network in Azure.</p>
 <p align="center">
   <figure>
@@ -5214,7 +5262,7 @@ Refer to <a href="../restrictive_permissions/#step-1-create-a-virtual-network-an
 
 <h3 id="step-8-subnet-selection">Step 8 Subnet selection<a class="headerlink" href="#step-8-subnet-selection" title="Permanent link">#</a></h3>
 <p>If you selected an existing virtual network in the previous step, this step lets you select which subnet of this virtual network to use. For more information about creating your own subnet refer to <a href="../restrictive_permissions/#step-1-create-a-virtual-network-and-subnet">Create a virtual network and subnet</a>.</p>
-<p>If you did not select an existing virtual network in the previous step Hopsworks.ai will create the subnet for you. You can choose the CIDR block this subnet will use.</p>
+<p>If you did not select an existing virtual network in the previous step <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> will create the subnet for you. You can choose the CIDR block this subnet will use.</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-14.png">
@@ -5225,14 +5273,14 @@ Refer to <a href="../restrictive_permissions/#step-1-create-a-virtual-network-an
 </p>
 
 <h3 id="step-9-network-security-group-selection">Step 9 Network Security group selection<a class="headerlink" href="#step-9-network-security-group-selection" title="Permanent link">#</a></h3>
-<p>In this step, you can select the network security group you want to use to manage the inbound and outbound network rules. You can either let Hopsworks.ai create a network security group for you or select an existing security group. For more information about how to create your own network security group in Azure refer to <a href="../restrictive_permissions/#step-2-create-a-network-security-group">Create a network security group</a>.</p>
+<p>In this step, you can select the network security group you want to use to manage the inbound and outbound network rules. You can either let <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> create a network security group for you or select an existing security group. For more information about how to create your own network security group in Azure refer to <a href="../restrictive_permissions/#step-2-create-a-network-security-group">Create a network security group</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Hopsworks.ai require some rules for inbound and outbound traffic in your security group, for more details refer to <a href="../restrictive_permissions/#inbound-traffic">inbound traffic rules</a> and <a href="../restrictive_permissions/#outbound-traffic">outbound traffic rules</a>.</p>
+<p><a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> require some rules for inbound and outbound traffic in your security group, for more details refer to <a href="../restrictive_permissions/#inbound-traffic">inbound traffic rules</a> and <a href="../restrictive_permissions/#outbound-traffic">outbound traffic rules</a>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Hopsworks.ai attaches a public ip to your cluster by default. However, you can disable this behavior by unchecking the <em>Attach Public IP</em> checkbox.</p>
+<p><a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> attaches a public ip to your cluster by default. However, you can disable this behavior by unchecking the <em>Attach Public IP</em> checkbox.</p>
 </div>
 <p align="center">
   <figure>
@@ -5243,8 +5291,8 @@ Refer to <a href="../restrictive_permissions/#step-1-create-a-virtual-network-an
   </figure>
 </p>
 
-<h4 id="limiting-outbound-traffic-to-hopsworksai">Limiting outbound traffic to Hopsworks.ai<a class="headerlink" href="#limiting-outbound-traffic-to-hopsworksai" title="Permanent link">#</a></h4>
-<p>Clusters created on Hopsworks.ai need to be able to send http requests to api.hopsworks.ai. If you have strict regulation regarding outbound traffic, you can enable the <em>Use static IPs to communicate with Hopsworks.ai</em> checkbox to get the list of IPs to be allowed as shown below:</p>
+<h4 id="limiting-outbound-traffic-to-managedhopsworksai">Limiting outbound traffic to managed.hopsworks.ai<a class="headerlink" href="#limiting-outbound-traffic-to-managedhopsworksai" title="Permanent link">#</a></h4>
+<p>Clusters created on <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> need to be able to send http requests to api.hopsworks.ai. If you have strict regulation regarding outbound traffic, you can enable the <em>Use static IPs to communicate with <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a></em> checkbox to get the list of IPs to be allowed as shown below:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-15-b.png">
@@ -5257,7 +5305,7 @@ Refer to <a href="../restrictive_permissions/#step-1-create-a-virtual-network-an
 <h3 id="step-10-user-management-selection">Step 10 User management selection<a class="headerlink" href="#step-10-user-management-selection" title="Permanent link">#</a></h3>
 <p>In this step, you can choose which user management system to use. You have four choices: </p>
 <ul>
-<li><em>Managed</em>: Hopsworks.ai automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details <a href="../../common/user_management/">here</a>).</li>
+<li><em>Managed</em>: <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details <a href="../../common/user_management/">here</a>).</li>
 <li><em>OAuth2</em>: integrate the cluster with your organization's OAuth2 identity provider. See <a href="../../common/sso/oauth/">Use OAuth2 for user management</a> for more detail.</li>
 <li><em>LDAP</em>: integrate the cluster with your organization's LDAP/ActiveDirectory server. See <a href="../../common/sso/ldap/">Use LDAP for user management</a> for more detail.</li>
 <li><em>Disabled</em>: let you manage users manually from within Hopsworks.</li>

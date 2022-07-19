@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cluster-creation-in-hopsworksai-gcp" class="md-skip">
+        <a href="#cluster-creation-in-managedhopsworksai-gcp" class="md-skip">
           Skip to content
         </a>
       
@@ -4125,6 +4125,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4138,6 +4144,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4175,6 +4209,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4246,7 +4294,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4255,13 +4303,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4276,7 +4324,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4287,13 +4335,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -5026,10 +5074,10 @@
                 
 
 
-<h1 id="cluster-creation-in-hopsworksai-gcp">Cluster creation in Hopsworks.ai (GCP)<a class="headerlink" href="#cluster-creation-in-hopsworksai-gcp" title="Permanent link">#</a></h1>
-<p>This guide goes into detail for each of the steps of the cluster creation in Hopsworks.ai</p>
+<h1 id="cluster-creation-in-managedhopsworksai-gcp">Cluster creation in managed.hopsworks.ai (GCP)<a class="headerlink" href="#cluster-creation-in-managedhopsworksai-gcp" title="Permanent link">#</a></h1>
+<p>This guide goes into detail for each of the steps of the cluster creation in <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a></p>
 <h3 id="step-1-starting-to-create-a-cluster">Step 1 starting to create a cluster<a class="headerlink" href="#step-1-starting-to-create-a-cluster" title="Permanent link">#</a></h3>
-<p>In Hopsworks.ai, select <em>Create cluster</em>:</p>
+<p>In <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, select <em>Create cluster</em>:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
@@ -5121,8 +5169,8 @@
 
 <h3 id="step-6-vpc-and-subnet-selection">Step 6 VPC and Subnet selection<a class="headerlink" href="#step-6-vpc-and-subnet-selection" title="Permanent link">#</a></h3>
 <p>You can select the VPC which will be used by the Hopsworks cluster. 
-You can either select an existing VPC or let Hopsworks.ai create one for you.
-If you decide to use restricted hopsworks.ai permissions (see <a href="../restrictive_permissions/#create-a-vpc-permissions">restrictive-permissions</a> for more details) 
+You can either select an existing VPC or let <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> create one for you.
+If you decide to use restricted <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> permissions (see <a href="../restrictive_permissions/#create-a-vpc-permissions">restrictive-permissions</a> for more details) 
 you will need to select an existing VPC here. </p>
 <p align="center">
   <figure>
@@ -5134,7 +5182,7 @@ you will need to select an existing VPC here. </p>
 </p>
 
 <p>If you selected an existing VPC in the previous step, this step lets you select which subnet of this VPC to use.</p>
-<p>If you did not select an existing virtual network in the previous step Hopsworks.ai will create a subnet for you. 
+<p>If you did not select an existing virtual network in the previous step <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> will create a subnet for you. 
 You can choose the CIDR block this subnet will use.
 Select the <em>Subnet</em> to be used by your cluster and press <em>Next</em>.</p>
 <p align="center">
@@ -5149,7 +5197,7 @@ Select the <em>Subnet</em> to be used by your cluster and press <em>Next</em>.</
 <h3 id="step-7-user-management-selection">Step 7 User management selection<a class="headerlink" href="#step-7-user-management-selection" title="Permanent link">#</a></h3>
 <p>In this step, you can choose which user management system to use. You have three choices: </p>
 <ul>
-<li><em>Managed</em>: Hopsworks.ai automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details <a href="../../common/user_management/">here</a>).</li>
+<li><em>Managed</em>: <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details <a href="../../common/user_management/">here</a>).</li>
 <li><em>OAuth2</em>: integrate the cluster with your organization's OAuth2 identity provider. See <a href="../../common/sso/oauth/">Use OAuth2 for user management</a> for more detail.</li>
 <li><em>LDAP</em>: integrate the cluster with your organization's LDAP/ActiveDirectory server. See <a href="../../common/sso/ldap/">Use LDAP for user management</a> for more detail.</li>
 <li><em>Disabled</em>: let you manage users manually from within Hopsworks.</li>

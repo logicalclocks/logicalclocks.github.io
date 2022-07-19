@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#hopsworksai-api-key" class="md-skip">
+        <a href="#managedhopsworksai-api-key" class="md-skip">
           Skip to content
         </a>
       
@@ -3994,6 +3994,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4007,6 +4013,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4044,6 +4078,20 @@
     <li class="md-nav__item">
       <a href="../autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4115,7 +4163,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4124,13 +4172,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4145,7 +4193,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4156,13 +4204,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -4874,10 +4922,10 @@
                 
 
 
-<h1 id="hopsworksai-api-key">Hopsworks.ai API Key<a class="headerlink" href="#hopsworksai-api-key" title="Permanent link">#</a></h1>
-<p>Hopsworks.ai allows users to generate an API Key that can be used to authenticate and access the Hopsworks.ai REST APIs.</p>
+<h1 id="managedhopsworksai-api-key">Managed.hopsworks.ai API Key<a class="headerlink" href="#managedhopsworksai-api-key" title="Permanent link">#</a></h1>
+<p><a href="https://managed.hopsworks.ai">Managed.hopsworks.ai</a> allows users to generate an API Key that can be used to authenticate and access the <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> REST APIs.</p>
 <h2 id="generate-an-api-key">Generate an API Key<a class="headerlink" href="#generate-an-api-key" title="Permanent link">#</a></h2>
-<p>First, login to your Hopsworks.ai account, then click on the Settings tab as shown below:</p>
+<p>First, login to your <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> account, then click on the Settings tab as shown below:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/common/api_key/api-key-1.png">
@@ -4912,12 +4960,12 @@
 </p>
 
 <h2 id="use-the-api-key">Use the API Key<a class="headerlink" href="#use-the-api-key" title="Permanent link">#</a></h2>
-<p>To access the Hopsworks.ai REST APIs, you should pass the API key as a header <strong>x-api-key</strong> when executing requests on Hopsworks.ai as shown below:</p>
+<p>To access the <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> REST APIs, you should pass the API key as a header <strong>x-api-key</strong> when executing requests on <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> as shown below:</p>
 <div class="highlight"><pre><span></span><code>curl -XGET -H <span class="s2">&quot;x-api-key: &lt;YOUR API KEY&gt;&quot;</span> https://api.hopsworks.ai/api/clusters
 </code></pre></div>
 <p>Alternatively, you can use your API Key with the <a href="https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest">Hopsworks.ai terraform provider</a> to manage your Hopsworks clusters using <a href="https://www.terraform.io/">terraform</a>.</p>
 <h2 id="delete-your-api-key">Delete your API Key<a class="headerlink" href="#delete-your-api-key" title="Permanent link">#</a></h2>
-<p>First, login to your Hopsworks.ai account, click on the Settings tab, then click on the API Key tab, and finally click on <em>Delete API Key</em> as shown below:</p>
+<p>First, login to your <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> account, click on the Settings tab, then click on the API Key tab, and finally click on <em>Delete API Key</em> as shown below:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/common/api_key/api-key-4.png">

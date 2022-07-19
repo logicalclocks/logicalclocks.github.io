@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#upgrade-existing-clusters-on-hopsworksai-from-version-22-or-older-azure" class="md-skip">
+        <a href="#upgrade-existing-clusters-on-managedhopsworksai-from-version-22-or-older-azure" class="md-skip">
           Skip to content
         </a>
       
@@ -3921,8 +3921,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-add-disk-read-permissions-to-your-role-connected-to-hopsworksai" class="md-nav__link">
-    Step 3: Add disk read permissions to your role connected to Hopsworks.ai
+  <a href="#step-3-add-disk-read-permissions-to-your-role-connected-to-managedhopsworksai" class="md-nav__link">
+    Step 3: Add disk read permissions to your role connected to managed.hopsworks.ai
   </a>
   
 </li>
@@ -4105,6 +4105,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4118,6 +4124,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4155,6 +4189,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4226,7 +4274,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4235,13 +4283,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4256,7 +4304,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4267,13 +4315,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -4930,8 +4978,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-add-disk-read-permissions-to-your-role-connected-to-hopsworksai" class="md-nav__link">
-    Step 3: Add disk read permissions to your role connected to Hopsworks.ai
+  <a href="#step-3-add-disk-read-permissions-to-your-role-connected-to-managedhopsworksai" class="md-nav__link">
+    Step 3: Add disk read permissions to your role connected to managed.hopsworks.ai
   </a>
   
 </li>
@@ -4984,7 +5032,7 @@
                 
 
 
-<h1 id="upgrade-existing-clusters-on-hopsworksai-from-version-22-or-older-azure">Upgrade existing clusters on Hopsworks.ai from version 2.2 or older (Azure)<a class="headerlink" href="#upgrade-existing-clusters-on-hopsworksai-from-version-22-or-older-azure" title="Permanent link">#</a></h1>
+<h1 id="upgrade-existing-clusters-on-managedhopsworksai-from-version-22-or-older-azure">Upgrade existing clusters on managed.hopsworks.ai from version 2.2 or older (Azure)<a class="headerlink" href="#upgrade-existing-clusters-on-managedhopsworksai-from-version-22-or-older-azure" title="Permanent link">#</a></h1>
 <p>This guide shows you how to upgrade your existing Hopsworks cluster to a newer version of Hopsworks.</p>
 <h2 id="step-1-make-sure-your-cluster-is-running">Step 1: Make sure your cluster is running<a class="headerlink" href="#step-1-make-sure-your-cluster-is-running" title="Permanent link">#</a></h2>
 <p>It is important that your cluster is <strong>Running</strong>. Otherwise you will not be able to upgrade. As soon as a new version is available an upgrade notification will appear:</p>
@@ -5113,9 +5161,9 @@ Make sure that the scope of these permissions is your resource group.</p>
 <p class="admonition-title">Warning</p>
 <p><a href="https://docs.microsoft.com/en-us/azure/role-based-access-control/troubleshooting#role-assignment-changes-are-not-being-detected">When you assign roles or remove role assignments, it can take up to 30 minutes for changes to take effect.</a></p>
 </div>
-<h2 id="step-3-add-disk-read-permissions-to-your-role-connected-to-hopsworksai">Step 3: Add disk read permissions to your role connected to Hopsworks.ai<a class="headerlink" href="#step-3-add-disk-read-permissions-to-your-role-connected-to-hopsworksai" title="Permanent link">#</a></h2>
-<p>We require extra permission ("Microsoft.Compute/disks/read") to be added to the role you used to connect to Hopsworks.ai, the one that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>. 
-If you don't remember the name of the role that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, you can navigate to your Resource group, (1) click on <em>Access Control</em>, (2) navigate to the <em>Check Access</em> tab, (3) search for <em>hopsworks.ai</em>, (4) click on it, (5) now you have the name of your custom role used to connect to hopsworks.ai. </p>
+<h2 id="step-3-add-disk-read-permissions-to-your-role-connected-to-managedhopsworksai">Step 3: Add disk read permissions to your role connected to managed.hopsworks.ai<a class="headerlink" href="#step-3-add-disk-read-permissions-to-your-role-connected-to-managedhopsworksai" title="Permanent link">#</a></h2>
+<p>We require extra permission ("Microsoft.Compute/disks/read") to be added to the role you used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, the one that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>. 
+If you don't remember the name of the role that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, you can navigate to your Resource group, (1) click on <em>Access Control</em>, (2) navigate to the <em>Check Access</em> tab, (3) search for <em>hopsworks.ai</em>, (4) click on it, (5) now you have the name of your custom role used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. </p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/azure-get-connected-hopswork.ai-role.png">
@@ -5221,9 +5269,9 @@ If you don't remember the name of the role that you have created in <a href="../
 </p>
 
 <h2 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">#</a></h2>
-<p>There are two categories of errors that you may encounter during an upgrade. First, a permission error due to a missing permission in your role connected to Hopsworks.ai, see <a href="#error-1-missing-permissions-error">Error 1</a>. Second, an error during the upgrade process running on your cluster, see <a href="#error-2-upgrade-process-error">Error 2</a>.</p>
+<p>There are two categories of errors that you may encounter during an upgrade. First, a permission error due to a missing permission in your role connected to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, see <a href="#error-1-missing-permissions-error">Error 1</a>. Second, an error during the upgrade process running on your cluster, see <a href="#error-2-upgrade-process-error">Error 2</a>.</p>
 <h3 id="error-1-missing-permissions-error">Error 1: Missing permissions error<a class="headerlink" href="#error-1-missing-permissions-error" title="Permanent link">#</a></h3>
-<p>If you encounter the following permission error right after starting an upgrade, then you need to make sure that the role you used to connect to Hopsworks.ai, the one that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, have permissions to read and write disks
+<p>If you encounter the following permission error right after starting an upgrade, then you need to make sure that the role you used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, the one that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, have permissions to read and write disks
 <em>("Microsoft.Compute/disks/read", "Microsoft.Compute/disks/write")</em>. </p>
 <p align="center">
   <figure>
@@ -5234,7 +5282,7 @@ If you don't remember the name of the role that you have created in <a href="../
   </figure>
 </p>
 
-<p>If you don't remember the name of the role that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, you can navigate to your Resource group, (1) click on <em>Access Control</em>, (2) navigate to the <em>Check Access</em> tab, (3) search for <em>hopsworks.ai</em>, (4) click on it, (5) now you have the name of your custom role used to connect to hopsworks.ai. </p>
+<p>If you don't remember the name of the role that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, you can navigate to your Resource group, (1) click on <em>Access Control</em>, (2) navigate to the <em>Check Access</em> tab, (3) search for <em>hopsworks.ai</em>, (4) click on it, (5) now you have the name of your custom role used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. </p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/azure-get-connected-hopswork.ai-role.png">

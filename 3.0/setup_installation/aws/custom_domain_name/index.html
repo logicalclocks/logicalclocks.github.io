@@ -3988,6 +3988,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4">
@@ -4001,6 +4007,34 @@
           Common
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/dashboard/" class="md-nav__link">
+        The dashboard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/settings/" class="md-nav__link">
+        Settings
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -4038,6 +4072,20 @@
     <li class="md-nav__item">
       <a href="../../common/autoscaling/" class="md-nav__link">
         Autoscaling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/backup/" class="md-nav__link">
+        Backup
       </a>
     </li>
   
@@ -4109,7 +4157,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8" type="checkbox" id="__nav_6_4_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11" type="checkbox" id="__nav_6_4_11" >
       
       
       
@@ -4118,13 +4166,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8">
+        <label class="md-nav__link" for="__nav_6_4_11">
           Single Sign On
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Single Sign On" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_4_8">
+        <label class="md-nav__title" for="__nav_6_4_11">
           <span class="md-nav__icon md-icon"></span>
           Single Sign On
         </label>
@@ -4139,7 +4187,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_8_1" type="checkbox" id="__nav_6_4_8_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4_11_1" type="checkbox" id="__nav_6_4_11_1" >
       
       
       
@@ -4150,13 +4198,13 @@
         
       
       
-        <label class="md-nav__link" for="__nav_6_4_8_1">
+        <label class="md-nav__link" for="__nav_6_4_11_1">
           Hopsworks
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Hopsworks" data-md-level="4">
-        <label class="md-nav__title" for="__nav_6_4_8_1">
+        <label class="md-nav__title" for="__nav_6_4_11_1">
           <span class="md-nav__icon md-icon"></span>
           Hopsworks
         </label>
@@ -4816,7 +4864,7 @@
 <h1 id="deploy-in-a-vpc-with-a-custom-domain-name">Deploy in a VPC with a custom domain name<a class="headerlink" href="#deploy-in-a-vpc-with-a-custom-domain-name" title="Permanent link">#</a></h1>
 <p>Some organizations follow network patterns which impose a specific domain
 name for Instances. In that case, the instance's hostname instead of <code>ip-10-0-0-175.us-east-2.compute.internal</code> would be <code>ip-10-0-0-175.bar.foo</code></p>
-<p>The control plane at <a href="https://www.hopsworks.ai/">hopsworks.ai</a> needs to be
+<p>The control plane at <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> needs to be
 aware of such case in order to properly initialize the Cluster.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -4848,7 +4896,7 @@ with your DNS.</p>
 name registration in Amazon Route 53</p>
 <h2 id="auto-registration-with-amazon-route-53">Auto registration with Amazon Route 53<a class="headerlink" href="#auto-registration-with-amazon-route-53" title="Permanent link">#</a></h2>
 <p>It is quite common for organizations in AWS to use Route 53 for DNS or for hosted zones.
-You can configure a cluster in <em>hopsworks.ai</em> to execute some custom
+You can configure a cluster in <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> to execute some custom
 initialization script <strong>before</strong> any other action. This script will
 be executed on all nodes of the cluster.</p>
 <p>Since the hostname of the VM is in the form of <code>INSTANCE_ID.DOMAIN_NAME</code>
