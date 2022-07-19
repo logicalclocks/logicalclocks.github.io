@@ -1,13 +1,13 @@
-# Getting started with Hopsworks.ai (Azure)
+# Getting started with managed.hopsworks.ai (Azure)
 
-Hopsworks.ai is our managed platform for running Hopsworks and the Feature Store
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) is our managed platform for running Hopsworks and the Feature Store
 in the cloud. It integrates seamlessly with third party platforms such as Databricks,
-SageMaker and KubeFlow. This guide shows how to set up Hopsworks.ai with your organization's Azure account.
+SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai) with your organization's Azure account.
 
 ## Step 1: Connecting your Azure account
 
-Hopsworks.ai deploys Hopsworks clusters to your Azure account. To enable this, you have to
-create a service principal and a custom role for Hopsworks.ai granting access
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your Azure account. To enable this, you have to
+create a service principal and a custom role for [managed.hopsworks.ai](https://managed.hopsworks.ai) granting access
 to either a subscription or resource group.
 
 <p align="center">
@@ -24,7 +24,7 @@ to either a subscription or resource group.
 
 ### Step 1.0: Prerequisite
 
-For Hopsworks.ai to deploy a cluster the following resource providers need to be registered on your Azure subscription.
+For [managed.hopsworks.ai](https://managed.hopsworks.ai) to deploy a cluster the following resource providers need to be registered on your Azure subscription.
 You can verify that they are registered by going to your subscription in the Azure portal and click on *Resource providers*.
 If one of the resource providers is not registered select it and click on *Register*.
 
@@ -35,9 +35,9 @@ If one of the resource providers is not registered select it and click on *Regis
     Microsoft.ManagedIdentity
 ```
 
-### Step 1.1: Creating a service principal for Hopsworks.ai
+### Step 1.1: Creating a service principal for managed.hopsworks.ai
 
-On Hopsworks.ai, go to *Settings/Cloud Accounts* and choose to *Configure* Azure:
+On [managed.hopsworks.ai](https://managed.hopsworks.ai), go to *Settings/Cloud Accounts* and choose to *Configure* Azure:
 
 <p align="center">
   <figure>
@@ -98,9 +98,9 @@ In this case, please ask your Azure administrator to add it for you or give you 
     When using this permission, the backing application of the service principal being created must in the local tenant.
 
 
-### Step 1.2: Creating a custom role for Hopsworks.ai
+### Step 1.2: Creating a custom role for managed.hopsworks.ai
 
-Proceed to the Azure Portal and open either a *Subscription* or *Resource Group* that you want to use for Hopsworks.ai. Click on *Access control (IAM)*
+Proceed to the Azure Portal and open either a *Subscription* or *Resource Group* that you want to use for [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Access control (IAM)*
 Select *Add* and choose *Add custom role*. 
 
 !!! note
@@ -139,19 +139,19 @@ You can change it here if required. Proceed to the JSON tab:
   </figure>
 </p>
 
-Select *Edit* and replace the *actions* part of the JSON with the one from Hopsworks.ai Azure account configuration workflow:
+Select *Edit* and replace the *actions* part of the JSON with the one from [managed.hopsworks.ai](https://managed.hopsworks.ai) Azure account configuration workflow:
 
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-5.1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-5.1.png" alt="Hopsworks.ai permission list">
+      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-5.1.png" alt="managed.hopsworks.ai permission list">
     </a>
-    <figcaption>Hopsworks.ai permission list</figcaption>
+    <figcaption>managed.hopsworks.ai permission list</figcaption>
   </figure>
 </p>
 
 !!! note
-    If the access rights provided by Hopsworks.ai Azure account configuration workflow are too permissive, you can go to [Limiting Azure permissions](restrictive_permissions.md) for more details on how to limit the permissions.
+    If the access rights provided by [managed.hopsworks.ai](https://managed.hopsworks.ai) Azure account configuration workflow are too permissive, you can go to [Limiting Azure permissions](restrictive_permissions.md) for more details on how to limit the permissions.
 
 Press *Save*, proceed to *Review + create* and create the role:
 
@@ -164,7 +164,7 @@ Press *Save*, proceed to *Review + create* and create the role:
   </figure>
 </p>
 
-### Step 1.3: Assigning the custom role to Hopsworks.ai
+### Step 1.3: Assigning the custom role to managed.hopsworks.ai
 
 Back in the *Subscription* or *Resource Group*, in *Access control (IAM)*, select *Add* and choose *Add role assignment*:
 
@@ -183,13 +183,13 @@ and select the *hopsworks.ai* service principal. Press *Save*:
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-8.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-8.png" alt="Configure Hopsworks.ai as role assignment">
+      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-8.png" alt="Configure managed.hopsworks.ai as role assignment">
     </a>
-    <figcaption>Configure Hopsworks.ai as role assignment</figcaption>
+    <figcaption>Configure managed.hopsworks.ai as role assignment</figcaption>
   </figure>
 </p>
 
-Go back to the Hopsworks.ai Azure account configuration workflow and proceed to the next step. Copy the CLI command shown:
+Go back to the [managed.hopsworks.ai](https://managed.hopsworks.ai) Azure account configuration workflow and proceed to the next step. Copy the CLI command shown:
 
 <p align="center">
   <figure>
@@ -213,10 +213,10 @@ If so, ensure that you pick the subscription that you want to use.
 </p>
 
 Copy the value of *id* and paste it into the *Subscription id*
-field on Hopsworks.ai. Go back to the terminal and copy the value of *tenantId*. Ensure to NOT use the *tenantId* under *managedByTenants*.
-Paste the value into the *Tenant ID* field on Hopsworks.ai and press *Finish*.
+field on [managed.hopsworks.ai](https://managed.hopsworks.ai). Go back to the terminal and copy the value of *tenantId*. Ensure to NOT use the *tenantId* under *managedByTenants*.
+Paste the value into the *Tenant ID* field on [managed.hopsworks.ai](https://managed.hopsworks.ai) and press *Finish*.
 
-Congratulations, you have successfully connected you Azure account to Hopsworks.ai.
+Congratulations, you have successfully connected you Azure account to [managed.hopsworks.ai](https://managed.hopsworks.ai).
 
 <p align="center">
   <figure>
@@ -232,7 +232,7 @@ Congratulations, you have successfully connected you Azure account to Hopsworks.
 !!! note 
     If you prefer using terraform, you can skip this step and the remaining steps, and instead follow [this guide](../common/terraform.md#getting-started-with-azure).
 
-The Hopsworks clusters deployed by hopsworks.ai store their data in a container in your Azure account. To enable this you need to perform the following operations
+The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in a container in your Azure account. To enable this you need to perform the following operations
 
 - Create a restrictive role to limit access to the storage account
 - Create a User Assigned Managed Identity
@@ -269,7 +269,7 @@ Similarly to [Step 1.2](#step-12-creating-a-custom-role-for-hopsworksai) create 
 
 ### Step 2.2: Creating a User Assigned Managed Identity
 
-Proceed to the Azure Portal and open the Resource Group that you want to use for Hopsworks.ai. Click on *Add* then *Marketplace*.
+Proceed to the Azure Portal and open the Resource Group that you want to use for [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Add* then *Marketplace*.
 
 <p align="center">
   <figure>
@@ -304,7 +304,7 @@ Click on *Create*. Then, select the Location you want to use and name the identi
 
 ### Step 2.3: Creating a Storage account
 
-Proceed to the Azure Portal and open the Resource Group that you want to use for Hopsworks.ai. Click on *Add* then *Marketplace*.
+Proceed to the Azure Portal and open the Resource Group that you want to use for [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Add* then *Marketplace*.
 
 <p align="center">
   <figure>
@@ -354,9 +354,9 @@ Click on *Save* (7).
 
 ## Step 3: Adding a ssh key to your resource group
 
-When deploying clusters, Hopsworks.ai installs a ssh key on the cluster's instances so that you can access them if necessary. For this purpose you need to add a ssh key to your resource group.
+When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs a ssh key on the cluster's instances so that you can access them if necessary. For this purpose you need to add a ssh key to your resource group.
 
-Proceed to the Azure Portal and open the Resource Group that you want to use for Hopsworks.ai. Click on *Add* then *Marketplace*.
+Proceed to the Azure Portal and open the Resource Group that you want to use for [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Add* then *Marketplace*.
 
 <p align="center">
   <figure>
@@ -380,7 +380,7 @@ Search for *SSH Key* and click on it. Click on Create. Then, name your key pair 
 
 ## Step 4: Deploying a Hopsworks cluster
 
-In Hopsworks.ai, select *Create cluster*:
+In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*:
 
 <p align="center">
   <figure>

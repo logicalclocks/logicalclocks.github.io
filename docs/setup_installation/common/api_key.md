@@ -1,10 +1,10 @@
-# Hopsworks.ai API Key
+# Managed.hopsworks.ai API Key
 
-Hopsworks.ai allows users to generate an API Key that can be used to authenticate and access the Hopsworks.ai REST APIs.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) allows users to generate an API Key that can be used to authenticate and access the [managed.hopsworks.ai](https://managed.hopsworks.ai) REST APIs.
 
 ## Generate an API Key
 
-First, login to your Hopsworks.ai account, then click on the Settings tab as shown below:
+First, login to your [managed.hopsworks.ai](https://managed.hopsworks.ai) account, then click on the Settings tab as shown below:
 
 <p align="center">
   <figure>
@@ -43,7 +43,7 @@ Copy the generated API Key and store it in a secure location.
 
 ## Use the API Key
 
-To access the Hopsworks.ai REST APIs, you should pass the API key as a header **x-api-key** when executing requests on Hopsworks.ai as shown below:
+To access the [managed.hopsworks.ai](https://managed.hopsworks.ai) REST APIs, you should pass the API key as a header **x-api-key** when executing requests on [managed.hopsworks.ai](https://managed.hopsworks.ai) as shown below:
 
 ```bash
 curl -XGET -H "x-api-key: <YOUR API KEY>" https://api.hopsworks.ai/api/clusters
@@ -53,7 +53,7 @@ Alternatively, you can use your API Key with the [Hopsworks.ai terraform provide
 
 ## Delete your API Key
 
-First, login to your Hopsworks.ai account, click on the Settings tab, then click on the API Key tab, and finally click on *Delete API Key* as shown below:
+First, login to your [managed.hopsworks.ai](https://managed.hopsworks.ai) account, click on the Settings tab, then click on the API Key tab, and finally click on *Delete API Key* as shown below:
 
 <p align="center">
   <figure>

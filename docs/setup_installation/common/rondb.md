@@ -1,6 +1,6 @@
 # Managed RonDB
 For applications where Feature Store's performance and scalability is paramount we give users the option to create clusters with
-Managed [RonDB](https://www.rondb.com/). You don't need to worry about configuration as [hopsworks.ai](https://managed.hopsworks.ai/) will
+Managed [RonDB](https://www.rondb.com/). You don't need to worry about configuration as [managed.hopsworks.ai](https://managed.hopsworks.ai) will
 automatically pick the best options for your setup.
 
 ## Single node RonDB

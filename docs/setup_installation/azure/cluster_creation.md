@@ -1,9 +1,9 @@
-# Getting started with Hopsworks.ai (Azure)
-This guide goes into detail for each of the steps of the cluster creation in Hopsworks.ai
+# Getting started with managed.hopsworks.ai (Azure)
+This guide goes into detail for each of the steps of the cluster creation in [managed.hopsworks.ai](https://managed.hopsworks.ai)
 
 ### Step 1 starting to create a cluster
 
-In Hopsworks.ai, select *Create cluster*:
+In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*:
 
 <p align="center">
   <figure>
@@ -25,7 +25,7 @@ Name your cluster (2). Your cluster will be deployed in the *Location* of your *
 
 Select the *Instance type* (4) and *Local storage* (5) size for the cluster *Head node*.
 
-To provide the capacity of adding and removing workers on demand, the Hopsworks clusters deployed by Hopsworks.ai store their data in an Azure storage container. In this step, you select which storage account and container to use for this purpose. Select the *storage account* (6) you want to use in *Azure Storage account name*. The name of the container in which the data will be stored is displayed in *Azure Container name* (7). You can change this name. For more details on how to create and configure a storage in Azure refer to [Creating and configuring a storage](getting_started.md#step-2-creating-and-configuring-a-storage)
+To provide the capacity of adding and removing workers on demand, the Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in an Azure storage container. In this step, you select which storage account and container to use for this purpose. Select the *storage account* (6) you want to use in *Azure Storage account name*. The name of the container in which the data will be stored is displayed in *Azure Container name* (7). You can change this name. For more details on how to create and configure a storage in Azure refer to [Creating and configuring a storage](getting_started.md#step-2-creating-and-configuring-a-storage)
 
 !!! note
     You can choose to use a container already existing in your *storage account* by using the name of this container, but you need to first make sure that this container is empty.
@@ -39,7 +39,7 @@ To provide the capacity of adding and removing workers on demand, the Hopsworks 
   </figure>
 </p>
 
-On this page, you can also choose to opt out of hopsworks.ai log collection. Hopsworks.ai collects logs about the services running in your cluster to help us improve our system and to provide support. If you choose to opt-out from the log collection and need support you will have to provide us the log by yourself, which will slow down the support process.
+On this page, you can also choose to opt out of [managed.hopsworks.ai](https://managed.hopsworks.ai) log collection. [Managed.hopsworks.ai](https://managed.hopsworks.ai) collects logs about the services running in your cluster to help us improve our system and to provide support. If you choose to opt-out from the log collection and need support you will have to provide us the log by yourself, which will slow down the support process.
 
 ### Step 3 workers configuration
 
@@ -81,7 +81,7 @@ You can set the autoscaling configuration by selecting enabled in the first drop
 
 ### Step 4 select a SSH key
 
-When deploying clusters, Hopsworks.ai installs a ssh key on the cluster's instances so that you can access them if necessary.
+When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs a ssh key on the cluster's instances so that you can access them if necessary.
 Select the *SSH key* that you want to use to access cluster instances. For more detail on how to add a shh key in Azure refer to [Adding a ssh key to your resource group](getting_started.md#step-3-adding-a-ssh-key-to-your-resource-group)
 
 <p align="center">
@@ -120,7 +120,7 @@ To backup the Azure blob storage data when taking a cluster backups we need to s
 </p>
 
 ### Step 7 Virtual network selection
-In this step, you can select the virtual network which will be used by the Hopsworks cluster. You can either select an existing virtual network or let Hopsworks.ai create one for you. If you decide to let Hopsworks.ai create the virtual network for you, you can choose the CIDR block for this virtual network. 
+In this step, you can select the virtual network which will be used by the Hopsworks cluster. You can either select an existing virtual network or let [managed.hopsworks.ai](https://managed.hopsworks.ai) create one for you. If you decide to let [managed.hopsworks.ai](https://managed.hopsworks.ai) create the virtual network for you, you can choose the CIDR block for this virtual network. 
 Refer to [Create a virtual network and subnet](restrictive_permissions.md#step-1-create-a-virtual-network-and-subnet) for more details on how to create your own virtual network in Azure.
 
 <p align="center">
@@ -135,7 +135,7 @@ Refer to [Create a virtual network and subnet](restrictive_permissions.md#step-1
 ### Step 8 Subnet selection
 If you selected an existing virtual network in the previous step, this step lets you select which subnet of this virtual network to use. For more information about creating your own subnet refer to [Create a virtual network and subnet](restrictive_permissions.md#step-1-create-a-virtual-network-and-subnet).
 
-If you did not select an existing virtual network in the previous step Hopsworks.ai will create the subnet for you. You can choose the CIDR block this subnet will use.
+If you did not select an existing virtual network in the previous step [managed.hopsworks.ai](https://managed.hopsworks.ai) will create the subnet for you. You can choose the CIDR block this subnet will use.
 
 <p align="center">
   <figure>
@@ -147,13 +147,13 @@ If you did not select an existing virtual network in the previous step Hopsworks
 </p>
 
 ### Step 9 Network Security group selection
-In this step, you can select the network security group you want to use to manage the inbound and outbound network rules. You can either let Hopsworks.ai create a network security group for you or select an existing security group. For more information about how to create your own network security group in Azure refer to [Create a network security group](restrictive_permissions.md#step-2-create-a-network-security-group).
+In this step, you can select the network security group you want to use to manage the inbound and outbound network rules. You can either let [managed.hopsworks.ai](https://managed.hopsworks.ai) create a network security group for you or select an existing security group. For more information about how to create your own network security group in Azure refer to [Create a network security group](restrictive_permissions.md#step-2-create-a-network-security-group).
 
 !!! note
-    Hopsworks.ai require some rules for inbound and outbound traffic in your security group, for more details refer to [inbound traffic rules](restrictive_permissions.md#inbound-traffic) and [outbound traffic rules](restrictive_permissions.md#outbound-traffic).
+    [Managed.hopsworks.ai](https://managed.hopsworks.ai) require some rules for inbound and outbound traffic in your security group, for more details refer to [inbound traffic rules](restrictive_permissions.md#inbound-traffic) and [outbound traffic rules](restrictive_permissions.md#outbound-traffic).
 
 !!! note
-    Hopsworks.ai attaches a public ip to your cluster by default. However, you can disable this behavior by unchecking the *Attach Public IP* checkbox.
+    [Managed.hopsworks.ai](https://managed.hopsworks.ai) attaches a public ip to your cluster by default. However, you can disable this behavior by unchecking the *Attach Public IP* checkbox.
 
 <p align="center">
   <figure>
@@ -164,9 +164,9 @@ In this step, you can select the network security group you want to use to manag
   </figure>
 </p>
 
-#### Limiting outbound traffic to Hopsworks.ai
+#### Limiting outbound traffic to managed.hopsworks.ai
 
-Clusters created on Hopsworks.ai need to be able to send http requests to api.hopsworks.ai. If you have strict regulation regarding outbound traffic, you can enable the *Use static IPs to communicate with Hopsworks.ai* checkbox to get the list of IPs to be allowed as shown below:
+Clusters created on [managed.hopsworks.ai](https://managed.hopsworks.ai) need to be able to send http requests to api.hopsworks.ai. If you have strict regulation regarding outbound traffic, you can enable the *Use static IPs to communicate with [managed.hopsworks.ai](https://managed.hopsworks.ai)* checkbox to get the list of IPs to be allowed as shown below:
 
 <p align="center">
   <figure>
@@ -181,7 +181,7 @@ Clusters created on Hopsworks.ai need to be able to send http requests to api.ho
 ### Step 10 User management selection
 In this step, you can choose which user management system to use. You have four choices: 
 
-* *Managed*: Hopsworks.ai automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details [here](../common/user_management.md)).
+* *Managed*: [managed.hopsworks.ai](https://managed.hopsworks.ai) automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details [here](../common/user_management.md)).
 * *OAuth2*: integrate the cluster with your organization's OAuth2 identity provider. See [Use OAuth2 for user management](../common/sso/oauth.md) for more detail.
 * *LDAP*: integrate the cluster with your organization's LDAP/ActiveDirectory server. See [Use LDAP for user management](../common/sso/ldap.md) for more detail.
 * *Disabled*: let you manage users manually from within Hopsworks.

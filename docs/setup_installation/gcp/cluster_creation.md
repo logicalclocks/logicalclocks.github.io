@@ -1,9 +1,9 @@
-# Cluster creation in Hopsworks.ai (GCP)
-This guide goes into detail for each of the steps of the cluster creation in Hopsworks.ai
+# Cluster creation in managed.hopsworks.ai (GCP)
+This guide goes into detail for each of the steps of the cluster creation in [managed.hopsworks.ai](https://managed.hopsworks.ai)
 
 ### Step 1 starting to create a cluster
 
-In Hopsworks.ai, select *Create cluster*:
+In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*:
 
 <p align="center">
   <figure>
@@ -105,8 +105,8 @@ To backup the storage bucket data when taking a cluster backup we need to set a 
 ### Step 6 VPC and Subnet selection
 
 You can select the VPC which will be used by the Hopsworks cluster. 
-You can either select an existing VPC or let Hopsworks.ai create one for you.
-If you decide to use restricted hopsworks.ai permissions (see [restrictive-permissions](../restrictive_permissions/#create-a-vpc-permissions) for more details) 
+You can either select an existing VPC or let [managed.hopsworks.ai](https://managed.hopsworks.ai) create one for you.
+If you decide to use restricted [managed.hopsworks.ai](https://managed.hopsworks.ai) permissions (see [restrictive-permissions](../restrictive_permissions/#create-a-vpc-permissions) for more details) 
 you will need to select an existing VPC here. 
 
 <p align="center">
@@ -120,7 +120,7 @@ you will need to select an existing VPC here.
 
 If you selected an existing VPC in the previous step, this step lets you select which subnet of this VPC to use.
 
-If you did not select an existing virtual network in the previous step Hopsworks.ai will create a subnet for you. 
+If you did not select an existing virtual network in the previous step [managed.hopsworks.ai](https://managed.hopsworks.ai) will create a subnet for you. 
 You can choose the CIDR block this subnet will use.
 Select the *Subnet* to be used by your cluster and press *Next*.
 
@@ -137,7 +137,7 @@ Select the *Subnet* to be used by your cluster and press *Next*.
 ### Step 7 User management selection
 In this step, you can choose which user management system to use. You have three choices: 
 
-* *Managed*: Hopsworks.ai automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details [here](../common/user_management.md)).
+* *Managed*: [managed.hopsworks.ai](https://managed.hopsworks.ai) automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details [here](../common/user_management.md)).
 * *OAuth2*: integrate the cluster with your organization's OAuth2 identity provider. See [Use OAuth2 for user management](../common/sso/oauth.md) for more detail.
 * *LDAP*: integrate the cluster with your organization's LDAP/ActiveDirectory server. See [Use LDAP for user management](../common/sso/ldap.md) for more detail.
 * *Disabled*: let you manage users manually from within Hopsworks.

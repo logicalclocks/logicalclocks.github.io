@@ -1,6 +1,6 @@
 # Integration with Amazon EKS and Amazon ECR
 
-This guide shows how to create a cluster in Hopsworks.ai with integrated support for Amazon Elastic Kubernetes Service (EKS) and Amazon Elastic Container Registry (ECR). So that Hopsworks can launch Python jobs, Jupyter servers, and ML model servings on top of Amazon EKS.
+This guide shows how to create a cluster in [managed.hopsworks.ai](https://managed.hopsworks.ai) with integrated support for Amazon Elastic Kubernetes Service (EKS) and Amazon Elastic Container Registry (ECR). So that Hopsworks can launch Python jobs, Jupyter servers, and ML model servings on top of Amazon EKS.
 
 !!! warning
     In the current version, we don't support sharing EKS clusters between Hopsworks clusters. That is, an EKS cluster can be only used by one Hopsworks cluster.
@@ -77,7 +77,7 @@ ip-192-168-62-117.us-east-2.compute.internal   Ready    <none>   2m34s   v1.17.9
 
 ## Step 2: Create an instance profile role on AWS
 
-You need to add permission to [the instance profile you use for instances deployed by Hopsworks.ai](getting_started.md#step-2-creating-instance-profile) to give them access to EKS and ECR.
+You need to add permission to [the instance profile you use for instances deployed by managed.hopsworks.ai](getting_started.md#step-2-creating-instance-profile) to give them access to EKS and ECR.
 Go to the [*IAM service*](https://console.aws.amazon.com/iam) in the *AWS management console*, click *Roles*, search for your role, and click on it. Click on *Add inline policy*. Go to the *JSON* tab and replace the existing JSON permissions with the JSON permissions below..
 
 ```json
@@ -302,11 +302,11 @@ OutputKey: "ClusterSecurityGroupId",
 OutputValue: "YOUR_EKS_SECURITY_GROUP_ID"
 ```
 
-## Step 5: Allow Hopsworks.ai to delete ECR repositories on your behalf
+## Step 5: Allow managed.hopsworks.ai to delete ECR repositories on your behalf
 
-For hopsworks.ai to be able to clean up the ECR repo when terminating your hopsworks cluster, you need to add a new inline policy to the [Cross-Account role](getting_started.md#option-1-using-aws-cross-account-roles) or [user connected to Hopsworks.ai](getting_started.md#option-2-using-aws-access-keys), that you set up when [connecting your AWS account to hopsworks.ai](getting_started.md#step-1-connecting-your-aws-account).
+For [managed.hopsworks.ai](https://managed.hopsworks.ai) to be able to clean up the ECR repo when terminating your hopsworks cluster, you need to add a new inline policy to the [Cross-Account role](getting_started.md#option-1-using-aws-cross-account-roles) or [user connected to managed.hopsworks.ai](getting_started.md#option-2-using-aws-access-keys), that you set up when [connecting your AWS account to managed.hopsworks.ai](getting_started.md#step-1-connecting-your-aws-account).
 
-Navigate to [AWS management console](https://console.aws.amazon.com/iam/home#), then click on *Roles* or *Users* depending on which connection method you have used in Hopsworks.ai, and then search for your role or user name and click on it.  Go to the *Permissions* tab, click on *Add inline policy* and go to the *JSON* tab. Replace the existing JSON permissions with the JSON permissions below. Click on *Review policy*, name it, and click *Create policy*.
+Navigate to [AWS management console](https://console.aws.amazon.com/iam/home#), then click on *Roles* or *Users* depending on which connection method you have used in [managed.hopsworks.ai](https://managed.hopsworks.ai), and then search for your role or user name and click on it.  Go to the *Permissions* tab, click on *Add inline policy* and go to the *JSON* tab. Replace the existing JSON permissions with the JSON permissions below. Click on *Review policy*, name it, and click *Create policy*.
 
 ```json
 {
@@ -329,7 +329,7 @@ Navigate to [AWS management console](https://console.aws.amazon.com/iam/home#), 
 
 ## Step 6: Create a Hopsworks cluster with EKS and ECR support
 
-In Hopsworks.ai, select *Create cluster*. Choose the region of your EKS cluster and fill in the name of your [S3 bucket](getting_started.md#step-3-creating-storage), then click Next:
+In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*. Choose the region of your EKS cluster and fill in the name of your [S3 bucket](getting_started.md#step-3-creating-storage), then click Next:
 
 <p align="center">
   <figure>

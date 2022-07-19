@@ -1,7 +1,7 @@
 # Configure your hopsworks cluster to use OAuth2 for user management.
  
 If you want to use your organization's OAuth 2.0 identity provider to manage users in your hopsworks cluster this document
-will guide you through the necessary steps to register your identity provider in Hopsworks.ai.
+will guide you through the necessary steps to register your identity provider in [managed.hopsworks.ai](https://managed.hopsworks.ai).
  
 Before registering your identity provider in Hopsworks you need to create a client application in your identity provider and
 acquire a _client id_ and a _client secret_. Examples on how to create a client using [Okta](https://www.okta.com/)

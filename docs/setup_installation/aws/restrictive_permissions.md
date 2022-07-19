@@ -1,21 +1,21 @@
 # Limiting AWS permissions
 
-Hopsworks.ai requires a set of permissions to be able to manage resources in the user’s AWS account.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) requires a set of permissions to be able to manage resources in the user’s AWS account.
 By default, these permissions are set to easily allow a wide range of different configurations and allow
 us to automate as many steps as possible. While we ensure to never access resources we shouldn’t,
 we do understand that this might not be enough for your organization or security policy.
 This guide explains how to lock down AWS permissions following the IT security policy principle of least privilege allowing
-Hopsworks.ai to only access resources in a specific VPC.
+[managed.hopsworks.ai](https://managed.hopsworks.ai) to only access resources in a specific VPC.
 
 ## Limiting the cross-account role permissions
 
 ### Step 1: Create a VPC
 
-To restrict Hopsworks.ai from accessing resources outside of a specific VPC, you need to create a new VPC
+To restrict [managed.hopsworks.ai](https://managed.hopsworks.ai) from accessing resources outside of a specific VPC, you need to create a new VPC
 connected to an Internet Gateway. This can be achieved in the AWS Management Console following this guide:
 [Create the VPC](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-getting-started.html#getting-started-create-vpc).
 The option VPC with a `Single Public Subnet` from the Launch VPC Wizard should work out of the box.
-Alternatively, an existing VPC such as the default VPC can be used and Hopsworks.ai will be restricted to this VPC.
+Alternatively, an existing VPC such as the default VPC can be used and [managed.hopsworks.ai](https://managed.hopsworks.ai) will be restricted to this VPC.
 Note the VPC ID of the VPC you want to use for the following steps.
 
 !!! note
@@ -32,7 +32,7 @@ It is _**imperative**_ the Security Group allows Inbound traffic from any Instan
 
 #### Outbound traffic 
 
-Clusters created on Hopsworks.ai need to be able to send http requests to *api.hopsworks.ai*. The *api.hopsworks.ai* domain use a content delivery network for better performance. This result in the impossibility to predict which IP the request will be sent to. If you require a list of static IPs to allow outbound traffic from your security group, use the *static IPs* option during [cluster creation](../cluster_creation/#limiting-outbound-traffic-to-hopsworksai).
+Clusters created on [managed.hopsworks.ai](https://managed.hopsworks.ai) need to be able to send http requests to *api.hopsworks.ai*. The *api.hopsworks.ai* domain use a content delivery network for better performance. This result in the impossibility to predict which IP the request will be sent to. If you require a list of static IPs to allow outbound traffic from your security group, use the *static IPs* option during [cluster creation](../cluster_creation/#limiting-outbound-traffic-to-hopsworksai).
 
 Similar to Inbound traffic, the Security Group in place _**must**_ allow Outbound traffic in any (TCP) port towards any VM withing the same Security Group.
 
@@ -41,7 +41,7 @@ Similar to Inbound traffic, the Security Group in place _**must**_ allow Outboun
 
 ### Step 2: Create an instance profile
 
-You need to create an instance profile that will identify all instances started by Hopsworks.ai.
+You need to create an instance profile that will identify all instances started by [managed.hopsworks.ai](https://managed.hopsworks.ai).
 Follow this guide to create a role to be used by EC2 with no permissions attached:
 [Creating a Role for an AWS Service (Console)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html).
 Take note of the ARN of the role you just created.
@@ -51,8 +51,8 @@ Check [bellow](#limiting-the-instance-profile-permissions) for more information 
 
 ### Step 3: Set permissions of the cross-account role
 
-During the account setup for Hopsworks.ai, you were asked to create and provide a cross-account role.
-If you don’t remember which role you used then you can find it in Settings/Account Settings in Hopsworks.ai.
+During the account setup for [managed.hopsworks.ai](https://managed.hopsworks.ai), you were asked to create and provide a cross-account role.
+If you don’t remember which role you used then you can find it in Settings/Account Settings in [managed.hopsworks.ai](https://managed.hopsworks.ai).
 Edit this role in the AWS Management Console and overwrite the existing inline policy with the following policy.
 
 Note that you have to replace `[INSTANCE_PROFILE_NAME]` and `[VPC_ID]` for multiple occurrences in the given policy.
@@ -173,12 +173,12 @@ If you want to learn more about how this policy works check out:
 
 ### Step 4: Create your Hopsworks instance
 
-You can now create a new Hopsworks instance in Hopsworks.ai by selecting the configured instance profile,
+You can now create a new Hopsworks instance in [managed.hopsworks.ai](https://managed.hopsworks.ai) by selecting the configured instance profile,
 VPC and security group during instance configuration. Selecting any other VPCs or instance profiles will result in permissions errors.
 
 ### Step 5: Supporting multiple VPCs
 
-The policy can be extended to give Hopsworks.ai access to multiple VPCs.
+The policy can be extended to give [managed.hopsworks.ai](https://managed.hopsworks.ai) access to multiple VPCs.
 See: [Creating a Condition with Multiple Keys or Values](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_multi-value-conditions.html).
 
 ### Backup permissions

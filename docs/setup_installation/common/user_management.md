@@ -1,6 +1,6 @@
 # User management
-In Hopsworks.ai users can be grouped into *organizations* to access the same resources.
-When a new user registers with Hopsworks.ai a new organization is created. This user later on can
+In [managed.hopsworks.ai](https://managed.hopsworks.ai) users can be grouped into *organizations* to access the same resources.
+When a new user registers with [managed.hopsworks.ai](https://managed.hopsworks.ai) a new organization is created. This user later on can
 invite other registered users to their organization so they can share access to the same clusters.
 
 Cloud Accounts configuration is also shared among users of the same organization. So if user Alice has configured
@@ -8,7 +8,7 @@ her account with her credentials, all member of her *organization* will automati
 account. Credits and cluster usage are also grouped to ease reporting.
 
 ## Adding members to an organization
-Organization membership can be edited by clicking **Members** on the left of Hopsworks.ai Dashboard page.
+Organization membership can be edited by clicking **Members** on the left of [managed.hopsworks.ai](https://managed.hopsworks.ai) Dashboard page.
 
 <p align="center">
   <figure>
