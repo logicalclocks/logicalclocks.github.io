@@ -1,0 +1,29 @@
+name: mkdocs-release
+
+on:
+  push:
+    branches: [ branch-* ]
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: install deps
+        run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
+
+      - name: setup git
+        run: |
+          git config --global user.name Mike
+          git config --global user.email mike@docs.hopsworks.ai
+
+      - name: mike deploy docs
+        run: mike deploy 3.0 latest -u --push
