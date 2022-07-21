@@ -23,7 +23,7 @@ To install on your single server or VM, run the following bash commands from you
 
 ```bash
 
-wget https://raw.githubusercontent.com/logicalclocks/karamel-chef/master/hopsworks-installer.sh
+wget https://raw.githubusercontent.com/logicalclocks/karamel-chef/3.0/hopsworks-installer.sh
 chmod +x hopsworks-installer.sh
 ./hopsworks-installer.sh
 ```
@@ -86,7 +86,7 @@ On the head node, in the sudo account, download and run this script that install
 
 ```bash
 
-wget https://raw.githubusercontent.com/logicalclocks/karamel-chef/master/hopsworks-installer.sh
+wget https://raw.githubusercontent.com/logicalclocks/karamel-chef/3.0/hopsworks-installer.sh
 chmod +x hopsworks-installer.sh
 ./hopsworks-installer.sh
 ```
