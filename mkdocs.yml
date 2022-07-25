@@ -255,8 +255,7 @@ extra:
       link: https://www.linkedin.com/company/hopsworks/
   analytics:
     provider: google
-    # switch for new token
-    property: UA-85730257-4
+    property: G-64FEEXPSDN
 
 extra_css:
     - css/custom.css
