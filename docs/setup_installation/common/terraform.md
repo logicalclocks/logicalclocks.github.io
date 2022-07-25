@@ -60,6 +60,7 @@ resource "hopsworksai_cluster" "cluster" {
   ssh_key = module.aws.ssh_key_pair_name
 
   head {
+    instance_type = "m5.2xlarge"
   }
 
   aws_attributes {
@@ -71,7 +72,15 @@ resource "hopsworksai_cluster" "cluster" {
   }
 
   rondb {
-
+    management_nodes {
+      instance_type = "t3a.medium"
+    }
+    data_nodes {
+      instance_type = "r5.large"
+    }
+    mysql_nodes {
+      instance_type = "c5.large"
+    }
   }
 
   open_ports {
@@ -161,6 +170,7 @@ resource "hopsworksai_cluster" "cluster" {
   ssh_key = module.azure.ssh_key_pair_name
 
   head {
+    instance_type = "Standard_D8_v3"
   }
 
  azure_attributes {
@@ -173,7 +183,17 @@ resource "hopsworksai_cluster" "cluster" {
   }
 
   rondb {
+    management_nodes {
+      instance_type = "Standard_D2s_v4"
+    }
 
+    data_nodes {
+      instance_type = "Standard_D4s_v4"
+    }
+    
+    mysql_nodes {
+      instance_type = "Standard_D2s_v4"
+    }
   }
 
   open_ports {
