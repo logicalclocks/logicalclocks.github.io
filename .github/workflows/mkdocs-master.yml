@@ -1,0 +1,41 @@
+name: mkdocs-master
+
+on:
+  pull_request:
+     branches:
+      - main
+  push:
+    branches: 
+      - main
+
+jobs:
+  test-docs-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Checkout hopsworks-tutorials
+        uses: actions/checkout@v3
+        with:
+          repository: logicalclocks/hopsworks-tutorials
+          path: docs/hopsworks-tutorials
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: install deps
+        run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
+
+      - name: setup git
+        run: |
+          git config --global user.name Mike
+          git config --global user.email mike@docs.hopsworks.ai
+
+      - name: mike deploy docs
+        run: mike deploy 3.1-SNAPSHOT dev -u
