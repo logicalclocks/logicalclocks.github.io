@@ -1,10 +1,6 @@
-name: mkdocs-master
+name: mkdocs-test
 
-on:
-  pull_request:
-  push:
-    branches: 
-      - main
+on: pull_request
 
 jobs:
   test-docs-build:
