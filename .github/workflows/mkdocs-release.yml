@@ -9,8 +9,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
+          fetch-depth: 0
+
+      - name: Checkout hopsworks-tutorials
+        uses: actions/checkout@v3
+        with:
+          repository: logicalclocks/hopsworks-tutorials
+          path: docs/hopsworks-tutorials
           fetch-depth: 0
 
       - uses: actions/setup-python@v2
@@ -19,6 +26,9 @@ jobs:
 
       - name: install deps
         run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
+
+      - name: copy tutorial images
+        run: python prepare_images.py
 
       - name: setup git
         run: |
