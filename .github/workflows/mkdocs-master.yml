@@ -30,6 +30,9 @@ jobs:
       - name: install deps
         run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
 
+      - name: copy tutorial images
+        run: python prepare_images.py
+
       - name: setup git
         run: |
           git config --global user.name Mike
