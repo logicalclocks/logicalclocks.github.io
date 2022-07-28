@@ -42,7 +42,7 @@ To clone a new repository, click on the `Clone repository` button on the Git ove
   </figure>
 </p>
 
-The clone dialog asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on Github, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
+The clone dialog asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
 
 Then specify which branch you want to clone. By default the `main` branch will be used, however a different branch or commit can be specified by selecting `Clone from a specific branch`.
 

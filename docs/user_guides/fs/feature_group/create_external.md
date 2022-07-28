@@ -66,7 +66,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
 
 The full method documentation is available [here](). `name` is a mandatory parameter of the `create_on_demand_feature_group` and represents the name of the feature group.
 
-The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the the highest existing version number plus one.
+The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
 If the storage connector is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the storage connector is defined for a data lake, the location of the data as well as the format need to be provided.
 

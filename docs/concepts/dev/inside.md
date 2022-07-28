@@ -1,4 +1,4 @@
-Hopsworks provides a complete self-service development environment for feature engineering and model training. You can develop programs as Jupyer noteooks or jobs, you can manage the Python libaries in a project using its conda environment, you can manage your source code in Git or BitBucket, and you can orchestrate jobs with Airflow.
+Hopsworks provides a complete self-service development environment for feature engineering and model training. You can develop programs as Jupyter notebooks or jobs, you can manage the Python libraries in a project using its conda environment, you can manage your source code with Git, and you can orchestrate jobs with Airflow.
 
 <img src="../../../assets/images/concepts/dev/dev-inside.svg">
 
@@ -8,11 +8,11 @@ Hopsworks provides a Jupyter notebook development environment for programs writt
 
 ### Source Code Control
 
-Hopsworks provides source code control support using Git (Github, Gitlab) or Bitbucket. You can securely checkout code into your project and commit and push updates to your code to your source code repository. 
+Hopsworks provides source code control support using Git (GitHub, GitLab) or BitBucket. You can securely checkout code into your project and commit and push updates to your code to your source code repository. 
 
 ### Conda Environment per Project
 
-Hopsworks supports the self-service installation of Python libraries using PyPi, Conda, Wheel files, or Github URLs. The Python libraries are installed in a Conda environment linked with your project. Each project has a base Docker image and its custom conda environment. Jobs are run as Docker images, but they are compiled transparently for you when you update your Conda enviornment. That is, there is no need to write a Dockerfile, users install Python libraries in their project. You can setup custom development and production environments by creating new projects, each with their own conda environment.
+Hopsworks supports the self-service installation of Python libraries using PyPi, Conda, Wheel files, or GitHub URLs. The Python libraries are installed in a Conda environment linked with your project. Each project has a base Docker image and its custom conda environment. Jobs are run as Docker images, but they are compiled transparently for you when you update your Conda environment. That is, there is no need to write a Dockerfile, users install Python libraries in their project. You can setup custom development and production environments by creating new projects, each with their own conda environment.
 
 ### Jobs
 

@@ -12,7 +12,7 @@ Hopsworks groups features in four categories:
 
 * **Correlation**: If enabled, Hopsworks computes the Pearson correlation between features of numerical data type within a feature group. By default correlation is disabled.
 
-* **Exact Statistics**: Exact statistics are an enhancement of the descriptive statistics that provide an exact count of distinctive values, entropy, uniqueness and distinctivness of the value of a feature. These statistics are more expensive to compute as they take into consideration all the values and they don't use approximations. By default they are disabled. 
+* **Exact Statistics**: Exact statistics are an enhancement of the descriptive statistics that provide an exact count of distinctive values, entropy, uniqueness and distinctiveness of the value of a feature. These statistics are more expensive to compute as they take into consideration all the values and they don't use approximations. By default they are disabled. 
 
 When statistics are enabled, they are computed every time new data is written into the *offline* storage of a feature group. Statistics are then displayed on the Hopsworks UI and users can track how data has changed over time. 
 
@@ -76,7 +76,7 @@ This is useful when a feature group is receiving frequent updates. Users can sch
 
 By default, the `compute_statistics` method computes statistics on the most recent version of the data available in a feature group. Users can provide a specific time using the `wallclock_time` parameter, to compute the statistics for a previous version of the data.
 
-Hopsworks can compute statistics of external feature groups. As external feature groups are read only from an Hopsworks prospective, statistics computation can be triggered using the `compute_statistics` method.
+Hopsworks can compute statistics of external feature groups. As external feature groups are read only from an Hopsworks perspective, statistics computation can be triggered using the `compute_statistics` method.
 
 === "Python"
 
@@ -84,6 +84,6 @@ Hopsworks can compute statistics of external feature groups. As external feature
     fg.compute_statistics(wallclock_time='20220611 20:00')
     ```
 
-## Inspect statisitcs  
+## Inspect statistics 
 
 You can also create a new feature group through the UI.

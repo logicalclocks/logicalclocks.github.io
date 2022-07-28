@@ -255,7 +255,7 @@ Hopsworks is widely used as a standalone Feature Store. Hopsworks breaks the mon
 ## The Widest Feature Store Capabilities
 Hopsworks Feature Store also supports feature pipelines in PySpark, Spark, Flink, and SQL. Offline features can either be stored in Hopsworks, as Hudi tables on object storage, or in external data lakehouses (Snowflake, Databricks, Redshift, BigQuery, any JDBC-enabled platform) via External Feature Groups. Online features are served by [RonDB](https://www.rondbai.com), developed by Hopsworks as the lowest latency, highest throughput, highest availability data store for your features.
 
-## MLOps on Hops
+## MLOps on Hopsworks
 Hopsworks provides model serving capabilities through KServe, with additional support for feature/prediction logging to Kafka (also part of Hopsworks), and secure, low-latency model deployments via Istio. Hopsworks also has a Model Registry for KServe, with support for versioning both models and model assets (such as KServe transformers). Hopsworks also includes a vector database to provide similarity search capabilities for embeddings, based on [OpenSearch](./concepts/mlops/opensearch.md).
 
 ## Project-based Multi-Tenancy and Team Collaboration
@@ -273,7 +273,7 @@ Hopsworks is available as a both managed platform in the cloud on AWS, Azure, an
 - Check out all our latest [product releases](https://github.com/logicalclocks/hopsworks/releases)
 
 ## Contribute
-We are building the most complete and modular ML platform available in the market and we count on your support to continuously improve Hopsworks. Feel free to [give us suggestions](https://github.com/logicalclocks/hopsworks), [report bugs](https://github.com/logicalclocks/hopsworks/issues) and [add features to our library](https://github.com/logicalclocks/feature-store-api) anytime.
+We are building the most complete and modular ML platform available in the market, and we count on your support to continuously improve Hopsworks. Feel free to [give us suggestions](https://github.com/logicalclocks/hopsworks), [report bugs](https://github.com/logicalclocks/hopsworks/issues) and [add features to our library](https://github.com/logicalclocks/feature-store-api) anytime.
 
 ## Open-Source
 Hopsworks is available under the AGPL-V3 license. In plain English this means that you are free to use Hopsworks and even build paid services on it, but if you modify the source code, you should also release back your changes and any systems built around it as AGPL-V3.
