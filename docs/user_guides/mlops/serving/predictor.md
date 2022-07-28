@@ -39,9 +39,9 @@ A simplified creation form will appear, including the most common deployment fie
 
 <p align="center">
   <figure>
-    <img style="float: left; width: 45%; margin-right: 12px" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_tf.png" alt="Simplified deployment creation form for Tensorflow">
+    <img style="float: left; width: 45%; margin-right: 12px" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_tf.png" alt="Simplified deployment creation form for TensorFlow">
     <img style="width: 45%;" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py.png" alt="Deployment simplified creation form for Python">
-    <figcaption>Simplified deployment creation forms for Tensorflow models (left) and Python models (right)</figcaption>
+    <figcaption>Simplified deployment creation forms for TensorFlow models (left) and Python models (right)</figcaption>
   </figure>
 </p>
 
