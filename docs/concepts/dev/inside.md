@@ -8,7 +8,7 @@ Hopsworks provides a Jupyter notebook development environment for programs writt
 
 ### Source Code Control
 
-Hopsworks provides source code control support using Git (GitHub, GitLab) or BitBucket. You can securely checkout code into your project and commit and push updates to your code to your source code repository. 
+Hopsworks provides source code control support using Git (GitHub, GitLab or BitBucket). You can securely checkout code into your project and commit and push updates to your code to your source code repository. 
 
 ### Conda Environment per Project
 
