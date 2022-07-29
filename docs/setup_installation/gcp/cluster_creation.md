@@ -25,7 +25,14 @@ Name your cluster (2). Choose the *Region*(3) and *Zone*(4) in which to deploy t
 
 Select the *Instance type* (5) and *Local storage* (6) size for the cluster *Head node*.
 
-Enter the name of the bucket in which the hopsworks cluster will store its data in *Cloud Storage Bucket* (7)
+Optional: Specify a [customer-managed encryption key](https://cloud.google.com/compute/docs/disks/customer-managed-encryption) to be used for encryption of local storage. The key has to be specified using the format: `projects/PROJECT_ID/locations/REGION/keyRings/KEY_RING/cryptoKeys/KEY`. Note that your project needs to be configured to allow usage of the key. This can be achieved by executing the gcloud command below. Refer to the GCP documentation for more details: [Protect resources by using Cloud KMS keys](https://cloud.google.com/compute/docs/disks/customer-managed-encryption#before_you_begin).
+    
+    gcloud projects add-iam-policy-binding KMS_PROJECT_ID \
+      --member serviceAccount:service-PROJECT_NUMBER@compute-system.iam.gserviceaccount.com \
+      --role roles/cloudkms.cryptoKeyEncrypterDecrypter
+
+
+Enter the name of the bucket in which the hopsworks cluster will store its data in *Cloud Storage Bucket* (8)
 
 !!! warning
     The bucket must be empty and must be in a region accessible from the region in which the cluster is deployed.
