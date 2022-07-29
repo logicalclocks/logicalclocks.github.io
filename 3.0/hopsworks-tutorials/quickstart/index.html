@@ -455,19 +455,6 @@
     🔪 Feature Selection
   </a>
   
-    <nav class="md-nav" aria-label="🔪 Feature Selection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-if-features-being-joined-together-have-the-same-name-but-come-from-different-feature-groups" class="md-nav__link">
-    What if features being joined together have the same name (but come from different feature groups)?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -4986,19 +4973,6 @@
     🔪 Feature Selection
   </a>
   
-    <nav class="md-nav" aria-label="🔪 Feature Selection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-if-features-being-joined-together-have-the-same-name-but-come-from-different-feature-groups" class="md-nav__link">
-    What if features being joined together have the same name (but come from different feature groups)?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -6905,7 +6879,8 @@ ds_query = trans_fg.select(["fraud_label", "category", "amount", "age_at_transac
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="what-if-features-being-joined-together-have-the-same-name-but-come-from-different-feature-groups">What if features being joined together have the same name (but come from different feature groups)?<a class="anchor-link" href="#what-if-features-being-joined-together-have-the-same-name-but-come-from-different-feature-groups">&#182;</a></h3><p>The problem of name clashes when joining features together can easily happen. For example, recall that you computed the features in transactions_4h_aggs using 4-hour aggregates. If you had created another feature group for 12-hour aggregates, you may have designed an identical schema with the same feature names (just for 12-hours, not 4-hours). If you join features together with identical names from different feature groups, you should pass a prefix argument (e.g., <code>prefix='4hr'</code>) in the join operation to give the features unique names in the join object. See the <a href="https://docs.hopsworks.ai">documentation</a> for more details.</p>
+<p><strong>What if features being joined together have the same name (but come from different feature groups)?</strong></p>
+<p>The problem of name clashes when joining features together can easily happen. For example, recall that you computed the features in transactions_4h_aggs using 4-hour aggregates. If you had created another feature group for 12-hour aggregates, you may have designed an identical schema with the same feature names (just for 12-hours, not 4-hours). If you join features together with identical names from different feature groups, you should pass a prefix argument (e.g., <code>prefix='4hr'</code>) in the join operation to give the features unique names in the join object. See the <a href="https://docs.hopsworks.ai">documentation</a> for more details.</p>
 <h2 id="transformation-functions">&#129302; Transformation Functions<a class="anchor-link" href="#transformation-functions">&#182;</a></h2><p>You will preprocess our data using min-max scaling on numerical features and label encoding on categorical features. To do this, for each feature, you can define a one-to-one mapping between your feature and a transformation function. This ensures that transformation functions such as <em>min-max scaling</em> are fitted only on the train set (and not the validation/test set), which ensures that there is no leakage into the test set during training. The transformation functions are also needed for model inference pipelines, where pre-computed features are retrieved from the feature store and the same transformation functions (with the same state/parameters computed on the train set) are applied on the features in serving (inference pipelines).</p>
 
 </div>
