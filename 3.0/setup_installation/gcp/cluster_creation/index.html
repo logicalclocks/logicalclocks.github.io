@@ -5095,7 +5095,13 @@
 </div>
 <p>Name your cluster (2). Choose the <em>Region</em>(3) and <em>Zone</em>(4) in which to deploy the cluster.</p>
 <p>Select the <em>Instance type</em> (5) and <em>Local storage</em> (6) size for the cluster <em>Head node</em>.</p>
-<p>Enter the name of the bucket in which the hopsworks cluster will store its data in <em>Cloud Storage Bucket</em> (7)</p>
+<p>Optional: Specify a <a href="https://cloud.google.com/compute/docs/disks/customer-managed-encryption">customer-managed encryption key</a> to be used for encryption of local storage. The key has to be specified using the format: <code>projects/PROJECT_ID/locations/REGION/keyRings/KEY_RING/cryptoKeys/KEY</code>. Note that your project needs to be configured to allow usage of the key. This can be achieved by executing the gcloud command below. Refer to the GCP documentation for more details: <a href="https://cloud.google.com/compute/docs/disks/customer-managed-encryption#before_you_begin">Protect resources by using Cloud KMS keys</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">gcloud</span><span class="w"> </span><span class="n">projects</span><span class="w"> </span><span class="k">add</span><span class="o">-</span><span class="n">iam</span><span class="o">-</span><span class="n">policy</span><span class="o">-</span><span class="n">binding</span><span class="w"> </span><span class="n">KMS_PROJECT_ID</span><span class="w"> </span><span class="err">\</span><span class="w"></span>
+<span class="w">  </span><span class="o">--</span><span class="k">member</span><span class="w"> </span><span class="nl">serviceAccount</span><span class="p">:</span><span class="n">service</span><span class="o">-</span><span class="n">PROJECT_NUMBER</span><span class="nv">@compute</span><span class="o">-</span><span class="k">system</span><span class="p">.</span><span class="n">iam</span><span class="p">.</span><span class="n">gserviceaccount</span><span class="p">.</span><span class="n">com</span><span class="w"> </span><span class="err">\</span><span class="w"></span>
+<span class="w">  </span><span class="c1">--role roles/cloudkms.cryptoKeyEncrypterDecrypter</span>
+</code></pre></div>
+
+<p>Enter the name of the bucket in which the hopsworks cluster will store its data in <em>Cloud Storage Bucket</em> (8)</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The bucket must be empty and must be in a region accessible from the region in which the cluster is deployed.</p>
