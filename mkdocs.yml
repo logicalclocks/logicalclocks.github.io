@@ -206,6 +206,9 @@ nav:
       - Configure Alerts: admin/alert.md
       - Manage Services: admin/services.md
       - IAM Role Chaining: admin/roleChaining.md
+      - Monitoring:
+          - Services Dashboards: admin/monitoring/grafana.md
+          - Services Logs: admin/monitoring/services-logs.md
       - Authentication:
           - Configure Authentication: admin/auth.md
           - Configure OAuth2:
