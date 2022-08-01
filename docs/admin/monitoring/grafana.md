@@ -12,7 +12,7 @@ To access the services dashboards in Grafana, you need to have an administrator 
 
 ## Step 1: Access Grafana 
 
-You can access the admin page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing `_Cluster Settings_ from the dropdown menu.
+You can access the admin page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing _Cluster Settings_ from the dropdown menu.
 
 You can then navigate to the _Monitoring_ tab. The _Monitoring_ tab gives you access to several of the observability tools that are already deployed to help you manage the health of the cluster.
 
