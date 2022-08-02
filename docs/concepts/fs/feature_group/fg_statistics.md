@@ -11,7 +11,7 @@ When you create a Feature Group in HSFS, you can configure it to compute statist
 
 ### Data Validation
 
-You can define expectation suites in Great Expectations and assoicate them with feature groups. When you write to a feature group, the expectations are executed, then you can define a policy on the feature group for what to do if any expectation fails.
+You can define expectation suites in Great Expectations and associate them with feature groups. When you write to a feature group, the expectations are executed, then you can define a policy on the feature group for what to do if any expectation fails.
 
 <img src="../../../../assets/images/concepts/fs/fg-expectations.svg">
 
