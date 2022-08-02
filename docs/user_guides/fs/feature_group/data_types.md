@@ -165,7 +165,7 @@ You can explicitly define the feature group schema as follows:
 
 ## Append features to existing feature groups 
 
-Hopsworks supports appending additional features to an existing feature group. Adding a additional features to an existing feature group is not considered a breaking change.
+Hopsworks supports appending additional features to an existing feature group. Adding additional features to an existing feature group is not considered a breaking change.
 
 === "Python"
     ```python

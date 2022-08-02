@@ -25,7 +25,7 @@ When you create training data from features in different feature groups, it is p
 
 <img src="../../../../assets/images/concepts/fs/feature-view-training-data.svg">
 
-HSFS uses the event_time columns on both feature groups to determine the most recent (but not newer) feature values that are joined together with the feature values from the feature group containing the label. That is, the features in the feature group containinig the label are the observation times for the features in the resulting training data, and we want feature values from the other feature groups that have the most recent timestamps, but not newer than the timestamp in the label-containing feature group.
+HSFS uses the event_time columns on both feature groups to determine the most recent (but not newer) feature values that are joined together with the feature values from the feature group containing the label. That is, the features in the feature group containing the label are the observation times for the features in the resulting training data, and we want feature values from the other feature groups that have the most recent timestamps, but not newer than the timestamp in the label-containing feature group.
 
 
 ### Splitting Training Data
@@ -33,7 +33,7 @@ HSFS uses the event_time columns on both feature groups to determine the most re
 You can create random train/validation/test splits of your training data using the HSFS API. You can also time-based splits with the HSFS API.
 
 ### Evaluation Sets
-Test data can also be split into evaluation sets to help evaluate a model for potential bias. First, you have to identify the classes of samples that could be at risk of bias, and generate *evaluation sets* from your unseen test set - one evaluation set for each group of samples at risk of bias. For example, if you have a feature group of users, where one of the features is gender, and you want to evaluate the risk of bias due to gender, you can use filters to generate 3 evaluation sets from your test set - one for male, female, and non-binary. Then you score your model against all 3 evaluation sets to ensure that the predicition performance is comparable and non-biased across all 3 gender.
+Test data can also be split into evaluation sets to help evaluate a model for potential bias. First, you have to identify the classes of samples that could be at risk of bias, and generate *evaluation sets* from your unseen test set - one evaluation set for each group of samples at risk of bias. For example, if you have a feature group of users, where one of the features is gender, and you want to evaluate the risk of bias due to gender, you can use filters to generate 3 evaluation sets from your test set - one for male, female, and non-binary. Then you score your model against all 3 evaluation sets to ensure that the prediction performance is comparable and non-biased across all 3 gender.
 
 
 ## Batch (Scoring) Data

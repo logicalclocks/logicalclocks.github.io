@@ -33,7 +33,7 @@ Once in the deployments page, click on `New deployment` if there are not existin
 
 A simplified creation form will appear including the most common deployment fields among all the configuration possible. We provide default values for the rest of the fields, adjusted to the type of deployment you want to create.
 
-In the simplified form, select the model framework used to train your model (i.e., _Tensorflow serving_ or _Python_). Then, select the model you want to deploy from the list of available models under `pick a model`.
+In the simplified form, select the model framework used to train your model (i.e., _TensorFlow Serving_ or _Python_). Then, select the model you want to deploy from the list of available models under `pick a model`.
 
 After selecting the model, the rest of fields are filled automatically. We pick the last model version and model artifact version available in the Model Registry. Moreover, we infer the deployment name from the model name.
 
@@ -47,9 +47,9 @@ If you prefer, change the name of the deployment, model version or [artifact ver
 
 <p align="center">
   <figure>
-    <img style="float: left; width: 45%; margin-right: 12px" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_tf.png" alt="Simplified deployment form for Tensorflow">
+    <img style="float: left; width: 45%; margin-right: 12px" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_tf.png" alt="Simplified deployment form for TensorFlow">
     <img style="width: 45%;" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py.png" alt="Simplified deployment form for Python">
-    <figcaption>Simplified deployment creation forms for Tensorflow models (left) and Python models (right)</figcaption>
+    <figcaption>Simplified deployment creation forms for TensorFlow models (left) and Python models (right)</figcaption>
   </figure>
 </p>
 
