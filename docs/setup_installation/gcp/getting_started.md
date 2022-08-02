@@ -8,7 +8,7 @@ SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](ht
 
 To follow the instruction of this page you will need the following:
 
-- A GCP project in which the hopsworks cluster will be deployed. Make sure to enable *Compute Engine API*, *Cloud Resource Manager API*, and *Identity and Access Management (IAM) API* on that project.
+- A GCP project in which the hopsworks cluster will be deployed. Make sure to enable *Compute Engine API*, *Cloud Resource Manager API*, and *Identity and Access Management (IAM) API* on that project by following [this guide](https://cloud.google.com/apis/docs/getting-started#enabling_apis).
 - The [gcloud CLI](https://cloud.google.com/sdk/gcloud)
 - The [gsutil tool](https://cloud.google.com/storage/docs/gsutil)
 
