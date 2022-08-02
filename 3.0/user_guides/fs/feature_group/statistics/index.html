@@ -1810,8 +1810,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inspect-statisitcs" class="md-nav__link">
-    Inspect statisitcs
+  <a href="#inspect-statistics" class="md-nav__link">
+    Inspect statistics
   </a>
   
 </li>
@@ -5017,8 +5017,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inspect-statisitcs" class="md-nav__link">
-    Inspect statisitcs
+  <a href="#inspect-statistics" class="md-nav__link">
+    Inspect statistics
   </a>
   
 </li>
@@ -5052,7 +5052,7 @@
 <p><strong>Correlation</strong>: If enabled, Hopsworks computes the Pearson correlation between features of numerical data type within a feature group. By default correlation is disabled.</p>
 </li>
 <li>
-<p><strong>Exact Statistics</strong>: Exact statistics are an enhancement of the descriptive statistics that provide an exact count of distinctive values, entropy, uniqueness and distinctivness of the value of a feature. These statistics are more expensive to compute as they take into consideration all the values and they don't use approximations. By default they are disabled. </p>
+<p><strong>Exact Statistics</strong>: Exact statistics are an enhancement of the descriptive statistics that provide an exact count of distinctive values, entropy, uniqueness and distinctiveness of the value of a feature. These statistics are more expensive to compute as they take into consideration all the values and they don't use approximations. By default they are disabled. </p>
 </li>
 </ul>
 <p>When statistics are enabled, they are computed every time new data is written into the <em>offline</em> storage of a feature group. Statistics are then displayed on the Hopsworks UI and users can track how data has changed over time. </p>
@@ -5108,7 +5108,7 @@ By default the value is empty list <code>[]</code> and the statistics are comput
 <p>As mentioned above, the statistics are computed every time new data is written into the <em>offline</em> storage of a feature group. By invoking the <code>compute_statistics</code> method, users can trigger explicitly the statistics computation for the data available in a feature group.</p>
 <p>This is useful when a feature group is receiving frequent updates. Users can schedule periodic statistics computation that take into consideration several data commits.</p>
 <p>By default, the <code>compute_statistics</code> method computes statistics on the most recent version of the data available in a feature group. Users can provide a specific time using the <code>wallclock_time</code> parameter, to compute the statistics for a previous version of the data.</p>
-<p>Hopsworks can compute statistics of external feature groups. As external feature groups are read only from an Hopsworks prospective, statistics computation can be triggered using the <code>compute_statistics</code> method.</p>
+<p>Hopsworks can compute statistics of external feature groups. As external feature groups are read only from an Hopsworks perspective, statistics computation can be triggered using the <code>compute_statistics</code> method.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -5117,7 +5117,7 @@ By default the value is empty list <code>[]</code> and the statistics are comput
 </div>
 </div>
 </div>
-<h2 id="inspect-statisitcs">Inspect statisitcs<a class="headerlink" href="#inspect-statisitcs" title="Permanent link">#</a></h2>
+<h2 id="inspect-statistics">Inspect statistics<a class="headerlink" href="#inspect-statistics" title="Permanent link">#</a></h2>
 <p>You can also create a new feature group through the UI.</p>
 
               

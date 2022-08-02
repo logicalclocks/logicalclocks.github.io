@@ -5000,7 +5000,7 @@
 <h3 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">#</a></h3>
 <p>When you create a Feature Group in HSFS, you can configure it to compute statistics over the features inserted into the fFeature Group by setting the <code>statistics_config</code> dict parameter, see <a href="../../../../user_guides/fs/feature_group/statistics/">Feature Group Statistics</a> for details. Every time you write to the Feature Group, new statistics will be computed over all of the data in the Feature Group.</p>
 <h3 id="data-validation">Data Validation<a class="headerlink" href="#data-validation" title="Permanent link">#</a></h3>
-<p>You can define expectation suites in Great Expectations and assoicate them with feature groups. When you write to a feature group, the expectations are executed, then you can define a policy on the feature group for what to do if any expectation fails.</p>
+<p>You can define expectation suites in Great Expectations and associate them with feature groups. When you write to a feature group, the expectations are executed, then you can define a policy on the feature group for what to do if any expectation fails.</p>
 <p><img src="../../../../assets/images/concepts/fs/fg-expectations.svg"></p>
 <h3 id="alerting">Alerting<a class="headerlink" href="#alerting" title="Permanent link">#</a></h3>
 <p>HSFS also supports alerts, that can be triggered when there are problems in your feature pipelines, for example, when a write fails due to an error or a failed expectation. You can send alerts to different alerting endpoints, such as email or Slack, that can be configured in the Hopsworks UI. For example, you can send a slack message if features being written to a feature group are missing some input data.</p>

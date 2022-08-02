@@ -5346,7 +5346,7 @@
 <p>Hopsworks shows a visual summary of validation reports. To check it out, go to your Feature Group overview and scroll to the expectation section. Click on the <code>Validation Results</code> tab and check that all went according to plan. Each row corresponds to an expectation in the suite. Features can have several corresponding expectations and the same type of expectation can be applied to different features.</p>
 <p>You can navigate to older reports using the dropdown menu. Should you need more than the information displayed in the UI for e.g., debugging, the full report can be downloaded by clicking on the corresponding button.</p>
 <h3 id="step-6-check-validation-history">Step 6: Check Validation History<a class="headerlink" href="#step-6-check-validation-history" title="Permanent link">#</a></h3>
-<p>The <code>Validation Reports</code> tab in the Expectations secion displays a brief history of recent validations. Each row corresponds to a validation report, with some summary information about the success of the validation step. You can download the full report by clicking the download icon button that appears at the end of the row.</p>
+<p>The <code>Validation Reports</code> tab in the Expectations section displays a brief history of recent validations. Each row corresponds to a validation report, with some summary information about the success of the validation step. You can download the full report by clicking the download icon button that appears at the end of the row.</p>
 <h2 id="code">Code<a class="headerlink" href="#code" title="Permanent link">#</a></h2>
 <h3 id="step-1-setup">Step 1: Setup<a class="headerlink" href="#step-1-setup" title="Permanent link">#</a></h3>
 <p>In order to define and validate an expectation when writing to a Feature Group, you will need:
@@ -5422,7 +5422,7 @@
 <h3 id="step-2-integrating-great-expectations-with-hopsworks">Step 2: Integrating Great Expectations with Hopsworks<a class="headerlink" href="#step-2-integrating-great-expectations-with-hopsworks" title="Permanent link">#</a></h3>
 <p>Hopsworks provides different support functions to ease adding a data validation step to your feature pipeline. By default, validation objects returned by Hopsworks are a native great_expectations object that you can use directly. Hopsworks works with vanilla Great Expectations code - without additional Hopsworks abstractions - but for flexibility, you can also access the underlying Hopsworks abstractions by setting <code>ge_type=False</code>.</p>
 <h4 id="attach-an-expectation-suite-to-a-feature-group">Attach an Expectation Suite to a Feature Group<a class="headerlink" href="#attach-an-expectation-suite-to-a-feature-group" title="Permanent link">#</a></h4>
-<p>The first step is to attach an expectation suite to your Feature Group. It enables persistence of the expectation suite to the hopsworks backend.</p>
+<p>The first step is to attach an expectation suite to your Feature Group. It enables persistence of the expectation suite to the Hopsworks backend.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fg</span><span class="o">.</span><span class="n">save_expectation_suite</span><span class="p">(</span><span class="n">expectation_suite</span><span class="p">)</span>
 
 <span class="c1"># or directly when creating your Feature Group</span>
@@ -5443,14 +5443,14 @@
 <div class="highlight"><pre><span></span><code><span class="n">ge_df</span> <span class="o">=</span> <span class="n">ge</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">expectation_suite</span><span class="o">=</span><span class="n">fg</span><span class="o">.</span><span class="n">get_expectation_suite</span><span class="p">())</span>
 <span class="n">ge_report</span> <span class="o">=</span> <span class="n">ge_df</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
 </code></pre></div>
-<p>Note that you should always use an expectation suite that has been saved to Hopsworks if you inted to upload the associated validation report. You can use a convenience wrapper method provided by Hopsworks to validate using the attached suite:</p>
+<p>Note that you should always use an expectation suite that has been saved to Hopsworks if you intend to upload the associated validation report. You can use a convenience wrapper method provided by Hopsworks to validate using the attached suite:</p>
 <div class="highlight"><pre><span></span><code><span class="n">ge_report</span> <span class="o">=</span> <span class="n">fg</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="c1"># set the save_report parameter to False to skip uploading the report to Hopsworks</span>
 <span class="c1"># ge_report = fg.validate(df, save_report=False)</span>
 </code></pre></div>
 <p>This will run the validation using the expectation suite attached to this Feature Group and raise an exception if no attached suite is found.</p>
 <h4 id="save-validation-reports">Save Validation Reports<a class="headerlink" href="#save-validation-reports" title="Permanent link">#</a></h4>
-<p>When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides informations about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group. </p>
+<p>When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group. </p>
 <div class="highlight"><pre><span></span><code><span class="n">fg</span><span class="o">.</span><span class="n">save_validation_report</span><span class="p">(</span><span class="n">ge_report</span><span class="p">)</span>
 </code></pre></div>
 <p>A summary of these reports will then be available via an API call or in the Hopsworks UI enabling easy monitoring. For in-depth analysis, it is possible to download the complete report from the UI.</p>
@@ -5469,7 +5469,7 @@
 <li>Monitoring Or Gatekeeping</li>
 </ul>
 <h4 id="validation-on-insertion">Validation On Insertion<a class="headerlink" href="#validation-on-insertion" title="Permanent link">#</a></h4>
-<p>By default, attaching an expectation suite to a Feature Group enables automatic validation on insertion. Meaning calling <code>fg.insert</code> after attaching an expectation suite to a Feature Group will perform validation under the hood (on the client) and upload the validation report. This approach enables you, the developpe, to write cleaner more maintainable code while Hopsworks manages the operational problem of storing your data validation history alongside the data itself.</p>
+<p>By default, attaching an expectation suite to a Feature Group enables automatic validation on insertion. Meaning calling <code>fg.insert</code> after attaching an expectation suite to a Feature Group will perform validation under the hood (on the client) and upload the validation report. This approach enables you, the developer, to write cleaner more maintainable code while Hopsworks manages the operational problem of storing your data validation history alongside the data itself.</p>
 <p>In your expectation suite script:</p>
 <div class="highlight"><pre><span></span><code><span class="n">expectation_suite</span> <span class="o">=</span> <span class="n">ge</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">ExpectationSuite</span><span class="p">(</span>
     <span class="n">expectation_suite_name</span><span class="o">=</span><span class="s2">&quot;validate_on_insert_suite&quot;</span>

@@ -5107,7 +5107,7 @@
 
 <h1 id="how-to-set-up-a-adls-storage-connector">How-To set up a ADLS Storage Connector<a class="headerlink" href="#how-to-set-up-a-adls-storage-connector" title="Permanent link">#</a></h1>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
-<p>Azure Data Lake Storage (ADLS) Gen2 is a HDFS-compatible filesystem on Azure for data analytics. The ADLS Gen2 filesystem stores its data in Azure Blob storage, ensuring low-cost storage, high availability, and disaster recovery. In Hopsworks, you can access ADLS Gen2 by defining a Storage Connector and creating and granting persmissions to a service principal.</p>
+<p>Azure Data Lake Storage (ADLS) Gen2 is a HDFS-compatible filesystem on Azure for data analytics. The ADLS Gen2 filesystem stores its data in Azure Blob storage, ensuring low-cost storage, high availability, and disaster recovery. In Hopsworks, you can access ADLS Gen2 by defining a Storage Connector and creating and granting permissions to a service principal.</p>
 <p>In this guide, you will configure a Storage Connector in Hopsworks to save all the authentication information needed in order to set up a connection to your Azure ADLS filesystem.
 When you're finished, you'll be able to read files using Spark through HSFS APIs. You can also use the connector to write out training data from the Feature Store, in order to make it accessible by third parties.</p>
 <div class="admonition note">
@@ -5168,7 +5168,7 @@ When you're finished, you'll be able to read files using Spark through HSFS APIs
 </li>
 </ol>
 <h4 id="common-problems">Common Problems<a class="headerlink" href="#common-problems" title="Permanent link">#</a></h4>
-<p>If you get a permission denied error when writing or reading to/from a ADLS container, it is often because the storage principal (app) does not have the correct permissions. Have you added the "Storage Blob Data Owner" or "Storage Blob Data Contributor" role to the resource group for your storage account (or the subscription for your storage group, if you apply roles at the subscription level)? Go to your resource group, then in "Access Control (IAM)", click the "Add" buton to add a "role assignment".</p>
+<p>If you get a permission denied error when writing or reading to/from a ADLS container, it is often because the storage principal (app) does not have the correct permissions. Have you added the "Storage Blob Data Owner" or "Storage Blob Data Contributor" role to the resource group for your storage account (or the subscription for your storage group, if you apply roles at the subscription level)? Go to your resource group, then in "Access Control (IAM)", click the "Add" button to add a "role assignment".</p>
 <p>If you get an error "StatusCode=404 StatusDescription=The specified filesystem does not exist.", then maybe you have not created the storage account or the storage container.</p>
 <h4 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h4>
 <ul>

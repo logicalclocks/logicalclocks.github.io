@@ -5159,14 +5159,14 @@
 <p>The full method documentation is available <a href="https://docs.hopsworks.ai/feature-store-api/dev/generated/api/feature_group_api/#featuregroup">here</a>. <code>name</code> is the only mandatory parameter of the <code>create_feature_group</code> and represents the name of the feature group. </p>
 <p>In the example above we created the first version of a feature group named <em>weather</em>, we provide a description to make it searchable to the other project members, as well as making the feature group available online. </p>
 <p>Additionally we specify which columns of the DataFrame will be used as primary key, partition key and event time. Composite primary key and multi level partitioning is also supported. </p>
-<p>The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the the highest existing version number plus one. </p>
+<p>The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one. </p>
 <p>The last parameter used in the examples above is <code>stream</code>. The <code>stream</code> parameter controls whether to enable the streaming write APIs to the online and offline feature store. When using the APIs in a Python environment this behavior is the default. </p>
 <h3 id="register-the-metadata-and-save-the-feature-data">Register the metadata and save the feature data<a class="headerlink" href="#register-the-metadata-and-save-the-feature-data" title="Permanent link">#</a></h3>
 <p>The snippet above only created the metadata object on the Python interpreter running the code. To register the feature group metadata and to save the feature data with Hopsworks, you should invoke the <code>save</code> method:</p>
 <div class="highlight"><pre><span></span><code><span class="n">fg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </code></pre></div>
 <p>The save method takes in input a Pandas or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time. </p>
-<p>The DataFrame <em>must</em> contains the columns specified as primary keys, partition key and event time in the <code>create_feature_group</code> call.</p>
+<p>The DataFrame <em>must</em> contain the columns specified as primary keys, partition key and event time in the <code>create_feature_group</code> call.</p>
 <p>If a feature group is online enabled, the <code>save</code> method will store the feature data to both the online and offline storage.</p>
 <h3 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">#</a></h3>
 <p><a href="https://docs.hopsworks.ai/feature-store-api/dev/generated/api/feature_group_api/#featuregroup">FeatureGroup</a></p>
