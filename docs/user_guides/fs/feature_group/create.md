@@ -66,7 +66,7 @@ In the example above we created the first version of a feature group named *weat
 
 Additionally we specify which columns of the DataFrame will be used as primary key, partition key and event time. Composite primary key and multi level partitioning is also supported. 
 
-The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the the highest existing version number plus one. 
+The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one. 
 
 The last parameter used in the examples above is `stream`. The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store. When using the APIs in a Python environment this behavior is the default. 
 
@@ -80,7 +80,7 @@ fg.save(df)
 
 The save method takes in input a Pandas or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time. 
 
-The DataFrame *must* contains the columns specified as primary keys, partition key and event time in the `create_feature_group` call.
+The DataFrame *must* contain the columns specified as primary keys, partition key and event time in the `create_feature_group` call.
 
 If a feature group is online enabled, the `save` method will store the feature data to both the online and offline storage.
 

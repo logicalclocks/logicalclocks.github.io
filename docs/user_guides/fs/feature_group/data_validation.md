@@ -38,7 +38,7 @@ You can navigate to older reports using the dropdown menu. Should you need more 
 
 ### Step 6: Check Validation History
 
-The `Validation Reports` tab in the Expectations secion displays a brief history of recent validations. Each row corresponds to a validation report, with some summary information about the success of the validation step. You can download the full report by clicking the download icon button that appears at the end of the row.
+The `Validation Reports` tab in the Expectations section displays a brief history of recent validations. Each row corresponds to a validation report, with some summary information about the success of the validation step. You can download the full report by clicking the download icon button that appears at the end of the row.
 
 ## Code 
 
@@ -143,7 +143,7 @@ Hopsworks provides different support functions to ease adding a data validation 
 
 #### Attach an Expectation Suite to a Feature Group
 
-The first step is to attach an expectation suite to your Feature Group. It enables persistence of the expectation suite to the hopsworks backend.
+The first step is to attach an expectation suite to your Feature Group. It enables persistence of the expectation suite to the Hopsworks backend.
 
 ```python3
 fg.save_expectation_suite(expectation_suite)
@@ -175,7 +175,7 @@ ge_df = ge.from_pandas(df, expectation_suite=fg.get_expectation_suite())
 ge_report = ge_df.validate()
 ```
 
-Note that you should always use an expectation suite that has been saved to Hopsworks if you inted to upload the associated validation report. You can use a convenience wrapper method provided by Hopsworks to validate using the attached suite:
+Note that you should always use an expectation suite that has been saved to Hopsworks if you intend to upload the associated validation report. You can use a convenience wrapper method provided by Hopsworks to validate using the attached suite:
 
 ```python3
 ge_report = fg.validate(df)
@@ -188,7 +188,7 @@ This will run the validation using the expectation suite attached to this Featur
 
 #### Save Validation Reports
 
-When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides informations about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group. 
+When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group. 
 
 ```python3
 fg.save_validation_report(ge_report)
@@ -215,7 +215,7 @@ Depending on your context, you might want to use (or not use) data validation in
 
 #### Validation On Insertion
 
-By default, attaching an expectation suite to a Feature Group enables automatic validation on insertion. Meaning calling `fg.insert` after attaching an expectation suite to a Feature Group will perform validation under the hood (on the client) and upload the validation report. This approach enables you, the developpe, to write cleaner more maintainable code while Hopsworks manages the operational problem of storing your data validation history alongside the data itself.
+By default, attaching an expectation suite to a Feature Group enables automatic validation on insertion. Meaning calling `fg.insert` after attaching an expectation suite to a Feature Group will perform validation under the hood (on the client) and upload the validation report. This approach enables you, the developer, to write cleaner more maintainable code while Hopsworks manages the operational problem of storing your data validation history alongside the data itself.
 
 In your expectation suite script:
 

@@ -43,7 +43,7 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
 4. The database endpoint.
 5. The database name.
 6. The database port.
-7. The database username, here you have the possibility to let Hopwsworks auto-create the username for you.
+7. The database username, here you have the possibility to let Hopsworks auto-create the username for you.
 8. Optionally provide the database group and table to point the connector to.
 9. Set the appropriate authentication method.
 
