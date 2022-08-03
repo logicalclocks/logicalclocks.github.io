@@ -44,24 +44,6 @@ If you have specified transformation functions when creating a feature view, you
 feature_view.init_serving(training_dataset_version=1)
 ```
 
-## Preview
-In order to enable ML engineers to test feature serving easily, a feature view can return a sample of feature vectors without specifying any primary keys.
-=== "Python"
-    ```python
-    # get a single vector
-    feature_view.preview_feature_vector()
-
-    # get multiple vectors
-    feature_view.preview_feature_vectors(n=3) # n = size of feature vectors
-    ```
-=== "Java"
-    ```java
-    // get a single vector
-    featureView.previewFeatureVector();
-
-    // get multiple vectors
-    featureView.previewFeatureVectors(3);
-    ```
 
 ## Passed features
-fabio's part
+Coming soon....
