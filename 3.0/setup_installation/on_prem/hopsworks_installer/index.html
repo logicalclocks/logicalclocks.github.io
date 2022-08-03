@@ -5108,9 +5108,16 @@ chmod +x hopsworks-installer.sh
 ./hopsworks-installer.sh
 </code></pre></div>
 <p>Installation takes roughly 1 hr, or slower if your server/VM has a low-bandwidth Internet connection.</p>
-<p>Once your installation is finished, you can stop (and start) Hopsworks using the commands:</p>
+<p>Once your installation is finished you can log in to the Hopsworks UI using the credentials:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Username</span><span class="o">:</span><span class="w"> </span><span class="n">admin</span><span class="err">@</span><span class="n">hopsworks</span><span class="o">.</span><span class="na">ai</span><span class="w"></span>
+<span class="n">Password</span><span class="o">:</span><span class="w"> </span><span class="n">admin</span><span class="w"></span>
+</code></pre></div>
+
+<p>You can stop Hopsworks using this command:</p>
 <div class="highlight"><pre><span></span><code>sudo /srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
-sudo /srv/hops/kagent/kagent/bin/start-all-local-services.sh
+</code></pre></div>
+<p>And start it again with:</p>
+<div class="highlight"><pre><span></span><code>/srv/hops/kagent/kagent/bin/start-all-local-services.sh
 </code></pre></div>
 <p>Note that all services in Hopsworks are systemd services that are enabled by default, that is, they will restart when VM/server is rebooted.</p>
 <h2 id="multi-node-installation">Multi-node installation<a class="headerlink" href="#multi-node-installation" title="Permanent link">#</a></h2>
@@ -5174,6 +5181,8 @@ You can explicitly specify the http proxy by passing the '-p' switch to the inst
  <span class="o">[</span>-gs<span class="p">|</span>--gem-server<span class="o">]</span> Run a <span class="nb">local</span> gem server <span class="k">for</span> chef-solo <span class="o">(</span><span class="k">for</span> air-gapped installations<span class="o">)</span>.
  <span class="o">[</span>-ni<span class="p">|</span>--non-interactive<span class="o">)]</span> skip license/terms acceptance and all confirmation screens.
  <span class="o">[</span>-p<span class="p">|</span>--http-proxy<span class="o">)</span> url<span class="o">]</span> URL of the http<span class="o">(</span>s<span class="o">)</span> proxy server. Only https proxies with valid certs supported.
+ <span class="o">[</span>-hip<span class="p">|</span>--hopsworks-public-ip<span class="o">)</span> ip_address<span class="o">]</span> Public IP address of the Hopsworks head VM.
+ <span class="o">[</span>-kip<span class="p">|</span>--kafka-public-ip<span class="o">)</span> ip_address<span class="o">]</span> Public IP address of the Kafka broker <span class="o">(</span>typically the head VM<span class="o">)</span>.
  <span class="o">[</span>-pwd<span class="p">|</span>--password password<span class="o">]</span> sudo password <span class="k">for</span> user running chef recipes.
  <span class="o">[</span>-y<span class="p">|</span>--yml yaml_file<span class="o">]</span> yaml file to run Karamel against.
 </code></pre></div>
