@@ -30,12 +30,22 @@ chmod +x hopsworks-installer.sh
 
 Installation takes roughly 1 hr, or slower if your server/VM has a low-bandwidth Internet connection.
 
-Once your installation is finished, you can stop (and start) Hopsworks using the commands:
+
+Once your installation is finished you can log in to the Hopsworks UI using the credentials:
+
+    Username: admin@hopsworks.ai
+    Password: admin
+
+You can stop Hopsworks using this command:
 
 ```bash
-
 sudo /srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
-sudo /srv/hops/kagent/kagent/bin/start-all-local-services.sh
+```
+
+And start it again with:
+
+```bash
+/srv/hops/kagent/kagent/bin/start-all-local-services.sh
 ```
 
 Note that all services in Hopsworks are systemd services that are enabled by default, that is, they will restart when VM/server is rebooted.
@@ -149,6 +159,8 @@ usage: [sudo] ./hopsworks-installer.sh
  [-gs|--gem-server] Run a local gem server for chef-solo (for air-gapped installations).
  [-ni|--non-interactive)] skip license/terms acceptance and all confirmation screens.
  [-p|--http-proxy) url] URL of the http(s) proxy server. Only https proxies with valid certs supported.
+ [-hip|--hopsworks-public-ip) ip_address] Public IP address of the Hopsworks head VM.
+ [-kip|--kafka-public-ip) ip_address] Public IP address of the Kafka broker (typically the head VM).
  [-pwd|--password password] sudo password for user running chef recipes.
  [-y|--yml yaml_file] yaml file to run Karamel against.
 
