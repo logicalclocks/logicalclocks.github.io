@@ -73,4 +73,3 @@ The feature view will apply the necessary transformations to the passed features
         ]
     )
     ```
-
