@@ -44,24 +44,33 @@ If you have specified transformation functions when creating a feature view, you
 feature_view.init_serving(training_dataset_version=1)
 ```
 
-## Preview
-In order to enable ML engineers to test feature serving easily, a feature view can return a sample of feature vectors without specifying any primary keys.
+## Passed features
+If some of the features values are only known at prediction time and cannot be computed and cached in the online feature store, you can provide those values as `passed_features` option. The `get_feature_vector` method is going to use the passed values to construct the final feature vector to submit to the model.
+
+You can use the `passed_features` parameter to overwrite individual features being retrieved from the online feature store. You can also use the parameter to provide values for all the features which are part of a specific feature group and used in the feature view. In this second case, you do not have to provide the primary key value for that feature group as no data needs to be retrieved from the online feature store.
+
+The feature view will apply the necessary transformations to the passed features as it does for the feature data retrieved from the online feature store.
+
 === "Python"
     ```python
     # get a single vector
-    feature_view.preview_feature_vector()
+    feature_view.get_feature_vector(
+        entry = {"pk1": 1, "pk2": 2},
+        passed_features = {"feature_a": "value_a"}
+    )
 
     # get multiple vectors
-    feature_view.preview_feature_vectors(n=3) # n = size of feature vectors
+    feature_view.get_feature_vectors(
+        entry = [
+            {"pk1": 1, "pk2": 2},
+            {"pk1": 3, "pk2": 4},
+            {"pk1": 5, "pk2": 6}
+        ],
+        passed_features = [
+            {"feature_a": "value_a"},
+            {"feature_a": "value_b"},
+            {"feature_a": "value_c"},
+        ]
+    )
     ```
-=== "Java"
-    ```java
-    // get a single vector
-    featureView.previewFeatureVector();
 
-    // get multiple vectors
-    featureView.previewFeatureVectors(3);
-    ```
-
-## Passed features
-fabio's part
