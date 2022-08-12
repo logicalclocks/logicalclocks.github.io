@@ -168,6 +168,7 @@ nav:
           - Cluster upgrade:
             - Version 2.4 or newer: setup_installation/aws/upgrade_2.4.md
             - Version 2.2 or older: setup_installation/aws/upgrade.md
+          - Troubleshooting: setup_installation/aws/troubleshooting.md
       - Azure:
           - Getting Started: setup_installation/azure/getting_started.md
           - Cluster Creation: setup_installation/azure/cluster_creation.md
