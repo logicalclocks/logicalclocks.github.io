@@ -39,7 +39,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
         GROUP BY ss_store_sk, sales_date
     """
 
-    fg = feature_store.create_on_demand_feature_group(name="sales",
+    fg = feature_store.create_external_feature_group(name="sales",
         version=1
         description="Physical shop sales features",
         query=query,
@@ -54,7 +54,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
 === "Python"
 
     ```python
-    fg = feature_store.create_on_demand_feature_group(name="sales",
+    fg = feature_store.create_external_feature_group(name="sales",
         version=1
         description="Physical shop sales features",
         data_format="parquet",
@@ -64,7 +64,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
     )
     ```
 
-The full method documentation is available [here](). `name` is a mandatory parameter of the `create_on_demand_feature_group` and represents the name of the feature group.
+The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/dev/generated/api/external_feature_group_api/#externalfeaturegroup). `name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
 
 The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
@@ -93,7 +93,7 @@ Hopsworks Feature Store does not support time-travel capabilities for on-demand 
 
 ### API Reference 
 
-[FeatureGroup](https://docs.hopsworks.ai/feature-store-api/dev/generated/api/feature_group_api/#featuregroup)
+[External FeatureGroup](https://docs.hopsworks.ai/feature-store-api/dev/generated/api/external_feature_group_api/#externalfeaturegroup)
 
 ## Create using the UI
 
