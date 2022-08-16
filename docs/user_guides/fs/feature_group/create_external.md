@@ -79,7 +79,7 @@ The snippet above only created the metadata object on the Python interpreter run
 === "Python"
 
     ```python 
-    fg.save(df)
+    fg.save()
     ```
 
 ### Limitations 
