@@ -96,12 +96,12 @@ and essentially stored as tables on external data sources.
 `Connector API` relies on storage connectors behind the scene to integrate with external datasource.
 This enables seamless integration with any data source as long as there is a storage connector defined.
 
-To create an external feature group, we use the `create_on_demand_feature_group` API, also known as `Connector API`, 
+To create an external feature group, we use the `create_external_feature_group` API, also known as `Connector API`, 
 and simply pass the storage connector created before to the `storage_connector` argument. 
 
 === "Python"
     ```python
-    fg = feature_store.create_on_demand_feature_group(name="sales",
+    fg = feature_store.create_external_feature_group(name="sales",
         version=1
         description="Physical shop sales features",
         data_format="parquet",
