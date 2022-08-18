@@ -5092,6 +5092,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight-ipynb .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight-ipynb .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight-ipynb .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight-ipynb .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight-ipynb .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight-ipynb .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight-ipynb .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -6026,13 +6027,9 @@ import pandas as pd</div>
         </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">36</span> <span class="o">*</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
 <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">📡 Connecting to Hopsworks Feature Store...&#39;</span><span class="p">)</span>
-<span class="n">project</span> <span class="o">=</span> <span class="n">hopsworks</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
-<span class="n">fs</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_feature_store</span><span class="p">()</span>
 </pre></div>
 <div id="cell-3" class="clipboard-copy-txt">st.write(36 * "-")
-st.header('\n📡 Connecting to Hopsworks Feature Store...')
-project = hopsworks.login()
-fs = project.get_feature_store()</div>
+st.header('\n📡 Connecting to Hopsworks Feature Store...')</div>
     
         </div>
     </div>
@@ -6062,13 +6059,13 @@ fs = project.get_feature_store()</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;Done ✅&#39;</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;-------</span><span class="se">\n</span><span class="s1">🪄 Retrieving Feature View...&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">header</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">36</span> <span class="o">*</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#### &#39;</span> <span class="o">+</span> <span class="n">text</span><span class="p">)</span>
 </pre></div>
-<div id="cell-4" class="clipboard-copy-txt">st.write(fs)
-st.text('Done ✅')
-st.text('-------\n🪄 Retrieving Feature View...')</div>
+<div id="cell-4" class="clipboard-copy-txt">def header(text):
+    st.write(36 * "-")
+    st.write('#### ' + text)</div>
     
         </div>
     </div>
@@ -6098,15 +6095,11 @@ st.text('-------\n🪄 Retrieving Feature View...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_view</span><span class="p">(</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;churn_feature_view&#39;</span><span class="p">,</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">hopsworks</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+<span class="n">fs</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_feature_store</span><span class="p">()</span>
 </pre></div>
-<div id="cell-5" class="clipboard-copy-txt">feature_view = fs.get_feature_view(
-    name = 'churn_feature_view',
-    version = 1
-)</div>
+<div id="cell-5" class="clipboard-copy-txt">project = hopsworks.login()
+fs = project.get_feature_store()</div>
     
         </div>
     </div>
@@ -6136,11 +6129,11 @@ st.text('-------\n🪄 Retrieving Feature View...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;Done ✅&#39;</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;-------</span><span class="se">\n</span><span class="s1">⚙️ Reading DataFrame from Feature View...&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">header</span><span class="p">(</span><span class="s1">&#39;🪄 Retrieving Feature View...&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-6" class="clipboard-copy-txt">st.text('Done ✅')
-st.text('-------\n⚙️ Reading DataFrame from Feature View...')</div>
+<div id="cell-6" class="clipboard-copy-txt">st.write(fs)
+header('🪄 Retrieving Feature View...')</div>
     
         </div>
     </div>
@@ -6170,13 +6163,21 @@ st.text('-------\n⚙️ Reading DataFrame from Feature View...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">batch_data</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_batch_data</span><span class="p">()</span>
-<span class="n">df_all</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">read</span><span class="p">()[:</span><span class="mi">500</span><span class="p">]</span>
-<span class="n">df_all</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;churn&#39;</span><span class="p">,</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="nd">@st</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">allow_output_mutation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suppress_st_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">retrive_feature_view</span><span class="p">(</span><span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span><span class="p">):</span>
+    <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_view</span><span class="p">(</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;churn_feature_view&quot;</span><span class="p">,</span>
+        <span class="n">version</span> <span class="o">=</span>  <span class="mi">1</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">feature_view</span>
 </pre></div>
-<div id="cell-7" class="clipboard-copy-txt">batch_data = feature_view.get_batch_data()
-df_all = feature_view.query.read()[:500]
-df_all.drop('churn',axis = 1, inplace = True)</div>
+<div id="cell-7" class="clipboard-copy-txt">@st.cache(allow_output_mutation=True, suppress_st_warning=True)
+def retrive_feature_view(fs = fs):
+    feature_view = fs.get_feature_view(
+        name = "churn_feature_view",
+        version =  1
+        )
+    return feature_view</div>
     
         </div>
     </div>
@@ -6206,15 +6207,13 @@ df_all.drop('churn',axis = 1, inplace = True)</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">df_all</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Shape: </span><span class="si">{</span><span class="n">df_all</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_view</span> <span class="o">=</span> <span class="n">retrive_feature_view</span><span class="p">()</span>
 <span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;Done ✅&#39;</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;-------</span><span class="se">\n</span><span class="s1">🔮 Model Retrieving...&#39;</span><span class="p">)</span>
+<span class="n">header</span><span class="p">(</span><span class="s1">&#39;⚙️ Reading DataFrames from Feature View...&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-8" class="clipboard-copy-txt">st.dataframe(df_all.head())
-st.text(f'Shape: {df_all.shape}')
+<div id="cell-8" class="clipboard-copy-txt">feature_view = retrive_feature_view()
 st.text('Done ✅')
-st.text('-------\n🔮 Model Retrieving...')</div>
+header('⚙️ Reading DataFrames from Feature View...')</div>
     
         </div>
     </div>
@@ -6244,15 +6243,21 @@ st.text('-------\n🔮 Model Retrieving...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">mr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_model_registry</span><span class="p">()</span>
-<span class="n">ms</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_model_serving</span><span class="p">()</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">mr</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s2">&quot;churnmodel&quot;</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">deployment</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_deployment</span><span class="p">(</span><span class="s2">&quot;churnmodel&quot;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="nd">@st</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">allow_output_mutation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suppress_st_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">retrive_data</span><span class="p">(</span><span class="n">feature_view</span> <span class="o">=</span> <span class="n">feature_view</span><span class="p">):</span>
+    <span class="n">batch_data</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_batch_data</span><span class="p">()</span>
+    <span class="n">batch_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;customerid&#39;</span><span class="p">,</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">df_all</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">df_all</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;churn&#39;</span><span class="p">,</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">batch_data</span><span class="p">,</span><span class="n">df_all</span>
 </pre></div>
-<div id="cell-9" class="clipboard-copy-txt">mr = project.get_model_registry()
-ms = project.get_model_serving()
-model = mr.get_model("churnmodel", version = 1)
-deployment = ms.get_deployment("churnmodel")</div>
+<div id="cell-9" class="clipboard-copy-txt">@st.cache(allow_output_mutation=True, suppress_st_warning=True)
+def retrive_data(feature_view = feature_view):
+    batch_data = feature_view.get_batch_data()
+    batch_data.drop('customerid',axis = 1, inplace = True)
+    df_all = feature_view.query.read()
+    df_all.drop('churn',axis = 1, inplace = True)
+    return batch_data,df_all</div>
     
         </div>
     </div>
@@ -6282,13 +6287,9 @@ deployment = ms.get_deployment("churnmodel")</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">deployment</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;Done ✅&#39;</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;-------</span><span class="se">\n</span><span class="s1">🚀 Model Start...&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">batch_data</span><span class="p">,</span> <span class="n">df_all</span> <span class="o">=</span> <span class="n">retrive_data</span><span class="p">()</span>
 </pre></div>
-<div id="cell-10" class="clipboard-copy-txt">st.write(deployment)
-st.text('Done ✅')
-st.text('-------\n🚀 Model Start...')</div>
+<div id="cell-10" class="clipboard-copy-txt">batch_data, df_all = retrive_data()</div>
     
         </div>
     </div>
@@ -6318,9 +6319,13 @@ st.text('-------\n🚀 Model Start...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">deployment</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">df_all</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Shape: </span><span class="si">{</span><span class="n">df_all</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">header</span><span class="p">(</span><span class="s1">&#39;🔮 Model Retrieving...&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-11" class="clipboard-copy-txt">deployment.start()</div>
+<div id="cell-11" class="clipboard-copy-txt">st.dataframe(df_all.head())
+st.text(f'Shape: {df_all.shape}')
+header('🔮 Model Retrieving...')</div>
     
         </div>
     </div>
@@ -6350,11 +6355,19 @@ st.text('-------\n🚀 Model Start...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;Done ✅&#39;</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;-------</span><span class="se">\n</span><span class="s1">📝 Input Example...&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="nd">@st</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">allow_output_mutation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">suppress_st_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="n">project</span> <span class="o">=</span> <span class="n">project</span><span class="p">):</span>
+    <span class="n">mr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_model_registry</span><span class="p">()</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">mr</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s2">&quot;churnmodel&quot;</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">model_dir</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_dir</span> <span class="o">+</span> <span class="s2">&quot;/churnmodel.pkl&quot;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-12" class="clipboard-copy-txt">st.text('Done ✅')
-st.text('-------\n📝 Input Example...')</div>
+<div id="cell-12" class="clipboard-copy-txt">@st.cache(allow_output_mutation=True,suppress_st_warning=True)
+def get_model(project = project):
+    mr = project.get_model_registry()
+    model = mr.get_model("churnmodel", version = 1)
+    model_dir = model.download()
+    return joblib.load(model_dir + "/churnmodel.pkl")</div>
     
         </div>
     </div>
@@ -6384,15 +6397,9 @@ st.text('-------\n📝 Input Example...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">transform_preds</span><span class="p">(</span><span class="n">predictions</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Churn&#39;</span> <span class="k">if</span> <span class="n">pred</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;Not Churn&#39;</span> <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">]</span>
-    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Churn&#39;</span> <span class="k">if</span> <span class="n">pred</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;Not Churn&#39;</span> <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">[</span><span class="s1">&#39;predictions&#39;</span><span class="p">]]</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">()</span>
 </pre></div>
-<div id="cell-13" class="clipboard-copy-txt">def transform_preds(predictions):
-    if type(predictions) == list:
-        return ['Churn' if pred == 1 else 'Not Churn' for pred in predictions]
-    return ['Churn' if pred == 1 else 'Not Churn' for pred in predictions['predictions']]</div>
+<div id="cell-13" class="clipboard-copy-txt">model = get_model()</div>
     
         </div>
     </div>
@@ -6422,9 +6429,9 @@ st.text('-------\n📝 Input Example...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">input_example</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
-<div id="cell-14" class="clipboard-copy-txt">st.write(model.input_example)</div>
+<div id="cell-14" class="clipboard-copy-txt">st.write(model)</div>
     
         </div>
     </div>
@@ -6454,13 +6461,11 @@ st.text('-------\n📝 Input Example...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">input_example</span>
-<span class="p">}</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">transform_preds</span><span class="p">(</span><span class="n">predictions</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Churn&#39;</span> <span class="k">if</span> <span class="n">pred</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;Not Churn&#39;</span> <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">]</span>
 </pre></div>
-<div id="cell-15" class="clipboard-copy-txt">data = {
-    "inputs": model.input_example
-}</div>
+<div id="cell-15" class="clipboard-copy-txt">def transform_preds(predictions):
+    return ['Churn' if pred == 1 else 'Not Churn' for pred in predictions]</div>
     
         </div>
     </div>
@@ -6490,9 +6495,9 @@ st.text('-------\n📝 Input Example...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">deployment</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;📝 Batch Data Prediction...&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-16" class="clipboard-copy-txt">result = deployment.predict(data)</div>
+<div id="cell-16" class="clipboard-copy-txt">header('📝 Batch Data Prediction...')</div>
     
         </div>
     </div>
@@ -6522,11 +6527,9 @@ st.text('-------\n📝 Input Example...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;👩🏻‍⚖️ Prediction: </span><span class="si">{</span><span class="n">transform_preds</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;-------</span><span class="se">\n</span><span class="s1">📝 Batch Data Prediction...&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">batch_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
-<div id="cell-17" class="clipboard-copy-txt">st.text(f'👩🏻‍⚖️ Prediction: {transform_preds(result)}')
-st.text('-------\n📝 Batch Data Prediction...')</div>
+<div id="cell-17" class="clipboard-copy-txt">st.dataframe(batch_data.head())</div>
     
         </div>
     </div>
@@ -6556,9 +6559,11 @@ st.text('-------\n📝 Batch Data Prediction...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">batch_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">batch_data</span><span class="p">)</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">transform_preds</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
 </pre></div>
-<div id="cell-18" class="clipboard-copy-txt">st.dataframe(batch_data.head())</div>
+<div id="cell-18" class="clipboard-copy-txt">predictions = model.predict(batch_data)
+predictions = transform_preds(predictions)</div>
     
         </div>
     </div>
@@ -6588,17 +6593,9 @@ st.text('-------\n📝 Batch Data Prediction...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">get_predictions</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">deployment</span> <span class="o">=</span> <span class="n">deployment</span><span class="p">):</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;inputs&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">deployment</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Churn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predictions</span>
 </pre></div>
-<div id="cell-19" class="clipboard-copy-txt">def get_predictions(row, deployment = deployment):
-    data = {
-        'inputs': row.tolist()
-    }
-    return deployment.predict(data)</div>
+<div id="cell-19" class="clipboard-copy-txt">df_all['Churn'] = predictions</div>
     
         </div>
     </div>
@@ -6628,11 +6625,9 @@ st.text('-------\n📝 Batch Data Prediction...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="p">[</span><span class="n">pred</span><span class="p">[</span><span class="s1">&#39;predictions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">batch_data</span><span class="p">[:</span><span class="mi">500</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_predictions</span><span class="p">,</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)]</span>
-<span class="n">predictions</span> <span class="o">=</span> <span class="n">transform_preds</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">result_table</span> <span class="o">=</span> <span class="n">df_all</span><span class="p">[[</span><span class="s1">&#39;customerid&#39;</span><span class="p">,</span><span class="s1">&#39;Churn&#39;</span><span class="p">]]</span>
 </pre></div>
-<div id="cell-20" class="clipboard-copy-txt">predictions = [pred['predictions'][0] for pred in batch_data[:500].apply(get_predictions,axis = 1)]
-predictions = transform_preds(predictions)</div>
+<div id="cell-20" class="clipboard-copy-txt">result_table = df_all[['customerid','Churn']]</div>
     
         </div>
     </div>
@@ -6662,9 +6657,11 @@ predictions = transform_preds(predictions)</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">df_all</span><span class="p">[</span><span class="s1">&#39;Churn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predictions</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;👩🏻‍⚖️ Predictions for 5 rows:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">predictions</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">header</span><span class="p">(</span><span class="s1">&#39;💳 Prediction by Customer Id...&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-21" class="clipboard-copy-txt">df_all['Churn'] = predictions</div>
+<div id="cell-21" class="clipboard-copy-txt">st.text(f'👩🏻‍⚖️ Predictions for 5 rows:\n {predictions[:5]}')
+header('💳 Prediction by Customer Id...')</div>
     
         </div>
     </div>
@@ -6694,11 +6691,19 @@ predictions = transform_preds(predictions)</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;👩🏻‍⚖️ Predictions for 5 rows:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">predictions</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;-------</span><span class="se">\n</span><span class="s1">👨🏻‍🎨 Prediction Visualizing...&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">form</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;Selecting Customer ID&quot;</span><span class="p">):</span>
+    <span class="n">option</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+             <span class="s1">&#39;Select a Custimer ID to return a predict.&#39;</span><span class="p">,</span>
+             <span class="p">(</span><span class="n">result_table</span><span class="o">.</span><span class="n">customerid</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="mi">15</span><span class="p">])</span>
+          <span class="p">)</span>
+    <span class="n">submit_button</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Submit&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-22" class="clipboard-copy-txt">st.text(f'👩🏻‍⚖️ Predictions for 5 rows:\n {predictions[:5]}')
-st.text('-------\n👨🏻‍🎨 Prediction Visualizing...')</div>
+<div id="cell-22" class="clipboard-copy-txt">with st.form(key="Selecting Customer ID"):
+    option = st.selectbox(
+             'Select a Custimer ID to return a predict.',
+             (result_table.customerid.values[:15])
+          )
+    submit_button = st.form_submit_button(label='Submit')</div>
     
         </div>
     </div>
@@ -6728,11 +6733,17 @@ st.text('-------\n👨🏻‍🎨 Prediction Visualizing...')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">model_lr</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;churn/churnmodel.pkl&#39;</span><span class="p">)</span>
-<span class="n">importance</span> <span class="o">=</span> <span class="n">model_lr</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">if</span> <span class="n">submit_button</span><span class="p">:</span>   
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result_table</span><span class="p">[</span><span class="n">result_table</span><span class="o">.</span><span class="n">customerid</span> <span class="o">==</span> <span class="n">option</span><span class="p">][</span><span class="s1">&#39;Churn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;👮🏻‍♂️ Customer ID: </span><span class="si">{</span><span class="n">option</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;👩🏻‍⚖️ Prediction: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-23" class="clipboard-copy-txt">model_lr = joblib.load('churn/churnmodel.pkl')
-importance = model_lr.coef_[0]</div>
+<div id="cell-23" class="clipboard-copy-txt">if submit_button:   
+    result = result_table[result_table.customerid == option]['Churn'].values
+
+    st.text(f'👮🏻‍♂️ Customer ID: {option}')
+    st.text(f'👩🏻‍⚖️ Prediction: {result}')</div>
     
         </div>
     </div>
@@ -6762,9 +6773,9 @@ importance = model_lr.coef_[0]</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_names</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">columns</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;👨🏻‍🎨 Prediction Visualizing...&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-24" class="clipboard-copy-txt">feature_names = batch_data.columns</div>
+<div id="cell-24" class="clipboard-copy-txt">header('👨🏻‍🎨 Prediction Visualizing...')</div>
     
         </div>
     </div>
@@ -6794,13 +6805,9 @@ importance = model_lr.coef_[0]</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_importance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;feature&quot;</span><span class="p">])</span>
-<span class="n">feature_importance</span><span class="p">[</span><span class="s2">&quot;importance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">e</span><span class="p">,</span> <span class="n">model_lr</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">feature_importance</span> <span class="o">=</span> <span class="n">feature_importance</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;importance&quot;</span><span class="p">],</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_names</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">columns</span>
 </pre></div>
-<div id="cell-25" class="clipboard-copy-txt">feature_importance = pd.DataFrame(feature_names, columns = ["feature"])
-feature_importance["importance"] = pow(math.e, model_lr.coef_[0])
-feature_importance = feature_importance.sort_values(by = ["importance"], ascending = False)</div>
+<div id="cell-25" class="clipboard-copy-txt">feature_names = batch_data.columns</div>
     
         </div>
     </div>
@@ -6830,19 +6837,13 @@ feature_importance = feature_importance.sort_values(by = ["importance"], ascendi
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_importance</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
-    <span class="n">feature_importance</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;feature&#39;</span><span class="p">,</span>
-    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;importance&#39;</span><span class="p">,</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Feature Importance Plot&#39;</span>
-     <span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_importance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;feature&quot;</span><span class="p">])</span>
+<span class="n">feature_importance</span><span class="p">[</span><span class="s2">&quot;importance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">e</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">feature_importance</span> <span class="o">=</span> <span class="n">feature_importance</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;importance&quot;</span><span class="p">],</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
-<div id="cell-26" class="clipboard-copy-txt">fig_importance = px.bar(
-    feature_importance,
-    x='feature',
-    y='importance',
-    title = 'Feature Importance Plot'
-     )</div>
+<div id="cell-26" class="clipboard-copy-txt">feature_importance = pd.DataFrame(feature_names, columns = ["feature"])
+feature_importance["importance"] = pow(math.e, model.coef_[0])
+feature_importance = feature_importance.sort_values(by = ["importance"], ascending = False)</div>
     
         </div>
     </div>
@@ -6872,15 +6873,19 @@ feature_importance = feature_importance.sort_values(by = ["importance"], ascendi
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_importance</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">tickangle</span> <span class="o">=</span> <span class="mi">23</span><span class="p">)</span>
-<span class="n">fig_importance</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Feature&quot;</span><span class="p">)</span>
-<span class="n">fig_importance</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Importance&quot;</span><span class="p">)</span>
-<span class="n">fig_importance</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">hovertemplate</span> <span class="o">=</span> <span class="s1">&#39;Feature: %</span><span class="si">{x}</span><span class="s1"> &lt;br&gt;Importance: %</span><span class="si">{y}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_importance</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+    <span class="n">feature_importance</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;feature&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;importance&#39;</span><span class="p">,</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Feature Importance Plot&#39;</span>
+     <span class="p">)</span>
 </pre></div>
-<div id="cell-27" class="clipboard-copy-txt">fig_importance.update_xaxes(tickangle = 23)
-fig_importance.update_xaxes(title = "Feature")
-fig_importance.update_yaxes(title = "Importance")
-fig_importance.update_traces(hovertemplate = 'Feature: %{x} <br>Importance: %{y}') </div>
+<div id="cell-27" class="clipboard-copy-txt">fig_importance = px.bar(
+    feature_importance,
+    x='feature',
+    y='importance',
+    title = 'Feature Importance Plot'
+     )</div>
     
         </div>
     </div>
@@ -6910,9 +6915,15 @@ fig_importance.update_traces(hovertemplate = 'Feature: %{x} <br>Importance: %{y}
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_gender</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_importance</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">tickangle</span> <span class="o">=</span> <span class="mi">23</span><span class="p">)</span>
+<span class="n">fig_importance</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Feature&quot;</span><span class="p">)</span>
+<span class="n">fig_importance</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Importance&quot;</span><span class="p">)</span>
+<span class="n">fig_importance</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">hovertemplate</span> <span class="o">=</span> <span class="s1">&#39;Feature: %</span><span class="si">{x}</span><span class="s1"> &lt;br&gt;Importance: %</span><span class="si">{y}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-28" class="clipboard-copy-txt">fig_gender = go.Figure()</div>
+<div id="cell-28" class="clipboard-copy-txt">fig_importance.update_xaxes(tickangle = 23)
+fig_importance.update_xaxes(title = "Feature")
+fig_importance.update_yaxes(title = "Importance")
+fig_importance.update_traces(hovertemplate = 'Feature: %{x} <br>Importance: %{y}') </div>
     
         </div>
     </div>
@@ -6942,19 +6953,9 @@ fig_importance.update_traces(hovertemplate = 'Feature: %{x} <br>Importance: %{y}
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_gender</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
-    <span class="n">df_all</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;gender&quot;</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Churn&quot;</span><span class="p">,</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Churn rate according to Gender&#39;</span>
-<span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_importance</span><span class="p">)</span>
 </pre></div>
-<div id="cell-29" class="clipboard-copy-txt">fig_gender = px.histogram(
-    df_all,
-    x="gender",
-    color="Churn",
-    title = 'Churn rate according to Gender'
-)</div>
+<div id="cell-29" class="clipboard-copy-txt">st.plotly_chart(fig_importance)</div>
     
         </div>
     </div>
@@ -6984,13 +6985,39 @@ fig_importance.update_traces(hovertemplate = 'Feature: %{x} <br>Importance: %{y}
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_gender</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Gender&quot;</span><span class="p">)</span>
-<span class="n">fig_gender</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Count&quot;</span><span class="p">)</span>
-<span class="n">fig_gender</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">hovertemplate</span> <span class="o">=</span> <span class="s1">&#39;Gender: %</span><span class="si">{x}</span><span class="s1"> &lt;br&gt;Amount: %</span><span class="si">{y}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">plot_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x_col</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">):</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x_col</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Churn&quot;</span><span class="p">,</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="n">ylabel</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">hovertemplate</span> <span class="o">=</span> <span class="n">xlabel</span> <span class="o">+</span> <span class="s1">&#39;: %</span><span class="si">{x}</span><span class="s1"> &lt;br&gt;&#39;</span> <span class="o">+</span> <span class="n">ylabel</span> <span class="o">+</span> <span class="s1">&#39;: %</span><span class="si">{y}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fig</span>
 </pre></div>
-<div id="cell-30" class="clipboard-copy-txt">fig_gender.update_xaxes(title = "Gender")
-fig_gender.update_yaxes(title = "Count")
-fig_gender.update_traces(hovertemplate = 'Gender: %{x} <br>Amount: %{y}') </div>
+<div id="cell-30" class="clipboard-copy-txt">def plot_histogram(data, x_col, title, xlabel, ylabel):
+
+    fig = go.Figure()
+
+    fig = px.histogram(
+        data,
+        x = x_col,
+        color="Churn",
+        title = title
+    )
+
+    fig.update_xaxes(title = xlabel)
+    fig.update_yaxes(title = ylabel)
+    fig.update_traces(hovertemplate = xlabel + ': %{x} <br>' + ylabel + ': %{y}')
+
+    return fig</div>
     
         </div>
     </div>
@@ -7020,9 +7047,21 @@ fig_gender.update_traces(hovertemplate = 'Gender: %{x} <br>Amount: %{y}') </div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_totalcharges</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="s1">&#39;internetservice&#39;</span><span class="p">,</span><span class="s1">&#39;Churn rate according to internet service subscribtion&#39;</span><span class="p">,</span><span class="s1">&#39;Internet service&#39;</span><span class="p">,</span> <span class="s1">&#39;Number of customers&#39;</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="s1">&#39;streamingmovies&#39;</span><span class="p">,</span><span class="s1">&#39;Churn rate according to streaming movies subscribtion&#39;</span><span class="p">,</span><span class="s1">&#39;Streaming movies&#39;</span><span class="p">,</span> <span class="s1">&#39;Number of customers&#39;</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="s1">&#39;streamingtv&#39;</span><span class="p">,</span><span class="s1">&#39;Churn rate according to internet streaming tv subscribtion&#39;</span><span class="p">,</span><span class="s1">&#39;Gender&#39;</span><span class="p">,</span> <span class="s1">&#39;Number of customers&#39;</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span><span class="s1">&#39;Churn rate according to Gender&#39;</span><span class="p">,</span><span class="s1">&#39;Gender&#39;</span><span class="p">,</span> <span class="s1">&#39;Number of customers&#39;</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span><span class="s1">&#39;totalcharges&#39;</span><span class="p">,</span><span class="s1">&#39;Distribution of Total Charges according to Churn/Not&#39;</span><span class="p">,</span><span class="s2">&quot;Charge Value&quot;</span><span class="p">,</span><span class="s1">&#39;Number of customers&#39;</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span><span class="s1">&#39;paymentmethod&#39;</span><span class="p">,</span><span class="s1">&#39;Amount of each Payment Method&#39;</span><span class="p">,</span><span class="s2">&quot;Payment Method&quot;</span><span class="p">,</span><span class="s1">&#39;Total Amount&#39;</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span><span class="s1">&#39;partner&#39;</span><span class="p">,</span><span class="s1">&#39;Affect of having a partner on Churn/Not&#39;</span><span class="p">,</span><span class="s2">&quot;Have a partner&quot;</span><span class="p">,</span><span class="s1">&#39;Number of customers&#39;</span><span class="p">))</span>
 </pre></div>
-<div id="cell-31" class="clipboard-copy-txt">fig_totalcharges = go.Figure()</div>
+<div id="cell-31" class="clipboard-copy-txt">st.plotly_chart(plot_histogram(df_all, 'internetservice','Churn rate according to internet service subscribtion','Internet service', 'Number of customers'))
+st.plotly_chart(plot_histogram(df_all, 'streamingmovies','Churn rate according to streaming movies subscribtion','Streaming movies', 'Number of customers'))
+st.plotly_chart(plot_histogram(df_all, 'streamingtv','Churn rate according to internet streaming tv subscribtion','Gender', 'Number of customers'))
+st.plotly_chart(plot_histogram(df_all, 'gender','Churn rate according to Gender','Gender', 'Number of customers'))
+st.plotly_chart(plot_histogram(df_all,'totalcharges','Distribution of Total Charges according to Churn/Not',"Charge Value",'Number of customers'))
+st.plotly_chart(plot_histogram(df_all,'paymentmethod','Amount of each Payment Method',"Payment Method",'Total Amount'))
+st.plotly_chart(plot_histogram(df_all,'partner','Affect of having a partner on Churn/Not',"Have a partner",'Number of customers'))</div>
     
         </div>
     </div>
@@ -7052,349 +7091,9 @@ fig_gender.update_traces(hovertemplate = 'Gender: %{x} <br>Amount: %{y}') </div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_totalcharges</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
-    <span class="n">df_all</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;totalcharges&quot;</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Churn&quot;</span><span class="p">,</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Distribution of Total Charges according to Churn/Not&#39;</span>
-<span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s1">&#39;🎉 📈 🤝 App Finished Successfully 🤝 📈 🎉&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-32" class="clipboard-copy-txt">fig_totalcharges = px.histogram(
-    df_all,
-    x="totalcharges",
-    color="Churn",
-    title = 'Distribution of Total Charges according to Churn/Not'
-)</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-33">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_totalcharges</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Charge Value&quot;</span><span class="p">)</span>
-<span class="n">fig_totalcharges</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Count&quot;</span><span class="p">)</span>
-<span class="n">fig_totalcharges</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">hovertemplate</span> <span class="o">=</span> <span class="s1">&#39;Charge: %</span><span class="si">{x}</span><span class="s1"> &lt;br&gt;Count: %</span><span class="si">{y}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-<div id="cell-33" class="clipboard-copy-txt">fig_totalcharges.update_xaxes(title = "Charge Value")
-fig_totalcharges.update_yaxes(title = "Count")
-fig_totalcharges.update_traces(hovertemplate = 'Charge: %{x} <br>Count: %{y}') </div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-34">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_paymentmethod</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
-</pre></div>
-<div id="cell-34" class="clipboard-copy-txt">fig_paymentmethod = go.Figure()</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-35">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_paymentmethod</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
-    <span class="n">df_all</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;paymentmethod&quot;</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Churn&quot;</span><span class="p">,</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Amount of each Payment Method&#39;</span>
-<span class="p">)</span>
-</pre></div>
-<div id="cell-35" class="clipboard-copy-txt">fig_paymentmethod = px.histogram(
-    df_all,
-    x="paymentmethod",
-    color="Churn",
-    title = 'Amount of each Payment Method'
-)</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-36">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_paymentmethod</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Payment Method&quot;</span><span class="p">)</span>
-<span class="n">fig_paymentmethod</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Total Amount&quot;</span><span class="p">)</span>
-<span class="n">fig_paymentmethod</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">hovertemplate</span> <span class="o">=</span> <span class="s1">&#39;Method: %</span><span class="si">{x}</span><span class="s1"> &lt;br&gt;Amount: %</span><span class="si">{y}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-<div id="cell-36" class="clipboard-copy-txt">fig_paymentmethod.update_xaxes(title = "Payment Method")
-fig_paymentmethod.update_yaxes(title = "Total Amount")
-fig_paymentmethod.update_traces(hovertemplate = 'Method: %{x} <br>Amount: %{y}') </div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-37">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_partner</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
-</pre></div>
-<div id="cell-37" class="clipboard-copy-txt">fig_partner = go.Figure()</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-38">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_partner</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
-    <span class="n">df_all</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;partner&quot;</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Churn&quot;</span><span class="p">,</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Affect of having a partner on Churn/Not&#39;</span>
-<span class="p">)</span>
-</pre></div>
-<div id="cell-38" class="clipboard-copy-txt">fig_partner = px.histogram(
-    df_all,
-    x="partner",
-    color="Churn",
-    title = 'Affect of having a partner on Churn/Not'
-)</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-39">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig_partner</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Have a partner&quot;</span><span class="p">)</span>
-<span class="n">fig_partner</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Count&quot;</span><span class="p">)</span>
-<span class="n">fig_partner</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">hovertemplate</span> <span class="o">=</span> <span class="s1">&#39;Partner: %</span><span class="si">{x}</span><span class="s1"> &lt;br&gt;Amount: %</span><span class="si">{y}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-<div id="cell-39" class="clipboard-copy-txt">fig_partner.update_xaxes(title = "Have a partner")
-fig_partner.update_yaxes(title = "Count")
-fig_partner.update_traces(hovertemplate = 'Partner: %{x} <br>Amount: %{y}') </div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-40">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_importance</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_gender</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_totalcharges</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_paymentmethod</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_partner</span><span class="p">)</span>
-<span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;Done ✅&#39;</span><span class="p">)</span>
-</pre></div>
-<div id="cell-40" class="clipboard-copy-txt">st.plotly_chart(fig_importance)
-st.plotly_chart(fig_gender)
-st.plotly_chart(fig_totalcharges)
-st.plotly_chart(fig_paymentmethod)
-st.plotly_chart(fig_partner)
-st.text('Done ✅')</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-41">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s1">&#39;-------</span><span class="se">\n</span><span class="s1">🎉 📈 🤝 App Finished Successfully 🤝 📈 🎉&#39;</span><span class="p">)</span>
-</pre></div>
-<div id="cell-41" class="clipboard-copy-txt">st.text('-------\n🎉 📈 🤝 App Finished Successfully 🤝 📈 🎉')</div>
+<div id="cell-32" class="clipboard-copy-txt">st.success('🎉 📈 🤝 App Finished Successfully 🤝 📈 🎉')    </div>
     
         </div>
     </div>

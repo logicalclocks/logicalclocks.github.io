@@ -5257,6 +5257,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight-ipynb .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight-ipynb .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight-ipynb .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight-ipynb .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight-ipynb .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight-ipynb .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight-ipynb .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -6113,7 +6114,7 @@ Licensed under the Apache License, Version 2.0.
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="part-01-load-engineer-connect">Part 01: Load, Engineer &amp; Connect<a class="anchor-link" href="#part-01-load-engineer-connect">&#182;</a></h1><p><a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/1_feature_groups.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
 <p><strong>Note</strong>: you may get an error when installing hopsworks on Colab, and it is safe to ignore it.</p>
-<p>This is the first part of the quick start series of tutorials about Hopsworks Feature Store. As part of this first module, we will work with data related to credit card transactions. 
+<p>This is the first part of the quick start series of tutorials about Hopsworks Feature Store. As part of this first module, you will work with data related to credit card transactions. 
 The objective of this tutorial is to demonstrate how to work with the <strong>Hopworks Feature Store</strong>  for batch data with a goal of training and deploying a model that can predict fraudulent transactions.</p>
 <h2 id="this-notebook-is-divided-in-3-sections">&#128466;&#65039; This notebook is divided in 3 sections:<a class="anchor-link" href="#this-notebook-is-divided-in-3-sections">&#182;</a></h2><ol>
 <li>Loading the data and feature engineeing,</li>
@@ -6121,7 +6122,7 @@ The objective of this tutorial is to demonstrate how to work with the <strong>Ho
 <li>Create feature groups and upload them to the feature store.</li>
 </ol>
 <p><img src="../images/01_featuregroups.png" alt="tutorial-flow"></p>
-<p>First of all we will load the data and do some feature engineering on it.</p>
+<p>First of all you will load the data and do some feature engineering on it.</p>
 
 </div>
 </div>
@@ -6165,14 +6166,14 @@ The objective of this tutorial is to demonstrate how to work with the <strong>Ho
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="loading-the-data"><span style="color:#ff5f27;"> &#128189; Loading the Data </span><a class="anchor-link" href="#loading-the-data">&#182;</a></h2><p>The data we will use comes from three different CSV files:</p>
+<h2 id="loading-the-data"><span style="color:#ff5f27;"> &#128189; Loading the Data </span><a class="anchor-link" href="#loading-the-data">&#182;</a></h2><p>The data you will use comes from three different CSV files:</p>
 <ul>
 <li><code>credit_cards.csv</code>: credit card information such as expiration date and provider.</li>
 <li><code>transactions.csv</code>: transaction information such as timestamp, location, and the amount. Importantly, the binary <code>fraud_label</code> variable tells us whether a transaction was fraudulent or not.</li>
 <li><code>profiles.csv</code>: credit card user information such as birthdate and city of residence.</li>
 </ul>
-<p>We can conceptualize these CSV files as originating from separate data sources.
-<strong>All three files have a credit card number column <code>cc_num</code> in common, which we can use for joins.</strong></p>
+<p>You can conceptualize these CSV files as originating from separate data sources.
+<strong>All three files have a credit card number column <code>cc_num</code> in common, which you can use for joins.</strong></p>
 <p>Let's go ahead and load the data.</p>
 
 </div>
@@ -6289,7 +6290,7 @@ trans_df.head(3)</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="feature-engineering"><span style="color:#ff5f27;"> &#128736;&#65039; Feature Engineering </span><a class="anchor-link" href="#feature-engineering">&#182;</a></h2><p>Fraudulent transactions can differ from regular ones in many different ways. Typical red flags would for instance be a large transaction volume/frequency in the span of a few hours. It could also be the case that elderly people in particular are targeted by fraudsters. To facilitate model learning we will create additional features based on these patterns. In particular, we will create two types of features:</p>
+<h2 id="feature-engineering"><span style="color:#ff5f27;"> &#128736;&#65039; Feature Engineering </span><a class="anchor-link" href="#feature-engineering">&#182;</a></h2><p>Fraudulent transactions can differ from regular ones in many different ways. Typical red flags would for instance be a large transaction volume/frequency in the span of a few hours. It could also be the case that elderly people in particular are targeted by fraudsters. To facilitate model learning you will create additional features based on these patterns. In particular, you will create two types of features:</p>
 <ol>
 <li><strong>Features that aggregate data from different data sources</strong>. This could for instance be the age of a customer at the time of a transaction, which combines the <code>birthdate</code> feature from <code>profiles.csv</code> with the <code>datetime</code> feature from <code>transactions.csv</code>.</li>
 <li><strong>Features that aggregate data from multiple time steps</strong>. An example of this could be the transaction frequency of a credit card in the span of a few hours, which is computed using a window function.</li>
@@ -6360,9 +6361,9 @@ trans_df[["age_at_transaction", "days_until_card_expires"]].head()</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Next, we create features that for each credit card aggregate data from multiple time steps.</p>
-<p>We start by computing the distance between consecutive transactions, which we will call <code>loc_delta</code>.
-Here we use the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.haversine_distances.html?highlight=haversine#sklearn.metrics.pairwise.haversine_distances">Haversine distance</a> to quantify the distance between two longitude and latitude coordinates.</p>
+<p>Next, you will create features that for each credit card aggregate data from multiple time steps.</p>
+<p>Yoy will start by computing the distance between consecutive transactions, lets call it <code>loc_delta</code>.
+Here you will use the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.haversine_distances.html?highlight=haversine#sklearn.metrics.pairwise.haversine_distances">Haversine distance</a> to quantify the distance between two longitude and latitude coordinates.</p>
 
 </div>
 </div>
@@ -6454,7 +6455,7 @@ trans_df["loc_delta"] = trans_df.groupby("cc_num")\
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Next we compute windowed aggregates. Here we will use 4-hour windows, but feel free to experiment with different window lengths by setting <code>window_len</code> below to a value of your choice.</p>
+<p>Next lets compute windowed aggregates. Here you will use 4-hour windows, but feel free to experiment with different window lengths by setting <code>window_len</code> below to a value of your choice.</p>
 
 </div>
 </div>
@@ -6617,9 +6618,9 @@ window_aggs_df.datetime = window_aggs_df.datetime.values.astype(np.int64) // 10 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="creating-feature-groups"><span style="color:#ff5f27;"> &#129668; Creating Feature Groups </span><a class="anchor-link" href="#creating-feature-groups">&#182;</a></h2><p>A <a href="https://docs.hopsworks.ai/feature-store-api/latest/generated/feature_group/">feature group</a> can be seen as a collection of conceptually related features. In our case, we will create a feature group for the transaction data and a feature group for the windowed aggregations on the transaction data. Both will have <code>cc_num</code> as primary key, which will allow us to join them when creating a dataset in the next tutorial.</p>
-<p>Feature groups can also be used to define a namespace for features. For instance, in a real-life setting we would likely want to experiment with different window lengths. In that case, we can create feature groups with identical schema for each window length.</p>
-<p>Before we can create a feature group we need to connect to our feature store.</p>
+<h2 id="creating-feature-groups"><span style="color:#ff5f27;"> &#129668; Creating Feature Groups </span><a class="anchor-link" href="#creating-feature-groups">&#182;</a></h2><p>A <a href="https://docs.hopsworks.ai/feature-store-api/latest/generated/feature_group/">feature group</a> can be seen as a collection of conceptually related features. In this case, you will create a feature group for the transaction data and a feature group for the windowed aggregations on the transaction data. Both will have <code>cc_num</code> as primary key, which will allow you to join them when creating a dataset in the next tutorial.</p>
+<p>Feature groups can also be used to define a namespace for features. For instance, in a real-life setting you would likely want to experiment with different window lengths. In that case, you can create feature groups with identical schema for each window length.</p>
+<p>Before you can create a feature group you need to connect to Hopsworks feature store.</p>
 
 </div>
 </div>
@@ -6671,7 +6672,7 @@ fs = project.get_feature_store()</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>To create a feature group we need to give it a name and specify a primary key. It is also good to provide a description of the contents of the feature group and a version number, if it is not defined it will automatically be incremented to <code>1</code>.</p>
+<p>To create a feature group you need to give it a name and specify a primary key. It is also good to provide a description of the contents of the feature group and a version number, if it is not defined it will automatically be incremented to <code>1</code>.</p>
 
 </div>
 </div>
@@ -6701,16 +6702,16 @@ fs = project.get_feature_store()</div>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;transactions_fraud_batch_fg&quot;</span><span class="p">,</span>
     <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Transaction data&quot;</span><span class="p">,</span>
-    <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cc_num&#39;</span><span class="p">],</span>
-    <span class="n">event_time</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span>
+    <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cc_num&quot;</span><span class="p">],</span>
+    <span class="n">event_time</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span>
 <span class="p">)</span>
 </pre></div>
 <div id="cell-10" class="clipboard-copy-txt">trans_fg = fs.get_or_create_feature_group(
     name="transactions_fraud_batch_fg",
     version=1,
     description="Transaction data",
-    primary_key=['cc_num'],
-    event_time=['datetime']
+    primary_key=["cc_num"],
+    event_time="datetime"
 )</div>
     
         </div>
@@ -6728,7 +6729,7 @@ fs = project.get_feature_store()</div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>A full list of arguments can be found in the <a href="https://docs.hopsworks.ai/feature-store-api/latest/generated/api/feature_store_api/#create_feature_group">documentation</a>.</p>
-<p>At this point, we have only specified some metadata for the feature group. It does not store any data or even have a schema defined for the data. To make the feature group persistent we populate it with its associated data using the <code>insert</code> function.</p>
+<p>At this point, you have only specified some metadata for the feature group. It does not store any data or even have a schema defined for the data. To make the feature group persistent you need to populate it with its associated data using the <code>insert</code> function.</p>
 
 </div>
 </div>
@@ -6838,7 +6839,7 @@ for desc in feature_descriptions:
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>At the creation of the feature group, you will prompted with an URL that will directly link to it; there you will be able to explore some of the aspects of your newly created feature group.</p>
+<p>At the creation of the feature group, you will be prompted with an URL that will directly link to it; there you will be able to explore some of the aspects of your newly created feature group.</p>
 
 </div>
 </div>
@@ -6850,7 +6851,7 @@ for desc in feature_descriptions:
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We can move on and do the same thing for the feature group with our windows aggregation.</p>
+<p>You can move on and do the same thing for the feature group with our windows aggregation.</p>
 
 </div>
 </div>
@@ -6880,16 +6881,16 @@ for desc in feature_descriptions:
     <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;transactions_</span><span class="si">{</span><span class="n">window_len</span><span class="si">}</span><span class="s2">_aggs_fraud_batch_fg&quot;</span><span class="p">,</span>
     <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Aggregate transaction data over </span><span class="si">{</span><span class="n">window_len</span><span class="si">}</span><span class="s2"> windows.&quot;</span><span class="p">,</span>
-    <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cc_num&#39;</span><span class="p">],</span>
-    <span class="n">event_time</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span>
+    <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cc_num&quot;</span><span class="p">],</span>
+    <span class="n">event_time</span><span class="o">=</span><span class="s2">&quot;datetime&quot;</span>
 <span class="p">)</span>
 </pre></div>
 <div id="cell-13" class="clipboard-copy-txt">window_aggs_fg = fs.get_or_create_feature_group(
     name=f"transactions_{window_len}_aggs_fraud_batch_fg",
     version=1,
     description=f"Aggregate transaction data over {window_len} windows.",
-    primary_key=['cc_num'],
-    event_time=['datetime']
+    primary_key=["cc_num"],
+    event_time="datetime"
 )</div>
     
         </div>
@@ -7003,10 +7004,42 @@ for desc in feature_descriptions:
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="next-part-02"><span style="color:#ff5f27;">&#9197;&#65039; **Next:** Part 02 </span><a class="anchor-link" href="#next-part-02">&#182;</a></h2><p>In the following notebook we will use our feature groups to create a dataset we can train a model on.</p>
+<h2 id="next-part-02"><span style="color:#ff5f27;">&#9197;&#65039; **Next:** Part 02 </span><a class="anchor-link" href="#next-part-02">&#182;</a></h2><p>In the following notebook you will use your feature groups to create a dataset you can train a model on.</p>
 
 </div>
 </div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+        <div class="zeroclipboard-container">
+            <clipboard-copy for="cell-16">
+            <div>
+                <span class="notice" hidden>Copied!</span>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                </svg>
+                </div>
+            </clipboard-copy>
+        </div>
+            <div class="highlight-ipynb hl-python"><pre><span></span>
+</pre></div>
+<div id="cell-16" class="clipboard-copy-txt"></div>
+    
+        </div>
+    </div>
+
+</div>
+</div>
+
 </div>
 </div>
 </div>

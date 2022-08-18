@@ -5285,6 +5285,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight-ipynb .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight-ipynb .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight-ipynb .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight-ipynb .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight-ipynb .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight-ipynb .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight-ipynb .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -6214,7 +6215,7 @@ import pandas as pd</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>First of all we will load the data and do some feature engineering on it.</p>
+<p>First of all you will load the data and do some feature engineering on it.</p>
 
 </div>
 </div>
@@ -6226,7 +6227,7 @@ import pandas as pd</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="loading-the-data"><span style="color:#ff5f27;"> &#128189; Loading the Data </span><a class="anchor-link" href="#loading-the-data">&#182;</a></h2><p>The data we will use comes from 2 different CSV files:</p>
+<h2 id="loading-the-data"><span style="color:#ff5f27;"> &#128189; Loading the Data </span><a class="anchor-link" href="#loading-the-data">&#182;</a></h2><p>The data you will use comes from 2 different CSV files:</p>
 <ul>
 <li><code>transactions.csv</code>: events containing information about when a credit card was used, such as a timestamp, location, and the amount spent. A boolean fraud_label variable (True/False) tells us whether a transaction was fraudulent or not.</li>
 <li><code>profiles.csv</code>: credit card user information such as birthdate and city of residence.</li>
@@ -6384,7 +6385,7 @@ profiles_df = profiles_df[profiles_df.cc_num.isin(trans_df.cc_num.unique())].res
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="feature-engineering"><span style="color:#ff5f27;"> &#128736;&#65039; Feature Engineering </span><a class="anchor-link" href="#feature-engineering">&#182;</a></h2><p>Fraudulent transactions can differ from regular ones in many different ways. Typical red flags would for instance be a large transaction volume/frequency in the span of a few hours. It could also be the case that elderly people in particular are targeted by fraudsters. To facilitate model learning we will create additional features based on these patterns. In particular, we will create two types of features:</p>
+<h2 id="feature-engineering"><span style="color:#ff5f27;"> &#128736;&#65039; Feature Engineering </span><a class="anchor-link" href="#feature-engineering">&#182;</a></h2><p>Fraudulent transactions can differ from regular ones in many different ways. Typical red flags would for instance be a large transaction volume/frequency in the span of a few hours. It could also be the case that elderly people in particular are targeted by fraudsters. To facilitate model learning you will create additional features based on these patterns. In particular, you will create two types of features:</p>
 <ol>
 <li><strong>Features that aggregate data from different data sources</strong>. This could for instance be the age of a customer at the time of a transaction, which combines the <code>birthdate</code> feature from <code>profiles.csv</code> with the <code>datetime</code> feature from <code>transactions.csv</code>.</li>
 <li><strong>Features that aggregate data from multiple time steps</strong>. An example of this could be the transaction frequency of a credit card in the span of a few hours, which is computed using a window function.</li>
@@ -6401,8 +6402,8 @@ profiles_df = profiles_df[profiles_df.cc_num.isin(trans_df.cc_num.unique())].res
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Now you are ready to start by computing the distance between consecutive transactions, which we will call <code>loc_delta</code>.
-Here we use the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.haversine_distances.html?highlight=haversine#sklearn.metrics.pairwise.haversine_distances">Haversine distance</a> to quantify the distance between two longitude and latitude coordinates.</p>
+<p>Now you are ready to start by computing the distance between consecutive transactions, lets call it <code>loc_delta</code>.
+Here you will use the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.haversine_distances.html?highlight=haversine#sklearn.metrics.pairwise.haversine_distances">Haversine distance</a> to quantify the distance between two longitude and latitude coordinates.</p>
 
 </div>
 </div>
@@ -6606,8 +6607,8 @@ trans_df.head()</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="creating-feature-groups"><span style="color:#ff5f27;"> &#129668; Creating Feature Groups </span><a class="anchor-link" href="#creating-feature-groups">&#182;</a></h2><p>A <a href="https://docs.hopsworks.ai/feature-store-api/latest/generated/feature_group/">feature group</a> can be seen as a collection of conceptually related features. In our case, we will create a feature group for the transaction data and a feature group for the windowed aggregations on the transaction data. Both will have <code>tid</code> as primary key, which will allow us to join them when creating a dataset in the next tutorial.</p>
-<p>Feature groups can also be used to define a namespace for features. For instance, in a real-life setting we would likely want to experiment with different window lengths. In that case, we can create feature groups with identical schema for each window length.</p>
+<h2 id="creating-feature-groups"><span style="color:#ff5f27;"> &#129668; Creating Feature Groups </span><a class="anchor-link" href="#creating-feature-groups">&#182;</a></h2><p>A <a href="https://docs.hopsworks.ai/feature-store-api/latest/generated/feature_group/">feature group</a> can be seen as a collection of conceptually related features. In your case, you will create a feature group for the transaction data and a feature group for the windowed aggregations on the transaction data. Both will have <code>tid</code> as primary key, which will allow us to join them when creating a dataset in the next tutorial.</p>
+<p>Feature groups can also be used to define a namespace for features. For instance, in a real-life setting you would likely want to experiment with different window lengths. In that case, you can create feature groups with identical schema for each window length.</p>
 <p>Before you can create a feature group you need to connect to our feature store.</p>
 
 </div>
@@ -6660,7 +6661,7 @@ fs = project.get_feature_store()</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>To create a feature group we need to give it a name and specify a primary key. It is also good to provide a description of the contents of the feature group and a version number, if it is not defined it will automatically be incremented to <code>1</code>.</p>
+<p>To create a feature group you need to give it a name and specify a primary key. It is also good to provide a description of the contents of the feature group and a version number, if it is not defined it will automatically be incremented to <code>1</code>.</p>
 
 </div>
 </div>
@@ -6691,7 +6692,7 @@ fs = project.get_feature_store()</div>
     <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Transaction data&quot;</span><span class="p">,</span>
     <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cc_num&#39;</span><span class="p">],</span>
-    <span class="n">event_time</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">],</span>
+    <span class="n">event_time</span><span class="o">=</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span>
     <span class="n">online_enabled</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 </pre></div>
@@ -6700,7 +6701,7 @@ fs = project.get_feature_store()</div>
     version=1,
     description="Transaction data",
     primary_key=['cc_num'],
-    event_time=['datetime'],
+    event_time='datetime',
     online_enabled=True
 )
 </div>
@@ -6944,7 +6945,7 @@ for desc in feature_descriptions:
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="exploration"><span style="color:#ff5f27;"> &#128083;  Exploration</span><a class="anchor-link" href="#exploration">&#182;</a></h2><p>In the Hopsworks feature store, the metadata allows for multiple levels of explorations and review. Here we will show a few of those capacities.</p>
-<h3 id="search">&#128270; <b>Search</b><a class="anchor-link" href="#search">&#182;</a></h3><p>Using the search function in the ui, you can query any aspect of the feature groups, feature_view and training data that was previously created.</p>
+<h3 id="search">&#128270; <b>Search</b><a class="anchor-link" href="#search">&#182;</a></h3><p>Using the search function in the UI, you can query any aspect of the feature groups, feature_view and training data that was previously created.</p>
 <h3 id="statistics">&#128202; <b>Statistics</b><a class="anchor-link" href="#statistics">&#182;</a></h3><p>You can also enable statistics in the feature groups.</p>
 
 </div>
