@@ -34,11 +34,12 @@ We retrieve a storage connector simply by its unique name.
 
 ## Reading a Spark Dataframe from a Storage Connector
 
-One of the most common usage of a storage connector is to read data directly into a spark dataframe.
-Its achieved via the `read` API of the connector object, which hides all the complexity of authentication and integration 
+One of the most common usages of a Storage Connector is to read data directly into a Spark Dataframe.
+It's achieved via the `read` API of the connector object, which hides all the complexity of authentication and integration 
 with a data storage source. 
 The `read` API primarily has two parameters for specifying the data source, `path` and `query`, depending on the storage connector type.
 The exact behaviour could change depending on the storage connector type, but broadly they could be classified as below
+
 ### Data lake/object based connectors
 
 For data sources based on object/file storage such as AWS S3, ADLS, GCS, we set the full object path to the `path` argument
