@@ -80,8 +80,8 @@ passing any SQL query to the `query` argument. This is mostly relevant for Googl
 
 ### Streaming based connector
 
-For reading data streams, the Kafka storage connector supports reading a kafka topic into spark streaming dataframe 
-instead of a static dataframe as in other connector types.
+For reading data streams, the Kafka Storage Connector supports reading a Kafka topic into Spark Structured Streaming Dataframes 
+instead of a static Dataframe as in other connector types.
 
 === "PySpark"
 
