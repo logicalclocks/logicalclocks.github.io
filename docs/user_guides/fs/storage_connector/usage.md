@@ -92,7 +92,7 @@ instead of a static Dataframe as in other connector types.
 ## Creating an External Feature Group
 
 Another important aspect of a storage connector is its ability to facilitate creation of external feature groups with 
-the [Connector API](../../../concepts/fs/feature_group/external_fg.md). [External feature groups](../feature_group/create_external.md)  are basically offline feature groups
+the [Connector API](../../../concepts/fs/feature_group/external_fg.md). [External feature groups](../feature_group/create_external.md) are basically offline feature groups
 and essentially stored as tables on external data sources. 
 `Connector API` relies on storage connectors behind the scene to integrate with external datasource.
 This enables seamless integration with any data source as long as there is a storage connector defined.
