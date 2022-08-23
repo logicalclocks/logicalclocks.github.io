@@ -1,13 +1,13 @@
 # Storage Connector Usage
-Here, we look at how to use a storage connector after its created. 
-Storage connectors provide an important first step of integrating to an external source.
+Here, we look at how to use a Storage Connector after it has been created. 
+Storage Connectors provide an important first step for integrating with external data sources.
 The 3 fundamental functionalities where storage connectors are used are
-    
-1. Reading data into spark dataframe
-2. Creating an external feature group
+
+1. Reading data into Spark Dataframes
+2. Creating external feature groups
 3. Writing training data
 
-We look at each case in below sections. 
+We will walk through each functionality in the sections below.
 
 ## Retrieving a Storage Connector
 We retrieve a storage connector simply by its unique name.
