@@ -67,7 +67,7 @@ passing any SQL query to the `query` argument. This is mostly relevant for Googl
 === "PySpark"
     ```python
     # read results from a SQL 
-    df = connector.read(query='SQL')    
+    df = connector.read(query="SELECT * FROM TABLE")    
     # or directly read a table if set on connector
     df = connector.read()
     ```
