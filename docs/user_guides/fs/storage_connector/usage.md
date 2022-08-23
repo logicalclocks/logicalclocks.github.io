@@ -133,6 +133,7 @@ the data to external sources, as shown below.
 
 Read more about training data creation [here](../feature_view/training-data.md)
 
+## Next Steps
 We have gone through the basic use cases of a storage connector. 
 For more details about the API functionality for any specific connector type, 
 checkout the [API section](https://docs.hopsworks.ai/feature-store-api/3.1.0-SNAPSHOT/generated/api/storage_connector_api/#storage-connector).
