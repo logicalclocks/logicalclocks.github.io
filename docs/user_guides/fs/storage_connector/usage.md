@@ -60,9 +60,9 @@ and users should pass a Spark data format to the `data_format` argument.
 
 ### Data warehouse/SQL based connectors
 
-For data sources based on SQL or data warehouses such as Redshift, Snowflake, BigQuery, JDBC, we set a SQL to the `query` 
-argument. Depending on the connector type, we can set the table path on connector and read the whole table without explicitly 
-passing any SQL to `query` argument, e.g. BigQuery.
+For data sources accessed via SQL such as data warehouses and JDBC compliant databases, e.g. Redshift, Snowflake, BigQuery, JDBC, users pass the SQL query to read the data to the `query` 
+argument. In most cases, this will be some for of a `SELECT` query. Depending on the connector type, users can also just set the table path and read the whole table without explicitly 
+passing any SQL query to the `query` argument. This is mostly relevant for Google BigQuery.
 
 === "PySpark"
     ```python
