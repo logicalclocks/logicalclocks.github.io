@@ -42,19 +42,19 @@ The exact behaviour could change depending on the storage connector type, but br
 
 ### Data lake/object based connectors
 
-For data sources based on object/file storage such as AWS S3, ADLS, GCS, we set the full object path to the `path` argument
-and should pass a spark data format to `data_format` argument.
+For data sources based on object/file storage such as AWS S3, ADLS, GCS, we set the full object path in the `path` argument
+and users should pass a Spark data format to the `data_format` argument.
 
 === "PySpark"
     ```python
     # read data into dataframe using path 
-    df = connector.read(data_format='csv',path='path/to/object')   
+    df = connector.read(data_format='csv', path='path/to/object')   
     ```
 
 === "Scala"
     ```scala 
     // read data into dataframe using path     
-    val df = connector.read("", "csv" , new HashMap(),"gs://bucket/test/")  
+    val df = connector.read("", "csv", new HashMap(), "gs://bucket/test/")  
     ```
     
 
