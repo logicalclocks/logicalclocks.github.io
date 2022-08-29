@@ -14,7 +14,7 @@ Install the required dependencies to build the documentation in the python envir
 
 **Note that {PY_ENV} is the path to your python environment.**
 
-```console
+```bash
 {PY_ENV}/bin/pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
 ```
 
@@ -22,7 +22,7 @@ Install the required dependencies to build the documentation in the python envir
 
 Clone this repository
 
-```console
+```bash
 git clone https://github.com/logicalclocks/logicalclocks.github.io.git
 ```
 
@@ -30,7 +30,7 @@ git clone https://github.com/logicalclocks/logicalclocks.github.io.git
 
 Go inside the cloned repository
 
-```console
+```bash
 cd logicalclocks.github.io
 ```
 
@@ -38,7 +38,7 @@ cd logicalclocks.github.io
 
 Use mkdocs to build the documentation and serve it locally
 
-```console
+```bash
 {PY_ENV}/bin/mkdocs serve
 ```
 
