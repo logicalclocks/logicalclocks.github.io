@@ -1,7 +1,7 @@
 # Storage Connector Usage
 Here, we look at how to use a Storage Connector after it has been created. 
 Storage Connectors provide an important first step for integrating with external data sources.
-The 3 fundamental functionalities where storage connectors are used are
+The 3 fundamental functionalities where storage connectors are used are:
 
 1. Reading data into Spark Dataframes
 2. Creating external feature groups
@@ -59,7 +59,7 @@ and users should pass a Spark data format to the `data_format` argument.
     
 #### Prepare Spark API
 
-Additionally, for reading file based data sources, another way to read the data is using the `prepare_spark` API. This API
+Additionally, for reading file based data sources, another way to read the data is using the `prepare_spark` method. This method
 can be used if you are reading the data directly through Spark. 
 
 Firstly, it handles the setup of all Spark configurations or properties necessary for a particular type of connector and 
@@ -100,7 +100,7 @@ passing any SQL query to the `query` argument. This is mostly relevant for Googl
 === "Scala"
     ```scala 
     // read results from a SQL 
-    val df = connector.read("SELECT * FROM TABLE", "data_format" , new HashMap(),"")    
+    val df = connector.read("SELECT * FROM TABLE", "" , new HashMap(),"")    
     ```
 
 ### Streaming based connector
@@ -156,7 +156,7 @@ the data to external sources, as shown below.
     # materialise a training dataset
     version, job = feature_view.create_training_data(
         description = 'describe training data',
-        data_format = 'spark_data_format',
+        data_format = 'spark_data_format', # e.g. data_format = "parquet" or data_format = "csv"
         write_options = {"wait_for_job": False},
         storage_connector = connector
     ) 
