@@ -43,7 +43,7 @@ The exact behaviour could change depending on the storage connector type, but br
 ### Data lake/object based connectors
 
 For data sources based on object/file storage such as AWS S3, ADLS, GCS, we set the full object path in the `path` argument
-and users should pass a Spark data format to the `data_format` argument.
+and users should pass a Spark data format (parquet, csv, orc, hudi, delta) to the `data_format` argument.
 
 === "PySpark"
     ```python
