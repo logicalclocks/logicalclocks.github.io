@@ -2756,6 +2756,40 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#errors-and-troubleshooting" class="md-nav__link">
+    Errors and Troubleshooting
+  </a>
+  
+    <nav class="md-nav" aria-label="Errors and Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invalid-credentials" class="md-nav__link">
+    Invalid credentials
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeout-errors" class="md-nav__link">
+    Timeout errors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symlink-errors" class="md-nav__link">
+    Symlink errors
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#conclusion" class="md-nav__link">
     Conclusion
   </a>
@@ -5141,6 +5175,40 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#errors-and-troubleshooting" class="md-nav__link">
+    Errors and Troubleshooting
+  </a>
+  
+    <nav class="md-nav" aria-label="Errors and Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invalid-credentials" class="md-nav__link">
+    Invalid credentials
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeout-errors" class="md-nav__link">
+    Timeout errors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symlink-errors" class="md-nav__link">
+    Symlink errors
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#conclusion" class="md-nav__link">
     Conclusion
   </a>
@@ -5197,7 +5265,7 @@ Repositories can be managed from the Git section in the project settings. The Gi
 
 <p>The clone dialog asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: <code>https://github.com/logicalclocks/hops-examples.git</code>.</p>
 <p>Then specify which branch you want to clone. By default the <code>main</code> branch will be used, however a different branch or commit can be specified by selecting <code>Clone from a specific branch</code>.</p>
-<p>You can select the folder, within your project, in which the repository should be cloned. By default, the repository is going to be cloned within the <code>Resources</code> dataset. However, by clicking on the location button, a different location can be selected.</p>
+<p>You can select the folder, within your project, in which the repository should be cloned. By default, the repository is going to be cloned within the <code>Jupyter</code> dataset. However, by clicking on the location button, a different location can be selected.</p>
 <p>Finally, click on the <code>Clone repository</code> button to trigger the cloning of the repository.</p>
 <h3 id="step-3-track-progress-of-the-clone">Step 3: Track progress of the clone<a class="headerlink" href="#step-3-track-progress-of-the-clone" title="Permanent link">#</a></h3>
 <p>The progress of the git clone can be tracked under <code>Git Executions</code>.</p>
@@ -5211,7 +5279,7 @@ Repositories can be managed from the Git section in the project settings. The Gi
 </p>
 
 <h3 id="step-4-browse-repository-files">Step 4: Browse repository files<a class="headerlink" href="#step-4-browse-repository-files" title="Permanent link">#</a></h3>
-<p>In the <code>File browser</code> page you can now browse the files of the cloned repository, found on the path in <code>Resources/hops-examples</code></p>
+<p>In the <code>File browser</code> page you can now browse the files of the cloned repository, found on the path in <code>Jupyter/hops-examples</code></p>
 <p align="center">
   <figure>
     <a  href="../../../../assets/images/guides/git/browse_repo_files.png">
@@ -5234,7 +5302,7 @@ Repositories can be managed from the Git section in the project settings. The Gi
 
 <h2 id="code">Code<a class="headerlink" href="#code" title="Permanent link">#</a></h2>
 <h3 id="step-1-get-the-git-api">Step 1: Get the git API<a class="headerlink" href="#step-1-get-the-git-api" title="Permanent link">#</a></h3>
-<p>This snippet assumes the python script is in the current working directory and named <code>script.py</code>. It will upload the python script to run to the <code>Resources</code> dataset.</p>
+<p>This snippet assumes the python script is in the current working directory and named <code>script.py</code>. It will upload the python script to run to the <code>Jupyter</code> dataset.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">hopsworks</span>
 
 <span class="n">connection</span> <span class="o">=</span> <span class="n">hopsworks</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span>
@@ -5245,13 +5313,26 @@ Repositories can be managed from the Git section in the project settings. The Gi
 </code></pre></div>
 <h3 id="step-2-clone-the-repository">Step 2: Clone the repository<a class="headerlink" href="#step-2-clone-the-repository" title="Permanent link">#</a></h3>
 <div class="highlight"><pre><span></span><code><span class="n">REPO_URL</span><span class="o">=</span><span class="s2">&quot;https://github.com/logicalclocks/hops-examples.git&quot;</span> <span class="c1"># git repository</span>
-<span class="n">HOPSWORKS_FOLDER</span><span class="o">=</span><span class="s2">&quot;Resources&quot;</span> <span class="c1"># path in hopsworks filesystem to clone to</span>
+<span class="n">HOPSWORKS_FOLDER</span><span class="o">=</span><span class="s2">&quot;Jupyter&quot;</span> <span class="c1"># path in hopsworks filesystem to clone to</span>
 <span class="n">PROVIDER</span><span class="o">=</span><span class="s2">&quot;GitHub&quot;</span>
 <span class="n">BRANCH</span><span class="o">=</span><span class="s2">&quot;master&quot;</span> <span class="c1"># optional branch to clone</span>
 
 <span class="n">examples_repo</span> <span class="o">=</span> <span class="n">git_api</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">REPO_URL</span><span class="p">,</span> <span class="n">HOPSWORKS_FOLDER</span><span class="p">,</span> <span class="n">PROVIDER</span><span class="p">,</span> <span class="n">branch</span><span class="o">=</span><span class="n">BRANCH</span><span class="p">)</span>
 </code></pre></div>
 <p>A notebook for managing git can be found <a href="https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb">here</a>.</p>
+<h2 id="errors-and-troubleshooting">Errors and Troubleshooting<a class="headerlink" href="#errors-and-troubleshooting" title="Permanent link">#</a></h2>
+<h3 id="invalid-credentials">Invalid credentials<a class="headerlink" href="#invalid-credentials" title="Permanent link">#</a></h3>
+<p>This might happen when the credentials entered for the provider are incorrect. Try the following:</p>
+<ul>
+<li>Confirm that the settings for the provider ( in Account Settings &gt; Git providers) are correct. You must enter both your Git provider username and token.</li>
+<li>Confirm that you have selected the correct Git provider when cloning the repository.</li>
+<li>Ensure your personal access token or app password has the correct repository access rights.</li>
+<li>Ensure your personal access token or app password has not expired.</li>
+</ul>
+<h3 id="timeout-errors">Timeout errors<a class="headerlink" href="#timeout-errors" title="Permanent link">#</a></h3>
+<p>Cloning a large repo or checking out a large branch may hit timeout errors. You can try again later if the system was under heavy load at the time.</p>
+<h3 id="symlink-errors">Symlink errors<a class="headerlink" href="#symlink-errors" title="Permanent link">#</a></h3>
+<p>Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail. You can create a separate branch to remove the symlinks, and clone from this branch.</p>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">#</a></h2>
 <p>In this guide you learned how to clone a Git repository. You can now start <a href="../../jupyter/python_notebook/">Jupyter</a> from the cloned git repository path to work with the files.</p>
 
