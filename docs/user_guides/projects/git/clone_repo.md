@@ -46,7 +46,7 @@ The clone dialog asks you to specify the URL of the repository to clone. The sup
 
 Then specify which branch you want to clone. By default the `main` branch will be used, however a different branch or commit can be specified by selecting `Clone from a specific branch`.
 
-You can select the folder, within your project, in which the repository should be cloned. By default, the repository is going to be cloned within the `Resources` dataset. However, by clicking on the location button, a different location can be selected.
+You can select the folder, within your project, in which the repository should be cloned. By default, the repository is going to be cloned within the `Jupyter` dataset. However, by clicking on the location button, a different location can be selected.
 
 Finally, click on the `Clone repository` button to trigger the cloning of the repository.
 
@@ -65,7 +65,7 @@ The progress of the git clone can be tracked under `Git Executions`.
 
 ### Step 4: Browse repository files
 
-In the `File browser` page you can now browse the files of the cloned repository, found on the path in `Resources/hops-examples`
+In the `File browser` page you can now browse the files of the cloned repository, found on the path in `Jupyter/hops-examples`
 
 <p align="center">
   <figure>
@@ -93,7 +93,7 @@ The operation to perform on the cloned repository can be found in the dropdown a
 
 ### Step 1: Get the git API
 
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Resources` dataset.
+This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Jupyter` dataset.
 
 ```python
 
@@ -112,7 +112,7 @@ git_api = project.get_git_api()
 ```python
 
 REPO_URL="https://github.com/logicalclocks/hops-examples.git" # git repository
-HOPSWORKS_FOLDER="Resources" # path in hopsworks filesystem to clone to
+HOPSWORKS_FOLDER="Jupyter" # path in hopsworks filesystem to clone to
 PROVIDER="GitHub"
 BRANCH="master" # optional branch to clone
 
@@ -121,6 +121,21 @@ examples_repo = git_api.clone(REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANC
 ```
 
 A notebook for managing git can be found [here](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb).
+
+## Errors and Troubleshooting
+###     Invalid credentials
+This might happen when the credentials entered for the provider are incorrect. Try the following:
+
+- Confirm that the settings for the provider ( in Account Settings > Git providers) are correct. You must enter both your Git provider username and token.
+- Confirm that you have selected the correct Git provider when cloning the repository.
+- Ensure your personal access token or app password has the correct repository access rights.
+- Ensure your personal access token or app password has not expired.
+
+### Timeout errors
+Cloning a large repo or checking out a large branch may hit timeout errors. You can try again later if the system was under heavy load at the time.
+
+### Symlink errors
+Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail. You can create a separate branch to remove the symlinks, and clone from this branch.
 
 ## Conclusion
 
