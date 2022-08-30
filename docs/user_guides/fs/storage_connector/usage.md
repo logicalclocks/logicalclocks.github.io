@@ -62,18 +62,15 @@ and users should pass a Spark data format to the `data_format` argument.
 Additionally, for reading file based data sources, another way to read the data is using the `prepare_spark` API. This API
 can be used if you are reading the data directly through Spark. 
 
-Firstly, it handles the setup of spark configurations or properties necessary for a particular type of connector and 
-prepares the absolute path to read from, along with bucket name and the appropriate file scheme of the data source. A spark session can handle only one configurations setup at one time, so 
-setting the spark configurations in `get_storage_connector` could lead to only initialising the configurations of last connector being retrieved.
-Instead, doing this setup explicitly in another method than during retrieval allows users to potentially
-use multiple connectors in one spark session. The `prepare_spark` handles only one bucket associated with that particular connector.
-However, it is possible to set up multiple connectors of different types if their spark properties do not interfere with each other
-So, for example a S3 connector and a Snowflake connector can be used in same session, as the properties don’t interfere with each other.
+Firstly, it handles the setup of all Spark configurations or properties necessary for a particular type of connector and 
+prepares the absolute path to read from, along with bucket name and the appropriate file scheme of the data source. A Spark session can handle only one configuration setup at a time, so HSFS cannot set the Spark configurations when retrieving the connector since it would lead to only always initialising the last connector being retrieved.
+Instead, user can do this setup explicitly with the `prepare_spark` method and therefore potentially
+use multiple connectors in one Spark session. `prepare_spark` handles only one bucket associated with that particular connector, however, it is possible to set up multiple connectors with different types as long as their Spark properties do not interfere with each other.
+So, for example a S3 connector and a Snowflake connector can be used in the same session, without calling `prepare_spark` multiple times, as the properties don’t interfere with each other.
 
 If the storage connector is used in another API call, `prepare_spark` gets implicitly invoked, for example, 
-when a user materializes a training dataset to it or uses the storage connector to set up an On-Demand/External Feature group. 
-So users do not need to call `prepare_spark` every time they do an operation with a connector, it is only necessary 
-if reading directly from spark and sufficient to do the necessary spark setup for a connector. Using `prepare_spark` is also 
+when a user materialises a training dataset using a storage connector or uses the storage connector to set up an External Feature Group. 
+So users do not need to call `prepare_spark` every time they do an operation with a connector, it is only necessary when reading directly using Spark . Using `prepare_spark` is also 
 not necessary when using the `read` API.
 
 For example, to read directly from a S3 connector, we use the `prepare_spark` as follows
