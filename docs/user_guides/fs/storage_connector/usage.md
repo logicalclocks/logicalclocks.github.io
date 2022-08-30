@@ -165,7 +165,7 @@ the data to external sources, as shown below.
     ) 
     ```
 
-Read more about training data creation [here](../feature_view/training-data.md)
+Read more about training data creation [here](../feature_view/training-data.md).
 
 ## Next Steps
 We have gone through the basic use cases of a storage connector. 
