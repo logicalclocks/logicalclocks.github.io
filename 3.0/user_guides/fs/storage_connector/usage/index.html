@@ -1673,6 +1673,46 @@
     Reading a Spark Dataframe from a Storage Connector
   </a>
   
+    <nav class="md-nav" aria-label="Reading a Spark Dataframe from a Storage Connector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-lakeobject-based-connectors" class="md-nav__link">
+    Data lake/object based connectors
+  </a>
+  
+    <nav class="md-nav" aria-label="Data lake/object based connectors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prepare-spark-api" class="md-nav__link">
+    Prepare Spark API
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-warehousesql-based-connectors" class="md-nav__link">
+    Data warehouse/SQL based connectors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#streaming-based-connector" class="md-nav__link">
+    Streaming based connector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1685,6 +1725,13 @@
         <li class="md-nav__item">
   <a href="#writing-training-data" class="md-nav__link">
     Writing Training Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    Next Steps
   </a>
   
 </li>
@@ -4995,6 +5042,46 @@
     Reading a Spark Dataframe from a Storage Connector
   </a>
   
+    <nav class="md-nav" aria-label="Reading a Spark Dataframe from a Storage Connector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-lakeobject-based-connectors" class="md-nav__link">
+    Data lake/object based connectors
+  </a>
+  
+    <nav class="md-nav" aria-label="Data lake/object based connectors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prepare-spark-api" class="md-nav__link">
+    Prepare Spark API
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-warehousesql-based-connectors" class="md-nav__link">
+    Data warehouse/SQL based connectors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#streaming-based-connector" class="md-nav__link">
+    Streaming based connector
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -5007,6 +5094,13 @@
         <li class="md-nav__item">
   <a href="#writing-training-data" class="md-nav__link">
     Writing Training Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    Next Steps
   </a>
   
 </li>
@@ -5026,10 +5120,170 @@
 
 
 <h1 id="storage-connector-usage">Storage Connector Usage<a class="headerlink" href="#storage-connector-usage" title="Permanent link">#</a></h1>
+<p>Here, we look at how to use a Storage Connector after it has been created. 
+Storage Connectors provide an important first step for integrating with external data sources.
+The 3 fundamental functionalities where storage connectors are used are:</p>
+<ol>
+<li>Reading data into Spark Dataframes</li>
+<li>Creating external feature groups</li>
+<li>Writing training data</li>
+</ol>
+<p>We will walk through each functionality in the sections below.</p>
 <h2 id="retrieving-a-storage-connector">Retrieving a Storage Connector<a class="headerlink" href="#retrieving-a-storage-connector" title="Permanent link">#</a></h2>
+<p>We retrieve a storage connector simply by its unique name.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">PySpark</label><label for="__tabbed_1_2">Scala</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">hsfs</span>
+<span class="c1"># Connect to the Hopsworks feature store</span>
+<span class="n">hsfs_connection</span> <span class="o">=</span> <span class="n">hsfs</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span>
+<span class="c1"># Retrieve the metadata handle</span>
+<span class="n">feature_store</span> <span class="o">=</span> <span class="n">hsfs_connection</span><span class="o">.</span><span class="n">get_feature_store</span><span class="p">()</span>
+<span class="c1"># Retrieve storage connector</span>
+<span class="n">connector</span> <span class="o">=</span> <span class="n">feature_store</span><span class="o">.</span><span class="n">get_storage_connector</span><span class="p">(</span><span class="s1">&#39;connector_name&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nn">com</span><span class="p">.</span><span class="nn">logicalclocks</span><span class="p">.</span><span class="nn">hsfs</span><span class="p">.</span><span class="n">_</span>
+<span class="kd">val</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HopsworksConnection</span><span class="p">.</span><span class="n">builder</span><span class="p">().</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
+<span class="kd">val</span><span class="w"> </span><span class="n">featureStore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="n">getFeatureStore</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// get directly via connector sub-type class e.g. for GCS type</span>
+<span class="kd">val</span><span class="w"> </span><span class="n">connector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">featureStore</span><span class="p">.</span><span class="n">getGcsConnector</span><span class="p">(</span><span class="s">&quot;connector_name&quot;</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="reading-a-spark-dataframe-from-a-storage-connector">Reading a Spark Dataframe from a Storage Connector<a class="headerlink" href="#reading-a-spark-dataframe-from-a-storage-connector" title="Permanent link">#</a></h2>
+<p>One of the most common usages of a Storage Connector is to read data directly into a Spark Dataframe.
+It's achieved via the <code>read</code> API of the connector object, which hides all the complexity of authentication and integration 
+with a data storage source. 
+The <code>read</code> API primarily has two parameters for specifying the data source, <code>path</code> and <code>query</code>, depending on the storage connector type.
+The exact behaviour could change depending on the storage connector type, but broadly they could be classified as below</p>
+<h3 id="data-lakeobject-based-connectors">Data lake/object based connectors<a class="headerlink" href="#data-lakeobject-based-connectors" title="Permanent link">#</a></h3>
+<p>For data sources based on object/file storage such as AWS S3, ADLS, GCS, we set the full object path in the <code>path</code> argument
+and users should pass a Spark data format (parquet, csv, orc, hudi, delta) to the <code>data_format</code> argument.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">PySpark</label><label for="__tabbed_2_2">Scala</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="c1"># read data into dataframe using path </span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">connector</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;data_format&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;fileScheme://bucket/path/&#39;</span><span class="p">)</span>   
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="c1">// read data into dataframe using path     </span>
+<span class="kd">val</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connector</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;data_format&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nc">HashMap</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;fileScheme://bucket/path/&quot;</span><span class="p">)</span><span class="w">  </span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h4 id="prepare-spark-api">Prepare Spark API<a class="headerlink" href="#prepare-spark-api" title="Permanent link">#</a></h4>
+<p>Additionally, for reading file based data sources, another way to read the data is using the <code>prepare_spark</code> method. This method
+can be used if you are reading the data directly through Spark. </p>
+<p>Firstly, it handles the setup of all Spark configurations or properties necessary for a particular type of connector and 
+prepares the absolute path to read from, along with bucket name and the appropriate file scheme of the data source. A Spark session can handle only one configuration setup at a time, so HSFS cannot set the Spark configurations when retrieving the connector since it would lead to only always initialising the last connector being retrieved.
+Instead, user can do this setup explicitly with the <code>prepare_spark</code> method and therefore potentially
+use multiple connectors in one Spark session. <code>prepare_spark</code> handles only one bucket associated with that particular connector, however, it is possible to set up multiple connectors with different types as long as their Spark properties do not interfere with each other.
+So, for example a S3 connector and a Snowflake connector can be used in the same session, without calling <code>prepare_spark</code> multiple times, as the properties don’t interfere with each other.</p>
+<p>If the storage connector is used in another API call, <code>prepare_spark</code> gets implicitly invoked, for example, 
+when a user materialises a training dataset using a storage connector or uses the storage connector to set up an External Feature Group. 
+So users do not need to call <code>prepare_spark</code> every time they do an operation with a connector, it is only necessary when reading directly using Spark . Using <code>prepare_spark</code> is also 
+not necessary when using the <code>read</code> API.</p>
+<p>For example, to read directly from a S3 connector, we use the <code>prepare_spark</code> as follows</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">PySpark</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">connector</span><span class="o">.</span><span class="n">prepare_spark</span><span class="p">()</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;s3a://[bucket]/path&quot;</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">connector</span><span class="o">.</span><span class="n">prepare_spark</span><span class="p">(</span><span class="s2">&quot;s3a://[bucket]/path&quot;</span><span class="p">))</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="data-warehousesql-based-connectors">Data warehouse/SQL based connectors<a class="headerlink" href="#data-warehousesql-based-connectors" title="Permanent link">#</a></h3>
+<p>For data sources accessed via SQL such as data warehouses and JDBC compliant databases, e.g. Redshift, Snowflake, BigQuery, JDBC, users pass the SQL query to read the data to the <code>query</code> 
+argument. In most cases, this will be some form of a <code>SELECT</code> query. Depending on the connector type, users can also just set the table path and read the whole table without explicitly 
+passing any SQL query to the <code>query</code> argument. This is mostly relevant for Google BigQuery.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">PySpark</label><label for="__tabbed_4_2">Scala</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="c1"># read results from a SQL </span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">connector</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM TABLE&quot;</span><span class="p">)</span>    
+<span class="c1"># or directly read a table if set on connector</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">connector</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="c1">// read results from a SQL </span>
+<span class="kd">val</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connector</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="s">&quot;SELECT * FROM TABLE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nc">HashMap</span><span class="p">(),</span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w">    </span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="streaming-based-connector">Streaming based connector<a class="headerlink" href="#streaming-based-connector" title="Permanent link">#</a></h3>
+<p>For reading data streams, the Kafka Storage Connector supports reading a Kafka topic into Spark Structured Streaming Dataframes 
+instead of a static Dataframe as in other connector types.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">PySpark</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">connector</span><span class="o">.</span><span class="n">read_stream</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="s1">&#39;kafka_topic_name&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="creating-an-external-feature-group">Creating an External Feature Group<a class="headerlink" href="#creating-an-external-feature-group" title="Permanent link">#</a></h2>
+<p>Another important aspect of a storage connector is its ability to facilitate creation of external feature groups with 
+the <a href="../../../../concepts/fs/feature_group/external_fg/">Connector API</a>. <a href="../../feature_group/create_external/">External feature groups</a> are basically offline feature groups
+and essentially stored as tables on external data sources. 
+The <code>Connector API</code> relies on storage connectors behind the scenes to integrate with external datasource.
+This enables seamless integration with any data source as long as there is a storage connector defined.</p>
+<p>To create an external feature group, we use the <code>create_external_feature_group</code> API, also known as <code>Connector API</code>, 
+and simply pass the storage connector created before to the <code>storage_connector</code> argument. 
+Depending on the external data source, we should set either the <code>query</code> argument for data warehouse based data sources, or 
+the <code>path</code> and <code>data_format</code> arguments for data lake based sources, similar to reading into dataframes as explained in above section.</p>
+<p>Example for any data warehouse/SQL based external sources, we set the desired SQL to <code>query</code> argument, and set the <code>storage_connector</code>
+argument to the storage connector object of desired data source.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">PySpark</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">fg</span> <span class="o">=</span> <span class="n">feature_store</span><span class="o">.</span><span class="n">create_external_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sales&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Physical shop sales features&quot;</span><span class="p">,</span>
+    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM TABLE&quot;</span><span class="p">,</span>
+    <span class="n">storage_connector</span><span class="o">=</span><span class="n">connector</span><span class="p">,</span>
+    <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ss_store_sk&#39;</span><span class="p">],</span>
+    <span class="n">event_time</span><span class="o">=</span><span class="s1">&#39;sale_date&#39;</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><code>Connector API</code> (external feature groups) only stores the metadata about the features within Hopsworks, 
+while the actual data is still stored externally. This enables users to create feature groups within Hopsworks without the hassle of data migration.
+For more information on <code>Connector API</code>, read detailed guide about <a href="../../feature_group/create_external/">external feature groups</a>.</p>
 <h2 id="writing-training-data">Writing Training Data<a class="headerlink" href="#writing-training-data" title="Permanent link">#</a></h2>
+<p>Storage connectors are also used while writing training data to external sources. While calling the 
+<a href="../../../../concepts/fs/feature_view/fv_overview/">Feature View</a> API <code>create_training_data</code> , we can pass the <code>storage_connector</code> argument which is necessary to materialise 
+the data to external sources, as shown below.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">PySpark</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="c1"># materialise a training dataset</span>
+<span class="n">version</span><span class="p">,</span> <span class="n">job</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">create_training_data</span><span class="p">(</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;describe training data&#39;</span><span class="p">,</span>
+    <span class="n">data_format</span> <span class="o">=</span> <span class="s1">&#39;spark_data_format&#39;</span><span class="p">,</span> <span class="c1"># e.g. data_format = &quot;parquet&quot; or data_format = &quot;csv&quot;</span>
+    <span class="n">write_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;wait_for_job&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="n">storage_connector</span> <span class="o">=</span> <span class="n">connector</span>
+<span class="p">)</span> 
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Read more about training data creation <a href="../../feature_view/training-data/">here</a>.</p>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
+<p>We have gone through the basic use cases of a storage connector. 
+For more details about the API functionality for any specific connector type, 
+checkout the <a href="https://docs.hopsworks.ai/feature-store-api/3.1.0-SNAPSHOT/generated/api/storage_connector_api/#storage-connector">API section</a>.</p>
 
               
             </article>

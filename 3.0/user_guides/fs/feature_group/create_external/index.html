@@ -5180,7 +5180,7 @@
 <span class="s2">    GROUP BY ss_store_sk, sales_date</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">fg</span> <span class="o">=</span> <span class="n">feature_store</span><span class="o">.</span><span class="n">create_on_demand_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sales&quot;</span><span class="p">,</span>
+<span class="n">fg</span> <span class="o">=</span> <span class="n">feature_store</span><span class="o">.</span><span class="n">create_external_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sales&quot;</span><span class="p">,</span>
     <span class="n">version</span><span class="o">=</span><span class="mi">1</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Physical shop sales features&quot;</span><span class="p">,</span>
     <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
@@ -5196,7 +5196,7 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">fg</span> <span class="o">=</span> <span class="n">feature_store</span><span class="o">.</span><span class="n">create_on_demand_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sales&quot;</span><span class="p">,</span>
+<div class="highlight"><pre><span></span><code><span class="n">fg</span> <span class="o">=</span> <span class="n">feature_store</span><span class="o">.</span><span class="n">create_external_feature_group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sales&quot;</span><span class="p">,</span>
     <span class="n">version</span><span class="o">=</span><span class="mi">1</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Physical shop sales features&quot;</span><span class="p">,</span>
     <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;parquet&quot;</span><span class="p">,</span>
@@ -5208,7 +5208,7 @@
 </div>
 </div>
 </div>
-<p>The full method documentation is available <a href="">here</a>. <code>name</code> is a mandatory parameter of the <code>create_on_demand_feature_group</code> and represents the name of the feature group.</p>
+<p>The full method documentation is available <a href="https://docs.hopsworks.ai/feature-store-api/dev/generated/api/external_feature_group_api/#externalfeaturegroup">here</a>. <code>name</code> is a mandatory parameter of the <code>create_external_feature_group</code> and represents the name of the feature group.</p>
 <p>The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.</p>
 <p>If the storage connector is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the storage connector is defined for a data lake, the location of the data as well as the format need to be provided.</p>
 <p>Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported. </p>
@@ -5217,7 +5217,7 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">fg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">fg</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -5229,7 +5229,7 @@
 <p>Currently the HSFS library does not support calling the read() or show() methods on on-demand feature groups. Likewise it is not possibile to call the read() or show() methods on queries containing on-demand feature groups. Nevertheless, on-demand feature groups can be used from a Python engine to create training datasets.</p>
 </div>
 <h3 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">#</a></h3>
-<p><a href="https://docs.hopsworks.ai/feature-store-api/dev/generated/api/feature_group_api/#featuregroup">FeatureGroup</a></p>
+<p><a href="https://docs.hopsworks.ai/feature-store-api/dev/generated/api/external_feature_group_api/#externalfeaturegroup">External FeatureGroup</a></p>
 <h2 id="create-using-the-ui">Create using the UI<a class="headerlink" href="#create-using-the-ui" title="Permanent link">#</a></h2>
 <p>You can also create a new feature group through the UI.</p>
 
