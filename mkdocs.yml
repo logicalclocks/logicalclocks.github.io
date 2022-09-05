@@ -159,6 +159,8 @@ nav:
             - Designer: user_guides/integrations/mlstudio_designer.md
             - Notebooks: user_guides/integrations/mlstudio_notebooks.md
         - Apache Spark: user_guides/integrations/spark.md
+    - Migration:
+      - 3.0: user_guides/migration/30_migration.md
   - Setup and Installation:
       - AWS:
           - Getting Started: setup_installation/aws/getting_started.md
