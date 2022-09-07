@@ -18,6 +18,8 @@ Documentation on how to generate a token for the supported Git hosting services 
 - [GitLab](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
 - [BitBucket](https://confluence.atlassian.com/bitbucketserver/http-access-tokens-939515499.html)
 
+The token permission should grant access to public and private repositories including read and write access to code and commit statuses.
+
 ### Step 1: Navigate to Git Providers
 
 In the `Account Settings` page you can find the `Git Providers` section. The Git provider section displays which providers have been already configured and can be used to clone new repositories.
@@ -62,10 +64,8 @@ The configured provider should now be marked as configured.
 </p>
 
 ## Code
-
+You can also configure a git provider through the hopsworks git API in python.
 ### Step 1: Get the git API
-
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Resources` dataset.
 
 ```python
 

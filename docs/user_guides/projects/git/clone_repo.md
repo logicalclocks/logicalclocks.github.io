@@ -10,7 +10,7 @@ Repositories can be managed from the Git section in the project settings. The Gi
 
 ## Prerequisites
 
-This guide requires that you have previously configured a [Git Provider](configure_git_provider.md) with your git credentials.
+For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials. You can clone a GitHub and GitLab public repository without configuring the provider. However, for BitBucket you always need to configure the username and password to clone a repository.
 
 ## UI
 
@@ -42,7 +42,7 @@ To clone a new repository, click on the `Clone repository` button on the Git ove
   </figure>
 </p>
 
-The clone dialog asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
+You should first choose the git provider e.g., GitHub, GitLab or BitBucket. If you are cloning a private repository, remember to configure the username and password for the provder first in [Git Provider](configure_git_provider.md). The clone dialog also asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
 
 Then specify which branch you want to clone. By default the `main` branch will be used, however a different branch or commit can be specified by selecting `Clone from a specific branch`.
 
@@ -65,7 +65,7 @@ The progress of the git clone can be tracked under `Git Executions`.
 
 ### Step 4: Browse repository files
 
-In the `File browser` page you can now browse the files of the cloned repository, found on the path in `Jupyter/hops-examples`
+In the `File browser` page you can now browse the files of the cloned repository. In the figure below, the repository is located in `Jupyter/hops-examples` directory.
 
 <p align="center">
   <figure>
@@ -76,24 +76,10 @@ In the `File browser` page you can now browse the files of the cloned repository
   </figure>
 </p>
 
-### Step 5: Repository actions
-
-The operation to perform on the cloned repository can be found in the dropdown as shown below.
-
-<p align="center">
-  <figure>
-    <a  href="../../../../assets/images/guides/git/repo_actions.gif">
-      <img src="../../../../assets/images/guides/git/repo_actions.gif" alt="Repository actions a repository">
-    </a>
-    <figcaption>Repository actions</figcaption>
-  </figure>
-</p>
-
 ## Code
-
+You can also clone a repository through the hopsworks git API in python.
+q
 ### Step 1: Get the git API
-
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Jupyter` dataset.
 
 ```python
 
