@@ -159,6 +159,8 @@ nav:
             - Designer: user_guides/integrations/mlstudio_designer.md
             - Notebooks: user_guides/integrations/mlstudio_notebooks.md
         - Apache Spark: user_guides/integrations/spark.md
+    - Migration:
+      - 3.0: user_guides/migration/30_migration.md
   - Setup and Installation:
       - AWS:
           - Getting Started: setup_installation/aws/getting_started.md
@@ -168,6 +170,7 @@ nav:
           - Cluster upgrade:
             - Version 2.4 or newer: setup_installation/aws/upgrade_2.4.md
             - Version 2.2 or older: setup_installation/aws/upgrade.md
+          - Troubleshooting: setup_installation/aws/troubleshooting.md
       - Azure:
           - Getting Started: setup_installation/azure/getting_started.md
           - Cluster Creation: setup_installation/azure/cluster_creation.md
