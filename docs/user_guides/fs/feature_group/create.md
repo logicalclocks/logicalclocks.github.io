@@ -66,6 +66,16 @@ In the example above we created the first version of a feature group named *weat
 
 Additionally we specify which columns of the DataFrame will be used as primary key, partition key and event time. Composite primary key and multi level partitioning is also supported. 
 
+!!! note
+    It is best practice to add a partition key. If you do not provide a partition key, all the feature data will be stored as files in a single directory.
+    The system has a limit of 10240 direct children (files or other subdirectories) per directory. What this means is that, as you add new data to a non-partitioned feature group, this will create new files and you might reach that limit. If you do reach the limit, your feature engineering pipeline will fail with the following error:
+
+    ```sh
+    MaxDirectoryItemsExceededException - The directory item limit is exceeded: limit=10240 items=10240
+    ```
+
+    By using partitioning the system will write the feature data in different subdirectories, thus allowing you to write 10240 files per partition.
+
 The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one. 
 
 The last parameter used in the examples above is `stream`. The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store. When using the APIs in a Python environment this behavior is the default. 
