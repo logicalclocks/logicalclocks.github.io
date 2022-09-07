@@ -47,9 +47,7 @@ feature_view.init_serving(training_dataset_version=1)
 ## Passed features
 If some of the features values are only known at prediction time and cannot be computed and cached in the online feature store, you can provide those values as `passed_features` option. The `get_feature_vector` method is going to use the passed values to construct the final feature vector to submit to the model.
 
-You can use the `passed_features` parameter to overwrite individual features being retrieved from the online feature store. You can also use the parameter to provide values for all the features which are part of a specific feature group and used in the feature view. In this second case, you do not have to provide the primary key value for that feature group as no data needs to be retrieved from the online feature store.
-
-The feature view will apply the necessary transformations to the passed features as it does for the feature data retrieved from the online feature store.
+You can use the `passed_features` parameter to overwrite individual features being retrieved from the online feature store. The feature view will apply the necessary transformations to the passed features as it does for the feature data retrieved from the online feature store.
 
 === "Python"
     ```python
@@ -67,9 +65,28 @@ The feature view will apply the necessary transformations to the passed features
             {"pk1": 5, "pk2": 6}
         ],
         passed_features = [
-            {"feature_a": "value_a"},
-            {"feature_a": "value_b"},
-            {"feature_a": "value_c"},
+            {"feature_a": "value_a1"},
+            {"feature_a": "value_a2"},
+            {"feature_a": "value_a3"},
         ]
+    )
+    ```
+
+You can also use the parameter to provide values for all the features which are part of a specific feature group and used in the feature view. In this second case, you do not have to provide the primary key value for that feature group as no data needs to be retrieved from the online feature store.
+
+=== "Python"
+    ```python
+    # get a single vector, replace values from an entire feature group
+    # note how in this example you don't have to provide the value of 
+    # pk2, but you need to provide the features coming from that feature group
+    # in this case feature_b and feature_c 
+
+    feature_view.get_feature_vector(
+        entry = { "pk1": 1 },
+        passed_features = {
+            "feature_a": "value_a", 
+            "feature_b": "value_b", 
+            "feature_c": "value_c"
+        }
     )
     ```
