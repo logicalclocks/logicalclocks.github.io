@@ -1001,6 +1001,21 @@ inherited from the original template
   }
 }
 @media screen and (max-width: 479px) {
+  .column_sides, .layer_02, .enterprisefs{
+    visibility: hidden;
+  }
+
+  .marctech_main {
+    margin-top: -80px;
+  }
+
+  .grid-infra{
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .center-content {
+    width: 100vw;
+  }
   .w-container {
     max-width: none;
   }
