@@ -68,7 +68,7 @@ Additionally we specify which columns of the DataFrame will be used as primary k
 
 !!! note
     It is best practice to add a partition key. If you do not provide a partition key, all the feature data will be stored as files in a single directory.
-    The system has a limit of 10240 direct children (files or other subdirectories) per directory. What this means is that, as you add new data to a non-partitioned feature group, this will create new files and you might reach that limit. If you do reach the limit, your feature engineering pipeline will fail with the following error:
+    The system has a limit of 10240 direct children (files or other subdirectories) per directory. This means that, as you add new data to a non-partitioned feature group, new files will be created and you might reach the limit. If you do reach the limit, your feature engineering pipeline will fail with the following error:
 
     ```sh
     MaxDirectoryItemsExceededException - The directory item limit is exceeded: limit=10240 items=10240
