@@ -6277,19 +6277,13 @@ fs = project.get_feature_store()</div>
 <span class="n">trans_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s1">&#39;transactions_fraud_online_fg&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">profile_online_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s1">&#39;profile_fraud_online_fg&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Select features for training data.</span>
-<span class="n">ds_query</span> <span class="o">=</span> <span class="n">trans_fg</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s2">&quot;fraud_label&quot;</span><span class="p">,</span> <span class="s2">&quot;loc_delta_t_plus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;loc_delta_t_minus_1&quot;</span><span class="p">,</span><span class="s2">&quot;time_delta_t_plus_1&quot;</span><span class="p">,</span> 
-                                                       <span class="s2">&quot;time_delta_t_minus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;country&quot;</span><span class="p">])</span><span class="o">.</span>\
-                                      <span class="n">join</span><span class="p">(</span><span class="n">profile_online_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">())</span>
+<span class="n">ds_query</span> <span class="o">=</span> <span class="n">trans_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">()</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">profile_online_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">())</span>
 </pre></div>
 <div id="cell-3" class="clipboard-copy-txt"># Load feature groups.
 trans_fg = fs.get_feature_group('transactions_fraud_online_fg', version=1)
 profile_online_fg = fs.get_feature_group('profile_fraud_online_fg', version=1)
 
-# Select features for training data.
-ds_query = trans_fg.select(["fraud_label", "loc_delta_t_plus_1", "loc_delta_t_minus_1","time_delta_t_plus_1", 
-                                                       "time_delta_t_minus_1", "country"]).\
-                                      join(profile_online_fg.select_all())</div>
+ds_query = trans_fg.select_all().join(profile_online_fg.select_all())</div>
     
         </div>
     </div>
@@ -6384,9 +6378,7 @@ ds_query = trans_fg.select(["fraud_label", "loc_delta_t_plus_1", "loc_delta_t_mi
 
 <span class="c1"># Map features to transformation functions.</span>
 <span class="n">transformation_functions</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;loc_delta_t_plus_1&quot;</span><span class="p">:</span> <span class="n">min_max_scaler</span><span class="p">,</span> 
     <span class="s2">&quot;loc_delta_t_minus_1&quot;</span><span class="p">:</span> <span class="n">min_max_scaler</span><span class="p">,</span> 
-    <span class="s2">&quot;time_delta_t_plus_1&quot;</span><span class="p">:</span> <span class="n">min_max_scaler</span><span class="p">,</span> 
     <span class="s2">&quot;time_delta_t_minus_1&quot;</span><span class="p">:</span> <span class="n">min_max_scaler</span><span class="p">,</span>
     <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">label_encoder</span><span class="p">,</span>
     <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="n">label_encoder</span><span class="p">,</span>
@@ -6398,9 +6390,7 @@ label_encoder = fs.get_transformation_function(name="label_encoder")
 
 # Map features to transformation functions.
 transformation_functions = {
-    "loc_delta_t_plus_1": min_max_scaler, 
     "loc_delta_t_minus_1": min_max_scaler, 
-    "time_delta_t_plus_1": min_max_scaler, 
     "time_delta_t_minus_1": min_max_scaler,
     "country": label_encoder,
     "gender": label_encoder,
@@ -6521,11 +6511,25 @@ In order to create a Feature View you may use <code>fs.create_feature_view()</co
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="n">date_format</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create training datasets based event time filter</span>
+<span class="n">td_jan_feb_version</span><span class="p">,</span> <span class="n">td_job</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">create_training_data</span><span class="p">(</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="s2">&quot;20220101000001&quot;</span><span class="p">,</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="s2">&quot;20220228235959&quot;</span><span class="p">,</span>    
+        <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;transactions fraud online training dataset jan/feb&#39;</span><span class="p">,</span>
+        <span class="n">data_format</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span><span class="p">,</span>
+        <span class="n">coalesce</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">write_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wait_for_job&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">)</span>
 </pre></div>
-<div id="cell-7" class="clipboard-copy-txt">from datetime import datetime
-date_format = "%Y-%m-%d %H:%M:%S"</div>
+<div id="cell-7" class="clipboard-copy-txt"># Create training datasets based event time filter
+td_jan_feb_version, td_job = feature_view.create_training_data(
+        start_time = "20220101000001",
+        end_time = "20220228235959",    
+        description = 'transactions fraud online training dataset jan/feb',
+        data_format = "csv",
+        coalesce = True,
+        write_options = {'wait_for_job': True},
+    )</div>
     
         </div>
     </div>
@@ -6555,78 +6559,18 @@ date_format = "%Y-%m-%d %H:%M:%S"</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create training datasets based event time filter</span>
-<span class="n">start_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2022-01-01 00:00:01&quot;</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="n">end_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2022-02-28 23:59:59&quot;</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-
-<span class="n">td_jan_feb_version</span><span class="p">,</span> <span class="n">td_job</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">create_training_data</span><span class="p">(</span>
-        <span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span><span class="p">,</span>
-        <span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="p">,</span>    
-        <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;transactions fraud online training dataset jan/feb&#39;</span><span class="p">,</span>
-        <span class="n">data_format</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span><span class="p">,</span>
-        <span class="n">coalesce</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">write_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wait_for_job&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
-    <span class="p">)</span>
-</pre></div>
-<div id="cell-8" class="clipboard-copy-txt"># Create training datasets based event time filter
-start_time = int(float(datetime.strptime("2022-01-01 00:00:01", date_format).timestamp()) * 1000)
-end_time = int(float(datetime.strptime("2022-02-28 23:59:59", date_format).timestamp()) * 1000)
-
-td_jan_feb_version, td_job = feature_view.create_training_data(
-        start_time = start_time,
-        end_time = end_time,    
-        description = 'transactions fraud online training dataset jan/feb',
-        data_format = "csv",
-        coalesce = True,
-        write_options = {'wait_for_job': True},
-    )</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-9">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">start_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2022-03-01 00:00:01&quot;</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="n">end_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2022-03-31 23:59:59&quot;</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-
-<span class="n">td_mar_version</span><span class="p">,</span> <span class="n">td_job</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">create_training_data</span><span class="p">(</span>
-        <span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span><span class="p">,</span>
-        <span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="p">,</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">td_mar_version</span><span class="p">,</span> <span class="n">td_job</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">create_training_data</span><span class="p">(</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="s2">&quot;20220301000001&quot;</span><span class="p">,</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="s2">&quot;20220331235959&quot;</span><span class="p">,</span>
         <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;transactions fraud online training dataset mar&#39;</span><span class="p">,</span>
         <span class="n">data_format</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span><span class="p">,</span>
         <span class="n">coalesce</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">write_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wait_for_job&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
  <span class="p">)</span>
 </pre></div>
-<div id="cell-9" class="clipboard-copy-txt">start_time = int(float(datetime.strptime("2022-03-01 00:00:01", date_format).timestamp()) * 1000)
-end_time = int(float(datetime.strptime("2022-03-31 23:59:59", date_format).timestamp()) * 1000)
-
-td_mar_version, td_job = feature_view.create_training_data(
-        start_time = start_time,
-        end_time = end_time,
+<div id="cell-8" class="clipboard-copy-txt">td_mar_version, td_job = feature_view.create_training_data(
+        start_time = "20220301000001",
+        end_time = "20220331235959",
         description = 'transactions fraud online training dataset mar',
         data_format = "csv",
         coalesce = True,
@@ -6670,6 +6614,38 @@ This allows for a clear undestanding of the pipeline in relation to each element
 
 </div>
 </div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+        <div class="zeroclipboard-container">
+            <clipboard-copy for="cell-9">
+            <div>
+                <span class="notice" hidden>Copied!</span>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                </svg>
+                </div>
+            </clipboard-copy>
+        </div>
+            <div class="highlight-ipynb hl-python"><pre><span></span>
+</pre></div>
+<div id="cell-9" class="clipboard-copy-txt"></div>
+    
+        </div>
+    </div>
+
+</div>
+</div>
+
 </div>
 </div>
 </div>

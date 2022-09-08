@@ -1926,13 +1926,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#preview" class="md-nav__link">
-    Preview
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#passed-features" class="md-nav__link">
     Passed features
   </a>
@@ -5065,13 +5058,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#preview" class="md-nav__link">
-    Preview
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#passed-features" class="md-nav__link">
     Passed features
   </a>
@@ -5135,30 +5121,56 @@
 <p>If you have specified transformation functions when creating a feature view, you receive transformed feature vectors. If your transformation functions require statistics of training dataset, you must also provide the training data version. <code>init_serving</code> will then fetch the statistics and initialize the functions with the required statistics. Then you can follow the above examples and retrieve the feature vectors. Please note that transformed feature vectors can only be returned in the python client but not in the java client.</p>
 <div class="highlight"><pre><span></span><code><span class="n">feature_view</span><span class="o">.</span><span class="n">init_serving</span><span class="p">(</span><span class="n">training_dataset_version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="preview">Preview<a class="headerlink" href="#preview" title="Permanent link">#</a></h2>
-<p>In order to enable ML engineers to test feature serving easily, a feature view can return a sample of feature vectors without specifying any primary keys.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Python</label><label for="__tabbed_2_2">Java</label></div>
+<h2 id="passed-features">Passed features<a class="headerlink" href="#passed-features" title="Permanent link">#</a></h2>
+<p>If some of the features values are only known at prediction time and cannot be computed and cached in the online feature store, you can provide those values as <code>passed_features</code> option. The <code>get_feature_vector</code> method is going to use the passed values to construct the final feature vector to submit to the model.</p>
+<p>You can use the <code>passed_features</code> parameter to overwrite individual features being retrieved from the online feature store. The feature view will apply the necessary transformations to the passed features as it does for the feature data retrieved from the online feature store.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="c1"># get a single vector</span>
-<span class="n">feature_view</span><span class="o">.</span><span class="n">preview_feature_vector</span><span class="p">()</span>
+<span class="n">feature_view</span><span class="o">.</span><span class="n">get_feature_vector</span><span class="p">(</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+    <span class="n">passed_features</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;feature_a&quot;</span><span class="p">:</span> <span class="s2">&quot;value_a&quot;</span><span class="p">}</span>
+<span class="p">)</span>
 
 <span class="c1"># get multiple vectors</span>
-<span class="n">feature_view</span><span class="o">.</span><span class="n">preview_feature_vectors</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># n = size of feature vectors</span>
+<span class="n">feature_view</span><span class="o">.</span><span class="n">get_feature_vectors</span><span class="p">(</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}</span>
+    <span class="p">],</span>
+    <span class="n">passed_features</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;feature_a&quot;</span><span class="p">:</span> <span class="s2">&quot;value_a1&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;feature_a&quot;</span><span class="p">:</span> <span class="s2">&quot;value_a2&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;feature_a&quot;</span><span class="p">:</span> <span class="s2">&quot;value_a3&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 </code></pre></div>
 </div>
+</div>
+</div>
+<p>You can also use the parameter to provide values for all the features which are part of a specific feature group and used in the feature view. In this second case, you do not have to provide the primary key value for that feature group as no data needs to be retrieved from the online feature store.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Python</label></div>
+<div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="c1">// get a single vector</span><span class="w"></span>
-<span class="n">featureView</span><span class="p">.</span><span class="na">previewFeatureVector</span><span class="p">();</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="c1"># get a single vector, replace values from an entire feature group</span>
+<span class="c1"># note how in this example you don&#39;t have to provide the value of </span>
+<span class="c1"># pk2, but you need to provide the features coming from that feature group</span>
+<span class="c1"># in this case feature_b and feature_c </span>
 
-<span class="c1">// get multiple vectors</span><span class="w"></span>
-<span class="n">featureView</span><span class="p">.</span><span class="na">previewFeatureVectors</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span><span class="w"></span>
+<span class="n">feature_view</span><span class="o">.</span><span class="n">get_feature_vector</span><span class="p">(</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span>
+    <span class="n">passed_features</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;feature_a&quot;</span><span class="p">:</span> <span class="s2">&quot;value_a&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;feature_b&quot;</span><span class="p">:</span> <span class="s2">&quot;value_b&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;feature_c&quot;</span><span class="p">:</span> <span class="s2">&quot;value_c&quot;</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
-<h2 id="passed-features">Passed features<a class="headerlink" href="#passed-features" title="Permanent link">#</a></h2>
-<p>fabio's part</p>
 
               
             </article>

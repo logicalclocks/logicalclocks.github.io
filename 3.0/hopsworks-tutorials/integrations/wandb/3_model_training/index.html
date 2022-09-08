@@ -6531,24 +6531,12 @@ This allows for a clear undestanding of the pipeline in relation to each element
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">fv_metadata = feature_view.to_dict()</span>
-<span class="sd">fv_metadata.pop(&#39;query&#39;)</span>
-<span class="sd">fv_metadata[&#39;features&#39;] = [f&quot;⚜️Feature name: {feature.name}. 📝Feature type: {feature.type}&quot; for feature in fv_metadata[&#39;features&#39;]]</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="n">fv_metadata</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fv_metadata</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 <span class="n">fv_metadata</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fv_metadata</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
 <span class="n">fv_metadata</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fv_metadata</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]]</span>
 <span class="n">fv_metadata</span><span class="p">[</span><span class="s2">&quot;link&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">_feature_view_engine</span><span class="o">.</span><span class="n">_get_feature_view_url</span><span class="p">(</span><span class="n">feature_view</span><span class="p">)</span>
 </pre></div>
-<div id="cell-8" class="clipboard-copy-txt">"""
-fv_metadata = feature_view.to_dict()
-fv_metadata.pop('query')
-fv_metadata['features'] = [f"⚜️Feature name: {feature.name}. 📝Feature type: {feature.type}" for feature in fv_metadata['features']]
-"""
-
-fv_metadata = feature_view.to_dict()
+<div id="cell-8" class="clipboard-copy-txt">fv_metadata = feature_view.to_dict()
 fv_metadata["query"] = fv_metadata["query"].to_string()
 fv_metadata["features"] = [f.name for f in fv_metadata["features"]]
 fv_metadata["link"] = feature_view._feature_view_engine._get_feature_view_url(feature_view)</div>
@@ -7203,6 +7191,42 @@ print(f"Best run {runs[0].name} with F1_score: {round(val_acc,4)}%")</div>
 </div>
 
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+        <div class="zeroclipboard-container">
+            <clipboard-copy for="cell-17">
+            <div>
+                <span class="notice" hidden>Copied!</span>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                </svg>
+                </div>
+            </clipboard-copy>
+        </div>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="c1"># Now lets load hyperpameter config for the best model</span>
+<span class="n">RUN_ID</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\w</span><span class="si">{8}</span><span class="s1">\s&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">runs</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">group</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+<div id="cell-17" class="clipboard-copy-txt">import re
+# Now lets load hyperpameter config for the best model
+RUN_ID = re.search(r'\w{8}\s',str(runs[0])).group()[:-1]</div>
+    
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -7226,7 +7250,7 @@ print(f"Best run {runs[0].name} with F1_score: {round(val_acc,4)}%")</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-17">
+            <clipboard-copy for="cell-18">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7255,7 +7279,7 @@ print(f"Best run {runs[0].name} with F1_score: {round(val_acc,4)}%")</div>
     <span class="n">wandb</span><span class="o">.</span><span class="n">log</span><span class="p">({</span><span class="s2">&quot;f1_score&quot;</span><span class="p">:</span> <span class="n">score</span><span class="p">})</span>
     <span class="n">run</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 </pre></div>
-<div id="cell-17" class="clipboard-copy-txt">import os
+<div id="cell-18" class="clipboard-copy-txt">import os
 
 with wandb.init(project=f"{PROJECT_NAME}", job_type="validation", name="validate_model") as run:
     model_artifact = run.use_artifact(f"{USER_NAME}/{PROJECT_NAME}/RandomForestClassifier:latest", type="model")
@@ -7316,7 +7340,7 @@ with wandb.init(project=f"{PROJECT_NAME}", job_type="validation", name="validate
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-18">
+            <clipboard-copy for="cell-19">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7337,7 +7361,7 @@ with wandb.init(project=f"{PROJECT_NAME}", job_type="validation", name="validate
     <span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span>
 <span class="p">)</span>
 </pre></div>
-<div id="cell-18" class="clipboard-copy-txt">from datetime import datetime
+<div id="cell-19" class="clipboard-copy-txt">from datetime import datetime
 date_format = "%Y-%m-%d %H:%M:%S"
 # Create training datasets based event time filter
 start_time = int(float(datetime.strptime("2022-01-03 00:00:01", date_format).timestamp()) * 1000)
@@ -7347,38 +7371,6 @@ march_transactions = feature_view.get_batch_data(
     start_time = start_time, 
     end_time = end_time
 )</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-19">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">march_transactions</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-<div id="cell-19" class="clipboard-copy-txt">march_transactions.head()</div>
     
         </div>
     </div>
@@ -7408,9 +7400,9 @@ march_transactions = feature_view.get_batch_data(
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">march_transactions</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">march_transactions</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
-<div id="cell-20" class="clipboard-copy-txt">predictions = model.predict(march_transactions)</div>
+<div id="cell-20" class="clipboard-copy-txt">march_transactions.head()</div>
     
         </div>
     </div>
@@ -7440,9 +7432,41 @@ march_transactions = feature_view.get_batch_data(
                 </div>
             </clipboard-copy>
         </div>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">march_transactions</span><span class="p">)</span>
+</pre></div>
+<div id="cell-21" class="clipboard-copy-txt">predictions = model.predict(march_transactions)</div>
+    
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+        <div class="zeroclipboard-container">
+            <clipboard-copy for="cell-22">
+            <div>
+                <span class="notice" hidden>Copied!</span>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                </svg>
+                </div>
+            </clipboard-copy>
+        </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">predictions</span>
 </pre></div>
-<div id="cell-21" class="clipboard-copy-txt">predictions</div>
+<div id="cell-22" class="clipboard-copy-txt">predictions</div>
     
         </div>
     </div>
@@ -7477,7 +7501,7 @@ For example you might want to make sure that features, feature views and trainin
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-22">
+            <clipboard-copy for="cell-23">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7494,58 +7518,12 @@ For example you might want to make sure that features, feature views and trainin
     <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://wandb.ai/</span><span class="si">{</span><span class="n">USER_NAME</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">PROJECT_NAME</span><span class="si">}</span><span class="s2">/artifacts/model/RandomForestClassifier/v1/overview&quot;</span>
 <span class="p">}</span>
 </pre></div>
-<div id="cell-22" class="clipboard-copy-txt">tag = {
+<div id="cell-23" class="clipboard-copy-txt">tag = {
     "name": "RandomForestClassifier",
     "version": "v1",
     "type": "model",
     "url": f"https://wandb.ai/{USER_NAME}/{PROJECT_NAME}/artifacts/model/RandomForestClassifier/v1/overview"
 }</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-23">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># attach tag to feature view</span>
-<span class="n">feature_view</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;wandb&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
-
-<span class="c1"># uncomment this if you would like to remove                      </span>
-<span class="c1">##get</span>
-<span class="c1">#feature_view.get_tag(name=&quot;wandb_schema&quot;)</span>
-<span class="c1">##remove</span>
-<span class="c1">#feature_view.delete_tag(name=&quot;wandb_schema&quot;)</span>
-</pre></div>
-<div id="cell-23" class="clipboard-copy-txt"># attach tag to feature view
-feature_view.add_tag(name="wandb", value=tag)
-
-# uncomment this if you would like to remove                      
-##get
-#feature_view.get_tag(name="wandb_schema")
-##remove
-#feature_view.delete_tag(name="wandb_schema")</div>
     
         </div>
     </div>
@@ -7575,19 +7553,23 @@ feature_view.add_tag(name="wandb", value=tag)
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># attach tag to training dataset</span>
-<span class="n">feature_view</span><span class="o">.</span><span class="n">add_training_dataset_tag</span><span class="p">(</span>
-    <span class="n">training_dataset_version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wandb&quot;</span><span class="p">,</span> 
-    <span class="n">value</span><span class="o">=</span><span class="n">tag</span>
-<span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># attach tag to feature view</span>
+<span class="n">feature_view</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;wandb&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
+
+<span class="c1"># uncomment this if you would like to remove                      </span>
+<span class="c1">##get</span>
+<span class="c1">#feature_view.get_tag(name=&quot;wandb_schema&quot;)</span>
+<span class="c1">##remove</span>
+<span class="c1">#feature_view.delete_tag(name=&quot;wandb_schema&quot;)</span>
 </pre></div>
-<div id="cell-24" class="clipboard-copy-txt"># attach tag to training dataset
-feature_view.add_training_dataset_tag(
-    training_dataset_version=1, 
-    name="wandb", 
-    value=tag
-)</div>
+<div id="cell-24" class="clipboard-copy-txt"># attach tag to feature view
+feature_view.add_tag(name="wandb", value=tag)
+
+# uncomment this if you would like to remove                      
+##get
+#feature_view.get_tag(name="wandb_schema")
+##remove
+#feature_view.delete_tag(name="wandb_schema")</div>
     
         </div>
     </div>
@@ -7617,6 +7599,48 @@ feature_view.add_training_dataset_tag(
                 </div>
             </clipboard-copy>
         </div>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># attach tag to training dataset</span>
+<span class="n">feature_view</span><span class="o">.</span><span class="n">add_training_dataset_tag</span><span class="p">(</span>
+    <span class="n">training_dataset_version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wandb&quot;</span><span class="p">,</span> 
+    <span class="n">value</span><span class="o">=</span><span class="n">tag</span>
+<span class="p">)</span>
+</pre></div>
+<div id="cell-25" class="clipboard-copy-txt"># attach tag to training dataset
+feature_view.add_training_dataset_tag(
+    training_dataset_version=1, 
+    name="wandb", 
+    value=tag
+)</div>
+    
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+        <div class="zeroclipboard-container">
+            <clipboard-copy for="cell-26">
+            <div>
+                <span class="notice" hidden>Copied!</span>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                </svg>
+                </div>
+            </clipboard-copy>
+        </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1">## Tags on W&amp;B</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">Api</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">USER_NAME</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">PROJECT_NAME</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">RUN_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">USER_NAME</span><span class="o">=</span><span class="n">USER_NAME</span><span class="p">,</span> <span class="n">PROJECT_NAME</span><span class="o">=</span><span class="n">PROJECT_NAME</span><span class="p">,</span>  <span class="n">RUN_ID</span><span class="o">=</span><span class="n">RUN_ID</span><span class="p">))</span>
 <span class="n">run</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{fv_name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fv_name</span><span class="o">=</span><span class="n">feature_view</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>  
@@ -7624,7 +7648,7 @@ feature_view.add_training_dataset_tag(
 <span class="n">run</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{td_version}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">td_version</span><span class="o">=</span><span class="n">training_dataset_version</span><span class="p">))</span>          
 <span class="n">run</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
-<div id="cell-25" class="clipboard-copy-txt">## Tags on W&B
+<div id="cell-26" class="clipboard-copy-txt">## Tags on W&B
 run = wandb.Api().run(f"{USER_NAME}/{PROJECT_NAME}/{RUN_ID}".format(USER_NAME=USER_NAME, PROJECT_NAME=PROJECT_NAME,  RUN_ID=RUN_ID))
 run.tags.append("{fv_name}".format(fv_name=feature_view.name))  
 run.tags.append("{fv_version}".format(fv_version=feature_view.version))  
@@ -7664,7 +7688,7 @@ run.update()</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-26">
+            <clipboard-copy for="cell-27">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7684,7 +7708,7 @@ run.update()</div>
 <span class="n">trans_fg</span><span class="o">.</span><span class="n">update_statistics_config</span><span class="p">()</span>
 <span class="n">trans_fg</span><span class="o">.</span><span class="n">compute_statistics</span><span class="p">()</span>
 </pre></div>
-<div id="cell-26" class="clipboard-copy-txt">trans_fg = fs.get_feature_group("transactions_fraud_batch_wandb", version = 1)
+<div id="cell-27" class="clipboard-copy-txt">trans_fg = fs.get_feature_group("transactions_fraud_batch_wandb", version = 1)
 trans_fg.statistics_config = {
     "enabled": True,
     "histograms": True,

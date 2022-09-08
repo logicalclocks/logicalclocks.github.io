@@ -6235,7 +6235,7 @@ The objective of this tutorial is to demonstrate how to work with the <strong>Ho
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6293,13 +6293,13 @@ import pandas as pd</div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6330,14 +6330,78 @@ profiles_df.head(3)</div>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cc_num</th>
+      <th>gender</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4796807885357879</td>
+      <td>F</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4529266636192966</td>
+      <td>F</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4922690008243953</td>
+      <td>F</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6364,6 +6428,102 @@ trans_df.head(3)</div>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>tid</th>
+      <th>datetime</th>
+      <th>cc_num</th>
+      <th>category</th>
+      <th>amount</th>
+      <th>latitude</th>
+      <th>longitude</th>
+      <th>city</th>
+      <th>country</th>
+      <th>fraud_label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>11df919988c134d97bbff2678eb68e22</td>
+      <td>2022-01-01 00:00:24</td>
+      <td>4473593503484549</td>
+      <td>Health/Beauty</td>
+      <td>62.95</td>
+      <td>42.30865</td>
+      <td>-83.48216</td>
+      <td>Canton</td>
+      <td>US</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>dd0b2d6d4266ccd3bf05bc2ea91cf180</td>
+      <td>2022-01-01 00:00:56</td>
+      <td>4272465718946864</td>
+      <td>Grocery</td>
+      <td>85.45</td>
+      <td>33.52253</td>
+      <td>-117.70755</td>
+      <td>Laguna Niguel</td>
+      <td>US</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>e627f5d9a9739833bd52d2da51761fc3</td>
+      <td>2022-01-01 00:02:32</td>
+      <td>4104216579248948</td>
+      <td>Domestic Transport</td>
+      <td>21.63</td>
+      <td>37.60876</td>
+      <td>-77.37331</td>
+      <td>Mechanicsville</td>
+      <td>US</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -6371,7 +6531,7 @@ trans_df.head(3)</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6407,7 +6567,7 @@ profiles_df = profiles_df[profiles_df.cc_num.isin(trans_df.cc_num.unique())].res
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6469,7 +6629,7 @@ Here you will use the <a href="https://scikit-learn.org/stable/modules/generated
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6520,17 +6680,11 @@ Here you will use the <a href="https://scikit-learn.org/stable/modules/generated
     <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>\
     <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="n">trans_df</span><span class="p">[</span><span class="s2">&quot;time_delta_t_plus_1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trans_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;cc_num&quot;</span><span class="p">)</span>\
-    <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">time_delta</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;datetime&quot;</span><span class="p">],</span> <span class="mi">1</span> <span class="p">))</span>\
-    <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
 <span class="n">trans_df</span><span class="p">[</span><span class="s2">&quot;time_delta_t_minus_1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trans_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;cc_num&quot;</span><span class="p">)</span>\
     <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">time_delta</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;datetime&quot;</span><span class="p">],</span>  <span class="o">-</span><span class="mi">1</span><span class="p">))</span>\
     <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">trans_df</span><span class="p">[</span><span class="s2">&quot;time_delta_t_plus_1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">trans_df</span><span class="o">.</span><span class="n">datetime</span> <span class="o">-</span> <span class="n">trans_df</span><span class="o">.</span><span class="n">time_delta_t_plus_1</span> <span class="p">)</span><span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
 <span class="n">trans_df</span><span class="p">[</span><span class="s2">&quot;time_delta_t_minus_1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">trans_df</span><span class="o">.</span><span class="n">time_delta_t_minus_1</span> <span class="o">-</span> <span class="n">trans_df</span><span class="o">.</span><span class="n">datetime</span> <span class="p">)</span><span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
-<span class="n">trans_df</span><span class="p">[</span><span class="s2">&quot;time_delta_t_plus_1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trans_df</span><span class="o">.</span><span class="n">time_delta_t_plus_1</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">trans_df</span><span class="p">[</span><span class="s2">&quot;time_delta_t_minus_1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">trans_df</span><span class="o">.</span><span class="n">time_delta_t_minus_1</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 <div id="cell-7" class="clipboard-copy-txt">from math import radians
@@ -6569,17 +6723,11 @@ trans_df["loc_delta_t_minus_1"] = trans_df.groupby("cc_num")\
     .reset_index(level=0, drop=True)\
     .fillna(0)
 
-trans_df["time_delta_t_plus_1"] = trans_df.groupby("cc_num")\
-    .apply(lambda x : time_delta(x["datetime"], 1 ))\
-    .reset_index(level=0, drop=True)
-
 trans_df["time_delta_t_minus_1"] = trans_df.groupby("cc_num")\
     .apply(lambda x : time_delta(x["datetime"],  -1))\
     .reset_index(level=0, drop=True)
 
-trans_df["time_delta_t_plus_1"] = (trans_df.datetime - trans_df.time_delta_t_plus_1 )/ np.timedelta64(1, 'D')
 trans_df["time_delta_t_minus_1"] = (trans_df.time_delta_t_minus_1 - trans_df.datetime )/ np.timedelta64(1, 'D')
-trans_df["time_delta_t_plus_1"] = trans_df.time_delta_t_plus_1.fillna(0)
 trans_df["time_delta_t_minus_1"] = trans_df.time_delta_t_minus_1.fillna(0)  </div>
     
         </div>
@@ -6595,7 +6743,7 @@ trans_df["time_delta_t_minus_1"] = trans_df.time_delta_t_minus_1.fillna(0)  </di
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6610,9 +6758,9 @@ trans_df["time_delta_t_minus_1"] = trans_df.time_delta_t_minus_1.fillna(0)  </di
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">trans_df</span> <span class="o">=</span> <span class="n">trans_df</span><span class="p">[[</span><span class="s2">&quot;tid&quot;</span><span class="p">,</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span><span class="s2">&quot;cc_num&quot;</span><span class="p">,</span><span class="s2">&quot;category&quot;</span><span class="p">,</span><span class="s2">&quot;amount&quot;</span><span class="p">,</span><span class="s2">&quot;city&quot;</span><span class="p">,</span><span class="s2">&quot;country&quot;</span><span class="p">,</span><span class="s2">&quot;fraud_label&quot;</span><span class="p">,</span><span class="s2">&quot;loc_delta_t_plus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;loc_delta_t_minus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;time_delta_t_plus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;time_delta_t_minus_1&quot;</span><span class="p">]]</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">trans_df</span> <span class="o">=</span> <span class="n">trans_df</span><span class="p">[[</span><span class="s2">&quot;tid&quot;</span><span class="p">,</span><span class="s2">&quot;datetime&quot;</span><span class="p">,</span><span class="s2">&quot;cc_num&quot;</span><span class="p">,</span><span class="s2">&quot;amount&quot;</span><span class="p">,</span><span class="s2">&quot;country&quot;</span><span class="p">,</span><span class="s2">&quot;fraud_label&quot;</span><span class="p">,</span><span class="s2">&quot;loc_delta_t_plus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;loc_delta_t_minus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;time_delta_t_minus_1&quot;</span><span class="p">]]</span>
 </pre></div>
-<div id="cell-8" class="clipboard-copy-txt">trans_df = trans_df[["tid","datetime","cc_num","category","amount","city","country","fraud_label","loc_delta_t_plus_1", "loc_delta_t_minus_1", "time_delta_t_plus_1", "time_delta_t_minus_1"]]</div>
+<div id="cell-8" class="clipboard-copy-txt">trans_df = trans_df[["tid","datetime","cc_num","amount","country","fraud_label","loc_delta_t_plus_1", "loc_delta_t_minus_1", "time_delta_t_minus_1"]]</div>
     
         </div>
     </div>
@@ -6621,13 +6769,13 @@ trans_df["time_delta_t_minus_1"] = trans_df.time_delta_t_minus_1.fillna(0)  </di
 </div>
 
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6642,16 +6790,130 @@ trans_df["time_delta_t_minus_1"] = trans_df.time_delta_t_minus_1.fillna(0)  </di
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">trans_df</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">trans_df</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span> <span class="o">**</span> <span class="mi">6</span>
-<span class="n">trans_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">trans_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
-<div id="cell-9" class="clipboard-copy-txt">trans_df.datetime = trans_df.datetime.values.astype(np.int64) // 10 ** 6
-trans_df.head()</div>
+<div id="cell-9" class="clipboard-copy-txt">trans_df.head()</div>
     
         </div>
     </div>
 
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>tid</th>
+      <th>datetime</th>
+      <th>cc_num</th>
+      <th>amount</th>
+      <th>country</th>
+      <th>fraud_label</th>
+      <th>loc_delta_t_plus_1</th>
+      <th>loc_delta_t_minus_1</th>
+      <th>time_delta_t_minus_1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>169514</th>
+      <td>4c51b54665c7ddb466ea5936f4f3a428</td>
+      <td>2022-01-01 08:11:01</td>
+      <td>4467360740682089</td>
+      <td>77.77</td>
+      <td>US</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.000148</td>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>167022</th>
+      <td>4c30185aea2e28e7d9797004710e13c6</td>
+      <td>2022-01-01 10:03:42</td>
+      <td>4700702588013561</td>
+      <td>781.27</td>
+      <td>US</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.000070</td>
+      <td>0.416667</td>
+    </tr>
+    <tr>
+      <th>60585</th>
+      <td>1a109febabc5c36409f2caf729e110d3</td>
+      <td>2022-01-01 10:08:59</td>
+      <td>4205094877256105</td>
+      <td>36.25</td>
+      <td>US</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.000108</td>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <th>249651</th>
+      <td>855eb0f8e7fdb85e9b63c60028ce1d53</td>
+      <td>2022-01-01 10:34:54</td>
+      <td>4918033532626920</td>
+      <td>93.05</td>
+      <td>US</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.000032</td>
+      <td>0.250000</td>
+    </tr>
+    <tr>
+      <th>203481</th>
+      <td>b0214ee4d61696adf1149dbaf61fcf2f</td>
+      <td>2022-01-01 12:34:54</td>
+      <td>4166420904624170</td>
+      <td>2.46</td>
+      <td>US</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.000135</td>
+      <td>0.250000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -6669,13 +6931,13 @@ trans_df.head()</div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6708,6 +6970,55 @@ fs = project.get_feature_store()</div>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Connected. Call `.close()` to terminate connection gracefully.
+
+Logged in to project, explore it here https://c.app.hopsworks.ai:443/p/258
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
+<pre>DeprecationWarning: the imp module is deprecated in favour of importlib; see the module&#39;s documentation for alternative uses
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Connected. Call `.close()` to terminate connection gracefully.
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
@@ -6727,7 +7038,7 @@ fs = project.get_feature_store()</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6781,13 +7092,13 @@ fs = project.get_feature_store()</div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6812,6 +7123,72 @@ fs = project.get_feature_store()</div>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Feature Group created successfully, explore it at 
+https://c.app.hopsworks.ai:443/p/258/fs/198/fg/791
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
+<pre>Uploading Dataframe: 0.00% |          | Rows 0/365120 | Elapsed Time: 00:00 | Remaining Time: ?</pre>
+</div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Launching offline feature group backfill job...
+Backfill Job started successfully, you can follow the progress at 
+https://c.app.hopsworks.ai/p/258/jobs/named/transactions_fraud_online_fg_3_offline_fg_backfill/executions
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>(&lt;hsfs.core.job.Job at 0x7fb44550d3d0&gt;, None)</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -6819,7 +7196,7 @@ fs = project.get_feature_store()</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6838,14 +7215,10 @@ fs = project.get_feature_store()</div>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;tid&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Transaction id&quot;</span><span class="p">},</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Transaction time&quot;</span><span class="p">},</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cc_num&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Number of the credit card performing the transaction&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Expense category&quot;</span><span class="p">},</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;amount&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Dollar amount of the transaction&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;city&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;City in which the transaction was made&quot;</span><span class="p">},</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;country&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Country in which the transaction was made&quot;</span><span class="p">},</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;fraud_label&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether the transaction was fraudulent or not&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;loc_delta_t_plus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Location of consecutive transaction&quot;</span><span class="p">},</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;loc_delta_t_minus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Location of previous transaction&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;time_delta_t_plus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Time of consecutive transaction&quot;</span><span class="p">},</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;time_delta_t_minus_1&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Time of previous transaction&quot;</span><span class="p">},</span>    
 <span class="p">]</span>
 
@@ -6856,14 +7229,10 @@ fs = project.get_feature_store()</div>
     {"name": "tid", "description": "Transaction id"},
     {"name": "datetime", "description": "Transaction time"},
     {"name": "cc_num", "description": "Number of the credit card performing the transaction"},
-    {"name": "category", "description": "Expense category"},
     {"name": "amount", "description": "Dollar amount of the transaction"},
-    {"name": "city", "description": "City in which the transaction was made"},
     {"name": "country", "description": "Country in which the transaction was made"},
     {"name": "fraud_label", "description": "Whether the transaction was fraudulent or not"},
-    {"name": "loc_delta_t_plus_1", "description": "Location of consecutive transaction"},
     {"name": "loc_delta_t_minus_1", "description": "Location of previous transaction"},
-    {"name": "time_delta_t_plus_1", "description": "Time of consecutive transaction"},
     {"name": "time_delta_t_minus_1", "description": "Time of previous transaction"},    
 ]
 
@@ -6889,13 +7258,13 @@ for desc in feature_descriptions:
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -6934,6 +7303,72 @@ profile_fg.insert(profiles_df)</div>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Feature Group created successfully, explore it at 
+https://c.app.hopsworks.ai:443/p/258/fs/198/fg/792
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output " data-mime-type="text/plain">
+<pre>Uploading Dataframe: 0.00% |          | Rows 0/1000 | Elapsed Time: 00:00 | Remaining Time: ?</pre>
+</div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Launching offline feature group backfill job...
+Backfill Job started successfully, you can follow the progress at 
+https://c.app.hopsworks.ai/p/258/jobs/named/profile_fraud_online_fg_3_offline_fg_backfill/executions
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>(&lt;hsfs.core.job.Job at 0x7fb4223ad880&gt;, None)</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -6941,7 +7376,7 @@ profile_fg.insert(profiles_df)</div>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -7006,13 +7441,13 @@ for desc in feature_descriptions:
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
         <div class="CodeMirror cm-s-jupyter">
@@ -7053,6 +7488,30 @@ trans_fg.compute_statistics()</div>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Statistics Job started successfully, you can follow the progress at 
+https://c.app.hopsworks.ai/p/258/jobs/named/transactions_fraud_online_fg_3_compute_stats_07092022151544/executions
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
@@ -7067,6 +7526,38 @@ trans_fg.compute_statistics()</div>
 
 </div>
 </div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+        <div class="zeroclipboard-container">
+            <clipboard-copy for="cell-17">
+            <div>
+                <span class="notice" hidden>Copied!</span>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                </svg>
+                </div>
+            </clipboard-copy>
+        </div>
+            <div class="highlight-ipynb hl-python"><pre><span></span>
+</pre></div>
+<div id="cell-17" class="clipboard-copy-txt"></div>
+    
+        </div>
+    </div>
+
+</div>
+</div>
+
 </div>
 </div>
 </div>
