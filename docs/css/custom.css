@@ -36,8 +36,6 @@
   border-radius: var(--border-radius-variable);
 }
 
-.md-nav__link:focus{
-}
 
 .image_logo_02{
   width:450px;
@@ -107,4 +105,15 @@
 /* Jupyter Stuff */
 .jupyter-wrapper .jp-CodeCell .jp-Cell-inputWrapper .jp-InputPrompt {
   display: none !important;
+}
+
+
+@media screen and (max-width: 479px){
+ .md-sidebar--primary, .md-sidebar {
+  z-index: 50 !important;
+ }
+ .md-logo {
+  visibility: hidden;
+ }
+  
 }
