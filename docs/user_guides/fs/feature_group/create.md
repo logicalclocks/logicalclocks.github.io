@@ -79,13 +79,13 @@ When writing data on the online feature store, existing rows with the same prima
 
 The event time column represent the time at which the event was generated. For example, with transaction data, the event time is the time at which a given transaction was made. 
 
-The even time is added to the primary key when writing to the offline feature store. This will make sure that the offline feature store has the entire history. As an example, if a user has done multiple purchases on a website, the event time being part of the primary key, will ensure that all the purchases for each user (user_id) will be saved in the feature group.
+The event time is added to the primary key when writing to the offline feature store. This will make sure that the offline feature store has the entire history. As an example, if a user has done multiple purchases on a website, the event time being part of the primary key, will ensure that all the purchases for each user (user_id) will be saved in the feature group.
 
 The event time **is not** part of the primary key when writing to the online feature store. This will ensure that the online feature store has the most recent version of the feature vector for each primary key.
 
 ##### Partition key
 
-It is best practice to add a partition key. When you specify a partition key the data in the feature group will be stored under multiple directories based on the value of the partition column(s).
+It is best practice to add a partition key. When you specify a partition key, the data in the feature group will be stored under multiple directories based on the value of the partition column(s).
 All the rows with a given value as partition key will be stored in the same directory. 
 
 Choosing the correct partition key has significant impact on the query performance as the execution engine (Spark) will be able to skip listing and reading files belonging to partitions which are not included in the query. 
