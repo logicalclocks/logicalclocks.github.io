@@ -6703,7 +6703,7 @@ feature_view = fs.create_feature_view(name="iris",
 
 <span class="n">le</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">LabelEncoder</span><span class="p">()</span>
 <span class="n">y_train_encoded</span><span class="o">=</span><span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y_train</span><span class="p">[</span><span class="s1">&#39;variety&#39;</span><span class="p">])</span>
-<span class="n">y_test_encoded</span><span class="o">=</span><span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y_test</span><span class="p">[</span><span class="s1">&#39;variety&#39;</span><span class="p">])</span>
+<span class="n">y_test_encoded</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_test</span><span class="p">[</span><span class="s1">&#39;variety&#39;</span><span class="p">])</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train_encoded</span><span class="p">)</span>
@@ -6712,7 +6712,7 @@ feature_view = fs.create_feature_view(name="iris",
 
 le = preprocessing.LabelEncoder()
 y_train_encoded=le.fit_transform(y_train['variety'])
-y_test_encoded=le.fit_transform(y_test['variety'])
+y_test_encoded = le.transform(y_test['variety'])
 
 model = KNeighborsClassifier(n_neighbors=4)
 model.fit(X_train, y_train_encoded) </div>
