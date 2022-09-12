@@ -70,6 +70,37 @@ The version number is optional, if you don't specify the version number the APIs
 
 The last parameter used in the examples above is `stream`. The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store. When using the APIs in a Python environment this behavior is the default. 
 
+##### Primary key
+
+A primary key is required when using the default Hudi file format to store offline feature data. When inserting data in a feature group on the offline feature store, the DataFrame you are writing is checked against the existing data in the feature group. If a row with the same primary key is found in the feature group, the row will be updated. If the primary key is not found, the row is appended to the feature group.
+When writing data on the online feature store, existing rows with the same primary key will be overwritten by new rows with the same primary key.
+
+##### Event time
+
+The event time column represent the time at which the event was generated. For example, with transaction data, the event time is the time at which a given transaction was made. 
+
+The event time is added to the primary key when writing to the offline feature store. This will make sure that the offline feature store has the entire history. As an example, if a user has done multiple purchases on a website, the event time being part of the primary key, will ensure that all the purchases for each user (user_id) will be saved in the feature group.
+
+The event time **is not** part of the primary key when writing to the online feature store. This will ensure that the online feature store has the most recent version of the feature vector for each primary key.
+
+##### Partition key
+
+It is best practice to add a partition key. When you specify a partition key, the data in the feature group will be stored under multiple directories based on the value of the partition column(s).
+All the rows with a given value as partition key will be stored in the same directory. 
+
+Choosing the correct partition key has significant impact on the query performance as the execution engine (Spark) will be able to skip listing and reading files belonging to partitions which are not included in the query. 
+As an example, if you have partitioned your feature group by day and you are creating a training dataset that includes only the last year of data, Spark will read only 365 partitions and not the entire history of data.
+On the other hand, if the partition key is too fine grained (e.g. timestamp at millisecond resolution) - a large number of small partitions will be generated. This will slow down query execution as Spark will need to list and read a large amount of small directories/files.
+
+If you do not provide a partition key, all the feature data will be stored as files in a single directory.
+The system has a limit of 10240 direct children (files or other subdirectories) per directory. This means that, as you add new data to a non-partitioned feature group, new files will be created and you might reach the limit. If you do reach the limit, your feature engineering pipeline will fail with the following error:
+
+```sh
+MaxDirectoryItemsExceededException - The directory item limit is exceeded: limit=10240 items=10240
+```
+
+By using partitioning the system will write the feature data in different subdirectories, thus allowing you to write 10240 files per partition.
+
 ### Register the metadata and save the feature data
 
 The snippet above only created the metadata object on the Python interpreter running the code. To register the feature group metadata and to save the feature data with Hopsworks, you should invoke the `save` method:
