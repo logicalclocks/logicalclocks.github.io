@@ -2,7 +2,7 @@
 
 Training data can be created from the feature view and used by different ML libraries for training different models.
 
-You can read [training data concepts](../../../concepts/fs/feature_view/offline_api.md) for more details. To see a full example of how to create a training data, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/2_feature_view_creation.ipynb).
+You can read [training data concepts](../../../concepts/fs/feature_view/offline_api.md) for more details. To see a full example of how to create training data, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/2_feature_view_creation.ipynb).
 
 ## Creation
 It can be created as in-memory DataFrames or materialised as `tfrecords`, `parquet`, `csv`, or `tsv` files to HopsFS or in all other locations, for example, S3, GCS. If you materialise a training dataset, a `PySparkJob` will be launched. By default, `create_training_data` waits for the job to finish. However, you can run the job asynchronously by passing `write_options={"wait_for_job": False}`. You can monitor the job status in the [jobs overview UI](../../projects/jobs/pyspark_job.md#step-1-jobs-overview). 
@@ -24,7 +24,7 @@ print(job.id) # get the job's id and view the job status in the UI
 
 
 ### Extra filters
-Sometimes data scientists need to train different models using subsets of a dataset. For example, there can be different models for different countries, seasons and different groups. One way is to create different feature views for training different models. Another way is to add extra filters on top of the feature view when creating a training data.
+Sometimes data scientists need to train different models using subsets of a dataset. For example, there can be different models for different countries, seasons, and different groups. One way is to create different feature views for training different models. Another way is to add extra filters on top of the feature view when creating training data.
 
 In the [transaction fraud example](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/1_feature_groups.ipynb), there are different transaction categories, for example: "Health/Beauty", "Restaurant/Cafeteria", "Holliday/Travel" etc. Examples below show how to create training data for different transaction categories.
 ```python
