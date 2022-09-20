@@ -4,7 +4,7 @@ Once you have trained a model, it is time to deploy it. You can get back all the
 If you want to understand more about the concept of feature vectors, you can refer to [here](../../../concepts/fs/feature_view/online_api.md).
 
 ## Retrieval
-You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view.
+You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view. Note that filters defined in feature view and training data will not be applied when feature vectors are returned.
 
 === "Python"
     ```python
