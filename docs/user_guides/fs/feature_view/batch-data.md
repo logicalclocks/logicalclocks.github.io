@@ -23,3 +23,4 @@ If you have specified transformation functions when creating a feature view, you
 feature_view.init_batch_scoring(training_dataset_version=1)
 ```
 
+It is important to note that in addition to the filters defined in feature view, [extra filters](./training-data.md#Extra-filters) will be applied if they are defined in the given training dataset version.
