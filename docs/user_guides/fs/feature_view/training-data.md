@@ -9,7 +9,7 @@ It can be created as in-memory DataFrames or materialised as `tfrecords`, `parqu
 
 ```python
 # create a training dataset as dataframe
-df = feature_view.training_data(
+feature_df, label_df = feature_view.training_data(
     description = 'transactions fraud batch training dataset',
 )
 
@@ -75,7 +75,7 @@ version, job = feature_view.create_train_validation_test_splits(
 Once you have created a training dataset, all its metadata are saved in Hopsworks. This enables you to reproduce exactly the same dataset at a later point in time. This holds for training data as both DataFrames or files. That is, you can delete the training data files (for example, to reduce storage costs), but still reproduce the training data files later on if you need to.
 ```python
 # get a training dataset
-df = feature_view.get_training_data(training_dataset_version=1)
+feature_df, label_df = feature_view.get_training_data(training_dataset_version=1)
 
 # get a training dataset with train and test splits
 X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_dataset_version=1)
