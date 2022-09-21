@@ -60,10 +60,10 @@ version, job = feature_view.create_train_test_split(
 Create a training dataset (as in-memory DataFrames) or materialise a training dataset with train, validation, and test splits.
 ```python
 # create a training dataset as DataFrame
-X_train, X_val, X_test, y_train, y_val, y_test = feature_view.train_validation_test_splits(validation_size=0.3, test_size=0.2)
+X_train, X_val, X_test, y_train, y_val, y_test = feature_view.train_validation_test_split(validation_size=0.3, test_size=0.2)
 
 # materialise a training dataset
-version, job = feature_view.create_train_validation_test_splits(
+version, job = feature_view.create_train_validation_test_split(
     validation_size = 0.3, 
     test_size = 0.2
     description = 'transactions fraud batch training dataset',
