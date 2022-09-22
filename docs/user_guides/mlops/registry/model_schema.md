@@ -11,9 +11,7 @@ In this guide you will learn how to attach a model schema to your model. A model
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project("my_project")
+project = hopsworks.login()
 
 # get Hopsworks Model Registry handle
 mr = project.get_model_registry()

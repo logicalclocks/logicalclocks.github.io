@@ -15,9 +15,7 @@ In this guide you will learn how to export a TensorFlow model and register it in
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project("my_project")
+project = hopsworks.login()
 
 # get Hopsworks Model Registry handle
 mr = project.get_model_registry()

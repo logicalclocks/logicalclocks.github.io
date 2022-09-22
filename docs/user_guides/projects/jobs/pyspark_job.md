@@ -152,9 +152,7 @@ This snippet assumes the python script is in the current working directory and n
 
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project()
+project = hopsworks.login()
 
 dataset_api = project.get_dataset_api()
 
