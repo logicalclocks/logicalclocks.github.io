@@ -19,9 +19,7 @@ In this guide, you will learn how to create a simple recommendation application,
 
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project()
+project = hopsworks.login()
 
 opensearch_api = project.get_opensearch_api()
 
