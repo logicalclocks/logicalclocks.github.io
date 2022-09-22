@@ -97,9 +97,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project("my_project")
+project = hopsworks.login()
 
 # get Hopsworks Model Registry handle
 mr = project.get_model_registry()
