@@ -5173,9 +5173,7 @@
 <h3 id="step-1-get-the-opensearch-api">Step 1: Get the OpenSearch API<a class="headerlink" href="#step-1-get-the-opensearch-api" title="Permanent link">#</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">hopsworks</span>
 
-<span class="n">connection</span> <span class="o">=</span> <span class="n">hopsworks</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span>
-
-<span class="n">project</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_project</span><span class="p">()</span>
+<span class="n">project</span> <span class="o">=</span> <span class="n">hopsworks</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="n">opensearch_api</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_opensearch_api</span><span class="p">()</span>
 </code></pre></div>
