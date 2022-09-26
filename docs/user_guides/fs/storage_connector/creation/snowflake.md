@@ -19,8 +19,10 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **Snowflake Connection URL:** Consult the documentation of your target snowflake account to determine the correct 
   connection URL. There are multiple formats supported by Snowflake. This is usually some form of your [Snowflake account 
   identifier](https://docs.snowflake.com/en/user-guide/admin-account-identifier.html) or an 
-[account URL](https://docs.snowflake.com/en/user-guide/organizations-connect.html#connecting-with-a-url), which can be retrieved from the Snowflake 
-  account home page or under the Accounts section under Admin settings. For example, using an account identifier format:
+[account URL](https://docs.snowflake.com/en/user-guide/organizations-connect.html#connecting-with-a-url).
+
+For example, connection URL can be set using an account 
+  identifier format:
 ```
 <account_identifier>.snowflakecomputing.com
 ```
@@ -28,7 +30,17 @@ OR using any of the account URL format:
 ```
 https://<orgname>-<account_name>.snowflakecomputing.com
 ```
-
+The account and organization details can be viewed in the Snowsight UI under **Admin > Account** or by querying it in 
+SQL,
+as explained in
+[Snowflake
+documentation](https://docs.snowflake.com/en/user-guide/organizations-gs.html#viewing-the-name-of-your-organization-and-its-accounts).
+Below is an example of how to view the account and organization to get the account URL from the Snowsight UI.
+<figure markdown>
+  ![Viewing Snowflake account URL](../../../..
+/assets/images/guides/fs/storage_connector/snowflake_account_url.png)
+  <figcaption>Viewing Snowflake account URL details</figcaption>
+</figure>
 
 !!! warning "Token-based authentication or password based"
     The Snowflake storage connector supports both username and password authentication as well as token-based authentication.
