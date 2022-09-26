@@ -17,7 +17,7 @@ When you're finished, you'll be able to query the database using Spark through H
 Before you begin this guide you'll need to retrieve the following information from your Snowflake account and database, the following options are **mandatory**:
 
 - **Snowflake Connection URL:** Consult the documentation of your target snowflake account to determine the correct 
-  connection URL. There multiple formats supported by Snowflake. This is usually some form of your [Snowflake account 
+  connection URL. There are multiple formats supported by Snowflake. This is usually some form of your [Snowflake account 
   identifier](https://docs.snowflake.com/en/user-guide/admin-account-identifier.html) or an 
 [account URL](https://docs.snowflake.com/en/user-guide/organizations-connect.html#connecting-with-a-url), which can be retrieved from the Snowflake 
   account home page or under the Accounts section under Admin settings. For example, using an account identifier format:
