@@ -247,6 +247,7 @@ theme:
     - navigation.indexes
 
 extra:
+  hopsworks_version: dev
   version:
     provider: mike
   generator: false
@@ -276,6 +277,11 @@ extra_javascript:
 plugins:
     - search
     - mkdocs-jupyter
+    - macros:
+        j2_block_start_string: '{{{%'
+        j2_block_end_string: '%}}}'
+        j2_variable_start_string: '{{{'
+        j2_variable_end_string: '}}}'
 
 markdown_extensions:
     - admonition
