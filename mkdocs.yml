@@ -278,6 +278,7 @@ plugins:
     - search
     - mkdocs-jupyter
     - macros:
+        # have to use custom templating string otherwise it interferes with jupyter notebooks
         j2_block_start_string: '{{{%'
         j2_block_end_string: '%}}}'
         j2_variable_start_string: '{{{'
