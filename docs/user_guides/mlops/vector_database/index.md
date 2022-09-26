@@ -161,7 +161,7 @@ pp.pprint(response)
 
 [k-NN plugin](https://opensearch.org/docs/1.3/search-plugins/knn/knn-index/)
 
-[OpenSearch](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/open_search/)
+[OpenSearch](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/open_search/)
 
 ## Conclusion
 
