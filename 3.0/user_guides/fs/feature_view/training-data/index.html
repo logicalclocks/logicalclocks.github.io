@@ -5126,8 +5126,8 @@
 <h2 id="creation">Creation<a class="headerlink" href="#creation" title="Permanent link">#</a></h2>
 <p>It can be created as in-memory DataFrames or materialised as <code>tfrecords</code>, <code>parquet</code>, <code>csv</code>, or <code>tsv</code> files to HopsFS or in all other locations, for example, S3, GCS. If you materialise a training dataset, a <code>PySparkJob</code> will be launched. By default, <code>create_training_data</code> waits for the job to finish. However, you can run the job asynchronously by passing <code>write_options={"wait_for_job": False}</code>. You can monitor the job status in the <a href="../../../projects/jobs/pyspark_job/#step-1-jobs-overview">jobs overview UI</a>. </p>
 <div class="highlight"><pre><span></span><code><span class="c1"># create a training dataset as dataframe</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">training_data</span><span class="p">(</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;transactions_dataset_jan_feb&#39;</span><span class="p">,</span>
+<span class="n">feature_df</span><span class="p">,</span> <span class="n">label_df</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">training_data</span><span class="p">(</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;transactions fraud batch training dataset&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># materialise a training dataset</span>
@@ -5153,11 +5153,11 @@
 </code></pre></div></p>
 <p>Create a training dataset (as in-memory DataFrames) or materialise a training dataset with train, validation, and test splits.
 <div class="highlight"><pre><span></span><code><span class="c1"># create a training dataset as DataFrame</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">train_validation_test_splits</span><span class="p">(</span><span class="n">val_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">train_validation_test_split</span><span class="p">(</span><span class="n">validation_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 
 <span class="c1"># materialise a training dataset</span>
-<span class="n">version</span><span class="p">,</span> <span class="n">job</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">create_train_validation_test_splits</span><span class="p">(</span>
-    <span class="n">val_size</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> 
+<span class="n">version</span><span class="p">,</span> <span class="n">job</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">create_train_validation_test_split</span><span class="p">(</span>
+    <span class="n">validation_size</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> 
     <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
     <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;transactions_dataset_jan_feb&#39;</span><span class="p">,</span>
     <span class="n">data_format</span> <span class="o">=</span> <span class="s1">&#39;csv&#39;</span>
@@ -5166,7 +5166,7 @@
 <h2 id="read-training-data">Read Training Data<a class="headerlink" href="#read-training-data" title="Permanent link">#</a></h2>
 <p>Once you have created a training dataset, all its metadata are saved in Hopsworks. This enables you to reproduce exactly the same dataset at a later point in time. This holds for training data as both DataFrames or files. That is, you can delete the training data files (for example, to reduce storage costs), but still reproduce the training data files later on if you need to.
 <div class="highlight"><pre><span></span><code><span class="c1"># get a training dataset</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_training_data</span><span class="p">(</span><span class="n">training_dataset_version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">feature_df</span><span class="p">,</span> <span class="n">label_df</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_training_data</span><span class="p">(</span><span class="n">training_dataset_version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># get a training dataset with train and test splits</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_train_test_split</span><span class="p">(</span><span class="n">training_dataset_version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
