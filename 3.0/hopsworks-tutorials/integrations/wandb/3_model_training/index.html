@@ -496,7 +496,7 @@
   
     <li class="md-nav__item">
       <a href="../../../fraud_batch/2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -581,7 +581,7 @@
   
     <li class="md-nav__item">
       <a href="../../../fraud_online/2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -4987,6 +4987,19 @@
      👩🏻‍🔬 Building machine learning model with Weights &amp; Biases
   </a>
   
+    <nav class="md-nav" aria-label=" 👩🏻‍🔬 Building machine learning model with Weights &amp; Biases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#important" class="md-nav__link">
+    ⚠️ Important:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -6118,12 +6131,12 @@ Licensed under the Apache License, Version 2.0.
                 },
                 displayAlign: 'center',
                 CommonHTML: {
-                    linebreaks: { 
-                    automatic: true 
+                    linebreaks: {
+                    automatic: true
                     }
                 }
             });
-        
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
     }
@@ -6274,7 +6287,7 @@ fs = project.get_feature_store()</div>
 <span class="n">feature_view_version</span><span class="o">=</span><span class="mi">1</span>
 <span class="n">training_dataset_version</span><span class="o">=</span><span class="mi">1</span>
 <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_view</span><span class="p">(</span><span class="s2">&quot;transactions_view_fraud_batch_wandb&quot;</span><span class="p">,</span> <span class="n">feature_view_version</span><span class="p">)</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_train_validation_test_split</span><span class="p">(</span><span class="n">training_dataset_version</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_train_validation_test_split</span><span class="p">(</span><span class="n">training_dataset_version</span><span class="p">)</span>
 </pre></div>
 <div id="cell-3" class="clipboard-copy-txt">import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -6284,7 +6297,7 @@ from sklearn.metrics import f1_score
 feature_view_version=1
 training_dataset_version=1
 feature_view = fs.get_feature_view("transactions_view_fraud_batch_wandb", feature_view_version)
-X_train, y_train, X_val, y_val, X_test, y_test = feature_view.get_train_validation_test_split(training_dataset_version)</div>
+X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validation_test_split(training_dataset_version)</div>
     
         </div>
     </div>
@@ -6456,6 +6469,19 @@ wandb.login()</div>
 </div>
 </div>
 
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h4 id="important">&#9888;&#65039; Important:<a class="anchor-link" href="#important">&#182;</a></h4><blockquote><p>Replace <strong>YOUR_USER_NAME</strong> and <strong>YOUR_PROJECT_NAME</strong> with your <strong>wandb's</strong> user name and project name.</p>
+</blockquote>
+
+</div>
+</div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -6689,11 +6715,13 @@ run.finish()</div>
 <ol>
 <li><p>Go to the <a href="https://wandb.ai/home">W&amp;B main page</a>.</p>
 </li>
+<li><p>Select required project.</p>
+</li>
 <li><p>Select the "Artifacts" icon in the left sidebar.</p>
 </li>
 <li><p>Inspect the <code>transactions_view_fraud_batch_fv_version1</code> type artifact.</p>
 </li>
-<li><p>Go to the <strong>Lineage</strong> and then press <strong>Explode</strong>.</p>
+<li><p>Go to the <strong>Lineage</strong> page.</p>
 </li>
 </ol>
 <p>So for now Data Lineage should look like this:</p>
@@ -6714,14 +6742,14 @@ run.finish()</div>
 an organized and efficient way to conduct a battle royale of models and pick the most accurate model. They enable this by automatically searching through combinations of hyperparameter values (e.g. learning rate, batch size, number of hidden layers, optimizer type) to find the most optimal values.</p>
 <p>To use the sweep you should:</p>
 <ul>
-<li><p>define a dictionary or a YAML file that specifies the parameters to search through, the search strategy, the optimization metric et all.</p>
+<li><p>define a dictionary or a YAML file that specifies the parameters to search through, the search strategy, the optimization metric et al.</p>
 </li>
 <li><p>Initialize the sweep: initialize the sweep and pass in the dictionary of sweep configurations: sweep_id = wandb.sweep(sweep_config)</p>
 </li>
 <li><p>Run the sweep agent: you can call wandb.agent() and pass the sweep_id to run, along with a function that defines your model architecture and trains it: wandb.agent(sweep_id, function=train)</p>
 </li>
 </ul>
-<p>But 1st Lets define a trainig fundtion where you will</p>
+<p>But first, let’s define a training function where you will:</p>
 
 <pre><code>- Create a RandomForestClassifier with a set of hyperparameters.
 
@@ -6865,7 +6893,7 @@ def train_model(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test):
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Now you are ready do to defind sweep configuration in form of a dictionary and iclude following parameters for your training function:</p>
+<p>Now you are ready to define sweep configuration in form of a dictionary and include following parameters for your training function:</p>
 <ul>
 <li><p><code>method</code>: specify your search strategy (<strong>Bayesian</strong>, <strong>Grid</strong> and <strong>Random</strong> searches.)</p>
 </li>
@@ -7042,7 +7070,7 @@ def train_model(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test):
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>Great!📈🎉</p>
-<p>Now you can click to links prined above and go to the <strong>Weights &amp; Biases</strong> UI to look at the results</p>
+<p>Now you can click to links printed above and go to the <strong>Weights &amp; Biases</strong> UI to look at the results.</p>
 <p>⬇️ Here you can see some great plots which will help you to explore model development process such as <strong>Feature Importance</strong>, <strong>ROC Curve</strong>, <strong>Confusion Matrix</strong> and others.</p>
 
 </div>
@@ -7067,7 +7095,7 @@ def train_model(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test):
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Also you can explore how different hyperparameters affect model.</p>
+<p>Also, you can explore how different hyperparameters affect the model.</p>
 <p>In addition you can sort all observations by desired column. In our case you will sort by F1_score metric in order to find the best set of Hyperparameters.</p>
 
 </div>

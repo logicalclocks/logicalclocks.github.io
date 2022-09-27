@@ -502,7 +502,7 @@
   
     <li class="md-nav__item">
       <a href="../2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -563,8 +563,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#train-model" class="md-nav__link">
-     🏃 Train Model
+  <a href="#modeling" class="md-nav__link">
+     🧬 Modeling
   </a>
   
 </li>
@@ -574,26 +574,26 @@
       Use the model to score transactions 
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
+    <nav class="md-nav" aria-label="  Use the model to score transactions ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#exploration" class="md-nav__link">
      👓  Exploration
   </a>
   
-    <nav class="md-nav" aria-label=" 👓  Exploration">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
   <a href="#search" class="md-nav__link">
-    🔎 Search
+     🔎 Search
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#statistics" class="md-nav__link">
-    📊 Statistics
+     📊 Statistics
   </a>
   
 </li>
@@ -690,7 +690,7 @@
   
     <li class="md-nav__item">
       <a href="../../fraud_online/2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -5092,8 +5092,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#train-model" class="md-nav__link">
-     🏃 Train Model
+  <a href="#modeling" class="md-nav__link">
+     🧬 Modeling
   </a>
   
 </li>
@@ -5103,26 +5103,26 @@
       Use the model to score transactions 
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
+    <nav class="md-nav" aria-label="  Use the model to score transactions ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#exploration" class="md-nav__link">
      👓  Exploration
   </a>
   
-    <nav class="md-nav" aria-label=" 👓  Exploration">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
   <a href="#search" class="md-nav__link">
-    🔎 Search
+     🔎 Search
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#statistics" class="md-nav__link">
-    📊 Statistics
+     📊 Statistics
   </a>
   
 </li>
@@ -6179,12 +6179,12 @@ Licensed under the Apache License, Version 2.0.
                 },
                 displayAlign: 'center',
                 CommonHTML: {
-                    linebreaks: { 
-                    automatic: true 
+                    linebreaks: {
+                    automatic: true
                     }
                 }
             });
-        
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
     }
@@ -6332,14 +6332,14 @@ fs = project.get_feature_store()</div>
 
 <span class="c1"># Load data.</span>
 <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_view</span><span class="p">(</span><span class="s2">&quot;transactions_view_fraud_batch_fv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_train_validation_test_split</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_train_validation_test_split</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 <div id="cell-3" class="clipboard-copy-txt">import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
 # Load data.
 feature_view = fs.get_feature_view("transactions_view_fraud_batch_fv", 1)
-X_train, y_train, X_val, y_val, X_test, y_test = feature_view.get_train_validation_test_split(1)</div>
+X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validation_test_split(1)</div>
     
         </div>
     </div>
@@ -6423,7 +6423,7 @@ X_train, y_train, X_val, y_val, X_test, y_test = feature_view.get_train_validati
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="train-model"><span style="color:#ff5f27;"> &#127939; Train Model</span><a class="anchor-link" href="#train-model">&#182;</a></h2><p>Next you will train a model and set the bigger class weight for the positive class.</p>
+<h2 id="modeling"><span style="color:#ff5f27;"> &#129516; Modeling</span><a class="anchor-link" href="#modeling">&#182;</a></h2><p>Next you will train a model and set the bigger class weight for the positive class.</p>
 
 </div>
 </div>
@@ -6677,9 +6677,9 @@ march_transactions = feature_view.get_batch_data(start_time = start_time,  end_t
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="exploration"><span style="color:#ff5f27;"> &#128083;  Exploration</span><a class="anchor-link" href="#exploration">&#182;</a></h2><p>In the Hopsworks feature store, the metadata allows for multiple levels of explorations and review. Here you will explore a few of those capacities.</p>
-<h3 id="search">&#128270; <b>Search</b><a class="anchor-link" href="#search">&#182;</a></h3><p>Using the search function in the UI, you can query any aspect of the feature groups, feature_view and training data that was previously created.</p>
-<h3 id="statistics">&#128202; <b>Statistics</b><a class="anchor-link" href="#statistics">&#182;</a></h3><p>You can also enable statistics in one or all the feature groups.</p>
+<h3 id="exploration"><span style="color:#ff5f27;"> &#128083;  Exploration</span><a class="anchor-link" href="#exploration">&#182;</a></h3><p>In the Hopsworks feature store, the metadata allows for multiple levels of explorations and review. Here you will explore a few of those capacities.</p>
+<h3 id="search"><span style="color:#ff5f27;"> &#128270; Search</span><a class="anchor-link" href="#search">&#182;</a></h3><p>Using the search function in the UI, you can query any aspect of the feature groups, feature_view and training data that was previously created.</p>
+<h3 id="statistics"><span style="color:#ff5f27;"> &#128202; Statistics</span><a class="anchor-link" href="#statistics">&#182;</a></h3><p>You can also enable statistics in one or all the feature groups.</p>
 
 </div>
 </div>
@@ -6705,7 +6705,7 @@ march_transactions = feature_view.get_batch_data(start_time = start_time,  end_t
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">trans_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_group</span><span class="p">(</span><span class="s2">&quot;transactions_fraud_batch_fg&quot;</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">trans_fg</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_or_create_feature_group</span><span class="p">(</span><span class="s2">&quot;transactions_fraud_batch_fg&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">trans_fg</span><span class="o">.</span><span class="n">statistics_config</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;enabled&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="s2">&quot;histograms&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
@@ -6715,7 +6715,7 @@ march_transactions = feature_view.get_batch_data(start_time = start_time,  end_t
 <span class="n">trans_fg</span><span class="o">.</span><span class="n">update_statistics_config</span><span class="p">()</span>
 <span class="n">trans_fg</span><span class="o">.</span><span class="n">compute_statistics</span><span class="p">()</span>
 </pre></div>
-<div id="cell-11" class="clipboard-copy-txt">trans_fg = fs.get_feature_group("transactions_fraud_batch_fg", version = 1)
+<div id="cell-11" class="clipboard-copy-txt">trans_fg = fs.get_or_create_feature_group("transactions_fraud_batch_fg", version=1)
 trans_fg.statistics_config = {
     "enabled": True,
     "histograms": True,
@@ -6777,7 +6777,7 @@ This allows for a clear undestanding of the pipeline in relation to each element
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../2_feature_view_creation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Part 02: Training Data &amp;amp; Feature views" rel="prev">
+        <a href="../2_feature_view_creation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Part 02: Feature views &amp;amp; Training Datasets" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -6786,7 +6786,7 @@ This allows for a clear undestanding of the pipeline in relation to each element
               <span class="md-footer__direction">
                 Previous
               </span>
-              Part 02: Training Data &amp; Feature views
+              Part 02: Feature views &amp; Training Datasets
             </div>
           </div>
         </a>

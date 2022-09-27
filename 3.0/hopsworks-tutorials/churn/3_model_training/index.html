@@ -496,7 +496,7 @@
   
     <li class="md-nav__item">
       <a href="../../fraud_batch/2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -581,7 +581,7 @@
   
     <li class="md-nav__item">
       <a href="../../fraud_online/2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -6098,12 +6098,12 @@ Licensed under the Apache License, Version 2.0.
                 },
                 displayAlign: 'center',
                 CommonHTML: {
-                    linebreaks: { 
-                    automatic: true 
+                    linebreaks: {
+                    automatic: true
                     }
                 }
             });
-        
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
     }
@@ -6251,7 +6251,7 @@ fs = project.get_feature_store()</div>
     <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="p">)</span>
 
-<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_train_validation_test_split</span><span class="p">(</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">get_train_validation_test_split</span><span class="p">(</span>
     <span class="n">training_dataset_version</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="p">)</span>
 
@@ -6275,7 +6275,7 @@ feature_view = fs.get_feature_view(
     version = 1
 )
 
-X_train, y_train, X_val, y_val, X_test, y_test = feature_view.get_train_validation_test_split(
+X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validation_test_split(
     training_dataset_version = 1
 )
 

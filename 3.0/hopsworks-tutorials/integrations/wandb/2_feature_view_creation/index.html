@@ -496,7 +496,7 @@
   
     <li class="md-nav__item">
       <a href="../../../fraud_batch/2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -581,7 +581,7 @@
   
     <li class="md-nav__item">
       <a href="../../../fraud_online/2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -4983,6 +4983,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#transformation-functions" class="md-nav__link">
+    🤖 Transformation Functions 
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#feature-view-creation" class="md-nav__link">
      ⚙️ Feature View Creation 
   </a>
@@ -6036,12 +6043,12 @@ Licensed under the Apache License, Version 2.0.
                 },
                 displayAlign: 'center',
                 CommonHTML: {
-                    linebreaks: { 
-                    automatic: true 
+                    linebreaks: {
+                    automatic: true
                     }
                 }
             });
-        
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
     }
@@ -6260,8 +6267,7 @@ ds_query = trans_fg.select(["fraud_label", "category", "amount", "age_at_transac
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>🤖 Transformation Functions &lt;/span&gt;</p>
-<p>We will preprocess our data using <em>min-max scaling</em> on numerical features and <em>label encoding</em> on categorical features. To do this we simply define a mapping between our features and transformation functions. This ensures that transformation functions such as <em>min-max scaling</em> are fitted only on the training data (and not the validation/test data), which ensures that there is no data leakage.</p>
+<h2 id="transformation-functions-span">&#129302; Transformation Functions &lt;/span&gt;<a class="anchor-link" href="#transformation-functions-span">&#182;</a></h2><p>We will preprocess our data using <em>min-max scaling</em> on numerical features and <em>label encoding</em> on categorical features. To do this we simply define a mapping between our features and transformation functions. This ensures that transformation functions such as <em>min-max scaling</em> are fitted only on the training data (and not the validation/test data), which ensures that there is no data leakage.</p>
 
 </div>
 </div>

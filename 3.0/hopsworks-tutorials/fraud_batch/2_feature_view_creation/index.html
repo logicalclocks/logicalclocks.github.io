@@ -19,7 +19,7 @@
     
     
       
-        <title>Part 02: Training Data & Feature views - Hopsworks Documentation</title>
+        <title>Part 02: Feature views & Training Datasets - Hopsworks Documentation</title>
       
     
     
@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#part-02-training-data-feature-views" class="md-skip">
+        <a href="#part-02-feature-views-training-datasets" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Part 02: Training Data &amp; Feature views
+              Part 02: Feature views &amp; Training Datasets
             
           </span>
         </div>
@@ -511,12 +511,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Part 02: Training Data &amp; Feature views
+          Part 02: Feature views &amp; Training Datasets
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
       
         
@@ -535,8 +535,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#in-this-notebook-you-will-see-how-to-create-a-training-dataset-from-the-feature-groups" class="md-nav__link">
-    🗒️ In this notebook you will see how to create a training dataset from the feature groups:
+  <a href="#in-this-notebook-you-will-see-how-to-create-a-feature-view-and-training-dataset-from-the-feature-groups" class="md-nav__link">
+    🗒️ In this notebook you will see how to create a feature view and training dataset from the feature groups:
   </a>
   
 </li>
@@ -544,6 +544,13 @@
         <li class="md-nav__item">
   <a href="#feature-selection" class="md-nav__link">
      🔪 Feature Selection 
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformation-functions" class="md-nav__link">
+     🤖 Transformation Functions 
   </a>
   
 </li>
@@ -656,7 +663,7 @@
   
     <li class="md-nav__item">
       <a href="../../fraud_online/2_feature_view_creation/" class="md-nav__link">
-        Part 02: Training Data &amp; Feature views
+        Part 02: Feature views &amp; Training Datasets
       </a>
     </li>
   
@@ -5044,8 +5051,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#in-this-notebook-you-will-see-how-to-create-a-training-dataset-from-the-feature-groups" class="md-nav__link">
-    🗒️ In this notebook you will see how to create a training dataset from the feature groups:
+  <a href="#in-this-notebook-you-will-see-how-to-create-a-feature-view-and-training-dataset-from-the-feature-groups" class="md-nav__link">
+    🗒️ In this notebook you will see how to create a feature view and training dataset from the feature groups:
   </a>
   
 </li>
@@ -5053,6 +5060,13 @@
         <li class="md-nav__item">
   <a href="#feature-selection" class="md-nav__link">
      🔪 Feature Selection 
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transformation-functions" class="md-nav__link">
+     🤖 Transformation Functions 
   </a>
   
 </li>
@@ -6111,12 +6125,12 @@ Licensed under the Apache License, Version 2.0.
                 },
                 displayAlign: 'center',
                 CommonHTML: {
-                    linebreaks: { 
-                    automatic: true 
+                    linebreaks: {
+                    automatic: true
                     }
                 }
             });
-        
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
     }
@@ -6141,10 +6155,10 @@ Licensed under the Apache License, Version 2.0.
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="part-02-training-data-feature-views">Part 02: Training Data &amp; Feature views<a class="anchor-link" href="#part-02-training-data-feature-views">&#182;</a></h1><p><a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/2_feature_view_creation.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
+<h1 id="part-02-feature-views-training-datasets">Part 02: Feature views &amp; Training Datasets<a class="anchor-link" href="#part-02-feature-views-training-datasets">&#182;</a></h1><p><a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/2_feature_view_creation.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
 <p><strong>Note</strong>: you may get an error when installing hopsworks on Colab, and it is safe to ignore it.</p>
 <p>This is the second part of the quick start series of tutorials about Hopsworks Feature Store. This notebook explains how to read from a feature group and create training dataset within the feature store</p>
-<h2 id="in-this-notebook-you-will-see-how-to-create-a-training-dataset-from-the-feature-groups">&#128466;&#65039; In this notebook you will see how to create a training dataset from the feature groups:<a class="anchor-link" href="#in-this-notebook-you-will-see-how-to-create-a-training-dataset-from-the-feature-groups">&#182;</a></h2><ol>
+<h2 id="in-this-notebook-you-will-see-how-to-create-a-feature-view-and-training-dataset-from-the-feature-groups">&#128466;&#65039; In this notebook you will see how to create a feature view and training dataset from the feature groups:<a class="anchor-link" href="#in-this-notebook-you-will-see-how-to-create-a-feature-view-and-training-dataset-from-the-feature-groups">&#182;</a></h2><ol>
 <li><strong>Select the features</strong> you want to train our model on,</li>
 <li><strong>How the features should be preprocessed,</strong></li>
 <li><strong>Create a dataset split</strong> for training and validation data.</li>
@@ -6335,8 +6349,7 @@ ds_query = trans_fg.select(["fraud_label", "category", "amount", "age_at_transac
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>🤖 Transformation Functions &lt;/span&gt;</p>
-<p>You will preprocess our data using <em>min-max scaling</em> on numerical features and <em>label encoding</em> on categorical features. To do this you simply define a mapping between our features and transformation functions. This ensures that transformation functions such as <em>min-max scaling</em> are fitted only on the training data (and not the validation/test data), which ensures that there is no data leakage.</p>
+<h2 id="transformation-functions"><span style="color:#ff5f27;"> &#129302; Transformation Functions </span><a class="anchor-link" href="#transformation-functions">&#182;</a></h2><p>You will preprocess our data using <em>min-max scaling</em> on numerical features and <em>label encoding</em> on categorical features. To do this you simply define a mapping between our features and transformation functions. This ensures that transformation functions such as <em>min-max scaling</em> are fitted only on the training data (and not the validation/test data), which ensures that there is no data leakage.</p>
 
 </div>
 </div>
