@@ -16,11 +16,24 @@ When you're finished, you'll be able to query the database using Spark through H
 
 Before you begin this guide you'll need to retrieve the following information from your Snowflake account and database, the following options are **mandatory**:
 
-- **Snowflake Connection URL:** Consult the documentation of your target snowflake account to determine the correct connection URL. This is usually some form of your [Snowflake account identifier](https://docs.snowflake.com/en/user-guide/admin-account-identifier.html). For example:
-
+- **Snowflake Connection URL:** Consult the documentation of your target snowflake account to determine the correct connection URL. This is usually some form of your [Snowflake account identifier](https://docs.snowflake.com/en/user-guide/admin-account-identifier.html).
+For example:
 ```
 <account_identifier>.snowflakecomputing.com
 ```
+OR:
+```
+https://<orgname>-<account_name>.snowflakecomputing.com
+```
+The account and organization details can be viewed in the Snowsight UI under **Admin > Account** or by querying it in 
+SQL, as explained in [Snowflake
+documentation](https://docs.snowflake.com/en/user-guide/organizations-gs.html#viewing-the-name-of-your-organization-and-its-accounts).
+Below is an example of how to view the account and organization to get the account identifier from the Snowsight UI.
+<figure markdown>
+  ![Viewing Snowflake account identifier](../../../..
+/assets/images/guides/fs/storage_connector/snowflake_account_url.png)
+  <figcaption>Viewing Snowflake account identifier</figcaption>
+</figure>
 
 !!! warning "Token-based authentication or password based"
     The Snowflake storage connector supports both username and password authentication as well as token-based authentication.
@@ -28,6 +41,7 @@ Before you begin this guide you'll need to retrieve the following information fr
     Currently token-based authentication is in beta phase. Users are advised to use username/password and/or create a service account for accessing Snowflake from Hopsworks.
 
 - **Username and Password:** Login name for the Snowflake user and password. This is often also referred to as `sfUser` and `sfPassword`.
+- **Warehouse:** The warehouse to use for the session after connecting
 - **Database:** The database to use for the session after connecting.
 - **Schema:** The schema to use for the session after connecting.
 
@@ -51,7 +65,8 @@ Head to the Storage Connector View on Hopsworks (1) and set up a new storage con
 Enter the details for your Snowflake connector. Start by giving it a **name** and an optional **description**.
 
 1. Select "Snowflake" as connector protocol.
-2. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com`.
+2. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com` 
+or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 3. Login name for the Snowflake user.
 4. Password for the Snowflake user or Token.
 5. The database to connect to.
