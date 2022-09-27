@@ -16,30 +16,23 @@ When you're finished, you'll be able to query the database using Spark through H
 
 Before you begin this guide you'll need to retrieve the following information from your Snowflake account and database, the following options are **mandatory**:
 
-- **Snowflake Connection URL:** Consult the documentation of your target snowflake account to determine the correct 
-  connection URL. There are multiple formats supported by Snowflake. This is usually some form of your [Snowflake account 
-  identifier](https://docs.snowflake.com/en/user-guide/admin-account-identifier.html) or an 
-[account URL](https://docs.snowflake.com/en/user-guide/organizations-connect.html#connecting-with-a-url).
-
-For example, connection URL can be set using an account 
-  identifier format:
+- **Snowflake Connection URL:** Consult the documentation of your target snowflake account to determine the correct connection URL. This is usually some form of your [Snowflake account identifier](https://docs.snowflake.com/en/user-guide/admin-account-identifier.html).
+For example:
 ```
 <account_identifier>.snowflakecomputing.com
 ```
-OR using any of the account URL format:
+OR:
 ```
 https://<orgname>-<account_name>.snowflakecomputing.com
 ```
 The account and organization details can be viewed in the Snowsight UI under **Admin > Account** or by querying it in 
-SQL,
-as explained in
-[Snowflake
+SQL, as explained in [Snowflake
 documentation](https://docs.snowflake.com/en/user-guide/organizations-gs.html#viewing-the-name-of-your-organization-and-its-accounts).
-Below is an example of how to view the account and organization to get the account URL from the Snowsight UI.
+Below is an example of how to view the account and organization to get the account identifier from the Snowsight UI.
 <figure markdown>
-  ![Viewing Snowflake account URL](../../../..
+  ![Viewing Snowflake account identifier](../../../..
 /assets/images/guides/fs/storage_connector/snowflake_account_url.png)
-  <figcaption>Viewing Snowflake account URL details</figcaption>
+  <figcaption>Viewing Snowflake account identifier</figcaption>
 </figure>
 
 !!! warning "Token-based authentication or password based"
@@ -72,9 +65,8 @@ Head to the Storage Connector View on Hopsworks (1) and set up a new storage con
 Enter the details for your Snowflake connector. Start by giving it a **name** and an optional **description**.
 
 1. Select "Snowflake" as connector protocol.
-2. Specify the hostname for your account in either the account identifier format
-`<account_identifier>.snowflakecomputing.com` 
-or any of the account URL format `https://<orgname>-<account_name>.snowflakecomputing.com`.
+2. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com` 
+or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 3. Login name for the Snowflake user.
 4. Password for the Snowflake user or Token.
 5. The database to connect to.
