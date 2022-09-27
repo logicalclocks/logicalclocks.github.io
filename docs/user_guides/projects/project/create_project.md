@@ -73,7 +73,7 @@ project = connection.create_project("my_project")
 
 ### API Reference
 
-[Projects](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/projects/)
+[Projects](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/projects/)
 
 ## Reserved project names
 

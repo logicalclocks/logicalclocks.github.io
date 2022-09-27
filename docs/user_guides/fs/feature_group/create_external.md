@@ -64,7 +64,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
     )
     ```
 
-The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/dev/generated/api/external_feature_group_api/#externalfeaturegroup). `name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
+The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup). `name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
 
 The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
@@ -93,7 +93,7 @@ Hopsworks Feature Store does not support time-travel capabilities for on-demand 
 
 ### API Reference 
 
-[External FeatureGroup](https://docs.hopsworks.ai/feature-store-api/dev/generated/api/external_feature_group_api/#externalfeaturegroup)
+[External FeatureGroup](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup)
 
 ## Create using the UI
 

@@ -60,7 +60,7 @@ The first step to create a feature group is to create the API metadata object re
     )
     ```
 
-The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/dev/generated/api/feature_group_api/#featuregroup). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group. 
+The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group. 
 
 In the example above we created the first version of a feature group named *weather*, we provide a description to make it searchable to the other project members, as well as making the feature group available online. 
 
@@ -117,7 +117,7 @@ If a feature group is online enabled, the `save` method will store the feature d
 
 ### API Reference 
 
-[FeatureGroup](https://docs.hopsworks.ai/feature-store-api/dev/generated/api/feature_group_api/#featuregroup)
+[FeatureGroup](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup)
 
 ## Create using the UI
 

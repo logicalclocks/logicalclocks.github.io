@@ -197,9 +197,9 @@ print(f_err.read())
 
 ### API Reference
 
-[Jobs](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/jobs/)
+[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
-[Executions](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/executions/)
+[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
 
 ## Conclusion
 
