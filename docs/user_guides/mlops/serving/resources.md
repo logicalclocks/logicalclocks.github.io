@@ -105,7 +105,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Resource Allocation](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/resources/)
+[Resource Allocation](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/resources/)
 
 ## Compatibility matrix
 

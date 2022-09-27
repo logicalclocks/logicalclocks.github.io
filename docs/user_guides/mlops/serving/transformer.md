@@ -157,7 +157,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Transformer](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/transformer/)
+[Transformer](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/transformer/)
 
 ## Resources
 
