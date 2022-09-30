@@ -6387,21 +6387,28 @@ In order to create a Feature View you may use <code>fs.create_feature_view()</co
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_view</span><span class="p">(</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;churn_feature_view&#39;</span><span class="p">,</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;churn&quot;</span><span class="p">],</span>
-    <span class="n">transformation_functions</span><span class="o">=</span><span class="n">transformation_functions</span><span class="p">,</span>
-    <span class="n">query</span><span class="o">=</span><span class="n">ds_query</span><span class="p">,</span>
-<span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_view</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;churn_feature_view&#39;</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_view</span><span class="p">(</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;churn_feature_view&#39;</span><span class="p">,</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;churn&quot;</span><span class="p">],</span>
+        <span class="n">transformation_functions</span><span class="o">=</span><span class="n">transformation_functions</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="n">ds_query</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
-<div id="cell-6" class="clipboard-copy-txt">feature_view = fs.create_feature_view(
-    name = 'churn_feature_view',
-    version = 1,
-    labels=["churn"],
-    transformation_functions=transformation_functions,
-    query=ds_query,
-)</div>
+<div id="cell-6" class="clipboard-copy-txt">
+try:
+    feature_view = fs.get_feature_view(name = 'churn_feature_view', version = 1)
+except:
+    feature_view = fs.create_feature_view(
+        name = 'churn_feature_view',
+        version = 1,
+        labels=["churn"],
+        transformation_functions=transformation_functions,
+        query=ds_query,
+    )</div>
     
         </div>
     </div>

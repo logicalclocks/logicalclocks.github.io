@@ -6416,19 +6416,15 @@ url = "https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/"
             </clipboard-copy>
         </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">credit_cards_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="s2">&quot;credit_cards.csv&quot;</span><span class="p">)</span>
-<span class="n">credit_cards_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="n">profiles_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="s2">&quot;profiles.csv&quot;</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;birthdate&quot;</span><span class="p">])</span>
-<span class="n">profiles_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="n">trans_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="s2">&quot;transactions.csv&quot;</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;datetime&quot;</span><span class="p">])</span>
 <span class="n">trans_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 <div id="cell-3" class="clipboard-copy-txt">credit_cards_df = pd.read_csv(url + "credit_cards.csv")
-credit_cards_df.head(3)
 
 profiles_df = pd.read_csv(url + "profiles.csv", parse_dates=["birthdate"])
-profiles_df.head(3)
 
 trans_df = pd.read_csv(url + "transactions.csv", parse_dates=["datetime"])
 trans_df.head(3)</div>
@@ -7114,7 +7110,9 @@ transformation_functions = {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="feature-view-creation"><span style="color:#ff5f27;"> &#9881;&#65039; Feature View Creation </span><a class="anchor-link" href="#feature-view-creation">&#182;</a></h2><p>The Feature View is the collection of features (from feature groups) and transformation functions used to train models and serve precomputed features to deployed models.</p>
 <p>The Feature View includes all of the features defined in the query object you created earlier. It can additionally include filters, one or more columns identified as the target(s) (or label) and the set of transformation functions and the features they are applied to.</p>
-<p>You create a Feature View with <code>fs.create_feature_view()</code>.</p>
+<p>You create a Feature View with <code>fs.create_feature_view()</code>. 
+You retrieve a reference to an existing feature view with: <code>fs.get_feature_view('transactions_view')</code>.
+This code first tries to get a reference to the feature_view, if it doesn't exist, an exception is thrown, and it creates the feature_view.</p>
 
 </div>
 </div>
@@ -7140,65 +7138,27 @@ transformation_functions = {
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_view</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;transactions_view&#39;</span><span class="p">,</span>
-    <span class="n">query</span><span class="o">=</span><span class="n">ds_query</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fraud_label&quot;</span><span class="p">],</span>
-    <span class="n">transformation_functions</span><span class="o">=</span><span class="n">transformation_functions</span>
-<span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_view</span><span class="p">(</span><span class="s1">&#39;transactions_view&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_view</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;transactions_view&#39;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="n">ds_query</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fraud_label&quot;</span><span class="p">],</span>
+        <span class="n">transformation_functions</span><span class="o">=</span><span class="n">transformation_functions</span>
+    <span class="p">)</span>
 </pre></div>
-<div id="cell-14" class="clipboard-copy-txt">feature_view = fs.create_feature_view(
-    name='transactions_view',
-    query=ds_query,
-    version=1,
-    labels=["fraud_label"],
-    transformation_functions=transformation_functions
-)</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>You can retrieve a reference to an existing feature view with: <code>fs.get_feature_view('transactions_view')</code>.</p>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-15">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_view</span><span class="p">(</span><span class="s1">&#39;transactions_view&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-<div id="cell-15" class="clipboard-copy-txt">feature_view = fs.get_feature_view('transactions_view', version=1)</div>
+<div id="cell-14" class="clipboard-copy-txt">try:
+    feature_view = fs.get_feature_view('transactions_view', version=1)
+except:
+    feature_view = fs.create_feature_view(
+        name='transactions_view',
+        query=ds_query,
+        version=1,
+        labels=["fraud_label"],
+        transformation_functions=transformation_functions
+    )</div>
     
         </div>
     </div>
@@ -7273,7 +7233,7 @@ td_version, td_job = feature_view.create_training_data(
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-16">
+            <clipboard-copy for="cell-15">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7285,7 +7245,39 @@ td_version, td_job = feature_view.create_training_data(
         </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">feature_view</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
-<div id="cell-16" class="clipboard-copy-txt">X_train, X_test, y_train, y_test = feature_view.train_test_split(0.2)</div>
+<div id="cell-15" class="clipboard-copy-txt">X_train, X_test, y_train, y_test = feature_view.train_test_split(0.2)</div>
+    
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+        <div class="zeroclipboard-container">
+            <clipboard-copy for="cell-16">
+            <div>
+                <span class="notice" hidden>Copied!</span>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                </svg>
+                </div>
+            </clipboard-copy>
+        </div>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">X_train</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+<div id="cell-16" class="clipboard-copy-txt">X_train.head(5)</div>
     
         </div>
     </div>
@@ -7315,41 +7307,9 @@ td_version, td_job = feature_view.create_training_data(
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">X_train</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-</pre></div>
-<div id="cell-17" class="clipboard-copy-txt">X_train.head(5)</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-18">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">y_train</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
-<div id="cell-18" class="clipboard-copy-txt">y_train.head(5)</div>
+<div id="cell-17" class="clipboard-copy-txt">y_train.head(5)</div>
     
         </div>
     </div>
@@ -7381,7 +7341,7 @@ td_version, td_job = feature_view.create_training_data(
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-19">
+            <clipboard-copy for="cell-18">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7393,7 +7353,7 @@ td_version, td_job = feature_view.create_training_data(
         </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">y_train</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
-<div id="cell-19" class="clipboard-copy-txt">y_train.value_counts(normalize=True)</div>
+<div id="cell-18" class="clipboard-copy-txt">y_train.value_counts(normalize=True)</div>
     
         </div>
     </div>
@@ -7437,7 +7397,7 @@ td_version, td_job = feature_view.create_training_data(
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-20">
+            <clipboard-copy for="cell-19">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7453,7 +7413,7 @@ td_version, td_job = feature_view.create_training_data(
 <span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">class_weight</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">pos_class_weight</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="n">pos_class_weight</span><span class="p">},</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">)</span>
 <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
 </pre></div>
-<div id="cell-20" class="clipboard-copy-txt">from sklearn.linear_model import LogisticRegression
+<div id="cell-19" class="clipboard-copy-txt">from sklearn.linear_model import LogisticRegression
 
 pos_class_weight = 0.9
 clf = LogisticRegression(class_weight={0: 1.0 - pos_class_weight, 1: pos_class_weight}, solver='liblinear')
@@ -7489,7 +7449,7 @@ clf.fit(X_train, y_train.values.ravel())</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-21">
+            <clipboard-copy for="cell-20">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7507,7 +7467,7 @@ clf.fit(X_train, y_train.values.ravel())</div>
 <span class="n">report_dict</span> <span class="o">=</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">,</span> <span class="n">output_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">report_dict</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
-<div id="cell-21" class="clipboard-copy-txt">from sklearn.metrics import classification_report
+<div id="cell-20" class="clipboard-copy-txt">from sklearn.metrics import classification_report
 import pprint
 
 preds = clf.predict(X_test)
@@ -7545,7 +7505,7 @@ pprint.pprint(report_dict, width=2)</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-22">
+            <clipboard-copy for="cell-21">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7559,7 +7519,7 @@ pprint.pprint(report_dict, width=2)</div>
 
 <span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="s1">&#39;model.pkl&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-22" class="clipboard-copy-txt">import joblib
+<div id="cell-21" class="clipboard-copy-txt">import joblib
 
 joblib.dump(clf, 'model.pkl')</div>
     
@@ -7581,7 +7541,7 @@ joblib.dump(clf, 'model.pkl')</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-23">
+            <clipboard-copy for="cell-22">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7593,7 +7553,7 @@ joblib.dump(clf, 'model.pkl')</div>
         </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">mr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_model_registry</span><span class="p">()</span>
 </pre></div>
-<div id="cell-23" class="clipboard-copy-txt">mr = project.get_model_registry()</div>
+<div id="cell-22" class="clipboard-copy-txt">mr = project.get_model_registry()</div>
     
         </div>
     </div>
@@ -7625,7 +7585,7 @@ joblib.dump(clf, 'model.pkl')</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-24">
+            <clipboard-copy for="cell-23">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7648,7 +7608,7 @@ joblib.dump(clf, 'model.pkl')</div>
 
 <span class="n">fraud_model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;model.pkl&#39;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-24" class="clipboard-copy-txt">from hsml.schema import Schema
+<div id="cell-23" class="clipboard-copy-txt">from hsml.schema import Schema
 from hsml.model_schema import ModelSchema
 
 input_schema = Schema(X_test)
@@ -7676,7 +7636,68 @@ fraud_model.save('model.pkl')</div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="create-deployment"><span style="color:#ff5f27;"> &#128640; Create Deployment </span><a class="anchor-link" href="#create-deployment">&#182;</a></h2><p>Next step is to deploy the model on KServe behind Hopsworks for real-time inference requests.</p>
-<p><strong>Note:</strong> deployments for scikit-learn without Kserve requires a predictor script. For details please refer to <a href="https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/#step-2-optional-implement-predictor-script">Hopsworks documentation</a>.</p>
+<p>Here, we first get a reference to the model serving object. 
+Then, we try and get a reference to the <code>fraud</code> deployment. If we can't find one, and an exception is thrown, we create the deployment.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+        <div class="zeroclipboard-container">
+            <clipboard-copy for="cell-24">
+            <div>
+                <span class="notice" hidden>Copied!</span>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                </svg>
+                </div>
+            </clipboard-copy>
+        </div>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ms</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_model_serving</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">deployment</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_deployment</span><span class="p">(</span><span class="s2">&quot;fraud&quot;</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">deployment</span> <span class="o">=</span> <span class="n">fraud_model</span><span class="o">.</span><span class="n">deploy</span><span class="p">()</span>
+
+<span class="n">state</span> <span class="o">=</span> <span class="n">deployment</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
+<span class="n">state</span>
+</pre></div>
+<div id="cell-24" class="clipboard-copy-txt">ms = project.get_model_serving()
+
+try:
+    deployment = ms.get_deployment("fraud")
+except:
+    deployment = fraud_model.deploy()
+
+state = deployment.get_state()
+state</div>
+    
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>If the deployment is already running, we do nothing, otherwise, we start the deployment.</p>
 
 </div>
 </div>
@@ -7702,59 +7723,17 @@ fraud_model.save('model.pkl')</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">deployment</span> <span class="o">=</span> <span class="n">fraud_model</span><span class="o">.</span><span class="n">deploy</span><span class="p">()</span>
-<span class="n">deployment</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;Running&quot;</span><span class="p">:</span>
+    <span class="n">deployment</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">deployment</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deployment already running&quot;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-25" class="clipboard-copy-txt">deployment = fraud_model.deploy()
-deployment.start()</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>You can retrieve a reference to the model with mr.get_model(..) and a reference to the deployed model with <code>project.get_model_deployment(..)</code></p>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-26">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ms</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_model_serving</span><span class="p">()</span>
-<span class="n">deployment</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_deployment</span><span class="p">(</span><span class="s2">&quot;fraud&quot;</span><span class="p">)</span>
-<span class="n">fraud_model</span> <span class="o">=</span> <span class="n">mr</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s2">&quot;fraud&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-<div id="cell-26" class="clipboard-copy-txt">ms = project.get_model_serving()
-deployment = ms.get_deployment("fraud")
-fraud_model = mr.get_model("fraud", version=1)</div>
+<div id="cell-25" class="clipboard-copy-txt">if state.status != "Running":
+    deployment.start()
+    deployment.describe()
+else:
+    print("Deployment already running")</div>
     
         </div>
     </div>
@@ -7787,7 +7766,7 @@ fraud_model = mr.get_model("fraud", version=1)</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-27">
+            <clipboard-copy for="cell-26">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7799,7 +7778,7 @@ fraud_model = mr.get_model("fraud", version=1)</div>
         </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">deployment</span><span class="o">.</span><span class="n">predict</span><span class="p">({</span><span class="s2">&quot;instances&quot;</span><span class="p">:[</span><span class="n">fraud_model</span><span class="o">.</span><span class="n">input_example</span><span class="p">]})</span>
 </pre></div>
-<div id="cell-27" class="clipboard-copy-txt">deployment.predict({"instances":[fraud_model.input_example]})</div>
+<div id="cell-26" class="clipboard-copy-txt">deployment.predict({"instances":[fraud_model.input_example]})</div>
     
         </div>
     </div>
@@ -7831,7 +7810,7 @@ fraud_model = mr.get_model("fraud", version=1)</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-28">
+            <clipboard-copy for="cell-27">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7844,7 +7823,7 @@ fraud_model = mr.get_model("fraud", version=1)</div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">gradio</span> <span class="o">--</span><span class="n">quiet</span>
 <span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">typing</span><span class="o">-</span><span class="n">extensions</span><span class="o">==</span><span class="mf">4.3.0</span>
 </pre></div>
-<div id="cell-28" class="clipboard-copy-txt">!pip install gradio --quiet
+<div id="cell-27" class="clipboard-copy-txt">!pip install gradio --quiet
 !pip install typing-extensions==4.3.0</div>
     
         </div>
@@ -7865,7 +7844,7 @@ fraud_model = mr.get_model("fraud", version=1)</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-29">
+            <clipboard-copy for="cell-28">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7911,9 +7890,9 @@ fraud_model = mr.get_model("fraud", version=1)</div>
 <span class="p">)</span>
 
 
-<span class="n">demo</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">share</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">demo</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">share</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
-<div id="cell-29" class="clipboard-copy-txt">import gradio as gr
+<div id="cell-28" class="clipboard-copy-txt">import gradio as gr
 import numpy as np
 
 def greet(credit_card_example):
@@ -7949,7 +7928,7 @@ demo = gr.Interface(greet,
 )
 
 
-demo.launch(share=True)</div>
+demo.launch(share=True, debug=True)</div>
     
         </div>
     </div>
@@ -7971,38 +7950,6 @@ demo.launch(share=True)</div>
 
 </div>
 </div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-30">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span>
-</pre></div>
-<div id="cell-30" class="clipboard-copy-txt"></div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
 </div>
 </div>
 </div>

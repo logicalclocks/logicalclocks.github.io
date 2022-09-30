@@ -6436,15 +6436,23 @@ In order to create a Feature View you may use <code>fs.create_feature_view()</co
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_view</span><span class="p">(</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_feature_view</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;transactions_fraud_online_fv&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span> 
+    <span class="n">feature_view</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create_feature_view</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;transactions_fraud_online_fv&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">query</span><span class="o">=</span><span class="n">ds_query</span><span class="p">,</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fraud_label&quot;</span><span class="p">],</span>
     <span class="n">transformation_functions</span><span class="o">=</span><span class="n">transformation_functions</span>
 <span class="p">)</span>
 </pre></div>
-<div id="cell-6" class="clipboard-copy-txt">feature_view = fs.create_feature_view(
+<div id="cell-6" class="clipboard-copy-txt">try:
+    feature_view = fs.get_feature_view(name='transactions_fraud_online_fv', version=1)
+except: 
+    feature_view = fs.create_feature_view(
     name='transactions_fraud_online_fv',
+    version=1,
     query=ds_query,
     labels=["fraud_label"],
     transformation_functions=transformation_functions
@@ -6517,7 +6525,7 @@ In order to create a Feature View you may use <code>fs.create_feature_view()</co
         <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;transactions fraud online training dataset jan/feb&#39;</span><span class="p">,</span>
         <span class="n">data_format</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span><span class="p">,</span>
         <span class="n">coalesce</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">write_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wait_for_job&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+        <span class="n">write_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wait_for_job&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
     <span class="p">)</span>
 </pre></div>
 <div id="cell-7" class="clipboard-copy-txt"># Create training datasets based event time filter
@@ -6527,7 +6535,7 @@ td_jan_feb_version, td_job = feature_view.create_training_data(
         description = 'transactions fraud online training dataset jan/feb',
         data_format = "csv",
         coalesce = True,
-        write_options = {'wait_for_job': True},
+        write_options = {'wait_for_job': False},
     )</div>
     
         </div>

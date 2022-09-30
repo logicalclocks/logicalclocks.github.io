@@ -7426,27 +7426,27 @@ predictor_script_path = os.path.join("/Projects", project.name, uploaded_file_pa
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Use the model name from the previous notebook.</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">mr</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s2">&quot;transactions_fraud_online_model&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># Give it any name you want</span>
-<span class="n">deployment</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fraudonlinemodeldeployment&quot;</span><span class="p">,</span> 
-    <span class="n">model_server</span><span class="o">=</span><span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span>
-    <span class="n">serving_tool</span><span class="o">=</span><span class="s2">&quot;KSERVE&quot;</span><span class="p">,</span>
-    <span class="n">script_file</span><span class="o">=</span><span class="n">predictor_script_path</span>
-<span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">ms</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_model_serving</span><span class="p">()</span>
+    <span class="n">deployment</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_deployment</span><span class="p">(</span><span class="s2">&quot;fraudonlinemodeldeployment&quot;</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">deployment</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fraudonlinemodeldeployment&quot;</span><span class="p">,</span> 
+        <span class="n">model_server</span><span class="o">=</span><span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span>
+        <span class="n">serving_tool</span><span class="o">=</span><span class="s2">&quot;KSERVE&quot;</span><span class="p">,</span>
+        <span class="n">script_file</span><span class="o">=</span><span class="n">predictor_script_path</span>
+    <span class="p">)</span>
 </pre></div>
-<div id="cell-24" class="clipboard-copy-txt"># Use the model name from the previous notebook.
-model = mr.get_model("transactions_fraud_online_model", version=1)
-
-# Give it any name you want
-deployment = model.deploy(
-    name="fraudonlinemodeldeployment", 
-    model_server="PYTHON",
-    serving_tool="KSERVE",
-    script_file=predictor_script_path
-)</div>
+<div id="cell-24" class="clipboard-copy-txt">try:
+    ms = project.get_model_serving()
+    deployment = ms.get_deployment("fraudonlinemodeldeployment")
+except:
+    deployment = model.deploy(
+        name="fraudonlinemodeldeployment", 
+        model_server="PYTHON",
+        serving_tool="KSERVE",
+        script_file=predictor_script_path
+    )</div>
     
         </div>
     </div>
@@ -7521,9 +7521,21 @@ deployment.describe()</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">deployment</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="n">deployment</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;Running&quot;</span><span class="p">:</span>
+    <span class="n">deployment</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">deployment</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deployment already running&quot;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-26" class="clipboard-copy-txt">deployment.start()</div>
+<div id="cell-26" class="clipboard-copy-txt">state = deployment.get_state()
+
+if state.status != "Running":
+    deployment.start()
+    deployment.describe()
+else:
+    print("Deployment already running")</div>
     
         </div>
     </div>
@@ -7685,11 +7697,9 @@ deployment.get_logs()</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ms</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_model_serving</span><span class="p">()</span>
-<span class="n">fraud_detector</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_deployment</span><span class="p">(</span><span class="s2">&quot;fraudonlinemodeldeployment&quot;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">prediction</span> <span class="o">=</span> <span class="n">deployment</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
-<div id="cell-30" class="clipboard-copy-txt">ms = project.get_model_serving()
-fraud_detector = ms.get_deployment("fraudonlinemodeldeployment")</div>
+<div id="cell-30" class="clipboard-copy-txt">prediction = deployment.predict(data)</div>
     
         </div>
     </div>
@@ -7719,41 +7729,9 @@ fraud_detector = ms.get_deployment("fraudonlinemodeldeployment")</div>
                 </div>
             </clipboard-copy>
         </div>
-            <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">prediction</span> <span class="o">=</span> <span class="n">fraud_detector</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-<div id="cell-31" class="clipboard-copy-txt">prediction = fraud_detector.predict(data)</div>
-    
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-        <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-32">
-            <div>
-                <span class="notice" hidden>Copied!</span>
-                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                    <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                    <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                </svg>
-                </div>
-            </clipboard-copy>
-        </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">prediction</span>
 </pre></div>
-<div id="cell-32" class="clipboard-copy-txt">prediction</div>
+<div id="cell-31" class="clipboard-copy-txt">prediction</div>
     
         </div>
     </div>
@@ -7785,7 +7763,7 @@ fraud_detector = ms.get_deployment("fraudonlinemodeldeployment")</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-33">
+            <clipboard-copy for="cell-32">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7797,7 +7775,7 @@ fraud_detector = ms.get_deployment("fraudonlinemodeldeployment")</div>
         </div>
             <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">deployment</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </pre></div>
-<div id="cell-33" class="clipboard-copy-txt">deployment.stop()</div>
+<div id="cell-32" class="clipboard-copy-txt">deployment.stop()</div>
     
         </div>
     </div>
@@ -7847,7 +7825,7 @@ fraud_detector = ms.get_deployment("fraudonlinemodeldeployment")</div>
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-34">
+            <clipboard-copy for="cell-33">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7867,7 +7845,7 @@ fraud_detector = ms.get_deployment("fraudonlinemodeldeployment")</div>
 <span class="n">trans_fg</span><span class="o">.</span><span class="n">update_statistics_config</span><span class="p">()</span>
 <span class="n">trans_fg</span><span class="o">.</span><span class="n">compute_statistics</span><span class="p">()</span>
 </pre></div>
-<div id="cell-34" class="clipboard-copy-txt">trans_fg = fs.get_or_create_feature_group("transactions_fraud_online_fg", version=1)
+<div id="cell-33" class="clipboard-copy-txt">trans_fg = fs.get_or_create_feature_group("transactions_fraud_online_fg", version=1)
 trans_fg.statistics_config = {
     "enabled": True,
     "histograms": True,
@@ -7923,7 +7901,7 @@ This allows for a clear undestanding of the pipeline in relation to each element
         
         <div class="CodeMirror cm-s-jupyter">
         <div class="zeroclipboard-container">
-            <clipboard-copy for="cell-35">
+            <clipboard-copy for="cell-34">
             <div>
                 <span class="notice" hidden>Copied!</span>
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
@@ -7935,7 +7913,7 @@ This allows for a clear undestanding of the pipeline in relation to each element
         </div>
             <div class="highlight-ipynb hl-python"><pre><span></span>
 </pre></div>
-<div id="cell-35" class="clipboard-copy-txt"></div>
+<div id="cell-34" class="clipboard-copy-txt"></div>
     
         </div>
     </div>
