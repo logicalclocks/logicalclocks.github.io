@@ -205,6 +205,7 @@ nav:
           - Hopsworks Installer: setup_installation/on_prem/hopsworks_installer.md
   - Administration:
       - Introduction: admin/index.md
+      - Cluster Configuration: admin/variables.md
       - User Management: admin/user.md
       - Configure Alerts: admin/alert.md
       - Manage Services: admin/services.md
