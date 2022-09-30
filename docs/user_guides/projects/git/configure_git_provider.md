@@ -65,8 +65,6 @@ The configured provider should now be marked as configured.
 
 ### Step 1: Get the git API
 
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Resources` dataset.
-
 ```python
 
 import hopsworks

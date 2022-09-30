@@ -144,9 +144,11 @@ Once the execution is finished, you can click on `Logs` to see the full logs for
 
 ## Code
 
-### Step 1: Upload the python program
+### Step 1: Upload the PySpark program
 
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Resources` dataset.
+This snippet assumes the program to run is in the current working directory and named `script.py`. 
+
+It will upload the python script to the `Resources` dataset in your project.
 
 ```python
 
@@ -156,20 +158,20 @@ project = hopsworks.login()
 
 dataset_api = project.get_dataset_api()
 
-uploaded_file_path = dataset_api.upload("script.ipynb", "Resources")
+uploaded_file_path = dataset_api.upload("script.py", "Resources")
 
 ```
 
 
-### Step 2: Create SPARK job
+### Step 2: Create PySpark job
 
-In this snippet we get the `JobsApi` object to get the default job configuration for a `SPARK` job, set the python script to run and create the `Job` object.
+In this snippet we get the `JobsApi` object to get the default job configuration for a `PYSPARK` job, set the python script to run and create the `Job` object.
 
 ```python
 
 jobs_api = project.get_jobs_api()
 
-spark_config = jobs_api.get_configuration("SPARK")
+spark_config = jobs_api.get_configuration("PYSPARK")
 
 spark_config['appPath'] = uploaded_file_path
 
