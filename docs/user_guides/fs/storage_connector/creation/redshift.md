@@ -56,7 +56,7 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
     By default, the session duration that the role will be assumed for is 1 hour or 3600 seconds.
     This means if you want to use the storage connector for example to [read or create an external Feature Group from Redshift](../usage.md##creating-an-external-feature-group), the operation cannot take longer than one hour.
 
-    You administrator can change the default session duration for AWS storage connectors, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming. And then changing the `fs_storage_connector_session_duration` [configuration property](../../../../admin/variables.md) to the appropriate value in seconds.
+    Your administrator can change the default session duration for AWS storage connectors, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming. And then changing the `fs_storage_connector_session_duration` [configuration property](../../../../admin/variables.md) to the appropriate value in seconds.
 
 ### Step 3: Upload the Redshift database driver
 
