@@ -159,7 +159,7 @@ Together with the new `.get_or_create_ APIs` this will avoid that users have to 
 This list is meant to serve as a starting point to explore the new features of the Hopsworks 3.0 release, which can significantly improve your workflows.
 
 ### Added new Storage Connectors: GCS, BigQuery and Kafka
-With the added support for Google Cloud, we added also two new [storage connectors](../fs/storage_connector.md): [Google Cloud Storage](../fs/storage_connector/creation/gcs.md) and [Google BigQuery](../fs/storage_connector/creation/bigquery.md). Users can use these connectors to create external feature groups or write out training data.
+With the added support for Google Cloud, we added also two new [storage connectors](../fs/storage_connector/index.md): [Google Cloud Storage](../fs/storage_connector/creation/gcs.md) and [Google BigQuery](../fs/storage_connector/creation/bigquery.md). Users can use these connectors to create external feature groups or write out training data.
 
 Additionally, to make it easier for users to get started with Spark Streaming applications, we added a [Kafka connector](../fs/storage_connector/creation/kafka.md), which let’s you easily read a Kafka topic into a Spark Streaming Dataframe.
 
@@ -183,7 +183,7 @@ fg.insert(df, write_options=extra_write_options)
 We recommend having shuffle parallelism `hoodie.[insert|upsert|bulkinsert].shuffle.parallelism` such that its at least input_data_size/500MB.
 
 ### Feature View passed features
-With the introduction of the [Feature View abstraction](../../concepts/fs/feature_view/fv_overview.), we added APIs to allow users to overwrite features with so-called [passed features](../fs/feature_view/feature-vectors.md#passed-features) when calling `fv.get_feature_vector()`:
+With the introduction of the [Feature View abstraction](../../concepts/fs/feature_view/fv_overview.md), we added APIs to allow users to overwrite features with so-called [passed features](../fs/feature_view/feature-vectors.md#passed-features) when calling `fv.get_feature_vector()`:
 
 ```python
 # get a single vector

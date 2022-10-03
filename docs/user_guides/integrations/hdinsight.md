@@ -150,4 +150,4 @@ fs = conn.get_feature_store()
 
 ## Next Steps
 
-For more information about how to use the Feature Store, see the [Quickstart Guide](../quickstart.md).
+For more information about how to use the Feature Store, see the [Quickstart Guide](../../hopsworks-tutorials/quickstart.ipynb).

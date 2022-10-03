@@ -35,4 +35,4 @@ jobs:
           git config --global user.email mike@docs.hopsworks.ai
 
       - name: mike deploy docs
-        run: mike deploy 3.1-SNAPSHOT dev -u
+        run: mike deploy 3.1-SNAPSHOT dev -u -s

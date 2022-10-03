@@ -1,10 +1,10 @@
 # Integrations
 
-![Feature Store Integrations](../../../assets/images/guides/integrations/integrations.png)
+![Feature Store Integrations](../../assets/images/guides/integrations/integrations.png)
 
 ## Hopsworks
 
-If you are using Spark or Python within Hopsworks, there is no further configuration required. Head over to the [Getting Started Guide](quickstart.md).
+If you are using Spark or Python within Hopsworks, there is no further configuration required. Head over to the [Getting Started Guide](../../hopsworks-tutorials/quickstart.ipynb).
 
 ## Storage Connectors
 

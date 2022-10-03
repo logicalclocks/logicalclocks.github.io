@@ -21,9 +21,9 @@ The landing page of [managed.hopsworks.ai](https://managed.hopsworks.ai) can be 
 The different functionalities of the dashboard are:
 
 - **Clusters**: the landing page which we will detail bellow.
-- **Members**: the place to managed the members of your organization ([doc](./user_management.md)).
-- **Backup**: the place to manage your clusters' backup ([doc](./backup.md)).
-- **Usage**: the place to get your credits consumption ([doc](./usage.md)).
+- **Members**: the place to managed the members of your organization ([doc](user_management.md)).
+- **Backup**: the place to manage your clusters' backup ([doc](backup.md)).
+- **Usage**: the place to get your credits consumption ([doc](usage.md)).
 
 ## Managing your clusters in the cluster panel
 The cluster panels contain the name of the cluster (1), its state (2) a button to [terminate the cluster](#terminate-the-cluster) (3), a button to [stop the cluster](#stop-the-cluster) (4) and different tabs to manage the cluster (5). You will now learn more details about these actions and tabs.

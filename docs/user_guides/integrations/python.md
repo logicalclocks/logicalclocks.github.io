@@ -76,4 +76,4 @@ fs = conn.get_feature_store()           # Get the project's default feature stor
 
 ## Next Steps
 
-For more information about how to connect, see the [Connection](../generated/project.md) guide. Or continue with the Data Source guide to import your own data to the Feature Store.
+For more information about how to connect, see the [Connection](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/connection_api/) API reference. Or continue with the Data Source guide to import your own data to the Feature Store.
