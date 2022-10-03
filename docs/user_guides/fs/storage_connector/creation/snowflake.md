@@ -30,8 +30,7 @@ SQL, as explained in [Snowflake
 documentation](https://docs.snowflake.com/en/user-guide/organizations-gs.html#viewing-the-name-of-your-organization-and-its-accounts).
 Below is an example of how to view the account and organization to get the account identifier from the Snowsight UI.
 <figure markdown>
-  ![Viewing Snowflake account identifier](../../../..
-/assets/images/guides/fs/storage_connector/snowflake_account_url.png)
+  ![Viewing Snowflake account identifier](../../../../assets/images/guides/fs/storage_connector/snowflake_account_url.png)
   <figcaption>Viewing Snowflake account identifier</figcaption>
 </figure>
 
