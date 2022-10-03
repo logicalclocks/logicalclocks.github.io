@@ -1,6 +1,6 @@
 # Compute Engine
 
-When writing Feature Pipelines handling feature data against Hopsworks, you need a computational engine to handle this data while it is in memory.
+In order to execute a feature pipeline to write to the Feature Store, as well as to retrieve data from the Feature Store, you need a compute engine.
 Hopsworks Feature Store APIs are built around dataframes, that means feature data is inserted into the Feature Store from a Dataframe and likewise when reading data from the Feature Store, it is returned
 as a Dataframe.
 
