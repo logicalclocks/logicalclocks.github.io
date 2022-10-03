@@ -36,6 +36,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/3.0/admin/variables/</loc>
+         <lastmod>2022-10-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/3.0/admin/ha-dr/dr/</loc>
          <lastmod>2022-10-03</lastmod>
          <changefreq>daily</changefreq>
