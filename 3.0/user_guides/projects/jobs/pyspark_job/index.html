@@ -2501,15 +2501,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-1-upload-the-python-program" class="md-nav__link">
-    Step 1: Upload the python program
+  <a href="#step-1-upload-the-pyspark-program" class="md-nav__link">
+    Step 1: Upload the PySpark program
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-2-create-spark-job" class="md-nav__link">
-    Step 2: Create SPARK job
+  <a href="#step-2-create-pyspark-job" class="md-nav__link">
+    Step 2: Create PySpark job
   </a>
   
 </li>
@@ -5205,15 +5205,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-1-upload-the-python-program" class="md-nav__link">
-    Step 1: Upload the python program
+  <a href="#step-1-upload-the-pyspark-program" class="md-nav__link">
+    Step 1: Upload the PySpark program
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-2-create-spark-job" class="md-nav__link">
-    Step 2: Create SPARK job
+  <a href="#step-2-create-pyspark-job" class="md-nav__link">
+    Step 2: Create PySpark job
   </a>
   
 </li>
@@ -5392,21 +5392,22 @@ the various configuration parameters each job type comes with. After following t
 </p>
 
 <h2 id="code">Code<a class="headerlink" href="#code" title="Permanent link">#</a></h2>
-<h3 id="step-1-upload-the-python-program">Step 1: Upload the python program<a class="headerlink" href="#step-1-upload-the-python-program" title="Permanent link">#</a></h3>
-<p>This snippet assumes the python script is in the current working directory and named <code>script.py</code>. It will upload the python script to run to the <code>Resources</code> dataset.</p>
+<h3 id="step-1-upload-the-pyspark-program">Step 1: Upload the PySpark program<a class="headerlink" href="#step-1-upload-the-pyspark-program" title="Permanent link">#</a></h3>
+<p>This snippet assumes the program to run is in the current working directory and named <code>script.py</code>. </p>
+<p>It will upload the python script to the <code>Resources</code> dataset in your project.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">hopsworks</span>
 
 <span class="n">project</span> <span class="o">=</span> <span class="n">hopsworks</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="n">dataset_api</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_dataset_api</span><span class="p">()</span>
 
-<span class="n">uploaded_file_path</span> <span class="o">=</span> <span class="n">dataset_api</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s2">&quot;script.ipynb&quot;</span><span class="p">,</span> <span class="s2">&quot;Resources&quot;</span><span class="p">)</span>
+<span class="n">uploaded_file_path</span> <span class="o">=</span> <span class="n">dataset_api</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="s2">&quot;script.py&quot;</span><span class="p">,</span> <span class="s2">&quot;Resources&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="step-2-create-spark-job">Step 2: Create SPARK job<a class="headerlink" href="#step-2-create-spark-job" title="Permanent link">#</a></h3>
-<p>In this snippet we get the <code>JobsApi</code> object to get the default job configuration for a <code>SPARK</code> job, set the python script to run and create the <code>Job</code> object.</p>
+<h3 id="step-2-create-pyspark-job">Step 2: Create PySpark job<a class="headerlink" href="#step-2-create-pyspark-job" title="Permanent link">#</a></h3>
+<p>In this snippet we get the <code>JobsApi</code> object to get the default job configuration for a <code>PYSPARK</code> job, set the python script to run and create the <code>Job</code> object.</p>
 <div class="highlight"><pre><span></span><code><span class="n">jobs_api</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_jobs_api</span><span class="p">()</span>
 
-<span class="n">spark_config</span> <span class="o">=</span> <span class="n">jobs_api</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">(</span><span class="s2">&quot;SPARK&quot;</span><span class="p">)</span>
+<span class="n">spark_config</span> <span class="o">=</span> <span class="n">jobs_api</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">(</span><span class="s2">&quot;PYSPARK&quot;</span><span class="p">)</span>
 
 <span class="n">spark_config</span><span class="p">[</span><span class="s1">&#39;appPath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uploaded_file_path</span>
 
