@@ -87,9 +87,11 @@ Once the execution is finished, click on `Logs` to see the logs for the executio
 
 ## Code
 
-### Step 1: Upload the python script
+### Step 1: Upload the Python script
 
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Resources` dataset.
+This snippet assumes the python script is in the current working directory and named `script.py`. 
+
+It will upload the python script to the `Resources` dataset in your project.
 
 ```python
 
@@ -104,7 +106,7 @@ uploaded_file_path = dataset_api.upload("script.py", "Resources")
 ```
 
 
-### Step 2: Create PYTHON job
+### Step 2: Create Python job
 
 In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the python script to run and create the `Job` object.
 
@@ -148,4 +150,4 @@ print(f_err.read())
 
 ## Conclusion
 
-In this guide you learned how to create and run a job.
+In this guide you learned how to create and run a Python job.

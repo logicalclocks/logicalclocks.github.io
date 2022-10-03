@@ -93,8 +93,6 @@ The operation to perform on the cloned repository can be found in the dropdown a
 
 ### Step 1: Get the git API
 
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Jupyter` dataset.
-
 ```python
 
 import hopsworks
