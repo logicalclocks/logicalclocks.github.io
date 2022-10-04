@@ -21,8 +21,6 @@ Before you begin this guide you'll need to retrieve the following information fr
 ```
 <account_identifier>.snowflakecomputing.com
 ```
-<<<<<<< HEAD
-=======
 OR:
 ```
 https://<orgname>-<account_name>.snowflakecomputing.com
@@ -35,7 +33,6 @@ Below is an example of how to view the account and organization to get the accou
   ![Viewing Snowflake account identifier](../../../../assets/images/guides/fs/storage_connector/snowflake_account_url.png)
   <figcaption>Viewing Snowflake account identifier</figcaption>
 </figure>
->>>>>>> 7bdc673 ([FSTORE-345] Update documentation to reflect supported methods in hsfs engines (#97))
 
 !!! warning "Token-based authentication or password based"
     The Snowflake storage connector supports both username and password authentication as well as token-based authentication.
