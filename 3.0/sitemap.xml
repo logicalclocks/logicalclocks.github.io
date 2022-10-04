@@ -146,11 +146,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://docs.hopsworks.ai/3.0/concepts/fs/feature_view/create_fv/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://docs.hopsworks.ai/3.0/concepts/fs/feature_view/fv_overview/</loc>
          <lastmod>2022-10-04</lastmod>
          <changefreq>daily</changefreq>
@@ -232,181 +227,6 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/3.0/concepts/projects/storage/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/quickstart/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/electricity/1_backfill_feature_groups/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/electricity/2_feature_pipeline/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/electricity/3_feature_views_and_training_dataset/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/electricity/4_model_training/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/electricity/5_batch_predictions/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/electricity/feature_electricity/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/electricity/feature_weather/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/nyc_taxi_fares/1_backfill_feature_groups/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/nyc_taxi_fares/2_feature_pipeline/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/nyc_taxi_fares/3_feature_view_and_dataset_creation/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/nyc_taxi_fares/4_model_training_and_registration/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/nyc_taxi_fares/functions/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/advanced_tutorials/nyc_taxi_fares/streamlit_app/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/churn/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/churn/1_feature_groups/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/churn/2_feature_view_creation/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/churn/3_model_training/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/churn/streamlit_app/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/fraud_batch/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/fraud_batch/1_feature_groups/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/fraud_batch/2_feature_view_creation/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/fraud_batch/3_model_training/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/fraud_online/1_feature_groups/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/fraud_online/2_feature_view_creation/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/fraud_online/3_model_training/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/fraud_online/streamlit_app/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/integrations/great_expectations/Great_Expectations_Hopsworks_Concepts/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/integrations/great_expectations/fraud_batch_data_validation/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/integrations/wandb/1_feature_groups/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/integrations/wandb/2_feature_view_creation/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/integrations/wandb/3_model_training/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/iris/iris_sklearn/</loc>
-         <lastmod>2022-10-04</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/3.0/hopsworks-tutorials/scripts/cleanup-tutorials/</loc>
          <lastmod>2022-10-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -582,6 +402,11 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/3.0/setup_installation/on_prem/hopsworks_installer/</loc>
+         <lastmod>2022-10-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/3.0/tutorials/</loc>
          <lastmod>2022-10-04</lastmod>
          <changefreq>daily</changefreq>
     </url>
