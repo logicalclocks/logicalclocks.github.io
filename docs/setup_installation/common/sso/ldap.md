@@ -24,7 +24,7 @@ The JNDI resource will communicate with your LDAP server to perform the authenti
 
 After configuring LDAP and creating your cluster you can log into your hopsworks cluster and edit the LDAP _attributes to field names_ to match
 your server. By default all _attributes to field names_ are set to the values in [OpenLDAP](https://www.openldap.org/). 
-See [Configure LDAP](../../user_guides/projects/auth/ldap.md) on how to edit the LDAP default configurations.
+See [Configure LDAP](../../../user_guides/projects/auth/ldap.md) on how to edit the LDAP default configurations.
 
 
 !!!Note
