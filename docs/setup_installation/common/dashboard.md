@@ -21,7 +21,7 @@ The landing page of [managed.hopsworks.ai](https://managed.hopsworks.ai) can be 
 The different functionalities of the dashboard are:
 
 - **Clusters**: the landing page which we will detail below.
-- **Members**: the place to managed the members of your organization ([doc](user_management.md)).
+- **Members**: the place to manage the members of your organization ([doc](user_management.md)).
 - **Backup**: the place to manage your clusters' backup ([doc](backup.md)).
 - **Usage**: the place to get your credits consumption.
 
