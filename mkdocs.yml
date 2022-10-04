@@ -8,6 +8,8 @@ repo_name: logicalclocks/hopsworks
 repo_url: https://github.com/logicalclocks/hopsworks
 edit_uri: ""
 
+strict: true
+
 nav:
   - Home: index.md
   - Getting Started: https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb
