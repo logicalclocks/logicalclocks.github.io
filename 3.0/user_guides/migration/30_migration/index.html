@@ -3164,6 +3164,8 @@
       
         
           
+            
+          
         
           
         
@@ -3181,30 +3183,24 @@
         
       
       
-        <label class="md-nav__link" for="__nav_5_5">
-          Integrations
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../integrations/">Compute Engine</a>
+          
+            <label for="__nav_5_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
-      <nav class="md-nav" aria-label="Integrations" data-md-level="2">
+      <nav class="md-nav" aria-label="Compute Engine" data-md-level="2">
         <label class="md-nav__title" for="__nav_5_5">
           <span class="md-nav__icon md-icon"></span>
-          Integrations
+          Compute Engine
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../integrations/setup/" class="md-nav__link">
-        Overview
-      </a>
-    </li>
-  
-
             
           
             
@@ -5542,7 +5538,7 @@ fg.insert<span class="o">(</span>df<span class="o">)</span>
 <h2 id="new-feature-highlights">New Feature Highlights<a class="headerlink" href="#new-feature-highlights" title="Permanent link">#</a></h2>
 <p>This list is meant to serve as a starting point to explore the new features of the Hopsworks 3.0 release, which can significantly improve your workflows.</p>
 <h3 id="added-new-storage-connectors-gcs-bigquery-and-kafka">Added new Storage Connectors: GCS, BigQuery and Kafka<a class="headerlink" href="#added-new-storage-connectors-gcs-bigquery-and-kafka" title="Permanent link">#</a></h3>
-<p>With the added support for Google Cloud, we added also two new <a href="../fs/storage_connector.md">storage connectors</a>: <a href="../../fs/storage_connector/creation/gcs/">Google Cloud Storage</a> and <a href="../../fs/storage_connector/creation/bigquery/">Google BigQuery</a>. Users can use these connectors to create external feature groups or write out training data.</p>
+<p>With the added support for Google Cloud, we added also two new <a href="../../fs/storage_connector/">storage connectors</a>: <a href="../../fs/storage_connector/creation/gcs/">Google Cloud Storage</a> and <a href="../../fs/storage_connector/creation/bigquery/">Google BigQuery</a>. Users can use these connectors to create external feature groups or write out training data.</p>
 <p>Additionally, to make it easier for users to get started with Spark Streaming applications, we added a <a href="../../fs/storage_connector/creation/kafka/">Kafka connector</a>, which let’s you easily read a Kafka topic into a Spark Streaming Dataframe.</p>
 <h3 id="optimized-default-hudi-options">Optimized Default Hudi Options<a class="headerlink" href="#optimized-default-hudi-options" title="Permanent link">#</a></h3>
 <p>By default, Hudi tends to over-partition input, and therefore the layout of Feature Groups. The default parallelism is 200, to ensure each Spark partition stays within the 2GB limit for inputs up to 500GB. The new default is the following for all insert/upsert operations:</p>
@@ -5557,7 +5553,7 @@ fg.insert<span class="o">(</span>df<span class="o">)</span>
 </code></pre></div>
 <p>We recommend having shuffle parallelism <code>hoodie.[insert|upsert|bulkinsert].shuffle.parallelism</code> such that its at least input_data_size/500MB.</p>
 <h3 id="feature-view-passed-features">Feature View passed features<a class="headerlink" href="#feature-view-passed-features" title="Permanent link">#</a></h3>
-<p>With the introduction of the <a href="../../concepts/fs/feature_view/fv_overview.">Feature View abstraction</a>, we added APIs to allow users to overwrite features with so-called <a href="../../fs/feature_view/feature-vectors/#passed-features">passed features</a> when calling <code>fv.get_feature_vector()</code>:</p>
+<p>With the introduction of the <a href="../../../concepts/fs/feature_view/fv_overview/">Feature View abstraction</a>, we added APIs to allow users to overwrite features with so-called <a href="../../fs/feature_view/feature-vectors/#passed-features">passed features</a> when calling <code>fv.get_feature_vector()</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get a single vector</span>
 <span class="n">feature_view</span><span class="o">.</span><span class="n">get_feature_vector</span><span class="p">(</span>
     <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>

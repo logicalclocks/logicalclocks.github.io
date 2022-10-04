@@ -3252,6 +3252,8 @@
       
         
           
+            
+          
         
           
         
@@ -3269,30 +3271,24 @@
         
       
       
-        <label class="md-nav__link" for="__nav_5_5">
-          Integrations
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../../../integrations/">Compute Engine</a>
+          
+            <label for="__nav_5_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
-      <nav class="md-nav" aria-label="Integrations" data-md-level="2">
+      <nav class="md-nav" aria-label="Compute Engine" data-md-level="2">
         <label class="md-nav__title" for="__nav_5_5">
           <span class="md-nav__icon md-icon"></span>
-          Integrations
+          Compute Engine
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../../integrations/setup/" class="md-nav__link">
-        Overview
-      </a>
-    </li>
-  
-
             
           
             
@@ -5151,10 +5147,23 @@ When you're finished, you'll be able to query the database using Spark through H
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
 <p>Before you begin this guide you'll need to retrieve the following information from your Snowflake account and database, the following options are <strong>mandatory</strong>:</p>
 <ul>
-<li><strong>Snowflake Connection URL:</strong> Consult the documentation of your target snowflake account to determine the correct connection URL. This is usually some form of your <a href="https://docs.snowflake.com/en/user-guide/admin-account-identifier.html">Snowflake account identifier</a>. For example:</li>
-</ul>
+<li><strong>Snowflake Connection URL:</strong> Consult the documentation of your target snowflake account to determine the correct connection URL. This is usually some form of your <a href="https://docs.snowflake.com/en/user-guide/admin-account-identifier.html">Snowflake account identifier</a>.
+For example:
 <div class="highlight"><pre><span></span><code>&lt;account_identifier&gt;.snowflakecomputing.com
 </code></pre></div>
+OR:
+<div class="highlight"><pre><span></span><code>https://&lt;orgname&gt;-&lt;account_name&gt;.snowflakecomputing.com
+</code></pre></div>
+The account and organization details can be viewed in the Snowsight UI under <strong>Admin &gt; Account</strong> or by querying it in 
+SQL, as explained in <a href="https://docs.snowflake.com/en/user-guide/organizations-gs.html#viewing-the-name-of-your-organization-and-its-accounts">Snowflake
+documentation</a>.
+Below is an example of how to view the account and organization to get the account identifier from the Snowsight UI.</li>
+</ul>
+<figure>
+<p><img alt="Viewing Snowflake account identifier" src="../../../../../assets/images/guides/fs/storage_connector/snowflake_account_url.png" />
+  </p>
+<figcaption>Viewing Snowflake account identifier</figcaption>
+</figure>
 <div class="admonition warning">
 <p class="admonition-title">Token-based authentication or password based</p>
 <p>The Snowflake storage connector supports both username and password authentication as well as token-based authentication.</p>
@@ -5162,6 +5171,7 @@ When you're finished, you'll be able to query the database using Spark through H
 </div>
 <ul>
 <li><strong>Username and Password:</strong> Login name for the Snowflake user and password. This is often also referred to as <code>sfUser</code> and <code>sfPassword</code>.</li>
+<li><strong>Warehouse:</strong> The warehouse to use for the session after connecting</li>
 <li><strong>Database:</strong> The database to use for the session after connecting.</li>
 <li><strong>Schema:</strong> The schema to use for the session after connecting.</li>
 </ul>
@@ -5182,7 +5192,8 @@ When you're finished, you'll be able to query the database using Spark through H
 <p>Enter the details for your Snowflake connector. Start by giving it a <strong>name</strong> and an optional <strong>description</strong>.</p>
 <ol>
 <li>Select "Snowflake" as connector protocol.</li>
-<li>Specify the hostname for your account in the following format <code>&lt;account_identifier&gt;.snowflakecomputing.com</code>.</li>
+<li>Specify the hostname for your account in the following format <code>&lt;account_identifier&gt;.snowflakecomputing.com</code> 
+or <code>https://&lt;orgname&gt;-&lt;account_name&gt;.snowflakecomputing.com</code>.</li>
 <li>Login name for the Snowflake user.</li>
 <li>Password for the Snowflake user or Token.</li>
 <li>The database to connect to.</li>
