@@ -12,22 +12,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout hopsworks-tutorials
-        uses: actions/checkout@v3
-        with:
-          repository: logicalclocks/hopsworks-tutorials
-          path: docs/hopsworks-tutorials
-          fetch-depth: 0
-
       - uses: actions/setup-python@v2
         with:
           python-version: '3.8'
 
       - name: install deps
         run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
-
-      - name: copy tutorial images
-        run: python prepare_images.py
 
       - name: setup git
         run: |

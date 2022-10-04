@@ -509,7 +509,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
 * Make Hopsworks services [accessible from outside services](../common/services.md)
-* Get started with the [Hopsworks Feature Store](../../hopsworks-tutorials/quickstart.ipynb)
-* Follow one of our [tutorials](../../hopsworks-tutorials/fraud_batch/1_feature_groups.ipynb)
+* Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
+* Follow one of our [tutorials](../../tutorials/index.md)
 * Follow one of our [Guide](../../user_guides/index.md)
 * Code examples and notebooks: [hops-examples](https://github.com/logicalclocks/hops-examples)
