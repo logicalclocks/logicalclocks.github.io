@@ -143,8 +143,8 @@ nav:
         - Inference Logger: user_guides/mlops/serving/inference-logger.md
         - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
       - Vector Database: user_guides/mlops/vector_database/index.md
-    - Integrations:
-        - Overview: user_guides/integrations/setup.md
+    - Compute Engine:
+        - user_guides/integrations/index.md
         - Python: user_guides/integrations/python.md
         - Databricks:
             - Networking: user_guides/integrations/databricks/networking.md
@@ -306,3 +306,6 @@ markdown_extensions:
         custom_checkbox: true
     - markdown_include.include:
         base_path: docs
+    - pymdownx.emoji:
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
