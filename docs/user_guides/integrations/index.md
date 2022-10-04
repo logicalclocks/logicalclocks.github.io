@@ -31,7 +31,7 @@ Hopsworks is aiming to provide funtional parity between the computational engine
 
 ### Inside Hopsworks
 
-If you are using Spark or Python within Hopsworks, there is no further configuration required. Head over to the [Getting Started Guide](../../hopsworks-tutorials/quickstart.ipynb).
+If you are using Spark or Python within Hopsworks, there is no further configuration required. Head over to the [Getting Started Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.
 
 ### Outside Hopsworks
 
@@ -41,7 +41,7 @@ Connecting to the Feature Store from any Python environment, such as your local 
 
 ### Inside Hopsworks
 
-If you are using Spark or Python within Hopsworks, there is no further configuration required. Head over to the [Getting Started Guide](../../hopsworks-tutorials/quickstart.ipynb).
+If you are using Spark or Python within Hopsworks, there is no further configuration required. Head over to the [Getting Started Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.
 
 ### Outside Hopsworks
 
