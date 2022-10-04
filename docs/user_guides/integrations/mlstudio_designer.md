@@ -144,4 +144,4 @@ Finally, submit the pipeline and wait for it to finish:
 
 ## Next Steps
 
-For more information about how to use the Feature Store, see the [Quickstart Guide](../quickstart.md).
+For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.

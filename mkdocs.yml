@@ -10,16 +10,9 @@ edit_uri: ""
 
 nav:
   - Home: index.md
-  - Getting Started: hopsworks-tutorials/quickstart.ipynb
+  - Getting Started: https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb
   - Tutorials:
-    - Fraud Batch:
-      - 1. Feature Groups: hopsworks-tutorials/fraud_batch/1_feature_groups.ipynb
-      - 2. Feature View: hopsworks-tutorials/fraud_batch/2_feature_view_creation.ipynb
-      - 3. Model Training: hopsworks-tutorials/fraud_batch/3_model_training.ipynb
-    - Fraud Online:
-      - 1. Feature Groups: hopsworks-tutorials/fraud_online/1_feature_groups.ipynb
-      - 2. Feature View: hopsworks-tutorials/fraud_online/2_feature_view_creation.ipynb
-      - 3. Model Training: hopsworks-tutorials/fraud_online/3_model_training.ipynb
+    - tutorials/index.md
   - Concepts:
     - Hopsworks Platform: concepts/hopsworks.md
     - Feature Store:

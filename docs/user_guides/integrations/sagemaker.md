@@ -189,4 +189,4 @@ fs = conn.get_feature_store()           # Get the project's default feature stor
 
 ## Next Steps
 
-For more information about how to use the Feature Store, see the [Quickstart Guide](../quickstart.md).
+For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.
