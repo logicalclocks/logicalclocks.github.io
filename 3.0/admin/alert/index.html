@@ -5074,6 +5074,51 @@ have the same effect as creating the SMTP configuration as shown in <a href="#1-
 <span class="w w-Error"> </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
 </code></pre></div>
 <p>To test the alerts by creating triggers from Jobs and Feature group validations see <a href="../../user_guides/projects/jobs/alert">Alerts</a>.</p>
+<p>The yaml syntax in the UI is slightly different in that it does not allow double quotes (it will ignore the values but give no error). 
+Below is an example configuration, that can be used in the UI, with both email and slack receivers configured for system alerts.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">smtp_smarthost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">smtp.gmail.com:587</span><span class="w"></span>
+<span class="w">    </span><span class="nt">smtp_from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hopsworks@gmail.com</span><span class="w"></span>
+<span class="w">    </span><span class="nt">smtp_auth_username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hopsworks@gmail.com</span><span class="w"></span>
+<span class="w">    </span><span class="nt">smtp_auth_password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">XXXXXXXXX</span><span class="w"></span>
+<span class="w">    </span><span class="nt">smtp_auth_identity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hopsworks@gmail.com</span><span class="w"></span>
+<span class="w">    </span><span class="nt">resolveTimeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5m</span><span class="w"></span>
+<span class="nt">templates</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/srv/hops/alertmanager/alertmanager-0.17.0.linux-amd64/template/*.tmpl</span><span class="w"></span>
+<span class="nt">route</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">receiver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
+<span class="w">  </span><span class="nt">routes</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">receiver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span><span class="w"></span>
+<span class="w">      </span><span class="nt">continue</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">      </span><span class="nt">match</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">system-alert</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">receiver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slack</span><span class="w"></span>
+<span class="w">      </span><span class="nt">continue</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">      </span><span class="nt">match</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">system-alert</span><span class="w"></span>
+<span class="w">  </span><span class="nt">groupBy</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alertname</span><span class="w"></span>
+<span class="w">  </span><span class="nt">groupWait</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span><span class="w"></span>
+<span class="w">  </span><span class="nt">groupInterval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span><span class="w"></span>
+<span class="nt">receivers</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span><span class="w"></span>
+<span class="w">    </span><span class="nt">emailConfigs</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">someone@logicalclocks.com</span><span class="w"></span>
+<span class="w">        </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hopsworks@logicalclocks.com</span><span class="w"></span>
+<span class="w">        </span><span class="nt">smarthost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mail.hello.com</span><span class="w"></span>
+<span class="w">        </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"></span>
+<span class="w">          </span><span class="no">summary: {{ .CommonAnnotations.summary }} description: {{</span><span class="w"></span>
+<span class="w">          </span><span class="no">.CommonAnnotations.description }}</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slack</span><span class="w"></span>
+<span class="w">    </span><span class="nt">slackConfigs</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">apiUrl</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"></span>
+<span class="w">          </span><span class="no">https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX</span><span class="w"></span>
+<span class="w">        </span><span class="nt">channel</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#general&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"></span>
+<span class="w">          </span><span class="no">&lt;!channel&gt; summary: {{ .Annotations.summary }} description: {{</span><span class="w"></span>
+<span class="w">          </span><span class="no">.Annotations.description }}</span><span class="w"></span>
+</code></pre></div>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">#</a></h2>
 <p>In this guide you learned how to configure alerts in Hopsworks.</p>
 
