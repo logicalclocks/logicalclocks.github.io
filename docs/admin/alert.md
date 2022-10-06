@@ -105,5 +105,53 @@ global:
 
 To test the alerts by creating triggers from Jobs and Feature group validations see [Alerts](../../user_guides/projects/jobs/alert).
 
+The yaml syntax in the UI is slightly different in that it does not allow double quotes (it will ignore the values but give no error). 
+Below is an example configuration, that can be used in the UI, with both email and slack receivers configured for system alerts.
+
+```yaml
+global:
+    smtp_smarthost: smtp.gmail.com:587
+    smtp_from: hopsworks@gmail.com
+    smtp_auth_username: hopsworks@gmail.com
+    smtp_auth_password: XXXXXXXXX
+    smtp_auth_identity: hopsworks@gmail.com
+    resolveTimeout: 5m
+templates:
+  - /srv/hops/alertmanager/alertmanager-0.17.0.linux-amd64/template/*.tmpl
+route:
+  receiver: default
+  routes:
+    - receiver: email
+      continue: true
+      match:
+        type: system-alert
+    - receiver: slack
+      continue: true
+      match:
+        type: system-alert
+  groupBy:
+    - alertname
+  groupWait: 10s
+  groupInterval: 10s
+receivers:
+  - name: default
+  - name: email
+    emailConfigs:
+      - to: someone@logicalclocks.com
+        from: hopsworks@logicalclocks.com
+        smarthost: mail.hello.com
+        text: >-
+          summary: {{ .CommonAnnotations.summary }} description: {{
+          .CommonAnnotations.description }}
+  - name: slack
+    slackConfigs:
+      - apiUrl: >-
+          https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+        channel: '#general'
+        text: >-
+          <!channel> summary: {{ .Annotations.summary }} description: {{
+          .Annotations.description }}
+```
+
 ## Conclusion
 In this guide you learned how to configure alerts in Hopsworks.
