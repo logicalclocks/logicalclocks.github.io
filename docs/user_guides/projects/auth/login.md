@@ -16,7 +16,7 @@ After your account is validated by an administrator you can use your email and p
     <figcaption>Login with password</figcaption>
   </figure>
 
-### Step 2: Tow-factor authentication
+### Step 2: Two-factor authentication
 
 If two-factor authentication is enabled you will be presented with a two-factor authentication window after you 
 enter your password. Use your authenticator app
