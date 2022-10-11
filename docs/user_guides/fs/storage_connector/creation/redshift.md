@@ -62,8 +62,8 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
 ### Step 3: Upload the Redshift database driver
 ### Step 3: Upload the Redshift database driver (optional)
 
-By default, JDBC Redshift driver library `redshift-jdbc42`, is included in Hopsworks to interact with Redshift. If you wish to use the same you can skip this step. Otherwise, to use a 
-different driver, you need to upload the driver yourself. First, you need to [download the library](https://docs.aws.amazon.com/redshift/latest/mgmt/jdbc20-download-driver.html). Select the driver version without the AWS SDK.
+The `redshift-jdbc42` JDBC driver is included by default in the Hopsworks distribution. 
+If you wish to use a different driver, you need to upload it on Hopsworks and add it as a dependency of Jobs and Jupyter Notebooks that need it. First, you need to [download the library](https://docs.aws.amazon.com/redshift/latest/mgmt/jdbc20-download-driver.html). Select the driver version without the AWS SDK.
 
 #### Upload the driver to Hopsworks
 You then upload the driver files to the “Resources” directory in your project, see the screenshot below.
