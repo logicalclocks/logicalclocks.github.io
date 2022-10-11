@@ -26,9 +26,9 @@ The default mapping, however, can be overwritten by using an [explicit schema de
 ### Offline data types 
 
 When registering a [Spark](https://spark.apache.org/docs/latest/sql-ref-datatypes.html) DataFrame in a PySpark environment (S),
-or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment (PO) the following default mapping to offline feature types applies:
+or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment (P) the following default mapping to offline feature types applies:
 
-| Spark Type (S) | Pandas Type (PO)                   | Offline Feature Type          | Remarks                                                        |
+| Spark Type (S) | Pandas Type (P)                    | Offline Feature Type          | Remarks                                                        |
 |----------------|------------------------------------|-------------------------------|----------------------------------------------------------------|
 | BooleanType    | bool                               | BOOLEAN                       |                                                                |
 | ByteType       | int8                               | TINYINT or INT                | INT when time_travel_type="HUDI"                               |
@@ -38,7 +38,7 @@ or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment
 | FloatType      | float, float16, float32            | FLOAT                         |                                                                |
 | DoubleType     | float64                            | DOUBLE                        |                                                                |
 | DecimalType    | decimal.decimal                    | DECIMAL(PREC, SCALE)          | Not supported in PO env. when time_travel_type="HUDI"          |
-| TimestampType  | datetime64[ns]                     | TIMESTAMP                     |                                                                |
+| TimestampType  | datetime64[ns], datetime64[ns, tz] | TIMESTAMP                     |                                                                |
 | DateType       | object (datetime.date)             | DATE                          |                                                                |
 | StringType     | object (str), object(np.unicode)   | STRING                        |                                                                |
 | ArrayType      | object (list), object (np.ndarray) | ARRAY&lt;TYPE&gt;             |                                                                |
@@ -55,7 +55,7 @@ It results in a less fine-grained mapping between Python and Spark types:
 | int8, uint8, int16, uint16, int32, int, uint32, int64 | LongType      |               |
 | float, float16, float32, float64                      | DoubleType    |               |
 | object (decimal.decimal)                              | DecimalType   |               |
-| datetime64[ns]                                        | TimestampType |               |
+| datetime64[ns], datetime64[ns, tz]                    | TimestampType |               |
 | object (datetime.date)                                | DateType      |               |
 | object (str), object(np.unicode)                      | StringType    |               |
 | object (list), object (np.ndarray)                    | -             | Not supported |
@@ -142,6 +142,31 @@ The byte size of each column is determined by its data type and calculated as fo
 | VARBINARY(LENGTH)               | LENGTH / 1.4 |
 | BLOB                            | 256          |
 | other                           | 8            |
+
+### Timestamps and Timezones
+
+Timestamp features are stored in Hopsworks without an associated time zone. 
+All timestamp features and all timestamp-based functions (such as [point-in-time joins](../../../concepts/fs/feature_view/offline_api.md#point-in-time-correct-training-data)) use UTC time. 
+This ensures consistency of data across different 
+time zones and simplifies working with timestamp data. When ingesting timestamp features,
+the [Feature Store Write API](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#insert) ensures that timestamps are correctly injected as UTC 
+timestamps. Input data is interpreted as follows, independent of the client's time zone:
+
+| Data Frame (Data Type)                | Engines                 | Handling                            |
+|---------------------------------------|-------------------------|-------------------------------------|
+| Pandas DataFrame (datetime64[ns])     | Python-only and PySpark | interpretation as UTC               |
+| Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timzone-sensitive conversion to UTC |
+| Spark (TimestampType)                 | PySpark and Spark       | interpretation as UTC                    |
+
+Data retrieved from the Feature Store, e.g. using the [Feature Store Read API](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#read), will always be in UTC time and in the following formats:
+
+| Data Frame (Data Type)                | Engines                 | Timezone |
+|---------------------------------------|-------------------------|----------|
+| Pandas DataFrame (datetime64[ns])     | Python-only and PySpark | UTC      |
+| Spark (TimestampType)                 | PySpark and Spark       | UTC      |
+
+Note that our PySpark/Spark client automatically sets the relevant [Spark SQL session configuration](https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration) ("spark.sql.session.timeZone"="UTC"). 
+This ensures that Spark SQL will interpret all timestamps as UTC timestamps. The settings will only apply to the current session, and you don't have to worry about setting/unsetting the configuration yourself.
 
 ## Explicit schema definition
 
