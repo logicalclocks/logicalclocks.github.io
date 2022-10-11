@@ -80,7 +80,7 @@ Add some expectation to your suite to validate columns:
 ```python3
 expectation_suite.add_expectation(
     ge.core.ExpectationConfiguration(
-        expectation_type="expect_column_minimum_value_to_be_between",
+        expectation_type="expect_column_min_to_be_between",
         kwargs={
             "column": "foo_id",
             "min_value": 0,
