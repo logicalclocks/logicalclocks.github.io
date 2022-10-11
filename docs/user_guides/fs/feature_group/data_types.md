@@ -148,21 +148,21 @@ The byte size of each column is determined by its data type and calculated as fo
 Timestamp features are stored in Hopsworks without an associated time zone. 
 All timestamp features and all timestamp-based functions (such as [point-in-time joins](../../../concepts/fs/feature_view/offline_api.md#point-in-time-correct-training-data)) use UTC time. 
 This ensures consistency of data across different 
-time zones and simplifies working with timestamp data. When ingesting timestamp features,
+time zones and simplifies working with timestamp data in general. When ingesting timestamp features,
 the [Feature Store Write API](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#insert) ensures that timestamps are correctly injected as UTC 
 timestamps. Input data is interpreted as follows, independent of the client's time zone:
 
-| Data Frame (Data Type)                | Engines                 | Handling                            |
-|---------------------------------------|-------------------------|-------------------------------------|
-| Pandas DataFrame (datetime64[ns])     | Python-only and PySpark | interpretation as UTC               |
-| Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timzone-sensitive conversion to UTC |
-| Spark (TimestampType)                 | PySpark and Spark       | interpretation as UTC                    |
+| Data Frame (Data Type)                | Environment             | Handling                                      |
+|---------------------------------------|-------------------------|-----------------------------------------------|
+| Pandas DataFrame (datetime64[ns])     | Python-only and PySpark | interpreted as UTC                            |
+| Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timzone-sensitive conversion from 'tz' to UTC |
+| Spark (TimestampType)                 | PySpark and Spark       | interpreted as UTC                            |
 
 Data retrieved from the Feature Store, e.g. using the [Feature Store Read API](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#read), will always be in UTC time and in the following formats:
 
-| Data Frame (Data Type)                | Engines                 | Timezone |
+| Data Frame (Data Type)                | Environment             | Timezone |
 |---------------------------------------|-------------------------|----------|
-| Pandas DataFrame (datetime64[ns])     | Python-only and PySpark | UTC      |
+| Pandas DataFrame (datetime64[ns])     | Python-only             | UTC      |
 | Spark (TimestampType)                 | PySpark and Spark       | UTC      |
 
 Note that our PySpark/Spark client automatically sets the relevant [Spark SQL session configuration](https://spark.apache.org/docs/latest/configuration.html#runtime-sql-configuration) ("spark.sql.session.timeZone"="UTC"). 
