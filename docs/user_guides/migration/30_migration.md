@@ -156,9 +156,9 @@ Together with the new `.get_or_create_ APIs` this will avoid that users have to 
 
 ### hops python library superseded by hopsworks library
 
-The `hops` python library is now deprecated and is superseded by the `hopsworks` python library. `hopsworks` is essentially a reimplementation of `hops`, but with an object-oriented API, similar in style with `hsfs`. For guides on how to use the API follow the [Projects guides](../../user_guides/projects/index.md).
+The [hops](https://pypi.org/project/hops/) python library is now deprecated and is superseded by the [hopsworks](https://pypi.org/project/hopsworks/) python library. `hopsworks` is essentially a reimplementation of `hops`, but with an object-oriented API, similar in style with [hsfs](https://pypi.org/project/hsfs/). For guides on how to use the API follow the [Projects guides](../../user_guides/projects/index.md).
 
-Furthermore, the functionality provided by the `model` and `serving` module is now included in the `hsml` python library. To create models and serving follow the [MLOps guides](../../user_guides/mlops/index.md).
+Furthermore, the functionality provided by the `model` and `serving` module in `hops`, is now ported to the [hsml](https://pypi.org/project/hsml/) python library. To create models and serving follow the [MLOps guides](../../user_guides/mlops/index.md).
 
 ## New Feature Highlights
 
