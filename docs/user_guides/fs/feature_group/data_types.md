@@ -38,7 +38,7 @@ or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment
 | FloatType      | float, float16, float32            | FLOAT                         |                                                                |
 | DoubleType     | float64                            | DOUBLE                        |                                                                |
 | DecimalType    | decimal.decimal                    | DECIMAL(PREC, SCALE)          | Not supported in PO env. when time_travel_type="HUDI"          |
-| TimestampType  | datetime64[ns], datetime64[ns, tz] | TIMESTAMP                     |                                                                |
+| TimestampType  | datetime64[ns], datetime64[ns, tz] | TIMESTAMP                     | s. [Timestamps and Timezones](#timestamps-and-timezones)       |
 | DateType       | object (datetime.date)             | DATE                          |                                                                |
 | StringType     | object (str), object(np.unicode)   | STRING                        |                                                                |
 | ArrayType      | object (list), object (np.ndarray) | ARRAY&lt;TYPE&gt;             |                                                                |
@@ -49,41 +49,41 @@ or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment
 When registering a Pandas DataFrame in a PySpark environment (S) the Pandas DataFrame is first converted to a Spark DataFrame, using Spark's [default conversion](https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.sql.SparkSession.createDataFrame.html).
 It results in a less fine-grained mapping between Python and Spark types:
 
-| Pandas Type (S)                                       | Spark Type    | Remarks       |
-|-------------------------------------------------------|---------------|---------------|
-| bool                                                  | BooleanType   |               |
-| int8, uint8, int16, uint16, int32, int, uint32, int64 | LongType      |               |
-| float, float16, float32, float64                      | DoubleType    |               |
-| object (decimal.decimal)                              | DecimalType   |               |
-| datetime64[ns], datetime64[ns, tz]                    | TimestampType |               |
-| object (datetime.date)                                | DateType      |               |
-| object (str), object(np.unicode)                      | StringType    |               |
-| object (list), object (np.ndarray)                    | -             | Not supported |
-| object (dict)                                         | StructType    |               |
-| object (binary)                                       | BinaryType    |               |
+| Pandas Type (S)                                       | Spark Type    | Remarks                                                  |
+|-------------------------------------------------------|---------------|----------------------------------------------------------|
+| bool                                                  | BooleanType   |                                                          |
+| int8, uint8, int16, uint16, int32, int, uint32, int64 | LongType      |                                                          |
+| float, float16, float32, float64                      | DoubleType    |                                                          |
+| object (decimal.decimal)                              | DecimalType   |                                                          |
+| datetime64[ns], datetime64[ns, tz]                    | TimestampType | s. [Timestamps and Timezones](#timestamps-and-timezones) |
+| object (datetime.date)                                | DateType      |                                                          |
+| object (str), object(np.unicode)                      | StringType    |                                                          |
+| object (list), object (np.ndarray)                    | -             | Not supported                                            |
+| object (dict)                                         | StructType    |                                                          |
+| object (binary)                                       | BinaryType    |                                                          |
 
 ### Online data types 
 
 The online data type is determined based on the offline type according to the following mapping, regardless of which environment the data originated from. 
 Only a subset of the data types can be used as primary key, as indicated in the table as well:
 
-| Offline Feature Type          | Online Feature Type  | Primary Key | Remarks                          | 
-|-------------------------------|----------------------|-------------|----------------------------------|
-| BOOLEAN                       | TINYINT              | x           |                                  | 
-| TINYINT                       | TINYINT              | x           |                                  | 
-| SMALLINT                      | SMALLINT             | x           |                                  | 
-| INT                           | INT                  | x           | Also supports: TINYINT, SMALLINT | 
-| BIGINT                        | BIGINT               | x           |                                  | 
-| FLOAT                         | FLOAT                |             |                                  | 
-| DOUBLE                        | DOUBLE               |             |                                  | 
-| DECIMAL(PREC, SCALE)          | DECIMAL(PREC, SCALE) |             | e.g. DECIMAL(38, 18)             | 
-| TIMESTAMP                     | TIMESTAMP            |             |                                  | 
-| DATE                          | DATE                 |             |                                  | 
-| STRING                        | VARCHAR(100)         | x           | Also supports: TEXT              | 
-| ARRAY&lt;TYPE&gt;             | VARBINARY(100)       | x           | Also supports: BLOB              | 
-| STRUCT&lt;NAME: TYPE, ...&gt; | VARBINARY(100)       | x           | Also supports: BLOB              | 
-| BINARY                        | VARBINARY(100)       | x           | Also supports: BLOB              | 
-| MAP&lt;String,TYPE&gt;        | VARBINARY(100)       | x           | Also supports: BLOB              | 
+| Offline Feature Type          | Online Feature Type  | Primary Key | Remarks                                                  | 
+|-------------------------------|----------------------|-------------|----------------------------------------------------------|
+| BOOLEAN                       | TINYINT              | x           |                                                          | 
+| TINYINT                       | TINYINT              | x           |                                                          | 
+| SMALLINT                      | SMALLINT             | x           |                                                          | 
+| INT                           | INT                  | x           | Also supports: TINYINT, SMALLINT                         | 
+| BIGINT                        | BIGINT               | x           |                                                          | 
+| FLOAT                         | FLOAT                |             |                                                          | 
+| DOUBLE                        | DOUBLE               |             |                                                          | 
+| DECIMAL(PREC, SCALE)          | DECIMAL(PREC, SCALE) |             | e.g. DECIMAL(38, 18)                                     | 
+| TIMESTAMP                     | TIMESTAMP            |             | s. [Timestamps and Timezones](#timestamps-and-timezones) | 
+| DATE                          | DATE                 |             |                                                          | 
+| STRING                        | VARCHAR(100)         | x           | Also supports: TEXT                                      | 
+| ARRAY&lt;TYPE&gt;             | VARBINARY(100)       | x           | Also supports: BLOB                                      | 
+| STRUCT&lt;NAME: TYPE, ...&gt; | VARBINARY(100)       | x           | Also supports: BLOB                                      | 
+| BINARY                        | VARBINARY(100)       | x           | Also supports: BLOB                                      | 
+| MAP&lt;String,TYPE&gt;        | VARBINARY(100)       | x           | Also supports: BLOB                                      | 
 
 More on how Hopsworks handles [string types](#string-online-data-types),  [complex data types](#complex-online-data-types) and the online restrictions for [primary keys](#online-restrictions-for-primary-key-data-types) and [row size](#online-restrictions-for-row-size) in the following sections.
 
