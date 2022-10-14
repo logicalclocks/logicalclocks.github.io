@@ -17,7 +17,6 @@ When you're finished, you'll be able to query the database using Spark through H
 Before you begin this guide you'll need to retrieve the following information from your AWS account and Redshift database, the following options are **mandatory**:
 
 - **Cluster identifier:** The name of the cluster.
-- **Database driver:** You can use the default JDBC Redshift Driver `com.amazon.redshift.jdbc42.Driver` (More on this later)
 - **Database endpoint:** The endpoint for the database. Should be in the format of `[UUID].eu-west-1.redshift.amazonaws.com`.
 - **Database name:** The name of the database to query.
 - **Database port:** The port of the cluster. Defaults to 5349.
@@ -44,7 +43,9 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
 5. The database name.
 6. The database port.
 7. The database username, here you have the possibility to let Hopsworks auto-create the username for you.
-8. Optionally provide the database group and table to point the connector to.
+8. Database Driver (optional): You can use the default JDBC Redshift Driver `com.amazon.redshift.jdbc42.Driver` 
+   included in Hopsworks or set a different driver (More on this later).
+9. Optionally provide the database group and table to point the connector to.
 9. Set the appropriate authentication method.
 
 <figure markdown>
@@ -59,8 +60,10 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
     Your administrator can change the default session duration for AWS storage connectors, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming. And then changing the `fs_storage_connector_session_duration` [configuration property](../../../../admin/variables.md) to the appropriate value in seconds.
 
 ### Step 3: Upload the Redshift database driver
+### Step 3: Upload the Redshift database driver (optional)
 
-With regards to the database driver, the library to interact with Redshift is not included in Hopsworks - you need to upload the driver yourself. First, you need to [download the library](https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html). Select the driver version without the AWS SDK.
+The `redshift-jdbc42` JDBC driver is included by default in the Hopsworks distribution. 
+If you wish to use a different driver, you need to upload it on Hopsworks and add it as a dependency of Jobs and Jupyter Notebooks that need it. First, you need to [download the library](https://docs.aws.amazon.com/redshift/latest/mgmt/jdbc20-download-driver.html). Select the driver version without the AWS SDK.
 
 #### Upload the driver to Hopsworks
 You then upload the driver files to the “Resources” directory in your project, see the screenshot below.
@@ -87,6 +90,13 @@ You can now add the driver file to the default job and Jupyter configuration. Th
   ![Redshift Driver Job and Jupyter Configuration](../../../../assets/images/guides/fs/storage_connector/driver_upload.png)
   <figcaption>Attaching the Redshift Driver to all Jobs and Jupyter Instances of the Project</figcaption>
 </figure>
+
+!!! tip 
+    If you face network connectivity issues to your Redshift cluster, a common cause could be the cluster database port 
+    not being accessible from outside the Redshift cluster VPC network. A quick and dirty way to enable connectivity is 
+    to [Enable Publicly Accessible](https://aws.amazon.com/premiumsupport/knowledge-center/redshift-cluster-private-public/).
+    However, in a production setting, you should use [VPC peering](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html) 
+    or some equivalent mechanism for connecting the clusters.
 
 ## Next Steps
 
