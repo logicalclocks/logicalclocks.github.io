@@ -5,26 +5,13 @@ To enable EMR to access the Hopsworks Feature Store, you need to set up a Hopswo
     Ensure [Networking](networking.md) is set up correctly before proceeding with this guide.
 
 ## Step 1: Set up a Hopsworks API key
-In order for EMR clusters to be able to communicate with the Hopsworks Feature Store, the clients running on EMR need to be able to access a Hopsworks API key.
 
-### Generate an API key
+For instructions on how to generate an API key follow this [user guide](../../projects/api_key/create_api_key.md). For the EMR integration to work correctly make sure you add the following scopes to your API key:
 
-In Hopsworks, click on your *username* in the top-right corner and select *Account Settings* to open the user settings. Select *API*. Give the key a name and select the project scope before creating the key. Copy the key into your clipboard for the next step.
-
-!!! success "Scopes"
-    The API key should contain at least the following scopes:
-
-    1. project
-
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/emr/api_key.png" alt="Generating an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-!!! info
-    You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it and create a new one.
+  1. featurestore
+  2. project
+  3. job
+  4. kafka
 
 ### Store the API key in the AWS Secrets Manager
 
