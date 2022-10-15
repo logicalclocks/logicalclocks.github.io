@@ -40,7 +40,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
     """
 
     fg = feature_store.create_external_feature_group(name="sales",
-        version=1
+        version=1,
         description="Physical shop sales features",
         query=query,
         storage_connector=connector,
@@ -55,7 +55,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
 
     ```python
     fg = feature_store.create_external_feature_group(name="sales",
-        version=1
+        version=1,
         description="Physical shop sales features",
         data_format="parquet",
         storage_connector=connector,
