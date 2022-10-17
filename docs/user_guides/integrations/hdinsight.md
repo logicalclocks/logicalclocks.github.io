@@ -9,26 +9,13 @@ To enable HDInsight to access the Hopsworks Feature Store, you need to set up a 
     To be able to connect to the Feature Store, please ensure that your HDInsight cluster and the Hopsworks Feature Store are either in the same [Virtual Network](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview) or [Virtual Network Peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering) is set up between the different networks. In addition, ensure that the Network Security Group of your Hopsworks instance is configured to allow incoming traffic from your HDInsight cluster on ports 443, 3306, 8020, 30010, 9083 and 9085 (443,3306,8020,30010,9083,9085). See [Network security groups](https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview) for more information.
 
 ## Step 1: Set up a Hopsworks API key
-In order for HDInsight clusters to be able to communicate with the Hopsworks Feature Store, the clients running on HDInsight need a Hopsworks API key.
 
-In Hopsworks, click on your *username* in the top-right corner and select *Settings* to open the user settings. Select *API keys*. Give the key a name and select the project scope before creating the key. Make sure you have the key handy for the next steps.
+For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the HDInsight integration to work correctly make sure you add the following scopes to your API key:
 
-!!! success "Scopes"
-    The API key should contain at least the following scopes:
-
-    1. featurestore
-    2. project
-    3. job
-
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/guides/integrations/azure/hdinsight/step-0.png" alt="Generating an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-!!! info
-    You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it and create a new one.
+  1. featurestore
+  2. project
+  3. job
+  4. kafka
 
 ## Step 2:  Use a script action to install the Feature Store connector
 
