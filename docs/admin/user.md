@@ -117,7 +117,7 @@ A temporary password will be displayed. Copy the password and pass it to the use
   <figcaption>Copy temporary password</figcaption>
 </figure>
 
-A user with a temporary password will see a warning message when going to _User settings_ **Authentication** tab.
+A user with a temporary password will see a warning message when going to _Account settings_ **Authentication** tab.
 
 <figure>
   <a  href="../../assets/images/admin/user-management/change-password.png">

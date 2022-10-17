@@ -11,7 +11,7 @@ to authenticate to Hopsworks.
 
 ### Step 1: Go to your Account settings
 After you have logged in, in the upper right-hand corner of the screen, you will see your name. Click on your name,
-then click on the menu item **Account settings**. The User settings page will open with profile tab selected. In this tab
+then click on the menu item **Account settings**. The account settings page will open with profile tab selected. In this tab
 you can change your first and last name. You cannot change your email address and will need to create a new 
 account if you wish to change your email address.
 
