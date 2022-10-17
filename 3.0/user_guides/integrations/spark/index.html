@@ -4962,7 +4962,7 @@
 <h1 id="spark-integration">Spark Integration<a class="headerlink" href="#spark-integration" title="Permanent link">#</a></h1>
 <p>Connecting to the Feature Store from an external Spark cluster, such as Cloudera, requires configuring it with the Hopsworks client jars and configuration. This guide explains step by step how to connect to the Feature Store from an external Spark cluster.</p>
 <h2 id="download-the-hopsworks-client-jars">Download the Hopsworks Client Jars<a class="headerlink" href="#download-the-hopsworks-client-jars" title="Permanent link">#</a></h2>
-<p>In the Feature Store UI, select the <em>integration</em> tab and then select the <em>Spark</em> tab. Click on <em>Download client Jars</em>. This will start the download of the <em>client.tar.gz</em> archive. The archive contains two jar files for HopsFS, the client libraries for HopsHive and the Java version of the HSFS library. You should upload these libraries to your Spark cluster and attach them as local resources to your Job. If you are using <code>spark-submit</code>, you should specify the <code>--jar</code> option. For more details see: <a href="https://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management">Spark Dependency Management</a>.</p>
+<p>In the <em>Project Settings</em>, select the <em>integration</em> tab and scroll to the <em>Configure Spark Integration</em> section. Click on <em>Download client Jars</em>. This will start the download of the <em>client.tar.gz</em> archive. The archive contains two jar files for HopsFS, the client libraries for HopsHive and the Java version of the HSFS library. You should upload these libraries to your Spark cluster and attach them as local resources to your Job. If you are using <code>spark-submit</code>, you should specify the <code>--jar</code> option. For more details see: <a href="https://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management">Spark Dependency Management</a>.</p>
 <p align="center">
     <figure>
         <img src="../../../assets/images/guides/integrations/spark_integration.png" alt="Spark integration tab">
@@ -4971,7 +4971,7 @@
 </p>
 
 <h2 id="download-the-certificates">Download the certificates<a class="headerlink" href="#download-the-certificates" title="Permanent link">#</a></h2>
-<p>Download the certificates from the same <em>Spark</em> tab in the Feature Store UI. Hopsworks uses X.509 certificates for authentication and authorization. If you are interested in the Hopsworks security model, you can read more about it in this <a href="https://www.logicalclocks.com/blog/how-we-secure-your-data-with-hopsworks">blog post</a>.
+<p>Download the certificates from the same section as above. Hopsworks uses X.509 certificates for authentication and authorization. If you are interested in the Hopsworks security model, you can read more about it in this <a href="https://www.logicalclocks.com/blog/how-we-secure-your-data-with-hopsworks">blog post</a>.
 The certificates are composed of three different components: the <code>keyStore.jks</code> containing the private key and the certificate for your project user, the <code>trustStore.jks</code> containing the certificates for the Hopsworks certificates authority, and a password to unlock the private key in the <code>keyStore.jks</code>. The password is displayed in a pop-up when downloading the certificate and should be saved in a file named <code>material_passwd</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -4999,35 +4999,14 @@ spark.hadoop.hive.metastore.uris                    thrift://[metastore_ip]:[met
 <p class="admonition-title">Matching Hopsworks version</p>
 <p>The <strong>major version of <code>HSFS</code></strong> needs to match the <strong>major version of Hopsworks</strong>.</p>
 </div>
-<p align="center">
-    <figure>
-        <img src="../../../assets/images/guides/integrations/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
-        <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
-    </figure>
-</p>
-
 <h2 id="generating-an-api-key">Generating an API Key<a class="headerlink" href="#generating-an-api-key" title="Permanent link">#</a></h2>
-<p>In Hopsworks, click on your <em>username</em> in the top-right corner and select <em>Settings</em> to open the user settings. Select <em>Api keys</em>. Give the key a name and select the job, featurestore and project scopes before creating the key. Copy the key into your clipboard for the next step.</p>
-<div class="admonition success">
-<p class="admonition-title">Scopes</p>
-<p>The created API-Key should at least have the following scopes:</p>
+<p>For instructions on how to generate an API key follow this <a href="../../projects/api_key/create_api_key/">user guide</a>. For the Spark integration to work correctly make sure you add the following scopes to your API key:</p>
 <ol>
 <li>featurestore</li>
 <li>project</li>
 <li>job</li>
+<li>kafka</li>
 </ol>
-</div>
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/guides/integrations/api-key.png" alt="Generating an API Key on Hopsworks">
-    <figcaption>API-Keys can be generated in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You are only ably to retrieve the API Key once. If you did not manage to copy it to your clipboard, delete it again and create a new one.</p>
-</div>
 <h2 id="connecting-to-the-feature-store">Connecting to the Feature Store<a class="headerlink" href="#connecting-to-the-feature-store" title="Permanent link">#</a></h2>
 <p>You are now ready to connect to the Hopsworks Feature Store from Spark:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">hsfs</span>

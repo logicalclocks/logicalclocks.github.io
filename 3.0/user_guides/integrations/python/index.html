@@ -4920,28 +4920,13 @@
 <h1 id="python-environments-local-or-kubeflow">Python Environments (Local or Kubeflow)<a class="headerlink" href="#python-environments-local-or-kubeflow" title="Permanent link">#</a></h1>
 <p>Connecting to the Feature Store from any Python environment requires setting up a Feature Store API key and installing the library. This guide explains step by step how to connect to the Feature Store from any Python environment such as your local environment or KubeFlow.</p>
 <h2 id="generate-an-api-key">Generate an API key<a class="headerlink" href="#generate-an-api-key" title="Permanent link">#</a></h2>
-<p>In Hopsworks, click on your <em>username</em> in the top-right corner and select <em>Settings</em> to open the user settings. Select <em>API keys</em>. Give the key a name and select the job, featurestore and project scopes before creating the key. Copy the key into your clipboard.</p>
-<p>Create a file called <code>featurestore.key</code> in your designated Python environment and save the API key from your clipboard in the file.</p>
-<div class="admonition success">
-<p class="admonition-title">Scopes</p>
-<p>The API key should contain at least the following scopes:</p>
+<p>For instructions on how to generate an API key follow this <a href="../../projects/api_key/create_api_key/">user guide</a>. For the Python client to work correctly make sure you add the following scopes to your API key:</p>
 <ol>
 <li>featurestore</li>
 <li>project</li>
 <li>job</li>
+<li>kafka</li>
 </ol>
-</div>
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/integrations/api-key.png" alt="Generating an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it and create a new one.</p>
-</div>
 <h2 id="install-hsfs">Install <strong>HSFS</strong><a class="headerlink" href="#install-hsfs" title="Permanent link">#</a></h2>
 <p>To be able to access the Hopsworks Feature Store, the <code>HSFS</code> Python library needs to be installed in the environment from which you want to connect to the Feature Store. You can install the library through pip. We recommend using a Python environment manager such as <em>virtualenv</em> or <em>conda</em>.</p>
 <div class="highlight"><pre><span></span><code>pip install hsfs[python]~=[HOPSWORKS_VERSION]

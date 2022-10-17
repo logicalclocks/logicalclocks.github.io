@@ -3239,13 +3239,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#generate-an-api-key" class="md-nav__link">
-    Generate an API key
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#store-the-api-key-in-the-aws-secrets-manager" class="md-nav__link">
     Store the API key in the AWS Secrets Manager
   </a>
@@ -4926,13 +4919,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#generate-an-api-key" class="md-nav__link">
-    Generate an API key
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#store-the-api-key-in-the-aws-secrets-manager" class="md-nav__link">
     Store the API key in the AWS Secrets Manager
   </a>
@@ -5006,27 +4992,13 @@
 <p>Ensure <a href="../networking/">Networking</a> is set up correctly before proceeding with this guide.</p>
 </div>
 <h2 id="step-1-set-up-a-hopsworks-api-key">Step 1: Set up a Hopsworks API key<a class="headerlink" href="#step-1-set-up-a-hopsworks-api-key" title="Permanent link">#</a></h2>
-<p>In order for EMR clusters to be able to communicate with the Hopsworks Feature Store, the clients running on EMR need to be able to access a Hopsworks API key.</p>
-<h3 id="generate-an-api-key">Generate an API key<a class="headerlink" href="#generate-an-api-key" title="Permanent link">#</a></h3>
-<p>In Hopsworks, click on your <em>username</em> in the top-right corner and select <em>Account Settings</em> to open the user settings. Select <em>API</em>. Give the key a name and select the project scope before creating the key. Copy the key into your clipboard for the next step.</p>
-<div class="admonition success">
-<p class="admonition-title">Scopes</p>
-<p>The API key should contain at least the following scopes:</p>
+<p>For instructions on how to generate an API key follow this <a href="../../../projects/api_key/create_api_key/">user guide</a>. For the EMR integration to work correctly make sure you add the following scopes to your API key:</p>
 <ol>
+<li>featurestore</li>
 <li>project</li>
+<li>job</li>
+<li>kafka</li>
 </ol>
-</div>
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/emr/api_key.png" alt="Generating an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it and create a new one.</p>
-</div>
 <h3 id="store-the-api-key-in-the-aws-secrets-manager">Store the API key in the AWS Secrets Manager<a class="headerlink" href="#store-the-api-key-in-the-aws-secrets-manager" title="Permanent link">#</a></h3>
 <p>In the AWS management console ensure that your active region is the region you use for EMR.
 Go to the <em>AWS Secrets Manager</em> and select <em>Store new secret</em>. Select <em>Other type of secrets</em> and add <em>api-key</em>

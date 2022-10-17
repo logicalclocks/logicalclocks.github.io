@@ -4942,28 +4942,13 @@
 <p>To be able to connect to the Feature Store, please ensure that your HDInsight cluster and the Hopsworks Feature Store are either in the same <a href="https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview">Virtual Network</a> or <a href="https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering">Virtual Network Peering</a> is set up between the different networks. In addition, ensure that the Network Security Group of your Hopsworks instance is configured to allow incoming traffic from your HDInsight cluster on ports 443, 3306, 8020, 30010, 9083 and 9085 (443,3306,8020,30010,9083,9085). See <a href="https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview">Network security groups</a> for more information.</p>
 </div>
 <h2 id="step-1-set-up-a-hopsworks-api-key">Step 1: Set up a Hopsworks API key<a class="headerlink" href="#step-1-set-up-a-hopsworks-api-key" title="Permanent link">#</a></h2>
-<p>In order for HDInsight clusters to be able to communicate with the Hopsworks Feature Store, the clients running on HDInsight need a Hopsworks API key.</p>
-<p>In Hopsworks, click on your <em>username</em> in the top-right corner and select <em>Settings</em> to open the user settings. Select <em>API keys</em>. Give the key a name and select the project scope before creating the key. Make sure you have the key handy for the next steps.</p>
-<div class="admonition success">
-<p class="admonition-title">Scopes</p>
-<p>The API key should contain at least the following scopes:</p>
+<p>For instructions on how to generate an API key follow this <a href="../../projects/api_key/create_api_key/">user guide</a>. For the HDInsight integration to work correctly make sure you add the following scopes to your API key:</p>
 <ol>
 <li>featurestore</li>
 <li>project</li>
 <li>job</li>
+<li>kafka</li>
 </ol>
-</div>
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/guides/integrations/azure/hdinsight/step-0.png" alt="Generating an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it and create a new one.</p>
-</div>
 <h2 id="step-2-use-a-script-action-to-install-the-feature-store-connector">Step 2:  Use a script action to install the Feature Store connector<a class="headerlink" href="#step-2-use-a-script-action-to-install-the-feature-store-connector" title="Permanent link">#</a></h2>
 <p>HDInsight requires Hopsworks connectors to be able to communicate with the Hopsworks Feature Store. These connectors can be installed with the script action shown below. Copy the content into a file, name the file <code>hopsworks.sh</code> and replace MY_INSTANCE, MY_PROJECT, MY_VERSION, MY_API_KEY and MY_CONDA_ENV with your values. Copy the <code>hopsworks.sh</code> file into any storage that is readable by your HDInsight clusters and take note of the URI of that file e.g., <code>https://account.blob.core.windows.net/scripts/hopsworks.sh</code>.</p>
 <p>The script action needs to be applied head and worker nodes and can be applied during cluster creation or to an existing cluster. Ensure to persist the script action so that it is run on newly created nodes. For more information about how to use script actions, see <a href="https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-linux">Customize Azure HDInsight clusters by using script actions</a>.</p>

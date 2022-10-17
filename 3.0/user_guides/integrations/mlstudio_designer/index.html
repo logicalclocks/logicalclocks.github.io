@@ -4912,27 +4912,13 @@
 <p>To be able to connect to the Feature Store, please ensure that the Network Security Group of your Hopsworks instance on Azure is configured to allow incoming traffic from your compute target on ports 443, 9083 and 9085 (443,9083,9085). See <a href="https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview">Network security groups</a> for more information. If your compute target is not in the same VNet as your Hopsworks instance and the Hopsworks instance is not accessible from the internet then you will need to configure <a href="https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering">Virtual Network Peering</a>.</p>
 </div>
 <h2 id="generate-an-api-key">Generate an API key<a class="headerlink" href="#generate-an-api-key" title="Permanent link">#</a></h2>
-<p>In Hopsworks, click on your <em>username</em> in the top-right corner and select <em>Settings</em> to open the user settings. Select <em>API keys</em>. Give the key a name and select the job, featurestore and project scopes before creating the key. Copy the key into your clipboard for the next step.</p>
-<div class="admonition success">
-<p class="admonition-title">Scopes</p>
-<p>The API key should contain at least the following scopes:</p>
+<p>For instructions on how to generate an API key follow this <a href="../../projects/api_key/create_api_key/">user guide</a>. For the Azure ML Designer integration to work correctly make sure you add the following scopes to your API key:</p>
 <ol>
 <li>featurestore</li>
 <li>project</li>
 <li>job</li>
+<li>kafka</li>
 </ol>
-</div>
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/guides/integrations/azure/designer/step-0.png" alt="Generate an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it again and create a new one.</p>
-</div>
 <h2 id="connect-to-the-feature-store">Connect to the Feature Store<a class="headerlink" href="#connect-to-the-feature-store" title="Permanent link">#</a></h2>
 <p>To connect to the Feature Store from the Azure Machine Learning Designer, create a new pipeline or open an existing one:</p>
 <p align="center">
