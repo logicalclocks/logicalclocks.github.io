@@ -5,7 +5,7 @@ The operations to perform on the cloned repository can be found in the dropdown 
 <p align="center">
   <figure>
     <a  href="../../../../assets/images/guides/git/repo_actions.gif">
-      <img src="../../../../assets/images/guides/git/repo_actions.gif" alt="Repository actions a repository">
+      <img src="../../../../assets/images/guides/git/repo_actions.gif" alt="Repository actions on a repository">
     </a>
     <figcaption>Repository actions</figcaption>
   </figure>
