@@ -30,7 +30,7 @@ You can also perform the repository actions through the hopsworks git API in pyt
 
 import hopsworks
 
-connection = hopsworks.connection()
+connection = hopsworks.login()
 
 project = connection.get_project()
 

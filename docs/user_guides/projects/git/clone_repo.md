@@ -10,7 +10,9 @@ Repositories can be managed from the Git section in the project settings. The Gi
 
 ## Prerequisites
 
-For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials. You can clone a GitHub and GitLab public repository without configuring the provider. However, for BitBucket you always need to configure the username and token to clone a repository.
+- For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials. You can clone a GitHub and GitLab public repository without configuring the provider. However, for BitBucket you always need to configure the username and password to clone a repository.
+
+- The token permission should grant access to public and private repositories including read and write access to code and commit statuses.
 
 ## UI
 
