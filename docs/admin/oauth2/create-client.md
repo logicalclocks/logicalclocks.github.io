@@ -37,7 +37,7 @@ Additional configuration can be set here:
 
 ### Step 2: Add Group mappings
 
-Optionally you can add a group mapping from your identity provider to hopsworks groups, by clicking on your name in the 
+Optionally you can add a group mapping from your identity provider to Hopsworks groups, by clicking on your name in the 
 top right corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu. In the *Cluster 
 Settings* _Configuration_ tab search for _oauth\_group\_mapping_ and click on the edit button.
 
@@ -51,9 +51,9 @@ Settings* _Configuration_ tab search for _oauth\_group\_mapping_ and click on th
 !!! Note
 
     Setting *oauth_group_mapping* to *ANY_GROUP->HOPS_USER* will assign the role *user* to any user from any group in 
-    your identity provider when they log into hopsworks with OAuth for the first time. You can replace *ANY_GROUP* with 
+    your identity provider when they log into Hopsworks with OAuth for the first time. You can replace *ANY_GROUP* with 
     the group of your choice in the identity provider. You can replace *HOPS_USER* by *HOPS_ADMIN* if you want the 
-    users of that group to be admins in hopsworks. You can do several mappings by separating them with a semicolon.
+    users of that group to be admins in Hopsworks. You can do several mappings by separating them with a semicolon.
 
 Users will now see a new button on the login page. The button has the name you set above for _Name_ and will 
 redirect to your identity provider.

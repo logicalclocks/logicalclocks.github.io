@@ -224,19 +224,7 @@ Paste the *Access Key ID* and the *Secret Access Key* into [managed.hopsworks.ai
   </figure>
 </p>
 
-## Step 2: Creating Instance profile
-
-!!! note 
-    If you prefer using terraform, you can skip this step and the remaining steps, and instead follow [this guide](../common/terraform.md#getting-started-with-aws).
-
-Hopsworks cluster nodes need access to certain resources such as S3 bucket and CloudWatch.
-
-Follow the instructions in this guide to create an IAM instance profile with access to your S3 bucket: [Guide](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-console)
-
-When creating the policy, paste the following in the JSON tab.
-{!setup_installation/aws/instance_profile_permissions.md!}
-
-## Step 3: Creating storage
+## Step 2: Creating storage
 
 The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in an S3 bucket in your AWS account.
 To enable this you need to create an S3 bucket and an instance profile to give cluster nodes access to the bucket.
@@ -261,6 +249,18 @@ Name your bucket and select the region where your Hopsworks cluster will run. Cl
     <figcaption>Create an S3 bucket</figcaption>
   </figure>
 </p>
+
+## Step 3: Creating Instance profile
+
+!!! note 
+    If you prefer using terraform, you can skip this step and the remaining steps, and instead follow [this guide](../common/terraform.md#getting-started-with-aws).
+
+Hopsworks cluster nodes need access to certain resources such as S3 bucket and CloudWatch.
+
+Follow the instructions in this guide to create an IAM instance profile with access to your S3 bucket: [Guide](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-console)
+
+When creating the policy, paste the following in the JSON tab.
+{!setup_installation/aws/instance_profile_permissions.md!}
 
 ## Step 4: Create an SSH key
 When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: [creating a new key pair](#step-31-create-a-new-key-pair) or [importing an existing key pair](#step-32-import-a-key-pair).

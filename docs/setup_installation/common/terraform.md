@@ -47,7 +47,7 @@ provider "aws" {
 provider "hopsworksai" {
 }
 
-# Create the required aws resources, an ssh key, an s3 bucket, and an instance profile with the required hopsworks permissions
+# Create the required aws resources, an ssh key, an s3 bucket, and an instance profile with the required Hopsworks permissions
 module "aws" {
   source  = "logicalclocks/helpers/hopsworksai//modules/aws"
   region  = var.region
@@ -157,7 +157,7 @@ data "azurerm_resource_group" "rg" {
   name = var.resource_group
 }
 
-# Create the required azure resources, an ssh key, a storage account, and an user assigned managed identity with the required hopsworks permissions
+# Create the required azure resources, an ssh key, a storage account, and an user assigned managed identity with the required Hopsworks permissions
 module "azure" {
   source         = "logicalclocks/helpers/hopsworksai//modules/azure"
   resource_group = var.resource_group

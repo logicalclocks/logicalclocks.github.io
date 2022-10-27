@@ -2,7 +2,7 @@
 
 ## Introduction
 LDAP and Kerberos integration need some configuration in the [Karamel](https://github.com/logicalclocks/karamel-chef) 
-cluster definition used to deploy your hopsworks cluster. This tutorial shows an administrator how to configure the application
+cluster definition used to deploy your Hopsworks cluster. This tutorial shows an administrator how to configure the application
 server for LDAP and Kerberos integration.
 
 ## Prerequisites

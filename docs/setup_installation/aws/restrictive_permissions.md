@@ -46,7 +46,7 @@ Follow this guide to create a role to be used by EC2 with no permissions attache
 [Creating a Role for an AWS Service (Console)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html).
 Take note of the ARN of the role you just created.
 
-You will need to add permissions to the instance profile to give access to the S3 bucket where Hopsworks will store its data. For more details about these permissions check [our guide here](../getting_started/#step-2-creating-instance-profile).
+You will need to add permissions to the instance profile to give access to the S3 bucket where Hopsworks will store its data. For more details about these permissions check [our guide here](../getting_started/#step-3-creating-instance-profile).
 Check [bellow](#limiting-the-instance-profile-permissions) for more information on restricting the permissions given the instance profile.
 
 ### Step 3: Set permissions of the cross-account role
@@ -231,7 +231,7 @@ The following permissions are used to let you close and open ports on your clust
 ## Limiting the instance profile permissions
 
 ### Backups
-If you do not intend to take backups or if you do not have access to this Enterprise feature you can remove the permissions that are only used by the backup feature when [configuring instance profile permissions](../getting_started/#step-2-creating-instance-profile) .
+If you do not intend to take backups or if you do not have access to this Enterprise feature you can remove the permissions that are only used by the backup feature when [configuring instance profile permissions](../getting_started/#step-3-creating-instance-profile) .
 For this remove the following permissions from the instance profile:
 
 ```json
@@ -271,7 +271,7 @@ Hopsworks put its logs in Amazon CloudWatch so that you can access them without 
 ### Upgrade permissions 
 
 #### Removing upgrade permissions
-If you do not intend to upgrade your cluster to newer versions of Hopsworks, then you can remove the upgrade permissions statement from the instance profile that you have created [here](../getting_started/#step-2-creating-instance-profile). For this remove the following statement from your instance profile
+If you do not intend to upgrade your cluster to newer versions of Hopsworks, then you can remove the upgrade permissions statement from the instance profile that you have created [here](../getting_started/#step-3-creating-instance-profile). For this remove the following statement from your instance profile
 
 ```json
     {

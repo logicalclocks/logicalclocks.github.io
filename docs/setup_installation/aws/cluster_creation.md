@@ -115,7 +115,9 @@ Select the *SSH key* that you want to use to access cluster instances. For more 
 
 ### Step 5 select the Instance Profile
 
-To let the cluster instances access the S3 bucket we need to attach an *instance profile* to the virtual machines. In this step, you choose which profile to use. This profile needs to have access right to the *S3 bucket* you selected in [Step 2](#step-2-setting-the-general-information). For more details on how to create the instance profile and give it access to the S3 bucket refer to [Creating an instance profile and giving it access to the bucket](getting_started.md#step-22-creating-an-instance-profile-and-giving-it-access-to-the-bucket)
+To let the cluster instances access the S3 bucket we need to attach an *instance profile* to the virtual machines. In this step, you choose which profile to use. This profile needs to have access right to the *S3 bucket* you selected in [Step 2](#step-2-setting-the-general-information). For more details on how to create the instance profile and give it access to the S3 bucket refer to [Creating an instance profile and giving it access to the bucket](getting_started.md#step-3-creating-instance-profile)
+
+If you want to use [role chaining](../../admin/roleChaining.md), it is recommanded to use a different *instance profile* for the head node and the other cluster's nodes. You do this by clicking the *Advanced configuration* check box and selecting instance profile for the head node. This profile should have the same permission as the profile you selected above, plus the extra permissions for the role chaining.
 
 <p align="center">
   <figure>
