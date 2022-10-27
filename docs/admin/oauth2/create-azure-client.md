@@ -9,7 +9,7 @@ Azure account.
 
 ### Step 1: Register Hopsworks as an application in your identity provider
 
-To use OAuth2 in hopsworks you first need to create and configure an OAuth client in your identity provider. We will take the example of Azure AD for the remaining of this documentation, but equivalent steps can be taken on other identity providers.
+To use OAuth2 in Hopsworks you first need to create and configure an OAuth client in your identity provider. We will take the example of Azure AD for the remaining of this documentation, but equivalent steps can be taken on other identity providers.
 
 Navigate to the [Microsoft Azure Portal](https://portal.azure.com) and authenticate. Navigate to [Azure Active Directory](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview). Click on [App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps). Click on *New Registration*.
 
@@ -114,7 +114,7 @@ In *Configure platforms* click on *Web*.
   </figure>
 </p>
 
-Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORKS-URI/callback* with *HOPSWORKS-URI* the URI of your hopsworks cluster.
+Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORKS-URI/callback* with *HOPSWORKS-URI* the URI of your Hopsworks cluster.
 
 <p align="center">
   <figure>
@@ -127,7 +127,7 @@ Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORK
 
 !!! note
 
-    If your hopsworks cluster is created on the cloud (managed.hopsworks.ai),
+    If your Hopsworks cluster is created on the cloud (managed.hopsworks.ai),
     you can find your *HOPSWORKS-URI* by going to the [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) 
     in the *General* tab of your cluster and copying the URI.
 

@@ -1,9 +1,9 @@
-# Configure your hopsworks cluster to use LDAP for user management.
+# Configure your Hopsworks cluster to use LDAP for user management.
 
 If you want to use your organization's LDAP as an identity provider to manage users in your Hopsworks cluster this document
 will guide you through the necessary steps to configure [managed.hopsworks.ai](https://managed.hopsworks.ai) to use LDAP.
 
-The LDAP attributes below are used to configure JNDI resources in the hopsworks server. 
+The LDAP attributes below are used to configure JNDI resources in the Hopsworks server. 
 The JNDI resource will communicate with your LDAP server to perform the authentication.
 <p align="center">
   <figure>
@@ -22,7 +22,7 @@ The JNDI resource will communicate with your LDAP server to perform the authenti
 - _java.naming.security.credentials_: contains the password of the user that will be used to query LDAP.
 - _java.naming.referral_: whether to follow or ignore an alternate location in which an LDAP Request may be processed.
 
-After configuring LDAP and creating your cluster you can log into your hopsworks cluster and edit the LDAP _attributes to field names_ to match
+After configuring LDAP and creating your cluster you can log into your Hopsworks cluster and edit the LDAP _attributes to field names_ to match
 your server. By default all _attributes to field names_ are set to the values in [OpenLDAP](https://www.openldap.org/). 
 See [Configure LDAP](../../../user_guides/projects/auth/ldap.md) on how to edit the LDAP default configurations.
 

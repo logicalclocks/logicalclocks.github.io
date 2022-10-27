@@ -32,7 +32,7 @@ Optional: Specify a [customer-managed encryption key](https://cloud.google.com/c
       --role roles/cloudkms.cryptoKeyEncrypterDecrypter
 
 
-Enter the name of the bucket in which the hopsworks cluster will store its data in *Cloud Storage Bucket* (8)
+Enter the name of the bucket in which the Hopsworks cluster will store its data in *Cloud Storage Bucket* (8)
 
 !!! warning
     The bucket must be empty and must be in a region accessible from the region in which the cluster is deployed.

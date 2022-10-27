@@ -252,7 +252,7 @@ OutputKey: "ClusterSecurityGroupId",
 OutputValue: "YOUR_EKS_SECURITY_GROUP_ID"
 ```
 
-Go to the [*Security Groups* section of *EC2* in the *AWS management console*](https://us-east-2.console.aws.amazon.com/ec2/v2/home?#SecurityGroups:) and search for your security group using the id obtained above. Note the *VPC ID*, you will need it when creating the hopsworks cluster. Then, click on it then go to the *Inbound rules* tab and click on *Edit inbound rules*. You should now see the following screen.
+Go to the [*Security Groups* section of *EC2* in the *AWS management console*](https://us-east-2.console.aws.amazon.com/ec2/v2/home?#SecurityGroups:) and search for your security group using the id obtained above. Note the *VPC ID*, you will need it when creating the Hopsworks cluster. Then, click on it then go to the *Inbound rules* tab and click on *Edit inbound rules*. You should now see the following screen.
 
 <p align="center">
   <figure>
@@ -304,7 +304,7 @@ OutputValue: "YOUR_EKS_SECURITY_GROUP_ID"
 
 ## Step 5: Allow managed.hopsworks.ai to delete ECR repositories on your behalf
 
-For [managed.hopsworks.ai](https://managed.hopsworks.ai) to be able to clean up the ECR repo when terminating your hopsworks cluster, you need to add a new inline policy to the [Cross-Account role](getting_started.md#option-1-using-aws-cross-account-roles) or [user connected to managed.hopsworks.ai](getting_started.md#option-2-using-aws-access-keys), that you set up when [connecting your AWS account to managed.hopsworks.ai](getting_started.md#step-1-connecting-your-aws-account).
+For [managed.hopsworks.ai](https://managed.hopsworks.ai) to be able to clean up the ECR repo when terminating your Hopsworks cluster, you need to add a new inline policy to the [Cross-Account role](getting_started.md#option-1-using-aws-cross-account-roles) or [user connected to managed.hopsworks.ai](getting_started.md#option-2-using-aws-access-keys), that you set up when [connecting your AWS account to managed.hopsworks.ai](getting_started.md#step-1-connecting-your-aws-account).
 
 Navigate to [AWS management console](https://console.aws.amazon.com/iam/home#), then click on *Roles* or *Users* depending on which connection method you have used in [managed.hopsworks.ai](https://managed.hopsworks.ai), and then search for your role or user name and click on it.  Go to the *Permissions* tab, click on *Add inline policy* and go to the *JSON* tab. Replace the existing JSON permissions with the JSON permissions below. Click on *Review policy*, name it, and click *Create policy*.
 
@@ -411,7 +411,7 @@ If you followed option *B* choose the VPC you created during [Step 4](#step-4-se
 Choose any of the subnets in the VPC, then click Next.
 
 !!! note
-    Avoid private subnets if you want to enjoy [all the hopsworks features](restrictive_permissions.md).
+    Avoid private subnets if you want to enjoy [all the Hopsworks features](restrictive_permissions.md).
 
 <p align="center">
   <figure>

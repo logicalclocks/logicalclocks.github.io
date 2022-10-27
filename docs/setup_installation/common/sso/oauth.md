@@ -1,6 +1,6 @@
-# Configure your hopsworks cluster to use OAuth2 for user management.
+# Configure your Hopsworks cluster to use OAuth2 for user management.
  
-If you want to use your organization's OAuth 2.0 identity provider to manage users in your hopsworks cluster this document
+If you want to use your organization's OAuth 2.0 identity provider to manage users in your Hopsworks cluster this document
 will guide you through the necessary steps to register your identity provider in [managed.hopsworks.ai](https://managed.hopsworks.ai).
  
 Before registering your identity provider in Hopsworks you need to create a client application in your identity provider and
@@ -23,12 +23,12 @@ _OAuth2 (OpenId)_ from the dropdown and configure your identity provider.
  
 Register your identity provider by setting the following fields:
 
-- _Create Administrator password user_: if checked an administrator that can log in to the hopsworks cluster, with email and password,
+- _Create Administrator password user_: if checked an administrator that can log in to the Hopsworks cluster, with email and password,
 will be created for the user creating the cluster. If **Not** checked a group mapping that maps at least one group in the identity provider to _HOPS_ADMIN_ is required. 
-- _ClientId_: the client id generated when registering hopsworks in your identity provider.
-- _Client Secret_: the client secret generated when registering hopsworks in your identity provider.
+- _ClientId_: the client id generated when registering Hopsworks in your identity provider.
+- _Client Secret_: the client secret generated when registering Hopsworks in your identity provider.
 - _Provider URI_: is the base uri of the identity provider (URI should contain scheme http:// or https://).
-- _Provider Name_: a unique name to identify the identity provider in your hopsworks cluster.
+- _Provider Name_: a unique name to identify the identity provider in your Hopsworks cluster.
                   This name will be used in the login page as an alternative login method if _Provider DisplayName_ is not set.
  
  
@@ -45,9 +45,9 @@ Optionally you can also set:
                   ```
                   This will map users in the IT group in your identity provider to HOPS_ADMIN and users in the DATA_SCIENCE group to HOPS_USER.
 - _Verify Email_: if checked only users with verified email address (in the identity provider) can log in to Hopsworks.
-- _Activate user_: if not checked an administrator in hopsworks needs to activate users before they can login.
+- _Activate user_: if not checked an administrator in Hopsworks needs to activate users before they can login.
 - _Need consent_: if checked, users will be asked for consent when logging in for the first time.
-- _Disable registration_: if unchecked users will have the possibility to create accounts in the hopsworks cluster using user name and password instead of OAuth.
+- _Disable registration_: if unchecked users will have the possibility to create accounts in the Hopsworks cluster using user name and password instead of OAuth.
 - _Provider Metadata Endpoint Supported_: if your provider defines a discovery mechanism, called OpenID Connect Discovery,
                                          where it publishes its metadata at a well-known URL, typically
 ```
