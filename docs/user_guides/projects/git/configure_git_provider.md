@@ -7,9 +7,6 @@ When you perform Git operations on Hopsworks that need to interact with the remo
 !!! warning "Beta"
     The feature is currently in Beta and will be improved in the upcoming releases.
 
-!!! notice "Tokens are personal"
-    The tokens are personal to each user. When you perform operations on a repository, your token is going to be used, even though the repository might belong to a different user.
-
 !!! notice "Token permissions"
     The token permissions should grant access to public and private repositories including read and write access to code and commit statuses.
 
