@@ -102,6 +102,9 @@ BRANCH="master" # optional branch to clone
 examples_repo = git_api.clone(REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANCH)
 
 ```
+### API Reference
+Api reference for git repositories is available here:
+[GitRepo](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/git_repo/)
 
 A notebook for managing git can be found [here](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb).
 
@@ -119,10 +122,6 @@ Cloning a large repo or checking out a large branch may hit timeout errors. You 
 
 ### Symlink errors
 Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail. You can create a separate branch to remove the symlinks, and clone from this branch.
-
-## API Reference
-Api reference for git repositories is available here:
-[GitRepo](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/git_repo/)
 
 ## Conclusion
 

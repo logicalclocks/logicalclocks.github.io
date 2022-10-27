@@ -1,4 +1,6 @@
 # Repository actions
+## Introduction
+This section explains the git operations or commands you can perform on hopsworks git repositories. These commands include commit, pull, push, create branches and many more.
 !!! warning "Beta"
     The feature is currently in Beta and will be improved in the upcoming releases.
 
@@ -28,7 +30,7 @@ Note that some repository actions will require the username and token to be conf
 </p>
 
 ## Code
-You can also perform the repository actions through the hopsworks git API in python. 
+You can also perform the repository actions using the hopsworks git API in python. 
 ### Step 1: Get the git API
 
 ```python
