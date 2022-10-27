@@ -26,4 +26,4 @@ When [adding workers](adding_removing_workers.md#adding-workers) to a cluster, y
 </p>
 
 ## Conclusion
-You now know how to add GPU workers in your hopsworks cluster.
+You now know how to add GPU workers in your Hopsworks cluster.

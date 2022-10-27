@@ -1,5 +1,5 @@
 # Adding and removing workers
-Once you have started a hopsworks cluster you can add and remove workers from the cluster to accommodate your workload.
+Once you have started a Hopsworks cluster you can add and remove workers from the cluster to accommodate your workload.
 
 ## Adding workers
 If the computation you are running is using all the resources of your Hopsworks cluster you can add workers to your cluster.

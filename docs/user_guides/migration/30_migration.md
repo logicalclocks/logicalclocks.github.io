@@ -154,7 +154,7 @@ Together with the new `.get_or_create_ APIs` this will avoid that users have to 
     fg.insert(df)
     ```
 
-### hops python library superseded by hopsworks library
+### hops python library superseded by Hopsworks library
 
 The [hops](https://pypi.org/project/hops/) python library is now deprecated and is superseded by the [hopsworks](https://pypi.org/project/hopsworks/) python library. `hopsworks` is essentially a reimplementation of `hops`, but with an object-oriented API, similar in style with [hsfs](https://pypi.org/project/hsfs/). For guides on how to use the API follow the [Projects guides](../../user_guides/projects/index.md).
 
