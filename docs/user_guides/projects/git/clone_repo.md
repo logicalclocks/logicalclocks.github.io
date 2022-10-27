@@ -120,6 +120,10 @@ Cloning a large repo or checking out a large branch may hit timeout errors. You 
 ### Symlink errors
 Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail. You can create a separate branch to remove the symlinks, and clone from this branch.
 
+## API Reference
+Api reference for git repositories is available here:
+[GitRepo](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/git_repo/)
+
 ## Conclusion
 
 In this guide you learned how to clone a Git repository. You can now start [Jupyter](../jupyter/python_notebook.md) from the cloned git repository path to work with the files.
