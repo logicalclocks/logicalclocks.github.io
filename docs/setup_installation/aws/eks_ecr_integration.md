@@ -77,7 +77,7 @@ ip-192-168-62-117.us-east-2.compute.internal   Ready    <none>   2m34s   v1.17.9
 
 ## Step 2: Create an instance profile role on AWS
 
-You need to add permission to [the instance profile you use for instances deployed by managed.hopsworks.ai](getting_started.md#step-2-creating-instance-profile) to give them access to EKS and ECR.
+You need to add permission to [the instance profile you use for instances deployed by managed.hopsworks.ai](getting_started.md#step-3-creating-instance-profile) to give them access to EKS and ECR.
 Go to the [*IAM service*](https://console.aws.amazon.com/iam) in the *AWS management console*, click *Roles*, search for your role, and click on it. Click on *Add inline policy*. Go to the *JSON* tab and replace the existing JSON permissions with the JSON permissions below..
 
 ```json
@@ -329,7 +329,7 @@ Navigate to [AWS management console](https://console.aws.amazon.com/iam/home#), 
 
 ## Step 6: Create a Hopsworks cluster with EKS and ECR support
 
-In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*. Choose the region of your EKS cluster and fill in the name of your [S3 bucket](getting_started.md#step-3-creating-storage), then click Next:
+In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*. Choose the region of your EKS cluster and fill in the name of your [S3 bucket](getting_started.md#step-2-creating-storage), then click Next:
 
 <p align="center">
   <figure>
