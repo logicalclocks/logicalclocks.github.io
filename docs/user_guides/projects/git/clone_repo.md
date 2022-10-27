@@ -10,9 +10,7 @@ Repositories can be managed from the Git section in the project settings. The Gi
 
 ## Prerequisites
 
-- For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials. You can clone a GitHub and GitLab public repository without configuring the provider. However, for BitBucket you always need to configure the username and password to clone a repository.
-
-- The token permission should grant access to public and private repositories including read and write access to code and commit statuses.
+- For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials. You can clone a GitHub and GitLab public repository without configuring the provider. However, for BitBucket you always need to configure the username and token to clone a repository.
 
 ## UI
 
@@ -44,7 +42,7 @@ To clone a new repository, click on the `Clone repository` button on the Git ove
   </figure>
 </p>
 
-You should first choose the git provider e.g., GitHub, GitLab or BitBucket. If you are cloning a private repository, remember to configure the username and password for the provder first in [Git Provider](configure_git_provider.md). The clone dialog also asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
+You should first choose the git provider e.g., GitHub, GitLab or BitBucket. If you are cloning a private repository, remember to configure the username and token for the provder first in [Git Provider](configure_git_provider.md). The clone dialog also asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
 
 Then specify which branch you want to clone. By default the `main` branch will be used, however a different branch or commit can be specified by selecting `Clone from a specific branch`.
 
@@ -67,7 +65,7 @@ The progress of the git clone can be tracked under `Git Executions`.
 
 ### Step 4: Browse repository files
 
-In the `File browser` page you can now browse the files of the cloned repository. In the figure below, the repository is located in `Jupyter/hops-examples` directory.
+In the `File browser` page you can now browse the files of the cloned repository. In the figure below, the repository is located in `Jupyter/<username>_hops-examples` directory.
 
 <p align="center">
   <figure>
@@ -80,16 +78,13 @@ In the `File browser` page you can now browse the files of the cloned repository
 
 ## Code
 You can also clone a repository through the hopsworks git API in python.
-q
 ### Step 1: Get the git API
 
 ```python
 
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project()
+project = hopsworks.login()
 
 git_api = project.get_git_api()
 
@@ -116,8 +111,8 @@ This might happen when the credentials entered for the provider are incorrect. T
 
 - Confirm that the settings for the provider ( in Account Settings > Git providers) are correct. You must enter both your Git provider username and token.
 - Confirm that you have selected the correct Git provider when cloning the repository.
-- Ensure your personal access token or app password has the correct repository access rights.
-- Ensure your personal access token or app password has not expired.
+- Ensure your personal access token has the correct repository access rights.
+- Ensure your personal access token has not expired.
 
 ### Timeout errors
 Cloning a large repo or checking out a large branch may hit timeout errors. You can try again later if the system was under heavy load at the time.

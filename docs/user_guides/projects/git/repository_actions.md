@@ -1,4 +1,6 @@
 # Repository actions
+!!! notice "Repository permissions"
+    Git repositories are private. Only the owner of the repository can perform git actions on the repository such as commit, push, pull e.t.c.
 ## UI
 The operations to perform on the cloned repository can be found in the dropdown as shown below.
 
@@ -30,9 +32,7 @@ You can also perform the repository actions through the hopsworks git API in pyt
 
 import hopsworks
 
-connection = hopsworks.login()
-
-project = connection.get_project()
+project = hopsworks.login()
 
 git_api = project.get_git_api()
 
