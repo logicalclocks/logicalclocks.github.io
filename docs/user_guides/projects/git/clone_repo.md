@@ -108,7 +108,7 @@ git_api = project.get_git_api()
 ```python
 
 REPO_URL="https://github.com/logicalclocks/hops-examples.git" # git repository
-HOPSWORKS_FOLDER="Jupyter" # path in hopsworks filesystem to clone to
+HOPSWORKS_FOLDER="Jupyter" # path in Hopsworks filesystem to clone to
 PROVIDER="GitHub"
 BRANCH="master" # optional branch to clone
 
