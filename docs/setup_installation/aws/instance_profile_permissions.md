@@ -32,6 +32,52 @@ Replace *BUCKET_NAME* with the appropriate S3 bucket name.
       ]
     },
     {
+      "Sid": "AllowPullMainImages",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+      ],
+      "Resource": [
+        "arn:aws:ecr:*:*:repository/filebeat",
+        "arn:aws:ecr:*:*:repository/base"
+      ]
+    },
+    {
+      "Sid": "AllowCreateRespositry",
+      "Effect": "Allow",
+      "Action": "ecr:CreateRepository",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowPushandPullImages",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "ecr:CompleteLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:InitiateLayerUpload",
+        "ecr:DeleteRepository",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:PutImage",
+        "ecr:ListImages",
+        "ecr:BatchDeleteImage",
+        "ecr:GetLifecyclePolicy",
+        "ecr:PutLifecyclePolicy"
+      ],
+      "Resource": [
+        "arn:aws:ecr:*:*:repository/*/filebeat",
+        "arn:aws:ecr:*:*:repository/*/base"
+      ]
+    },
+    {
+      "Sid": "AllowGetAuthToken",
+      "Effect": "Allow",
+      "Action": "ecr:GetAuthorizationToken",
+      "Resource": "*"
+    },
+    {
       "Effect": "Allow",
       "Action": [
         "cloudwatch:PutMetricData",
@@ -51,17 +97,6 @@ Replace *BUCKET_NAME* with the appropriate S3 bucket name.
         "ssm:GetParameter"
       ],
       "Resource": "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
-    },
-    {
-      "Sid": "UpgradePermissions",
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeVolumes",
-        "ec2:DetachVolume",
-        "ec2:AttachVolume",
-        "ec2:ModifyInstanceAttribute"
-      ],
-      "Resource": "*"
     }
   ]
 }

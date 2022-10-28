@@ -325,11 +325,14 @@ Select the *Region* in which you want your cluster to run (1), name your cluster
 
 Select the *Instance type* (3) and *Local storage* (4) size for the cluster *Head node*.
 
-Enter the name of the *S3 bucket* (5) you created above in *S3 bucket*.
+Check if you want to *Enable EBS encryption* (5)
+
+Enter the name of the *S3 bucket* (6) you created above in *S3 bucket*.
 
 !!! note
     The S3 bucket you are using must be empty.
 
+Make sure that the *ECR AWS Account Id* (7) is correct. It is set by default to the AWS account id where you set the cross account role. 
 Press *Next*:
 
 <p align="center">

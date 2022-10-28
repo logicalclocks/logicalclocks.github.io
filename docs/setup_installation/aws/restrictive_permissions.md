@@ -269,6 +269,8 @@ Hopsworks put its logs in Amazon CloudWatch so that you can access them without 
     }
 ```
 ### Upgrade permissions 
+!!! warning
+    This section is obselete and only applicable clusters with version 2.2 or older
 
 #### Removing upgrade permissions
 If you do not intend to upgrade your cluster to newer versions of Hopsworks, then you can remove the upgrade permissions statement from the instance profile that you have created [here](../getting_started/#step-3-creating-instance-profile). For this remove the following statement from your instance profile
