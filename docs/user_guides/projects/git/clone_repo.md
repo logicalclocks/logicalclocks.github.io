@@ -16,7 +16,7 @@ Repositories can be managed from the Git section in the project settings. The Gi
 
 ### Step 1: Navigate to repositories
 
-In the `Project settings` page you can find the `Git` section.
+In the left-hand sidebar found in your project click on `Project settings`, and then navigate to the `Git` section.
 
 This page lists all the cloned git repositories under `Repositories`, while operations performed on those repositories, e.g `push`/`pull`/`commit` are listed under `Git Executions`.
 

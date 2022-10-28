@@ -20,7 +20,7 @@ Documentation on how to generate a token for the supported Git hosting services 
 - [BitBucket](https://confluence.atlassian.com/bitbucketserver/http-access-tokens-939515499.html)
 ### Step 1: Navigate to Git Providers
 
-In the `Account Settings` page you can find the `Git Providers` section. The Git provider section displays which providers have been already configured and can be used to clone new repositories.
+You can access the `Git Providers` page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing `Account Settings` from the dropdown menu. The `Git providers` section displays which providers have been already configured and can be used to clone new repositories.
 
 <p align="center">
   <figure>
