@@ -114,6 +114,7 @@ nav:
       - Git:
         - Configure Git Provider: user_guides/projects/git/configure_git_provider.md
         - Clone Repository: user_guides/projects/git/clone_repo.md
+        - Repository Actions: user_guides/projects/git/repository_actions.md
       - Secrets:
         - Create Secret: user_guides/projects/secrets/create_secret.md
       - Api Keys:

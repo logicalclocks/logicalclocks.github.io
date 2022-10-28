@@ -7,8 +7,9 @@ When you perform Git operations on Hopsworks that need to interact with the remo
 !!! warning "Beta"
     The feature is currently in Beta and will be improved in the upcoming releases.
 
-!!! notice "Tokens are personal"
-    The tokens are personal to each user. When you perform operations on a repository, your token is going to be used, even though the repository might belong to a different user.
+!!! notice "Token permissions"
+    The token permissions should grant access to public and private repositories including read and write access to code and commit statuses.
+
 
 ## UI
 
@@ -17,10 +18,9 @@ Documentation on how to generate a token for the supported Git hosting services 
 - [GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 - [GitLab](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
 - [BitBucket](https://confluence.atlassian.com/bitbucketserver/http-access-tokens-939515499.html)
-
 ### Step 1: Navigate to Git Providers
 
-In the `Account Settings` page you can find the `Git Providers` section. The Git provider section displays which providers have been already configured and can be used to clone new repositories.
+You can access the `Git Providers` page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing `Account Settings` from the dropdown menu. The `Git providers` section displays which providers have been already configured and can be used to clone new repositories.
 
 <p align="center">
   <figure>
@@ -62,7 +62,7 @@ The configured provider should now be marked as configured.
 </p>
 
 ## Code
-
+You can also configure a git provider using the hopsworks git API in python.
 ### Step 1: Get the git API
 
 ```python

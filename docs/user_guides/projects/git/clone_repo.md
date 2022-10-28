@@ -10,13 +10,13 @@ Repositories can be managed from the Git section in the project settings. The Gi
 
 ## Prerequisites
 
-This guide requires that you have previously configured a [Git Provider](configure_git_provider.md) with your git credentials.
+- For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials. You can clone a GitHub and GitLab public repository without configuring the provider. However, for BitBucket you always need to configure the username and token to clone a repository.
 
 ## UI
 
 ### Step 1: Navigate to repositories
 
-In the `Project settings` page you can find the `Git` section.
+In the left-hand sidebar found in your project click on `Project settings`, and then navigate to the `Git` section.
 
 This page lists all the cloned git repositories under `Repositories`, while operations performed on those repositories, e.g `push`/`pull`/`commit` are listed under `Git Executions`.
 
@@ -42,7 +42,7 @@ To clone a new repository, click on the `Clone repository` button on the Git ove
   </figure>
 </p>
 
-The clone dialog asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
+You should first choose the git provider e.g., GitHub, GitLab or BitBucket. If you are cloning a private repository, remember to configure the username and token for the provder first in [Git Provider](configure_git_provider.md). The clone dialog also asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
 
 Then specify which branch you want to clone. By default the `main` branch will be used, however a different branch or commit can be specified by selecting `Clone from a specific branch`.
 
@@ -65,7 +65,7 @@ The progress of the git clone can be tracked under `Git Executions`.
 
 ### Step 4: Browse repository files
 
-In the `File browser` page you can now browse the files of the cloned repository, found on the path in `Jupyter/hops-examples`
+In the `File browser` page you can now browse the files of the cloned repository. In the figure below, the repository is located in `Jupyter/<username>_hops-examples` directory.
 
 <p align="center">
   <figure>
@@ -76,21 +76,8 @@ In the `File browser` page you can now browse the files of the cloned repository
   </figure>
 </p>
 
-### Step 5: Repository actions
-
-The operation to perform on the cloned repository can be found in the dropdown as shown below.
-
-<p align="center">
-  <figure>
-    <a  href="../../../../assets/images/guides/git/repo_actions.gif">
-      <img src="../../../../assets/images/guides/git/repo_actions.gif" alt="Repository actions a repository">
-    </a>
-    <figcaption>Repository actions</figcaption>
-  </figure>
-</p>
-
 ## Code
-
+You can also clone a repository through the hopsworks git API in python.
 ### Step 1: Get the git API
 
 ```python
@@ -115,6 +102,9 @@ BRANCH="master" # optional branch to clone
 examples_repo = git_api.clone(REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANCH)
 
 ```
+### API Reference
+Api reference for git repositories is available here:
+[GitRepo](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/git_repo/)
 
 A notebook for managing git can be found [here](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb).
 
@@ -124,8 +114,8 @@ This might happen when the credentials entered for the provider are incorrect. T
 
 - Confirm that the settings for the provider ( in Account Settings > Git providers) are correct. You must enter both your Git provider username and token.
 - Confirm that you have selected the correct Git provider when cloning the repository.
-- Ensure your personal access token or app password has the correct repository access rights.
-- Ensure your personal access token or app password has not expired.
+- Ensure your personal access token has the correct repository access rights.
+- Ensure your personal access token has not expired.
 
 ### Timeout errors
 Cloning a large repo or checking out a large branch may hit timeout errors. You can try again later if the system was under heavy load at the time.
