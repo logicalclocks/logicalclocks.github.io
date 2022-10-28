@@ -18,7 +18,7 @@ The operations to perform on the cloned repository can be found in the dropdown 
   </figure>
 </p>
 
-Note that some repository actions will require the username and token to be configured first depending on the provider. For example to be able to perform a push action in any repository, you must configure the provider for the repository first. To be able to perform a pull action for the for a GitLab repository, you must configure the GitLab first. You will see the dialog below in the case you need to configure the provider first to perform the repository action.
+Note that some repository actions will require the username and token to be configured first depending on the provider. For example to be able to perform a push action in any repository, you must configure the provider for the repository first. To be able to perform a pull action for the for a GitLab repository, you must configure the GitLab provider first. You will see the dialog below in the case you need to configure the provider first to perform the repository action.
 
 <p align="center">
   <figure>
