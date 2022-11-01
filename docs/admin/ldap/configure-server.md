@@ -61,7 +61,7 @@ asadmin create-jndi-resource \
  ldap/LdapResource
 ```
 
-### Step 1: Server Configuration for Kerberos
+### Step 2: Server Configuration for Kerberos
 
 The Kerberos attributes are used to configure [SPNEGO](http://spnego.sourceforge.net/).
 SPNEGO is used to establish a secure context between the requester and the application server when using Kerberos 
