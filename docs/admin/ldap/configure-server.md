@@ -34,7 +34,34 @@ ldap:
 - security_credentials: contains the password of the user that will be used to query LDAP.
 - referral: whether to follow or ignore an alternate location in which an LDAP Request may be processed.
 
-### Step 1: Server Configuration for Kerberos
+### Without Karamel/Chef
+An already deployed instance can be configured to connect to LDAP without re-running Karamel/Chef. 
+Go to the payara admin UI and create a new JNDI external resource. The name of the resource should be __ldap/LdapResource__. 
+
+<figure>
+  <a  href="../../../assets/images/admin/ldap/ldap-resource.png">
+    <img src="../../../assets/images/admin/ldap/ldap-resource.png" alt="LDAP Resource" />
+  </a>
+  <figcaption>LDAP Resource</figcaption>
+</figure>
+
+This can also be achived by running the bellow asadmin command.
+
+```bash
+asadmin create-jndi-resource \
+ --restype javax.naming.ldap.LdapContext \
+ --factoryclass com.sun.jndi.ldap.LdapCtxFactory \
+ --jndilookupname dc\=hopsworks\,dc\=ai \
+ --property java.naming.provider.url=ldap\\://193\.10\.66\.104\\:1389:\
+ java.naming.ldap.attributes.binary=entryUUID:\
+ java.naming.security.authentication=simple:\
+ java.naming.security.principal=<username>:\
+ java.naming.security.credentials=<password>:\
+ java.naming.referral=ignore \
+ ldap/LdapResource
+```
+
+### Step 2: Server Configuration for Kerberos
 
 The Kerberos attributes are used to configure [SPNEGO](http://spnego.sourceforge.net/).
 SPNEGO is used to establish a secure context between the requester and the application server when using Kerberos 
