@@ -169,7 +169,7 @@ nav:
       - Azure:
           - Getting Started: setup_installation/azure/getting_started.md
           - Cluster Creation: setup_installation/azure/cluster_creation.md
-          - AKS/ACR integration: setup_installation/azure/aks_acr_integration.md
+          - AKS integration: setup_installation/azure/aks_acr_integration.md
           - Limiting Permissions: setup_installation/azure/restrictive_permissions.md
           - Cluster upgrade: 
             - Version 2.4 or newer: setup_installation/azure/upgrade_2.4.md
