@@ -4702,8 +4702,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-1-server-configuration-for-kerberos" class="md-nav__link">
-    Step 1: Server Configuration for Kerberos
+  <a href="#without-karamelchef" class="md-nav__link">
+    Without Karamel/Chef
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-server-configuration-for-kerberos" class="md-nav__link">
+    Step 2: Server Configuration for Kerberos
   </a>
   
 </li>
@@ -4913,8 +4920,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-1-server-configuration-for-kerberos" class="md-nav__link">
-    Step 1: Server Configuration for Kerberos
+  <a href="#without-karamelchef" class="md-nav__link">
+    Without Karamel/Chef
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-server-configuration-for-kerberos" class="md-nav__link">
+    Step 2: Server Configuration for Kerberos
   </a>
   
 </li>
@@ -4975,7 +4989,30 @@ with your LDAP server to perform the authentication.</p>
 <li>security_credentials: contains the password of the user that will be used to query LDAP.</li>
 <li>referral: whether to follow or ignore an alternate location in which an LDAP Request may be processed.</li>
 </ul>
-<h3 id="step-1-server-configuration-for-kerberos">Step 1: Server Configuration for Kerberos<a class="headerlink" href="#step-1-server-configuration-for-kerberos" title="Permanent link">#</a></h3>
+<h3 id="without-karamelchef">Without Karamel/Chef<a class="headerlink" href="#without-karamelchef" title="Permanent link">#</a></h3>
+<p>An already deployed instance can be configured to connect to LDAP without re-running Karamel/Chef. 
+Go to the payara admin UI and create a new JNDI external resource. The name of the resource should be <strong>ldap/LdapResource</strong>. </p>
+<figure>
+  <a  href="../../../assets/images/admin/ldap/ldap-resource.png">
+    <img src="../../../assets/images/admin/ldap/ldap-resource.png" alt="LDAP Resource" />
+  </a>
+  <figcaption>LDAP Resource</figcaption>
+</figure>
+
+<p>This can also be achived by running the bellow asadmin command.</p>
+<div class="highlight"><pre><span></span><code>asadmin create-jndi-resource <span class="se">\</span>
+ --restype javax.naming.ldap.LdapContext <span class="se">\</span>
+ --factoryclass com.sun.jndi.ldap.LdapCtxFactory <span class="se">\</span>
+ --jndilookupname dc<span class="se">\=</span>hopsworks<span class="se">\,</span>dc<span class="se">\=</span>ai <span class="se">\</span>
+ --property java.naming.provider.url<span class="o">=</span>ldap<span class="se">\\</span>://193<span class="se">\.</span><span class="m">10</span><span class="se">\.</span><span class="m">66</span><span class="se">\.</span><span class="m">104</span><span class="se">\\</span>:1389:<span class="se">\</span>
+ java.naming.ldap.attributes.binary<span class="o">=</span>entryUUID:<span class="se">\</span>
+ java.naming.security.authentication<span class="o">=</span>simple:<span class="se">\</span>
+ java.naming.security.principal<span class="o">=</span>&lt;username&gt;:<span class="se">\</span>
+ java.naming.security.credentials<span class="o">=</span>&lt;password&gt;:<span class="se">\</span>
+ java.naming.referral<span class="o">=</span>ignore <span class="se">\</span>
+ ldap/LdapResource
+</code></pre></div>
+<h3 id="step-2-server-configuration-for-kerberos">Step 2: Server Configuration for Kerberos<a class="headerlink" href="#step-2-server-configuration-for-kerberos" title="Permanent link">#</a></h3>
 <p>The Kerberos attributes are used to configure <a href="http://spnego.sourceforge.net/">SPNEGO</a>.
 SPNEGO is used to establish a secure context between the requester and the application server when using Kerberos 
 authentication.  </p>
