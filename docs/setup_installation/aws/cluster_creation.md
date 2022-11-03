@@ -57,7 +57,8 @@ Users can also select an AWS *canned* **ACLs** for the objects:
 
 1. `bucket-owner-full-control`
 
-
+#### ECR AWS Account Id
+Enter the *AWS account Id* (7) to setup ECR repositories for the cluster. It is set by default to the AWS account id where you set the cross account role.  
 
 On the main page, you can also choose to aggregate logs in CloudWatch and to opt out of [managed.hopsworks.ai](https://managed.hopsworks.ai) log collection. The first one is to aggregate the logs of services running in your cluster in CloudWatch service in your configured AWS account. This can be useful if you want to understand what is happening on your cluster, without having to ssh into the instances. The second one is for [managed.hopsworks.ai](https://managed.hopsworks.ai) to collect logs about the services running in your cluster. These logs will help us improve our system and provide support. If you choose to opt-out from the log collection and need support you will have to provide us the log by yourself, which will slow down the support process.
 
@@ -142,7 +143,7 @@ To backup the S3 bucket data when taking a cluster backup we need to set a reten
 </p>
 
 ### Step 7 Managed Containers
-Hopsworks can integrate with Amazon Elastic Kubernetes Service (EKS) and Amazon Elastic Container Registry (ECR) to launch Python jobs, Jupyter servers, and ML model servings on top of Amazon EKS. For more detail on how to set up this integration refer to [Integration with Amazon EKS and Amazon ECR](eks_ecr_integration.md).
+Hopsworks can integrate with Amazon Elastic Kubernetes Service (EKS) to launch Python jobs, Jupyter servers, and ML model servings on top of Amazon EKS. For more detail on how to set up this integration refer to [Integration with Amazon EKS](eks_ecr_integration.md).
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/aws/eks-hopsworks-create-cluster-2.png">

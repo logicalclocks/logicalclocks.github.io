@@ -161,7 +161,7 @@ nav:
       - AWS:
           - Getting Started: setup_installation/aws/getting_started.md
           - Cluster Creation: setup_installation/aws/cluster_creation.md
-          - EKS/ECR integration: setup_installation/aws/eks_ecr_integration.md
+          - EKS integration: setup_installation/aws/eks_ecr_integration.md
           - Limiting Permissions: setup_installation/aws/restrictive_permissions.md
           - Cluster upgrade:
             - Version 2.4 or newer: setup_installation/aws/upgrade_2.4.md
@@ -170,7 +170,7 @@ nav:
       - Azure:
           - Getting Started: setup_installation/azure/getting_started.md
           - Cluster Creation: setup_installation/azure/cluster_creation.md
-          - AKS/ACR integration: setup_installation/azure/aks_acr_integration.md
+          - AKS integration: setup_installation/azure/aks_acr_integration.md
           - Limiting Permissions: setup_installation/azure/restrictive_permissions.md
           - Cluster upgrade: 
             - Version 2.4 or newer: setup_installation/azure/upgrade_2.4.md
