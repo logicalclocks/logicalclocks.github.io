@@ -81,7 +81,7 @@ feature_df, label_df = feature_view.get_training_data(training_dataset_version=1
 X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_dataset_version=1)
 
 # get a training dataset with train, validation and test splits
-X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validation_test_splits(training_dataset_version=1)
+X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validation_test_split(training_dataset_version=1)
 ```
 
 ## Deletion
