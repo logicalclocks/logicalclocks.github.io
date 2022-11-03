@@ -86,7 +86,7 @@ You can set the autoscaling configuration by selecting enabled in the first drop
 ### Step 4 select a SSH key
 
 When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs a ssh key on the cluster's instances so that you can access them if necessary.
-Select the *SSH key* that you want to use to access cluster instances. For more detail on how to add a shh key in Azure refer to [Adding a ssh key to your resource group](getting_started.md#step-3-adding-a-ssh-key-to-your-resource-group)
+Select the *SSH key* that you want to use to access cluster instances. For more detail on how to add a shh key in Azure refer to [Adding a ssh key to your resource group](getting_started.md#step-4-adding-a-ssh-key-to-your-resource-group)
 
 <p align="center">
   <figure>
