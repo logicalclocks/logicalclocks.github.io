@@ -1,10 +1,16 @@
 # How to take, restore and manage backups in managed.hopsworks.ai
 
 ### Introduction
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) is our managed platform for running Hopsworks and the Feature Store in the cloud. When managing a cluster it is important to be able to take and restore backups to handle any failure eventuality. In this tutorial you will learn how to [take](), [restore]() and [manage]() backups in [managed.hopsworks.ai](https://managed.hopsworks.ai)
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) is our managed platform for running Hopsworks in the cloud. When managing a cluster it is important to be able to take and restore backups to handle any failure eventuality. In this tutorial you will learn how to [take](## Taking a backup), [restore](## Restoring a backup) and [manage](## Managing your backups) backups in [managed.hopsworks.ai](https://managed.hopsworks.ai)
+
+!!! Note
+    The information below is only accurate for version 3.1.0 and above. If your cluster is of an older version, refer to the appropriate version of the documentation.
+
+!!! Note
+    Clusters deployed on GCP are still running the 3.0.0 version of the backup. Refer to this version of the documentation to get more information.
 
 ## Prerequisites
-To follow this tutorial you need to create a cluster in [Managed.hopsworks.ai](https://managed.hopsworks.ai). During the [cluster creation](../aws/cluster_creation.md) you need to set a positive number for the maximum retention period for your backups. This is done in the [backups](../aws/cluster_creation.md#step-6-set-the-backup-retention-policy) step of the cluster creation by setting the wanted retention period in _Validity of cluster backup images_. This step is needed because the backup process relies on the cloud bucket retention policy and needs to configure it before any backup is taken.
+To follow this tutorial you need to create a cluster in [Managed.hopsworks.ai](https://managed.hopsworks.ai). During the [cluster creation](../aws/cluster_creation.md) you need to set a positive number for the maximum retention period for your backups. This is done in the [backups step](../aws/cluster_creation.md#step-6-set-the-backup-retention-policy) of the cluster creation by setting the wanted retention period in _Validity of cluster backup images_. This step is needed because the backup process relies on the cloud bucket retention policy and needs it to be configured before any backup is taken.
 
 !!! Warning 
     This value cannot be edited later on so make sure to set the proper one.
@@ -21,6 +27,27 @@ To follow this tutorial you need to create a cluster in [Managed.hopsworks.ai](h
   </figure>
 </p>
 
+## Important to keep in mind
+!!! Warning
+    When you take a backup it is stored in the bucket and the container registry associated with the cluster. If you, at any point delete them you will not be able to restore your backup.
+
+## Backup guaranties
+
+Taking a backup will save:
+
+  - The content of the online feature store.
+  - The content of the offline feature store.
+  - Any file stored in the distributed file system.
+  - The python environments.
+  - Any setting configured through Hopsworks.
+
+
+Anything not listed above will not be saved by the backup and will need to be recreated after the backup restoration. Here is a nonexhaustive list of examples of things that are not saved by the backup:
+
+  - Kafka schemas and topics.
+  - OpenSearch content.
+  - Cluster metrics.
+  - Custom configuration modifications done directly on the instance.
 
 ## Taking a backup
 To take a backup go to the backup tab of your cluster (1) and click on _Create backup_ (2). If you wish to give a name to your backup edit the value in _New backup name_ (3) before clicking on _Create backup_.
@@ -37,10 +64,12 @@ To take a backup go to the backup tab of your cluster (1) and click on _Create b
   </figure>
 </p>
 
-Taking a backup takes time and necessitates restarting the cluster. To avoid any risk of accidental restart you will be asked to confirm that you want to take a backup. To confirm check the check box and click on the  _Backup_ button.
+While the backup is being created some operations will not be possible on the cluster. To avoid, temporarily, limiting your cluster capabilities by accident you need to confirm that you want to take a backup. To confirm check the check box and click on the  _Backup_ button.
 
-!!! Warning
-    This will interrupt any operation currently running on the cluster. Make sure to stop them properly before taking a backup.
+!!! Note
+    The current list of operations being limited by the backup procedure is:
+     
+     - python library installation.
 
 <p align="center">
   <figure>
@@ -62,12 +91,13 @@ You can then wait until the backup is complete. The backup process being underwa
   </figure>
 </p>
 
-Once the backup is taken your cluster will be back up and running and ready to use.
-
 ## Restoring a backup
 Go to the Backup tab of the dashboard (left menu (1)) to the list of all the backups. This list is organized by cluster. For each of the clusters, you can see the state of the cluster (2) and the list of backups for this cluster (3). 
 
 To be able to restore a backup the corresponding cluster needs to be [terminated](./dashboard.md#terminate-the-cluster). If your cluster is not terminated go and terminate it. Once the cluster is terminated you restore a backup by clicking on the _Restore_ button (4) of the backup you want to restore.
+
+!!! Warning
+    The cluster needs to be terminated, but the bucket and docker repositories need to be kept as they are.
 
 <p align="center">
   <figure>
@@ -104,7 +134,7 @@ Once you have clicked on _Restore_ you will be brought to the [cluster creation]
   </figure>
 </p>
 
-A new cluster will be created and set in the state your cluster was at the time of the backup.
+A new cluster will be created and set in the state your cluster was in at the time of the backup.
 
 !!! Note
     Restoring a backup does not recreate the workers for this cluster. You need to [add the workers](./adding_removing_workers.md) back once the cluster is created.
@@ -166,6 +196,6 @@ Once you have clicked on the _Delete_ button, you will be asked to confirm that 
 The backup will then be deleted.
 
 ## Conclusion
-During this tutorial, you have created a backup, restored a cluster from this backup, checked the information about this backup, and finally deleted the backup.
+During this tutorial, you have created a backup, restored a cluster from this backup, check the information about this backup, and finally deleted the backup.
 
 Now that you have restored a cluster you can [add workers](./adding_removing_workers.md) or set up [autoscale](./autoscaling.md) on it.

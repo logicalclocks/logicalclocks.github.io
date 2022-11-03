@@ -63,8 +63,8 @@ To terminate a cluster click on the __Terminate__ button on the top right part o
 
 Terminating the cluster will destroy it and delete all the resources that were automatically created during the cluster creation. To be sure that you are not terminating a cluster by accident you will be asked to confirm that you want to terminate the cluster. To confirm the termination, check the check box and click on __Terminate__.
 
-!!! Note
-    Terminating a cluster does not delete or empty the bucket associated with the cluster. This is because this bucket is needed to restore a backup. You can find more information about backups in the [backup documentation](./backup.md).
+!!! Warning
+    Terminating a cluster does not delete or empty the bucket and the container registry associated with the cluster. This is because backups may be stored in them. You can find more information about backups in the [backup documentation](./backup.md).
 
 <p align="center">
   <figure>
