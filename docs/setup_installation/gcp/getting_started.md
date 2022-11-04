@@ -97,7 +97,7 @@ gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
 ```
 
 !!! note 
-    The Hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the *-l* option of *gsutil md*. For more detail about creating buckets with gsutil see the [documentation](https://cloud.google.com/storage/docs/creating-buckets)
+    The Hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the *-l* option of *gsutil mb*. For more detail about creating buckets with gsutil see the [documentation](https://cloud.google.com/storage/docs/creating-buckets)
 
 ## Step 4: Deploying a Hopsworks cluster
 
