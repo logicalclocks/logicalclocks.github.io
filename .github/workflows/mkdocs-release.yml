@@ -2,7 +2,7 @@ name: mkdocs-release
 
 on:
   push:
-    branches: [ branch-* ]
+    branches: [ main ]
 
 jobs:
   publish-release:
@@ -25,6 +25,6 @@ jobs:
           git config --global user.name Mike
           git config --global user.email mike@docs.hopsworks.ai
 
-      # Put this back and increment version when cutting a new release branch
-      # - name: mike deploy docs
-      #  run: mike deploy 3.0 latest -u --push
+      - name: mike deploy docs
+        run: mike deploy 3.1 latest -u --push
+
