@@ -10,7 +10,7 @@ User defined, custom transformation functions need to be registered in the featu
 
 
 ## Creation
-Hopsworks ships built-in transformation functions such as `min_max_scaler`, `standard_scaler`, `robust_scaler` and `label_encoder`. 
+Hopsworks ships built-in transformation functions such as `min_max_scaler`, `standard_scaler`, `robust_scaler` and `label_encoder`.
 
 You can also create new functions. Let's assume that you have already installed Python library [transformation_fn_template](https://github.com/logicalclocks/transformation_fn_template) containing the transformation function `plus_one`.
 
@@ -54,13 +54,12 @@ You can define in the feature view transformation functions as dict, where key i
 
     !!! example "Attaching transformation functions to the feature view"
         ```python
-        plus_one_fn = fs.get_transformation_function(name="plus_one", version=1)
         feature_view = fs.create_feature_view(
             name='transactions_view',
             query=query,
             labels=["fraud_label"],
             transformation_functions={
-                "amount_spent": plus_one_fn
+                "amount_spent": fs.get_transformation_function(name="plus_one", version=1)
             }
         )
         ```
@@ -70,21 +69,16 @@ Built-in transformation functions are attached in the same way. The only differe
 === "Python"
 
     !!! example "Attaching built-in transformation functions to the feature view"
-        ```python
-        min_max_scaler = fs.get_transformation_function(name="min_max_scaler")
-        standard_scaler = fs.get_transformation_function(name="standard_scaler")
-        robust_scaler = fs.get_transformation_function(name="robust_scaler")
-        label_encoder = fs.get_transformation_function(name="label_encoder")
-        
+        ```python      
         feature_view = fs.create_feature_view(
             name='transactions_view',
             query=query,
             labels=["fraud_label"],
             transformation_functions = {
-                "category": label_encoder,
-                "amount": robust_scaler,
-                "loc_delta": min_max_scaler,
-                "age_at_transaction": standard_scaler
+                "category": fs.get_transformation_function(name="label_encoder"),
+                "amount": fs.get_transformation_function(name="robust_scaler"),
+                "loc_delta": fs.get_transformation_function(name="min_max_scaler"),
+                "age_at_transaction": fs.get_transformation_function(name="standard_scaler")
             }
         )
         ```

@@ -40,7 +40,7 @@ You can navigate to older reports using the dropdown menu. Should you need more 
 
 The `Validation Reports` tab in the Expectations section displays a brief history of recent validations. Each row corresponds to a validation report, with some summary information about the success of the validation step. You can download the full report by clicking the download icon button that appears at the end of the row.
 
-## Code 
+## Code
 
 ### Step 1: Setup
 
@@ -57,7 +57,7 @@ Here is a small DataFrame to validate. You could also create your own Pandas Dat
 import pandas as pd
 
 df = pd.DataFrame({
-    "foo_id": [1, 2, 3, 4, 5], 
+    "foo_id": [1, 2, 3, 4, 5],
     "bar_name": ["alice", "bob", "carl", "dylan", "e"]
 })
 ```
@@ -111,20 +111,21 @@ expectation_suite_profiler, _ = ge_profiler.profile(ge.from_pandas(df))
 
 #### Hopsworks
 
- You can then setup a connection to your Hopsworks Feature Store. 
+ You can then setup a connection to your Hopsworks Feature Store.
 
 ```python3
-import hsfs
+import hopsworks
 
-conn = hsfs.connection()
-fs = conn.get_feature_store()
+project = hopsworks.login()
+
+fs = project.get_feature_store()
 ```
 
 Before writing data to Hopsworks, we first need to create a Feature Group. For more information see [create Feature Group](create.md).
 
 ```python3
-fg = fs.create_feature_group(
-  "fg_with_data_validation",
+example_fg = fs.get_or_create_feature_group(
+  name="fg_with_data_validation",
   version=1,
   description="Validated data",
   primary_key=['foo_id'],
@@ -134,7 +135,7 @@ fg = fs.create_feature_group(
 )
 
 # Create empty Feature Group in the backend
-fg.insert(df.head(0))
+example_fg.insert(df.head(0))
 ```
 
 ### Step 2: Integrating Great Expectations with Hopsworks
@@ -146,11 +147,11 @@ Hopsworks provides different support functions to ease adding a data validation 
 The first step is to attach an expectation suite to your Feature Group. It enables persistence of the expectation suite to the Hopsworks backend.
 
 ```python3
-fg.save_expectation_suite(expectation_suite)
+example_fg.save_expectation_suite(expectation_suite)
 
 # or directly when creating your Feature Group
 
-fg = fs.create_feature_group(
+example_fg = fs.get_or_create_feature_group(
     ...,
     expectation_suite=expectation_suite
 )
@@ -161,9 +162,9 @@ Note that the expectation suite object is modified in place to populate it with 
 This suite can easily be retrieved during a different session or deleted whenever you are working with this Feature Group by calling:
 
 ```python3
-ge_expectation_suite = fg.get_expectation_suite()
+ge_expectation_suite = example_fg.get_expectation_suite()
 # or delete with
-fg.drop_expectation_suite()
+example_fg.drop_expectation_suite()
 ```
 
 #### Validate your data
@@ -171,16 +172,16 @@ fg.drop_expectation_suite()
 As validation objects returned by Hopsworks are native Great Expectation objects you can run validation using the usual Great Expectations syntax:
 
 ```python3
-ge_df = ge.from_pandas(df, expectation_suite=fg.get_expectation_suite())
+ge_df = ge.from_pandas(df, expectation_suite=example_fg.get_expectation_suite())
 ge_report = ge_df.validate()
 ```
 
 Note that you should always use an expectation suite that has been saved to Hopsworks if you intend to upload the associated validation report. You can use a convenience wrapper method provided by Hopsworks to validate using the attached suite:
 
 ```python3
-ge_report = fg.validate(df)
+ge_report = example_fg.validate(df)
 # set the save_report parameter to False to skip uploading the report to Hopsworks
-# ge_report = fg.validate(df, save_report=False)
+# ge_report = example_fg.validate(df, save_report=False)
 ```
 
 This will run the validation using the expectation suite attached to this Feature Group and raise an exception if no attached suite is found.
@@ -188,22 +189,22 @@ This will run the validation using the expectation suite attached to this Featur
 
 #### Save Validation Reports
 
-When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group. 
+When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group.
 
 ```python3
-fg.save_validation_report(ge_report)
+example_fg.save_validation_report(ge_report)
 ```
 
 A summary of these reports will then be available via an API call or in the Hopsworks UI enabling easy monitoring. For in-depth analysis, it is possible to download the complete report from the UI.
 
 ```python3
 # convenience method for rapid development
-ge_latest_report = fg.get_latest_validation_report()
-# fetching the latest summary prints a link to the UI 
+ge_latest_report = example_fg.get_latest_validation_report()
+# fetching the latest summary prints a link to the UI
 # where you can download full report if summary is insufficient
 
 # or load multiple reports
-validation_history = fg.get_validation_reports()
+validation_history = example_fg.get_validation_reports()
 ```
 
 ### Step 3: Data validation in development or production environments
@@ -215,7 +216,7 @@ Depending on your context, you might want to use (or not use) data validation in
 
 #### Validation On Insertion
 
-By default, attaching an expectation suite to a Feature Group enables automatic validation on insertion. Meaning calling `fg.insert` after attaching an expectation suite to a Feature Group will perform validation under the hood (on the client) and upload the validation report. This approach enables you, the developer, to write cleaner more maintainable code while Hopsworks manages the operational problem of storing your data validation history alongside the data itself.
+By default, attaching an expectation suite to a Feature Group enables automatic validation on insertion. Meaning calling `example_fg.insert` after attaching an expectation suite to a Feature Group will perform validation under the hood (on the client) and upload the validation report. This approach enables you, the developer, to write cleaner more maintainable code while Hopsworks manages the operational problem of storing your data validation history alongside the data itself.
 
 In your expectation suite script:
 
@@ -236,16 +237,16 @@ expectation_suite.add_expectation(
 )
 
 # run_validation kwarg defaults to True
-fg.save_expectation_suite(expectation_suite, run_validation=True)
+example_fg.save_expectation_suite(expectation_suite, run_validation=True)
 ```
 
 In your insertion script:
 
 ```python3
 # With Hopsworks: clean and simple
-fg.insert(df)
+example_fg.insert(df)
 
-# Without Hopsworks: lots of boiler plate code for managing 
+# Without Hopsworks: lots of boiler plate code for managing
 # validation reports as JSON objects and files.
 expectation_suite_path = Path("./my_expectation_suite.json")
 report_path = Path("./my_validation_report.json")
@@ -262,14 +263,14 @@ with report_path.open("w") as f:
 
 For your convenience, Hopsworks also provides a link to the UI with a summary of the latest validation.
 
-There is a variety of use cases where performing data validation on insertion is not desirable, e.g., when rapid prototyping or when backfilling a large amount of pre-validated data for a time-sensitive project deadline. In these cases, you can skip validation for `fg.insert` using:
+There is a variety of use cases where performing data validation on insertion is not desirable, e.g., when rapid prototyping or when backfilling a large amount of pre-validated data for a time-sensitive project deadline. In these cases, you can skip validation for `example_fg.insert` using:
 
 ```python3
 # skip validation for a single run
-fg.insert(df, validation_options={"run_validation": False})
+example_fg.insert(df, validation_options={"run_validation": False})
 
 # or skip validation until specified otherwise
-fg.save_expectation_suite(fg.get_expectation_suite(), run_validation=False)
+example_fg.save_expectation_suite(example_fg.get_expectation_suite(), run_validation=False)
 ```
 
 ### Step 4: Monitoring or Gatekeeping
@@ -281,13 +282,13 @@ In contrast, a production setup often requires additional protection to prevent 
 Hopsworks is focused on making the transition from development to production as seamless as possible. To switch between these two behaviours you can simply use the `validation_insertion_policy` parameter. By default, expectation suites are attached to Feature Groups as a monitoring tool. This default choice is made as it corresponds to development setup and avoids any loss of data on insertion.
 
 ```python3
-fg.save_expectation_suite(expectation_suite)
+example_fg.save_expectation_suite(expectation_suite)
 # defaults to the monitoring behaviour
-fg.save_expectation_suite(expectation_suite, validation_insertion_policy="ALWAYS")
+example_fg.save_expectation_suite(expectation_suite, validation_insertion_policy="ALWAYS")
 ```
 
 When you want to switch from development to production, you can enable gatekeeping by setting:
 
 ```python3
-fg.save_expectation_suite(fg.get_expectation_suite(), validation_insertion_policy="STRICT")
+example_fg.save_expectation_suite(example_fg.get_expectation_suite(), validation_insertion_policy="STRICT")
 ```

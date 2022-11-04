@@ -20,7 +20,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
     connector = feature_store.get_storage_connector("connector_name")
     ```
 
-### Create an External Feature Group 
+### Create an External Feature Group
 
 #### SQL based external feature group
 
@@ -30,7 +30,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
     query = """
         SELECT TO_NUMERIC(ss_store_sk) AS ss_store_sk
             , AVG(ss_net_profit) AS avg_ss_net_profit
-            , SUM(ss_net_profit) AS total_ss_net_profit 
+            , SUM(ss_net_profit) AS total_ss_net_profit
             , AVG(ss_list_price) AS avg_ss_list_price
             , AVG(ss_coupon_amt) AS avg_ss_coupon_amt
             , sale_date
@@ -49,7 +49,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
     )
     ```
 
-#### Data Lake based external feature group 
+#### Data Lake based external feature group
 
 === "Python"
 
@@ -70,19 +70,19 @@ The version number is optional, if you don't specify the version number the APIs
 
 If the storage connector is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the storage connector is defined for a data lake, the location of the data as well as the format need to be provided.
 
-Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported. 
+Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported.
 
 ### Register the metadata
 
-The snippet above only created the metadata object on the Python interpreter running the code. To register the external feature group metadata with Hopsworks, you should invoke the `save` method:
+The snippet above only created the metadata object on the Python interpreter running the code. To register the external feature group metadata with Hopsworks, you should invoke the `insert` method:
 
 === "Python"
 
-    ```python 
-    fg.save()
+    ```python
+    fg.insert()
     ```
 
-### Limitations 
+### Limitations
 
 Hopsworks Feature Store does not support time-travel capabilities for on-demand feature groups. Moreover, as the data resides on external systems, on-demand feature groups cannot be made available online for low latency serving. To make data from an on-demand feature group available online, users need to define an online enabled feature group and hava a job that periodically reads data from the on-demand feature group and writes in the online feature group.
 
@@ -91,7 +91,7 @@ Hopsworks Feature Store does not support time-travel capabilities for on-demand 
     Currently the HSFS library does not support calling the read() or show() methods on on-demand feature groups. Likewise it is not possibile to call the read() or show() methods on queries containing on-demand feature groups. Nevertheless, on-demand feature groups can be used from a Python engine to create training datasets.
 
 
-### API Reference 
+### API Reference
 
 [External FeatureGroup](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup)
 

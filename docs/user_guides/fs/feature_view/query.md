@@ -9,14 +9,14 @@ The joining functionality is heavily inspired by the APIs used by Pandas to merg
 === "Python"
     ```python
     # create a query
-    feature_join = rain_fg.select_all() \
+    query = rain_fg.select_all() \
         .join(temperature_fg.select_all(), on=["date", "location_id"]) \
         .join(location_fg.select_all())
 
     # save the query to feature view
     feature_view = fs.create_feature_view(
         name='rain_dataset',
-        query=feature_join
+        query=query
     )
 
     # retrieve the query back from the feature view
@@ -56,13 +56,13 @@ Selecting features from a feature group is a lazy operation, returning a query w
     rain_fg = fs.get_feature_group("rain_fg")
 
     # Returns Query
-    feature_join = rain_fg.select(["location_id", "weekly_rainfall"])
+    query = rain_fg.select(["location_id", "weekly_rainfall"])
     ```
 
 === "Scala"
     ```Scala
     val rainFg = fs.getFeatureGroup("rain_fg")
-    
+
     # Returns Query
     val featureJoin = rainFg.select(Seq("location_id", "weekly_rainfall"))
     ```
@@ -75,7 +75,7 @@ By default, Hopsworks will use the maximal matching subset of the primary keys o
 === "Python"
     ```python
     # Returns Query
-    feature_join = rain_fg.join(temperature_fg)
+    query = rain_fg.join(temperature_fg)
     ```
 
 === "Scala"
@@ -89,7 +89,7 @@ The join key lists should contain the names of the features to join on.
 
 === "Python"
     ```python
-    feature_join = rain_fg.select_all() \
+    query = rain_fg.select_all() \
         .join(temperature_fg.select_all(), on=["date", "location_id"]) \
         .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left")
     ```
@@ -126,7 +126,7 @@ Filters are fully compatible with joins:
 
 === "Python"
     ```python
-    feature_join = rain_fg.select_all() \
+    query = rain_fg.select_all() \
         .join(temperature_fg.select_all(), on=["date", "location_id"]) \
         .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left") \
         .filter((rain_fg.location_id == 10) | (rain_fg.location_id == 20))
@@ -144,7 +144,7 @@ The filters can be applied at any point of the query:
 
 === "Python"
     ```python
-    feature_join = rain_fg.select_all() \
+    query = rain_fg.select_all() \
         .join(temperature_fg.select_all().filter(temperature_fg.avg_temp >= 22), on=["date", "location_id"]) \
         .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left") \
         .filter(rain_fg.location_id == 10)

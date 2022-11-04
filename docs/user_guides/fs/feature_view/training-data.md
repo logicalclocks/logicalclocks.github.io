@@ -5,7 +5,7 @@ Training data can be created from the feature view and used by different ML libr
 You can read [training data concepts](../../../concepts/fs/feature_view/offline_api.md) for more details. To see a full example of how to create training data, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/2_feature_view_creation.ipynb).
 
 ## Creation
-It can be created as in-memory DataFrames or materialised as `tfrecords`, `parquet`, `csv`, or `tsv` files to HopsFS or in all other locations, for example, S3, GCS. If you materialise a training dataset, a `PySparkJob` will be launched. By default, `create_training_data` waits for the job to finish. However, you can run the job asynchronously by passing `write_options={"wait_for_job": False}`. You can monitor the job status in the [jobs overview UI](../../projects/jobs/pyspark_job.md#step-1-jobs-overview). 
+It can be created as in-memory DataFrames or materialised as `tfrecords`, `parquet`, `csv`, or `tsv` files to HopsFS or in all other locations, for example, S3, GCS. If you materialise a training dataset, a `PySparkJob` will be launched. By default, `create_training_data` waits for the job to finish. However, you can run the job asynchronously by passing `write_options={"wait_for_job": False}`. You can monitor the job status in the [jobs overview UI](../../projects/jobs/pyspark_job.md#step-1-jobs-overview).
 
 ```python
 # create a training dataset as dataframe
@@ -46,14 +46,14 @@ In most cases, ML practitioners want to slice a dataset into multiple splits, mo
 
 Create a training dataset (as in-memory DataFrames) or materialise a training dataset with train and test splits.
 ```python
-# create a training dataset 
+# create a training dataset
 X_train, X_test, y_train, y_test = feature_view.train_test_split(test_size=0.2)
 
 # materialise a training dataset
 version, job = feature_view.create_train_test_split(
     test_size = 0.2,
     description = 'transactions fraud batch training dataset',
-    data_format = 'csv'
+    data_format = 'csv' # or 'tfrecords', 'parquet', 'tsv'
 )
 ```
 
@@ -64,7 +64,7 @@ X_train, X_val, X_test, y_train, y_val, y_test = feature_view.train_validation_t
 
 # materialise a training dataset
 version, job = feature_view.create_train_validation_test_split(
-    validation_size = 0.3, 
+    validation_size = 0.3,
     test_size = 0.2
     description = 'transactions fraud batch training dataset',
     data_format = 'csv'
@@ -111,8 +111,8 @@ Similar to feature view, You can attach, get, and remove tags. You can refer to 
 ```python
 # attach
 feature_view.add_training_dataset_tag(
-    training_dataset_version=1, 
-    name="tag_schema", 
+    training_dataset_version=1,
+    name="tag_schema",
     value={"key", "value"}
 )
 
