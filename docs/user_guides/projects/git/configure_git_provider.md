@@ -9,8 +9,7 @@ When you perform Git operations on Hopsworks that need to interact with the remo
 
 !!! notice "Token permissions"
     The token permissions should grant access to public and private repositories including read and write access to code and commit statuses. 
-    If you are cloning a forked private repository using the new fine-grained GitHub personal tokens, make sure that the fine-grained GitHub personal access tokens are enabled in the organisation.
-
+    If you are using the new GitHub access tokens, make sure you choose the correct `Resource owner` when generating the token.
 
 ## UI
 
