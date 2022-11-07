@@ -5084,7 +5084,7 @@ ip-192-168-21-142.us-east-2.compute.internal   Ready    &lt;none&gt;   2m35s   v
 ip-192-168-62-117.us-east-2.compute.internal   Ready    &lt;none&gt;   2m34s   v1.17.9-eks-4c6976
 </code></pre></div>
 <h2 id="step-2-create-an-instance-profile-role-on-aws">Step 2: Create an instance profile role on AWS<a class="headerlink" href="#step-2-create-an-instance-profile-role-on-aws" title="Permanent link">#</a></h2>
-<p>You need to add permission to <a href="../getting_started/#step-2-creating-instance-profile">the instance profile you use for instances deployed by managed.hopsworks.ai</a> to give them access to EKS and ECR.
+<p>You need to add permission to <a href="../getting_started/#step-3-creating-instance-profile">the instance profile you use for instances deployed by managed.hopsworks.ai</a> to give them access to EKS and ECR.
 Go to the <a href="https://console.aws.amazon.com/iam"><em>IAM service</em></a> in the <em>AWS management console</em>, click <em>Roles</em>, search for your role, and click on it. Click on <em>Add inline policy</em>. Go to the <em>JSON</em> tab and replace the existing JSON permissions with the JSON permissions below..</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span><span class="w"></span>
@@ -5234,7 +5234,7 @@ uid: c794b2d8-9f10-443d-9072-c65d0f2eb552
 OutputKey: <span class="s2">&quot;ClusterSecurityGroupId&quot;</span>,
 OutputValue: <span class="s2">&quot;YOUR_EKS_SECURITY_GROUP_ID&quot;</span>
 </code></pre></div>
-<p>Go to the <a href="https://us-east-2.console.aws.amazon.com/ec2/v2/home?#SecurityGroups:"><em>Security Groups</em> section of <em>EC2</em> in the <em>AWS management console</em></a> and search for your security group using the id obtained above. Note the <em>VPC ID</em>, you will need it when creating the hopsworks cluster. Then, click on it then go to the <em>Inbound rules</em> tab and click on <em>Edit inbound rules</em>. You should now see the following screen.</p>
+<p>Go to the <a href="https://us-east-2.console.aws.amazon.com/ec2/v2/home?#SecurityGroups:"><em>Security Groups</em> section of <em>EC2</em> in the <em>AWS management console</em></a> and search for your security group using the id obtained above. Note the <em>VPC ID</em>, you will need it when creating the Hopsworks cluster. Then, click on it then go to the <em>Inbound rules</em> tab and click on <em>Edit inbound rules</em>. You should now see the following screen.</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/aws/eks-sg-edit-inbound-rules.png">
@@ -5273,7 +5273,7 @@ OutputKey: <span class="s2">&quot;ClusterSecurityGroupId&quot;</span>,
 OutputValue: <span class="s2">&quot;YOUR_EKS_SECURITY_GROUP_ID&quot;</span>
 </code></pre></div>
 <h2 id="step-5-allow-managedhopsworksai-to-delete-ecr-repositories-on-your-behalf">Step 5: Allow managed.hopsworks.ai to delete ECR repositories on your behalf<a class="headerlink" href="#step-5-allow-managedhopsworksai-to-delete-ecr-repositories-on-your-behalf" title="Permanent link">#</a></h2>
-<p>For <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> to be able to clean up the ECR repo when terminating your hopsworks cluster, you need to add a new inline policy to the <a href="../getting_started/#option-1-using-aws-cross-account-roles">Cross-Account role</a> or <a href="../getting_started/#option-2-using-aws-access-keys">user connected to managed.hopsworks.ai</a>, that you set up when <a href="../getting_started/#step-1-connecting-your-aws-account">connecting your AWS account to managed.hopsworks.ai</a>.</p>
+<p>For <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> to be able to clean up the ECR repo when terminating your Hopsworks cluster, you need to add a new inline policy to the <a href="../getting_started/#option-1-using-aws-cross-account-roles">Cross-Account role</a> or <a href="../getting_started/#option-2-using-aws-access-keys">user connected to managed.hopsworks.ai</a>, that you set up when <a href="../getting_started/#step-1-connecting-your-aws-account">connecting your AWS account to managed.hopsworks.ai</a>.</p>
 <p>Navigate to <a href="https://console.aws.amazon.com/iam/home#">AWS management console</a>, then click on <em>Roles</em> or <em>Users</em> depending on which connection method you have used in <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, and then search for your role or user name and click on it.  Go to the <em>Permissions</em> tab, click on <em>Add inline policy</em> and go to the <em>JSON</em> tab. Replace the existing JSON permissions with the JSON permissions below. Click on <em>Review policy</em>, name it, and click <em>Create policy</em>.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span><span class="w"></span>
@@ -5293,7 +5293,7 @@ OutputValue: <span class="s2">&quot;YOUR_EKS_SECURITY_GROUP_ID&quot;</span>
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 <h2 id="step-6-create-a-hopsworks-cluster-with-eks-and-ecr-support">Step 6: Create a Hopsworks cluster with EKS and ECR support<a class="headerlink" href="#step-6-create-a-hopsworks-cluster-with-eks-and-ecr-support" title="Permanent link">#</a></h2>
-<p>In <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, select <em>Create cluster</em>. Choose the region of your EKS cluster and fill in the name of your <a href="../getting_started/#step-3-creating-storage">S3 bucket</a>, then click Next:</p>
+<p>In <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, select <em>Create cluster</em>. Choose the region of your EKS cluster and fill in the name of your <a href="../getting_started/#step-2-creating-storage">S3 bucket</a>, then click Next:</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/aws/eks-hopsworks-create-cluster.png">
@@ -5367,7 +5367,7 @@ OutputValue: <span class="s2">&quot;YOUR_EKS_SECURITY_GROUP_ID&quot;</span>
 <p>Choose any of the subnets in the VPC, then click Next.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Avoid private subnets if you want to enjoy <a href="../restrictive_permissions/">all the hopsworks features</a>.</p>
+<p>Avoid private subnets if you want to enjoy <a href="../restrictive_permissions/">all the Hopsworks features</a>.</p>
 </div>
 <p align="center">
   <figure>

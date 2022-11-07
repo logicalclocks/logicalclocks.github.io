@@ -4952,7 +4952,7 @@ supporting OAuth2 OpenID Connect protocol.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
 <p>Azure account.</p>
 <h3 id="step-1-register-hopsworks-as-an-application-in-your-identity-provider">Step 1: Register Hopsworks as an application in your identity provider<a class="headerlink" href="#step-1-register-hopsworks-as-an-application-in-your-identity-provider" title="Permanent link">#</a></h3>
-<p>To use OAuth2 in hopsworks you first need to create and configure an OAuth client in your identity provider. We will take the example of Azure AD for the remaining of this documentation, but equivalent steps can be taken on other identity providers.</p>
+<p>To use OAuth2 in Hopsworks you first need to create and configure an OAuth client in your identity provider. We will take the example of Azure AD for the remaining of this documentation, but equivalent steps can be taken on other identity providers.</p>
 <p>Navigate to the <a href="https://portal.azure.com">Microsoft Azure Portal</a> and authenticate. Navigate to <a href="https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview">Azure Active Directory</a>. Click on <a href="https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps">App Registrations</a>. Click on <em>New Registration</em>.</p>
 <p align="center">
   <figure>
@@ -5047,7 +5047,7 @@ We will use it in <a href="../create-client">Identity Provider registration</a> 
   </figure>
 </p>
 
-<p>Enter the <em>Redirect URI</em> and click on <em>Configure</em>. The redirect URI is <em>HOPSWORKS-URI/callback</em> with <em>HOPSWORKS-URI</em> the URI of your hopsworks cluster.</p>
+<p>Enter the <em>Redirect URI</em> and click on <em>Configure</em>. The redirect URI is <em>HOPSWORKS-URI/callback</em> with <em>HOPSWORKS-URI</em> the URI of your Hopsworks cluster.</p>
 <p align="center">
   <figure>
     <a  href="../../../assets/images/admin/oauth2/sso/add_platform_redirect.png">
@@ -5059,7 +5059,7 @@ We will use it in <a href="../create-client">Identity Provider registration</a> 
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If your hopsworks cluster is created on the cloud (managed.hopsworks.ai),
+<p>If your Hopsworks cluster is created on the cloud (managed.hopsworks.ai),
 you can find your <em>HOPSWORKS-URI</em> by going to the <a href="https://managed.hopsworks.ai/dashboard">managed.hopsworks.ai dashboard</a> 
 in the <em>General</em> tab of your cluster and copying the URI.</p>
 </div>

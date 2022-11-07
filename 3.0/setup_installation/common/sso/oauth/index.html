@@ -4833,8 +4833,8 @@
                 
 
 
-<h1 id="configure-your-hopsworks-cluster-to-use-oauth2-for-user-management">Configure your hopsworks cluster to use OAuth2 for user management.<a class="headerlink" href="#configure-your-hopsworks-cluster-to-use-oauth2-for-user-management" title="Permanent link">#</a></h1>
-<p>If you want to use your organization's OAuth 2.0 identity provider to manage users in your hopsworks cluster this document
+<h1 id="configure-your-hopsworks-cluster-to-use-oauth2-for-user-management">Configure your Hopsworks cluster to use OAuth2 for user management.<a class="headerlink" href="#configure-your-hopsworks-cluster-to-use-oauth2-for-user-management" title="Permanent link">#</a></h1>
+<p>If you want to use your organization's OAuth 2.0 identity provider to manage users in your Hopsworks cluster this document
 will guide you through the necessary steps to register your identity provider in <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>.</p>
 <p>Before registering your identity provider in Hopsworks you need to create a client application in your identity provider and
 acquire a <em>client id</em> and a <em>client secret</em>. Examples on how to create a client using <a href="https://www.okta.com/">Okta</a>
@@ -4854,12 +4854,12 @@ and <a href="https://docs.microsoft.com/en-us/azure/active-directory">Azure Acti
 
 <p>Register your identity provider by setting the following fields:</p>
 <ul>
-<li><em>Create Administrator password user</em>: if checked an administrator that can log in to the hopsworks cluster, with email and password,
+<li><em>Create Administrator password user</em>: if checked an administrator that can log in to the Hopsworks cluster, with email and password,
 will be created for the user creating the cluster. If <strong>Not</strong> checked a group mapping that maps at least one group in the identity provider to <em>HOPS_ADMIN</em> is required. </li>
-<li><em>ClientId</em>: the client id generated when registering hopsworks in your identity provider.</li>
-<li><em>Client Secret</em>: the client secret generated when registering hopsworks in your identity provider.</li>
+<li><em>ClientId</em>: the client id generated when registering Hopsworks in your identity provider.</li>
+<li><em>Client Secret</em>: the client secret generated when registering Hopsworks in your identity provider.</li>
 <li><em>Provider URI</em>: is the base uri of the identity provider (URI should contain scheme http:// or https://).</li>
-<li><em>Provider Name</em>: a unique name to identify the identity provider in your hopsworks cluster.
+<li><em>Provider Name</em>: a unique name to identify the identity provider in your Hopsworks cluster.
                   This name will be used in the login page as an alternative login method if <em>Provider DisplayName</em> is not set.</li>
 </ul>
 <p>Optionally you can also set:</p>
@@ -4874,9 +4874,9 @@ will be created for the user creating the cluster. If <strong>Not</strong> check
 </code></pre></div>
                   This will map users in the IT group in your identity provider to HOPS_ADMIN and users in the DATA_SCIENCE group to HOPS_USER.</li>
 <li><em>Verify Email</em>: if checked only users with verified email address (in the identity provider) can log in to Hopsworks.</li>
-<li><em>Activate user</em>: if not checked an administrator in hopsworks needs to activate users before they can login.</li>
+<li><em>Activate user</em>: if not checked an administrator in Hopsworks needs to activate users before they can login.</li>
 <li><em>Need consent</em>: if checked, users will be asked for consent when logging in for the first time.</li>
-<li><em>Disable registration</em>: if unchecked users will have the possibility to create accounts in the hopsworks cluster using user name and password instead of OAuth.</li>
+<li><em>Disable registration</em>: if unchecked users will have the possibility to create accounts in the Hopsworks cluster using user name and password instead of OAuth.</li>
 <li><em>Provider Metadata Endpoint Supported</em>: if your provider defines a discovery mechanism, called OpenID Connect Discovery,
                                          where it publishes its metadata at a well-known URL, typically
 <div class="highlight"><pre><span></span><code>https://server.com/.well-known/openid-configuration

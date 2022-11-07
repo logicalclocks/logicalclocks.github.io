@@ -4992,7 +4992,7 @@ SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.
 <h2 id="prerequisite">Prerequisite<a class="headerlink" href="#prerequisite" title="Permanent link">#</a></h2>
 <p>To follow the instruction of this page you will need the following:</p>
 <ul>
-<li>A GCP project in which the hopsworks cluster will be deployed. Make sure to enable <em>Compute Engine API</em>, <em>Cloud Resource Manager API</em>, and <em>Identity and Access Management (IAM) API</em> on that project by following <a href="https://cloud.google.com/apis/docs/getting-started#enabling_apis">this guide</a>.</li>
+<li>A GCP project in which the Hopsworks cluster will be deployed. Make sure to enable <em>Compute Engine API</em>, <em>Cloud Resource Manager API</em>, and <em>Identity and Access Management (IAM) API</em> on that project by following <a href="https://cloud.google.com/apis/docs/getting-started#enabling_apis">this guide</a>.</li>
 <li>The <a href="https://cloud.google.com/sdk/gcloud">gcloud CLI</a></li>
 <li>The <a href="https://cloud.google.com/storage/docs/gsutil">gsutil tool</a></li>
 </ul>
@@ -5059,7 +5059,7 @@ SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The hopsworks cluster created by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the <em>-l</em> option of <em>gsutil md</em>. For more detail about creating buckets with gsutil see the <a href="https://cloud.google.com/storage/docs/creating-buckets">documentation</a></p>
+<p>The Hopsworks cluster created by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the <em>-l</em> option of <em>gsutil mb</em>. For more detail about creating buckets with gsutil see the <a href="https://cloud.google.com/storage/docs/creating-buckets">documentation</a></p>
 </div>
 <h2 id="step-4-deploying-a-hopsworks-cluster">Step 4: Deploying a Hopsworks cluster<a class="headerlink" href="#step-4-deploying-a-hopsworks-cluster" title="Permanent link">#</a></h2>
 <p>In <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a>, select <em>Create cluster</em>:</p>

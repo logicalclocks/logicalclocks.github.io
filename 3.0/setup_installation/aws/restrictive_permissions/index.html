@@ -5169,7 +5169,7 @@ need to be configured so that at least port <code>80</code> is reachable from th
 Follow this guide to create a role to be used by EC2 with no permissions attached:
 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html">Creating a Role for an AWS Service (Console)</a>.
 Take note of the ARN of the role you just created.</p>
-<p>You will need to add permissions to the instance profile to give access to the S3 bucket where Hopsworks will store its data. For more details about these permissions check <a href="../getting_started/#step-2-creating-instance-profile">our guide here</a>.
+<p>You will need to add permissions to the instance profile to give access to the S3 bucket where Hopsworks will store its data. For more details about these permissions check <a href="../getting_started/#step-3-creating-instance-profile">our guide here</a>.
 Check <a href="#limiting-the-instance-profile-permissions">bellow</a> for more information on restricting the permissions given the instance profile.</p>
 <h3 id="step-3-set-permissions-of-the-cross-account-role">Step 3: Set permissions of the cross-account role<a class="headerlink" href="#step-3-set-permissions-of-the-cross-account-role" title="Permanent link">#</a></h3>
 <p>During the account setup for <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, you were asked to create and provide a cross-account role.
@@ -5333,7 +5333,7 @@ The following permissions are used to let you close and open ports on your clust
 </code></pre></div>
 <h2 id="limiting-the-instance-profile-permissions">Limiting the instance profile permissions<a class="headerlink" href="#limiting-the-instance-profile-permissions" title="Permanent link">#</a></h2>
 <h3 id="backups">Backups<a class="headerlink" href="#backups" title="Permanent link">#</a></h3>
-<p>If you do not intend to take backups or if you do not have access to this Enterprise feature you can remove the permissions that are only used by the backup feature when <a href="../getting_started/#step-2-creating-instance-profile">configuring instance profile permissions</a> .
+<p>If you do not intend to take backups or if you do not have access to this Enterprise feature you can remove the permissions that are only used by the backup feature when <a href="../getting_started/#step-3-creating-instance-profile">configuring instance profile permissions</a> .
 For this remove the following permissions from the instance profile:</p>
 <div class="highlight"><pre><span></span><code><span class="w">      </span><span class="s2">&quot;S3:PutLifecycleConfiguration&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">      </span><span class="s2">&quot;S3:GetLifecycleConfiguration&quot;</span><span class="p">,</span><span class="w"> </span>
@@ -5367,7 +5367,7 @@ For this remove the following permissions from the instance profile:</p>
 </code></pre></div>
 <h3 id="upgrade-permissions">Upgrade permissions<a class="headerlink" href="#upgrade-permissions" title="Permanent link">#</a></h3>
 <h4 id="removing-upgrade-permissions">Removing upgrade permissions<a class="headerlink" href="#removing-upgrade-permissions" title="Permanent link">#</a></h4>
-<p>If you do not intend to upgrade your cluster to newer versions of Hopsworks, then you can remove the upgrade permissions statement from the instance profile that you have created <a href="../getting_started/#step-2-creating-instance-profile">here</a>. For this remove the following statement from your instance profile</p>
+<p>If you do not intend to upgrade your cluster to newer versions of Hopsworks, then you can remove the upgrade permissions statement from the instance profile that you have created <a href="../getting_started/#step-3-creating-instance-profile">here</a>. For this remove the following statement from your instance profile</p>
 <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UpgradePermissions&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span><span class="w"></span>

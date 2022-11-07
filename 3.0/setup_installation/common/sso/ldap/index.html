@@ -4833,10 +4833,10 @@
                 
 
 
-<h1 id="configure-your-hopsworks-cluster-to-use-ldap-for-user-management">Configure your hopsworks cluster to use LDAP for user management.<a class="headerlink" href="#configure-your-hopsworks-cluster-to-use-ldap-for-user-management" title="Permanent link">#</a></h1>
+<h1 id="configure-your-hopsworks-cluster-to-use-ldap-for-user-management">Configure your Hopsworks cluster to use LDAP for user management.<a class="headerlink" href="#configure-your-hopsworks-cluster-to-use-ldap-for-user-management" title="Permanent link">#</a></h1>
 <p>If you want to use your organization's LDAP as an identity provider to manage users in your Hopsworks cluster this document
 will guide you through the necessary steps to configure <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> to use LDAP.</p>
-<p>The LDAP attributes below are used to configure JNDI resources in the hopsworks server. 
+<p>The LDAP attributes below are used to configure JNDI resources in the Hopsworks server. 
 The JNDI resource will communicate with your LDAP server to perform the authentication.</p>
 <p align="center">
   <figure>
@@ -4856,7 +4856,7 @@ The JNDI resource will communicate with your LDAP server to perform the authenti
 <li><em>java.naming.security.credentials</em>: contains the password of the user that will be used to query LDAP.</li>
 <li><em>java.naming.referral</em>: whether to follow or ignore an alternate location in which an LDAP Request may be processed.</li>
 </ul>
-<p>After configuring LDAP and creating your cluster you can log into your hopsworks cluster and edit the LDAP <em>attributes to field names</em> to match
+<p>After configuring LDAP and creating your cluster you can log into your Hopsworks cluster and edit the LDAP <em>attributes to field names</em> to match
 your server. By default all <em>attributes to field names</em> are set to the values in <a href="https://www.openldap.org/">OpenLDAP</a>. 
 See <a href="../../../../user_guides/projects/auth/ldap/">Configure LDAP</a> on how to edit the LDAP default configurations.</p>
 <div class="admonition note">

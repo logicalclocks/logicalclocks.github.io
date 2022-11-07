@@ -3520,15 +3520,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-creating-instance-profile" class="md-nav__link">
-    Step 2: Creating Instance profile
+  <a href="#step-2-creating-storage" class="md-nav__link">
+    Step 2: Creating storage
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-creating-storage" class="md-nav__link">
-    Step 3: Creating storage
+  <a href="#step-3-creating-instance-profile" class="md-nav__link">
+    Step 3: Creating Instance profile
   </a>
   
 </li>
@@ -4957,15 +4957,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-creating-instance-profile" class="md-nav__link">
-    Step 2: Creating Instance profile
+  <a href="#step-2-creating-storage" class="md-nav__link">
+    Step 2: Creating storage
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-creating-storage" class="md-nav__link">
-    Step 3: Creating storage
+  <a href="#step-3-creating-instance-profile" class="md-nav__link">
+    Step 3: Creating Instance profile
   </a>
   
 </li>
@@ -5226,7 +5226,30 @@ If you want to limit the required AWS permissions, see <a href="../restrictive_p
   </figure>
 </p>
 
-<h2 id="step-2-creating-instance-profile">Step 2: Creating Instance profile<a class="headerlink" href="#step-2-creating-instance-profile" title="Permanent link">#</a></h2>
+<h2 id="step-2-creating-storage">Step 2: Creating storage<a class="headerlink" href="#step-2-creating-storage" title="Permanent link">#</a></h2>
+<p>The Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> store their data in an S3 bucket in your AWS account.
+To enable this you need to create an S3 bucket and an instance profile to give cluster nodes access to the bucket.</p>
+<p>Proceed to the <a href="https://s3.console.aws.amazon.com/s3/home">S3 Management Console</a> and click on <em>Create bucket</em>:</p>
+<p align="center">
+  <figure>
+    <a  href="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-1.png">
+      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-1.png" alt="Create an S3 bucket">
+    </a>
+    <figcaption>Create an S3 bucket</figcaption>
+  </figure>
+</p>
+
+<p>Name your bucket and select the region where your Hopsworks cluster will run. Click on <em>Create bucket</em> at the bottom of the page.</p>
+<p align="center">
+  <figure>
+    <a  href="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-2.png">
+      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-2.png" alt="Create an S3 bucket">
+    </a>
+    <figcaption>Create an S3 bucket</figcaption>
+  </figure>
+</p>
+
+<h2 id="step-3-creating-instance-profile">Step 3: Creating Instance profile<a class="headerlink" href="#step-3-creating-instance-profile" title="Permanent link">#</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you prefer using terraform, you can skip this step and the remaining steps, and instead follow <a href="../../common/terraform/#getting-started-with-aws">this guide</a>.</p>
@@ -5300,29 +5323,6 @@ If you want to limit the required AWS permissions, see <a href="../restrictive_p
 <span class="w">  </span><span class="p">]</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
-<h2 id="step-3-creating-storage">Step 3: Creating storage<a class="headerlink" href="#step-3-creating-storage" title="Permanent link">#</a></h2>
-<p>The Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> store their data in an S3 bucket in your AWS account.
-To enable this you need to create an S3 bucket and an instance profile to give cluster nodes access to the bucket.</p>
-<p>Proceed to the <a href="https://s3.console.aws.amazon.com/s3/home">S3 Management Console</a> and click on <em>Create bucket</em>:</p>
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-1.png" alt="Create an S3 bucket">
-    </a>
-    <figcaption>Create an S3 bucket</figcaption>
-  </figure>
-</p>
-
-<p>Name your bucket and select the region where your Hopsworks cluster will run. Click on <em>Create bucket</em> at the bottom of the page.</p>
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-2.png" alt="Create an S3 bucket">
-    </a>
-    <figcaption>Create an S3 bucket</figcaption>
-  </figure>
-</p>
-
 <h2 id="step-4-create-an-ssh-key">Step 4: Create an SSH key<a class="headerlink" href="#step-4-create-an-ssh-key" title="Permanent link">#</a></h2>
 <p>When deploying clusters, <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: <a href="#step-31-create-a-new-key-pair">creating a new key pair</a> or <a href="#step-32-import-a-key-pair">importing an existing key pair</a>.</p>
 <h3 id="step-41-create-a-new-key-pair">Step 4.1: Create a new key pair<a class="headerlink" href="#step-41-create-a-new-key-pair" title="Permanent link">#</a></h3>
