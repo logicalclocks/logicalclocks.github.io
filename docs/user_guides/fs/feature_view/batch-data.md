@@ -11,6 +11,7 @@ It is very common that ML models are deployed in a "batch" setting where ML pipe
         end_time = "20220627"
     ) # return a dataframe
     ```
+
 === "Java"
     ```java
     Dataset<Row> ds = featureView.getBatchData("20220620", "20220627")

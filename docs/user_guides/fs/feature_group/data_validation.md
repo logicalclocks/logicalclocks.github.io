@@ -53,7 +53,7 @@ In order to define and validate an expectation when writing to a Feature Group, 
 
 Here is a small DataFrame to validate. You could also create your own Pandas DataFrame using your own data.
 
-```python3
+```python
 import pandas as pd
 
 df = pd.DataFrame({
@@ -66,7 +66,7 @@ df = pd.DataFrame({
 
 Create (or import an existing) expectation suite using the Great Expectations library.
 
-```python3
+```python
 import great_expectations as ge
 
 expectation_suite = ge.core.ExpectationSuite(
@@ -77,7 +77,7 @@ expectation_suite = ge.core.ExpectationSuite(
 #### Add Expectations in the Source Code
 
 Add some expectation to your suite to validate columns:
-```python3
+```python
 expectation_suite.add_expectation(
     ge.core.ExpectationConfiguration(
         expectation_type="expect_column_min_to_be_between",
@@ -103,7 +103,7 @@ expectation_suite.add_expectation(
 
 #### Using Great Expectations Profiler
 
-```python3
+```python
 ge_profiler = ge.profile.BasicSuiteBuilderProfiler()
 expectation_suite_profiler, _ = ge_profiler.profile(ge.from_pandas(df))
 ```
@@ -113,7 +113,7 @@ expectation_suite_profiler, _ = ge_profiler.profile(ge.from_pandas(df))
 
  You can then setup a connection to your Hopsworks Feature Store.
 
-```python3
+```python
 import hopsworks
 
 project = hopsworks.login()
@@ -123,7 +123,7 @@ fs = project.get_feature_store()
 
 Before writing data to Hopsworks, we first need to create a Feature Group. For more information see [create Feature Group](create.md).
 
-```python3
+```python
 example_fg = fs.get_or_create_feature_group(
   name="fg_with_data_validation",
   version=1,
@@ -146,7 +146,7 @@ Hopsworks provides different support functions to ease adding a data validation 
 
 The first step is to attach an expectation suite to your Feature Group. It enables persistence of the expectation suite to the Hopsworks backend.
 
-```python3
+```python
 example_fg.save_expectation_suite(expectation_suite)
 
 # or directly when creating your Feature Group
@@ -161,7 +161,7 @@ Note that the expectation suite object is modified in place to populate it with 
 
 This suite can easily be retrieved during a different session or deleted whenever you are working with this Feature Group by calling:
 
-```python3
+```python
 ge_expectation_suite = example_fg.get_expectation_suite()
 # or delete with
 example_fg.drop_expectation_suite()
@@ -171,14 +171,14 @@ example_fg.drop_expectation_suite()
 
 As validation objects returned by Hopsworks are native Great Expectation objects you can run validation using the usual Great Expectations syntax:
 
-```python3
+```python
 ge_df = ge.from_pandas(df, expectation_suite=example_fg.get_expectation_suite())
 ge_report = ge_df.validate()
 ```
 
 Note that you should always use an expectation suite that has been saved to Hopsworks if you intend to upload the associated validation report. You can use a convenience wrapper method provided by Hopsworks to validate using the attached suite:
 
-```python3
+```python
 ge_report = example_fg.validate(df)
 # set the save_report parameter to False to skip uploading the report to Hopsworks
 # ge_report = example_fg.validate(df, save_report=False)
@@ -191,13 +191,13 @@ This will run the validation using the expectation suite attached to this Featur
 
 When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group.
 
-```python3
+```python
 example_fg.save_validation_report(ge_report)
 ```
 
 A summary of these reports will then be available via an API call or in the Hopsworks UI enabling easy monitoring. For in-depth analysis, it is possible to download the complete report from the UI.
 
-```python3
+```python
 # convenience method for rapid development
 ge_latest_report = example_fg.get_latest_validation_report()
 # fetching the latest summary prints a link to the UI
@@ -220,7 +220,7 @@ By default, attaching an expectation suite to a Feature Group enables automatic 
 
 In your expectation suite script:
 
-```python3
+```python
 expectation_suite = ge.core.ExpectationSuite(
     expectation_suite_name="validate_on_insert_suite"
 )
@@ -242,7 +242,7 @@ example_fg.save_expectation_suite(expectation_suite, run_validation=True)
 
 In your insertion script:
 
-```python3
+```python
 # With Hopsworks: clean and simple
 example_fg.insert(df)
 
@@ -265,7 +265,7 @@ For your convenience, Hopsworks also provides a link to the UI with a summary of
 
 There is a variety of use cases where performing data validation on insertion is not desirable, e.g., when rapid prototyping or when backfilling a large amount of pre-validated data for a time-sensitive project deadline. In these cases, you can skip validation for `example_fg.insert` using:
 
-```python3
+```python
 # skip validation for a single run
 example_fg.insert(df, validation_options={"run_validation": False})
 
@@ -281,7 +281,7 @@ In contrast, a production setup often requires additional protection to prevent 
 
 Hopsworks is focused on making the transition from development to production as seamless as possible. To switch between these two behaviours you can simply use the `validation_insertion_policy` parameter. By default, expectation suites are attached to Feature Groups as a monitoring tool. This default choice is made as it corresponds to development setup and avoids any loss of data on insertion.
 
-```python3
+```python
 example_fg.save_expectation_suite(expectation_suite)
 # defaults to the monitoring behaviour
 example_fg.save_expectation_suite(expectation_suite, validation_insertion_policy="ALWAYS")
@@ -289,6 +289,6 @@ example_fg.save_expectation_suite(expectation_suite, validation_insertion_policy
 
 When you want to switch from development to production, you can enable gatekeeping by setting:
 
-```python3
+```python
 example_fg.save_expectation_suite(example_fg.get_expectation_suite(), validation_insertion_policy="STRICT")
 ```
