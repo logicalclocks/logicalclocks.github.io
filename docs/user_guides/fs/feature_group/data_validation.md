@@ -6,25 +6,29 @@ Clean, high quality feature data is of paramount importance to being able to tra
 
 ## UI
 
-### Step 1: Create or Edit a Feature Group
+### Create a Feature Group (Pre-requisite)
 
-You can attach at most one expectation suite to a Feature Group. It can be done on creation or at a later point in time. Data validation is an optional step and is not required to write to a Feature Group. You can find out more information about creating a Feature Group [here](create.md).
+In the UI, you must create a Feature Group first before attaching an Expectation Suite. You can find out more information about creating a Feature Group [here](create.md). You can attach at most one expectation suite to a Feature Group. Data validation is an optional step and is not required to write to a Feature Group.
 
-Click on the Feature Group section in the navigation menu. Click on `New Feature Group` if you want to create a brand new Feature Group. If you already created your Feature Group you can use the search bar to find and open it. Select `edit` at the top or scroll to Expectations section and click on `Edit Expectations`.
+### Step 1: Find and Edit Feature Group
+
+Click on the Feature Group section in the navigation menu. Find your Feature Group in the list and click on its name to access the Feature Group page. Select `edit` in the top right corner or scroll to the Expectations section and click on `Edit Expectation Suite`.
 
 ### Step 2: Edit General Expectation Suite Settings
 
 Scroll to the Expectation Suite section. You can pick a name for your suite as well as two general options.
 
-- enabled checkbox controls whether validation will be run automatically before writing a DataFrame to a Feature Group. Note that validation is executed by the client.
+- Checkbox enabled. This controls whether the Expectation Suite will be used to validate a Dataframe automatically upon insertion into a Feature Group. Note that validation is executed by the client. Disabling validation allows you to skip the validation step without deleting the Expectation Suite.
 - 'ALWAYS' vs. 'STRICT' mode. This option controls what happens after validation. Hopsworks defaults to 'ALWAYS', where data is written to the Feature Group regardless of the validation result. This means that even if expectations are failing or throw an exception, Hopsworks will attempt to insert the data into the Feature Group. In 'STRICT' mode, Hopsworks will only write data to the Feature Group if each individual expectation has been successful.
 
 ### Step 3: Add new expectations
 
-By clicking on `Add another expectation` one can choose an expectation type from a dropdown menu. Currently, only the built-in expectations from the Great Expectations framework are supported. For user-defined expectations, please use the Rest API or python client. All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the json and click the tick button to save the change locally.
+By clicking on `Add expectation` one can choose an expectation type from a searchable dropdown menu. Currently, only the built-in expectations from the Great Expectations framework are supported. For user-defined expectations, please use the Rest API or python client.
+
+All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the arguments in the json to configure the Expectation. In particular, arguments such as `column`, `columnA`, `columnB`, `column_set` and `column_list` require valid feature name(s). Click the tick button to save the expectation configuration and append it to the Expectation Suite locally.
 
 !!! info
-    Click the `Save and Create New Version` button to persist your changes!
+Click the `Save feature group` button to persist your changes!
 
 ### Step 4: Save new data to a Feature Group
 
@@ -40,11 +44,12 @@ You can navigate to older reports using the dropdown menu. Should you need more 
 
 The `Validation Reports` tab in the Expectations section displays a brief history of recent validations. Each row corresponds to a validation report, with some summary information about the success of the validation step. You can download the full report by clicking the download icon button that appears at the end of the row.
 
-## Code 
+## Code
 
 ### Step 1: Setup
 
 In order to define and validate an expectation when writing to a Feature Group, you will need:
+
 - A pandas DataFrame to validate
 - A Hopsworks project
 - great_expectations installed in your client
@@ -57,7 +62,7 @@ Here is a small DataFrame to validate. You could also create your own Pandas Dat
 import pandas as pd
 
 df = pd.DataFrame({
-    "foo_id": [1, 2, 3, 4, 5], 
+    "foo_id": [1, 2, 3, 4, 5],
     "bar_name": ["alice", "bob", "carl", "dylan", "e"]
 })
 ```
@@ -77,6 +82,7 @@ expectation_suite = ge.core.ExpectationSuite(
 #### Add Expectations in the Source Code
 
 Add some expectation to your suite to validate columns:
+
 ```python3
 expectation_suite.add_expectation(
     ge.core.ExpectationConfiguration(
@@ -108,10 +114,9 @@ ge_profiler = ge.profile.BasicSuiteBuilderProfiler()
 expectation_suite_profiler, _ = ge_profiler.profile(ge.from_pandas(df))
 ```
 
-
 #### Hopsworks
 
- You can then setup a connection to your Hopsworks Feature Store. 
+You can then setup a connection to your Hopsworks Feature Store.
 
 ```python3
 import hsfs
@@ -185,10 +190,9 @@ ge_report = fg.validate(df)
 
 This will run the validation using the expectation suite attached to this Feature Group and raise an exception if no attached suite is found.
 
-
 #### Save Validation Reports
 
-When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group. 
+When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group.
 
 ```python3
 fg.save_validation_report(ge_report)
@@ -199,7 +203,7 @@ A summary of these reports will then be available via an API call or in the Hops
 ```python3
 # convenience method for rapid development
 ge_latest_report = fg.get_latest_validation_report()
-# fetching the latest summary prints a link to the UI 
+# fetching the latest summary prints a link to the UI
 # where you can download full report if summary is insufficient
 
 # or load multiple reports
@@ -245,7 +249,7 @@ In your insertion script:
 # With Hopsworks: clean and simple
 fg.insert(df)
 
-# Without Hopsworks: lots of boiler plate code for managing 
+# Without Hopsworks: lots of boiler plate code for managing
 # validation reports as JSON objects and files.
 expectation_suite_path = Path("./my_expectation_suite.json")
 report_path = Path("./my_validation_report.json")
