@@ -46,7 +46,7 @@ In the `Resource allocation` section of the form, you can optionally set the res
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
-## CODE
+## Code
 
 ### Step 1: Connect to Hopsworks
 
