@@ -68,7 +68,8 @@ Replace the following placeholders with their appropiate values
         "ecr:ListImages",
         "ecr:BatchDeleteImage",
         "ecr:GetLifecyclePolicy",
-        "ecr:PutLifecyclePolicy"
+        "ecr:PutLifecyclePolicy",
+        "ecr:TagResource"
       ],
       "Resource": [
         "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/filebeat",
