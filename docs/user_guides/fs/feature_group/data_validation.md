@@ -18,7 +18,7 @@ Click on the Feature Group section in the navigation menu. Find your Feature Gro
 
 Scroll to the Expectation Suite section. You can pick a name for your suite as well as two general options.
 
-- Checkbox enabled. It controls whether the Expectation Suite will be used to validate automatically a Dataframe on insertion into a Feature Group. Note that validation is executed by the client. Disabling validation allows to skip the validation step without deleting the Expectation Suite.
+- Checkbox enabled. It controls whether the Expectation Suite will be used to validate a Dataframe automatically upon insertion into a Feature Group. Note that validation is executed by the client. Disabling validation allows to skip the validation step without deleting the Expectation Suite.
 - 'ALWAYS' vs. 'STRICT' mode. This option controls what happens after validation. Hopsworks defaults to 'ALWAYS', where data is written to the Feature Group regardless of the validation result. This means that even if expectations are failing or throw an exception, Hopsworks will attempt to insert the data into the Feature Group. In 'STRICT' mode, Hopsworks will only write data to the Feature Group if each individual expectation has been successful.
 
 ### Step 3: Add new expectations
