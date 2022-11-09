@@ -5,11 +5,12 @@ It is very common that ML models are deployed in a "batch" setting where ML pipe
 
 === "Python"
     ```python
-    # get batch data
-    df = feature_view.get_batch_data(
-        start_time = "20220620", # or "1655726400000" (unix format)
-        end_time = "20220627"
-    ) # return a dataframe
+    import datetime
+    start_date = (datetime.datetime.now() - datetime.timedelta(hours=24))
+    end_date = (datetime.datetime.now())
+
+    feature_view = fs.get_feature_view("transactions_fv", 1)
+    transactions_df = feature_view.get_batch_data(start_time=start_date, end_time=end_date)
     ```
 
 === "Java"
