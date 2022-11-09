@@ -22,7 +22,7 @@ Firstly, let's connect to the Feature Store.
     project = hopsworks.login()
     fs = project.get_feature_store()
     ```
-    
+
 === "Scala"
     ```scala
     import com.logicalclocks.hsfs._
@@ -48,7 +48,7 @@ The first step to create a feature group is to create the API metadata object re
 === "Python"
 
     ```python
-    weather_fg = fs.get_or_create_feature_group(name="weather",
+    fg = fs.get_or_create_feature_group(name="weather",
         version=1,
         description="Weather Features",
         online_enabled=True,
@@ -61,7 +61,7 @@ The first step to create a feature group is to create the API metadata object re
 === "Java"
 
     ```Java
-    val games_fg = fs.createFeatureGroup()
+    val fg = fs.createFeatureGroup()
       .name("games_features")
       .version(1)
       .description("Features of games")
@@ -73,7 +73,7 @@ The first step to create a feature group is to create the API metadata object re
 === "Scala"
 
     ```scala
-    val contractsFg = (fs.createFeatureGroup()
+    val fg = (fs.createFeatureGroup()
                        .name("contracts")
                        .version(1)
                        .description("Contract information features")
@@ -135,13 +135,13 @@ The snippet above only created the metadata object on the Python interpreter run
 === "Python"
 
     ```python
-    weather_fg.insert(weather_df)
+    fg.insert(weather_df)
     ```
 
 === "Scala"
 
     ```scala
-    contractsFg.save(contractsDf)
+    fg.save(contractsDf)
     ```
 
 
@@ -154,13 +154,13 @@ To insert new data to the existing Feature Group use `insert` method in both Pyt
 === "Python"
 
     ```python
-    weather_fg.insert(weather_df)
+    fg.insert(weather_df)
     ```
 
 === "Scala"
 
     ```scala
-    contractsFg.insert(contractsDf)
+    fg.insert(contractsDf)
     ```
 
 If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.

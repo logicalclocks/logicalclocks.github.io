@@ -33,7 +33,7 @@ By default the value is empty list `[]` and the statistics are computed for all 
 === "Python"
 
     ```python
-    weather_fg = feature_store.get_or_create_feature_group(name="weather",
+    fg = feature_store.get_or_create_feature_group(name="weather",
         version=1,
         description="Weather Features",
         online_enabled=True,
@@ -57,7 +57,7 @@ It is possible users to change the statistics configuration after a feature grou
 === "Python"
 
     ```python
-    weather_fg.statistics_config = {
+    fg.statistics_config = {
             "enabled": True,
             "histograms": False,
             "correlations": False,
@@ -65,7 +65,7 @@ It is possible users to change the statistics configuration after a feature grou
             "columns": ['location_id', 'min_temp', 'max_temp']
         }
 
-    weather_fg.update_statistics_config()
+    fg.update_statistics_config()
     ```
 
 ## Explicitly compute statistics
@@ -81,7 +81,7 @@ Hopsworks can compute statistics of external feature groups. As external feature
 === "Python"
 
     ```python
-    weather_fg.compute_statistics(wallclock_time='20220611 20:00')
+    fg.compute_statistics(wallclock_time='20220611 20:00')
     ```
 
 ## Inspect statistics

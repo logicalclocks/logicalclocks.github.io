@@ -179,10 +179,10 @@ You can explicitly define the feature group schema as follows:
         Feature(name="name",type="string",online_type="varchar(20)")
     ]
 
-    example_fg = fs.create_feature_group(name="manual_schema_example",
-                                          features=features,
-                                          online_enabled=True)
-    example_fg.insert(df)
+    fg = fs.get_or_create_feature_group(name="manual_schema_example",
+                                        features=features,
+                                        online_enabled=True)
+    fg.insert(df)
     ```
 
 ## Append features to existing feature groups
@@ -198,8 +198,9 @@ Hopsworks supports appending additional features to an existing feature group. A
         Feature(name="name",type="string",online_type="varchar(20)")
     ]
 
-    example2_fg = fs.get_or_create_feature_group(name="already_existing_fg", version=1)
-    example2_fg.append_features(features)
+    fg = fs.get_or_create_feature_group(name="already_existing_fg",
+                                                 version=1)
+    fg.append_features(features)
     ```
 
 When adding additional features to a feature group, you can provide a default values for existing entries in the feature group. You can also backfill the new features for existing entries by running an `insert()` operation and update all existing combinations of *primary key* - *event time*.
