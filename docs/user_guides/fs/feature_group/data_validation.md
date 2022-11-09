@@ -28,7 +28,7 @@ By clicking on `Add expectation` one can choose an expectation type from a searc
 All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the arguments in the json to configure the Expectation. In particular, arguments such as `column`, `columnA`, `columnB`, `column_set` and `column_list` require valid feature name(s). Click the tick button to save the expectation configuration and append it to the Expectation Suite locally.
 
 !!! info
-Click the `Save feature group` button to persist your changes!
+    Click the `Save feature group` button to persist your changes!
 
 ### Step 4: Save new data to a Feature Group
 
