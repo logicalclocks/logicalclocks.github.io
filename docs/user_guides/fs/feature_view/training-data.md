@@ -52,6 +52,21 @@ df_restaurant_travel = feature_view.training_data(
 )
 ```
 
+### Event-time based dataset split
+Also you can create dataset splits based on event-time filter. There can be several such splits.
+```python
+start_time = 1640991600000
+end_time = 1642633200000
+
+td_train_version, td_job = feature_view.create_training_data(
+        start_time=start_time,
+        end_time=end_time,    
+        description='training dataset, 2022-01-01 -> 2022-01-20',
+        data_format="csv",
+        coalesce = True,
+        write_options = {'wait_for_job': True},
+    )
+```
 
 ### Train/Validation/Test Splits
 In most cases, ML practitioners want to slice a dataset into multiple splits, most commonly train-test splits or train-validation-test splits, so that they can train and test their models. Feature view provides a sklearn-like API for this purpose, so it is very easy to create a training dataset with different splits.

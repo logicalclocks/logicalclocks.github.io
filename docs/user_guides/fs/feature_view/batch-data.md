@@ -7,7 +7,7 @@ It is very common that ML models are deployed in a "batch" setting where ML pipe
     ```python
     # get batch data
     df = feature_view.get_batch_data(
-        start_time = "20220620",
+        start_time = "20220620", # or "1655726400000" (unix format)
         end_time = "20220627"
     ) # return a dataframe
     ```
