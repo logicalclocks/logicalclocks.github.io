@@ -28,7 +28,7 @@ By clicking on `Add expectation` one can choose an expectation type from a searc
 All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the arguments in the json to configure the Expectation. In particular, arguments such as `column`, `columnA`, `columnB`, `column_set` and `column_list` require valid feature name(s). Click the tick button to save the expectation configuration and append it to the Expectation Suite locally.
 
 !!! info
-    Click the `Save feature group` button to persist your changes!
+Click the `Save feature group` button to persist your changes!
 
 ### Step 4: Save new data to a Feature Group
 
@@ -282,16 +282,16 @@ Data validation steps in a feature engineering pipeline has two complementary us
 
 In contrast, a production setup often requires additional protection to prevent bad quality data finding its way into the Feature Group. A typical example is preventing the Online Feature Store returning a feature vector containing NaN values that could lead to problems in inference pipelines. In such cases data validation can be used as a gatekeeper to prevent erroneous data from finding its way into an Online Feature Store.
 
-Hopsworks is focused on making the transition from development to production as seamless as possible. To switch between these two behaviours you can simply use the `validation_insertion_policy` parameter. By default, expectation suites are attached to Feature Groups as a monitoring tool. This default choice is made as it corresponds to development setup and avoids any loss of data on insertion.
+Hopsworks is focused on making the transition from development to production as seamless as possible. To switch between these two behaviours you can simply use the `validation_ingestion_policy` parameter. By default, expectation suites are attached to Feature Groups as a monitoring tool. This default choice is made as it corresponds to development setup and avoids any loss of data on insertion.
 
 ```python3
 fg.save_expectation_suite(expectation_suite)
 # defaults to the monitoring behaviour
-fg.save_expectation_suite(expectation_suite, validation_insertion_policy="ALWAYS")
+fg.save_expectation_suite(expectation_suite, validation_ingestion_policy="ALWAYS")
 ```
 
 When you want to switch from development to production, you can enable gatekeeping by setting:
 
 ```python3
-fg.save_expectation_suite(fg.get_expectation_suite(), validation_insertion_policy="STRICT")
+fg.save_expectation_suite(fg.get_expectation_suite(), validation_ingestion_policy="STRICT")
 ```
