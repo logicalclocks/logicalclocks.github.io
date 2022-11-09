@@ -45,7 +45,7 @@ If your deployment uses KServe, you can optionally set three additional paramete
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
-## CODE
+## Code
 
 ### Step 1: Connect to Hopsworks
 
