@@ -41,7 +41,7 @@ The joining functionality is heavily inspired by the APIs used by Pandas to merg
     val query = featureView.getQuery()
     ```
 
-If it is necessary to modify a new feature that is not available in the feature store, a data scientist can write code to compute the new feature (using existing features or external data) and ingest the new feature values into the feature store. If the new feature is based solely on existing feature values in the Feature Store, we call it a derived feature. The same HSFS APIs can be used to compute derived features as well as features using external data sources.
+If a data scientist wants to modify a new feature that is not available in the feature store, she can write code to compute the new feature (using existing features or external data) and ingest the new feature values into the feature store. If the new feature is based solely on existing feature values in the Feature Store, we call it a derived feature. The same HSFS APIs can be used to compute derived features as well as features using external data sources.
 
 ## The Query Abstraction
 
