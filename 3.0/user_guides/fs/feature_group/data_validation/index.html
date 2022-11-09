@@ -1633,8 +1633,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-1-create-or-edit-a-feature-group" class="md-nav__link">
-    Step 1: Create or Edit a Feature Group
+  <a href="#create-a-feature-group-pre-requisite" class="md-nav__link">
+    Create a Feature Group (Pre-requisite)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-1-find-and-edit-feature-group" class="md-nav__link">
+    Step 1: Find and Edit Feature Group
   </a>
   
 </li>
@@ -5049,8 +5056,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-1-create-or-edit-a-feature-group" class="md-nav__link">
-    Step 1: Create or Edit a Feature Group
+  <a href="#create-a-feature-group-pre-requisite" class="md-nav__link">
+    Create a Feature Group (Pre-requisite)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-1-find-and-edit-feature-group" class="md-nav__link">
+    Step 1: Find and Edit Feature Group
   </a>
   
 </li>
@@ -5235,20 +5249,22 @@
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
 <p>Clean, high quality feature data is of paramount importance to being able to train and serve high quality models. Hopsworks offers integration with <a href="https://greatexpectations.io/">Great Expectations</a> to enable a smooth data validation workflow. This guide is designed to help you integrate a data validation step when inserting new DataFrames into a Feature Group. Note that validation is performed inline as part of your feature pipeline (on the client machine) - it is not executed by Hopsworks after writing features.</p>
 <h2 id="ui">UI<a class="headerlink" href="#ui" title="Permanent link">#</a></h2>
-<h3 id="step-1-create-or-edit-a-feature-group">Step 1: Create or Edit a Feature Group<a class="headerlink" href="#step-1-create-or-edit-a-feature-group" title="Permanent link">#</a></h3>
-<p>You can attach at most one expectation suite to a Feature Group. It can be done on creation or at a later point in time. Data validation is an optional step and is not required to write to a Feature Group. You can find out more information about creating a Feature Group <a href="../create/">here</a>.</p>
-<p>Click on the Feature Group section in the navigation menu. Click on <code>New Feature Group</code> if you want to create a brand new Feature Group. If you already created your Feature Group you can use the search bar to find and open it. Select <code>edit</code> at the top or scroll to Expectations section and click on <code>Edit Expectations</code>.</p>
+<h3 id="create-a-feature-group-pre-requisite">Create a Feature Group (Pre-requisite)<a class="headerlink" href="#create-a-feature-group-pre-requisite" title="Permanent link">#</a></h3>
+<p>In the UI, you must create a Feature Group first before attaching an Expectation Suite. You can find out more information about creating a Feature Group <a href="../create/">here</a>. You can attach at most one expectation suite to a Feature Group. Data validation is an optional step and is not required to write to a Feature Group.</p>
+<h3 id="step-1-find-and-edit-feature-group">Step 1: Find and Edit Feature Group<a class="headerlink" href="#step-1-find-and-edit-feature-group" title="Permanent link">#</a></h3>
+<p>Click on the Feature Group section in the navigation menu. Find your Feature Group in the list and click on its name to access the Feature Group page. Select <code>edit</code> in the top right corner or scroll to the Expectations section and click on <code>Edit Expectation Suite</code>.</p>
 <h3 id="step-2-edit-general-expectation-suite-settings">Step 2: Edit General Expectation Suite Settings<a class="headerlink" href="#step-2-edit-general-expectation-suite-settings" title="Permanent link">#</a></h3>
 <p>Scroll to the Expectation Suite section. You can pick a name for your suite as well as two general options.</p>
 <ul>
-<li>enabled checkbox controls whether validation will be run automatically before writing a DataFrame to a Feature Group. Note that validation is executed by the client.</li>
+<li>Checkbox enabled. This controls whether the Expectation Suite will be used to validate a Dataframe automatically upon insertion into a Feature Group. Note that validation is executed by the client. Disabling validation allows you to skip the validation step without deleting the Expectation Suite.</li>
 <li>'ALWAYS' vs. 'STRICT' mode. This option controls what happens after validation. Hopsworks defaults to 'ALWAYS', where data is written to the Feature Group regardless of the validation result. This means that even if expectations are failing or throw an exception, Hopsworks will attempt to insert the data into the Feature Group. In 'STRICT' mode, Hopsworks will only write data to the Feature Group if each individual expectation has been successful.</li>
 </ul>
 <h3 id="step-3-add-new-expectations">Step 3: Add new expectations<a class="headerlink" href="#step-3-add-new-expectations" title="Permanent link">#</a></h3>
-<p>By clicking on <code>Add another expectation</code> one can choose an expectation type from a dropdown menu. Currently, only the built-in expectations from the Great Expectations framework are supported. For user-defined expectations, please use the Rest API or python client. All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the json and click the tick button to save the change locally.</p>
+<p>By clicking on <code>Add expectation</code> one can choose an expectation type from a searchable dropdown menu. Currently, only the built-in expectations from the Great Expectations framework are supported. For user-defined expectations, please use the Rest API or python client.</p>
+<p>All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the arguments in the json to configure the Expectation. In particular, arguments such as <code>column</code>, <code>columnA</code>, <code>columnB</code>, <code>column_set</code> and <code>column_list</code> require valid feature name(s). Click the tick button to save the expectation configuration and append it to the Expectation Suite locally.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>Click the <code>Save and Create New Version</code> button to persist your changes!</p>
+<p>Click the <code>Save feature group</code> button to persist your changes!</p>
 </div>
 <h3 id="step-4-save-new-data-to-a-feature-group">Step 4: Save new data to a Feature Group<a class="headerlink" href="#step-4-save-new-data-to-a-feature-group" title="Permanent link">#</a></h3>
 <p>Use the python client to write a DataFrame to the Feature Group. Note that if an expectation suite is enabled for a Feature Group, calling the <code>insert</code> method will run validation and default to uploading the corresponding validation report to Hopsworks. The report is uploaded even if validation fails and 'STRICT' mode is selected.</p>
@@ -5259,16 +5275,18 @@
 <p>The <code>Validation Reports</code> tab in the Expectations section displays a brief history of recent validations. Each row corresponds to a validation report, with some summary information about the success of the validation step. You can download the full report by clicking the download icon button that appears at the end of the row.</p>
 <h2 id="code">Code<a class="headerlink" href="#code" title="Permanent link">#</a></h2>
 <h3 id="step-1-setup">Step 1: Setup<a class="headerlink" href="#step-1-setup" title="Permanent link">#</a></h3>
-<p>In order to define and validate an expectation when writing to a Feature Group, you will need:
-- A pandas DataFrame to validate
-- A Hopsworks project
-- great_expectations installed in your client</p>
+<p>In order to define and validate an expectation when writing to a Feature Group, you will need:</p>
+<ul>
+<li>A pandas DataFrame to validate</li>
+<li>A Hopsworks project</li>
+<li>great_expectations installed in your client</li>
+</ul>
 <h4 id="dataframe-to-validate">DataFrame to validate<a class="headerlink" href="#dataframe-to-validate" title="Permanent link">#</a></h4>
 <p>Here is a small DataFrame to validate. You could also create your own Pandas DataFrame using your own data.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s2">&quot;foo_id&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> 
+    <span class="s2">&quot;foo_id&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
     <span class="s2">&quot;bar_name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="s2">&quot;bob&quot;</span><span class="p">,</span> <span class="s2">&quot;carl&quot;</span><span class="p">,</span> <span class="s2">&quot;dylan&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">]</span>
 <span class="p">})</span>
 </code></pre></div>
@@ -5281,7 +5299,7 @@
 <span class="p">)</span>
 </code></pre></div>
 <h4 id="add-expectations-in-the-source-code">Add Expectations in the Source Code<a class="headerlink" href="#add-expectations-in-the-source-code" title="Permanent link">#</a></h4>
-<p>Add some expectation to your suite to validate columns:
+<p>Add some expectation to your suite to validate columns:</p>
 <div class="highlight"><pre><span></span><code><span class="n">expectation_suite</span><span class="o">.</span><span class="n">add_expectation</span><span class="p">(</span>
     <span class="n">ge</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">ExpectationConfiguration</span><span class="p">(</span>
         <span class="n">expectation_type</span><span class="o">=</span><span class="s2">&quot;expect_column_min_to_be_between&quot;</span><span class="p">,</span>
@@ -5303,13 +5321,13 @@
         <span class="p">}</span>
     <span class="p">)</span>
 <span class="p">)</span>
-</code></pre></div></p>
+</code></pre></div>
 <h4 id="using-great-expectations-profiler">Using Great Expectations Profiler<a class="headerlink" href="#using-great-expectations-profiler" title="Permanent link">#</a></h4>
 <div class="highlight"><pre><span></span><code><span class="n">ge_profiler</span> <span class="o">=</span> <span class="n">ge</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">BasicSuiteBuilderProfiler</span><span class="p">()</span>
 <span class="n">expectation_suite_profiler</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ge_profiler</span><span class="o">.</span><span class="n">profile</span><span class="p">(</span><span class="n">ge</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
 </code></pre></div>
 <h4 id="hopsworks">Hopsworks<a class="headerlink" href="#hopsworks" title="Permanent link">#</a></h4>
-<p>You can then setup a connection to your Hopsworks Feature Store. </p>
+<p>You can then setup a connection to your Hopsworks Feature Store.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">hsfs</span>
 
 <span class="n">conn</span> <span class="o">=</span> <span class="n">hsfs</span><span class="o">.</span><span class="n">connection</span><span class="p">()</span>
@@ -5360,13 +5378,13 @@
 </code></pre></div>
 <p>This will run the validation using the expectation suite attached to this Feature Group and raise an exception if no attached suite is found.</p>
 <h4 id="save-validation-reports">Save Validation Reports<a class="headerlink" href="#save-validation-reports" title="Permanent link">#</a></h4>
-<p>When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group. </p>
+<p>When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group.</p>
 <div class="highlight"><pre><span></span><code><span class="n">fg</span><span class="o">.</span><span class="n">save_validation_report</span><span class="p">(</span><span class="n">ge_report</span><span class="p">)</span>
 </code></pre></div>
 <p>A summary of these reports will then be available via an API call or in the Hopsworks UI enabling easy monitoring. For in-depth analysis, it is possible to download the complete report from the UI.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># convenience method for rapid development</span>
 <span class="n">ge_latest_report</span> <span class="o">=</span> <span class="n">fg</span><span class="o">.</span><span class="n">get_latest_validation_report</span><span class="p">()</span>
-<span class="c1"># fetching the latest summary prints a link to the UI </span>
+<span class="c1"># fetching the latest summary prints a link to the UI</span>
 <span class="c1"># where you can download full report if summary is insufficient</span>
 
 <span class="c1"># or load multiple reports</span>
@@ -5403,7 +5421,7 @@
 <div class="highlight"><pre><span></span><code><span class="c1"># With Hopsworks: clean and simple</span>
 <span class="n">fg</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
-<span class="c1"># Without Hopsworks: lots of boiler plate code for managing </span>
+<span class="c1"># Without Hopsworks: lots of boiler plate code for managing</span>
 <span class="c1"># validation reports as JSON objects and files.</span>
 <span class="n">expectation_suite_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./my_expectation_suite.json&quot;</span><span class="p">)</span>
 <span class="n">report_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./my_validation_report.json&quot;</span><span class="p">)</span>
