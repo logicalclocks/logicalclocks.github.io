@@ -8,13 +8,13 @@ In this guide we will use a bash script to export audit logs to BigQuery.
 ## Prerequisites
 To follow this guide you need ssh access to the Hopsworks cluster.
 
-## Step 1: Create BigQuery Table
+## Step 1: Create a BigQuery Table
 Create a dataset and a table in [BigQuery](https://cloud.google.com/bigquery/docs/datasets#console).
 
 The table schema is shown below.
 
 ```
-fullname	      mode	    type	   description
+fullname	      mode	    type	    description
 pathInfo	      NULLABLE	STRING	
 methodName	      NULLABLE	STRING	
 caller	          NULLABLE	RECORD	
