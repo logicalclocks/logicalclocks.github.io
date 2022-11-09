@@ -8,7 +8,7 @@ Clean, high quality feature data is of paramount importance to being able to tra
 
 ### Create a Feature Group (Pre-requisite)
 
-In the UI, one must create a Feature Group first before attaching an Expectation Suite. You can find out more information about creating a Feature Group [here](create.md). You can attach at most one expectation suite to a Feature Group. Data validation is an optional step and is not required to write to a Feature Group.
+In the UI, you must create a Feature Group first before attaching an Expectation Suite. You can find out more information about creating a Feature Group [here](create.md). You can attach at most one expectation suite to a Feature Group. Data validation is an optional step and is not required to write to a Feature Group.
 
 ### Step 1: Find and Edit Feature Group
 
@@ -18,7 +18,7 @@ Click on the Feature Group section in the navigation menu. Find your Feature Gro
 
 Scroll to the Expectation Suite section. You can pick a name for your suite as well as two general options.
 
-- Checkbox enabled. It controls whether the Expectation Suite will be used to validate a Dataframe automatically upon insertion into a Feature Group. Note that validation is executed by the client. Disabling validation allows to skip the validation step without deleting the Expectation Suite.
+- Checkbox enabled. This controls whether the Expectation Suite will be used to validate a Dataframe automatically upon insertion into a Feature Group. Note that validation is executed by the client. Disabling validation allows you to skip the validation step without deleting the Expectation Suite.
 - 'ALWAYS' vs. 'STRICT' mode. This option controls what happens after validation. Hopsworks defaults to 'ALWAYS', where data is written to the Feature Group regardless of the validation result. This means that even if expectations are failing or throw an exception, Hopsworks will attempt to insert the data into the Feature Group. In 'STRICT' mode, Hopsworks will only write data to the Feature Group if each individual expectation has been successful.
 
 ### Step 3: Add new expectations
