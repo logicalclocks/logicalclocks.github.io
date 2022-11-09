@@ -132,12 +132,15 @@ nav:
         - Input Example: user_guides/mlops/registry/input_example.md
       - Model Serving:
         - user_guides/mlops/serving/index.md
-        - Deployment: user_guides/mlops/serving/deployment.md
+        - Deployment:
+          - Deployment creation: user_guides/mlops/serving/deployment.md
+          - Deployment state: user_guides/mlops/serving/deployment-state.md
         - Predictor: user_guides/mlops/serving/predictor.md
         - Transformer: user_guides/mlops/serving/transformer.md
         - Resource Allocation: user_guides/mlops/serving/resources.md
         - Inference Logger: user_guides/mlops/serving/inference-logger.md
         - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
+        - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
       - Vector Database: user_guides/mlops/vector_database/index.md
     - Compute Engine:
         - user_guides/integrations/index.md
