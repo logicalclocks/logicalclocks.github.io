@@ -120,6 +120,7 @@ nav:
       - Api Keys:
         - Create API Key: user_guides/projects/api_key/create_api_key.md
       - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
+      - How to Share and access Feature Store: user_guides/projects/share_and_access/sharing-a-feature-store.md
     - MLOps:
       - user_guides/mlops/index.md
       - Model Registry:
