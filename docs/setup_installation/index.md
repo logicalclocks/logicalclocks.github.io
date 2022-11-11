@@ -7,6 +7,6 @@ This section contains installation guides for the **Hopsworks Platform**, on
 - [GCP](gcp/getting_started.md)
 - [On-Prem](on_prem/hopsworks_installer.md) environments
 
-and [common setup instructions](common/dashboard.md).
+and [common](common/dashboard.md) setup instructions.
 
-For instructions on installing the **Hopsworks Client** libraries, see [Hopsworks Client Installation](../user_guides/client_installation/index.md).
+For instructions on installing the **Hopsworks Client** libraries, see the [Client Installation](../user_guides/client_installation/index.md) guide.

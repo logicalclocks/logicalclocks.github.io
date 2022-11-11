@@ -1,4 +1,4 @@
-# Hopsworks Client Installation Guide
+# Client Installation Guide
 
 ## Hopsworks (including Feature Store and MLOps)
 The Hopsworks client library is required to connect to the Hopsworks Feature Store and MLOps services from your local machine. Execute the following command to install the full Hopsworks client library on your local machine:
@@ -10,7 +10,7 @@ Supported versions of Python: 3.7, 3.8, 3.9
 
 !!! attention "OSX Installation"
 
-    On OSX system you might need to install librdkafka manually before installing hsfs. You can do so by running the following command:
+    On OSX systems you might need to install librdkafka manually before installing hopsworks. You can do so by running the following commands:
 
     ```
     brew install librdkafka
@@ -21,7 +21,7 @@ Supported versions of Python: 3.7, 3.8, 3.9
 
 !!! attention "Windows/Conda Installation"
 
-    It is recommended to use a conda environment to install the Hopsworks Feature Store client library on Windows. To install the Hopsworks Feature Store client library in a conda environment, execute the following commands:
+    On Windows systems you might need to install twofish manually before installing hopsworks. It is recommended to use a conda environment and run the following commands:
     
     ```
     conda install twofish
@@ -39,7 +39,7 @@ Supported versions of Python: 3.7, 3.8, 3.9
 
 !!! attention "OSX Installation"
 
-    On OSX system you might need to install librdkafka manually before installing hsfs. You can do so by running the following command:
+    On OSX systems you might need to install librdkafka manually before installing hsfs. You can do so by running the following commands:
 
     ```
     brew install librdkafka
@@ -50,7 +50,7 @@ Supported versions of Python: 3.7, 3.8, 3.9
 
 !!! attention "Windows/Conda Installation"
 
-    It is recommended to use a conda environment to install the Hopsworks Feature Store client library on Windows. To install the Hopsworks Feature Store client library in a conda environment, execute the following commands:
+    On Windows systems you might need to install twofish manually before installing hsfs. It is recommended to use a conda environment and run the following commands:
     
     ```
     conda install twofish
@@ -58,7 +58,11 @@ Supported versions of Python: 3.7, 3.8, 3.9
     pip install hsfs[python]
     ```
 
+## Next Steps
+
+If you are using local python environment and want to connect to the Hopsworks Feature Store, you can follow the [Python Guide](../integrations/python.md#generate-an-api-key) section.
+
 ## Other environments
 
-The Hopsworks client libraries can also be installed in other environments, such as Databricks, AWS Sagemaker, or Google Cloud Dataproc. For more information, see [Feature Store Client Integrations](../integrations/index.md).
+The Hopsworks Feature Store client libraries can also be installed in external environments, such as Databricks, AWS Sagemaker, or Azure Machine Learning. For more information, see [Client Integrations](../integrations/index.md).
 

@@ -50,7 +50,7 @@ nav:
         - Inside Hopsworks: concepts/dev/inside.md
   - Guides:
     - user_guides/index.md
-    - Hopsworks Client Installation:
+    - Client Installation:
       - user_guides/client_installation/index.md
     - Feature Store:
       - user_guides/fs/index.md
@@ -83,7 +83,7 @@ nav:
         - Query: user_guides/fs/feature_view/query.md
         - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
       - Compute Engines: user_guides/fs/compute_engines.md
-      - Integrations:
+      - Client Integrations:
           - user_guides/integrations/index.md
           - Python: user_guides/integrations/python.md
           - Databricks:
