@@ -14,8 +14,8 @@ Supported versions of Python: 3.7, 3.8, 3.9
 
     ```
     brew install librdkafka
-    C_INCLUDE_PATH=/opt/homebrew/Cellar/librdkafka/1.9.2/include
-    LIBRARY_PATH=/opt/homebrew/Cellar/librdkafka/1.9.2/lib
+    C_INCLUDE_PATH=$(readlink -f $(brew --prefix librdkafka))/include
+    LIBRARY_PATH=$(readlink -f $(brew --prefix librdkafka))/lib
     pip install hopsworks
     ```
 
@@ -43,8 +43,8 @@ Supported versions of Python: 3.7, 3.8, 3.9
 
     ```
     brew install librdkafka
-    C_INCLUDE_PATH=/opt/homebrew/Cellar/librdkafka/1.9.2/include
-    LIBRARY_PATH=/opt/homebrew/Cellar/librdkafka/1.9.2/lib
+    C_INCLUDE_PATH=$(readlink -f $(brew --prefix librdkafka))/include
+    LIBRARY_PATH=$(readlink -f $(brew --prefix librdkafka))/lib
     pip install hsfs[python]
     ```
 
