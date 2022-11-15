@@ -43,13 +43,15 @@ nav:
       - Model Training: concepts/mlops/training.md
       - Model Registry: concepts/mlops/registry.md
       - Model Serving: concepts/mlops/kserve.md # create, read, version
-      - Vector Database: concepts/mlops/opensearch.md 
-      - BI Tools: concepts/mlops/bi_tools.md 
+      - Vector Database: concepts/mlops/opensearch.md
+      - BI Tools: concepts/mlops/bi_tools.md
     - Development:
         - Outside Hopsworks: concepts/dev/outside.md # api-keys
         - Inside Hopsworks: concepts/dev/inside.md
   - Guides:
     - user_guides/index.md
+    - Client Installation:
+      - user_guides/client_installation/index.md
     - Feature Store:
       - user_guides/fs/index.md
       - Storage Connector:
@@ -80,6 +82,23 @@ nav:
         - Feature vectors: user_guides/fs/feature_view/feature-vectors.md
         - Query: user_guides/fs/feature_view/query.md
         - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
+      - Compute Engines: user_guides/fs/compute_engines.md
+      - Client Integrations:
+          - user_guides/integrations/index.md
+          - Python: user_guides/integrations/python.md
+          - Databricks:
+              - Networking: user_guides/integrations/databricks/networking.md
+              - Hopsworks API Key: user_guides/integrations/databricks/api_key.md
+              - Configuration: user_guides/integrations/databricks/configuration.md
+          - AWS Sagemaker: user_guides/integrations/sagemaker.md
+          - AWS EMR:
+              - Networking: user_guides/integrations/emr/networking.md
+              - Configure EMR for the Hopsworks Feature Store: user_guides/integrations/emr/emr_configuration.md
+          - Azure HDInsight: user_guides/integrations/hdinsight.md
+          - Azure Machine Learning:
+              - Designer: user_guides/integrations/mlstudio_designer.md
+              - Notebooks: user_guides/integrations/mlstudio_notebooks.md
+          - Apache Spark: user_guides/integrations/spark.md
     - Projects:
       - user_guides/projects/index.md
       - Authentication:
@@ -142,25 +161,10 @@ nav:
         - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
         - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
       - Vector Database: user_guides/mlops/vector_database/index.md
-    - Compute Engine:
-        - user_guides/integrations/index.md
-        - Python: user_guides/integrations/python.md
-        - Databricks:
-            - Networking: user_guides/integrations/databricks/networking.md
-            - Hopsworks API Key: user_guides/integrations/databricks/api_key.md
-            - Configuration: user_guides/integrations/databricks/configuration.md
-        - AWS Sagemaker: user_guides/integrations/sagemaker.md
-        - AWS EMR:
-            - Networking: user_guides/integrations/emr/networking.md
-            - Configure EMR for the Hopsworks Feature Store: user_guides/integrations/emr/emr_configuration.md
-        - Azure HDInsight: user_guides/integrations/hdinsight.md
-        - Azure Machine Learning:
-            - Designer: user_guides/integrations/mlstudio_designer.md
-            - Notebooks: user_guides/integrations/mlstudio_notebooks.md
-        - Apache Spark: user_guides/integrations/spark.md
     - Migration:
       - 3.0: user_guides/migration/30_migration.md
   - Setup and Installation:
+      - setup_installation/index.md
       - AWS:
           - Getting Started: setup_installation/aws/getting_started.md
           - Cluster Creation: setup_installation/aws/cluster_creation.md
