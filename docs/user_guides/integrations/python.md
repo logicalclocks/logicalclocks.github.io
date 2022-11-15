@@ -2,15 +2,6 @@
 
 Connecting to the Feature Store from any Python environment requires setting up a Feature Store API key and installing the library. This guide explains step by step how to connect to the Feature Store from any Python environment such as your local environment or KubeFlow.
 
-## Generate an API key
-
-For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the Python client to work correctly make sure you add the following scopes to your API key:
-
-  1. featurestore
-  2. project
-  3. job
-  4. kafka
-
 ## Install **HSFS**
 
 To be able to access the Hopsworks Feature Store, the `HSFS` Python library needs to be installed in the environment from which you want to connect to the Feature Store. You can install the library through pip. We recommend using a Python environment manager such as *virtualenv* or *conda*.
@@ -24,7 +15,7 @@ pip install hsfs[python]~=[HOPSWORKS_VERSION]
     By default, `HSFS` assumes Spark/EMR is used as execution engine and therefore Hive dependencies are not installed. Hence, on a local Python evnironment, if you are planning to use a regular Python Kernel **without Spark/EMR**, make sure to install the **"python"** extra dependencies (`hsfs[python]`).
 
 !!! attention "Matching Hopsworks version"
-    The **major version of `HSFS`** needs to match the **major version of Hopsworks**.
+The **major version of `HSFS`** needs to match the **major version of Hopsworks**.
 
 
 <p align="center">
@@ -33,6 +24,15 @@ pip install hsfs[python]~=[HOPSWORKS_VERSION]
         <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
     </figure>
 </p>
+
+## Generate an API key
+
+For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the Python client to work correctly make sure you add the following scopes to your API key:
+
+  1. featurestore
+  2. project
+  3. job
+  4. kafka
 
 ## Connect to the Feature Store
 
