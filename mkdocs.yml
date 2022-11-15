@@ -80,6 +80,7 @@ nav:
         - Feature vectors: user_guides/fs/feature_view/feature-vectors.md
         - Query: user_guides/fs/feature_view/query.md
         - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
+      - Sharing: user_guides/fs/sharing/sharing.md
     - Projects:
       - user_guides/projects/index.md
       - Authentication:
@@ -120,7 +121,6 @@ nav:
       - Api Keys:
         - Create API Key: user_guides/projects/api_key/create_api_key.md
       - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
-      - How to Share and access Feature Store: user_guides/projects/share_and_access/sharing-a-feature-store.md
     - MLOps:
       - user_guides/mlops/index.md
       - Model Registry:
