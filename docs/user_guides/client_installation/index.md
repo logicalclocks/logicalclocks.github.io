@@ -1,7 +1,10 @@
 # Client Installation Guide
 
 ## Hopsworks (including Feature Store and MLOps)
-The Hopsworks client library is required to connect to the Hopsworks Feature Store and MLOps services from your local machine. Execute the following command to install the full Hopsworks client library on your local machine:
+The Hopsworks client library is required to connect to the Hopsworks Feature Store and MLOps services from your local machine or any other Python environment such as Google Colab or AWS Sagemaker. Execute the following command to install the full Hopsworks client library in your Python environment:
+
+!!! note "Virtual environment"
+    It is recommended to use a virtual python environment instead of the system environment used by your operating system, in order to avoid any side effects regarding interfering dependencies.
 
 ```
 pip install hopsworks
