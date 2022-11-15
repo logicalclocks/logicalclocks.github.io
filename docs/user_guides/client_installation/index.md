@@ -63,7 +63,7 @@ Supported versions of Python: 3.7, 3.8, 3.9
 
 ## Next Steps
 
-If you are using local python environment and want to connect to the Hopsworks Feature Store, you can follow the [Python Guide](../integrations/python.md#generate-an-api-key) section.
+If you are using a local python environment and want to connect to the Hopsworks Feature Store, you can follow the [Python Guide](../integrations/python.md#generate-an-api-key) section to create an API Key and to get started.
 
 ## Other environments
 
