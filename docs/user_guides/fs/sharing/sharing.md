@@ -80,7 +80,7 @@ shared_feature_store = connection.get_feature_store(name="name_of_shared_feature
 
 ```python
 # fetch feature group object from shared feature store
-shared_fg = shared_feature_store.get_or_create_feature_group(
+shared_fg = shared_feature_store.get_feature_group(
     name="shared_fg_name",
     version="1")
 
