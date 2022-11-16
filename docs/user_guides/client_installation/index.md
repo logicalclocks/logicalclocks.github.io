@@ -9,22 +9,26 @@ The Hopsworks client library is required to connect to the Hopsworks Feature Sto
 ```
 pip install hopsworks
 ```
-Supported versions of Python: 3.7, 3.8, 3.9
+Supported versions of Python: 3.7, 3.8, 3.9 ([PyPI ↗](https://pypi.org/project/hopsworks/))
 
 !!! attention "OSX Installation"
 
-    On OSX systems you might need to install librdkafka manually before installing hopsworks. You can do so by running the following commands:
+    On OSX systems you need to install librdkafka manually before installing hopsworks. You can verify if you have installed it previously using `brew info librdkafka`. If it is not installed yet, you can do so using `brew install`, however, you always need to set the `C_INCLUDE_PATH` and `LIBRARY_PATH`.
 
+    If not installed yet, install librdkafka:
     ```
     brew install librdkafka
-    C_INCLUDE_PATH=$(readlink -f $(brew --prefix librdkafka))/include
-    LIBRARY_PATH=$(readlink -f $(brew --prefix librdkafka))/lib
+    ```
+    If it is already installed, set the environment variables and proceed with installing the hopsworks client library:
+    ```
+    C_INCLUDE_PATH=$(brew --prefix)/include
+    LIBRARY_PATH=$(brew --prefix)/lib
     pip install hopsworks
     ```
 
 !!! attention "Windows/Conda Installation"
 
-    On Windows systems you might need to install twofish manually before installing hopsworks. It is recommended to use a conda environment and run the following commands:
+    On Windows systems you might need to install twofish manually before installing hopsworks, if you don't have the Microsoft Visual C++ Build Tools installed. In that case, it is recommended to use a conda environment and run the following commands:
     
     ```
     conda install twofish
@@ -38,22 +42,26 @@ To only install the Hopsworks Feature Store client library, execute the followin
 ```
 pip install hsfs[python]
 ```
-Supported versions of Python: 3.7, 3.8, 3.9
+Supported versions of Python: 3.7, 3.8, 3.9 ([PyPI ↗](https://pypi.org/project/hsfs/))
 
 !!! attention "OSX Installation"
 
-    On OSX systems you might need to install librdkafka manually before installing hsfs. You can do so by running the following commands:
+    On OSX systems you need to install librdkafka manually before installing hopsworks. You can verify if you have installed it previously using `brew info librdkafka`. If it is not installed yet, you can do so using `brew install`, however, you always need to set the `C_INCLUDE_PATH` and `LIBRARY_PATH`.
 
+    If not installed yet, install librdkafka:
     ```
     brew install librdkafka
-    C_INCLUDE_PATH=$(readlink -f $(brew --prefix librdkafka))/include
-    LIBRARY_PATH=$(readlink -f $(brew --prefix librdkafka))/lib
+    ```
+    If it is already installed, set the environment variables and proceed with installing the hopsworks client library:
+    ```
+    C_INCLUDE_PATH=$(brew --prefix)/include
+    LIBRARY_PATH=$(brew --prefix)/lib
     pip install hsfs[python]
     ```
 
 !!! attention "Windows/Conda Installation"
 
-    On Windows systems you might need to install twofish manually before installing hsfs. It is recommended to use a conda environment and run the following commands:
+    On Windows systems you might need to install twofish manually before installing hsfs, if you don't have the Microsoft Visual C++ Build Tools installed. In that case, it is recommended to use a conda environment and run the following commands:
     
     ```
     conda install twofish
