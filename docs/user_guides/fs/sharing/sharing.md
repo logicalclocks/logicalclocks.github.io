@@ -32,8 +32,6 @@ Click `Share feature store` to bring up the dialog for sharing.
 
 In `Project` section choose feature store project you wish to share feature store with.
 
-In `Access rights` section select the permissions level that the project user members should have on the feature store and click Share.
-
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/project/share_dialog.png" alt="Share Project Dialog">
@@ -52,8 +50,7 @@ Click `accept`.
   </figure>
 </p>
 
-After accepting the share, the feature store and corresponding access rights are listed under the 
-`Shared from other projects` section.
+After accepting the share, the shared feature store is listed under the `Shared from other projects` section.
 
 <p align="center">
   <figure>
