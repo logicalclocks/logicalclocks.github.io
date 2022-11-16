@@ -46,7 +46,7 @@ Supported versions of Python: 3.7, 3.8, 3.9 ([PyPI ↗](https://pypi.org/project
 
 !!! attention "OSX Installation"
 
-    On OSX systems you need to install librdkafka manually before installing hopsworks. You can verify if you have installed it previously using `brew info librdkafka`. If it is not installed yet, you can do so using `brew install`, however, you always need to set the `C_INCLUDE_PATH` and `LIBRARY_PATH`
+    On OSX systems you need to install librdkafka manually before installing hopsworks. You can verify if you have installed it previously using `brew info librdkafka`. If it is not installed yet, you can do so using `brew install`, however, you always need to set the `C_INCLUDE_PATH` and `LIBRARY_PATH`.
 
     If not installed yet, install librdkafka:
     ```
