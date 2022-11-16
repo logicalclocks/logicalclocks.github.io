@@ -5,3 +5,5 @@ This section serves to provide guides and examples for the common usage of abstr
 - [Storage Connectors](storage_connector/index.md)
 - [Feature Groups](feature_group/index.md)
 - [Feature Views](feature_view/index.md)
+- [Compute Engines](compute_engines.md)
+- [Integrations](../integrations/index.md)
