@@ -216,6 +216,7 @@ nav:
       - Monitoring:
           - Services Dashboards: admin/monitoring/grafana.md
           - Services Logs: admin/monitoring/services-logs.md
+          - Export Logs: admin/monitoring/export-logs.md
       - Authentication:
           - Configure Authentication: admin/auth.md
           - Configure OAuth2:
