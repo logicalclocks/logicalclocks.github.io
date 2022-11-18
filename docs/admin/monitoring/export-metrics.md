@@ -57,6 +57,9 @@ These are the basic labels gathered by Hopsworks.
     * `'{job="cadvisor"}'`
     * `'{job="cadvisor"}'`
 
+#### Step 3
+Finally restart Prometheus service with `sudo systemctl restart prometheus`
+
 ### Custom service
 Prometheus can push metrics to another custom resource via HTTP. The custom service is responsible for handling the received metrics.
 To push metrics with this method we use the `remote_write` configuration.
