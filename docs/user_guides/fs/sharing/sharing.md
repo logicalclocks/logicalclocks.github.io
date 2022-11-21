@@ -2,19 +2,16 @@
 
 ## Introduction
 
-Machine Learning Operations (MLOps) is a process that applies DevOps principles to automate the building, testing, and 
-deployment of machine learning (ML) models through its entire life cycle. The Feature Store has become the defacto building block for MLOps.
-For more details check our blog [MLOps with a Feature Store](https://www.hopsworks.ai/post/mlops-with-a-feature-store).
+Hopsworks allows artifacts (e.g. feature groups, feature views) to be shared between projects.
+There are two main use cases for sharing features between projects:
 
-Enterprise MLOps process usually follow established release management guidelines and includes the following distinct stages:
-Development, Testing, Staging and Production.
+- If you have multiple teams working on the same Hopsworks deployment. Each team works within their own set of projects. 
+  If a team A wants to leverage features built by team B, they can do so by sharing the feature groups from a team A project to a team B project.
 
-Thus, enterprises may have separate feature stores for each of this stage and data scientist may need to access feature groups
-from production feature store and join with newly developed feature groups in development feature store. 
-
-In Hopsworks it is possible to share feature stores among projects, so even if you have a connection to one project,
-you can fetch a handle to any feature store shared with that project:
-
+- By creating different projects for the different stages of development lifecycle (e.g. a dev project, a testing project and a production project), 
+  you can make sure that changes on the development project don't impact the features in the production project. At the same time you might want to 
+  leverage production features to develop new models or additional features. In this case you can share the production feature store with the 
+  development feature store in read only mode.
 
 ### Step 1: Open the project of the feature store that you would like to share on Hopsworks.
 
@@ -30,7 +27,7 @@ In the `Project Settings` navigate to `Shared with other projects` section.
 
 Click `Share feature store` to bring up the dialog for sharing.
 
-In `Project` section choose feature store project you wish to share feature store with.
+In `Project` section choose project you wish to share feature store with.
 
 <p align="center">
   <figure>
