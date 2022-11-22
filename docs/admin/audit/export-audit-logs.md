@@ -2,13 +2,17 @@
 
 ## Introduction
 
-In this guide we will use a bash script to export audit logs to BigQuery.
+Audit logs can be exported to your storage of preference. In case audit logs have not been configured yet in your Hopsworks cluster, please see [Access Audit Logs](../audit/audit-logs.md).
 
+!!! note 
+        As an example, in this guide we will show how to export audit logs to BigQuery using the ```bq``` command-line tool.
 
 ## Prerequisites
-To follow this guide you need ssh access to the Hopsworks cluster.
+
+In order to export audit logs you need SSH access to the Hopsworks cluster.
 
 ## Step 1: Create a BigQuery Table
+
 Create a dataset and a table in [BigQuery](https://cloud.google.com/bigquery/docs/datasets#console).
 
 The table schema is shown below.
@@ -31,11 +35,12 @@ caller.username	  NULLABLE	STRING
 
 ## Step 2: Export Audit Logs to the BigQuery Table
 
-To export the audit logs in json format set ```audit_log_file_type=io.hops.hopsworks.audit.helper.JSONLogFormatter```.
+Audit logs can be exported in different formats. For instance, to export audit logs in JSON format set ```audit_log_file_type=io.hops.hopsworks.audit.helper.JSONLogFormatter```.
 
-See [Audit Logs](audit-logs.md) for more information on how to configure audit log file type.
+!!! info
+        For more information on how to configure the audit log file type see the ```audit_log_file_type``` configuration variable in [Audit logs](../audit/audit-logs.md#step-1-configure-audit-logs).
 
-Run the bash script below to export the audit log to the BigQuery table created in step 1.
+To export the audit logs to the BigQuery table created in the previous step, run the following command.
 
 ```sh
 bq load --project_id <projectId> \
@@ -44,8 +49,9 @@ bq load --project_id <projectId> \
         /srv/hops/domains/domain1/logs/audit/server_audit_log0.log
 ```
 
-The above command can be configured to run periodically on a given schedule by setting up a cronjob.
+!!! tip
+        This command can be configured to run periodically on a given schedule by setting up a cronjob.
 
 ## Conclusion
 
-In this guide you learned how to export audit logs to BigQuery.
+In this guide you showed how you can export audit logs in your Hopsworks cluster to a BigQuery table.
