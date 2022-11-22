@@ -2,7 +2,7 @@
 
 ## Introduction
 Hopsworks services produce metrics which are centrally gathered by [Prometheus](https://prometheus.io/) and visualized in [Grafana](../grafana).
-Although the system is self-contained it is possible to export metrics gathered by Prometheus to third-party services or another Prometheus instance.
+Although the system is self-contained, it is possible to export these metrics to third-party services or another Prometheus instance.
 
 ## Prerequisites
 In order to configure Prometheus to export metrics you need `root` SSH access to either Hopsworks or to the target server depending on the export method you choose below.
