@@ -216,6 +216,7 @@ nav:
       - IAM Role Chaining: admin/roleChaining.md
       - Monitoring:
           - Services Dashboards: admin/monitoring/grafana.md
+          - Export metrics: admin/monitoring/export-metrics.md
           - Services Logs: admin/monitoring/services-logs.md
       - Authentication:
           - Configure Authentication: admin/auth.md
