@@ -8,8 +8,8 @@ When you perform Git operations on Hopsworks that need to interact with the remo
     The feature is currently in Beta and will be improved in the upcoming releases.
 
 !!! notice "Token permissions"
-    The token permissions should grant access to public and private repositories including read and write access to code and commit statuses.
-
+    The token permissions should grant access to public and private repositories including read and write access to repository contents and commit statuses. 
+    If you are using the new GitHub access tokens, make sure you choose the correct `Resource owner` when generating the token for the repositories you will want to clone. For the `Repository permissions` of the new GitHub fine-grained token, you should atleast give read and write access to `Commit statuses` and `Contents`.
 
 ## UI
 
