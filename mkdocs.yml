@@ -50,8 +50,6 @@ nav:
         - Inside Hopsworks: concepts/dev/inside.md
   - Guides:
     - user_guides/index.md
-    - Client Installation:
-      - user_guides/client_installation/index.md
     - Feature Store:
       - user_guides/fs/index.md
       - Storage Connector:
@@ -162,6 +160,8 @@ nav:
       - 3.0: user_guides/migration/30_migration.md
   - Setup and Installation:
       - setup_installation/index.md
+      - Client Installation:
+          - user_guides/client_installation/index.md
       - AWS:
           - Getting Started: setup_installation/aws/getting_started.md
           - Cluster Creation: setup_installation/aws/cluster_creation.md
