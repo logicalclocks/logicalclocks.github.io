@@ -38,7 +38,7 @@ To edit a configuration variable, you can click on the edit button (:material-pe
     | audit_log_date_format | if io.hops.hopsworks.audit.helper.JSONLogFormatter is used as audit log file type, this will set the date format of the output JSON. The format should be java.text.SimpleDateFormat compatible string. |
 
 !!! warning
-    Hopsworks application needs to be reloaded for any changes to be applied. For doing that, go to the Payara admin panel (```https://<your-domain>:4848```), click on _Aplications_ on the side menu and reload the _hopsworks-ear_ application.
+    Hopsworks application needs to be reloaded for any changes to be applied. For doing that, go to the Payara admin panel (```https://<your-domain>:4848```), click on _Applications_ on the side menu and reload the _hopsworks-ear_ application.
  
 ## Step 2: Access the Logs
  
