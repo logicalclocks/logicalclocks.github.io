@@ -7,11 +7,11 @@ The idea of the Feature Store is to have pre-computed features available for bot
 The joining functionality is heavily inspired by the APIs used by Pandas to merge DataFrames. The APIs allow you to specify which features to select from which feature group, how to join them and which features to use in join conditions.
 
 === "Python"
-```python
-# create a query
-feature_join = rain_fg.select_all() \
-.join(temperature_fg.select_all(), on=["date", "location_id"]) \
-.join(location_fg.select_all())
+    ```python
+    # create a query
+    feature_join = rain_fg.select_all() \
+        .join(temperature_fg.select_all(), on=["date", "location_id"]) \
+        .join(location_fg.select_all())
 
     # save the query to feature view
     feature_view = fs.create_feature_view(
@@ -25,11 +25,11 @@ feature_join = rain_fg.select_all() \
     ```
 
 === "Scala"
-```scala
-// create a query
-val featureJoin = (rainFg.selectAll()
-.join(temperatureFg.selectAll(), on=Seq("date", "location_id"))
-.join(locationFg.selectAll()))
+    ```scala
+    // create a query
+    val featureJoin = (rainFg.selectAll()
+        .join(temperatureFg.selectAll(), on=Seq("date", "location_id"))
+        .join(locationFg.selectAll()))
 
     val featureView = featureStore.createFeatureView()
         .name("rain_dataset")
@@ -52,17 +52,17 @@ Most operations performed on `FeatureGroup` metadata objects will return a `Quer
 Selecting features from a feature group is a lazy operation, returning a query with the selected features only:
 
 === "Python"
-```python
-rain_fg = fs.get_feature_group("rain_fg")
+    ```python
+    rain_fg = fs.get_feature_group("rain_fg")
 
     # Returns Query
     feature_join = rain_fg.select(["location_id", "weekly_rainfall"])
     ```
 
 === "Scala"
-```Scala
-val rainFg = fs.getFeatureGroup("rain_fg")
-
+    ```Scala
+    val rainFg = fs.getFeatureGroup("rain_fg")
+    
     # Returns Query
     val featureJoin = rainFg.select(Seq("location_id", "weekly_rainfall"))
     ```
@@ -73,33 +73,33 @@ Similarly, joins return query objects. The simplest join in one where we join al
 By default, Hopsworks will use the maximal matching subset of the primary keys of the two feature groups as joining key(s), if not specified otherwise.
 
 === "Python"
-```python
-# Returns Query
-feature_join = rain_fg.join(temperature_fg)
-```
+    ```python
+    # Returns Query
+    feature_join = rain_fg.join(temperature_fg)
+    ```
 
 === "Scala"
-```Scala
-// Returns Query
-val featureJoin = rainFg.join(temperatureFg)
-```
+    ```Scala
+    // Returns Query
+    val featureJoin = rainFg.join(temperatureFg)
+    ```
 More complex joins are possible by selecting subsets of features from the joined feature groups and by specifying a join key and type.
 Possible join types are "inner", "left" or "right". Furthermore, it is possible to specify different features for the join key of the left and right feature group.
 The join key lists should contain the names of the features to join on.
 
 === "Python"
-```python
-feature_join = rain_fg.select_all() \
-.join(temperature_fg.select_all(), on=["date", "location_id"]) \
-.join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left")
-```
+    ```python
+    feature_join = rain_fg.select_all() \
+        .join(temperature_fg.select_all(), on=["date", "location_id"]) \
+        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left")
+    ```
 
 === "Scala"
-```scala
-val featureJoin = (rainFg.selectAll()
-.join(temperatureFg.selectAll(), Seq("date", "location_id"))
-.join(locationFg.selectAll(), Seq("location_id"), Seq("id"), "left"))
-```
+    ```scala
+    val featureJoin = (rainFg.selectAll()
+        .join(temperatureFg.selectAll(), Seq("date", "location_id"))
+        .join(locationFg.selectAll(), Seq("location_id"), Seq("id"), "left"))
+    ```
 
 !!! error "Nested Joins"
 The API currently does not support nested joins. That is joins of joins.
@@ -113,50 +113,50 @@ Filters are constructed with Python Operators `==`, `>=`, `<=`, `!=`, `>`, `<` a
 For the Scala part of the API, equivalent methods are available in the `Feature` and `Filter` classes.
 
 === "Python"
-```python
-filtered_rain = rain_fg.filter(rain_fg.location_id == 10)
-```
+    ```python
+    filtered_rain = rain_fg.filter(rain_fg.location_id == 10)
+    ```
 
 === "Scala"
-```scala
-val filteredRain = rainFg.filter(rainFg.getFeature("location_id").eq(10))
-```
+    ```scala
+    val filteredRain = rainFg.filter(rainFg.getFeature("location_id").eq(10))
+    ```
 
 Filters are fully compatible with joins:
 
 === "Python"
-```python
-feature_join = rain_fg.select_all() \
-.join(temperature_fg.select_all(), on=["date", "location_id"]) \
-.join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left") \
-.filter((rain_fg.location_id == 10) | (rain_fg.location_id == 20))
-```
+    ```python
+    feature_join = rain_fg.select_all() \
+        .join(temperature_fg.select_all(), on=["date", "location_id"]) \
+        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left") \
+        .filter((rain_fg.location_id == 10) | (rain_fg.location_id == 20))
+    ```
 
 === "Scala"
-```scala
-val featureJoin = (rainFg.selectAll()
-.join(temperatureFg.selectAll(), Seq("date", "location_id"))
-.join(locationFg.selectAll(), Seq("location_id"), Seq("id"), "left")
-.filter(rainFg.getFeature("location_id").eq(10).or(rainFg.getFeature("location_id").eq(20))))
-```
+    ```scala
+    val featureJoin = (rainFg.selectAll()
+        .join(temperatureFg.selectAll(), Seq("date", "location_id"))
+        .join(locationFg.selectAll(), Seq("location_id"), Seq("id"), "left")
+        .filter(rainFg.getFeature("location_id").eq(10).or(rainFg.getFeature("location_id").eq(20))))
+    ```
 
 The filters can be applied at any point of the query:
 
 === "Python"
-```python
-feature_join = rain_fg.select_all() \
-.join(temperature_fg.select_all().filter(temperature_fg.avg_temp >= 22), on=["date", "location_id"]) \
-.join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left") \
-.filter(rain_fg.location_id == 10)
-```
+    ```python
+    feature_join = rain_fg.select_all() \
+        .join(temperature_fg.select_all().filter(temperature_fg.avg_temp >= 22), on=["date", "location_id"]) \
+        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left") \
+        .filter(rain_fg.location_id == 10)
+    ```
 
 === "Scala"
-```scala
-val featureJoin = (rainFg.selectAll()
-.join(temperatureFg.selectAll().filter(temperatureFg.getFeature("avg_temp").ge(22)), Seq("date", "location_id"))
-.join(locationFg.selectAll(), Seq("location_id"), Seq("id"), "left")
-.filter(rainFg.getFeature("location_id").eq(10)))
-```
+    ```scala
+    val featureJoin = (rainFg.selectAll()
+        .join(temperatureFg.selectAll().filter(temperatureFg.getFeature("avg_temp").ge(22)), Seq("date", "location_id"))
+        .join(locationFg.selectAll(), Seq("location_id"), Seq("id"), "left")
+        .filter(rainFg.getFeature("location_id").eq(10)))
+    ```
 
 #### Joins and/or Filters on feature view query
 
@@ -164,14 +164,14 @@ Exiting feature view query can be extended with new joins and/or new filters. Ho
 will not update feature view metadata and persist it with new query.
 
 === "Python"
-```python
-fs = ...
-wind_speed_fg = fs.get_feature_group(name=wind_speed, version=1)
-rain_fg = fs.get_feature_group(name=rain, version=1)
-fs.get_feature_view(“rain_dataset”, version=1).query\
-.join(wind_speed_fg.select_all())\
-.filter((rain_fg.location_id == 54)
-```
+    ```python
+    fs = ...
+    wind_speed_fg = fs.get_feature_group(name=wind_speed, version=1)
+    rain_fg = fs.get_feature_group(name=rain, version=1)
+    fs.get_feature_view(“rain_dataset”, version=1).query\
+    .join(wind_speed_fg.select_all())\
+    .filter((rain_fg.location_id == 54)
+    ```
 
 To successfully apply new joins and/or filter to existing feature view query it is recommended to
 fetch new query object as shown in above example `fs.get_feature_view(“rain_dataset”, version=1).query`.
