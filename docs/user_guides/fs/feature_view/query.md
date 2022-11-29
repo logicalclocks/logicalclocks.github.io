@@ -168,24 +168,35 @@ will not update feature view metadata and persist it with new query.
     fs = ...
     wind_speed_fg = fs.get_feature_group(name=wind_speed, version=1)
     rain_fg = fs.get_feature_group(name=rain, version=1)
-    fs.get_feature_view(“rain_dataset”, version=1).query\
+    feature_view = fs.get_feature_view(“rain_dataset”, version=1)
+    feature_view.query\
     .join(wind_speed_fg.select_all())\
     .filter((rain_fg.location_id == 54)
     ```
 
-To successfully apply new joins and/or filter to existing feature view query it is recommended to
-fetch new query object as shown in above example `fs.get_feature_view(“rain_dataset”, version=1).query`.
+!!! warning
+    Evey join/filter operation applied to an existing feature view query instance will update its state and accumulate.
+    To successfully apply new join/filter logic it is recommended to refresh query instance by re-fetching it:
 
 === "Python"
-!!! warning
-
-    The follwing code will fail: 
-
     ```python
     fs = ...
     wind_speed_fg = fs.get_feature_group(name=wind_speed, version=1)
+    sollar_irradiance_fg = fs.get_feature_group(name=sollar irradiance, version=1)
     rain_fg = fs.get_feature_group(name=rain, version=1)
+
+    # fetch new feature view and its query instance
     feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
+
+    # apply join/filter logic based on location and wind speed
     query = feature_veiw.query.join(wind_speed_fg.select_all())
     query.filter((rain_fg.location_id == 54)
+
+    # to apply new logic indendent of location and wind speed from above 
+    # re-fetch new feature view and its query instance
+    feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
+
+    # apply new join/filter logic based on sollar irradiance
+    query = feature_veiw.query.join(sollar_irradiance_fg.select_all())
+    query.filter((sollar_irradiance_fg.location_id == 28)
     ```
