@@ -22,20 +22,6 @@ You can get back feature vectors from either python or java client by providing 
         ]
     )
     ```
-=== "Java"
-    ```java
-    // get a single vector
-    Map<String, Object> entry1 = Maps.newHashMap();
-    entry1.put("pk1", 1);
-    entry1.put("pk2", 2);
-    featureView.getFeatureVector(entry1);
-
-    // get multiple vectors
-    Map<String, Object> entry2 = Maps.newHashMap();
-    entry2.put("pk1", 3);
-    entry2.put("pk2", 4);
-    featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2);
-    ```
 
 ### Retrieval with transformation
 If you have specified transformation functions when creating a feature view, you receive transformed feature vectors. If your transformation functions require statistics of training dataset, you must also provide the training data version. `init_serving` will then fetch the statistics and initialize the functions with the required statistics. Then you can follow the above examples and retrieve the feature vectors. Please note that transformed feature vectors can only be returned in the python client but not in the java client.
@@ -77,15 +63,15 @@ You can also use the parameter to provide values for all the features which are 
 === "Python"
     ```python
     # get a single vector, replace values from an entire feature group
-    # note how in this example you don't have to provide the value of 
+    # note how in this example you don't have to provide the value of
     # pk2, but you need to provide the features coming from that feature group
-    # in this case feature_b and feature_c 
+    # in this case feature_b and feature_c
 
     feature_view.get_feature_vector(
         entry = { "pk1": 1 },
         passed_features = {
-            "feature_a": "value_a", 
-            "feature_b": "value_b", 
+            "feature_a": "value_a",
+            "feature_b": "value_b",
             "feature_c": "value_c"
         }
     )

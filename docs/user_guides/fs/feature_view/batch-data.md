@@ -13,10 +13,6 @@ It is very common that ML models are deployed in a "batch" setting where ML pipe
     transactions_df = feature_view.get_batch_data(start_time=start_date, end_time=end_date)
     ```
 
-=== "Java"
-    ```java
-    Dataset<Row> ds = featureView.getBatchData("20220620", "20220627")
-    ```
 
 ## Creation with transformation
 If you have specified transformation functions when creating a feature view, you will get back transformed batch data as well. If your transformation functions require statistics of training dataset, you must also provide the training data version. `init_batch_scoring` will then fetch the statistics and initialize the functions with required statistics. Then you can follow the above examples and create the batch data. Please note that transformed batch data can only be returned in the python client but not in the java client.

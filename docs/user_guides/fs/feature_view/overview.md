@@ -27,23 +27,6 @@ If you want to understand more about the concept of feature view, you can refer 
     )
     ```
 
-=== "Java"
-
-    ```java
-    // create a simple feature view
-    FeatureView featureView = featureStore.createFeatureView()
-                                            .name("transactions_view)
-                                            .query(query)
-                                            .build();
-
-    // create a feature view with label
-    FeatureView featureView = featureStore.createFeatureView()
-                                            .name("transactions_view)
-                                            .query(query)
-                                            .labels(Lists.newArrayList("fraud_label")
-                                            .build();
-    ```
-
 You can refer to [query](./query.md) and [transformation function](./transformation-function.md) for creating `query` and `transformation_function`. To see a full example of how to create a feature view, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/2_feature_view_creation.ipynb).
 
 ## Retrieval
@@ -53,10 +36,6 @@ Once you have created a feature view, you can retrieve it by its name and versio
     ```python
     feature_view = fs.get_feature_view(name="transactions_view", version=1)
     ```
-=== "Java"
-    ```java
-    FeatureView featureView = featureStore.getFeatureView("transactions_view", 1)
-    ```
 
 ## Deletion
 If there are some feature view instances which you do not use anymore, you can delete a feature view. It is important to mention that all training datasets (include all materialised hopsfs training data) will be deleted along with the feature view.
@@ -64,10 +43,6 @@ If there are some feature view instances which you do not use anymore, you can d
 === "Python"
     ```python
     feature_view.delete()
-    ```
-=== "Java"
-    ```java
-    featureView.delete()
     ```
 
 ## Tags
@@ -84,19 +59,6 @@ Feature views also support tags. You can attach, get, and remove tags. You can r
 
     #remove
     feature_view.delete_tag(name="tag_schema")
-    ```
-=== "Java"
-    ```java
-    // attach
-    Map<String, String> tag = Maps.newHashMap();
-    tag.put("key", "value");
-    featureView.addTag("tag_schema", tag)
-
-    // get
-    featureView.getTag("tag_schema")
-
-    // remove
-    featureView.deleteTag("tag_schema")
     ```
 
 ## Next

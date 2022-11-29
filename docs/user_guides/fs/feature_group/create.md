@@ -23,23 +23,6 @@ Firstly, let's connect to the Feature Store.
     fs = project.get_feature_store()
     ```
 
-=== "Scala"
-    ```scala
-    import com.logicalclocks.hsfs._
-
-    val connection = HopsworksConnection.builder().build();
-    val fs = connection.getFeatureStore();
-    ```
-<!-- === "Java"
-
-    ```java
-    package io.hops.examples.featurestore_tour.featuregroups
-
-    import com.logicalclocks.hsfs.{DataFormat, HopsworksConnection, TimeTravelFormat, StatisticsConfig}
-
-    val connection = HopsworksConnection.builder.build
-    val fs = connection.getFeatureStore
-    ``` -->
 
 ### Create a Feature Group
 
@@ -57,33 +40,6 @@ The first step to create a feature group is to create the API metadata object re
         event_time='timestamp',,
         streaming=False)
     ```
-
-=== "Java"
-
-    ```Java
-    val fg = fs.createFeatureGroup()
-      .name("games_features")
-      .version(1)
-      .description("Features of games")
-      .timeTravelFormat(TimeTravelFormat.NONE)
-      .primaryKeys(Seq("home_team_id"))
-      .statisticsConfig(new StatisticsConfig(true, true, true, true))
-      .build()
-
-=== "Scala"
-
-    ```scala
-    val fg = (fs.createFeatureGroup()
-                       .name("contracts")
-                       .version(1)
-                       .description("Contract information features")
-                       .onlineEnabled(true)
-                       .statisticsConfig(new StatisticsConfig(false, false, false, false))
-                       .primaryKeys(Seq("contract_id"))
-                       .eventTime("ts")
-                       .build())
-    ```
-
 
 
 The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup). `name` is the only mandatory parameter of the `get_or_create_feature_group` and represents the name of the feature group.
@@ -138,13 +94,6 @@ The snippet above only created the metadata object on the Python interpreter run
     fg.insert(weather_df)
     ```
 
-=== "Scala"
-
-    ```scala
-    fg.save(contractsDf)
-    ```
-
-
 These methods take in input a Pandas or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time.
 
 The DataFrame *must* contain the columns specified as primary keys, partition key and event time in the `get_or_create_feature_group` (Python) or `createFeatureGroup` (Scala) call.
@@ -157,11 +106,6 @@ To insert new data to the existing Feature Group use `insert` method in both Pyt
     fg.insert(weather_df)
     ```
 
-=== "Scala"
-
-    ```scala
-    fg.insert(contractsDf)
-    ```
 
 If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.
 

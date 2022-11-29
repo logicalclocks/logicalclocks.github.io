@@ -23,17 +23,6 @@ It can be created as in-memory DataFrames or materialised as `tfrecords`, `parqu
     print(job.id) # get the job's id and view the job status in the UI
     ```
 
-=== "Scala"
-    ```scala
-    val td = (fs.createTrainingDataset()
-          .name("churn_model")
-          .version(1)
-          .dataFormat(DataFormat.CSV)
-          .label(Seq("contract_churn"))
-          .build())
-    td.save(query)
-    ```
-
 
 ### Extra filters
 Sometimes data scientists need to train different models using subsets of a dataset. For example, there can be different models for different countries, seasons, and different groups. One way is to create different feature views for training different models. Another way is to add extra filters on top of the feature view when creating training data.
