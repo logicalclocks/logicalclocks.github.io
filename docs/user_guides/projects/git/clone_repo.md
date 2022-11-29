@@ -65,7 +65,7 @@ The progress of the git clone can be tracked under `Git Executions`.
 
 ### Step 4: Browse repository files
 
-In the `File browser` page you can now browse the files of the cloned repository. In the figure below, the repository is located in `Jupyter/<username>_hops-examples` directory.
+In the `File browser` page you can now browse the files of the cloned repository. In the figure below, the repository is located in `Jupyter/hops-examples` directory.
 
 <p align="center">
   <figure>

@@ -2,7 +2,7 @@
 
 Hopsworks Model Registry is a centralized repository, within an organization, to manage machine learning models. A model is the product of training a machine learning algorithm with training data.
 
-This section provides guides for creating models and publish them to the Model Registry to make them available to make them available for download for batch predictions, or deployed to serve realtime applications.
+This section provides guides for creating models and publish them to the Model Registry to make them available for download for batch predictions, or deployed to serve realtime applications.
 
 
 ## Exporting a model
