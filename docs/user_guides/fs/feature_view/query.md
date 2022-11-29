@@ -181,7 +181,7 @@ will not update feature view metadata and persist it with new query.
 === "Python"
     ```python
     fs = ...
-    wind_speed_fg = fs.get_feature_group(name=wind_speed, version=1)
+    wind_speed_fg = fs.get_feature_group(name="wind_speed", version=1)
     sollar_irradiance_fg = fs.get_feature_group(name=sollar irradiance, version=1)
     rain_fg = fs.get_feature_group(name="rain_fg", version=1)
 
