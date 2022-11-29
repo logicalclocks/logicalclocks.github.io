@@ -174,6 +174,17 @@ will not update feature view metadata and persist it with new query.
     .filter((rain_fg.location_id == 54)
     ```
 
+=== "Scala"
+    ```scala
+    val fs = ...
+    val windSpeedFg = fs.getFeatureGroup("wind_speed_fg", 1)
+    val rainFg = fs.getFeatureGroup("rain_fg", 1)
+    val featureView = fs.getFeatureView(“rain_dataset”, 1)
+    featureView.getQuery().
+        join(windSpeedFg.selectAll()).
+        filter(rainFg.getFeature("location_id").eq(54))
+    ```
+
 !!! warning
     Evey join/filter operation applied to an existing feature view query instance will update its state and accumulate.
     To successfully apply new join/filter logic it is recommended to refresh query instance by re-fetching it:
@@ -181,22 +192,22 @@ will not update feature view metadata and persist it with new query.
 === "Python"
     ```python
     fs = ...
-    wind_speed_fg = fs.get_feature_group(name="wind_speed_fg", version=1)
-    solar_irradiance_fg = fs.get_feature_group(name="solar_irradiance_fg", version=1)
-    rain_fg = fs.get_feature_group(name="rain_fg", version=1)
+    windSpeedFg = fs.getFeatureGroup("wind_speed_fg", 1)
+    solarIrradianceFg = fs.getFeatureGroup("solar_irradiance_fg", 1)
+    rainFg = fs.getFeatureGroup("rain_fg", 1)
 
-    # fetch new feature view and its query instance
-    feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
+    // fetch new feature view and its query instance
+    val featureVeiw = fs.getFeatureView(“rain_dataset”, version=1)
 
-    # apply join/filter logic based on location and wind speed
-    feature_veiw.query.join(wind_speed_fg.select_all())\
-        .filter((rain_fg.location_id == 54)
+    // apply join/filter logic based on location and wind speed
+    featureVeiw.getQuery.join(windSpeedFg.selectAll()).
+        filter(rainFg.getFeature("location_id").eq(54))
 
-    # to apply new logic indendent of location and wind speed from above 
-    # re-fetch new feature view and its query instance
-    feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
+    // to apply new logic indendent of location and wind speed from above 
+    // re-fetch new feature view and its query instance
+    val featureVeiw = fs.getFeatureView(“rain_dataset”, version=1)
 
-    # apply new join/filter logic based on solar irradiance
-    feature_veiw.query.join(solar_irradiance_fg.select_all())\
-        .filter(solar_irradiance_fg.location_id == 28)
+    // apply new join/filter logic based on solar irradiance
+    featureVeiw.getQuery.join(solarIrradianceFg.selectAll()).
+        filter(solarIrradianceFg.getFeature("location_id").eq(28))
     ```
