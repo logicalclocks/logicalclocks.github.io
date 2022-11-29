@@ -166,7 +166,7 @@ will not update feature view metadata and persist it with new query.
 === "Python"
     ```python
     fs = ...
-    wind_speed_fg = fs.get_feature_group(name="wind_speed", version=1)
+    wind_speed_fg = fs.get_feature_group(name="wind_speed_fg", version=1)
     rain_fg = fs.get_feature_group(name="rain_fg", version=1)
     feature_view = fs.get_feature_view(“rain_dataset”, version=1)
     feature_view.query\
@@ -181,8 +181,8 @@ will not update feature view metadata and persist it with new query.
 === "Python"
     ```python
     fs = ...
-    wind_speed_fg = fs.get_feature_group(name="wind_speed", version=1)
-    sollar_irradiance_fg = fs.get_feature_group(name=sollar irradiance, version=1)
+    wind_speed_fg = fs.get_feature_group(name="wind_speed_fg", version=1)
+    solar_irradiance_fg = fs.get_feature_group(name="solar_irradiance_fg", version=1)
     rain_fg = fs.get_feature_group(name="rain_fg", version=1)
 
     # fetch new feature view and its query instance
@@ -196,7 +196,7 @@ will not update feature view metadata and persist it with new query.
     # re-fetch new feature view and its query instance
     feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
 
-    # apply new join/filter logic based on sollar irradiance
-    query = feature_veiw.query.join(sollar_irradiance_fg.select_all())
-    query.filter((sollar_irradiance_fg.location_id == 28)
+    # apply new join/filter logic based on solar irradiance
+    query = feature_veiw.query.join(solar_irradiance_fg.select_all())
+    query.filter((solar_irradiance_fg.location_id == 28)
     ```
