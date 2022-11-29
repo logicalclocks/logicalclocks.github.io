@@ -189,7 +189,7 @@ will not update feature view metadata and persist it with new query.
     feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
 
     # apply join/filter logic based on location and wind speed
-    query = feature_veiw.query.join(wind_speed_fg.select_all())
+    feature_veiw.query.join(wind_speed_fg.select_all()).filter((rain_fg.location_id == 54)
     query.filter((rain_fg.location_id == 54)
 
     # to apply new logic indendent of location and wind speed from above 
