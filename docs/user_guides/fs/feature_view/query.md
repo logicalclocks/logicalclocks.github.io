@@ -167,7 +167,7 @@ will not update feature view metadata and persist it with new query.
     ```python
     fs = ...
     wind_speed_fg = fs.get_feature_group(name=wind_speed, version=1)
-    rain_fg = fs.get_feature_group(name=rain, version=1)
+    rain_fg = fs.get_feature_group(name="rain_fg", version=1)
     feature_view = fs.get_feature_view(“rain_dataset”, version=1)
     feature_view.query\
     .join(wind_speed_fg.select_all())\
