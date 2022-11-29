@@ -132,12 +132,15 @@ nav:
         - Input Example: user_guides/mlops/registry/input_example.md
       - Model Serving:
         - user_guides/mlops/serving/index.md
-        - Deployment: user_guides/mlops/serving/deployment.md
+        - Deployment:
+          - Deployment creation: user_guides/mlops/serving/deployment.md
+          - Deployment state: user_guides/mlops/serving/deployment-state.md
         - Predictor: user_guides/mlops/serving/predictor.md
         - Transformer: user_guides/mlops/serving/transformer.md
         - Resource Allocation: user_guides/mlops/serving/resources.md
         - Inference Logger: user_guides/mlops/serving/inference-logger.md
         - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
+        - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
       - Vector Database: user_guides/mlops/vector_database/index.md
     - Compute Engine:
         - user_guides/integrations/index.md
@@ -161,7 +164,7 @@ nav:
       - AWS:
           - Getting Started: setup_installation/aws/getting_started.md
           - Cluster Creation: setup_installation/aws/cluster_creation.md
-          - EKS/ECR integration: setup_installation/aws/eks_ecr_integration.md
+          - EKS integration: setup_installation/aws/eks_ecr_integration.md
           - Limiting Permissions: setup_installation/aws/restrictive_permissions.md
           - Cluster upgrade:
             - Version 2.4 or newer: setup_installation/aws/upgrade_2.4.md
@@ -170,7 +173,7 @@ nav:
       - Azure:
           - Getting Started: setup_installation/azure/getting_started.md
           - Cluster Creation: setup_installation/azure/cluster_creation.md
-          - AKS/ACR integration: setup_installation/azure/aks_acr_integration.md
+          - AKS integration: setup_installation/azure/aks_acr_integration.md
           - Limiting Permissions: setup_installation/azure/restrictive_permissions.md
           - Cluster upgrade: 
             - Version 2.4 or newer: setup_installation/azure/upgrade_2.4.md

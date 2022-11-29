@@ -32,6 +32,8 @@ To provide the capacity of adding and removing workers on demand, the Hopsworks 
 !!! note
     You can choose to use a container already existing in your *storage account* by using the name of this container, but you need to first make sure that this container is empty.
 
+Enter the *Azure container registry name* (9) to be used as the managed docker registry for the cluster. 
+
 <p align="center">
   <figure>
     <a  href="../../../assets/images/setup_installation/managed/azure/create-instance-general.png">
@@ -84,7 +86,7 @@ You can set the autoscaling configuration by selecting enabled in the first drop
 ### Step 4 select a SSH key
 
 When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs a ssh key on the cluster's instances so that you can access them if necessary.
-Select the *SSH key* that you want to use to access cluster instances. For more detail on how to add a shh key in Azure refer to [Adding a ssh key to your resource group](getting_started.md#step-3-adding-a-ssh-key-to-your-resource-group)
+Select the *SSH key* that you want to use to access cluster instances. For more detail on how to add a shh key in Azure refer to [Adding a ssh key to your resource group](getting_started.md#step-4-adding-a-ssh-key-to-your-resource-group)
 
 <p align="center">
   <figure>

@@ -352,7 +352,46 @@ Click on *Save* (7).
   </figure>
 </p>
 
-## Step 3: Adding a ssh key to your resource group
+## Step 3: Create an ACR Container Registry
+
+The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their docker images in a registry container in your Azure account. To enable this you need to perform the following operations
+
+### Step 3.1: Create an ACR Container Registry
+
+Proceed to the Azure Portal and open the Resource Group that you want to use for [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Create*, search for *Container Registery*, and click on *Create*. Then, make sure to choose the same Location as the one to deploy your cluser, choose a name for the registry and select **Premium** for the SKU. Then press *Review + create*. 
+
+<p align="center">
+  <figure>
+    <a  href="../../../assets/images/setup_installation/managed/azure/create-acr.png">
+      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-acr.png" alt="Create a Container Registry">
+    </a>
+    <figcaption>Create a Container Registery</figcaption>
+  </figure>
+</p>
+
+### Step 3.2: Give the Managed Identity access to the container registry
+
+Go to the managed identity created in [Step 2.2](#step-22-creating-a-user-assigned-managed-identity). Click on *Azure role assignments* in the left column. Click on *Add role assignment*. For the *Scope* select *Resource group* or *Subscription* depending on your preference. Select the *Role* *AcrPull* and click on *Save*.
+
+Repeat the same operation with the following roles:
+
+* *AcrPull*
+* *AcrPush*
+* *AcrDelete*
+
+### Step 3.3: Setup retention policy 
+
+To prevent the registry from filling up with unnecessary images and artifacts you can enable a retention policy. A retention policy will automatically remove untagged manifests after a specified number of days. To enable a retention policy, go to the registry you created. Go to the **Retention (preview)** tab and set **Status** from **disabled** to **enabled**. Set the retention policy for 7 days as in the figure below, then press **save**.
+<p align="center">
+  <figure>
+    <a  href="../../../assets/images/setup_installation/managed/azure/acr-retention.png">
+      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/acr-retention.png" alt="ACR retention policy">
+    </a>
+    <figcaption>ACR retention policy</figcaption>
+  </figure>
+</p>
+
+## Step 4: Adding a ssh key to your resource group
 
 When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs a ssh key on the cluster's instances so that you can access them if necessary. For this purpose you need to add a ssh key to your resource group.
 
@@ -378,7 +417,7 @@ Search for *SSH Key* and click on it. Click on Create. Then, name your key pair 
   </figure>
 </p>
 
-## Step 4: Deploying a Hopsworks cluster
+## Step 5: Deploying a Hopsworks cluster
 
 In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*:
 
@@ -400,10 +439,14 @@ Name your cluster (2). Your cluster will be deployed in the *Location* of your *
 
 Select the *Instance type* (4) and *Local storage* (5) size for the cluster *Head node*.
 
-Select the *storage account* (6) you created above in *Azure Storage account name*. The name of the container in which the data will be stored is displayed in *Azure Container name* (7), you can modify it if needed.
+Check if you want to *Use customer-managed encryption key* (6)
+
+Select the *storage account* (7) you created above in *Azure Storage account name*. The name of the container in which the data will be stored is displayed in *Azure Container name* (8), you can modify it if needed.
 
 !!! note
     You can choose to use a container already existing in your *storage account* by using the name of this container, but you need to first make sure that this container is empty.
+
+Enter the *Azure container registry name* (9) of the ACR registry created in [Step 3.1](#step-31-create-an-acr-container-registry)
 
 Press *Next*:
 
@@ -455,7 +498,6 @@ Select the *User assigned managed identity* that you created above:
   </figure>
 </p>
 
-### Step 6 set the backup retention policy:
 
 To backup the Azure blob storage data when taking a cluster backups we need to set a retention policy for the blob storage. You can deactivate the retention policy by setting this value to 0 but this will block you from taking any backup of your cluster. Choose the retention period in days and click on *Review and submit*.
 
@@ -504,7 +546,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
   </figure>
 </p>
 
-## Step 5: Next steps
+## Step 6: Next steps
 
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 

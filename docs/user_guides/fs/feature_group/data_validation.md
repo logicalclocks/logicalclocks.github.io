@@ -6,25 +6,29 @@ Clean, high quality feature data is of paramount importance to being able to tra
 
 ## UI
 
-### Step 1: Create or Edit a Feature Group
+### Create a Feature Group (Pre-requisite)
 
-You can attach at most one expectation suite to a Feature Group. It can be done on creation or at a later point in time. Data validation is an optional step and is not required to write to a Feature Group. You can find out more information about creating a Feature Group [here](create.md).
+In the UI, you must create a Feature Group first before attaching an Expectation Suite. You can find out more information about creating a Feature Group [here](create.md). You can attach at most one expectation suite to a Feature Group. Data validation is an optional step and is not required to write to a Feature Group.
 
-Click on the Feature Group section in the navigation menu. Click on `New Feature Group` if you want to create a brand new Feature Group. If you already created your Feature Group you can use the search bar to find and open it. Select `edit` at the top or scroll to Expectations section and click on `Edit Expectations`.
+### Step 1: Find and Edit Feature Group
+
+Click on the Feature Group section in the navigation menu. Find your Feature Group in the list and click on its name to access the Feature Group page. Select `edit` in the top right corner or scroll to the Expectations section and click on `Edit Expectation Suite`.
 
 ### Step 2: Edit General Expectation Suite Settings
 
 Scroll to the Expectation Suite section. You can pick a name for your suite as well as two general options.
 
-- enabled checkbox controls whether validation will be run automatically before writing a DataFrame to a Feature Group. Note that validation is executed by the client.
+- Checkbox enabled. This controls whether the Expectation Suite will be used to validate a Dataframe automatically upon insertion into a Feature Group. Note that validation is executed by the client. Disabling validation allows you to skip the validation step without deleting the Expectation Suite.
 - 'ALWAYS' vs. 'STRICT' mode. This option controls what happens after validation. Hopsworks defaults to 'ALWAYS', where data is written to the Feature Group regardless of the validation result. This means that even if expectations are failing or throw an exception, Hopsworks will attempt to insert the data into the Feature Group. In 'STRICT' mode, Hopsworks will only write data to the Feature Group if each individual expectation has been successful.
 
 ### Step 3: Add new expectations
 
-By clicking on `Add another expectation` one can choose an expectation type from a dropdown menu. Currently, only the built-in expectations from the Great Expectations framework are supported. For user-defined expectations, please use the Rest API or python client. All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the json and click the tick button to save the change locally.
+By clicking on `Add expectation` one can choose an expectation type from a searchable dropdown menu. Currently, only the built-in expectations from the Great Expectations framework are supported. For user-defined expectations, please use the Rest API or python client.
+
+All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the arguments in the json to configure the Expectation. In particular, arguments such as `column`, `columnA`, `columnB`, `column_set` and `column_list` require valid feature name(s). Click the tick button to save the expectation configuration and append it to the Expectation Suite locally.
 
 !!! info
-    Click the `Save and Create New Version` button to persist your changes!
+Click the `Save feature group` button to persist your changes!
 
 ### Step 4: Save new data to a Feature Group
 
@@ -45,6 +49,7 @@ The `Validation Reports` tab in the Expectations section displays a brief histor
 ### Step 1: Setup
 
 In order to define and validate an expectation when writing to a Feature Group, you will need:
+
 - A pandas DataFrame to validate
 - A Hopsworks project
 - great_expectations installed in your client
@@ -77,6 +82,7 @@ expectation_suite = ge.core.ExpectationSuite(
 #### Add Expectations in the Source Code
 
 Add some expectation to your suite to validate columns:
+
 ```python
 expectation_suite.add_expectation(
     ge.core.ExpectationConfiguration(
@@ -108,10 +114,8 @@ ge_profiler = ge.profile.BasicSuiteBuilderProfiler()
 expectation_suite_profiler, _ = ge_profiler.profile(ge.from_pandas(df))
 ```
 
-
 #### Hopsworks
-
- You can then setup a connection to your Hopsworks Feature Store.
+You can then setup a connection to your Hopsworks Feature Store.
 
 ```python
 import hopsworks
@@ -185,7 +189,6 @@ ge_report = fg.validate(df)
 ```
 
 This will run the validation using the expectation suite attached to this Feature Group and raise an exception if no attached suite is found.
-
 
 #### Save Validation Reports
 
@@ -279,12 +282,12 @@ Data validation steps in a feature engineering pipeline has two complementary us
 
 In contrast, a production setup often requires additional protection to prevent bad quality data finding its way into the Feature Group. A typical example is preventing the Online Feature Store returning a feature vector containing NaN values that could lead to problems in inference pipelines. In such cases data validation can be used as a gatekeeper to prevent erroneous data from finding its way into an Online Feature Store.
 
-Hopsworks is focused on making the transition from development to production as seamless as possible. To switch between these two behaviours you can simply use the `validation_insertion_policy` parameter. By default, expectation suites are attached to Feature Groups as a monitoring tool. This default choice is made as it corresponds to development setup and avoids any loss of data on insertion.
+Hopsworks is focused on making the transition from development to production as seamless as possible. To switch between these two behaviours you can simply use the `validation_ingestion_policy` parameter. By default, expectation suites are attached to Feature Groups as a monitoring tool. This default choice is made as it corresponds to development setup and avoids any loss of data on insertion.
 
 ```python
 fg.save_expectation_suite(expectation_suite)
 # defaults to the monitoring behaviour
-fg.save_expectation_suite(expectation_suite, validation_insertion_policy="ALWAYS")
+fg.save_expectation_suite(expectation_suite, validation_ingestion_policy="ALWAYS")
 ```
 
 When you want to switch from development to production, you can enable gatekeeping by setting:
