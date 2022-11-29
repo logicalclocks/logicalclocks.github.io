@@ -198,5 +198,5 @@ will not update feature view metadata and persist it with new query.
 
     # apply new join/filter logic based on solar irradiance
     feature_veiw.query.join(solar_irradiance_fg.select_all())\
-        .filter((solar_irradiance_fg.location_id == 28)
+        .filter(solar_irradiance_fg.location_id == 28)
     ```
