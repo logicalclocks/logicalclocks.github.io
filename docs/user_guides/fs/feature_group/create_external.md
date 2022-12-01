@@ -105,7 +105,7 @@ You can also create a new feature group through the UI. For this, navigate to th
   </figure>
 </p>
 
-Subsequently, you will be able to define its properties (such as name, mode, features, storage connector, and more) and finish by clicking `Create New Feature Group` at the bottom of the page.
+Subsequently, you will be able to define its properties (such as name, mode, features, and more). Refer to the documentation above for an explanation of the parameters available, they are the same as when you create a feature group using the SDK. Finally, complete the creation by clicking `Create New Feature Group` at the bottom of the page.
 
 <p align="center">
   <figure>
