@@ -109,7 +109,7 @@ You can fall back to Spark DataFrames to cover these cases. However, if you have
 
 In the same way as joins, applying filters to feature groups creates a query with the applied filter.
 
-Filters are constructed with Python Operators `==`, `>=`, `<=`, `!=`, `>`, `<` and using the Bitwise Operators `&` and `|` to construct conjunctions.
+Filters are constructed with Python Operators `==`, `>=`, `<=`, `!=`, `>`, `<` and Addition Methods `contains` and `like`. Bitwise Operators `&` and `|` are used to construct conjunctions.
 For the Scala part of the API, equivalent methods are available in the `Feature` and `Filter` classes.
 
 === "Python"
