@@ -121,4 +121,18 @@ If a feature group is online enabled, the `save` method will store the feature d
 
 ## Create using the UI
 
-You can also create a new feature group through the UI.
+You can also create a new feature group through the UI. For this, navigate to the `Feature Groups` section and press the `Create` button at the top-right corner.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/no_feature_group_list.png" alt="List of Feature Groups">
+  </figure>
+</p>
+
+Subsequently, you will be able to define its properties (such as name, mode, features, and more). Refer to the documentation above for an explanation of the parameters available, they are the same as when you create a feature group using the SDK. Finally, complete the creation by clicking `Create New Feature Group` at the bottom of the page.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/create_feature_group.png" alt="Create new Feature Group">
+  </figure>
+</p>
