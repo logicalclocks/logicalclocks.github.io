@@ -121,7 +121,7 @@ If a feature group is online enabled, the `save` method will store the feature d
 
 ## Create using the UI
 
-You can also create a new feature group through the UI. For this, navigate to the `Feature Groups` section and press the `Create` button.
+You can also create a new feature group through the UI. For this, navigate to the `Feature Groups` section and press the `Create` button at the top-right corner.
 
 <p align="center">
   <figure>

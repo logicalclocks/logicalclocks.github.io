@@ -97,7 +97,7 @@ Hopsworks Feature Store does not support time-travel capabilities for on-demand 
 
 ## Create using the UI
 
-You can also create a new feature group through the UI. For this, navigate to the `Feature Groups` section and press the `Create` button.
+You can also create a new feature group through the UI. For this, navigate to the `Feature Groups` section and press the `Create` button at the top-right corner.
 
 <p align="center">
   <figure>
