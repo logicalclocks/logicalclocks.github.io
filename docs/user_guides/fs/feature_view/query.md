@@ -160,8 +160,8 @@ The filters can be applied at any point of the query:
 
 #### Joins and/or Filters on feature view query
 
-Exiting feature view query can be extended with new joins and/or new filters. However, this operation
-will not update feature view metadata and persist it with new query.
+The query retrieved from a feature view can be extended with new joins and/or new filters.
+However, this operation will not update the metadata and persist the updated query of the feature view itself. This query can then be used to create a new feature view.
 
 === "Python"
     ```python
