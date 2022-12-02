@@ -186,8 +186,8 @@ However, this operation will not update the metadata and persist the updated que
     ```
 
 !!! warning
-    Evey join/filter operation applied to an existing feature view query instance will update its state and accumulate.
-    To successfully apply new join/filter logic it is recommended to refresh query instance by re-fetching it:
+    Every join/filter operation applied to an existing feature view query instance will update its state and accumulate.
+    To successfully apply new join/filter logic it is recommended to refresh the query instance by re-fetching the feature view:
 
 === "Python"
     ```python
