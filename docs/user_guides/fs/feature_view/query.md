@@ -197,7 +197,7 @@ However, this operation will not update the metadata and persist the updated que
     rain_fg = fs.get_feature_group(name="rain_fg", version=1)
 
     # fetch new feature view and its query instance
-    feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
+    feature_view = fs.get_feature_view(“rain_dataset”, version=1)
 
     # apply join/filter logic based on location and wind speed
     feature_veiw.query.join(wind_speed_fg.select_all())\
