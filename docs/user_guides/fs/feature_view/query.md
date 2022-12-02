@@ -180,9 +180,9 @@ However, this operation will not update the metadata and persist the updated que
     val windSpeedFg = fs.getFeatureGroup("wind_speed_fg", 1)
     val rainFg = fs.getFeatureGroup("rain_fg", 1)
     val featureView = fs.getFeatureView(“rain_dataset”, 1)
-    featureView.getQuery().
-        join(windSpeedFg.selectAll()).
-        filter(rainFg.getFeature("location_id").eq(54))
+    featureView.getQuery()
+        .join(windSpeedFg.selectAll())
+        .filter(rainFg.getFeature("location_id").eq(54))
     ```
 
 !!! warning
