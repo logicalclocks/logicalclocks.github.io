@@ -220,7 +220,7 @@ However, this operation will not update the metadata and persist the updated que
     rainFg = fs.getFeatureGroup("rain_fg", 1)
     
     // fetch new feature view and its query instance
-    val featureVeiw = fs.getFeatureView(“rain_dataset”, version=1)
+    val featureView = fs.getFeatureView(“rain_dataset”, version=1)
     
     // apply join/filter logic based on location and wind speed
     featureVeiw.getQuery.join(windSpeedFg.selectAll()).
