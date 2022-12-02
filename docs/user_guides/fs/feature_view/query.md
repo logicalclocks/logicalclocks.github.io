@@ -205,7 +205,7 @@ However, this operation will not update the metadata and persist the updated que
 
     # to apply new logic independent of location and wind speed from above 
     # re-fetch new feature view and its query instance
-    feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
+    feature_view = fs.get_feature_view(“rain_dataset”, version=1)
 
     # apply new join/filter logic based on solar irradiance
     feature_view.query.join(solar_irradiance_fg.select_all()) \
