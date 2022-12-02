@@ -228,7 +228,7 @@ However, this operation will not update the metadata and persist the updated que
     
     // to apply new logic independent of location and wind speed from above 
     // re-fetch new feature view and its query instance
-    val featureVeiw = fs.getFeatureView(“rain_dataset”, 1)
+    val featureView = fs.getFeatureView(“rain_dataset”, 1)
     
     // apply new join/filter logic based on solar irradiance
     featureVeiw.getQuery.join(solarIrradianceFg.selectAll()).
