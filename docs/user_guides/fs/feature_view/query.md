@@ -231,6 +231,6 @@ However, this operation will not update the metadata and persist the updated que
     val featureView = fs.getFeatureView(“rain_dataset”, 1)
     
     // apply new join/filter logic based on solar irradiance
-    featureVeiw.getQuery.join(solarIrradianceFg.selectAll()).
+    featureView.getQuery.join(solarIrradianceFg.selectAll()).
         filter(solarIrradianceFg.getFeature("location_id").eq(28))
     ```
