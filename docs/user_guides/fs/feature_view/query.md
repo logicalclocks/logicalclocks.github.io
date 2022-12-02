@@ -169,9 +169,9 @@ However, this operation will not update the metadata and persist the updated que
     wind_speed_fg = fs.get_feature_group(name="wind_speed_fg", version=1)
     rain_fg = fs.get_feature_group(name="rain_fg", version=1)
     feature_view = fs.get_feature_view(“rain_dataset”, version=1)
-    feature_view.query\
-    .join(wind_speed_fg.select_all())\
-    .filter((rain_fg.location_id == 54)
+    feature_view.query \
+        .join(wind_speed_fg.select_all()) \
+        .filter((rain_fg.location_id == 54)
     ```
 
 === "Scala"
