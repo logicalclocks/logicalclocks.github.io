@@ -89,13 +89,13 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 Additional files or dependencies required for the Spark job can be configured.
 
-* `Additional archives`: Number of cores to allocate for the Spark driver
+* `Additional archives`: List of archives to be extracted into the working directory of each executor.
 
-* `Additional jars`: Number of MBs to allocate for the Spark driver
+* `Additional jars`: List of jars to be placed in the working directory of each executor.
 
-* `Additional python dependencies`: Number of cores to allocate for each Spark executor
+* `Additional python dependencies`: List of python files and archives to be placed on each executor and added to PATH.
 
-* `Additional files`: Number of MBs to allocate for each Spark executor
+* `Additional files`: List of files to be placed in the working directory of each executor.
 
 <p align="center">
   <figure>
