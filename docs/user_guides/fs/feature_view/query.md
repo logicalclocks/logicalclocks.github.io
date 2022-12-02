@@ -208,7 +208,7 @@ However, this operation will not update the metadata and persist the updated que
     feature_veiw = fs.get_feature_view(“rain_dataset”, version=1)
 
     # apply new join/filter logic based on solar irradiance
-    feature_veiw.query.join(solar_irradiance_fg.select_all())\
+    feature_view.query.join(solar_irradiance_fg.select_all()) \
         .filter(solar_irradiance_fg.location_id == 28)
     ```
 
