@@ -94,6 +94,65 @@ my_suite.add_expectation(new_expectation)
 fg.save_expectation_suite(my_suite)
 ```
 
+### Save Validation Reports
+
+When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group.
+
+The boilerplate of uploading report on insertion is taken care of by hopsworks, however for custom pipelines we provide an alternative method in the python client. The UI does not currently support upload of a validation report.
+
+#### In Hopsworks Python Client
+
+```python3
+fg.save_validation_report(ge_report)
+```
+
+#### Monitor and Fetch Validation Reports
+
+A summary of uploaded reports will then be available via an API call or in the Hopsworks UI enabling easy monitoring. For in-depth analysis, it is possible to download the complete report from the UI.
+
+#### In Hopsworks UI
+
+Open the Feature Group overview page and go to the Expectations section. One tab allows you to check the report history with general information, while the other tab allows you to explore a summary of the result for individual expectations.
+
+#### In Hopsworks Python Client
+
+```python3
+# convenience method for rapid development
+ge_latest_report = fg.get_latest_validation_report()
+# fetching the latest summary prints a link to the UI
+# where you can download full report if summary is insufficient
+
+# or load multiple reports
+validation_history = fg.get_validation_reports()
+```
+
+### Validate your data
+
+#### In the python client
+
+As validation objects returned by Hopsworks are native Great Expectation objects you can run validation using the usual Great Expectations syntax:
+
+```python3
+ge_df = ge.from_pandas(df, expectation_suite=fg.get_expectation_suite())
+ge_report = ge_df.validate()
+```
+
+Note that you should always use an expectation suite that has been saved to Hopsworks if you intend to upload the associated validation report. You can use a convenience wrapper method provided by Hopsworks to validate using the attached suite:
+
+```python3
+ge_report = fg.validate(df)
+# set the save_report parameter to False to skip uploading the report to Hopsworks
+# ge_report = fg.validate(df, save_report=False)
+```
+
+This will run the validation using the expectation suite attached to this Feature Group and raise an exception if no attached suite is found.
+
+If you want to apply validation to the data already in the Feature Group you can call the `.validate` without providing data. It will read the data in the Feature Group.
+
+```python3
+report = fg.validate()
+```
+
 ## Best Practices
 
 Below is a set of recommendations and code snippets to help our users follow best practices when it comes to integrating a data validation step in your feature engineering pipelines. Rather than being prescriptive, we want to showcase how the API and configuration options can help adapt validation to your use-case.
@@ -183,78 +242,6 @@ First you will need to configure your preferred communication endpoint: slack, e
 ## Conclusion
 
 Hopsworks completes Great Expectation by automatically running the validation, persisting the reports along your data and allowing you to monitor data quality in its UI. How you decide to make use of these tools depends on your application and requirements. Whether in development or in production, real-time or batch, we think there is configuration that will work for your team. Check out our [quick hands-on tutorial](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/integrations/great_expectations/fraud_batch_data_validation.ipynb) to start applying what you learned so far.
-
-### Step 4: Integrating Great Expectations with Hopsworks
-
-Hopsworks can automatically run your expectation suite whenever you are inserting new data in your Feature Group. Your suite and reports are saved as part of your Feature Group with your data.
-
-#### Attach an Expectation Suite to a Feature Group
-
-The first step is to attach the GE expectation suite to your Feature Group. It enables both persistence of the expectation suite to the Hopsworks backend and automatic validation on insertion.
-
-```python3
-fg.save_expectation_suite(expectation_suite)
-
-# or directly when creating your Feature Group
-
-fg = fs.create_feature_group(
-    ...,
-    expectation_suite=expectation_suite
-)
-```
-
-### TODO validation on insertion.
-
-### TODO monitoring
-
-### TODO Extra boring stuff about using the API in other ways
-
-This suite can then easily be retrieved during a different session or deleted whenever you are working with this Feature Group by calling:
-
-```python3
-ge_expectation_suite = fg.get_expectation_suite()
-# or delete with
-fg.delete_expectation_suite()
-```
-
-#### Validate your data
-
-As validation objects returned by Hopsworks are native Great Expectation objects you can run validation using the usual Great Expectations syntax:
-
-```python3
-ge_df = ge.from_pandas(df, expectation_suite=fg.get_expectation_suite())
-ge_report = ge_df.validate()
-```
-
-Note that you should always use an expectation suite that has been saved to Hopsworks if you intend to upload the associated validation report. You can use a convenience wrapper method provided by Hopsworks to validate using the attached suite:
-
-```python3
-ge_report = fg.validate(df)
-# set the save_report parameter to False to skip uploading the report to Hopsworks
-# ge_report = fg.validate(df, save_report=False)
-```
-
-This will run the validation using the expectation suite attached to this Feature Group and raise an exception if no attached suite is found.
-
-#### Save Validation Reports
-
-When running validation using Great Expectations, a validation report is generated containing all validation results for the different expectations. Each result provides information about whether the provided DataFrame conforms to the corresponding expectation. These reports can be stored in Hopsworks to save a validation history for the data written to a particular Feature Group.
-
-```python3
-fg.save_validation_report(ge_report)
-```
-
-A summary of these reports will then be available via an API call or in the Hopsworks UI enabling easy monitoring. For in-depth analysis, it is possible to download the complete report from the UI.
-
-```python3
-# convenience method for rapid development
-ge_latest_report = fg.get_latest_validation_report()
-# fetching the latest summary prints a link to the UI
-# where you can download full report if summary is insufficient
-
-# or load multiple reports
-validation_history = fg.get_validation_reports()
-```
 
 ### Step 3: Data validation in development or production environments
 
