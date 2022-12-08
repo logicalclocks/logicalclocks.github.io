@@ -30,7 +30,7 @@ Note that some repository actions will require the username and token to be conf
 </p>
 
 ## Read only repositories
-In read only repositories, the following actions are disabled: commit, push and file checkout. The read only property can be enabled or disabled in the Cluster settings > Configuration, by updating the enable_read_only_git_repositories variable to true or false. Not that you need administrator previledges to update this property.
+In read only repositories, the following actions are disabled: commit, push and file checkout. The read only property can be enabled or disabled in the Cluster settings > Configuration, by updating the `enable_read_only_git_repositories` variable to true or false. Note that you need administrator privileges to update this property.
 
 ## Code
 You can also perform the repository actions using the hopsworks git API in python. 
