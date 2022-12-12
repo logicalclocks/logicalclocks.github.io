@@ -1,11 +1,18 @@
 # Limiting AWS permissions
 
 [Managed.hopsworks.ai](https://managed.hopsworks.ai) requires a set of permissions to be able to manage resources in the user’s AWS account.
-By default, these permissions are set to easily allow a wide range of different configurations and allow
+By default, [these permissions](#default-permissions) are set to easily allow a wide range of different configurations and allow
 us to automate as many steps as possible. While we ensure to never access resources we shouldn’t,
 we do understand that this might not be enough for your organization or security policy.
 This guide explains how to lock down AWS permissions following the IT security policy principle of least privilege allowing
 [managed.hopsworks.ai](https://managed.hopsworks.ai) to only access resources in a specific VPC.
+
+## Default permissions 
+This is the list of default permissions that are required by [managed.hopsworks.ai](https://managed.hopsworks.ai). If you prefer to limit these permissions, then proceed to the [next section](#limiting-the-cross-account-role-permissions).
+
+```json
+{!setup_installation/aws/aws_permissions.json!}
+```
 
 ## Limiting the cross-account role permissions
 
