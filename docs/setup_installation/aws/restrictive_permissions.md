@@ -144,8 +144,7 @@ If you want to learn more about how this policy works check out:
         "Effect": "Allow",
         "Action": [
           "ec2:AuthorizeSecurityGroupIngress",
-          "ec2:RevokeSecurityGroupIngress",
-          "ec2:DeleteSecurityGroup"
+          "ec2:RevokeSecurityGroupIngress"
         ],
         "Resource": "*",
         "Condition": {
@@ -217,7 +216,6 @@ The following permissions are used to let you close and open ports on your clust
         "Action": [
           "ec2:AuthorizeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupIngress",
-          "ec2:DeleteSecurityGroup"
         ],
         "Resource": "*",
         "Condition": {
@@ -226,6 +224,21 @@ The following permissions are used to let you close and open ports on your clust
           }
         }
       }
+```
+
+If you are using terraform, then you can also remove most of the *Describe* permissions in `NonResourceBasedPermissions` and use the following permissions instead
+
+```json
+        {
+            "Sid": "NonResourceBasedPermissions",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeSecurityGroups"
+            ],
+            "Resource": "*"
+        },
 ```
 
 ## Limiting the instance profile permissions
