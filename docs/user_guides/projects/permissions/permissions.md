@@ -21,8 +21,8 @@ Data owners hold the highest authority in the project, having full control of it
 
 Capable of:
 - Sharing project
-- Managing project members
-- Working with all feature store abstractions
+- Managing project and its members
+- Working with all feature store abstractions (such as Feature groups, Feature views, Storage connectors, etc.)
 
 It is worth mentioning that the project's creator (aka. `author`) is a special type of `Data owner`. He is the only user capable of deleting the project and it is impossible to change his role to `Data scientist`.
 
