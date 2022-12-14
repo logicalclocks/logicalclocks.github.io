@@ -42,4 +42,4 @@ The projects can be shared exclusively using `read-only` permission. This means 
 
 ## Conclusion
 
-Properly set up permissions can help a user avoid permisong changes that they should not be capable of doing on the project. Therefore, the member's role should be picked, based on the expected usage, and when in doubt pick the role with the least privileges. The members' role can be revised if there is no need for it.
+Properly set up permissions can help a user avoid permisong changes that they should not be capable of doing on the project. Therefore, the member's role should be picked, based on the expected usage, and when in doubt pick the role with the least privileges. The members' role can be revised if there is need for it.
