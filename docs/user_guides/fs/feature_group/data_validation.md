@@ -1,5 +1,10 @@
 # Data Validation
 
+<figure markdown>
+  ![Validation on Insertion with Hopsworks and Great Expectations](../../../assets/images/guides/fs/great_expectations/great_exp_in_hopsworks.png)
+  <figcaption>Validation on Insertion with Hopsworks and Great Expectations.</figcaption>
+</figure>
+
 ## Introduction
 
 Clean, high quality feature data is of paramount importance to being able to train and serve high quality models. Hopsworks offers integration with [Great Expectations](https://greatexpectations.io/) to enable a smooth data validation workflow. This guide is designed to help you integrate a data validation step when inserting new DataFrames into a Feature Group. Note that validation is performed inline as part of your feature pipeline (on the client machine) - it is not executed by Hopsworks after writing features.

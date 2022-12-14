@@ -198,7 +198,7 @@ Any data you insert in the Feature Group from now will be validated and a report
 
 ```python3
 # Insert and validate your data
-# insert_job, validation_report = my_validated_data_fg.insert(my_data_df)
+insert_job, validation_report = my_validated_data_fg.insert(my_data_df)
 ```
 
 Great Expectations profiler can inspect your data to build a standard Expectation Suite. You can attach this Expectation Suite directly when creating your Feature Group to make sure every piece of data finding its way in Hopsworks gets validated. Hopsworks will default to its `"ALWAYS"` ingestion policy, meaning data are ingested whether validation succeeds or not. This way data validation is not a barrier, just a monitoring tool.
