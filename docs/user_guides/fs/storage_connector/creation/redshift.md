@@ -23,7 +23,7 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **Authentication method:** There are two options available for authenticating with the Redshift cluster. The first option is to configure a username and a password. 
 The second option is to configure an IAM role. With IAM roles, Jobs or notebooks launched on Hopsworks do not need to explicitly authenticate with Redshift, as the HSFS library will transparently use the IAM role to acquire a temporary credential to authenticate the specified user. 
 Read more about IAM roles in our [AWS credentials passthrough guide](../../../../admin/roleChaining.md). Note, the option `Instance Role` allows the user to save the connector.
-  However, this option does not yet support to read from the connector.
+  However, this option does not yet support reading from the connector.
 
 ## Creation in the UI
 ### Step 1: Set up new storage connector
@@ -41,15 +41,15 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
 
 1. Select "Redshift" as connector protocol.
 2. The name of the cluster.
-3. The database endpoint. Should be in the format of `[UUID].eu-west-1.redshift.amazonaws.com`. For example, if the endpoint info 
+3. The database endpoint. Should be in the format `[UUID].eu-west-1.redshift.amazonaws.com`. For example, if the endpoint info 
    displayed in Redshift is `cluster-id.uuid.eu-north-1.redshift.amazonaws.com:5439/dev` the value to enter 
    here is just `uuid.eu-north-1.redshift.amazonaws.com` 
 4. The database name.
 5. The database port.
 6. The database username, here you have the possibility to let Hopsworks auto-create the username for you.
-8. Database Driver (optional): You can use the default JDBC Redshift Driver `com.amazon.redshift.jdbc42.Driver` 
+7. Database Driver (optional): You can use the default JDBC Redshift Driver `com.amazon.redshift.jdbc42.Driver` 
    included in Hopsworks or set a different driver (More on this later).
-9. Optionally provide the database group and table to point the connector to. A database group is the group created 
+8. Optionally provide the database group and table for the connector. A database group is the group created 
    for the user if applicable. More information, at [redshift documentation](https://docs.aws.amazon.com/redshift/latest/dg/r_Groups.html)
 9. Set the appropriate authentication method. 
 
@@ -76,16 +76,15 @@ You can now add the driver file to the default job and Jupyter configuration. Th
 1. Go into the Project's settings.
 2. Select "Compute configuration".
 3. Select "Spark".
-4. Under "Additional Jars" choose to "Upload new file" to upload the driver jar file.
+4. Under "Additional Jars" choose "Upload new file" to upload the driver jar file.
 
 <figure markdown>
   ![Redshift Driver Job and Jupyter Configuration](../../../../assets/images/guides/fs/storage_connector/jupyter_config.png)
   <figcaption>Attaching the Redshift Driver to all Jobs and Jupyter Instances of the Project</figcaption>
 </figure>
 
-Alternatively, you can choose "From Project" option to choose an already existing jar file in the Project. For this, 
-you will first have to upload a jar file in Project using the File Browser if not already, and then choose the 
-desired file using the "From Project" option. To upload the jar file in Project through File Browser, see below example:
+Alternatively, you can choose the "From Project" option. You will first have to upload the jar file to the Project using the File Browser. After you have uploaded the jar 
+file, you can select it using the "From Project" option. To upload the jar file to the Project through the File Browser, see the example below:
 
    1. Open File Browser
    2. Navigate to "Resources" directory
@@ -93,7 +92,7 @@ desired file using the "From Project" option. To upload the jar file in Project 
 
 <figure markdown>
   ![Redshift Driver Upload](../../../../assets/images/guides/fs/storage_connector/driver_upload.png)
-  <figcaption>Redshift Driver Upload in the Filesystem Browser</figcaption>
+  <figcaption>Redshift Driver Upload in the File Browser</figcaption>
 </figure>
 
 
