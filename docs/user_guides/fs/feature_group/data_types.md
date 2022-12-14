@@ -30,7 +30,7 @@ or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment
 
 | Spark Type (S) | Pandas Type (P)                    | Offline Feature Type          | Remarks                                                        |
 |----------------|------------------------------------|-------------------------------|----------------------------------------------------------------|
-| BooleanType    | bool, boolean                      | BOOLEAN                       |                                                                |
+| BooleanType    | bool, object(bool)                 | BOOLEAN                       |                                                                |
 | ByteType       | int8, Int8                         | TINYINT or INT                | INT when time_travel_type="HUDI"                               |
 | ShortType      | uint8, int16, Int16                | SMALLINT or INT               | INT when time_travel_type="HUDI"                               |
 | IntegerType    | uint16, int32, Int32               | INT                           |                                                                |
