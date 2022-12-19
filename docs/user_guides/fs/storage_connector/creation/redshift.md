@@ -20,10 +20,10 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **Database endpoint:** The endpoint for the database. Should be in the format of `[UUID].eu-west-1.redshift.amazonaws.com`.
 - **Database name:** The name of the database to query.
 - **Database port:** The port of the cluster. Defaults to 5349.
-- **Authentication method:** There are two options available for authenticating with the Redshift cluster. The first option is to configure a username and a password. 
+- **Authentication method:** There are three options available for authenticating with the Redshift cluster. The first option is to configure a username and a password. 
 The second option is to configure an IAM role. With IAM roles, Jobs or notebooks launched on Hopsworks do not need to explicitly authenticate with Redshift, as the HSFS library will transparently use the IAM role to acquire a temporary credential to authenticate the specified user. 
-Read more about IAM roles in our [AWS credentials passthrough guide](../../../../admin/roleChaining.md). Note, the option `Instance Role` allows the user to save the connector.
-  However, this option does not yet support reading from the connector.
+Read more about IAM roles in our [AWS credentials passthrough guide](../../../../admin/roleChaining.md). Lastly, 
+  option `Instance Role` will use the default ARN Role configured for the cluster instance.
 
 ## Creation in the UI
 ### Step 1: Set up new storage connector
