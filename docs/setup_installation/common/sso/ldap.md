@@ -15,6 +15,7 @@ The JNDI resource will communicate with your LDAP server to perform the authenti
 </p>
 
 - _jndilookupname_: should contain the LDAP domain.
+- _hopsworks.ldap.basedn_: the LDAP domain, it should be the same as _jndilookupname_
 - _java.naming.provider.url_: url of your LDAP server with port.
 - _java.naming.ldap.attributes.binary_: is the binary unique identifier that will be used in subsequent logins to identify the user.
 - _java.naming.security.authentication_: how to authenticate to the LDAP server.

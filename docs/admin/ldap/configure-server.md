@@ -53,6 +53,7 @@ asadmin create-jndi-resource \
  --factoryclass com.sun.jndi.ldap.LdapCtxFactory \
  --jndilookupname dc\=hopsworks\,dc\=ai \
  --property java.naming.provider.url=ldap\\://193\.10\.66\.104\\:1389:\
+ hopsworks.ldap.basedn=dc\\\=hopsworks\,dc\\\=ai:\
  java.naming.ldap.attributes.binary=entryUUID:\
  java.naming.security.authentication=simple:\
  java.naming.security.principal=<username>:\
