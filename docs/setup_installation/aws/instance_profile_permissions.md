@@ -44,7 +44,10 @@ Replace the following placeholders with their appropiate values
       ],
       "Resource": [
         "arn:aws:ecr:*:*:repository/filebeat",
-        "arn:aws:ecr:*:*:repository/base"
+        "arn:aws:ecr:*:*:repository/base",
+        "arn:aws:ecr:*:*:repository/onlinefs",
+        "arn:aws:ecr:*:*:repository/airflow",
+        "arn:aws:ecr:*:*:repository/git"
       ]
     },
     {
@@ -73,7 +76,10 @@ Replace the following placeholders with their appropiate values
       ],
       "Resource": [
         "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/filebeat",
-        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/base"
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/base",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/onlinefs",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/airflow",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/git"
       ]
     },
     {

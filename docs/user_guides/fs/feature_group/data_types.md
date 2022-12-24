@@ -30,11 +30,11 @@ or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment
 
 | Spark Type (S) | Pandas Type (P)                    | Offline Feature Type          | Remarks                                                        |
 |----------------|------------------------------------|-------------------------------|----------------------------------------------------------------|
-| BooleanType    | bool                               | BOOLEAN                       |                                                                |
-| ByteType       | int8                               | TINYINT or INT                | INT when time_travel_type="HUDI"                               |
-| ShortType      | uint8, int16                       | SMALLINT or INT               | INT when time_travel_type="HUDI"                               |
-| IntegerType    | uint16, int32                      | INT                           |                                                                |
-| LongType       | int, uint32, int64                 | BIGINT                        |                                                                |
+| BooleanType    | bool, object(bool)                 | BOOLEAN                       |                                                                |
+| ByteType       | int8, Int8                         | TINYINT or INT                | INT when time_travel_type="HUDI"                               |
+| ShortType      | uint8, int16, Int16                | SMALLINT or INT               | INT when time_travel_type="HUDI"                               |
+| IntegerType    | uint16, int32, Int32               | INT                           |                                                                |
+| LongType       | int, uint32, int64, Int64          | BIGINT                        |                                                                |
 | FloatType      | float, float16, float32            | FLOAT                         |                                                                |
 | DoubleType     | float64                            | DOUBLE                        |                                                                |
 | DecimalType    | decimal.decimal                    | DECIMAL(PREC, SCALE)          | Not supported in PO env. when time_travel_type="HUDI"          |
