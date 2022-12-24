@@ -99,6 +99,7 @@ nav:
           - Apache Spark: user_guides/integrations/spark.md
       - Sharing: user_guides/fs/sharing/sharing.md
       - Tags: user_guides/fs/tags/tags.md
+      - Lineage: user_guides/fs/lineage/lineage.md
     - Projects:
       - user_guides/projects/index.md
       - Authentication:
