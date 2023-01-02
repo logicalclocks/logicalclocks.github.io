@@ -6,7 +6,7 @@ A group to project mapping allows you to add members of your LDAP group to a pro
 add each user manually. A mapping is created by specifying a group from LDAP that will be mapped to a project in
 Hopsworks and what role the members of that group will be assigned in the project.
 
-Once a mapping is created project membership is managed by LDAP group membership. Any change to group membership in LDAP will be reflected 
+Once a mapping is created, project membership is managed by LDAP group membership. Any change to group membership in LDAP will be reflected 
 in Hopsworks i.e. removing a user from the LDAP group will also remove them from the project.
  
 ## Prerequisites
