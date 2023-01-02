@@ -35,7 +35,7 @@ In the `Project` section choose project you wish to share the feature store with
   </figure>
 </p>
 
-The projects can be shared exclusively using `read-only` permission. This means that a member is not capable of enacting any changes on the shared project, without also being a part of that project.
+Feature stores can be shared exclusively using `read-only` permission. This means that a member is not capable of enacting any changes on the shared project.
 
 ### Step 3: Accept the Invitation
 
