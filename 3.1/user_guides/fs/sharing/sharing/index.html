@@ -2151,8 +2151,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-3-accept-invitation" class="md-nav__link">
-    Step 3: Accept Invitation
+  <a href="#step-3-accept-the-invitation" class="md-nav__link">
+    Step 3: Accept the Invitation
   </a>
   
 </li>
@@ -5231,8 +5231,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-3-accept-invitation" class="md-nav__link">
-    Step 3: Accept Invitation
+  <a href="#step-3-accept-the-invitation" class="md-nav__link">
+    Step 3: Accept the Invitation
   </a>
   
 </li>
@@ -5303,18 +5303,18 @@
 There are two main use cases for sharing features between projects:</p>
 <ul>
 <li>
-<p>If you have multiple teams working on the same Hopsworks deployment. Each team works within their own set of projects. 
-  If a team A wants to leverage features built by team B, they can do so by sharing the feature groups from a team A project to a team B project.</p>
+<p>If you have multiple teams working on the same Hopsworks deployment. Each team works within its own set of projects. 
+  If team A wants to leverage features built by team B, they can do so by sharing the feature groups from a team A project to a team B project.</p>
 </li>
 <li>
-<p>By creating different projects for the different stages of development lifecycle (e.g. a dev project, a testing project and a production project), 
-  you can make sure that changes on the development project don't impact the features in the production project. At the same time you might want to 
-  leverage production features to develop new models or additional features. In this case you can share the production feature store with the 
-  development feature store in read only mode.</p>
+<p>By creating different projects for the different stages of the development lifecycle (e.g. a dev project, a testing project, and a production project), 
+  you can make sure that changes on the development project don't impact the features in the production project. At the same time, you might want to 
+  leverage production features to develop new models or additional features. In this case, you can share the production feature store with the 
+  development feature store in <code>read-only</code> mode.</p>
 </li>
 </ul>
 <h3 id="step-1-open-the-project-of-the-feature-store-that-you-would-like-to-share-on-hopsworks">Step 1: Open the project of the feature store that you would like to share on Hopsworks.<a class="headerlink" href="#step-1-open-the-project-of-the-feature-store-that-you-would-like-to-share-on-hopsworks" title="Permanent link">#</a></h3>
-<p>In the <code>Project Settings</code> navigate to <code>Shared with other projects</code> section.</p>
+<p>In the <code>Project Settings</code> navigate to the <code>Shared with other projects</code> section.</p>
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/project/share_with_other_projects.png" alt="Share Project">
@@ -5323,15 +5323,16 @@ There are two main use cases for sharing features between projects:</p>
 
 <h3 id="step-2-share">Step 2: Share<a class="headerlink" href="#step-2-share" title="Permanent link">#</a></h3>
 <p>Click <code>Share feature store</code> to bring up the dialog for sharing.</p>
-<p>In <code>Project</code> section choose project you wish to share feature store with.</p>
+<p>In the <code>Project</code> section choose project you wish to share the feature store with.</p>
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/project/share_dialog.png" alt="Share Project Dialog">
   </figure>
 </p>
 
-<h3 id="step-3-accept-invitation">Step 3: Accept Invitation<a class="headerlink" href="#step-3-accept-invitation" title="Permanent link">#</a></h3>
-<p>In the project where feature store was shared (step 2) go to <code>Project Settings</code> and navigate to <code>Shared from other projects</code> section.
+<p>Feature stores can be shared exclusively using <code>read-only</code> permission. This means that a member is not capable of enacting any changes on the shared project.</p>
+<h3 id="step-3-accept-the-invitation">Step 3: Accept the Invitation<a class="headerlink" href="#step-3-accept-the-invitation" title="Permanent link">#</a></h3>
+<p>In the project where the feature store was shared (step 2) go to <code>Project Settings</code> and navigate to the <code>Shared from other projects</code> section.
 Click <code>accept</code>.</p>
 <p align="center">
   <figure>
@@ -5373,7 +5374,7 @@ To retrieve the handle use the get_feature_store() method and provide the name o
 <span class="n">query</span> <span class="o">=</span> <span class="n">shared_fg</span><span class="o">.</span><span class="n">select_all</span><span class="p">()</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fg_a</span><span class="o">.</span><span class="n">select_all</span><span class="p">())</span>
 </code></pre></div>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">#</a></h2>
-<p>In this guide you learned how to share a feature store and how to join features from different feature stores.</p>
+<p>In this guide, you learned how to share a feature store and how to join features from different feature stores.</p>
 
               
             </article>

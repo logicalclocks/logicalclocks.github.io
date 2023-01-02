@@ -2451,9 +2451,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-add-new-member" class="md-nav__link">
-    Step 2: Add new member
+  <a href="#step-2-add-a-new-member" class="md-nav__link">
+    Step 2: Add a new member
   </a>
+  
+    <nav class="md-nav" aria-label="Step 2: Add a new member">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-owner" class="md-nav__link">
+    Data owner
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-scientist" class="md-nav__link">
+    Data scientist
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -5185,9 +5205,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-add-new-member" class="md-nav__link">
-    Step 2: Add new member
+  <a href="#step-2-add-a-new-member" class="md-nav__link">
+    Step 2: Add a new member
   </a>
+  
+    <nav class="md-nav" aria-label="Step 2: Add a new member">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-owner" class="md-nav__link">
+    Data owner
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-scientist" class="md-nav__link">
+    Data scientist
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -5221,9 +5261,9 @@
 
 <h1 id="how-to-add-members-to-a-project">How To Add Members To A Project<a class="headerlink" href="#how-to-add-members-to-a-project" title="Permanent link">#</a></h1>
 <h3 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h3>
-<p>In this guide, you will learn how to add new members to your project.</p>
+<p>In this guide, you will learn how to add new members to your project as well as the different roles within a project.</p>
 <h2 id="step-1-members-list">Step 1: Members list<a class="headerlink" href="#step-1-members-list" title="Permanent link">#</a></h2>
-<p>In the <code>Project settings</code> page you can find the <code>General</code> section, which lists the members of the project.</p>
+<p>On the <code>Project settings</code> page, you can find the <code>General</code> section, which lists the members of the project.</p>
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/project/members_list.png" alt="API Keys">
@@ -5231,8 +5271,8 @@
   </figure>
 </p>
 
-<h2 id="step-2-add-new-member">Step 2: Add new member<a class="headerlink" href="#step-2-add-new-member" title="Permanent link">#</a></h2>
-<p>Next click <code>Add members</code> and a dialog where users can be invited. Select the users to invite.</p>
+<h2 id="step-2-add-a-new-member">Step 2: Add a new member<a class="headerlink" href="#step-2-add-a-new-member" title="Permanent link">#</a></h2>
+<p>Next click <code>Add members</code> and a dialog where users can be invited will appear. Select the users to invite.</p>
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/project/add_new_member.png" alt="API Keys">
@@ -5240,6 +5280,19 @@
   </figure>
 </p>
 
+<p>Subsequently, the selected project members can be assigned to 2 different roles, depending on the privileges necessary for him/her to fulfill their needs.</p>
+<h3 id="data-owner">Data owner<a class="headerlink" href="#data-owner" title="Permanent link">#</a></h3>
+<p>Data owners hold the highest authority in the project, having full control of its contents.</p>
+<p>They are allowed to:
+- Share a project
+- Manage the project and its members
+- Work with all feature store abstractions (such as Feature groups, Feature views, Storage connectors, etc.)</p>
+<p>It is worth mentioning that the project's creator (aka. <code>author</code>) is a special type of <code>Data owner</code>. He is the only user capable of deleting the project and it is impossible to change his role to <code>Data scientist</code>.</p>
+<h3 id="data-scientist">Data scientist<a class="headerlink" href="#data-scientist" title="Permanent link">#</a></h3>
+<p>Data scientists can be viewed as the users of data.</p>
+<p>They are allowed to:
+- Create feature views/training datasets using existing features
+- Manage the feature views/training datasets they have created</p>
 <h2 id="step-3-member-invited">Step 3: Member invited<a class="headerlink" href="#step-3-member-invited" title="Permanent link">#</a></h2>
 <p>The invited user will now appear in the list of members and will have access to the project.</p>
 <p align="center">
@@ -5250,7 +5303,7 @@
 </p>
 
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">#</a></h2>
-<p>In this guide you learned how to add a new member.</p>
+<p>In this guide, you learned how to add a new member and the types of roles this member can be a part of.</p>
 
               
             </article>
