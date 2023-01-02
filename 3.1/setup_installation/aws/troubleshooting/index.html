@@ -1199,6 +1199,8 @@
         
           
         
+          
+        
       
       
         
@@ -2105,6 +2107,20 @@
     <li class="md-nav__item">
       <a href="../../../user_guides/fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guides/fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5176,9 +5192,9 @@
 <div class="highlight"><pre><span></span><code>$ aws sts decode-authorization-message --encoded-message hg-Sh5-CUNT5jgB305YbOp_FDp2P70ZPw5iwoextxcdWmoc4wgm_K0pAUZEvTtCpvCk_-EwtaqaRS0act1BM-Bz-id4NOwo-OVZES5q9fLQIqk5_typL767idkb4jdzrrwNLD3h7iaaoleKGQpaW5kzI_oHEtibBRY2uWhU07oiwDHOAwb-cQ-kIA4nJIay7wVoL7QRx8nECpb56s68lMWhrdbqKj6uRQwsAILY7eoV-sDCbWWjnr98ja_olixhlV95txiV-oCR2qW6GKn4TVKl2raGbwjWRdS2GACP0fm7RUI_glPl7q65Erhrcr7Z2uF2SRF46VI5vfXkjXxv58e0x6SSRmKXF397e4QpPM6RyopmgDa9sSWAbkBxC86O9b30l47GX9w98trc76jsfU-UcdqK-Vu7Qy3-j8ehYMDpNvZRFNX64fUrsfusLJcHnhAPqUgCbvjfmEa605GkH7amlP2j23vprb94auzCVk8rgVkrSrBMek6YlWA0nzXtSjq8mVAvFE-n6x3ByLdt68Ldgc602FsFqifuzUm7CnjapIIwSAat_TXQCs-mjXyB983AEw__RwiXN
 </code></pre></div>
 <p>Then you will get the following message as response 
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;DecodedMessage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;allowed\&quot;:false,\&quot;explicitDeny\&quot;:false,\&quot;matchedStatements\&quot;:{\&quot;items\&quot;:[]},\&quot;failures\&quot;:{\&quot;items\&quot;:[]},\&quot;context\&quot;:{\&quot;principal\&quot;:{\&quot;id\&quot;:\&quot;AROA27VDEGQLGDB4JOSOI:1f708920-18a6-11ed-8dd4-f162dca8fc19\&quot;,\&quot;arn\&quot;:\&quot;arn:aws:sts::xxxxx:assumed-role/cross-acount-role/1f708920-18a6-11ed-8dd4-f162dca8fc19\&quot;},\&quot;action\&quot;:\&quot;ec2:CreateVpc\&quot;,\&quot;resource\&quot;:\&quot;arn:aws:ec2:us-east-2:xxxxx:vpc/*\&quot;,\&quot;conditions\&quot;:{\&quot;items\&quot;:[{\&quot;key\&quot;:\&quot;aws:Region\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;us-east-2\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:Service\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;ec2\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:Resource\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;vpc/*\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:Type\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;vpc\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:Account\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;xxxxxx\&quot;}]}},{\&quot;key\&quot;:\&quot;ec2:VpcID\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;*\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:ARN\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;arn:aws:ec2:us-east-2:xxxx:vpc/*\&quot;}]}}]}}}&quot;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;DecodedMessage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;allowed\&quot;:false,\&quot;explicitDeny\&quot;:false,\&quot;matchedStatements\&quot;:{\&quot;items\&quot;:[]},\&quot;failures\&quot;:{\&quot;items\&quot;:[]},\&quot;context\&quot;:{\&quot;principal\&quot;:{\&quot;id\&quot;:\&quot;AROA27VDEGQLGDB4JOSOI:1f708920-18a6-11ed-8dd4-f162dca8fc19\&quot;,\&quot;arn\&quot;:\&quot;arn:aws:sts::xxxxx:assumed-role/cross-acount-role/1f708920-18a6-11ed-8dd4-f162dca8fc19\&quot;},\&quot;action\&quot;:\&quot;ec2:CreateVpc\&quot;,\&quot;resource\&quot;:\&quot;arn:aws:ec2:us-east-2:xxxxx:vpc/*\&quot;,\&quot;conditions\&quot;:{\&quot;items\&quot;:[{\&quot;key\&quot;:\&quot;aws:Region\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;us-east-2\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:Service\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;ec2\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:Resource\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;vpc/*\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:Type\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;vpc\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:Account\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;xxxxxx\&quot;}]}},{\&quot;key\&quot;:\&quot;ec2:VpcID\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;*\&quot;}]}},{\&quot;key\&quot;:\&quot;aws:ARN\&quot;,\&quot;values\&quot;:{\&quot;items\&quot;:[{\&quot;value\&quot;:\&quot;arn:aws:ec2:us-east-2:xxxx:vpc/*\&quot;}]}}]}}}&quot;</span>
+<span class="p">}</span>
 </code></pre></div></p>
 <p>From the above response we can see that the cross-account role is missing the <code>ec2:CreateVpc</code> permission. The solution is to terminate the cluster in error and update <a href="getting_started/#step-1-connecting-your-aws-account">cross account role setup</a> with the missing permission(s) and then try to create a new cluster.</p>
 <h2 id="missing-permissions-error-during-cluster-creation">Missing permissions error during cluster creation<a class="headerlink" href="#missing-permissions-error-during-cluster-creation" title="Permanent link">#</a></h2>

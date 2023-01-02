@@ -1199,6 +1199,8 @@
         
           
         
+          
+        
       
       
         
@@ -2105,6 +2107,20 @@
     <li class="md-nav__item">
       <a href="../../../user_guides/fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guides/fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5249,34 +5265,34 @@ This guide explains how to lock down access permissions following the IT securit
 <p>Some of the permissions set up when connection your GCP account to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> (<a href="../getting_started/#step-1-connecting-your-gcp-account">here</a>) can be removed under certain conditions.</p>
 <h3 id="backup-permissions">Backup permissions<a class="headerlink" href="#backup-permissions" title="Permanent link">#</a></h3>
 <p>The following permissions are only needed for the backup feature. If you are not going to create backups or if you do not have access to this Enterprise feature, you can limit the permission of the Service Account by removing them.</p>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.disks.createSnapshot</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.create</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.delete</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.setLabels</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.get</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.useReadOnly</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.disks.createSnapshot</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.delete</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.setLabels</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.useReadOnly</span>
 </code></pre></div>
 <h3 id="instance-type-modification-permissions">Instance type modification permissions<a class="headerlink" href="#instance-type-modification-permissions" title="Permanent link">#</a></h3>
 <p>The following permission is only needed to be able to change the head node and RonDB nodes instance type on an existing cluster (<a href="../../common/scalingup/">documentation</a>). If you are not going to use this feature, you can limit the permission of the Service Account by removing it.</p>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setMachineType</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setMachineType</span>
 </code></pre></div>
 <h3 id="create-a-vpc-permissions">Create a VPC permissions<a class="headerlink" href="#create-a-vpc-permissions" title="Permanent link">#</a></h3>
 <p>The following permissions are only needed if you want <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> to create VPC and subnet for you.
 If you choose an existing VPC and subnet, you can limit the permission of the Service Account by removing them. </p>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.create</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.delete</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.get</span><span class="w"></span>
-<span class="nn">...</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.create</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.delete</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.get</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.delete</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.get</span>
+<span class="nn">...</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.delete</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.get</span>
 </code></pre></div>
 <h2 id="limiting-the-instances-service-account-permissions">Limiting the Instances Service Account permissions<a class="headerlink" href="#limiting-the-instances-service-account-permissions" title="Permanent link">#</a></h2>
 <p>Some of the permissions set up for the instances service account used during cluster creation (<a href="../cluster_creation/#step-4-select-the-service-account">here</a>) can be removed under certain conditions.</p>
 <h3 id="backups">Backups<a class="headerlink" href="#backups" title="Permanent link">#</a></h3>
 <p>If you do not intend to take backups or if you do not have access to this Enterprise feature you can remove the permissions that are only used by the backup feature when configuring your instances service account.
 For this remove the following permission from <a href="../getting_started/#step-21-creating-a-custom-role-for-accessing-storage">your instances service account</a>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">storage.buckets.update</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">storage.buckets.update</span>
 </code></pre></div>
 
               

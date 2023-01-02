@@ -1199,6 +1199,8 @@
         
           
         
+          
+        
       
       
         
@@ -2105,6 +2107,20 @@
     <li class="md-nav__item">
       <a href="../../../user_guides/fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guides/fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5234,10 +5250,10 @@ caller.username   NULLABLE  STRING
 </p>
 </div>
 <p>To export the audit logs to the BigQuery table created in the previous step, run the following command.</p>
-<div class="highlight"><pre><span></span><code>bq load --project_id &lt;projectId&gt; <span class="se">\</span>
-        --source_format<span class="o">=</span>NEWLINE_DELIMITED_JSON <span class="se">\</span>
-        &lt;DATASET.TABLE&gt; <span class="se">\</span>
-        /srv/hops/domains/domain1/logs/audit/server_audit_log0.log
+<div class="highlight"><pre><span></span><code>bq<span class="w"> </span>load<span class="w"> </span>--project_id<span class="w"> </span>&lt;projectId&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--source_format<span class="o">=</span>NEWLINE_DELIMITED_JSON<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>&lt;DATASET.TABLE&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>/srv/hops/domains/domain1/logs/audit/server_audit_log0.log
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip<p>This command can be configured to run periodically on a given schedule by setting up a cronjob.</p>

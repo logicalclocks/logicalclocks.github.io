@@ -1199,6 +1199,8 @@
         
           
         
+          
+        
       
       
         
@@ -2105,6 +2107,20 @@
     <li class="md-nav__item">
       <a href="../../../user_guides/fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guides/fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5301,22 +5317,22 @@ but there are some specificities to Hopsworks.</p>
 <p class="admonition-title">Note</p>
 <p>Replace IP_ADDRESS with the actual address of Hopsworks server</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;federate&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;federate&#39;</span>
+<span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s</span>
 
-<span class="w">    </span><span class="nt">honor_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">    </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/federate&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">honor_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/federate&#39;</span>
 
-<span class="w">    </span><span class="nt">params</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="s">&#39;match[]&#39;</span><span class="p p-Indicator">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{job=&quot;airflow&quot;}&#39;</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{job=&quot;pushgateway&quot;}&#39;</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{job=&quot;hadoop&quot;}&#39;</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{job=&quot;hopsworks&quot;}&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">      </span><span class="s">&#39;match[]&#39;</span><span class="p p-Indicator">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{job=&quot;airflow&quot;}&#39;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{job=&quot;pushgateway&quot;}&#39;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{job=&quot;hadoop&quot;}&#39;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{job=&quot;hopsworks&quot;}&#39;</span>
 
-<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;IP_ADDRESS:9089&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;IP_ADDRESS:9089&#39;</span>
 </code></pre></div>
 <p>These are the basic labels gathered by Hopsworks.</p>
 <ul>
@@ -5343,12 +5359,12 @@ but there are some specificities to Hopsworks.</p>
 To push metrics with this method we use the <code>remote_write</code> configuration.</p>
 <p>We will only give a sample configuration as <code>remote_write</code> is extensively documented in Prometheus <a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write">documentation</a>
 In the example below we push metrics to a custom service listening on port 9096 which transforms the metrics and forwards them.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">remote_write</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://localhost:9096&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">queue_config</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">capacity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span><span class="w"></span>
-<span class="w">      </span><span class="nt">max_samples_per_send</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w"></span>
-<span class="w">      </span><span class="nt">batch_send_deadline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60s</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">remote_write</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://localhost:9096&quot;</span>
+<span class="w">    </span><span class="nt">queue_config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">capacity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+<span class="w">      </span><span class="nt">max_samples_per_send</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span>
+<span class="w">      </span><span class="nt">batch_send_deadline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60s</span>
 </code></pre></div>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">#</a></h2>
 <p>In this guide we showed how you can push metrics outside of Hopsworks cluster using two methods, (a) federated Prometheus or (b) remote write to a custom service. This configuration is useful if you

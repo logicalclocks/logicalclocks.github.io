@@ -1203,6 +1203,8 @@
         
           
         
+          
+        
       
       
         
@@ -2180,6 +2182,20 @@
     <li class="md-nav__item">
       <a href="../../tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5229,18 +5245,18 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="c1">// create a simple feature view</span><span class="w"></span>
-<span class="n">FeatureView</span><span class="w"> </span><span class="n">featureView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">featureStore</span><span class="p">.</span><span class="na">createFeatureView</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="c1">// create a simple feature view</span>
+<span class="n">FeatureView</span><span class="w"> </span><span class="n">featureView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">featureStore</span><span class="p">.</span><span class="na">createFeatureView</span><span class="p">()</span>
 <span class="w">                                        </span><span class="p">.</span><span class="na">name</span><span class="p">(</span><span class="s">&quot;transactions_view)</span>
 <span class="s">                                        .query(query)</span>
 <span class="s">                                        .build();</span>
 
 <span class="s">// create a feature view with label</span>
 <span class="s">FeatureView featureView = featureStore.createFeatureView()</span>
-<span class="s">                                        .name(&quot;</span><span class="n">transactions_view</span><span class="p">)</span><span class="w"></span>
-<span class="w">                                        </span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="w"></span>
-<span class="w">                                        </span><span class="p">.</span><span class="na">labels</span><span class="p">(</span><span class="n">Lists</span><span class="p">.</span><span class="na">newArrayList</span><span class="p">(</span><span class="s">&quot;fraud_label&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                                        </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w"></span>
+<span class="s">                                        .name(&quot;</span><span class="n">transactions_view</span><span class="p">)</span>
+<span class="w">                                        </span><span class="p">.</span><span class="na">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="w">                                        </span><span class="p">.</span><span class="na">labels</span><span class="p">(</span><span class="n">Lists</span><span class="p">.</span><span class="na">newArrayList</span><span class="p">(</span><span class="s">&quot;fraud_label&quot;</span><span class="p">)</span>
+<span class="w">                                        </span><span class="p">.</span><span class="na">build</span><span class="p">();</span>
 </code></pre></div>
 </div>
 </div>
@@ -5255,7 +5271,7 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">FeatureView</span><span class="w"> </span><span class="n">featureView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">featureStore</span><span class="p">.</span><span class="na">getFeatureView</span><span class="p">(</span><span class="s">&quot;transactions_view&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="n">FeatureView</span><span class="w"> </span><span class="n">featureView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">featureStore</span><span class="p">.</span><span class="na">getFeatureView</span><span class="p">(</span><span class="s">&quot;transactions_view&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -5269,7 +5285,7 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">featureView</span><span class="p">.</span><span class="na">delete</span><span class="p">()</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="n">featureView</span><span class="p">.</span><span class="na">delete</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -5290,16 +5306,16 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="c1">// attach</span><span class="w"></span>
-<span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Maps</span><span class="p">.</span><span class="na">newHashMap</span><span class="p">();</span><span class="w"></span>
-<span class="n">tag</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="n">featureView</span><span class="p">.</span><span class="na">addTag</span><span class="p">(</span><span class="s">&quot;tag_schema&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">)</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="c1">// attach</span>
+<span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Maps</span><span class="p">.</span><span class="na">newHashMap</span><span class="p">();</span>
+<span class="n">tag</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;value&quot;</span><span class="p">);</span>
+<span class="n">featureView</span><span class="p">.</span><span class="na">addTag</span><span class="p">(</span><span class="s">&quot;tag_schema&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">)</span>
 
-<span class="c1">// get</span><span class="w"></span>
-<span class="n">featureView</span><span class="p">.</span><span class="na">getTag</span><span class="p">(</span><span class="s">&quot;tag_schema&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="c1">// get</span>
+<span class="n">featureView</span><span class="p">.</span><span class="na">getTag</span><span class="p">(</span><span class="s">&quot;tag_schema&quot;</span><span class="p">)</span>
 
-<span class="c1">// remove</span><span class="w"></span>
-<span class="n">featureView</span><span class="p">.</span><span class="na">deleteTag</span><span class="p">(</span><span class="s">&quot;tag_schema&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="c1">// remove</span>
+<span class="n">featureView</span><span class="p">.</span><span class="na">deleteTag</span><span class="p">(</span><span class="s">&quot;tag_schema&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>

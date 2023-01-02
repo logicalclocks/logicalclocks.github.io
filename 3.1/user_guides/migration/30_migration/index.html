@@ -1201,6 +1201,8 @@
         
           
         
+          
+        
       
       
         
@@ -2107,6 +2109,20 @@
     <li class="md-nav__item">
       <a href="../../fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5611,11 +5627,11 @@ This has the following advantages:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Pre-3.0</label><label for="__tabbed_3_2">3.0</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>pip install hsfs<span class="o">[</span>hive<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>hsfs<span class="o">[</span>hive<span class="o">]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>pip install hsfs<span class="o">[</span>python<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>hsfs<span class="o">[</span>python<span class="o">]</span>
 </code></pre></div>
 </div>
 </div>
@@ -5632,15 +5648,15 @@ This has the following advantages:</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>try:
-    <span class="nb">fg</span> <span class="o">=</span> fs.get_feature_group<span class="o">(</span>...<span class="o">)</span>
-    fg.insert<span class="o">(</span>df<span class="o">)</span>
-except RESTError as e:
-    <span class="nb">fg</span> <span class="o">=</span> fs.create_feature_group<span class="o">(</span>...<span class="o">)</span>
-    fg.save<span class="o">(</span>df<span class="o">)</span>
+<span class="w">    </span><span class="nb">fg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>fs.get_feature_group<span class="o">(</span>...<span class="o">)</span>
+<span class="w">    </span>fg.insert<span class="o">(</span>df<span class="o">)</span>
+except<span class="w"> </span>RESTError<span class="w"> </span>as<span class="w"> </span>e:
+<span class="w">    </span><span class="nb">fg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>fs.create_feature_group<span class="o">(</span>...<span class="o">)</span>
+<span class="w">    </span>fg.save<span class="o">(</span>df<span class="o">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="nb">fg</span> <span class="o">=</span> fs.get_or_create_feature_group<span class="o">(</span>...<span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="nb">fg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>fs.get_or_create_feature_group<span class="o">(</span>...<span class="o">)</span>
 fg.insert<span class="o">(</span>df<span class="o">)</span>
 </code></pre></div>
 </div>

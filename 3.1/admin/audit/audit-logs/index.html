@@ -1199,6 +1199,8 @@
         
           
         
+          
+        
       
       
         
@@ -2105,6 +2107,20 @@
     <li class="md-nav__item">
       <a href="../../../user_guides/fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guides/fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5268,7 +5284,7 @@ To edit a configuration variable, you can click on the edit button (<span class=
 <p>Audit logs follow the format set in the <em>audit_log_file_type</em> configuration variable.</p>
 <div class="admonition note">
 <p class="admonition-title">Example of audit logs using JSONLogFormatter</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;className&quot;</span><span class="p">:</span><span class="s2">&quot;io.hops.hopsworks.api.user.AuthService&quot;</span><span class="p">,</span><span class="nt">&quot;methodName&quot;</span><span class="p">:</span><span class="s2">&quot;login&quot;</span><span class="p">,</span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="s2">&quot;[admin@hopsworks.ai, org.apache.catalina.connector.ResponseFacade@2de6dd0b, org.apache.catalina.connector.RequestFacade@7a82f674]&quot;</span><span class="p">,</span><span class="nt">&quot;outcome&quot;</span><span class="p">:</span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="nt">&quot;caller&quot;</span><span class="p">:{</span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="s2">&quot;admin@hopsworks.ai&quot;</span><span class="p">,</span><span class="nt">&quot;userId&quot;</span><span class="p">:</span><span class="kc">null</span><span class="p">},</span><span class="nt">&quot;clientIp&quot;</span><span class="p">:</span><span class="s2">&quot;10.0.2.2&quot;</span><span class="p">,</span><span class="nt">&quot;userAgent&quot;</span><span class="p">:</span><span class="s2">&quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36&quot;</span><span class="p">,</span><span class="nt">&quot;pathInfo&quot;</span><span class="p">:</span><span class="s2">&quot;/auth/login&quot;</span><span class="p">,</span><span class="nt">&quot;dateTime&quot;</span><span class="p">:</span><span class="s2">&quot;2022-11-09 12:00:08&quot;</span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;className&quot;</span><span class="p">:</span><span class="s2">&quot;io.hops.hopsworks.api.user.AuthService&quot;</span><span class="p">,</span><span class="nt">&quot;methodName&quot;</span><span class="p">:</span><span class="s2">&quot;login&quot;</span><span class="p">,</span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="s2">&quot;[admin@hopsworks.ai, org.apache.catalina.connector.ResponseFacade@2de6dd0b, org.apache.catalina.connector.RequestFacade@7a82f674]&quot;</span><span class="p">,</span><span class="nt">&quot;outcome&quot;</span><span class="p">:</span><span class="s2">&quot;200&quot;</span><span class="p">,</span><span class="nt">&quot;caller&quot;</span><span class="p">:{</span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="s2">&quot;admin@hopsworks.ai&quot;</span><span class="p">,</span><span class="nt">&quot;userId&quot;</span><span class="p">:</span><span class="kc">null</span><span class="p">},</span><span class="nt">&quot;clientIp&quot;</span><span class="p">:</span><span class="s2">&quot;10.0.2.2&quot;</span><span class="p">,</span><span class="nt">&quot;userAgent&quot;</span><span class="p">:</span><span class="s2">&quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36&quot;</span><span class="p">,</span><span class="nt">&quot;pathInfo&quot;</span><span class="p">:</span><span class="s2">&quot;/auth/login&quot;</span><span class="p">,</span><span class="nt">&quot;dateTime&quot;</span><span class="p">:</span><span class="s2">&quot;2022-11-09 12:00:08&quot;</span><span class="p">}</span>
 </code></pre></div>
 </div>
 <p>Regardless the format, each line in the audit logs can contain the following variables:</p>

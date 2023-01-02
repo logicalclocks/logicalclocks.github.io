@@ -1201,6 +1201,8 @@
         
           
         
+          
+        
       
       
         
@@ -2107,6 +2109,20 @@
     <li class="md-nav__item">
       <a href="../../../fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5219,9 +5235,9 @@
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h2>
 <p>An API key allows a user or a program to make API calls without having to authenticate with a username and password. To access an endpoint using an API key, a client should send the access token using the ApiKey authentication scheme.</p>
 <p>The API Key can now be used when connecting to your Hopsworks instance using the <code>hopsworks</code>, <code>hsfs</code> or <code>hsml</code> python library or set in the <code>ApiKey</code> header for the REST API.</p>
-<div class="highlight"><pre><span></span><code>GET /resource HTTP/1.1
-Host: server.hopsworks.ai
-Authorization: ApiKey &lt;api_key&gt;
+<div class="highlight"><pre><span></span><code>GET<span class="w"> </span>/resource<span class="w"> </span>HTTP/1.1
+Host:<span class="w"> </span>server.hopsworks.ai
+Authorization:<span class="w"> </span>ApiKey<span class="w"> </span>&lt;api_key&gt;
 </code></pre></div>
 <h2 id="ui">UI<a class="headerlink" href="#ui" title="Permanent link">#</a></h2>
 <p>In this guide, you will learn how to create an API key.</p>

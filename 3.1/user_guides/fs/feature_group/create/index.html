@@ -1203,6 +1203,8 @@
         
           
         
+          
+        
       
       
         
@@ -2247,6 +2249,20 @@
     <li class="md-nav__item">
       <a href="../../tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5410,7 +5426,7 @@ As an example, if you have partitioned your feature group by day and you are cre
 On the other hand, if the partition key is too fine grained (e.g. timestamp at millisecond resolution) - a large number of small partitions will be generated. This will slow down query execution as Spark will need to list and read a large amount of small directories/files.</p>
 <p>If you do not provide a partition key, all the feature data will be stored as files in a single directory.
 The system has a limit of 10240 direct children (files or other subdirectories) per directory. This means that, as you add new data to a non-partitioned feature group, new files will be created and you might reach the limit. If you do reach the limit, your feature engineering pipeline will fail with the following error:</p>
-<div class="highlight"><pre><span></span><code>MaxDirectoryItemsExceededException - The directory item limit is exceeded: <span class="nv">limit</span><span class="o">=</span><span class="m">10240</span> <span class="nv">items</span><span class="o">=</span><span class="m">10240</span>
+<div class="highlight"><pre><span></span><code>MaxDirectoryItemsExceededException<span class="w"> </span>-<span class="w"> </span>The<span class="w"> </span>directory<span class="w"> </span>item<span class="w"> </span>limit<span class="w"> </span>is<span class="w"> </span>exceeded:<span class="w"> </span><span class="nv">limit</span><span class="o">=</span><span class="m">10240</span><span class="w"> </span><span class="nv">items</span><span class="o">=</span><span class="m">10240</span>
 </code></pre></div>
 <p>By using partitioning the system will write the feature data in different subdirectories, thus allowing you to write 10240 files per partition.</p>
 <h3 id="register-the-metadata-and-save-the-feature-data">Register the metadata and save the feature data<a class="headerlink" href="#register-the-metadata-and-save-the-feature-data" title="Permanent link">#</a></h3>

@@ -1203,6 +1203,8 @@
         
           
         
+          
+        
       
       
         
@@ -2220,6 +2222,20 @@
     <li class="md-nav__item">
       <a href="../../tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5309,10 +5325,10 @@ The 3 fundamental functionalities where storage connectors are used are:</p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nn">com</span><span class="p">.</span><span class="nn">logicalclocks</span><span class="p">.</span><span class="nn">hsfs</span><span class="p">.</span><span class="n">_</span>
-<span class="kd">val</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HopsworksConnection</span><span class="p">.</span><span class="n">builder</span><span class="p">().</span><span class="n">build</span><span class="p">();</span><span class="w"></span>
-<span class="kd">val</span><span class="w"> </span><span class="n">featureStore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="n">getFeatureStore</span><span class="p">();</span><span class="w"></span>
+<span class="kd">val</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HopsworksConnection</span><span class="p">.</span><span class="n">builder</span><span class="p">().</span><span class="n">build</span><span class="p">();</span>
+<span class="kd">val</span><span class="w"> </span><span class="n">featureStore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">connection</span><span class="p">.</span><span class="n">getFeatureStore</span><span class="p">();</span>
 <span class="c1">// get directly via connector sub-type class e.g. for GCS type</span>
-<span class="kd">val</span><span class="w"> </span><span class="n">connector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">featureStore</span><span class="p">.</span><span class="n">getGcsConnector</span><span class="p">(</span><span class="s">&quot;connector_name&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="kd">val</span><span class="w"> </span><span class="n">connector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">featureStore</span><span class="p">.</span><span class="n">getGcsConnector</span><span class="p">(</span><span class="s">&quot;connector_name&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>

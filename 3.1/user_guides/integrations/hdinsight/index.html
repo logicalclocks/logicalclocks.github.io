@@ -1203,6 +1203,8 @@
         
           
         
+          
+        
       
       
         
@@ -2180,6 +2182,20 @@
     <li class="md-nav__item">
       <a href="../../fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5235,40 +5251,40 @@
 </p></p>
 </div>
 <p>Feature Store script action:
-<div class="highlight"><pre><span></span><code><span class="nb">set</span> -e
+<div class="highlight"><pre><span></span><code><span class="nb">set</span><span class="w"> </span>-e
 
-<span class="nv">HOST</span><span class="o">=</span><span class="s2">&quot;MY_INSTANCE.cloud.hopsworks.ai&quot;</span> <span class="c1"># DNS of your Feature Store instance</span>
-<span class="nv">PROJECT</span><span class="o">=</span><span class="s2">&quot;MY_PROJECT&quot;</span>                  <span class="c1"># Port to reach your Hopsworks instance, defaults to 443</span>
-<span class="nv">HSFS_VERSION</span><span class="o">=</span><span class="s2">&quot;MY_VERSION&quot;</span>             <span class="c1"># The major version of HSFS needs to match the major version of Hopsworks</span>
-<span class="nv">API_KEY</span><span class="o">=</span><span class="s2">&quot;MY_API_KEY&quot;</span>                  <span class="c1"># The API key to authenticate with Hopsworks</span>
-<span class="nv">CONDA_ENV</span><span class="o">=</span><span class="s2">&quot;MY_CONDA_ENV&quot;</span>              <span class="c1"># py35 is the default for HDI 3.6</span>
+<span class="nv">HOST</span><span class="o">=</span><span class="s2">&quot;MY_INSTANCE.cloud.hopsworks.ai&quot;</span><span class="w"> </span><span class="c1"># DNS of your Feature Store instance</span>
+<span class="nv">PROJECT</span><span class="o">=</span><span class="s2">&quot;MY_PROJECT&quot;</span><span class="w">                  </span><span class="c1"># Port to reach your Hopsworks instance, defaults to 443</span>
+<span class="nv">HSFS_VERSION</span><span class="o">=</span><span class="s2">&quot;MY_VERSION&quot;</span><span class="w">             </span><span class="c1"># The major version of HSFS needs to match the major version of Hopsworks</span>
+<span class="nv">API_KEY</span><span class="o">=</span><span class="s2">&quot;MY_API_KEY&quot;</span><span class="w">                  </span><span class="c1"># The API key to authenticate with Hopsworks</span>
+<span class="nv">CONDA_ENV</span><span class="o">=</span><span class="s2">&quot;MY_CONDA_ENV&quot;</span><span class="w">              </span><span class="c1"># py35 is the default for HDI 3.6</span>
 
-apt-get --assume-yes install python3-dev
-apt-get --assume-yes install jq
+apt-get<span class="w"> </span>--assume-yes<span class="w"> </span>install<span class="w"> </span>python3-dev
+apt-get<span class="w"> </span>--assume-yes<span class="w"> </span>install<span class="w"> </span>jq
 
-/usr/bin/anaconda/envs/<span class="nv">$CONDA_ENV</span>/bin/pip install <span class="nv">hsfs</span><span class="o">==</span><span class="nv">$HSFS_VERSION</span>
+/usr/bin/anaconda/envs/<span class="nv">$CONDA_ENV</span>/bin/pip<span class="w"> </span>install<span class="w"> </span><span class="nv">hsfs</span><span class="o">==</span><span class="nv">$HSFS_VERSION</span>
 
-<span class="nv">PROJECT_ID</span><span class="o">=</span><span class="k">$(</span>curl -H <span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span> https://<span class="nv">$HOST</span>/hopsworks-api/api/project/getProjectInfo/<span class="nv">$PROJECT</span> <span class="p">|</span> jq -r .projectId<span class="k">)</span>
+<span class="nv">PROJECT_ID</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>https://<span class="nv">$HOST</span>/hopsworks-api/api/project/getProjectInfo/<span class="nv">$PROJECT</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.projectId<span class="k">)</span>
 
-mkdir -p /usr/lib/hopsworks
-chown root:hadoop /usr/lib/hopsworks
-<span class="nb">cd</span> /usr/lib/hopsworks
+mkdir<span class="w"> </span>-p<span class="w"> </span>/usr/lib/hopsworks
+chown<span class="w"> </span>root:hadoop<span class="w"> </span>/usr/lib/hopsworks
+<span class="nb">cd</span><span class="w"> </span>/usr/lib/hopsworks
 
-curl -o client.tar.gz -H <span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span> https://<span class="nv">$HOST</span>/hopsworks-api/api/project/<span class="nv">$PROJECT_ID</span>/client
+curl<span class="w"> </span>-o<span class="w"> </span>client.tar.gz<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>https://<span class="nv">$HOST</span>/hopsworks-api/api/project/<span class="nv">$PROJECT_ID</span>/client
 
-tar -xvf client.tar.gz
-tar -xzf client/apache-hive-*-bin.tar.gz
-mv apache-hive-*-bin apache-hive-bin
-rm client.tar.gz
-rm client/apache-hive-*-bin.tar.gz
+tar<span class="w"> </span>-xvf<span class="w"> </span>client.tar.gz
+tar<span class="w"> </span>-xzf<span class="w"> </span>client/apache-hive-*-bin.tar.gz
+mv<span class="w"> </span>apache-hive-*-bin<span class="w"> </span>apache-hive-bin
+rm<span class="w"> </span>client.tar.gz
+rm<span class="w"> </span>client/apache-hive-*-bin.tar.gz
 
-curl -H <span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span> https://<span class="nv">$HOST</span>/hopsworks-api/api/project/<span class="nv">$PROJECT_ID</span>/credentials <span class="p">|</span> jq -r .kStore <span class="p">|</span> base64 -d &gt; keyStore.jks
+curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>https://<span class="nv">$HOST</span>/hopsworks-api/api/project/<span class="nv">$PROJECT_ID</span>/credentials<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.kStore<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>keyStore.jks
 
-curl -H <span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span> https://<span class="nv">$HOST</span>/hopsworks-api/api/project/<span class="nv">$PROJECT_ID</span>/credentials <span class="p">|</span> jq -r .tStore <span class="p">|</span> base64 -d &gt; trustStore.jks
+curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>https://<span class="nv">$HOST</span>/hopsworks-api/api/project/<span class="nv">$PROJECT_ID</span>/credentials<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.tStore<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>trustStore.jks
 
-<span class="nb">echo</span> -n <span class="k">$(</span>curl -H <span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span> https://<span class="nv">$HOST</span>/hopsworks-api/api/project/<span class="nv">$PROJECT_ID</span>/credentials <span class="p">|</span> jq -r .password<span class="k">)</span> &gt; material_passwd
+<span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="k">$(</span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: ApiKey </span><span class="si">${</span><span class="nv">API_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>https://<span class="nv">$HOST</span>/hopsworks-api/api/project/<span class="nv">$PROJECT_ID</span>/credentials<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.password<span class="k">)</span><span class="w"> </span>&gt;<span class="w"> </span>material_passwd
 
-chown -R root:hadoop /usr/lib/hopsworks
+chown<span class="w"> </span>-R<span class="w"> </span>root:hadoop<span class="w"> </span>/usr/lib/hopsworks
 </code></pre></div></p>
 <h2 id="step-3-configure-hdinsight-for-feature-store-access">Step 3: Configure HDInsight for Feature Store access<a class="headerlink" href="#step-3-configure-hdinsight-for-feature-store-access" title="Permanent link">#</a></h2>
 <p>The Hadoop and Spark installations of the HDInsight cluster need to be configured in order to access the Feature Store. This can be achieved either by using a <a href="https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-bootstrap">bootstrap script</a> when creating clusters or using <a href="https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-manage-ambari">Ambari</a> on existing clusters. Apply the following configurations to your HDInsight cluster.</p>

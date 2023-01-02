@@ -1199,6 +1199,8 @@
         
           
         
+          
+        
       
       
         
@@ -2105,6 +2107,20 @@
     <li class="md-nav__item">
       <a href="../../../user_guides/fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guides/fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5212,7 +5228,7 @@
 
 <h2 id="use-the-api-key">Use the API Key<a class="headerlink" href="#use-the-api-key" title="Permanent link">#</a></h2>
 <p>To access the <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> REST APIs, you should pass the API key as a header <strong>x-api-key</strong> when executing requests on <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> as shown below:</p>
-<div class="highlight"><pre><span></span><code>curl -XGET -H <span class="s2">&quot;x-api-key: &lt;YOUR API KEY&gt;&quot;</span> https://api.hopsworks.ai/api/clusters
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-XGET<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;x-api-key: &lt;YOUR API KEY&gt;&quot;</span><span class="w"> </span>https://api.hopsworks.ai/api/clusters
 </code></pre></div>
 <p>Alternatively, you can use your API Key with the <a href="https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest">Hopsworks.ai terraform provider</a> to manage your Hopsworks clusters using <a href="https://www.terraform.io/">terraform</a>.</p>
 <h2 id="delete-your-api-key">Delete your API Key<a class="headerlink" href="#delete-your-api-key" title="Permanent link">#</a></h2>

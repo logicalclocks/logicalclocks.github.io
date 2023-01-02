@@ -1201,6 +1201,8 @@
         
           
         
+          
+        
       
       
         
@@ -2107,6 +2109,20 @@
     <li class="md-nav__item">
       <a href="../../../fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5468,15 +5484,15 @@ Otherwise, you can click on <code>Upload new file</code> to upload the transform
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialization code goes here &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialization code goes here &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Transform the requests inputs here. The object returned by this method will be used as model input to make predictions. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Transform the requests inputs here. The object returned by this method will be used as model input to make predictions. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">inputs</span>
 
     <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Transform the predictions computed by the model before returning a response &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Transform the predictions computed by the model before returning a response &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">outputs</span>
 </code></pre></div>
 </div>

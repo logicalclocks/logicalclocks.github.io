@@ -1199,6 +1199,8 @@
         
           
         
+          
+        
       
       
         
@@ -2105,6 +2107,20 @@
     <li class="md-nav__item">
       <a href="../../../user_guides/fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guides/fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5247,7 +5263,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can skip this step if you already have the following permissions in your cross account role:
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"> </span><span class="s2">&quot;ec2:RegisterImage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DeregisterImage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DescribeImages&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:CreateSnapshot&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DeleteSnapshot&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DescribeSnapshots&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"> </span><span class="s2">&quot;ec2:RegisterImage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DeregisterImage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DescribeImages&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:CreateSnapshot&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DeleteSnapshot&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DescribeSnapshots&quot;</span><span class="p">]</span>
 </code></pre></div></p>
 </div>
 <p>We require some extra permissions to be added to the role you have created when connecting your AWS account as described in <a href="../getting_started/#step-1-connecting-your-aws-account">getting started guide</a>. These permissions are required to create a snapshot of your cluster before proceeding with the upgrade. </p>
@@ -5272,24 +5288,24 @@
 </p>
 
 <p>Once you get your role name, navigate to <a href="https://console.aws.amazon.com/iam/home#">AWS management console</a>, then click on <em>Roles</em> and then search for your role name and click on it.  Go to the <em>Permissions</em> tab, click on <em>Add inline policy</em>, and then go to the <em>JSON</em> tab. Paste the following snippet, click on <em>Review policy</em>, name it, and click <em>Create policy</em>.</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HopsworksAIBackup&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:RegisterImage&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:DeregisterImage&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:DescribeImages&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:CreateSnapshot&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:DeleteSnapshot&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:DescribeSnapshots&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="p">],</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">]</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HopsworksAIBackup&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;ec2:RegisterImage&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;ec2:DeregisterImage&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;ec2:DescribeImages&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;ec2:CreateSnapshot&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;ec2:DeleteSnapshot&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;ec2:DescribeSnapshots&quot;</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="step-3-run-the-upgrade-process">Step 3: Run the upgrade process<a class="headerlink" href="#step-3-run-the-upgrade-process" title="Permanent link">#</a></h2>
 <p>You need to click on <em>Upgrade</em> to start the upgrade process. You will be prompted with the screen shown below to confirm your intention to upgrade: </p>

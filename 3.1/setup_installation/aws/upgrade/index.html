@@ -1199,6 +1199,8 @@
         
           
         
+          
+        
       
       
         
@@ -2105,6 +2107,20 @@
     <li class="md-nav__item">
       <a href="../../../user_guides/fs/tags/tags/" class="md-nav__link">
         Tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guides/fs/provenance/provenance/" class="md-nav__link">
+        Provenance
       </a>
     </li>
   
@@ -5247,7 +5263,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can skip this step if you already have the following permissions in your instance profile:
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"> </span><span class="s2">&quot;ec2:DescribeVolumes&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DetachVolume&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:AttachVolume&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:ModifyInstanceAttribute&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"> </span><span class="s2">&quot;ec2:DescribeVolumes&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:DetachVolume&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:AttachVolume&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ec2:ModifyInstanceAttribute&quot;</span><span class="p">]</span>
 </code></pre></div></p>
 </div>
 <p>We require extra permissions to be added to the instance profile attached to your cluster to proceed with the upgrade. First to get the name of your instance profile, click on the <em>Details</em> tab as shown below:</p>
@@ -5265,22 +5281,22 @@
 <p class="admonition-title">Note</p>
 <p>You can restrict the upgrade permissions given to your instance profile. Refer to <a href="../restrictive_permissions/#limiting-upgrade-permissions">this guide</a> for more information.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UpgradePermissions&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:DescribeVolumes&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:DetachVolume&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:AttachVolume&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="s2">&quot;ec2:ModifyInstanceAttribute&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="p">],</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">]</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UpgradePermissions&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;ec2:DescribeVolumes&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;ec2:DetachVolume&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;ec2:AttachVolume&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;ec2:ModifyInstanceAttribute&quot;</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="step-3-run-the-upgrade-process">Step 3: Run the upgrade process<a class="headerlink" href="#step-3-run-the-upgrade-process" title="Permanent link">#</a></h2>
 <p>You need to click on <em>Upgrade</em> to start the upgrade process. You will be prompted with the screen shown below to confirm your intention to upgrade: </p>
