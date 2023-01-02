@@ -1,12 +1,19 @@
 # Configure LDAP/Kerberos group to project mapping
  
 ## Introduction
+
 A group to project mapping allows you to add members of your LDAP group to a project without having to
-add each user manually. 
+add each user manually. A mapping is created by specifying a group from LDAP that will be mapped to a project in
+Hopsworks and what role the members of that group will be assigned in the project.
+
+Once a mapping is created project membership is managed by LDAP group membership. Any change to group membership in LDAP will be reflected 
+in Hopsworks i.e. removing a user from the LDAP group will also remove them from the project.
  
 ## Prerequisites
-A server configured with LDAP or Kerberos. See [Server Configuration for Kerberos](../configure-server/#server-configuration-for-kerberos) and
+1. A server configured with LDAP or Kerberos. See [Server Configuration for Kerberos](../configure-server/#server-configuration-for-kerberos) and
 [Server Configuration for LDAP](../configure-server/#server-configuration-for-ldap) for instructions on how to do this.
+2. LDAP group mapping sync enabled. This can be done by setting the variable ```ldap_group_mapping_sync_enabled=true```. 
+See [Cluster Configuration](../variables.md) on how to change variable values in Hopsworks.
  
 ### Step 1: Create a mapping
 To create a mapping go to **Cluster Settings** by clicking on your name in the top right
@@ -71,3 +78,14 @@ To delete a mapping click on the delete button.
  
 !!!Warning
     Deleting a mapping will remove all members of that group from the project.
+
+### Step 4: Configure sync interval 
+
+After configuring all the group mappings users will be added to or removed from the projects in the mapping when they login to Hopsworks.
+It is also possible to synchronize mappings without requiring users to log out. This can be done by setting ```ldap_group_mapping_sync_interval```
+to an interval greater or equal to 2 minutes. If ```ldap_group_mapping_sync_interval``` is set group mapping sync will run periodically based on the interval and
+add or remove users from projects.
+
+
+## Conclusion
+In this guide you learned how to configure LDAP group to project mapping.
