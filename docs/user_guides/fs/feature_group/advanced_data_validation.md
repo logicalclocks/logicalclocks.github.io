@@ -29,15 +29,23 @@ Should you wish to do so, you can disable data validation on a punctual basis or
 
 #### In the UI
 
-You can do it in the UI in the Expectation section of the Feature Group edit page. Simply tick or untick the enabled checkbox.
+You can do it in the UI in the Expectation section of the Feature Group edit page. Simply tick or untick the enabled checkbox. This will be used as the default option but can be overriden via the API.
 
 #### In the python client
+
+To disable data validation until further notice in the API, you can update the `run_validation` field of the expectation suite. If your suite is registered with Hopsworks, this will persist the change to the server.
 
 ```python3
 fg.expectation_suite.run_validation = False
 ```
 
-If your suite is registered with Hopsworks, it will persist the change to the server.
+If you wish to override the default behaviour of the suite when inserting data in the Feature Group, you can do so via the `validate_options` kwarg. The example below will enable validation for this insertion only.
+
+```python3
+fg.insert(df_to_validate, validation_options={"run_validation" : True})
+```
+
+We recommend to avoid using this option in scheduled job as it silently changes the expected behaviour that is displayed in the UI and prevents changes to the default behaviour to change the behaviour of the job.
 
 ### Edit Expectations
 
@@ -49,9 +57,9 @@ Go to the Feature Group edit page, in the expectation section. You can click on 
 
 ### In Hopsworks Python Client
 
-There are several way to edit an Expectation in the python client. You can use Great Expectations API or directly go through Hopsworks. In the latter case, if you want to edit or remove an expectation, you will need the Hopsworks expectation ID. It can be found in the UI or in the meta field of an expectation. Note that the Feature Group and corresponding Expectation Suite need to be registered to enable the Expectation API:
+There are several way to edit an Expectation in the python client. You can use Great Expectations API or directly go through Hopsworks. In the latter case, if you want to edit or remove an expectation, you will need the Hopsworks expectation ID. It can be found in the UI or in the meta field of an expectation. Note that you must have inserted data in the FG and attached the expectation suite to enable the Expectation API.
 
-Get an expectation with a given expectationId:
+Get an expectation with a given id:
 
 ```python3
 my_expectation = fg.expectation_suite.get_expectation(
@@ -267,9 +275,13 @@ timeseries = pd.DataFrame(
 
 #### Setup Alerts
 
-While checking your feature engineering pipeline executed properly in the morning can be good enough in the development phase, it won't make the cut for demanding production use-cases. In Hopsworks, you can setup alerts if validation fails.
+While checking your feature engineering pipeline executed properly in the morning can be good enough in the development phase, it won't make the cut for demanding production use-cases. In Hopsworks, you can setup alerts if ingestion fails or succeeds.
 
-First you will need to configure your preferred communication endpoint: slack, email or pagerduty. Check out [this page](../../../admin/alert.md) for more information on how to set it up. You can then set an alert on data ingestion success in the Feature Group holding rejected data for example.
+First you will need to configure your preferred communication endpoint: slack, email or pagerduty. Check out [this page](../../../admin/alert.md) for more information on how to set it up. A typical use-case would be to add an alert on ingestion success to a Feature Group you created to hold data that failed validation. Here is a quick walkthrough:
+
+1. Go the Feature Group page in the UI
+2. Scroll down and click on the `Add an alert` button.
+3. Choose the trigger, receiver and severity and click save.
 
 ## Conclusion
 

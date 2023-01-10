@@ -34,7 +34,7 @@ By clicking on `Add expectation` one can choose an expectation type from a searc
 All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the arguments in the json to configure the Expectation. In particular, arguments such as `column`, `columnA`, `columnB`, `column_set` and `column_list` require valid feature name(s). Click the tick button to save the expectation configuration and append it to the Expectation Suite locally.
 
 !!! info
-Click the `Save feature group` button to persist your changes!
+	Click the `Save feature group` button to persist your changes!
 
 You can use the button `Clear Expectation Suite` to clean up before saving changes if you changed your mind. If the Expectation Suite is already registered, it will instead show a button to delete the Expectation Suite.
 
@@ -177,7 +177,7 @@ job, validation_report = fg.insert(df.head(5))
 As you can see, Hopsworks runs the validation in the client before attempting to insert the data. By default, Hopsworks will try to insert the data even if validation fails to prevent data loss. However it can be configured for production setup to be more restrictive, checkout the [data validation advanced guide](advanced_data_validation.md).
 
 !!!info
-Note that once the Expectation Suite is attached to the Feature Group, any subsequent attempt to insert to this Feature Group will apply the Data Validation step even from a different client or in a scheduled job.
+	Note that once the Expectation Suite is attached to the Feature Group, any subsequent attempt to insert to this Feature Group will apply the Data Validation step even from a different client or in a scheduled job.
 
 ### Step 4: Data Quality Monitoring
 
@@ -206,8 +206,12 @@ validation_history = fg.get_validation_history(
 You can find the expectationIds in the UI or using `fg.get_expectation_suite` and looking it up in the expectation's meta field.
 
 !!! info
-If Validation Reports or Results are too long, they can be truncated to fit in the database. A full version of the reports can be downloaded from the UI.
+	If Validation Reports or Results are too long, they can be truncated to fit in the database. A full version of the reports can be downloaded from the UI.
 
 ## Conclusion
 
-Yhe integration between Hopsworks and Great Expectations makes it simple to add a data validation step to your feature engineering pipeline. Build your Expectation Suite and attach it to your Feature Group with a single line of code. No need to add any code to your pipeline or job scripts, calling `fg.insert` will now automatically validate the data before inserting them in the Feature Group. The validation reports are stored along your data in Hopsworks allowing us to provide basic monitoring capabilities to quickly spot a data quality issue in the UI.
+The integration between Hopsworks and Great Expectations makes it simple to add a data validation step to your feature engineering pipeline. Build your Expectation Suite and attach it to your Feature Group with a single line of code. No need to add any code to your pipeline or job scripts, calling `fg.insert` will now automatically validate the data before inserting them in the Feature Group. The validation reports are stored along your data in Hopsworks allowing us to provide basic monitoring capabilities to quickly spot a data quality issue in the UI.
+
+## Going further
+
+If you wish to find out more about how to use the data validation API or best practices for development or production pipelines in Hopsworks, checkout the [advanced guide](advanced_data_validation.md).
