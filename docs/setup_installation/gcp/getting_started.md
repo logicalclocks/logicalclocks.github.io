@@ -32,12 +32,24 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to GC
   </figure>
 </p>
 
-## Step 2: Creating and configuring a storage
+## Step 2: Creating storage
 
-The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. To enable this you need to create a bucket and to create a service account with permissions to access the storage.
+The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. This bucket need to be created before the cluster creation.
 
-### Step 2.1: Creating a custom role for accessing storage 
+Execute the following gsutil command to create a bucket. Replace all occurrences \[PROJECT_ID\] with your GCP project id and \[BUCKET_NAME\] by the name you want to give to your bucket:
 
+```
+gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
+```
+
+!!! note 
+    The Hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the *-l* option of *gsutil mb*. For more detail about creating buckets with gsutil see the [documentation](https://cloud.google.com/storage/docs/creating-buckets)
+
+
+## Step 3: Creating a service account for your cluster instances
+The cluster instances will need to be granted the permission to access the storage. To enable this you need to create a service account that will later be attached to the cluster instance. This service account should be different from the service account created in step 1, as it has only provide permissions related to storing objects in a GCP bucket.
+
+### Step 3.1: Creating a custom role for accessing storage
 Create a file named *hopsworksai_instances_role.yaml* with the following content:
 
 ```yaml
@@ -69,7 +81,7 @@ gcloud iam roles create hopsworksai_instances \
   --file=hopsworksai_instances_role.yaml
 ```
 
-### Step 2.2: Creating a service account 
+### Step 3.2: Creating a service account 
 
 Execute the following gcloud command to create a service account for Hopsworks AI instances. Replace \[PROJECT_ID\] with your GCP project id:
 
@@ -87,17 +99,6 @@ gcloud projects add-iam-policy-binding [PROJECT_ID] \
   --member="serviceAccount:hopsworks-ai-instances@[PROJECT_ID].iam.gserviceaccount.com" \
   --role="projects/[PROJECT_ID]/roles/hopsworksai_instances"
 ```
-
-### Step 2.3: Creating a Bucket
-
-Execute the following gsutil command to create a bucket. Replace all occurrences \[PROJECT_ID\] with your GCP project id and \[BUCKET_NAME\] by the name you want to give to your bucket:
-
-```
-gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
-```
-
-!!! note 
-    The Hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the *-l* option of *gsutil mb*. For more detail about creating buckets with gsutil see the [documentation](https://cloud.google.com/storage/docs/creating-buckets)
 
 ## Step 4: Deploying a Hopsworks cluster
 
