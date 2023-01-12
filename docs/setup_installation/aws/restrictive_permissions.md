@@ -20,8 +20,8 @@ This is the list of default permissions that are required by [managed.hopsworks.
 
 To restrict [managed.hopsworks.ai](https://managed.hopsworks.ai) from accessing resources outside of a specific VPC, you need to create a new VPC
 connected to an Internet Gateway. This can be achieved in the AWS Management Console following this guide:
-[Create the VPC](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-getting-started.html#getting-started-create-vpc).
-The option VPC with a `Single Public Subnet` from the Launch VPC Wizard should work out of the box.
+[Create the VPC](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html#Create-VPC).
+Follow the steps of `Create a VPC, subnets, and other VPC resources`, naming your vpc and changing the `Number of Availability Zones` to 1 are the only changes you need to make to the default configuration.
 Alternatively, an existing VPC such as the default VPC can be used and [managed.hopsworks.ai](https://managed.hopsworks.ai) will be restricted to this VPC.
 Note the VPC ID of the VPC you want to use for the following steps.
 
@@ -32,10 +32,10 @@ After you have created the VPC either [Create a Security Group](https://docs.aws
 
 #### Inbound traffic 
 
-The [Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#AddRemoveRules) and/or [Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html#Rules)
-need to be configured so that at least port `80` is reachable from the internet otherwise you will have to use self signed certificate in your Hopsworks cluster.
+It is _**imperative**_ that the [Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#AddRemoveRules) allows Inbound traffic from any Instance within the same Security Group in any (TCP) port. All VMs of the Cluster should be able to communicate with each other. It is also recommended to open TCP port `80` to sign the certificates. If you do not open port `80` you will have to use a self-signed certificate in your Hopsworks cluster. This can be done by checking the `Continue with self-signed certificate` check box in the `Security Group` step of the cluster creation.
 
-It is _**imperative**_ the Security Group allows Inbound traffic from any Instance within the same Security Group in any (TCP) port. All VMs of the Cluster should be able to communicate with each other.
+
+We recommend configuring the [Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html#Rules) to be open to all inbound traffic and let the security group handle the access restriction. But if you want to set limitations at the Network ACLs level, they must be configured so that at least the TCP ephemeral port `32768 - 65535` are open to the internet (this is so that outbound trafic can receive answers). It is also recommended to open TCP port `80` to sign the certificates. If you do not open port `80` you will have to use a self-signed certificate in your Hopsworks cluster. This can be done by checking the `Continue with self-signed certificate` check box in the `Security Group` step of the cluster creation.
 
 #### Outbound traffic 
 
