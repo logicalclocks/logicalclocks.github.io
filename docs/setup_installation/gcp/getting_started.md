@@ -34,7 +34,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to GC
 
 ## Step 2: Creating storage
 
-The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. This bucket need to be created before creating the Hopsworks cluster.
+The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. This bucket needs to be created before creating the Hopsworks cluster.
 
 Execute the following gsutil command to create a bucket. Replace all occurrences \[PROJECT_ID\] with your GCP project id and \[BUCKET_NAME\] with the name you to give to your bucket:
 
@@ -43,7 +43,7 @@ gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
 ```
 
 !!! note 
-    The Hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the *-l* option of *gsutil mb*. For more details about creating buckets with gsutil, see the [google documentation](https://cloud.google.com/storage/docs/creating-buckets)
+    The Hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the world us the *-l* option of *gsutil mb*. For more details about creating buckets with gsutil, see the [google documentation](https://cloud.google.com/storage/docs/creating-buckets)
 
 
 ## Step 3: Creating a service account for your cluster instances
