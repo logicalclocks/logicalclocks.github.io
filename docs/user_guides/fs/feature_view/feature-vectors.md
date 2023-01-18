@@ -37,6 +37,36 @@ You can get back feature vectors from either python or java client by providing 
     featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2);
     ```
 
+### Missing Primary Key Entries
+
+It can happen that some of the primary key entries are not available in some or all of the feature groups used by a feature view.
+
+Take the above example assuming the feature view consists of two joined feature groups, first one with primary key column `pk1`, the second feature group with primary key column `pk2`.
+```python
+# get a single vector
+feature_view.get_feature_vector(
+    entry = {"pk1": 1, "pk2": 2}
+)
+```
+This call will raise an exception if `pk1 = 1` OR `pk2 = 2` can't be found but also if `pk1 = 1` AND `pk2 = 2` can't be found, meaning, it will not return a partial or empty feature vector.
+
+When retrieving a batch of vectors, the behaviour is slightly different.
+```python
+# get multiple vectors
+feature_view.get_feature_vectors(
+    entry = [
+        {"pk1": 1, "pk2": 2},
+        {"pk1": 3, "pk2": 4},
+        {"pk1": 5, "pk2": 6}
+    ]
+)
+```
+This call will raise an exception if for example for the third entry `pk1 = 5` OR `pk2 = 6` can't be found, however, it will simply not return a vector for this entry if `pk1 = 5` AND `pk2 = 6`
+can't be found.
+That means, `get_feature_vectors` will never return partial feature vector, but will omit empty feature vectors.
+
+If you are aware of missing featurs, you can use the [*passed features*](#passed-features) functionality, described down below.
+
 ### Retrieval with transformation
 If you have specified transformation functions when creating a feature view, you receive transformed feature vectors. If your transformation functions require statistics of training dataset, you must also provide the training data version. `init_serving` will then fetch the statistics and initialize the functions with the required statistics. Then you can follow the above examples and retrieve the feature vectors. Please note that transformed feature vectors can only be returned in the python client but not in the java client.
 
