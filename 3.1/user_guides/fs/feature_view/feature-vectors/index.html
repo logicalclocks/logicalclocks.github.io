@@ -1742,6 +1742,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#missing-primary-key-entries" class="md-nav__link">
+    Missing Primary Key Entries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#retrieval-with-transformation" class="md-nav__link">
     Retrieval with transformation
   </a>
@@ -5171,6 +5178,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#missing-primary-key-entries" class="md-nav__link">
+    Missing Primary Key Entries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#retrieval-with-transformation" class="md-nav__link">
     Retrieval with transformation
   </a>
@@ -5242,6 +5256,29 @@
 </div>
 </div>
 </div>
+<h3 id="missing-primary-key-entries">Missing Primary Key Entries<a class="headerlink" href="#missing-primary-key-entries" title="Permanent link">#</a></h3>
+<p>It can happen that some of the primary key entries are not available in some or all of the feature groups used by a feature view.</p>
+<p>Take the above example assuming the feature view consists of two joined feature groups, first one with primary key column <code>pk1</code>, the second feature group with primary key column <code>pk2</code>.
+<div class="highlight"><pre><span></span><code><span class="c1"># get a single vector</span>
+<span class="n">feature_view</span><span class="o">.</span><span class="n">get_feature_vector</span><span class="p">(</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+This call will raise an exception if <code>pk1 = 1</code> OR <code>pk2 = 2</code> can't be found but also if <code>pk1 = 1</code> AND <code>pk2 = 2</code> can't be found, meaning, it will not return a partial or empty feature vector.</p>
+<p>When retrieving a batch of vectors, the behaviour is slightly different.
+<div class="highlight"><pre><span></span><code><span class="c1"># get multiple vectors</span>
+<span class="n">feature_view</span><span class="o">.</span><span class="n">get_feature_vectors</span><span class="p">(</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;pk1&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;pk2&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
+This call will raise an exception if for example for the third entry <code>pk1 = 5</code> OR <code>pk2 = 6</code> can't be found, however, it will simply not return a vector for this entry if <code>pk1 = 5</code> AND <code>pk2 = 6</code>
+can't be found.
+That means, <code>get_feature_vectors</code> will never return partial feature vector, but will omit empty feature vectors.</p>
+<p>If you are aware of missing featurs, you can use the <a href="#passed-features"><em>passed features</em></a> functionality, described down below.</p>
 <h3 id="retrieval-with-transformation">Retrieval with transformation<a class="headerlink" href="#retrieval-with-transformation" title="Permanent link">#</a></h3>
 <p>If you have specified transformation functions when creating a feature view, you receive transformed feature vectors. If your transformation functions require statistics of training dataset, you must also provide the training data version. <code>init_serving</code> will then fetch the statistics and initialize the functions with the required statistics. Then you can follow the above examples and retrieve the feature vectors. Please note that transformed feature vectors can only be returned in the python client but not in the java client.</p>
 <div class="highlight"><pre><span></span><code><span class="n">feature_view</span><span class="o">.</span><span class="n">init_serving</span><span class="p">(</span><span class="n">training_dataset_version</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
