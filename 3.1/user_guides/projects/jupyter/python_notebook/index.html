@@ -5240,6 +5240,12 @@
 <li>Supports JupyterLab and the classic Jupyter front-end</li>
 <li>Configured with Python3, Spark, PySpark and SparkR kernels</li>
 </ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If Hopsworks is not configured to run Jupyter on Kubernetes then the Python kernel is disabled by default. 
+In this case the Python kernel can be enabled by setting the configuration variable <code>enable_jupyter_python_kernel_non_kubernetes</code> to True. 
+Follow this <a href="../../../../admin/variables/">guide</a> for instructions on how to set a configuration variable.</p>
+</div>
 <h2 id="step-1-jupyter-dashboard">Step 1: Jupyter dashboard<a class="headerlink" href="#step-1-jupyter-dashboard" title="Permanent link">#</a></h2>
 <p>The image below shows the Jupyter service page in Hopsworks and is accessed by clicking <code>Jupyter</code> in the sidebar.</p>
 <p align="center">
