@@ -175,6 +175,7 @@ nav:
           - EKS integration: setup_installation/aws/eks_ecr_integration.md
           - Limiting Permissions: setup_installation/aws/restrictive_permissions.md
           - Cluster upgrade:
+              - Version 3.0 or newer: setup_installation/aws/upgrade_3.0.md
               - Version 2.4 or newer: setup_installation/aws/upgrade_2.4.md
               - Version 2.2 or older: setup_installation/aws/upgrade.md
           - Troubleshooting: setup_installation/aws/troubleshooting.md
@@ -184,6 +185,7 @@ nav:
           - AKS integration: setup_installation/azure/aks_acr_integration.md
           - Limiting Permissions: setup_installation/azure/restrictive_permissions.md
           - Cluster upgrade:
+              - Version 3.0 or newer: setup_installation/azure/upgrade_3.0.md
               - Version 2.4 or newer: setup_installation/azure/upgrade_2.4.md
               - Version 2.2 or older: setup_installation/azure/upgrade.md
       - GCP:
