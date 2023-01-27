@@ -4056,30 +4056,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-creating-and-configuring-a-storage" class="md-nav__link">
-    Step 2: Creating and configuring a storage
+  <a href="#step-2-creating-storage" class="md-nav__link">
+    Step 2: Creating storage
   </a>
   
-    <nav class="md-nav" aria-label="Step 2: Creating and configuring a storage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-creating-a-service-account-for-your-cluster-instances" class="md-nav__link">
+    Step 3: Creating a service account for your cluster instances
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Creating a service account for your cluster instances">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-21-creating-a-custom-role-for-accessing-storage" class="md-nav__link">
-    Step 2.1: Creating a custom role for accessing storage
+  <a href="#step-31-creating-a-custom-role-for-accessing-storage" class="md-nav__link">
+    Step 3.1: Creating a custom role for accessing storage
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-22-creating-a-service-account" class="md-nav__link">
-    Step 2.2: Creating a service account
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-23-creating-a-bucket" class="md-nav__link">
-    Step 2.3: Creating a Bucket
+  <a href="#step-32-creating-a-service-account" class="md-nav__link">
+    Step 3.2: Creating a service account
   </a>
   
 </li>
@@ -5210,30 +5210,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-creating-and-configuring-a-storage" class="md-nav__link">
-    Step 2: Creating and configuring a storage
+  <a href="#step-2-creating-storage" class="md-nav__link">
+    Step 2: Creating storage
   </a>
   
-    <nav class="md-nav" aria-label="Step 2: Creating and configuring a storage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-creating-a-service-account-for-your-cluster-instances" class="md-nav__link">
+    Step 3: Creating a service account for your cluster instances
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Creating a service account for your cluster instances">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-21-creating-a-custom-role-for-accessing-storage" class="md-nav__link">
-    Step 2.1: Creating a custom role for accessing storage
+  <a href="#step-31-creating-a-custom-role-for-accessing-storage" class="md-nav__link">
+    Step 3.1: Creating a custom role for accessing storage
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-22-creating-a-service-account" class="md-nav__link">
-    Step 2.2: Creating a service account
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-23-creating-a-bucket" class="md-nav__link">
-    Step 2.3: Creating a Bucket
+  <a href="#step-32-creating-a-service-account" class="md-nav__link">
+    Step 3.2: Creating a service account
   </a>
   
 </li>
@@ -5298,9 +5298,18 @@ SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.
   </figure>
 </p>
 
-<h2 id="step-2-creating-and-configuring-a-storage">Step 2: Creating and configuring a storage<a class="headerlink" href="#step-2-creating-and-configuring-a-storage" title="Permanent link">#</a></h2>
-<p>The Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> store their data in a bucket in your GCP account. To enable this you need to create a bucket and to create a service account with permissions to access the storage.</p>
-<h3 id="step-21-creating-a-custom-role-for-accessing-storage">Step 2.1: Creating a custom role for accessing storage<a class="headerlink" href="#step-21-creating-a-custom-role-for-accessing-storage" title="Permanent link">#</a></h3>
+<h2 id="step-2-creating-storage">Step 2: Creating storage<a class="headerlink" href="#step-2-creating-storage" title="Permanent link">#</a></h2>
+<p>The Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> store their data in a bucket in your GCP account. This bucket needs to be created before creating the Hopsworks cluster.</p>
+<p>Execute the following gsutil command to create a bucket. Replace all occurrences [PROJECT_ID] with your GCP project id and [BUCKET_NAME] with the name you to give to your bucket:</p>
+<div class="highlight"><pre><span></span><code>gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Hopsworks cluster created by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the world us the <em>-l</em> option of <em>gsutil mb</em>. For more details about creating buckets with gsutil, see the <a href="https://cloud.google.com/storage/docs/creating-buckets">google documentation</a></p>
+</div>
+<h2 id="step-3-creating-a-service-account-for-your-cluster-instances">Step 3: Creating a service account for your cluster instances<a class="headerlink" href="#step-3-creating-a-service-account-for-your-cluster-instances" title="Permanent link">#</a></h2>
+<p>The cluster instances will need to be granted permission to access the storage bucket. You achieve this by creating a service account that will later be attached to the Hopsworks cluster instances. This service account should be different from the service account created in step 1, as it has only those permissions related to storing objects in a GCP bucket.</p>
+<h3 id="step-31-creating-a-custom-role-for-accessing-storage">Step 3.1: Creating a custom role for accessing storage<a class="headerlink" href="#step-31-creating-a-custom-role-for-accessing-storage" title="Permanent link">#</a></h3>
 <p>Create a file named <em>hopsworksai_instances_role.yaml</em> with the following content:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hopsworks AI Instances</span>
 <span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Role that allows Hopsworks AI Instances to access resources</span>
@@ -5327,7 +5336,7 @@ SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.
   --project=[PROJECT_ID] \
   --file=hopsworksai_instances_role.yaml
 </code></pre></div>
-<h3 id="step-22-creating-a-service-account">Step 2.2: Creating a service account<a class="headerlink" href="#step-22-creating-a-service-account" title="Permanent link">#</a></h3>
+<h3 id="step-32-creating-a-service-account">Step 3.2: Creating a service account<a class="headerlink" href="#step-32-creating-a-service-account" title="Permanent link">#</a></h3>
 <p>Execute the following gcloud command to create a service account for Hopsworks AI instances. Replace [PROJECT_ID] with your GCP project id:</p>
 <div class="highlight"><pre><span></span><code>gcloud iam service-accounts create hopsworks-ai-instances \
   --project=[PROJECT_ID] \
@@ -5339,14 +5348,6 @@ SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.
   --member=&quot;serviceAccount:hopsworks-ai-instances@[PROJECT_ID].iam.gserviceaccount.com&quot; \
   --role=&quot;projects/[PROJECT_ID]/roles/hopsworksai_instances&quot;
 </code></pre></div>
-<h3 id="step-23-creating-a-bucket">Step 2.3: Creating a Bucket<a class="headerlink" href="#step-23-creating-a-bucket" title="Permanent link">#</a></h3>
-<p>Execute the following gsutil command to create a bucket. Replace all occurrences [PROJECT_ID] with your GCP project id and [BUCKET_NAME] by the name you want to give to your bucket:</p>
-<div class="highlight"><pre><span></span><code>gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The Hopsworks cluster created by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the <em>-l</em> option of <em>gsutil mb</em>. For more detail about creating buckets with gsutil see the <a href="https://cloud.google.com/storage/docs/creating-buckets">documentation</a></p>
-</div>
 <h2 id="step-4-deploying-a-hopsworks-cluster">Step 4: Deploying a Hopsworks cluster<a class="headerlink" href="#step-4-deploying-a-hopsworks-cluster" title="Permanent link">#</a></h2>
 <p>In <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a>, select <em>Create cluster</em>:</p>
 <p align="center">
