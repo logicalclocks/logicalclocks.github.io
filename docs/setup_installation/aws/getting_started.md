@@ -4,6 +4,11 @@
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
 SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai) with your organization's AWS account.
 
+## Prerequisit
+To run the commands in this guide, you must have the AWS CLI installed and configured. See the [Getting started guide](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html) in the AWS CLI User Guide for more information.
+
+All the commands have unix-like quotation rules. These commands will need to be adapted to your terminal's quoting rules. See [Using quotation marks with strings](https://docs.aws.amazon.com/cli/v1/userguide/cli-usage-parameters-quoting-strings.html) in the AWS CLI User Guide .
+
 ## Step 1: Connecting your AWS account
 
 [Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your AWS account. To enable this you have to permit us to do so. This is done using an AWS cross-account role.
@@ -20,104 +25,11 @@ SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](ht
   </iframe>
 </p>
 
-To create a cross-account role for [managed.hopsworks.ai](https://managed.hopsworks.ai), you need our AWS account id and the external
-id we created for you. You can find this information on the first screen of the cross-account
-configuration flow. Take note of the account id and external id and go to the *Roles* section
-of the *IAM* service in the AWS Management Console and select *Create role*.
+In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to AWS* or go to *Settings* and click on *Configure* next to *AWS*. Then click on *Cross-accont role*. This will direct you to a page with the instructions needed to create the Cross account role and set up the connection. Follow the instructions.
 
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png" alt="Creating the cross-account role instructions">
-    </a>
-    <figcaption>Creating the cross-account role instructions</figcaption>
-  </figure>
-</p>
+!!! note 
+    it is possible to limit the permissions that are set up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md).
 
-Select *Another AWS account* as trusted entity and fill in our AWS account id and the external
-id generated for you:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-role-aws-step-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-aws-step-1.png" alt="Creating the cross-account role step 1">
-    </a>
-    <figcaption>Creating the cross-account role step 1</figcaption>
-  </figure>
-</p>
-
-Go to the last step of the wizard, name the role and create it:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-role-aws-step-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-aws-step-2.png" alt="Creating the cross-account role step 1">
-    </a>
-    <figcaption>Creating the cross-account role step 2</figcaption>
-  </figure>
-</p>
-
-As a next step, you need to create an access policy to give [managed.hopsworks.ai](https://managed.hopsworks.ai) permissions to manage
-clusters in your organization's AWS account. By default, [managed.hopsworks.ai](https://managed.hopsworks.ai) is automating all steps required to launch
-a new Hopsworks cluster. If you want to limit the required AWS permissions, see [restrictive-permissions](restrictive_permissions.md).
-
-Copy the permission JSON from the instructions:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-instructions.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-instructions.png" alt="Adding the policy instructions">
-    </a>
-    <figcaption>Adding the policy instructions</figcaption>
-  </figure>
-</p>
-
-Identify your newly created cross-account role in the *Roles* section of the *IAM* service in the
-AWS Management Console and select *Add inline policy*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-1.png" alt="Adding the inline policy step 1">
-    </a>
-    <figcaption>Adding the inline policy step 1</figcaption>
-  </figure>
-</p>
-
-Replace the JSON policy with the JSON from our instructions and continue in the wizard:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-2.png" alt="Adding the inline policy step 2">
-    </a>
-    <figcaption>Adding the inline policy step 2</figcaption>
-  </figure>
-</p>
-
-Name and create the policy:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-3.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-3.png" alt="Adding the inline policy step 3">
-    </a>
-    <figcaption>Adding the inline policy step 3</figcaption>
-  </figure>
-</p>
-
-Copy the *Role ARN* from the summary of your cross-account role:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-4.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-4.png" alt="Adding the inline policy step 4">
-    </a>
-    <figcaption>Adding the inline policy step 4</figcaption>
-  </figure>
-</p>
-
-Paste the *Role ARN* into [managed.hopsworks.ai](https://managed.hopsworks.ai) and click on *Finish*:
 
 <p align="center">
   <figure>
@@ -127,7 +39,6 @@ Paste the *Role ARN* into [managed.hopsworks.ai](https://managed.hopsworks.ai) a
     <figcaption>Saving the cross-account role</figcaption>
   </figure>
 </p>
-
 
 ## Step 2: Creating storage
 
