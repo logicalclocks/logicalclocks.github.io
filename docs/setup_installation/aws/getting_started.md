@@ -44,87 +44,92 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to AW
 
 ## Step 2: Creating storage
 
+!!! note 
+    If you prefer using terraform, you can skip this step and the remaining steps, and instead, follow [this guide](../common/terraform.md#getting-started-with-aws).
+
 The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in an S3 bucket in your AWS account.
-To enable this you need to create an S3 bucket and an instance profile to give cluster nodes access to the bucket.
 
-Proceed to the [S3 Management Console](https://s3.console.aws.amazon.com/s3/home) and click on *Create bucket*:
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-1.png" alt="Create an S3 bucket">
-    </a>
-    <figcaption>Create an S3 bucket</figcaption>
-  </figure>
-</p>
 
-Name your bucket and select the region where your Hopsworks cluster will run. Click on *Create bucket* at the bottom of the page.
+To create the bucket run the following command, replacing *BUCKET_NAME* with the name you want for your bucket and setting the region to the aws region in which you want to run your cluster.
 
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-2.png" alt="Create an S3 bucket">
-    </a>
-    <figcaption>Create an S3 bucket</figcaption>
-  </figure>
-</p>
+!!! warning
+    The bucket must be in the same region as the hopsworks cluster you are going to run
+
+```bash
+aws s3 mb s3://BUCKET_NAME --region us-east-2
+```
+
 
 ## Step 3: Creating Instance profile
 
-!!! note 
-    If you prefer using terraform, you can skip this step and the remaining steps, and instead follow [this guide](../common/terraform.md#getting-started-with-aws).
+Hopsworks cluster nodes need access to certain resources such as the S3 bucket you created above, an ecr repository, and CloudWatch.
 
-Hopsworks cluster nodes need access to certain resources such as S3 bucket and CloudWatch.
 
-Follow the instructions in this guide to create an IAM instance profile with access to your S3 bucket: [Guide](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-console)
+First, create an instance profile by running:
+```bash
+aws iam create-instance-profile --instance-profile-name hopsworksai-instances
+```
 
-When creating the policy, paste the following in the JSON tab.
+We will now create a role with the needed permissions for this instance profile. 
+Start by creating a file named *assume-role-policy.json* containing the following:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
+
+Run the following to create the role:
+
+```bash
+aws iam create-role perm --role-name hopsworksai-instances \
+   --description "Role for the hopsworks cluster instances" \
+   --assume-role-policy-document file://assume-role-policy.json
+```
+
+Create a file called *instances-policy.json* containing the following permissions.
 {!setup_installation/aws/instance_profile_permissions.md!}
+
+Attach the permission to the role by running:
+```bash
+aws iam put-role-policy --role-name hopsworksai-instances \
+   --policy-name hopsworksai-instances \
+   --policy-document file://instances-policy.json
+```
+
+Finally, attach the role to the instance profile by running:
+```bash
+aws iam add-role-to-instance-profile \
+   --role-name hopsworks-instances \
+   --instance-profile-name hopsworksai-instances
+```
 
 ## Step 4: Create an SSH key
 When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: [creating a new key pair](#step-31-create-a-new-key-pair) or [importing an existing key pair](#step-32-import-a-key-pair).
 
 ### Step 4.1: Create a new key pair
-
-Proceed to [Key pairs in the EC2 console](https://us-east-2.console.aws.amazon.com/ec2/v2/home?#KeyPairs) and click on *Create key pair*
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-key-pair.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-key-pair.png" alt="Create a key pair">
-    </a>
-    <figcaption>Create a key pair</figcaption>
-  </figure>
-</p>
-
-Name your key, select the file format you prefer and click on *Create key pair*.
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-key-pair-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-key-pair-2.png" alt="Create a key pair">
-    </a>
-    <figcaption>Create a key pair</figcaption>
-  </figure>
-</p>
+To create a new key pair run the following command replacing REGION by the region in which you want to run the hopsworks cluster.
+```bash
+aws ec2 create-key-pair --key-name hopsworksai \
+    --region REGION
+```
+The output is an ASCII version of the private key and key fingerprint. You need to save the key to a file.
 
 ### Step 4.2: Import a key pair
-Proceed to [Key pairs in the EC2 console](https://us-east-2.console.aws.amazon.com/ec2/v2/home?#KeyPairs), click on *Action* and click on *Import key pair*
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/import-key-pair.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/import-key-pair.png" alt="Import a key pair">
-    </a>
-    <figcaption>Import a key pair</figcaption>
-  </figure>
-</p>
-
-Name your key pair, upload your public key and click on *Import key pair*.
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/import-key-pair-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/import-key-pair-2.png" alt="Import a key pair">
-    </a>
-    <figcaption>Import a key pair</figcaption>
-  </figure>
-</p>
+To import an existing key pair run the following command replacing *PATH_TO_PUBLIC_KEY* by the path to the public key on your machine and REGION by the region in which you want to run the hopsworks cluster.
+```bash
+aws ec2 import-key-pair --key-name hopsworskai \
+   --public-key-material fileb://PATH_TO_PUBLIC_KEY \
+   --region REGION
+```
 
 ## Step 5: Deploying a Hopsworks cluster
 
@@ -145,12 +150,12 @@ Select the *Instance type* (3) and *Local storage* (4) size for the cluster *Hea
 
 Check if you want to *Enable EBS encryption* (5)
 
-Enter the name of the *S3 bucket* (6) you created above in *S3 bucket*.
+Enter the name of the *S3 bucket* (6) you created in [step 2](#step-2-creating-storage).
 
 !!! note
     The S3 bucket you are using must be empty.
 
-Make sure that the *ECR AWS Account Id* (7) is correct. It is set by default to the AWS account id where you set the cross account role. 
+Make sure that the *ECR AWS Account Id* (7) is correct. It is set by default to the AWS account id where you set the cross-account role and need to match the permissions you set in [step 3](#step-3-creating-instance-profile). 
 Press *Next*:
 
 <p align="center">
@@ -180,7 +185,7 @@ Press *Next*:
   </figure>
 </p>
 
-Select the *SSH key* that you want to use to access cluster instances:
+Select the *SSH key* you created in [step 4](#step-4-create-an-ssh-key):
 
 <p align="center">
   <figure>
@@ -191,7 +196,7 @@ Select the *SSH key* that you want to use to access cluster instances:
   </figure>
 </p>
 
-Select the *Instance Profile* that you created above:
+Select the *Instance Profile* that you created in [step 3](#step-3-creating-instance-profile):
 
 <p align="center">
   <figure>
@@ -202,7 +207,7 @@ Select the *Instance Profile* that you created above:
   </figure>
 </p>
 
-To backup the S3 bucket data when taking a cluster backup we need to set a retention policy for S3. You can deactivate the retention policy by setting this value to 0 but this will block you from taking any backup of your cluster. Choose the retention period in day and click on *Review and submit*:
+To backup the S3 bucket data when taking a cluster backup we need to set a retention policy for S3. You can deactivate the retention policy by setting this value to 0 but this will block you from taking any backup of your cluster. Choose the retention period in days and click on *Review and submit*:
 
 <p align="center">
   <figure>
