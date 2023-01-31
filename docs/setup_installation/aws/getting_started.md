@@ -35,10 +35,10 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to AW
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/save-role.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/save-role.png" alt="Saving the cross-account role">
+    <a  href="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png">
+      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png" alt="Screenshot of the instruction to create the cross account role">
     </a>
-    <figcaption>Saving the cross-account role</figcaption>
+    <figcaption>Instructions to create the cross account role</figcaption>
   </figure>
 </p>
 
