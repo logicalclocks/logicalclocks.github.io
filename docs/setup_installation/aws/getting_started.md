@@ -5,9 +5,32 @@ in the cloud. It integrates seamlessly with third-party platforms such as Databr
 SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai) with your organization's AWS account.
 
 ## Prerequisit
-To run the commands in this guide, you must have the AWS CLI installed and configured. See the [Getting started guide](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html) in the AWS CLI User Guide for more information.
+To run the commands in this guide, you must have the AWS CLI installed and configured and your user must have at least the set of permission listed below. See the [Getting started guide](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html) in the AWS CLI User Guide for more information about installing and configuring the AWS CLI.
 
-All the commands have unix-like quotation rules. These commands will need to be adapted to your terminal's quoting rules. See [Using quotation marks with strings](https://docs.aws.amazon.com/cli/v1/userguide/cli-usage-parameters-quoting-strings.html) in the AWS CLI User Guide .
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateInstanceProfile",
+                "iam:PassRole",
+                "iam:CreateRole",
+                "iam:PutRolePolicy",
+                "iam:AddRoleToInstanceProfile",
+                "ec2:ImportKeyPair",
+                "ec2:CreateKeyPair",
+                "s3:CreateBucket"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+All the commands have unix-like quotation rules. These commands will need to be adapted to your terminal's quoting rules. See [Using quotation marks with strings](https://docs.aws.amazon.com/cli/v1/userguide/cli-usage-parameters-quoting-strings.html) in the AWS CLI User Guide.
 
 All the commands use the default AWS profile. Add the *--profile* parameter to use another profile. 
 
