@@ -9,6 +9,8 @@ To run the commands in this guide, you must have the AWS CLI installed and confi
 
 All the commands have unix-like quotation rules. These commands will need to be adapted to your terminal's quoting rules. See [Using quotation marks with strings](https://docs.aws.amazon.com/cli/v1/userguide/cli-usage-parameters-quoting-strings.html) in the AWS CLI User Guide .
 
+All the commands use the default AWS profile. Add the *--profile* parameter to use another profile. 
+
 ## Step 1: Connecting your AWS account
 
 [Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your AWS account. To enable this you have to permit us to do so. This is done using an AWS cross-account role.
