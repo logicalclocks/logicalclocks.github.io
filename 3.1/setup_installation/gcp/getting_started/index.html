@@ -5278,10 +5278,16 @@ SageMaker and KubeFlow. This guide shows how to set up <a href="https://managed.
 <h2 id="prerequisite">Prerequisite<a class="headerlink" href="#prerequisite" title="Permanent link">#</a></h2>
 <p>To follow the instruction of this page you will need the following:</p>
 <ul>
-<li>A GCP project in which the Hopsworks cluster will be deployed. Make sure to enable <em>Compute Engine API</em>, <em>Cloud Resource Manager API</em>, and <em>Identity and Access Management (IAM) API</em> on that project by following <a href="https://cloud.google.com/apis/docs/getting-started#enabling_apis">this guide</a>.</li>
+<li>A GCP project in which the Hopsworks cluster will be deployed. </li>
 <li>The <a href="https://cloud.google.com/sdk/gcloud">gcloud CLI</a></li>
 <li>The <a href="https://cloud.google.com/storage/docs/gsutil">gsutil tool</a></li>
 </ul>
+<p>Make sure to enable <em>Compute Engine API</em>, <em>Cloud Resource Manager API</em>, and <em>Identity and Access Management (IAM) API</em> on the GCP project. This can be done by running the following commands. Replacing <em>[PROJECT_ID]</em> with the id of your GCP project.
+<div class="highlight"><pre><span></span><code>gcloud<span class="w"> </span>--project<span class="o">=[</span>PROJECT_ID<span class="o">]</span><span class="w"> </span>services<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>compute.googleapis.com
+gcloud<span class="w"> </span>--project<span class="o">=[</span>PROJECT_ID<span class="o">]</span><span class="w"> </span>services<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>cloudresourcemanager.googleapis.com
+gcloud<span class="w"> </span>--project<span class="o">=[</span>PROJECT_ID<span class="o">]</span><span class="w"> </span>services<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>iam.googleapis.com
+</code></pre></div>
+You can find more information about GCP cloud APIs in the <a href="https://cloud.google.com/apis/docs/getting-started">GCP documentation</a>.</p>
 <h2 id="step-1-connecting-your-gcp-account">Step 1: Connecting your GCP account<a class="headerlink" href="#step-1-connecting-your-gcp-account" title="Permanent link">#</a></h2>
 <p><a href="https://managed.hopsworks.ai/">Managed.hopsworks.ai</a> deploys Hopsworks clusters to a project in your GCP account. <a href="https://managed.hopsworks.ai/">Managed.hopsworks.ai</a> uses service account keys to connect to your GCP project. To enable this, you need to create a service account in your GCP project. Assign to the service account the required permissions. And, create a service account key JSON. For more details about creating and managing service accounts steps in GCP, see <a href="https://cloud.google.com/iam/docs/creating-managing-service-accounts">documentation</a>.</p>
 <p>In <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> click on <em>Connect to GCP</em> or go to <em>Settings</em> and click on <em>Configure</em> next to <em>GCP</em>. This will direct you to a page with the instructions needed to create the service account and set up the connection. Follow the instructions.</p>
