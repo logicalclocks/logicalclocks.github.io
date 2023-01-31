@@ -131,7 +131,7 @@ aws iam put-role-policy --role-name hopsworksai-instances \
 Finally, attach the role to the instance profile by running:
 ```bash
 aws iam add-role-to-instance-profile \
-   --role-name hopsworks-instances \
+   --role-name hopsworksai-instances \
    --instance-profile-name hopsworksai-instances
 ```
 
