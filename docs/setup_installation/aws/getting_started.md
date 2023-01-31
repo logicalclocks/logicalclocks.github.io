@@ -6,12 +6,7 @@ SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](ht
 
 ## Step 1: Connecting your AWS account
 
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your AWS account. To enable this you have to
-permit us to do so. This can be either achieved by using AWS cross-account roles or
-AWS access keys. We strongly recommend the usage of cross-account roles whenever possible due
-to security reasons.
-
-### Option 1: Using AWS Cross-Account Roles
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your AWS account. To enable this you have to permit us to do so. This is done using an AWS cross-account role.
 
 <p align="center">
   <iframe
@@ -133,96 +128,6 @@ Paste the *Role ARN* into [managed.hopsworks.ai](https://managed.hopsworks.ai) a
   </figure>
 </p>
 
-### Option 2: Using AWS Access Keys
-
-You can either create a new IAM user or use an existing IAM user to create access keys for [managed.hopsworks.ai](https://managed.hopsworks.ai).
-If you want to create a new IAM user, see [Creating an IAM User in Your AWS Account](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html).
-
-!!! warning
-
-    We recommend using Cross-Account Roles instead of Access Keys whenever possible, see [Option 1: Using AWS Cross-Account Roles](#option-1-using-aws-cross-account-roles).
-
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) requires a set of permissions to be able to launch clusters in your AWS account.
-The permissions can be granted by attaching an access policy to your IAM user.
-By default, [managed.hopsworks.ai](https://managed.hopsworks.ai) is automating all steps required to launch a new Hopsworks cluster.
-If you want to limit the required AWS permissions, see [restrictive-permissions](restrictive_permissions.md).
-
-The required permissions are shown in the instructions. Copy them if you want to create a new access policy:
-
-<p align="center">
-  <figure>
-    <a  href="../../assets/images/setup_installation/managed/aws/access-key-permissions-instructions.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/access-key-permissions-instructions.png" alt="Configuring access key instructions">
-    </a>
-    <figcaption>Configuring access key instructions</figcaption>
-  </figure>
-</p>
-
-Add a new *Inline policy* to your AWS user:
-
-<p align="center">
-  <figure>
-    <a  href="../../assets/images/setup_installation/managed/aws/access-keys-aws-step-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-1.png" alt="Configuring the access key on AWS step 1">
-    </a>
-    <figcaption>Configuring the access key on AWS step 1</figcaption>
-  </figure>
-</p>
-
-Replace the JSON policy with the JSON from our instructions and continue in the wizard:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-2.png" alt="Adding the inline policy step 2">
-    </a>
-    <figcaption>Adding the inline policy step 2</figcaption>
-  </figure>
-</p>
-
-Name and create the policy:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-3.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-3.png" alt="Adding the inline policy step 3">
-    </a>
-    <figcaption>Adding the inline policy step 3</figcaption>
-  </figure>
-</p>
-
-In the overview of your IAM user, select *Create access key*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-2.png" alt="Configuring the access key on AWS step 2">
-    </a>
-    <figcaption>Configuring the access key on AWS step 2</figcaption>
-  </figure>
-</p>
-
-Copy the *Access Key ID* and the *Secret Access Key*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-3.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-3.png" alt="Configuring the access key on AWS step 3">
-    </a>
-    <figcaption>Configuring the access key on AWS step 3</figcaption>
-  </figure>
-</p>
-
-Paste the *Access Key ID* and the *Secret Access Key* into [managed.hopsworks.ai](https://managed.hopsworks.ai) and click on *Finish*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/save-access-key.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/save-access-key.png" alt="Saving the access key pair">
-    </a>
-    <figcaption>Saving the access key pair</figcaption>
-  </figure>
-</p>
 
 ## Step 2: Creating storage
 
