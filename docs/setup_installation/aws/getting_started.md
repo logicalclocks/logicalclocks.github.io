@@ -90,7 +90,7 @@ Start by creating a file named *assume-role-policy.json* containing the followin
 Run the following to create the role:
 
 ```bash
-aws iam create-role perm --role-name hopsworksai-instances \
+aws iam create-role --role-name hopsworksai-instances \
    --description "Role for the hopsworks cluster instances" \
    --assume-role-policy-document file://assume-role-policy.json
 ```
