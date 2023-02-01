@@ -12,11 +12,23 @@ To follow the instruction of this page you will need the following:
 - The [gcloud CLI](https://cloud.google.com/sdk/gcloud)
 - The [gsutil tool](https://cloud.google.com/storage/docs/gsutil)
 
-Make sure to enable *Compute Engine API*, *Cloud Resource Manager API*, and *Identity and Access Management (IAM) API* on the GCP project. This can be done by running the following commands. Replacing *[PROJECT_ID]* with the id of your GCP project.
+To run all the commands on this page the user needs to have at least the following permissions on the GCP project:
+```
+    iam.roles.create
+    iam.roles.list
+    iam.serviceAccountKeys.create
+    iam.serviceAccounts.create
+    resourcemanager.projects.getIamPolicy
+    resourcemanager.projects.setIamPolicy
+    serviceusage.services.enable
+    storage.buckets.create
+```
+
+Make sure to enable *Compute Engine API*, *Cloud Resource Manager API*, and *Identity and Access Management (IAM) API* on the GCP project. This can be done by running the following commands. Replacing *$PROJECT_ID* with the id of your GCP project.
 ```bash
-gcloud --project=[PROJECT_ID] services enable compute.googleapis.com
-gcloud --project=[PROJECT_ID] services enable cloudresourcemanager.googleapis.com
-gcloud --project=[PROJECT_ID] services enable iam.googleapis.com
+gcloud --project=$PROJECT_ID services enable compute.googleapis.com
+gcloud --project=$PROJECT_ID services enable cloudresourcemanager.googleapis.com
+gcloud --project=$PROJECT_ID services enable iam.googleapis.com
 ```
 You can find more information about GCP cloud APIs in the [GCP documentation](https://cloud.google.com/apis/docs/getting-started).
 ## Step 1: Connecting your GCP account
@@ -42,10 +54,10 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to GC
 
 The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. This bucket needs to be created before creating the Hopsworks cluster.
 
-Execute the following gsutil command to create a bucket. Replace all occurrences \[PROJECT_ID\] with your GCP project id and \[BUCKET_NAME\] with the name you to give to your bucket:
+Execute the following gsutil command to create a bucket. Replace all occurrences $PROJECT_ID with your GCP project id and $BUCKET_NAME with the name you to give to your bucket:
 
 ```
-gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
+gsutil mb -p $PROJECT_ID gs://$BUCKET_NAME
 ```
 
 !!! note 
@@ -79,31 +91,31 @@ includedPermissions:
 !!! note 
     it is possible to limit the permissions that set up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md#limiting-the-instances-service-account-permissions).
 
-Execute the following gcloud command to create a custom role from the file. Replace \[PROJECT_ID\] with your GCP project id:
+Execute the following gcloud command to create a custom role from the file. Replace $PROJECT_ID with your GCP project id:
 
 ```
 gcloud iam roles create hopsworksai_instances \
-  --project=[PROJECT_ID] \
+  --project=$PROJECT_ID \
   --file=hopsworksai_instances_role.yaml
 ```
 
 ### Step 3.2: Creating a service account 
 
-Execute the following gcloud command to create a service account for Hopsworks AI instances. Replace \[PROJECT_ID\] with your GCP project id:
+Execute the following gcloud command to create a service account for Hopsworks AI instances. Replace $PROJECT_ID with your GCP project id:
 
 ```
 gcloud iam service-accounts create hopsworks-ai-instances \
-  --project=[PROJECT_ID] \
+  --project=$PROJECT_ID \
   --description="Service account for Hopsworks AI instances" \
   --display-name="Hopsworks AI instances"
 ```
 
-Execute the following gcloud command to bind the custom role to the service account. Replace all occurrences \[PROJECT_ID\] with your GCP project id:
+Execute the following gcloud command to bind the custom role to the service account. Replace all occurrences $PROJECT_ID with your GCP project id:
 
 ```
-gcloud projects add-iam-policy-binding [PROJECT_ID] \
-  --member="serviceAccount:hopsworks-ai-instances@[PROJECT_ID].iam.gserviceaccount.com" \
-  --role="projects/[PROJECT_ID]/roles/hopsworksai_instances"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:hopsworks-ai-instances@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="projects/$PROJECT_ID/roles/hopsworksai_instances"
 ```
 
 ## Step 4: Deploying a Hopsworks cluster
@@ -161,7 +173,7 @@ Press *Next*:
   </figure>
 </p>
 
-Enter *Email* of the instances *service account* that you created [above](#step-22-creating-a-service-account). If you followed the instruction it should be *hopsworks-ai-instances@\[PROJECT_ID\].iam.gserviceaccount.com* with \[PROJECT_ID\] the name of your project:
+Enter *Email* of the instances *service account* that you created [above](#step-22-creating-a-service-account). If you followed the instruction it should be *hopsworks-ai-instances@$PROJECT_ID.iam.gserviceaccount.com* with $PROJECT_ID the name of your project:
 
 <p align="center">
   <figure>
