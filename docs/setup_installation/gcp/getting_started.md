@@ -54,10 +54,10 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to GC
 
 The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. This bucket needs to be created before creating the Hopsworks cluster.
 
-Execute the following gsutil command to create a bucket. Replace all occurrences $PROJECT_ID with your GCP project id and $BUCKET_NAME with the name you to give to your bucket:
+Execute the following gsutil command to create a bucket. Replace all occurrences $PROJECT_ID with your GCP project id and $BUCKET_NAME with the name you want to give to your bucket. You can also replace US with another location if you are not going to run your cluster in this *Multi-Region (see note below for more details).
 
 ```
-gsutil mb -p $PROJECT_ID gs://$BUCKET_NAME
+gsutil mb -p $PROJECT_ID -l US gs://$BUCKET_NAME
 ```
 
 !!! note 
