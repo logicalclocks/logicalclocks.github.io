@@ -4070,6 +4070,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#default-permissions" class="md-nav__link">
+    Default permissions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#limiting-the-account-service-account-permissions" class="md-nav__link">
     Limiting the Account Service Account permissions
   </a>
@@ -5188,6 +5195,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#default-permissions" class="md-nav__link">
+    Default permissions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#limiting-the-account-service-account-permissions" class="md-nav__link">
     Limiting the Account Service Account permissions
   </a>
@@ -5261,6 +5275,52 @@ By default, these permissions are set to easily allow a wide range of different 
 us to automate as many steps as possible. While we ensure to never access resources we shouldn’t,
 we do understand that this might not be enough for your organization or security policy.
 This guide explains how to lock down access permissions following the IT security policy principle of least privilege.</p>
+<h2 id="default-permissions">Default permissions<a class="headerlink" href="#default-permissions" title="Permanent link">#</a></h2>
+<p>This is the list of default permissions that are required by <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. If you prefer to limit these permissions, then proceed to the <a href="#limiting-the-account-service-account-permissions">next section</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Hopsworks AI</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Role that allows Hopsworks AI to manage resources</span>
+<span class="nt">stage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GA</span>
+<span class="nt">includedPermissions</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.disks.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.disks.createSnapshot</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.delete</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.setLabels</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.snapshots.useReadOnly</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.firewalls.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.firewalls.delete</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.firewalls.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.firewalls.list</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.firewalls.update</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.globalOperations.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.delete</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setLabels</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setMetadata</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setServiceAccount</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setTags</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.start</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.stop</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setMachineType</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.delete</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.list</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.updatePolicy</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.projects.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.delete</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.list</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.use</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.useExternalIp</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.zoneOperations.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iam.serviceAccounts.actAs</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iam.serviceAccounts.list</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resourcemanager.projects.get</span>
+</code></pre></div>
 <h2 id="limiting-the-account-service-account-permissions">Limiting the Account Service Account permissions<a class="headerlink" href="#limiting-the-account-service-account-permissions" title="Permanent link">#</a></h2>
 <p>Some of the permissions set up when connection your GCP account to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> (<a href="../getting_started/#step-1-connecting-your-gcp-account">here</a>) can be removed under certain conditions.</p>
 <h3 id="backup-permissions">Backup permissions<a class="headerlink" href="#backup-permissions" title="Permanent link">#</a></h3>
