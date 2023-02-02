@@ -5316,8 +5316,8 @@ You can find more information about GCP cloud APIs in the <a href="https://cloud
 
 <h2 id="step-2-creating-storage">Step 2: Creating storage<a class="headerlink" href="#step-2-creating-storage" title="Permanent link">#</a></h2>
 <p>The Hopsworks clusters deployed by <a href="https://managed.hopsworks.ai/">managed.hopsworks.ai</a> store their data in a bucket in your GCP account. This bucket needs to be created before creating the Hopsworks cluster.</p>
-<p>Execute the following gsutil command to create a bucket. Replace all occurrences $PROJECT_ID with your GCP project id and $BUCKET_NAME with the name you to give to your bucket:</p>
-<div class="highlight"><pre><span></span><code>gsutil mb -p $PROJECT_ID gs://$BUCKET_NAME
+<p>Execute the following gsutil command to create a bucket. Replace all occurrences $PROJECT_ID with your GCP project id and $BUCKET_NAME with the name you want to give to your bucket. You can also replace US with another location if you are not going to run your cluster in this *Multi-Region (see note below for more details).</p>
+<div class="highlight"><pre><span></span><code>gsutil mb -p $PROJECT_ID -l US gs://$BUCKET_NAME
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
