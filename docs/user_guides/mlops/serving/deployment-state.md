@@ -99,9 +99,9 @@ deployment.transformer.resources.describe()
 
 ### API Reference
 
-[Deployment](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/deployment/)
+[Deployment](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/deployment/)
 
-[PredictorState](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/predictor-state/)
+[PredictorState](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/predictor-state/)
 
 ## Deployment status
 
