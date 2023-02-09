@@ -6,7 +6,7 @@ A Producer is a process which produces messages to a Kafka topic. In Hopsworks, 
 
 ## Prerequisites
 
-This guide requires that you have Data owner role and have previously created a [Kafka Topic](create_topic.md).
+This guide requires that you have 'Data owner' role and have previously created a [Kafka Topic](create_topic.md).
 
 ## Code
 
