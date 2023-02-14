@@ -4,7 +4,7 @@
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
 SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai/) with your organization's Google Cloud Platform's (GCP) account.
 
-## Prerequisite
+## Prerequisites
 
 To follow the instruction of this page you will need the following:
 
