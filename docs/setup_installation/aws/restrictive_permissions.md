@@ -28,6 +28,9 @@ Note the VPC ID of the VPC you want to use for the following steps.
 !!! note
     Make sure you enable `DNS hostnames` for your VPC
 
+!!! note
+    If you use VPC endpoints to managed access to services such as S3 and ECR you need to ensure that the endpoints provide the same permissions as set in the [instance profile](../getting_started/#step-3-creating-instance-profile)
+
 After you have created the VPC either [Create a Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#CreatingSecurityGroups) or use VPC's default. Make sure that the VPC allow the following traffic.
 
 #### Inbound traffic 

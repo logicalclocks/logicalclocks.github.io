@@ -4,7 +4,7 @@
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
 SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai) with your organization's AWS account.
 
-## Prerequisit
+## Prerequisites
 To run the commands in this guide, you must have the AWS CLI installed and configured and your user must have at least the set of permission listed below. See the [Getting started guide](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html) in the AWS CLI User Guide for more information about installing and configuring the AWS CLI.
 
 ```json
