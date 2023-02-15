@@ -112,7 +112,6 @@ We have enforced using managed docker registry (ECR) starting from Hopsworks ver
             "ecr:CompleteLayerUpload",
             "ecr:UploadLayerPart",
             "ecr:InitiateLayerUpload",
-            "ecr:DeleteRepository",
             "ecr:BatchCheckLayerAvailability",
             "ecr:PutImage",
             "ecr:ListImages",
