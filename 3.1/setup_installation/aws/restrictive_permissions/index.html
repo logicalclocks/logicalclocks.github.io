@@ -5472,6 +5472,10 @@ Note the VPC ID of the VPC you want to use for the following steps.</p>
 <p class="admonition-title">Note</p>
 <p>Make sure you enable <code>DNS hostnames</code> for your VPC</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you use VPC endpoints to managed access to services such as S3 and ECR you need to ensure that the endpoints provide the same permissions as set in the <a href="../getting_started/#step-3-creating-instance-profile">instance profile</a></p>
+</div>
 <p>After you have created the VPC either <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#CreatingSecurityGroups">Create a Security Group</a> or use VPC's default. Make sure that the VPC allow the following traffic.</p>
 <h4 id="inbound-traffic">Inbound traffic<a class="headerlink" href="#inbound-traffic" title="Permanent link">#</a></h4>
 <p>It is <em><strong>imperative</strong></em> that the <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#AddRemoveRules">Security Group</a> allows Inbound traffic from any Instance within the same Security Group in any (TCP) port. All VMs of the Cluster should be able to communicate with each other. It is also recommended to open TCP port <code>80</code> to sign the certificates. If you do not open port <code>80</code> you will have to use a self-signed certificate in your Hopsworks cluster. This can be done by checking the <code>Continue with self-signed certificate</code> check box in the <code>Security Group</code> step of the cluster creation.</p>
