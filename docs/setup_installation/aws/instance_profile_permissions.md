@@ -36,18 +36,18 @@ Replace the following placeholders with their appropiate values
       ]
     },
     {
-      "Sid": "AllowPullMainImages",
+      "Sid": "AllowPullImagesFromHopsworkAi",
       "Effect": "Allow",
       "Action": [
         "ecr:GetDownloadUrlForLayer",
         "ecr:BatchGetImage"
       ],
       "Resource": [
-        "arn:aws:ecr:*:*:repository/filebeat",
-        "arn:aws:ecr:*:*:repository/base",
-        "arn:aws:ecr:*:*:repository/onlinefs",
-        "arn:aws:ecr:*:*:repository/airflow",
-        "arn:aws:ecr:*:*:repository/git"
+        "arn:aws:ecr:REGION:822623301872:repository/filebeat",
+        "arn:aws:ecr:REGION:822623301872:repository/base",
+        "arn:aws:ecr:REGION:822623301872:repository/onlinefs",
+        "arn:aws:ecr:REGION:822623301872:repository/airflow",
+        "arn:aws:ecr:REGION:822623301872:repository/git"
       ]
     },
     {
@@ -57,7 +57,7 @@ Replace the following placeholders with their appropiate values
       "Resource": "*"
     },
     {
-      "Sid": "AllowPushandPullImages",
+      "Sid": "AllowPushandPullImagesToUserRepo",
       "Effect": "Allow",
       "Action": [
         "ecr:GetDownloadUrlForLayer",
