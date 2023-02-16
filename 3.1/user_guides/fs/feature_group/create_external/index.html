@@ -5344,6 +5344,8 @@
 </div>
 </div>
 <h3 id="create-an-external-feature-group">Create an External Feature Group<a class="headerlink" href="#create-an-external-feature-group" title="Permanent link">#</a></h3>
+<p>The first step is to instantiate the metadata through the <code>create_external_feature_group</code> method. Once you have defined the metadata, you can 
+<a href="#register-the-metadata">persist the metadata and create the feature group</a> in Hopsworks by calling <code>fg.save()</code>.</p>
 <h4 id="sql-based-external-feature-group">SQL based external feature group<a class="headerlink" href="#sql-based-external-feature-group" title="Permanent link">#</a></h4>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Python</label></div>
 <div class="tabbed-content">
@@ -5368,6 +5370,8 @@
     <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ss_store_sk&#39;</span><span class="p">],</span>
     <span class="n">event_time</span><span class="o">=</span><span class="s1">&#39;sale_date&#39;</span>
 <span class="p">)</span>
+
+<span class="n">fg</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -5384,6 +5388,8 @@
     <span class="n">primary_key</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ss_store_sk&#39;</span><span class="p">],</span>
     <span class="n">event_time</span><span class="o">=</span><span class="s1">&#39;sale_date&#39;</span>
 <span class="p">)</span>
+
+<span class="n">fg</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -5393,7 +5399,7 @@
 <p>If the storage connector is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the storage connector is defined for a data lake, the location of the data as well as the format need to be provided.</p>
 <p>Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported. </p>
 <h3 id="register-the-metadata">Register the metadata<a class="headerlink" href="#register-the-metadata" title="Permanent link">#</a></h3>
-<p>The snippet above only created the metadata object on the Python interpreter running the code. To register the external feature group metadata with Hopsworks, you should invoke the <code>save</code> method:</p>
+<p>In the snippet above it's important that the created metadata object gets registered in Hopsworks. To do so, you should invoke the <code>save</code> method:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Python</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
