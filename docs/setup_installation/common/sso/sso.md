@@ -13,9 +13,7 @@ Go to your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboa
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/setupsso.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/setupsso.png" alt="Setup SSO">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/setupsso.png" alt="Setup SSO">
     <figcaption>Setup SSO</figcaption>
   </figure>
 </p>
@@ -24,9 +22,7 @@ Click on *Azure Active Directory*. You will need the two copyable entries on thi
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/azure_active_directory.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/azure_active_directory.png" alt="Azure Active Directory">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/azure_active_directory.png" alt="Azure Active Directory">
     <figcaption>Azure Active Directory</figcaption>
   </figure>
 </p>
@@ -35,9 +31,7 @@ Go to the [Azure Portal](https://portal.azure.com) then proceed to the [Active D
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/new_app.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/new_app.png" alt="New application">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/new_app.png" alt="New application">
     <figcaption>New application</figcaption>
   </figure>
 </p>
@@ -46,9 +40,7 @@ Search for *hopsworks.ai*. Click on it then click on *create*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/create_new_app.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/create_new_app.png" alt="Create your own application">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/create_new_app.png" alt="Create your own application">
     <figcaption>Create your own application</figcaption>
   </figure>
 </p>
@@ -57,9 +49,7 @@ Click on *Single sign-on*. Then click on *SAML*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/saml.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/saml.png" alt="SAML">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/saml.png" alt="SAML">
     <figcaption>SAML</figcaption>
   </figure>
 </p>
@@ -73,9 +63,7 @@ Click on *Save*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/configure_saml.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/configure_saml.png" alt="Configure SAML">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/configure_saml.png" alt="Configure SAML">
     <figcaption>Configure SAML</figcaption>
   </figure>
 </p>
@@ -84,9 +72,7 @@ In the *SAML Signing Certificate* section copy the *App Federation Metadata URL*
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/metadata_url.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/metadata_url.png" alt="App Federation Metadata URL">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/metadata_url.png" alt="App Federation Metadata URL">
     <figcaption>App Federation Metadata URL</figcaption>
   </figure>
 </p>
@@ -97,9 +83,7 @@ Go back to [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Next 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/next_step_azure.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/next_step_azure.png" alt="Next step">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/next_step_azure.png" alt="Next step">
     <figcaption>Next step</figcaption>
   </figure>
 </p>
@@ -110,9 +94,7 @@ Paste the *Metadata URL* you copied above and click *Finish*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png" alt="Configure managed.hopsworks.ai">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png" alt="Configure managed.hopsworks.ai">
     <figcaption>Configure managed.hopsworks.ai</figcaption>
   </figure>
 </p>
@@ -124,9 +106,7 @@ If you go back to the *SSO* tab of *Settings* you will get a *logging page* link
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/login_url.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/login_url.png" alt="Configure managed.hopsworks.ai">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/login_url.png" alt="Configure managed.hopsworks.ai">
     <figcaption>Configure managed.hopsworks.ai</figcaption>
   </figure>
 </p>
@@ -136,9 +116,7 @@ Go to your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboa
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/setupsso.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/setupsso.png" alt="Setup SSO">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/setupsso.png" alt="Setup SSO">
     <figcaption>Setup SSO</figcaption>
   </figure>
 </p>
@@ -147,9 +125,7 @@ Click on *AWS SSO*. You will need the copyable entries on this page in the follo
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_sso.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_sso.png" alt="AWS SSO">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_sso.png" alt="AWS SSO">
     <figcaption>AWS SSO</figcaption>
   </figure>
 </p>
@@ -158,9 +134,7 @@ Go to [AWS Single Sign-On](https://console.aws.amazon.com/singlesignon) in the A
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_add_app.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_add_app.png" alt="Add New application">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_add_app.png" alt="Add New application">
     <figcaption>Add New application</figcaption>
   </figure>
 </p>
@@ -169,9 +143,7 @@ Click on *Add a custom SAML 2.0 application*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_add_custom_app.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_add_custom_app.png" alt="Add a custom SAML 2.0 application">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_add_custom_app.png" alt="Add a custom SAML 2.0 application">
     <figcaption>Add a custom SAML 2.0 application</figcaption>
   </figure>
 </p>
@@ -180,9 +152,7 @@ Give a name to your application, for example, *hopsworks_sso*. Scroll to the bot
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_app_config.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_app_config.png" alt="Application configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_app_config.png" alt="Application configuration">
     <figcaption>Application configuration</figcaption>
   </figure>
 </p>
@@ -191,9 +161,7 @@ Paste the *Application ACS URL* and *Application SAML audience* that you copy fr
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_app_config2.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_app_config2.png" alt="Application configuration 2">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_app_config2.png" alt="Application configuration 2">
     <figcaption>Application configuration 2</figcaption>
   </figure>
 </p>
@@ -202,9 +170,7 @@ Go to the *Attribute mappings* tab. On the first line enter the value *Subject* 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_attribute_mapping.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_attribute_mapping.png" alt="Attribute mapping">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_attribute_mapping.png" alt="Attribute mapping">
     <figcaption>Attribute mapping</figcaption>
   </figure>
 </p>
@@ -219,9 +185,7 @@ Click on *Save changes*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_attribute_mapping2.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_attribute_mapping2.png" alt="Attribute mapping 2">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_attribute_mapping2.png" alt="Attribute mapping 2">
     <figcaption>Attribute mapping 2</figcaption>
   </figure>
 </p>
@@ -230,9 +194,7 @@ Return to the *Configuration* tab and click on *Edit configuration*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_edit_conf.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_edit_conf.png" alt="Edit configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_edit_conf.png" alt="Edit configuration">
     <figcaption>Edit configuration</figcaption>
   </figure>
 </p>
@@ -241,9 +203,7 @@ Click on Copy URL on the *AWS SSO SAML metadata file* line. We will call this UR
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/aws_metadata_url.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_metadata_url.png" alt="Metadata URL">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/aws_metadata_url.png" alt="Metadata URL">
     <figcaption>Metadata URL</figcaption>
   </figure>
 </p>
@@ -252,9 +212,7 @@ Go back to [managed.hopsworks.ai](https://managed.hopsworks.ai). Click on *Next 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/next_step_azure.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/next_step_azure.png" alt="Next step">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/next_step_azure.png" alt="Next step">
     <figcaption>Next step</figcaption>
   </figure>
 </p>
@@ -265,9 +223,7 @@ Paste the *Metadata URL* you copied above and click *Finish*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png" alt="Configure managed.hopsworks.ai">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/hopsworks_config.png" alt="Configure managed.hopsworks.ai">
     <figcaption>Configure managed.hopsworks.ai</figcaption>
   </figure>
 </p>
@@ -276,9 +232,7 @@ If you go back to the *SSO* tab of *Settings* you will get a *logging page* link
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/login_url.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/login_url.png" alt="Configure managed.hopsworks.ai">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/login_url.png" alt="Configure managed.hopsworks.ai">
     <figcaption>Configure managed.hopsworks.ai</figcaption>
   </figure>
 </p>

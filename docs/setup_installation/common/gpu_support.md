@@ -6,9 +6,7 @@ When selecting the [workers' instance type](../aws/cluster_creation.md#step-3-wo
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-gpu.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/create-gpu.png" alt="Create cluster with GPUs">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/create-gpu.png" alt="Create cluster with GPUs">
     <figcaption>Create cluster with GPUs</figcaption>
   </figure>
 </p>
@@ -18,9 +16,7 @@ When [adding workers](adding_removing_workers.md#adding-workers) to a cluster, y
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/add-gpu.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/add-gpu.png" alt="Add GPUs to cluster">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/add-gpu.png" alt="Add GPUs to cluster">
     <figcaption>Add GPUs to cluster</figcaption>
   </figure>
 </p>

@@ -58,9 +58,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to AW
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png" alt="Screenshot of the instruction to create the cross account role">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png" alt="Screenshot of the instruction to create the cross account role">
     <figcaption>Instructions to create the cross account role</figcaption>
   </figure>
 </p>
@@ -160,9 +158,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
     <figcaption>Create a Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -183,9 +179,7 @@ Press *Next*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-instance-general.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-instance-general.png" alt="Create a Hopsworks cluster, general Information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-instance-general.png" alt="Create a Hopsworks cluster, general Information">
     <figcaption>Create a Hopsworks cluster, general information</figcaption>
   </figure>
 </p>
@@ -201,9 +195,7 @@ Press *Next*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
     <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
   </figure>
 </p>
@@ -212,9 +204,7 @@ Select the *SSH key* you created in [step 4](#step-4-create-an-ssh-key):
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png" alt="Choose SSH key">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png" alt="Choose SSH key">
     <figcaption>Choose SSH key</figcaption>
   </figure>
 </p>
@@ -223,9 +213,7 @@ Select the *Instance Profile* that you created in [step 3](#step-3-creating-inst
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png" alt="Choose the instance profile">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png" alt="Choose the instance profile">
     <figcaption>Choose the instance profile</figcaption>
   </figure>
 </p>
@@ -234,9 +222,7 @@ To backup the S3 bucket data when taking a cluster backup we need to set a reten
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
     <figcaption>Choose the backup retention policy</figcaption>
   </figure>
 </p>
@@ -245,9 +231,7 @@ Review all information and select *Create*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png" alt="Review cluster information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png" alt="Review cluster information">
     <figcaption>Review cluster information</figcaption>
   </figure>
 </p>
@@ -256,9 +240,7 @@ The cluster will start. This will take a few minutes:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/booting.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
     <figcaption>Booting Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -268,9 +250,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/running.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
     <figcaption>Running Hopsworks cluster</figcaption>
   </figure>
 </p>

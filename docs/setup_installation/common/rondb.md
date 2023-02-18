@@ -9,9 +9,7 @@ This way the database can scale independently and does not affect other cluster 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png" alt="Configure RonDB">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png" alt="Configure RonDB">
     <figcaption>Configure RonDB</figcaption>
   </figure>
 </p>
@@ -27,9 +25,7 @@ If you enable Managed RonDB you will see a basic configuration page where you ca
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/rondb/rondb_basic.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/rondb_basic.png" alt="RonDB basic configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/rondb_basic.png" alt="RonDB basic configuration">
     <figcaption>RonDB basic configuration</figcaption>
   </figure>
 </p>
@@ -66,9 +62,7 @@ We recommend keeping the defaults unless you know what you are doing.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/rondb/rondb_advanced.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/rondb_advanced.png" alt="RonDB advanced configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/rondb_advanced.png" alt="RonDB advanced configuration">
     <figcaption>RonDB advanced configuration</figcaption>
   </figure>
 </p>
@@ -102,9 +96,7 @@ Once the cluster is created you can view some details by clicking on the `RonDB`
 
 <p align="center">
   <figure>
-    <a href="../../../assets/images/setup_installation/managed/common/rondb/rondb_details.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/rondb_details.png" alt="RonDB cluster details">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/rondb_details.png" alt="RonDB cluster details">
     <figcaption>RonDB cluster details</figcaption>
   </figure>
 </p>

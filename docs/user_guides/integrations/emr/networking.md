@@ -15,18 +15,14 @@ Identify your EMR VPC in the Summary of your EMR cluster:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/emr/emr_vpc_0.png">
-      <img src="../../../../assets/images/guides/integrations/emr/emr_vpc_0.png" alt="Identify the EMR VPC">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/emr/emr_vpc_0.png" alt="Identify the EMR VPC">
     <figcaption>Identify the EMR VPC</figcaption>
   </figure>
 </p>
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/emr/emr_vpc_1.png">
-      <img src="../../../../assets/images/guides/integrations/emr/emr_vpc_1.png" alt="Identify the EMR VPC">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/emr/emr_vpc_1.png" alt="Identify the EMR VPC">
     <figcaption>Identify the EMR VPC</figcaption>
   </figure>
 </p>
@@ -46,9 +42,7 @@ Follow the guide [VPC Peering](https://docs.aws.amazon.com/vpc/latest/peering/cr
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/hopsworks_vpc.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/hopsworks_vpc.png" alt="Identify the Feature Store VPC">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/hopsworks_vpc.png" alt="Identify the Feature Store VPC">
     <figcaption>Identify the Feature Store VPC</figcaption>
   </figure>
 </p>
@@ -65,9 +59,7 @@ from the EMR Security Group:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_overview.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_overview.png" alt="Hopsworks Feature Store Security Group">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_overview.png" alt="Hopsworks Feature Store Security Group">
     <figcaption>Hopsworks Feature Store Security Group</figcaption>
   </figure>
 </p>
@@ -76,9 +68,7 @@ Connectivity from the EMR Security Group can be allowed by opening the Security 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_details.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_details.png" alt="Hopsworks Feature Store Security Group details">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_details.png" alt="Hopsworks Feature Store Security Group details">
     <figcaption>Hopsworks Feature Store Security Group details</figcaption>
   </figure>
 </p>
@@ -87,9 +77,7 @@ You can find your EMR security groups in the EMR cluster summary:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/emr/emr_security_group.png">
-      <img src="../../../../assets/images/guides/integrations/emr/emr_security_group.png" alt="EMR Security Groups">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/emr/emr_security_group.png" alt="EMR Security Groups">
     <figcaption>EMR Security Groups</figcaption>
   </figure>
 </p>

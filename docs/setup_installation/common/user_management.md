@@ -12,9 +12,7 @@ Organization membership can be edited by clicking **Members** on the left of [ma
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/members_empty.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_empty.png" alt="Organization membership">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_empty.png" alt="Organization membership">
     <figcaption>Organization membership</figcaption>
   </figure>
 </p>
@@ -28,16 +26,12 @@ the invitation yet.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/members_invited.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_invited.png" alt="Invitation">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_invited.png" alt="Invitation">
     <figcaption>Alice has sent the invitation</figcaption>
   </figure>
 
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/members_accept.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_accept.png" alt="Accept invitation">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_accept.png" alt="Accept invitation">
     <figcaption>Bob's dashboard</figcaption>
   </figure>
 </p>
@@ -48,16 +42,12 @@ Also, he will be able to view **the same** Dashboard as Alice, so he can start, 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/alice_dashboard.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/alice_dashboard.png" alt="Alice dashboard">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/alice_dashboard.png" alt="Alice dashboard">
     <figcaption>Alice's dashboard</figcaption>
   </figure>
 
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/bob_dashboard.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/bob_dashboard.png" alt="Bob dashboard">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/bob_dashboard.png" alt="Bob dashboard">
     <figcaption>Bob's dashboard</figcaption>
   </figure>
 </p>
@@ -71,9 +61,7 @@ You will **stop** sharing any resource and the user **will be blocked** from any
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/members_delete.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_delete.png" alt="Delete organization member">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_delete.png" alt="Delete organization member">
     <figcaption>Delete organization member</figcaption>
   </figure>
 </p>
@@ -89,9 +77,7 @@ The supported permissions are:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/members_permissions.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_permissions.png" alt="Modify permissions">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_permissions.png" alt="Modify permissions">
     <figcaption>Modify permissions</figcaption>
   </figure>
 </p>
@@ -103,9 +89,7 @@ Administrators can do all the actions described in the [Organization permissions
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/members_set_admin.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_set_admin.png" alt="Set a member as admin">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/members_set_admin.png" alt="Set a member as admin">
     <figcaption>Set a member as admin</figcaption>
   </figure>
 </p>

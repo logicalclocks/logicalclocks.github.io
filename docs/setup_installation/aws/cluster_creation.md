@@ -7,9 +7,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
     <figcaption>Create a Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -18,9 +16,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-instance-general.png">
-      <img style="border: 1px solid #000;width:300px" src="../../../assets/images/setup_installation/managed/aws/create-instance-general.png" alt="Create a Hopsworks cluster, general Information">
-    </a>
+    <img style="border: 1px solid #000;width:300px" src="../../../assets/images/setup_installation/managed/aws/create-instance-general.png" alt="Create a Hopsworks cluster, general Information">
     <figcaption>Create a Hopsworks cluster, general information</figcaption>
   </figure>
 </p>
@@ -71,9 +67,7 @@ You can set the static configuration by selecting *Disabled* in the first drop-d
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
     <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
   </figure>
 </p>
@@ -93,9 +87,7 @@ You can set the autoscaling configuration by selecting enabled in the first drop
 
 <p align="center">
   <figure>
-    <a  href="./../../assets/images/setup_installation/managed/common/create-instance-workers-autoscale.png">
-      <img style="border: 1px solid #000;width:700px;width:506px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-autoscale.png" alt="Create a Hopsworks cluster, autoscale workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px;width:506px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-autoscale.png" alt="Create a Hopsworks cluster, autoscale workers configuration">
     <figcaption>Create a Hopsworks cluster, autoscale workers configuration</figcaption>
   </figure>
 </p>
@@ -107,9 +99,7 @@ Select the *SSH key* that you want to use to access cluster instances. For more 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png" alt="Choose SSH key">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png" alt="Choose SSH key">
     <figcaption>Choose SSH key</figcaption>
   </figure>
 </p>
@@ -122,9 +112,7 @@ If you want to use [role chaining](../../admin/roleChaining.md), it is recommand
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png" alt="Choose the instance profile">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png" alt="Choose the instance profile">
     <figcaption>Choose the instance profile</figcaption>
   </figure>
 </p>
@@ -135,9 +123,7 @@ To backup the S3 bucket data when taking a cluster backup we need to set a reten
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-backup.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/connect-aws-backup.png" alt="Choose the backup retention policy">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/connect-aws-backup.png" alt="Choose the backup retention policy">
     <figcaption>Choose the backup retention policy</figcaption>
   </figure>
 </p>
@@ -146,9 +132,7 @@ To backup the S3 bucket data when taking a cluster backup we need to set a reten
 Hopsworks can integrate with Amazon Elastic Kubernetes Service (EKS) to launch Python jobs, Jupyter servers, and ML model servings on top of Amazon EKS. For more detail on how to set up this integration refer to [Integration with Amazon EKS](eks_ecr_integration.md).
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/eks-hopsworks-create-cluster-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/eks-hopsworks-create-cluster-2.png" alt="Add EKS cluster name">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/eks-hopsworks-create-cluster-2.png" alt="Add EKS cluster name">
     <figcaption>Add EKS cluster name</figcaption>
   </figure>
 </p>
@@ -159,9 +143,7 @@ Refer to [Create a VPC](restrictive_permissions.md#step-1-create-a-vpc) for more
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-aws-vpc.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-aws-vpc.png" alt="Choose VPC">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-aws-vpc.png" alt="Choose VPC">
     <figcaption>Choose a VPC</figcaption>
   </figure>
 </p>
@@ -176,9 +158,7 @@ If you did not select an existing virtual network in the previous step [managed.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-subnet.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-subnet.png" alt="Choose subnet">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-subnet.png" alt="Choose subnet">
     <figcaption>Choose an availability zone</figcaption>
   </figure>
 </p>
@@ -194,9 +174,7 @@ If you selected an existing VPC in the previous step, this step lets you select 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-security-group.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-security-group.png" alt="Choose security group">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-security-group.png" alt="Choose security group">
     <figcaption>Choose security group</figcaption>
   </figure>
 </p>
@@ -207,9 +185,7 @@ Clusters created on [managed.hopsworks.ai](https://managed.hopsworks.ai) need to
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-security-group-static.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-security-group-static.png" alt="Enable static IPs">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-security-group-static.png" alt="Enable static IPs">
     <figcaption>Enable static IPs </figcaption>
   </figure>
 </p>
@@ -224,9 +200,7 @@ In this step, you can choose which user management system to use. You have four 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png" alt="Choose user management type">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png" alt="Choose user management type">
     <figcaption>Choose user management type</figcaption>
   </figure>
 </p>
@@ -240,9 +214,7 @@ For details on how to configure RonDB check our guide [here](../common/rondb.md)
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png" alt="Configure RonDB">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png" alt="Configure RonDB">
     <figcaption>Configure RonDB</figcaption>
   </figure>
 </p>
@@ -254,9 +226,7 @@ In this step, you can define tags that will be added to the cluster virtual mach
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-tags.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-tags.png" alt="Add tags">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-tags.png" alt="Add tags">
     <figcaption>Add tags</figcaption>
   </figure>
 </p>
@@ -273,9 +243,7 @@ configuration as this might affect Cluster creation.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/init_script.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/init_script.png" alt="Add initialization script">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/init_script.png" alt="Add initialization script">
     <figcaption>Add initialization script</figcaption>
   </figure>
 </p>
@@ -285,9 +253,7 @@ Review all information and select *Create*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png" alt="Review cluster information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png" alt="Review cluster information">
     <figcaption>Review cluster information</figcaption>
   </figure>
 </p>
@@ -296,9 +262,7 @@ The cluster will start. This will take a few minutes:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/booting.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
     <figcaption>Booting Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -307,9 +271,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/running.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
     <figcaption>Running Hopsworks cluster</figcaption>
   </figure>
 </p>

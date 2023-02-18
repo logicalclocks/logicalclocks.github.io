@@ -228,9 +228,7 @@ In this section, we show how to use `terraform import` to manage your existing H
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/get-cluster-id.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/get-cluster-id.png" alt="Details tab">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/get-cluster-id.png" alt="Details tab">
     <figcaption>Click on the Details tab and copy the Id</figcaption>
   </figure>
 </p>

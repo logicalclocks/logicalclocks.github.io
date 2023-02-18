@@ -18,9 +18,7 @@ You can find the configuration page by navigating in the UI:
 2. Among the cluster settings, you will find a tab *Configuration*
 
 <figure>
-  <a  href="../../assets/images/admin/variables/configuration.png">
-    <img src="../../assets/images/admin/variables/configuration.png" alt="Configuration Settings" />
-  </a>
+  <img src="../../assets/images/admin/variables/configuration.png" alt="Configuration Settings" />
   <figcaption>Configuration settings</figcaption>
 </figure>
 
@@ -41,8 +39,6 @@ To do so, click on *New Variable*, where you can then configure the new setting 
 Once you have set the desired properties, you can persist them by clicking *Create Configuration*
 
 <figure>
-  <a  href="../../assets/images/admin/variables/new-variable.png">
-    <img src="../../assets/images/admin/variables/new-variable.png" alt="Adding a new configuration property" />
-  </a>
+  <img src="../../assets/images/admin/variables/new-variable.png" alt="Adding a new configuration property" />
   <figcaption>Adding a new configuration property</figcaption>
 </figure>
