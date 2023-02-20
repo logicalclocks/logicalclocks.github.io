@@ -5305,18 +5305,18 @@
 <span class="w">   </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
 <span class="w">   </span><span class="nt">&quot;Statement&quot;</span><span class="p">:[</span>
 <span class="w">      </span><span class="p">{</span>
-<span class="w">         </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="s2">&quot;AllowPullMainImages&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="s2">&quot;AllowPullImagesFromHopsworkAi&quot;</span><span class="p">,</span>
 <span class="w">         </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
 <span class="w">         </span><span class="nt">&quot;Action&quot;</span><span class="p">:[</span>
 <span class="w">            </span><span class="s2">&quot;ecr:GetDownloadUrlForLayer&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="s2">&quot;ecr:BatchGetImage&quot;</span>
 <span class="w">         </span><span class="p">],</span>
 <span class="w">         </span><span class="nt">&quot;Resource&quot;</span><span class="p">:[</span>
-<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:*:repository/filebeat&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:*:repository/base&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:*:repository/onlinefs&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:*:repository/airflow&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:*:repository/git&quot;</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:822623301872:repository/filebeat&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:822623301872:repository/base&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:822623301872:repository/onlinefs&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:822623301872:repository/airflow&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;arn:aws:ecr:*:822623301872:repository/git&quot;</span>
 <span class="w">         </span><span class="p">]</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="p">{</span>
@@ -5326,7 +5326,7 @@
 <span class="w">         </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="s2">&quot;*&quot;</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="p">{</span>
-<span class="w">         </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="s2">&quot;AllowPushandPullImages&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;Sid&quot;</span><span class="p">:</span><span class="s2">&quot;AllowPushandPullImagesToUserRepo&quot;</span><span class="p">,</span>
 <span class="w">         </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
 <span class="w">         </span><span class="nt">&quot;Action&quot;</span><span class="p">:[</span>
 <span class="w">            </span><span class="s2">&quot;ecr:GetDownloadUrlForLayer&quot;</span><span class="p">,</span>
@@ -5334,7 +5334,6 @@
 <span class="w">            </span><span class="s2">&quot;ecr:CompleteLayerUpload&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="s2">&quot;ecr:UploadLayerPart&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="s2">&quot;ecr:InitiateLayerUpload&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;ecr:DeleteRepository&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="s2">&quot;ecr:BatchCheckLayerAvailability&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="s2">&quot;ecr:PutImage&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="s2">&quot;ecr:ListImages&quot;</span><span class="p">,</span>
