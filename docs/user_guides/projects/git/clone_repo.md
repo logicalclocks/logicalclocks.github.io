@@ -22,9 +22,7 @@ This page lists all the cloned git repositories under `Repositories`, while oper
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/repository_overview.png">
-      <img src="../../../../assets/images/guides/git/repository_overview.png" alt="Repository overview">
-    </a>
+    <img src="../../../../assets/images/guides/git/repository_overview.png" alt="Repository overview">
     <figcaption>Git repository overview</figcaption>
   </figure>
 </p>
@@ -35,9 +33,7 @@ To clone a new repository, click on the `Clone repository` button on the Git ove
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/clone_repo_dialog.png">
-      <img src="../../../../assets/images/guides/git/clone_repo_dialog.png" alt="Clone a repository">
-    </a>
+    <img src="../../../../assets/images/guides/git/clone_repo_dialog.png" alt="Clone a repository">
     <figcaption>Git clone</figcaption>
   </figure>
 </p>
@@ -56,9 +52,7 @@ The progress of the git clone can be tracked under `Git Executions`.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/repo_cloning.png">
-      <img src="../../../../assets/images/guides/git/repo_cloning.png" alt="Clone a repository">
-    </a>
+    <img src="../../../../assets/images/guides/git/repo_cloning.png" alt="Clone a repository">
     <figcaption>Track progress of clone</figcaption>
   </figure>
 </p>
@@ -69,9 +63,7 @@ In the `File browser` page you can now browse the files of the cloned repository
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/browse_repo_files.png">
-      <img src="../../../../assets/images/guides/git/browse_repo_files.png" alt="Browse repository files">
-    </a>
+    <img src="../../../../assets/images/guides/git/browse_repo_files.png" alt="Browse repository files">
     <figcaption>Browse repository files</figcaption>
   </figure>
 </p>

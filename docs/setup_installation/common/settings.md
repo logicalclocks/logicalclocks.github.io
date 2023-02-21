@@ -10,9 +10,7 @@ The settings page contains a menu on the left. The remaining of the page display
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/settings/settings.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/settings.png" alt="Getting to the settings page">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/settings.png" alt="Getting to the settings page">
     <figcaption>Getting to the settings page</figcaption>
   </figure>
 </p>
@@ -28,9 +26,7 @@ For more details about setting up a connection with a cloud provider see the get
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/settings/cloud_accounts.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/cloud_accounts.png" alt="Cloud accounts management">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/cloud_accounts.png" alt="Cloud accounts management">
     <figcaption>Cloud accounts management</figcaption>
   </figure>
 </p>
@@ -40,9 +36,7 @@ The __Profile__ section is where you can edit your personal information such as 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/settings/profile.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/profile.png" alt="Profile management">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/profile.png" alt="Profile management">
     <figcaption>Profile</figcaption>
   </figure>
 </p>
@@ -53,9 +47,7 @@ To change your password, go to the security section, enter your current password
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/settings/change_password.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/change_password.png" alt="Change password">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/change_password.png" alt="Change password">
     <figcaption>Change password</figcaption>
   </figure>
 </p>
@@ -65,9 +57,7 @@ To set up multi-factor authentication, go to the security section, scan the QR c
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/settings/mfa.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/mfa.png" alt="Enable MFA">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/settings/mfa.png" alt="Enable MFA">
     <figcaption>Enable MFA</figcaption>
   </figure>
 </p>
@@ -77,9 +67,7 @@ The API key section is where you create or delete your [managed.hopsworks.ai](ht
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/api_key/api-key-2.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-2.png" alt="Generate API Key">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-2.png" alt="Generate API Key">
     <figcaption>Generate an API Key</figcaption>
   </figure>
 </p>

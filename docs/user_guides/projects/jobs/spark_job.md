@@ -85,9 +85,7 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
     <figcaption>Resource configuration for the Spark kernels</figcaption>
   </figure>
 </p>
@@ -104,9 +102,7 @@ Additional files or dependencies required for the Spark job can be configured.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_additional_files.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
     <figcaption>File configuration for the Spark kernels</figcaption>
   </figure>
 </p>
@@ -115,9 +111,7 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_properties.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
     <figcaption>Additional Spark configuration</figcaption>
   </figure>
 </p>

@@ -7,9 +7,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
     <figcaption>Create a Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -39,9 +37,7 @@ Enter the name of the bucket in which the Hopsworks cluster will store its data 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/create-instance-general.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-general.png" alt="General configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-general.png" alt="General configuration">
     <figcaption>General configuration</figcaption>
   </figure>
 </p>
@@ -55,9 +51,7 @@ You can set the static configuration by selecting *Disabled* in the first drop-d
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
     <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
   </figure>
 </p>
@@ -77,9 +71,7 @@ You can set the autoscaling configuration by selecting enabled in the first drop
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-workers-autoscale.png">
-      <img style="border: 1px solid #000;width:700px;width:506px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-autoscale.png" alt="Create a Hopsworks cluster, autoscale workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px;width:506px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-autoscale.png" alt="Create a Hopsworks cluster, autoscale workers configuration">
     <figcaption>Create a Hopsworks cluster, autoscale workers configuration</figcaption>
   </figure>
 </p>
@@ -89,9 +81,7 @@ Hopsworks cluster store their data in a storage bucket. To let the cluster insta
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/create-instance-service-account.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-service-account.png" alt="Set the instance service account">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-service-account.png" alt="Set the instance service account">
     <figcaption>Set the instance service account</figcaption>
   </figure>
 </p>
@@ -102,9 +92,7 @@ To backup the storage bucket data when taking a cluster backup we need to set a 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/create-instance-backup.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-backup.png" alt="Choose the backup retention policy">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-backup.png" alt="Choose the backup retention policy">
     <figcaption>Choose the backup retention policy</figcaption>
   </figure>
 </p>
@@ -118,9 +106,7 @@ you will need to select an existing VPC here.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/select-vpc.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/select-vpc.png" alt="Select the vpc">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/select-vpc.png" alt="Select the vpc">
     <figcaption>Select the vpc</figcaption>
   </figure>
 </p>
@@ -133,9 +119,7 @@ Select the *Subnet* to be used by your cluster and press *Next*.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/select-subnet.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/select-subnet.png" alt="Select the subnet">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/select-subnet.png" alt="Select the subnet">
     <figcaption>Select the subnet</figcaption>
   </figure>
 </p>
@@ -151,9 +135,7 @@ In this step, you can choose which user management system to use. You have three
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png" alt="Choose user management type">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png" alt="Choose user management type">
     <figcaption>Choose user management type</figcaption>
   </figure>
 </p>
@@ -167,9 +149,7 @@ For details on how to configure RonDB check our guide [here](../common/rondb.md)
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png" alt="Configure RonDB">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png" alt="Configure RonDB">
     <figcaption>Configure RonDB</figcaption>
   </figure>
 </p>
@@ -181,9 +161,7 @@ In this step, you can define tags that will be added to the cluster virtual mach
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-tags.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-tags.png" alt="Add tags">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-tags.png" alt="Add tags">
     <figcaption>Add tags</figcaption>
   </figure>
 </p>
@@ -200,9 +178,7 @@ configuration as this might affect Cluster creation.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/init_script.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/init_script.png" alt="Add initialization script">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/init_script.png" alt="Add initialization script">
     <figcaption>Add initialization script</figcaption>
   </figure>
 </p>
@@ -212,9 +188,7 @@ Review all information and select *Create*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/create-instance-review.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-review.png" alt="Review cluster information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-review.png" alt="Review cluster information">
     <figcaption>Review cluster information</figcaption>
   </figure>
 </p>
@@ -223,9 +197,7 @@ The cluster will start. This will take a few minutes:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/booting.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
     <figcaption>Booting Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -234,9 +206,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/running.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
     <figcaption>Running Hopsworks cluster</figcaption>
   </figure>
 </p>

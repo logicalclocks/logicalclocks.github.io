@@ -17,9 +17,7 @@ Identify your Databricks VPC by searching for VPCs containing Databricks in thei
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_vpc.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_vpc.png" alt="Identify the Databricks VPC">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_vpc.png" alt="Identify the Databricks VPC">
     <figcaption>Identify the Databricks VPC</figcaption>
   </figure>
 </p>
@@ -39,9 +37,7 @@ Follow the guide [VPC Peering](https://docs.databricks.com/administration-guide/
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/hopsworks_vpc.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/hopsworks_vpc.png" alt="Identify the Feature Store VPC">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/hopsworks_vpc.png" alt="Identify the Feature Store VPC">
     <figcaption>Identify the Feature Store VPC</figcaption>
   </figure>
 </p>
@@ -57,9 +53,7 @@ Open your feature store instance under EC2 in the AWS Management Console and ens
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_overview.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_overview.png" alt="Hopsworks Feature Store Security Group">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_overview.png" alt="Hopsworks Feature Store Security Group">
     <figcaption>Hopsworks Feature Store Security Group</figcaption>
   </figure>
 </p>
@@ -68,9 +62,7 @@ Connectivity from the Databricks Security Group can be allowed by opening the Se
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_details.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_details.png" alt="Hopsworks Feature Store Security Group details">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_security_group_details.png" alt="Hopsworks Feature Store Security Group details">
     <figcaption>Hopsworks Feature Store Security Group details</figcaption>
   </figure>
 </p>
@@ -86,9 +78,7 @@ In the Azure portal, go to Azure Databricks and go to *Virtual Network Peering*:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-7.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-7.png" alt="Azure Databricks">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-7.png" alt="Azure Databricks">
     <figcaption>Azure Databricks</figcaption>
   </figure>
 </p>
@@ -97,9 +87,7 @@ Select *Add Peering*:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-8.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-8.png" alt="Add peering">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-8.png" alt="Add peering">
     <figcaption>Add peering</figcaption>
   </figure>
 </p>
@@ -110,9 +98,7 @@ on the bottom of the page and save the value somewhere. Press *Add* and create t
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-10.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-10.png" alt="Configure peering">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-10.png" alt="Configure peering">
     <figcaption>Configure peering</figcaption>
   </figure>
 </p>
@@ -121,9 +107,7 @@ The virtual network used by your cluster is shown under *Details*:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-9.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-9.png" alt="Check the Hopsworks virtual network">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-9.png" alt="Check the Hopsworks virtual network">
     <figcaption>Check the Hopsworks virtual network</figcaption>
   </figure>
 </p>
@@ -132,9 +116,7 @@ The peering connection should now be listed as initiated:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-11.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-11.png" alt="Peering connection initiated">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-11.png" alt="Peering connection initiated">
     <figcaption>Peering connection initiated</figcaption>
   </figure>
 </p>
@@ -144,9 +126,7 @@ Hopsworks cluster:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-12.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-12.png" alt="Virtual networks">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-12.png" alt="Virtual networks">
     <figcaption>Virtual networks</figcaption>
   </figure>
 </p>
@@ -155,9 +135,7 @@ Open the network and select *Peerings*:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-13.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-13.png" alt="Select peerings">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-13.png" alt="Select peerings">
     <figcaption>Select peerings</figcaption>
   </figure>
 </p>
@@ -166,9 +144,7 @@ Choose to add a peering connection:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-14.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-14.png" alt="Add a peering connection">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-14.png" alt="Add a peering connection">
     <figcaption>Add a peering connection</figcaption>
   </figure>
 </p>
@@ -179,9 +155,7 @@ network used by Databricks and press *OK* to create the peering:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-15.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-15.png" alt="Configure peering">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/azure/azure-databricks-15.png" alt="Configure peering">
     <figcaption>Configure peering</figcaption>
   </figure>
 </p>
@@ -190,9 +164,7 @@ The peering should now be *Updating*:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations//databricks/azure/azure-databricks-16.png">
-      <img src="../../../../assets/images/guides/integrations//databricks/azure/azure-databricks-16.png" alt="Cloud account settings">
-    </a>
+    <img src="../../../../assets/images/guides/integrations//databricks/azure/azure-databricks-16.png" alt="Cloud account settings">
     <figcaption>Cloud account settings</figcaption>
   </figure>
 </p>
@@ -201,9 +173,7 @@ Wait for the peering to show up as *Connected*. There should now be bi-direction
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations//databricks/azure/azure-databricks-17.png">
-      <img src="../../../../assets/images/guides/integrations//databricks/azure/azure-databricks-17.png" alt="Cloud account settings">
-    </a>
+    <img src="../../../../assets/images/guides/integrations//databricks/azure/azure-databricks-17.png" alt="Cloud account settings">
     <figcaption>Cloud account settings</figcaption>
   </figure>
 </p>

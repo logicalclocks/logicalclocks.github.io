@@ -17,9 +17,7 @@ Audit logs can be configured from the _Cluster Settings_ Configuration tab.
 You can access the _Configuration_ page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing _Cluster Settings_ from the dropdown menu.
 
 <figure>
- <a  href="../../../assets/images/admin/audit/audit-log-vars.png">
-   <img src="../../../assets/images/admin/audit/audit-log-vars.png" alt="Audit log configuration" />
- </a>
+ <img src="../../../assets/images/admin/audit/audit-log-vars.png" alt="Audit log configuration" />
  <figcaption>Audit log configuration</figcaption>
 </figure>
  

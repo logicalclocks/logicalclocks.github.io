@@ -8,9 +8,7 @@ If you encounter the following error right after creating your cluster, then it 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/troubleshooting-unauthorized-error.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/troubleshooting-unauthorized-error.png" alt="Unauthorized error during cluster creation">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/troubleshooting-unauthorized-error.png" alt="Unauthorized error during cluster creation">
     <figcaption>Unauthorized error during cluster creation</figcaption>
   </figure>
 </p>
@@ -36,9 +34,7 @@ If you encounter the following error right after creating your cluster, then the
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/troubleshooting-missing-permissions-error.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/troubleshooting-missing-permissions-error.png" alt="Missing permissions error during cluster creation">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/troubleshooting-missing-permissions-error.png" alt="Missing permissions error during cluster creation">
     <figcaption>Missing permissions error during cluster creation</figcaption>
   </figure>
 </p>
