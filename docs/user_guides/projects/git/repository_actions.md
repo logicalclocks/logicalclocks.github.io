@@ -11,9 +11,7 @@ The operations to perform on the cloned repository can be found in the dropdown 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/repo_actions.gif">
-      <img src="../../../../assets/images/guides/git/repo_actions.gif" alt="Repository actions on a repository">
-    </a>
+    <img src="../../../../assets/images/guides/git/repo_actions.gif" alt="Repository actions on a repository">
     <figcaption>Repository actions</figcaption>
   </figure>
 </p>
@@ -22,9 +20,7 @@ Note that some repository actions will require the username and token to be conf
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/provider_not_configured_for_repo_action.png">
-      <img src="../../../../assets/images/guides/git/provider_not_configured_for_repo_action.png" alt="Provider not configured">
-    </a>
+    <img src="../../../../assets/images/guides/git/provider_not_configured_for_repo_action.png" alt="Provider not configured">
     <figcaption>Configure provider prompt</figcaption>
   </figure>
 </p>

@@ -10,9 +10,7 @@ You can proceed by clicking the *Upgrade* button.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-notification-running.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-notification-running.png" alt="New version notification">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-notification-running.png" alt="New version notification">
     <figcaption>A new Hopsworks version is available</figcaption>
   </figure>
 </p>
@@ -30,9 +28,7 @@ We require extra permissions to be added to the instance profile attached to you
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-instance-profile.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-instance-profile.png" alt="Getting the name of your instance profile">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-instance-profile.png" alt="Getting the name of your instance profile">
     <figcaption>Getting the name of your instance profile</figcaption>
   </figure>
 </p>
@@ -74,9 +70,7 @@ You need to click on *Upgrade* to start the upgrade process. You will be prompte
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-1.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-1.png" alt="AWS Upgrade Prompt">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-1.png" alt="AWS Upgrade Prompt">
     <figcaption>Upgrade confirmation</figcaption>
   </figure>
 </p>
@@ -88,9 +82,7 @@ Check the *Yes, upgrade cluster* checkbox to proceed, then the *Upgrade* button 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-2.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-2.png" alt="AWS Upgrade Prompt">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-2.png" alt="AWS Upgrade Prompt">
     <figcaption>Upgrade confirmation</figcaption>
   </figure>
 </p>
@@ -103,9 +95,7 @@ Depending on how big your current cluster is, the upgrade process may take from 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start.png" alt="AWS Upgrade starting">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start.png" alt="AWS Upgrade starting">
     <figcaption>Upgrade is running</figcaption>
   </figure>
 </p>
@@ -114,9 +104,7 @@ Once the upgrade is completed, you can confirm that you have the new Hopsworks v
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-complete.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-complete.png" alt="AWS Upgrade complete">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-complete.png" alt="AWS Upgrade complete">
     <figcaption>Upgrade is complete</figcaption>
   </figure>
 </p>
@@ -130,9 +118,7 @@ During the upgrade process, [managed.hopsworks.ai](https://managed.hopsworks.ai)
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-retry.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-retry.png" alt="AWS Upgrade Retry">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-retry.png" alt="AWS Upgrade Retry">
     <figcaption>Upgrade permissions are missing</figcaption>
   </figure>
 </p>
@@ -141,9 +127,7 @@ Update you instance profile accordingly, then click *Retry*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start.png" alt="AWS Upgrade starting">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start.png" alt="AWS Upgrade starting">
     <figcaption>Upgrade is running</figcaption>
   </figure>
 </p>
@@ -154,9 +138,7 @@ If an error occurs during the upgrade process, you will have the option to rollb
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-error.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-error.png" alt="Error during upgrade">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-error.png" alt="Error during upgrade">
     <figcaption>Error occurred during upgrade</figcaption>
   </figure>
 </p>
@@ -165,9 +147,7 @@ Click on *Rollback* to recover your old cluster before upgrade.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-rollback-prompt-1.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-rollback-prompt-1.png" alt="Rollback prompt">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-rollback-prompt-1.png" alt="Rollback prompt">
     <figcaption>Upgrade rollback confirmation</figcaption>
   </figure>
 </p>
@@ -176,9 +156,7 @@ Check the *Yes, rollback cluster* checkbox to proceed, then the *Rollback* butto
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-rollback-prompt-2.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-rollback-prompt-2.png" alt="Rollback prompt">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-rollback-prompt-2.png" alt="Rollback prompt">
     <figcaption>Upgrade rollback confirmation</figcaption>
   </figure>
 </p>

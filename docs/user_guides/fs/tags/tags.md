@@ -25,9 +25,7 @@ If you use the UI tool, you should provide the name of the property in the schem
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/tags/tags_schema_simple.png">
-      <img src="../../../../assets/images/guides/tags/tags_schema_simple.png" alt="UI tag schema definition">
-    </a>
+    <img src="../../../../assets/images/guides/tags/tags_schema_simple.png" alt="UI tag schema definition">
     <figcaption>UI tag schema definition</figcaption>
   </figure>
 </p>
@@ -118,9 +116,7 @@ You can attach tags to feature groups and feature views directly from the UI. Yo
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/tags/tags_ui.gif">
-      <img src="../../../../assets/images/guides/tags/tags_ui.gif" alt="Attach tag to a feature group">
-    </a>
+    <img src="../../../../assets/images/guides/tags/tags_ui.gif" alt="Attach tag to a feature group">
     <figcaption>Attach tag to a feature group</figcaption>
   </figure>
 </p>
@@ -131,9 +127,7 @@ Hopsworks indexes the tags attached to feature groups, feature views and trainin
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/tags/search_ui.gif">
-      <img src="../../../../assets/images/guides/tags/search_ui.gif" alt="Search for tags in the feature store">
-    </a>
+    <img src="../../../../assets/images/guides/tags/search_ui.gif" alt="Search for tags in the feature store">
     <figcaption>Search for tags in the feature store</figcaption>
   </figure>
 </p>

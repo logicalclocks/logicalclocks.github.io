@@ -8,9 +8,7 @@ First, login to your [managed.hopsworks.ai](https://managed.hopsworks.ai) accoun
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/api_key/api-key-1.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-1.png" alt="Click on Settings">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-1.png" alt="Click on Settings">
     <figcaption>Click on the Settings tab</figcaption>
   </figure>
 </p>
@@ -19,9 +17,7 @@ Click on the API Key tab, and then click on the *Generate API Key* button:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/api_key/api-key-2.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-2.png" alt="Generate API Key">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-2.png" alt="Generate API Key">
     <figcaption>Generate an API Key</figcaption>
   </figure>
 </p>
@@ -34,9 +30,7 @@ Copy the generated API Key and store it in a secure location.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/api_key/api-key-3.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-3.png" alt="Copy API Key">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-3.png" alt="Copy API Key">
     <figcaption>Copy the generated API Key</figcaption>
   </figure>
 </p>
@@ -57,9 +51,7 @@ First, login to your [managed.hopsworks.ai](https://managed.hopsworks.ai) accoun
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/api_key/api-key-4.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-4.png" alt="Delete API Key">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/api_key/api-key-4.png" alt="Delete API Key">
     <figcaption>Delete your API Key</figcaption>
   </figure>
 </p>

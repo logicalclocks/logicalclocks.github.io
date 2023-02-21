@@ -7,9 +7,7 @@ You can also set up autoscaling during the cluster creation. For more details ab
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/configure_autoscale.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/configure_autoscale.png" alt="Configure autoscale">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/configure_autoscale.png" alt="Configure autoscale">
     <figcaption>Configure autoscale</figcaption>
   </figure>
 </p>
@@ -28,9 +26,7 @@ Once you have clicked on *Configure autoscale* you will access a form allowing y
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/configure_autoscale_2.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/configure_autoscale_2.png" alt="Configure autoscale details">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/configure_autoscale_2.png" alt="Configure autoscale details">
     <figcaption>Configure autoscale details</figcaption>
   </figure>
 </p>
@@ -45,9 +41,7 @@ Once you have set your configuration you can review it and enable the autoscalin
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/configure_autoscale_review.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/configure_autoscale_review.png" alt="Configure autoscale review">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/configure_autoscale_review.png" alt="Configure autoscale review">
     <figcaption>Configure autoscale review</figcaption>
   </figure>
 </p>
@@ -60,9 +54,7 @@ To disable the autoscaling go to the *Details* tab, click on *Disable autoscale*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/disable_autoscale.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/disable_autoscale.png" alt="Disable autoscale">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/disable_autoscale.png" alt="Disable autoscale">
     <figcaption>Disable autoscale</figcaption>
   </figure>
 </p>

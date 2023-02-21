@@ -14,9 +14,7 @@ Cluster Settings from the dropdown menu. In the Cluster Settings' Alerts tab you
 manager to send alerts via email, slack or pagerduty.
 
 <figure>
-  <a href="../../assets/images/alerts/configure-alerts.png">
-    <img src="../../assets/images/alerts/configure-alerts.png" alt="Configure alerts"/>
-  </a>
+  <img src="../../assets/images/alerts/configure-alerts.png" alt="Configure alerts"/>
   <figcaption>Configure alerts</figcaption>
 </figure>
 
@@ -25,9 +23,7 @@ To send alerts via email you need to configure an SMTP server. Click on the _Con
 button on the left side of the **email** row and fill out the form that pops up.
 
 <figure>
-  <a href="../../assets/images/alerts/smtp-config.png">
-    <img src="../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
-  </a>
+  <img src="../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
   <figcaption>Configure Email Alerts</figcaption>
 </figure>
 
@@ -46,9 +42,7 @@ a Slack webhook. Click on the _Configure_ button on the left side of the **slack
 [Slack webhook](https://api.slack.com/messaging/webhooks) in _Webhook_.
 
 <figure>
-  <a href="../../assets/images/alerts/slack-config.png">
-    <img src="../../assets/images/alerts/slack-config.png" alt="Configure slack Alerts"/>
-  </a>
+  <img src="../../assets/images/alerts/slack-config.png" alt="Configure slack Alerts"/>
   <figcaption>Configure slack Alerts</figcaption>
 </figure>
 
@@ -60,9 +54,7 @@ Pagerduty is another way you can send alerts from Hopsworks. Click on the _Confi
 the **pagerduty** row and fill out the form that pops up. 
 
 <figure>
-  <a href="../../assets/images/alerts/pagerduty-config.png">
-    <img src="../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
-  </a>
+  <img src="../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
   <figcaption>Configure Pagerduty Alerts</figcaption>
 </figure>
 
@@ -84,9 +76,7 @@ If you are familiar with Prometheus' [Alert manager](https://prometheus.io/docs/
 you can also configure alerts by editing the _yaml/json_ file directly.  
 
 <figure>
-  <a href="../../assets/images/alerts/advanced-config.png">
-    <img src="../../assets/images/alerts/advanced-config.png" alt="Advanced configuration"/>
-  </a>
+  <img src="../../assets/images/alerts/advanced-config.png" alt="Advanced configuration"/>
   <figcaption>Advanced configuration</figcaption>
 </figure>
 

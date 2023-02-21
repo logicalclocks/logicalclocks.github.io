@@ -17,9 +17,7 @@ You can access the admin page of your Hopsworks cluster by clicking on your name
 You can then navigate to the _Monitoring_ tab. The _Monitoring_ tab gives you access to several of the observability tools that are already deployed to help you manage the health of the cluster.
 
 <figure>
-  <a  href="../../../assets/images/admin/monitoring/monitoring_tab.png">
-    <img src="../../../assets/images/admin/monitoring/monitoring_tab.png" alt="monitoring tab" />
-  </a>
+  <img src="../../../assets/images/admin/monitoring/monitoring_tab.png" alt="monitoring tab" />
   <figcaption>Monitoring tab</figcaption>
 </figure>
 
@@ -34,9 +32,7 @@ You can filter the logs of a specific service by searching for the term `service
 Currently only the logs of the following services are collected and indexed: Hopsworks web application (called `domain1` in the log entires), namenodes, resource managers, datanodes, nodemanagers, Kafka brokers, Hive services and RonDB. These are the core component of the platform, additional logs will be added in the future.
 
 <figure>
-  <a  href="../../../assets/images/admin/monitoring/services_logs.png">
-    <img src="../../../assets/images/admin/monitoring/services_logs.png" alt="OpenSearch Dashboards with services logs" />
-  </a>
+  <img src="../../../assets/images/admin/monitoring/services_logs.png" alt="OpenSearch Dashboards with services logs" />
   <figcaption>OpenSearch Dashboards displaying the logs</figcaption>
 </figure>
 

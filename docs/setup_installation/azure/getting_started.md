@@ -41,9 +41,7 @@ On [managed.hopsworks.ai](https://managed.hopsworks.ai), go to *Settings/Cloud A
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-0.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-0.png" alt="Cloud account settings">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-0.png" alt="Cloud account settings">
     <figcaption>Cloud account settings</figcaption>
   </figure>
 </p>
@@ -52,9 +50,7 @@ Select *Add subscription key*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-0.1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-0.1.png" alt="Add subscription keys">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-0.1.png" alt="Add subscription keys">
     <figcaption>Add subscription keys</figcaption>
   </figure>
 </p>
@@ -67,9 +63,7 @@ Copy the Azure CLI command from the first step and open a terminal:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-1.png" alt="Connect your Azure Account">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-1.png" alt="Connect your Azure Account">
     <figcaption>Connect your Azure Account</figcaption>
   </figure>
 </p>
@@ -78,9 +72,7 @@ Paste the command into the terminal and execute it:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-2.png" alt="Add service principal">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-2.png" alt="Add service principal">
     <figcaption>Add service principal</figcaption>
   </figure>
 </p>
@@ -109,9 +101,7 @@ Select *Add* and choose *Add custom role*.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-3.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-3.png" alt="Add custom role">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-3.png" alt="Add custom role">
     <figcaption>Add custom role</figcaption>
   </figure>
 </p>
@@ -120,9 +110,7 @@ Name the role and proceed to *Assignable scopes*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-4.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-4.png" alt="Name custom role">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-4.png" alt="Name custom role">
     <figcaption>Name custom role</figcaption>
   </figure>
 </p>
@@ -132,9 +120,7 @@ You can change it here if required. Proceed to the JSON tab:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-5.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-5.png" alt="Review assignable scope">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-5.png" alt="Review assignable scope">
     <figcaption>Review assignable scope</figcaption>
   </figure>
 </p>
@@ -143,9 +129,7 @@ Select *Edit* and replace the *actions* part of the JSON with the one from [mana
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-5.1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-5.1.png" alt="managed.hopsworks.ai permission list">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-5.1.png" alt="managed.hopsworks.ai permission list">
     <figcaption>managed.hopsworks.ai permission list</figcaption>
   </figure>
 </p>
@@ -157,9 +141,7 @@ Press *Save*, proceed to *Review + create* and create the role:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-6.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-6.png" alt="Update permission JSON">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-6.png" alt="Update permission JSON">
     <figcaption>Update permission JSON</figcaption>
   </figure>
 </p>
@@ -170,9 +152,7 @@ Back in the *Subscription* or *Resource Group*, in *Access control (IAM)*, selec
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-7.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-7.png" alt="Add role assignment">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-7.png" alt="Add role assignment">
     <figcaption>Add role assignment</figcaption>
   </figure>
 </p>
@@ -182,9 +162,7 @@ and select the *hopsworks.ai* service principal. Press *Save*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-8.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-8.png" alt="Configure managed.hopsworks.ai as role assignment">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-8.png" alt="Configure managed.hopsworks.ai as role assignment">
     <figcaption>Configure managed.hopsworks.ai as role assignment</figcaption>
   </figure>
 </p>
@@ -193,9 +171,7 @@ Go back to the [managed.hopsworks.ai](https://managed.hopsworks.ai) Azure accoun
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-9.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-9.png" alt="Configure subscription and tenant id">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-9.png" alt="Configure subscription and tenant id">
     <figcaption>Configure subscription and tenant id</figcaption>
   </figure>
 </p>
@@ -205,9 +181,7 @@ If so, ensure that you pick the subscription that you want to use.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-10.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-10.png" alt="Show subscription and tenant id">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-10.png" alt="Show subscription and tenant id">
     <figcaption>Show subscription and tenant id</figcaption>
   </figure>
 </p>
@@ -220,9 +194,7 @@ Congratulations, you have successfully connected you Azure account to [managed.h
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-10.1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-10.1.png" alt="Store subscription and tenant id">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-10.1.png" alt="Store subscription and tenant id">
     <figcaption>Store subscription and tenant id</figcaption>
   </figure>
 </p>
@@ -273,9 +245,7 @@ Proceed to the Azure Portal and open the Resource Group that you want to use for
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png" alt="Add to resource group">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png" alt="Add to resource group">
     <figcaption>Add to resource group</figcaption>
   </figure>
 </p>
@@ -284,9 +254,7 @@ Search for *User Assigned Managed Identity* and click on it.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/search-user-assigned-identity.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/search-user-assigned-identity.png" alt="Search User Assigned Managed Identity">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/search-user-assigned-identity.png" alt="Search User Assigned Managed Identity">
     <figcaption>Search User Assigned Managed Identity</figcaption>
   </figure>
 </p>
@@ -295,9 +263,7 @@ Click on *Create*. Then, select the Location you want to use and name the identi
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/create-user-assigned-identity.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-user-assigned-identity.png" alt="Create a User Assigned Managed Identity">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-user-assigned-identity.png" alt="Create a User Assigned Managed Identity">
     <figcaption>Create a User Assigned Managed Identity</figcaption>
   </figure>
 </p>
@@ -308,9 +274,7 @@ Proceed to the Azure Portal and open the Resource Group that you want to use for
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png" alt="Add to resource group">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png" alt="Add to resource group">
     <figcaption>Add to resource group</figcaption>
   </figure>
 </p>
@@ -319,9 +283,7 @@ Search for *Storage account* and click on it.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/search-storage-account.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/search-storage-account.png" alt="Search Storage Account Identity">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/search-storage-account.png" alt="Search Storage Account Identity">
     <figcaption>Search Storage Account Identity</figcaption>
   </figure>
 </p>
@@ -330,9 +292,7 @@ Click on *Create*, name your storage account, select the Location you want to us
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/create-storage-account.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-storage-account.png" alt="Create a Storage Account">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-storage-account.png" alt="Create a Storage Account">
     <figcaption>Create a Storage Account</figcaption>
   </figure>
 </p>
@@ -345,9 +305,7 @@ Click on *Save* (7).
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/add-role-to-storage.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/add-role-to-storage.png" alt="Add role assignment to storage">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/add-role-to-storage.png" alt="Add role assignment to storage">
     <figcaption>Add role assignment to storage</figcaption>
   </figure>
 </p>
@@ -362,9 +320,7 @@ Proceed to the Azure Portal and open the Resource Group that you want to use for
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/create-acr.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-acr.png" alt="Create a Container Registry">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-acr.png" alt="Create a Container Registry">
     <figcaption>Create a Container Registery</figcaption>
   </figure>
 </p>
@@ -384,9 +340,7 @@ Repeat the same operation with the following roles:
 To prevent the registry from filling up with unnecessary images and artifacts you can enable a retention policy. A retention policy will automatically remove untagged manifests after a specified number of days. To enable a retention policy, go to the registry you created. Go to the **Retention (preview)** tab and set **Status** from **disabled** to **enabled**. Set the retention policy for 7 days as in the figure below, then press **save**.
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/acr-retention.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/acr-retention.png" alt="ACR retention policy">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/acr-retention.png" alt="ACR retention policy">
     <figcaption>ACR retention policy</figcaption>
   </figure>
 </p>
@@ -399,9 +353,7 @@ Proceed to the Azure Portal and open the Resource Group that you want to use for
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png" alt="Add to resource group">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/add-to-resource-group.png" alt="Add to resource group">
     <figcaption>Add to resource group</figcaption>
   </figure>
 </p>
@@ -410,9 +362,7 @@ Search for *SSH Key* and click on it. Click on Create. Then, name your key pair 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/create-ssh-key.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-ssh-key.png" alt="Create a SSH key">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-ssh-key.png" alt="Create a SSH key">
     <figcaption>Add to resource group</figcaption>
   </figure>
 </p>
@@ -423,9 +373,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
     <figcaption>Create a Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -452,9 +400,7 @@ Press *Next*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/create-instance-general.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-instance-general.png" alt="General configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-instance-general.png" alt="General configuration">
     <figcaption>General configuration</figcaption>
   </figure>
 </p>
@@ -469,9 +415,7 @@ Press *Next*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
     <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
   </figure>
 </p>
@@ -480,9 +424,7 @@ Select the *SSH key* that you want to use to access cluster instances:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-12.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-12.png" alt="Choose SSH key">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-12.png" alt="Choose SSH key">
     <figcaption>Choose SSH key</figcaption>
   </figure>
 </p>
@@ -491,9 +433,7 @@ Select the *User assigned managed identity* that you created above:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-identity.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-identity.png" alt="Choose the User assigned managed identity">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-identity.png" alt="Choose the User assigned managed identity">
     <figcaption>Choose the User assigned managed identity</figcaption>
   </figure>
 </p>
@@ -503,9 +443,7 @@ To backup the Azure blob storage data when taking a cluster backups we need to s
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
     <figcaption>Choose the backup retention policy</figcaption>
   </figure>
 </p>
@@ -514,9 +452,7 @@ Review all information and select *Create*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-17.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-17.png" alt="Review cluster information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-17.png" alt="Review cluster information">
     <figcaption>Review cluster information</figcaption>
   </figure>
 </p>
@@ -528,9 +464,7 @@ The cluster will start. This will take a few minutes:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/booting.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
     <figcaption>Booting Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -539,9 +473,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/running.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
     <figcaption>Running Hopsworks cluster</figcaption>
   </figure>
 </p>

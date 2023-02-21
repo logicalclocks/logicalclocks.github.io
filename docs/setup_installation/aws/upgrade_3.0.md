@@ -10,9 +10,7 @@ You can proceed by clicking the *Upgrade* button.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-notification-running-3.0.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-notification-running-3.0.png" alt="New version notification">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-notification-running-3.0.png" alt="New version notification">
     <figcaption>A new Hopsworks version is available</figcaption>
   </figure>
 </p>
@@ -32,9 +30,7 @@ First, check which role or access key you have added to managed.hopsworks.ai, yo
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-account-settings.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-account-settings.png" alt="AWS account settings">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-account-settings.png" alt="AWS account settings">
     <figcaption>Cloud Accounts</figcaption>
   </figure>
 </p>
@@ -43,9 +39,7 @@ Once you have clicked on *Edit*, you will be able to see the current assigned ro
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-cross-account-role.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-cross-account-role.png" alt="AWS cross-account role">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-cross-account-role.png" alt="AWS cross-account role">
     <figcaption>AWS Cross-Account Role</figcaption>
   </figure>
 </p>
@@ -147,9 +141,7 @@ You need to click on *Upgrade* to start the upgrade process. You will be prompte
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-1_3.0.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-1_3.0.png" alt="AWS Upgrade Prompt">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-1_3.0.png" alt="AWS Upgrade Prompt">
     <figcaption>Upgrade confirmation</figcaption>
   </figure>
 </p>
@@ -161,9 +153,7 @@ Check the *Yes, upgrade cluster* checkbox to proceed, then the *Upgrade* button 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-2_3.0.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-2_3.0.png" alt="AWS Upgrade Prompt">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-prompt-2_3.0.png" alt="AWS Upgrade Prompt">
     <figcaption>Upgrade confirmation</figcaption>
   </figure>
 </p>
@@ -176,9 +166,7 @@ Depending on how big your current cluster is, the upgrade process may take from 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start_3.0.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start_3.0.png" alt="AWS Upgrade starting">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/aws-upgrade-start_3.0.png" alt="AWS Upgrade starting">
     <figcaption>Upgrade is running</figcaption>
   </figure>
 </p>

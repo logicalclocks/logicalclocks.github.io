@@ -13,9 +13,7 @@ _username_ and _password_ then click on **Login**.
 
 Note that you need to use your LDAP credentials.
 <figure>
-  <a  href="../../../../assets/images/admin/ldap/login-ldap.png">
-    <img width="400px" src="../../../../assets/images/admin/ldap/login-ldap.png" alt="Log in using LDAP" />
-  </a>
+  <img width="400px" src="../../../../assets/images/admin/ldap/login-ldap.png" alt="Log in using LDAP" />
   <figcaption>Log in using LDAP</figcaption>
 </figure>
 
@@ -28,17 +26,13 @@ If you do not want your information to be saved in Hopsworks you can click **Can
 to the login page.
 
 <figure>
-  <a  href="../../../../assets/images/auth/consent.png">
-    <img width="400px" src="../../../../assets/images/auth/consent.png" alt="OAuth2 consent" />
-  </a>
+  <img width="400px" src="../../../../assets/images/auth/consent.png" alt="OAuth2 consent" />
   <figcaption>Give consent</figcaption>
 </figure>
 
 After clicking on **Register** you will be redirected to the landing page:
   <figure>
-    <a  href="../../../../assets/images/auth/landing-page.png">
-      <img alt="landing page" src="../../../../assets/images/auth/landing-page.png">
-    </a>
+    <img alt="landing page" src="../../../../assets/images/auth/landing-page.png">
     <figcaption>Landing page</figcaption>
   </figure>
 

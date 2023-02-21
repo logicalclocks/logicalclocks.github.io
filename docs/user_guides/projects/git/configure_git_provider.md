@@ -24,9 +24,7 @@ You can access the `Git Providers` page of your Hopsworks cluster by clicking on
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/git_provider_not_configured.png">
-      <img src="../../../../assets/images/guides/git/git_provider_not_configured.png" alt="Git provider configuration list">
-    </a>
+    <img src="../../../../assets/images/guides/git/git_provider_not_configured.png" alt="Git provider configuration list">
     <figcaption>Git provider configuration list</figcaption>
   </figure>
 </p>
@@ -39,9 +37,7 @@ Tick the checkbox next to the provider you want to configure and insert the user
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/configure_git_provider.png">
-      <img src="../../../../assets/images/guides/git/configure_git_provider.png" alt="Git provider configuration">
-    </a>
+    <img src="../../../../assets/images/guides/git/configure_git_provider.png" alt="Git provider configuration">
     <figcaption>Git provider configuration</figcaption>
   </figure>
 </p>
@@ -54,9 +50,7 @@ The configured provider should now be marked as configured.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/git_provider_configured.png">
-      <img src="../../../../assets/images/guides/git/git_provider_configured.png" alt="Git provider configured">
-    </a>
+    <img src="../../../../assets/images/guides/git/git_provider_configured.png" alt="Git provider configured">
     <figcaption>Git provider configured</figcaption>
   </figure>
 </p>
