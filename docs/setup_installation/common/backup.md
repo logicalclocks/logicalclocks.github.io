@@ -14,9 +14,7 @@ To follow this tutorial you need to create a cluster in [Managed.hopsworks.ai](h
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-backup.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/connect-aws-backup.png" alt="Choose the backup retention policy">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/aws/connect-aws-backup.png" alt="Choose the backup retention policy">
     <figcaption>Choose the backup retention policy</figcaption>
   </figure>
 </p>
@@ -30,9 +28,7 @@ To take a backup go to the backup tab of your cluster (1) and click on _Create b
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/create_backup.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/create_backup.png" alt="Create a backup">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/create_backup.png" alt="Create a backup">
     <figcaption>Create a backup</figcaption>
   </figure>
 </p>
@@ -44,9 +40,7 @@ Taking a backup takes time and necessitates restarting the cluster. To avoid any
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/confirm_backup.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/confirm_backup.png" alt="Confirm backup creation">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/confirm_backup.png" alt="Confirm backup creation">
     <figcaption>Confirm backup creation</figcaption>
   </figure>
 </p>
@@ -55,9 +49,7 @@ You can then wait until the backup is complete. The backup process being underwa
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/ongoing_backup.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/ongoing_backup.png" alt="Backup ongoing">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/ongoing_backup.png" alt="Backup ongoing">
     <figcaption>Backup ongoing</figcaption>
   </figure>
 </p>
@@ -71,9 +63,7 @@ To be able to restore a backup the corresponding cluster needs to be [terminated
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/backup_list.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_list.png" alt="List of backups">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_list.png" alt="List of backups">
     <figcaption>List of backups</figcaption>
   </figure>
 </p>
@@ -86,10 +76,8 @@ To be able to restore a backup the corresponding cluster needs to be [terminated
 
     <p align="center">
       <figure>
-        <a  href="../../../assets/images/setup_installation/managed/common/backup/backup_delete_succeding.png">
-          <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_delete_succeding.png" alt="Delete succeding backups">
-        </a>
-        <figcaption>Delete succeding backups</figcaption>
+        <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_delete_succeding.png" alt="Delete succeeding backups">
+        <figcaption>Delete succeeding backups</figcaption>
       </figure>
     </p>
 
@@ -97,9 +85,7 @@ Once you have clicked on _Restore_ you will be brought to the [cluster creation]
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/backup_review_and_create.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_review_and_create.png" alt="Review and restore backup">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_review_and_create.png" alt="Review and restore backup">
     <figcaption>Review and restore backup</figcaption>
   </figure>
 </p>
@@ -114,9 +100,7 @@ To manage your backups either go to the Backup tab of your cluster (1) or go to 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/backup_tabs.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_tabs.png" alt="Backup tabs">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_tabs.png" alt="Backup tabs">
     <figcaption>Backup tabs</figcaption>
   </figure>
 </p>
@@ -132,9 +116,7 @@ If you go to the backup tab of your cluster you will see the list of backups ass
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/backup_info.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_info.png" alt="Backup info">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_info.png" alt="Backup info">
     <figcaption>Backup info</figcaption>
   </figure>
 </p>
@@ -145,9 +127,7 @@ To delete a backup click on the _Delete_ button on the same line as the backup n
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/backup_delete.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_delete.png" alt="Delete backup">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_delete.png" alt="Delete backup">
     <figcaption>Delete backup</figcaption>
   </figure>
 </p>
@@ -156,9 +136,7 @@ Once you have clicked on the _Delete_ button, you will be asked to confirm that 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/backup/backup_delete_confirm.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_delete_confirm.png" alt="Confirm backup deletion">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/backup/backup_delete_confirm.png" alt="Confirm backup deletion">
     <figcaption>Confirm backup deletion</figcaption>
   </figure>
 </p>

@@ -14,9 +14,7 @@ _OAuth2 (OpenId)_ from the dropdown and configure your identity provider.
  
 <p align="center">
  <figure>
-   <a  href="../../../../assets/images/setup_installation/managed/common/sso/oauth.png">
-     <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/oauth.png" alt="Setup OAuth">
-   </a>
+   <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/oauth.png" alt="Setup OAuth">
    <figcaption>Setup OAuth</figcaption>
  </figure>
 </p>
@@ -58,9 +56,7 @@ If your provider does not publish its metadata you need to supply these values m
  
 <p align="center">
  <figure>
-   <a  href="../../../../assets/images/setup_installation/managed/common/sso/provider-metadata.png">
-     <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/provider-metadata.png" alt="provider metadata">
-   </a>
+   <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/provider-metadata.png" alt="provider metadata">
    <figcaption>Setup Provider</figcaption>
  </figure>
 </p>

@@ -9,9 +9,7 @@ Open ports by going to the *Services* tab, selecting a service, and pressing *Up
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/open-ports.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/open-ports.png" alt="Outside Access to the Feature Store">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/open-ports.png" alt="Outside Access to the Feature Store">
     <figcaption>Outside Access to the Feature Store</figcaption>
   </figure>
 </p>
@@ -44,9 +42,7 @@ If you have enabled the use of static IPs to communicate with [managed.hopsworks
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/limit-outbound-traffic-hopsworksai.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/limit-outbound-traffic-hopsworksai.png" alt="Limiting outbound traffic to managed.hopsworks.ai">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/limit-outbound-traffic-hopsworksai.png" alt="Limiting outbound traffic to managed.hopsworks.ai">
     <figcaption>Limiting outbound traffic to managed.hopsworks.ai</figcaption>
   </figure>
 </p>

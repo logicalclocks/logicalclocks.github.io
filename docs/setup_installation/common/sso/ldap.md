@@ -7,9 +7,7 @@ The LDAP attributes below are used to configure JNDI resources in the Hopsworks 
 The JNDI resource will communicate with your LDAP server to perform the authentication.
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/setup_installation/managed/common/sso/ldap.png">
-      <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/ldap.png" alt="Setup ldap">
-    </a>
+    <img style="border: 1px solid #000" src="../../../../assets/images/setup_installation/managed/common/sso/ldap.png" alt="Setup ldap">
     <figcaption>Setup LDAP</figcaption>
   </figure>
 </p>

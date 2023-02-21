@@ -10,9 +10,7 @@ An account on a Hopsworks cluster.
 After your account is validated by an administrator you can use your email and password to login.
 
   <figure>
-    <a  href="../../../../assets/images/auth/login.png">
-      <img width="400px" src="../../../../assets/images/auth/login.png" alt="Login" />
-    </a>
+    <img width="400px" src="../../../../assets/images/auth/login.png" alt="Login" />
     <figcaption>Login with password</figcaption>
   </figure>
 
@@ -24,18 +22,14 @@ enter your password. Use your authenticator app
 on your phone to get a one-time password.
 
 <figure>
-  <a  href="../../../../assets/images/auth/otp.png">
-    <img width="400px" src="../../../../assets/images/auth/otp.png" alt="Two-factor" />
-  </a>
+  <img width="400px" src="../../../../assets/images/auth/otp.png" alt="Two-factor" />
   <figcaption>One time password</figcaption>
 </figure>
 
 Upon successful login, you will arrive at the landing page:
 
   <figure>
-    <a  href="../../../../assets/images/auth/landing-page.png">
-      <img alt="landing page" src="../../../../assets/images/auth/landing-page.png">
-    </a>
+    <img alt="landing page" src="../../../../assets/images/auth/landing-page.png">
     <figcaption>Landing page</figcaption>
   </figure>
 

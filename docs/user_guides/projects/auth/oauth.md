@@ -12,9 +12,7 @@ If OAuth is configured a **Login with ** button will appear in the login page. U
 using your OAuth credentials.
 
   <figure>
-    <a  href="../../../../assets/images/auth/oauth2.png">
-      <img width="400px" src="../../../../assets/images/auth/oauth2.png" alt="OAuth2 login" />
-    </a>
+    <img width="400px" src="../../../../assets/images/auth/oauth2.png" alt="OAuth2 login" />
     <figcaption>Login with OAuth2</figcaption>
   </figure>
 
@@ -23,17 +21,13 @@ When logging in with OAuth for the first time Hopsworks will retrieve and save c
 and email), about the logged in end-user.
 
   <figure>
-    <a  href="../../../../assets/images/auth/consent.png">
-      <img width="400px" src="../../../../assets/images/auth/consent.png" alt="OAuth2 consent" />
-    </a>
+    <img width="400px" src="../../../../assets/images/auth/consent.png" alt="OAuth2 consent" />
     <figcaption>Give consent</figcaption>
   </figure>
 
 After clicking on **Register** you will be redirected to the landing page:
   <figure>
-    <a  href="../../../../assets/images/auth/landing-page.png">
-      <img alt="landing page" src="../../../../assets/images/auth/landing-page.png">
-    </a>
+    <img alt="landing page" src="../../../../assets/images/auth/landing-page.png">
     <figcaption>Landing page</figcaption>
   </figure>
 

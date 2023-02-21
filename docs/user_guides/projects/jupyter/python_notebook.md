@@ -19,9 +19,7 @@ The image below shows the Jupyter service page in Hopsworks and is accessed by c
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/jupyter_overview.png">
-      <img src="../../../../assets/images/guides/jupyter/jupyter_overview.png" alt="Jupyter dashboard in Hopsworks">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/jupyter_overview.png" alt="Jupyter dashboard in Hopsworks">
     <figcaption>Jupyter dashboard in Hopsworks</figcaption>
   </figure>
 </p>
@@ -40,9 +38,7 @@ Next step is to configure Jupyter, Click `edit configuration` to get to the conf
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/python_configuration.png">
-      <img src="../../../../assets/images/guides/jupyter/python_configuration.png" alt="Resource configuration for the Python kernel">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/python_configuration.png" alt="Resource configuration for the Python kernel">
     <figcaption>Resource configuration for the Python kernel</figcaption>
   </figure>
 </p>
@@ -57,9 +53,7 @@ The runtime of the Jupyter instance can be configured, this is useful to ensure 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/configure_shutdown.png">
-      <img src="../../../../assets/images/guides/jupyter/configure_shutdown.png" alt="Configure maximum runtime">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/configure_shutdown.png" alt="Configure maximum runtime">
     <figcaption>Configure maximum runtime</figcaption>
   </figure>
 </p>
@@ -68,9 +62,7 @@ The root path from which to start the Jupyter instance can be configured. By def
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/start_from_folder.png">
-      <img src="../../../../assets/images/guides/jupyter/start_from_folder.png" alt="Configure root folder">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/start_from_folder.png" alt="Configure root folder">
     <figcaption>Configure root folder</figcaption>
   </figure>
 </p>
@@ -82,9 +74,7 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/python_jupyter_starting.gif">
-      <img src="../../../../assets/images/guides/jupyter/python_jupyter_starting.gif" alt="Starting Jupyter and running a Python notebook">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/python_jupyter_starting.gif" alt="Starting Jupyter and running a Python notebook">
     <figcaption>Starting Jupyter and running a Python notebook</figcaption>
   </figure>
 </p>

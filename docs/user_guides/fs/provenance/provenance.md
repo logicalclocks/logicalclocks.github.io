@@ -100,9 +100,7 @@ You can also visualize the relationship between the parent and child feature gro
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/fs/provenance/provenance_fg.png">
-      <img src="../../../../assets/images/guides/fs/provenance/provenance_fg.png" alt="Derived feature group provenance graph">
-    </a>
+    <img src="../../../../assets/images/guides/fs/provenance/provenance_fg.png" alt="Derived feature group provenance graph">
     <figcaption>Provenance graph of derived feature groups</figcaption>
   </figure>
 </p>
@@ -150,9 +148,7 @@ In the feature view overview UI you can explore the provenance graph of the feat
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/fs/provenance/provenance_fv.png">
-      <img src="../../../../assets/images/guides/fs/provenance/provenance_fv.png" alt="Feature view provenance graph">
-    </a>
+    <img src="../../../../assets/images/guides/fs/provenance/provenance_fv.png" alt="Feature view provenance graph">
     <figcaption>Feature view provenance graph</figcaption>
   </figure>
 </p>
