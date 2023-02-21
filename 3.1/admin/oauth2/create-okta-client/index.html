@@ -5298,9 +5298,7 @@ identity provider.</p>
 <h3 id="step-1-register-hopsworks-as-an-application-in-your-identity-provider">Step 1: Register Hopsworks as an application in your identity provider<a class="headerlink" href="#step-1-register-hopsworks-as-an-application-in-your-identity-provider" title="Permanent link">#</a></h3>
 <p>After creating a developer account register a client by going to <em>Applications</em> and click on <strong>Create App Integration</strong>.</p>
 <figure>
-    <a  href="../../../assets/images/admin/oauth2/okta.png">
-      <img src="../../../assets/images/admin/oauth2/okta.png" alt="Okta Applications" />
-    </a>
+    <img src="../../../assets/images/admin/oauth2/okta.png" alt="Okta Applications" />
     <figcaption>Okta Applications</figcaption>
   </figure>
 
@@ -5308,9 +5306,7 @@ identity provider.</p>
 <em>Application type</em> and click next.
 <br />
 <figure>
-    <a  href="../../../assets/images/admin/oauth2/create-new-app.png">
-      <img src="../../../assets/images/admin/oauth2/create-new-app.png" alt="Create New Application" />
-    </a>
+    <img src="../../../assets/images/admin/oauth2/create-new-app.png" alt="Create New Application" />
     <figcaption>Create new Application</figcaption>
   </figure>
 </p>
@@ -5318,18 +5314,14 @@ identity provider.</p>
 that is your Hopsworks cluster domain name (including the port number if needed) with path <em>/callback</em>, and a <em>Sign-out 
 redirect URI</em> that is Hopsworks cluster domain name (including the port number if needed) with no path.</p>
 <figure>
-    <a  href="../../../assets/images/admin/oauth2/new-web-app.png">
-      <img src="../../../assets/images/admin/oauth2/new-web-app.png" alt="New Application" />
-    </a>
+    <img src="../../../assets/images/admin/oauth2/new-web-app.png" alt="New Application" />
     <figcaption>New Application</figcaption>
   </figure>
 
 <p>If you want to limit who can access your Hopsworks cluster select <em>Limit access to selected groups</em> and 
 select group(s) you want to give access to. Here we will allow everyone in the organization to access the cluster.</p>
 <figure>
-    <a  href="../../../assets/images/admin/oauth2/assignments.png">
-      <img src="../../../assets/images/admin/oauth2/assignments.png" alt="Group assignment" />
-    </a>
+    <img src="../../../assets/images/admin/oauth2/assignments.png" alt="Group assignment" />
     <figcaption>Group assignment</figcaption>
   </figure>
 
@@ -5340,9 +5332,7 @@ On</em> tab click edit <em>OpenID Connect ID Token</em> and select <strong>Filte
 filter</em> add <strong>groups</strong> as the claim name, select <strong>Match Regex</strong> from the dropdown and .* (dot star) as Regex to 
 match all groups. See <a href="../create-client/#group-mapping">Group mapping</a> on how to do the mapping in Hopsworks.</p>
 <figure>
-    <a  href="../../../assets/images/admin/oauth2/okta-groups.png">
-      <img src="../../../assets/images/admin/oauth2/okta-groups.png" alt="Group claim" />
-    </a>
+    <img src="../../../assets/images/admin/oauth2/okta-groups.png" alt="Group claim" />
     <figcaption>Group claim</figcaption>
   </figure>
 
@@ -5351,9 +5341,7 @@ match all groups. See <a href="../create-client/#group-mapping">Group mapping</a
 <em>Okta domain</em> (<em>Connection URL</em>), <em>client id</em> and <em>client secret</em> generated for your app in the 
 <a href="../create-client">Identity Provider registration</a> in Hopsworks.</p>
 <figure>
-    <a  href="../../../assets/images/admin/oauth2/overview.png">
-      <img src="../../../assets/images/admin/oauth2/overview.png" alt="Application overview" />
-    </a>
+    <img src="../../../assets/images/admin/oauth2/overview.png" alt="Application overview" />
     <figcaption>Application overview</figcaption>
   </figure>
 

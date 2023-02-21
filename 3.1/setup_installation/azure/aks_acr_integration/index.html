@@ -5298,9 +5298,7 @@
 <p>Go to <em>Kubernetes services</em> in the azure portal and click <em>Add</em> then <em>Add Kubernetes cluster</em>. Place the Kubernetes cluster in the same resource group and region as the Hopsworks cluster and choose a name for the Kubernetes cluster.</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-base.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-base.png" alt="AKS general configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-base.png" alt="AKS general configuration">
     <figcaption>AKS general configuration</figcaption>
   </figure>
 </p>
@@ -5317,9 +5315,7 @@
 </div>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-authentication.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-authentication.png" alt="AKS authentication configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-authentication.png" alt="AKS authentication configuration">
     <figcaption>AKS authencation configuration</figcaption>
   </figure>
 </p>
@@ -5327,9 +5323,7 @@
 <p>Next, go to the networking tab and check <strong>Azure CNI</strong>. The portal will automatically fill in the IP address ranges for the Kubernetes virtual network. Take note of the virtual network name that is created, in this example the virtual network name was hopsworksstagevnet154. Lastly, check the <strong>Enable private cluster</strong> option. </p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-network.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-network.png" alt="AKS network configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-network.png" alt="AKS network configuration">
     <figcaption>AKS network configuration</figcaption>
   </figure>
 </p>
@@ -5340,9 +5334,7 @@
 <p>Once finished the role assignments should look similar to the picture below. </p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-permissions.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-permissions.png" alt="AKS permissions">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-permissions.png" alt="AKS permissions">
     <figcaption>AKS permissions</figcaption>
   </figure>
 </p>
@@ -5357,9 +5349,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>Next, go to the created virtual network and go to the <em>Peerings</em> tab. Then click <em>Add</em>. </p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-peering.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering.png" alt="Virtual network peering">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering.png" alt="Virtual network peering">
     <figcaption>Virtual network peering</figcaption>
   </figure>
 </p>
@@ -5367,9 +5357,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>Choose a name for the peering link. Check the <em>Traffic to remote virtual network</em> as <em>Allow</em>, and <em>Traffic forwarded from remote virtual network</em> to <em>Block</em>.</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-peering1.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering1.png" alt="Virtual network peering">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering1.png" alt="Virtual network peering">
     <figcaption>Virtual network peering configuration</figcaption>
   </figure>
 </p>
@@ -5377,9 +5365,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>For the virtual network select the virtual network which was created by AKS, in our example this was <em>hopsworksstagevnet154</em>. Then press <em>Add</em>.</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-peering2.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering2.png" alt="Virtual network peering">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering2.png" alt="Virtual network peering">
     <figcaption>Virtual network peering configuration continuation</figcaption>
   </figure>
 </p>
@@ -5387,9 +5373,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>The last step is to set up a DNS private link to be able to use DNS resolution for the Kubernetes API servers. Go to resource groups in the Azure portal and find the resource group of the Kubernetes cluster. This will be in the form of <em>MC_<resouce_group><em><cluster_name></em><region></em> in this example it was <em>MC_hopsworks-stage_hopsworks-aks_northeurope</em>. Open the resource group and click on the DNS zone.</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-private-dns.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-private-dns.png" alt="Virtual network peering">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-private-dns.png" alt="Virtual network peering">
     <figcaption>Private DNS link setup</figcaption>
   </figure>
 </p>
@@ -5397,9 +5381,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>In the left plane there is a tab called <em>Virtual network links</em>, click on the tab. Next press <em>Add</em>.</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-vnet-link.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-vnet-link.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-vnet-link.png" alt="">
     <figcaption>Private DNS link configuration</figcaption>
   </figure>
 </p>
@@ -5407,9 +5389,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>Choose a name for the private link and select the <strong>virtual network</strong> you will use for the Hopsworks cluster, then press OK.</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-vnet-link-config.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-vnet-link-config.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-vnet-link-config.png" alt="">
     <figcaption>Private DNS link configuration</figcaption>
   </figure>
 </p>
@@ -5420,9 +5400,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>To set up the subnet, first, go to the virtual network that was created by AKS. In our example, this was hopsworksstagevnet154. Next, go to the subnets tab.</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-subnet.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-subnet.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-subnet.png" alt="">
     <figcaption>AKS subnet setup</figcaption>
   </figure>
 </p>
@@ -5430,9 +5408,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>Press <em>+ Subnet</em>. Choose a name for the subnet, for example, "hopsworks" and an IP range that does not overlap with the Kubernetes network. Then save.</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-subnet-config.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-subnet-config.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-subnet-config.png" alt="">
     <figcaption>AKS subnet setup</figcaption>
   </figure>
 </p>
@@ -5441,9 +5417,7 @@ Choose a name for the new virtual network and select the same resource group you
 <p>This step assumes you are creating your Hopsworks cluster using <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. The AKS configuration can be set under the <em>Managed containers</em> tab. Set <em>Use Azure AKS</em> as enabled. One new field will pop up. Fill it with the name of the AKS you created above. In the previous example, we created an AKS cluster with the name <em>hopsaks-cluster</em>. Hence, the configuration should look similar to the picture below</p>
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-hops-config.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-hops-config.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-hops-config.png" alt="">
     <figcaption>Hopsworks AKS configuration</figcaption>
   </figure>
 </p>

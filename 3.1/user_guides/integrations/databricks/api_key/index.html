@@ -5377,9 +5377,7 @@ Go to the <em>AWS Systems Manager</em> choose <em>Parameter Store</em> and selec
 As name enter <code>/hopsworks/role/[MY_DATABRICKS_ROLE]/type/api-key</code> replacing <code>[MY_DATABRICKS_ROLE]</code> with the name of the AWS role you have created in <a href="#step-1-create-an-instance-profile-to-attach-to-your-databricks-clusters">Step 1</a>. Select <em>Secure String</em> as type and create the parameter.</p>
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store.png" alt="Storing the Feature Store API key in the Parameter Store">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store.png" alt="Storing the Feature Store API key in the Parameter Store">
     <figcaption>Storing the Feature Store API key in the Parameter Store</figcaption>
   </figure>
 </p>
@@ -5392,9 +5390,7 @@ Enter the region of the <em>Systems Manager</em> as well as the name of the para
 Click on <em>Review</em>, give the policy a name und click on <em>Create policy</em>.</p>
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store_policy.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store_policy.png" alt="Configuring the access policy for the Parameter Store">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store_policy.png" alt="Configuring the access policy for the Parameter Store">
     <figcaption>Configuring the access policy for the Parameter Store</figcaption>
   </figure>
 </p>
@@ -5405,9 +5401,7 @@ Go to the <em>AWS Secrets Manager</em> and select <em>Store new secret</em>. Sel
 as the key and paste the API key created in the previous step as the value. Click next.</p>
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png" alt="Storing a Feature Store API key in the Secrets Manager Step 1">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png" alt="Storing a Feature Store API key in the Secrets Manager Step 1">
     <figcaption>Storing a Feature Store API key in the Secrets Manager Step 1</figcaption>
   </figure>
 </p>
@@ -5416,9 +5410,7 @@ as the key and paste the API key created in the previous step as the value. Clic
 Then click on the secret in the secrets list and take note of the <em>Secret ARN</em>.</p>
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_2.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_2.png" alt="Storing a Feature Store API key in the Secrets Manager Step 2">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_2.png" alt="Storing a Feature Store API key in the Secrets Manager Step 2">
     <figcaption>Storing a Feature Store API key in the Secrets Manager Step 2</figcaption>
   </figure>
 </p>
@@ -5430,9 +5422,7 @@ Expand Resources and select <em>Add ARN</em>. Paste the ARN of the secret create
 Click on <em>Review</em>, give the policy a name und click on <em>Create policy</em>.</p>
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_policy.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_policy.png" alt="Configuring the access policy for the Secrets Manager">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_policy.png" alt="Configuring the access policy for the Secrets Manager">
     <figcaption>Configuring the access policy for the Secrets Manager</figcaption>
   </figure>
 </p>
