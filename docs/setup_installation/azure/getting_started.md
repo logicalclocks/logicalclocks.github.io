@@ -22,7 +22,7 @@ to either a subscription or resource group.
   </iframe>
 </p>
 
-### Step 1.0: Prerequisite
+### Step 1.0: Prerequisites
 
 For [managed.hopsworks.ai](https://managed.hopsworks.ai) to deploy a cluster the following resource providers need to be registered on your Azure subscription.
 You can verify that they are registered by going to your subscription in the Azure portal and click on *Resource providers*.

@@ -20,7 +20,10 @@ To create an external feature group using the HSFS APIs you need to provide an e
     connector = feature_store.get_storage_connector("connector_name")
     ```
 
-### Create an External Feature Group 
+### Create an External Feature Group
+
+The first step is to instantiate the metadata through the `create_external_feature_group` method. Once you have defined the metadata, you can 
+[persist the metadata and create the feature group](#register-the-metadata) in Hopsworks by calling `fg.save()`.
 
 #### SQL based external feature group
 
@@ -47,6 +50,8 @@ To create an external feature group using the HSFS APIs you need to provide an e
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
+
+    fg.save()
     ```
 
 #### Data Lake based external feature group 
@@ -62,6 +67,8 @@ To create an external feature group using the HSFS APIs you need to provide an e
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
+
+    fg.save()
     ```
 
 The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup). `name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
@@ -74,7 +81,7 @@ Additionally we specify which columns of the DataFrame will be used as primary k
 
 ### Register the metadata
 
-The snippet above only created the metadata object on the Python interpreter running the code. To register the external feature group metadata with Hopsworks, you should invoke the `save` method:
+In the snippet above it's important that the created metadata object gets registered in Hopsworks. To do so, you should invoke the `save` method:
 
 === "Python"
 

@@ -152,7 +152,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Model Serving](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/deployment/)
+[Model Serving](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/deployment/)
 
 ## Model Artifact
 

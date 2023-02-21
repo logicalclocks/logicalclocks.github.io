@@ -83,18 +83,18 @@ We have enforced using managed docker registry (ECR) starting from Hopsworks ver
    "Version":"2012-10-17",
    "Statement":[
       {
-         "Sid":"AllowPullMainImages",
+         "Sid":"AllowPullImagesFromHopsworkAi",
          "Effect":"Allow",
          "Action":[
             "ecr:GetDownloadUrlForLayer",
             "ecr:BatchGetImage"
          ],
          "Resource":[
-            "arn:aws:ecr:*:*:repository/filebeat",
-            "arn:aws:ecr:*:*:repository/base",
-            "arn:aws:ecr:*:*:repository/onlinefs",
-            "arn:aws:ecr:*:*:repository/airflow",
-            "arn:aws:ecr:*:*:repository/git"
+            "arn:aws:ecr:*:822623301872:repository/filebeat",
+            "arn:aws:ecr:*:822623301872:repository/base",
+            "arn:aws:ecr:*:822623301872:repository/onlinefs",
+            "arn:aws:ecr:*:822623301872:repository/airflow",
+            "arn:aws:ecr:*:822623301872:repository/git"
          ]
       },
       {
@@ -104,7 +104,7 @@ We have enforced using managed docker registry (ECR) starting from Hopsworks ver
          "Resource":"*"
       },
       {
-         "Sid":"AllowPushandPullImages",
+         "Sid":"AllowPushandPullImagesToUserRepo",
          "Effect":"Allow",
          "Action":[
             "ecr:GetDownloadUrlForLayer",
@@ -112,7 +112,6 @@ We have enforced using managed docker registry (ECR) starting from Hopsworks ver
             "ecr:CompleteLayerUpload",
             "ecr:UploadLayerPart",
             "ecr:InitiateLayerUpload",
-            "ecr:DeleteRepository",
             "ecr:BatchCheckLayerAvailability",
             "ecr:PutImage",
             "ecr:ListImages",
