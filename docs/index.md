@@ -271,6 +271,7 @@ Hopsworks is available as a both managed platform in the cloud on AWS, Azure, an
 - Ask questions and give us feedback in the [Hopsworks Community](https://community.hopsworks.ai/)
 - Follow us on [Twitter](https://twitter.com/hopsworks)
 - Check out all our latest [product releases](https://github.com/logicalclocks/hopsworks/releases)
+- Join our public [slack-channel](https://bit.ly/publichopsworks)
 
 ## Contribute
 We are building the most complete and modular ML platform available in the market, and we count on your support to continuously improve Hopsworks. Feel free to [give us suggestions](https://github.com/logicalclocks/hopsworks), [report bugs](https://github.com/logicalclocks/hopsworks/issues) and [add features to our library](https://github.com/logicalclocks/feature-store-api) anytime.
