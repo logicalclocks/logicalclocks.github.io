@@ -274,6 +274,8 @@ extra:
       link: https://community.hopsworks.ai/
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/hopsworks/
+    - icon: fontawesome/brands/slack
+      link: https://bit.ly/publichopsworks
   analytics:
     provider: google
     property: G-64FEEXPSDN
