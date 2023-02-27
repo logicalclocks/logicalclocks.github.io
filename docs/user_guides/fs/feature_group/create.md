@@ -125,12 +125,14 @@ job.run()
 #### Insert Best Practices
 
 When designing a feature group, it is worth taking a look at how this feature group will be queried in the future, in order to optimize it for those query patterns.
+At the same time, Spark and Hudi tend to overpartition writes, slowing down the write.
 The best practices described in this section hold both for the Streaming API and the Batch API.
 
-There are two main considerations that influence the query performance:
+There are three main considerations that influence the write and also the query performance:
 
 1. Partitioning on feature group level
 2. Parquet file size within a feature group partition
+3. Backfilling of feature group partitions
 
 ##### Partitioning on feature group level
 
@@ -225,12 +227,24 @@ If the inserted Dataframe contains multiple feature group partitions, the parque
         'hoodie.upsert.shuffle.parallelism': 5
     }
     fg.insert(df, write_options=write_options)
+    ```
+
+##### Backfilling of feature group partitions
 
 Hudi scales well with the number of partitions to write, when performing backfilling of old feature partitions, meaning moving backwards in time with the event-time,
-it makes sense to batch those feature group partitions together into a single `fg.insert()` call. As shown in the figure above, the number of utilised executors you choose for the insert
+it makes sense to **batch those feature group partitions** together into a single `fg.insert()` call. As shown in the figure above, the number of utilised executors you choose for the insert
 highly depends on the number of partitions and shuffle parallelism you are writing, so by writing multiple feature group partitions in a single insert, you can scale up your Spark application
 and fully utilise the resources.
 In that case you can increase the Hudi shuffle parallelism accordingly.
+
+!!! danger "Concurrent feature group inserts"
+    Hopsworks 3.1 and earlier, currently does not support concurrent inserts to feature groups.
+    That means if you feature pipeline is written to write one feature group partition at a time,
+    you cannot run it multiple times in parallel for backfilling.
+
+    The recommended approach is to unionise the dataframes and insert them with a single `fg.insert()` instead.
+    For stream enabled feature groups, it is enough to defer starting the backfill job after multiple inserts,
+    [as described above](#streaming-write-api).
 
 ### Register the metadata and save the feature data
 
