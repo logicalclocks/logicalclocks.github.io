@@ -21,8 +21,8 @@ Supported versions of Python: 3.7, 3.8, 3.9 ([PyPI ↗](https://pypi.org/project
     ```
     If it is already installed, set the environment variables and proceed with installing the hopsworks client library:
     ```
-    C_INCLUDE_PATH=$(brew --prefix)/include
-    LIBRARY_PATH=$(brew --prefix)/lib
+    export C_INCLUDE_PATH=$(brew --prefix)/include
+    export LIBRARY_PATH=$(brew --prefix)/lib
     pip install hopsworks
     ```
 
@@ -54,8 +54,8 @@ Supported versions of Python: 3.7, 3.8, 3.9 ([PyPI ↗](https://pypi.org/project
     ```
     If it is already installed, set the environment variables and proceed with installing the hopsworks client library:
     ```
-    C_INCLUDE_PATH=$(brew --prefix)/include
-    LIBRARY_PATH=$(brew --prefix)/lib
+    export C_INCLUDE_PATH=$(brew --prefix)/include
+    export LIBRARY_PATH=$(brew --prefix)/lib
     pip install hsfs[python]
     ```
 

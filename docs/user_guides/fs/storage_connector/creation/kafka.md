@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Apache Kafka is a distributed event store and stream-processing platform. It's very popular framework for handling realtime data streams and is often used as a message you for events coming from production systems until they are being processed and either loaded into a data warehouse our aggregated into features for Machine Learning.
+Apache Kafka is a distributed event store and stream-processing platform. It's a very popular framework for handling realtime data streams and is often used as a message broker for events coming from production systems until they are being processed and either loaded into a data warehouse or aggregated into features for Machine Learning.
 
 In this guide, you will configure a Storage Connector in Hopsworks to save all the authentication information needed in order to set up a connection to your Kafka cluster.
 When you're finished, you'll be able to read from Kafka topics in your cluster using Spark through HSFS APIs.
