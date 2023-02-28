@@ -292,7 +292,10 @@ extra_javascript:
 
 plugins:
   - search
-  - minify
+  - minify:
+      minify_html: true
+      minify_css: true
+      minify_js: true
   - mkdocs-jupyter
   - macros:
       # have to use custom templating string otherwise it interferes with jupyter notebooks
