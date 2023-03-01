@@ -52,11 +52,10 @@ When writing data on the online feature store, existing rows with the same prima
 
 ##### Event time
 
-The event time column represent the time at which the event was generated. For example, with transaction data, the event time is the time at which a given transaction was made. 
-In the context of feature pipelines, the event time is often also the end timestamp of the interval of events included in the feature computation. For example, computing the feature "number of purchases by customer last week",
-the event timestamp should be the day that's used as a reference date for this "last week" window.
+The event time column represents the time at which the event was generated. For example, with transaction data, the event time is the time at which a given transaction happened. 
+In the context of feature pipelines, the event time is often also the end timestamp of the interval of events included in the feature computation. For example, computing the feature "number of purchases by customer last week", the event time should be the last day of this "last week" window.
 
-The event time is added to the primary key when writing to the offline feature store. This will make sure that the offline feature store has the entire history. As an example, if a user has done multiple purchases on a website, the event time being part of the primary key, will ensure that all the purchases for each user (user_id) will be saved in the feature group.
+The event time is added to the primary key when writing to the offline feature store. This will make sure that the offline feature store has the entire history of feature values over time. As an example, if a user has made multiple purchases on a website, each of the purchases for a given user (identified by a user_id) will be saved in the feature group, with each purchase having a different event time (the combination of user_id and event_time makes up the primary key for the offline feature store).
 
 The event time **is not** part of the primary key when writing to the online feature store. This will ensure that the online feature store has the most recent version of the feature vector for each primary key.
 
@@ -81,8 +80,7 @@ By using partitioning the system will write the feature data in different subdir
 #### Streaming Write API
 
 As explained above, the stream parameter controls whether to enable the streaming write APIs to the online and offline feature store.
-For Python environments, the stream pipeline is enabled by default, and this is the recommended way of writing to a feature group from
-Python.
+For Python environments, the stream pipeline is enabled by default, and this is the recommended way of writing to a feature group from Python.
 
 === "Python"
 
@@ -111,9 +109,8 @@ Python.
     )
     ```
 
-When using the streaming API, the data will be written to the online storage (if `online_enabled=True`) on the shortest path. However, you can control when the sync to
-the offline storage is going to happen. You can do it synchronously after every `fg.insert()`, which is the default, or you can defer it to later, also in order to batch together
-multiple writes on the offline storage:
+When using the streaming API, the data will be written directly to the online storage (if `online_enabled=True`). However, you can control when the sync to
+the offline storage is going to happen. You can do it synchronously after every call to `fg.insert()`, which is the default. Often, you defer writes to a later point in order to batch together multiple writes to the offline storage (useful to reduce the overhead of many small writes):
 
 ```python
 # run multiple inserts without starting the offline backfill
@@ -126,21 +123,22 @@ job, _ = fg.insert(df3, write_options={"start_offline_backfill": False})
 job.run()
 ```
 
-#### Insert Best Practices
+#### Best Practices for Writing
 
 When designing a feature group, it is worth taking a look at how this feature group will be queried in the future, in order to optimize it for those query patterns.
-At the same time, Spark and Hudi tend to overpartition writes, slowing down the write.
+At the same time, Spark and Hudi tend to overpartition writes, creatingtoo many small parquet files, which is inefficient and slowing down the write.
+But they also slow down queries, because file listings are taking more time, but also reading many small files is usually slower.
 The best practices described in this section hold both for the Streaming API and the Batch API.
 
 There are three main considerations that influence the write and also the query performance:
 
-1. Partitioning on feature group level
+1. Partitioning on a feature group level
 2. Parquet file size within a feature group partition
 3. Backfilling of feature group partitions
 
-##### Partitioning on feature group level
+##### Partitioning on a feature group level
 
-**Partitioning on the feature group level** allows Hopsworks and Hudi to push down filters during training dataset or batch data generation to the filesystem.
+**Partitioning on the feature group level** allows Hopsworks and Hudi to push down filters to the filesystem during training dataset or batch data generation.
 In practice that means, less directories need to be listed and less files need to be read, speeding up queries.
 
 For example, most commonly, filtering is done on the event time column of a feature group when generating training data or batches of data:
@@ -165,15 +163,17 @@ version, job = feature_view.create_training_data(
 )
 ```
 
-Assuming, the feature group was partitioned by a daily event time column, for example the features are updated with a daily batch job, the feature store will only have to list and read the files in the directories of those
-six months that are being queried.
+Assuming the feature group was partitioned by a daily event time column, for example, the features are updated with a daily batch job, the feature store will only have to
+list and read the files in the directories of those six months that are being queried.
 
 !!! danger "Too granular event time columns"
     An event time column which is too granular, such as a timestamp, shouldn't be used as partition key.
-    Granular partition keys lead to many partition directories and small files, which are inefficient to query
-    even with pushed down filters.
+    For example, a streaming pipeline generating features where the event time includes seconds, and therefore almost all
+    event timestamps are unique can lead to many partition directories and small files, each of which contains only a few number of rows,
+    which are inefficient to query even with pushed down filters.
 
     A good practice are partition keys with at most daily granularity, if they are based on time.
+    Additionally, one can look at the size of a partition directory, which should be in the 100s of MB.
 
 Additionally, if you are commonly training models for different categories of your data, you can add another level of partitioning for this. That is, if the query contains
 an additional filter:
@@ -217,7 +217,7 @@ If the inserted Dataframe contains multiple feature group partitions, the parque
 </figure>
 
 !!! tip "Setting shuffle parallelism"
-    In practice that means the shuffle parallelism should be set equal to the number of feature group partitions being contained in the inserted dataframe.
+    In practice that means the shuffle parallelism should be set equal to the number of feature group partitions in the inserted dataframe.
     This will create one parquet file per feature group partition, which in many cases is optimal.
 
     Theoretically, this rule holds up to a partition size of 2GB, which is the limit of Spark. However, one should bump this up accordingly already for smaller inputs.
@@ -237,32 +237,32 @@ If the inserted Dataframe contains multiple feature group partitions, the parque
 
 Hudi scales well with the number of partitions to write, when performing backfilling of old feature partitions, meaning moving backwards in time with the event-time,
 it makes sense to **batch those feature group partitions** together into a single `fg.insert()` call. As shown in the figure above, the number of utilised executors you choose for the insert
-highly depends on the number of partitions and shuffle parallelism you are writing, so by writing multiple feature group partitions in a single insert, you can scale up your Spark application
-and fully utilise the resources.
+depends highly on the number of partitions and shuffle parallelism you are writing. So by writing multiple feature group partitions in a single insert, you can scale up your Spark application
+and fully utilise the workers.
 In that case you can increase the Hudi shuffle parallelism accordingly.
 
 !!! danger "Concurrent feature group inserts"
     Hopsworks 3.1 and earlier, currently does not support concurrent inserts to feature groups.
-    That means if you feature pipeline is written to write one feature group partition at a time,
+    This means that if your feature pipeline writes to one feature group partition at a time,
     you cannot run it multiple times in parallel for backfilling.
 
     The recommended approach is to unionise the dataframes and insert them with a single `fg.insert()` instead.
-    For stream enabled feature groups, it is enough to defer starting the backfill job after multiple inserts,
+    For clients that write with the Stream API, it is enough to defer starting the backfill job until after multiple inserts,
     [as described above](#streaming-write-api).
 
 ### Register the metadata and save the feature data
 
-The snippet above only created the metadata object on the Python interpreter running the code. To register the feature group metadata and to save the feature data with Hopsworks, you should invoke the `save` method:
+The snippet above only created the metadata object on the Python interpreter running the code. To register the feature group metadata and to save the feature data with Hopsworks, you should invoke the `insert` method:
 
 ```python 
-fg.save(df)
+fg.insert(df)
 ```
 
 The save method takes in input a Pandas or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time. 
 
 The DataFrame *must* contain the columns specified as primary keys, partition key and event time in the `create_feature_group` call.
 
-If a feature group is online enabled, the `save` method will store the feature data to both the online and offline storage.
+If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.
 
 ### API Reference 
 
