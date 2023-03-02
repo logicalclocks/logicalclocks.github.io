@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#hopsworks-installer" class="md-skip">
+        <a href="#hopsworks-on-premises" class="md-skip">
           Skip to content
         </a>
       
@@ -4490,70 +4490,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quickstart" class="md-nav__link">
-    Quickstart
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#multi-node-installation" class="md-nav__link">
-    Multi-node installation
-  </a>
-  
-    <nav class="md-nav" aria-label="Multi-node installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configure-installer-ssh-access" class="md-nav__link">
-    Configure installer ssh access
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#start-installation" class="md-nav__link">
-    Start installation
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#purge-an-existing-cluster-installation" class="md-nav__link">
-    Purge an Existing Cluster Installation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation-from-behind-an-http-proxy-firewall" class="md-nav__link">
-    Installation from behind an HTTP Proxy (firewall)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#air-gapped-installation" class="md-nav__link">
-    Air-gapped installation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation-script-options" class="md-nav__link">
-    Installation Script Options
+  <a href="#minimum-requirements" class="md-nav__link">
+    Minimum Requirements
   </a>
   
 </li>
@@ -5235,70 +5173,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quickstart" class="md-nav__link">
-    Quickstart
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#multi-node-installation" class="md-nav__link">
-    Multi-node installation
-  </a>
-  
-    <nav class="md-nav" aria-label="Multi-node installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configure-installer-ssh-access" class="md-nav__link">
-    Configure installer ssh access
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#start-installation" class="md-nav__link">
-    Start installation
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#purge-an-existing-cluster-installation" class="md-nav__link">
-    Purge an Existing Cluster Installation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation-from-behind-an-http-proxy-firewall" class="md-nav__link">
-    Installation from behind an HTTP Proxy (firewall)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#air-gapped-installation" class="md-nav__link">
-    Air-gapped installation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation-script-options" class="md-nav__link">
-    Installation Script Options
+  <a href="#minimum-requirements" class="md-nav__link">
+    Minimum Requirements
   </a>
   
 </li>
@@ -5317,103 +5193,19 @@
                 
 
 
-<h1 id="hopsworks-installer">Hopsworks Installer<a class="headerlink" href="#hopsworks-installer" title="Permanent link">#</a></h1>
-<p>The <em>hopsworks-installer.sh</em> script downloads, configures, and installs Hopsworks. It is typically run interactively, prompting the user about details of what to be is installed and where. It can also be run non-interactively (no user prompts) using the '-ni' switch.</p>
-<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">#</a></h2>
+<h1 id="hopsworks-on-premises">Hopsworks On premises<a class="headerlink" href="#hopsworks-on-premises" title="Permanent link">#</a></h1>
+<p>It is possible to use Hopsworks on-premises, which means that companies can run their machine learning workloads on their own hardware and infrastructure, rather than relying on a cloud provider. This can provide greater flexibility, control, and cost savings, as well as enabling companies to meet specific compliance and security requirements.</p>
+<p>Working on-premises with Hopsworks typically involves collaboration with the Hopsworks engineering teams, as each infrastructure is unique and requires a tailored approach to deployment and configuration. The process begins with an assessment of the company's existing infrastructure and requirements, including network topology, security policies, and hardware specifications.</p>
+<p>For further details about on-premise installations; <a href="https://www.hopsworks.ai/contact">contact us</a>.</p>
+<h2 id="minimum-requirements">Minimum Requirements<a class="headerlink" href="#minimum-requirements" title="Permanent link">#</a></h2>
 <p>You need at least one server or virtual machine on which Hopsworks will be installed with at least the following specification:</p>
 <ul>
-<li>Centos/RHEL 7.x or Ubuntu 18.04;</li>
+<li>Ubuntu, Centos or RHEL Linux supported,</li>
 <li>at least 32GB RAM,</li>
 <li>at least 8 CPUs,</li>
 <li>100 GB of free hard-disk space,</li>
-<li>outside Internet access (if this server is air-gapped, contact us for support),</li>
 <li>a UNIX user account with sudo privileges.</li>
 </ul>
-<h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">#</a></h2>
-<p>To install on your single server or VM, run the following bash commands from your user account with sudo privileges:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/logicalclocks/karamel-chef/3.1/hopsworks-installer.sh
-chmod<span class="w"> </span>+x<span class="w"> </span>hopsworks-installer.sh
-./hopsworks-installer.sh
-</code></pre></div>
-<p>Installation takes roughly 1 hr, or slower if your server/VM has a low-bandwidth Internet connection.</p>
-<p>Once your installation is finished you can log in to the Hopsworks UI using the credentials:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">Username</span><span class="o">:</span><span class="w"> </span><span class="n">admin</span><span class="err">@</span><span class="n">hopsworks</span><span class="o">.</span><span class="na">ai</span>
-<span class="n">Password</span><span class="o">:</span><span class="w"> </span><span class="n">admin</span>
-</code></pre></div>
-
-<p>You can stop Hopsworks using this command:</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>/srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
-</code></pre></div>
-<p>And start it again with:</p>
-<div class="highlight"><pre><span></span><code>/srv/hops/kagent/kagent/bin/start-all-local-services.sh
-</code></pre></div>
-<p>Note that all services in Hopsworks are systemd services that are enabled by default, that is, they will restart when VM/server is rebooted.</p>
-<h2 id="multi-node-installation">Multi-node installation<a class="headerlink" href="#multi-node-installation" title="Permanent link">#</a></h2>
-<h3 id="configure-installer-ssh-access">Configure installer ssh access<a class="headerlink" href="#configure-installer-ssh-access" title="Permanent link">#</a></h3>
-<p>You need to identify a set of servers/VMs and create the same user account with sudo privileges on all the servers. You should identify one server as the head server from which you will perform the installation. You need to ensure that the nodes can communicate with each other on every port and to configure password-less SSH Access from the Head node to Worker nodes. First, on the head node, you should create an openssh keypair without a password:</p>
-<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>/dev/zero<span class="w"> </span><span class="p">|</span><span class="w"> </span>ssh-keygen<span class="w"> </span>-m<span class="w"> </span>PEM<span class="w"> </span>-q<span class="w"> </span>-N<span class="w"> </span><span class="s2">&quot;&quot;</span>
-cat<span class="w"> </span>~/.ssh/id_rsa.pub
-</code></pre></div>
-<p>The second line above will print the public key for the sudo account on the head node. Copy that public key, and append it to the ~/.ssh/authorized_keys files on all worker nodes, so that that the sudo account on the head node can SSH into the worker nodes without a password. It may be that you need to configure your sshd daemon (sshd_config and sshlogin) to allow openssh-key based login, depending on how your server is configured:</p>
-<p><a href="https://linuxize.com/post/how-to-setup-passwordless-ssh-login/">How to setup passwordless ssh</a></p>
-<p>For both Ubuntu and Centos/RHEL, and assuming the sudo account is 'ubuntu' and our three worker nodes have hostnames 'vm1', 'vm2', and 'vm3', then you could run the following:</p>
-<div class="highlight"><pre><span></span><code>ssh-copy-id<span class="w"> </span>-i<span class="w"> </span><span class="nv">$HOME</span>/.ssh/id_rsa.pub<span class="w"> </span>ubuntu@vm1
-ssh-copy-id<span class="w"> </span>-i<span class="w"> </span><span class="nv">$HOME</span>/.ssh/id_rsa.pub<span class="w"> </span>ubuntu@vm2
-ssh-copy-id<span class="w"> </span>-i<span class="w"> </span><span class="nv">$HOME</span>/.ssh/id_rsa.pub<span class="w"> </span>ubuntu@vm3
-</code></pre></div>
-<p>Test that you now have passwordless SSH access to all the worker nodes from the head node (assuming 'ubuntu' is the sudo account):</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># from the head VM</span>
-ssh<span class="w"> </span>ubuntu@vm1
-ssh<span class="w"> </span>ubuntu@vm2
-ssh<span class="w"> </span>ubuntu@vm3
-</code></pre></div>
-<h3 id="start-installation">Start installation<a class="headerlink" href="#start-installation" title="Permanent link">#</a></h3>
-<p>On the head node, in the sudo account, download and run this script that installs Hopsworks on all hosts. It will ask you to enter the IP address of all the workers during installation:</p>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/logicalclocks/karamel-chef/3.1/hopsworks-installer.sh
-chmod<span class="w"> </span>+x<span class="w"> </span>hopsworks-installer.sh
-./hopsworks-installer.sh
-</code></pre></div>
-<p>The above script will download and install Karamel on the same server that runs the script. Karamel will install Hopsworks across all hosts. Installation takes roughly 1 hr, slightly longer for large clusters. To find out more about Karamel, read more below.</p>
-<h2 id="purge-an-existing-cluster-installation">Purge an Existing Cluster Installation<a class="headerlink" href="#purge-an-existing-cluster-installation" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code>./hopsworks-installer.sh<span class="w"> </span>-i<span class="w"> </span>purge<span class="w"> </span>-ni
-</code></pre></div>
-<h2 id="installation-from-behind-an-http-proxy-firewall">Installation from behind an HTTP Proxy (firewall)<a class="headerlink" href="#installation-from-behind-an-http-proxy-firewall" title="Permanent link">#</a></h2>
-<p>Installation will not work if your http proxy has a self-signed certificate.
-You can explicitly specify the http proxy by passing the '-p' switch to the installer.</p>
-<div class="highlight"><pre><span></span><code>./hopsworks-installer.sh<span class="w"> </span>-p<span class="w"> </span>https://1.2.3.4:3283
-</code></pre></div>
-<p>If you have set the environment variable http_proxy or https_proxy, hopsworks-installer.sh will use it, even if you don't specify the '-p-' switch. The '-p' switch overrides the environment variable, if both are set. If both http_proxy and https_proxy environment variables are set, it will favour the http_proxy environment variable. You can change this behavior using the following arguments '-p $https_proxy'.</p>
-<h2 id="air-gapped-installation">Air-gapped installation<a class="headerlink" href="#air-gapped-installation" title="Permanent link">#</a></h2>
-<p>Hopsworks can be installed in an air-gapped environment. We recommend that you submit a <a href="https://www.hopsworks.ai/contact">contact form</a> for help in installing in an environment without outbound Internet access.</p>
-<h2 id="installation-script-options">Installation Script Options<a class="headerlink" href="#installation-script-options" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code>usage:<span class="w"> </span><span class="o">[</span>sudo<span class="o">]</span><span class="w"> </span>./hopsworks-installer.sh<span class="w"> </span>
-<span class="w"> </span><span class="o">[</span>-h<span class="p">|</span>--help<span class="o">]</span><span class="w">      </span><span class="nb">help</span><span class="w"> </span>message
-<span class="w"> </span><span class="o">[</span>-i<span class="p">|</span>--install-action<span class="w"> </span>localhost<span class="p">|</span>localhost-tls<span class="p">|</span>cluster<span class="p">|</span>enterprise<span class="p">|</span>karamel<span class="p">|</span>purge<span class="p">|</span>purge-all<span class="o">]</span><span class="w"> </span>
-<span class="w">                 </span><span class="s1">&#39;localhost&#39;</span><span class="w"> </span>installs<span class="w"> </span>a<span class="w"> </span>localhost<span class="w"> </span>Hopsworks<span class="w"> </span>cluster
-<span class="w">                 </span><span class="s1">&#39;localhost-tls&#39;</span><span class="w"> </span>installs<span class="w"> </span>a<span class="w"> </span>localhost<span class="w"> </span>Hopsworks<span class="w"> </span>cluster<span class="w"> </span>with<span class="w"> </span>TLS<span class="w"> </span>enabled
-<span class="w">                 </span><span class="s1">&#39;cluster&#39;</span><span class="w"> </span>installs<span class="w"> </span>a<span class="w"> </span>multi-host<span class="w"> </span>Hopsworks<span class="w"> </span>cluster
-<span class="w">                 </span><span class="s1">&#39;enterprise&#39;</span><span class="w"> </span>installs<span class="w"> </span>a<span class="w"> </span>multi-host<span class="w"> </span>Enterprise<span class="w">  </span>Hopsworks<span class="w"> </span>cluster
-<span class="w">                 </span><span class="s1">&#39;kubernetes&#39;</span><span class="w"> </span>installs<span class="w"> </span>a<span class="w"> </span>multi-host<span class="w"> </span>Enterprise<span class="w"> </span>Hopsworks<span class="w"> </span>cluster<span class="w"> </span>with<span class="w"> </span>Kubernetes
-<span class="w">                 </span><span class="s1">&#39;karamel&#39;</span><span class="w"> </span>installs<span class="w"> </span>and<span class="w"> </span>starts<span class="w"> </span>Karamel
-<span class="w">                 </span><span class="s1">&#39;purge&#39;</span><span class="w"> </span>removes<span class="w"> </span>Hopsworks<span class="w"> </span>completely<span class="w"> </span>from<span class="w"> </span>this<span class="w"> </span>host
-<span class="w">                 </span><span class="s1">&#39;purge-all&#39;</span><span class="w"> </span>removes<span class="w"> </span>Hopsworks<span class="w"> </span>completely<span class="w"> </span>from<span class="w"> </span>ALL<span class="w"> </span>hosts
-<span class="w"> </span><span class="o">[</span>-cl<span class="p">|</span>--clean<span class="o">]</span><span class="w">    </span>removes<span class="w"> </span>the<span class="w"> </span>karamel<span class="w"> </span>installation
-<span class="w"> </span><span class="o">[</span>-dr<span class="p">|</span>--dry-run<span class="o">]</span><span class="w">  </span>does<span class="w"> </span>not<span class="w"> </span>run<span class="w"> </span>karamel,<span class="w"> </span>just<span class="w"> </span>generates<span class="w"> </span>YML<span class="w"> </span>file
-<span class="w"> </span><span class="o">[</span>-nvme<span class="p">|</span>--nvme<span class="w"> </span>num_disks<span class="o">]</span><span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>NVMe<span class="w"> </span>disks<span class="w"> </span>on<span class="w"> </span>worker<span class="w"> </span>nodes<span class="w"> </span><span class="o">(</span><span class="k">for</span><span class="w"> </span>NDB/HopsFS<span class="o">)</span>
-<span class="w"> </span><span class="o">[</span>-c<span class="p">|</span>--cloud<span class="w">      </span>on-premises<span class="p">|</span>gcp<span class="p">|</span>aws<span class="p">|</span>azure<span class="o">]</span>
-<span class="w"> </span><span class="o">[</span>-w<span class="p">|</span>--workers<span class="w">    </span>IP1,IP2,...,IPN<span class="p">|</span>none<span class="o">]</span><span class="w"> </span>install<span class="w"> </span>on<span class="w"> </span>workers<span class="w"> </span>with<span class="w"> </span>IPs<span class="w"> </span><span class="k">in</span><span class="w"> </span>supplied<span class="w"> </span>list<span class="w"> </span><span class="o">(</span>or<span class="w"> </span>none<span class="o">)</span>.<span class="w"> </span>Uses<span class="w"> </span>default<span class="w"> </span>mem/cpu/gpus<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>workers.
-<span class="w"> </span><span class="o">[</span>-de<span class="p">|</span>--download-enterprise-url<span class="w"> </span>url<span class="o">]</span><span class="w"> </span>downloads<span class="w"> </span>enterprise<span class="w"> </span>binaries<span class="w"> </span>from<span class="w"> </span>this<span class="w"> </span>URL.
-<span class="w"> </span><span class="o">[</span>-dc<span class="p">|</span>--download-opensource-url<span class="w"> </span>url<span class="o">]</span><span class="w"> </span>downloads<span class="w"> </span>open-source<span class="w"> </span>binaries<span class="w"> </span>from<span class="w"> </span>this<span class="w"> </span>URL.
-<span class="w"> </span><span class="o">[</span>-du<span class="p">|</span>--download-user<span class="w"> </span>username<span class="o">]</span><span class="w"> </span>Username<span class="w"> </span><span class="k">for</span><span class="w"> </span>downloading<span class="w"> </span>enterprise<span class="w"> </span>binaries.
-<span class="w"> </span><span class="o">[</span>-dp<span class="p">|</span>--download-password<span class="w"> </span>password<span class="o">]</span><span class="w"> </span>Password<span class="w"> </span><span class="k">for</span><span class="w"> </span>downloading<span class="w"> </span>enterprise<span class="w"> </span>binaries.
-<span class="w"> </span><span class="o">[</span>-gs<span class="p">|</span>--gem-server<span class="o">]</span><span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>gem<span class="w"> </span>server<span class="w"> </span><span class="k">for</span><span class="w"> </span>chef-solo<span class="w"> </span><span class="o">(</span><span class="k">for</span><span class="w"> </span>air-gapped<span class="w"> </span>installations<span class="o">)</span>.
-<span class="w"> </span><span class="o">[</span>-ni<span class="p">|</span>--non-interactive<span class="o">)]</span><span class="w"> </span>skip<span class="w"> </span>license/terms<span class="w"> </span>acceptance<span class="w"> </span>and<span class="w"> </span>all<span class="w"> </span>confirmation<span class="w"> </span>screens.
-<span class="w"> </span><span class="o">[</span>-p<span class="p">|</span>--http-proxy<span class="o">)</span><span class="w"> </span>url<span class="o">]</span><span class="w"> </span>URL<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>http<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>proxy<span class="w"> </span>server.<span class="w"> </span>Only<span class="w"> </span>https<span class="w"> </span>proxies<span class="w"> </span>with<span class="w"> </span>valid<span class="w"> </span>certs<span class="w"> </span>supported.
-<span class="w"> </span><span class="o">[</span>-hip<span class="p">|</span>--hopsworks-public-ip<span class="o">)</span><span class="w"> </span>ip_address<span class="o">]</span><span class="w"> </span>Public<span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>Hopsworks<span class="w"> </span>head<span class="w"> </span>VM.
-<span class="w"> </span><span class="o">[</span>-kip<span class="p">|</span>--kafka-public-ip<span class="o">)</span><span class="w"> </span>ip_address<span class="o">]</span><span class="w"> </span>Public<span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>Kafka<span class="w"> </span>broker<span class="w"> </span><span class="o">(</span>typically<span class="w"> </span>the<span class="w"> </span>head<span class="w"> </span>VM<span class="o">)</span>.
-<span class="w"> </span><span class="o">[</span>-pwd<span class="p">|</span>--password<span class="w"> </span>password<span class="o">]</span><span class="w"> </span>sudo<span class="w"> </span>password<span class="w"> </span><span class="k">for</span><span class="w"> </span>user<span class="w"> </span>running<span class="w"> </span>chef<span class="w"> </span>recipes.
-<span class="w"> </span><span class="o">[</span>-y<span class="p">|</span>--yml<span class="w"> </span>yaml_file<span class="o">]</span><span class="w"> </span>yaml<span class="w"> </span>file<span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>Karamel<span class="w"> </span>against.
-</code></pre></div>
 
               
             </article>
