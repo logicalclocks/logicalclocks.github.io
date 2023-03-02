@@ -6,7 +6,7 @@ A Topic is a queue to which records are stored and published. Producer applicati
 
 ## Prerequisites
 
-This guide requires that you have previously created a [Kafka Schema](create_schema.md) to be used for the topic.
+This guide requires that you have 'Data owner' role and have previously created a [Kafka Schema](create_schema.md) to be used for the topic.
 
 
 ## Code
