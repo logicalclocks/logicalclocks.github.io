@@ -5,26 +5,13 @@ To enable EMR to access the Hopsworks Feature Store, you need to set up a Hopswo
     Ensure [Networking](networking.md) is set up correctly before proceeding with this guide.
 
 ## Step 1: Set up a Hopsworks API key
-In order for EMR clusters to be able to communicate with the Hopsworks Feature Store, the clients running on EMR need to be able to access a Hopsworks API key.
 
-### Generate an API key
+For instructions on how to generate an API key follow this [user guide](../../projects/api_key/create_api_key.md). For the EMR integration to work correctly make sure you add the following scopes to your API key:
 
-In Hopsworks, click on your *username* in the top-right corner and select *Account Settings* to open the user settings. Select *API*. Give the key a name and select the project scope before creating the key. Copy the key into your clipboard for the next step.
-
-!!! success "Scopes"
-    The API key should contain at least the following scopes:
-
-    1. project
-
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/emr/api_key.png" alt="Generating an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-!!! info
-    You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it and create a new one.
+  1. featurestore
+  2. project
+  3. job
+  4. kafka
 
 ### Store the API key in the AWS Secrets Manager
 
@@ -34,9 +21,7 @@ as the key and paste the API key created in the previous step as the value. Clic
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png" alt="Store a Hopsworks API key in the Secrets Manager">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png" alt="Store a Hopsworks API key in the Secrets Manager">
     <figcaption>Store a Hopsworks API key in the Secrets Manager</figcaption>
   </figure>
 </p>
@@ -46,9 +31,7 @@ Then click on the secret in the secrets list and take note of the *Secret ARN*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/images/emr/secrets_manager.png">
-      <img src="../../../../assets/images/guides/integrations/images/emr/secrets_manager.png" alt="Name the secret">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/images/emr/secrets_manager.png" alt="Name the secret">
     <figcaption>Name the secret</figcaption>
   </figure>
 </p>
@@ -58,9 +41,7 @@ Then click on the secret in the secrets list and take note of the *Secret ARN*.
 Identify your EMR EC2 instance profile in the EMR cluster summary:
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/images/emr/emr_instance_profile.png">
-      <img src="../../../../assets/images/guides/integrations/emr/emr_instance_profile.png" alt="Identify your EMR EC2 instance profile">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/emr/emr_instance_profile.png" alt="Identify your EMR EC2 instance profile">
     <figcaption>Identify your EMR EC2 instance profile</figcaption>
   </figure>
 </p>
@@ -73,9 +54,7 @@ Click on *Review*, give the policy a name und click on *Create policy*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/emr/emr_policy.png">
-      <img src="../../../../assets/images/guides/integrations/emr/emr_policy.png" alt="Configure the access policy for the Secrets Manager">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/emr/emr_policy.png" alt="Configure the access policy for the Secrets Manager">
     <figcaption>Configure the access policy for the Secrets Manager</figcaption>
   </figure>
 </p>
@@ -133,9 +112,7 @@ When you create your EMR cluster, add the configuration:
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations//emr/emr_config.png">
-      <img src="../../../../assets/images/guides/integrations//emr/emr_config.png" alt="Configure EMR to access the Feature Store">
-    </a>
+    <img src="../../../../assets/images/guides/integrations//emr/emr_config.png" alt="Configure EMR to access the Feature Store">
     <figcaption>Configure EMR to access the Feature Store</figcaption>
   </figure>
 </p>
@@ -192,8 +169,8 @@ sudo pip3 install --upgrade hsfs~=X.X.0
 
 <p align="center">
     <figure>
-        <img src="../../../../assets/images/guides/integrations/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
-        <figcaption>To find your Hopsworks version, enter any of your projects and go to the settings tab inside your project.</figcaption>
+      <img src="../../../../assets/images/guides/integrations/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
+      <figcaption>To find your Hopsworks version, enter any of your projects and go to the settings tab inside your project.</figcaption>
     </figure>
 </p>
 
@@ -202,9 +179,7 @@ the public DNS name of your Hopsworks cluster, such as `ad005770-33b5-11eb-b5a7-
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/emr/emr_bootstrap_action.png">
-      <img src="../../../../assets/images/guides/integrations/emr/emr_bootstrap_action.png" alt="Set the bootstrap action for EMR">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/emr/emr_bootstrap_action.png" alt="Set the bootstrap action for EMR">
     <figcaption>Set the bootstrap action for EMR</figcaption>
   </figure>
 </p>
@@ -213,4 +188,4 @@ Your EMR cluster will now be able to access your Hopsworks Feature Store.
 
 ## Next Steps
 
-Use the [Connection API](../../../generated/api/connection_api/) to connect to the Hopsworks Feature Store. For more information about how to use the Feature Store, see the [Quickstart Guide](../../quickstart.md).
+Use the [Connection API](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/connection_api/) to connect to the Hopsworks Feature Store. For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.

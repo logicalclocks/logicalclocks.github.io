@@ -10,9 +10,7 @@ At a high level a Hopsworks cluster can be divided into 4 groups of nodes. Each 
 Example deployment:
 
 <figure>
-  <a href="../../../assets/images/admin/ha_dr/example_ha_cluster.svg">
-    <img width="800px" src="../../../assets/images/admin/ha_dr/example_ha_cluster.svg" alt="Example HA deployment"/>
-  </a>
+  <img width="800px" src="../../../assets/images/admin/ha_dr/example_ha_cluster.svg" alt="Example HA deployment"/>
   <figcaption>Example High Available deployment</figcaption>
 </figure>
 

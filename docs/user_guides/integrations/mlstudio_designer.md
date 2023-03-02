@@ -8,24 +8,12 @@ Connecting to the Feature Store from the Azure Machine Learning Designer require
 
 ## Generate an API key
 
-In Hopsworks, click on your *username* in the top-right corner and select *Settings* to open the user settings. Select *API keys*. Give the key a name and select the job, featurestore and project scopes before creating the key. Copy the key into your clipboard for the next step.
+For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the Azure ML Designer integration to work correctly make sure you add the following scopes to your API key:
 
-!!! success "Scopes"
-    The API key should contain at least the following scopes:
-
-    1. featurestore
-    2. project
-    3. job
-
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/guides/integrations/azure/designer/step-0.png" alt="Generate an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-!!! info
-    You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it again and create a new one.
+  1. featurestore
+  2. project
+  3. job
+  4. kafka
 
 ## Connect to the Feature Store
 
@@ -144,4 +132,4 @@ Finally, submit the pipeline and wait for it to finish:
 
 ## Next Steps
 
-For more information about how to use the Feature Store, see the [Quickstart Guide](../quickstart.md).
+For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.

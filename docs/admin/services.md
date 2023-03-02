@@ -12,9 +12,7 @@ You can find the Services page by clicking on your name, in the top right corner
 _Cluster Settings_ from the dropdown menu and going to the _Services_ tab.
 
 <figure>
-  <a  href="../../assets/images/admin/services/full.png">
-    <img src="../../assets/images/admin/services/full.png" alt="services page" />
-  </a>
+  <img src="../../assets/images/admin/services/full.png" alt="services page" />
   <figcaption>Services page</figcaption>
 </figure>
 
@@ -31,18 +29,14 @@ Services are divided into groups, and you can search for a service by its name o
 by their host name.
 
 <figure>
-  <a  href="../../assets/images/admin/services/services.png">
-    <img src="../../assets/images/admin/services/services.png" alt="services" />
-  </a>
+  <img src="../../assets/images/admin/services/services.png" alt="services" />
   <figcaption>Services</figcaption>
 </figure>
 
 ### Step 3: Manage a service
 After you find the correct service you will be able to **start**, **stop** or **restart** it, by clicking on its status.
 <figure>
-  <a  href="../../assets/images/admin/services/start.png">
-    <img src="../../assets/images/admin/services/start.png" alt="start services" />
-  </a>
+  <img src="../../assets/images/admin/services/start.png" alt="start services" />
   <figcaption>Start, Stop and Restart a service</figcaption>
 </figure>
 

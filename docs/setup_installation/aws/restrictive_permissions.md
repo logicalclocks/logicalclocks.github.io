@@ -1,11 +1,18 @@
 # Limiting AWS permissions
 
 [Managed.hopsworks.ai](https://managed.hopsworks.ai) requires a set of permissions to be able to manage resources in the user’s AWS account.
-By default, these permissions are set to easily allow a wide range of different configurations and allow
+By default, [these permissions](#default-permissions) are set to easily allow a wide range of different configurations and allow
 us to automate as many steps as possible. While we ensure to never access resources we shouldn’t,
 we do understand that this might not be enough for your organization or security policy.
 This guide explains how to lock down AWS permissions following the IT security policy principle of least privilege allowing
 [managed.hopsworks.ai](https://managed.hopsworks.ai) to only access resources in a specific VPC.
+
+## Default permissions 
+This is the list of default permissions that are required by [managed.hopsworks.ai](https://managed.hopsworks.ai). If you prefer to limit these permissions, then proceed to the [next section](#limiting-the-cross-account-role-permissions).
+
+```json
+{!setup_installation/aws/aws_permissions.json!}
+```
 
 ## Limiting the cross-account role permissions
 
@@ -13,22 +20,25 @@ This guide explains how to lock down AWS permissions following the IT security p
 
 To restrict [managed.hopsworks.ai](https://managed.hopsworks.ai) from accessing resources outside of a specific VPC, you need to create a new VPC
 connected to an Internet Gateway. This can be achieved in the AWS Management Console following this guide:
-[Create the VPC](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-getting-started.html#getting-started-create-vpc).
-The option VPC with a `Single Public Subnet` from the Launch VPC Wizard should work out of the box.
+[Create the VPC](https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html#Create-VPC).
+Follow the steps of `Create a VPC, subnets, and other VPC resources`, naming your vpc and changing the `Number of Availability Zones` to 1 are the only changes you need to make to the default configuration.
 Alternatively, an existing VPC such as the default VPC can be used and [managed.hopsworks.ai](https://managed.hopsworks.ai) will be restricted to this VPC.
 Note the VPC ID of the VPC you want to use for the following steps.
 
 !!! note
     Make sure you enable `DNS hostnames` for your VPC
 
+!!! note
+    If you use VPC endpoints to managed access to services such as S3 and ECR you need to ensure that the endpoints provide the same permissions as set in the [instance profile](../getting_started/#step-3-creating-instance-profile)
+
 After you have created the VPC either [Create a Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#CreatingSecurityGroups) or use VPC's default. Make sure that the VPC allow the following traffic.
 
 #### Inbound traffic 
 
-The [Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#AddRemoveRules) and/or [Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html#Rules)
-need to be configured so that at least port `80` is reachable from the internet otherwise you will have to use self signed certificate in your Hopsworks cluster.
+It is _**imperative**_ that the [Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#AddRemoveRules) allows Inbound traffic from any Instance within the same Security Group in any (TCP) port. All VMs of the Cluster should be able to communicate with each other. It is also recommended to open TCP port `80` to sign the certificates. If you do not open port `80` you will have to use a self-signed certificate in your Hopsworks cluster. This can be done by checking the `Continue with self-signed certificate` check box in the `Security Group` step of the cluster creation.
 
-It is _**imperative**_ the Security Group allows Inbound traffic from any Instance within the same Security Group in any (TCP) port. All VMs of the Cluster should be able to communicate with each other.
+
+We recommend configuring the [Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html#Rules) to be open to all inbound traffic and let the security group handle the access restriction. But if you want to set limitations at the Network ACLs level, they must be configured so that at least the TCP ephemeral port `32768 - 65535` are open to the internet (this is so that outbound trafic can receive answers). It is also recommended to open TCP port `80` to sign the certificates. If you do not open port `80` you will have to use a self-signed certificate in your Hopsworks cluster. This can be done by checking the `Continue with self-signed certificate` check box in the `Security Group` step of the cluster creation.
 
 #### Outbound traffic 
 
@@ -46,7 +56,7 @@ Follow this guide to create a role to be used by EC2 with no permissions attache
 [Creating a Role for an AWS Service (Console)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html).
 Take note of the ARN of the role you just created.
 
-You will need to add permissions to the instance profile to give access to the S3 bucket where Hopsworks will store its data. For more details about these permissions check [our guide here](../getting_started/#step-2-creating-instance-profile).
+You will need to add permissions to the instance profile to give access to the S3 bucket where Hopsworks will store its data. For more details about these permissions check [our guide here](../getting_started/#step-3-creating-instance-profile).
 Check [bellow](#limiting-the-instance-profile-permissions) for more information on restricting the permissions given the instance profile.
 
 ### Step 3: Set permissions of the cross-account role
@@ -144,8 +154,7 @@ If you want to learn more about how this policy works check out:
         "Effect": "Allow",
         "Action": [
           "ec2:AuthorizeSecurityGroupIngress",
-          "ec2:RevokeSecurityGroupIngress",
-          "ec2:DeleteSecurityGroup"
+          "ec2:RevokeSecurityGroupIngress"
         ],
         "Resource": "*",
         "Condition": {
@@ -217,7 +226,6 @@ The following permissions are used to let you close and open ports on your clust
         "Action": [
           "ec2:AuthorizeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupIngress",
-          "ec2:DeleteSecurityGroup"
         ],
         "Resource": "*",
         "Condition": {
@@ -228,10 +236,25 @@ The following permissions are used to let you close and open ports on your clust
       }
 ```
 
+If you are using terraform, then you can also remove most of the *Describe* permissions in `NonResourceBasedPermissions` and use the following permissions instead
+
+```json
+        {
+            "Sid": "NonResourceBasedPermissions",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeSecurityGroups"
+            ],
+            "Resource": "*"
+        },
+```
+
 ## Limiting the instance profile permissions
 
 ### Backups
-If you do not intend to take backups or if you do not have access to this Enterprise feature you can remove the permissions that are only used by the backup feature when [configuring instance profile permissions](../getting_started/#step-2-creating-instance-profile) .
+If you do not intend to take backups or if you do not have access to this Enterprise feature you can remove the permissions that are only used by the backup feature when [configuring instance profile permissions](../getting_started/#step-3-creating-instance-profile) .
 For this remove the following permissions from the instance profile:
 
 ```json
@@ -266,84 +289,5 @@ Hopsworks put its logs in Amazon CloudWatch so that you can access them without 
         "ssm:GetParameter"
       ],
       "Resource": "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
-    }
-```
-### Upgrade permissions 
-
-#### Removing upgrade permissions
-If you do not intend to upgrade your cluster to newer versions of Hopsworks, then you can remove the upgrade permissions statement from the instance profile that you have created [here](../getting_started/#step-2-creating-instance-profile). For this remove the following statement from your instance profile
-
-```json
-    {
-      "Sid": "UpgradePermissions",
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeVolumes",
-        "ec2:DetachVolume",
-        "ec2:AttachVolume",
-        "ec2:ModifyInstanceAttribute"
-      ],
-      "Resource": "*"
-    }
-```
-
-#### Limiting upgrade permissions
-
-You can use tags to restrict the upgrade permissions to only the resources created for your cluster. For this [attach a tag to your cluster during the cluster creation](../cluster_creation/#step-13-add-tags-to-your-instances). Then, replace the upgrade permissions with the following policy instead. First you need to replace *REGION* and *ACCOUNT* with your region and account where you run your cluster, then replace *HEAD_NODE_INSTANCE_ID* with your aws instance id of the head node and *HEAD_NODE_VOLUME_ID* with the volume id attached to the head node, and finally replace the *TAG_KEY* and *TAG_VALUE* with your the tag name and value that is used with your cluster.
-
-```json
-    {
-      "Version":"2012-10-17",
-      "Statement":[
-          {
-            "Sid":"AllowAttachVolumeForUpgrade",
-            "Effect":"Allow",
-            "Action":"ec2:AttachVolume",
-            "Resource":"arn:aws:ec2:REGION:ACCOUNT:volume/HEAD_NODE_VOLUME_ID"
-          },
-          {
-            "Sid":"AllowAttachVolumeForUpgradeOnlyTaggedInstance",
-            "Effect":"Allow",
-            "Action":"ec2:AttachVolume",
-            "Resource":"arn:aws:ec2:REGION:ACCOUNT:instance/*",
-            "Condition":{
-                "StringEquals":{
-                  "ec2:ResourceTag/TAG_KEY":"TAG_VALUE"
-                }
-            }
-          },
-          {
-            "Sid":"AllowDetachVolumeForUpgrade",
-            "Effect":"Allow",
-            "Action":"ec2:DetachVolume",
-            "Resource":"arn:aws:ec2:REGION:ACCOUNT:volume/HEAD_NODE_VOLUME_ID"
-          },
-          {
-            "Sid":"AllowDetachVolumeForUpgradeOnlyTaggedInstance",
-            "Effect":"Allow",
-            "Action":"ec2:DetachVolume",
-            "Resource":"arn:aws:ec2:REGION:ACCOUNT:instance/*",
-            "Condition":{
-                "StringEquals":{
-                  "ec2:ResourceTag/TAG_KEY":"TAG_VALUE"
-                }
-            }
-          },
-          {
-            "Sid":"AllowModifyInstanceAttributeForUpgrade",
-            "Effect":"Allow",
-            "Action":"ec2:ModifyInstanceAttribute",
-            "Resource":[
-                "arn:aws:ec2:REGION:ACCOUNT:instance/HEAD_NODE_INSTANCE_ID",
-                "arn:aws:ec2:REGION:ACCOUNT:volume/HEAD_NODE_VOLUME_ID"
-            ]
-          },
-          {
-            "Sid":"AllowDescribeVolumesForUpgrade",
-            "Effect":"Allow",
-            "Action":"ec2:DescribeVolumes",
-            "Resource":"*"
-          }
-      ]
     }
 ```

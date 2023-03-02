@@ -14,9 +14,7 @@ Cluster Settings from the dropdown menu. In the Cluster Settings' Alerts tab you
 manager to send alerts via email, slack or pagerduty.
 
 <figure>
-  <a href="../../assets/images/alerts/configure-alerts.png">
-    <img src="../../assets/images/alerts/configure-alerts.png" alt="Configure alerts"/>
-  </a>
+  <img src="../../assets/images/alerts/configure-alerts.png" alt="Configure alerts"/>
   <figcaption>Configure alerts</figcaption>
 </figure>
 
@@ -25,9 +23,7 @@ To send alerts via email you need to configure an SMTP server. Click on the _Con
 button on the left side of the **email** row and fill out the form that pops up.
 
 <figure>
-  <a href="../../assets/images/alerts/smtp-config.png">
-    <img src="../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
-  </a>
+  <img src="../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
   <figcaption>Configure Email Alerts</figcaption>
 </figure>
 
@@ -46,9 +42,7 @@ a Slack webhook. Click on the _Configure_ button on the left side of the **slack
 [Slack webhook](https://api.slack.com/messaging/webhooks) in _Webhook_.
 
 <figure>
-  <a href="../../assets/images/alerts/slack-config.png">
-    <img src="../../assets/images/alerts/slack-config.png" alt="Configure slack Alerts"/>
-  </a>
+  <img src="../../assets/images/alerts/slack-config.png" alt="Configure slack Alerts"/>
   <figcaption>Configure slack Alerts</figcaption>
 </figure>
 
@@ -60,9 +54,7 @@ Pagerduty is another way you can send alerts from Hopsworks. Click on the _Confi
 the **pagerduty** row and fill out the form that pops up. 
 
 <figure>
-  <a href="../../assets/images/alerts/pagerduty-config.png">
-    <img src="../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
-  </a>
+  <img src="../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
   <figcaption>Configure Pagerduty Alerts</figcaption>
 </figure>
 
@@ -84,9 +76,7 @@ If you are familiar with Prometheus' [Alert manager](https://prometheus.io/docs/
 you can also configure alerts by editing the _yaml/json_ file directly.  
 
 <figure>
-  <a href="../../assets/images/alerts/advanced-config.png">
-    <img src="../../assets/images/alerts/advanced-config.png" alt="Advanced configuration"/>
-  </a>
+  <img src="../../assets/images/alerts/advanced-config.png" alt="Advanced configuration"/>
   <figcaption>Advanced configuration</figcaption>
 </figure>
 
@@ -104,6 +94,54 @@ global:
 ```
 
 To test the alerts by creating triggers from Jobs and Feature group validations see [Alerts](../../user_guides/projects/jobs/alert).
+
+The yaml syntax in the UI is slightly different in that it does not allow double quotes (it will ignore the values but give no error). 
+Below is an example configuration, that can be used in the UI, with both email and slack receivers configured for system alerts.
+
+```yaml
+global:
+    smtp_smarthost: smtp.gmail.com:587
+    smtp_from: hopsworks@gmail.com
+    smtp_auth_username: hopsworks@gmail.com
+    smtp_auth_password: XXXXXXXXX
+    smtp_auth_identity: hopsworks@gmail.com
+    resolveTimeout: 5m
+templates:
+  - /srv/hops/alertmanager/alertmanager-0.17.0.linux-amd64/template/*.tmpl
+route:
+  receiver: default
+  routes:
+    - receiver: email
+      continue: true
+      match:
+        type: system-alert
+    - receiver: slack
+      continue: true
+      match:
+        type: system-alert
+  groupBy:
+    - alertname
+  groupWait: 10s
+  groupInterval: 10s
+receivers:
+  - name: default
+  - name: email
+    emailConfigs:
+      - to: someone@logicalclocks.com
+        from: hopsworks@logicalclocks.com
+        smarthost: mail.hello.com
+        text: >-
+          summary: {{ .CommonAnnotations.summary }} description: {{
+          .CommonAnnotations.description }}
+  - name: slack
+    slackConfigs:
+      - apiUrl: >-
+          https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+        channel: '#general'
+        text: >-
+          <!channel> summary: {{ .Annotations.summary }} description: {{
+          .Annotations.description }}
+```
 
 ## Conclusion
 In this guide you learned how to configure alerts in Hopsworks.

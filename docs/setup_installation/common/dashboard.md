@@ -11,28 +11,24 @@ The landing page of [managed.hopsworks.ai](https://managed.hopsworks.ai) can be 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/dashboard.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/dashboard.png" alt="Dashboard overview">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/dashboard.png" alt="Dashboard overview">
     <figcaption>Dashboard overview</figcaption>
   </figure>
 </p>
 
 The different functionalities of the dashboard are:
 
-- **Clusters**: the landing page which we will detail bellow.
-- **Members**: the place to managed the members of your organization ([doc](./user_management.md)).
-- **Backup**: the place to manage your clusters' backup ([doc](./backup.md)).
-- **Usage**: the place to get your credits consumption ([doc](./usage.md)).
+- **Clusters**: the landing page which we will detail below.
+- **Members**: the place to manage the members of your organization ([doc](user_management.md)).
+- **Backup**: the place to manage your clusters' backup ([doc](backup.md)).
+- **Usage**: the place to get your credits consumption.
 
 ## Managing your clusters in the cluster panel
 The cluster panels contain the name of the cluster (1), its state (2) a button to [terminate the cluster](#terminate-the-cluster) (3), a button to [stop the cluster](#stop-the-cluster) (4) and different tabs to manage the cluster (5). You will now learn more details about these actions and tabs.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/cluster_pannel.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/cluster_pannel.png" alt="Cluster pannel structure">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/cluster_pannel.png" alt="Cluster pannel structure">
     <figcaption>Cluster pannel structure</figcaption>
   </figure>
 </p>
@@ -42,9 +38,7 @@ To stop a cluster click on the __Stop__ button on the top right part of the clus
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/stop_cluster.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/stop_cluster.png" alt="Stop a cluster">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/stop_cluster.png" alt="Stop a cluster">
     <figcaption>Stop a cluster</figcaption>
   </figure>
 </p>
@@ -54,9 +48,7 @@ To terminate a cluster click on the __Terminate__ button on the top right part o
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/terminate_cluster.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/terminate_cluster.png" alt="Terminate a cluster">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/terminate_cluster.png" alt="Terminate a cluster">
     <figcaption>Terminate a cluster</figcaption>
   </figure>
 </p>
@@ -68,9 +60,7 @@ Terminating the cluster will destroy it and delete all the resources that were a
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/terminate_cluster_confirmation.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/terminate_cluster_confirmation.png" alt="Confirm a cluster termination">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/terminate_cluster_confirmation.png" alt="Confirm a cluster termination">
     <figcaption>Confirm a cluster Termination</figcaption>
   </figure>
 </p>
@@ -80,9 +70,7 @@ The General tab gives you the basic information about your cluster. If you have 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/general_tab.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/general_tab.png" alt="General tab">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/general_tab.png" alt="General tab">
     <figcaption>General tab</figcaption>
   </figure>
 </p>
@@ -92,9 +80,7 @@ The services tab shows which service ports are open to the internet on your clus
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/services_tab.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/services_tab.png" alt="Services tab">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/services_tab.png" alt="Services tab">
     <figcaption>Services tab</figcaption>
   </figure>
 </p>
@@ -104,9 +90,7 @@ The console tab display more detailed information about the current state of you
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/console_tab.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/console_tab.png" alt="Console tab">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/console_tab.png" alt="Console tab">
     <figcaption>Console tab</figcaption>
   </figure>
 </p>
@@ -117,9 +101,7 @@ The backups tab is where you create and manage backups for your cluster. You can
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/backups_tab.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/backups_tab.png" alt="Backups tab">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/backups_tab.png" alt="Backups tab">
     <figcaption>Backups tab</figcaption>
   </figure>
 </p>
@@ -129,9 +111,7 @@ The Details tab provides you with details about your cluster setup. It is also w
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/details_tab.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/details_tab.png" alt="Details tab">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/details_tab.png" alt="Details tab">
     <figcaption>Details tab</figcaption>
   </figure>
 </p>
@@ -141,9 +121,7 @@ The RonDB tab provides you with details about the instances running RonDB in you
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/dashboard/rondb_tab.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/rondb_tab.png" alt="RonDB tab">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/dashboard/rondb_tab.png" alt="RonDB tab">
     <figcaption>RonDB tab</figcaption>
   </figure>
 </p>

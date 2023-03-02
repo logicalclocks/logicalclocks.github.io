@@ -19,9 +19,7 @@ In this guide, you will learn how to create a simple recommendation application,
 
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project()
+project = hopsworks.login()
 
 opensearch_api = project.get_opensearch_api()
 
@@ -163,7 +161,7 @@ pp.pprint(response)
 
 [k-NN plugin](https://opensearch.org/docs/1.3/search-plugins/knn/knn-index/)
 
-[OpenSearch](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/open_search/)
+[OpenSearch](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/open_search/)
 
 ## Conclusion
 

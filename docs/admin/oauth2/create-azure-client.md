@@ -9,15 +9,13 @@ Azure account.
 
 ### Step 1: Register Hopsworks as an application in your identity provider
 
-To use OAuth2 in hopsworks you first need to create and configure an OAuth client in your identity provider. We will take the example of Azure AD for the remaining of this documentation, but equivalent steps can be taken on other identity providers.
+To use OAuth2 in Hopsworks you first need to create and configure an OAuth client in your identity provider. We will take the example of Azure AD for the remaining of this documentation, but equivalent steps can be taken on other identity providers.
 
 Navigate to the [Microsoft Azure Portal](https://portal.azure.com) and authenticate. Navigate to [Azure Active Directory](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview). Click on [App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps). Click on *New Registration*.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/create_application.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/create_application.png" alt="Create application">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/create_application.png" alt="Create application">
     <figcaption>Create application</figcaption>
   </figure>
 </p>
@@ -26,9 +24,7 @@ Enter a name for the client such as *hopsworks_oauth_client*. Verify the Support
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/name_application.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/name_application.png" alt="Name application">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/name_application.png" alt="Name application">
     <figcaption>Name application</figcaption>
   </figure>
 </p>
@@ -39,9 +35,7 @@ In the Overview section, copy the *Application (client) ID field*. We will use i
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/client_id.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/client_id.png" alt="Copy client ID">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/client_id.png" alt="Copy client ID">
     <figcaption>Copy client ID</figcaption>
   </figure>
 </p>
@@ -51,9 +45,7 @@ We will use it in [Identity Provider registration](../create-client) under the n
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/endpoint.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/endpoint.png" alt="Endpoint">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/endpoint.png" alt="Endpoint">
     <figcaption>Endpoint</figcaption>
   </figure>
 </p>
@@ -62,9 +54,7 @@ Click on *Certificates & secrets*, then Click on *New client secret*.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/new_client_secret.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/new_client_secret.png" alt="New client secret">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/new_client_secret.png" alt="New client secret">
     <figcaption>New client secret</figcaption>
   </figure>
 </p>
@@ -73,9 +63,7 @@ Add a *description* of the secret. Select an expiration period. And, Click *Add*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/new_client_secret_config.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/new_client_secret_config.png" alt="Client secret creation">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/new_client_secret_config.png" alt="Client secret creation">
     <figcaption>Client secret creation</figcaption>
   </figure>
 </p>
@@ -85,9 +73,7 @@ Copy the secret. This will be used in [Identity Provider registration](../create
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/copy_secret.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/copy_secret.png" alt="Client secret creation">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/copy_secret.png" alt="Client secret creation">
     <figcaption>Client secret creation</figcaption>
   </figure>
 </p>
@@ -96,9 +82,7 @@ Click on *Authentication*. Then click on *Add a platform*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/add_platform.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/add_platform.png" alt="Add a platform">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/add_platform.png" alt="Add a platform">
     <figcaption>Add a platform</figcaption>
   </figure>
 </p>
@@ -107,27 +91,23 @@ In *Configure platforms* click on *Web*.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/add_platform_web.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/add_platform_web.png" alt="Configure platform: Web">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/add_platform_web.png" alt="Configure platform: Web">
     <figcaption>Configure platform: Web</figcaption>
   </figure>
 </p>
 
-Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORKS-URI/callback* with *HOPSWORKS-URI* the URI of your hopsworks cluster.
+Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORKS-URI/callback* with *HOPSWORKS-URI* the URI of your Hopsworks cluster.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/add_platform_redirect.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/add_platform_redirect.png" alt="Configure platform: Redirect">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/admin/oauth2/sso/add_platform_redirect.png" alt="Configure platform: Redirect">
     <figcaption>Configure platform: Redirect</figcaption>
   </figure>
 </p>
 
 !!! note
 
-    If your hopsworks cluster is created on the cloud (managed.hopsworks.ai),
+    If your Hopsworks cluster is created on the cloud (managed.hopsworks.ai),
     you can find your *HOPSWORKS-URI* by going to the [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) 
     in the *General* tab of your cluster and copying the URI.
 

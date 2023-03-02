@@ -45,16 +45,14 @@ If your deployment uses KServe, you can optionally set three additional paramete
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
-## CODE
+## Code
 
 ### Step 1: Connect to Hopsworks
 
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project("my_project")
+project = hopsworks.login()
 
 # get Hopsworks Model Registry handle
 mr = project.get_model_registry()
@@ -96,7 +94,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Inference Batcher](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/inference-batcher/)
+[Inference Batcher](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/inference-batcher/)
 
 ## Compatibility matrix
 

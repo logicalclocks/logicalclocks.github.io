@@ -85,28 +85,24 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
     <figcaption>Resource configuration for the Spark kernels</figcaption>
   </figure>
 </p>
 
 Additional files or dependencies required for the Spark job can be configured.
 
-* `Additional archives`: Number of cores to allocate for the Spark driver
+* `Additional archives`: List of archives to be extracted into the working directory of each executor.
 
-* `Additional jars`: Number of MBs to allocate for the Spark driver
+* `Additional jars`: List of jars to be placed in the working directory of each executor.
 
-* `Additional python dependencies`: Number of cores to allocate for each Spark executor
+* `Additional python dependencies`: List of python files and archives to be placed on each executor and added to PATH.
 
-* `Additional files`: Number of MBs to allocate for each Spark executor
+* `Additional files`: List of files to be placed in the working directory of each executor.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_additional_files.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
     <figcaption>File configuration for the Spark kernels</figcaption>
   </figure>
 </p>
@@ -115,9 +111,7 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_properties.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
     <figcaption>Additional Spark configuration</figcaption>
   </figure>
 </p>
@@ -149,26 +143,26 @@ Once the execution is finished, you can click on `Logs` to see the full logs for
 
 ## Code
 
-### Step 1: Upload the python program
+### Step 1: Upload the Spark jar
 
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Resources` dataset.
+This snippet assumes the Spark program is in the current working directory and named `sparkpi.jar`. 
+
+It will upload the jar to the `Resources` dataset in your project.
 
 ```python
 
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project()
+project = hopsworks.login()
 
 dataset_api = project.get_dataset_api()
 
-uploaded_file_path = dataset_api.upload("script.ipynb", "Resources")
+uploaded_file_path = dataset_api.upload("sparkpi.jar", "Resources")
 
 ```
 
 
-### Step 2: Create SPARK job
+### Step 2: Create Spark job
 
 In this snippet we get the `JobsApi` object to get the default job configuration for a `SPARK` job, set the python script to run and create the `Job` object.
 
@@ -205,10 +199,10 @@ print(f_err.read())
 
 ### API Reference
 
-[Jobs](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/jobs/)
+[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
-[Executions](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/executions/)
+[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
 
 ## Conclusion
 
-In this guide you learned how to create and run a PySpark job.
+In this guide you learned how to create and run a Spark job.

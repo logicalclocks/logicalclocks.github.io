@@ -47,7 +47,7 @@ provider "aws" {
 provider "hopsworksai" {
 }
 
-# Create the required aws resources, an ssh key, an s3 bucket, and an instance profile with the required hopsworks permissions
+# Create the required aws resources, an ssh key, an s3 bucket, and an instance profile with the required Hopsworks permissions
 module "aws" {
   source  = "logicalclocks/helpers/hopsworksai//modules/aws"
   region  = var.region
@@ -60,6 +60,7 @@ resource "hopsworksai_cluster" "cluster" {
   ssh_key = module.aws.ssh_key_pair_name
 
   head {
+    instance_type = "m5.2xlarge"
   }
 
   aws_attributes {
@@ -71,7 +72,15 @@ resource "hopsworksai_cluster" "cluster" {
   }
 
   rondb {
-
+    management_nodes {
+      instance_type = "t3a.medium"
+    }
+    data_nodes {
+      instance_type = "r5.large"
+    }
+    mysql_nodes {
+      instance_type = "c5.large"
+    }
   }
 
   open_ports {
@@ -148,7 +157,7 @@ data "azurerm_resource_group" "rg" {
   name = var.resource_group
 }
 
-# Create the required azure resources, an ssh key, a storage account, and an user assigned managed identity with the required hopsworks permissions
+# Create the required azure resources, an ssh key, a storage account, and an user assigned managed identity with the required Hopsworks permissions
 module "azure" {
   source         = "logicalclocks/helpers/hopsworksai//modules/azure"
   resource_group = var.resource_group
@@ -161,6 +170,7 @@ resource "hopsworksai_cluster" "cluster" {
   ssh_key = module.azure.ssh_key_pair_name
 
   head {
+    instance_type = "Standard_D8_v3"
   }
 
  azure_attributes {
@@ -173,7 +183,17 @@ resource "hopsworksai_cluster" "cluster" {
   }
 
   rondb {
+    management_nodes {
+      instance_type = "Standard_D2s_v4"
+    }
 
+    data_nodes {
+      instance_type = "Standard_D4s_v4"
+    }
+    
+    mysql_nodes {
+      instance_type = "Standard_D2s_v4"
+    }
   }
 
   open_ports {
@@ -208,9 +228,7 @@ In this section, we show how to use `terraform import` to manage your existing H
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/get-cluster-id.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/get-cluster-id.png" alt="Details tab">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/get-cluster-id.png" alt="Details tab">
     <figcaption>Click on the Details tab and copy the Id</figcaption>
   </figure>
 </p>

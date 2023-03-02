@@ -20,7 +20,10 @@ To create an external feature group using the HSFS APIs you need to provide an e
     connector = feature_store.get_storage_connector("connector_name")
     ```
 
-### Create an External Feature Group 
+### Create an External Feature Group
+
+The first step is to instantiate the metadata through the `create_external_feature_group` method. Once you have defined the metadata, you can 
+[persist the metadata and create the feature group](#register-the-metadata) in Hopsworks by calling `fg.save()`.
 
 #### SQL based external feature group
 
@@ -39,14 +42,16 @@ To create an external feature group using the HSFS APIs you need to provide an e
         GROUP BY ss_store_sk, sales_date
     """
 
-    fg = feature_store.create_on_demand_feature_group(name="sales",
-        version=1
+    fg = feature_store.create_external_feature_group(name="sales",
+        version=1,
         description="Physical shop sales features",
         query=query,
         storage_connector=connector,
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
+
+    fg.save()
     ```
 
 #### Data Lake based external feature group 
@@ -54,19 +59,21 @@ To create an external feature group using the HSFS APIs you need to provide an e
 === "Python"
 
     ```python
-    fg = feature_store.create_on_demand_feature_group(name="sales",
-        version=1
+    fg = feature_store.create_external_feature_group(name="sales",
+        version=1,
         description="Physical shop sales features",
         data_format="parquet",
         storage_connector=connector,
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
+
+    fg.save()
     ```
 
-The full method documentation is available [here](). `name` is a mandatory parameter of the `create_on_demand_feature_group` and represents the name of the feature group.
+The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup). `name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
 
-The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the the highest existing version number plus one.
+The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
 If the storage connector is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the storage connector is defined for a data lake, the location of the data as well as the format need to be provided.
 
@@ -74,12 +81,12 @@ Additionally we specify which columns of the DataFrame will be used as primary k
 
 ### Register the metadata
 
-The snippet above only created the metadata object on the Python interpreter running the code. To register the external feature group metadata with Hopsworks, you should invoke the `save` method:
+In the snippet above it's important that the created metadata object gets registered in Hopsworks. To do so, you should invoke the `save` method:
 
 === "Python"
 
     ```python 
-    fg.save(df)
+    fg.save()
     ```
 
 ### Limitations 
@@ -93,8 +100,22 @@ Hopsworks Feature Store does not support time-travel capabilities for on-demand 
 
 ### API Reference 
 
-[FeatureGroup](https://docs.hopsworks.ai/feature-store-api/dev/generated/api/feature_group_api/#featuregroup)
+[External FeatureGroup](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup)
 
 ## Create using the UI
 
-You can also create a new feature group through the UI.
+You can also create a new feature group through the UI. For this, navigate to the `Feature Groups` section and press the `Create` button at the top-right corner.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/no_feature_group_list.png" alt="List of Feature Groups">
+  </figure>
+</p>
+
+Subsequently, you will be able to define its properties (such as name, mode, features, and more). Refer to the documentation above for an explanation of the parameters available, they are the same as when you create a feature group using the SDK. Finally, complete the creation by clicking `Create New Feature Group` at the bottom of the page.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/create_feature_group.png" alt="Create new Feature Group">
+  </figure>
+</p>

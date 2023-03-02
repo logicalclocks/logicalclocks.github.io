@@ -10,21 +10,19 @@ Repositories can be managed from the Git section in the project settings. The Gi
 
 ## Prerequisites
 
-This guide requires that you have previously configured a [Git Provider](configure_git_provider.md) with your git credentials.
+- For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials. You can clone a GitHub and GitLab public repository without configuring the provider. However, for BitBucket you always need to configure the username and token to clone a repository.
 
 ## UI
 
 ### Step 1: Navigate to repositories
 
-In the `Project settings` page you can find the `Git` section.
+In the left-hand sidebar found in your project click on `Project settings`, and then navigate to the `Git` section.
 
 This page lists all the cloned git repositories under `Repositories`, while operations performed on those repositories, e.g `push`/`pull`/`commit` are listed under `Git Executions`.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/repository_overview.png">
-      <img src="../../../../assets/images/guides/git/repository_overview.png" alt="Repository overview">
-    </a>
+    <img src="../../../../assets/images/guides/git/repository_overview.png" alt="Repository overview">
     <figcaption>Git repository overview</figcaption>
   </figure>
 </p>
@@ -35,18 +33,16 @@ To clone a new repository, click on the `Clone repository` button on the Git ove
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/clone_repo_dialog.png">
-      <img src="../../../../assets/images/guides/git/clone_repo_dialog.png" alt="Clone a repository">
-    </a>
+    <img src="../../../../assets/images/guides/git/clone_repo_dialog.png" alt="Clone a repository">
     <figcaption>Git clone</figcaption>
   </figure>
 </p>
 
-The clone dialog asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on Github, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
+You should first choose the git provider e.g., GitHub, GitLab or BitBucket. If you are cloning a private repository, remember to configure the username and token for the provder first in [Git Provider](configure_git_provider.md). The clone dialog also asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
 
 Then specify which branch you want to clone. By default the `main` branch will be used, however a different branch or commit can be specified by selecting `Clone from a specific branch`.
 
-You can select the folder, within your project, in which the repository should be cloned. By default, the repository is going to be cloned within the `Resources` dataset. However, by clicking on the location button, a different location can be selected.
+You can select the folder, within your project, in which the repository should be cloned. By default, the repository is going to be cloned within the `Jupyter` dataset. However, by clicking on the location button, a different location can be selected.
 
 Finally, click on the `Clone repository` button to trigger the cloning of the repository.
 
@@ -56,52 +52,31 @@ The progress of the git clone can be tracked under `Git Executions`.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/repo_cloning.png">
-      <img src="../../../../assets/images/guides/git/repo_cloning.png" alt="Clone a repository">
-    </a>
+    <img src="../../../../assets/images/guides/git/repo_cloning.png" alt="Clone a repository">
     <figcaption>Track progress of clone</figcaption>
   </figure>
 </p>
 
 ### Step 4: Browse repository files
 
-In the `File browser` page you can now browse the files of the cloned repository, found on the path in `Resources/hops-examples`
+In the `File browser` page you can now browse the files of the cloned repository. In the figure below, the repository is located in `Jupyter/hops-examples` directory.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/git/browse_repo_files.png">
-      <img src="../../../../assets/images/guides/git/browse_repo_files.png" alt="Browse repository files">
-    </a>
+    <img src="../../../../assets/images/guides/git/browse_repo_files.png" alt="Browse repository files">
     <figcaption>Browse repository files</figcaption>
   </figure>
 </p>
 
-### Step 5: Repository actions
-
-The operation to perform on the cloned repository can be found in the dropdown as shown below.
-
-<p align="center">
-  <figure>
-    <a  href="../../../../assets/images/guides/git/repo_actions.gif">
-      <img src="../../../../assets/images/guides/git/repo_actions.gif" alt="Repository actions a repository">
-    </a>
-    <figcaption>Repository actions</figcaption>
-  </figure>
-</p>
-
 ## Code
-
+You can also clone a repository through the hopsworks git API in python.
 ### Step 1: Get the git API
-
-This snippet assumes the python script is in the current working directory and named `script.py`. It will upload the python script to run to the `Resources` dataset.
 
 ```python
 
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project()
+project = hopsworks.login()
 
 git_api = project.get_git_api()
 
@@ -112,15 +87,33 @@ git_api = project.get_git_api()
 ```python
 
 REPO_URL="https://github.com/logicalclocks/hops-examples.git" # git repository
-HOPSWORKS_FOLDER="Resources" # path in hopsworks filesystem to clone to
+HOPSWORKS_FOLDER="Jupyter" # path in Hopsworks filesystem to clone to
 PROVIDER="GitHub"
 BRANCH="master" # optional branch to clone
 
 examples_repo = git_api.clone(REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANCH)
 
 ```
+### API Reference
+Api reference for git repositories is available here:
+[GitRepo](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/git_repo/)
 
 A notebook for managing git can be found [here](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb).
+
+## Errors and Troubleshooting
+###     Invalid credentials
+This might happen when the credentials entered for the provider are incorrect. Try the following:
+
+- Confirm that the settings for the provider ( in Account Settings > Git providers) are correct. You must enter both your Git provider username and token.
+- Confirm that you have selected the correct Git provider when cloning the repository.
+- Ensure your personal access token has the correct repository access rights.
+- Ensure your personal access token has not expired.
+
+### Timeout errors
+Cloning a large repo or checking out a large branch may hit timeout errors. You can try again later if the system was under heavy load at the time.
+
+### Symlink errors
+Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail. You can create a separate branch to remove the symlinks, and clone from this branch.
 
 ## Conclusion
 

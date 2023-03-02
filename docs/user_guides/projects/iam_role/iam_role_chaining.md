@@ -20,9 +20,7 @@ In this guide, you will learn how to use a mapped IAM role in your project.
 In the _Project Settings_ page you can find the _IAM Role Chaining_ section showing a list of all IAM roles mapped to your project.
 
 <figure>
-  <a href="../../../../assets/images/guides/iam_role/project-settings.png">
-    <img src="../../../../assets/images/guides/iam_role/project-settings.png" alt="Role Chaining"/>
-  </a>
+  <img src="../../../../assets/images/guides/iam_role/project-settings.png" alt="Role Chaining"/>
   <figcaption>Role Chaining</figcaption>
 </figure>
 

@@ -4,14 +4,33 @@
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
 SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai/) with your organization's Google Cloud Platform's (GCP) account.
 
-## Prerequisite
+## Prerequisites
 
 To follow the instruction of this page you will need the following:
-- A GCP project in which the hopsworks cluster will be deployed.
+
+- A GCP project in which the Hopsworks cluster will be deployed. 
 - The [gcloud CLI](https://cloud.google.com/sdk/gcloud)
 - The [gsutil tool](https://cloud.google.com/storage/docs/gsutil)
 
+To run all the commands on this page the user needs to have at least the following permissions on the GCP project:
+```
+    iam.roles.create
+    iam.roles.list
+    iam.serviceAccountKeys.create
+    iam.serviceAccounts.create
+    resourcemanager.projects.getIamPolicy
+    resourcemanager.projects.setIamPolicy
+    serviceusage.services.enable
+    storage.buckets.create
+```
 
+Make sure to enable *Compute Engine API*, *Cloud Resource Manager API*, and *Identity and Access Management (IAM) API* on the GCP project. This can be done by running the following commands. Replacing *$PROJECT_ID* with the id of your GCP project.
+```bash
+gcloud --project=$PROJECT_ID services enable compute.googleapis.com
+gcloud --project=$PROJECT_ID services enable cloudresourcemanager.googleapis.com
+gcloud --project=$PROJECT_ID services enable iam.googleapis.com
+```
+You can find more information about GCP cloud APIs in the [GCP documentation](https://cloud.google.com/apis/docs/getting-started).
 ## Step 1: Connecting your GCP account
 
 [Managed.hopsworks.ai](https://managed.hopsworks.ai/) deploys Hopsworks clusters to a project in your GCP account. [Managed.hopsworks.ai](https://managed.hopsworks.ai/) uses service account keys to connect to your GCP project. To enable this, you need to create a service account in your GCP project. Assign to the service account the required permissions. And, create a service account key JSON. For more details about creating and managing service accounts steps in GCP, see [documentation](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
@@ -24,19 +43,29 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to GC
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/connect-gcp.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/connect-gcp.png" alt="GCP configuration page">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/connect-gcp.png" alt="GCP configuration page">
     <figcaption>GCP configuration page</figcaption>
   </figure>
 </p>
 
-## Step 2: Creating and configuring a storage
+## Step 2: Creating storage
 
-The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. To enable this you need to create a bucket and to create a service account with permissions to access the storage.
+The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai/) store their data in a bucket in your GCP account. This bucket needs to be created before creating the Hopsworks cluster.
 
-### Step 2.1: Creating a custom role for accessing storage 
+Execute the following gsutil command to create a bucket. Replace all occurrences $PROJECT_ID with your GCP project id and $BUCKET_NAME with the name you want to give to your bucket. You can also replace US with another location if you are not going to run your cluster in this *Multi-Region (see note below for more details).
 
+```
+gsutil mb -p $PROJECT_ID -l US gs://$BUCKET_NAME
+```
+
+!!! note 
+    The Hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the world us the *-l* option of *gsutil mb*. For more details about creating buckets with gsutil, see the [google documentation](https://cloud.google.com/storage/docs/creating-buckets)
+
+
+## Step 3: Creating a service account for your cluster instances
+The cluster instances will need to be granted permission to access the storage bucket. You achieve this by creating a service account that will later be attached to the Hopsworks cluster instances. This service account should be different from the service account created in step 1, as it has only those permissions related to storing objects in a GCP bucket.
+
+### Step 3.1: Creating a custom role for accessing storage
 Create a file named *hopsworksai_instances_role.yaml* with the following content:
 
 ```yaml
@@ -60,43 +89,32 @@ includedPermissions:
 !!! note 
     it is possible to limit the permissions that set up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md#limiting-the-instances-service-account-permissions).
 
-Execute the following gcloud command to create a custom role from the file. Replace \[PROJECT_ID\] with your GCP project id:
+Execute the following gcloud command to create a custom role from the file. Replace $PROJECT_ID with your GCP project id:
 
 ```
 gcloud iam roles create hopsworksai_instances \
-  --project=[PROJECT_ID] \
+  --project=$PROJECT_ID \
   --file=hopsworksai_instances_role.yaml
 ```
 
-### Step 2.2: Creating a service account 
+### Step 3.2: Creating a service account 
 
-Execute the following gcloud command to create a service account for Hopsworks AI instances. Replace \[PROJECT_ID\] with your GCP project id:
+Execute the following gcloud command to create a service account for Hopsworks AI instances. Replace $PROJECT_ID with your GCP project id:
 
 ```
 gcloud iam service-accounts create hopsworks-ai-instances \
-  --project=[PROJECT_ID] \
+  --project=$PROJECT_ID \
   --description="Service account for Hopsworks AI instances" \
   --display-name="Hopsworks AI instances"
 ```
 
-Execute the following gcloud command to bind the custom role to the service account. Replace all occurrences \[PROJECT_ID\] with your GCP project id:
+Execute the following gcloud command to bind the custom role to the service account. Replace all occurrences $PROJECT_ID with your GCP project id:
 
 ```
-gcloud projects add-iam-policy-binding [PROJECT_ID] \
-  --member="serviceAccount:hopsworks-ai-instances@[PROJECT_ID].iam.gserviceaccount.com" \
-  --role="projects/[PROJECT_ID]/roles/hopsworksai_instances"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:hopsworks-ai-instances@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="projects/$PROJECT_ID/roles/hopsworksai_instances"
 ```
-
-### Step 2.3: Creating a Bucket
-
-Execute the following gsutil command to create a bucket. Replace all occurrences \[PROJECT_ID\] with your GCP project id and \[BUCKET_NAME\] by the name you want to give to your bucket:
-
-```
-gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]
-```
-
-!!! note 
-    The hopsworks cluster created by [managed.hopsworks.ai](https://managed.hopsworks.ai/) must be in the same region as the bucket. The above command will create the bucket in the US so in the following steps, you must deploy your cluster in a US region. If you want to deploy your cluster in another part of the word us the *-l* option of *gsutil md*. For more detail about creating buckets with gsutil see the [documentation](https://cloud.google.com/storage/docs/creating-buckets)
 
 ## Step 4: Deploying a Hopsworks cluster
 
@@ -104,9 +122,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/), select *Create cluster
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common//create-instance.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
     <figcaption>Create a Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -129,9 +145,7 @@ Press *Next*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/create-instance-general.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-general.png" alt="General configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-general.png" alt="General configuration">
     <figcaption>General configuration</figcaption>
   </figure>
 </p>
@@ -146,20 +160,16 @@ Press *Next*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
     <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
   </figure>
 </p>
 
-Enter *Email* of the instances *service account* that you created [above](#step-22-creating-a-service-account). If you followed the instruction it should be *hopsworks-ai-instances@\[PROJECT_ID\].iam.gserviceaccount.com* with \[PROJECT_ID\] the name of your project:
+Enter *Email* of the instances *service account* that you created [above](#step-22-creating-a-service-account). If you followed the instruction it should be *hopsworks-ai-instances@$PROJECT_ID.iam.gserviceaccount.com* with $PROJECT_ID the name of your project:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/create-instance-service-account.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-service-account.png" alt="Set the instance service account">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-service-account.png" alt="Set the instance service account">
     <figcaption>Set the instance service account</figcaption>
   </figure>
 </p>
@@ -168,9 +178,7 @@ To backup the storage bucket data when taking a cluster backup we need to set a 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/create-instance-backup.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-backup.png" alt="Choose the backup retention policy">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-backup.png" alt="Choose the backup retention policy">
     <figcaption>Choose the backup retention policy</figcaption>
   </figure>
 </p>
@@ -179,9 +187,7 @@ Review all information and select *Create*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/gcp/create-instance-review.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-review.png" alt="Review cluster information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-review.png" alt="Review cluster information">
     <figcaption>Review cluster information</figcaption>
   </figure>
 </p>
@@ -193,9 +199,7 @@ The cluster will start. This will take a few minutes:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/booting.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
     <figcaption>Booting Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -204,9 +208,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/running.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
     <figcaption>Running Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -216,7 +218,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
 * Make Hopsworks services [accessible from outside services](../common/services.md)
-* Get started with the [Hopsworks Feature Store](../../getting_started/quickstart.ipynb)
-* Follow one of our [tutorials](../../tutorials/fraud_batch/1_feature_groups.ipynb)
+* Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
+* Follow one of our [tutorials](../../tutorials/index.md)
 * Follow one of our [Guide](../../user_guides/index.md)
 * Code examples and notebooks: [hops-examples](https://github.com/logicalclocks/hops-examples)

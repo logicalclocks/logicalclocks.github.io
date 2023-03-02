@@ -14,9 +14,7 @@ The image below shows the Jupyter service page in Hopsworks and is accessed by c
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/jupyter_overview.png">
-      <img src="../../../../assets/images/guides/jupyter/jupyter_overview.png" alt="Jupyter dashboard in Hopsworks">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/jupyter_overview.png" alt="Jupyter dashboard in Hopsworks">
     <figcaption>Jupyter dashboard in Hopsworks</figcaption>
   </figure>
 </p>
@@ -44,9 +42,7 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
     <figcaption>Resource configuration for the Spark kernels</figcaption>
   </figure>
 </p>
@@ -65,9 +61,7 @@ Additional files or dependencies required for the Spark job can be configured.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_additional_files.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
     <figcaption>File configuration for the Spark kernels</figcaption>
   </figure>
 </p>
@@ -76,9 +70,7 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_properties.png">
-      <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
     <figcaption>Additional Spark configuration</figcaption>
   </figure>
 </p>
@@ -94,9 +86,7 @@ The runtime of the Jupyter instance can be configured, this is useful to ensure 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/configure_shutdown.png">
-      <img src="../../../../assets/images/guides/jupyter/configure_shutdown.png" alt="Configure maximum runtime">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/configure_shutdown.png" alt="Configure maximum runtime">
     <figcaption>Configure maximum runtime</figcaption>
   </figure>
 </p>
@@ -105,9 +95,7 @@ The root path from which to start the Jupyter instance can be configured. By def
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/start_from_folder.png">
-      <img src="../../../../assets/images/guides/jupyter/start_from_folder.png" alt="Configure root folder">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/start_from_folder.png" alt="Configure root folder">
     <figcaption>Configure root folder</figcaption>
   </figure>
 </p>
@@ -119,9 +107,7 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_jupyter_starting.gif">
-      <img src="../../../../assets/images/guides/jupyter/spark_jupyter_starting.gif" alt="Starting Jupyter and running a Spark notebook">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_jupyter_starting.gif" alt="Starting Jupyter and running a Spark notebook">
     <figcaption>Starting Jupyter and running a Spark notebook</figcaption>
   </figure>
 </p>
@@ -132,9 +118,7 @@ Navigate back to Hopsworks and a Spark session will have appeared, click on the 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/jupyter/spark_ui.gif">
-      <img src="../../../../assets/images/guides/jupyter/spark_ui.gif" alt="Access Spark UI and see application logs">
-    </a>
+    <img src="../../../../assets/images/guides/jupyter/spark_ui.gif" alt="Access Spark UI and see application logs">
     <figcaption>Access Spark UI and see application logs</figcaption>
   </figure>
 </p>

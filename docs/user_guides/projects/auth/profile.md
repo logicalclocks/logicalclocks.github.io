@@ -11,23 +11,19 @@ to authenticate to Hopsworks.
 
 ### Step 1: Go to your Account settings
 After you have logged in, in the upper right-hand corner of the screen, you will see your name. Click on your name,
-then click on the menu item **Account settings**. The User settings page will open with profile tab selected. In this tab
+then click on the menu item **Account settings**. The account settings page will open with profile tab selected. In this tab
 you can change your first and last name. You cannot change your email address and will need to create a new 
 account if you wish to change your email address.
 
   <figure>
-    <a  href="../../../../assets/images/auth/profile.png">
-      <img src="../../../../assets/images/auth/profile.png" alt="User profile" />
-    </a>
+    <img src="../../../../assets/images/auth/profile.png" alt="User profile" />
     <figcaption>Update profile</figcaption>
   </figure>
 
 ### Step 2: Update credential
 To update your credential go to the **Authentication** tab as shown in the image below.
   <figure>
-    <a  href="../../../../assets/images/auth/updatePassword.png">
-      <img src="../../../../assets/images/auth/updatePassword.png" alt="Update credentials">
-    </a>
+    <img src="../../../../assets/images/auth/updatePassword.png" alt="Update credentials">
     <figcaption>Update credential</figcaption>
   </figure>
 
@@ -36,9 +32,7 @@ You can also change your two-factor setting in the **Authentication** tab. Two-f
 is only available if it is enabled from the cluster administration page.
 
   <figure>
-    <a  href="../../../../assets/images/auth/2fa-enabled.png">
-      <img src="../../../../assets/images/auth/2fa-enabled.png" alt="Two-factor Authentication">
-    </a>
+    <img src="../../../../assets/images/auth/2fa-enabled.png" alt="Two-factor Authentication">
     <figcaption>Enable Two-factor Authentication</figcaption>
   </figure>
 
@@ -49,9 +43,7 @@ to add it on your phone's authenticator application
 If you miss this step, you will have to recover your smartphone credentials at a later stage.
 
   <figure>
-    <a  href="../../../../assets/images/auth/enable2fa.png">
-      <img src="../../../../assets/images/auth/enable2fa.png" alt="Register Two-factor Authentication">
-    </a>
+    <img src="../../../../assets/images/auth/enable2fa.png" alt="Register Two-factor Authentication">
     <figcaption>Register Two-factor Authentication</figcaption>
   </figure>
 

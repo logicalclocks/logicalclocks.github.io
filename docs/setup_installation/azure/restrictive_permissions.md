@@ -155,9 +155,7 @@ The following permissions are used to create and attach a public IP Address to t
 You then have to make sure that you uncheck the *Attach Public IP* check box in the *Security Group* section of the cluster creation:
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/attach_public_ip.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/attach_public_ip.png" alt="Attach Public IP">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/attach_public_ip.png" alt="Attach Public IP">
     <figcaption>Attach Public IP</figcaption>
   </figure>
 </p>
@@ -192,20 +190,6 @@ For this remove the following actions from [your user assigned managed identity]
 ```json
   "actions": [
     "Microsoft.Storage/storageAccounts/blobServices/write",
-    "Microsoft.Storage/storageAccounts/listKeys/action"
-  ]
-```
-
-### Upgrades
-
-If you do not intend to upgrade your cluster to newer versions of Hopsworks, then you can remove the permissions required for upgrade from the custom role that you have created [here](../upgrade/#step-2-add-upgrade-permissions-to-your-user-assigned-managed-identity). For this remove the following actions from your custom role:
-
-```json
-  "actions": [
-    "Microsoft.Compute/virtualMachines/read",
-    "Microsoft.Compute/virtualMachines/write",
-    "Microsoft.Compute/disks/read",
-    "Microsoft.Compute/disks/write",
     "Microsoft.Storage/storageAccounts/listKeys/action"
   ]
 ```

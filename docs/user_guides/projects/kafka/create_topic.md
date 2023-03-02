@@ -6,7 +6,7 @@ A Topic is a queue to which records are stored and published. Producer applicati
 
 ## Prerequisites
 
-This guide requires that you have previously created a [Kafka Schema](create_schema.md) to be used for the topic.
+This guide requires that you have 'Data owner' role and have previously created a [Kafka Schema](create_schema.md) to be used for the topic.
 
 
 ## Code
@@ -19,9 +19,7 @@ In this guide, you will learn how to create a Kafka Topic.
 
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project()
+project = hopsworks.login()
 
 kafka_api = project.get_kafka_api()
 
@@ -40,7 +38,7 @@ my_topic = kafka_api.create_topic(TOPIC_NAME, SCHEMA_NAME, 1, replicas=1, partit
 
 ### API Reference
 
-[KafkaTopic](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/kafka_topic/)
+[KafkaTopic](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/kafka_topic/)
 
 ## Conclusion
 

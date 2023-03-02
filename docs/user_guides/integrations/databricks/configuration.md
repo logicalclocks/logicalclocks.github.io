@@ -34,9 +34,7 @@ The instance address should be in the format `[UUID].cloud.databricks.com` (or `
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/databricks-integration.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/databricks-integration.png" alt="Register a Databricks Instance along with a Databricks API key">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/databricks-integration.png" alt="Register a Databricks Instance along with a Databricks API key">
     <figcaption>Register a Databricks Instance along with a Databricks API key</figcaption>
   </figure>
 </p>
@@ -58,9 +56,7 @@ To configure a cluster, click on the `Configure` button. By default the cluster 
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/databricks-integration-cluster.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/databricks-integration-cluster.png" alt="Configure a Databricks Cluster from Hopsworks">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/databricks-integration-cluster.png" alt="Configure a Databricks Cluster from Hopsworks">
     <figcaption>Configure a Databricks Cluster from Hopsworks</figcaption>
   </figure>
 </p>
@@ -114,4 +110,4 @@ Once the cluster is running users can establish a connection to the Hopsworks Fe
 
 ## Next Steps
 
-For more information about how to connect, see the [Connection](../../generated/project.md) guide. Or continue with the Data Source guide to import your own data to the Feature Store.
+For more information about how to connect, see the [Connection](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/connection_api/) API reference. Or continue with the Data Source guide to import your own data to the Feature Store.

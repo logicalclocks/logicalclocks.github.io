@@ -4,25 +4,12 @@ In order for the Databricks cluster to be able to communicate with the Hopsworks
 
 ## Generate an API key
 
-In Hopsworks, click on your *username* in the top-right corner and select *Settings* to open the user settings. Select *API keys*. Give the key a name and select the job, featurestore and project scopes before creating the key. Copy the key into your clipboard for the next step.
+For instructions on how to generate an API key follow this [user guide](../../projects/api_key/create_api_key.md). For the Databricks integration to work make sure you add the following scopes to your API key:
 
-!!! success "Scopes"
-    The API key should contain at least the following scopes:
-
-    1. featurestore
-    2. project
-    3. job
-    4. kafka
-
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/api-key.png" alt="Generating an API key on Hopsworks">
-    <figcaption>API keys can be created in the User Settings on Hopsworks</figcaption>
-  </figure>
-</p>
-
-!!! info
-    You are only able to retrieve the API key once. If you did not manage to copy it to your clipboard, delete it and create a new one.
+  1. featurestore
+  2. project
+  3. job
+  4. kafka
 
 ## Quickstart API key Argument
 
@@ -67,9 +54,7 @@ As name enter `/hopsworks/role/[MY_DATABRICKS_ROLE]/type/api-key` replacing `[MY
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store.png" alt="Storing the Feature Store API key in the Parameter Store">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store.png" alt="Storing the Feature Store API key in the Parameter Store">
     <figcaption>Storing the Feature Store API key in the Parameter Store</figcaption>
   </figure>
 </p>
@@ -84,9 +69,7 @@ Click on *Review*, give the policy a name und click on *Create policy*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store_policy.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store_policy.png" alt="Configuring the access policy for the Parameter Store">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_parameter_store_policy.png" alt="Configuring the access policy for the Parameter Store">
     <figcaption>Configuring the access policy for the Parameter Store</figcaption>
   </figure>
 </p>
@@ -100,9 +83,7 @@ as the key and paste the API key created in the previous step as the value. Clic
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png" alt="Storing a Feature Store API key in the Secrets Manager Step 1">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_1.png" alt="Storing a Feature Store API key in the Secrets Manager Step 1">
     <figcaption>Storing a Feature Store API key in the Secrets Manager Step 1</figcaption>
   </figure>
 </p>
@@ -112,9 +93,7 @@ Then click on the secret in the secrets list and take note of the *Secret ARN*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_2.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_2.png" alt="Storing a Feature Store API key in the Secrets Manager Step 2">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_step_2.png" alt="Storing a Feature Store API key in the Secrets Manager Step 2">
     <figcaption>Storing a Feature Store API key in the Secrets Manager Step 2</figcaption>
   </figure>
 </p>
@@ -127,9 +106,7 @@ Click on *Review*, give the policy a name und click on *Create policy*.
 
 <p align="center">
   <figure>
-    <a  href="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_policy.png">
-      <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_policy.png" alt="Configuring the access policy for the Secrets Manager">
-    </a>
+    <img src="../../../../assets/images/guides/integrations/databricks/aws/databricks_secrets_manager_policy.png" alt="Configuring the access policy for the Secrets Manager">
     <figcaption>Configuring the access policy for the Secrets Manager</figcaption>
   </figure>
 </p>

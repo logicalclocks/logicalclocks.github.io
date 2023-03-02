@@ -89,9 +89,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project("my_project")
+project = hopsworks.login()
 
 # get Dataset API instance
 dataset_api = project.get_dataset_api()
@@ -159,7 +157,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Transformer](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/transformer/)
+[Transformer](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/transformer/)
 
 ## Resources
 

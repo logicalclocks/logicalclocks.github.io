@@ -7,9 +7,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
     <figcaption>Create a Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -25,16 +23,18 @@ Name your cluster (2). Your cluster will be deployed in the *Location* of your *
 
 Select the *Instance type* (4) and *Local storage* (5) size for the cluster *Head node*.
 
-To provide the capacity of adding and removing workers on demand, the Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in an Azure storage container. In this step, you select which storage account and container to use for this purpose. Select the *storage account* (6) you want to use in *Azure Storage account name*. The name of the container in which the data will be stored is displayed in *Azure Container name* (7). You can change this name. For more details on how to create and configure a storage in Azure refer to [Creating and configuring a storage](getting_started.md#step-2-creating-and-configuring-a-storage)
+Optional (6): Enable customer-managed encryption keys and specify a [disk encryption set](https://docs.microsoft.com/en-us/azure/virtual-machines/disks-enable-customer-managed-keys-portal#set-up-your-disk-encryption-set) to be used for encryption of local storage. The disk encryption set has to be specified using the format: `/subscriptions/[SUBSCRIPTION_ID]/resourceGroups/[RESOURCE_GROUP]/providers/Microsoft.Compute/diskEncryptionSets/[DISK_ENCRYPTION_SET]`. Note that you have to grant the service principal of managed.hopsworks.ai `Reader` access to the disk encryption set and `Key Vault Reader` and ` Key Vault Secrets User` on the key vault used with the disk encryption set. Refer to the Azure documentation for more details: [Server-side encryption of Azure Disk Storage](https://docs.microsoft.com/en-us/azure/virtual-machines/disk-encryption).
+
+To provide the capacity of adding and removing workers on demand, the Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in an Azure storage container. In this step, you select which storage account and container to use for this purpose. Select the *storage account* (7) you want to use in *Azure Storage account name*. The name of the container in which the data will be stored is displayed in *Azure Container name* (8). You can change this name. For more details on how to create and configure a storage in Azure refer to [Creating and configuring a storage](getting_started.md#step-2-creating-and-configuring-a-storage)
 
 !!! note
     You can choose to use a container already existing in your *storage account* by using the name of this container, but you need to first make sure that this container is empty.
 
+Enter the *Azure container registry name* (9) to be used as the managed docker registry for the cluster. 
+
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/create-instance-general.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-instance-general.png" alt="General configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-instance-general.png" alt="General configuration">
     <figcaption>General configuration</figcaption>
   </figure>
 </p>
@@ -50,9 +50,7 @@ You can set the static configuration by selecting *Disabled* in the first drop-d
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
     <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
   </figure>
 </p>
@@ -72,9 +70,7 @@ You can set the autoscaling configuration by selecting enabled in the first drop
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common.create-instance-workers-autoscale.png">
-      <img style="border: 1px solid #000;width:700px;width:506px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-autoscale.png" alt="Create a Hopsworks cluster, autoscale workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px;width:506px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-autoscale.png" alt="Create a Hopsworks cluster, autoscale workers configuration">
     <figcaption>Create a Hopsworks cluster, autoscale workers configuration</figcaption>
   </figure>
 </p>
@@ -82,13 +78,11 @@ You can set the autoscaling configuration by selecting enabled in the first drop
 ### Step 4 select a SSH key
 
 When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs a ssh key on the cluster's instances so that you can access them if necessary.
-Select the *SSH key* that you want to use to access cluster instances. For more detail on how to add a shh key in Azure refer to [Adding a ssh key to your resource group](getting_started.md#step-3-adding-a-ssh-key-to-your-resource-group)
+Select the *SSH key* that you want to use to access cluster instances. For more detail on how to add a shh key in Azure refer to [Adding a ssh key to your resource group](getting_started.md#step-4-adding-a-ssh-key-to-your-resource-group)
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-12.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-12.png" alt="Choose SSH key">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-12.png" alt="Choose SSH key">
     <figcaption>Choose SSH key</figcaption>
   </figure>
 </p>
@@ -99,9 +93,7 @@ In order to let the cluster instances access to the Azure storage we need to att
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-identity.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-identity.png" alt="Choose the User assigned managed identity">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-identity.png" alt="Choose the User assigned managed identity">
     <figcaption>Choose the User assigned managed identity</figcaption>
   </figure>
 </p>
@@ -112,9 +104,7 @@ To backup the Azure blob storage data when taking a cluster backups we need to s
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
     <figcaption>Choose the backup retention policy</figcaption>
   </figure>
 </p>
@@ -125,9 +115,7 @@ Refer to [Create a virtual network and subnet](restrictive_permissions.md#step-1
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-13.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-13.png" alt="Choose virtual network">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-13.png" alt="Choose virtual network">
     <figcaption>Choose virtual network</figcaption>
   </figure>
 </p>
@@ -139,9 +127,7 @@ If you did not select an existing virtual network in the previous step [managed.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-14.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-14.png" alt="Choose subnet">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-14.png" alt="Choose subnet">
     <figcaption>Choose subnet</figcaption>
   </figure>
 </p>
@@ -157,9 +143,7 @@ In this step, you can select the network security group you want to use to manag
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-15.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-15.png" alt="Choose security group">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-15.png" alt="Choose security group">
     <figcaption>Choose security group</figcaption>
   </figure>
 </p>
@@ -170,9 +154,7 @@ Clusters created on [managed.hopsworks.ai](https://managed.hopsworks.ai) need to
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-15-b.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-15-b.png" alt="Enable static IPs">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-15-b.png" alt="Enable static IPs">
     <figcaption>Enable static IPs</figcaption>
   </figure>
 </p>
@@ -188,9 +170,7 @@ In this step, you can choose which user management system to use. You have four 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png" alt="Choose user management type">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-user-management.png" alt="Choose user management type">
     <figcaption>Choose user management type</figcaption>
   </figure>
 </p>
@@ -204,9 +184,7 @@ For details on how to configure RonDB check our guide [here](../common/rondb.md)
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png" alt="Configure RonDB">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/rondb/configure_database.png" alt="Configure RonDB">
     <figcaption>Configure RonDB</figcaption>
   </figure>
 </p>
@@ -218,9 +196,7 @@ In this step, you can define tags that will be added to the cluster virtual mach
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-tags.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-tags.png" alt="Add tags">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-tags.png" alt="Add tags">
     <figcaption>Add tags</figcaption>
   </figure>
 </p>
@@ -233,9 +209,7 @@ In this step, you can enter an initialization script that will be run at startup
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/init_script.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/init_script.png" alt="Add initialization script">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/init_script.png" alt="Add initialization script">
     <figcaption>Add initialization script</figcaption>
   </figure>
 </p>
@@ -245,9 +219,7 @@ Review all information and select *Create*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-17.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-17.png" alt="Review cluster information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-17.png" alt="Review cluster information">
     <figcaption>Review cluster information</figcaption>
   </figure>
 </p>
@@ -256,9 +228,7 @@ The cluster will start. This will take a few minutes:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/booting.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
     <figcaption>Booting Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -267,9 +237,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/running.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
     <figcaption>Running Hopsworks cluster</figcaption>
   </figure>
 </p>

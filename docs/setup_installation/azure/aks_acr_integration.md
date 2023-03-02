@@ -1,67 +1,18 @@
-# Integration with Azure AKS and ACR
+# Integration with Azure AKS
 
-This guide shows how to create a cluster in [managed.hopsworks.ai](https://managed.hopsworks.ai) with integrated support for Azure Kubernetes Service (AKS) and Azure Container Registry (ACR). This enables Hopsworks to launch Python jobs, Jupyter servers, and serve models on top of AKS.
+This guide shows how to create a cluster in [managed.hopsworks.ai](https://managed.hopsworks.ai) with integrated support for Azure Kubernetes Service (AKS). This enables Hopsworks to launch Python jobs, Jupyter servers, and serve models on top of AKS.
 
-Hopsworks AKS and ACR integration have four requirements:
-
-1. A virtual network with access to AKS pods and the AKS API servers 
-2. One Azure container registry configured in your account
-3. One AKS cluster
-4. Permissions to the ACR and AKS attached to a user-managed identity
-
-This guide provides an example setup with a private AKS cluster and public ACR.
+This guide provides an example setup with a private AKS cluster and [public ACR registry](getting_started.md#step-3-create-an-acr-container-registry).
 !!! note
     A public AKS cluster means the Kubernetes API server is accessible outside the virtual network it is deployed in. Similarly, a public ACR is accessible through the internet.
 
 
-## User assigned managed identity (managed identity)
-
-!!! note
-    A user assigned managed identity (managed identity) can be created at the subscription level or to a specific resource group in a subscription. The managed identity is attached to the virtual machines that run inside your subscription (or resource group). Hence, the permissions only apply to services that run within your subscription (or resource group). 
-
-The AKS and ACR integration requires some permissions to be attached to the managed identity used by the Hopsworks cluster. 
-
-If you have already created a *user assigned managed identity* for the storage continue to [Add role assignment to the managed identity](#add-role-assignment-to-the-managed-identity) using this identity.
-
-To set up the managed identity, go to the resource group where you will add the managed identity - this should be the same resource group you will deploy Hopsworks in. Click on the *Add* button. In the search dialog, enter *"user assigned managed identity"*.  Click on *Create*. Then give a name to the managed identity and make sure that it is in the Region where you will deploy your cluster. Click on *Review + create*, and click on *Create*.
-
-### Add role assignment to the managed identity
-
-Go to the managed identity created above. Click on *Azure role assignments* in the left column. Click on *Add role assignment*. For the *Scope* select *Resource group* or *Subscription* depending on your preference. Select the *Role* *AcrPull* and click on *Save*.
-
-Repeat the same operation with the following roles:
-
-* *AcrPull*
-* *AcrPush*
-* *AcrDelete*
-* *Azure Kubernetes Service Cluster User Role*
-
-!!! warning
-    You will also need to attach storage access permissions to the managed identity, see [Creating and configuring a storage](getting_started.md#step-2-creating-and-configuring-a-storage)
-
-Once finished the role assignments should look similar to the picture below. 
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-permissions.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-permissions.png" alt="AKS permissions">
-    </a>
-    <figcaption>AKS permissions</figcaption>
-  </figure>
-</p>
-
-## Private AKS cluster and public ACR
-
-This guide will step through setting up a private AKS cluster and a public ACR. 
-
-### Step 1: Create an AKS cluster
+## Step 1: Create an AKS cluster
 Go to *Kubernetes services* in the azure portal and click *Add* then *Add Kubernetes cluster*. Place the Kubernetes cluster in the same resource group and region as the Hopsworks cluster and choose a name for the Kubernetes cluster.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-base.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-base.png" alt="AKS general configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-base.png" alt="AKS general configuration">
     <figcaption>AKS general configuration</figcaption>
   </figure>
 </p>
@@ -77,9 +28,7 @@ Next, click on the *Authentication* tab and verify the settings are as follow:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-authentication.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-authentication.png" alt="AKS authentication configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-authentication.png" alt="AKS authentication configuration">
     <figcaption>AKS authencation configuration</figcaption>
   </figure>
 </p>
@@ -88,52 +37,32 @@ Next, go to the networking tab and check **Azure CNI**. The portal will automati
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-network.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-network.png" alt="AKS network configuration">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-network.png" alt="AKS network configuration">
     <figcaption>AKS network configuration</figcaption>
-  </figure>
-</p>
-
-Next, go to the *Integrations* tab. Under container registry click Create new. 
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-acr-create.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-acr-create.png" alt="AKS create ACR">
-    </a>
-    <figcaption>AKS create ACR</figcaption>
-  </figure>
-</p>
-
-Choose a name for the registry and select **premium** for the SKU. Then press *OK*. 
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-acr.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-acr.png" alt="AKS ACR configuration">
-    </a>
-    <figcaption>ACR configuration</figcaption>
   </figure>
 </p>
 
 Next press *Review + create*, then click *Create*.
 
-To prevent the registry from filling up with unnecessary images and artifacts you can enable a retention policy. A retention policy will automatically remove untagged manifests after a specified number of days. To enable a retention policy, go to the registry you created. Go to the **Retention (preview)** tab and set **Status** from **disabled** to **enabled**. Set the retention policy for 7 days as in the figure below, then press **save**.
+### Step 1.1: Add role assignment to the managed identity
+
+Go to the managed identity created in [Step 2.2](getting_started#step-22-creating-a-user-assigned-managed-identity). Click on *Azure role assignments* in the left column. Click on *Add role assignment*. For the *Scope* select *Resource group* or *Subscription* depending on your preference. Select the *Role* *Azure Kubernetes Service Cluster User Role* and click on *Save*.
+
+Once finished the role assignments should look similar to the picture below. 
+
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/acr-retention.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/acr-retention.png" alt="ACR retention policy">
-    </a>
-    <figcaption>ACR retention policy</figcaption>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-permissions.png" alt="AKS permissions">
+    <figcaption>AKS permissions</figcaption>
   </figure>
 </p>
 
-### Step 2: create a virtual network for the Hopsworks cluster
+
+## Step 2: create a virtual network for the Hopsworks cluster
 
 Because the Kubernetes API service is private the Hopsworks cluster must be able to reach it over a private network. There are two options to integrate with a private AKS cluster. The first option (*A*) is to put the Hopsworks cluster in a pre-defined virtual network with a peering setup to the Kubernetes network. The second option (*B*) is to create a subnet inside the Kubernetes virtual network where the Hopsworks cluster will be placed.
 
-#### Option *A*: Peering setup
+### Option *A*: Peering setup
 
 To establish virtual peering between the Kubernetes cluster and Hopsworks, you need to select or create a virtual network for Hopsworks. Go to **virtual networks** and press create.
 Choose a name for the new virtual network and select the same resource group you are planning to use for your Hopsworks cluster.
@@ -146,9 +75,7 @@ Next, go to the created virtual network and go to the *Peerings* tab. Then click
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-peering.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering.png" alt="Virtual network peering">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering.png" alt="Virtual network peering">
     <figcaption>Virtual network peering</figcaption>
   </figure>
 </p>
@@ -157,9 +84,7 @@ Choose a name for the peering link. Check the *Traffic to remote virtual network
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-peering1.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering1.png" alt="Virtual network peering">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering1.png" alt="Virtual network peering">
     <figcaption>Virtual network peering configuration</figcaption>
   </figure>
 </p>
@@ -168,9 +93,7 @@ For the virtual network select the virtual network which was created by AKS, in 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-peering2.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering2.png" alt="Virtual network peering">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-peering2.png" alt="Virtual network peering">
     <figcaption>Virtual network peering configuration continuation</figcaption>
   </figure>
 </p>
@@ -179,9 +102,7 @@ The last step is to set up a DNS private link to be able to use DNS resolution f
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-private-dns.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-private-dns.png" alt="Virtual network peering">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-private-dns.png" alt="Virtual network peering">
     <figcaption>Private DNS link setup</figcaption>
   </figure>
 </p>
@@ -190,9 +111,7 @@ In the left plane there is a tab called *Virtual network links*, click on the ta
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-vnet-link.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-vnet-link.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-vnet-link.png" alt="">
     <figcaption>Private DNS link configuration</figcaption>
   </figure>
 </p>
@@ -201,16 +120,14 @@ Choose a name for the private link and select the **virtual network** you will u
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-vnet-link-config.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-vnet-link-config.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-vnet-link-config.png" alt="">
     <figcaption>Private DNS link configuration</figcaption>
   </figure>
 </p>
 
 The setup is now finalized and you can create the Hopsworks cluster.
 
-#### Option *B*: Subnet in AKS network
+### Option *B*: Subnet in AKS network
 
 With this setup, the Hopsworks cluster will reside in the same virtual network as the AKS cluster. The difference is that a new subnet in the virtual network will be used for the Hopsworks cluster.
 
@@ -218,9 +135,7 @@ To set up the subnet, first, go to the virtual network that was created by AKS. 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-subnet.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-subnet.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-subnet.png" alt="">
     <figcaption>AKS subnet setup</figcaption>
   </figure>
 </p>
@@ -229,22 +144,18 @@ Press *+ Subnet*. Choose a name for the subnet, for example, "hopsworks" and an 
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-subnet-config.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-subnet-config.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-subnet-config.png" alt="">
     <figcaption>AKS subnet setup</figcaption>
   </figure>
 </p>
 
-## Create the Hopsworks cluster
+## Step 3: Create the Hopsworks cluster
 
-This step assumes you are creating your Hopsworks cluster using [managed.hopsworks.ai](https://managed.hopsworks.ai). The AKS configuration can be set under the *Managed containers* tab. Set *Use Azure AKS and Azure ACR* as enabled. Two new fields will pop up. Fill them with the name of the container registry and the AKS you created above. In the previous example, we created an ACR with the name *hopsworksaks* and an AKS cluster with the name *hopsaks-cluster*. Hence, the configuration should look similar to the picture below
+This step assumes you are creating your Hopsworks cluster using [managed.hopsworks.ai](https://managed.hopsworks.ai). The AKS configuration can be set under the *Managed containers* tab. Set *Use Azure AKS* as enabled. One new field will pop up. Fill it with the name of the AKS you created above. In the previous example, we created an AKS cluster with the name *hopsaks-cluster*. Hence, the configuration should look similar to the picture below
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/aks-hops-config.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-hops-config.png" alt="">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/aks-hops-config.png" alt="">
     <figcaption>Hopsworks AKS configuration</figcaption>
   </figure>
 </p>

@@ -4,14 +4,39 @@
 in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
 SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai) with your organization's AWS account.
 
+## Prerequisites
+To run the commands in this guide, you must have the AWS CLI installed and configured and your user must have at least the set of permission listed below. See the [Getting started guide](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html) in the AWS CLI User Guide for more information about installing and configuring the AWS CLI.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateInstanceProfile",
+                "iam:PassRole",
+                "iam:CreateRole",
+                "iam:PutRolePolicy",
+                "iam:AddRoleToInstanceProfile",
+                "ec2:ImportKeyPair",
+                "ec2:CreateKeyPair",
+                "s3:CreateBucket"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+All the commands have unix-like quotation rules. These commands will need to be adapted to your terminal's quoting rules. See [Using quotation marks with strings](https://docs.aws.amazon.com/cli/v1/userguide/cli-usage-parameters-quoting-strings.html) in the AWS CLI User Guide.
+
+All the commands use the default AWS profile. Add the *--profile* parameter to use another profile. 
+
 ## Step 1: Connecting your AWS account
 
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your AWS account. To enable this you have to
-permit us to do so. This can be either achieved by using AWS cross-account roles or
-AWS access keys. We strongly recommend the usage of cross-account roles whenever possible due
-to security reasons.
-
-### Option 1: Using AWS Cross-Account Roles
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your AWS account. To enable this you have to permit us to do so. This is done using an AWS cross-account role.
 
 <p align="center">
   <iframe
@@ -25,288 +50,107 @@ to security reasons.
   </iframe>
 </p>
 
-To create a cross-account role for [managed.hopsworks.ai](https://managed.hopsworks.ai), you need our AWS account id and the external
-id we created for you. You can find this information on the first screen of the cross-account
-configuration flow. Take note of the account id and external id and go to the *Roles* section
-of the *IAM* service in the AWS Management Console and select *Create role*.
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png" alt="Creating the cross-account role instructions">
-    </a>
-    <figcaption>Creating the cross-account role instructions</figcaption>
-  </figure>
-</p>
-
-Select *Another AWS account* as trusted entity and fill in our AWS account id and the external
-id generated for you:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-role-aws-step-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-aws-step-1.png" alt="Creating the cross-account role step 1">
-    </a>
-    <figcaption>Creating the cross-account role step 1</figcaption>
-  </figure>
-</p>
-
-Go to the last step of the wizard, name the role and create it:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-role-aws-step-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-aws-step-2.png" alt="Creating the cross-account role step 1">
-    </a>
-    <figcaption>Creating the cross-account role step 2</figcaption>
-  </figure>
-</p>
-
-As a next step, you need to create an access policy to give [managed.hopsworks.ai](https://managed.hopsworks.ai) permissions to manage
-clusters in your organization's AWS account. By default, [managed.hopsworks.ai](https://managed.hopsworks.ai) is automating all steps required to launch
-a new Hopsworks cluster. If you want to limit the required AWS permissions, see [restrictive-permissions](restrictive_permissions.md).
-
-Copy the permission JSON from the instructions:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-instructions.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-instructions.png" alt="Adding the policy instructions">
-    </a>
-    <figcaption>Adding the policy instructions</figcaption>
-  </figure>
-</p>
-
-Identify your newly created cross-account role in the *Roles* section of the *IAM* service in the
-AWS Management Console and select *Add inline policy*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-1.png" alt="Adding the inline policy step 1">
-    </a>
-    <figcaption>Adding the inline policy step 1</figcaption>
-  </figure>
-</p>
-
-Replace the JSON policy with the JSON from our instructions and continue in the wizard:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-2.png" alt="Adding the inline policy step 2">
-    </a>
-    <figcaption>Adding the inline policy step 2</figcaption>
-  </figure>
-</p>
-
-Name and create the policy:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-3.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-3.png" alt="Adding the inline policy step 3">
-    </a>
-    <figcaption>Adding the inline policy step 3</figcaption>
-  </figure>
-</p>
-
-Copy the *Role ARN* from the summary of your cross-account role:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-4.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-4.png" alt="Adding the inline policy step 4">
-    </a>
-    <figcaption>Adding the inline policy step 4</figcaption>
-  </figure>
-</p>
-
-Paste the *Role ARN* into [managed.hopsworks.ai](https://managed.hopsworks.ai) and click on *Finish*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/save-role.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/save-role.png" alt="Saving the cross-account role">
-    </a>
-    <figcaption>Saving the cross-account role</figcaption>
-  </figure>
-</p>
-
-### Option 2: Using AWS Access Keys
-
-You can either create a new IAM user or use an existing IAM user to create access keys for [managed.hopsworks.ai](https://managed.hopsworks.ai).
-If you want to create a new IAM user, see [Creating an IAM User in Your AWS Account](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html).
-
-!!! warning
-
-    We recommend using Cross-Account Roles instead of Access Keys whenever possible, see [Option 1: Using AWS Cross-Account Roles](#option-1-using-aws-cross-account-roles).
-
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) requires a set of permissions to be able to launch clusters in your AWS account.
-The permissions can be granted by attaching an access policy to your IAM user.
-By default, [managed.hopsworks.ai](https://managed.hopsworks.ai) is automating all steps required to launch a new Hopsworks cluster.
-If you want to limit the required AWS permissions, see [restrictive-permissions](restrictive_permissions.md).
-
-The required permissions are shown in the instructions. Copy them if you want to create a new access policy:
-
-<p align="center">
-  <figure>
-    <a  href="../../assets/images/setup_installation/managed/aws/access-key-permissions-instructions.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/access-key-permissions-instructions.png" alt="Configuring access key instructions">
-    </a>
-    <figcaption>Configuring access key instructions</figcaption>
-  </figure>
-</p>
-
-Add a new *Inline policy* to your AWS user:
-
-<p align="center">
-  <figure>
-    <a  href="../../assets/images/setup_installation/managed/aws/access-keys-aws-step-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-1.png" alt="Configuring the access key on AWS step 1">
-    </a>
-    <figcaption>Configuring the access key on AWS step 1</figcaption>
-  </figure>
-</p>
-
-Replace the JSON policy with the JSON from our instructions and continue in the wizard:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-2.png" alt="Adding the inline policy step 2">
-    </a>
-    <figcaption>Adding the inline policy step 2</figcaption>
-  </figure>
-</p>
-
-Name and create the policy:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-3.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/role-permissions-aws-step-3.png" alt="Adding the inline policy step 3">
-    </a>
-    <figcaption>Adding the inline policy step 3</figcaption>
-  </figure>
-</p>
-
-In the overview of your IAM user, select *Create access key*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-2.png" alt="Configuring the access key on AWS step 2">
-    </a>
-    <figcaption>Configuring the access key on AWS step 2</figcaption>
-  </figure>
-</p>
-
-Copy the *Access Key ID* and the *Secret Access Key*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-3.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/access-keys-aws-step-3.png" alt="Configuring the access key on AWS step 3">
-    </a>
-    <figcaption>Configuring the access key on AWS step 3</figcaption>
-  </figure>
-</p>
-
-Paste the *Access Key ID* and the *Secret Access Key* into [managed.hopsworks.ai](https://managed.hopsworks.ai) and click on *Finish*:
-
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/save-access-key.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/save-access-key.png" alt="Saving the access key pair">
-    </a>
-    <figcaption>Saving the access key pair</figcaption>
-  </figure>
-</p>
-
-## Step 2: Creating Instance profile
+In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to AWS* or go to *Settings* and click on *Configure* next to *AWS*. Then click on *Cross-accont role*. This will direct you to a page with the instructions needed to create the Cross account role and set up the connection. Follow the instructions.
 
 !!! note 
-    If you prefer using terraform, you can skip this step and the remaining steps, and instead follow [this guide](../common/terraform.md#getting-started-with-aws).
+    it is possible to limit the permissions that are set up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md).
 
-Hopsworks cluster nodes need access to certain resources such as S3 bucket and CloudWatch.
 
-Follow the instructions in this guide to create an IAM instance profile with access to your S3 bucket: [Guide](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-console)
+<p align="center">
+  <figure>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png" alt="Screenshot of the instruction to create the cross account role">
+    <figcaption>Instructions to create the cross account role</figcaption>
+  </figure>
+</p>
 
-When creating the policy, paste the following in the JSON tab.
-{!setup_installation/aws/instance_profile_permissions.md!}
+## Step 2: Creating storage
 
-## Step 3: Creating storage
+!!! note 
+    If you prefer using terraform, you can skip this step and the remaining steps, and instead, follow [this guide](../common/terraform.md#getting-started-with-aws).
 
 The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in an S3 bucket in your AWS account.
-To enable this you need to create an S3 bucket and an instance profile to give cluster nodes access to the bucket.
 
-Proceed to the [S3 Management Console](https://s3.console.aws.amazon.com/s3/home) and click on *Create bucket*:
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-1.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-1.png" alt="Create an S3 bucket">
-    </a>
-    <figcaption>Create an S3 bucket</figcaption>
-  </figure>
-</p>
 
-Name your bucket and select the region where your Hopsworks cluster will run. Click on *Create bucket* at the bottom of the page.
+To create the bucket run the following command, replacing *BUCKET_NAME* with the name you want for your bucket and setting the region to the aws region in which you want to run your cluster.
 
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-s3-bucket-2.png" alt="Create an S3 bucket">
-    </a>
-    <figcaption>Create an S3 bucket</figcaption>
-  </figure>
-</p>
+!!! warning
+    The bucket must be in the same region as the hopsworks cluster you are going to run
+
+```bash
+aws s3 mb s3://BUCKET_NAME --region us-east-2
+```
+
+
+## Step 3: Creating Instance profile
+
+Hopsworks cluster nodes need access to certain resources such as the S3 bucket you created above, an ecr repository, and CloudWatch.
+
+
+First, create an instance profile by running:
+```bash
+aws iam create-instance-profile --instance-profile-name hopsworksai-instances
+```
+
+We will now create a role with the needed permissions for this instance profile. 
+Start by creating a file named *assume-role-policy.json* containing the following:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
+
+Run the following to create the role:
+
+```bash
+aws iam create-role --role-name hopsworksai-instances \
+   --description "Role for the hopsworks cluster instances" \
+   --assume-role-policy-document file://assume-role-policy.json
+```
+
+Create a file called *instances-policy.json* containing the following permissions.
+{!setup_installation/aws/instance_profile_permissions.md!}
+
+Attach the permission to the role by running:
+```bash
+aws iam put-role-policy --role-name hopsworksai-instances \
+   --policy-name hopsworksai-instances \
+   --policy-document file://instances-policy.json
+```
+
+Finally, attach the role to the instance profile by running:
+```bash
+aws iam add-role-to-instance-profile \
+   --role-name hopsworksai-instances \
+   --instance-profile-name hopsworksai-instances
+```
 
 ## Step 4: Create an SSH key
 When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: [creating a new key pair](#step-31-create-a-new-key-pair) or [importing an existing key pair](#step-32-import-a-key-pair).
 
 ### Step 4.1: Create a new key pair
-
-Proceed to [Key pairs in the EC2 console](https://us-east-2.console.aws.amazon.com/ec2/v2/home?#KeyPairs) and click on *Create key pair*
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-key-pair.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-key-pair.png" alt="Create a key pair">
-    </a>
-    <figcaption>Create a key pair</figcaption>
-  </figure>
-</p>
-
-Name your key, select the file format you prefer and click on *Create key pair*.
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-key-pair-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-key-pair-2.png" alt="Create a key pair">
-    </a>
-    <figcaption>Create a key pair</figcaption>
-  </figure>
-</p>
+To create a new key pair run the following command replacing REGION by the region in which you want to run the hopsworks cluster.
+```bash
+aws ec2 create-key-pair --key-name hopsworksai \
+    --region REGION
+```
+The output is an ASCII version of the private key and key fingerprint. You need to save the key to a file.
 
 ### Step 4.2: Import a key pair
-Proceed to [Key pairs in the EC2 console](https://us-east-2.console.aws.amazon.com/ec2/v2/home?#KeyPairs), click on *Action* and click on *Import key pair*
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/import-key-pair.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/import-key-pair.png" alt="Import a key pair">
-    </a>
-    <figcaption>Import a key pair</figcaption>
-  </figure>
-</p>
-
-Name your key pair, upload your public key and click on *Import key pair*.
-<p align="center">
-  <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/import-key-pair-2.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/import-key-pair-2.png" alt="Import a key pair">
-    </a>
-    <figcaption>Import a key pair</figcaption>
-  </figure>
-</p>
+To import an existing key pair run the following command replacing *PATH_TO_PUBLIC_KEY* by the path to the public key on your machine and REGION by the region in which you want to run the hopsworks cluster.
+```bash
+aws ec2 import-key-pair --key-name hopsworskai \
+   --public-key-material fileb://PATH_TO_PUBLIC_KEY \
+   --region REGION
+```
 
 ## Step 5: Deploying a Hopsworks cluster
 
@@ -314,9 +158,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
     <figcaption>Create a Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -325,18 +167,19 @@ Select the *Region* in which you want your cluster to run (1), name your cluster
 
 Select the *Instance type* (3) and *Local storage* (4) size for the cluster *Head node*.
 
-Enter the name of the *S3 bucket* (5) you created above in *S3 bucket*.
+Check if you want to *Enable EBS encryption* (5)
+
+Enter the name of the *S3 bucket* (6) you created in [step 2](#step-2-creating-storage).
 
 !!! note
     The S3 bucket you are using must be empty.
 
+Make sure that the *ECR AWS Account Id* (7) is correct. It is set by default to the AWS account id where you set the cross-account role and need to match the permissions you set in [step 3](#step-3-creating-instance-profile). 
 Press *Next*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/create-instance-general.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-instance-general.png" alt="Create a Hopsworks cluster, general Information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-instance-general.png" alt="Create a Hopsworks cluster, general Information">
     <figcaption>Create a Hopsworks cluster, general information</figcaption>
   </figure>
 </p>
@@ -352,42 +195,34 @@ Press *Next*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
     <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
   </figure>
 </p>
 
-Select the *SSH key* that you want to use to access cluster instances:
+Select the *SSH key* you created in [step 4](#step-4-create-an-ssh-key):
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png" alt="Choose SSH key">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png" alt="Choose SSH key">
     <figcaption>Choose SSH key</figcaption>
   </figure>
 </p>
 
-Select the *Instance Profile* that you created above:
+Select the *Instance Profile* that you created in [step 3](#step-3-creating-instance-profile):
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png" alt="Choose the instance profile">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png" alt="Choose the instance profile">
     <figcaption>Choose the instance profile</figcaption>
   </figure>
 </p>
 
-To backup the S3 bucket data when taking a cluster backup we need to set a retention policy for S3. You can deactivate the retention policy by setting this value to 0 but this will block you from taking any backup of your cluster. Choose the retention period in day and click on *Review and submit*:
+To backup the S3 bucket data when taking a cluster backup we need to set a retention policy for S3. You can deactivate the retention policy by setting this value to 0 but this will block you from taking any backup of your cluster. Choose the retention period in days and click on *Review and submit*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
     <figcaption>Choose the backup retention policy</figcaption>
   </figure>
 </p>
@@ -396,9 +231,7 @@ Review all information and select *Create*:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png" alt="Review cluster information">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png" alt="Review cluster information">
     <figcaption>Review cluster information</figcaption>
   </figure>
 </p>
@@ -407,9 +240,7 @@ The cluster will start. This will take a few minutes:
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/booting.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
     <figcaption>Booting Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -419,9 +250,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/running.png">
-      <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    </a>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
     <figcaption>Running Hopsworks cluster</figcaption>
   </figure>
 </p>
@@ -431,7 +260,7 @@ As soon as the cluster has started, you will be able to log in to your new Hopsw
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
 * Make Hopsworks services [accessible from outside services](../common/services.md)
-* Get started with the [Hopsworks Feature Store](../../getting_started/quickstart.ipynb)
-* Follow one of our [tutorials](../../tutorials/fraud_batch/1_feature_groups.ipynb)
+* Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
+* Follow one of our [tutorials](../../tutorials/index.md)
 * Follow one of our [Guide](../../user_guides/index.md)
 * Code examples and notebooks: [hops-examples](https://github.com/logicalclocks/hops-examples)

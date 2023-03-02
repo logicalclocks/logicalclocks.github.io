@@ -1,5 +1,9 @@
 
-Replace *BUCKET_NAME* with the appropriate S3 bucket name.
+Replace the following placeholders with their appropiate values
+
+* *BUCKET_NAME* - S3 bucket name 
+* *REGION* - region where the cluster is deployed
+* *ECR_AWS_ACCOUNT_ID* - AWS account id for ECR repositories
 
 !!! note
     Some of these permissions can be removed. Refer to [this guide](restrictive_permissions.md#limiting-the-instance-profile-permissions) for more information.
@@ -14,7 +18,6 @@ Replace *BUCKET_NAME* with the appropriate S3 bucket name.
       "Action": [
         "S3:PutObject",
         "S3:ListBucket",
-        "S3:GetBucketLocation",
         "S3:GetObject",
         "S3:DeleteObject",
         "S3:AbortMultipartUpload",
@@ -30,6 +33,58 @@ Replace *BUCKET_NAME* with the appropriate S3 bucket name.
         "arn:aws:s3:::BUCKET_NAME/*",
         "arn:aws:s3:::BUCKET_NAME"
       ]
+    },
+    {
+      "Sid": "AllowPullImagesFromHopsworkAi",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+      ],
+      "Resource": [
+        "arn:aws:ecr:REGION:822623301872:repository/filebeat",
+        "arn:aws:ecr:REGION:822623301872:repository/base",
+        "arn:aws:ecr:REGION:822623301872:repository/onlinefs",
+        "arn:aws:ecr:REGION:822623301872:repository/airflow",
+        "arn:aws:ecr:REGION:822623301872:repository/git"
+      ]
+    },
+    {
+      "Sid": "AllowCreateRespositry",
+      "Effect": "Allow",
+      "Action": "ecr:CreateRepository",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowPushandPullImagesToUserRepo",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "ecr:CompleteLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:InitiateLayerUpload",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:PutImage",
+        "ecr:ListImages",
+        "ecr:BatchDeleteImage",
+        "ecr:GetLifecyclePolicy",
+        "ecr:PutLifecyclePolicy",
+        "ecr:TagResource"
+      ],
+      "Resource": [
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/filebeat",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/base",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/onlinefs",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/airflow",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/git"
+      ]
+    },
+    {
+      "Sid": "AllowGetAuthToken",
+      "Effect": "Allow",
+      "Action": "ecr:GetAuthorizationToken",
+      "Resource": "*"
     },
     {
       "Effect": "Allow",
@@ -51,17 +106,6 @@ Replace *BUCKET_NAME* with the appropriate S3 bucket name.
         "ssm:GetParameter"
       ],
       "Resource": "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
-    },
-    {
-      "Sid": "UpgradePermissions",
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeVolumes",
-        "ec2:DetachVolume",
-        "ec2:AttachVolume",
-        "ec2:ModifyInstanceAttribute"
-      ],
-      "Resource": "*"
     }
   ]
 }

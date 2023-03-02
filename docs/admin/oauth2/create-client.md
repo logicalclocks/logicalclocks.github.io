@@ -17,9 +17,7 @@ in the login page as an alternative login method) and set the _client id_ and _c
 fields,  as shown in the figure below.
 
 <figure>
-  <a  href="../../../assets/images/admin/oauth2/register-app.png">
-    <img src="../../../assets/images/admin/oauth2/register-app.png" alt="Application overview" />
-  </a>
+  <img src="../../../assets/images/admin/oauth2/register-app.png" alt="Application overview" />
   <figcaption>Application overview</figcaption>
 </figure>
 
@@ -37,31 +35,27 @@ Additional configuration can be set here:
 
 ### Step 2: Add Group mappings
 
-Optionally you can add a group mapping from your identity provider to hopsworks groups, by clicking on your name in the 
+Optionally you can add a group mapping from your identity provider to Hopsworks groups, by clicking on your name in the 
 top right corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu. In the *Cluster 
 Settings* _Configuration_ tab search for _oauth\_group\_mapping_ and click on the edit button.
 
   <figure>
-    <a  href="../../../assets/images/admin/oauth2/sso/oauth-group-mapping.png">
-      <img src="../../../assets/images/admin/oauth2/sso/oauth-group-mapping.png" alt="Set variables">
-    </a>
+    <img src="../../../assets/images/admin/oauth2/sso/oauth-group-mapping.png" alt="Set variables">
     <figcaption>Set Configuration variables</figcaption>
   </figure>
 
 !!! Note
 
     Setting *oauth_group_mapping* to *ANY_GROUP->HOPS_USER* will assign the role *user* to any user from any group in 
-    your identity provider when they log into hopsworks with OAuth for the first time. You can replace *ANY_GROUP* with 
+    your identity provider when they log into Hopsworks with OAuth for the first time. You can replace *ANY_GROUP* with 
     the group of your choice in the identity provider. You can replace *HOPS_USER* by *HOPS_ADMIN* if you want the 
-    users of that group to be admins in hopsworks. You can do several mappings by separating them with a semicolon.
+    users of that group to be admins in Hopsworks. You can do several mappings by separating them with a semicolon.
 
 Users will now see a new button on the login page. The button has the name you set above for _Name_ and will 
 redirect to your identity provider.
 
   <figure>
-    <a  href="../../../assets/images/auth/oauth2.png">
-      <img width="400px" src="../../../assets/images/auth/oauth2.png" alt="OAuth2 login" />
-    </a>
+    <img width="400px" src="../../../assets/images/auth/oauth2.png" alt="OAuth2 login" />
     <figcaption>Login with OAuth2</figcaption>
   </figure>
 

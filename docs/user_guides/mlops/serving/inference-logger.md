@@ -51,16 +51,14 @@ If the deployment is created with KServe enabled, you can specify which inferenc
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
-## CODE
+## Code
 
 ### Step 1: Connect to Hopsworks
 
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
-
-project = connection.get_project("my_project")
+project = hopsworks.login()
 
 # get Hopsworks Model Registry handle
 mr = project.get_model_registry()
@@ -112,7 +110,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Inference Logger](https://docs.hopsworks.ai/hopsworks-api/dev/generated/api/inference-logger/)
+[Inference Logger](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/inference-logger/)
 
 ## Topic schema
 

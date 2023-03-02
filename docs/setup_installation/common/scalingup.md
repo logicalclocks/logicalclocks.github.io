@@ -16,9 +16,7 @@ To scale up the head node you first have to stop your cluster.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/stop_cluster.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/stop_cluster.png" alt="Stop the cluster">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/stop_cluster.png" alt="Stop the cluster">
     <figcaption>Stop the cluster</figcaption>
   </figure>
 </p>
@@ -27,9 +25,7 @@ Once the cluster is stopped you can go to the *Details* tab and click on the hea
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/details_tab.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/details_tab.png" alt="Go to details tab an click on the head node instance type">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/details_tab.png" alt="Go to details tab an click on the head node instance type">
     <figcaption>Go to details tab an click on the head node instance type</figcaption>
   </figure>
 </p>
@@ -38,9 +34,7 @@ This will open a new window. Select the type of instance you want to change to a
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/node_type_selection.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/node_type_selection.png" alt="Select the new instance type for the heade node">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/node_type_selection.png" alt="Select the new instance type for the heade node">
     <figcaption>Select the new instance type for the heade node</figcaption>
   </figure>
 </p>
@@ -52,9 +46,7 @@ Verify your choice and click on *Modify*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/validate_node_type.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/validate_node_type.png" alt="Validate your choice">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/validate_node_type.png" alt="Validate your choice">
     <figcaption>Validate your choice</figcaption>
   </figure>
 </p>
@@ -67,9 +59,7 @@ If you are running a cluster with [dedicated RonDB nodes](../aws/cluster_creatio
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/stop_cluster.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/stop_cluster.png" alt="Stop the cluster">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/stop_cluster.png" alt="Stop the cluster">
     <figcaption>Stop the cluster</figcaption>
   </figure>
 </p>
@@ -81,9 +71,7 @@ Datanodes cannot be scaled individually.
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/rondb_tab.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb_tab.png" alt="Go to RonDB tab an click on the instance type you want to change">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb_tab.png" alt="Go to RonDB tab an click on the instance type you want to change">
     <figcaption>Go to RonDB tab and click on the instance type you want to change or, for datanodes, click on the Change button</figcaption>
   </figure>
 </p>
@@ -92,9 +80,7 @@ This will open a new window. Select the type of instance you want to change to a
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/node_type_selection.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/node_type_selection.png" alt="Select the new instance type for the heade node">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/node_type_selection.png" alt="Select the new instance type for the heade node">
     <figcaption>Select the new instance type for the heade node</figcaption>
   </figure>
 </p>
@@ -106,9 +92,7 @@ Verify your choice and click on *Modify*
 
 <p align="center">
   <figure>
-    <a  href="../../../assets/images/setup_installation/managed/common/validate_node_type.png">
-      <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/validate_node_type.png" alt="Validate your choice">
-    </a>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/validate_node_type.png" alt="Validate your choice">
     <figcaption>Validate your choice</figcaption>
   </figure>
 </p>
