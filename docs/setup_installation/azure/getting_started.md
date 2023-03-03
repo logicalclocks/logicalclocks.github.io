@@ -11,6 +11,47 @@ To follow the instruction on this page you will need the following:
 - An Azure resource group in which the Hopsworks cluster will be deployed. 
 - The [azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) installed and [logged in](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli).
 
+### Permissions
+To run all the commands on this page the user needs to have at least the following permissions on the Azure resource group:
+
+```json
+Microsoft.Authorization/roleDefinitions/write
+Microsoft.Authorization/roleAssignments/write
+Microsoft.Compute/sshPublicKeys/generateKeyPair/action
+Microsoft.Compute/sshPublicKeys/read
+Microsoft.Compute/sshPublicKeys/write
+Microsoft.ContainerRegistry/registries/operationStatuses/read
+Microsoft.ContainerRegistry/registries/read
+Microsoft.ContainerRegistry/registries/write
+Microsoft.ManagedIdentity/userAssignedIdentities/write
+Microsoft.Resources/subscriptions/resourcegroups/read
+Microsoft.Storage/storageAccounts/write
+```
+
+You will also need to have a role such as *Application Administrator* on the Azure Active Directory to be able to create the hopsworks.ai service principal.
+
+### Resource providers
+For [managed.hopsworks.ai](https://managed.hopsworks.ai) to deploy a cluster the following resource providers need to be registered on your Azure subscription.
+
+```json
+Microsoft.Network
+Microsoft.Compute
+Microsoft.Storage
+Microsoft.ManagedIdentity
+```
+This can be done by running the following commands:
+
+!!!note
+    To run these commands you need to have the following permission on your subscription: *Microsoft.Network/register/action*
+
+```bash
+az provider register --namespace 'Microsoft.Network'
+az provider register --namespace 'Microsoft.Compute'
+az provider register --namespace 'Microsoft.Storage'
+az provider register --namespace 'Microsoft.ManagedIdentity'
+```
+
+### Other
 All the commands have been written for a Unix system. These commands will need to be adapted to your terminal if it is not directly compatible.
 
 All the commands use your default location. Add the *--location* parameter if you want to run your cluster in another location. Make sure to create the resources in the same location as you are going to run your cluster.
@@ -32,23 +73,6 @@ create a service principal and a custom role for [managed.hopsworks.ai](https://
   </iframe>
 </p>
 
-### Step 1.0: Prerequisites
-
-For [managed.hopsworks.ai](https://managed.hopsworks.ai) to deploy a cluster the following resource providers need to be registered on your Azure subscription.
-
-```json
-    Microsoft.Network
-    Microsoft.Compute
-    Microsoft.Storage
-    Microsoft.ManagedIdentity
-```
-This can be done by running the following commands:
-```bash
-az provider register --namespace 'Microsoft.Network'
-az provider register --namespace 'Microsoft.Compute'
-az provider register --namespace 'Microsoft.Storage'
-az provider register --namespace 'Microsoft.ManagedIdentity'
-```
 
 ### Step 1.1: Connect your Azure account
 
@@ -148,7 +172,7 @@ az role assignment create --resource-group $RESOURCE_GROUP --role hopsworks-inst
 ```
 
 !!!note 
-    It takes several minutes between the time you create the managed identity and the time a role can be asigned to it. So if we get an error message starting by the following wait and retry: *Cannot find user or service principal in graph database*
+    It takes several minutes between the time you create the managed identity and the time a role can be assigned to it. So if we get an error message starting by the following wait and retry: *Cannot find user or service principal in graph database*
 
 ## Step 5: Add an ssh key to your resource group
 
