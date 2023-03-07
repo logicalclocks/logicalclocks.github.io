@@ -159,7 +159,7 @@ To create a new role for the managed identity, first, create a file called *inst
   ]
 }
 ```
-Then run the following command, replacing *$RESOURCE_GROUP* with the name of your resource group, to create the new role.
+Then run the following command, to create the new role.
 
 ```bash
 az role definition create --role-definition instance-role.json
