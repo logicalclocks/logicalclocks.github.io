@@ -4,7 +4,7 @@ A list of common problems that you might encounter during cluster creation and h
 
 ## Unauthorized error during cluster creation
 
-If you encounter the following error right after creating your cluster, then it is likely that you have either missed or misconfigured one of the permissions in the [cross account role setup](getting_started/#step-1-connecting-your-aws-account). 
+If you encounter the following error right after creating your cluster, then it is likely that you have either missed or misconfigured one of the permissions in the [cross account role setup](../getting_started/#step-1-connecting-your-aws-account). 
 
 <p align="center">
   <figure>
@@ -26,7 +26,7 @@ Then you will get the following message as response
 }
 ```
 
-From the above response we can see that the cross-account role is missing the `ec2:CreateVpc` permission. The solution is to terminate the cluster in error and update [cross account role setup](getting_started/#step-1-connecting-your-aws-account) with the missing permission(s) and then try to create a new cluster.
+From the above response we can see that the cross-account role is missing the `ec2:CreateVpc` permission. The solution is to terminate the cluster in error and update [cross account role setup](../getting_started/#step-1-connecting-your-aws-account) with the missing permission(s) and then try to create a new cluster.
 
 ## Missing permissions error during cluster creation
 
@@ -43,4 +43,4 @@ This issue could be caused by one of the following:
 
 * The [instance profile that you have chosen during cluster creation](cluster_creation/#step-5-select-the-instance-profile) is actually missing the permissions stated in the error  on your [chosen S3 bucket](cluster_creation/#step-2-setting-the-general-information). Then in that case, update your instance profile accordingly and then click *Retry* to retry cluster creation operation. 
 
-* Your AWS organization is using [SCPs policy](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html) that disallow policy simulation. In that case, you could do a simple test to confirm the issue by using [the AWS PolicySim on AWS console](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_testing-policies.html). If policy simulation is disallowed, you can configure managed.hopsworks.ai to skip the policy simulation step by removing the `iam:SimulatePrincipalPolicy` permission from [your cross account role](getting_started/#step-1-connecting-your-aws-account), by navitgating to the [AWS Roles console](https://us-east-1.console.aws.amazon.com/iamv2/home#/roles), search for your cross account role name and click on it, on the permissions tab click edit on hopsworks inline policy, choose JSON tab, remove `iam:SimulatePrincipalPolicy`, click *Review Policy*, and then click *Save Changes*, and finally navigate back to manged.hopsworks.ai and click *Retry* to retry the cluster creation.
+* Your AWS organization is using [SCPs policy](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html) that disallow policy simulation. In that case, you could do a simple test to confirm the issue by using [the AWS PolicySim on AWS console](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_testing-policies.html). If policy simulation is disallowed, you can configure managed.hopsworks.ai to skip the policy simulation step by removing the `iam:SimulatePrincipalPolicy` permission from [your cross account role](../getting_started/#step-1-connecting-your-aws-account), by navitgating to the [AWS Roles console](https://us-east-1.console.aws.amazon.com/iamv2/home#/roles), search for your cross account role name and click on it, on the permissions tab click edit on hopsworks inline policy, choose JSON tab, remove `iam:SimulatePrincipalPolicy`, click *Review Policy*, and then click *Save Changes*, and finally navigate back to manged.hopsworks.ai and click *Retry* to retry the cluster creation.

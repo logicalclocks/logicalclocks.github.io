@@ -14,7 +14,7 @@ It is important that your cluster is **Running**. Otherwise you will not be able
 
 ## Step 2: Add backup permissions to your role connected to managed.hopsworks.ai
 
-We require extra permission to be added to the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai).  These permissions are required to create a snapshot of your cluster before proceeding with the upgrade. 
+We require extra permission to be added to the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created when [connecting your Azure account](../getting_started/#step-11-connect-your-azure-account).  These permissions are required to create a snapshot of your cluster before proceeding with the upgrade. 
 
 ```json
 "actions": [
@@ -25,7 +25,7 @@ We require extra permission to be added to the role you used to connect to [mana
   ]
 ```
 
-If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
+If you don't remember the name of the role that you have created when [connecting your Azure account](../getting_started/#step-11-connect-your-azure-account), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
 
 <p align="center">
   <figure>

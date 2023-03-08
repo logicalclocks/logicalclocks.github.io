@@ -203,7 +203,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 Select the *Resource Group* (1) in which you created your *storage account* and *managed identity* (see above).
 
 !!! note
-    If the *Resource Group* does not appear in the drop-down, make sure that you properly [created and set the custom role](#step-12-creating-a-custom-role-for-hopsworksai) for this resource group.
+    If the *Resource Group* does not appear in the drop-down, make sure that the customre role you created in step [1.1](#step-11-connect-your-azure-account) has the *Microsoft.Resources/subscriptions/resourceGroups/read* permission and is assigned to the *hopsworks.ai* user.
 
 Name your cluster (2). Your cluster will be deployed in the *Location* of your *Resource Group* (3).
 
@@ -216,7 +216,7 @@ Select the *storage account* (7) you created above in *Azure Storage account nam
 !!! note
     You can choose to use a container already existing in your *storage account* by using the name of this container, but you need to first make sure that this container is empty.
 
-Enter the *Azure container registry name* (9) of the ACR registry created in [Step 3.1](#step-31-create-an-acr-container-registry)
+Enter the *Azure container registry name* (9) of the ACR registry created in [Step 3.1](#step-3-create-an-acr-container-registry)
 
 Press *Next*:
 
