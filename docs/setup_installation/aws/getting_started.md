@@ -50,7 +50,7 @@ All the commands use the default AWS profile. Add the *--profile* parameter to u
   </iframe>
 </p>
 
-In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to AWS* or go to *Settings* and click on *Configure* next to *AWS*. Then click on *Cross-accont role*. This will direct you to a page with the instructions needed to create the Cross account role and set up the connection. Follow the instructions.
+In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to AWS* or go to *Settings* and click on *Configure* next to *AWS*. This will direct you to a page with the instructions needed to create the Cross account role and set up the connection. Follow the instructions.
 
 !!! note 
     it is possible to limit the permissions that are set up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md).
