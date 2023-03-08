@@ -84,7 +84,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to Az
     it is possible to limit the permissions that are set up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md).
 <p align="center">
   <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-0.png" alt="Cloud account settings">
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-1.png" alt="Cloud account settings">
     <figcaption>Cloud account settings</figcaption>
   </figure>
 </p>
