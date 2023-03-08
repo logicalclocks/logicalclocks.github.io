@@ -50,6 +50,7 @@ az provider register --namespace 'Microsoft.Network'
 az provider register --namespace 'Microsoft.Compute'
 az provider register --namespace 'Microsoft.Storage'
 az provider register --namespace 'Microsoft.ManagedIdentity'
+az provider register --namespace 'Microsoft.ContainerRegistry'
 ```
 
 ### Other
