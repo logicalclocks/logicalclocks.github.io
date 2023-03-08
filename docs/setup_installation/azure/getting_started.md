@@ -203,7 +203,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*
 Select the *Resource Group* (1) in which you created your *storage account* and *managed identity* (see above).
 
 !!! note
-    If the *Resource Group* does not appear in the drop-down, make sure that the customre role you created in step [1.1](#step-11-connect-your-azure-account) has the *Microsoft.Resources/subscriptions/resourceGroups/read* permission and is assigned to the *hopsworks.ai* user.
+    If the *Resource Group* does not appear in the drop-down, make sure that the custom role you created in step [1.1](#step-11-connect-your-azure-account) has the *Microsoft.Resources/subscriptions/resourceGroups/read* permission and is assigned to the *hopsworks.ai* user.
 
 Name your cluster (2). Your cluster will be deployed in the *Location* of your *Resource Group* (3).
 
