@@ -79,7 +79,7 @@ Now, add the following permissions to the list of actions, then click on *Save*,
 </p>
 
 ## Step 3: Create an ACR Container Registry
-We have enforced using managed docker registry (ECR) starting from Hopsworks version 3.1.0, so you need to create an ACR container registry and configure your managed identity to allow access to the container registry. First, get the name of the managed identity used in your cluster by clicking on the *Details* tab and check the name shown infront of *Managed Identity*. Then, follow [this guide](../getting_started/#step-3-create-an-acr-container-registry) to create and configure an ACR container registry.
+We have enforced using managed docker registry (ACR) starting from Hopsworks version 3.1.0, so you need to create an ACR container registry and configure your managed identity to allow access to the container registry. First, get the name of the managed identity used in your cluster by clicking on the *Details* tab and check the name shown infront of *Managed Identity*. Then, follow [this guide](../getting_started/#step-3-create-an-acr-container-registry) to create and configure an ACR container registry.
 
 ## Step 4: Run the upgrade process
 
