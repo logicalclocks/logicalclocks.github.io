@@ -38,6 +38,7 @@ Microsoft.Network
 Microsoft.Compute
 Microsoft.Storage
 Microsoft.ManagedIdentity
+Microsoft.ContainerRegistry
 ```
 This can be done by running the following commands:
 
