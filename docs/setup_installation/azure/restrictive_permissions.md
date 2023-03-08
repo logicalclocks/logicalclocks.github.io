@@ -6,6 +6,13 @@ us to automate as many steps as possible. While we ensure to never access resour
 we do understand that this might not be enough for your organization or security policy.
 This guide explains how to lock down access permissions following the IT security policy principle of least privilege.
 
+## Default permissions 
+This is the list of default permissions that are required by [managed.hopsworks.ai](https://managed.hopsworks.ai). If you prefer to limit these permissions, then proceed to the [next section](# Limiting the cross-account role permissions).
+
+```json
+{!setup_installation/azure/azure_permissions.json!}
+```
+
 ## Limiting the cross-account role permissions
 
 ### Step 1: Create a virtual network and subnet
