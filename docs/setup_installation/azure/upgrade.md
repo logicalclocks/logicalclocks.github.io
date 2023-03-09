@@ -15,7 +15,7 @@ It is important that your cluster is **Running**. Otherwise you will not be able
 ## Step 2: Add upgrade permissions to your user assigned managed identity
 
 !!! note
-    You can skip this step if you already have the following permissions in [your user assigned managed identity](../getting_started/#step-22-creating-a-user-assigned-managed-identity):
+    You can skip this step if you already have the following permissions in [your user assigned managed identity](../getting_started/#step-4-create-a-managed-identity):
     ```json 
     [
       "Microsoft.Compute/virtualMachines/read", 
@@ -38,7 +38,7 @@ We require extra permissions to be added to the user assigned managed identity a
 
 ### Step 2.1: Add custom role for upgrade permissions 
 
-Once you get the names of the resource group and user-assigned managed identity, follow the same steps as in [getting started to add a custom role](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai). First, navigate to [Azure portal](https://portal.azure.com/#home), then click on *Resource groups* and then search for your resource group and click on it. Go to the *Access control (IAM)* tab, select *Add*, and click on *Add custom role* 
+Once you get the names of the resource group and user-assigned managed identity, navigate to [Azure portal](https://portal.azure.com/#home), then click on *Resource groups* and then search for your resource group and click on it. Go to the *Access control (IAM)* tab, select *Add*, and click on *Add custom role* 
 
 <p align="center">
   <figure>
@@ -128,8 +128,8 @@ Navigate back to the your Resource group home page at [Azure portal](https://por
 
 ## Step 3: Add disk read permissions to your role connected to managed.hopsworks.ai
 
-We require extra permission ("Microsoft.Compute/disks/read") to be added to the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai). 
-If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
+We require extra permission ("Microsoft.Compute/disks/read") to be added to the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created when [connecting your azure account](../getting_started/#step-11-connect-your-azure-account). 
+If you don't remember the name of the role that you have created when [connecting your azure account](../getting_started/#step-11-connect-your-azure-account), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
 
 <p align="center">
   <figure>
@@ -232,7 +232,7 @@ Once the upgrade is completed, you can confirm that you have the new Hopsworks v
 There are two categories of errors that you may encounter during an upgrade. First, a permission error due to a missing permission in your role connected to [managed.hopsworks.ai](https://managed.hopsworks.ai), see [Error 1](#error-1-missing-permissions-error). Second, an error during the upgrade process running on your cluster, see [Error 2](#error-2-upgrade-process-error).
 
 ### Error 1: Missing permissions error
-If you encounter the following permission error right after starting an upgrade, then you need to make sure that the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), have permissions to read and write disks
+If you encounter the following permission error right after starting an upgrade, then you need to make sure that the role you used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai), the one that you have created when [connecting your azure account](../getting_started/#step-11-connect-your-azure-account), have permissions to read and write disks
 *("Microsoft.Compute/disks/read", "Microsoft.Compute/disks/write")*. 
 
 <p align="center">
@@ -243,7 +243,7 @@ If you encounter the following permission error right after starting an upgrade,
 </p>
 
 
-If you don't remember the name of the role that you have created in [Getting started Step 1.2](../getting_started/#step-12-creating-a-custom-role-for-hopsworksai), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
+If you don't remember the name of the role that you have created when [connecting your azure account](../getting_started/#step-11-connect-your-azure-account), you can navigate to your Resource group, (1) click on *Access Control*, (2) navigate to the *Check Access* tab, (3) search for *hopsworks.ai*, (4) click on it, (5) now you have the name of your custom role used to connect to [managed.hopsworks.ai](https://managed.hopsworks.ai). 
 
 <p align="center">
   <figure>
