@@ -5345,7 +5345,7 @@
 <h2 id="step-2-add-upgrade-permissions-to-your-user-assigned-managed-identity">Step 2: Add upgrade permissions to your user assigned managed identity<a class="headerlink" href="#step-2-add-upgrade-permissions-to-your-user-assigned-managed-identity" title="Permanent link">#</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You can skip this step if you already have the following permissions in <a href="../getting_started/#step-22-creating-a-user-assigned-managed-identity">your user assigned managed identity</a>:
+<p>You can skip this step if you already have the following permissions in <a href="../getting_started/#step-4-create-a-managed-identity">your user assigned managed identity</a>:
 <div class="highlight"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/read&quot;</span><span class="p">,</span><span class="w"> </span>
 <span class="w">  </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/write&quot;</span><span class="p">,</span><span class="w"> </span>
@@ -5365,7 +5365,7 @@ Make sure that the scope of these permissions is your resource group.</p>
 </p>
 
 <h3 id="step-21-add-custom-role-for-upgrade-permissions">Step 2.1: Add custom role for upgrade permissions<a class="headerlink" href="#step-21-add-custom-role-for-upgrade-permissions" title="Permanent link">#</a></h3>
-<p>Once you get the names of the resource group and user-assigned managed identity, follow the same steps as in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">getting started to add a custom role</a>. First, navigate to <a href="https://portal.azure.com/#home">Azure portal</a>, then click on <em>Resource groups</em> and then search for your resource group and click on it. Go to the <em>Access control (IAM)</em> tab, select <em>Add</em>, and click on <em>Add custom role</em> </p>
+<p>Once you get the names of the resource group and user-assigned managed identity, navigate to <a href="https://portal.azure.com/#home">Azure portal</a>, then click on <em>Resource groups</em> and then search for your resource group and click on it. Go to the <em>Access control (IAM)</em> tab, select <em>Add</em>, and click on <em>Add custom role</em> </p>
 <p align="center">
   <figure>
     <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-portal-add-custom-upgrade.png" alt="Azure add custom role">
@@ -5443,8 +5443,8 @@ Make sure that the scope of these permissions is your resource group.</p>
 <p><a href="https://docs.microsoft.com/en-us/azure/role-based-access-control/troubleshooting#role-assignment-changes-are-not-being-detected">When you assign roles or remove role assignments, it can take up to 30 minutes for changes to take effect.</a></p>
 </div>
 <h2 id="step-3-add-disk-read-permissions-to-your-role-connected-to-managedhopsworksai">Step 3: Add disk read permissions to your role connected to managed.hopsworks.ai<a class="headerlink" href="#step-3-add-disk-read-permissions-to-your-role-connected-to-managedhopsworksai" title="Permanent link">#</a></h2>
-<p>We require extra permission ("Microsoft.Compute/disks/read") to be added to the role you used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, the one that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>. 
-If you don't remember the name of the role that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, you can navigate to your Resource group, (1) click on <em>Access Control</em>, (2) navigate to the <em>Check Access</em> tab, (3) search for <em>hopsworks.ai</em>, (4) click on it, (5) now you have the name of your custom role used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. </p>
+<p>We require extra permission ("Microsoft.Compute/disks/read") to be added to the role you used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, the one that you have created when <a href="../getting_started/#step-11-connect-your-azure-account">connecting your azure account</a>. 
+If you don't remember the name of the role that you have created when <a href="../getting_started/#step-11-connect-your-azure-account">connecting your azure account</a>, you can navigate to your Resource group, (1) click on <em>Access Control</em>, (2) navigate to the <em>Check Access</em> tab, (3) search for <em>hopsworks.ai</em>, (4) click on it, (5) now you have the name of your custom role used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. </p>
 <p align="center">
   <figure>
     <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-get-connected-hopswork.ai-role.png" alt="Get your connected role to hopswork.ai">
@@ -5534,7 +5534,7 @@ If you don't remember the name of the role that you have created in <a href="../
 <h2 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">#</a></h2>
 <p>There are two categories of errors that you may encounter during an upgrade. First, a permission error due to a missing permission in your role connected to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, see <a href="#error-1-missing-permissions-error">Error 1</a>. Second, an error during the upgrade process running on your cluster, see <a href="#error-2-upgrade-process-error">Error 2</a>.</p>
 <h3 id="error-1-missing-permissions-error">Error 1: Missing permissions error<a class="headerlink" href="#error-1-missing-permissions-error" title="Permanent link">#</a></h3>
-<p>If you encounter the following permission error right after starting an upgrade, then you need to make sure that the role you used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, the one that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, have permissions to read and write disks
+<p>If you encounter the following permission error right after starting an upgrade, then you need to make sure that the role you used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>, the one that you have created when <a href="../getting_started/#step-11-connect-your-azure-account">connecting your azure account</a>, have permissions to read and write disks
 <em>("Microsoft.Compute/disks/read", "Microsoft.Compute/disks/write")</em>. </p>
 <p align="center">
   <figure>
@@ -5543,7 +5543,7 @@ If you don't remember the name of the role that you have created in <a href="../
   </figure>
 </p>
 
-<p>If you don't remember the name of the role that you have created in <a href="../getting_started/#step-12-creating-a-custom-role-for-hopsworksai">Getting started Step 1.2</a>, you can navigate to your Resource group, (1) click on <em>Access Control</em>, (2) navigate to the <em>Check Access</em> tab, (3) search for <em>hopsworks.ai</em>, (4) click on it, (5) now you have the name of your custom role used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. </p>
+<p>If you don't remember the name of the role that you have created when <a href="../getting_started/#step-11-connect-your-azure-account">connecting your azure account</a>, you can navigate to your Resource group, (1) click on <em>Access Control</em>, (2) navigate to the <em>Check Access</em> tab, (3) search for <em>hopsworks.ai</em>, (4) click on it, (5) now you have the name of your custom role used to connect to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a>. </p>
 <p align="center">
   <figure>
     <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/azure/azure-get-connected-hopswork.ai-role.png" alt="Get your connected role to hopswork.ai">
