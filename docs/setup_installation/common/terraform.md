@@ -120,7 +120,7 @@ export HOPSWORKSAI_API_KEY=<YOUR_API_KEY>
 3. Install the [AZURE CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and run `az login` to configure your AZURE credentials.
 
 ### Example 
-In this section, we provide a simple example to create a Hopsworks cluster on AWS along with all its required resources (ssh key, S3 bucket, and instance profile with the required permissions). 
+In this section, we provide a simple example to create a Hopsworks cluster on AZURE along with all its required resources (ssh key, storage account, acr registry, and user assigned managed identity with the required permissions).
 
 1. In your terminal, run the following to create a demo directory and cd to it 
 ```bash
@@ -164,6 +164,19 @@ module "azure" {
   version        = "2.0.0"
 }
 
+# Create an ACR registry 
+resource "azurerm_container_registry" "acr" {
+  name                = replace(module.azure.storage_account_name, "storageaccount", "acr")
+  resource_group_name = module.azure.resource_group
+  location            = module.azure.location
+  sku                 = "Premium"
+  admin_enabled       = false
+  retention_policy {
+    enabled = true
+    days    = 7
+  }
+}
+
 # Create a cluster with no workers
 resource "hopsworksai_cluster" "cluster" {
   name    = "tf-hopsworks-cluster"
@@ -180,6 +193,7 @@ resource "hopsworksai_cluster" "cluster" {
     container {
       storage_account = module.azure.storage_account_name
     }
+    acr_registry_name = azurerm_container_registry.acr.name
   }
 
   rondb {
@@ -209,15 +223,15 @@ output "hopsworks_cluster_url" {
 ```bash
 terraform init 
 ```
-4. Now you can apply the changes to create all required resources
+4. Now you can apply the changes to create all required resources. Replace the placeholders with your Azure resource group
 ```bash
-terraform apply 
+terraform apply -var="resource_group=<YOUR_RESOURCE_GROUP>"
 ```
 5. Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) to get your login credentials.
 
 6. After you finish working with the cluster, you can terminate it along with the other AZURE resources using the following command
 ```bash
-terraform destroy 
+terraform destroy -var="resource_group=<YOUR_RESOURCE_GROUP>"
 ```
 
 ## Importing an existing cluster to terraform 
