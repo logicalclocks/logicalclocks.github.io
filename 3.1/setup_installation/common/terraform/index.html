@@ -5400,7 +5400,7 @@ output &quot;hopsworks_cluster_url&quot; {
 <li>Install the <a href="https://docs.microsoft.com/en-us/cli/azure/install-azure-cli">AZURE CLI</a> and run <code>az login</code> to configure your AZURE credentials.</li>
 </ol>
 <h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">#</a></h3>
-<p>In this section, we provide a simple example to create a Hopsworks cluster on AWS along with all its required resources (ssh key, S3 bucket, and instance profile with the required permissions). </p>
+<p>In this section, we provide a simple example to create a Hopsworks cluster on AZURE along with all its required resources (ssh key, storage account, acr registry, and user assigned managed identity with the required permissions).</p>
 <ol>
 <li>In your terminal, run the following to create a demo directory and cd to it 
 <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>demo
@@ -5442,6 +5442,19 @@ module &quot;azure&quot; {
   version        = &quot;2.0.0&quot;
 }
 
+# Create an ACR registry 
+resource &quot;azurerm_container_registry&quot; &quot;acr&quot; {
+  name                = replace(module.azure.storage_account_name, &quot;storageaccount&quot;, &quot;acr&quot;)
+  resource_group_name = module.azure.resource_group
+  location            = module.azure.location
+  sku                 = &quot;Premium&quot;
+  admin_enabled       = false
+  retention_policy {
+    enabled = true
+    days    = 7
+  }
+}
+
 # Create a cluster with no workers
 resource &quot;hopsworksai_cluster&quot; &quot;cluster&quot; {
   name    = &quot;tf-hopsworks-cluster&quot;
@@ -5458,6 +5471,7 @@ resource &quot;hopsworksai_cluster&quot; &quot;cluster&quot; {
     container {
       storage_account = module.azure.storage_account_name
     }
+    acr_registry_name = azurerm_container_registry.acr.name
   }
 
   rondb {
@@ -5486,15 +5500,15 @@ output &quot;hopsworks_cluster_url&quot; {
 <li>Initialize the terraform directory by running the following command 
 <div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>init<span class="w"> </span>
 </code></pre></div></li>
-<li>Now you can apply the changes to create all required resources
-<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w"> </span>
+<li>Now you can apply the changes to create all required resources. Replace the placeholders with your Azure resource group
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply<span class="w"> </span>-var<span class="o">=</span><span class="s2">&quot;resource_group=&lt;YOUR_RESOURCE_GROUP&gt;&quot;</span>
 </code></pre></div></li>
 <li>
 <p>Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your <a href="https://managed.hopsworks.ai/dashboard">managed.hopsworks.ai dashboard</a> to get your login credentials.</p>
 </li>
 <li>
 <p>After you finish working with the cluster, you can terminate it along with the other AZURE resources using the following command
-<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>destroy<span class="w"> </span>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>destroy<span class="w"> </span>-var<span class="o">=</span><span class="s2">&quot;resource_group=&lt;YOUR_RESOURCE_GROUP&gt;&quot;</span>
 </code></pre></div></p>
 </li>
 </ol>
