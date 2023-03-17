@@ -41,3 +41,5 @@ includedPermissions:
 - iam.serviceAccounts.actAs
 - iam.serviceAccounts.list
 - resourcemanager.projects.get
+- iam.roles.get
+- resourcemanager.projects.getIamPolicy
