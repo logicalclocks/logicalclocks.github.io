@@ -37,6 +37,15 @@ The following permission is only needed to be able to change the head node and R
 ```yaml
 - compute.instances.setMachineType
 ```
+
+### Instance Service account check
+The following permissions are only needed to check that the service account you select for your cluster has the proper permissions. If you remove them the check will be skipped. This may result in your cluster taking more time to detect the error if the service account does not have the proper permissions
+
+```yaml
+- iam.roles.get
+- resourcemanager.projects.getIamPolicy
+```
+
 ### Create a VPC permissions
 The following permissions are only needed if you want [managed.hopsworks.ai](https://managed.hopsworks.ai) to create VPC and subnet for you.
 If you choose an existing VPC and subnet, you can limit the permission of the Service Account by removing them. 
