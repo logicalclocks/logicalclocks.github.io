@@ -21,7 +21,6 @@ includedPermissions:
 - compute.instances.setLabels
 - compute.instances.setMetadata
 - compute.instances.setServiceAccount
-- compute.instances.setTags
 - compute.instances.start
 - compute.instances.stop
 - compute.instances.setMachineType
