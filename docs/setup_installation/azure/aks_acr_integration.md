@@ -44,3 +44,7 @@ Create the hopsworks cluster by following the same steps as in the [getting star
   </figure>
 </p>
 
+
+## Going further
+
+You can also deploy the AKS cluster and the Hopsworks cluster in two different virtual networks by using network peering. For this we recommend to use our [terraform provider](../common/terraform.md) and to refer to our [example](https://github.com/logicalclocks/terraform-provider-hopsworksai/tree/main/examples/complete/azure/advanced/aks-with-peering)
