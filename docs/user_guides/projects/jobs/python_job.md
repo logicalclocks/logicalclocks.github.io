@@ -1,3 +1,7 @@
+---
+description: Documentation on how to configure and execute a Python job on Hopsworks.
+---
+
 # How To Run A Python Job
 
 ## Introduction
@@ -9,6 +13,11 @@ All members of a project in Hopsworks can launch the following types of applicat
 
 Launching a job of any type is very similar process, what mostly differs between job types is
 the various configuration parameters each job type comes with. After following this guide you will be able to create a Python job.
+
+!!! note "Kubernetes integration required"
+    Python Jobs are only available if Hopsworks has been integrated with a Kubernetes cluster.
+
+    Hopsworks can be integrated with [Amazon EKS](../../../setup_installation/aws/eks_ecr_integration.md), [Azure AKS](../../../setup_installation/azure/aks_acr_integration.md) and on-premise Kubernetes clusters.
 
 ## UI
 

@@ -1,3 +1,7 @@
+---
+description: Documentation on how to configure and execute a Spark (Scala) job on Hopsworks.
+---
+
 # How To Run A Spark Job
 
 ## Introduction
