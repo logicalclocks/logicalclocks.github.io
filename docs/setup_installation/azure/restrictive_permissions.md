@@ -54,8 +54,6 @@ You can then navigate to the JSON tab and overwrite the "action" field with the 
 "actions": [
     "Microsoft.Compute/virtualMachines/write",
 	  "Microsoft.Compute/virtualMachines/start/action",
-	  "Microsoft.Compute/virtualMachines/powerOff/action",
-	  "Microsoft.Compute/virtualMachines/restart/action",
 	  "Microsoft.Compute/virtualMachines/delete",
 	  "Microsoft.Compute/virtualMachines/read",
     "Microsoft.Compute/virtualMachines/deallocate/action",
@@ -67,10 +65,6 @@ You can then navigate to the JSON tab and overwrite the "action" field with the 
     "Microsoft.Network/networkInterfaces/delete",
     "Microsoft.Network/networkSecurityGroups/read",
     "Microsoft.Network/networkSecurityGroups/join/action",
-    "Microsoft.Network/networkSecurityGroups/defaultSecurityRules/read",
-    "Microsoft.Network/networkSecurityGroups/securityRules/read",
-    "Microsoft.Network/networkSecurityGroups/securityRules/write",
-    "Microsoft.Network/networkSecurityGroups/securityRules/delete",
     "Microsoft.Network/publicIPAddresses/join/action",
     "Microsoft.Network/publicIPAddresses/read",
     "Microsoft.Network/publicIPAddresses/write",
@@ -115,8 +109,6 @@ If you are not going to create backups or if you do not have access to this Ente
 "actions": [
     "Microsoft.Compute/virtualMachines/write",
 	  "Microsoft.Compute/virtualMachines/start/action",
-	  "Microsoft.Compute/virtualMachines/powerOff/action",
-	  "Microsoft.Compute/virtualMachines/restart/action",
 	  "Microsoft.Compute/virtualMachines/delete",
 	  "Microsoft.Compute/virtualMachines/read",
     "Microsoft.Compute/virtualMachines/deallocate/action",
@@ -128,10 +120,6 @@ If you are not going to create backups or if you do not have access to this Ente
     "Microsoft.Network/networkInterfaces/delete",
     "Microsoft.Network/networkSecurityGroups/read",
     "Microsoft.Network/networkSecurityGroups/join/action",
-    "Microsoft.Network/networkSecurityGroups/defaultSecurityRules/read",
-    "Microsoft.Network/networkSecurityGroups/securityRules/read",
-    "Microsoft.Network/networkSecurityGroups/securityRules/write",
-    "Microsoft.Network/networkSecurityGroups/securityRules/delete",
     "Microsoft.Network/publicIPAddresses/join/action",
     "Microsoft.Network/publicIPAddresses/read",
     "Microsoft.Network/publicIPAddresses/write",
@@ -168,15 +156,6 @@ You then have to make sure that you uncheck the *Attach Public IP* check box in 
 </p>
 
 ### Other removable permissions
-
-The following permissions are used to let you close and open ports on your cluster from hopswork.ai, you can remove them if you do not want to open ports on your cluster or if you want to manually open ports in Azure.
-
-```json
-  "actions": [
-    "Microsoft.Network/networkSecurityGroups/securityRules/write",
-    "Microsoft.Network/networkSecurityGroups/securityRules/delete",
-  ]
-```
 
 The following permission is only needed to select the Azure Storage account through a drop-down during cluster creation. You can remove it from the cross-account role and enter the value manually
 
