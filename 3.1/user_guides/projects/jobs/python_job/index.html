@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the development and operation of machine learning models at scale.">
+        <meta name="description" content="Documentation on how to configure and execute a Python job on Hopsworks.">
       
       
         <meta name="author" content="Hopsworks">
@@ -5410,6 +5410,11 @@
 </ul>
 <p>Launching a job of any type is very similar process, what mostly differs between job types is
 the various configuration parameters each job type comes with. After following this guide you will be able to create a Python job.</p>
+<div class="admonition note">
+<p class="admonition-title">Kubernetes integration required</p>
+<p>Python Jobs are only available if Hopsworks has been integrated with a Kubernetes cluster.</p>
+<p>Hopsworks can be integrated with <a href="../../../../setup_installation/aws/eks_ecr_integration/">Amazon EKS</a>, <a href="../../../../setup_installation/azure/aks_acr_integration/">Azure AKS</a> and on-premise Kubernetes clusters.</p>
+</div>
 <h2 id="ui">UI<a class="headerlink" href="#ui" title="Permanent link">#</a></h2>
 <h3 id="step-1-jobs-overview">Step 1: Jobs overview<a class="headerlink" href="#step-1-jobs-overview" title="Permanent link">#</a></h3>
 <p>The image below shows the Jobs overview page in Hopsworks and is accessed by clicking <code>Jobs</code> in the sidebar.</p>
