@@ -18,7 +18,7 @@ jobs:
           python-version: '3.8'
 
       - name: install deps
-        run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
+        run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python && pip3 install mkdocs-minify-plugin'
 
       - name: setup git
         run: |
