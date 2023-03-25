@@ -1,3 +1,7 @@
+---
+description: Documentation on how to create an external feature group in Hopsworks and the different APIs available to interact with them.
+---
+
 # How to create an External Feature Group
 
 ### Introduction
@@ -91,11 +95,11 @@ In the snippet above it's important that the created metadata object gets regist
 
 ### Limitations 
 
-Hopsworks Feature Store does not support time-travel capabilities for on-demand feature groups. Moreover, as the data resides on external systems, on-demand feature groups cannot be made available online for low latency serving. To make data from an on-demand feature group available online, users need to define an online enabled feature group and hava a job that periodically reads data from the on-demand feature group and writes in the online feature group.
+Hopsworks Feature Store does not support time-travel capabilities for external feature groups. Moreover, as the data resides on external systems, external feature groups cannot be made available online for low latency serving. To make data from an external feature group available online, users need to define an online enabled feature group and have a job that periodically reads data from the external feature group and writes in the online feature group.
 
 !!! warning "Python support"
 
-    Currently the HSFS library does not support calling the read() or show() methods on on-demand feature groups. Likewise it is not possibile to call the read() or show() methods on queries containing on-demand feature groups. Nevertheless, on-demand feature groups can be used from a Python engine to create training datasets.
+    Currently the HSFS library does not support calling the read() or show() methods on external feature groups. Likewise it is not possible to call the read() or show() methods on queries containing external feature groups. Nevertheless, external feature groups can be used from a Python engine to create training datasets.
 
 
 ### API Reference 
