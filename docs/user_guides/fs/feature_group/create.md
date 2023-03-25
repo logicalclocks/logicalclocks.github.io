@@ -59,6 +59,9 @@ The event time is added to the primary key when writing to the offline feature s
 
 The event time **is not** part of the primary key when writing to the online feature store. This will ensure that the online feature store has the most recent version of the feature vector for each primary key.
 
+!!!note "Event time data type restriction"
+    The supported data types for the event time column are: `timestamp`, `date` and `bigint`.
+
 ##### Partition key
 
 It is best practice to add a partition key. When you specify a partition key, the data in the feature group will be stored under multiple directories based on the value of the partition column(s).
