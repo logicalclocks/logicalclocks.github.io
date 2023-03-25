@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the development and operation of machine learning models at scale.">
+        <meta name="description" content="Documentation on how to create an external feature group in Hopsworks and the different APIs available to interact with them.">
       
       
         <meta name="author" content="Hopsworks">
@@ -5441,10 +5441,10 @@
 </div>
 </div>
 <h3 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">#</a></h3>
-<p>Hopsworks Feature Store does not support time-travel capabilities for on-demand feature groups. Moreover, as the data resides on external systems, on-demand feature groups cannot be made available online for low latency serving. To make data from an on-demand feature group available online, users need to define an online enabled feature group and hava a job that periodically reads data from the on-demand feature group and writes in the online feature group.</p>
+<p>Hopsworks Feature Store does not support time-travel capabilities for external feature groups. Moreover, as the data resides on external systems, external feature groups cannot be made available online for low latency serving. To make data from an external feature group available online, users need to define an online enabled feature group and have a job that periodically reads data from the external feature group and writes in the online feature group.</p>
 <div class="admonition warning">
 <p class="admonition-title">Python support</p>
-<p>Currently the HSFS library does not support calling the read() or show() methods on on-demand feature groups. Likewise it is not possibile to call the read() or show() methods on queries containing on-demand feature groups. Nevertheless, on-demand feature groups can be used from a Python engine to create training datasets.</p>
+<p>Currently the HSFS library does not support calling the read() or show() methods on external feature groups. Likewise it is not possible to call the read() or show() methods on queries containing external feature groups. Nevertheless, external feature groups can be used from a Python engine to create training datasets.</p>
 </div>
 <h3 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">#</a></h3>
 <p><a href="https://docs.hopsworks.ai/feature-store-api/3.1/generated/api/external_feature_group_api/#externalfeaturegroup">External FeatureGroup</a></p>

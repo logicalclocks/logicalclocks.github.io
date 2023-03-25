@@ -5491,6 +5491,10 @@ When writing data on the online feature store, existing rows with the same prima
 In the context of feature pipelines, the event time is often also the end timestamp of the interval of events included in the feature computation. For example, computing the feature "number of purchases by customer last week", the event time should be the last day of this "last week" window.</p>
 <p>The event time is added to the primary key when writing to the offline feature store. This will make sure that the offline feature store has the entire history of feature values over time. As an example, if a user has made multiple purchases on a website, each of the purchases for a given user (identified by a user_id) will be saved in the feature group, with each purchase having a different event time (the combination of user_id and event_time makes up the primary key for the offline feature store).</p>
 <p>The event time <strong>is not</strong> part of the primary key when writing to the online feature store. This will ensure that the online feature store has the most recent version of the feature vector for each primary key.</p>
+<div class="admonition note">
+<p class="admonition-title">Event time data type restriction</p>
+<p>The supported data types for the event time column are: <code>timestamp</code>, <code>date</code> and <code>bigint</code>.</p>
+</div>
 <h5 id="partition-key">Partition key<a class="headerlink" href="#partition-key" title="Permanent link">#</a></h5>
 <p>It is best practice to add a partition key. When you specify a partition key, the data in the feature group will be stored under multiple directories based on the value of the partition column(s).
 All the rows with a given value as partition key will be stored in the same directory. </p>
