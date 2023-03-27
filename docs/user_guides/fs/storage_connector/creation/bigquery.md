@@ -31,6 +31,9 @@ Before you begin this guide you'll need to retrieve the following information ab
   and creating keyfile in GCP, read [Google Cloud documentation.](https://cloud.google.com/docs/authentication/production#create_service_account
   'creating service account keyfile')
 
+!!! note
+        To read data, the BigQuery service account user needs permission to `create read sesssion` which is available in **BigQuery Admin role**.
+
 ## Creation in the UI
 ### Step 1: Set up new storage connector
 
@@ -59,13 +62,14 @@ it a unique **name** and an optional
    upload from your local using `Upload new file` or choose an existing file within project using `From Project`.
 4. Read Options: There are two ways to read via BigQuery, using the **BigQuery Table** or **BigQuery Query** option:
    
-      1. The table option reads directly from the BigQuery table reference. In the UI set the below fields, 
+      1. **BigQuery Table** - can be used for reading data from BigQuery. You can't create an External FG using this option. The table option reads directly from the BigQuery table reference. In the UI set the below fields, 
          1. *BigQuery Project*: The BigQuery project
          2. *BigQuery Dataset*: The dataset of the table
          3. *BigQuery Table*: The table to read
-      2. The second option is to read by executing a SQL query at runtime, by selecting **BigQuery Query** and setting,
-         1. *Materiliazation Dataset*: Temporary dataset used by BigQuery for writing
-         
+      2. **BigQuery Query** - can be used for both reading data and **creating External FG**. This option executes a SQL query at runtime.
+         1. *Materialization Dataset*: Temporary dataset used by BigQuery for writing. It must be set to a dataset where the GCP user has table creation permission. The queried table must be in the same location as the `materializationDataset`. Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]`.
+         2. *Materialization Project* is optional.
+
 5. Spark Options: Optionally, you can set additional spark options using the `Key - Value` pairs
 ## Next Steps
 
