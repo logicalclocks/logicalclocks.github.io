@@ -4,6 +4,9 @@ This guide shows how to create a cluster in [managed.hopsworks.ai](https://manag
 
 This guide provides an example setup with a private AKS cluster.
 
+!!!Note
+    If you prefer to use Terraform over command lines you can refer to our Terraform example [here](https://github.com/logicalclocks/terraform-provider-hopsworksai/tree/main/examples/complete/azure/aks).
+
 ## Step 1: Create a Virtual network and a subnet
 First, you need to create the virtual network and the subnet in which Hopsworks and the AKS nodes will run. To do this run the following commands, replacing *\$RESOURCE_GROUP* with the resource group in which you will run your cluster.
 
