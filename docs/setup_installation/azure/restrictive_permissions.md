@@ -165,6 +165,13 @@ The following permission is only needed to select the Azure Storage account thro
   ]
 ```
 
+The following permission is only needed, during cluster creation, to check that the managed identity as the proper permission. If you remove it, this check will not be done and the deployment may fail later if the managed identity does not have the proper permissions
+
+```json
+"actions": [
+    "Microsoft.Authorization/roleAssignments/read"
+]
+```
 
 ## Limiting the User Assigned Managed Identity permissions
 

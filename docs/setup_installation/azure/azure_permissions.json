@@ -36,7 +36,8 @@
       "Microsoft.Compute/snapshots/read",
       "Microsoft.Compute/snapshots/delete",
       "Microsoft.Compute/disks/beginGetAccess/action",
-      "Microsoft.Compute/disks/read"
+      "Microsoft.Compute/disks/read",
+      "Microsoft.Authorization/roleAssignments/read"
     ],
     "NotActions": [],
     "AssignableScopes": ["/subscriptions/SUBSCRIPTION_ID/resourceGroups/RESOURCE_GROUP"]
