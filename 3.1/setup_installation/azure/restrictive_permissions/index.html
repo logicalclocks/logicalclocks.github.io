@@ -5412,8 +5412,6 @@ This guide explains how to lock down access permissions following the IT securit
 <span class="w">    </span><span class="nt">&quot;Actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/write&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/start/action&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/powerOff/action&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/restart/action&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/delete&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/read&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/deallocate/action&quot;</span><span class="p">,</span>
@@ -5425,12 +5423,8 @@ This guide explains how to lock down access permissions following the IT securit
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkInterfaces/delete&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/read&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/join/action&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/defaultSecurityRules/read&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/read&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/write&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/delete&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/write&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/delete&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/join/action&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/read&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/write&quot;</span><span class="p">,</span>
@@ -5439,8 +5433,6 @@ This guide explains how to lock down access permissions following the IT securit
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/virtualNetworks/delete&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/virtualNetworks/read&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/virtualNetworks/subnets/read&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Network/virtualNetworks/subnets/write&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Network/virtualNetworks/subnets/delete&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Network/virtualNetworks/subnets/join/action&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Resources/subscriptions/resourceGroups/read&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/sshPublicKeys/read&quot;</span><span class="p">,</span>
@@ -5489,8 +5481,6 @@ You can then navigate to the JSON tab and overwrite the "action" field with the 
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/write&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/start/action&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/powerOff/action&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/restart/action&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/delete&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/read&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/deallocate/action&quot;</span><span class="p">,</span>
@@ -5502,10 +5492,6 @@ You can then navigate to the JSON tab and overwrite the "action" field with the 
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkInterfaces/delete&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/read&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/join/action&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/defaultSecurityRules/read&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/read&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/write&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/delete&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/join/action&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/read&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/write&quot;</span><span class="p">,</span>
@@ -5541,8 +5527,6 @@ You can then navigate to the JSON tab and overwrite the "action" field with the 
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/write&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/start/action&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/powerOff/action&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/restart/action&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/delete&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/read&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Compute/virtualMachines/deallocate/action&quot;</span><span class="p">,</span>
@@ -5554,10 +5538,6 @@ You can then navigate to the JSON tab and overwrite the "action" field with the 
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkInterfaces/delete&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/read&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/join/action&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/defaultSecurityRules/read&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/read&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/write&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/delete&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/join/action&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/read&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Network/publicIPAddresses/write&quot;</span><span class="p">,</span>
@@ -5590,12 +5570,6 @@ You then have to make sure that you uncheck the <em>Attach Public IP</em> check 
 </p>
 
 <h3 id="other-removable-permissions">Other removable permissions<a class="headerlink" href="#other-removable-permissions" title="Permanent link">#</a></h3>
-<p>The following permissions are used to let you close and open ports on your cluster from hopswork.ai, you can remove them if you do not want to open ports on your cluster or if you want to manually open ports in Azure.</p>
-<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/write&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;Microsoft.Network/networkSecurityGroups/securityRules/delete&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="p">]</span>
-</code></pre></div>
 <p>The following permission is only needed to select the Azure Storage account through a drop-down during cluster creation. You can remove it from the cross-account role and enter the value manually</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="s2">&quot;Microsoft.Storage/storageAccounts/read&quot;</span><span class="p">,</span>

@@ -4131,8 +4131,22 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#instance-service-account-check" class="md-nav__link">
+    Instance Service account check
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#create-a-vpc-permissions" class="md-nav__link">
     Create a VPC permissions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-firewall" class="md-nav__link">
+    Update Firewall
   </a>
   
 </li>
@@ -5256,8 +5270,22 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#instance-service-account-check" class="md-nav__link">
+    Instance Service account check
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#create-a-vpc-permissions" class="md-nav__link">
     Create a VPC permissions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-firewall" class="md-nav__link">
+    Update Firewall
   </a>
   
 </li>
@@ -5332,7 +5360,6 @@ This guide explains how to lock down access permissions following the IT securit
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setLabels</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setMetadata</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setServiceAccount</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setTags</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.start</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.stop</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setMachineType</span>
@@ -5352,6 +5379,8 @@ This guide explains how to lock down access permissions following the IT securit
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iam.serviceAccounts.actAs</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iam.serviceAccounts.list</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resourcemanager.projects.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iam.roles.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resourcemanager.projects.getIamPolicy</span>
 </code></pre></div>
 <h2 id="limiting-the-account-service-account-permissions">Limiting the Account Service Account permissions<a class="headerlink" href="#limiting-the-account-service-account-permissions" title="Permanent link">#</a></h2>
 <p>Some of the permissions set up when connection your GCP account to <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> (<a href="../getting_started/#step-1-connecting-your-gcp-account">here</a>) can be removed under certain conditions.</p>
@@ -5368,16 +5397,36 @@ This guide explains how to lock down access permissions following the IT securit
 <p>The following permission is only needed to be able to change the head node and RonDB nodes instance type on an existing cluster (<a href="../../common/scalingup/">documentation</a>). If you are not going to use this feature, you can limit the permission of the Service Account by removing it.</p>
 <div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.instances.setMachineType</span>
 </code></pre></div>
+<h3 id="instance-service-account-check">Instance Service account check<a class="headerlink" href="#instance-service-account-check" title="Permanent link">#</a></h3>
+<p>The following permissions are only needed to check that the service account you select for your cluster has the proper permissions. If you remove them the check will be skipped. This may result in your cluster taking more time to detect the error if the service account does not have the proper permissions</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iam.roles.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resourcemanager.projects.getIamPolicy</span>
+</code></pre></div>
 <h3 id="create-a-vpc-permissions">Create a VPC permissions<a class="headerlink" href="#create-a-vpc-permissions" title="Permanent link">#</a></h3>
-<p>The following permissions are only needed if you want <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> to create VPC and subnet for you.
-If you choose an existing VPC and subnet, you can limit the permission of the Service Account by removing them. </p>
+<p>The following permissions are only needed if you want <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> to create VPC and subnet for you.</p>
 <div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.create</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.delete</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.networks.get</span>
-<span class="nn">...</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.create</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.delete</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.subnetworks.get</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.firewalls.create</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.firewalls.delete</span>
+</code></pre></div>
+<p>You can remove these permissions by creating your own VPC, subnet, and firewalls and selecting them during cluster creation. For the VPC to be accepted you will need to associate it with firewall rules with the following constraints:</p>
+<ul>
+<li>One firewall rule associated with the VPC must allow ingress communication on all ports for communication between sources with the <a href="../getting_started/#step-3-creating-a-service-account-for-your-cluster-instances">service account you will attach to the cluster nodes</a> (source and target). To create such a rule, run the following command replacing <em>$NETWORK</em> with the name of your VPC, <em>$SERVICE_ACCOUNT</em> with the email of your service account, and <em>$PROJECT_ID</em> with the id of your project:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>gcloud<span class="w"> </span>compute<span class="w"> </span>firewall-rules<span class="w"> </span>create<span class="w"> </span>nodetonode<span class="w"> </span>--network<span class="o">=</span><span class="nv">$NETWORK</span><span class="w"> </span>--allow<span class="o">=</span>all<span class="w"> </span>--direction<span class="o">=</span>INGRESS<span class="w"> </span>--target-service-accounts<span class="o">=</span><span class="nv">$SERVICE_ACCOUNT</span><span class="w"> </span>--source-service-accounts<span class="o">=</span><span class="nv">$SERVICE_ACCOUNT</span><span class="w"> </span>--project<span class="o">=</span><span class="nv">$PROJECT_ID</span>
+</code></pre></div>
+<ul>
+<li>We recommend that you have a firewall rule associated with the VPC allowing TCP ingress communication to ports 443 and 80. If you don't have a rule opening port 443 the cluster will not be accessible from the internet. If you don't have a rule opening port 80 your cluster will be created with a self-signed certificate. You will have to acknowledge it by checking the <em>Continue with self-signed certificate</em> check box during <a href="../cluster_creation/#step-6-vpc-and-subnet-selection">subnet selection</a>. Depending on your firewall rules setup at cluster creation <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> may not be able to manage services port at run time. In such a case you will have to open and close the ports yourself in the cluster provider. To create this rule, run the following command replacing <em>$NETWORK</em> with the name of your VPC, <em>$SERVICE_ACCOUNT</em> with the email of your service account and <em>$PROJECT_ID</em> with the id of your project:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>gcloud<span class="w"> </span>compute<span class="w"> </span>firewall-rules<span class="w"> </span>create<span class="w"> </span>inbound<span class="w"> </span>--network<span class="o">=</span><span class="nv">$NETWORK</span><span class="w"> </span>--allow<span class="o">=</span>all<span class="w"> </span>--direction<span class="o">=</span>INGRESS<span class="w"> </span>--target-service-accounts<span class="o">=</span><span class="nv">$SERVICE_ACCOUNT</span><span class="w"> </span>--allow<span class="o">=</span>tcp:80,tcp:443<span class="w"> </span>--source-ranges<span class="o">=</span><span class="s2">&quot;0.0.0.0/0&quot;</span><span class="w"> </span>--project<span class="o">=</span><span class="nv">$PROJECT_ID</span>
+</code></pre></div>
+<h3 id="update-firewall">Update Firewall<a class="headerlink" href="#update-firewall" title="Permanent link">#</a></h3>
+<p>The following permission is only needed to open and close service ports on the cluster. If you are not intending to open and close these ports from <a href="https://managed.hopsworks.ai">managed.hopsworks.ai</a> you can remove the permission.</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute.firewalls.update</span>
 </code></pre></div>
 <h2 id="limiting-the-instances-service-account-permissions">Limiting the Instances Service Account permissions<a class="headerlink" href="#limiting-the-instances-service-account-permissions" title="Permanent link">#</a></h2>
 <p>Some of the permissions set up for the instances service account used during cluster creation (<a href="../cluster_creation/#step-4-select-the-service-account">here</a>) can be removed under certain conditions.</p>
