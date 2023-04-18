@@ -17,6 +17,7 @@ nav:
       - tutorials/index.md
   - Concepts:
       - Hopsworks Platform: concepts/hopsworks.md
+      - MLOps Dictionary ↗: https://www.hopsworks.ai/mlops-dictionary
       - Feature Store:
           - Architecture: concepts/fs/index.md #hsfs
           - Feature Groups:
