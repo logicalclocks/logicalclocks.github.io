@@ -62,14 +62,17 @@ it a unique **name** and an optional
    upload from your local using `Upload new file` or choose an existing file within project using `From Project`.
 4. Read Options: There are two ways to read via BigQuery, using the **BigQuery Table** or **BigQuery Query** option:
    
-      1. **BigQuery Table** - can be used for reading data from BigQuery. You can't create an External FG using this option. The table option reads directly from the BigQuery table reference. In the UI set the below fields, 
+      1. **BigQuery Table** - This option reads directly from BigQuery table reference. Note that it can only be used in `read` API for reading data from BigQuery. Creating external Feature Groups using this option is not yet supported. In the UI set the below fields, 
          1. *BigQuery Project*: The BigQuery project
          2. *BigQuery Dataset*: The dataset of the table
          3. *BigQuery Table*: The table to read
-      2. **BigQuery Query** - can be used for both reading data and **creating External FG**. This option executes a SQL query at runtime.
-         1. *Materialization Dataset*: Temporary dataset used by BigQuery for writing. It must be set to a dataset where the GCP user has table creation permission. The queried table must be in the same location as the `materializationDataset`. Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]`.
+      2. **BigQuery Query** - This option executes a SQL query at runtime. It can be used for both reading data and **creating external Feature Groups**. 
+         1. *Materialization Dataset*: Temporary dataset used by BigQuery for writing. It must be set to a dataset where the GCP user has table creation permission. The queried table must be in the same location as the `materializationDataset` (e.g 'EU' or 'US'). Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]`.
 
-5. Spark Options: Optionally, you can set additional spark options using the `Key - Value` pairs
+5. Spark Options: Optionally, you can set additional spark options using the `Key - Value` pairs.
+
+Read more details from Google documentation on usage of query for BigQuery spark connector [here](https://github.com/GoogleCloudDataproc/spark-bigquery-connector#reading-data-from-a-bigquery-query).
+
 ## Next Steps
 
 Move on to the [usage guide for storage connectors](../usage.md) to see how you can use your newly created BigQuery 
