@@ -67,11 +67,10 @@ it a unique **name** and an optional
          2. *BigQuery Dataset*: The dataset of the table
          3. *BigQuery Table*: The table to read
       2. **BigQuery Query** - This option executes a SQL query at runtime. It can be used for both reading data and **creating external Feature Groups**. 
-         1. *Materialization Dataset*: Temporary dataset used by BigQuery for writing. It must be set to a dataset where the GCP user has table creation permission. The queried table must be in the same location as the `materializationDataset` (e.g 'EU' or 'US'). Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]`.
+         1. *Materialization Dataset*: Temporary dataset used by BigQuery for writing. It must be set to a dataset where the GCP user has table creation permission. The queried table must be in the same location as the `materializationDataset` (e.g 'EU' or 'US'). Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]` 
+         (Read more details from Google documentation on usage of query for BigQuery spark connector [here](https://github.com/GoogleCloudDataproc/spark-bigquery-connector#reading-data-from-a-bigquery-query)).
 
 5. Spark Options: Optionally, you can set additional spark options using the `Key - Value` pairs.
-
-Read more details from Google documentation on usage of query for BigQuery spark connector [here](https://github.com/GoogleCloudDataproc/spark-bigquery-connector#reading-data-from-a-bigquery-query).
 
 ## Next Steps
 
