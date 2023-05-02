@@ -68,7 +68,6 @@ it a unique **name** and an optional
          3. *BigQuery Table*: The table to read
       2. **BigQuery Query** - can be used for both reading data and **creating External FG**. This option executes a SQL query at runtime.
          1. *Materialization Dataset*: Temporary dataset used by BigQuery for writing. It must be set to a dataset where the GCP user has table creation permission. The queried table must be in the same location as the `materializationDataset`. Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]`.
-         2. *Materialization Project* is optional.
 
 5. Spark Options: Optionally, you can set additional spark options using the `Key - Value` pairs
 ## Next Steps
