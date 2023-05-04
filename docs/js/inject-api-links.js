@@ -6,6 +6,7 @@ window.addEventListener("DOMContentLoaded", function () {
         document.getElementById("hopsworks_api_link").href = "https://docs.hopsworks.ai/hopsworks-api/" + windowPathNameSplits[1] + "/generated/api/login/";
         document.getElementById("hsfs_api_link").href = "https://docs.hopsworks.ai/feature-store-api/" + windowPathNameSplits[1] + "/generated/api/connection_api/";
         document.getElementById("hsml_api_link").href = "https://docs.hopsworks.ai/machine-learning-api/" + windowPathNameSplits[1] + "/generated/connection_api/";
+        document.getElementById("hsfs_javadoc_link").href = "https://docs.hopsworks.ai/feature-store-api/" + windowPathNameSplits[1] + "/javadoc";
     } else { // on docs.hopsworks.api/feature-store-api/3.0 / docs.hopsworks.api/hopsworks-api/3.0 / docs.hopsworks.api/machine-learning-api/3.0
         var apiVersion = windowPathNameSplits[2];
         var majorVersion = apiVersion.match(majorVersionRegex)[0];
