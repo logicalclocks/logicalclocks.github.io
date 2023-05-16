@@ -1,10 +1,13 @@
+---
+description: Documentation on how to configure an external Spark cluster to read and write features from the Hopsworks Feature Store
+---
 # Spark Integration
 
 Connecting to the Feature Store from an external Spark cluster, such as Cloudera, requires configuring it with the Hopsworks client jars and configuration. This guide explains step by step how to connect to the Feature Store from an external Spark cluster.
 
 ## Download the Hopsworks Client Jars
 
-In the *Project Settings*, select the *integration* tab and scroll to the *Configure Spark Integration* section. Click on *Download client Jars*. This will start the download of the *client.tar.gz* archive. The archive contains two jar files for HopsFS, the client libraries for HopsHive and the Java version of the HSFS library. You should upload these libraries to your Spark cluster and attach them as local resources to your Job. If you are using `spark-submit`, you should specify the `--jar` option. For more details see: [Spark Dependency Management](https://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management).
+In the *Project Settings*, select the *integration* tab and scroll to the *Configure Spark Integration* section. Click on *Download client Jars*. This will start the download of the *client.tar.gz* archive. The archive contains two jar files for HopsFS, the Apache Hudi jar and the Java version of the HSFS library. You should upload these libraries to your Spark cluster and attach them as local resources to your Job. If you are using `spark-submit`, you should specify the `--jar` option. For more details see: [Spark Dependency Management](https://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management).
 
 <p align="center">
     <figure>
@@ -36,12 +39,12 @@ spark.hadoop.client.rpc.ssl.enabled.protocol        TLSv1.2
 spark.hadoop.hops.ssl.keystores.passwd.name         material_passwd
 spark.hadoop.hops.ssl.keystore.name                 keyStore.jks
 spark.hadoop.hops.ssl.trustore.name                 trustStore.jks
-
-spark.sql.hive.metastore.jars                       [Path to the Hopsworks Hive Jars]
+spark.sql.hive.metastore.jars                       path
+spark.sql.hive.metastore.jars.path                  [Path to the Hopsworks Hive Jars]
 spark.hadoop.hive.metastore.uris                    thrift://[metastore_ip]:[metastore_port]
 ```
 
-`spark.sql.hive.metastore.jars` should point to the path with the Hive Jars which can be found in the *clients.tar.gz*.
+`spark.sql.hive.metastore.jars.path` should point to the path with the jars from the uncompressed Hive archive you can find in *clients.tar.gz*.
 
 ## PySpark
 
