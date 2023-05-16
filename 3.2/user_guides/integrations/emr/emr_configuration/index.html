@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the development and operation of machine learning models at scale.">
+        <meta name="description" content="Documentation on how to configure an EMR cluster to read and write features from the Hopsworks Feature Store">
       
       
         <meta name="author" content="Hopsworks">
@@ -5427,7 +5427,8 @@ Copy the configuration below and replace ip-XXX-XX-XX-XXX.XX-XXXX-X.compute.inte
 <span class="w">      </span><span class="nt">&quot;spark.serializer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;org.apache.spark.serializer.KryoSerializer&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;spark.executor.extraClassPath&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/usr/lib/hopsworks/client/*&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;spark.driver.extraClassPath&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/usr/lib/hopsworks/client/*&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;spark.sql.hive.metastore.jars&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/usr/lib/hopsworks/apache-hive-bin/lib/*&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;spark.sql.hive.metastore.jars&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;path&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;spark.sql.hive.metastore.jars.path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/usr/lib/hopsworks/apache-hive-bin/lib/*&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;spark.hadoop.hive.metastore.uris&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;thrift://ip-XXX-XX-XX-XXX.XX-XXXX-X.compute.internal:9083&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">},</span>

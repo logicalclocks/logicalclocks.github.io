@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the development and operation of machine learning models at scale.">
+        <meta name="description" content="Documentation on how to configure an external Spark cluster to read and write features from the Hopsworks Feature Store">
       
       
         <meta name="author" content="Hopsworks">
@@ -5314,7 +5314,7 @@
 <h1 id="spark-integration">Spark Integration<a class="headerlink" href="#spark-integration" title="Permanent link">#</a></h1>
 <p>Connecting to the Feature Store from an external Spark cluster, such as Cloudera, requires configuring it with the Hopsworks client jars and configuration. This guide explains step by step how to connect to the Feature Store from an external Spark cluster.</p>
 <h2 id="download-the-hopsworks-client-jars">Download the Hopsworks Client Jars<a class="headerlink" href="#download-the-hopsworks-client-jars" title="Permanent link">#</a></h2>
-<p>In the <em>Project Settings</em>, select the <em>integration</em> tab and scroll to the <em>Configure Spark Integration</em> section. Click on <em>Download client Jars</em>. This will start the download of the <em>client.tar.gz</em> archive. The archive contains two jar files for HopsFS, the client libraries for HopsHive and the Java version of the HSFS library. You should upload these libraries to your Spark cluster and attach them as local resources to your Job. If you are using <code>spark-submit</code>, you should specify the <code>--jar</code> option. For more details see: <a href="https://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management">Spark Dependency Management</a>.</p>
+<p>In the <em>Project Settings</em>, select the <em>integration</em> tab and scroll to the <em>Configure Spark Integration</em> section. Click on <em>Download client Jars</em>. This will start the download of the <em>client.tar.gz</em> archive. The archive contains two jar files for HopsFS, the Apache Hudi jar and the Java version of the HSFS library. You should upload these libraries to your Spark cluster and attach them as local resources to your Job. If you are using <code>spark-submit</code>, you should specify the <code>--jar</code> option. For more details see: <a href="https://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management">Spark Dependency Management</a>.</p>
 <p align="center">
     <figure>
         <img src="../../../assets/images/guides/integrations/spark_integration.png" alt="Spark integration tab">
@@ -5340,11 +5340,11 @@ spark.hadoop.client.rpc.ssl.enabled.protocol        TLSv1.2
 spark.hadoop.hops.ssl.keystores.passwd.name         material_passwd
 spark.hadoop.hops.ssl.keystore.name                 keyStore.jks
 spark.hadoop.hops.ssl.trustore.name                 trustStore.jks
-
-spark.sql.hive.metastore.jars                       [Path to the Hopsworks Hive Jars]
+spark.sql.hive.metastore.jars                       path
+spark.sql.hive.metastore.jars.path                  [Path to the Hopsworks Hive Jars]
 spark.hadoop.hive.metastore.uris                    thrift://[metastore_ip]:[metastore_port]
 </code></pre></div>
-<p><code>spark.sql.hive.metastore.jars</code> should point to the path with the Hive Jars which can be found in the <em>clients.tar.gz</em>.</p>
+<p><code>spark.sql.hive.metastore.jars.path</code> should point to the path with the jars from the uncompressed Hive archive you can find in <em>clients.tar.gz</em>.</p>
 <h2 id="pyspark">PySpark<a class="headerlink" href="#pyspark" title="Permanent link">#</a></h2>
 <p>To use PySpark, install the HSFS Python library which can be found on <a href="https://pypi.org/project/hsfs/">PyPi</a>.</p>
 <div class="admonition attention">

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the development and operation of machine learning models at scale.">
+        <meta name="description" content="Documentation on how to configure an HDInsight cluster to read and write features from the Hopsworks Feature Store">
       
       
         <meta name="author" content="Hopsworks">
@@ -5372,7 +5372,8 @@ hops.ssl.trustore.name=/usr/lib/hopsworks/trustStore.jks
 <p>Spark spark-defaults.conf:
 <div class="highlight"><pre><span></span><code>spark.executor.extraClassPath=/usr/lib/hopsworks/client/*
 spark.driver.extraClassPath=/usr/lib/hopsworks/client/*
-spark.sql.hive.metastore.jars=/usr/lib/hopsworks/apache-hive-bin/lib/*
+spark.sql.hive.metastore.jars=path
+spark.sql.hive.metastore.jars.path=/usr/lib/hopsworks/apache-hive-bin/lib/*
 </code></pre></div></p>
 <p>Spark hive-site.xml:
 <div class="highlight"><pre><span></span><code>hive.metastore.uris=thrift://MY_HOPSWORKS_INSTANCE_PRIVATE_IP:9083
