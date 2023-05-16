@@ -1,3 +1,6 @@
+---
+description: Documentation on how to configure an EMR cluster to read and write features from the Hopsworks Feature Store
+---
 # Configure EMR for the Hopsworks Feature Store
 To enable EMR to access the Hopsworks Feature Store, you need to set up a Hopsworks API key, add a bootstrap action and configurations to your EMR cluster.
 
@@ -98,7 +101,8 @@ Copy the configuration below and replace ip-XXX-XX-XX-XXX.XX-XXXX-X.compute.inte
       "spark.serializer": "org.apache.spark.serializer.KryoSerializer",
       "spark.executor.extraClassPath": "/usr/lib/hopsworks/client/*",
       "spark.driver.extraClassPath": "/usr/lib/hopsworks/client/*",
-      "spark.sql.hive.metastore.jars": "/usr/lib/hopsworks/apache-hive-bin/lib/*",
+      "spark.sql.hive.metastore.jars": "path",
+      "spark.sql.hive.metastore.jars.path": "/usr/lib/hopsworks/apache-hive-bin/lib/*",
       "spark.hadoop.hive.metastore.uris": "thrift://ip-XXX-XX-XX-XXX.XX-XXXX-X.compute.internal:9083"
     }
   },

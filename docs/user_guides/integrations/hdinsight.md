@@ -1,3 +1,6 @@
+---
+description: Documentation on how to configure an HDInsight cluster to read and write features from the Hopsworks Feature Store
+---
 # Configure HDInsight for the Hopsworks Feature Store
 To enable HDInsight to access the Hopsworks Feature Store, you need to set up a Hopsworks API key, add a script action and configurations to your HDInsight cluster.
 
@@ -100,7 +103,8 @@ Spark spark-defaults.conf:
 ```
 spark.executor.extraClassPath=/usr/lib/hopsworks/client/*
 spark.driver.extraClassPath=/usr/lib/hopsworks/client/*
-spark.sql.hive.metastore.jars=/usr/lib/hopsworks/apache-hive-bin/lib/*
+spark.sql.hive.metastore.jars=path
+spark.sql.hive.metastore.jars.path=/usr/lib/hopsworks/apache-hive-bin/lib/*
 ```
 
 Spark hive-site.xml:
