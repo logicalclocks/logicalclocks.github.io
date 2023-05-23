@@ -165,7 +165,7 @@ fg = fs.create_feature_group(
 or, if the Feature Group already exist, you can simply run:
 
 ```python3
-fg.save_expectation-suite(expectation_suite)
+fg.save_expectation_suite(expectation_suite)
 ```
 
 That is all there is to it. Hopsworks will now automatically use your suite to validate the DataFrames you want to write to the Feature Group. Try it out!
