@@ -55,6 +55,6 @@ Batch data requires specification of a `start_time` for the start of the batch s
 
 ### Spine Dataframes
 
-Similar to training dataset generation, it might be helpful to specify a spine when retrieving features for batch scoring. The only difference in this case is that the spine dataframe doesn't
+Similar to training dataset generation, it might be helpful to specify a spine when retrieving features for batch inference. The only difference in this case is that the spine dataframe doesn't
 need to contain the label, as this will be the output of the inference pipeline.
 A typical use case is the handling of opt-ins, where certain customers have to be excluded from an inference pipeline due to a missing marketing opt-in.

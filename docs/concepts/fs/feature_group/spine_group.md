@@ -25,8 +25,8 @@ measurements, which is our prediction target:
 | 3           | 2022-06-01 06:36 | 2                |
 
 A Spine Group does not materialize any data to the feature store itself, and always needs to be provided when retrieving features from the [offline API](../feature_view/offline_api.md).
-You can think of it as a place holder or a temporary feature group, to be replaced by a Dataframe in point in time joins.
+You can think of it as a place holder or a temporary feature group, to be replaced by a Dataframe in point-in-time joins.
 
 When using the [online API](../feature_view/online_api.md), it is not necessary to provide the spine, since the online feature store contains only the latest feature values, and therefore
-no point in time join is required, the label is not required, as the inference pipelien is going to compute the prediciton
+no point in time join is required, the label is not required, as the inference pipeline is going to compute the prediction
 and the primary key values are specified when calling the online API.

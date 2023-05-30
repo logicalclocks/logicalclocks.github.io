@@ -79,9 +79,9 @@ X_train, X_test, y_train, y_test = feature_view_spine.train_test_split(0.2, spin
 X_train.show()
 ```
 
-### Step 4: Retrieving New Batches of Data for Scoring
+### Step 4: Retrieving New Batches Inference Data
 
-You can now use the offline and online API of the feature stores to read features for scoring.
+You can now use the offline and online API of the feature stores to read features for inference.
 Similarly to training dataset creation, every time you read up a new batch of data, you can pass a different spine dataframe.
 
 ```python
@@ -99,7 +99,7 @@ feature_view.get_feature_vector({"cc_num": 4473593503484549})
 
 ## Replacing a Regular Feature Group with a Spine at Serving Time
 
-Sometimes it might be handy to create a feature view with a regular feature group, but then in the inference pipeline to use a spine in order to fetch features for example only for a small set of primary key values.
+In the case where you create a feature view with a regular feature group, but you would like to retrieve batch inference data using IDs (primary key values), you can use a spine to replace the left feature group.
 To do this, you can pass the Spine Group instead of a dataframe.
 
 ```python
