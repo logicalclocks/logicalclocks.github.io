@@ -25,6 +25,7 @@ nav:
               - Write APIs: concepts/fs/feature_group/write_apis.md
               - Feature Pipelines: concepts/fs/feature_group/feature_pipelines.md
               - External Feature Groups: concepts/fs/feature_group/external_fg.md
+              - Spine Group: concepts/fs/feature_group/spine_group.md
               - Data Validation/Stats/Alerts: concepts/fs/feature_group/fg_statistics.md
               - Versioning: concepts/fs/feature_group/versioning.md
           - Feature Views:
@@ -76,12 +77,13 @@ nav:
               - Advanced Data Validation: user_guides/fs/feature_group/advanced_data_validation.md
           - Feature View:
               - user_guides/fs/feature_view/index.md
-              - Feature View: user_guides/fs/feature_view/overview.md
+              - Overview: user_guides/fs/feature_view/overview.md
               - Training data: user_guides/fs/feature_view/training-data.md
               - Batch data: user_guides/fs/feature_view/batch-data.md
               - Feature vectors: user_guides/fs/feature_view/feature-vectors.md
               - Query: user_guides/fs/feature_view/query.md
               - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
+              - Spines: user_guides/fs/feature_view/spine-query.md
           - Compute Engines: user_guides/fs/compute_engines.md
           - Client Integrations:
               - user_guides/integrations/index.md

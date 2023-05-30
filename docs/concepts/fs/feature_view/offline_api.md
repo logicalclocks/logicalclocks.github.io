@@ -27,6 +27,12 @@ When you create training data from features in different feature groups, it is p
 
 HSFS uses the event_time columns on both feature groups to determine the most recent (but not newer) feature values that are joined together with the feature values from the feature group containing the label. That is, the features in the feature group containing the label are the observation times for the features in the resulting training data, and we want feature values from the other feature groups that have the most recent timestamps, but not newer than the timestamp in the label-containing feature group.
 
+#### Spine Dataframes
+
+The left side of the point-in-time join is typically the set of training entities/primary key values for which the relevant features need to be retrieved. This left side of the join can also be replaced by a [spine group](../feature_group/spine_group.md).
+When using feature groups also so save labels/prediction targets, it can happen that you end up with the same entity multiple times in the training dataset depending on the cadence at which the label group was updated and the length of the event time interval
+that is being used to generate the training dataset. This can lead to bias in the training dataset and should be avoided. To avoid this kind of situation, users can either narrow down the event time interval during training dataset creation or use a spine
+in order to precisely define the entities to be included in the training dataset. This is just one example where spines are helpful.
 
 ### Splitting Training Data
 
@@ -46,3 +52,9 @@ Batch data for scoring models is created using a feature view. Similar to traini
 Batch data requires specification of a `start_time` for the start of the batch scoring data. You can also specify the `end_time` (default is the current date).
 
 <img src="../../../../assets/images/concepts/fs/batch-scoring-data.svg">
+
+### Spine Dataframes
+
+Similar to training dataset generation, it might be helpful to specify a spine when retrieving features for batch scoring. The only difference in this case is that the spine dataframe doesn't
+need to contain the label, as this will be the output of the inference pipeline.
+A typical use case is the handling of opt-ins, where certain customers have to be excluded from an inference pipeline due to a missing marketing opt-in.
