@@ -91,7 +91,7 @@ The join key lists should contain the names of the features to join on.
     ```python
     feature_join = rain_fg.select_all() \
         .join(temperature_fg.select_all(), on=["date", "location_id"]) \
-        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left")
+        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], join_type="left")
     ```
 
 === "Scala"
@@ -128,7 +128,7 @@ Filters are fully compatible with joins:
     ```python
     feature_join = rain_fg.select_all() \
         .join(temperature_fg.select_all(), on=["date", "location_id"]) \
-        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left") \
+        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], join_type="left") \
         .filter((rain_fg.location_id == 10) | (rain_fg.location_id == 20))
     ```
 
@@ -146,7 +146,7 @@ The filters can be applied at any point of the query:
     ```python
     feature_join = rain_fg.select_all() \
         .join(temperature_fg.select_all().filter(temperature_fg.avg_temp >= 22), on=["date", "location_id"]) \
-        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], how="left") \
+        .join(location_fg.select_all(), left_on=["location_id"], right_on=["id"], join_type="left") \
         .filter(rain_fg.location_id == 10)
     ```
 
