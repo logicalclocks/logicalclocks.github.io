@@ -25,7 +25,7 @@ The three files (`keyStore.jks`, `trustStore.jks` and `material_passwd`) should 
 
 ## Configure your Flink cluster
 
-Add the following configuration to the `flink-conf.yaml` application:
+Add the following configuration to the `flink-conf.yaml`:
 
 ```
 flink.hadoop.hops.ssl.keystore.name: replace_this_with_actual_path/keyStore.jks
