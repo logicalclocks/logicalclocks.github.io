@@ -57,7 +57,7 @@ If you are using Flink within Hopsworks, there is no further configuration requi
 
 ### Outside Hopsworks
 
-Connecting to the Feature Store from an external Flink cluster, such as GCP DataProc or AWS EMR, requires Hopsworks certificates. 
+Connecting to the Feature Store from an external Flink cluster, such as GCP DataProc or AWS EMR, requires Hopsworks certificates. The [Flink integration guide](../integrations/flink.md) explains step by step how to connect to the Feature Store from an external Flink cluster.
 
 ## Beam
 
