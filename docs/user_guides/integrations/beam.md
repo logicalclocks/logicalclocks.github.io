@@ -1,7 +1,7 @@
 ---
 description: Documentation on how to configure an Apache Beam Dataflow Runner job to write features in to the Hopsworks Feature Store
 ---
-# Apache Beam DataflowRunner
+# Apache Beam Dataflow Runner
 
 Connecting to the Feature Store from an Apache Beam Dataflow Runner, requires Hopsworks certificates. For this in your Beam Java application `pom.xml` file include following snippet:
 ```
