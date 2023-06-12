@@ -30,7 +30,7 @@ It is defined in the cluster definition configuration under the property "online
 
 <p align="center">
   <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/on_prem/kafka_connector_config.png" alt="The name of the Kafka Storage connector used by Hopsworks">
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/on_prem/kafka_connector_config.png" alt="The name of the Kafka storage connector used by Hopsworks">
   </figure>
 </p>
 
