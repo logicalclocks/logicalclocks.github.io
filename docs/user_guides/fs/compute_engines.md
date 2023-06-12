@@ -67,17 +67,11 @@ Currently, Beam is only supported as an external client.
 
 ### Outside Hopsworks
 
-Connecting to the Feature Store from an external Beam client, such as from Dataflow, requires Hopsworks certificates. For this in Beam application `pom.xml` file include following snippet:
-```
-    <resources>
-      <resource>
-        <directory>java.io.tmpdir</directory>
-        <includes>
-          <include>**/*.jks</include>
-        </includes>
-      </resource>
-    </resources>
-```
+Connecting to the Feature Store from Beam DataFlowRunner, requires configuring Hopsworks certificates. The [Beam integration guide](../integrations/beam.md) explains step by step how to connect to the Feature Store from Beam Dataflow Runner.
+
+!!! warning
+Apache Beam integration with Hopsworks feature store was only tested used Dataflow Runner.
+
 
 For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/beam).
 
