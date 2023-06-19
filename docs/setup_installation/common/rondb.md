@@ -340,8 +340,7 @@ We can change all three parameters at once. The below shows an example of how to
   </figure>
 </p>
 
-The below image shows to use the scroll bar to change the VM type of a data node and it looks very similar for the
-MySQL Servers and API nodes. It is currently not possible to reconfigure API nodes. The VM type differs from cloud
+It is currently not possible to reconfigure API nodes. The VM type differs from cloud
 to cloud.
 
 <p align="center">
