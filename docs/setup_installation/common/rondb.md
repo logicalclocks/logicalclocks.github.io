@@ -301,7 +301,7 @@ cluster.
   </figure>
 </p>
 
-At some point the MySQL Servers need to be stopped and removed from the cluster. During this step we see this
+At some point the old MySQL Servers need to be stopped and removed from the cluster. During this step we see this
 message. After this step the MySQL Server is no longer serving queries in the cluster.
 
 The order of starting MySQL Server and stopping them can change, but we always ensure that we never decrease
