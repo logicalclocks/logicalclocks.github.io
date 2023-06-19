@@ -314,7 +314,7 @@ the number of MySQL Servers until the final step if at all.
   </figure>
 </p>
 
-After starting and stopping all the MySQL Servers we have some cleanup steps to go through such as deleting the
+After starting all the MySQL Servers we have some cleanup steps to go through such as deleting the
 old VMs. However during this step the cluster is already reconfigured. After all cleanup steps are completed the
 final message arrives. As you can see the state is changed to **running**. This means that a new reconfiguration
 can be started again as well. Only one reconfiguration at a time is allowed.
