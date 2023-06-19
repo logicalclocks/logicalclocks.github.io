@@ -73,7 +73,7 @@ First, you need to select the instance type and local storage size for the data 
 These are the database nodes that will store data.
 
 RonDB in Hopsworks is an in-memory database, so in order to fit more data you need to choose an instance type with more memory.
-Local storage is used for offline storage of recovery data, and requires a disk of at least 40 GiB plus 1.8 times the memory size of the data node VM. RonDB does support on-disk columns that can be used for on-disk features, this will be accessible from Hopsworks in some future version.
+Local storage is used for offline storage of recovery data. RonDB does support on-disk columns that can be used for on-disk features, this will be accessible from Hopsworks in some future version.
 
 Since the data node is an in-memory database we only provide options with high memory compared to the CPUs. Most VMs have
 8 GByte of memory per VCPU. The VM type is changed with the scroll bar **RonDB Data node instance type**. Local storage size
@@ -187,7 +187,8 @@ we only support increasing the size of the RonDB data nodes to ensure that we al
 Storing the database in-memory provides much lower latency to online applications.
 
 Thus reconfiguring of the Storage Layer is mainly intended to meet long-term needs of the business in terms of
-CPU and memory.
+CPU and memory. In addition one can change the number of replicas to improve the availability of the RonDB
+cluster.
 
 ## Reconfiguration of Storage Client Layer
 To start a reconfiguration of the MySQL Servers choose the RonDB tab in the Cluster you want to change.
