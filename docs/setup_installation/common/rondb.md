@@ -343,12 +343,6 @@ We can change all three parameters at once. The below shows an example of how to
 It is currently not possible to reconfigure API nodes. The VM type differs from cloud
 to cloud.
 
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb/reconfig_select_vm.png" alt="Reconfiguration Select VM Type">
-    <figcaption>Reconfiguration Select VM Type</figcaption>
-  </figure>
-</p>
 
 The start of a reconfiguration uses the same pop-up windows as when reconfiguring the Storage Client Layer.
 
