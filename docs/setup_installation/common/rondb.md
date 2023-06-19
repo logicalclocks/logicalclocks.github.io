@@ -290,7 +290,7 @@ During this we see the following message for a short time.
   </figure>
 </p>
 
-After starting the MySQL Server we need to insert the MySQL Server into Consul and other post init activities.
+After starting the new MySQL Server we need to insert the MySQL Server into Consul and other post init activities.
 During this step we see the message below. Already here the new MySQL Server can start serving queries in the
 cluster.
 
