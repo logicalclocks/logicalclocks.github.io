@@ -1,3 +1,7 @@
+---
+description: Requirements and instructions on how to install the Hopsworks feature store on-premises.
+---
+
 # Hopsworks On premises
 
 It is possible to use Hopsworks on-premises, which means that companies can run their machine learning workloads on their own hardware and infrastructure, rather than relying on a cloud provider. This can provide greater flexibility, control, and cost savings, as well as enabling companies to meet specific compliance and security requirements.
@@ -10,7 +14,7 @@ For further details about on-premise installations; [contact us](https://www.hop
 
 You need at least one server or virtual machine on which Hopsworks will be installed with at least the following specification:
 
-* Ubuntu, Centos or RHEL Linux supported,
+* Ubuntu 22.04, Centos or RHEL Linux (Version 8) supported,
 * at least 32GB RAM,
 * at least 8 CPUs,
 * 100 GB of free hard-disk space,
