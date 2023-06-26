@@ -36,10 +36,10 @@ You can do aggregation in SQL for data in your data warehouse or database.
 
 
 ### Feature Engineering in Flink
-Apache Flink is a powerful and flexible framework for stateful feature computation operations over unbounded and bounded data streams. It is used for feature engineering when you need very fresh features computed in real-time. Flink provides a rich set of operators and functions such as time windows and aggregation operations that can be applied to keyed and/or global window streams. Flink’s stateful operations allows it to maintain and update state across multiple data records or events, which is particularly useful for feature engineering tasks such as sessionization and/or maintaining rolling aggregates over a sliding window of data.
+Apache Flink is a powerful and flexible framework for stateful feature computation operations over unbounded and bounded data streams. It is used for feature engineering when you need very fresh features computed in real-time. Flink provides a rich set of operators and functions such as time windows and aggregation operations that can be applied to keyed and/or global window streams. Flink’s stateful operations allow users to maintain and update state across multiple data records or events, which is particularly useful for feature engineering tasks such as sessionization and/or maintaining rolling aggregates over a sliding window of data.
 
-Currently, Flink feature engineering pipelines are supported in Java/Scala only. Hopsworks Feature Store expects that your computed features are encapsulated in POJO that has the same schema as the feature group you are writing into. In database terms this POJO class corresponds to one row. Feature Group is expected to be online and stream enabled.
+Flink feature engineering pipelines are supported in Java/Scala only.
 
 
 ### Feature Engineering in Beam
-Currently, Beam feature engineering pipelines are supported in Java/Scala only. Hopsworks Feature Store expects that your computed features are encapsulated in `org.apache.beam.sdk.values.Row` class and that it has the same schema as the feature group you are writing into. Feature Group is expected to be online and stream enabled.
+Beam feature engineering pipelines are supported in Java/Scala only. 

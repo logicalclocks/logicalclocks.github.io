@@ -8,7 +8,7 @@ As such, Hopsworks supports three computational engines:
 
 1. [Apache Spark](https://spark.apache.org): Spark Dataframes and Spark Structured Streaming Dataframes are supported, both from Python environments (PySpark) and from Scala environments.
 2. [Pandas](https://pandas.pydata.org/): For pure Python environments without dependencies on Spark, Hopsworks supports [Pandas Dataframes](https://pandas.pydata.org/).
-3. [Apache Flink](https://flink.apache.org) *experimental*: Flink Data Streams are currently supported as an experimental feature from Java/Scala environments.
+3. [Apache Flink](https://flink.apache.org): Flink Data Streams are currently supported as an experimental feature from Java/Scala environments.
 3. [Apache Beam](https://beam.apache.org/) *experimental*: Beam Data Streams are currently supported as an experimental feature from Java/Scala environments.
 
 Hopsworks supports running [compute on the platform itself](../../concepts/dev/inside.md) in the form of [Jobs](../projects/jobs/pyspark_job.md) or in [Jupyter Notebooks](../projects/jupyter/python_notebook.md).
@@ -57,19 +57,20 @@ If you are using Flink within Hopsworks, there is no further configuration requi
 
 ### Outside Hopsworks
 
-Connecting to the Feature Store from an external Flink cluster, such as GCP DataProc or AWS EMR, requires Hopsworks certificates. The [Flink integration guide](../integrations/flink.md) explains step by step how to connect to the Feature Store from an external Flink cluster.
+Connecting to the Feature Store from an external Flink cluster, such as GCP DataProc or AWS EMR, requires configuring the Hopsworks certificates. The [Flink integration guide](../integrations/flink.md) explains step by step how to connect to the Feature Store from an external Flink cluster.
 
 ## Beam
 
 ### Inside Hopsworks
 
-Currently, Beam is only supported as an external client. 
+Beam is only supported as an external client. 
 
 ### Outside Hopsworks
 
-Connecting to the Feature Store from Beam DataFlowRunner, requires configuring Hopsworks certificates. The [Beam integration guide](../integrations/beam.md) explains step by step how to connect to the Feature Store from Beam Dataflow Runner.
+Connecting to the Feature Store from Beam DataFlowRunner, requires configuring the Hopsworks certificates. The [Beam integration guide](../integrations/beam.md) explains step by step how to connect to the Feature Store from Beam Dataflow Runner.
 
 !!! warning
+
 Apache Beam integration with Hopsworks feature store was only tested used Dataflow Runner.
 
 

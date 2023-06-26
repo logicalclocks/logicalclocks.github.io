@@ -1,9 +1,9 @@
 ---
-description: Documentation on how to configure an Apache Beam Dataflow Runner job to write features in to the Hopsworks Feature Store
+description: Documentation on how to configure an Apache Beam Dataflow Runner job to write features to the Hopsworks Feature Store
 ---
 # Apache Beam Dataflow Runner
 
-Connecting to the Feature Store from an Apache Beam Dataflow Runner, requires Hopsworks certificates. For this in your Beam Java application `pom.xml` file include following snippet:
+Connecting to the Feature Store from an Apache Beam Dataflow Runner, requires configuring the Hopsworks certificates. For this in your Beam Java application `pom.xml` file include following snippet:
 ```
     <resources>
       <resource>
@@ -17,7 +17,7 @@ Connecting to the Feature Store from an Apache Beam Dataflow Runner, requires Ho
 
 ## Generating an API Key
 
-For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the Flink integration to work correctly make sure you add the following scopes to your API key:
+For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the Beam integration to work correctly make sure you add the following scopes to your API key:
 
   1. featurestore
   2. project
@@ -26,7 +26,7 @@ For instructions on how to generate an API key follow this [user guide](../proje
 
 ## Connecting to the Feature Store
 
-You are now ready to connect to the Hopsworks Feature Store from Flink:
+You are now ready to connect to the Hopsworks Feature Store from Beam:
 
 ```Java
 //Establish connection with Hopsworks.
@@ -44,4 +44,4 @@ FeatureStore fs = hopsworksConnection.getFeatureStore();
 
 ## Next Steps
 
-For more information about how to connect, see the [Connection](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/connection_api/) API reference.
+For more information and how to integrate Beam feature pipeline  to the Hopsworks Feature store follow the [tutorial](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/beam).

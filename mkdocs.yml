@@ -101,6 +101,8 @@ nav:
                   - Designer: user_guides/integrations/mlstudio_designer.md
                   - Notebooks: user_guides/integrations/mlstudio_notebooks.md
               - Apache Spark: user_guides/integrations/spark.md
+              - Apache Flink: user_guides/integrations/flink.md
+              - Apache Beam: user_guides/integrations/beam.md
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
           - Provenance: user_guides/fs/provenance/provenance.md

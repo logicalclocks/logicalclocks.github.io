@@ -1,5 +1,5 @@
 ---
-description: Documentation on how to configure an external Flink cluster to write features in to the Hopsworks Feature Store
+description: Documentation on how to configure an external Flink cluster to write features to the Hopsworks Feature Store
 ---
 # Flink Integration
 
@@ -15,7 +15,7 @@ In the *Project Settings*, select the *integration* tab and scroll to the *Confi
     </figure>
 </p>
 
-Hopsworks uses X.509 certificates for authentication and authorization. If you are interested in the Hopsworks security model, you can read more about it in this [blog post](https://www.logicalclocks.com/blog/how-we-secure-your-data-with-hopsworks).
+Hopsworks uses X.509 certificates for authentication and authorization. If you are interested in the Hopsworks security model, you can read more about it in this [blog post](https://www.hopsworks.ai/post/how-we-secure-your-data-with-hopsworks).
 The certificates are composed of three different components: the `keyStore.jks` containing the private key and the certificate for your project user, the `trustStore.jks` containing the certificates for the Hopsworks certificates authority, and a password to unlock the private key in the `keyStore.jks`. The password is displayed in a pop-up when downloading the certificate and should be saved in a file named `material_passwd`.
 
 !!! warning
@@ -62,4 +62,4 @@ FeatureStore fs = hopsworksConnection.getFeatureStore();
 
 ## Next Steps
 
-For more information about how to connect, see the [Connection](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/connection_api/) API reference.
+For more information and how to integrate Flink streaming feature pipeline to the Hopsworks Feature store follow the [tutorial](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/flink).
