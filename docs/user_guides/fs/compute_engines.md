@@ -71,7 +71,7 @@ Connecting to the Feature Store from Beam DataFlowRunner, requires configuring t
 
 !!! warning
 
-Apache Beam integration with Hopsworks feature store was only tested used Dataflow Runner.
+Apache Beam integration with Hopsworks feature store was only tested using Dataflow Runner.
 
 
 For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/beam).
