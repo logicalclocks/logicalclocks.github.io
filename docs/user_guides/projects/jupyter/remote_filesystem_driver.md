@@ -6,7 +6,7 @@ We provide two ways to access and persist files in HopsFs inside a jupyter noteb
 
 * `hdfscontentsmanager`: With `hdfscontentsmanager` you interact with the project datasets using the dataset api. When you
   start a notebook using the `hdfscontentsmanager` you will only see the files in the configured root path.
-* `hopsfsmount`: With `hopsfsmount` the project datasets are available in the jupyter notebook as a local filesystem.
+* `hopsfsmount`: With `hopsfsmount` all the project datasets are available in the jupyter notebook as a local filesystem.
   This means you can use native Python file I/O operations (copy, move, create, open, etc.) to interact with the project datasets.
   When you open the jupyter notebook you will see all the project datasets.
 
