@@ -124,6 +124,7 @@ nav:
           - Jupyter:
               - Run Spark Notebook: user_guides/projects/jupyter/spark_notebook.md
               - Run Python Notebook: user_guides/projects/jupyter/python_notebook.md
+              - Remote Filesystem Driver: user_guides/projects/jupyter/remote_filesystem_driver.md
           - Jobs:
               - Run PySpark Job: user_guides/projects/jobs/pyspark_job.md
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
