@@ -78,7 +78,7 @@ Only a subset of the data types can be used as primary key, as indicated in the 
 | DOUBLE                        | DOUBLE               |             |                                                          | 
 | DECIMAL(PREC, SCALE)          | DECIMAL(PREC, SCALE) |             | e.g. DECIMAL(38, 18)                                     | 
 | TIMESTAMP                     | TIMESTAMP            |             | s. [Timestamps and Timezones](#timestamps-and-timezones) | 
-| DATE                          | DATE                 |             |                                                          | 
+| DATE                          | DATE                 | x           |                                                          | 
 | STRING                        | VARCHAR(100)         | x           | Also supports: TEXT                                      | 
 | ARRAY&lt;TYPE&gt;             | VARBINARY(100)       | x           | Also supports: BLOB                                      | 
 | STRUCT&lt;NAME: TYPE, ...&gt; | VARBINARY(100)       | x           | Also supports: BLOB                                      | 
@@ -117,7 +117,7 @@ When in doubt, use the BLOB type instead, but note that it comes with a potentia
 #### Online restrictions for primary key data types
 
 When a feature is being used as a primary key, certain types are not allowed. 
-Examples of such types are *FLOAT*, *DOUBLE*, *DATE*, *TEXT* and *BLOB*. 
+Examples of such types are *FLOAT*, *DOUBLE*, *TEXT* and *BLOB*. 
 Additionally, the size of the sum of the primary key online data types storage requirements **should not exceed 4KB**.
 
 #### Online restrictions for row size
