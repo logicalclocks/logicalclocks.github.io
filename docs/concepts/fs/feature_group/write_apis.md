@@ -21,7 +21,7 @@ The Stream API first writes data to be ingested to a Kafka topic, and then Hopsw
 
 ## Batch API
 
-For very large updates to feature groups, such as when you are backfilling large amounts of data to an offline feature group, it is often preferential to write directly to the Hudi tables in Hopsworks, instead of via Kafka - thus reducing write amplification. Spark clients can write directly to Hudi tables on Hopsworks with Hopsworks libraries and certificates using a HDFS API. This requires network connectivity between the Spark clients and the datanodes in Hopsworks.
+For very large updates to feature groups, such as when you are materializing large amounts of data to an offline feature group, it is often preferential to write directly to the Hudi tables in Hopsworks, instead of via Kafka - thus reducing write amplification. Spark clients can write directly to Hudi tables on Hopsworks with Hopsworks libraries and certificates using a HDFS API. This requires network connectivity between the Spark clients and the datanodes in Hopsworks.
 
 <img src="../../../../assets/images/concepts/fs/fg-batch-api.svg">
 

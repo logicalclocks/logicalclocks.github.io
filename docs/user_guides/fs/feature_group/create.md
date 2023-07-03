@@ -116,12 +116,12 @@ When using the streaming API, the data will be written directly to the online st
 the offline storage is going to happen. You can do it synchronously after every call to `fg.insert()`, which is the default. Often, you defer writes to a later point in order to batch together multiple writes to the offline storage (useful to reduce the overhead of many small writes):
 
 ```python
-# run multiple inserts without starting the offline backfill
-job, _ = fg.insert(df1, write_options={"start_offline_backfill": False})
-job, _ = fg.insert(df2, write_options={"start_offline_backfill": False})
-job, _ = fg.insert(df3, write_options={"start_offline_backfill": False})
+# run multiple inserts without starting the offline materialization job
+job, _ = fg.insert(df1, write_options={"start_offline_materialization": False})
+job, _ = fg.insert(df2, write_options={"start_offline_materialization": False})
+job, _ = fg.insert(df3, write_options={"start_offline_materialization": False})
 
-# start the backfill for all three inserts
+# start the materialization job for all three inserts
 # note the job object is always the same, you don't need to call it three times
 job.run()
 ```
