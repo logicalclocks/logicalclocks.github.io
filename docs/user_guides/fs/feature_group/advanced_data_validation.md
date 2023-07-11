@@ -241,9 +241,9 @@ fg_prod.save_expectation_suite(
 
 In this setup, Hopsworks will abort inserting a DataFrame that does not successfully fullfill all expectations in the attached Expectation Suite. This ensures data quality standards are upheld for every insertion and provide downstream users with strong guarantees.
 
-#### Avoid Data Loss on Backfill jobs
+#### Avoid Data Loss on materialization jobs
 
-Aborting insertions of DataFrames which do not satisfy the data quality standards can lead to data loss in your backfill job. To avoid such loss we recommend creating a duplicate Feature Group with the same Expectation Suite in `"ALWAYS"` mode which will hold the rejected data.
+Aborting insertions of DataFrames which do not satisfy the data quality standards can lead to data loss in your materialization job. To avoid such loss we recommend creating a duplicate Feature Group with the same Expectation Suite in `"ALWAYS"` mode which will hold the rejected data.
 
 ```python3
 job, report = fg_prod.insert(df)
