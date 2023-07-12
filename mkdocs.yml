@@ -209,6 +209,7 @@ nav:
           - GPU support: setup_installation/common/gpu_support.md
           - User management: setup_installation/common/user_management.md
           - Managed RonDB: setup_installation/common/rondb.md
+          - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
           - Single Sign On:
               - Hopsworks:
                   - OAuth2: setup_installation/common/sso/oauth.md
