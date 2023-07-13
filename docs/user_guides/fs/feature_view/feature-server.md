@@ -1,3 +1,7 @@
+---
+description:Using Feature Store REST API Server for retrieving feature vectors
+---
+
 # Feature Store REST API Server
 
 This API server allows users to retrieve single/batch feature vectors from a feature view.
