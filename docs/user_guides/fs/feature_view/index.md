@@ -6,5 +6,6 @@ This section serves to provide guides and examples for the common usage of abstr
 - [Create a Training Data with different splits](training-data.md)
 - [Batch Data](batch-data.md)
 - [Feature Vectors](feature-vectors.md)
+- [Feature Server](feature-server.md)
 - [Query](query.md)
 - [Transformation Functions](transformation-function.md)

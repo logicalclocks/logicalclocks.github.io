@@ -1,5 +1,5 @@
 ---
-description:Using Spine Groups in Feature View queries for training dataset and batch retrieval.
+description: Using Spine Groups in Feature View queries for training dataset and batch retrieval.
 ---
 
 # Using Spines
