@@ -4,20 +4,18 @@ This is great for large datasets, but for small or moderately sized datasets (th
 DataFrame in your local Python environment), the overhead of starting a Spark or Hive job and doing distributed data processing can be significant.
 
 ArrowFlight Server with DuckDB significantly reduces the time that Python clients need to read feature groups 
-and batch inference data from the Feature Store, as well as creating moderately-sized training datasets.
+and batch inference data from the Feature Store, as well as creating moderately-sized in-memory training datasets.
 
 When the service is enabled, clients will automatically use it for the following operations:
 
-- reading Feature Groups
-- reading External Feature Groups (supported Storage Connectors: Snowflake, BigQuery)
-- reading Queries (containing Feature Groups and supported External Feature Groups)
-- reading Batch Inference Data
-- creating In-Memory Training Datasets
-- writing Training Datasets
-- reading Training Datasets
+- [reading Feature Groups](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#read)
+- [reading Queries](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/query/#read)
+- [reading Training Datasets](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#get_training_data)
+- [creating In-Memory Training Datasets](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#training_data)
+- [reading Batch Inference Data](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#get_batch_data)
 
-For larger datasets, clients can still make use of the Spark/Hive backend by explicitly setting 
-`read_options={"use_hive": True}` or `write_options={"use_spark": True}`, respectively.
+For larger datasets, clients can still make use of the Spark/Hive backend by explicitly setting
+`read_options={"use_hive": True}`.
 
 ## Service configuration
 The ArrowFlight Server with DuckDB is co-located with RonDB in the Hopsworks cluster.
