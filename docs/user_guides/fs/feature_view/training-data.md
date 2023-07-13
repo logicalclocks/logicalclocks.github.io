@@ -4,8 +4,8 @@ Training data can be created from the feature view and used by different ML libr
 
 You can read [training data concepts](../../../concepts/fs/feature_view/offline_api.md) for more details. To see a full example of how to create training data, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/2_feature_view_creation.ipynb).
 
-For small or moderately-sized data, we recommend enabling the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md) service,
-which will provide significant speedups over Spark/Hive for creating in-memory training datasets.
+For Python-clients, handling small or moderately-sized data, we recommend enabling the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md) service,
+which will provide significant speedups over Spark/Hive for reading and creating in-memory training datasets.
 
 ## Creation
 It can be created as in-memory DataFrames or materialised as `tfrecords`, `parquet`, `csv`, or `tsv` files to HopsFS or in all other locations, for example, S3, GCS. If you materialise a training dataset, a `PySparkJob` will be launched. By default, `create_training_data` waits for the job to finish. However, you can run the job asynchronously by passing `write_options={"wait_for_job": False}`. You can monitor the job status in the [jobs overview UI](../../projects/jobs/pyspark_job.md#step-1-jobs-overview). 
@@ -72,6 +72,13 @@ version, job = feature_view.create_train_validation_test_split(
     description = 'transactions fraud batch training dataset',
     data_format = 'csv'
 )
+```
+
+If the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md) service is enabled,
+and you want to create a particular in-memory training dataset with Hive instead, you can set `read_options={"use_hive": True}`.
+```python
+# create a training dataset as DataFrame with Hive
+X_train, X_test, y_train, y_test = feature_view.train_test_split(test_size=0.2, read_options={"use_hive: True})
 ```
 
 ## Read Training Data

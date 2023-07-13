@@ -15,7 +15,17 @@ It is very common that ML models are deployed in a "batch" setting where ML pipe
     ```java
     Dataset<Row> ds = featureView.getBatchData("20220620", "20220627")
     ```
+
 For Python-clients, handling small or moderately-sized data, we recommend enabling the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md), which will provide significant speedups over Spark/Hive for reading batch data.
+If the service is enabled, and you want to read this particular batch data with Hive instead, you can set the read_options to `{"use_hive": True}`.
+```python
+# get batch data with Hive
+df = feature_view.get_batch_data(
+    start_time = "20220620",
+    end_time = "20220627",
+    read_options={"use_hive: True})
+)
+```
 
 ## Creation with transformation
 If you have specified transformation functions when creating a feature view, you will get back transformed batch data as well. If your transformation functions require statistics of training dataset, you must also provide the training data version. `init_batch_scoring` will then fetch the statistics and initialize the functions with required statistics. Then you can follow the above examples and create the batch data. Please note that transformed batch data can only be returned in the python client but not in the java client.
