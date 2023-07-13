@@ -1,5 +1,5 @@
 ---
-description:Using Feature Store REST API Server for retrieving feature vectors
+description: Using Feature Store REST API Server for retrieving feature vectors
 ---
 
 # Feature Store REST API Server
