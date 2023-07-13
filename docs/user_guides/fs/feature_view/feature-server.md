@@ -2,8 +2,8 @@
 
 This API server allows users to retrieve single/batch feature vectors from a feature view.
 
-## Setup
-TODO: from Salman
+## How to use
+Hopsworks 3.3 includes a preview of the feature store REST API, version 0.1.0. By default, the server listens on the `0.0.0.0:4406`. Please refer to `/srv/hops/mysql-cluster/rdrs_config.json` config file located on machines running the REST Server for additional configuration parameters.
 
 ## Single feature vector
 
@@ -272,4 +272,4 @@ note: Order of the returned features are the same as the order of entries in the
 
 ## Access control to feature store
 
-Authentication to feature store is done by Hopsworks API key.
+Currently, the REST API server only supports Hopsworks API Keys for authentication and authorization. Add the API key to the HTTP requests using the `X-API-KEY` header.
