@@ -3,7 +3,7 @@ By default, Hopsworks uses big data technologies (Spark or Hive) to create train
 This is great for large datasets, but for small or moderately sized datasets (think of the size of data that would fit in a Pandas
 DataFrame in your local Python environment), the overhead of starting a Spark or Hive job and doing distributed data processing can be significant.
 
-ArrowFlight Server with DuckDB significantly reduces the time that Python clients need to read feature groups 
+[ArrowFlight](https://arrow.apache.org/docs/format/Flight.html) Server, powered by [DuckDB](https://duckdb.org/) significantly reduces the time that Python clients need to read feature groups 
 and batch inference data from the Feature Store, as well as creating moderately-sized in-memory training datasets.
 
 When the service is enabled, clients will automatically use it for the following operations:
@@ -18,7 +18,7 @@ For larger datasets, clients can still make use of the Spark/Hive backend by exp
 `read_options={"use_hive": True}`.
 
 ## Service configuration
-The ArrowFlight Server with DuckDB is co-located with RonDB in the Hopsworks cluster.
+The ArrowFlight Server is co-located with RonDB in the Hopsworks cluster.
 If the ArrowFlight Server is activated, RonDB and ArrowFlight Server can each use up to 50% 
 of the available resources on the node, so they can co-exist without impacting each other.
 Just like RonDB, the ArrowFlight Server can be replicated across multiple nodes to serve more clients at lower latency.
@@ -27,16 +27,16 @@ Requests will be queued for up to 10 minutes before they are rejected.
 
 <p align="center">
   <figure>
-    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/flyingduck_rondb.png" alt="Configure RonDB">
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/arrowflight_rondb.png" alt="Configure RonDB">
     <figcaption>Activate ArrowFlight Server with DuckDB on a RonDB cluster</figcaption>
   </figure>
 </p>
 
-To deploy ArrowFlight Server with DuckDB on a cluster:
+To deploy ArrowFlight Server on a cluster:
 
 1. Select "RonDB cluster"
 2. Select an instance type with at least 16GB of memory and 4 cores. (*)
-3. Tick the checkbox `Enable FlyingDuck`.
+3. Tick the checkbox `Enable ArrowFlight Server`.
 
 (*) The service should have at least the 2x the amount of memory available that a typical Python client would have. 
   Because RonDB and ArrowFlight Server share the same node we recommend selecting an instance type with at least 4x the 
