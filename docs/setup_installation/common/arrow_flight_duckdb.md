@@ -3,7 +3,7 @@ By default, Hopsworks uses big data technologies (Spark or Hive) to create train
 This is great for large datasets, but for small or moderately sized datasets (think of the size of data that would fit in a Pandas
 DataFrame in your local Python environment), the overhead of starting a Spark or Hive job and doing distributed data processing can be significant.
 
-[ArrowFlight](https://arrow.apache.org/docs/format/Flight.html) Server, powered by [DuckDB](https://duckdb.org/) significantly reduces the time that Python clients need to read feature groups 
+ArrowFlight Server with DuckDB significantly reduces the time that Python clients need to read feature groups 
 and batch inference data from the Feature Store, as well as creating moderately-sized in-memory training datasets.
 
 When the service is enabled, clients will automatically use it for the following operations:
