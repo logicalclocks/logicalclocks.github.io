@@ -268,7 +268,7 @@ theme:
     - navigation.indexes
 
 extra:
-  hopsworks_version: dev
+  hopsworks_version: 3.3
   version:
     provider: mike
   generator: false
