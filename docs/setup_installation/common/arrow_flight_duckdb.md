@@ -18,6 +18,10 @@ For larger datasets, clients can still make use of the Spark/Hive backend by exp
 `read_options={"use_hive": True}`.
 
 ## Service configuration
+
+!!! note
+    Supported only on AWS at the moment.
+
 The ArrowFlight Server is co-located with RonDB in the Hopsworks cluster.
 If the ArrowFlight Server is activated, RonDB and ArrowFlight Server can each use up to 50% 
 of the available resources on the node, so they can co-exist without impacting each other.
