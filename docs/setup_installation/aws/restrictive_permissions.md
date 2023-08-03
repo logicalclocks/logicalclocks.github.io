@@ -190,7 +190,11 @@ VPC and security group during instance configuration. Selecting any other VPCs o
 The policy can be extended to give [managed.hopsworks.ai](https://managed.hopsworks.ai) access to multiple VPCs.
 See: [Creating a Condition with Multiple Keys or Values](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_multi-value-conditions.html).
 
-### Backup permissions
+### Other removable permissions
+
+There are other permissions that are required by Hopsworks to provide certain product capabilities to the users. In this section, we go through these permissions and what are the implication or removing them. 
+
+#### Backup permissions
 
 The following permissions are only needed for the backup feature. You can remove them if you are not going to create backups or if you do not have access to this Enterprise feature.
 
@@ -210,13 +214,16 @@ The following permissions are only needed for the backup feature. You can remove
       }
 ```
 
-### Other removable permissions
+#### Early warnings if VPC is not configured correctly
 
 The following permissions are needed to give an early warning if your VPC and security groups are badly configured. You can remove them if you don't need it.
 ```json
           "ec2:DescribeVpcAttribute",
           "ec2:DescribeRouteTables"
 ```
+
+#### Open and close ports from within Hopsworks.ai 
+
 The following permissions are used to let you close and open ports on your cluster from hopswork.ai, you can remove them if you do not want to open ports on your cluster or if you want to manually open ports in EC2.
 
 ```json
@@ -236,6 +243,8 @@ The following permissions are used to let you close and open ports on your clust
       }
 ```
 
+#### Non resource based permissions used for listing 
+
 If you are using terraform, then you can also remove most of the *Describe* permissions in `NonResourceBasedPermissions` and use the following permissions instead
 
 ```json
@@ -250,6 +259,29 @@ If you are using terraform, then you can also remove most of the *Describe* perm
             "Resource": "*"
         },
 ```
+
+#### Load balancers permissions for external access 
+If you plan to access your Hopsworks cluster from an external python environment, especially if you plan to use the [ArrowFlight with DuckDB](../common/arrow_flight_duckdb), then it is required to create a network load balancer that forward requests to the ArrowFlight server(s) co-located with the RonDB MySQL Server(s). If you are not planning to use ArrowFlight server(s) or multiple mysql server(s), you can skip adding the following permissions. If you still wish to use the ArrowFlight server(s) but without adding the following permissions to your cross account role, check [this advanced terraform example for more details](https://github.com/logicalclocks/terraform-provider-hopsworksai/tree/main/examples/complete/aws/advanced/arrowflight-no-loadbalancer-permissions).
+
+
+```json 
+      {
+        "Sid": "ManageLoadBalancersForExternalAccess",
+        "Effect": "Allow",
+        "Action": [
+            "elasticloadbalancing:CreateLoadBalancer",
+            "elasticloadbalancing:CreateListener",
+            "elasticloadbalancing:CreateTargetGroup",
+            "elasticloadbalancing:RegisterTargets",
+            "elasticloadbalancing:AddTags",
+            "elasticloadbalancing:DescribeTargetGroups",
+            "elasticloadbalancing:DeleteLoadBalancer",
+            "elasticloadbalancing:DeleteTargetGroup"
+        ],
+        "Resource": "*"
+    }
+```
+
 
 ## Limiting the instance profile permissions
 
