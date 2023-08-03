@@ -3,8 +3,6 @@ For applications where Feature Store's performance and scalability is paramount 
 Managed [RonDB](https://www.rondb.com/). You don't need to worry about configuration as [managed.hopsworks.ai](https://managed.hopsworks.ai) will
 automatically pick the best options for your setup.
 
-#Selecting Cloud
-
 To start a new Hopsworks Cluster with a Managed RonDB installation one first goes to the Dashboard view seen below.
 
 <p align="center">
