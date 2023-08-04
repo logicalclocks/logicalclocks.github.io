@@ -106,6 +106,21 @@
               "ec2:ModifyInstanceAttribute"
           ],
           "Resource": "*"
-      }
+      },
+      {
+        "Sid": "ManageLoadBalancersForExternalAccess",
+        "Effect": "Allow",
+        "Action": [
+            "elasticloadbalancing:CreateLoadBalancer",
+            "elasticloadbalancing:CreateListener",
+            "elasticloadbalancing:CreateTargetGroup",
+            "elasticloadbalancing:RegisterTargets",
+            "elasticloadbalancing:AddTags",
+            "elasticloadbalancing:DescribeTargetGroups",
+            "elasticloadbalancing:DeleteLoadBalancer",
+            "elasticloadbalancing:DeleteTargetGroup"
+        ],
+        "Resource": "*"
+    }
   ]
 }
