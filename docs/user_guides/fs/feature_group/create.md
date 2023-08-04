@@ -83,7 +83,7 @@ By using partitioning the system will write the feature data in different subdir
 #### Streaming Write API
 
 As explained above, the stream parameter controls whether to enable the streaming write APIs to the online and offline feature store.
-For Python environments, the stream pipeline is enabled by default, and this is the recommended way of writing to a feature group from Python.
+For Python environments, only the stream API is supported (stream=True).
 
 === "Python"
 

@@ -182,7 +182,7 @@ You can explicitly define the feature group schema as follows:
     fg = fs.create_feature_group(name="fg_manual_schema",
                                  features=features,
                                  online_enabled=True)
-    fg.save(df)
+    fg.save(features)
     ```
 
 ## Append features to existing feature groups 
