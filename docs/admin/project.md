@@ -4,15 +4,15 @@ description: Guide on how to manage projects and quotas as a Hopsworks administr
 
 # Manage Projects
 
-Hopsworks provides administrator with a view of the projects in a Hopsworks deployment.
+Hopsworks provides an administrator with a view of the projects in a Hopsworks cluster.
 
-Hopsworks administrators are not automatically members of all the projects in a deployment however they can see which projects exist, who is their owners and they can limit the amount of storage and compute quotas each project has available. 
+A Hopsworks administrator is not automatically a member of all the projects in a cluster. However, they can see which projects exist, who is the project owner, and they can limit the storage quota and compute quota for each project.
 
 ## Prerequisites
 
-You need to be an administrator on a Hopsworks deployment. 
+You need to be an administrator on a Hopsworks cluster.
 
-## Changing a project quotas
+## Changing project quotas
 
 You can find the Project management page by clicking on your name, in the top right coner of the navigation bar, and choosing _Cluster Settings_ from the dropdown menu and going to the _Project_ tab.
 
@@ -34,9 +34,9 @@ Storage quota represents the amount of data a project can store. The storage quo
 
 - **Feature Store**: This represents the storage quota for files and directories stored in the `_featurestore.db` dataset in the project. This dataset contains all the feature group offline data for the project.
 - **Hive DB**: This represents the storage quota for files and directories stored in the `[projectName].db` dataset in the project. This is a general purpose Hive database for the project that can be used for analytics.
-- **Project**: This represents the storage quota for all the data stored on any ohter dataset.
+- **Project**: This represents the storage quota for all the data stored on any other dataset.
 
-Each storage quota is divided into space quota, i.e. how much space the files can consume, and namespace quota, i.e. how many files and directories there can be. If Hopsworks is deployed on-premise using hard drives to store the data, i.e. Hopsworks is not configured to laverage a S3-compliant storage system, the data is replicated across multiple nodes (by default 3) and the space quota takes the replication into consideration. As an example, a 100MB file stored with a replication factor of 3, will consume 300MB of space quota.
+Each storage quota is divided into space quota, i.e., how much space the files can consume, and namespace quota, i.e., how many files and directories there can be. If Hopsworks is deployed on-premise using hard drives to store the data, i.e., Hopsworks is not configured to store its data in a S3-compliant storage system, the data is replicated across multiple nodes (by default 3) and the space quota takes the replication factor into consideration. As an example, a 100MB file stored with a replication factor of 3, will consume 300MB of space quota.
 
 By default, all storage quotas are disabled and not enforced. Administrators can change this default by changing the following configuration in the [Configuration](../admin/variables.md) UI and/or the cluster definition:
 ```
@@ -51,9 +51,9 @@ The values specified will be set during project creation and administrators will
 
 Compute quotas represents the amount of compute a project can use to run Spark and Flink applications as well as Tez queries. Quota is expressed as number of seconds a container of size 1 CPU and 1GB of RAM can run for.
 
-If the Hopsworks deployment is connected to a Kubernetes cluster, the Python jobs, Jupyter notebooks and KServe models are not subject to the compute quota. Currently Hopsworks does not support defining quotas for compute happening on the connected Kubernetes cluster.
+If the Hopsworks cluster is connected to a Kubernetes cluster, Python jobs, Jupyter notebooks and KServe models are not subject to the compute quota. Currently, Hopsworks does not support defining quotas for compute scheduled on the connected Kubernetes cluster.
 
-By default, the compute quota is disabled and each project can execute as many jobs as it needs. Administrators can change this default by changing the following configuration in the [Condiguration](../admin/variables.md) UI and/or the cluster definition:
+By default, the compute quota is disabled. Administrators can change this default by changing the following configuration in the [Condiguration](../admin/variables.md) UI and/or the cluster definition:
 ```
 hopsworks:
     yarn_default_payment_type: [NOLIMIT to disable the quota, PREPAID to enable it]
@@ -69,7 +69,7 @@ Administrators can increase the number of Kafka topics a project is allowed to c
 
 ## Force deleting a project
 
-Administrators have the option to force delete a project. This is useful if the project was not created or deleted properly, e.g. because of an error. 
+Administrators have the option to force delete a project. This is useful if the project was not created or deleted properly, e.g., because of an error.
 
 ## Controlling who can create projects
 
