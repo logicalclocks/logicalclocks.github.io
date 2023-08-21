@@ -223,6 +223,7 @@ nav:
       - Introduction: admin/index.md
       - Cluster Configuration: admin/variables.md
       - User Management: admin/user.md
+      - Project Management: admin/project.md
       - Configure Alerts: admin/alert.md
       - Manage Services: admin/services.md
       - IAM Role Chaining: admin/roleChaining.md
