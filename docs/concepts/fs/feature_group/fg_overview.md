@@ -10,3 +10,7 @@ A feature group is a table of features, where each feature group has a primary k
 Feature groups can be stored in a low-latency "online" database and/or in low cost, high throughput  "offline" storage, typically a data lake or data warehouse. The online store stores only the latest values of features for a feature group. It is used to serve pre-computed features to models at runtime. The offline store stores the historical values of features for a feature group, so it may store many times more data than the online store. Offline feature groups are used, typically, to create training data for models, but also to retrieve data for batch scoring of models:
 
 <img src="../../../../assets/images/concepts/fs/feature-storage.svg">
+
+### Deprecation
+
+To disparage the usage of specific feature groups it is possible to deprecate them. When a feature group is deprecated user will be warned when employing it or its derivatives (such as feature views).
