@@ -4,10 +4,10 @@ Hopsworks uses Kafka for streaming applications and ingesting data. The users ha
 
 ## Bringing your own Kafka
 
-By default, Hopsworks comes with its own Kafka cluster, but it is possible to use your own.
+By default, Hopsworks comes with Kafka cluster, but it is possible to use your own.
 For that changes have to be made both to the Hopsworks Online Feature Store service (OnlineFS) and each project.
 
-### Online Feature store service configuration
+### Online Feature Store service configuration
 
 The OnlineFS has to be configured with the necessary properties to consume messages from the self-managed Kafka.
 This can be done by providing the OnlineFS with the Kafka configuration file and any other entities (such as certificates) necessary for communication.
@@ -19,7 +19,7 @@ The configuration is done for each project to ensure its members have the necess
 
 To consume and produce Kafka events, Hopsworks relies on storage connectors to contain the required properties.
 The accepted configuration can be found here: [apache kafka configuration](https://kafka.apache.org/documentation/#configuration).
-If a storage connector is not found, default values referring to hopsworks-managed Kafka will be used.
+If a storage connector is not found in the project, default values referring to hopsworks-managed Kafka will be used.
 
 <p align="center">
   <figure>
@@ -28,7 +28,7 @@ If a storage connector is not found, default values referring to hopsworks-manag
   </figure>
 </p>
 
-The name of the storage connector used for this purpose is "kafka_connector".
+The name reserved for this storage connector is "kafka_connector".
 
 ## Usage
 
