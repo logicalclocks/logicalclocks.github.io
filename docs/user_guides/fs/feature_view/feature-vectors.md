@@ -120,3 +120,6 @@ You can also use the parameter to provide values for all the features which are 
         }
     )
     ```
+
+## Feature Server
+In addition to Python/Java clients, from Hopsworks 3.3, a new [feature server](./feature-server.md) implemented in Go is introduced. With this new API, single or batch feature vectors can be retrieved in any programming language.

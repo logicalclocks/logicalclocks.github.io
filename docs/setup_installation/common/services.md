@@ -36,6 +36,11 @@ If you want to be able to SSH into the virtual machines running the Hopsworks cl
 
 Port: 22.
 
+## ArrowFlight with DuckDB
+Hopsworks provides ArrowFlight Server(s) with DuckDB to significantly reduce the time that Python clients need to read feature groups and batch inference data from the Feature Store, as well as creating moderately-sized in-memory training datasets.
+
+Port: 5005
+
 ## Limiting outbound traffic to managed.hopsworks.ai
 
 If you have enabled the use of static IPs to communicate with [managed.hopsworks.ai](https://managed.hopsworks.ai) as described in [AWS](../../aws/cluster_creation/#limiting-outbound-traffic-to-hopsworksai) and [AZURE](../../azure/cluster_creation/#limiting-outbound-traffic-to-hopsworksai), you need to ensure that your security group allow outbound traffic to the two IPs indicated in the service page.
