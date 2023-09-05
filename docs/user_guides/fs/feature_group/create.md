@@ -126,6 +126,9 @@ job, _ = fg.insert(df3, write_options={"start_offline_materialization": False})
 job.run()
 ```
 
+It is also possible to define the topics used for data ingestion, this can be done by setting the `topic_name` parameter with your preferred value.
+By default, feature groups in hopsworks will share a project-wide topic.
+
 #### Best Practices for Writing
 
 When designing a feature group, it is worth taking a look at how this feature group will be queried in the future, in order to optimize it for those query patterns.
@@ -133,11 +136,12 @@ At the same time, Spark and Hudi tend to overpartition writes, creatingtoo many 
 But they also slow down queries, because file listings are taking more time, but also reading many small files is usually slower.
 The best practices described in this section hold both for the Streaming API and the Batch API.
 
-There are three main considerations that influence the write and also the query performance:
+Four main considerations influence the write and the query performance:
 
 1. Partitioning on a feature group level
 2. Parquet file size within a feature group partition
 3. Backfilling of feature group partitions
+4. The choice of topic for data ingestion
 
 ##### Partitioning on a feature group level
 
@@ -252,6 +256,13 @@ In that case you can increase the Hudi shuffle parallelism accordingly.
     The recommended approach is to unionise the dataframes and insert them with a single `fg.insert()` instead.
     For clients that write with the Stream API, it is enough to defer starting the backfill job until after multiple inserts,
     [as described above](#streaming-write-api).
+
+##### The choice of topic for data ingestion
+
+When creating a feature group that uses streaming write APIs for data ingestion it is possible to define the Kafka topics that should be utilized.
+The default approach of using a project-wide topic functions great for use cases involving little to no overlap when producing data. However,
+concurrently inserting into multiple feature groups could cause read amplification for the Hudi delta streamer job. Therefore, it is
+advised to utilize separate topics when ingestions overlap or there is a large frequently running insertion into a specific feature group.
 
 ### Register the metadata and save the feature data
 
