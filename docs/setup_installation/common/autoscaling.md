@@ -12,9 +12,9 @@ You can also set up autoscaling during the cluster creation. For more details ab
   </figure>
 </p>
 
-Once you have clicked on *Configure autoscale* you will access a form allowing you to configure the autoscaling. This form is in two parts. In the first part, you configure the autoscaling for general-purpose compute nodes. In the second part, you configure the autoscaling for nodes equipped with GPUs. In both parts you will have to set up the following:
+Once you have clicked on *Configure autoscale* you will access a form allowing you to configure the autoscaling. You can configure the following:
 
-1. The instance type you want to use. You can decide to not enable the autoscaling for GPU nodes by selecting *No GPU autoscale*.
+1. The instance type you want to use.
 2. The size of the instances' disk.
 3. The minimum number of workers. 
 4. The maximum number of workers.

@@ -73,9 +73,9 @@ You can set the static configuration by selecting *Disabled* in the first drop-d
 </p>
 
 #### Autoscaling workers configuration
-You can set the autoscaling configuration by selecting enabled in the first drop-down (1). You then have access to a two parts form allowing you to configure the autoscaling. In the first part, you configure the autoscaling for general-purpose compute nodes. In the second part, you configure the autoscaling for nodes equipped with GPUs. In both parts you will have to set up the following:
+You can set the autoscaling configuration by selecting enabled in the first drop-down (1). You can configure:
 
-1. The instance type you want to use. You can decide to not enable the autoscaling for GPU nodes by selecting *No GPU autoscale*.
+1. The instance type you want to use.
 2. The size of the instances' disk.
 3. The minimum number of workers. 
 4. The maximum number of workers.
