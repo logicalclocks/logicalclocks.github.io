@@ -1,11 +1,13 @@
 # Using self-managed Kafka
 
-Hopsworks uses Kafka for streaming applications and ingesting data. The users have the opportunity to operate Hopsworks-managed Kafka or integrate their own Kafka service.
+Hopsworks uses Kafka for streaming applications and ingesting data.
+The users have the opportunity to operate Hopsworks-managed Kafka or integrate their own Kafka service.
 
 ## Bringing your own Kafka
 
-By default, Hopsworks comes with Kafka cluster, but it is possible to use your own.
-For that changes have to be made both to the Hopsworks Online Feature Store service (OnlineFS) and each project.
+By default, Hopsworks comes with a Kafka cluster, but it is possible to use your own. 
+For this, the cluster configuration ‘enable_bring_your_own_kafka’ value has to be set to ‘true’.
+Furthermore, additional changes must be made to the Hopsworks Online Feature Store service (OnlineFS) and each project.
 
 ### Online Feature Store service configuration
 
@@ -32,5 +34,5 @@ The name reserved for this storage connector is "kafka_connector".
 
 ## Usage
 
-Assuming that the configuration of the previously mentioned components is properly defined the subsequent usage of Hopsworks will remain unchanged.
-Therefore, the existing workflows will continue working seamlessly.
+Assuming that the configuration of the previously mentioned components is properly defined the subsequent usage of Hopsworks will remain mostly unchanged.
+The only exception is that the management of topics is the users' responsibility.
