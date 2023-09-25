@@ -81,6 +81,7 @@ nav:
               - Training data: user_guides/fs/feature_view/training-data.md
               - Batch data: user_guides/fs/feature_view/batch-data.md
               - Feature vectors: user_guides/fs/feature_view/feature-vectors.md
+              - Feature server: user_guides/fs/feature_view/feature-server.md
               - Query: user_guides/fs/feature_view/query.md
               - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
               - Spines: user_guides/fs/feature_view/spine-query.md
