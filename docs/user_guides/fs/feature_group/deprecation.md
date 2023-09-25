@@ -1,19 +1,19 @@
 ---
-description: Documentation on how to deprecate a feature group in Hopsworks and the different APIs available to interact with them.
+description: Documentation on how to deprecate a feature group in Hopsworks.
 ---
 
 # How to deprecate a Feature Group
 
 ### Introduction
 
-To disparage the usage of specific feature groups it is possible to deprecate them.
-When a feature group is deprecated user will be warned when employing it or feature views created using it.
+To discourage the usage of specific feature groups it is possible to deprecate them.
+When a feature group is deprecated, user will be warned when they try to use it or use a feature view that depends on it.
 
 In this guide you will learn how to deprecate a feature group within Hopsworks, showing examples in HSFS APIs as well as the user interface.
 
 ## Prerequisites
 
-Before you begin this guide it is expected that there is an existing feature group in your project. You can familiarize yourself with [creation of feature group](./create.md) in the user guide.
+Before you begin this guide it is expected that there is an existing feature group in your project. You can familiarize yourself with [the creation of a feature group](./create.md) in the user guide.
 
 ## Deprecate using the HSFS APIs
 
