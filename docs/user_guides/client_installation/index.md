@@ -12,11 +12,11 @@ The Hopsworks client library is required to connect to the Hopsworks Feature Sto
 ```
 pip install hopsworks
 ```
-Supported versions of Python: 3.7, 3.8, 3.9, 3.10 ([PyPI ↗](https://pypi.org/project/hopsworks/))
+Supported versions of Python: 3.7, 3.8, 3.9, 3.10, 3.11 ([PyPI ↗](https://pypi.org/project/hopsworks/))
 
 !!! attention "OSX Installation"
 
-    On OSX systems you need to install librdkafka manually before installing hopsworks. You can verify if you have installed it previously using `brew info librdkafka`. Hopsworks requires `librdkafka` version to be lower than 2.0.0. If it is not installed yet, you can do so using `brew install`, however, you always need to set the `C_INCLUDE_PATH` and `LIBRARY_PATH`.
+    On OSX systems you might need to install librdkafka manually before installing hopsworks. You can verify if you have installed it previously using `brew info librdkafka`. Hopsworks requires `librdkafka` version to be lower than 2.0.0. If it is not installed yet, you can do so using `brew install`, however, you always need to set the `C_INCLUDE_PATH` and `LIBRARY_PATH`.
 
     If not installed yet, install librdkafka:
     ```
@@ -46,11 +46,11 @@ To only install the Hopsworks Feature Store client library, execute the followin
 ```
 pip install hsfs[python]
 ```
-Supported versions of Python: 3.7, 3.8, 3.9, 3.10 ([PyPI ↗](https://pypi.org/project/hsfs/))
+Supported versions of Python: 3.7, 3.8, 3.9, 3.10, 3.11 ([PyPI ↗](https://pypi.org/project/hsfs/))
 
 !!! attention "OSX Installation"
 
-    On OSX systems you need to install librdkafka manually before installing hopsworks. You can verify if you have installed it previously using `brew info librdkafka`. Hopsworks requires `librdkafka` version to be lower than 2.0.0. If it is not installed yet, you can do so using `brew install`, however, you always need to set the `C_INCLUDE_PATH` and `LIBRARY_PATH`.
+    On OSX systems you might need to install librdkafka manually before installing hopsworks. You can verify if you have installed it previously using `brew info librdkafka`. Hopsworks requires `librdkafka` version to be lower than 2.0.0. If it is not installed yet, you can do so using `brew install`, however, you always need to set the `C_INCLUDE_PATH` and `LIBRARY_PATH`.
 
     If not installed yet, install librdkafka:
     ```
