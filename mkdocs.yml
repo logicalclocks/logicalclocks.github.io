@@ -209,7 +209,6 @@ nav:
           - Autoscaling: setup_installation/common/autoscaling.md
           - Backup: setup_installation/common/backup.md
           - Scaling up: setup_installation/common/scalingup.md
-          - GPU support: setup_installation/common/gpu_support.md
           - User management: setup_installation/common/user_management.md
           - Managed RonDB: setup_installation/common/rondb.md
           - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
