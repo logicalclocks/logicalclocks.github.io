@@ -17,7 +17,7 @@ in the login page as an alternative login method) and set the _client id_ and _c
 fields,  as shown in the figure below.
 
 <figure>
-  <img src="../../../assets/images/admin/oauth2/register-app.png" alt="Application overview" />
+  <img src="../../../assets/images/admin/oauth2/register-idp.png" alt="Application overview" />
   <figcaption>Application overview</figcaption>
 </figure>
 
@@ -32,6 +32,7 @@ Additional configuration can be set here:
   _S256_.
 - _Logo URL_: optionally a logo URL to an image can be added. The logo will be shown on the login page with the name 
   as shown in the figure below.
+- Claim names for given name, family name, email and group can also be set here. If left empty the default openid claim names will be used.
 
 ### Step 2: Add Group mappings
 
@@ -46,10 +47,15 @@ Settings* _Configuration_ tab search for _oauth\_group\_mapping_ and click on th
 
 !!! Note
 
-    Setting *oauth_group_mapping* to *ANY_GROUP->HOPS_USER* will assign the role *user* to any user from any group in 
+    Setting ```oauth_group_mapping``` to ```ANY_GROUP->HOPS_USER``` will assign the role *user* to any user from any group in 
     your identity provider when they log into Hopsworks with OAuth for the first time. You can replace *ANY_GROUP* with 
     the group of your choice in the identity provider. You can replace *HOPS_USER* by *HOPS_ADMIN* if you want the 
     users of that group to be admins in Hopsworks. You can do several mappings by separating them with a semicolon.
+
+    Group mapping can be disabled by setting ```oauth_group_mapping_enabled=false``` in the [Configuration](../variables.md) UI.
+    When group mapping is disabled an administrator needs to activate each user from the [User Management](../user.md) page.
+
+    If ```oauth_group_mapping_enabled=false``` then ```oauth_account_status``` in the [Configuration](../variables.md) UI should be set to 1 (Verified).
 
 Users will now see a new button on the login page. The button has the name you set above for _Name_ and will 
 redirect to your identity provider.
