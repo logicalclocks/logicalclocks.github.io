@@ -57,6 +57,12 @@ The login page will now have the choice to use LDAP for authentication.
   <figcaption>Log in using LDAP</figcaption>
 </figure>
 
+!!! note
+    Group mapping can be disabled by setting ```ldap_group_mapping_enabled=false``` in the [Configuration](../variables.md) UI.
+    When group mapping is disabled an administrator needs to activate each user from the [User Management](../user.md) page.
+
+    If group mapping is disabled then Account status in LDAP configuration above should be set to ```Verified```.
+ 
 
 ## Conclusion
 In this guide you learned how to configure LDAP for authentication.
