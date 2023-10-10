@@ -125,6 +125,8 @@ nav:
               - Install Library: user_guides/projects/python/python_install.md
               - Export environment: user_guides/projects/python/python_env_export.md
               - Recreate environment: user_guides/projects/python/python_env_recreate.md
+              - Custom Commands: user_guides/projects/python/custom_commands.md
+              - Python Environment History: user_guides/projects/python/environment_history.md
           - Jupyter:
               - Run Spark Notebook: user_guides/projects/jupyter/spark_notebook.md
               - Run Python Notebook: user_guides/projects/jupyter/python_notebook.md
