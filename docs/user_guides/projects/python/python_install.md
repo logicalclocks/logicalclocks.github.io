@@ -15,6 +15,9 @@ In this guide, you will learn how to install Python packages using these differe
 
 Under the `Project settings` section you can find the `Python libraries` setting.
 
+!!! notice "Notice"
+    If your libraries require installing some extra OS-Level packages, refer to the guide custom commands guide on how to install OS-Level packages.
+
 ### Name and version
 
 Enter the name and, optionally, the desired version to install.
