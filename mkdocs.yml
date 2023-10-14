@@ -223,6 +223,7 @@ nav:
           - Terraform: setup_installation/common/terraform.md
       - On-Prem:
           - Hopsworks Installer: setup_installation/on_prem/hopsworks_installer.md
+          - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md 
   - Administration:
       - Introduction: admin/index.md
       - Cluster Configuration: admin/variables.md
