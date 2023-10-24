@@ -207,7 +207,6 @@ nav:
               - Hopsworks:
                   - OAuth2: setup_installation/common/sso/oauth.md
                   - LDAP: setup_installation/common/sso/ldap.md
-              # - Managed.hopsworks.ai: setup_installation/common/sso/sso.md TODO put back when putting back sso https://github.com/logicalclocks/hopsworks-cloud/issues/3202
           - API Key: setup_installation/common/api_key.md
           - Terraform: setup_installation/common/terraform.md
       - On-Prem:
