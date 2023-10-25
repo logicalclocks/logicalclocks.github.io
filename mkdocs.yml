@@ -8,7 +8,7 @@ repo_name: logicalclocks/hopsworks
 repo_url: https://github.com/logicalclocks/hopsworks
 edit_uri: ""
 
-strict: true
+strict: false
 
 nav:
   - Home: index.md

@@ -28,13 +28,22 @@ Users can get a valid Databricks API key by following the [Databricks Documentat
 
 ## Register a new Databricks Instance
 
-Users can register a new Databricks instance by navigating to the `Integrations` tab of a project Feature Store. Registering a Databricks instance requires adding the instance address and the API key.
-
-The instance address should be in the format `[UUID].cloud.databricks.com` (or `adb-[UUID].19.azuredatabricks.net` for Databricks on Azure), essentially the same web address used to reach the Databricks instance from the browser.
+To register a new Databricks instance, first navigate to `Project settings`, which can be found on the left-hand side of a Project's landing page, then select the `Integrations` tab. 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/databricks/databricks-integration.png" alt="Register a Databricks Instance along with a Databricks API key">
+    <img src="../../../../assets/images/guides/integrations/databricks/databricks-integration.png" alt="Hopsworks's Integrations page">
+    <figcaption>Hopsworks's Integrations page</figcaption>
+  </figure>
+</p>
+
+Registering a Databricks instance requires adding the instance address and the Databricks API key.
+
+The instance name corresponds to the adress of the Databricks instance and should be in the format `[UUID].cloud.databricks.com` (or `adb-[UUID].19.azuredatabricks.net` for Databricks on Azure), essentially the same web address used to reach the Databricks instance from the browser.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/integrations/databricks/databricks-integration-popup.png" alt="Register a Databricks Instance along with a Databricks API key">
     <figcaption>Register a Databricks Instance along with a Databricks API key</figcaption>
   </figure>
 </p>
@@ -47,7 +56,7 @@ A cluster needs to exist before users can configure it using the Hopsworks UI. T
 
 !!! warning "Runtime limitation"
 
-    Currently Runtime 8.x is suggested to be able to use the full suite of Hopsworks Feature Store capabilities.
+    Currently Runtime 11.3 LTS is suggested to be able to use the full suite of Hopsworks Feature Store capabilities.
 
 ## Configure a cluster
 
