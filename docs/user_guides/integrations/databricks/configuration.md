@@ -39,7 +39,7 @@ To register a new Databricks instance, first navigate to `Project settings`, whi
 
 Registering a Databricks instance requires adding the instance address and the Databricks API key.
 
-The instance name corresponds to the adress of the Databricks instance and should be in the format `[UUID].cloud.databricks.com` (or `adb-[UUID].19.azuredatabricks.net` for Databricks on Azure), essentially the same web address used to reach the Databricks instance from the browser.
+The instance name corresponds to the address of the Databricks instance and should be in the format `[UUID].cloud.databricks.com` (or `adb-[UUID].19.azuredatabricks.net` for Databricks on Azure), essentially the same web address used to reach the Databricks instance from the browser.
 
 <p align="center">
   <figure>
@@ -56,7 +56,7 @@ A cluster needs to exist before users can configure it using the Hopsworks UI. T
 
 !!! warning "Runtime limitation"
 
-    Currently Runtime 11.3 LTS is suggested to be able to use the full suite of Hopsworks Feature Store capabilities.
+    Currently Runtime 9.1 LTS is suggested to be able to use the full suite of Hopsworks Feature Store capabilities.
 
 ## Configure a cluster
 
