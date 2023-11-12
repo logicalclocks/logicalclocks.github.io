@@ -9,7 +9,7 @@ description: Documentation on how to orchestrate Hopsworks jobs using Apache Air
 Hopsworks jobs can be orchestrated using [Apache Airflow](https://airflow.apache.org/). You can define a Airflow DAG (Direct Acyclic Graph) containing the dependencies between Hopsworks jobs. 
 You can then schedule the DAG to be executed at a specific schedule using a [cron](https://en.wikipedia.org/wiki/Cron) expression.
 
-Airflow DAGs are defined as Python files. Within the Python file, different configuration and operators can be used to trigger different actions. Hopsworks provides an operator to execute jobs and a sensor to wait for a specific job execution to finish.
+Airflow DAGs are defined as Python files. Within the Python file, different operators can be used to trigger different actions. Hopsworks provides an operator to execute jobs on Hopsworks and a sensor to wait for a specific job to finish.
 
 ### Use Apache Airflow in Hopsworks 
 
@@ -22,11 +22,11 @@ Airfow is configured to enforce Role Based Access Control (RBAC) to the Airflow 
 
 #### Hopsworks DAG Builder 
 
-You can create a new Airflow DAG to orchestrate jobs using the Hopsworks DAG builder tool. Click on _New Workflow_ to create a new Airflow DAG. You should provide a name for the DAG as well as a schedule interval. You can define the schedule using the drop down menu or by providing a cron expression.
+You can create a new Airflow DAG to orchestrate jobs using the Hopsworks DAG builder tool. Click on _New Workflow_ to create a new Airflow DAG. You should provide a name for the DAG as well as a schedule interval. You can define the schedule using the dropdown menus or by providing a cron expression.
 
 You can add to the DAG Hopsworks operators and sensors:
 
-- **Operator**: The operator is used to trigger a job execution. When configuring the operator you select the job you want to execute and you can optionally provide execution arguments. You can decide whether or not the operator should wait for the execution to be done. If you select the _wait_ option, the operator will block and Airflow will not execute any parallel task. If you want to execute tasks in parallel, you should not select the _wait_ option but instead use the sensor. When configuring the operator, you can can also provide which other Airflow tasks it depends on. If you add a dependency, he task will be executed only after the upstream tasks have been executed successfully. 
+- **Operator**: The operator is used to trigger a job execution. When configuring the operator you select the job you want to execute and you can optionally provide execution arguments. You can decide whether or not the operator should wait for the execution to be done. If you select the _wait_ option, the operator will block and Airflow will not execute any parallel task. In this case the Airflow task fails if the job fails. If you want to execute tasks in parallel, you should not select the _wait_ option but instead use the sensor. When configuring the operator, you can can also provide which other Airflow tasks it depends on. If you add a dependency, the task will be executed only after the upstream tasks have been executed successfully. 
 
 - **Sensor**: The sensor can be used to wait for executions to be completed. Similarly to the _wait_ option of the operator, the sensor blocks until the job execution is completed. The sensor can be used to launch several jobs in parallel and wait for their execution to be completed. Please note that the sensor is defined at the job level rather than the execution level. The sensor will wait for the most recent execution to be completed and it will fail the Airflow task if the execution was not successful. 
 
@@ -34,9 +34,9 @@ You can then create the DAG and Hopsworks will generate the Python file. You can
 
 #### Write your own DAG 
 
-If you prefer to write the DAGs manually or you want to edit a DAG built with the builder tool you can do so. The Airflow DAGs are stored in the _Airflow_ dataset which you can access using the file browser in the project settings.
+If you prefer to code the DAGs or you want to edit a DAG built with the builder tool, you can do so. The Airflow DAGs are stored in the _Airflow_ dataset which you can access using the file browser in the project settings.
 
-When writing your own Dag you can invoke the operator as follows:
+When writing the code for the DAG you can invoke the operator as follow:
 
 ```python
 HopsworksLaunchOperator(dag=dag,
@@ -58,7 +58,7 @@ HopsworksJobSuccessSensor(dag=dag,
     job_name='profiles_fg')
 ```
 
-When writing your own DAG file, you should also add the `access_control` parameter to the DAG configuration. The `access_control` parameter specicifies which projects have access to the DAG and which actions the project members can perform on it. If you do not specify the `access_control` option, project members will not be able to see the DAG in the Airflow UI.
+When writing the DAG file, you should also add the `access_control` parameter to the DAG configuration. The `access_control` parameter specicifies which projects have access to the DAG and which actions the project members can perform on it. If you do not specify the `access_control` option, project members will not be able to see the DAG in the Airflow UI.
 
 !!! warning "Admin access"
     The `access_control` configuration does not apply to Hopsworks admin users which have full access to all the DAGs even if they are not member of the project. 
