@@ -5,9 +5,6 @@
 Repositories are cloned and managed within the scope of a project. The content of the repository will reside on the Hopsworks File System. The content of the repository can be edited from Jupyter notebooks and can for example be used to configure Jobs.
 Repositories can be managed from the Git section in the project settings. The Git overview in the project settings provides a list of repositories currently cloned within the project, the location of their content as well which branch and commit their HEAD is currently at.
 
-!!! warning "Beta"
-    The feature is currently in Beta and will be improved in the upcoming releases.
-
 ## Prerequisites
 
 - For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials. You can clone a GitHub and GitLab public repository without configuring the provider. However, for BitBucket you always need to configure the username and token to clone a repository.
