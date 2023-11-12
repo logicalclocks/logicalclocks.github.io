@@ -22,6 +22,11 @@ Airfow is configured to enforce Role Based Access Control (RBAC) to the Airflow 
 
 #### Hopsworks DAG Builder 
 
+<figure>
+  <img src="../../../../assets/images/guides/airflow/airflow_dag_builder.png" alt="Airflow DAG Builder"/>
+  <figcaption>Airflow DAG Builder</figcaption>
+</figure>
+
 You can create a new Airflow DAG to orchestrate jobs using the Hopsworks DAG builder tool. Click on _New Workflow_ to create a new Airflow DAG. You should provide a name for the DAG as well as a schedule interval. You can define the schedule using the dropdown menus or by providing a cron expression.
 
 You can add to the DAG Hopsworks operators and sensors:
@@ -30,7 +35,7 @@ You can add to the DAG Hopsworks operators and sensors:
 
 - **Sensor**: The sensor can be used to wait for executions to be completed. Similarly to the _wait_ option of the operator, the sensor blocks until the job execution is completed. The sensor can be used to launch several jobs in parallel and wait for their execution to be completed. Please note that the sensor is defined at the job level rather than the execution level. The sensor will wait for the most recent execution to be completed and it will fail the Airflow task if the execution was not successful. 
 
-You can then create the DAG and Hopsworks will generate the Python file. You can inspect the python file by clicking on the eye next to the generated dag.
+You can then create the DAG and Hopsworks will generate the Python file. 
 
 #### Write your own DAG 
 
@@ -78,7 +83,7 @@ When writing the DAG file, you should also add the `access_control` parameter to
 !!! note "Project Name"
     You should replace the `project_name` in the snippet above with the name of your own project
 
-#### Manage Airflow DAGs using GIT
+#### Manage Airflow DAGs using Git
 
 You can leverage the [Git integration](../git/clone_repo.md) to track your Airflow DAGs in a git repository. Airflow will only consider the DAG files which are stored in the _Airflow_ Dataset in Hopsworks. 
 After cloning the git repository in Hopsworks, you can automate the process of copying the DAG file in the _Airflow_ Dataset using the [copy method](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/datasets/#copy) of the Hopsworks API.
@@ -89,4 +94,6 @@ If you already have an existing Airflow deployment you want to use, you can do s
 ```
 pip install hopsworks-airflow
 ```
+
+An Airflow administrator should also configure a new HTTP connection in Airflow providing the URL of the Hopsworks Cluster as well as an API key to authenticate with the cluster to launch and monitor jobs.
 
