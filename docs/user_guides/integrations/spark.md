@@ -28,6 +28,11 @@ The three files (`keyStore.jks`, `trustStore.jks` and `material_passwd`) should 
 
 ## Configure your Spark cluster
 
+!!! warning "Spark version limitation"
+
+    Currently Spark version 3.3.x is suggested to be able to use the full suite of Hopsworks Feature Store capabilities.
+
+
 Add the following configuration to the Spark application:
 
 ```
