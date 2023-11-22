@@ -1,3 +1,6 @@
+---
+description: Documentation on how to configure a Databricks cluster to read and write features from the Hopsworks Feature Store
+---
 # Databricks Integration
 
 Users can configure their Databricks clusters to write the results of feature engineering pipelines in the Hopsworks Feature Store using HSFS.
@@ -56,7 +59,7 @@ A cluster needs to exist before users can configure it using the Hopsworks UI. T
 
 !!! warning "Runtime limitation"
 
-    Currently Runtime 9.1 LTS is suggested to be able to use the full suite of Hopsworks Feature Store capabilities.
+    Currently Runtime 12.2 LTS is suggested to be able to use the full suite of Hopsworks Feature Store capabilities.
 
 ## Configure a cluster
 
