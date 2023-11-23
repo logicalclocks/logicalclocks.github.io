@@ -51,7 +51,7 @@ provider "hopsworksai" {
 module "aws" {
   source  = "logicalclocks/helpers/hopsworksai//modules/aws"
   region  = var.region
-  version = "2.2.0"
+  version = "2.3.0"
 }
 
 # Create a cluster with no workers
@@ -72,14 +72,19 @@ resource "hopsworksai_cluster" "cluster" {
   }
 
   rondb {
-    management_nodes {
-      instance_type = "t3a.medium"
+    single_node {
+      instance_type = "t3a.xlarge"
     }
-    data_nodes {
-      instance_type = "r5.large"
-    }
-    mysql_nodes {
-      instance_type = "c5.large"
+  }
+
+  autoscale {
+    non_gpu_workers {
+      instance_type       = "m5.2xlarge"
+      disk_size           = 256
+      min_workers         = 1
+      max_workers         = 5
+      standby_workers     = 0.5
+      downscale_wait_time = 300
     }
   }
 
@@ -161,7 +166,7 @@ data "azurerm_resource_group" "rg" {
 module "azure" {
   source         = "logicalclocks/helpers/hopsworksai//modules/azure"
   resource_group = var.resource_group
-  version        = "2.2.0"
+  version        = "2.3.0"
 }
 
 # Create an ACR registry 
@@ -197,16 +202,19 @@ resource "hopsworksai_cluster" "cluster" {
   }
 
   rondb {
-    management_nodes {
-      instance_type = "Standard_D2s_v4"
-    }
-
-    data_nodes {
+    single_node {
       instance_type = "Standard_D4s_v4"
     }
-    
-    mysql_nodes {
-      instance_type = "Standard_D2s_v4"
+  }
+
+  autoscale {
+    non_gpu_workers {
+      instance_type       = "Standard_D8_v3"
+      disk_size           = 256
+      min_workers         = 1
+      max_workers         = 5
+      standby_workers     = 0.5
+      downscale_wait_time = 300
     }
   }
 
