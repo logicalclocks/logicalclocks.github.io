@@ -12,7 +12,7 @@ The Hopsworks client library is required to connect to the Hopsworks Feature Sto
 ```
 pip install hopsworks
 ```
-Supported versions of Python: 3.7, 3.8, 3.9, 3.10, 3.11 ([PyPI ↗](https://pypi.org/project/hopsworks/))
+Supported versions of Python: 3.8, 3.9, 3.10, 3.11, 3.12 ([PyPI ↗](https://pypi.org/project/hopsworks/))
 
 !!! attention "OSX Installation"
 
@@ -46,7 +46,7 @@ To only install the Hopsworks Feature Store client library, execute the followin
 ```
 pip install hsfs[python]
 ```
-Supported versions of Python: 3.7, 3.8, 3.9, 3.10, 3.11 ([PyPI ↗](https://pypi.org/project/hsfs/))
+Supported versions of Python: 3.8, 3.9, 3.10, 3.11, 3.12 ([PyPI ↗](https://pypi.org/project/hsfs/))
 
 !!! attention "OSX Installation"
 
