@@ -28,6 +28,7 @@ nav:
               - Spine Group: concepts/fs/feature_group/spine_group.md
               - Data Validation/Stats/Alerts: concepts/fs/feature_group/fg_statistics.md
               - Versioning: concepts/fs/feature_group/versioning.md
+              - On-Demand Feature: concepts/fs/feature_group/on_demand_feature.md
           - Feature Views:
               - Overview: concepts/fs/feature_view/fv_overview.md
               - Offline API: concepts/fs/feature_view/offline_api.md
@@ -84,6 +85,7 @@ nav:
               - Feature vectors: user_guides/fs/feature_view/feature-vectors.md
               - Feature server: user_guides/fs/feature_view/feature-server.md
               - Query: user_guides/fs/feature_view/query.md
+              - Helper Columns: user_guides/fs/feature_view/helper-columns.md
               - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
               - Spines: user_guides/fs/feature_view/spine-query.md
           - Compute Engines: user_guides/fs/compute_engines.md
