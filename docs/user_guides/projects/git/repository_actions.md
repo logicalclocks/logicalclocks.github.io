@@ -1,8 +1,6 @@
 # Repository actions
 ## Introduction
 This section explains the git operations or commands you can perform on hopsworks git repositories. These commands include commit, pull, push, create branches and many more.
-!!! warning "Beta"
-    The feature is currently in Beta and will be improved in the upcoming releases.
 
 !!! notice "Repository permissions"
     Git repositories are private. Only the owner of the repository can perform git actions on the repository such as commit, push, pull e.t.c.

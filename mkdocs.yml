@@ -136,6 +136,7 @@ nav:
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
               - Run Python Job: user_guides/projects/jobs/python_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
+          - Airflow: user_guides/projects/airflow/airflow.md
           - OpenSearch:
               - Connect: user_guides/projects/opensearch/connect.md
           - Kafka:
