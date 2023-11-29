@@ -27,4 +27,4 @@ jobs:
 
       # Put this back and increment version when cutting a new release branch
       - name: mike deploy docs
-        run: mike deploy 3.4 latest -u --push
+        run: mike deploy 3.4 -u --push
