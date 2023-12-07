@@ -98,7 +98,7 @@ X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validati
 To clean up unused training data, you can delete all training data or for a particular version. Note that all metadata of training data and materialised files stored in HopsFS will be deleted and cannot be recreated anymore.
 ```python
 # delete a training data version
-feature_view.delete_training_dataset(version=1)
+feature_view.delete_training_dataset(training_dataset_version=1)
 
 # delete all training datasets
 feature_view.delete_all_training_datasets()
