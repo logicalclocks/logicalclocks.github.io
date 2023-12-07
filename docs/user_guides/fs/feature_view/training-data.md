@@ -106,14 +106,14 @@ feature_view.delete_all_training_datasets()
 It is also possible to keep the metadata and delete only the materialised files. Then you can recreate the deleted files by just specifying a version, and you get back the exact same dataset again. This is useful when you are running out of storage.
 ```python
 # delete files of a training data version
-feature_view.purge_training_data(version=1)
+feature_view.purge_training_data(training_dataset_version=1)
 
 # delete files of all training datasets
 feature_view.purge_all_training_data()
 ```
 To recreate a training dataset:
 ```python
-feature_view.recreate_training_dataset(version=1)
+feature_view.recreate_training_dataset(training_dataset_version =1)
 ```
 
 ## Tags
