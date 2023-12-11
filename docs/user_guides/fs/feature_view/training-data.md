@@ -113,7 +113,7 @@ feature_view.purge_all_training_data()
 ```
 To recreate a training dataset:
 ```python
-feature_view.recreate_training_dataset(training_dataset_version =1)
+feature_view.recreate_training_dataset(training_dataset_version=1)
 ```
 
 ## Tags
