@@ -50,16 +50,16 @@
 <span class=c1># get a training dataset with train, validation and test splits</span>
 <span class=n>X_train</span><span class=p>,</span> <span class=n>X_val</span><span class=p>,</span> <span class=n>X_test</span><span class=p>,</span> <span class=n>y_train</span><span class=p>,</span> <span class=n>y_val</span><span class=p>,</span> <span class=n>y_test</span> <span class=o>=</span> <span class=n>feature_view</span><span class=o>.</span><span class=n>get_train_validation_test_split</span><span class=p>(</span><span class=n>training_dataset_version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 </code></pre></div></p> <h2 id=deletion>Deletion<a class=headerlink href=#deletion title="Permanent link">#</a></h2> <p>To clean up unused training data, you can delete all training data or for a particular version. Note that all metadata of training data and materialised files stored in HopsFS will be deleted and cannot be recreated anymore. <div class=highlight><pre><span></span><code><span class=c1># delete a training data version</span>
-<span class=n>feature_view</span><span class=o>.</span><span class=n>delete_training_dataset</span><span class=p>(</span><span class=n>version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
+<span class=n>feature_view</span><span class=o>.</span><span class=n>delete_training_dataset</span><span class=p>(</span><span class=n>training_dataset_version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 
 <span class=c1># delete all training datasets</span>
-<span class=n>feature_view</span><span class=o>.</span><span class=n>delete_training_dataset</span><span class=p>()</span>
+<span class=n>feature_view</span><span class=o>.</span><span class=n>delete_all_training_datasets</span><span class=p>()</span>
 </code></pre></div> It is also possible to keep the metadata and delete only the materialised files. Then you can recreate the deleted files by just specifying a version, and you get back the exact same dataset again. This is useful when you are running out of storage. <div class=highlight><pre><span></span><code><span class=c1># delete files of a training data version</span>
-<span class=n>feature_view</span><span class=o>.</span><span class=n>purge_training_data</span><span class=p>(</span><span class=n>version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
+<span class=n>feature_view</span><span class=o>.</span><span class=n>purge_training_data</span><span class=p>(</span><span class=n>training_dataset_version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 
 <span class=c1># delete files of all training datasets</span>
 <span class=n>feature_view</span><span class=o>.</span><span class=n>purge_all_training_data</span><span class=p>()</span>
-</code></pre></div> To recreate a training dataset: <div class=highlight><pre><span></span><code><span class=n>feature_view</span><span class=o>.</span><span class=n>recreate_training_dataset</span><span class=p>(</span><span class=n>version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
+</code></pre></div> To recreate a training dataset: <div class=highlight><pre><span></span><code><span class=n>feature_view</span><span class=o>.</span><span class=n>recreate_training_dataset</span><span class=p>(</span><span class=n>training_dataset_version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 </code></pre></div></p> <h2 id=tags>Tags<a class=headerlink href=#tags title="Permanent link">#</a></h2> <p>Similar to feature view, You can attach, get, and remove tags. You can refer to <a href=../../tags/tags/ >here</a> if you want to learn more about how tags work. <div class=highlight><pre><span></span><code><span class=c1># attach</span>
 <span class=n>feature_view</span><span class=o>.</span><span class=n>add_training_dataset_tag</span><span class=p>(</span>
     <span class=n>training_dataset_version</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span> 
