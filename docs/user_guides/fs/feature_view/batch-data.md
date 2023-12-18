@@ -17,10 +17,9 @@ It is very common that ML models are deployed in a "batch" setting where ML pipe
     ```
 
 ## Retrieve batch data with primary keys and event time
-In certain scenarios, for example for time series model input data needs to be sorted according to primary key(s) and event time combination.  
-Or one might want to merge predictions back to original input data for postmortem analysis. However,  primary key(s) and event time usually are not included in the feature view query as 
-they are not features used for training. To get them pass following attributes to `get_batch_data` method:  
-`primary_keys=True` and/or `event_time=True`.
+For certain use cases, e.g. time series models, the input data needs to be sorted according to the primary key(s) and event time combination. Or one might want to merge predictions back with the original input data for postmortem analysis.
+Primary key(s) and event time are not usually included in the feature view query as they are not features used for training.
+To retrieve the primary key(s) and/or event time when retrieving batch data for inference, you need to set the parameters `primary_keys=True` and/or `event_time=True`.
 
 === "Python"
     ```python
