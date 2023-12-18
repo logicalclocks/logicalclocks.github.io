@@ -32,8 +32,7 @@ To retrieve the primary key(s) and/or event time when retrieving batch data for 
     ) # return a dataframe with primary keys and event time
     ```
 !!! note
-    If event time column has the same name in feature groups included in feature view query then the event time of the left most feature group in the query will be returned. If they have different names then
-    all of them will be returned. Join prefix doesn't have any influence on this behaviour. 
+    If the event time columns have the same name across all the feature groups included in the feature view, then only the event time of the label feature group (left most feature group in the query) will be returned. If they have different names, then all of them will be returned. The Join prefix does not have any influence on this behaviour.
 
 For Python-clients, handling small or moderately-sized data, we recommend enabling the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md), which will provide significant speedups over Spark/Hive for reading batch data.
 If the service is enabled, and you want to read this particular batch data with Hive instead, you can set the read_options to `{"use_hive": True}`.
