@@ -9,7 +9,7 @@ Hopsworks Feature Store provides functionality to define two types of helper col
     Both inference and training helper column name(s) must be part of the `Query` object. If helper column name(s) belong to feature group that is part of a `Join` with `prefix` defined, then this prefix needs to prepended
     to the original column name when defining helper column list.
 
-# Inference Helper columns
+## Inference Helper columns
 `inference_helper_columns` are a list of feature names that are not used for training the model itself but are used for extra information during online or batch inference. 
 For example computing [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md) like distance between previous and current place of transaction `loc_delta_t_minus_1` in credit card fraud detection system.
 Feature `loc_delta_t_minus_1` will be computed using previous transaction coordinates `longitude` and `latitude` that needs to fetched from the feature store and compared to the new transaction coordinates that arrives at inference application. 
@@ -37,7 +37,7 @@ In this use case `longitude` and `latitude` are `inference_helper_columns`. They
 ### Retrieval
 When retrieving data for model inference, helper columns will be omitted. However, they can be optionally fetched with inference or training data.
 
-### Batch inference
+#### Batch inference
 
 === "Python"
 
@@ -68,7 +68,7 @@ When retrieving data for model inference, helper columns will be omitted. Howeve
         df = df[[f.name for f in feature_view.features if not (f.label or f.inference_helper_column or f.training_helper_column)]]
         ```
 
-### Online inference
+#### Online inference
 
 === "Python"
 
