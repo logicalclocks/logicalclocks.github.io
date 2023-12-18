@@ -108,8 +108,7 @@ X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_da
 ```
 
 !!! note
-    If event time column has the same name in feature groups included in the parent feature view query then the event time of the left most feature group in the query will be returned. If they have different names then
-    all of them will be returned. Join prefix doesn't have any influence on this behaviour.
+    If the event time columns have the same name across all the feature groups included in the feature view, then only the event time of the label feature group (left most feature group in the query) will be returned. If they have different names, then all of them will be returned. The Join prefix does not have any influence on this behaviour.
 
     To use primary key(s) and event time column with materialized training datasets it needs to be created with `primary_keys=True` and/or `with_event_time=True`.  
 
