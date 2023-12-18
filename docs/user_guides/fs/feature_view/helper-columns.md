@@ -3,7 +3,7 @@ description: Using Helper columns in Feature View queries for online/batch infer
 ---
 
 # Helper columns
-Hopsworks Feature Store provides functionality to define two types of helper columns `inference_helper_columns` and `training_helper_columns` for [feature views](./overview.md).
+Hopsworks Feature Store provides a functionality to define two types of helper columns `inference_helper_columns` and `training_helper_columns` for [feature views](./overview.md).
 
 !!! note
     Both inference and training helper column name(s) must be part of the `Query` object. If helper column name(s) belong to feature group that is part of a `Join` with `prefix` defined, then this prefix needs to prepended
