@@ -95,9 +95,9 @@ X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validati
 ```
 
 ## Read training data with primary key(s) and event time
-In certain scenarios, for example for time series analysis training data needs to be sorted according to primary key(s) and event time combination.  
-However, they usually are not included in the feature view query as they are not features used for training. To get them pass following attributes  
-`primary_keys=True` and/or `event_time=True`.
+For certain use cases, e.g. time series models, the input data needs to be sorted according to the primary key(s) and event time combination. 
+Primary key(s) and event time are not usually included in the feature view query as they are not features used for training.
+To retrieve the primary key(s) and/or event time when retrieving training data, you need to set the parameters `primary_keys=True` and/or `event_time=True`.
 
 
 ```python
