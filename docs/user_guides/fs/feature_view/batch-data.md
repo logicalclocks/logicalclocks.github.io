@@ -16,6 +16,24 @@ It is very common that ML models are deployed in a "batch" setting where ML pipe
     Dataset<Row> ds = featureView.getBatchData("20220620", "20220627")
     ```
 
+## Retrieve batch data with primary keys and event time
+For certain use cases, e.g. time series models, the input data needs to be sorted according to the primary key(s) and event time combination. Or one might want to merge predictions back with the original input data for postmortem analysis.
+Primary key(s) and event time are not usually included in the feature view query as they are not features used for training.
+To retrieve the primary key(s) and/or event time when retrieving batch data for inference, you need to set the parameters `primary_keys=True` and/or `event_time=True`.
+
+=== "Python"
+    ```python
+    # get batch data
+    df = feature_view.get_batch_data(
+    start_time = "20220620",
+    end_time = "20220627",
+    primary_keys=True,
+    event_time=True
+    ) # return a dataframe with primary keys and event time
+    ```
+!!! note
+    If the event time columns have the same name across all the feature groups included in the feature view, then only the event time of the label feature group (left most feature group in the query) will be returned. If they have different names, then all of them will be returned. The Join prefix does not have any influence on this behaviour.
+
 For Python-clients, handling small or moderately-sized data, we recommend enabling the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md), which will provide significant speedups over Spark/Hive for reading batch data.
 If the service is enabled, and you want to read this particular batch data with Hive instead, you can set the read_options to `{"use_hive": True}`.
 ```python

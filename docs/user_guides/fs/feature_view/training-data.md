@@ -94,6 +94,24 @@ X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_da
 X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validation_test_split(training_dataset_version=1)
 ```
 
+## Read training data with primary key(s) and event time
+For certain use cases, e.g. time series models, the input data needs to be sorted according to the primary key(s) and event time combination. 
+Primary key(s) and event time are not usually included in the feature view query as they are not features used for training.
+To retrieve the primary key(s) and/or event time when retrieving training data, you need to set the parameters `primary_keys=True` and/or `event_time=True`.
+
+
+```python
+# get a training dataset
+X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_dataset_version=1, 
+                                                                     primary_keys=True,
+                                                                     event_time=True)
+```
+
+!!! note
+    If the event time columns have the same name across all the feature groups included in the feature view, then only the event time of the label feature group (left most feature group in the query) will be returned. If they have different names, then all of them will be returned. The Join prefix does not have any influence on this behaviour.
+
+    To use primary key(s) and event time column with materialized training datasets it needs to be created with `primary_keys=True` and/or `with_event_time=True`.  
+
 ## Deletion
 To clean up unused training data, you can delete all training data or for a particular version. Note that all metadata of training data and materialised files stored in HopsFS will be deleted and cannot be recreated anymore.
 ```python
