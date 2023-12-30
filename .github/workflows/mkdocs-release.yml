@@ -17,6 +17,9 @@ jobs:
         with:
           python-version: '3.8'
 
+      - name: Install ubuntu dependencies
+        run: sudo apt-get install -y libxml2-dev libxslt-dev python-dev
+
       - name: install deps
         run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python' mkdocs-minify-plugin
 
