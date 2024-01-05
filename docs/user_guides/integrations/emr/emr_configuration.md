@@ -34,7 +34,7 @@ Then click on the secret in the secrets list and take note of the *Secret ARN*.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/images/emr/secrets_manager.png" alt="Name the secret">
+    <img src="../../../../assets/images/guides/integrations/emr/secrets_manager.png" alt="Name the secret">
     <figcaption>Name the secret</figcaption>
   </figure>
 </p>

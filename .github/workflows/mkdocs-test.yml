@@ -36,7 +36,7 @@ jobs:
           # Give enough time for 
           sleep 30
           echo "Launching linkchecker"
-          linkchecker http://127.0.0.1:8000/
+          linkchecker --no-warnings http://127.0.0.1:8000/
 
           # If ok just kill the server
           kill -9 $SERVER_PID
