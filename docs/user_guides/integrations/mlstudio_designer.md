@@ -21,7 +21,7 @@ To connect to the Feature Store from the Azure Machine Learning Designer, create
 
 <p align="center">
   <figure>
-    <img src="../../../assets/images/guides/integrations/azure/designer/step-1.png" alt="Add an Execute Python Script step">
+    <img src="../../../../assets/images/guides/integrations/azure/designer/step-1.png" alt="Add an Execute Python Script step">
     <figcaption>Add an Execute Python Script step</figcaption>
   </figure>
 </p>

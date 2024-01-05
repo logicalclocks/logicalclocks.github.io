@@ -20,12 +20,26 @@ jobs:
         run: sudo apt-get install -y libxml2-dev libxslt-dev
 
       - name: install deps
-        run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python' mkdocs-minify-plugin
+        run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python' mkdocs-minify-plugin linkchecker
 
       - name: setup git
         run: |
           git config --global user.name Mike
           git config --global user.email mike@docs.hopsworks.ai
+
+      - name: test broken links
+        run: |
+          # run the server
+          mkdocs serve  > /dev/null 2>&1 &
+          SERVER_PID=$!
+          echo "mk server in PID $SERVER_PID"
+          # Give enough time for 
+          sleep 30
+          echo "Launching linkchecker"
+          linkchecker http://127.0.0.1:8000/
+
+          # If ok just kill the server
+          kill -9 $SERVER_PID
 
       - name: mike deploy docs
         run: mike deploy 3.2-SNAPSHOT dev -u

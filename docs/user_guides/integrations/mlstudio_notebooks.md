@@ -21,7 +21,7 @@ To access the Feature Store from Azure Machine Learning, open a Python notebook 
 
 <p align="center">
   <figure>
-    <img src="../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
+    <img src="../../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
     <figcaption>Connecting from an Azure Machine Learning Notebook</figcaption>
   </figure>
 </p>
@@ -43,7 +43,7 @@ To be able to access the Hopsworks Feature Store, the `HSFS` Python library need
 
     <p align="center">
         <figure>
-            <img src="../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
         </figure>
     </p>
