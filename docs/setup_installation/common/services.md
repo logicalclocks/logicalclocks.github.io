@@ -41,6 +41,11 @@ Hopsworks provides ArrowFlight Server(s) with DuckDB to significantly reduce the
 
 Port: 5005
 
+## OpenSearch
+Hopsworks includes a vector database to provide similarity search capabilities for embeddings, based on OpenSearch.
+
+Port: 9200
+
 ## Limiting outbound traffic to managed.hopsworks.ai
 
 If you have enabled the use of static IPs to communicate with [managed.hopsworks.ai](https://managed.hopsworks.ai) as described in [AWS](../../aws/cluster_creation/#limiting-outbound-traffic-to-hopsworksai) and [AZURE](../../azure/cluster_creation/#limiting-outbound-traffic-to-hopsworksai), you need to ensure that your security group allow outbound traffic to the two IPs indicated in the service page.
