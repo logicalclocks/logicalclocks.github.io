@@ -51,7 +51,7 @@ in a configured Route 53 hosted zone.
 
 !!! warning
     If you want the VM to register itself with Route 53 you **must** amend the
-    [Instance Profile](cluster_creation/#step-5-select-the-instance-profile) with the following permissions
+    [Instance Profile](../cluster_creation) with the following permissions
 
 ```json
 {

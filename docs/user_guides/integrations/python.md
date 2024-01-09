@@ -20,7 +20,7 @@ The **major version of `HSFS`** needs to match the **major version of Hopsworks*
 
 <p align="center">
     <figure>
-        <img src="../../../../assets/images/guides/integrations/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
+        <img src="../../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
         <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
     </figure>
 </p>

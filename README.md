@@ -48,3 +48,19 @@ The documentation should now be available locally on the following URL: http://1
 
 The `mkdocs.yml` file of this repository defines the pages to show in the navigation. 
 After adding your new page in the docs folder, you also need to add it to this file for it to show up in the navigation.
+
+## Checking links
+
+``` bash
+# run the server
+mkdocs serve  > /dev/null 2>&1 &
+SERVER_PID=$!
+echo "mk server in PID $SERVER_PID"
+# Give enough time for serving
+sleep 30
+echo "Launching linkchecker"
+linkchecker http://127.0.0.1:8000/
+
+# If ok just kill the server
+kill -9 $SERVER_PID
+```

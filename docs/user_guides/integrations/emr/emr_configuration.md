@@ -34,7 +34,7 @@ Then click on the secret in the secrets list and take note of the *Secret ARN*.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/images/emr/secrets_manager.png" alt="Name the secret">
+    <img src="../../../../assets/images/guides/integrations/emr/secrets_manager.png" alt="Name the secret">
     <figcaption>Name the secret</figcaption>
   </figure>
 </p>
@@ -173,7 +173,7 @@ sudo pip3 install --upgrade hsfs~=X.X.0
 
 <p align="center">
     <figure>
-      <img src="../../../../assets/images/guides/integrations/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
+      <img src="../../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
       <figcaption>To find your Hopsworks version, enter any of your projects and go to the settings tab inside your project.</figcaption>
     </figure>
 </p>
