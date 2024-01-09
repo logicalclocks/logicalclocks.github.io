@@ -149,7 +149,7 @@ Refer to [Create a VPC](restrictive_permissions.md#step-1-create-a-vpc) for more
 </p>
 
 !!! note
-    If the VPC uses a custom domain read our [guide](custom_domain_name.md) on how to set this up
+    If the VPC uses a custom domain read our [guide](./custom_domain_name.md) on how to set this up
 
 ### Step 9 Availability Zone selection
 If you selected an existing VPC in the previous step, this step lets you select which availability zone of this VPC to use.
