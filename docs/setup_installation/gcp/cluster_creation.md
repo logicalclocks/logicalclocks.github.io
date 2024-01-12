@@ -35,6 +35,8 @@ Enter the name of the bucket in which the Hopsworks cluster will store its data 
 !!! warning
     The bucket must be empty and must be in a region accessible from the region in which the cluster is deployed.
 
+The artifact registry used to store the clusters docker images (9)
+
 <p align="center">
   <figure>
     <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-general.png" alt="General configuration">
@@ -97,7 +99,17 @@ To backup the storage bucket data when taking a cluster backup we need to set a 
   </figure>
 </p>
 
-### Step 6 VPC and Subnet selection
+### Step 6 Managed Containers
+Hopsworks cluster can integrate with Google GKE (GKE) to launch Python jobs, Jupyter servers, and ML model servings on top of Google GKE. For more detail on how to set up this integration refer to [Integration with Google GKE](gke_integration.md).
+<p align="center">
+  <figure>
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-set-gke-cluster.png" alt="Add EKS cluster name">
+    <figcaption>Add GKE cluster name</figcaption>
+  </figure>
+</p>
+
+
+### Step 7 VPC and Subnet selection
 
 You can select the VPC which will be used by the Hopsworks cluster. 
 You can either select an existing VPC or let [managed.hopsworks.ai](https://managed.hopsworks.ai) create one for you.
@@ -125,7 +137,7 @@ Select the *Subnet* to be used by your cluster and press *Next*.
 </p>
 
 
-### Step 7 User management selection
+### Step 8 User management selection
 In this step, you can choose which user management system to use. You have three choices: 
 
 * *Managed*: [managed.hopsworks.ai](https://managed.hopsworks.ai) automatically adds and removes users from the Hopsworks cluster when you add and remove users from your organization  (more details [here](../common/user_management.md)).
@@ -140,7 +152,7 @@ In this step, you can choose which user management system to use. You have three
   </figure>
 </p>
 
-### Step 8 Managed RonDB
+### Step 9 Managed RonDB
 Hopsworks uses [RonDB](https://www.rondb.com/) as a database engine for its online Feature Store. By default database will run on its
 own VM. Premium users can scale-out database services to multiple VMs
 to handle increased workload.
@@ -156,7 +168,7 @@ For details on how to configure RonDB check our guide [here](../common/rondb.md)
 
 If you need to deploy a RonDB cluster instead of a single node please contact [us](mailto:sales@logicalclocks.com).
 
-### Step 9 add tags to your instances.
+### Step 10 add tags to your instances.
 In this step, you can define tags that will be added to the cluster virtual machines.
 
 <p align="center">
@@ -183,7 +195,7 @@ configuration as this might affect Cluster creation.
   </figure>
 </p>
 
-### Step 11 Review and create
+### Step 12 Review and create
 Review all information and select *Create*:
 
 <p align="center">
