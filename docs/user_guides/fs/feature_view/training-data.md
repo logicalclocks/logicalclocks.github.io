@@ -109,6 +109,7 @@ X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_da
 
 !!! note
     All primary and event time columns of all the feature groups included in the feature view will be returned. If they have the same names across feature groups and the join prefix was not provided then reading operation will fail with ambiguous column exception.
+    Make sure to define the join prefix if primary key and event time columns have the same names across feature groups. 
 
     To use primary key(s) and event time column with materialized training datasets it needs to be created with `primary_keys=True` and/or `with_event_time=True`.  
 
