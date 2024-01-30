@@ -5,6 +5,9 @@ This guide demonstrates the step-by-step process to create a cluster in [managed
 !!! note
     Currently, we don't support sharing GKE clusters between Hopsworks clusters. That is, a GKE cluster can be only used by one Hopsworks cluster. Also, we only support integration with GKE in the same project as Hopsworks cluster.
 
+!!! note
+    If you prefer to use Terraform over gcloud command line, then you can refer to our Terraform example [here](https://github.com/logicalclocks/terraform-provider-hopsworksai/tree/main/examples/complete/gcp/gke).
+
 ## Step 1: Attach Kuberentes developer role to the service account for cluster instances
 
 Ensure that the Hopsworks cluster has access to the GKE cluster by attaching the Kubernetes Engine Developer role  to the [service account you will attach to the cluster nodes](getting_started.md#step-3-creating-a-service-account-for-your-cluster-instances). Execute the following gcloud command to attach `roles/container.developer` to the cluster service account. Replace *\$PROJECT_ID* with your GCP project id and *\$SERVICE_ACCOUNT* with your service account that you have created during getting started [Step 3](getting_started.md#step-3-creating-a-service-account-for-your-cluster-instances).
