@@ -34,7 +34,9 @@ After specifying topic details it can be created by clicking on the `Create Topi
   </figure>
 </p>
 
-## Create Feeature Group with notification topic in HSFS APIs
+## Using HSFS APIs
+
+### Create Feeature Group with notification topic
 
 To enable notifications for an online-enabled feature group using the HSFS APIs you need to [create a feature group](./create.md) and set the `notification_topic_name` properties value to the create topic.
 
@@ -42,6 +44,14 @@ To enable notifications for an online-enabled feature group using the HSFS APIs 
 
     ```python
     fg = fs.create_feature_group(name="feature_group_name", version=feature_group_version, primary_key=feature_group_primary_keys, online_enabled=True, notification_topic_name="notification_topic_name")
+    ```
+
+### Update Feeature Group notification topic
+
+=== "Python"
+
+    ```python
+    fg.update_notification_topic_name(notification_topic_name="new_notification_topic_name")
     ```
 
 ## Create a Feeature Group with a notification topic using the UI
