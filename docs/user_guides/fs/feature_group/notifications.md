@@ -1,15 +1,15 @@
 ---
-description: Documentation on how notifications work for feature group in Hopsworks.
+description: Documentation on how notifications work for feature groups in Hopsworks.
 ---
 
-# how notifications work for a Feature Group
+# How notifications work for a Feature Group
 
 ### Introduction
 
-Changes to online enabled feature groups can be captured by listening to events on specified topics.
-This optimizes the user experience by allowing users to proactively making predictions as soon as there is an update on the features.
+Changes to online-enabled feature groups can be captured by listening to events on specified topics.
+This optimizes the user experience by allowing users to proactively make predictions as soon as there is an update on the features.
 
-In this guide you will learn how to enable notfications for online enable feature group within Hopsworks, showing examples in HSFS APIs as well as the user interface.
+In this guide you will learn how to enable notifications for online feature groups within Hopsworks, showing examples in HSFS APIs as well as the user interface.
 
 ## Prerequisites
 
@@ -17,8 +17,8 @@ Before you begin this guide we suggest you read the [Feature Group](../../../con
 
 ## Create notification topic
 
-To begin with you will need to have a topic where the notifications will be sent.
-To create a topic you can navigate to `kafka` subsection of project `settings` and click on `Add a new topic`.
+To begin with, you will need to have a topic where the notifications will be sent.
+To create a topic you can navigate to the `Kafka` subsection of project `settings` and click on `Add a new topic`.
 
 <p align="center">
   <figure>
@@ -26,7 +26,7 @@ To create a topic you can navigate to `kafka` subsection of project `settings` a
   </figure>
 </p>
 
-After specifying topic details it can be created by clicking on `Create Topic` button.
+After specifying topic details it can be created by clicking on the `Create Topic` button.
 
 <p align="center">
   <figure>
@@ -36,7 +36,7 @@ After specifying topic details it can be created by clicking on `Create Topic` b
 
 ## Create Feeature Group with notification topic in HSFS APIs
 
-To enable notifications for a online enabled feature group using the HSFS APIs you need to [create a feature group](./create.md) and set `notification_topic_name` properties value to the create topic.
+To enable notifications for an online-enabled feature group using the HSFS APIs you need to [create a feature group](./create.md) and set the `notification_topic_name` properties value to the create topic.
 
 === "Python"
 
@@ -44,7 +44,7 @@ To enable notifications for a online enabled feature group using the HSFS APIs y
     fg = fs.create_feature_group(name="feature_group_name", version=feature_group_version, primary_key=feature_group_primary_keys, online_enabled=True, notification_topic_name="notification_topic_name")
     ```
 
-## Create Feeature Group with notification topic using the UI
+## Create a Feeature Group with a notification topic using the UI
 
 TODO write stuff here
 
@@ -67,4 +67,5 @@ TODO write stuff here
       "featurestoreId":67
     }
   ]
-}```
+}
+```
