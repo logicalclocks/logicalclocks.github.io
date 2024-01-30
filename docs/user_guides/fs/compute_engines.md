@@ -4,12 +4,12 @@ In order to execute a feature pipeline to write to the Feature Store, as well as
 Hopsworks Feature Store APIs are built around dataframes, that means feature data is inserted into the Feature Store from a Dataframe and likewise when reading data from the Feature Store, it is returned
 as a Dataframe.
 
-As such, Hopsworks supports three computational engines:
+As such, Hopsworks supports four computational engines:
 
 1. [Apache Spark](https://spark.apache.org): Spark Dataframes and Spark Structured Streaming Dataframes are supported, both from Python environments (PySpark) and from Scala environments.
 2. [Pandas](https://pandas.pydata.org/): For pure Python environments without dependencies on Spark, Hopsworks supports [Pandas Dataframes](https://pandas.pydata.org/).
 3. [Apache Flink](https://flink.apache.org): Flink Data Streams are currently supported as an experimental feature from Java/Scala environments.
-3. [Apache Beam](https://beam.apache.org/) *experimental*: Beam Data Streams are currently supported as an experimental feature from Java/Scala environments.
+4. [Apache Beam](https://beam.apache.org/) *experimental*: Beam Data Streams are currently supported as an experimental feature from Java/Scala environments.
 
 Hopsworks supports running [compute on the platform itself](../../concepts/dev/inside.md) in the form of [Jobs](../projects/jobs/pyspark_job.md) or in [Jupyter Notebooks](../projects/jupyter/python_notebook.md).
 Alternatlively, you can also connect to Hopsworks using Python or Spark from [external environments](../../concepts/dev/outside.md), given that there is network connectivity.
@@ -76,3 +76,8 @@ Apache Beam integration with Hopsworks feature store was only tested using Dataf
 
 For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/beam).
 
+## Java
+It is also possible to interact to Hopsworks feature store using  pure Java environments without dependencies on Spark, Flink or Beam. 
+However, this is limited to retrieval of feature vector(s) from the online Feature Store. 
+
+For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/java).
