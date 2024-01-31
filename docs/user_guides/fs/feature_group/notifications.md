@@ -48,17 +48,41 @@ To enable notifications for an online-enabled feature group using the HSFS APIs 
 
 ### Update Feeature Group notification topic
 
+The notification topic name can be changed.
+It can take some time for these changes to take place.
+
 === "Python"
 
     ```python
     fg.update_notification_topic_name(notification_topic_name="new_notification_topic_name")
     ```
 
-## Create a Feeature Group with a notification topic using the UI
+## Using UI
 
-TODO write stuff here
+### Create Feeature Group with notification topic
 
-## Example of notification event structure
+When creating feature group enable online feature serving. When enabled you will be able set notification topic name property.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/create_online_enabled_feature_group.png" alt="Create online enabled feature group">
+  </figure>
+</p>
+
+### Update Feeature Group with notification topic
+
+The notification topic name can be changed by editing feature group.
+It can take some time for notifications to be posted to this topic.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/edit_online_enabled_feature_group.png" alt="Edit online enabled feature group">
+  </figure>
+</p>
+
+## Example of notification event
+
+The online feature store service will produce events to this notification topic when data ingestion was succesfully completed.
 
 ```
 {
