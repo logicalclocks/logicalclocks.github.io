@@ -18,7 +18,7 @@ Before you begin this guide we suggest you read the [Feature Group](../../../con
 ### Create notification topic
 
 To begin with, you will need to have a topic where the notifications will be sent.
-To create a topic you can navigate to the `Kafka` subsection of project `settings` and click on `Add a new topic`.
+To create a topic in Hopsworks you can navigate to the `Kafka` subsection of project `settings` and click on `Add a new topic`.
 
 <p align="center">
   <figure>
@@ -49,8 +49,8 @@ To enable notifications for an online-enabled feature group using the HSFS APIs 
 ### Update Feature Group notification topic
 
 The notification topic name can be changed after the creation of the feature group.
-It can take some time for these changes to take place since the onlinefs service internally caches feature groups for a set amount of time.
 By setting the `notification_topic_name` value to `None` or empty string notification will be disabled.
+It can take some time for these changes to take place since the onlinefs service internally caches feature groups for a set amount of time.
 
 === "Python"
 
@@ -74,8 +74,8 @@ When enabled you will be able to set the notification topic name property.
 ### Update Feeature Group with notification topic
 
 The notification topic name can be changed after creation by editing the feature group.
-It can take some time for notifications to be posted to the new topic.
-By setting the `Notification topic name` value empty notifications will be disabled.
+By setting the `Notification topic name` value to empty the notifications will be disabled.
+It can take some time for changes to notifications to take place.
 
 <p align="center">
   <figure>
@@ -85,7 +85,8 @@ By setting the `Notification topic name` value empty notifications will be disab
 
 ## Example of notification event
 
-The online feature store service will produce events to the provided notification topic when data ingestion is completed.
+Once properly set up the online feature store service will produce events to the provided notification topic when data ingestion is completed for records.
+
 Here is an example output:
 
 ```
