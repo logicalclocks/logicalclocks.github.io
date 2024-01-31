@@ -1,6 +1,6 @@
 # Hopsworks.ai Terraform Provider
 
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) allows users to create and manage their clusters using the [Hopsworks.ai terraform provider](https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest). In this guide, we first provide brief description on how to get started on AWS and AZURE, then we show how to import an existing cluster to be managed by terraform.
+[Managed.hopsworks.ai](https://managed.hopsworks.ai) allows users to create and manage their clusters using the [Hopsworks.ai terraform provider](https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest). In this guide, we first provide brief description on how to get started on AWS, AZURE, and GCP, then we show how to import an existing cluster to be managed by terraform.
 
 ## Getting Started with AWS
 
@@ -242,6 +242,175 @@ terraform apply -var="resource_group=<YOUR_RESOURCE_GROUP>"
 terraform destroy -var="resource_group=<YOUR_RESOURCE_GROUP>"
 ```
 
+## Getting Started with GCP
+
+Complete the following steps to start using Hopsworks.ai Terraform Provider on GCP.
+
+1. Create a [managed.hopsworks.ai](https://managed.hopsworks.ai) API KEY as described in details [here](api_key.md), and export the API KEY as follows 
+```bash
+export HOPSWORKSAI_API_KEY=<YOUR_API_KEY>
+```
+2. Download the proper Terraform CLI for your os from [here](https://www.terraform.io/downloads.html).
+3. Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk) and run `gcloud init` to configure your GCP credentials.
+
+### Example 
+In this section, we provide a simple example to create a Hopsworks cluster on GCP along with all its required resources (Google storage bucket and service account with the required permissions). 
+
+1. In your terminal, run the following to create a demo directory and cd to it 
+```bash
+mkdir demo
+cd demo
+```
+2. In this empty directory, create an empty file `main.tf`. Open the file and paste the following configurations to it then save it.
+```hcl
+terraform {
+  required_version = ">= 0.14.0"
+
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "5.13.0"
+    }
+    hopsworksai = {
+      source = "logicalclocks/hopsworksai"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = "0.10.0"
+    }
+  }
+}
+
+variable "region" {
+  type    = string
+  default = "europe-north1"
+}
+
+variable "project" {
+  type = string
+}
+
+provider "google" {
+  region  = var.region
+  project = var.project
+}
+
+provider "hopsworksai" {
+}
+
+provider "time" {
+
+}
+
+# Create required google resources, a storage bucket and an service account with the required hopsworks permissions
+data "hopsworksai_gcp_service_account_custom_role_permissions" "service_account" {
+
+}
+
+resource "google_project_iam_custom_role" "service_account_role" {
+  role_id     = "tf.HopsworksAIInstances"
+  title       = "Hopsworks AI Instances"
+  description = "Role that allows Hopsworks AI Instances to access resources"
+  permissions = data.hopsworksai_gcp_service_account_custom_role_permissions.service_account.permissions
+}
+
+resource "google_service_account" "service_account" {
+  account_id   = "tf-hopsworks-ai-instances"
+  display_name = "Hopsworks AI instances"
+  description  = "Service account for Hopsworks AI instances"
+}
+
+resource "google_project_iam_binding" "service_account_role_binding" {
+  project = var.project
+  role    = google_project_iam_custom_role.service_account_role.id
+
+  members = [
+    google_service_account.service_account.member
+  ]
+}
+
+resource "google_storage_bucket" "bucket" {
+  name          = "tf-hopsworks-bucket"
+  location      = var.region
+  force_destroy = true
+}
+
+resource "time_sleep" "wait_60_seconds" {
+  depends_on      = [google_project_iam_binding.service_account_role_binding]
+  create_duration = "60s"
+}
+
+# Create a simple cluster with two workers with two different configuration
+data "google_compute_zones" "available" {
+  region = var.region
+}
+
+locals {
+  zone = data.google_compute_zones.available.names.0
+}
+
+resource "hopsworksai_cluster" "cluster" {
+  name = "tf-cluster"
+
+  head {
+    instance_type = "e2-standard-8"
+  }
+
+  gcp_attributes {
+    project_id            = var.project
+    region                = var.region
+    zone                  = local.zone
+    service_account_email = google_service_account.service_account.email
+    bucket {
+      name = google_storage_bucket.bucket.name
+    }
+  }
+
+  rondb {
+    single_node {
+      instance_type = "e2-highmem-4"
+    }
+  }
+
+  autoscale {
+    non_gpu_workers {
+      instance_type       = "e2-standard-8"
+      disk_size           = 256
+      min_workers         = 1
+      max_workers         = 5
+      standby_workers     = 0.5
+      downscale_wait_time = 300
+    }
+  }
+
+  open_ports {
+    ssh = true
+  }
+
+  # waiting for 60 seconds after service account permissions has been granted 
+  # to avoid permissions validation failure on hopsworks when creating the cluster 
+  depends_on = [time_sleep.wait_60_seconds]
+}
+
+output "hopsworks_cluster_url" {
+  value = hopsworksai_cluster.cluster.url
+}
+```
+3. Initialize the terraform directory by running the following command 
+```bash
+terraform init 
+```
+4. Now you can apply the changes to create all required resources. Replace the placeholders with your GCP project id
+```bash
+terraform apply -var="project=<YOUR_PROJECT_ID>"
+```
+5. Once terraform finishes creating the resources, it will output the url to the newly created cluster. Notice that for now, you have to navigate to your [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) to get your login credentials.
+
+6. After you finish working with the cluster, you can terminate it along with the other GCP resources using the following command
+```bash
+terraform destroy -var="project=<YOUR_PROJECT_ID>"
+```
+
 ## Importing an existing cluster to terraform 
 
 In this section, we show how to use `terraform import` to manage your existing Hopsworks cluster. 
@@ -393,3 +562,4 @@ actions need to be performed.
 * Check the [Hopsworks.ai terraform provider documentation](https://registry.terraform.io/providers/logicalclocks/hopsworksai/latest/docs) for more details about the different resources and data sources supported by the provider and a description of their attributes.
 * Check the [Hopsworks.ai terraform AWS examples](https://github.com/logicalclocks/terraform-provider-hopsworksai/tree/main/examples/complete/aws), each example contains a README file describing how to run it and more details about configuring it.
 * Check the [Hopsworks.ai terraform AZURE examples](https://github.com/logicalclocks/terraform-provider-hopsworksai/tree/main/examples/complete/azure), each example contains a README file describing how to run it and more details about configuring it.
+* Check the [Hopsworks.ai terraform GCP examples](https://github.com/logicalclocks/terraform-provider-hopsworksai/tree/main/examples/complete/gcp), each example contains a README file describing how to run it and more details about configuring it.
