@@ -63,7 +63,8 @@ It can take some time for these changes to take place since the onlinefs service
 ### Create a Feeature Group with a notification topic
 
 During the creation of the feature group enable online feature serving.
-When enabled you will be able to set the notification topic name property.
+When enabled you will be able to set the `CDC topic name` property.
+CDC stands for change data capture.
 
 <p align="center">
   <figure>
@@ -74,7 +75,7 @@ When enabled you will be able to set the notification topic name property.
 ### Update Feeature Group with notification topic
 
 The notification topic name can be changed after creation by editing the feature group.
-By setting the `Notification topic name` value to empty the notifications will be disabled.
+By setting the `CDC topic name` value to empty the notifications will be disabled.
 It can take some time for changes to notifications to take place.
 
 <p align="center">
