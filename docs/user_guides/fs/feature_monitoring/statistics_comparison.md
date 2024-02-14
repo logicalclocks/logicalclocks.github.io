@@ -9,7 +9,7 @@ Hopsworks stores both detection and reference statistics and enable you to visua
 
 ## Use cases
 
-Feature monitoring is a powerful tool that allows you to monitoring your data over time and quickly detect anomalies in your feature data by comparing statistics computed on different windows of your feature data, notifying you about anomalies, and/or visualizing the evolution of these statistics and comparison results in a time series. It can be enabled in both Feature Groups and Feature Views, but for different purposes.
+Feature monitoring is a powerful tool that allows you to monitor your data over time and quickly detect anomalies in your feature data by comparing statistics computed on different windows of your feature data, notifying you about anomalies, and/or visualizing the evolution of these statistics and comparison results in a time series. It can be enabled in both Feature Groups and Feature Views, but for different purposes.
 
 For **Feature Groups**, feature monitoring helps you rapidly identify unexpected trends or anomalous values in your Feature Group data, facilitating the debugging of possible root causes such as newly introduced changes in your feature pipelines.
 
