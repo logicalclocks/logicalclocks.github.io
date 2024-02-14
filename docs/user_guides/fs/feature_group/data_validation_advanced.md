@@ -1,6 +1,6 @@
 # Advanced Data Validation Options and Best Practices
 
-The introduction to data validation guide can be found [here](data_validation.md). The notebook example to get started with Data Validation in Hopsworks can be found [here](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/integrations/great_expectations/fraud_batch_data_validation.ipynb).
+The introduction to the data validation guide can be found [here](data_validation.md). The notebook example to get started with Data Validation in Hopsworks can be found [here](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/integrations/great_expectations/fraud_batch_data_validation.ipynb).
 
 ## Data Validation Configuration Options in Hopsworks
 
