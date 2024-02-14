@@ -47,7 +47,7 @@ In the overview page for feature monitoring, you can enable or disable a specifi
 
 ### From Python client
 
-You can easily enable and disable a specific feature monitoring configuration using the Python object.
+You can easily enable or disable a specific feature monitoring configuration using the Python object.
 
 === "Python"
 
