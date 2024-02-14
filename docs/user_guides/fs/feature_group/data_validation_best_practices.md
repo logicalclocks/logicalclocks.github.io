@@ -45,7 +45,7 @@ Once you setup data validation, every insertion will upload a validation report 
 
 ### Get the stakeholders involved
 
-Hopsworks UI helps involve every project stakeholder by enabling both setting and monitoring of data quality requirements. No coding skills needed! You can monitor data quality requirements by checkint out the validation reports and results on the Feature Group page.
+Hopsworks UI helps involve every project stakeholder by enabling both setting and monitoring of data quality requirements. No coding skills needed! You can monitor data quality requirements by checking out the validation reports and results on the Feature Group page.
 
 If you need to set or edit the existing requirements, you can go on the Feature Group edit page. The Expectation suite section allows you to edit individual expectations and set success parameters that match ever changing business requirements.
 
