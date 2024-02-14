@@ -25,7 +25,7 @@ In [a previous section](index.md#statistics-computation-on-windows-of-feature-da
 
 - A _expanding window_ covering the whole Feature Group data from its creation until the time when statistics are computing. It can be seen as an snapshot of the latest version of your feature data. This reference window is useful when you want to compare the statistics of **newly inserted feature data against all the Feature Group data**.
 - A _rolling window_ covering a variable subset of feature data (e.g., feature data written last week). It helps you compare the properties of **feature data inserted at different cadences** (e.g., feature data inserted last month and two months ago). 
-- A _static window_ representing a snapshot of Feature Group data read using the Feature View query at a specific point in time (i.e., Training Dataset).It helps you compare **newly inserted feature data** into your Feature Groups **against a Training Dataset version**.
+- A _static window_ representing a snapshot of Feature Group data read using the Feature View query at a specific point in time (i.e., Training Dataset). It helps you compare **newly inserted feature data** into your Feature Groups **against a Training Dataset version**.
 - A _specific value_. It helps you target the analysis of feature data to a **specific feature and statistics metric**.
 
 See more details on how to define a reference window for your Feature Groups and Training Datasets in the Feature Monitoring guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
