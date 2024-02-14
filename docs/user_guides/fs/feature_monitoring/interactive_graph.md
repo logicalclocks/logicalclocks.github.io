@@ -23,7 +23,7 @@ Multiple feature monitoring configurations can be visualized at the same time on
 
 ### Show reference statistics
 
-In feature monitoring configurations with reference windows, you can also visualize the reference values by enabling the ^^Reference values^^ checkbox on the controls menu. Reference values can be either statistics computed over time or a speficic value shown as an horizontal line. 
+In feature monitoring configurations with reference windows, you can also visualize the reference values by enabling the ^^Reference values^^ checkbox on the controls menu. Reference values can be either statistics computed over time or a specific value shown as an horizontal line. 
 
 !!! note
     The same statistics metric will be visualized for both detection and reference values.
