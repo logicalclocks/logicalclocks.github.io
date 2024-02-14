@@ -174,7 +174,7 @@ That is all there is to it. Hopsworks will now automatically use your suite to v
 job, validation_report = fg.insert(df.head(5))
 ```
 
-As you can see, Hopsworks runs the validation in the client before attempting to insert the data. By default, Hopsworks will try to insert the data even if validation fails to prevent data loss. However it can be configured for production setup to be more restrictive, checkout the [data validation advanced guide](advanced_data_validation.md).
+As you can see, Hopsworks runs the validation in the client before attempting to insert the data. By default, Hopsworks will try to insert the data even if validation fails to prevent data loss. However it can be configured for production setup to be more restrictive, checkout the [data validation advanced guide](data_validation_advanced.md).
 
 !!!info
 	Note that once the Expectation Suite is attached to the Feature Group, any subsequent attempt to insert to this Feature Group will apply the Data Validation step even from a different client or in a scheduled job.
@@ -214,4 +214,4 @@ The integration between Hopsworks and Great Expectations makes it simple to add 
 
 ## Going further
 
-If you wish to find out more about how to use the data validation API or best practices for development or production pipelines in Hopsworks, checkout the [advanced guide](advanced_data_validation.md).
+If you wish to find out more about how to use the data validation API or best practices for development or production pipelines in Hopsworks, checkout the [advanced guide](data_validation_advanced.md) and [best practices guide](data_validation_best_practices.md).
