@@ -9,7 +9,7 @@ feature monitoring user interface is centered around two functionalities:
 - **Scheduled Statistics**: The user defines a _detection window_ over its data for which Hopsworks will compute the statistics on a regular basis. The results are stored
 in Hopsworks and enable the user to visualise the temporal evolution of statistical metrics on its data. This can be enabled for a whole Feature Group or Feature View, or for a particular Feature. For more details, see the [Scheduled statistics guide](scheduled_statistics.md).
 
-- **Statistics Comparison**: Enabled only for individual features, this variant allows the user to schedule the statistics computation on both a detection and a _reference window_. By providing information about how to compare those statistics, you can setup alerts to quickly detect critical change in the data. For more details, see the [Statistics comparison guide](statistics_comparison.md).
+- **Statistics Comparison**: Enabled only for individual features, this variant allows the user to schedule the statistics computation on both a _detection_ and a _reference window_. By providing information about how to compare those statistics, you can setup alerts to quickly detect critical change in the data. For more details, see the [Statistics comparison guide](statistics_comparison.md).
 
 !!! important
     To enable feature monitoring in Hopsworks, you need to set the `enable_feature_monitoring` [configuration option](../../../admin/variables.md) to `true`.
