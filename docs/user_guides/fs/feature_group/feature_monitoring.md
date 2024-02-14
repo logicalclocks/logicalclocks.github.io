@@ -38,7 +38,7 @@ Connect the client running your notebooks to Hopsworks.
     fs = project.get_feature_store()
     ```
 
-You will be prompt to paste your API key to connect the notebook to your project. The `fs` Feature Store entity is now ready to be used to insert or read data from Hopsworks.
+You will be prompted to paste your API key to connect the notebook to your project. The `fs` Feature Store entity is now ready to be used to insert or read data from Hopsworks.
 
 #### Get or create a Feature Group
 
