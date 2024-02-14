@@ -78,7 +78,7 @@ if report["success"] is False:
 
 ### Take Advantage of the Validation History
 
-You can easily retrieve the validation history of a specific expectation to export it to your favourite visualisation tool. You can filter on time and on whether insertion was successful or not
+You can easily retrieve the validation history of a specific expectation to export it to your favourite visualisation tool. You can filter on time and on whether insertion was successful or not.
 
 ```python3
 validation_history = fg.get_validation_history(
