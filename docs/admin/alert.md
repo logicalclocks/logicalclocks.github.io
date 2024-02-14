@@ -34,7 +34,7 @@ button on the left side of the **email** row and fill out the form that pops up.
   CRAM-MD5, LOGIN or PLAIN.
 
 Optionally cluster wide Email alert receivers can be added in _Default receiver emails_.
-These receivers will be available to all users when they create event triggered [alerts](../../user_guides/fs/feature_group/advanced_data_validation/#setup-alerts).
+These receivers will be available to all users when they create event triggered [alerts](../../user_guides/fs/feature_group/data_validation_best_practices#setup-alerts).
 
 ### Step 3: Configure Slack Alerts
 Alerts can also be sent via Slack messages. To be able to send Slack messages you first need to configure
@@ -47,7 +47,7 @@ a Slack webhook. Click on the _Configure_ button on the left side of the **slack
 </figure>
 
 Optionally cluster wide Slack alert receivers can be added in _Slack channel/user_.
-These receivers will be available to all users when they create event triggered [alerts](../../user_guides/fs/feature_group/advanced_data_validation/#setup-alerts).
+These receivers will be available to all users when they create event triggered [alerts](../../user_guides/fs/feature_group/data_validation_best_practices/#setup-alerts).
 
 ### Step 4: Configure Pagerduty Alerts
 Pagerduty is another way you can send alerts from Hopsworks. Click on the _Configure_ button on the left side of 
@@ -93,7 +93,7 @@ global:
  ...
 ```
 
-To test the alerts by creating triggers from Jobs and Feature group validations see [Alerts](../../user_guides/fs/feature_group/advanced_data_validation/#setup-alerts).
+To test the alerts by creating triggers from Jobs and Feature group validations see [Alerts](../../user_guides/fs/feature_group/data_validation_best_practices/#setup-alerts).
 
 The yaml syntax in the UI is slightly different in that it does not allow double quotes (it will ignore the values but give no error). 
 Below is an example configuration, that can be used in the UI, with both email and slack receivers configured for system alerts.

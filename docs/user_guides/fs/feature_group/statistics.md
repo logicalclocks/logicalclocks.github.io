@@ -4,7 +4,7 @@
 
 In this guide you will learn how to configure, compute and visualize statistics for the features registered with Hopsworks. 
 
-Hopsworks groups features in four categories:
+Hopsworks groups statistics in four categories:
 
 * **Descriptive**: These are the basic statistics Hopsworks computes. They include an _approximate_ count of the distinctive values and the completeness (i.e. the percentage of non null values). For numerical features Hopsworks also computes the minimum, maximum, mean, standard deviation and the sum of each feature. Enabled by default.
 
