@@ -17,7 +17,7 @@ For **Feature Views**, feature monitoring helps you quickly detect when newly in
 
 ## Reference windows
 
-To compare statistics computed on a _detection window_ against a baseline, you need to define a _reference window_ of feature data. Reference windows can be defined on different ways depending on whether you are configuring feature monitoring on a Feature Group or Feature View.
+To compare statistics computed on a _detection window_ against a baseline, you need to define a _reference window_ of feature data. Reference windows can be defined in different ways depending on whether you are configuring feature monitoring on a Feature Group or Feature View.
 
 ![Types of reference windows](../../../assets/images/guides/fs/feature_monitoring/fm-reference-windows.png)
 
