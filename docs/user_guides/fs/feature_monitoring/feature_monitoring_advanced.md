@@ -37,7 +37,7 @@ You can retrieve one or more feature monitoring configurations from the Feature 
 
 ## Disable feature monitoring
 
-You can enable and disable feature monitoring while keeping the historical statistics and comparison results.
+You can enable or disable feature monitoring while keeping the historical statistics and comparison results.
 
 ### From UI
 
