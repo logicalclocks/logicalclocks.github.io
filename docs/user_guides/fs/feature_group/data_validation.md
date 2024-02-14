@@ -64,7 +64,7 @@ In order to define and validate an expectation when writing to a Feature Group, 
 
 - A Hopsworks project. If you don't have a project yet you can go to [managed.hopsworks.ai](https://managed.hopsworks.ai), signup with your email and create your first project.
 - An API key, you can get one by following the instructions [here](../../../setup_installation/common/api_key.md)
-- The [hopsworks python library](../../client_installation/index.md) installed in your client
+- The [Hopsworks Python library](https://pypi.org/project/hopsworks) installed in your client. See the [installation guide](../../client_installation/index.md).
 
 #### Connect your notebook to Hopsworks
 

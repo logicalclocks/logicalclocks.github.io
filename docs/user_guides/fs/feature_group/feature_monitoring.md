@@ -5,13 +5,13 @@ Feature Monitoring complements the Hopsworks data validation capabilities for Fe
 Before continuing with this guide, see the [Feature monitoring guide](../feature_monitoring/index.md) to learn more about how feature monitoring works, and get familiar with the different use cases of feature monitoring for Feature Groups described in the **Use cases** sections of the [Scheduled statistics guide](../feature_monitoring/scheduled_statistics.md#use-cases) and [Statistics comparison guide](../feature_monitoring/statistics_comparison.md#use-cases).
 
 !!! warning "Limited UI support"
-    Currently, feature monitoring can only be configured using the **Hopsworks Python library**. However, you can enable/disable a feature monitoring configuration or trigger the statistics comparison manually from the UI, as shown in the [Advanced guide](../feature_monitoring/feature_monitoring_advanced.md).
+    Currently, feature monitoring can only be configured using the [Hopsworks Python library](https://pypi.org/project/hopsworks). However, you can enable/disable a feature monitoring configuration or trigger the statistics comparison manually from the UI, as shown in the [Advanced guide](../feature_monitoring/feature_monitoring_advanced.md).
 
 ## Code
 
 In this section, we show you how to setup feature monitoring in a Feature Group using the ==Hopsworks Python library==. Alternatively, you can get started quickly by running our [tutorial for feature monitoring](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/integrations/feature-monitoring/feature-monitoring.ipynb).
 
-First, checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the Hopsworks Python library in your environment, connect via the generated API key. The second step is to start a new configuration for feature monitoring. 
+First, checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the [Hopsworks Python library](https://pypi.org/project/hopsworks) in your environment, connect via the generated API key. The second step is to start a new configuration for feature monitoring. 
 
 After that, you can optionally define a detection window of data to compute statistics on, or use the default detection window (i.e., whole feature data). If you want to setup scheduled statistics alone, you can jump to the last step to save your configuration. Otherwise, the third and fourth steps are also optional and show you how to setup the comparison of statistics on a schedule by defining a reference window and specifying the statistics metric to monitor.
 
@@ -21,7 +21,7 @@ In order to setup feature monitoring for a Feature Group, you will need:
 
 - A Hopsworks project. If you don't have a project yet you can go to [managed.hopsworks.ai](https://managed.hopsworks.ai), signup with your email and create your first project.
 - An API key, you can get one by following the instructions [here](../../../setup_installation/common/api_key.md)
-- The [hopsworks python library](../../client_installation/index.md) installed in your client
+- The Hopsworks Python library installed in your client. See the [installation guide](../../client_installation/index.md).
 - A Feature Group
 
 #### Connect your notebook to Hopsworks
