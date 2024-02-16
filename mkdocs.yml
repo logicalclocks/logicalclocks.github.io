@@ -27,6 +27,7 @@ nav:
               - External Feature Groups: concepts/fs/feature_group/external_fg.md
               - Spine Group: concepts/fs/feature_group/spine_group.md
               - Data Validation/Stats/Alerts: concepts/fs/feature_group/fg_statistics.md
+              - Feature Monitoring: concepts/fs/feature_group/feature_monitoring.md
               - Versioning: concepts/fs/feature_group/versioning.md
               - On-Demand Feature: concepts/fs/feature_group/on_demand_feature.md
           - Feature Views:
@@ -35,6 +36,7 @@ nav:
               - Online API: concepts/fs/feature_view/online_api.md
               - Consistent Transformations: concepts/fs/feature_view/training_inference_pipelines.md
               - Statistics: concepts/fs/feature_view/statistics.md
+              - Feature Monitoring: concepts/fs/feature_view/feature_monitoring.md
               - Versioning: concepts/fs/feature_view/versioning.md
       - Projects:
           - Governance: concepts/projects/governance.md
@@ -72,12 +74,17 @@ nav:
               - user_guides/fs/feature_group/index.md
               - Create: user_guides/fs/feature_group/create.md
               - Create External: user_guides/fs/feature_group/create_external.md
-              - Deprecating: user_guides/fs/feature_group/deprecation.md
-              - Notification: user_guides/fs/feature_group/notification.md
+              - Deprecate: user_guides/fs/feature_group/deprecation.md
               - Data Types and Schema management: user_guides/fs/feature_group/data_types.md
               - Statistics: user_guides/fs/feature_group/statistics.md
-              - Data Validation: user_guides/fs/feature_group/data_validation.md
-              - Advanced Data Validation: user_guides/fs/feature_group/advanced_data_validation.md
+              - Data Validation:
+                  - Getting started: user_guides/fs/feature_group/data_validation.md
+                  - Advanced guide: user_guides/fs/feature_group/data_validation_advanced.md
+                  - Best practices: user_guides/fs/feature_group/data_validation_best_practices.md
+              - Feature Monitoring:
+                  - Getting started: user_guides/fs/feature_group/feature_monitoring.md
+                  - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
+              - Notification: user_guides/fs/feature_group/notification.md
           - Feature View:
               - user_guides/fs/feature_view/index.md
               - Overview: user_guides/fs/feature_view/overview.md
@@ -89,6 +96,9 @@ nav:
               - Helper Columns: user_guides/fs/feature_view/helper-columns.md
               - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
               - Spines: user_guides/fs/feature_view/spine-query.md
+              - Feature Monitoring:
+                  - Getting started: user_guides/fs/feature_view/feature_monitoring.md
+                  - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
           - Compute Engines: user_guides/fs/compute_engines.md
           - Client Integrations:
               - user_guides/integrations/index.md
@@ -111,6 +121,11 @@ nav:
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
           - Provenance: user_guides/fs/provenance/provenance.md
+          - Feature Monitoring:
+              - user_guides/fs/feature_monitoring/index.md
+              - Scheduled Statistics: user_guides/fs/feature_monitoring/scheduled_statistics.md
+              - Statistics Comparison: user_guides/fs/feature_monitoring/statistics_comparison.md
+              - Interactive Graph: user_guides/fs/feature_monitoring/interactive_graph.md
       - Projects:
           - user_guides/projects/index.md
           - Authentication:
@@ -227,7 +242,7 @@ nav:
           - Terraform: setup_installation/common/terraform.md
       - On-Prem:
           - Hopsworks Installer: setup_installation/on_prem/hopsworks_installer.md
-          - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md 
+          - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
   - Administration:
       - Introduction: admin/index.md
       - Cluster Configuration: admin/variables.md

@@ -8,3 +8,4 @@ This section serves to provide guides and examples for the common usage of abstr
 - [Data Types and Schema management](data_types.md)
 - [Statistics](statistics.md)
 - [Data Validation](data_validation.md)
+- [Feature Monitoring](feature_monitoring.md)
