@@ -14,7 +14,7 @@ Before you begin this guide we suggest you read the [Feature Group](../../../con
 
 ## Create using the HSFS APIs
 
-To create a feature group using the HSFS APIs, you need to provide a Pandas or Spark DataFrame. The DataFrame will contain all the features you want to register within the feature group, as well as the primary key, event time and partition key.
+To create a feature group using the HSFS APIs, you need to provide a Pandas, Polars or Spark DataFrame. The DataFrame will contain all the features you want to register within the feature group, as well as the primary key, event time and partition key.
 
 ### Create a Feature Group 
 
@@ -272,7 +272,7 @@ The snippet above only created the metadata object on the Python interpreter run
 fg.insert(df)
 ```
 
-The save method takes in input a Pandas or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time. 
+The save method takes in input a Pandas, Polars or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time. 
 
 The DataFrame *must* contain the columns specified as primary keys, partition key and event time in the `create_feature_group` call.
 
