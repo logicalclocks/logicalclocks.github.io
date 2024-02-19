@@ -2,7 +2,7 @@
 description: Documentation on Change Data Capture for feature groups in Hopsworks.
 ---
 
-# Change Data Capture for feature groups
+# Change Data Capture for a Feature Group
 
 ## Introduction
 
@@ -81,7 +81,9 @@ Here is an example output:
 {
   "projectId":119,  # project used for data ingestion
   "featureStoreId":67,  # feature store where changes took place
-  "featureGroupId":14,  # feature group changed
+  "featureGroupId":14,  # id of the feature group
+  "featureGroupName":"fg_name",  # name of the feature group
+  "featureGroupVersion":1,  # version of the feature group
   "entry":{ # values of the affected feature group entry
     "id":"15",
     "text":"test"
