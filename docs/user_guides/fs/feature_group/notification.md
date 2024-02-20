@@ -2,7 +2,7 @@
 description: Documentation on Change Data Capture for feature groups in Hopsworks.
 ---
 
-# Change Data Capture for a Feature Group
+# Change Data Capture for feature groups
 
 ## Introduction
 
