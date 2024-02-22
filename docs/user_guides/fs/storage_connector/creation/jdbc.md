@@ -43,7 +43,7 @@ Enter the details for your JDBC enabled database.
 
 1. Select "JDBC" as connector protocol.
 2. Enter the JDBC connection url. This can for example also contain the username and password.
-3. Add additional key/value arguments to be passed to the connection. These might differ by database.
+3. Add additional key/value arguments to be passed to the connection, such as username or password. These might differ by database.
 
 
     !!! note 
