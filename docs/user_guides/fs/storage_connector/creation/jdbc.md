@@ -47,7 +47,7 @@ Enter the details for your JDBC enabled database.
 
 
     !!! note 
-    Add driver class name as an argument. This is a mandatory argument even if using default MySQL driver. Add an argument with name `driver` and class name as value. The driver class name will differ based on the database to connect. For MySQL databases, the class name is `com.mysql.cj.jdbc.Driver`, as shown in example image.
+    Driver class name is a mandatory argument even if using the default MySQL driver. Add it by specifying a property with the name `driver` and class name as value. The driver class name will differ based on the database. For MySQL databases, the class name is `com.mysql.cj.jdbc.Driver`, as shown in the example image.
 
 
 4. Click "Setup storage connector".
