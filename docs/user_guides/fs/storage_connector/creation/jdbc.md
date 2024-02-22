@@ -43,18 +43,22 @@ Enter the details for your JDBC enabled database.
 
 1. Select "JDBC" as connector protocol.
 2. Enter the JDBC connection url. This can for example also contain the username and password.
-6. Add driver class name as an argument. This is a mandatory argument even if using default MySQL driver. Add an argument with name `driver` and driver class name as value. For MySQL databases, the class name is `com.mysql.cj.jdbc.Driver`, as shown in example below. The driver class name will differ based on the database to connect.
-3. Add additional key/value arguments to be passed to the connection. These might differ by database. It can be the username and password. Passwords are encrypted as [Secret](../../../projects/secrets/create_secret.md) and stored in the database for additional security.
-4. Click "Setup storage connector".
+3. Add additional key/value arguments to be passed to the connection. These might differ by database. It can be the username and password. 
 
-<figure markdown>
-  ![Adding Driver in arguments](../../../../assets/images/guides/fs/storage_connector/jdbc_driver.png)
-  <figcaption>Specifying driver name in case of MySQL</figcaption>
-</figure>
+
+    !!! note 
+    Add driver class name as an argument. This is a mandatory argument even if using default MySQL driver. Add an argument with name `driver` and class name as value. The driver class name will differ based on the database to connect. For MySQL databases, the class name is `com.mysql.cj.jdbc.Driver`, as shown in example image.
+
+
+4. Click "Setup storage connector".
 
 
 !!! note
-  To be able to use the connector, you need to upload the driver JAR file to the  [Jupyter configuration](../../../projects/jupyter/spark_notebook.md) or to a [Job configuration](../../../projects/jobs/pyspark_job.md)  in `Addtional Jars`.  However, for MySQL connections the default JDBC driver is included in Hopsworks so this step can skipped.
+To be able to use the connector, you need to upload the driver JAR file to the  [Jupyter configuration](../../../projects/jupyter/spark_notebook.md) or to a [Job configuration](../../../projects/jobs/pyspark_job.md)  in `Addtional Jars`.  However, for MySQL connections the default JDBC driver is included in Hopsworks so this step can skipped.
+
+
+!!! info 
+Passwords are encrypted as [Secret](../../../projects/secrets/create_secret.md) and stored in the database for additional security.
 
 ## Next Steps
 
