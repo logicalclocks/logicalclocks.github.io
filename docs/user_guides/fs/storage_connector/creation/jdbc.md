@@ -36,15 +36,26 @@ Head to the Storage Connector View on Hopsworks (1) and set up a new storage con
 
 Enter the details for your JDBC enabled database.
 
-1. Select "JDBC" as connector protocol.
-2. Enter the JDBC connection url. This can for example also contain the username and password.
-3. Add additional key/value arguments to be passed to the connection. These might differ by database. It can be the username and password.
-4. Click "Setup storage connector".
-
 <figure markdown>
   ![JDBC Connector Creation](../../../../assets/images/guides/fs/storage_connector/jdbc_creation.png)
   <figcaption>JDBC Connector Creation Form</figcaption>
 </figure>
+
+1. Select "JDBC" as connector protocol.
+2. Enter the JDBC connection url. This can for example also contain the username and password.
+3. Add additional key/value arguments to be passed to the connection, such as username or password. These might differ by database.
+
+
+    !!! note 
+        Driver class name is a mandatory argument even if using the default MySQL driver. Add it by specifying a property with the name `driver` and class name as value. The driver class name will differ based on the database. For MySQL databases, the class name is `com.mysql.cj.jdbc.Driver`, as shown in the example image.
+
+
+4. Click "Setup storage connector".
+
+
+!!! note
+    To be able to use the connector, you need to upload the driver JAR file to the [Jupyter configuration](../../../projects/jupyter/spark_notebook.md) or [Job configuration](../../../projects/jobs/pyspark_job.md) in `Addtional Jars`.  For MySQL connections the default JDBC driver is already included in Hopsworks so this step can be skipped.
+
 
 ## Next Steps
 
