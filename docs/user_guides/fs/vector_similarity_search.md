@@ -94,15 +94,14 @@ It is also possible to get back feature vector by providing the primary keys, bu
 fv.get_feature_vector({"news_id": 1})
 ```
 
-# Best Practices
-## Choose the Appropriate Online Feature Stores
-
-There are 2 types of online feature stores in Hopsworks: online store (RonDB) and vector store (Opensearch). Online store is designed for retrieving feature vectors efficiently with low latency. Vector store is designed for finding similar embedding efficiently. If similarity search is not required, using online store is recommended for low latency retrieval of feature values including embedding.
-
 # Performance considerations for Feature Groups with Embeddings
 ## Choose Features for Vector Store
 
 While it is possible to update feature value in vector store, updating feature value in online store is more efficient. If you have features which are frequently being updated and do not require for filtering, consider storing them separately in a different feature group. As shown in the previous example, `view_cnt` is updated frequently and stored separately. You can then get all the required features by using feature view.
+
+## Choose the Appropriate Online Feature Stores
+
+There are 2 types of online feature stores in Hopsworks: online store (RonDB) and vector store (Opensearch). Online store is designed for retrieving feature vectors efficiently with low latency. Vector store is designed for finding similar embedding efficiently. If similarity search is not required, using online store is recommended for low latency retrieval of feature values including embedding.
 
 ## Use New Index per Feature Group
 
