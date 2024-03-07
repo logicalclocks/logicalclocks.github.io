@@ -17,7 +17,7 @@ from hsfs import embedding
 emb = embedding.EmbeddingIndex(index_name="news_fg")
 ```
 
-Then, add one or more embedding features to the index. Name and dimension of the embedding features are required for identifying which features should be indexed for k-nearest neighbor (KNN) search. In this example, we get the dimension of the embedding by taking the length of the value of the `embedding_heading` column in the first row of the dataframe `df`. Optionally, you can specify the [similarity function](TODO: add link).
+Then, add one or more embedding features to the index. Name and dimension of the embedding features are required for identifying which features should be indexed for k-nearest neighbor (KNN) search. In this example, we get the dimension of the embedding by taking the length of the value of the `embedding_heading` column in the first row of the dataframe `df`. Optionally, you can specify the similarity function.
 ```aidl
 # Add embedding feature to the index
 emb.add_embedding("embedding_heading", len(df["embedding_heading"][0]))
@@ -62,7 +62,7 @@ news_fg.as_of(time_in_past).read()
 # Querying Similar Embeddings with Additional features
 
 You can also use similarity search for vector embedding features in feature views.
-In the code snippet below, we create a feature view by selecting features from the earlier `news_fg` and a new feature group `view_fg`. If you include a feature group with vector embedding features in a feature view, *regardless* if the vector embedding features are selected or not, you can call `find_neighbors` on the feature view, and it will return rows containing all the feature values in the feature view. In the example below, a list of `heading` and `view_cnt` will be returned for the news articles which are closet to provided `news_description`.
+In the code snippet below, we create a feature view by selecting features from the earlier `news_fg` and a new feature group `view_fg`. If you include a feature group with vector embedding features in a feature view, **whether or not the vector embedding features are selected**, you can call `find_neighbors` on the feature view, and it will return rows containing all the feature values in the feature view. In the example below, a list of `heading` and `view_cnt` will be returned for the news articles which are closet to provided `news_description`.
 
 ```aidl
 view_fg = fs.get_or_create_feature_group(
@@ -80,7 +80,7 @@ fv = fs.get_or_create_feature_view(
 fv.find_neighbors(model.encode(news_description), k=5)
 ```
 
-Note that you can use similarity search from the feature view only if the feature group which you are querying with `find_neighbors` has all the primary keys of the other feature groups. In the example above, you are querying against the feature group `news_fg` which has the vector embedding features, and it has the feature "news_id" which is the primary key of the feature group `view_fg`. But if `page_fg` is used as illustrated below, `find_neighbors` will fail to return any features because primary key `page_id` does not exist in `news_fg`.
+Note that you can use similarity search from the feature view **only if** the feature group which you are querying with `find_neighbors` has **all** the primary keys of the other feature groups. In the example above, you are querying against the feature group `news_fg` which has the vector embedding features, and it has the feature "news_id" which is the primary key of the feature group `view_fg`. But if `page_fg` is used as illustrated below, `find_neighbors` will fail to return any features because primary key `page_id` does not exist in `news_fg`.
 
 <p align="center">
   <figure>
@@ -95,16 +95,16 @@ fv.get_feature_vector({"news_id": 1})
 ```
 
 # Best Practices
-1. Choose the Appropriate Online Feature Stores
+## Choose the Appropriate Online Feature Stores
 
 There are 2 types of online feature stores in Hopsworks: online store (RonDB) and vector store (Opensearch). Online store is designed for retrieving feature vectors efficiently with low latency. Vector store is designed for finding similar embedding efficiently. If similarity search is not required, using online store is recommended for low latency retrieval of feature values including embedding.
 
 # Performance considerations for Feature Groups with Embeddings
-1. Choose features for vector store
+## Choose Features for Vector Store
 
 While it is possible to update feature value in vector store, updating feature value in online store is more efficient. If you have features which are frequently being updated and do not require for filtering, consider storing them separately in a different feature group. As shown in the previous example, `view_cnt` is updated frequently and stored separately. You can then get all the required features by using feature view.
 
-2. Use new index per feature group
+## Use New Index per Feature Group
 
 Create a new index per feature group to optimize retrieval performance.
 
