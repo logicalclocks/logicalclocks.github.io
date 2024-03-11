@@ -72,6 +72,7 @@ You will be redirected to a full-page deployment creation form where you can see
     3. [Inference logger](#inference-logger)
     4. [Inference batcher](#inference-batcher)
     5. [Resources](#resources)
+    6. [API protocol](#api-protocol)
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -191,6 +192,10 @@ Inference batcher are deployment component that apply batching to the incoming i
 ## Resources
 
 Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica. To learn about the different combinations available, see the [Resources Guide](resources.md).
+
+## API protocol
+
+Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. To learn about REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).
 
 ## Conclusion
 

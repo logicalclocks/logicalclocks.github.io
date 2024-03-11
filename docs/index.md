@@ -155,7 +155,7 @@ pointer-events: initial;
             <div class="rec_frame_main">
               <div class="text_and_icon">
                 <div class="svg_icon w-embed"><img alt="svgImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iNjQiIGhlaWdodD0iNjQiCnZpZXdCb3g9IjAgMCA1MTIgNTEyIgpzdHlsZT0iIGZpbGw6I3VuZGVmaW5lZDsiPjxwYXRoIGQ9Ik01MyA0MTUuNjQ1YTMwLjAzNCAzMC4wMzQgMCAwMDMwIDMwSDQyOWEzMC4wMzQgMzAuMDM0IDAgMDAzMC0zMFYxNjcuNTEzSDUzek0zMDIuNjY3IDI2My41MzdhMTAgMTAgMCAxMTE0LjAwOC0xNC4yNzZsNDQuMTM3IDQzLjMxYTEwIDEwIDAgMDEwIDE0LjI3NmwtNDQuMTM3IDQzLjMwOWExMCAxMCAwIDExLTE0LjAwOC0xNC4yNzZsMzYuODYyLTM2LjE3MXptLTgwLjkgMTA5LjVsMzguMjU3LTE1MC41YTEwIDEwIDAgMTExOS4zODMgNC45MjdsLTM4LjI1NyAxNTAuNWExMCAxMCAwIDAxLTE5LjM4My00LjkyN3ptLTc3LjA3NC04MC40NjVsNDQuMTM3LTQzLjMxYTEwIDEwIDAgMTExNC4wMDggMTQuMjc2bC0zNi44NjIgMzYuMTcyIDM2Ljg2MiAzNi4xNzFhMTAgMTAgMCAwMS0xNC4wMDggMTQuMjc2bC00NC4xMzctNDMuMzA5YTEwIDEwIDAgMDEwLTE0LjI3NnpNNDI5IDY2LjM1NUg4M2EzMC4wMzQgMzAuMDM0IDAgMDAtMzAgMzB2NTEuMTU3SDQ1OVY5Ni4zNTVBMzAuMDM0IDMwLjAzNCAwIDAwNDI5IDY2LjM1NXoiPjwvcGF0aD48L3N2Zz4="></div>
-                <div class="name_item_02"><a href="./concepts/projects/search/">Search</a>, <a href="./concepts/fs/feature_group/versioning/">Versioning</a>, <a href="./concepts/fs/feature_group/fg_statistics/">Statistics</a></div>
+                <div class="name_item_02"><a href="./concepts/projects/search/">Search</a>, <a href="./concepts/fs/feature_group/versioning/">Versioning</a>, <a href="./concepts/fs/feature_group/fg_statistics/">Statistics</a>, <a href="./concepts/fs/feature_group/feature_monitoring/">Monitoring</a></div>
               </div>
             </div>
             <div class="rec_frame_main">

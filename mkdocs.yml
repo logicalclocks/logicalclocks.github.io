@@ -192,6 +192,7 @@ nav:
               - Resource Allocation: user_guides/mlops/serving/resources.md
               - Inference Logger: user_guides/mlops/serving/inference-logger.md
               - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
+              - API Protocol: user_guides/mlops/serving/api-protocol.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
           - Vector Database: user_guides/mlops/vector_database/index.md
       - Migration:
@@ -356,6 +357,7 @@ markdown_extensions:
   - pymdownx.critic
   - attr_list
   - md_in_html
+  - def_list
   - toc:
       permalink: "#"
   - pymdownx.tasklist:

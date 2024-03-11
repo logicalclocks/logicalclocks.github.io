@@ -17,6 +17,7 @@ Predictors are the main component of deployments. They are responsible for runni
     5. [Inference Logger](#inference-logger)
     6. [Inference Batcher](#inference-batcher)
     7. [Resources](#resources)
+    8. [API protocol](#api-protocol)
 
 ## GUI
 
@@ -87,6 +88,7 @@ Additionally, you can adjust the default values of the rest of components:
     2. [Inference logger](#inference-logger)
     3. [Inference batcher](#inference-batcher)
     4. [Resources](#resources)
+    5. [API protocol](#api-protocol)
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -245,6 +247,10 @@ Inference batcher are deployment component that apply batching to the incoming i
 ## Resources
 
 Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica. To learn about the different combinations available, see the [Resources Guide](resources.md).
+
+## API protocol
+
+Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. To learn about REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).
 
 ## Conclusion
 
