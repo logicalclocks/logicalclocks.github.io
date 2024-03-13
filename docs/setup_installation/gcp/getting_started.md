@@ -24,11 +24,12 @@ To run all the commands on this page the user needs to have at least the followi
     storage.buckets.create
 ```
 
-Make sure to enable *Compute Engine API*, *Cloud Resource Manager API*, and *Identity and Access Management (IAM) API* on the GCP project. This can be done by running the following commands. Replacing *$PROJECT_ID* with the id of your GCP project.
+Make sure to enable *Compute Engine API*, *Cloud Resource Manager API*, *Identity and Access Management (IAM) API*, and *Artifact Registry* on the GCP project. This can be done by running the following commands. Replacing *$PROJECT_ID* with the id of your GCP project.
 ```bash
 gcloud --project=$PROJECT_ID services enable compute.googleapis.com
 gcloud --project=$PROJECT_ID services enable cloudresourcemanager.googleapis.com
 gcloud --project=$PROJECT_ID services enable iam.googleapis.com
+gcloud --project=$PROJECT_ID services enable artifactregistry.googleapis.com
 ```
 You can find more information about GCP cloud APIs in the [GCP documentation](https://cloud.google.com/apis/docs/getting-started).
 ## Step 1: Connecting your GCP account
@@ -63,7 +64,7 @@ gsutil mb -p $PROJECT_ID -l US gs://$BUCKET_NAME
 
 
 ## Step 3: Creating a service account for your cluster instances
-The cluster instances will need to be granted permission to access the storage bucket. You achieve this by creating a service account that will later be attached to the Hopsworks cluster instances. This service account should be different from the service account created in step 1, as it has only those permissions related to storing objects in a GCP bucket.
+The cluster instances will need to be granted permission to access the storage bucket and the artifact registry. You achieve this by creating a service account that will later be attached to the Hopsworks cluster instances. This service account should be different from the service account created in step 1, as it has only those permissions related to storing objects in a GCP bucket and docker images in an artifact registry repository.
 
 ### Step 3.1: Creating a custom role for accessing storage
 Create a file named *hopsworksai_instances_role.yaml* with the following content:
@@ -84,6 +85,12 @@ includedPermissions:
 - storage.objects.get
 - storage.objects.list
 - storage.objects.update
+- artifactregistry.repositories.create
+- artifactregistry.repositories.get
+- artifactregistry.repositories.uploadArtifacts
+- artifactregistry.repositories.downloadArtifacts
+- artifactregistry.tags.list
+- artifactregistry.tags.delete
 ```
 
 !!! note 
