@@ -223,6 +223,7 @@ nav:
           - Getting Started: setup_installation/gcp/getting_started.md
           - Cluster Creation: setup_installation/gcp/cluster_creation.md
           - Limiting Permissions: setup_installation/gcp/restrictive_permissions.md
+          - GKE integration: setup_installation/gcp/gke_integration.md
       - Common:
           - The dashboard: setup_installation/common/dashboard.md
           - Settings: setup_installation/common/settings.md
