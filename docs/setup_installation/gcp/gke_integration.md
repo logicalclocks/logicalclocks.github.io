@@ -18,7 +18,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID --member=$SERVICE_ACCOUNT --r
 
 ## Steps 2: Create a virtual network to be used by Hopsworks and GKE
 
-You need to create a virtual network and a subnet in which Hopsworks and the GKE nodes will run.To do this run the following commands, replacing *\$PROJECT_ID* with your GCP project id in which you will run your cluster and *\$SERVICE_ACCOUNT* with the service account that you have updated in [Step 1](#step-1-attach-kuberentes-developer-role-to-the-service-account-for-cluster-instances). In this step, we will create a virtual network `hopsworks`, a subnetwork `hopsworks-eu-north`, and 3 firewall rules to allow communication within the virtual network and allow inbount http and https traffic.
+You need to create a virtual network and a subnet in which Hopsworks and the GKE nodes will run. To do this run the following commands, replacing *\$PROJECT_ID* with your GCP project id in which you will run your cluster and *\$SERVICE_ACCOUNT* with the service account that you have updated in [Step 1](#step-1-attach-kuberentes-developer-role-to-the-service-account-for-cluster-instances). In this step, we will create a virtual network `hopsworks`, a subnetwork `hopsworks-eu-north`, and 3 firewall rules to allow communication within the virtual network and allow inbound http and https traffic.
 
 ```bash
 gcloud compute networks create hopsworks --project=$PROJECT_ID --subnet-mode=custom --mtu=1460 --bgp-routing-mode=regional
