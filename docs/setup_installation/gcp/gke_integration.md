@@ -87,7 +87,7 @@ gcloud compute --project=$PROJECT_ID firewall-rules create hopsworks-clouddns-fo
 
 ### Option 2: Autopilot cluster 
 
-Hopsworks internally uses consul for service discovery and we automically forward traffic from Standard GKE clusters to the corresponding Hopsworks cluster. However,Autopilot clusters don't allow updating the DNS configurations through `kube-dns` and they use Cloud DNS by default. Therefore, in order to allow seamless communication between pods running on GKE and Hopsworks, we would need to add a [forwarding zone](https://cloud.google.com/dns/docs/zones/forwarding-zones) to Cloud DNS to forward `.consul` taffic to Hopsworks head node.
+Hopsworks internally uses Consul for service discovery and we automatically forward traffic from Standard GKE clusters to the corresponding Hopsworks cluster. However, Autopilot clusters don't allow updating the DNS configurations through `kube-dns` and they use Cloud DNS by default. Therefore, in order to allow seamless communication between pods running on GKE and Hopsworks, we would need to add a [forwarding zone](https://cloud.google.com/dns/docs/zones/forwarding-zones) to Cloud DNS to forward `.consul` DNS Zone to Hopsworks head node.
 
 First, we need to get the ip of the Hopsworks head node of your cluster. Replace *\$PROJECT_ID* with your GCP project id in which you will run your cluster, *\$CLUSTER_NAME* with the name you gave to your Hopsworks cluster duing creation in [Step 4](#step-4-create-a-hopsworks-cluster). Using the following gcloud command, we will be able to get the internal ip of Hopsworks cluster
 
