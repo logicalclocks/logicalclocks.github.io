@@ -3,7 +3,7 @@ description: User guide for how to use vector similarity search in Hopsworks
 ---
 
 # Introduction
-Vector similarity search is a technique enabling the retrieval of similar items based on their vector embeddings or representations. Its applications range across various domains, from recommendation systems to image similarity and beyond. In Hopsworks, vector similarity search is enabled by extending an online feature group with approximate nearest neighbor search capabilities through a vector database, such as Opensearch. This guide provides a detailed walkthrough on how to leverage Hopsworks for vector similarity search.
+Vector similarity search (also called similarity search) is a technique enabling the retrieval of similar items based on their vector embeddings or representations. Its applications range across various domains, from recommendation systems to image similarity and beyond. In Hopsworks, vector similarity search is enabled by extending an online feature group with approximate nearest neighbor search capabilities through a vector database, such as Opensearch. This guide provides a detailed walkthrough on how to leverage Hopsworks for vector similarity search.
 
 # Extending Feature Groups with Similarity Search
 In Hopsworks, each vector embedding in a feature group is stored in an index within the backing vector database. By default, vector embeddings are stored in the default index for the project (created for every project in Hopsworks), but you have the option to create a new index for a feature group if needed. Creating a separate index per feature group is particularly useful for large volumes of data, ensuring that when a feature group is deleted, its associated index is also removed. For feature groups that use the default project index, the index will only be removed when the project is deleted - not when the feature group is deleted. The index will store all the vector embeddings defined in that feature group, if you have more than one vector embedding in the feature group.
@@ -17,13 +17,13 @@ from hsfs import embedding
 emb = embedding.EmbeddingIndex(index_name="news_fg")
 ```
 
-Then, add one or more embedding features to the index. Name and dimension of the embedding features are required for identifying which features should be indexed for k-nearest neighbor (KNN) search. In this example, we get the dimension of the embedding by taking the length of the value of the `embedding_heading` column in the first row of the dataframe `df`. Optionally, you can specify the similarity function.
+Then, add one or more embedding features to the index. Name and dimension of the embedding features are required for identifying which features should be indexed for k-nearest neighbor (KNN) search. In this example, we get the dimension of the embedding by taking the length of the value of the `embedding_heading` column in the first row of the dataframe `df`. Optionally, you can specify the similarity function among `l2_norm`, `cosine`, and `dot_product`.
 ```aidl
 # Add embedding feature to the index
 emb.add_embedding("embedding_heading", len(df["embedding_heading"][0]))
 ```
 
-Next, you create a feature group with the `embedding_index` and ingest data to the feature group. When the `embedding_index` is provided, the vector database is used as online feature store. That is, all the features in the feature group are stored **exclusively** in the vector database. The advantage of storing all features in the vector database is that it enables similarity search, and filtering for all feature values.
+Next, you create a feature group with the `embedding_index` and ingest data to the feature group. When the `embedding_index` is provided, the vector database is used as online feature store. That is, all the features in the feature group are stored **exclusively** in the vector database. The advantage of storing all features in the vector database is that it enables similarity search, and push-down filtering for all feature values.
 
 ```aidl
 # Create a feature group with the embedding index
