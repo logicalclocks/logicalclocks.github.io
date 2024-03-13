@@ -64,7 +64,7 @@ gsutil mb -p $PROJECT_ID -l US gs://$BUCKET_NAME
 
 
 ## Step 3: Creating a service account for your cluster instances
-The cluster instances will need to be granted permission to access the storage bucket and the artifcate registry. You achieve this by creating a service account that will later be attached to the Hopsworks cluster instances. This service account should be different from the service account created in step 1, as it has only those permissions related to storing objects in a GCP bucket and docker images in an artifact registry repository.
+The cluster instances will need to be granted permission to access the storage bucket and the artifact registry. You achieve this by creating a service account that will later be attached to the Hopsworks cluster instances. This service account should be different from the service account created in step 1, as it has only those permissions related to storing objects in a GCP bucket and docker images in an artifact registry repository.
 
 ### Step 3.1: Creating a custom role for accessing storage
 Create a file named *hopsworksai_instances_role.yaml* with the following content:
