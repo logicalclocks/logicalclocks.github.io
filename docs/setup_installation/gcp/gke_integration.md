@@ -101,7 +101,7 @@ Use the *\$HOPSWORKS_HEAD_IP* you just got from the above command to create the 
 gcloud dns --project=$PROJECT_ID managed-zones create hopsworks-consul --description="Forward .consul DNS requests to Hopsworks" --dns-name="consul." --visibility="private" --networks="hopsworks" --forwarding-targets=$HOPSWORKS_HEAD_IP
 ```
 
-Finally, you would need to add the following firewall rule to allow the incoming traffic from `Cloud DNS` on port `53` to Hopsworks. `35.199.192.0/19` is the ip range used by Cloud DNS to issue DNS requests, check [this guide](https://cloud.google.com/dns/docs/zones/forwarding-zones#firewall-rules) for more details.
+Finally, you would need to add the following firewall rule to allow the incoming traffic from `Cloud DNS` on port `53` to Hopsworks. `35.199.192.0/19` is the IP range used by Cloud DNS to issue DNS requests, check [this guide](https://cloud.google.com/dns/docs/zones/forwarding-zones#firewall-rules) for more details.
 
 ```bash
 gcloud compute --project=$PROJECT_ID firewall-rules create hopsworks-clouddns-forward-consul --direction=INGRESS --priority=1000 --network="hopsworks" --action=ALLOW --rules=udp:53 --source-ranges="35.199.192.0/19"
