@@ -78,7 +78,7 @@ In [managed.hopsworks.ai](https://managed.hopsworks.ai), follow the same instruc
 ### Option 1: Standard cluster 
 In the setup described in [Step 3](#option-1-standard-cluster), we are using the default DNS which is `kube-dns`. Hopsworks automatically configures `kube-dns` during cluster initialization, so there is no extra steps that needs to be done here. 
 
-Alterntively, if you configure `Cloud DNS` while creating the standard GKE cluster, then you would need to add the following firewall rule to allow the incoming traffic from `Cloud DNS` on port `53` to Hopsworks. `35.199.192.0/19` is the ip range used by Cloud DNS to issue DNS requests, check [this guide](https://cloud.google.com/dns/docs/zones/forwarding-zones#firewall-rules) for more details.
+Alternatively, if you configure `Cloud DNS` while creating the standard GKE cluster, then you would need to add the following firewall rule to allow the incoming traffic from `Cloud DNS` on port `53` to Hopsworks. `35.199.192.0/19` is the ip range used by Cloud DNS to issue DNS requests, check [this guide](https://cloud.google.com/dns/docs/zones/forwarding-zones#firewall-rules) for more details.
 
 ```bash
 gcloud compute --project=$PROJECT_ID firewall-rules create hopsworks-clouddns-forward-consul --direction=INGRESS --priority=1000 --network="hopsworks" --action=ALLOW --rules=udp:53 --source-ranges="35.199.192.0/19"
