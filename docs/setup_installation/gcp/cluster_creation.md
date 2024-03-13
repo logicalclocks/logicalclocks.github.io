@@ -103,7 +103,7 @@ To backup the storage bucket data when taking a cluster backup we need to set a 
 Hopsworks cluster can integrate with Google GKE (GKE) to launch Python jobs, Jupyter servers, and ML model servings on top of Google GKE. For more detail on how to set up this integration refer to [Integration with Google GKE](gke_integration.md).
 <p align="center">
   <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-set-gke-cluster.png" alt="Add EKS cluster name">
+    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/gcp/create-instance-set-gke-cluster.png" alt="Add GKE cluster name">
     <figcaption>Add GKE cluster name</figcaption>
   </figure>
 </p>
