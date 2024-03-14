@@ -168,7 +168,7 @@ fs = conn.get_feature_store()           # Get the project's default feature stor
 
 !!! note "Engine"
 
-    `HSFS` uses either Apache Spark or Pandas on Python as an execution engine to perform queries against the feature store. Most AWS SageMaker Kernels have PySpark installed but are not connected to AWS EMR by default, hence, the `engine` option of the connection let's you overwrite the default behaviour. By default, `HSFS` will try to use Spark as engine if PySpark is available, however, if Spark/EMR is not configured, you will have to set the engine manually to `"python"`. Please refer to the [EMR integration guide](emr/emr_configuration.md) to setup EMR with the Hopsworks Feature Store.
+    `HSFS` uses either Apache Spark or Pandas/Polars on Python as an execution engine to perform queries against the feature store. Most AWS SageMaker Kernels have PySpark installed but are not connected to AWS EMR by default, hence, the `engine` option of the connection let's you overwrite the default behaviour. By default, `HSFS` will try to use Spark as engine if PySpark is available, however, if Spark/EMR is not configured, you will have to set the engine manually to `"python"`. Please refer to the [EMR integration guide](emr/emr_configuration.md) to setup EMR with the Hopsworks Feature Store.
 
 
 !!! info "Ports"

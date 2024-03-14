@@ -7,7 +7,7 @@ The feature view provides an *Offline API* for
 
 Training data is created using a feature view. You can create training data as either:
 
- - in-memory Pandas DataFrames, useful when you have a small amount of training data;
+ - in-memory Pandas/Polars DataFrames, useful when you have a small amount of training data;
  - materialized training data in files, in a file format of your choice (such as .tfrecord, .csv, or .parquet).
 
 You can apply filters when creating training data from a feature view:
@@ -46,7 +46,7 @@ Test data can also be split into evaluation sets to help evaluate a model for po
 
 Batch data for scoring models is created using a feature view. Similar to training data, you can create batch data as either:
 
- - in-memory Pandas DataFrames, useful when you have a small amount of data to score;
+ - in-memory Pandas/Polars DataFrames, useful when you have a small amount of data to score;
  - materialized data in files, in a file format of your choice (such as .tfrecord, .csv, or .parquet)
 
 Batch data requires specification of a `start_time` for the start of the batch scoring data. You can also specify the `end_time` (default is the current date).

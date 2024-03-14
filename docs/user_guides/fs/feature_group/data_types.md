@@ -26,25 +26,25 @@ The default mapping, however, can be overwritten by using an [explicit schema de
 ### Offline data types 
 
 When registering a [Spark](https://spark.apache.org/docs/latest/sql-ref-datatypes.html) DataFrame in a PySpark environment (S),
-or a [Pandas](https://pandas.pydata.org/) DataFrame in a Python-only environment (P) the following default mapping to offline feature types applies:
+or a [Pandas](https://pandas.pydata.org/) DataFrame, or a [Polars](https://pola.rs/) DataFrame in a Python-only environment (P) the following default mapping to offline feature types applies:
 
-| Spark Type (S) | Pandas Type (P)                    | Offline Feature Type          | Remarks                                                        |
-|----------------|------------------------------------|-------------------------------|----------------------------------------------------------------|
-| BooleanType    | bool, object(bool)                 | BOOLEAN                       |                                                                |
-| ByteType       | int8, Int8                         | TINYINT or INT                | INT when time_travel_type="HUDI"                               |
-| ShortType      | uint8, int16, Int16                | SMALLINT or INT               | INT when time_travel_type="HUDI"                               |
-| IntegerType    | uint16, int32, Int32               | INT                           |                                                                |
-| LongType       | int, uint32, int64, Int64          | BIGINT                        |                                                                |
-| FloatType      | float, float16, float32            | FLOAT                         |                                                                |
-| DoubleType     | float64                            | DOUBLE                        |                                                                |
-| DecimalType    | decimal.decimal                    | DECIMAL(PREC, SCALE)          | Not supported in PO env. when time_travel_type="HUDI"          |
-| TimestampType  | datetime64[ns], datetime64[ns, tz] | TIMESTAMP                     | s. [Timestamps and Timezones](#timestamps-and-timezones)       |
-| DateType       | object (datetime.date)             | DATE                          |                                                                |
-| StringType     | object (str), object(np.unicode)   | STRING                        |                                                                |
-| ArrayType      | object (list), object (np.ndarray) | ARRAY&lt;TYPE&gt;             |                                                                |
-| StructType     | object (dict)                      | STRUCT&lt;NAME: TYPE, ...&gt; |                                                                |
-| BinaryType     | object (binary)                    | BINARY                        |                                                                |
-| MapType        | -                                  | MAP&lt;String,TYPE&gt;        | Only when time_travel_type!="HUDI"; Only string keys permitted |
+| Spark Type (S) | Pandas Type (P)                    |Polars Type (P)                    | Offline Feature Type          | Remarks                                                        |
+|----------------|------------------------------------|-----------------------------------|-------------------------------|----------------------------------------------------------------|
+| BooleanType    | bool, object(bool)                 |Boolean                            | BOOLEAN                       |                                                                |
+| ByteType       | int8, Int8                         |Int8                               | TINYINT or INT                | INT when time_travel_type="HUDI"                               |
+| ShortType      | uint8, int16, Int16                |UInt8, Int16                       | SMALLINT or INT               | INT when time_travel_type="HUDI"                               |
+| IntegerType    | uint16, int32, Int32               |UInt16, Int32                      | INT                           |                                                                |
+| LongType       | int, uint32, int64, Int64          |UInt32, Int64                      | BIGINT                        |                                                                |
+| FloatType      | float, float16, float32            |Float32                            | FLOAT                         |                                                                |
+| DoubleType     | float64                            |Float64                            | DOUBLE                        |                                                                |
+| DecimalType    | decimal.decimal                    |Decimal                            | DECIMAL(PREC, SCALE)          | Not supported in PO env. when time_travel_type="HUDI"          |
+| TimestampType  | datetime64[ns], datetime64[ns, tz] |Datetime                           | TIMESTAMP                     | s. [Timestamps and Timezones](#timestamps-and-timezones)       |
+| DateType       | object (datetime.date)             |Date                               | DATE                          |                                                                |
+| StringType     | object (str), object(np.unicode)   |String, Utf8                       | STRING                        |                                                                |
+| ArrayType      | object (list), object (np.ndarray) |List                               | ARRAY&lt;TYPE&gt;             |                                                                |
+| StructType     | object (dict)                      |Struct                             | STRUCT&lt;NAME: TYPE, ...&gt; |                                                                |
+| BinaryType     | object (binary)                    |Binary                             | BINARY                        |                                                                |
+| MapType        | -                                  |-                                  | MAP&lt;String,TYPE&gt;        | Only when time_travel_type!="HUDI"; Only string keys permitted |
 
 When registering a Pandas DataFrame in a PySpark environment (S) the Pandas DataFrame is first converted to a Spark DataFrame, using Spark's [default conversion](https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.sql.SparkSession.createDataFrame.html).
 It results in a less fine-grained mapping between Python and Spark types:
