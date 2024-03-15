@@ -10,10 +10,12 @@ Hopsworks Feature Store provides a functionality to define two types of helper c
     to the original column name when defining helper column list.
 
 ## Inference Helper columns
-`inference_helper_columns` are a list of feature names that are not used for training the model itself but are used for extra information during online or batch inference. 
-For example computing [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md) like days left until credit card is valid at the time of transaction `days_until_valid` in credit card fraud detection system.
-Feature `days_until_valid` will be computed using credit cart valid through date `cc_valid_through` that needs to be fetched from the feature store and compared to the new transaction date that arrives at 
-inference application. In this use case `cc_valid_through` is `inference_helper_column`. It is not used for training but is necessary for computing [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md) `days_until_valid` feature.
+`inference_helper_columns` are a list of feature names that are not used for training the model itself but are used for extra information during online or batch inference.
+For example, computing an [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md) such as `days_valid` (days left that a credit card is valid at the time of the transaction) 
+in a credit card fraud detection system. The feature `days_valid` will be computed using the credit cart expiry date that needs to be fetched from the feature store and compared to the transaction 
+date that the transaction is performed on (`days_valid` = `expiry_date` - `current_date`). In this use case `expiry_date` is an inference helper column. It is not used for training but is necessary 
+for computing the [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md)`days_valid` feature.
+
 
 === "Python"
 
@@ -21,7 +23,7 @@ inference application. In this use case `cc_valid_through` is `inference_helper_
         ```python
         # define query object 
         query = label_fg.select("fraud_label")\
-                        .join(trans_fg.select(["amount", "days_until_valid", "cc_valid_through", "category"])) 
+                        .join(trans_fg.select(["amount", "days_valid", "expiry_date", "category"])) 
         
         # define feature view with helper columns
         feature_view = fs.get_or_create_feature_view(
@@ -30,7 +32,7 @@ inference application. In this use case `cc_valid_through` is `inference_helper_
             query=query,
             labels=["fraud_label"],
             transformation_functions=transformation_functions,
-            inference_helper_columns=["cc_valid_through"],
+            inference_helper_columns=["expiry_date"],
         )
         ```
 
@@ -57,7 +59,7 @@ When retrieving data for model inference, helper columns will be omitted. Howeve
         df = feature_view.get_batch_data(start_time=start_time, end_time=end_time, inference_helpers=True, event_time=True)
 
         # compute location delta
-        df['days_until_valid'] = df.apply(lambda row: time_delta(row['cc_valid_through'], row['transaction_date']), axis=1)
+        df['days_valid'] = df.apply(lambda row: time_delta(row['expiry_date'], row['transaction_date']), axis=1)
 
         # prepare datatame for prediction
         df = df[[f.name for f in feature_view.features if not (f.label or f.inference_helper_column or f.training_helper_column)]]
@@ -92,11 +94,11 @@ When retrieving data for model inference, helper columns will be omitted. Howeve
         inference_helper = feature_view.get_inference_helper({"cc_num": cc_num}, return_type="dict")
 
         # compute location delta 
-        days_until_valid = time_delta(transaction_date, inference_helper['cc_valid_through'])
+        days_valid = time_delta(transaction_date, inference_helper['expiry_date'])
 
         # Now get assembled feature vector for prediction
         feature_vector = feature_view.get_feature_vector({"cc_num": cc_num}, 
-                                                          passed_features={"days_until_valid": days_until_valid}
+                                                          passed_features={"days_valid": days_valid}
                                                          )
         ```
 
@@ -111,7 +113,7 @@ For example one might want to use feature like `category` of the purchased produ
         ```python
         # define query object 
         query = label_fg.select("fraud_label")\
-                        .join(trans_fg.select(["amount", "days_until_valid", "cc_valid_through", "category"])) 
+                        .join(trans_fg.select(["amount", "days_valid", "expiry_date", "category"])) 
         
         # define feature view with helper columns
         feature_view = fs.get_or_create_feature_view(
