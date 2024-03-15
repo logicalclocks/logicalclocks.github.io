@@ -12,8 +12,8 @@ Hopsworks Feature Store provides a functionality to define two types of helper c
 ## Inference Helper columns
 `inference_helper_columns` are a list of feature names that are not used for training the model itself but are used for extra information during online or batch inference. 
 For example computing [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md) like days left until credit card is valid at the time of transaction `days_until_valid` in credit card fraud detection system.
-Feature `days_until_valid` will be computed using credit cart valid through date `cc_valid_through` that needs to fetched from the feature store and compared to the new transaction date that arrives at 
-inference application. In this use case `cc_valid_through` are `inference_helper_column`. It is not used for training but is necessary for computing [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md) `days_until_valid`.
+Feature `days_until_valid` will be computed using credit cart valid through date `cc_valid_through` that needs to be fetched from the feature store and compared to the new transaction date that arrives at 
+inference application. In this use case `cc_valid_through` is `inference_helper_column`. It is not used for training but is necessary for computing [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md) `days_until_valid` feature.
 
 === "Python"
 
