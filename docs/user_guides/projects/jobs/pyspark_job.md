@@ -36,7 +36,7 @@ The image below shows the Jobs overview page in Hopsworks and is accessed by cli
 
 ### Step 2: Create new job dialog
 
-To configure a  job, click `Advanced options`, which will open up the advanced configuration page for the job.
+Click `New Job` and the following dialog will appear.
 
 <p align="center">
   <figure>
@@ -45,29 +45,36 @@ To configure a  job, click `Advanced options`, which will open up the advanced c
   </figure>
 </p>
 
-### Step 3: Set the script
+### Step 3: Set the job type
 
-Next step is to select the program to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below.
+By default, the dialog will create a Spark job. Make sure `SPARK` is chocen.
+
+### Step 4: Set the script
+
+Next step is to select the program to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown. 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jobs/upload_job_py_file.gif" alt="Configure program">
+    <img src="../../../../assets/images/guides/jobs/upload_job_pyspark_file.gif" alt="Configure program">
     <figcaption>Configure program</figcaption>
   </figure>
 </p>
 
-### Step 4: Set the job type
+Then click `Create job` to create the job.
 
-Next step is to set the job type to `SPARK` to indicate it should be executed as a spark job. Then specify [advanced configuration](#step-5-optional-advanced-configuration) or click `Create New Job` to create the job.
+### Step 5 (optional): Set the PySpark script arguments
+
+In the job settings, you can specify arguments for your PySpark script.
+Remember to handle the arguments inside your PySpark script.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jobs/advanced_configuration_pyspark.png" alt="Set the job type">
-    <figcaption>Set the job type</figcaption>
+    <img src="../../../../assets/images/guides/jobs/job_py_args.png" alt="Configure PySpark script arguments">
+    <figcaption>Configure PySpark script arguments</figcaption>
   </figure>
 </p>
 
-### Step 5 (optional): Advanced configuration
+### Step 6 (optional): Advanced configuration
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
@@ -115,10 +122,9 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
   </figure>
 </p>
 
-### Step 6: Execute the job
+### Step 7: Execute the job
 
-Now click the `Run` button to start the execution of the job, and then click on `Executions` to see the list of all executions.
-
+Now click the `Run` button to start the execution of the job. You will be redirected to the `Executions` page where you can see the list of all executions.
 
 <p align="center">
   <figure>
@@ -127,7 +133,7 @@ Now click the `Run` button to start the execution of the job, and then click on 
   </figure>
 </p>
 
-### Step 7: Application logs
+### Step 8: Application logs
 
 To monitor logs while the execution is running, click `Spark UI` to open the Spark UI in a separate tab. 
 
