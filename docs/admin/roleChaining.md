@@ -39,7 +39,7 @@ To use role chaining the head node need to be able to impersonate the roles you 
 <figcaption>Example policy for assuming four roles.</figcaption>
 
 ### Step 2: Create the resource roles
-For the instance profile to be able to impersonate the roles you need to configure the roles themselves to allow it. This is dome by adding the instance profile to the role's [Trust relationships](https://docs.aws.amazon.com/directoryservice/latest/admin-guide/edit_trust.html).
+For the instance profile to be able to impersonate the roles you need to configure the roles themselves to allow it. This is done by adding the instance profile to the role's [Trust relationships](https://docs.aws.amazon.com/directoryservice/latest/admin-guide/edit_trust.html).
 
 ```json
 {
