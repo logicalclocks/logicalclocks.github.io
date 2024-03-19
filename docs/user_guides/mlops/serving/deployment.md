@@ -27,11 +27,11 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, click on `New deployment` if there are not existing deployments or on `Create new deployment` at the top-right corner to open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
 
 ### Step 2: Basic deployment configuration
 
-A simplified creation form will appear including the most common deployment fields among all the configuration possible. We provide default values for the rest of the fields, adjusted to the type of deployment you want to create.
+A simplified creation form will appear including the most common deployment fields from all available configurations. We provide default values for the rest of the fields, adjusted to the type of deployment you want to create.
 
 In the simplified form, select the model framework used to train your model (i.e., _TensorFlow Serving_ or _Python_). Then, select the model you want to deploy from the list of available models under `pick a model`.
 
@@ -72,6 +72,7 @@ You will be redirected to a full-page deployment creation form where you can see
     3. [Inference logger](#inference-logger)
     4. [Inference batcher](#inference-batcher)
     5. [Resources](#resources)
+    6. [API protocol](#api-protocol)
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -191,6 +192,10 @@ Inference batcher are deployment component that apply batching to the incoming i
 ## Resources
 
 Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica. To learn about the different combinations available, see the [Resources Guide](resources.md).
+
+## API protocol
+
+Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. In general, you use gRPC when you need lower latency inference requests. To learn more about the REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).
 
 ## Conclusion
 

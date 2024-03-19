@@ -2,7 +2,7 @@
 
 ## Deployment
 
-Assuming you have already created a model in the Model Registry, a deployment can now be created to prepare a model artifact for this model and make it accessible for running predictions behind a REST endpoint. Follow the [Deployment Creation Guide](deployment.md) to create a Deployment for your model.
+Assuming you have already created a model in the Model Registry, a deployment can now be created to prepare a model artifact for this model and make it accessible for running predictions behind a REST or gRPC endpoint. Follow the [Deployment Creation Guide](deployment.md) to create a Deployment for your model.
 
 ### Predictor
 
