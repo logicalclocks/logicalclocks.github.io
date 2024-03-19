@@ -6,4 +6,4 @@ If you train models with Hopsworks, you can setup CI/CD pipelines as shown below
 
 <img src="../../../assets/images/concepts/mlops/training-pipeline.svg">
 
-Hopsworks [Model Registry](registry.md) and [Model Serving](kserve.md) capabilities can then be used to build a batch or online prediction service using the model.
+Hopsworks [Model Registry](registry.md) and [Model Serving](serving.md) capabilities can then be used to build a batch or online prediction service using the model.

@@ -17,11 +17,11 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, click on `New deployment` if there are not existing deployments or on `Create new deployment` at the top-right corner to open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
 
 ### Step 2: Go to advanced options
 
-A simplified creation form will appear including the most common deployment fields among all the configuration possible. Inference batching is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
+A simplified creation form will appear including the most common deployment fields from all available configurations. Inference batching is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>

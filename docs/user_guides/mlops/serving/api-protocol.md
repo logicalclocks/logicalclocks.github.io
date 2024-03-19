@@ -5,11 +5,11 @@
 Hopsworks supports both REST and gRPC as API protocols for sending inference requests to model deployments. While REST API protocol is supported in all types of model deployments, support for gRPC is only available for models served with [KServe](predictor.md#serving-tool).
 
 !!! warning
-    At the moment, gRPC API protocol is only supported for **Python model deployments** (e.g., scikit-learn, xgboost, ...). Support for Tensorflow model deployments is coming soon.
+    At the moment, the gRPC API protocol is only supported for **Python model deployments** (e.g., scikit-learn, xgboost). Support for Tensorflow model deployments is coming soon.
 
 ## GUI
 
-### Step 1: Create new deployment
+### Step 1: Create a new deployment
 
 If you have at least one model already trained and saved in the Model Registry, navigate to the deployments page by clicking on the `Deployments` tab on the navigation menu on the left.
 
@@ -20,11 +20,11 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, click on `New deployment` if there are not existing deployments or on `Create new deployment` at the top-right corner to open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
 
 ### Step 2: Go to advanced options
 
-A simplified creation form will appear including the most common deployment fields among all the configuration possible. Resource allocation is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
+A simplified creation form will appear including the most common deployment fields from all available configurations. Resource allocation is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>
@@ -46,8 +46,8 @@ Enabling gRPC as the API protocol for a model deployment requires KServe as the 
 
 Then, you can select the API protocol to be enabled in your model deployment.
 
-!!! note "Only one API protocol can be enabled simultaneously"
-    Currently, KServe model deployments are limited to one API protocol at a time. Therefore, only one of REST or gRPC API protocols can be enabled at the same time on the same model deployment.
+!!! info "Only one API protocol can be enabled for a model (they cannot support both gRPC and REST)"
+    Currently, KServe model deployments are limited to one API protocol at a time. Therefore, only one of REST or gRPC API protocols can be enabled at the same time on the same model deployment. You can change the API protocol of existing deployments.
 
 <p align="center">
   <figure>

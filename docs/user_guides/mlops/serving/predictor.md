@@ -32,11 +32,11 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, click on `New deployment` if there are not existing deployments or on `Create new deployment` at the top-right corner to open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
 
 ### Step 2: Choose a model server
 
-A simplified creation form will appear, including the most common deployment fields among all the configuration possible. These fields include the [model server](#model-server) and [custom script](#custom-script) (for python models).
+A simplified creation form will appear, including the most common deployment fields from all available configurations. These fields include the [model server](#model-server) and [custom script](#custom-script) (for python models).
 
 <p align="center">
   <figure>
@@ -250,7 +250,7 @@ Resources include the number of replicas for the deployment as well as the resou
 
 ## API protocol
 
-Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. To learn about REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).
+Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. In general, you use gRPC when you need lower latency inference requests. To learn more about the REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).
 
 ## Conclusion
 

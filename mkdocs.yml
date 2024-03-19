@@ -47,7 +47,7 @@ nav:
           - Prediction Services: concepts/mlops/prediction_services.md
           - Model Training: concepts/mlops/training.md
           - Model Registry: concepts/mlops/registry.md
-          - Model Serving: concepts/mlops/kserve.md # create, read, version
+          - Model Serving: concepts/mlops/serving.md
           - Vector Database: concepts/mlops/opensearch.md
           - BI Tools: concepts/mlops/bi_tools.md
       - Development:

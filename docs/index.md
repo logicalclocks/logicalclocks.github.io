@@ -219,7 +219,7 @@ pointer-events: initial;
               </div>
               <div class="frame_with_arrow">
                 <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/mlops/kserve/">Model Serving</a></div>
+                  <div class="name_item"><a href="./concepts/mlops/serving/">Model Serving</a></div>
                 </div>
               </div>
             </div>
