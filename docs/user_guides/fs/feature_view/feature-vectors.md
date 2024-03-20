@@ -38,9 +38,9 @@ You can get back feature vectors from either python or java client by providing 
     ```
 
 ### Required entry
-Starting from python client v3.4, you can specify different values for the primary key of the same name which exists in multiple feature groups but is not used as the join key. The table below summarises the value of `primary_keys` in different settings. Considering that you are joining 2 feature groups, namely, `left_fg` and `right_fg`, the feature groups have different primary keys, and features (`feature_*`) in each setting. Also, the 2 feature groups are [joint](https://docs.hopsworks.ai/feature-store-api/3.7/generated/api/query_api/#join) on different *join conditions* and *prefix* as `left_fg.join(right_fg, <join conditions>, prefix=<prefix>)`.
+Starting from python client v3.4, you can specify different values for the primary key of the same name which exists in multiple feature groups but are not joint by the same name. The table below summarises the value of `primary_keys` in different settings. Considering that you are joining 2 feature groups, namely, `left_fg` and `right_fg`, the feature groups have different primary keys, and features (`feature_*`) in each setting. Also, the 2 feature groups are [joint](https://docs.hopsworks.ai/feature-store-api/3.7/generated/api/query_api/#join) on different *join conditions* and *prefix* as `left_fg.join(right_fg, <join conditions>, prefix=<prefix>)`.
 
-For java client, and python client before v3.4, the `primary_keys` are the set of primary key of all the feature groups in the query. These key are also compatible to python client starting from v3.4.
+For java client, and python client before v3.4, the `primary_keys` are the set of primary key of all the feature groups in the query. Python client is backward compatible. It means that the `primary_keys` used before v3.4 can be applied to python client of later versions as well.
 
 | Setting | primary key of `left_fg` | primary key of `right_fg` | join conditions                            | prefix | primary_keys                                   | note                                                     |
 |------|----------------------------|-----------------------------|-------------------------------------------|--------|-----------------------------------------------|----------------------------------------------------------|
