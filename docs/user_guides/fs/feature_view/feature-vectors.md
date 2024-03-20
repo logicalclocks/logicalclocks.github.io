@@ -67,25 +67,46 @@ Note:
 It can happen that some of the primary key entries are not available in some or all of the feature groups used by a feature view.
 
 Take the above example assuming the feature view consists of two joined feature groups, first one with primary key column `pk1`, the second feature group with primary key column `pk2`.
-```python
-# get a single vector
-feature_view.get_feature_vector(
-    entry = {"pk1": 1, "pk2": 2}
-)
-```
+=== "Python"
+    ```python
+    # get a single vector
+    feature_view.get_feature_vector(
+        entry = {"pk1": 1, "pk2": 2}
+    )
+    ```
+=== "Java"
+    ```java
+    // get a single vector
+    Map<String, Object> entry1 = Maps.newHashMap();
+    entry1.put("pk1", 1);
+    entry1.put("pk2", 2);
+    featureView.getFeatureVector(entry1);
+    ```
 This call will raise an exception if `pk1 = 1` OR `pk2 = 2` can't be found but also if `pk1 = 1` AND `pk2 = 2` can't be found, meaning, it will not return a partial or empty feature vector.
 
 When retrieving a batch of vectors, the behaviour is slightly different.
-```python
-# get multiple vectors
-feature_view.get_feature_vectors(
-    entry = [
-        {"pk1": 1, "pk2": 2},
-        {"pk1": 3, "pk2": 4},
-        {"pk1": 5, "pk2": 6}
-    ]
-)
-```
+=== "Python"
+    ```python
+    # get multiple vectors
+    feature_view.get_feature_vectors(
+        entry = [
+            {"pk1": 1, "pk2": 2},
+            {"pk1": 3, "pk2": 4},
+            {"pk1": 5, "pk2": 6}
+        ]
+    )
+    ```
+=== "Java"
+    ```java
+    // get multiple vectors
+    Map<String, Object> entry2 = Maps.newHashMap();
+    entry2.put("pk1", 3);
+    entry2.put("pk2", 4);
+    Map<String, Object> entry3 = Maps.newHashMap();
+    entry3.put("pk1", 5);
+    entry3.put("pk2", 6);
+    featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2, entry3);
+    ```
 This call will raise an exception if for example for the third entry `pk1 = 5` OR `pk2 = 6` can't be found, however, it will simply not return a vector for this entry if `pk1 = 5` AND `pk2 = 6`
 can't be found.
 That means, `get_feature_vectors` will never return partial feature vector, but will omit empty feature vectors.
@@ -93,36 +114,40 @@ That means, `get_feature_vectors` will never return partial feature vector, but 
 If you are aware of missing features, you can use the [*passed features*](#passed-features) or [Partial feature retrieval](#partial-feature-retrieval) functionality, described down below.
 
 ### Partial feature retrieval
-If your model can handle missing value or if you want to impute the missing value, you can get back feature vectors with partial values using python client starting from version 3.4. In the example below, let's say you join 2 feature groups by `fg1.join(fg2, left_on=["pk1"], right_on=["pk2"])`, required keys of the `entry` are `pk1` and `pk2`. If `pk2` is not provided, this returns feature values from the first feature group and null values from the second feature group when using the option `allow_missing=True`, otherwise it raises exception.
+If your model can handle missing value or if you want to impute the missing value, you can get back feature vectors with partial values using python client starting from version 3.4 (Note that this does not apply to java client.). In the example below, let's say you join 2 feature groups by `fg1.join(fg2, left_on=["pk1"], right_on=["pk2"])`, required keys of the `entry` are `pk1` and `pk2`. If `pk2` is not provided, this returns feature values from the first feature group and null values from the second feature group when using the option `allow_missing=True`, otherwise it raises exception.
 
-```python
-# get a single vector with 
-feature_view.get_feature_vector(
-    entry = {"pk1": 1},
-    allow_missing=True
-)
-
-# get multiple vectors
-feature_view.get_feature_vectors(
-    entry = [
-        {"pk1": 1},
-        {"pk1": 3},
-    ],
-    allow_missing=True
-)
-```
+=== "Python"
+    ```python
+    # get a single vector with 
+    feature_view.get_feature_vector(
+        entry = {"pk1": 1},
+        allow_missing=True
+    )
+    
+    # get multiple vectors
+    feature_view.get_feature_vectors(
+        entry = [
+            {"pk1": 1},
+            {"pk1": 3},
+        ],
+        allow_missing=True
+    )
+    ```
 
 ### Retrieval with transformation
 If you have specified transformation functions when creating a feature view, you receive transformed feature vectors. If your transformation functions require statistics of training dataset, you must also provide the training data version. `init_serving` will then fetch the statistics and initialize the functions with the required statistics. Then you can follow the above examples and retrieve the feature vectors. Please note that transformed feature vectors can only be returned in the python client but not in the java client.
 
-```python
-feature_view.init_serving(training_dataset_version=1)
-```
+=== "Python"
+    ```python
+    feature_view.init_serving(training_dataset_version=1)
+    ```
 
 ## Passed features
 If some of the features values are only known at prediction time and cannot be computed and cached in the online feature store, you can provide those values as `passed_features` option. The `get_feature_vector` method is going to use the passed values to construct the final feature vector to submit to the model.
 
 You can use the `passed_features` parameter to overwrite individual features being retrieved from the online feature store. The feature view will apply the necessary transformations to the passed features as it does for the feature data retrieved from the online feature store.
+
+Please note that passed features is only available in the python client but not in the java client.
 
 === "Python"
     ```python
