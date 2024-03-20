@@ -34,7 +34,7 @@ The image below shows the Jobs overview page in Hopsworks and is accessed by cli
 
 ### Step 2: Create new job dialog
 
-By default, the dialog will create a Spark job. To instead configure a Python job, click `Advanced options`, which will open up the advanced configuration page for the job.
+Click `New Job` and the following dialog will appear.
 
 <p align="center">
   <figure>
@@ -43,9 +43,20 @@ By default, the dialog will create a Spark job. To instead configure a Python jo
   </figure>
 </p>
 
-### Step 3: Set the script
+### Step 3: Set the job type
 
-Next step is to select the python script to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below.
+By default, the dialog will create a Spark job. To instead configure a Python job, select `PYTHON`.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jobs/jobs_select_python.gif" alt="Select Python job type">
+    <figcaption>Select Python job type</figcaption>
+  </figure>
+</p>
+
+### Step 4: Set the script
+
+Next step is to select the python script to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown. 
 
 <p align="center">
   <figure>
@@ -54,18 +65,19 @@ Next step is to select the python script to run. You can either select `From pro
   </figure>
 </p>
 
-### Step 4: Set the job type
+### Step 5 (optional): Set the Python script arguments
 
-Next step is to set the job type to `PYTHON` to indicate it should be executed as a simple python script. Then click `Create New Job` to create the job. 
+In the job settings, you can specify arguments for your Python script.
+Remember to handle the arguments inside your Python script.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jobs/advanced_configuration_py.gif" alt="Set the job type">
-    <figcaption>Set the job type</figcaption>
+    <img src="../../../../assets/images/guides/jobs/job_notebook_args.png" alt="Configure Python script arguments">
+    <figcaption>Configure Python script arguments</figcaption>
   </figure>
 </p>
 
-### Step 5 (optional): Additional configuration
+### Step 6 (optional): Additional configuration
 
 It is possible to also set following configuration settings for a `PYTHON` job.
 
@@ -80,12 +92,11 @@ It is possible to also set following configuration settings for a `PYTHON` job.
   </figure>
 </p>
 
-### Step 6: Execute the job
+### Step 7: Execute the job
 
-Now click the `Run` button to start the execution of the job, and then click on `Executions` to see the list of all executions.
+Now click the `Run` button to start the execution of the job. You will be redirected to the `Executions` page where you can see the list of all executions.
 
 Once the execution is finished, click on `Logs` to see the logs for the execution.
-
 
 <p align="center">
   <figure>
