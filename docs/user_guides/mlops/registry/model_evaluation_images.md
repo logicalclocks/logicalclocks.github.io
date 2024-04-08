@@ -6,7 +6,7 @@ description: Documentation on how to attach model evaluation images to a model.
 
 ## Introduction
 
-In this guide, you will learn how to attach ==model evaluation images== to a model. Model evaluation images contain **confusion matrices**, **ROC curves** or other graphs that help visualizing model evaluation metrics. By attaching model evaluation images to your model version, other users can better understand the experiment results obtained during model training.
+In this guide, you will learn how to attach ==model evaluation images== to a model. Model evaluation images are images that visually describe model performance metrics. For example, **confusion matrices**, **ROC curves**, **model bias tests**, and **training loss curves** are examples of common model evaluation images. By attaching model evaluation images to your versioned model, other users can better understand the model performance and evaluation metrics.
 
 ## Code
 
@@ -21,9 +21,9 @@ project = hopsworks.login()
 mr = project.get_model_registry()
 ```
 
-### Step 2: Generate model evaluation figures
+### Step 2: Generate model evaluation images
 
-Generate a figure that visualizes a model metric. 
+Generate an image that visualizes model performance and evaluation metrics
 
 ```python
 import seaborn
@@ -53,15 +53,15 @@ fig = heatmap.get_figure()
 fig.show()
 ```
 
-### Step 3: Save the figures as images inside the model directory
+### Step 3: Save the figure to a file inside the model directory
 
-Save the figure to an image file, and place it in a directory with name ´images´ inside the model directory to be exported.
+Save the figure to a file with a common filename extension (for example, .png or .jpeg), and place it in a directory called `images` - a subdirectory of the model directory that is registered to Hopsworks.
 
 ```python
 # Specify the directory name for saving the model and related artifacts
 model_dir = "./model"
 
-# Create a directory with name 'images' for saving the model evaluation images
+# Create a subdirectory of model_dir called 'images' for saving the model evaluation images
 model_images_dir = model_dir + "/images"
 if not os.path.exists(model_images_dir):
     os.mkdir(model_images_dir)
@@ -76,4 +76,4 @@ py_model.save("./model")
 
 ## Conclusion
 
-In this guide you learned how to attach model evaluation images to a model, helping better understand the experiment results obtained during model training.
+In this guide you learned how to attach model evaluation images to a model, visually communicating the model performance and evaluation metrics in the model registry.
