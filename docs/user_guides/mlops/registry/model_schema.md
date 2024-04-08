@@ -1,3 +1,7 @@
+---
+description: Documentation on how to attach a model schema to a model.
+---
+
 # How To Attach A Model Schema
 
 ## Introduction
