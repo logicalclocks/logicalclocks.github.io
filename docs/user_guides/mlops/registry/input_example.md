@@ -1,3 +1,7 @@
+---
+description: Documentation on how to attach an input example to a model.
+---
+
 # How To Attach An Input Example
 
 ## Introduction
