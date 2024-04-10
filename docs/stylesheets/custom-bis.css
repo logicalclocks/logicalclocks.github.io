@@ -1,4 +1,4 @@
-:root {
+[data-md-color-scheme="hopsworks"] {
   --md-primary-fg-color: #1eb382;
   --md-secondary-fg-color: #188a64;
   --md-tertiary-fg-color: #0d493550;
@@ -27,6 +27,10 @@
 .md-tabs__item:hover {
   background-color: var(--md-tertiary-fg-color);
   transition: background-color 450ms;
+}
+
+.md-tabs__item {
+  min-width: 2.5rem;
 }
 
 .md-sidebar__scrollwrap {
