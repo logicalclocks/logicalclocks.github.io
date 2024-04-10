@@ -1,6 +1,8 @@
 window.addEventListener("DOMContentLoaded", function () {
   var windowPathNameSplits = window.location.pathname.split("/");
   var majorVersionRegex = new RegExp("(\\d+[.]\\d+)");
+  console.log(windowPathNameSplits);
+  console.log(majorVersionRegex);
   if (majorVersionRegex.test(windowPathNameSplits[1])) {
     // On landing page docs.hopsworks.api/3.0 - URL contains major version
     // Version API dropdown
