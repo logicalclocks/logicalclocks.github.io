@@ -1,4 +1,4 @@
-:root {
+[data-md-color-scheme="hopsworks"] {
   --md-primary-fg-color: #1eb382;
   --md-secondary-fg-color: #188a64;
   --md-tertiary-fg-color: #0d493550;
@@ -9,7 +9,6 @@
 .md-footer__inner:not([hidden]) {
   display: none;
 }
-
 /* Lex did stuff here */
 .svg_topnav {
   width: 12px;
@@ -22,6 +21,10 @@
 
 .md-header[data-md-state="shadow"] {
   box-shadow: 0 0 0 0;
+}
+
+.md-tabs__item {
+  min-width: 2.5rem;
 }
 
 .md-tabs__item:hover {
