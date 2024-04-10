@@ -291,6 +291,7 @@ theme:
     code: "IBM Plex Mono"
   palette:
     accent: teal
+    primary: custom
   features:
     - navigation.tabs
     - navigation.tabs.sticky
