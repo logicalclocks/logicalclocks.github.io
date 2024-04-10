@@ -2,7 +2,6 @@
 
 This is the source of the landing page for https://docs.hopsworks.ai
 
-
 ## Build instructions
 
 ### Step 1: Setup python environment

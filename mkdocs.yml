@@ -276,7 +276,7 @@ nav:
       - Audit:
           - Access Audit Logs: admin/audit/audit-logs.md
           - Export Audit Logs: admin/audit/export-audit-logs.md
-  - API<div class="dropdown"><button class="dropbtn">API</button><div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_api_link" href="https://docs.hopsworks.ai/feature-store-api/dev">Feature Store API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/feature-store-api/dev/javadoc">Feature Store JavaDoc</a> <a id="hsml_api_link" href="https://docs.hopsworks.ai/machine-learning-api/dev">MLOps API</a> </div></div>: https://docs.hopsworks.ai
+  - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_api_link" href="https://docs.hopsworks.ai/feature-store-api/dev">Feature Store API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/feature-store-api/dev/javadoc">Feature Store JavaDoc</a> <a id="hsml_api_link" href="https://docs.hopsworks.ai/machine-learning-api/dev">MLOps API</a> </div></div>: https://docs.hopsworks.ai
   - Community ↗: https://community.hopsworks.ai/
 
 theme:
@@ -291,7 +291,6 @@ theme:
     code: "IBM Plex Mono"
   palette:
     accent: teal
-    scheme: hopsworks
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -320,14 +319,14 @@ extra:
     property: G-64FEEXPSDN
 
 extra_css:
-  - stylesheets/custom-bis.css
-  - stylesheets/marctech.css
-  - stylesheets/dropdown-bis.css
+  - css/custom.css
+  - css/marctech.css
+  - css/dropdown.css
 
 extra_javascript:
-  - javascripts/inject-api-links.js
-  - javascripts/hide-dropdown.js
-  - javascripts/quickstart-fullscreen.js
+  - js/inject-api-links.js
+  - js/dropdown.js
+  - js/quickstart-fullscreen.js
 
 plugins:
   - search
