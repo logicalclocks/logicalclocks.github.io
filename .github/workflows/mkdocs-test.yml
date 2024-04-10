@@ -8,19 +8,19 @@ jobs:
 
     steps:
       - name: Checkout main repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.8'
+          python-version: "3.10"
 
       - name: Install ubuntu dependencies
         run: sudo apt-get install -y libxml2-dev libxslt-dev
 
       - name: install deps
-        run: pip3 install pip==22.0.3 && pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python' mkdocs-minify-plugin
+        run: pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python' linkchecker
 
       - name: setup git
         run: |
