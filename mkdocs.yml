@@ -283,6 +283,7 @@ nav:
 
 theme:
   name: material
+  custom_dir: overrides
   favicon: assets/images/favicon.ico
   logo: assets/images/hops-logo.png
   icon:
@@ -302,6 +303,7 @@ extra:
   hopsworks_version: dev
   version:
     provider: mike
+    default: latest
   generator: false
   social:
     - icon: fontawesome/brands/twitter
@@ -367,5 +369,5 @@ markdown_extensions:
   - markdown_include.include:
       base_path: docs
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
