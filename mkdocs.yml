@@ -289,7 +289,6 @@ theme:
   font:
     text: "Roboto"
     code: "IBM Plex Mono"
-
   palette:
     accent: teal
     primary: custom
