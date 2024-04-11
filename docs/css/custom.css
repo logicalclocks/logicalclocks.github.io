@@ -9,7 +9,6 @@
 .md-footer__inner:not([hidden]) {
   display: none;
 }
-
 /* Lex did stuff here */
 .svg_topnav {
   width: 12px;
@@ -24,13 +23,13 @@
   box-shadow: 0 0 0 0;
 }
 
+.md-tabs__item {
+  min-width: 2.5rem;
+}
+
 .md-tabs__item:hover {
   background-color: var(--md-tertiary-fg-color);
   transition: background-color 450ms;
-}
-
-.md-tabs__item {
-  min-width: 2.5rem;
 }
 
 .md-sidebar__scrollwrap {
