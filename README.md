@@ -6,7 +6,7 @@ This is the source of the landing page for https://docs.hopsworks.ai
 
 ### Step 1: Setup python environment
 
-Create a python 3.8 environment, using a python environment manager of your own choosing. For example `virtualenv` or `anaconda`.
+Create a python 3.10 environment, using a python environment manager of your own choosing. For example `virtualenv` or `anaconda`.
 
 ### Step 2
 
