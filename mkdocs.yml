@@ -175,7 +175,7 @@ nav:
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
           - Vector Database: user_guides/mlops/vector_database/index.md
       - Migration:
-          - 3.0: user_guides/migration/30_migration.md
+          - 2.X to 3.0 : user_guides/migration/30_migration.md
   - Setup and Installation:
       - setup_installation/index.md
       - Client Installation:

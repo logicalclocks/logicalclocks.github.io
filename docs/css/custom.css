@@ -110,6 +110,10 @@
   display: none !important;
 }
 
+/* Sticky latest version notification bar*/ 
+[data-md-component="outdated"] {
+  position: sticky;
+}
 
 @media screen and (max-width: 479px){
  .md-sidebar--primary, .md-sidebar {
