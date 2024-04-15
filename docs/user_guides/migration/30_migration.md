@@ -86,8 +86,6 @@ This lead to a change in HSFS APIs:
     fs.get_external_feature_groups()
     ```
 
-    {{macros_info()}}
-
 Note, pre-3.0 methods are marked as deprecated and still available in the library for backwards compatibility.
 
 ### Streaming API for writing becomes the Python Default
