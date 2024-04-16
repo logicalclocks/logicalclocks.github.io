@@ -93,13 +93,39 @@ In the snippet above it's important that the created metadata object gets regist
     fg.save()
     ```
 
-### Limitations 
+### Enable online storage
 
-Hopsworks Feature Store does not support time-travel capabilities for external feature groups. Moreover, as the data resides on external systems, external feature groups cannot be made available online for low latency serving. To make data from an external feature group available online, users need to define an online enabled feature group and have a job that periodically reads data from the external feature group and writes in the online feature group.
+You can enable online storage for external feature groups, however, the sync from the external storage to Hopsworks online storage is not automatic and needs to be setup manually. For an external feature group to be available online, during the creation of the feature group, the `online_enabled` option needs to be set to `True`.
 
-!!! warning "Python support"
+=== "Python"
 
-    Currently the HSFS library does not support calling the read() or show() methods on external feature groups. Likewise it is not possible to call the read() or show() methods on queries containing external feature groups. Nevertheless, external feature groups can be used from a Python engine to create training datasets.
+    ```python
+    external_fg = fs.create_external_feature_group(
+                name="sales",
+                version=1,
+                description="Physical shop sales features",
+                query=query,
+                storage_connector=connector,
+                primary_key=['ss_store_sk'],
+                event_time='sale_date',
+                online_enabled=True)
+    external_fg.save()
+
+    # read from external storage and filter data to sync to online
+    df = external_fg.read().filter(external_fg.customer_status == "active")
+
+    # insert to online storage
+    external_fg.insert(df)
+    ```
+
+The `insert()` method takes a DataFrame as parameter and writes it _only_ to the online feature store. Users can select which subset of the feature group data they want to make available on the online feautre store by using the [query APIs](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/query_api/).
+
+### Limitations
+
+Hopsworks Feature Store does not support time-travel queries on external feature groups.
+
+Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
+Nevertheless, external feature groups defined top of any storage connector can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_validation_test_split)
 
 
 ### API Reference 
