@@ -165,7 +165,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Predictor](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/predictor/)
+[Predictor](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
 
 ## Model Server
 

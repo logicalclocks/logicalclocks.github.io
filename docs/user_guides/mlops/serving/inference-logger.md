@@ -110,7 +110,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Inference Logger](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/inference-logger/)
+[Inference Logger](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/inference_logger_api/)
 
 ## Topic schema
 
