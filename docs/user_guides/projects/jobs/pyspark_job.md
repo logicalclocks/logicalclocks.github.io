@@ -12,9 +12,13 @@ All members of a project in Hopsworks can launch the following types of applicat
 - Apache Spark
 
 Launching a job of any type is very similar process, what mostly differs between job types is
-the various configuration parameters each job type comes with. After following this guide you will be able to create a PySpark job.
+the various configuration parameters each job type comes with. Hopsworks clusters support schedyuling to run jobs on a regular basis,
+e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
+checkout [our Scheduling guide](schedule_job.md).
 
-The PySpark program can either be a `.py` script or a `.ipynb` file.
+
+PySpark program can either be a `.py` script or a `.ipynb` file, however be mindful of how to access/create
+the spark session based on the extension you provide.
 
 !!! notice "Instantiate the SparkSession"
     For a `.py` file, remember to instantiate the SparkSession i.e `spark=SparkSession.builder.getOrCreate()`
