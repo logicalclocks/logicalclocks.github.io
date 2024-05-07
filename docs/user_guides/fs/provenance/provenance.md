@@ -2,7 +2,7 @@
 
 ## Introduction 
 
-Hopsworks feature store allows users to track provenance (lineage) between feature groups, feature views and training dataset. Tracking lineage allows users to determine where/if a feature group is being used. You can track if feature groups are being used to create additional (derived) feature groups or feature views. 
+Hopsworks feature store allows users to track provenance (lineage) between storage connectors, feature groups, feature views, training dataset and models. Tracking lineage allows users to determine where/if a feature group is being used. You can track if feature groups are being used to create additional (derived) feature groups or feature views.
 
 You can interact with the provenance graph using the UI and the APIs.
 
@@ -10,7 +10,9 @@ You can interact with the provenance graph using the UI and the APIs.
 
 ### Assign parents to a feature group
 
-When creating a feature group, it is possible to specify a list of feature groups used to create the derived features. For example, you could have an external feature group defined over a Snowflake or Redshift table, which you use to compute the features and save them in a feature group. You can mark the external feature group as parent of the feature group you are creating by using the `parents` parameter in the [get_or_create_feature_group](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) or [create_feature_group](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#create_feature_group) methods:
+When creating a feature group, it is possible to specify a list of feature groups used to create the derived features. For example, you could have an external feature group defined over a Snowflake or Redshift table, which you use to compute the features and save them in a feature group.
+
+The storage connector is automaticaly assigned as a parent for external feature groups. You can mark the external feature group as parent of the feature group you are creating by using the `parents` parameter in the [get_or_create_feature_group](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) or [create_feature_group](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#create_feature_group) methods:
 
 === "Python"
 
@@ -96,7 +98,7 @@ To traverse the provenance graph in the opposite direction (i.e. from the parent
     lineage.inaccessible
     ```
 
-You can also visualize the relationship between the parent and child feature groups in the UI. In each feature group overview page you can find a provenance section with the graph of parent feature groups and child feature groups/feature views.
+You can also visualize the relationship between the parent and child feature groups in the UI. In each feature group overview page you can find a provenance section with the graph of parent storage connectors/feature groups and child feature groups/feature views.
 
 <p align="center">
   <figure>
