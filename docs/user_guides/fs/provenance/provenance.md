@@ -2,11 +2,80 @@
 
 ## Introduction 
 
-Hopsworks feature store allows users to track provenance (lineage) between feature groups, feature views and training dataset. Tracking lineage allows users to determine where/if a feature group is being used. You can track if feature groups are being used to create additional (derived) feature groups or feature views. 
+Hopsworks feature store allows users to track provenance (lineage) between storage connectors, feature groups, feature views, training datasets and models. Tracking lineage allows users to determine where/if a feature group is being used. You can track if feature groups are being used to create additional (derived) feature groups or feature views.
 
 You can interact with the provenance graph using the UI and the APIs.
 
-## Step 1: Feature group lineage
+## Step 1: Storage connector lineage
+
+The relationship between storage connectors and feature groups is captured automatically when you create an external feature group. You can inspect the relationship between storage connectors and feature groups using the APIs.
+
+=== "Python"
+
+    ```python
+    # Retrieve the storage connector
+    snowflake_sc = fs.get_storage_connector("snowflake_sc")
+
+    # Create the user profiles feature group
+    user_profiles_fg = fs.create_external_feature_group(
+        name="user_profiles",
+        version=1,
+        storage_connector=snowflake_sc,
+        query="SELECT * FROM USER_PROFILES"
+    )
+    user_profiles_fg.save()
+    ```
+
+### Using the APIs
+
+Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the storage connectors that are part of the feature group. To do so, you can use the [get_storage_connector_provenance](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_storage_connector_provenance) method.
+
+=== "Python"
+
+    ```python
+    # Returns all storage connectors linked to the provided feature group
+    lineage = user_profiles_fg.get_storage_connector_provenance()
+
+    # List all accessible parent storage connectors
+    lineage.accessible
+
+    # List all deleted parent storage connectors
+    lineage.deleted
+
+    # List all the inaccessible parent storage connectors
+    lineage.inaccessible
+    ```
+
+=== "Python"
+
+    ```python
+    # Returns an accessible storage connector linked to the feature group (if it exists)
+    user_profiles_fg.get_storage_connector()
+    ```
+
+To traverse the provenance graph in the opposite direction (i.e. from the storage connector to the feature group), you can use the [get_feature_groups_provenance](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method. When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
+
+=== "Python"
+
+    ```python
+    # Returns all feature groups linked to the provided storage connector
+    lineage = snowflake_sc.get_feature_groups_provenance()
+
+    # List all accessible downstream feature groups
+    lineage.accessible
+
+    # List all the inaccessible downstream feature groups
+    lineage.inaccessible
+    ```
+
+=== "Python"
+
+    ```python
+    # Returns all accessible feature groups linked to the storage connector (if any exists)
+    snowflake_sc.get_feature_groups()
+    ```
+
+## Step 2: Feature group lineage
 
 ### Assign parents to a feature group
 
@@ -96,7 +165,7 @@ To traverse the provenance graph in the opposite direction (i.e. from the parent
     lineage.inaccessible
     ```
 
-You can also visualize the relationship between the parent and child feature groups in the UI. In each feature group overview page you can find a provenance section with the graph of parent feature groups and child feature groups/feature views.
+You can also visualize the relationship between the parent and child feature groups in the UI. In each feature group overview page you can find a provenance section with the graph of parent storage connectors/feature groups and child feature groups/feature views.
 
 <p align="center">
   <figure>
@@ -105,7 +174,7 @@ You can also visualize the relationship between the parent and child feature gro
   </figure>
 </p>
 
-## Step 2: Feature view lineage
+## Step 3: Feature view lineage
 
 The relationship between feature groups and feature views is captured automatically when you create a feature view. You can inspect the relationship between feature groups and feature views using the APIs or the UI.
 
