@@ -17,7 +17,7 @@ The relationship between storage connectors and feature groups is captured autom
     snowflake_sc = fs.get_storage_connector("snowflake_sc")
 
     # Create the user profiles feature group
-    user_profiles_fg = fs.create_on_demand_feature_group(
+    user_profiles_fg = fs.create_external_feature_group(
         name="user_profiles",
         version=1,
         storage_connector=snowflake_sc,
