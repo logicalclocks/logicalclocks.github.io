@@ -62,13 +62,13 @@ Once the project is created the overview page for it will appear.
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
+hopsworks.login()
 ```
 
 ### Step 2: Create project
 
 ```python
-project = connection.create_project("my_project")
+project = hopsworks.create_project("my_project")
 ```
 
 ### API Reference

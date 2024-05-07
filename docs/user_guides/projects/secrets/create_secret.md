@@ -51,9 +51,9 @@ If the secret should be private to this user, select `Private`, to share the sec
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
+hopsworks.login()
 
-secrets_api = connection.get_secrets_api()
+secrets_api = hopsworks.get_secrets_api()
 ```
 
 ### Step 2: Create secret
