@@ -33,6 +33,7 @@ Starting from a feature group metadata object, you can traverse upstream the pro
 === "Python"
 
     ```python
+    # Returns all storage connectors linked to the provided feature group
     lineage = user_profiles_fg.get_storage_connector_provenance()
 
     # List all accessible parent storage connectors
@@ -45,11 +46,19 @@ Starting from a feature group metadata object, you can traverse upstream the pro
     lineage.inaccessible
     ```
 
+=== "Python"
+
+    ```python
+    # Returns an accessible storage connector linked to the feature group (if it exists)
+    user_profiles_fg.get_storage_connector()
+    ```
+
 To traverse the provenance graph in the opposite direction (i.e. from the storage connector to the feature group), you can use the [get_feature_groups_provenance](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method. When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
 
 === "Python"
 
     ```python
+    # Returns all feature groups linked to the provided storage connector
     lineage = snowflake_sc.get_feature_groups_provenance()
 
     # List all accessible downstream feature groups
@@ -57,6 +66,13 @@ To traverse the provenance graph in the opposite direction (i.e. from the storag
 
     # List all the inaccessible downstream feature groups
     lineage.inaccessible
+    ```
+
+=== "Python"
+
+    ```python
+    # Returns all accessible feature groups linked to the storage connector (if any exists)
+    snowflake_sc.get_feature_groups()
     ```
 
 ## Step 2: Feature group lineage
