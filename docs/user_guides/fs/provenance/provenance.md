@@ -8,7 +8,23 @@ You can interact with the provenance graph using the UI and the APIs.
 
 ## Step 1: Storage connector lineage
 
-The relationship between storage connecotors and feature groups is captured automatically when you create a external feature group. You can inspect the relationship between storage connecotors and feature groups using the APIs.
+The relationship between storage connectors and feature groups is captured automatically when you create an external feature group. You can inspect the relationship between storage connectors and feature groups using the APIs.
+
+=== "Python"
+
+    ```python
+    # Retrieve the storage connector
+    snowflake_sc = fs.get_storage_connector("snowflake_sc")
+
+    # Create the user profiles feature group
+    user_profiles_fg = fs.create_on_demand_feature_group(
+        name="user_profiles",
+        version=1,
+        storage_connector=snowflake_sc,
+        query="SELECT * FROM USER_PROFILES"
+    )
+    user_profiles_fg.save()
+    ```
 
 ### Using the APIs
 
@@ -17,7 +33,7 @@ Starting from a feature group metadata object, you can traverse upstream the pro
 === "Python"
 
     ```python
-    lineage = transaction_fg.get_storage_connector_provenance()
+    lineage = user_profiles_fg.get_storage_connector_provenance()
 
     # List all accessible parent storage connectors
     lineage.accessible
