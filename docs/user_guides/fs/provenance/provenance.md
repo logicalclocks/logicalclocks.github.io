@@ -6,13 +6,48 @@ Hopsworks feature store allows users to track provenance (lineage) between stora
 
 You can interact with the provenance graph using the UI and the APIs.
 
-## Step 1: Feature group lineage
+## Step 1: Storage connector lineage
+
+The relationship between storage connecotors and feature groups is captured automatically when you create a external feature group. You can inspect the relationship between storage connecotors and feature groups using the APIs.
+
+### Using the APIs
+
+Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the storage connectors that are part of the feature group. To do so, you can use the [get_storage_connector_provenance](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_storage_connector_provenance) method.
+
+=== "Python"
+
+    ```python
+    lineage = transaction_fg.get_storage_connector_provenance()
+
+    # List all accessible parent storage connectors
+    lineage.accessible
+
+    # List all deleted parent storage connectors
+    lineage.deleted
+
+    # List all the inaccessible parent storage connectors
+    lineage.inaccessible
+    ```
+
+To traverse the provenance graph in the opposite direction (i.e. from the storage connector to the feature group), you can use the [get_feature_groups_provenance](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method. When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
+
+=== "Python"
+
+    ```python
+    lineage = snowflake_sc.get_feature_groups_provenance()
+
+    # List all accessible downstream feature groups
+    lineage.accessible
+
+    # List all the inaccessible downstream feature groups
+    lineage.inaccessible
+    ```
+
+## Step 2: Feature group lineage
 
 ### Assign parents to a feature group
 
-When creating a feature group, it is possible to specify a list of feature groups used to create the derived features. For example, you could have an external feature group defined over a Snowflake or Redshift table, which you use to compute the features and save them in a feature group.
-
-The storage connector is automatically assigned as a parent for external feature groups. You can mark the external feature group as parent of the feature group you are creating by using the `parents` parameter in the [get_or_create_feature_group](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) or [create_feature_group](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#create_feature_group) methods:
+When creating a feature group, it is possible to specify a list of feature groups used to create the derived features. For example, you could have an external feature group defined over a Snowflake or Redshift table, which you use to compute the features and save them in a feature group. You can mark the external feature group as parent of the feature group you are creating by using the `parents` parameter in the [get_or_create_feature_group](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) or [create_feature_group](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#create_feature_group) methods:
 
 === "Python"
 
@@ -107,7 +142,7 @@ You can also visualize the relationship between the parent and child feature gro
   </figure>
 </p>
 
-## Step 2: Feature view lineage
+## Step 3: Feature view lineage
 
 The relationship between feature groups and feature views is captured automatically when you create a feature view. You can inspect the relationship between feature groups and feature views using the APIs or the UI.
 
