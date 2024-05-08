@@ -12,7 +12,7 @@ All members of a project in Hopsworks can launch the following types of applicat
 - Apache Spark
 
 Launching a job of any type is very similar process, what mostly differs between job types is
-the various configuration parameters each job type comes with. Hopsworks clusters support schedyuling to run jobs on a regular basis,
+the various configuration parameters each job type comes with. Hopsworks support scheduling to run jobs on a regular basis,
 e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
 checkout [our Scheduling guide](schedule_job.md).
 
