@@ -6,7 +6,7 @@ description: Documentation on how to schedule a job on Hopsworks.
 
 ## Introduction
 
-Hopsworks jobs can be scheduled to run at regular intervals using the scheduling function provided by Hopsworks. Each job can be configured to have a single schedule.
+Hopsworks clusters can run jobs on a schedule, allowing you to automate the execution. Whether you need to backfill your feature groups on a nightly basis or run a model training pipeline every week, the Hopsworks scheduler will help you automate these tasks. Each job can be configured to have a single schedule. For more advanced use cases, Hopsworks integrates with any DAG manager and directly with the open-source [Apache Airflow](https://airflow.apache.org/use-cases/), check out our [Airflow Guide](../airflow/airflow.md).
 
 Schedules can be defined using the drop down menus in the UI or a Quartz [cron](https://en.wikipedia.org/wiki/Cron) expression. 
 
