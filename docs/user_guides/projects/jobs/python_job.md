@@ -12,7 +12,9 @@ All members of a project in Hopsworks can launch the following types of applicat
 - Apache Spark
 
 Launching a job of any type is very similar process, what mostly differs between job types is
-the various configuration parameters each job type comes with. After following this guide you will be able to create a Python job.
+the various configuration parameters each job type comes with. Hopsworks support scheduling jobs to run on a regular basis,
+e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
+checkout [our Scheduling guide](schedule_job.md).
 
 !!! note "Kubernetes integration required"
     Python Jobs are only available if Hopsworks has been integrated with a Kubernetes cluster.
