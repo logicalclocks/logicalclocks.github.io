@@ -26,13 +26,13 @@ aksidentity=$(az aks create --resource-group $RESOURCE_GROUP --name hopsworks-ak
 You need to add permission to [the managed identity you will assign to your Hopsworks cluster](getting_started.md#step-4-create-a-managed-identity) to access the AKS cluster. To do it run the following command, replacing *\$RESOURCE_GROUP* with the resource group in which you will run your cluster and $identityId with the *id* of the identity you will assign to your Hopsworks cluster.
 
 ```bash
-az role assignment create --resource-group $RESOURCE_GROUP --role "Azure Kubernetes Service Cluster User Role" --assignee $identityId
+az role assignment create --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP --role "Azure Kubernetes Service Cluster User Role" --assignee $identityId
 ```
 
 You also need to grant permission to pull images from the [ACR](getting_started.md#step-3-create-an-acr-container-registry) to the AKS nodes. To do it run the following command, replacing *\$RESOURCE_GROUP* with the resource group in which you will run your cluster
 
 ```bash
-az role assignment create --resource-group $RESOURCE_GROUP --role "AcrPull" --assignee $aksidentity
+az role assignment create --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP --role "AcrPull" --assignee $aksidentity
 ```
 
 

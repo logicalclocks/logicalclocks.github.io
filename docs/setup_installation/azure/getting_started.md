@@ -170,7 +170,7 @@ az role definition create --role-definition instance-role.json
 Finally assign the role to the managed identity by running the following command, replacing *$RESOURCE_GROUP* with the name of your resource group.
 
 ```bash
-az role assignment create --resource-group $RESOURCE_GROUP --role hopsworks-instance --assignee $identityId
+az role assignment create --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP --role hopsworks-instance --assignee $identityId
 ```
 
 !!!note 
