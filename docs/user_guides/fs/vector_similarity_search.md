@@ -17,7 +17,7 @@ from hsfs import embedding
 emb = embedding.EmbeddingIndex(index_name="news_fg")
 ```
 
-Then, add one or more embedding features to the index. Name and dimension of the embedding features are required for identifying which features should be indexed for k-nearest neighbor (KNN) search. In this example, we get the dimension of the embedding by taking the length of the value of the `embedding_heading` column in the first row of the dataframe `df`. Optionally, you can specify the similarity function among `l2_norm`, `cosine`, and `dot_product`. Refer to [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/embedding_index_api/#add_embedding) for the list of arguments for `add_embedding`.
+Then, add one or more embedding features to the index. Name and dimension of the embedding features are required for identifying which features should be indexed for k-nearest neighbor (KNN) search. In this example, we get the dimension of the embedding by taking the length of the value of the `embedding_heading` column in the first row of the dataframe `df`. Optionally, you can specify the similarity function among `l2_norm`, `cosine`, and `dot_product`. Refer to [add_embedding](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/embedding_index_api/#add_embedding) for the full list of arguments.
 ```aidl
 # Add embedding feature to the index
 emb.add_embedding("embedding_heading", len(df["embedding_heading"][0]))
