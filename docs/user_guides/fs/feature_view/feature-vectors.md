@@ -1,7 +1,26 @@
 # Feature Vectors
-Once you have trained a model, it is time to deploy it. You can get back all the features required to feed into an ML model with a single method call. A feature view provides great flexibility for you to retrieve a vector (or row) of features from any environment, whether you are either inside the Hopsworks platform, a model serving platform, or in an external environment, such as your application server. Harnessing the powerful [RonDB](https://www.rondb.com/), feature vectors are served at in-memory latency.
+The Hopsworks Platform integrates real-time capabilities with its Online Store. Based on [RonDB](https://www.rondb.com/), your feature vectors are served at scale at in-memory latency (~1-10ms). Checkout the benchmarks results [here](https://www.hopsworks.ai/post/feature-store-benchmark-comparison-hopsworks-and-feast#images-2) and the code [here](https://github.com/featurestoreorg/featurestore-benchmarks). The same Feature View which was used to create training datasets can be used to retrieve feature vectors for real-time predictions. This allows you to serve the same features to your model in training and serving, ensuring consistency and reducing boilerplate. Whether you are either inside the Hopsworks platform, a model serving platform, or in an external environment, such as your application server. 
 
-If you want to understand more about the concept of feature vectors, you can refer to [here](../../../concepts/fs/feature_view/online_api.md).
+Below is a practical guide on how to use the Online Store Python and Java Client. The aim is to get you started quickly by providing code snippets which illustrate various use cases and functionalities of the clients. If you need to get more familiar with the concept of feature vectors, you can read this [short introduction](../../../concepts/fs/feature_view/online_api.md) first.
+
+## Choose your Client
+The Online Store can be accessed via the **Python** or **Java** client allowing you to use your language of choice to connect to the Online Store. Additionally, the Python client provides two different implementations to fetch data: **SQL** or **REST**. The SQL client is the default implementation. It requires a direct SQL connection to your RonDB cluster and uses python asyncio to offer high performance even when your Feature View rows involve querying multiple different tables. The REST client is an alternative implementation connecting to [RonDB Feature Vector Server](./feature-server.md). Perfect if you want to avoid exposing ports of your database cluster directly to clients. This implementation is available as of Hopsworks 3.7.
+
+Initialise the client by calling the `init_serving` method on the Feature View object before starting to fetch feature vectors. Thiswill initialise the chose client, test the connection, as well as initialise the transformation functions if they are defined in the Feature View.
+
+=== "Python"
+```python
+# initialize the SQL client to fetch feature vectors from the Online Store
+my_feature_view.init_serving()
+
+# or use the REST client
+my_feature_view.init_serving(
+    init_rest_client=True,
+    config_rest_client={
+        ...
+    }
+)
+```
 
 ## Retrieval
 You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view. Note that filters defined in feature view and training data will not be applied when feature vectors are returned. If you need to retrieve a complete value of feature vectors without missing values, the required `entry` are [feature_view.primary_keys](https://docs.hopsworks.ai/feature-store-api/3.7/generated/api/feature_view_api/#primary_keys). Alternative, you can provide the primary key of the feature groups as the key of the entry. It is also possible to provide a subset of the entry, which will be discussed [below](#partial-feature-retrieval).
