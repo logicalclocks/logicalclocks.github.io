@@ -17,10 +17,12 @@ my_feature_view.init_serving()
 my_feature_view.init_serving(
     init_rest_client=True,
     config_rest_client={
-        ...
+        "api_key": "your_api_key",
     }
 )
 ```
+
+Note that when using the REST client in the Hopsworks Cluster python environment you will need to provide an API key explicitly as JWT authentication is not supported.
 
 ## Retrieval
 You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view. Note that filters defined in feature view and training data will not be applied when feature vectors are returned. If you need to retrieve a complete value of feature vectors without missing values, the required `entry` are [feature_view.primary_keys](https://docs.hopsworks.ai/feature-store-api/3.7/generated/api/feature_view_api/#primary_keys). Alternative, you can provide the primary key of the feature groups as the key of the entry. It is also possible to provide a subset of the entry, which will be discussed [below](#partial-feature-retrieval).
