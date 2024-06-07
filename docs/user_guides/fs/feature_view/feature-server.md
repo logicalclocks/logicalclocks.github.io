@@ -6,10 +6,13 @@ description: Using Feature Store REST API Server for retrieving feature vectors
 
 This API server allows users to retrieve single/batch feature vectors from a feature view.
 
-## How to use
-Hopsworks 3.3 includes a preview of the feature store REST API, version 0.1.0. By default, the server listens on the `0.0.0.0:4406`. Please refer to `/srv/hops/mysql-cluster/rdrs_config.json` config file located on machines running the REST Server for additional configuration parameters.
+## How to use 
 
-## Single feature vector
+From Hopsworks 3.3, you can connect to the Feature Vector Server via any REST client which supports POST requests. Set the X-API-HEADER to your Hopsworks API Key and send the request with a JSON body, [single](#request) or [batch](#request-1). By default, the server listens on the `0.0.0.0:4406` and the api version is set to `0.1.0`. Please refer to `/srv/hops/mysql-cluster/rdrs_config.json` config file located on machines running the REST Server for additional configuration parameters.
+
+In Hopsworks 3.7, we introduced a python client for the Online Store REST API Server. The python client is available in the `hsfs` module and can be installed using `pip install hsfs`. This client can be used instead of the Online Store SQL client in the `FeatureView.get_feature_vector(s)` methods. Check the corresponding [documentation](./feature-vectors.md) for these methods.
+
+## Single feature vector 
 
 ### Request
 
