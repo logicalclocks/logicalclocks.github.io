@@ -20,7 +20,7 @@ jobs:
         run: sudo apt-get install -y libxml2-dev libxslt-dev
 
       - name: install deps
-        run: pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python' linkchecker
+        run: pip3 install -r requirements-docs.txt
 
       - name: setup git
         run: |
