@@ -79,7 +79,8 @@ Here is an example output:
 
 ```
 {
-  "projectId":119,  # project used for data ingestion
+  "projectName":"project_name",  # name of the project used for data ingestion
+  "projectId":119,  # id of the project used for data ingestion
   "featureStoreId":67,  # feature store where changes took place
   "featureGroupId":14,  # id of the feature group
   "featureGroupName":"fg_name",  # name of the feature group
