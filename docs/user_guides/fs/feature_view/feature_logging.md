@@ -4,25 +4,25 @@ Feature logging is essential for tracking and auditing the data your models use.
 
 ## Logging Features and Predictions
 
-After you have trained a model, logging the features it uses and the predictions it makes is crucial. This helps track what data was used during inference and allows for validation of predictions later. You can log either transformed or untransformed features or both.
+After you have trained a model, logging the features it uses and the predictions it makes is crucial. This helps track what data was used during inference and allows for validation of predictions later. You can log either transformed or/and untransformed features.
 
 ### Enabling Feature Logging
 
-To enable logging, set `enabled_logging=True` when creating the feature view. Two feature groups will be created for storing transformed and untransformed features. The logged features will be written to the offline feature store every hour by scheduled materialization jobs which are created automatically.
+To enable logging, set `logging_enabled=True` when creating the feature view. Two feature groups will be created for storing transformed and untransformed features, but they are not visible in the UI. The logged features will be written to the offline feature store every hour by scheduled materialization jobs which are created automatically.
 
 ```python
-feature_view = fs.create_feature_view("name", query, enabled_logging=True)
+feature_view = fs.create_feature_view("name", query, logging_enabled=True)
 ```
 
 Alternatively, you can call `feature_view.enable_logging()` for an existing feature view. Or, calling `feature_view.log()` will implicitly enable logging if it is not already enabled.
 
 ### Logging Features and Predictions
 
-You can log either transformed or untransformed features or both. Inference helper columns are returned and logged as untransformed features, but they are not logged as transformed features. Prediction can be optionally provided as a column in the feature DataFrame or separately in the `prediction` argument. This is useful for logging real-time features and predictions which are often in type `list`, avoiding the need to ensure feature order of the labels.
+You can log either transformed or/and untransformed features. To get untransformed features, you can specify `transform=False` in `feature_view.get_batch_data` or `feature_view.get_feature_vector(s)`. Inference helper columns are returned along with the untransformed features. To get the transformed features, you can call `feature_view.transform_batch_data` or `feature_view.transform_feature_vector(s)`. Inference helper columns are not returned as transformed features. [link to transformed features]()
+
+You can also log predictions, and optionally the training dataset version and the model used for prediction. Prediction can be optionally provided as a column in the feature DataFrame or separately in the `prediction` argument. This is useful for logging real-time features and predictions which are often in type `list`, avoiding the need to ensure feature order of the labels. Training dataset version will also be logged if it is cached after you provide the training dataset version when calling  `feature_view.init_serving(...)` or `feature_view.init_batch_scoring(...)`.
 
 The time of calling `feature_view.log` is automatically logged, enabling filtering by logging time when retrieving logs.
-
-You can also log predictions, and optionally the training dataset version and the model used for prediction. Training dataset version will also be logged if it is cached after you provide the training dataset version when calling  `fv.init_serving(...)` or `fv.init_batch_scoring(...)`.
 
 #### Example 1: Log Features Only
 
@@ -63,7 +63,7 @@ feature_view.log(features,
 ```python
 untransformed_df = fv.get_batch_data(transform=False)
 # then apply the transformations after:
-transformed_df = fv.transform(untransformed_df)
+transformed_df = fv.transform_batch_data(untransformed_df)
 # Log untransformed features
 feature_view.log(untransformed_df)
 # Log transformed features
@@ -74,7 +74,7 @@ feature_view.log(transformed_df, transformed=True)
 ```python
 untransformed_vector = fv.get_feature_vector({"id": 1}, transform=False)
 # then apply the transformations after:
-transformed_vector = fv.transform(untransformed_vector)
+transformed_vector = fv.transform_feature_vector(untransformed_vector)
 # Log untransformed features
 feature_view.log(untransformed_vector)
 # Log transformed features
@@ -187,7 +187,7 @@ print(materialization_result)
 
 ## Deleting Logs
 
-When log data is no longer needed, you might want to delete it to free up space and maintain data hygiene. This operation deletes the feature groups and recreate a new one. Scheduled materialization job and log timeline are reset as well.
+When log data is no longer needed, you might want to delete it to free up space and maintain data hygiene. This operation deletes the feature groups and recreates new ones. Scheduled materialization job and log timeline are reset as well.
 
 ### Delete Logs
 
