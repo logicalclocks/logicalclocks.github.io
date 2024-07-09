@@ -18,6 +18,8 @@ Alternatively, you can call `feature_view.enable_logging()` for an existing feat
 
 ### Logging Features and Predictions
 
+You can log features and predictions by calling `feature_view.log`. The logged features are written periodically to the offline store. If you need it to be available immediately, call `feature_view.materialize_log`.
+
 You can log either transformed or/and untransformed features. To get untransformed features, you can specify `transform=False` in `feature_view.get_batch_data` or `feature_view.get_feature_vector(s)`. Inference helper columns are returned along with the untransformed features. To get the transformed features, you can call `feature_view.transform_batch_data` or `feature_view.transform_feature_vector(s)`. Inference helper columns are not returned as transformed features. [link to transformed features]()
 
 You can also log predictions, and optionally the training dataset version and the model used for prediction. Prediction can be optionally provided as a column in the feature DataFrame or separately in the `prediction` argument. This is useful for logging real-time features and predictions which are often in type `list`, avoiding the need to ensure feature order of the labels. Training dataset version will also be logged if it is cached after you provide the training dataset version when calling  `feature_view.init_serving(...)` or `feature_view.init_batch_scoring(...)`.
