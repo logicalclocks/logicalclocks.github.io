@@ -94,7 +94,7 @@ nav:
               - Feature server: user_guides/fs/feature_view/feature-server.md
               - Query: user_guides/fs/feature_view/query.md
               - Helper Columns: user_guides/fs/feature_view/helper-columns.md
-              - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
+              - Model-Dependent Transformation Functions: user_guides/fs/feature_view/transformation-function.md
               - Spines: user_guides/fs/feature_view/spine-query.md
               - Feature Monitoring:
                   - Getting started: user_guides/fs/feature_view/feature_monitoring.md
