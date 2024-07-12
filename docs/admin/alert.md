@@ -70,8 +70,21 @@ Then adding the Service key/Routing key of the receiver(s). PagerDuty provides
 [documentation](https://www.pagerduty.com/docs/guides/prometheus-integration-guide/) on how to integrate with 
 Prometheus' Alert manager.
 
+### Step 5: Configure Webhook Alerts
 
-### Step 5: Advanced configuration
+You can also use webhooks to send alerts. A Webhook Alert is sent as an HTTP POST command with a JSON-encoded parameter payload.
+Click on the _Configure_ button on the left side of the **webhook** row and fill out the form that pops up. 
+
+<figure>
+  <img src="../../assets/images/alerts/webhook-config.png" alt="Configure Webhook Alerts"/>
+  <figcaption>Configure Webhook Alerts</figcaption>
+</figure>
+
+Fill in the unique URL of your Webhook: the endpoint to send HTTP POST requests to.
+
+A global receiver is created when a webhook is configured. 
+
+### Step 6: Advanced configuration
 If you are familiar with Prometheus' [Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/) 
 you can also configure alerts by editing the _yaml/json_ file directly.  
 
