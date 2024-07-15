@@ -82,16 +82,25 @@ Click on the _Configure_ button on the left side of the **webhook** row and fill
 
 Fill in the unique URL of your Webhook: the endpoint to send HTTP POST requests to.
 
-A global receiver is created when a webhook is configured. 
+A global receiver is created when a webhook is configured and can be used by any project in the cluster. 
 
 ### Step 6: Advanced configuration
 If you are familiar with Prometheus' [Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/) 
-you can also configure alerts by editing the _yaml/json_ file directly.  
+you can also configure alerts by editing the _yaml/json_ file directly by going to the advaced page and clicking the edit button.
+ 
+The advanced page shows the configuration currently loaded on the alert manager. After editing the configuration it takes some time to propagate changes to the alertmanager. 
+
+The reload button can be used to validate the changes made to the configuration. 
+It will try to load the new configuration to the alertmanager and show any errors that might prevent the configuration from being loaded. 
 
 <figure>
   <img src="../../../assets/images/alerts/advanced-config.png" alt="Advanced configuration"/>
   <figcaption>Advanced configuration</figcaption>
 </figure>
+
+!!!warning
+
+    If you make any changes to the configuration ensure that the changes are valid by reloading the configuration until the changes are loaded and visible in the advanced page. 
 
 _Example:_ Adding the yaml snippet shown below in the global section of the alert manager configuration will
 have the same effect as creating the SMTP configuration as shown in [section 1](#1-email-alerts) above.
