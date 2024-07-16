@@ -1,10 +1,10 @@
-# User Guide: Feature Logging with Feature View
+# User Guide: Feature and Prediction Logging with a Feature View
 
-Feature logging is essential for tracking and auditing the data your models use. This guide explains how to log features and predictions, and retrieve and manage these logs with feature view in Hopsworks.
+Feature logging is essential for debugging, monitoring, and auditing the data your models use. This guide explains how to log features and predictions, and retrieve and manage these logs with feature view in Hopsworks.
 
 ## Logging Features and Predictions
 
-After you have trained a model, logging the features it uses and the predictions it makes is crucial. This helps track what data was used during inference and allows for validation of predictions later. You can log either transformed or/and untransformed features.
+After you have trained a model, you can log the features it uses and the predictions with the feature view used to create the training data for the model. You can log either transformed or/and untransformed features values.
 
 ### Enabling Feature Logging
 
@@ -14,7 +14,7 @@ To enable logging, set `logging_enabled=True` when creating the feature view. Tw
 feature_view = fs.create_feature_view("name", query, logging_enabled=True)
 ```
 
-Alternatively, you can call `feature_view.enable_logging()` for an existing feature view. Or, calling `feature_view.log()` will implicitly enable logging if it is not already enabled.
+Alternatively, you can enable logging on an existing feature view by calling `feature_view.enable_logging()`. Also, calling `feature_view.log()` will implicitly enable logging if it has not already been enabled.
 
 ### Logging Features and Predictions
 
@@ -22,9 +22,9 @@ You can log features and predictions by calling `feature_view.log`. The logged f
 
 You can log either transformed or/and untransformed features. To get untransformed features, you can specify `transform=False` in `feature_view.get_batch_data` or `feature_view.get_feature_vector(s)`. Inference helper columns are returned along with the untransformed features. If you have On-Demand features as well, call `feature_view.compute_on_demand_features` to get the on demand features before calling `feature_view.log`.To get the transformed features, you can call `feature_view.transform` and pass the untransformed feature with the on-demand feature.
 
-You can also log predictions, and optionally the training dataset version and the model used for prediction. Prediction can be optionally provided as a column in the feature DataFrame or separately in the `prediction` argument. This is useful for logging real-time features and predictions which are often in type `list`, avoiding the need to ensure feature order of the labels. Training dataset version will also be logged if it is cached after you provide the training dataset version when calling  `feature_view.init_serving(...)` or `feature_view.init_batch_scoring(...)`.
+Predictions can be optionally provided as one or more columns in the DataFrame containing the features or separately in the `predictions` argument. There must be the same number of prediction columns as there are labels in the feature view. It is required to provide predictions in the `predictions` argument if you provide the features as `list` instead of pandas `dataframe`. The training dataset version will also be logged if you have called either `feature_view.init_serving(...)` or `feature_view.init_batch_scoring(...)`.
 
-The time of calling `feature_view.log` is automatically logged, enabling filtering by logging time when retrieving logs.
+The wallclock time of calling `feature_view.log` is automatically logged, enabling filtering by logging time when retrieving logs.
 
 #### Example 1: Log Features Only
 
@@ -85,11 +85,11 @@ feature_view.log(transformed_vector, transformed=True)
 
 ## Retrieving the Log Timeline
 
-To audit and review the data logs, you might want to retrieve the timeline of log entries. This helps understand when data was logged and monitor the logging process.
+To audit and review the feature/prediction logs, you might want to retrieve the timeline of log entries. This helps understand when data was logged and monitor the logs.
 
 ### Retrieve Log Timeline
 
-Get the latest 10 log entries.
+A log timeline is the hudi commit timeline of the logging feature group.
 
 ```python
 # Retrieve the latest 10 log entries
@@ -101,7 +101,7 @@ print(log_timeline)
 
 You may need to read specific log entries for analysis, such as entries within a particular time range or for a specific model version and training dataset version.
 
-### Read All Log Entries
+### Read all Log Entries
 
 Read all log entries for comprehensive analysis. The output will return all values of the same primary keys instead of just the latest value.
 
@@ -111,9 +111,9 @@ log_entries = feature_view.read_log()
 print(log_entries)
 ```
 
-### Read Log Entries Within a Time Range
+### Read Log Entries within a Time Range
 
-Focus on logs within a specific time frame. You can specify `start_time` and `end_time` for filtering, but the time columns will not be returned in the DataFrame.
+Focus on logs within a specific time range. You can specify `start_time` and `end_time` for filtering, but the time columns will not be returned in the DataFrame. You can provide the `start/end_time` as `datetime`, `date`, `int`, or `str` type. Accepted date format are: `%Y-%m-%d`, `%Y-%m-%d %H`, `%Y-%m-%d %H:%M`, `%Y-%m-%d %H:%M:%S`, or `%Y-%m-%d %H:%M:%S.%f`
 
 ```python
 # Read log entries from January 2022
@@ -131,17 +131,17 @@ log_entries = feature_view.read_log(training_dataset_version=1)
 print(log_entries)
 ```
 
-### Read Log Entries by HSML Model
+### Read Log Entries by Model in Hopsworks
 
 Analyze logs from a particular name and version of the HSML model. The HSML model column will be returned in the DataFrame.
 
 ```python
 # Read log entries of a specific HSML model
-log_entries = feature_view.read_log(hsml_model=Model(1, "model", version=1))
+log_entries = feature_view.read_log(hopsworks_model=Model(1, "model", version=1))
 print(log_entries)
 ```
 
-### Read Log Entries by Custom Filter
+### Read Log Entries using a Custom Filter
 
 Provide filters which work similarly to the filter method in the `Query` class. The filter should be part of the query in the feature view.
 
@@ -193,7 +193,7 @@ When log data is no longer needed, you might want to delete it to free up space 
 
 ### Delete Logs
 
-Remove all log entries, optionally specifying whether to delete transformed/untransformed logs.
+Remove all log entries (both transformed and untransformed logs), optionally specifying whether to delete transformed (transformed=True) or untransformed (transformed=False) logs. 
 
 ```python
 # Delete all log entries
@@ -205,4 +205,4 @@ feature_view.delete_log(transformed=True)
 
 ## Summary
 
-Feature logging is a crucial part of maintaining and monitoring your machine learning workflows. By following these examples, you can effectively log, retrieve, and delete logs to keep your data pipeline robust and auditable.
+Feature logging is a crucial part of maintaining and monitoring your machine learning workflows. By following these examples, you can effectively log, retrieve, and delete logs, as well as manage the lifecycle of log materialization jobs, adding observability for your AI system and making it auditable.
