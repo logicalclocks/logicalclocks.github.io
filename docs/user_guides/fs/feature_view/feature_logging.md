@@ -20,7 +20,7 @@ Alternatively, you can call `feature_view.enable_logging()` for an existing feat
 
 You can log features and predictions by calling `feature_view.log`. The logged features are written periodically to the offline store. If you need it to be available immediately, call `feature_view.materialize_log`.
 
-You can log either transformed or/and untransformed features. To get untransformed features, you can specify `transform=False` in `feature_view.get_batch_data` or `feature_view.get_feature_vector(s)`. Inference helper columns are returned along with the untransformed features. To get the transformed features, you can call `feature_view.transform_batch_data` or `feature_view.transform_feature_vector(s)`. Inference helper columns are not returned as transformed features. [link to transformed features]()
+You can log either transformed or/and untransformed features. To get untransformed features, you can specify `transform=False` in `feature_view.get_batch_data` or `feature_view.get_feature_vector(s)`. Inference helper columns are returned along with the untransformed features. If you have On-Demand features as well, call `feature_view.compute_on_demand_features` to get the on demand features before calling `feature_view.log`.To get the transformed features, you can call `feature_view.transform` and pass the untransformed feature with the on-demand feature.
 
 You can also log predictions, and optionally the training dataset version and the model used for prediction. Prediction can be optionally provided as a column in the feature DataFrame or separately in the `prediction` argument. This is useful for logging real-time features and predictions which are often in type `list`, avoiding the need to ensure feature order of the labels. Training dataset version will also be logged if it is cached after you provide the training dataset version when calling  `feature_view.init_serving(...)` or `feature_view.init_batch_scoring(...)`.
 
@@ -65,7 +65,7 @@ feature_view.log(features,
 ```python
 untransformed_df = fv.get_batch_data(transform=False)
 # then apply the transformations after:
-transformed_df = fv.transform_batch_data(untransformed_df)
+transformed_df = fv.transform(untransformed_df)
 # Log untransformed features
 feature_view.log(untransformed_df)
 # Log transformed features
@@ -76,7 +76,7 @@ feature_view.log(transformed_df, transformed=True)
 ```python
 untransformed_vector = fv.get_feature_vector({"id": 1}, transform=False)
 # then apply the transformations after:
-transformed_vector = fv.transform_feature_vector(untransformed_vector)
+transformed_vector = fv.transform(untransformed_vector)
 # Log untransformed features
 feature_view.log(untransformed_vector)
 # Log transformed features
