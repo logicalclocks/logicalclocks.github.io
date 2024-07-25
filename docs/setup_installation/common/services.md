@@ -22,7 +22,7 @@ The Feature Store is a data management system for managing machine learning feat
 Ports: 8020, 30010, 9083 and 9085
 
 ## Online Feature store
-The online Feature store is required for online applications, where the goal is to retrieve a single feature vector with low latency and the same logic as was applied to generate the training dataset, such that the vector can subsequently be passed to a machine learning model in production to compute a prediction. You can find a more detailed explanation of the difference between Online and Offline Feature Store [here](../../concepts/fs/feature_group/fg_overview.md#online-and-offline-storage). Once you have opened the ports, the Online Feature store can be used with the same library as the offline feature store. You can find more in the [user guildes](../../user_guides/index.md).
+The online Feature store is required for online applications, where the goal is to retrieve a single feature vector with low latency and the same logic as was applied to generate the training dataset, such that the vector can subsequently be passed to a machine learning model in production to compute a prediction. You can find a more detailed explanation of the difference between Online and Offline Feature Store [here](../../concepts/fs/feature_group/fg_overview.md#online-and-offline-storage). Once you have opened the ports, the Online Feature store can be used with the same library as the offline feature store. You can find more in the [user guides](../../user_guides/index.md).
 
 Port: 3306
 

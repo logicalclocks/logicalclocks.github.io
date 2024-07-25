@@ -63,7 +63,7 @@ fg_prod.save_expectation_suite(
     validation_ingestion_policy="STRICT")
 ```
 
-In this setup, Hopsworks will abort inserting a DataFrame that does not successfully fullfill all expectations in the attached Expectation Suite. This ensures data quality standards are upheld for every insertion and provide downstream users with strong guarantees.
+In this setup, Hopsworks will abort inserting a DataFrame that does not successfully fulfill all expectations in the attached Expectation Suite. This ensures data quality standards are upheld for every insertion and provide downstream users with strong guarantees.
 
 ### Avoid Data Loss on materialization jobs
 

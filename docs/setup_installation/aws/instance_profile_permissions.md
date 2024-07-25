@@ -1,5 +1,5 @@
 
-Replace the following placeholders with their appropiate values
+Replace the following placeholders with their appropriate values
 
 * *BUCKET_NAME* - S3 bucket name 
 * *REGION* - region where the cluster is deployed

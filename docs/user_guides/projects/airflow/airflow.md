@@ -63,7 +63,7 @@ HopsworksJobSuccessSensor(dag=dag,
     job_name='profiles_fg')
 ```
 
-When writing the DAG file, you should also add the `access_control` parameter to the DAG configuration. The `access_control` parameter specicifies which projects have access to the DAG and which actions the project members can perform on it. If you do not specify the `access_control` option, project members will not be able to see the DAG in the Airflow UI.
+When writing the DAG file, you should also add the `access_control` parameter to the DAG configuration. The `access_control` parameter specifies which projects have access to the DAG and which actions the project members can perform on it. If you do not specify the `access_control` option, project members will not be able to see the DAG in the Airflow UI.
 
 !!! warning "Admin access"
     The `access_control` configuration does not apply to Hopsworks admin users which have full access to all the DAGs even if they are not member of the project. 

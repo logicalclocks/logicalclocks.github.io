@@ -38,7 +38,7 @@ After you have created the VPC either [Create a Security Group](https://docs.aws
 It is _**imperative**_ that the [Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#AddRemoveRules) allows Inbound traffic from any Instance within the same Security Group in any (TCP) port. All VMs of the Cluster should be able to communicate with each other. It is also recommended to open TCP port `80` to sign the certificates. If you do not open port `80` you will have to use a self-signed certificate in your Hopsworks cluster. This can be done by checking the `Continue with self-signed certificate` check box in the `Security Group` step of the cluster creation.
 
 
-We recommend configuring the [Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html#Rules) to be open to all inbound traffic and let the security group handle the access restriction. But if you want to set limitations at the Network ACLs level, they must be configured so that at least the TCP ephemeral port `32768 - 65535` are open to the internet (this is so that outbound trafic can receive answers). It is also recommended to open TCP port `80` to sign the certificates. If you do not open port `80` you will have to use a self-signed certificate in your Hopsworks cluster. This can be done by checking the `Continue with self-signed certificate` check box in the `Security Group` step of the cluster creation.
+We recommend configuring the [Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html#Rules) to be open to all inbound traffic and let the security group handle the access restriction. But if you want to set limitations at the Network ACLs level, they must be configured so that at least the TCP ephemeral port `32768 - 65535` are open to the internet (this is so that outbound traffic can receive answers). It is also recommended to open TCP port `80` to sign the certificates. If you do not open port `80` you will have to use a self-signed certificate in your Hopsworks cluster. This can be done by checking the `Continue with self-signed certificate` check box in the `Security Group` step of the cluster creation.
 
 #### Outbound traffic 
 
@@ -57,7 +57,7 @@ Follow this guide to create a role to be used by EC2 with no permissions attache
 Take note of the ARN of the role you just created.
 
 You will need to add permissions to the instance profile to give access to the S3 bucket where Hopsworks will store its data. For more details about these permissions check [our guide here](../getting_started/#step-3-creating-instance-profile).
-Check [bellow](#limiting-the-instance-profile-permissions) for more information on restricting the permissions given the instance profile.
+Check [below](#limiting-the-instance-profile-permissions) for more information on restricting the permissions given the instance profile.
 
 ### Step 3: Set permissions of the cross-account role
 

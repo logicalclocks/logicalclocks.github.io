@@ -148,7 +148,7 @@ While Hopsworks provides automatic validation on insertion logic, we recognise t
 
 #### In the UI
 
-You can validate data already ingested in the Feature Group by going to the Feature Group overview page. In the top right corner is a button to trigger a validation. The button will lauch a job which will read the Feature Group data, run validation and persist the associated report.
+You can validate data already ingested in the Feature Group by going to the Feature Group overview page. In the top right corner is a button to trigger a validation. The button will launch a job which will read the Feature Group data, run validation and persist the associated report.
 
 #### In the python client
 

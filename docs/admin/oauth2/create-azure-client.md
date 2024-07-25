@@ -29,7 +29,7 @@ Enter a name for the client such as *hopsworks_oauth_client*. Verify the Support
   </figure>
 </p>
 
-### Step 2: Get the nessary fields for client registration
+### Step 2: Get the necessary fields for client registration
 In the Overview section, copy the *Application (client) ID field*. We will use it in 
 [Identity Provider registration](../create-client) under the name *Client id*.
 

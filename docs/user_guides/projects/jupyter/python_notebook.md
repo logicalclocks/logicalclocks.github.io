@@ -5,13 +5,7 @@
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 
 * Supports JupyterLab and the classic Jupyter front-end
-* Configured with Python3, Spark, PySpark and SparkR kernels
-
-!!! important
-    If Hopsworks is not configured to run Jupyter on Kubernetes then the Python kernel is disabled by default. 
-    In this case the Python kernel can be enabled by setting the configuration variable `enable_jupyter_python_kernel_non_kubernetes` to True. 
-    Follow this [guide](../../../admin/variables.md) for instructions on how to set a configuration variable.
-
+* Configured with Python and PySpark kernels
 
 ## Step 1: Jupyter dashboard
 
@@ -19,7 +13,7 @@ The image below shows the Jupyter service page in Hopsworks and is accessed by c
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/jupyter_overview.png" alt="Jupyter dashboard in Hopsworks">
+    <img src="../../../../assets/images/guides/jupyter/jupyter_overview_py.png" alt="Jupyter dashboard in Hopsworks">
     <figcaption>Jupyter dashboard in Hopsworks</figcaption>
   </figure>
 </p>
@@ -45,9 +39,18 @@ Next step is to configure Jupyter, Click `edit configuration` to get to the conf
 
 Click `Save` to save the new configuration.
 
-## Step 3 (Optional): Configure max runtime and root path
+## Step 3 (Optional): Configure environment, root folder and automatic shutdown
 
-Before starting the server there are two additional configurations that can be set next to the `Run Jupyter` button.
+Before starting the server there are three additional configurations that can be set next to the `Run Jupyter` button.
+
+The environment that Jupyter should run in needs to be configured. Select the environment that contains the necessary dependencies for your code.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jupyter/configure_environment.png" alt="Configure environment">
+    <figcaption>Configure environment</figcaption>
+  </figure>
+</p>
 
 The runtime of the Jupyter instance can be configured, this is useful to ensure that idle instances will not be hanging around and keep allocating resources. If a limited runtime is not desirable, this can be disabled by setting `no limit`. 
 

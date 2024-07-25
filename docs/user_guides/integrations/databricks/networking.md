@@ -30,7 +30,7 @@ Identify your Databricks VPC by searching for VPCs containing Databricks in thei
 
 **Option 2: Set up VPC peering**
 
-Follow the guide [VPC Peering](https://docs.databricks.com/administration-guide/cloud-configurations/aws/vpc-peering.html) to set up VPC peering between the Feature Store cluster and Databricks. Get your Feature Store *VPC ID* and *CIDR* by searching for thr Feature Store VPC in the AWS Management Console:
+Follow the guide [VPC Peering](https://docs.databricks.com/administration-guide/cloud-configurations/aws/vpc-peering.html) to set up VPC peering between the Feature Store cluster and Databricks. Get your Feature Store *VPC ID* and *CIDR* by searching for the Feature Store VPC in the AWS Management Console:
 
 !!! info "managed.hopsworks.ai"
     On **[managed.hopsworks.ai](https://managed.hopsworks.ai)**, the VPC is shown in the cluster details.

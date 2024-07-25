@@ -6,7 +6,7 @@ cluster definition used to deploy your Hopsworks cluster. This tutorial shows an
 server for LDAP and Kerberos integration.
 
 ## Prerequisites
-An accessable LDAP domain. 
+An accessible LDAP domain. 
 A Kerberos Key Distribution Center (KDC) running on the same domain as Hopsworks (Only for Kerberos).
 
 ### Step 1: Server Configuration for LDAP
@@ -43,7 +43,7 @@ Go to the payara admin UI and create a new JNDI external resource. The name of t
   <figcaption>LDAP Resource</figcaption>
 </figure>
 
-This can also be achived by running the bellow asadmin command.
+This can also be achieved by running the below asadmin command.
 
 ```bash
 asadmin create-jndi-resource \

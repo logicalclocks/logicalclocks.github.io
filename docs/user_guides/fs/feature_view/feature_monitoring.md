@@ -188,7 +188,7 @@ In order to compare detection and reference statistics, you need to provide the 
     ```
 
 !!! info "Difference values and thresholds"
-    For more information about the computation of difference values and the comparison against threhold bounds see the [Comparison criteria section](../feature_monitoring/statistics_comparison.md#comparison-criteria) in the Statistics comparison guide.
+    For more information about the computation of difference values and the comparison against threshold bounds see the [Comparison criteria section](../feature_monitoring/statistics_comparison.md#comparison-criteria) in the Statistics comparison guide.
 
 
 ### Step 6: Save configuration

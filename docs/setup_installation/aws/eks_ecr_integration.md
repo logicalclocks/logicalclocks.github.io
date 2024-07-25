@@ -96,7 +96,7 @@ Go to the [*IAM service*](https://console.aws.amazon.com/iam) in the *AWS manage
 
 Click on *Review policy*. Give a name to your policy and click on *Create policy*.
 
-Copy the *Role ARN* of your profile (not to be confused with the *Instance Profile ARNs* two lines bellow).
+Copy the *Role ARN* of your profile (not to be confused with the *Instance Profile ARNs* two lines below).
 
 <p align="center">
   <figure>

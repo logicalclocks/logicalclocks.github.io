@@ -7,7 +7,7 @@
 If you want to navigate the to the different tabs presented in this document you will need to connect [managed.hopsworks.ai](https://managed.hopsworks.ai) and create a cluster. Instructions about this process can be found in the getting started pages ([AWS](../aws/getting_started.md), [Azure](../azure/getting_started.md), [GCP](../gcp/getting_started.md))
 
 ## Dashboard overview
-The landing page of [managed.hopsworks.ai](https://managed.hopsworks.ai) can be seen in the picture below. It is composed of three main parts. At the top, you have a menu bar (1) allowing you to navigate between the dashboard and the [settings](./settings.md). Bellow, you have a menu column (2) allowing you to navigate between different functionalities of the dashboard. And finally, in the middle, you find pannels representing your different clusters (3) and a button to [create new clusters](../aws/cluster_creation.md) (4).
+The landing page of [managed.hopsworks.ai](https://managed.hopsworks.ai) can be seen in the picture below. It is composed of three main parts. At the top, you have a menu bar (1) allowing you to navigate between the dashboard and the [settings](./settings.md). Bellow, you have a menu column (2) allowing you to navigate between different functionalities of the dashboard. And finally, in the middle, you find panels representing your different clusters (3) and a button to [create new clusters](../aws/cluster_creation.md) (4).
 
 <p align="center">
   <figure>
@@ -117,7 +117,7 @@ The Details tab provides you with details about your cluster setup. It is also w
 </p>
 
 ### Get more details about your cluster RonDB in the RonDB tab
-The RonDB tab provides you with details about the instances running RonDB in your cluster. This is also where you can [scale up Rondb](./scalingup.md) if needed.
+The RonDB tab provides you with details about the instances running RonDB in your cluster. This is also where you can [scale up RonDB](./scalingup.md) if needed.
 
 <p align="center">
   <figure>

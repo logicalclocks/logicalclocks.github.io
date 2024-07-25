@@ -16,7 +16,7 @@ Before you begin this guide you'll need the following:
 To use role chaining the head node need to be able to impersonate the roles you want to be linked to your project. For this you need to create an instance profile with assume role permissions and attach it to your head node. For more details about the creation of instance profile see the [aws documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html). If running in [managed.hopsworks.ai](https://managed.hopsworks.ai) you can also refer to our [getting started guide](../setup_installation/aws/getting_started.md#step-3-creating-instance-profile).
 
 !!!note 
-    To ensure that the Hopsworks users can't use the head node instance profile and impersonate the roles by their own means, you need to ensure that they can't execute code on the head node. This means having all jobs running on worker nodes and using EKS to run jupyter nodebooks.
+    To ensure that the Hopsworks users can't use the head node instance profile and impersonate the roles by their own means, you need to ensure that they can't execute code on the head node. This means having all jobs running on worker nodes and using EKS to run jupyter notebooks.
 
 ```json
 {
@@ -58,7 +58,7 @@ For the instance profile to be able to impersonate the roles you need to configu
 <figcaption>Example trust-policy document.</figcaption>
 
 ### Step 3: Create mappings
-Now that the head node can assume the roles we need to configure Hopsworks to deletegate access to the roles on a project base.
+Now that the head node can assume the roles we need to configure Hopsworks to delegate access to the roles on a project base.
 
 In Hopsworks, click on your name in the top right corner of the navigation bar and choose _Cluster Settings_ from the dropdown menu.
 In the Cluster Settings' _IAM Role Chaining_ tab you can configure the mappings between projects and IAM roles.
