@@ -209,7 +209,7 @@ Filters are fully compatible with joins:
     ```python
     selected_features = credit_card_transactions_fg.select_all() \
         .join(account_details_fg.select_all(), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"], join_type="left") \
+        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"]) \
         .filter((credit_card_transactions_fg.category == "Grocery") | (credit_card_transactions_fg.category == "Restaurant/Cafeteria"))
     ```
 
@@ -227,7 +227,7 @@ The filters can be applied at any point of the query:
     ```python
     selected_features = credit_card_transactions_fg.select_all() \
         .join(accountDetails_fg.select_all().filter(accountDetails_fg.avg_temp >= 22), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"], join_type="left") \
+        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"]) \
         .filter(credit_card_transactions_fg.category == "Grocery")
     ```
 
