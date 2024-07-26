@@ -20,7 +20,9 @@ The joining functionality is heavily inspired by the APIs used by Pandas to merg
 
     # save the query to feature view
     feature_view = fs.create_feature_view(
+        version=1, 
         name='credit_card_fraud',
+        labels=["is_fraud"],
         query=selected_features
     )
 
@@ -95,21 +97,21 @@ By default, Hopsworks will use the maximal matching subset of the primary keys o
     val selectedFeatures = creditCardTransactionsFg.join(accountDetailsFg)
     ```
 More complex joins are possible by selecting subsets of features from the joined feature groups and by specifying a join key and type.
-Possible join types are "inner", "left" or "right". Furthermore, it is possible to specify different features for the join key of the left and right feature group.
-The join key lists should contain the names of the features to join on.
+Possible join types are "inner", "left" or "right". By default`join_type` is `"left". Furthermore, it is possible to specify different 
+features for the join key of the left and right feature group. The join key lists should contain the names of the features to join on.
 
 === "Python"
     ```python
     selected_features = credit_card_transactions_fg.select_all() \
         .join(account_details_fg.select_all(), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["cc_num"], right_on=["merchant_id"], join_type="left")
+        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"], join_type="inner")
     ```
 
 === "Scala"
     ```scala
     val selectedFeatures = (creditCardTransactionsFg.selectAll()
         .join(accountDetailsFg.selectAll(), Seq("cc_num"))
-        .join(merchantDetailsFg.selectAll(), Seq("cc_num"), Seq("merchant_id"), "left"))
+        .join(merchantDetailsFg.selectAll(), Seq("merchant_id"), Seq("id"), "inner"))
     ```
 
 ### Data modeling in Hopsworks
@@ -119,7 +121,7 @@ Since v4.0 Hopsworks Feature selection API supports both Star and Snowflake Sche
 #### Star schema data model
 
 When choosing Star Schema data model all tables are children of the parent (the left most) feature group, which has all 
-foreign keys for its children feature groups.
+foreign keys for its child feature groups.
 
 <p align="center">
   <figure>
@@ -137,8 +139,8 @@ foreign keys for its children feature groups.
         .join(cc_issuer_details.select_all())
     ```
 
-In online inference, when you want to retrieve features in your online model, you have to provide all foreign key values 
-from the parent feature group to retrieve your precomputed feature values using the feature view.
+In online inference, when you want to retrieve features in your online model, you have to provide all foreign key values, 
+known as the serving_keys, from the parent feature group to retrieve your precomputed feature values using the feature view.
 
 === "Python"
     ```python
@@ -151,9 +153,9 @@ from the parent feature group to retrieve your precomputed feature values using 
     ```
 
 #### Snowflake schema 
-Hopsworks also provides the possibility to define children and grandchildren of the root (the left most) feature group. 
-This is called  Snowflake Schema data model where you need to build nested tables (subtrees) using joins, and then join the 
-subtrees to their parents which can be children of the root node (the leftmost feature group):
+Hopsworks also provides the possibility to define a feature view that consists of a nested tree of children (to up to a depth of 20) 
+from the root (left most) feature group. This is called  Snowflake Schema data model where you need to build nested tables (subtrees) using joins, and then join the
+subtrees to their parents iteratively until you reach the root node (the leftmost feature group in the feature selection):
 
 <p align="center">
   <figure>
@@ -170,10 +172,11 @@ subtrees to their parents which can be children of the root node (the leftmost f
 
         selected_features = credit_card_transactions.select_all()
                 .join(nested_selection)
-        .join(merchant_details.select_all()
+        .join(merchant_details.select_all())
     ```
 
-Now, you have the benefit that in online inference you only need to pass two foreign key values to retrieve the precomputed features:
+Now, you have the benefit that in online inference you only need to pass two serving key values (the foreign keys of the leftmost feature group)
+to retrieve the precomputed features:
 
 === "Python"
     ```python
@@ -206,15 +209,15 @@ Filters are fully compatible with joins:
     ```python
     selected_features = credit_card_transactions_fg.select_all() \
         .join(account_details_fg.select_all(), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["cc_num"], right_on=["merchant_id"], join_type="left") \
+        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"], join_type="left") \
         .filter((credit_card_transactions_fg.category == "Grocery") | (credit_card_transactions_fg.category == "Restaurant/Cafeteria"))
     ```
 
 === "Scala"
     ```scala
     val selectedFeatures = (creditCardTransactionsFg.selectAll()
-        .join(taccountDetailsFg.selectAll(), Seq("cc_num"))
-        .join(merchantDetailsFg.selectAll(), Seq("cc_num"), Seq("merchant_id"), "left")
+        .join(accountDetailsFg.selectAll(), Seq("cc_num"))
+        .join(merchantDetailsFg.selectAll(), Seq("merchant_id"), Seq("id"), "left")
         .filter(creditCardTransactionsFg.getFeature("category").eq("Grocery").or(creditCardTransactionsFg.getFeature("category").eq("Restaurant/Cafeteria"))))
     ```
 
@@ -224,7 +227,7 @@ The filters can be applied at any point of the query:
     ```python
     selected_features = credit_card_transactions_fg.select_all() \
         .join(accountDetails_fg.select_all().filter(accountDetails_fg.avg_temp >= 22), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["cc_num"], right_on=["merchant_id"], join_type="left") \
+        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"], join_type="left") \
         .filter(credit_card_transactions_fg.category == "Grocery")
     ```
 
@@ -232,7 +235,7 @@ The filters can be applied at any point of the query:
     ```scala
     val selectedFeatures = (creditCardTransactionsFg.selectAll()
         .join(accountDetailsFg.selectAll().filter(accountDetailsFg.getFeature("avg_temp").ge(22)), Seq("cc_num"))
-        .join(merchantDetailsFg.selectAll(), Seq("cc_num"), Seq("merchant_id"), "left")
+        .join(merchantDetailsFg.selectAll(), Seq("merchant_id"), Seq("id"), "left")
         .filter(creditCardTransactionsFg.getFeature("category").eq("Grocery")))
     ```
 
