@@ -1,9 +1,9 @@
 
 # Transformation Functions    
 
-In AI systems, [transformation functions](https://www.hopsworks.ai/dictionary/transformation) modify data used for machine learning applications, often to improve performance. The [taxonomy of data transformations](../../concepts/mlops/data_transformations.md) introduces three types of data transformation prevalent in all AI systems. Hopsworks offers simple Python APIs to define custom transformation functions. These can be used along with [feature groups](./feature_group/index.md) and [feature views](./feature_view/overview.md) to create [on-demand transformations](./feature_group/on_demand_transformations.md) and [model-dependent transformations](./feature_view/model-dependent-transformations.md), producing modular AI pipelines that are skew-free.
+In AI systems, [transformation functions](https://www.hopsworks.ai/dictionary/transformation) transform data to create features, the inputs to machine learning models (in both training and inference). The [taxonomy of data transformations](../../concepts/mlops/data_transformations.md) introduces three types of data transformation prevalent in all AI systems. Hopsworks offers simple Python APIs to define custom transformation functions. These can be used along with [feature groups](./feature_group/index.md) and [feature views](./feature_view/overview.md) to create [on-demand transformations](./feature_group/on_demand_transformations.md) and [model-dependent transformations](./feature_view/model-dependent-transformations.md), producing modular AI pipelines that are skew-free.
 
-## Creation
+## Custom Transformation Function Creation
 
 User-defined transformation functions can be created in Hopsworks using the [`@udf`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/udf/) decorator. These functions should be designed as Pandas functions, meaning they must take input features as a [Pandas Series](https://pandas.pydata.org/docs/reference/api/pandas.Series.html) and return either a Pandas Series or a [Pandas DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html). Hopsworks automatically executes the defined transformation function as a [`pandas_udf`](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.functions.pandas_udf.html) in a PySpark application and as Pandas functions in Python clients.
 
@@ -11,10 +11,11 @@ Transformation functions created in Hopsworks can be directly attached to featur
 
 !!! warning "Java/Scala support"
 
-    Creating and attaching Transformation functions to feature views or feature groups are not supported for HSFS Java or Scala client. If feature view/feature groups with transformation function was created using python client, you cannot get training data or get feature vectors from HSFS Java or Scala client.
+    Hopsworks supports on-demand transformations in Python (Pandas UDFs, Python UDFs). On-demand transformations can also be executed in Python-based DataFrame frameworks (PySpark, Pandas). There is currently no support for SQL or Java-based feature pipelines.
 
 
-The `@udf` decorator in Hopsworks creates a metadata class called `HopsworksUdf`. This class manages the necessary operations to execute the transformation function. The decorator has two arguments `return_type` and `drop`. The `return_type` is a mandatory argument and denotes the data types of the features returned by the transformation function. It can be a single Python type if the transformation function returns a single transformed feature or a list of Python types if it returns multiple transformed features. The supported types include `str`, `int`, `float`, `bool`, `datetime.datetime`, `datetime.date`, and `datetime.time`. The `drop` argument is optional and specifies the input arguments to remove from the final output after all transformation functions are applied. By default, all input arguments are retained in the final transformed output.
+The `@udf` decorator in Hopsworks creates a metadata class called `HopsworksUdf`. This class manages the necessary operations to execute the transformation function. The decorator has two arguments `return_type` and `drop`. The `return_type` is a mandatory argument and denotes the data types of the features returned by the transformation function. It can be a single Python type if the transformation function returns a single transformed feature or a list of Python types if it returns multiple transformed features. The supported types include `str`, `int`, `float`, `bool`, `datetime.datetime`, `datetime.date`, and `datetime.time`. The `drop` argument is optional and specifies the input arguments to remove from the final output after all transformation functions are applied. By default, all input arguments are retained in the final transformed output. 
+
 
 Hopsworks supports four types of transformation functions:
 
@@ -85,7 +86,7 @@ The creation of a many-to-many transformation function is similar to that of a o
 
 ### Dropping input features
 
-The `drop` parameter of the `@udf` decorator is used to drop specific features after transformation.  If any argument of the transformation function is passed to the `drop` parameter, then the feature mapped to the argument is dropped after the transformation functions are applied. In the example below, the features mapped to the arguments `feature1` and `feature2` are dropped after the application of all transformation functions.
+The `drop` parameter of the `@udf` decorator is used to drop specific columns in the input DataFrame after transformation.  If any argument of the transformation function is passed to the `drop` parameter, then the column mapped to the argument is dropped after the transformation functions are applied. In the example below, the columns mapped to the arguments `feature1` and `feature2` are dropped after the application of all transformation functions.
 
 
 === "Python"    
@@ -101,20 +102,20 @@ The `drop` parameter of the `@udf` decorator is used to drop specific featur
 
 ### Training dataset statistics
 
-A keyword argument `statistics` can be defined in the transformation function if it requires training dataset statistics for any of its arguments. The `statistics` argument must be assigned an instance of the class `TransformationStatistics` as the default value. The `TransformationStatistics` instance must be initialized using the names of the arguments requiring statistics.
+A keyword argument `statistics` can be defined in the transformation function if it requires training dataset statistics for any of its arguments. The `statistics` argument must be assigned an instance of the class [`TransformationStatistics`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/transformation_statistics/) as the default value. The `TransformationStatistics` instance must be initialized using the names of the arguments requiring statistics.
 
 !!! warning "Transformation Statistics"
 
-    The statistics provided to the transformation function is the statistics computed using [train set](https://www.hopsworks.ai/dictionary/train-training-set) obtained when training data is generated. It might not portray the statistics of the complete data. Hence, training dataset statistics cannot be obtained for on-demand transformations. 
+    The statistics provided to the transformation function is the statistics computed using [the train set](https://www.hopsworks.ai/dictionary/train-training-set). Training dataset statistics are not available for on-demand transformations.
 
-The `TransformationStatistics` instance contains separate objects with the same name as the arguments used to initialize it. These objects encapsulate statistics related to the argument as instances of the class `FeatureTransformationStatistics`. Upon instantiation, instances of `FeatureTransformationStatistics` contain `None` values and are updated with the required statistics after the creation of a training dataset.
+The `TransformationStatistics` instance contains separate objects with the same name as the arguments used to initialize it. These objects encapsulate statistics related to the argument as instances of the class [`FeatureTransformationStatistics`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_transformation_statistics/). Upon instantiation, instances of `FeatureTransformationStatistics` contain `None` values and are updated with the required statistics after the creation of a training dataset.
 
 
 === "Python"   
-    !!! example "Creation of a transformation function in Hopsworks that accesses training dataset statistics"
+    !!! example "Creation of a transformation function in Hopsworks that uses training dataset statistics"
         ```python
         from hopsworks import udf
-        from hsfs.transformation_statistics import TransformationStatistics
+        from hopsworks.transformation_statistics import TransformationStatistics
 
         stats = TransformationStatistics("argument1", "argument2", "argument3") 
 
@@ -124,9 +125,9 @@ The `TransformationStatistics` instance contains separate objects with the sam
         ```
 
 
-## Saving to Feature Store
+## Saving to the Feature Store
 
-To save a transformation function to the feature store, use the function `create_transformation_function`. It would create a `TransformationFunction` object which can then be saved by calling the save function.
+To save a transformation function to the feature store, use the function `create_transformation_function`. It creates a `TransformationFunction` object which can then be saved by calling the save function.
 
 === "Python"
 
@@ -138,9 +139,9 @@ To save a transformation function to the feature store, use the function `creat
         plus_one_meta.save()
         ```
 
-## Retrieval from Feature Store
+## Retrieval from the Feature Store
 
-To retrieve all transformation functions from the feature store, use the function `get_transformation_functions`, which will return the list of `TransformationFunction` objects. 
+To retrieve all transformation functions from the feature store, use the function `get_transformation_functions`, which returns the list of `TransformationFunction` objects. 
 
 A specific transformation function can be retrieved using its `name` and `version` with the function `get_transformation_function`. If only the `name` is provided, then the version will default to 1.
 

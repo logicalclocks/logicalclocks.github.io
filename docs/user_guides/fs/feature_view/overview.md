@@ -4,7 +4,7 @@ A feature view is a set of features that come from one or more feature groups. I
 
 If you want to understand more about the concept of feature view, you can refer to [here](../../../concepts/fs/feature_view/fv_overview.md).
 
-## Creation
+## Feature View Creation
 [Query](./query.md) and [transformation function](./model-dependent-transformations.md) are the building blocks of a feature view. You can define your set of features by building a `query`. You can also define which columns in your feature view are the `labels`, which is useful for supervised machine learning tasks. Furthermore, in python client, each feature can be attached to its own transformation function. This way, when a feature is read (for training or scoring), the transformation is executed on-demand - just before the feature data is returned. For example, when a client reads a numerical feature, the feature value could be normalized by a StandardScalar transformation function before it is returned to the client.
 
 === "Python"
