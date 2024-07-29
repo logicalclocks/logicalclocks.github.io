@@ -8,7 +8,7 @@
 An on-demand transformation function can be created by attaching a [transformation function](../transformation_functions.md) to a feature group. Each on-demand transformation function creates one on-demand feature having the same name as the transformation function. For instance, in the example below, the on-demand transformation function `transaction_age` will generate one on-demand feature called `transaction_age`. Hence, only one-to-one or many-to-one transformation functions can be used to create an on-demand transformation functions.
 
 !!! warning "On-demand transformation"
-    All on-demand transformation functions attached to a feature group must have unique names and, in constrast to model-dependent transformations, they do not have access to training dataset statistics.
+    All on-demand transformation functions attached to a feature group must have unique names and, in contrast to model-dependent transformations, they do not have access to training dataset statistics.
 
 Each on-demand transformation function can map specific features to its arguments by explicitly providing their names as arguments to the transformation function. If no feature names are provided, the transformation function will default to using features that match the name of the transformation function's argument.
 
@@ -53,7 +53,7 @@ The features to be used by the on-demand transformation function can be specifie
 
 ## Usage
 
-On-demand transformation functions attached to a feature group are automatically executed in the feature pipeline when you [insert data](../create/#batch-write-api) into a feature group and [bu the Python client while retrieving feature vectors](../feature_view/feature-vectors.md#retrieval) for online inference using feature views that contain on-demand features. 
+On-demand transformation functions attached to a feature group are automatically executed in the feature pipeline when you [insert data](../create/#batch-write-api) into a feature group and [by the Python client while retrieving feature vectors](../feature_view/feature-vectors.md#retrieval) for online inference using feature views that contain on-demand features. 
 
 The on-demand features computed by on-demand transformation functions are positioned after all other features in a feature group and are ordered alphabetically by their names.
 

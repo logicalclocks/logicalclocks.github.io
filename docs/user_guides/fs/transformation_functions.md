@@ -7,14 +7,28 @@ In AI systems, [transformation functions](https://www.hopsworks.ai/dictionary/tr
 
 User-defined transformation functions can be created in Hopsworks using the [`@udf`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/udf/) decorator. These functions should be designed as Pandas functions, meaning they must take input features as a [Pandas Series](https://pandas.pydata.org/docs/reference/api/pandas.Series.html) and return either a Pandas Series or a [Pandas DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html). Hopsworks automatically executes the defined transformation function as a [`pandas_udf`](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.functions.pandas_udf.html) in a PySpark application and as Pandas functions in Python clients.
 
-Transformation functions created in Hopsworks can be directly attached to feature views or feature groups or stored in the feature store for later retrieval. These functions can be part of a library [installed](../../user_guides/projects/python/python_install.md) in Hopsworks or be defined in a [Jupyter notebook](../../user_guides/projects/jupyter/python_notebook.md) running a Python kernel or added when starting a Jupyter notebook or [Hopsworks job](../../user_guides/projects/jobs/spark_job.md).
-
 !!! warning "Java/Scala support"
 
-    Hopsworks supports on-demand transformations in Python (Pandas UDFs, Python UDFs). On-demand transformations can also be executed in Python-based DataFrame frameworks (PySpark, Pandas). There is currently no support for SQL or Java-based feature pipelines.
+    Hopsworks supports transformations functions in Python (Pandas UDFs, Python UDFs). Transformations functions can also be executed in Python-based DataFrame frameworks (PySpark, Pandas). There is currently no support for transformation functions in SQL or Java-based feature pipelines.
+
+Transformation functions created in Hopsworks can be directly attached to feature views or feature groups or stored in the feature store for later retrieval. These functions can be part of a library [installed](../../user_guides/projects/python/python_install.md) in Hopsworks or be defined in a [Jupyter notebook](../../user_guides/projects/jupyter/python_notebook.md) running a Python kernel or added when starting a Jupyter notebook or [Hopsworks job](../../user_guides/projects/jobs/spark_job.md).
+
+!!! warning "PySpark Kernels"
+
+    Definition transformation function within a Jupyter notebook is only supported in Python Kernel. In a PySpark Kernel transformation function have to defined as modules or added when starting a Jupyter notebook.
 
 
-The `@udf` decorator in Hopsworks creates a metadata class called `HopsworksUdf`. This class manages the necessary operations to execute the transformation function. The decorator has two arguments `return_type` and `drop`. The `return_type` is a mandatory argument and denotes the data types of the features returned by the transformation function. It can be a single Python type if the transformation function returns a single transformed feature or a list of Python types if it returns multiple transformed features. The supported types include `str`, `int`, `float`, `bool`, `datetime.datetime`, `datetime.date`, and `datetime.time`. The `drop` argument is optional and specifies the input arguments to remove from the final output after all transformation functions are applied. By default, all input arguments are retained in the final transformed output. 
+The `@udf` decorator in Hopsworks creates a metadata class called [`HopsworksUdf`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/hopsworks_udf/). This class manages the necessary operations to execute the transformation function. The decorator has two arguments `return_type` and `drop`. The `return_type` is a mandatory argument and denotes the data types of the features returned by the transformation function. It can be a single Python type if the transformation function returns a single transformed feature or a list of Python types if it returns multiple transformed features. The supported types include `str`, `int`, `float`, `bool`, `datetime.datetime`, `datetime.date`, and `datetime.time`. The `drop` argument is optional and specifies the input arguments to remove from the final output after all transformation functions are applied. By default, all input arguments are retained in the final transformed output. The supported python types that be used with the `return_type` argument are provided as a table below
+
+| Supported Python Types   |
+|--------------------------|
+| str                      |
+| int                      |
+| float                    |
+| bool                     |
+| datetime.datetime        |
+| datetime.date            |
+| datetime.time            |
 
 
 Hopsworks supports four types of transformation functions:
@@ -127,7 +141,7 @@ The `TransformationStatistics` instance contains separate objects with the sam
 
 ## Saving to the Feature Store
 
-To save a transformation function to the feature store, use the function `create_transformation_function`. It creates a `TransformationFunction` object which can then be saved by calling the save function.
+To save a transformation function to the feature store, use the function `create_transformation_function`. It creates a [`TransformationFunction`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/transformation_functions_api/) object which can then be saved by calling the save function.
 
 === "Python"
 
