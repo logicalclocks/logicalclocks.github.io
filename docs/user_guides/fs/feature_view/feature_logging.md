@@ -22,7 +22,7 @@ You can log features and predictions by calling `feature_view.log`. The logged f
 
 You can log either transformed or/and untransformed features. To get untransformed features, you can specify `transform=False` in `feature_view.get_batch_data` or `feature_view.get_feature_vector(s)`. Inference helper columns are returned along with the untransformed features. If you have On-Demand features as well, call `feature_view.compute_on_demand_features` to get the on demand features before calling `feature_view.log`.To get the transformed features, you can call `feature_view.transform` and pass the untransformed feature with the on-demand feature.
 
-Predictions can be optionally provided as one or more columns in the DataFrame containing the features or separately in the `predictions` argument. There must be the same number of prediction columns as there are labels in the feature view. It is required to provide predictions in the `predictions` argument if you provide the features as `list` instead of pandas `dataframe`. The training dataset version will also be logged if you have called either `feature_view.init_serving(...)` or `feature_view.init_batch_scoring(...)`.
+Predictions can be optionally provided as one or more columns in the DataFrame containing the features or separately in the `predictions` argument. There must be the same number of prediction columns as there are labels in the feature view. It is required to provide predictions in the `predictions` argument if you provide the features as `list` instead of pandas `dataframe`. The training dataset version will also be logged if you have called either `feature_view.init_serving(...)` or `feature_view.init_batch_scoring(...)` or if the provided model has a training dataset version.
 
 The wallclock time of calling `feature_view.log` is automatically logged, enabling filtering by logging time when retrieving logs.
 
@@ -63,7 +63,7 @@ feature_view.log(features,
 
 **Batch Features**
 ```python
-untransformed_df = fv.get_batch_data(transform=False)
+untransformed_df = fv.get_batch_data(transformed=False)
 # then apply the transformations after:
 transformed_df = fv.transform(untransformed_df)
 # Log untransformed features
@@ -137,7 +137,7 @@ Analyze logs from a particular name and version of the HSML model. The HSML mode
 
 ```python
 # Read log entries of a specific HSML model
-log_entries = feature_view.read_log(hopsworks_model=Model(1, "model", version=1))
+log_entries = feature_view.read_log(model=Model(1, "model", version=1))
 print(log_entries)
 ```
 
@@ -175,7 +175,7 @@ feature_view.resume_logging()
 
 ## Materializing Logs
 
-Besides the scheduled materialization job, you can materialize logs from Kafka to the offline store on demand. This does not pause the scheduled job.
+Besides the scheduled materialization job, you can materialize logs from Kafka to the offline store on demand. This does not pause the scheduled job. By default, it materializes both transformed and untransformed logs, optionally specifying whether to materialize transformed (transformed=True) or untransformed (transformed=False) logs.
 
 ### Materialize Logs
 
@@ -184,7 +184,8 @@ Materialize logs and optionally wait for the process to complete.
 ```python
 # Materialize logs and wait for completion
 materialization_result = feature_view.materialize_log(wait=True)
-print(materialization_result)
+# Materialize only transformed log entries
+feature_view.materialize_log(wait=True, transformed=True)
 ```
 
 ## Deleting Logs
