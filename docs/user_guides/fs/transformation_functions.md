@@ -141,7 +141,7 @@ The `TransformationStatistics` instance contains separate objects with the sam
 
 ## Saving to the Feature Store
 
-To save a transformation function to the feature store, use the function `create_transformation_function`. It creates a [`TransformationFunction`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/transformation_functions_api/) object which can then be saved by calling the save function.
+To save a transformation function to the feature store, use the function `create_transformation_function`. It creates a [`TransformationFunction`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/transformation_functions_api/) object which can then be saved by calling the save function. The save function will throw an error if another transformation function with the same name and version is saved in the feature store.
 
 === "Python"
 
