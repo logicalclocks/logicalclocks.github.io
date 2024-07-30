@@ -99,6 +99,7 @@ nav:
               - Feature Monitoring:
                   - Getting started: user_guides/fs/feature_view/feature_monitoring.md
                   - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
+              - Feature Logging: user_guides/fs/feature_view/feature_logging.md
           - Vector Similarity Search: user_guides/fs/vector_similarity_search.md
           - Compute Engines: user_guides/fs/compute_engines.md
           - Client Integrations:
