@@ -50,6 +50,7 @@ nav:
           - Model Serving: concepts/mlops/serving.md
           - Vector Database: concepts/mlops/opensearch.md
           - BI Tools: concepts/mlops/bi_tools.md
+          - Data Transformations: concepts/mlops/data_transformations.md
       - Development:
           - Outside Hopsworks: concepts/dev/outside.md # api-keys
           - Inside Hopsworks: concepts/dev/inside.md
@@ -85,6 +86,7 @@ nav:
                   - Getting started: user_guides/fs/feature_group/feature_monitoring.md
                   - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
               - Notification: user_guides/fs/feature_group/notification.md
+              - On-Demand Transformations: user_guides/fs/feature_group/on_demand_transformations.md
           - Feature View:
               - user_guides/fs/feature_view/index.md
               - Overview: user_guides/fs/feature_view/overview.md
@@ -94,13 +96,14 @@ nav:
               - Feature server: user_guides/fs/feature_view/feature-server.md
               - Query: user_guides/fs/feature_view/query.md
               - Helper Columns: user_guides/fs/feature_view/helper-columns.md
-              - Model-Dependent Transformation Functions: user_guides/fs/feature_view/transformation-function.md
+              - Model-Dependent Transformation Functions: user_guides/fs/feature_view/model-dependent-transformations.md
               - Spines: user_guides/fs/feature_view/spine-query.md
               - Feature Monitoring:
                   - Getting started: user_guides/fs/feature_view/feature_monitoring.md
                   - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
               - Feature Logging: user_guides/fs/feature_view/feature_logging.md
           - Vector Similarity Search: user_guides/fs/vector_similarity_search.md
+          - Transformation Functions: user_guides/fs/transformation_functions.md
           - Compute Engines: user_guides/fs/compute_engines.md
           - Client Integrations:
               - user_guides/integrations/index.md

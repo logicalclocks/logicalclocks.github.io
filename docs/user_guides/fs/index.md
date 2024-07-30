@@ -8,3 +8,4 @@ This section serves to provide guides and examples for the common usage of abstr
 - [Vector Similarity Search](vector_similarity_search.md)
 - [Compute Engines](compute_engines.md)
 - [Integrations](../integrations/index.md)
+- [Transformations](transformation_functions.md)
