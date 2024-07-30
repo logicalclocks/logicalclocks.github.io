@@ -53,9 +53,9 @@ predictions = pd.DataFrame({
 
 # Log features and predictions
 feature_view.log(features, 
-                 prediction=predictions, 
+                 predictions=predictions, 
                  training_dataset_version=1, 
-                 hsml_model=Model(1, "model", version=1)
+                 model=Model(1, "model", version=1)
 )
 ```
 
