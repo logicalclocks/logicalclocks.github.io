@@ -10,31 +10,24 @@ Create a python 3.10 environment, using a python environment manager of your own
 
 ### Step 2
 
-Install the required dependencies to build the documentation in the python environment created in the previous step.
-
-**Note that {PY_ENV} is the path to your python environment.**
-
-```bash
-{PY_ENV}/bin/pip3 install 'git+https://github.com/logicalclocks/feature-store-api@master#egg=hsfs[docs]&subdirectory=python'
-```
-
-### Step 3
-
 Clone this repository
 
 ```bash
 git clone https://github.com/logicalclocks/logicalclocks.github.io.git
 ```
 
-### Step 4
+### Step 3
 
-Go inside the cloned repository
+Install the required dependencies to build the documentation in the python environment created in the previous step.
+
+**Note that {PY_ENV} is the path to your python environment.**
 
 ```bash
 cd logicalclocks.github.io
+{PY_ENV}/bin/pip3 install -r requirements-docs.txt
 ```
 
-### Step 5
+### Step 4
 
 Use mkdocs to build the documentation and serve it locally
 
