@@ -91,6 +91,7 @@ Here is an example output:
   },
   "featureViews":[  # list of feature views affected
     {
+      "projectName":"project_name", # name of the project the feature view belongs to
       "id":9,  # id of the feature view
       "name":"test",  # name of the feature view
       "version":1,  # version of the feature view
