@@ -69,7 +69,7 @@ transformed_df = fv.transform(untransformed_df)
 # Log untransformed features
 feature_view.log(untransformed_df)
 # Log transformed features
-feature_view.log(transformed_df, transformed=True)
+feature_view.log(transformed_features=transformed_df)
 ```
 
 **Real-time Features**
@@ -80,7 +80,7 @@ transformed_vector = fv.transform(untransformed_vector)
 # Log untransformed features
 feature_view.log(untransformed_vector)
 # Log transformed features
-feature_view.log(transformed_vector, transformed=True)
+feature_view.log(transformed_features=transformed_vector)
 ```
 
 ## Retrieving the Log Timeline
