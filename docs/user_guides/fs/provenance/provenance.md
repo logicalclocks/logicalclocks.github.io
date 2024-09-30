@@ -211,6 +211,47 @@ You can also traverse the provenance graph in the opposite direction. Starting f
     lineage.inaccessible
     ```
 
+You can also traverse the provenance graph downstream to retrieve the models which use training datasets of this feature view as its parents.
+=== "Python"
+
+    ```python
+    models = fraud_fv.get_models_provenance()
+
+    # List all accessible models
+    lineage.accessible
+
+    # List all the inaccessible models
+    lineage.inaccessible
+    ```
+
+You can also retrieve only the models generated from specific training dataset versions:
+=== "Python"
+
+    ```python
+    models = fraud_fv.get_models_provenance(training_dataset_version: 1)
+    ```
+
+You can also retrive directly the accessible model objects, without the need to extract them from the provenance links object:
+=== "Python"
+
+    ```python
+    #List all accessible models
+    models = fraud_fv.get_models()
+
+    #List accessible models trained from a specific training dataset version
+    models = fraud_fv.get_models(training_dataset_version: 1)
+    ```
+
+Also we added a utility method to retrieve from the user's accessible models, the last trained one. Last is determined based on timestamp when it was saved into the model registry.
+=== "Python"
+
+    ```python
+    #Retrieve newest model from all user's accessible models based on this feature view
+    model = fraud_fv.get_newest_model()
+    #Retrieve newest model from all user's accessible models based on this training dataset version
+    model = fraud_fv.get_newest_model(training_dataset_version: 1)
+    ```
+
 ### Using the UI 
 
 In the feature view overview UI you can explore the provenance graph of the feature view:
@@ -221,3 +262,55 @@ In the feature view overview UI you can explore the provenance graph of the feat
     <figcaption>Feature view provenance graph</figcaption>
   </figure>
 </p>
+
+## Step 3: Model lineage
+
+The relationship between feature views and models is captured automatically when you create a model. You can inspect the relationship between feature views and models using the APIs or the UI.
+=== "Python"
+
+    ```python
+    lineage = model.get_feature_view_provenance()
+
+    # List all accessible parent feature views
+    lineage.accessible
+
+    # List all deleted parent feature views
+    lineage.deleted
+
+    # List all the inaccessible parent feature views
+    lineage.inaccessible
+    ```
+
+You can also retrieve the training dataset provenance object.
+=== "Python"
+
+    ```python
+    lineage = model.get_training_dataset_provenance()
+
+    # List all accessible parent training datasets
+    lineage.accessible
+
+    # List all deleted parent training datasets
+    lineage.deleted
+
+    # List all the inaccessible parent training datasets
+    lineage.inaccessible
+    ```
+
+You can also retrieve directly the parent feature view object, without the need to extract them from the provenance links object
+=== "Python"
+
+    ```python
+    feature_view = model.get_feature_view()
+    ```
+This utility method also has the options to initialize the required components for batch or online retrieval of feature vectors. 
+=== "Python"
+
+    ```python
+    model.get_feature_view(init: bool = True, online: Optional[bool]: None)
+    ```
+
+By default, the base init for feature vector retrieval is enabled. In case you have a workflow that requires more particular options, you can disable this base init by setting the `init` to `false`.
+The method detects if it is running within a deployment and will initialize the feature vector retrieval for the serving.
+If the `online` argument is provided and `true` it will initialize for online feature vector retrieval.
+If the `online` argument is provided and `false` it will initialize the feature vector retrieval for batch scoring.
