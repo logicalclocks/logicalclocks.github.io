@@ -123,10 +123,9 @@ uploaded_file_path = dataset_api.upload("script.py", "Resources")
 
 ```
 
-
 ### Step 2: Create Python job
 
-In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the python script to run and create the `Job` object.
+In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the python script and override the environment to run in, and finally create the `Job` object.
 
 ```python
 
@@ -134,7 +133,11 @@ jobs_api = project.get_jobs_api()
 
 py_job_config = jobs_api.get_configuration("PYTHON")
 
+# Set the application file
 py_job_config['appPath'] = uploaded_file_path
+
+# Override the python job environment
+py_job_config['environmentName'] = "python-feature-pipeline"
 
 job = jobs_api.create_job("py_job", py_job_config)
 

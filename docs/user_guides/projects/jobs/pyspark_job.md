@@ -175,7 +175,7 @@ uploaded_file_path = dataset_api.upload("script.py", "Resources")
 
 ### Step 2: Create PySpark job
 
-In this snippet we get the `JobsApi` object to get the default job configuration for a `PYSPARK` job, set the python script to run and create the `Job` object.
+In this snippet we get the `JobsApi` object to get the default job configuration for a `PYSPARK` job, set the pyspark script and override the environment to run in, and finally create the `Job` object.
 
 ```python
 
@@ -183,7 +183,11 @@ jobs_api = project.get_jobs_api()
 
 spark_config = jobs_api.get_configuration("PYSPARK")
 
+# Set the application file
 spark_config['appPath'] = uploaded_file_path
+
+# Override the python job environment
+spark_config['environmentName'] = "spark-feature-pipeline"
 
 job = jobs_api.create_job("pyspark_job", spark_config)
 

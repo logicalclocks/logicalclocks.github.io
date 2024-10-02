@@ -138,7 +138,7 @@ uploaded_file_path = dataset_api.upload("notebook.ipynb", "Resources")
 
 ### Step 2: Create Jupyter Notebook job
 
-In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the Jupyter Notebook script to run and create the `Job` object.
+In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the jupyter notebook file and override the environment to run in, and finally create the `Job` object.
 
 ```python
 
@@ -146,7 +146,11 @@ jobs_api = project.get_jobs_api()
 
 notebook_job_config = jobs_api.get_configuration("PYTHON")
 
+# Set the application file
 notebook_job_config['appPath'] = uploaded_file_path
+
+# Override the python job environment
+notebook_job_config['environmentName'] = "python-feature-pipeline"
 
 job = jobs_api.create_job("notebook_job", notebook_job_config)
 
