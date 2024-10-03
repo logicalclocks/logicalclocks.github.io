@@ -139,7 +139,10 @@ If you want to learn more about how this policy works check out:
       {
         "Sid": "RemainingRunInstancePermissions",
         "Effect": "Allow",
-        "Action": "ec2:RunInstances",
+        "Action": [
+          "ec2:RunInstances",
+          "ec2:CreateTags"
+        ],
         "Resource": [
           "arn:aws:ec2:*:*:volume/*",
           "arn:aws:ec2:*::image/*",
