@@ -192,7 +192,10 @@
 <span class=w>      </span><span class=p>{</span>
 <span class=w>        </span><span class=nt>&quot;Sid&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;RemainingRunInstancePermissions&quot;</span><span class=p>,</span>
 <span class=w>        </span><span class=nt>&quot;Effect&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;Allow&quot;</span><span class=p>,</span>
-<span class=w>        </span><span class=nt>&quot;Action&quot;</span><span class=p>:</span><span class=w> </span><span class=s2>&quot;ec2:RunInstances&quot;</span><span class=p>,</span>
+<span class=w>        </span><span class=nt>&quot;Action&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
+<span class=w>          </span><span class=s2>&quot;ec2:RunInstances&quot;</span><span class=p>,</span>
+<span class=w>          </span><span class=s2>&quot;ec2:CreateTags&quot;</span>
+<span class=w>        </span><span class=p>],</span>
 <span class=w>        </span><span class=nt>&quot;Resource&quot;</span><span class=p>:</span><span class=w> </span><span class=p>[</span>
 <span class=w>          </span><span class=s2>&quot;arn:aws:ec2:*:*:volume/*&quot;</span><span class=p>,</span>
 <span class=w>          </span><span class=s2>&quot;arn:aws:ec2:*::image/*&quot;</span><span class=p>,</span>
