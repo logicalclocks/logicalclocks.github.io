@@ -2,7 +2,7 @@
 
 ### Introduction
 
-Hopsworks assumes that an ML system consists of three independently developed and operated ML pipelines.
+Hopsworks postulates that building ML systems following the FTI pipeline architecture is best practice. This architecture consists of three independently developed and operated ML pipelines:
 
 - Feature Pipeline: takes as input raw data that it transforms into features (and labels)
 - Training Pipeline: takes as input features (and labels) and outputs a trained model
