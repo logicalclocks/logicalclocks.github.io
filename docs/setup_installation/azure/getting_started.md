@@ -102,7 +102,7 @@ helm repo add hopsworks-dev https://nexus.hops.works/repository/hopsworks-helm-d
 helm repo update hopsworks-dev
 ```
 
-### Step 3.3: Create Hopsworks namespace & secrets
+### Step 3.2: Create Hopsworks namespace & secrets
 
 ```bash
 kubectl create namespace hopsworks
