@@ -15,7 +15,7 @@ Settings_ from the dropdown menu and going to the _Users_ tab (You need to have 
 _Cluster Settings_ page).
 
 <figure>
-  <img src="../../assets/images/admin/user-management/active-users.png" alt="active users" />
+  <img src="../../../assets/images/admin/user-management/active-users.png" alt="active users" />
   <figcaption>Active Users</figcaption>
 </figure>
 
@@ -37,7 +37,7 @@ First, a user with an admin role needs to validate their account.
 By clicking on the _Review Requests_ button you can open a _user request review_ popup as shown in the image below.
 
 <figure>
-  <img src="../../assets/images/admin/user-management/user-request-review.png" alt="request" />
+  <img src="../../../assets/images/admin/user-management/user-request-review.png" alt="request" />
   <figcaption>Review user request</figcaption>
 </figure>
 
@@ -50,7 +50,7 @@ deleted manually in the cluster using the command line.
 You can block a user by clicking on the block icon on the right side of the user in the list.
 
 <figure>
-  <img src="../../assets/images/admin/user-management/blocked-users.png" alt="blocked users" />
+  <img src="../../../assets/images/admin/user-management/blocked-users.png" alt="blocked users" />
   <figcaption>Blocked Users</figcaption>
 </figure>
 
@@ -67,7 +67,7 @@ cluster click on the _select dropdown_ to the right of the search box and choose
 If you want to allow users to login without registering you can pre-create them by clicking on _New user_.
 
 <figure>
-  <img src="../../assets/images/admin/user-management/new-user.png" alt="New user" />
+  <img src="../../../assets/images/admin/user-management/new-user.png" alt="New user" />
   <figcaption>Create new user</figcaption>
 </figure>
 
@@ -80,7 +80,7 @@ A temporary password will be generated and displayed when you click on _Create n
 it securely to the user. 
 
 <figure>
-  <img src="../../assets/images/admin/user-management/create-user.png" alt="create user" />
+  <img src="../../../assets/images/admin/user-management/create-user.png" alt="create user" />
   <figcaption>Copy temporary password</figcaption>
 </figure>
 
@@ -92,21 +92,21 @@ In the case where a user loses her/his password and can not recover it with the
 On the bottom of the _Users_ page click on the _Reset a user password_ link. A popup window with a dropdown for 
 searching users by name or email will open. Find the user and click on _Reset new password_.
 <figure>
-  <img src="../../assets/images/admin/user-management/reset-password.png" alt="reset password" />
+  <img src="../../../assets/images/admin/user-management/reset-password.png" alt="reset password" />
   <figcaption>Reset user password</figcaption>
 </figure>
 
 A temporary password will be displayed. Copy the password and pass it to the user securely.
 
 <figure>
-  <img src="../../assets/images/admin/user-management/temp-password.png" alt="temp password" />
+  <img src="../../../assets/images/admin/user-management/temp-password.png" alt="temp password" />
   <figcaption>Copy temporary password</figcaption>
 </figure>
 
 A user with a temporary password will see a warning message when going to _Account settings_ **Authentication** tab.
 
 <figure>
-  <img src="../../assets/images/admin/user-management/change-password.png" alt="change password" />
+  <img src="../../../assets/images/admin/user-management/change-password.png" alt="change password" />
   <figcaption>Change password</figcaption>
 </figure>
 

@@ -64,20 +64,20 @@ In Hopsworks, click on your name in the top right corner of the navigation bar a
 In the Cluster Settings' _IAM Role Chaining_ tab you can configure the mappings between projects and IAM roles.
 
 <figure>
-  <img src="../../assets/images/admin/iam-role/cluster-settings.png" alt="Role Chaining"/>
+  <img src="../../../assets/images/admin/iam-role/cluster-settings.png" alt="Role Chaining"/>
   <figcaption>Role Chaining</figcaption>
 </figure>
 
 Add mappings by clicking on *New role chaining*. Enter the project name. Select the type of user that can assume the role. Enter the role ARN. And click on *Create new role chaining*
 
 <figure>
-  <img src="../../assets/images/admin/iam-role/new-role-chaining.png" alt="Create Role Chaining"/>
+  <img src="../../../assets/images/admin/iam-role/new-role-chaining.png" alt="Create Role Chaining"/>
   <figcaption>Create Role Chaining</figcaption>
 </figure>
 
 Project member can now create connectors using *temporary credentials* to assume the role you configured. More detail about using temporary credentials can be found [here](../user_guides/fs/storage_connector/creation/s3.md#temporary-credentials).
 
-Project member can see the list of role they can assume by going the _Project Settings_ -> [Assuming IAM Roles](../../user_guides/projects/iam_role/iam_role_chaining) page.
+Project member can see the list of role they can assume by going the _Project Settings_ -> [Assuming IAM Roles](../../../user_guides/projects/iam_role/iam_role_chaining) page.
 
 ## Conclusion
 In this guide you learned how to configure and map AWS IAM roles to project roles in Hopsworks.

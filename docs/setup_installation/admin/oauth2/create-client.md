@@ -17,7 +17,7 @@ in the login page as an alternative login method) and set the _client id_ and _c
 fields,  as shown in the figure below.
 
 <figure>
-  <img src="../../../assets/images/admin/oauth2/register-idp.png" alt="Application overview" />
+  <img src="../../../../assets/images/admin/oauth2/register-idp.png" alt="Application overview" />
   <figcaption>Application overview</figcaption>
 </figure>
 
@@ -41,7 +41,7 @@ top right corner of the navigation bar and choosing *Cluster Settings* from the 
 Settings* _Configuration_ tab search for _oauth\_group\_mapping_ and click on the edit button.
 
   <figure>
-    <img src="../../../assets/images/admin/oauth2/sso/oauth-group-mapping.png" alt="Set variables">
+    <img src="../../../../assets/images/admin/oauth2/sso/oauth-group-mapping.png" alt="Set variables">
     <figcaption>Set Configuration variables</figcaption>
   </figure>
 
@@ -61,7 +61,7 @@ Users will now see a new button on the login page. The button has the name you s
 redirect to your identity provider.
 
   <figure>
-    <img width="400px" src="../../../assets/images/auth/oauth2.png" alt="OAuth2 login" />
+    <img width="400px" src="../../../../assets/images/auth/oauth2.png" alt="OAuth2 login" />
     <figcaption>Login with OAuth2</figcaption>
   </figure>
 
