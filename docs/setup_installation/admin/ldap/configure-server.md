@@ -1,7 +1,7 @@
 # Configure Server for LDAP and Kerberos
 
 ## Introduction
-LDAP and Kerberos integration need some configuration in the [Karamel](https://github.com/logicalclocks/karamel-chef) 
+LDAP and Kerberos integration need some configuration in the helm charts for your 
 cluster definition used to deploy your Hopsworks cluster. This tutorial shows an administrator how to configure the application
 server for LDAP and Kerberos integration.
 
@@ -34,8 +34,7 @@ ldap:
 - security_credentials: contains the password of the user that will be used to query LDAP.
 - referral: whether to follow or ignore an alternate location in which an LDAP Request may be processed.
 
-### Without Karamel/Chef
-An already deployed instance can be configured to connect to LDAP without re-running Karamel/Chef. 
+An already deployed instance can be configured to connect to LDAP. 
 Go to the payara admin UI and create a new JNDI external resource. The name of the resource should be __ldap/LdapResource__. 
 
 <figure>
