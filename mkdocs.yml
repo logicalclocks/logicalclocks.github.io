@@ -204,85 +204,55 @@ nav:
           - Vector Database: user_guides/mlops/vector_database/index.md
       - Migration:
           - 2.X to 3.0: user_guides/migration/30_migration.md
-  - Setup and Installation:
+  - Setup and Administration:
       - setup_installation/index.md
       - Client Installation:
           - user_guides/client_installation/index.md
-      - AWS:
-          - Getting Started: setup_installation/aws/getting_started.md
-          - Cluster Creation: setup_installation/aws/cluster_creation.md
-          - EKS integration: setup_installation/aws/eks_ecr_integration.md
-          - Limiting Permissions: setup_installation/aws/restrictive_permissions.md
-          - Custom Domain: setup_installation/aws/custom_domain_name.md
-          - Cluster upgrade:
-              - Version 3.0 or newer: setup_installation/aws/upgrade_3.0.md
-              - Version 2.4 or newer: setup_installation/aws/upgrade_2.4.md
-              - Version 2.2 or older: setup_installation/aws/upgrade.md
-          - Troubleshooting: setup_installation/aws/troubleshooting.md
-      - Azure:
-          - Getting Started: setup_installation/azure/getting_started.md
-          - Cluster Creation: setup_installation/azure/cluster_creation.md
-          - AKS integration: setup_installation/azure/aks_acr_integration.md
-          - Limiting Permissions: setup_installation/azure/restrictive_permissions.md
-          - Cluster upgrade:
-              - Version 3.0 or newer: setup_installation/azure/upgrade_3.0.md
-              - Version 2.4 or newer: setup_installation/azure/upgrade_2.4.md
-              - Version 2.2 or older: setup_installation/azure/upgrade.md
-      - GCP:
-          - Getting Started: setup_installation/gcp/getting_started.md
-          - Cluster Creation: setup_installation/gcp/cluster_creation.md
-          - Limiting Permissions: setup_installation/gcp/restrictive_permissions.md
-          - GKE integration: setup_installation/gcp/gke_integration.md
-      - Common:
-          - The dashboard: setup_installation/common/dashboard.md
-          - Settings: setup_installation/common/settings.md
-          - Services: setup_installation/common/services.md
-          - Adding and Removing workers: setup_installation/common/adding_removing_workers.md
-          - Autoscaling: setup_installation/common/autoscaling.md
-          - Backup: setup_installation/common/backup.md
-          - Scaling up: setup_installation/common/scalingup.md
-          - User management: setup_installation/common/user_management.md
-          - Managed RonDB: setup_installation/common/rondb.md
-          - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
-          - Single Sign On:
-              - Hopsworks:
-                  - OAuth2: setup_installation/common/sso/oauth.md
-                  - LDAP: setup_installation/common/sso/ldap.md
-          - API Key: setup_installation/common/api_key.md
-          - Terraform: setup_installation/common/terraform.md
+      - Cloud Installation:
+          - AWS - Getting Started: setup_installation/aws/getting_started.md
+          - Azure - Getting Started: setup_installation/azure/getting_started.md
+          - GCP - Getting Started: setup_installation/gcp/getting_started.md
       - On-Prem:
           - Hopsworks Installer: setup_installation/on_prem/hopsworks_installer.md
           - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
-  - Administration:
-      - Introduction: admin/index.md
-      - Cluster Configuration: admin/variables.md
-      - User Management: admin/user.md
-      - Project Management: admin/project.md
-      - Configure Alerts: admin/alert.md
-      - Manage Services: admin/services.md
-      - IAM Role Chaining: admin/roleChaining.md
-      - Monitoring:
-          - Services Dashboards: admin/monitoring/grafana.md
-          - Export metrics: admin/monitoring/export-metrics.md
-          - Services Logs: admin/monitoring/services-logs.md
-      - Authentication:
-          - Configure Authentication: admin/auth.md
-          - Configure OAuth2:
-              - Register an Identity Provider: admin/oauth2/create-client.md
-              - Create Okta Client: admin/oauth2/create-okta-client.md
-              - Create Azure Client: admin/oauth2/create-azure-client.md
-          - Configure LDAP/Kerberos:
-              - Configure LDAP: admin/ldap/configure-ldap.md
-              - Configure Kerberos: admin/ldap/configure-krb.md
-              - Configure server for LDAP and Kerberos: admin/ldap/configure-server.md
-              - Configure Project Mapping: admin/ldap/configure-project-mapping.md
-      - High availability / Disaster Recovery:
-          - Overview: admin/ha-dr/intro.md
-          - High Availability: admin/ha-dr/ha.md
-          - Disaster Recovery: admin/ha-dr/dr.md
-      - Audit:
-          - Access Audit Logs: admin/audit/audit-logs.md
-          - Export Audit Logs: admin/audit/export-audit-logs.md
+      - Administration:
+          - Cluster Configuration: setup_installation/admin/variables.md
+          - Introduction: setup_installation/admin/index.md
+          - User Management: setup_installation/admin/user.md
+          - Project Management: setup_installation/admin/project.md
+          - Configure Alerts: setup_installation/admin/alert.md
+          - Manage Services: setup_installation/admin/services.md
+          - IAM Role Chaining: setup_installation/admin/roleChaining.md
+          - Monitoring:
+             - Services Dashboards: setup_installation/admin/monitoring/grafana.md
+             - Export metrics: setup_installation/admin/monitoring/export-metrics.md
+             - Services Logs: setup_installation/admin/monitoring/services-logs.md
+          - Authentication:
+             - Configure Authentication: setup_installation/admin/auth.md
+             - Configure OAuth2:
+                 - Register an Identity Provider: setup_installation/admin/oauth2/create-client.md
+                 - Create Okta Client: setup_installation/admin/oauth2/create-okta-client.md
+                 - Create Azure Client: setup_installation/admin/oauth2/create-azure-client.md
+             - Configure LDAP/Kerberos:
+                 - Configure LDAP: setup_installation/admin/ldap/configure-ldap.md
+                 - Configure Kerberos: setup_installation/admin/ldap/configure-krb.md
+                 - Configure server for LDAP and Kerberos: setup_installation/admin/ldap/configure-server.md
+                 - Configure Project Mapping: setup_installation/admin/ldap/configure-project-mapping.md
+          - High availability / Disaster Recovery:
+             - Overview: setup_installation/admin/ha-dr/intro.md
+             - High Availability: setup_installation/admin/ha-dr/ha.md
+             - Disaster Recovery: setup_installation/admin/ha-dr/dr.md
+          - Audit:
+             - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
+             - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
+  - Managed:
+      - The dashboard: common/dashboard.md
+      - Settings: common/settings.md
+      - Services: common/services.md
+      - Adding and Removing workers: common/adding_removing_workers.md
+      - Autoscaling: common/autoscaling.md
+      - Backup: common/backup.md
+      - Scaling up: common/scalingup.md
   - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_api_link" href="https://docs.hopsworks.ai/feature-store-api/dev">Feature Store API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/feature-store-api/dev/javadoc">Feature Store JavaDoc</a> <a id="hsml_api_link" href="https://docs.hopsworks.ai/machine-learning-api/dev">MLOps API</a> </div></div>: https://docs.hopsworks.ai
   - Community ↗: https://community.hopsworks.ai/
 
