@@ -8,16 +8,11 @@ description: Documentation on how to configure and execute a Jupyter Notebook jo
 
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
-- Python (*Hopsworks Enterprise only*)
+- Python
 - Apache Spark
 
 Launching a job of any type is very similar process, what mostly differs between job types is
 the various configuration parameters each job type comes with. After following this guide you will be able to create a Jupyter Notebook job.
-
-!!! note "Kubernetes integration required"
-    Python Jobs are only available if Hopsworks has been integrated with a Kubernetes cluster.
-
-    Hopsworks can be integrated with [Amazon EKS](../../../setup_installation/aws/eks_ecr_integration.md), [Azure AKS](../../../setup_installation/azure/aks_acr_integration.md) and on-premise Kubernetes clusters.
 
 ## UI
 
@@ -54,7 +49,7 @@ By default, the dialog will create a Spark job. To instead configure a Jupyter N
   </figure>
 </p>
 
-### Step 4: Set the script
+### Step 4: Set the notebook
 
 Next step is to select the Jupyter Notebook to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown. 
 
@@ -70,8 +65,8 @@ Then click `Create job` to create the job.
 ### Step 5 (optional): Set the Jupyter Notebook arguments
 
 In the job settings, you can specify arguments for your notebook script.
-Arguments must be in the format of `-arg1 value1 -arg2 value2`. For each argument, you must provide the parameter name (e.g. `arg1`) preceded by a hyphen (`-`), followed by its value (e.g. `value1`).
-You do not need to handle the arguments in your notebook. Our system uses [Papermill](https://papermill.readthedocs.io/en/latest/) to insert a new cell containing the initialized parameters.
+Arguments must be in the format of `-p arg1 value1 -p arg2 value2`. For each argument, you must first provide `-p`, followed by the parameter name (e.g. `arg1`), followed by its value (e.g. `value1`).
+The next step is to read the arguments in the notebook which is explained in this [guide](https://papermill.readthedocs.io/en/latest/usage-parameterize.html).
 
 <p align="center">
   <figure>
@@ -84,6 +79,7 @@ You do not need to handle the arguments in your notebook. Our system uses [Paper
 
 It is possible to also set following configuration settings for a `PYTHON` job.
 
+* `Environment`: The python environment to use
 * `Container memory`: The amount of memory in MB to be allocated to the Jupyter Notebook script
 * `Container cores`: The number of cores to be allocated for the Jupyter Notebook script
 * `Additional files`: List of files that will be locally accessible by the application
@@ -142,7 +138,7 @@ uploaded_file_path = dataset_api.upload("notebook.ipynb", "Resources")
 
 ### Step 2: Create Jupyter Notebook job
 
-In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the Jupyter Notebook script to run and create the `Job` object.
+In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the jupyter notebook file and override the environment to run in, and finally create the `Job` object.
 
 ```python
 
@@ -150,7 +146,11 @@ jobs_api = project.get_jobs_api()
 
 notebook_job_config = jobs_api.get_configuration("PYTHON")
 
+# Set the application file
 notebook_job_config['appPath'] = uploaded_file_path
+
+# Override the python job environment
+notebook_job_config['environmentName'] = "python-feature-pipeline"
 
 job = jobs_api.create_job("notebook_job", notebook_job_config)
 
@@ -163,7 +163,7 @@ In this code snippet, we execute the job with arguments and wait until it reache
 ```python
 
 # Run the job
-execution = job.run(args='-a 2 -b 5', await_termination=True)
+execution = job.run(args='-p a 2 -p b 5', await_termination=True)
 ```
 
 ### API Reference

@@ -35,7 +35,7 @@ To clone a new repository, click on the `Clone repository` button on the Git ove
   </figure>
 </p>
 
-You should first choose the git provider e.g., GitHub, GitLab or BitBucket. If you are cloning a private repository, remember to configure the username and token for the provder first in [Git Provider](configure_git_provider.md). The clone dialog also asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
+You should first choose the git provider e.g., GitHub, GitLab or BitBucket. If you are cloning a private repository, remember to configure the username and token for the provider first in [Git Provider](configure_git_provider.md). The clone dialog also asks you to specify the URL of the repository to clone. The supported protocol is HTTPS. As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
 
 Then specify which branch you want to clone. By default the `main` branch will be used, however a different branch or commit can be specified by selecting `Clone from a specific branch`.
 

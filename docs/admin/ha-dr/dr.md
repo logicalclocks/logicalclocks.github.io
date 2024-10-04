@@ -12,7 +12,7 @@ Backing up service/application metrics and services/applications logs are out of
 
 Apache Kafka and OpenSearch are additional services maintaining state. The OpenSearch metadata can be reconstructed from the metadata stored on RonDB.
 
-Apache Kafka is used in Hopsworks to store the in-flight data that is on its way to the online feature store. In the event of a total loss of the cluster, running jobs with inflight data will have to be replayed.
+Apache Kafka is used in Hopsworks to store the in-flight data that is on its way to the online feature store. In the event of a total loss of the cluster, running jobs with in-flight data will have to be replayed.
 
 ### Configuration Backup
 

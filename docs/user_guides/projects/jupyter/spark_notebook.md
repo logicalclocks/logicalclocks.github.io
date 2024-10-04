@@ -1,11 +1,11 @@
-# How To Run A Spark Notebook
+# How To Run A PySpark Notebook
 
 ### Introduction
 
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 
 * Supports JupyterLab and the classic Jupyter front-end
-* Configured with Python3, Spark, PySpark and SparkR kernels
+* Configured with Python and PySpark kernels
 
 
 ## Step 1: Jupyter dashboard
@@ -14,14 +14,25 @@ The image below shows the Jupyter service page in Hopsworks and is accessed by c
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/jupyter_overview.png" alt="Jupyter dashboard in Hopsworks">
+    <img src="../../../../assets/images/guides/jupyter/jupyter_overview_spark.png" alt="Jupyter dashboard in Hopsworks">
     <figcaption>Jupyter dashboard in Hopsworks</figcaption>
   </figure>
 </p>
 
 From this page, you can configure various options and settings to start Jupyter with as described in the sections below.
 
-## Step 2 (Optional): Configure spark
+## Step 2: A Spark environment must be configured
+
+The PySpark kernel will only be available if Jupyter is configured to use the `spark-feature-pipeline` or an environment cloned from it.
+You can easily refer to the green ticks as to what kernels are available in which environment.
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jupyter/select_spark_environment.png" alt="Select an environment with PySpark kernel enabled">
+    <figcaption>Select an environment with PySpark kernel enabled</figcaption>
+  </figure>
+</p>
+
+## Step 3 (Optional): Configure spark properties
 
 Next step is to configure the Spark properties to be used in Jupyter, Click `edit configuration` to get to the configuration page and select `Spark`.
 
@@ -78,7 +89,7 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
 
 Click `Save` to save the new configuration.
 
-## Step 3 (Optional): Configure max runtime and root path
+## Step 4 (Optional): Configure root folder and automatic shutdown
 
 Before starting the server there are two additional configurations that can be set next to the `Run Jupyter` button.
 
@@ -101,7 +112,7 @@ The root path from which to start the Jupyter instance can be configured. By def
 </p>
 
 
-## Step 4: Start Jupyter
+## Step 5: Start Jupyter
 
 Start the Jupyter instance by clicking the `Run Jupyter` button.
 
@@ -112,7 +123,7 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
   </figure>
 </p>
 
-## Step 5: Access Spark UI
+## Step 6: Access Spark UI
 
 Navigate back to Hopsworks and a Spark session will have appeared, click on the `Spark UI` button to go to the Spark UI.
 

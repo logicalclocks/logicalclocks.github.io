@@ -51,7 +51,7 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job. Make sure `SPARK` is chocen.
+By default, the dialog will create a Spark job. Make sure `SPARK` is chosen.
 
 ### Step 4: Set the script
 
@@ -82,6 +82,8 @@ Remember to handle the arguments inside your PySpark script.
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
+* `Environment`: The python environment to use, must be based on `spark-feature-pipeline`
+
 * `Driver memory`: Number of cores to allocate for the Spark driver
 
 * `Driver virtual cores`: Number of MBs to allocate for the Spark driver
@@ -95,8 +97,8 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
-    <figcaption>Resource configuration for the Spark kernels</figcaption>
+    <img src="../../../../assets/images/guides/jobs/spark_resource_and_compute.png" alt="Resource configuration for the PySpark job">
+    <figcaption>Resource configuration for the PySpark job</figcaption>
   </figure>
 </p>
 
@@ -112,8 +114,8 @@ Additional files or dependencies required for the Spark job can be configured.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
-    <figcaption>File configuration for the Spark kernels</figcaption>
+    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the PySpark job">
+    <figcaption>File configuration for the PySpark job</figcaption>
   </figure>
 </p>
 
@@ -121,7 +123,7 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
+    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="Additional Spark configuration">
     <figcaption>Additional Spark configuration</figcaption>
   </figure>
 </p>
@@ -173,7 +175,7 @@ uploaded_file_path = dataset_api.upload("script.py", "Resources")
 
 ### Step 2: Create PySpark job
 
-In this snippet we get the `JobsApi` object to get the default job configuration for a `PYSPARK` job, set the python script to run and create the `Job` object.
+In this snippet we get the `JobsApi` object to get the default job configuration for a `PYSPARK` job, set the pyspark script and override the environment to run in, and finally create the `Job` object.
 
 ```python
 
@@ -181,7 +183,11 @@ jobs_api = project.get_jobs_api()
 
 spark_config = jobs_api.get_configuration("PYSPARK")
 
+# Set the application file
 spark_config['appPath'] = uploaded_file_path
+
+# Override the python job environment
+spark_config['environmentName'] = "spark-feature-pipeline"
 
 job = jobs_api.create_job("pyspark_job", spark_config)
 

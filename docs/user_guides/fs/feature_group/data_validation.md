@@ -56,7 +56,7 @@ The `Validation Reports` tab in the Expectations section displays a brief histor
 
 Hopsworks python client interfaces with the Great Expectations library to enable you to add data validation to your feature engineering pipeline. In this section, we show you how in a single line you enable automatic validation on each insertion of new data into your Feature Group. Whether you have an existing Feature Group you want to add validation to or Follow the guide or get your hands dirty by running our [tutorial data validation notebook](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/integrations/great_expectations/fraud_batch_data_validation.ipynb) in google colab.
 
-First checkout the pre-requisite and hospworks setup to follow the guide below. Create a project, install the hopsworks client and connect via the generated API key. You are ready to load your data in a DataFrame. The second step is a short introduction to the relevant Great Expectations API to build data validation suited to your data. Third and final step shows how to attach your Expectation Suite to the Feature Group to benefit from automatic validation on insertion capabilities.
+First checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the hopsworks client and connect via the generated API key. You are ready to load your data in a DataFrame. The second step is a short introduction to the relevant Great Expectations API to build data validation suited to your data. Third and final step shows how to attach your Expectation Suite to the Feature Group to benefit from automatic validation on insertion capabilities.
 
 ### Step 1: Pre-requisite
 

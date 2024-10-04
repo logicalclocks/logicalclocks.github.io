@@ -72,7 +72,7 @@ You have two options to make your API key accessible from SageMaker:
 3. Choose *Systems Manager* as service, expand the *Read access level* and check *GetParameter*.
 4. Expand *Resources* and select *Add ARN*.
 6. Enter the region of the Systems Manager as well as the name of the parameter **WITHOUT the leading slash** e.g. `hopsworks/role/[MY_SAGEMAKER_ROLE]/type/api-key` and click *Add*.
-7. Click on *Review*, give the policy a name und click on *Create policy*.
+7. Click on *Review*, give the policy a name and click on *Create policy*.
 
 <p align="center">
   <figure>
@@ -115,7 +115,7 @@ You have two options to make your API key accessible from SageMaker:
 3. Choose *Secrets Manager* as service, expand the *Read access* level and check *GetSecretValue*.
 4. Expand *Resources* and select *Add ARN*.
 5. Paste the *ARN* of the secret created in the previous step.
-6. Click on *Review*, give the policy a name und click on *Create policy*.
+6. Click on *Review*, give the policy a name and click on *Create policy*.
 
 <p align="center">
   <figure>

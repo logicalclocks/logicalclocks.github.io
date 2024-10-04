@@ -65,7 +65,7 @@ In the AWS Management Console, go to *IAM*, select *Roles* and then search for t
 Select *Add inline policy*. Choose *Systems Manager* as service, expand the *Read* access level and check *GetParameter*.
 Expand Resources and select *Add ARN*.
 Enter the region of the *Systems Manager* as well as the name of the parameter **WITHOUT the leading slash** e.g. *hopsworks/role/[MY_DATABRICKS_ROLE]/type/api-key* and click *Add*.
-Click on *Review*, give the policy a name und click on *Create policy*.
+Click on *Review*, give the policy a name and click on *Create policy*.
 
 <p align="center">
   <figure>
@@ -102,7 +102,7 @@ Once the API Key is stored, you need to grant access to it from the AWS role tha
 In the AWS Management Console, go to *IAM*, select *Roles* and then the role that that you have created in [Step 1](#step-1-create-an-instance-profile-to-attach-to-your-databricks-clusters).
 Select *Add inline policy*. Choose *Secrets Manager* as service, expand the *Read* access level and check *GetSecretValue*.
 Expand Resources and select *Add ARN*. Paste the ARN of the secret created in the previous step.
-Click on *Review*, give the policy a name und click on *Create policy*.
+Click on *Review*, give the policy a name and click on *Create policy*.
 
 <p align="center">
   <figure>

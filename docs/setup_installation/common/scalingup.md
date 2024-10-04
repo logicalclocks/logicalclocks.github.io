@@ -72,7 +72,7 @@ Datanodes cannot be scaled individually.
 <p align="center">
   <figure>
     <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/rondb_tab.png" alt="Go to RonDB tab an click on the instance type you want to change">
-    <figcaption>Go to RonDB tab and click on the instance type you want to change or, for datanodes, click on the Change button</figcaption>
+    <figcaption>Go to RonDB and click on the instance type you want to change or, for datanodes, click on the Change button</figcaption>
   </figure>
 </p>
 
@@ -80,8 +80,8 @@ This will open a new window. Select the type of instance you want to change to a
 
 <p align="center">
   <figure>
-    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/node_type_selection.png" alt="Select the new instance type for the heade node">
-    <figcaption>Select the new instance type for the heade node</figcaption>
+    <img style="border: 1px solid #000" src="../../../assets/images/setup_installation/managed/common/node_type_selection.png" alt="Select the new instance type for the head node">
+    <figcaption>Select the new instance type for the head node</figcaption>
   </figure>
 </p>
 

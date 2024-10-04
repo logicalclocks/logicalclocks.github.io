@@ -9,7 +9,7 @@ Hopsworks and its Feature Store are an open source data-intensive AI platform us
 ##HSFS API
 
 
-The HSFS (HopsworkS Feature Store) API is how you, as a developer, will use the feature store.
+The HSFS (Hopsworks Feature Store) API is how you, as a developer, will use the feature store.
 The HSFS API helps simplify some of the problems that feature stores address including:
 
  - consistent features for training and serving

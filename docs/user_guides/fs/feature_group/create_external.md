@@ -118,7 +118,7 @@ You can enable online storage for external feature groups, however, the sync fro
     external_fg.insert(df)
     ```
 
-The `insert()` method takes a DataFrame as parameter and writes it _only_ to the online feature store. Users can select which subset of the feature group data they want to make available on the online feautre store by using the [query APIs](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/query_api/).
+The `insert()` method takes a DataFrame as parameter and writes it _only_ to the online feature store. Users can select which subset of the feature group data they want to make available on the online feature store by using the [query APIs](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/query_api/).
 
 ### Limitations
 

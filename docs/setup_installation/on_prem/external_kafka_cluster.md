@@ -51,7 +51,7 @@ sasl.mechanism=PLAIN
 
 #### Topic configuration
 
-As mentioned above, when configuring Hopsworks to use an external Kafka cluster, Hopsworks will not provision the topics for the different projects. Instead, when creating a project, users will be aksed to provide the topic name to use for the feature store operations.
+As mentioned above, when configuring Hopsworks to use an external Kafka cluster, Hopsworks will not provision the topics for the different projects. Instead, when creating a project, users will be asked to provide the topic name to use for the feature store operations.
 
 <p align="center">
   <figure>

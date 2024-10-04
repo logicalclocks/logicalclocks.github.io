@@ -14,7 +14,7 @@ You need to be an administrator on a Hopsworks cluster.
 
 ## Changing project quotas
 
-You can find the Project management page by clicking on your name, in the top right coner of the navigation bar, and choosing _Cluster Settings_ from the dropdown menu and going to the _Project_ tab.
+You can find the Project management page by clicking on your name, in the top right corner of the navigation bar, and choosing _Cluster Settings_ from the dropdown menu and going to the _Project_ tab.
 
 <figure>
   <img src="../../assets/images/admin/projects/project_list.png" alt="Project page" />
@@ -53,7 +53,7 @@ Compute quotas represents the amount of compute a project can use to run Spark a
 
 If the Hopsworks cluster is connected to a Kubernetes cluster, Python jobs, Jupyter notebooks and KServe models are not subject to the compute quota. Currently, Hopsworks does not support defining quotas for compute scheduled on the connected Kubernetes cluster.
 
-By default, the compute quota is disabled. Administrators can change this default by changing the following configuration in the [Condiguration](../admin/variables.md) UI and/or the cluster definition:
+By default, the compute quota is disabled. Administrators can change this default by changing the following configuration in the [Configuration](../admin/variables.md) UI and/or the cluster definition:
 ```
 hopsworks:
     yarn_default_payment_type: [NOLIMIT to disable the quota, PREPAID to enable it]

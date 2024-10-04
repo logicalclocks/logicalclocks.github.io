@@ -1,4 +1,4 @@
-# Integration with Goolge GKE
+# Integration with Google GKE
 
 This guide demonstrates the step-by-step process to create a cluster in [managed.hopsworks.ai](https://managed.hopsworks.ai) with integrated support for Google Kubernetes Engine (GKE). This enables Hopsworks to launch Python jobs, Jupyter servers, and serve models on top of GKE.
 
@@ -8,7 +8,7 @@ This guide demonstrates the step-by-step process to create a cluster in [managed
 !!! note
     If you prefer to use Terraform over gcloud command line, then you can refer to our Terraform example [here](https://github.com/logicalclocks/terraform-provider-hopsworksai/tree/main/examples/complete/gcp/gke).
 
-## Step 1: Attach Kuberentes developer role to the service account for cluster instances
+## Step 1: Attach Kubernetes developer role to the service account for cluster instances
 
 Ensure that the Hopsworks cluster has access to the GKE cluster by attaching the Kubernetes Engine Developer role  to the [service account you will attach to the cluster nodes](getting_started.md#step-3-creating-a-service-account-for-your-cluster-instances). Execute the following gcloud command to attach `roles/container.developer` to the cluster service account. Replace *\$PROJECT_ID* with your GCP project id and *\$SERVICE_ACCOUNT* with your service account that you have created during getting started [Step 3](getting_started.md#step-3-creating-a-service-account-for-your-cluster-instances).
 
@@ -18,7 +18,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID --member=$SERVICE_ACCOUNT --r
 
 ## Steps 2: Create a virtual network to be used by Hopsworks and GKE
 
-You need to create a virtual network and a subnet in which Hopsworks and the GKE nodes will run. To do this run the following commands, replacing *\$PROJECT_ID* with your GCP project id in which you will run your cluster and *\$SERVICE_ACCOUNT* with the service account that you have updated in [Step 1](#step-1-attach-kuberentes-developer-role-to-the-service-account-for-cluster-instances). In this step, we will create a virtual network `hopsworks`, a subnetwork `hopsworks-eu-north`, and 3 firewall rules to allow communication within the virtual network and allow inbound http and https traffic.
+You need to create a virtual network and a subnet in which Hopsworks and the GKE nodes will run. To do this run the following commands, replacing *\$PROJECT_ID* with your GCP project id in which you will run your cluster and *\$SERVICE_ACCOUNT* with the service account that you have updated in [Step 1](#step-1-attach-kubernetes-developer-role-to-the-service-account-for-cluster-instances). In this step, we will create a virtual network `hopsworks`, a subnetwork `hopsworks-eu-north`, and 3 firewall rules to allow communication within the virtual network and allow inbound http and https traffic.
 
 ```bash
 gcloud compute networks create hopsworks --project=$PROJECT_ID --subnet-mode=custom --mtu=1460 --bgp-routing-mode=regional

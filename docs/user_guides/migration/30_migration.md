@@ -57,7 +57,7 @@ This has the following advantages:
 3. GE is both available for Spark and for Pandas Dataframes, whereas Deequ was only supporting Spark.
 
 #### Required changes
-All APIs regarding data validation have been redesigned to accomodate the functionality of GE. This means that you will have to redesign your previous expectations in the form of GE expectation suites that you can attach to Feature Groups. Please refer to the [data validation guide](../fs/feature_group/data_validation.md) for a full specification of the functionality.
+All APIs regarding data validation have been redesigned to accommodate the functionality of GE. This means that you will have to redesign your previous expectations in the form of GE expectation suites that you can attach to Feature Groups. Please refer to the [data validation guide](../fs/feature_group/data_validation.md) for a full specification of the functionality.
 
 #### Limitations
 GE is a Python library and therefore we can support synchronous data validation only in Python and PySpark kernels and not on Java/Scala Spark kernels. However, you have the possibility to launch a job asynchronously after writing with Java/Scala in order to perform data validation.
@@ -68,7 +68,7 @@ These changes or new features introduce changes in APIs which might break your p
 
 ### On-Demand Feature Groups are now called External Feature Groups
 
-Most data engineers but also many data scientists have a background where they at least partially where exposed to database terminology. Therefore, we decided to rename On-Demand Feature Groups to simply External Feature Groups. We think this makes the abstraction clearer, as practitioners are usually familiar with the concept of Extern Tables in a database.
+Most data engineers but also many data scientists have a background where they at least partially where exposed to database terminology. Therefore, we decided to rename On-Demand Feature Groups to simply External Feature Groups. We think this makes the abstraction clearer, as practitioners are usually familiar with the concept of External Tables in a database.
 
 This lead to a change in HSFS APIs:
 

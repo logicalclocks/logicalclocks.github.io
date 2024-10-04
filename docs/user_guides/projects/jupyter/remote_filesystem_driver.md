@@ -2,7 +2,7 @@
 
 ### Introduction
 
-We provide two ways to access and persist files in HopsFs from a jupyter notebook:
+We provide two ways to access and persist files in HopsFS from a jupyter notebook:
 
 * `hdfscontentsmanager`: With `hdfscontentsmanager` you interact with the project datasets using the dataset api. When you
   start a notebook using the `hdfscontentsmanager` you will only see the files in the configured root path.

@@ -12,11 +12,11 @@ As such, Hopsworks supports three computational engines:
 3. [Apache Beam](https://beam.apache.org/) *experimental*: Beam Data Streams are currently supported as an experimental feature from Java/Scala environments.
 
 Hopsworks supports running [compute on the platform itself](../../concepts/dev/inside.md) in the form of [Jobs](../projects/jobs/pyspark_job.md) or in [Jupyter Notebooks](../projects/jupyter/python_notebook.md).
-Alternatlively, you can also connect to Hopsworks using Python or Spark from [external environments](../../concepts/dev/outside.md), given that there is network connectivity.
+Alternatively, you can also connect to Hopsworks using Python or Spark from [external environments](../../concepts/dev/outside.md), given that there is network connectivity.
 
 ## Functionality Support
 
-Hopsworks is aiming to provide funtional parity between the computational engines, however, there are certain Hopsworks functionalities which are exclusive to the engines.
+Hopsworks is aiming to provide functional parity between the computational engines, however, there are certain Hopsworks functionalities which are exclusive to the engines.
 
 | Functionality                                                     | Method | Spark | Python | Flink  | Beam   | Comment |
 | ----------------------------------------------------------------- | ------ | ----- | ------ | ------ | ------ | ------- |

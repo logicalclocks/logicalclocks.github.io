@@ -212,7 +212,7 @@ The two things that influence the number of parquet files per partition are
 1. The number of feature group partitions written in a single insert
 2. The shuffle parallelism used by the table format
 
-For example, the inserted dataframe (unique combination of partition key values) will be parallised according to the following Hudi settings:
+For example, the inserted dataframe (unique combination of partition key values) will be parallelized according to the following Hudi settings:
 !!! example "Default Hudi partitioning"
     ```python
     write_options = {

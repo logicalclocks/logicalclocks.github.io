@@ -29,7 +29,7 @@ In the OpenSearch dashboard web application you will see by default all the logs
 
 You can filter the logs of a specific service by searching for the term `service:[service name]`. As shown in the picture below, you can search for the _namenode_ logs by querying `service:namenode`.
 
-Currently only the logs of the following services are collected and indexed: Hopsworks web application (called `domain1` in the log entires), namenodes, resource managers, datanodes, nodemanagers, Kafka brokers, Hive services and RonDB. These are the core component of the platform, additional logs will be added in the future.
+Currently only the logs of the following services are collected and indexed: Hopsworks web application (called `domain1` in the log entries), namenodes, resource managers, datanodes, nodemanagers, Kafka brokers, Hive services and RonDB. These are the core component of the platform, additional logs will be added in the future.
 
 <figure>
   <img src="../../../assets/images/admin/monitoring/services_logs.png" alt="OpenSearch Dashboards with services logs" />
