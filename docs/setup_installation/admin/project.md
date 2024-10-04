@@ -17,14 +17,14 @@ You need to be an administrator on a Hopsworks cluster.
 You can find the Project management page by clicking on your name, in the top right corner of the navigation bar, and choosing _Cluster Settings_ from the dropdown menu and going to the _Project_ tab.
 
 <figure>
-  <img src="../../assets/images/admin/projects/project_list.png" alt="Project page" />
+  <img src="../../../assets/images/admin/projects/project_list.png" alt="Project page" />
   <figcaption>Project page</figcaption>
 </figure>
 
 This page will list all the projects in a cluster, their name, owner and when its quota was last updated. By clicking on the _edit configuration_ link of a project you will be able to edit the quotas of that project.
 
 <figure>
-  <img src="../../assets/images/admin/projects/project_quotas.png" alt="Project quotas" />
+  <img src="../../../assets/images/admin/projects/project_quotas.png" alt="Project quotas" />
   <figcaption>Project quotas</figcaption>
 </figure>
 

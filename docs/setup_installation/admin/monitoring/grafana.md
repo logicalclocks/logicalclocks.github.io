@@ -17,7 +17,7 @@ You can access the admin page of your Hopsworks cluster by clicking on your name
 You can then navigate to the _Monitoring_ tab. The _Monitoring_ tab gives you access to several of the observability tools that are already deployed to help you manage the health of the cluster.
 
 <figure>
-  <img src="../../../assets/images/admin/monitoring/monitoring_tab.png" alt="monitoring tab" />
+  <img src="../../../../assets/images/admin/monitoring/monitoring_tab.png" alt="monitoring tab" />
   <figcaption>Monitoring tab</figcaption>
 </figure>
 
@@ -36,7 +36,7 @@ Dashboards are organized into three folders:
 - **Kubernetes**: If you have integrated Hopsworks with a Kubernetes cluster, this folder contains the dashboards to monitor the health of the Kubernetes cluster.
 
 <figure>
-  <img src="../../../assets/images/admin/monitoring/grafana.png" alt="Grafana view" />
+  <img src="../../../../assets/images/admin/monitoring/grafana.png" alt="Grafana view" />
   <figcaption>Grafana view</figcaption>
 </figure>
 

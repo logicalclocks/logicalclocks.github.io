@@ -35,7 +35,7 @@ In the **Cluster Settings** _Authentication_ tab you can configure how users aut
    [Configure LDAP](../ldap/configure-ldap) and [Configure Kerberos](../ldap/configure-krb).
 
 <figure>
-  <img src="../../assets/images/admin/auth-config.png" alt="Authentication config" />
+  <img src="../../../assets/images/admin/auth-config.png" alt="Authentication config" />
   <figcaption>Setup Authentication Methods</figcaption>
 </figure>
 

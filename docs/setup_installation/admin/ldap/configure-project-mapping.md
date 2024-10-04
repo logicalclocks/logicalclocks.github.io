@@ -21,16 +21,16 @@ corner of the navigation bar and choosing *Cluster Settings* from the dropdown m
 In the _Project mapping_ tab, you can create a new mapping by clicking on _Create new mapping_.
  
 <figure>
- <a  href="../../../assets/images/admin/project-mapping/project-mapping-empty.png">
-   <img src="../../../assets/images/admin/project-mapping/project-mapping-empty.png" alt="Project mapping tab" />
+ <a  href="../../../../assets/images/admin/project-mapping/project-mapping-empty.png">
+   <img src="../../../../assets/images/admin/project-mapping/project-mapping-empty.png" alt="Project mapping tab" />
  </a>
  <figcaption>Project mapping</figcaption>
 </figure>
  
 This will take you to the create mapping page shown below
 <figure>
- <a  href="../../../assets/images/admin/project-mapping/create-mapping.png">
-   <img src="../../../assets/images/admin/project-mapping/create-mapping.png" alt="Create mapping" />
+ <a  href="../../../../assets/images/admin/project-mapping/create-mapping.png">
+   <img src="../../../../assets/images/admin/project-mapping/create-mapping.png" alt="Create mapping" />
  </a>
  <figcaption>Create mapping</figcaption>
 </figure>
@@ -41,8 +41,8 @@ You can also choose the _Project role_ users will be assigned when they are adde
 Finally, click on _Create mapping_ and go back to mappings. You should see the newly created mapping(s) as shown below.
  
 <figure>
- <a  href="../../../assets/images/admin/project-mapping/project-mappings.png">
-   <img src="../../../assets/images/admin/project-mapping/project-mappings.png" alt="Project mappings" />
+ <a  href="../../../../assets/images/admin/project-mapping/project-mappings.png">
+   <img src="../../../../assets/images/admin/project-mapping/project-mappings.png" alt="Project mappings" />
  </a>
  <figcaption>Project mappings</figcaption>
 </figure>
@@ -63,8 +63,8 @@ From the list of mappings click on the edit button (:material-pencil:). This wil
 the _remote group_, _project name_, and _project role_ of a mapping.
  
 <figure>
- <a  href="../../../assets/images/admin/project-mapping/edit-mapping.png">
-   <img src="../../../assets/images/admin/project-mapping/edit-mapping.png" alt="Edit mapping" />
+ <a  href="../../../../assets/images/admin/project-mapping/edit-mapping.png">
+   <img src="../../../../assets/images/admin/project-mapping/edit-mapping.png" alt="Edit mapping" />
  </a>
  <figcaption>Edit mapping</figcaption>
 </figure>

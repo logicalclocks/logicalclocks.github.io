@@ -19,7 +19,7 @@ If LDAP/Kerberos checkbox is not checked, make sure that you configured your app
 clicking on the checkbox.
 
 <figure>
-  <img src="../../../assets/images/admin/ldap/auth-config-krb.png" alt="Authentication config" />
+  <img src="../../../../assets/images/admin/ldap/auth-config-krb.png" alt="Authentication config" />
   <figcaption>Setup Authentication Methods</figcaption>
 </figure>
 
@@ -27,7 +27,7 @@ clicking on the checkbox.
 Finally, click on edit configuration and fill in the attributes.
 
 <figure>
-  <img src="../../../assets/images/admin/ldap/configure-krb.png" alt="Kerberos config" />
+  <img src="../../../../assets/images/admin/ldap/configure-krb.png" alt="Kerberos config" />
   <figcaption>Configure Kerberos</figcaption>
 </figure>
 
@@ -59,7 +59,7 @@ All defaults are taken from [OpenLDAP](https://www.openldap.org/).
 
 The login page will now have the choice to use Kerberos for authentication.
 <figure>
-  <img width="400px" src="../../../assets/images/admin/ldap/login-using-krb.png" alt="Log in using Kerberos" />
+  <img width="400px" src="../../../../assets/images/admin/ldap/login-using-krb.png" alt="Log in using Kerberos" />
   <figcaption>Log in using Kerberos</figcaption>
 </figure>
 

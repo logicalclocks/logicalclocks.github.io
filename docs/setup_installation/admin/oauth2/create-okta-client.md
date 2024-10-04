@@ -11,14 +11,14 @@ Okta development account. To create a developer account go to [Okta developer](h
 After creating a developer account register a client by going to _Applications_ and click on **Create App Integration**.
 
   <figure>
-    <img src="../../../assets/images/admin/oauth2/okta.png" alt="Okta Applications" />
+    <img src="../../../../assets/images/admin/oauth2/okta.png" alt="Okta Applications" />
     <figcaption>Okta Applications</figcaption>
   </figure>
 
 This will open a popup as shown in the figure below. Select **OIDC** as _Sign-in-method_ and **Web Application** as 
 _Application type_ and click next.
   <figure>
-    <img src="../../../assets/images/admin/oauth2/create-new-app.png" alt="Create New Application" />
+    <img src="../../../../assets/images/admin/oauth2/create-new-app.png" alt="Create New Application" />
     <figcaption>Create new Application</figcaption>
   </figure>
 
@@ -27,7 +27,7 @@ that is your Hopsworks cluster domain name (including the port number if needed)
 redirect URI_ that is Hopsworks cluster domain name (including the port number if needed) with no path.
 
   <figure>
-    <img src="../../../assets/images/admin/oauth2/new-web-app.png" alt="New Application" />
+    <img src="../../../../assets/images/admin/oauth2/new-web-app.png" alt="New Application" />
     <figcaption>New Application</figcaption>
   </figure>
 
@@ -35,7 +35,7 @@ If you want to limit who can access your Hopsworks cluster select _Limit access 
 select group(s) you want to give access to. Here we will allow everyone in the organization to access the cluster.
 
   <figure>
-    <img src="../../../assets/images/admin/oauth2/assignments.png" alt="Group assignment" />
+    <img src="../../../../assets/images/admin/oauth2/assignments.png" alt="Group assignment" />
     <figcaption>Group assignment</figcaption>
   </figure>
 
@@ -48,7 +48,7 @@ filter_ add **groups** as the claim name, select **Match Regex** from the dropdo
 match all groups. See [Group mapping](../create-client/#group-mapping) on how to do the mapping in Hopsworks.
 
   <figure>
-    <img src="../../../assets/images/admin/oauth2/okta-groups.png" alt="Group claim" />
+    <img src="../../../../assets/images/admin/oauth2/okta-groups.png" alt="Group claim" />
     <figcaption>Group claim</figcaption>
   </figure>
 
@@ -58,7 +58,7 @@ _Okta domain_ (_Connection URL_), _client id_ and _client secret_ generated for 
 [Identity Provider registration](../create-client) in Hopsworks.
 
   <figure>
-    <img src="../../../assets/images/admin/oauth2/overview.png" alt="Application overview" />
+    <img src="../../../../assets/images/admin/oauth2/overview.png" alt="Application overview" />
     <figcaption>Application overview</figcaption>
   </figure>
 

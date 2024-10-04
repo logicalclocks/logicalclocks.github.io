@@ -14,7 +14,7 @@ Cluster Settings from the dropdown menu. In the Cluster Settings' Alerts tab you
 manager to send alerts via email, slack or pagerduty.
 
 <figure>
-  <img src="../../assets/images/alerts/configure-alerts.png" alt="Configure alerts"/>
+  <img src="../../../assets/images/alerts/configure-alerts.png" alt="Configure alerts"/>
   <figcaption>Configure alerts</figcaption>
 </figure>
 
@@ -23,7 +23,7 @@ To send alerts via email you need to configure an SMTP server. Click on the _Con
 button on the left side of the **email** row and fill out the form that pops up.
 
 <figure>
-  <img src="../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
+  <img src="../../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
   <figcaption>Configure Email Alerts</figcaption>
 </figure>
 
@@ -34,7 +34,7 @@ button on the left side of the **email** row and fill out the form that pops up.
   CRAM-MD5, LOGIN or PLAIN.
 
 Optionally cluster wide Email alert receivers can be added in _Default receiver emails_.
-These receivers will be available to all users when they create event triggered [alerts](../../user_guides/fs/feature_group/data_validation_best_practices#setup-alerts).
+These receivers will be available to all users when they create event triggered [alerts](../../../user_guides/fs/feature_group/data_validation_best_practices#setup-alerts).
 
 ### Step 3: Configure Slack Alerts
 Alerts can also be sent via Slack messages. To be able to send Slack messages you first need to configure
@@ -42,19 +42,19 @@ a Slack webhook. Click on the _Configure_ button on the left side of the **slack
 [Slack webhook](https://api.slack.com/messaging/webhooks) in _Webhook_.
 
 <figure>
-  <img src="../../assets/images/alerts/slack-config.png" alt="Configure slack Alerts"/>
+  <img src="../../../assets/images/alerts/slack-config.png" alt="Configure slack Alerts"/>
   <figcaption>Configure slack Alerts</figcaption>
 </figure>
 
 Optionally cluster wide Slack alert receivers can be added in _Slack channel/user_.
-These receivers will be available to all users when they create event triggered [alerts](../../user_guides/fs/feature_group/data_validation_best_practices/#setup-alerts).
+These receivers will be available to all users when they create event triggered [alerts](../../../user_guides/fs/feature_group/data_validation_best_practices/#setup-alerts).
 
 ### Step 4: Configure Pagerduty Alerts
 Pagerduty is another way you can send alerts from Hopsworks. Click on the _Configure_ button on the left side of 
 the **pagerduty** row and fill out the form that pops up. 
 
 <figure>
-  <img src="../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
+  <img src="../../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
   <figcaption>Configure Pagerduty Alerts</figcaption>
 </figure>
 
@@ -76,7 +76,7 @@ If you are familiar with Prometheus' [Alert manager](https://prometheus.io/docs/
 you can also configure alerts by editing the _yaml/json_ file directly.  
 
 <figure>
-  <img src="../../assets/images/alerts/advanced-config.png" alt="Advanced configuration"/>
+  <img src="../../../assets/images/alerts/advanced-config.png" alt="Advanced configuration"/>
   <figcaption>Advanced configuration</figcaption>
 </figure>
 
@@ -93,7 +93,7 @@ global:
  ...
 ```
 
-To test the alerts by creating triggers from Jobs and Feature group validations see [Alerts](../../user_guides/fs/feature_group/data_validation_best_practices/#setup-alerts).
+To test the alerts by creating triggers from Jobs and Feature group validations see [Alerts](../../../user_guides/fs/feature_group/data_validation_best_practices/#setup-alerts).
 
 The yaml syntax in the UI is slightly different in that it does not allow double quotes (it will ignore the values but give no error). 
 Below is an example configuration, that can be used in the UI, with both email and slack receivers configured for system alerts.

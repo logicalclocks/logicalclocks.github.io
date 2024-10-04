@@ -20,7 +20,7 @@ If LDAP/Kerberos checkbox is not checked make sure that you configured your appl
 clicking on the checkbox.
 
 <figure>
-  <img src="../../../assets/images/admin/auth-config.png" alt="Authentication config" />
+  <img src="../../../../assets/images/admin/auth-config.png" alt="Authentication config" />
   <figcaption>Setup Authentication Methods</figcaption>
 </figure>
 
@@ -28,7 +28,7 @@ clicking on the checkbox.
 Finally, click on edit configuration and fill in the attributes.
 
 <figure>
-  <img src="../../../assets/images/admin/ldap/configure-ldap.png" alt="LDAP config" />
+  <img src="../../../../assets/images/admin/ldap/configure-ldap.png" alt="LDAP config" />
   <figcaption>Configure LDAP</figcaption>
 </figure>
 
@@ -53,7 +53,7 @@ All defaults are taken from [OpenLDAP](https://www.openldap.org/).
 
 The login page will now have the choice to use LDAP for authentication.
 <figure>
-  <img width="400px" src="../../../assets/images/admin/ldap/login-ldap.png" alt="Log in using LDAP" />
+  <img width="400px" src="../../../../assets/images/admin/ldap/login-ldap.png" alt="Log in using LDAP" />
   <figcaption>Log in using LDAP</figcaption>
 </figure>
 
