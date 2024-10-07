@@ -206,7 +206,7 @@ nav:
           - Azure - Getting Started: setup_installation/azure/getting_started.md
           - GCP - Getting Started: setup_installation/gcp/getting_started.md
       - On-Prem:
-          - Hopsworks Installer: setup_installation/on_prem/hopsworks_installer.md
+          - Background: setup_installation/on_prem/contact_hopsworks.md
           - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
       - Administration:
           - Cluster Configuration: setup_installation/admin/variables.md
