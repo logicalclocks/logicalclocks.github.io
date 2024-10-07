@@ -300,7 +300,7 @@ consul:
 - Run the Helm install 
 
 ```bash
-helm install hopsworks hopsworks-dev/hopsworks --devel --namespace hopsworks --values values.aws.yaml --timeout=600s
+helm install hopsworks hopsworks-dev/hopsworks --namespace hopsworks --values values.aws.yaml --timeout=600s
 ```
 
 
