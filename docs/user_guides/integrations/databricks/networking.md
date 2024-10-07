@@ -22,12 +22,6 @@ Identify your Databricks VPC by searching for VPCs containing Databricks in thei
   </figure>
 </p>
 
-!!! info "Hopsworks installer"
-    If you are performing an installation using the [Hopsworks installer script](../../../setup_installation/on_prem/hopsworks_installer.md), ensure that the virtual machines you install Hopsworks on are deployed in the EMR VPC.
-
-!!! info "managed.hopsworks.ai"
-    If you are working on **[managed.hopsworks.ai](https://managed.hopsworks.ai)**, you can directly deploy the Hopsworks instance to the Databricks VPC, by simply selecting it at the [VPC selection step during cluster creation](https://docs.hopsworks.ai/hopsworks-cloud/latest/aws/cluster_creation/#step-8-vpc-selection).
-
 **Option 2: Set up VPC peering**
 
 Follow the guide [VPC Peering](https://docs.databricks.com/administration-guide/cloud-configurations/aws/vpc-peering.html) to set up VPC peering between the Feature Store cluster and Databricks. Get your Feature Store *VPC ID* and *CIDR* by searching for the Feature Store VPC in the AWS Management Console:

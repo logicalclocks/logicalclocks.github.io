@@ -13,7 +13,8 @@ Before you begin this guide you'll need the following:
 - Administrator account on a Hopsworks cluster.
 
 ### Step 1: Create an instance profile role
-To use role chaining the head node need to be able to impersonate the roles you want to be linked to your project. For this you need to create an instance profile with assume role permissions and attach it to your head node. For more details about the creation of instance profile see the [aws documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html). If running in [managed.hopsworks.ai](https://managed.hopsworks.ai) you can also refer to our [getting started guide](../setup_installation/aws/getting_started.md#step-3-creating-instance-profile).
+To use role chaining the head node need to be able to impersonate the roles you want to be linked to your project. For this you need to create an instance profile with assume role permissions and attach it to your head node. For more details about the creation of instance profile see the [aws documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html). 
+
 
 !!!note 
     To ensure that the Hopsworks users can't use the head node instance profile and impersonate the roles by their own means, you need to ensure that they can't execute code on the head node. This means having all jobs running on worker nodes and using EKS to run jupyter notebooks.
@@ -75,7 +76,7 @@ Add mappings by clicking on *New role chaining*. Enter the project name. Select 
   <figcaption>Create Role Chaining</figcaption>
 </figure>
 
-Project member can now create connectors using *temporary credentials* to assume the role you configured. More detail about using temporary credentials can be found [here](../user_guides/fs/storage_connector/creation/s3.md#temporary-credentials).
+Project member can now create connectors using *temporary credentials* to assume the role you configured. More detail about using temporary credentials can be found [here](../../user_guides/fs/storage_connector/creation/s3.md#temporary-credentials).
 
 Project member can see the list of role they can assume by going the _Project Settings_ -> [Assuming IAM Roles](../../../user_guides/projects/iam_role/iam_role_chaining) page.
 

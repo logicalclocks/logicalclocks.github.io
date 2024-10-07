@@ -87,7 +87,7 @@ it securely to the user.
 ### Step 5: Reset user password
 
 In the case where a user loses her/his password and can not recover it with the 
-[password recovery](../user_guides/projects/auth/recovery.md), an administrator can reset it for them.
+[password recovery](../../user_guides/projects/auth/recovery.md), an administrator can reset it for them.
 
 On the bottom of the _Users_ page click on the _Reset a user password_ link. A popup window with a dropdown for 
 searching users by name or email will open. Find the user and click on _Reset new password_.
