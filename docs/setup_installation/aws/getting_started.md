@@ -214,8 +214,14 @@ This section describes the steps required to deploy the Hopsworks stack using He
 
 - Configure Repo
 
+To obtain access to the Hopsworks helm chart repository, please obtain 
+an evaluation/startup licence [here](https://www.hopsworks.ai/try).
+
+Once you have the helm chart repository URL, replace the environment
+variable $HOPSWORKS_REPO in the following command with this URL.
+
 ```bash
-helm repo add hopsworks https://nexus.hops.works/repository/hopsworks-helm-dev --username NEXUS_USER --password NEXUS_PASS
+helm repo add hopsworks $HOPSWORKS_REPO
 helm repo update hopsworks
 ```
 
