@@ -105,12 +105,6 @@ Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORK
   </figure>
 </p>
 
-!!! note
-
-    If your Hopsworks cluster is created on the cloud (managed.hopsworks.ai),
-    you can find your *HOPSWORKS-URI* by going to the [managed.hopsworks.ai dashboard](https://managed.hopsworks.ai/dashboard) 
-    in the *General* tab of your cluster and copying the URI.
-
 
 ## Conclusion
 In this guide you learned how to create a client in your Azure identity provider and 

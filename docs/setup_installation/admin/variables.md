@@ -1,7 +1,7 @@
 # Cluster Configuration
 
 ## Introduction
-Whether you run Hopsworks on-premise, or on the cloud using [managed.hopsworks.ai](https://managed.hopsworks.ai), it is possible to change a variety of configurations on the cluster, changing its default behaviour.
+Whether you run Hopsworks on-premise, or on the cloud using kubernetes, it is possible to change a variety of configurations on the cluster, changing its default behaviour.
 This section is not going into detail for every setting, since every Hopsworks cluster comes with a robust default setup. However, this guide is to explain where to find the configurations and if necessary, how to change them.
 
 !!! note
