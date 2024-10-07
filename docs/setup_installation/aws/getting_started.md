@@ -377,11 +377,10 @@ Cluster Roles and Cluster Role Bindings:
 By default a set of cluster roles are provisioned, if you don’t have permissions to provision cluster roles or cluster role bindings, you should reach out to your K8s administrator. You should then provide the appropriate resource names as value in the values.yml file.
 
 
-## Step 6: Next steps
+## Step 4: Next steps
 
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
 * Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
 * Follow one of our [tutorials](../../tutorials/index.md)
 * Follow one of our [Guide](../../user_guides/index.md)
-* Code examples and notebooks: [hops-examples](https://github.com/logicalclocks/hops-examples)
