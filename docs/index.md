@@ -185,7 +185,7 @@ pointer-events: initial;
               </a>
             </div>
             <div id="w-node-_4a479fbb-90c7-9f47-d439-20aa6a224339-46672785" class="infra">
-              <a href="./setup_installation/on_prem/hopsworks_installer/">
+              <a href="./setup_installation/on_prem/contact_hopsworks/">
                 <img src="images/icons8-database.svg" loading="lazy" alt="" class="infra-icon">
                 <div class="name_item small">On-premise</div>
               </a>
