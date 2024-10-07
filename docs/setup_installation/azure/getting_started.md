@@ -136,7 +136,7 @@ global:
 Deploy Hopsworks in the created namespace.
 
 ```bash
-helm install hopsworks hopsworks-dev/hopsworks --devel --namespace hopsworks --values values.azure.yaml --timeout=600s
+helm install hopsworks hopsworks-dev/hopsworks --namespace hopsworks --values values.azure.yaml --timeout=600s
 ```
 
 Check that Hopsworks is installing on your provisioned AKS cluster.
