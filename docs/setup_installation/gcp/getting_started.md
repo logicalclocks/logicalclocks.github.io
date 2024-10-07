@@ -200,4 +200,3 @@ Check out our other guides for how to get started with Hopsworks and the Feature
 * Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
 * Follow one of our [tutorials](../../tutorials/index.md)
 * Follow one of our [Guide](../../user_guides/index.md)
-* Code examples and notebooks: [hops-examples](https://github.com/logicalclocks/hops-examples)
