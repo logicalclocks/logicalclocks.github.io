@@ -108,12 +108,10 @@ helm repo add hopsworks $HOPSWORKS_REPO
 helm repo update hopsworks
 ```
 
-### Step 3.2: Create Hopsworks namespace & secrets
+### Step 3.2: Create Hopsworks namespace
 
 ```bash
 kubectl create namespace hopsworks
-
-kubectl create secret docker-registry regcred --namespace=hopsworks --docker-server=docker.hops.works --docker-username=$NEXUS_USER --docker-password=$NEXUS_PASS --docker-email=$NEXUS_EMAIL_ADDRESS
 ```
 
 ### Step 3.3: Create helm values file

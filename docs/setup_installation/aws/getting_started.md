@@ -231,17 +231,6 @@ helm repo update hopsworks
 kubectl create namespace hopsworks
 ```
 
-- Create Hopsworks secrets 
-
-```bash
-kubectl create secret docker-registry regcred \
-    --namespace=hopsworks \
-    --docker-server=docker.hops.works \
-    --docker-username=NEXUS_USER \
-    --docker-password=NEXUS_PASS \
-    --docker-email=NEXUS_EMAIL_ADDRESS
-```
-
 - Update values.aws.yml
 
 ```bash
