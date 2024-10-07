@@ -10,7 +10,7 @@ Before you begin this guide you'll need the following:
 
 - A Hopsworks cluster running on EC2.
 - [Role chaining](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html#iam-term-role-chaining) setup in AWS.
-- Configure role mappings in Hopsworks. For a guide on how to configure this see [AWS IAM Role Chaining](../../../../admin/roleChaining).
+- Configure role mappings in Hopsworks. For a guide on how to configure this see [AWS IAM Role Chaining](../../../../setup_installation/admin/roleChaining).
 
 ## UI
 In this guide, you will learn how to use a mapped IAM role in your project.
