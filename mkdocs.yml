@@ -108,14 +108,7 @@ nav:
           - Client Integrations:
               - user_guides/integrations/index.md
               - Python: user_guides/integrations/python.md
-              - Databricks:
-                  - Networking: user_guides/integrations/databricks/networking.md
-                  - Hopsworks API Key: user_guides/integrations/databricks/api_key.md
-                  - Configuration: user_guides/integrations/databricks/configuration.md
               - AWS Sagemaker: user_guides/integrations/sagemaker.md
-              - AWS EMR:
-                  - Networking: user_guides/integrations/emr/networking.md
-                  - Configure EMR for the Hopsworks Feature Store: user_guides/integrations/emr/emr_configuration.md
               - Azure HDInsight: user_guides/integrations/hdinsight.md
               - Azure Machine Learning:
                   - Designer: user_guides/integrations/mlstudio_designer.md
@@ -222,7 +215,6 @@ nav:
           - Project Management: setup_installation/admin/project.md
           - Configure Alerts: setup_installation/admin/alert.md
           - Manage Services: setup_installation/admin/services.md
-          - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Monitoring:
              - Services Dashboards: setup_installation/admin/monitoring/grafana.md
              - Export metrics: setup_installation/admin/monitoring/export-metrics.md
@@ -245,14 +237,6 @@ nav:
           - Audit:
              - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
              - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
-  - Managed:
-      - The dashboard: common/dashboard.md
-      - Settings: common/settings.md
-      - Services: common/services.md
-      - Adding and Removing workers: common/adding_removing_workers.md
-      - Autoscaling: common/autoscaling.md
-      - Backup: common/backup.md
-      - Scaling up: common/scalingup.md
   - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_api_link" href="https://docs.hopsworks.ai/feature-store-api/dev">Feature Store API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/feature-store-api/dev/javadoc">Feature Store JavaDoc</a> <a id="hsml_api_link" href="https://docs.hopsworks.ai/machine-learning-api/dev">MLOps API</a> </div></div>: https://docs.hopsworks.ai
   - Community ↗: https://community.hopsworks.ai/
 

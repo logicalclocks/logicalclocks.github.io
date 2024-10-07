@@ -1,7 +1,7 @@
 # User Management
 
 ## Introduction
-Whether you run Hopsworks on-premise, or on the cloud using [managed.hopsworks.ai](https://managed.hopsworks.ai), 
+Whether you run Hopsworks on-premise, or on the cloud using kubernetes, 
 you have a Hopsworks cluster which contains all users and projects.
 
 ## Prerequisites
