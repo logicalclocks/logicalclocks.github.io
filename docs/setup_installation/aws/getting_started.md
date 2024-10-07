@@ -256,7 +256,6 @@ global:
 
 hopsworks:
   variables:
-  ﻿  kube_kserve_installed: false
     docker_operations_managed_docker_secrets: *awsregcred
     docker_operations_image_pull_secrets: "regcred"
   dockerRegistry:
