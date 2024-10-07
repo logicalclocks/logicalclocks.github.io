@@ -98,8 +98,8 @@ kubectl config current-context
 ### Step 3.1: Add the Hopsworks Helm repository
 
 ```bash
-helm repo add hopsworks-dev https://nexus.hops.works/repository/hopsworks-helm-dev --username $NEXUS_USER --password $NEXUS_PASS
-helm repo update hopsworks-dev
+helm repo add hopsworks https://nexus.hops.works/repository/hopsworks-helm-dev --username $NEXUS_USER --password $NEXUS_PASS
+helm repo update hopsworks
 ```
 
 ### Step 3.2: Create Hopsworks namespace & secrets
@@ -136,7 +136,7 @@ global:
 Deploy Hopsworks in the created namespace.
 
 ```bash
-helm install hopsworks hopsworks-dev/hopsworks --namespace hopsworks --values values.azure.yaml --timeout=600s
+helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.azure.yaml --timeout=600s
 ```
 
 Check that Hopsworks is installing on your provisioned AKS cluster.
