@@ -85,6 +85,10 @@ By using partitioning the system will write the feature data in different subdir
 
 When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter. The currently support values are "HUDI", "DELTA", "NONE" (which defaults to Parquet). 
 
+##### Storage connector
+
+During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for saving of offline data in the desired table format outside the Hopsworks cluster. Currently, only [S3](../storage_connector/creation/s3.md) connectors are supported.
+
 
 #### Streaming Write API
 
