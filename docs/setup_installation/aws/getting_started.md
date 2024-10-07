@@ -215,8 +215,8 @@ This section describes the steps required to deploy the Hopsworks stack using He
 - Configure Repo
 
 ```bash
-helm repo add hopsworks-dev https://nexus.hops.works/repository/hopsworks-helm-dev --username NEXUS_USER --password NEXUS_PASS
-helm repo update hopsworks-dev
+helm repo add hopsworks https://nexus.hops.works/repository/hopsworks-helm-dev --username NEXUS_USER --password NEXUS_PASS
+helm repo update hopsworks
 ```
 
 - Create Hopsworks namespace 
@@ -300,7 +300,7 @@ consul:
 - Run the Helm install 
 
 ```bash
-helm install hopsworks hopsworks-dev/hopsworks --namespace hopsworks --values values.aws.yaml --timeout=600s
+helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.aws.yaml --timeout=600s
 ```
 
 
