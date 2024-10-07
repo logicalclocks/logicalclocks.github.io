@@ -5,7 +5,7 @@ This section contains installation guides for the **Hopsworks Platform** using k
 - [AWS](aws/getting_started.md)
 - [Azure](azure/getting_started.md)
 - [GCP](gcp/getting_started.md)
-- [On-Prem](on_prem/hopsworks_installer.md) environments
+- [On-Prem](on_prem/contact_hopsworks.md) environments
 
 and [common](admin/index.md) administration instructions.
 
