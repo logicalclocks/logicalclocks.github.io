@@ -10,7 +10,7 @@ This guide will cover how to configure an Hopsworks cluster to leverage an exter
 
 ## Configure the external Kafka cluster integration
 
-To enable the integration with an external Kafka cluster, you should set the `enable_bring_your_own_kafka` [configuration option](../../admin/variables.md) to `true`.
+To enable the integration with an external Kafka cluster, you should set the `enable_bring_your_own_kafka` [configuration option](../admin/variables.md) to `true`.
 This can also be achieved in the cluster definition by setting the following attribute:
 
 ```

@@ -59,7 +59,6 @@ fs = conn.get_feature_store()           # Get the project's default feature stor
 
     If you have trouble to connect, please ensure that your Feature Store can receive incoming traffic from your Python environment on ports 443, 9083 and 9085 (443,9083,9085).
 
-    If you deployed your Hopsworks Feature Store instance with [managed.hopsworks.ai](https://managed.hopsworks.ai), it suffices to enable [outside access of the Feature Store and Online Feature Store services](https://docs.hopsworks.ai/hopsworks-cloud/latest/services/#outside-access-to-the-feature-store).
 
 ## Next Steps
 

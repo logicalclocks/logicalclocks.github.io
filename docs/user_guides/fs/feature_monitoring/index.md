@@ -12,7 +12,7 @@ in Hopsworks and enable the user to visualise the temporal evolution of statisti
 - **Statistics Comparison**: Enabled only for individual features, this variant allows the user to schedule the statistics computation on both a _detection_ and a _reference window_. By providing information about how to compare those statistics, you can setup alerts to quickly detect critical change in the data. For more details, see the [Statistics comparison guide](statistics_comparison.md).
 
 !!! important
-    To enable feature monitoring in Hopsworks, you need to set the `enable_feature_monitoring` [configuration option](../../../admin/variables.md) to `true`.
+    To enable feature monitoring in Hopsworks, you need to set the `enable_feature_monitoring` [configuration option](../../../setup_installation/admin/variables.md) to `true`.
     This can also be achieved in the cluster definition by setting the following attribute:
 
     ```
@@ -42,7 +42,7 @@ Hopsworks provides an interactive graph to make the exploration of statistics an
 
 ## Alerting
 
-Moreover, feature monitoring integrates with the Hopsworks built-in system for [alerts](../../../admin/alert.md), enabling you to setup alerts that will notify you as soon as shift is detected in your feature values. You can setup alerts for feature monitoring at a Feature Group, Feature View, and project level.
+Moreover, feature monitoring integrates with the Hopsworks built-in system for [alerts](../../../setup_installation/admin/alert.md), enabling you to setup alerts that will notify you as soon as shift is detected in your feature values. You can setup alerts for feature monitoring at a Feature Group, Feature View, and project level.
 
 !!! tip "Select the correct trigger" 
     When configuring alerts for feature monitoring, make sure you select the `feature monitoring-shift detected` or `feature monitoring-shift undetected` trigger.

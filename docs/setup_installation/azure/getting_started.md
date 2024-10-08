@@ -1,311 +1,169 @@
-# Getting started with managed.hopsworks.ai (Azure)
+# Azure - Getting started with AKS
 
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) is our managed platform for running Hopsworks and the Feature Store
-in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
-SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai) with your organization's Azure account.
+Kubernetes and Helm are used to install & run Hopsworks and the Feature Store
+in the cloud. They both integrate seamlessly with third-party platforms such as Databricks,
+SageMaker and KubeFlow. This guide shows how to set up the Hopsworks platform in your organization's Azure account.
 
 ## Prerequisites
 
 To follow the instruction on this page you will need the following:
 
+- Kubernetes Version: Hopsworks can be deployed on AKS clusters running Kubernetes >= 1.27.0.
 - An Azure resource group in which the Hopsworks cluster will be deployed. 
 - The [azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) installed and [logged in](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli).
+- kubectl (to manage the AKS cluster)
+- helm (to deploy Hopsworks)
 
 ### Permissions
-To run all the commands on this page the user needs to have at least the following permissions on the Azure resource group:
 
-```json
-Microsoft.Authorization/roleDefinitions/write
-Microsoft.Authorization/roleAssignments/write
-Microsoft.Compute/sshPublicKeys/generateKeyPair/action
-Microsoft.Compute/sshPublicKeys/read
-Microsoft.Compute/sshPublicKeys/write
-Microsoft.ContainerRegistry/registries/operationStatuses/read
-Microsoft.ContainerRegistry/registries/read
-Microsoft.ContainerRegistry/registries/write
-Microsoft.ManagedIdentity/userAssignedIdentities/write
-Microsoft.Resources/subscriptions/resourcegroups/read
-Microsoft.Storage/storageAccounts/write
-```
+The deployment requires cluster admin access to create ClusterRoles, ServiceAccounts, and ClusterRoleBindings in AKS.
+
+A namespace is also required for deploying the Hopsworks stack. If you don’t have permissions to create a namespace, ask your AKS administrator to provision one for you.
+	
+To run all the commands on this page the user needs to have at least the following permissions on the Azure resource group:
 
 You will also need to have a role such as *Application Administrator* on the Azure Active Directory to be able to create the hopsworks.ai service principal.
 
-### Resource providers
-For [managed.hopsworks.ai](https://managed.hopsworks.ai) to deploy a cluster the following resource providers need to be registered on your Azure subscription.
+## Step 1: Azure AKS Setup
 
-```json
-Microsoft.Network
-Microsoft.Compute
-Microsoft.Storage
-Microsoft.ManagedIdentity
-Microsoft.ContainerRegistry
-```
-This can be done by running the following commands:
+### Step 1.1: Create an Azure Blob Storage Account
 
-!!!note
-    To run these commands you need to have the following permission on your subscription: *Microsoft.Network/register/action*
+Create a storage account to host project data. Ensure that the storage account is in the same region as the AKS cluster for performance and cost reasons:
 
 ```bash
-az provider register --namespace 'Microsoft.Network'
-az provider register --namespace 'Microsoft.Compute'
-az provider register --namespace 'Microsoft.Storage'
-az provider register --namespace 'Microsoft.ManagedIdentity'
-az provider register --namespace 'Microsoft.ContainerRegistry'
+az storage account create --name $storage_account_name --resource-group $resource_group --location $region
 ```
 
-### Other
-All the commands have been written for a Unix system. These commands will need to be adapted to your terminal if it is not directly compatible.
-
-All the commands use your default location. Add the *--location* parameter if you want to run your cluster in another location. Make sure to create the resources in the same location as you are going to run your cluster.
-
-## Step 1: Connect your Azure account
-
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your Azure account. To enable this, you have to
-create a service principal and a custom role for [managed.hopsworks.ai](https://managed.hopsworks.ai) granting access to your resource group.
-
-<p align="center">
-  <iframe
-    title="Azure information video"
-    style="width:700px; height: 370px;"
-    src="https://www.youtube.com/embed/Pfx2b3UTt88"
-    frameBorder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowFullScreen
-  >
-  </iframe>
-</p>
-
-
-### Step 1.1: Connect your Azure account
-
-In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to Azure* or go to *Settings* and click on *Configure* next to *Azure*. This will direct you to a page with the instructions needed to create the service principal and set up the connection. Follow the instructions.
-
-!!! note 
-    it is possible to limit the permissions that are set up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md).
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-1.png" alt="Cloud account settings">
-    <figcaption>Cloud account settings</figcaption>
-  </figure>
-</p>
-
-## Step 2: Create a storage
-
-!!! note 
-    If you prefer using terraform, you can skip this step and the remaining steps, and instead, follow [this guide](../common/terraform.md#getting-started-with-azure).
-
-The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in a storage container in your Azure account. To enable this you need to create a storage account.
-This is done by running the following command, replacing *$RESOURCE_GROUP* with the name of your resource group.
+Also create a corresponding container:
 
 ```bash
-az storage account create --resource-group $RESOURCE_GROUP --name hopsworksstorage$RANDOM
+az storage container create --account-name $storage_account_name --name $container_name
 ```
 
-## Step 3: Create an ACR Container Registry
 
-The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their docker images in a container registry in your Azure account. 
-To create this storage account run the following command, replacing *$RESOURCE_GROUP* with the name of your resource group.
+### Step 1.2: Create an Azure Container Registry (ACR)
+
+Create an ACR to store the images used by Hopsworks:
 
 ```bash
-az acr create --resource-group $RESOURCE_GROUP --name hopsworksecr --sku Premium
+az acr create --resource-group $resource_group --name $registry_name --sku Basic --location $region
 ```
 
-To prevent the registry from filling up with unnecessary images and artifacts you can enable a retention policy. A retention policy will automatically remove untagged manifests after a specified number of days. To enable a retention policy, run the following command, replacing *$RESOURCE_GROUP* with the name of your resource group.
+### Step 1.3: Create an AKS Kubernetes Cluster
+
+Provision an AKS cluster with a number of nodes:
 
 ```bash
-az acr config retention update --resource-group $RESOURCE_GROUP --registry hopsworksecr --status Enabled --days 7 --type UntaggedManifests
+az aks create --resource-group $resource_group --name $cluster_name --enable-cluster-autoscaler --min-count 1 --max-count 4 --node-count 3 --node-vm-size Standard_D16_v4 --network-plugin azure --enable-managed-identity --generate-ssh-keys
 ```
 
-## Step 4: Create a managed identity
-To allow the hopsworks cluster instances to access the storage account and the container registry, [managed.hopsworks.ai](https://managed.hopsworks.ai) assigns a managed identity to the cluster nodes. To enable this you need to:
+### Step 1.4: Retrieve setup Identifiers
 
-- Create a managed identity
-- Create a role with appropriate permission and assign it to the managed identity
-
-### Step 4.1: Create a managed identity
-You create a managed identity by running the following command, replacing *$RESOURCE_GROUP* with the name of your resource group.
+Create a set of environment variables for use in later steps.
 
 ```bash
-identityId=$(az identity create --name hopsworks-instance --resource-group $RESOURCE_GROUP --query principalId -o tsv)
+export managed_id=`az aks show --resource-group $resource_group --name $cluster_name --query "identity.principalId" --output tsv`
+
+export storage_id=`az storage account show --name $storage_account_name --resource-group $resource_group --query "id" --output tsv`
+
+export acr_id=`az acr show --name $registry_name --resource-group $resource_group --query "id" --output tsv`
 ```
 
-### Step 4.2: Create a role for the managed identity
-To create a new role for the managed identity, first, create a file called *instance-role.json* with the following content. Replace *SUBSCRIPTION_ID* by your subscription id and *RESOURCE_GROUP* by your resource group
-
-```json
-{
-  "Name": "hopsworks-instance",
-  "IsCustom": true,
-  "Description": "Allow the hopsworks instance to access the storage and the docker repository",
-  "Actions": [
-      "Microsoft.Storage/storageAccounts/blobServices/containers/write",
-      "Microsoft.Storage/storageAccounts/blobServices/containers/read",
-      "Microsoft.Storage/storageAccounts/blobServices/write",
-      "Microsoft.Storage/storageAccounts/blobServices/read",
-      "Microsoft.Storage/storageAccounts/listKeys/action",
-      "Microsoft.ContainerRegistry/registries/artifacts/delete",
-      "Microsoft.ContainerRegistry/registries/pull/read",
-      "Microsoft.ContainerRegistry/registries/push/write"
-  ],
-  "NotActions": [
-
-  ],
-  "DataActions": [
-      "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/delete",
-      "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read",
-      "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/move/action",
-      "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/write"
-  ],
-  "AssignableScopes": [
-    "/subscriptions/SUBSCRIPTION_ID/resourceGroups/RESOURCE_GROUP"
-  ]
-}
-```
-Then run the following command, to create the new role.
+### Step 1.5: Assign Roles to Managed Identity
 
 ```bash
-az role definition create --role-definition instance-role.json
+az role assignment create --assignee $managed_id --role "Storage Blob Data Contributor" --scope $storage_id
+
+az role assignment create --assignee $managed_id --role AcrPull --scope $acr_id
+az role assignment create --assignee $managed_id --role "AcrPush" --scope $acr_id
+az role assignment create --assignee $managed_id --role "AcrDelete" --scope $acr_id
 ```
 
-Finally assign the role to the managed identity by running the following command, replacing *$RESOURCE_GROUP* with the name of your resource group.
+### Step 1.6: Allow AKS cluster access to ACR repository.
 
 ```bash
-az role assignment create --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP --role hopsworks-instance --assignee $identityId
+az aks update --resource-group $resource_group --name $cluster_name --attach-acr $registry_name
 ```
 
-!!!note 
-    It takes several minutes between the time you create the managed identity and the time a role can be assigned to it. So if we get an error message starting by the following wait and retry: *Cannot find user or service principal in graph database*
-
-## Step 5: Add an ssh key to your resource group
-
-When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your resource group.
-
-To create an ssh key in your resource group run the following command, replacing *$RESOURCE_GROUP* with the name of your resource group.
+## Step 2: Configure kubectl
 
 ```bash
-az sshkey create --resource-group $RESOURCE_GROUP --name hopsworksKey 
+az aks get-credentials --resource-group $resource_group --name $cluster_name --file ~/my-aks-kubeconfig.yaml
+export KUBECONFIG=~/my-aks-kubeconfig.yaml
+kubectl config current-context
 ```
 
-!!!note
-    the command returns the path to the private and public keys associated with this ssh key. You can also create a key from an existing public key as indicated in the [Azure documentation](https://learn.microsoft.com/en-us/cli/azure/sshkey?view=azure-cli-latest#az-sshkey-create)
+## Step 3: Setup Hopsworks for Deployment
 
-## Step 6: Deploy a Hopsworks cluster
+### Step 3.1: Add the Hopsworks Helm repository
 
-In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*:
+To obtain access to the Hopsworks helm chart repository, please obtain 
+an evaluation/startup licence [here](https://www.hopsworks.ai/try).
 
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    <figcaption>Create a Hopsworks cluster</figcaption>
-  </figure>
-</p>
+Once you have the helm chart repository URL, replace the environment
+variable $HOPSWORKS_REPO in the following command with this URL.
 
-Select the *Resource Group* (1) in which you created your *storage account* and *managed identity* (see above).
+```bash
+helm repo add hopsworks $HOPSWORKS_REPO
+helm repo update hopsworks
+```
 
-!!! note
-    If the *Resource Group* does not appear in the drop-down, make sure that the custom role you created in step [1.1](#step-11-connect-your-azure-account) has the *Microsoft.Resources/subscriptions/resourceGroups/read* permission and is assigned to the *hopsworks.ai* user.
+### Step 3.2: Create Hopsworks namespace
 
-Name your cluster (2). Your cluster will be deployed in the *Location* of your *Resource Group* (3).
+```bash
+kubectl create namespace hopsworks
+```
 
-Select the *Instance type* (4) and *Local storage* (5) size for the cluster *Head node*.
+### Step 3.3: Create helm values file
 
-Check if you want to *Use customer-managed encryption key* (6)
+Below is a simplifield values.azure.yaml file to get started which can be updated for improved performance and further customisation.
 
-Select the *storage account* (7) you created above in *Azure Storage account name*. The name of the container in which the data will be stored is displayed in *Azure Container name* (8), you can modify it if needed.
+```bash
+global:
+  _hopsworks:
+    storageClassName: null
+    cloudProvider: "AWS"
+    managedDockerRegistry:
+      enabled: true
+      domain: "rchopsworksrepo.azurecr.io"
+      namespace: "hopsworks"
+    
+    managedObjectStorage:
+      enabled: true
+      endpoint: "https://rchopsworksbucket.blob.core.windows.net"
+    minio:
+      enabled: false
+```
 
-!!! note
-    You can choose to use a container already existing in your *storage account* by using the name of this container, but you need to first make sure that this container is empty.
+## Step 4: Deploy Hopsworks
 
-Enter the *Azure container registry name* (9) of the ACR registry created in [Step 3.1](#step-3-create-an-acr-container-registry)
+Deploy Hopsworks in the created namespace.
 
-Press *Next*:
+```bash
+helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.azure.yaml --timeout=600s
+```
 
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/create-instance-general.png" alt="General configuration">
-    <figcaption>General configuration</figcaption>
-  </figure>
-</p>
+Check that Hopsworks is installing on your provisioned AKS cluster.
 
-Select the number of workers you want to start the cluster with (2).
-Select the *Instance type* (3) and *Local storage* size (4) for the *worker nodes*.
+```bash
+kubectl get pods --namespace=hopsworks
 
-!!! note
-    It is possible to [add or remove workers](../common/adding_removing_workers.md) or to [enable autoscaling](../common/autoscaling.md) once the cluster is running.
+kubectl get svc -n hopsworks -o wide
+```
 
-Press *Next*:
+Upon completion (circa 20 minutes), setup a load balancer to access Hopsworks:
 
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
-  </figure>
-</p>
-
-Select the *SSH key* that you want to use to access cluster instances:
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-12.png" alt="Choose SSH key">
-    <figcaption>Choose SSH key</figcaption>
-  </figure>
-</p>
-
-Select the *User assigned managed identity* that you created above:
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-identity.png" alt="Choose the User assigned managed identity">
-    <figcaption>Choose the User assigned managed identity</figcaption>
-  </figure>
-</p>
+```bash
+kubectl expose deployment hopsworks --type=LoadBalancer --name=hopsworks-service --namespace <namespace>
+```
 
 
-To backup the Azure blob storage data when taking a cluster backup we need to set a retention policy for the blob storage. You can deactivate the retention policy by setting this value to 0 but this will block you from taking any backup of your cluster. Choose the retention period in days and click on *Review and submit*.
 
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
-    <figcaption>Choose the backup retention policy</figcaption>
-  </figure>
-</p>
-
-Review all information and select *Create*:
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-17.png" alt="Review cluster information">
-    <figcaption>Review cluster information</figcaption>
-  </figure>
-</p>
-
-!!! note
-    We skipped cluster creation steps that are not mandatory. You can find more details about these steps [here](cluster_creation.md)
-
-The cluster will start. This will take a few minutes:
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    <figcaption>Booting Hopsworks cluster</figcaption>
-  </figure>
-</p>
-
-As soon as the cluster has started, you will be able to log in to your new Hopsworks cluster. You will also be able to stop, restart or terminate the cluster.
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    <figcaption>Running Hopsworks cluster</figcaption>
-  </figure>
-</p>
-
-## Step 7: Next steps
+## Step 5: Next steps
 
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
-* Make Hopsworks services [accessible from outside services](../common/services.md)
 * Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
 * Follow one of our [tutorials](../../tutorials/index.md)
 * Follow one of our [Guide](../../user_guides/index.md)
-* Code examples and notebooks: [hops-examples](https://github.com/logicalclocks/hops-examples)
+

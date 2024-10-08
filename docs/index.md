@@ -185,7 +185,7 @@ pointer-events: initial;
               </a>
             </div>
             <div id="w-node-_4a479fbb-90c7-9f47-d439-20aa6a224339-46672785" class="infra">
-              <a href="./setup_installation/on_prem/hopsworks_installer/">
+              <a href="./setup_installation/on_prem/contact_hopsworks/">
                 <img src="images/icons8-database.svg" loading="lazy" alt="" class="infra-icon">
                 <div class="name_item small">On-premise</div>
               </a>
@@ -265,7 +265,7 @@ Hopsworks provides projects as a secure sandbox in which teams can collaborate a
 Hopsworks provides a FTI (feature/training/inference) pipeline architecture for ML systems. Each part of the pipeline is defined in a Hopsworks job which corresponds to a Jupyter notebook, a python script or a jar. The production pipelines are then orchestrated with Airflow which is bundled in Hopsworks. Hopsworks provides several python environments that can be used and customized for each part of the FTI pipeline, for example switching between using PyTorch or TensorFlow in the training pipeline. You can train models on as many GPUs as are installed in a Hopsworks cluster and easily share them among users. You can also run Spark, Spark Streaming, or Flink programs on Hopsworks. JupyterLab is also bundled which can be used to run Python and Spark interactively. 
 
 ## Available on any Platform
-Hopsworks is available as a both managed platform in the cloud on AWS, Azure, and GCP, and can be installed on any Linux-based virtual machines (Ubuntu/Redhat compatible), even in air-gapped data centers. Hopsworks is also available as a serverless platform that manages and serves both your features and models.
+Hopsworks is available to be installed on a kubernetes cluster in the cloud on AWS, Azure, and GCP, and On-Prem (Ubuntu/Redhat compatible), even in air-gapped data centers. Hopsworks is also available as a serverless platform that manages and serves both your features and models.
 
 ## Join the community
 - Ask questions and give us feedback in the [Hopsworks Community](https://community.hopsworks.ai/)

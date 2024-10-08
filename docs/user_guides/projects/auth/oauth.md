@@ -5,7 +5,7 @@ Hopsworks supports different methods of authentication. Here we will look at aut
 
 ## Prerequisites
 A Hopsworks cluster with OAuth authentication. 
-See [Configure OAuth2](../../../../admin/oauth2/create-client) on how to configure OAuth on your cluster.
+See [Configure OAuth2](../../../../setup_installation/admin/oauth2/create-client) on how to configure OAuth on your cluster.
 
 ### Step 1: Log in with OAuth
 If OAuth is configured a **Login with ** button will appear in the login page. Use this button to log in to Hopsworks
