@@ -80,6 +80,9 @@ During the cluster configuration the following steps will be taken:
 - Install `hsfs` python library
 - Configure the necessary Spark properties to authenticate and communicate with the Feature Store
 
+!!! note "HopsFS configuration"
+    It is not necessary to configure HopsFS if data is stored outside the Hopsworks file system. To do this define [Storage Connectors](../../fs/storage_connector/index.md) and link them to [Feature Groups](../../fs/feature_group/create.md) and [Training Datasets](../../fs/feature_view/training-data.md).
+
 When a cluster is configured for a specific project user, all the operations with the Hopsworks Feature Store will be executed as that project user. If another user needs to re-use the same cluster, the cluster can be reconfigured by following the same steps above.
 
 ## Connecting to the Feature Store

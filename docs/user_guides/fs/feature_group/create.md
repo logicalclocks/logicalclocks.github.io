@@ -87,7 +87,7 @@ When you create a feature group, you can specify the table format you want to us
 
 ##### Storage connector
 
-During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for saving of offline data in the desired table format outside the Hopsworks cluster. Currently, only [S3](../storage_connector/creation/s3.md) connectors are supported.
+During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster. Currently, only [S3](../storage_connector/creation/s3.md) connectors and "DELTA" `time_travel_format` format is supported.
 
 
 #### Streaming Write API
