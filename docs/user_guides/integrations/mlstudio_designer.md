@@ -21,7 +21,7 @@ To connect to the Feature Store from the Azure Machine Learning Designer, create
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-1.png" alt="Add an Execute Python Script step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-1.png" alt="Add an Execute Python Script step">
     <figcaption>Add an Execute Python Script step</figcaption>
   </figure>
 </p>
@@ -30,7 +30,7 @@ In the pipeline, add a new `Execute Python Script` step and replace the Python s
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-2.png" alt="Add the code to access the Feature Store">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-2.png" alt="Add the code to access the Feature Store">
     <figcaption>Add the code to access the Feature Store</figcaption>
   </figure>
 </p>
@@ -39,12 +39,12 @@ In the pipeline, add a new `Execute Python Script` step and replace the Python s
 
     Replace MY_VERSION, MY_API_KEY, MY_INSTANCE, MY_PROJECT and MY_FEATURE_GROUP with the respective values. The major version set for MY_VERSION needs to match the major version of Hopsworks. Check [PyPI](https://pypi.org/project/hsfs/#history) for available releases.
 
-    <p align="center">
-    <figure>
-        <img src="../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
-        <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
-    </figure>
-    </p>
+  <p align="center">
+  <figure>
+      <img src="../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
+      <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
+  </figure>
+  </p>
 
 ```python
 import os
@@ -85,7 +85,7 @@ Select a compute target and save the step. The step is now ready to use:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-3.png" alt="Select a compute target">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-3.png" alt="Select a compute target">
     <figcaption>Select a compute target</figcaption>
   </figure>
 </p>
@@ -94,7 +94,7 @@ As a next step, you have to connect the previously created `Execute Python Scrip
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-4.png" alt="Add an Export Data step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-4.png" alt="Add an Export Data step">
     <figcaption>Add an Export Data step</figcaption>
   </figure>
 </p>
@@ -103,7 +103,7 @@ Configure the `Export Data` step to write to you data store of choice:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-5.png" alt="Configure the Export Data step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-5.png" alt="Configure the Export Data step">
     <figcaption>Configure the Export Data step</figcaption>
   </figure>
 </p>
@@ -112,7 +112,7 @@ Connect the to steps by drawing a line between them:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-6.png" alt="Connect the steps">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-6.png" alt="Connect the steps">
     <figcaption>Connect the steps</figcaption>
   </figure>
 </p>
@@ -125,7 +125,7 @@ Finally, submit the pipeline and wait for it to finish:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-7.png" alt="Execute the pipeline">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-7.png" alt="Execute the pipeline">
     <figcaption>Execute the pipeline</figcaption>
   </figure>
 </p>
