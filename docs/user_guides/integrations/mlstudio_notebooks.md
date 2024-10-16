@@ -21,7 +21,7 @@ To access the Feature Store from Azure Machine Learning, open a Python notebook 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
+    <img src="../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
     <figcaption>Connecting from an Azure Machine Learning Notebook</figcaption>
   </figure>
 </p>
