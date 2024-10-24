@@ -6,4 +6,4 @@ This section serves to provide guides and examples for the common usage of abstr
 - [Feature Store](fs/index.md): Learn about the common usage of the core Hopsworks Feature Store abstractions, such as Feature Groups, Feature Views, Data Validation and Storage Connectors. Also, learn from the [Client Integrations](integrations/index.md) guides how to connect to the Feature Store from external environments such as a local Python environment, Databricks, or AWS Sagemaker
 - [MLOps](mlops/index.md): Learn about the common usage of Hopsworks MLOps abstractions, such as the Model Registry or Model Serving.
 - [Projects](projects/index.md): The core abstraction on Hopsworks are [Projects](../concepts/projects/governance.md). Learn in this section how to manage your projects and the services therein.
-- [Migration](migration/30_migration.md): Learn how to migrate to newer versions of Hopsworks.
+- [Migration](migration/40_migration.md): Learn how to migrate to newer versions of Hopsworks.
