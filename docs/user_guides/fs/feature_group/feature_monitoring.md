@@ -19,8 +19,8 @@ After that, you can optionally define a detection window of data to compute stat
 
 In order to setup feature monitoring for a Feature Group, you will need:
 
-- A Hopsworks project. If you don't have a project yet you can go to [managed.hopsworks.ai](https://managed.hopsworks.ai), signup with your email and create your first project.
-- An API key, you can get one by following the instructions [here](../../../setup_installation/common/api_key.md)
+- A Hopsworks project. If you don't have a project yet you can go to [app.hopsworks.ai](https://app.hopsworks.ai), signup with your email and create your first project.
+- An API key, you can get one by going to "Account Settings" on [app.hopsworks.ai](https://app.hopsworks.ai).
 - The Hopsworks Python library installed in your client. See the [installation guide](../../client_installation/index.md).
 - A Feature Group
 
