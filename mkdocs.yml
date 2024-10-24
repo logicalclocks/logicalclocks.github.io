@@ -1,5 +1,5 @@
 site_name: "Hopsworks Documentation"
-site_description: "Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the development and operation of machine learning models at scale."
+site_description: "Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the 4.0elopment and operation of machine learning models at scale."
 site_author: "Hopsworks"
 site_url: "https://docs.hopsworks.ai/"
 
@@ -52,8 +52,8 @@ nav:
           - BI Tools: concepts/mlops/bi_tools.md
           - Data Transformations: concepts/mlops/data_transformations.md
       - Development:
-          - Outside Hopsworks: concepts/dev/outside.md # api-keys
-          - Inside Hopsworks: concepts/dev/inside.md
+          - Outside Hopsworks: concepts/4.0/outside.md # api-keys
+          - Inside Hopsworks: concepts/4.0/inside.md
   - Guides:
       - user_guides/index.md
       - Feature Store:
@@ -237,7 +237,7 @@ nav:
           - Audit:
              - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
              - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
-  - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_api_link" href="https://docs.hopsworks.ai/feature-store-api/dev">Feature Store API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/feature-store-api/dev/javadoc">Feature Store JavaDoc</a> <a id="hsml_api_link" href="https://docs.hopsworks.ai/machine-learning-api/dev">MLOps API</a> </div></div>: https://docs.hopsworks.ai
+  - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/4.0">Hopsworks API</a> <a id="hsfs_api_link" href="https://docs.hopsworks.ai/feature-store-api/4.0">Feature Store API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/feature-store-api/4.0/javadoc">Feature Store JavaDoc</a> <a id="hsml_api_link" href="https://docs.hopsworks.ai/machine-learning-api/4.0">MLOps API</a> </div></div>: https://docs.hopsworks.ai
   - Community ↗: https://community.hopsworks.ai/
 
 theme:
@@ -260,7 +260,7 @@ theme:
     - navigation.indexes
 
 extra:
-  hopsworks_version: dev
+  hopsworks_version: 4.0
   version:
     provider: mike
     default: latest
