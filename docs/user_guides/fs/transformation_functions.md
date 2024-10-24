@@ -5,7 +5,11 @@ In AI systems, [transformation functions](https://www.hopsworks.ai/dictionary/tr
 
 ## Custom Transformation Function Creation
 
-User-defined transformation functions can be created in Hopsworks using the [`@udf`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/udf/) decorator. These functions should be designed as Pandas functions, meaning they must take input features as a [Pandas Series](https://pandas.pydata.org/docs/reference/api/pandas.Series.html) and return either a Pandas Series or a [Pandas DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html). Hopsworks automatically executes the defined transformation function as a [`pandas_udf`](https://spark.apache.org/docs/3.1.2/api/python/reference/api/pyspark.sql.functions.pandas_udf.html) in a PySpark application and as Pandas functions in Python clients.
+User-defined transformation functions can be created in Hopsworks using the [`@udf`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/udf/) decorator. These functions can be either vectorized or implemented as pure Python or Pandas UDFs (User-Defined Functions).
+
+Hopsworks provides three execution modes to control the execution of transformation functions during training dataset generations, batch inference, and online inference. By default, Hopsworks assumes that the defined transformation function is vectorized. It will execute the function as a Python UDF during online inference and as a Pandas UDF during batch inference and training dataset generation. While Python UDFs are faster for small data volumes, Pandas UDFs offer better performance for large datasets. This execution mode provides the optimal balance based on the data size across training dataset generations, batch inference, and online inference. You can also explicitly specify the execution mode as either `python` or `pandas`, forcing the transformation function to always run as a Python or Pandas UDF, respectively.
+
+A Pandas UDF in Hopsworks accepts one or more Pandas Series as input and can return either one or more Series or a Pandas DataFrame. When integrated with PySpark applications, Hopsworks automatically executes Pandas UDFs using PySpark’s [`pandas_udf`](https://spark.apache.org/docs/3.4.1/api/python/reference/pyspark.sql/api/pyspark.sql.functions.pandas_udf.html), enabling the transformation functions to efficiently scale for large datasets.
 
 !!! warning "Java/Scala support"
 
@@ -18,7 +22,9 @@ Transformation functions created in Hopsworks can be directly attached to featur
     Definition transformation function within a Jupyter notebook is only supported in Python Kernel. In a PySpark Kernel transformation function have to defined as modules or added when starting a Jupyter notebook.
 
 
-The `@udf` decorator in Hopsworks creates a metadata class called [`HopsworksUdf`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/hopsworks_udf/). This class manages the necessary operations to execute the transformation function. The decorator has two arguments `return_type` and `drop`. The `return_type` is a mandatory argument and denotes the data types of the features returned by the transformation function. It can be a single Python type if the transformation function returns a single transformed feature or a list of Python types if it returns multiple transformed features. The supported types include `str`, `int`, `float`, `bool`, `datetime.datetime`, `datetime.date`, and `datetime.time`. The `drop` argument is optional and specifies the input arguments to remove from the final output after all transformation functions are applied. By default, all input arguments are retained in the final transformed output. The supported python types that be used with the `return_type` argument are provided as a table below
+The `@udf` decorator in Hopsworks creates a metadata class called [`HopsworksUdf`](http://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/hopsworks_udf/). This class manages the necessary operations to execute the transformation function. The decorator has three arguments `return_type`, `drop` and `mode`. 
+
+The `return_type` is a mandatory argument and denotes the data types of the features returned by the transformation function. It can be a single Python type if the transformation function returns a single transformed feature or a list of Python types if it returns multiple transformed features. The supported types include `str`, `int`, `float`, `bool`, `datetime.datetime`, `datetime.date`, and `datetime.time`.  The supported python types that be used with the `return_type` argument are provided as a table below
 
 | Supported Python Types   |
 |--------------------------|
@@ -30,8 +36,11 @@ The `@udf` decorator in Hopsworks creates a metadata class called [`HopsworksUdf
 | datetime.date            |
 | datetime.time            |
 
+The `drop` argument is optional and specifies the input arguments to remove from the final output after all transformation functions are applied. By default, all input arguments are retained in the final transformed output. 
 
-Hopsworks supports four types of transformation functions:
+The `mode` argument controls the execution mode of transformation functions and accepts three values: `default`, `python`, or `pandas`. The `default` mode assumes the function can be executed as both a Python and Pandas UDF, the transformation function in this mode is  executed as a Python UDF for online inference and as a Pandas UDF for batch inference and training dataset generation. Setting mode to `pandas` forces the function to always run as a Pandas UDF, while setting the mode to `python` ensures it always runs as a Python UDF.
+
+Hopsworks supports four types of transformation functions across all execution modes:
 
 1. One-to-one: Transforms one feature into one transformed feature.
 2. One-to-many: Transforms one feature into multiple transformed features.
@@ -80,7 +89,7 @@ To create a one-to-many transformation function, the Hopsworks `@udf` decorato
 
         @udf(return_type=[int, int])
         def add_one_and_two(feature1):
-            return pd.DataFrame({"add_one":feature1 + 1, "add_two":feature1 + 2})
+            return feature1 + 1, feature1 + 2
         ```
 
 ### Many-to-many transformations
@@ -95,7 +104,67 @@ The creation of a many-to-many transformation function is similar to that of a o
 
         @udf(return_type=[int, int, int])
         def add_one_multiple(feature1, feature2, feature3):
+            return feature1 + 1, feature2 + 1, feature3 + 1
+        ```
+
+### Specifying execution modes
+
+The `mode` parameter of the `@udf` decorator can be used to specify the execution mode of the transformation function. 
+
+#### Default 
+This execution mode assumes that the transformation function is vectorized and can be executed as both a Pandas UDF and a Python UDF. It serves as the default mode used when the `mode` parameter is not specified. In this mode, the transformation function is executed as a Pandas UDF during training and in the batch inference pipeline, while it operates as a Python UDF during online inference.
+
+
+=== "Python"    
+    !!! example "Creating a many to many transformations function using the default execution mode"
+        ```python
+        from hopsworks import udf
+        import pandas as pd
+        
+        # "default" mode is used if the parameter `mode` is not explicitly set.
+        @udf(return_type=[int, int, int], drop=["feature1", "feature3"])
+        def add_one_multiple(feature1, feature2, feature3):
+            return feature1 + 1, feature2 + 1, feature3 + 1
+
+        @udf(return_type=[int, int, int], mode="default" drop=["feature1", "feature3"])
+        def add_two_multiple(feature1, feature2, feature3):
+            return feature1 + 2, feature2 + 2, feature3 + 2
+        ```
+
+#### Python 
+The transformation function can be configured to always execute as a Python UDF by setting the `mode` parameter of the `@udf` decorator to `python`.
+
+
+=== "Python"    
+    !!! example "Creating a many to many transformation function as a Python UDF"
+        ```python
+        from hopsworks import udf
+        import pandas as pd
+
+        @udf(return_type=[int, int, int], mode = "python", drop=["feature1", "feature3"])
+        def add_one_multiple(feature1, feature2, feature3):
+            return feature1 + 1, feature2 + 1, feature3 + 1
+        ```
+
+#### Pandas 
+The transformation function can be configured to always execute as a Pandas UDF by setting the `mode` parameter of the `@udf` decorator to `pandas`.
+
+
+=== "Python"    
+    !!! example "Creating a many to many transformations function as a Pandas UDF"
+        ```python
+        from hopsworks import udf
+        import pandas as pd
+
+        # A Pandas UDF returning a Pandas DataFrame
+        @udf(return_type=[int, int, int], mode = "pandas", drop=["feature1", "feature3"])
+        def add_one_multiple(feature1, feature2, feature3):
             return pd.DataFrame({"add_one_feature1":feature1 + 1, "add_one_feature2":feature2 + 1, "add_one_feature3":feature3 + 1})
+
+        # A Pandas UDF returning multiple Pandas Series
+        @udf(return_type=[int, int, int], mode="pandas" drop=["feature1", "feature3"])
+        def add_two_multiple(feature1, feature2, feature3):
+            return feature1 + 2, feature2 + 2, feature3 + 2
         ```
 
 ### Dropping input features
@@ -111,7 +180,7 @@ The `drop` parameter of the `@udf` decorator is used to drop specific column
 
         @udf(return_type=[int, int, int], drop=["feature1", "feature3"])
         def add_one_multiple(feature1, feature2, feature3):
-            return pd.DataFrame({"add_one_feature1":feature1 + 1, "add_one_feature2":feature2 + 1, "add_one_feature3":feature3 + 1})
+            return feature1 + 1, feature2 + 1, feature3 + 1
         ```
 
 ### Training dataset statistics
