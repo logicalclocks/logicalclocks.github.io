@@ -44,6 +44,3 @@ After you find the correct service you will be able to **start**, **stop** or **
 
     Stopping some services like the web server (glassfish_domain1) is not recommended. If you stop it you will have to
     access the machine running the service and start it with ```systemctl start glassfish_domain1```. 
-
-## Conclusion
-In this guide you learned how to manage services in Hopsworks.

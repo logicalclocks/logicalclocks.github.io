@@ -41,6 +41,3 @@ In the **Cluster Settings** _Authentication_ tab you can configure how users aut
 
 In the figure above we see a cluster with Two-factor authentication disabled, OAuth enabled with one registered 
 identity provider and LDAP authentication enabled. 
-
-## Conclusion
-In this guide you learned how to configure authentication methods in Hopsworks.

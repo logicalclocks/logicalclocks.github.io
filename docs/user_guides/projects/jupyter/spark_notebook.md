@@ -134,6 +134,6 @@ Navigate back to Hopsworks and a Spark session will have appeared, click on the 
   </figure>
 </p>
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to configure and run a Spark application in Jupyter. You can now follow this [guide](../python/python_install.md) to install a library that can be used in a notebook.
+You can learn how to [install a library](../python/python_install.md) so that it can be used in a notebook.

@@ -66,7 +66,3 @@ _Okta domain_ (_Connection URL_), _client id_ and _client secret_ generated for 
 
     When copying the domain in the figure above make sure to add the url scheme (http:// or https://) when using it 
     in the _Connection URL_ in the [Identity Provider registration form](../create-client).
-
-## Conclusion
-In this guide you learned how to create a client in your Okta identity provider and 
-acquire a _client id_ and a _client secret_.

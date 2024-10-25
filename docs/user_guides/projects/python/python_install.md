@@ -86,6 +86,6 @@ In the case of a private git repository, also select whether it is a GitHub or G
 </p>
 
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to install python libraries. Now you can use the library in a [Jupyter notebook](../jupyter/python_notebook.md) or a [Job](../jobs/python_job.md).
+Now you can use the library in a [Jupyter notebook](../jupyter/python_notebook.md) or a [Job](../jobs/python_job.md).

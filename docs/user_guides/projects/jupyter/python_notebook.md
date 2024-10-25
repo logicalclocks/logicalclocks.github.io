@@ -83,6 +83,6 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
 </p>
 
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to configure and run a Python application in Jupyter. You can now follow this [guide](../python/python_install.md) to install a library that can be used in a notebook.
+You can learn how to [install a library](../python/python_install.md) so that it can be used in a notebook.

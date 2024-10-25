@@ -3,6 +3,7 @@
 ## Introduction
 Hopsworks services produce metrics which are centrally gathered by [Prometheus](https://prometheus.io/) and visualized in [Grafana](../grafana).
 Although the system is self-contained, it is possible to export these metrics to third-party services or another Prometheus instance.
+This is useful if you have a centralized monitoring system with already configured alerts.
 
 ## Prerequisites
 In order to configure Prometheus to export metrics you need `root` SSH access to either Hopsworks or to the target server depending on the export method you choose below.
@@ -76,7 +77,3 @@ remote_write:
       max_samples_per_send: 5000
       batch_send_deadline: 60s
 ```
-
-## Conclusion
-In this guide we showed how you can push metrics outside of Hopsworks cluster using two methods, (a) federated Prometheus or (b) remote write to a custom service. This configuration is useful if you
-already have a centralized monitoring system with alerts already configured.

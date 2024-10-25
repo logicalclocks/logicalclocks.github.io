@@ -46,8 +46,6 @@ The default dashboards are read only and cannot be edited. Additional dashboards
 
     By default Hopsworks keeps metrics information only for the past 15 days. This means that, by default, you will not be able to access health and performance metrics which are older than 15 days.
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to access the Grafana dashboards to monitor the health and performance of the Hopsworks services.
-
-You can find additional documentation on Grafana itself at: [https://grafana.com/docs/](https://grafana.com/docs/)
+You can read [Grafana Documentation](https://grafana.com/docs/) to learn how to use it advancedly.

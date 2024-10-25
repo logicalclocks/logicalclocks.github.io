@@ -57,6 +57,6 @@ py_model.save(model_dir)
 
 ```
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to export a Python model to the Model Registry. You can also try attaching an [Input Example](../input_example.md) and a [Model Schema](../input_example.md) to your model to document the shape and type of the data the model was trained on.
+You can attach an [Input Example](../input_example.md) and a [Model Schema](../input_example.md) to your model to document the shape and type of the data the model was trained on.

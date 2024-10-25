@@ -35,6 +35,3 @@ Upon successful login, you will arrive at the landing page:
 
 In the landing page, you will find two buttons. Use these buttons to either create a 
 _demo project_ or [a new project](../../../projects/project/create_project).
-
-## Conclusion
-In this guide you learned how to log in to Hopsworks.

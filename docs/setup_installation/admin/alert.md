@@ -142,6 +142,3 @@ receivers:
           <!channel> summary: {{ .Annotations.summary }} description: {{
           .Annotations.description }}
 ```
-
-## Conclusion
-In this guide you learned how to configure alerts in Hopsworks.

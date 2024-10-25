@@ -212,6 +212,6 @@ You can find the expectationIds in the UI or using `fg.get_expectation_suite` an
 
 The integration between Hopsworks and Great Expectations makes it simple to add a data validation step to your feature engineering pipeline. Build your Expectation Suite and attach it to your Feature Group with a single line of code. No need to add any code to your pipeline or job scripts, calling `fg.insert` will now automatically validate the data before inserting them in the Feature Group. The validation reports are stored along your data in Hopsworks allowing us to provide basic monitoring capabilities to quickly spot a data quality issue in the UI.
 
-## Going further
+## Going Further
 
 If you wish to find out more about how to use the data validation API or best practices for development or production pipelines in Hopsworks, checkout the [advanced guide](data_validation_advanced.md) and [best practices guide](data_validation_best_practices.md).

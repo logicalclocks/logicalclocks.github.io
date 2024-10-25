@@ -17,6 +17,3 @@ If you forget your password start by clicking on **Forgot password** on the logi
 ### Step 2: Use the password reset link
 A password reset link will be sent to the email address you entered if the email is found in the system.
 Click on the reset link to set your new password.
-
-## Conclusion
-In this guide you learned how to recover your password.

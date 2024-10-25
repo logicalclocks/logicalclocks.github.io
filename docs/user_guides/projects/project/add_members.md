@@ -57,7 +57,3 @@ The invited user will now appear in the list of members and will have access to 
     <figcaption>List of project members</figcaption>
   </figure>
 </p>
-
-## Conclusion
-
-In this guide, you learned how to add a new member and the types of roles this member can be a part of.

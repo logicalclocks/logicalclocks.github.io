@@ -113,6 +113,3 @@ A user with a temporary password will see a warning message when going to _Accou
 !!! Note
 
     A temporary password should be changed as soon as possible.
-
-## Conclusion
-In this guide you learned how to manage users in Hopsworks.

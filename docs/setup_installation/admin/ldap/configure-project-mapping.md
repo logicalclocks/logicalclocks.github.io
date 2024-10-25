@@ -85,7 +85,3 @@ After configuring all the group mappings users will be added to or removed from 
 It is also possible to synchronize mappings without requiring users to log out. This can be done by setting ```ldap_group_mapping_sync_interval```
 to an interval greater or equal to 2 minutes. If ```ldap_group_mapping_sync_interval``` is set group mapping sync will run periodically based on the interval and
 add or remove users from projects.
-
-
-## Conclusion
-In this guide you learned how to configure LDAP group to project mapping.
