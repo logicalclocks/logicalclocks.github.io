@@ -79,6 +79,3 @@ Add mappings by clicking on *New role chaining*. Enter the project name. Select 
 Project member can now create connectors using *temporary credentials* to assume the role you configured. More detail about using temporary credentials can be found [here](../../user_guides/fs/storage_connector/creation/s3.md#temporary-credentials).
 
 Project member can see the list of role they can assume by going the _Project Settings_ -> [Assuming IAM Roles](../../../user_guides/projects/iam_role/iam_role_chaining) page.
-
-## Conclusion
-In this guide you learned how to configure and map AWS IAM roles to project roles in Hopsworks.

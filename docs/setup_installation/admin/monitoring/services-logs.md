@@ -40,8 +40,6 @@ Currently only the logs of the following services are collected and indexed: Hop
 
     By default, logs are rotated automatically after 7 days. This means that by default, you will not be able to access logs through OpenSearch Dashboards which are older than 7 days. Depending on the service and on the Hopsworks configuration, you can still access the logs by SSH directly into the machines of the cluster.
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to access the services logs using OpenSearch Dashboards from the Hopsworks admin page. 
-
-You can find additional documentation on OpenSearch Dashboards at: [https://opensearch.org/docs/latest/](https://opensearch.org/docs/latest/)
+You can read [OpenSearch Dashboards Documentation](https://opensearch.org/docs/latest/dashboards/) to learn how to use them advancedly.

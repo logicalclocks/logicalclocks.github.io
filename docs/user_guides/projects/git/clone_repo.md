@@ -112,6 +112,6 @@ Cloning a large repo or checking out a large branch may hit timeout errors. You 
 ### Symlink errors
 Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail. You can create a separate branch to remove the symlinks, and clone from this branch.
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to clone a Git repository. You can now start [Jupyter](../jupyter/python_notebook.md) from the cloned git repository path to work with the files.
+You can now start [Jupyter](../jupyter/python_notebook.md) from the cloned git repository path to work with the files.

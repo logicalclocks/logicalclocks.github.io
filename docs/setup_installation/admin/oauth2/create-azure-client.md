@@ -104,8 +104,3 @@ Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORK
     <figcaption>Configure platform: Redirect</figcaption>
   </figure>
 </p>
-
-
-## Conclusion
-In this guide you learned how to create a client in your Azure identity provider and 
-acquire a _client id_ and a _client secret_.

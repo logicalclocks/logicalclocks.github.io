@@ -66,6 +66,6 @@ Regardless the format, each line in the audit logs can contain the following var
     | pathInfo   | the URL path called by the client                                           |
     | dateTime   | time of the request                                                         |
  
-## Conclusion
+## Going Further
 
-In this guide we showed how you can configure audit logs in Hopsworks from the admin page and access the audit log files via SSH. To learn how to export audit logs, see [Export Audit Logs](../audit/export-audit-logs.md).
+You can [export audit logs](../audit/export-audit-logs.md) to use them outside Hopsworks.

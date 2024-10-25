@@ -24,7 +24,3 @@ An existing Anaconda environment can be exported as a yml file, clicking the `Ex
     <figcaption>Export environment</figcaption>
   </figure>
 </p>
-
-## Conclusion
-
-In this guide you learned how to export your python environment.

@@ -176,7 +176,3 @@ A number of different environment variables is available in the transformer to e
     | MODEL_NAME   | Name of the model being served by the current deployment |
     | MODEL_VERSION | Version of the model being served by the current deployment |
     | ARTIFACT_VERSION       | Version of the model artifact being served by the current deployment |
-
-## Conclusion
-
-In this guide you learned how to configure a transformer.

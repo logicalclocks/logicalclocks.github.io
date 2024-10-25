@@ -73,7 +73,3 @@ fig.savefig(model_images_dir + "/confusion_matrix.png")
 py_model = mr.python.create_model(name="py_model")
 py_model.save("./model")
 ```
-
-## Conclusion
-
-In this guide you learned how to attach model evaluation images to a model, visually communicating the model performance and evaluation metrics in the model registry.

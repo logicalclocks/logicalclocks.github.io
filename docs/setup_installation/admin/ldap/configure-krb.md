@@ -67,6 +67,3 @@ The login page will now have the choice to use Kerberos for authentication.
 
     Make sure that you have Kerberos properly configured on your computer and you are logged in.
     Kerberos support must also be configured on the browser to use Kerberos for authentication.
-
-## Conclusion
-In this guide you learned how to configure Kerberos for authentication.

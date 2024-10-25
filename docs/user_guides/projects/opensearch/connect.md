@@ -38,6 +38,6 @@ client = OpenSearch(**opensearch_api.get_default_py_config())
 
 [OpenSearch](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/opensearch/)
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to connect to the OpenSearch cluster. You can now use the client to interact directly with the OpenSearch cluster, such as [vector database](../../mlops/vector_database/index.md).
+You can now use the client to interact directly with the OpenSearch cluster, such as [vector database](../../mlops/vector_database/index.md).

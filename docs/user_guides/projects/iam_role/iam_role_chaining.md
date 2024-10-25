@@ -27,6 +27,3 @@ In the _Project Settings_ page you can find the _IAM Role Chaining_ section show
 ### Step 2: Use the IAM role 
 
 You can now use the IAM roles listed in your project when creating a storage connector with [Temporary Credentials](../../../fs/storage_connector/creation/s3/#temporary-credentials).
-
-## Conclusion
-In this guide you learned how to use IAM roles on a cluster deployed on an EC2 instances.

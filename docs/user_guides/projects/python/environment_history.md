@@ -21,6 +21,3 @@ If you had built the environment using custom commands you can go back to see wh
     <figcaption>Figure 2:  You can see custom commands that were used to create the environment by clicking on the button pointed. </figcaption>
   </figure>
 </p>
-
-# Conclusion
-In this guide, you have learned how you can track the changes of your Python environment.

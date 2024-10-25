@@ -216,7 +216,3 @@ print(f_err.read())
 [Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
 [Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
-
-## Conclusion
-
-In this guide you learned how to create and run a PySpark job.

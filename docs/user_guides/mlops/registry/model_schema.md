@@ -58,7 +58,3 @@ model = mr.tensorflow.create_model(name="mnist",
 model.save("./model")
 
 ```
-
-## Conclusion
-
-In this guide you learned how to attach an input example to your model.

@@ -92,6 +92,3 @@ Both Kerberos and LDAP attributes need to be specified to configure Kerberos. Th
 - spnego_server_conf: contains the configuration that will be appended to Payara's (application serve used to host hopsworks) 
   login.conf. In particular, it should contain useKeyTab=true, and the principal name to be used in the authentication phase. 
   Initiator should be set to false.
-
-## Conclusion
-In this guide you learned how to configure the application server for LDAP and Kerberos.

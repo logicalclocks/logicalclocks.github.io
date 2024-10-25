@@ -51,7 +51,3 @@ bq load --project_id <projectId> \
 
 !!! tip
         This command can be configured to run periodically on a given schedule by setting up a cronjob.
-
-## Conclusion
-
-In this guide you showed how you can export audit logs in your Hopsworks cluster to a BigQuery table.

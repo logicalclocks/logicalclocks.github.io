@@ -202,7 +202,3 @@ Resources include the number of replicas for the deployment as well as the resou
 ## API protocol
 
 Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. In general, you use gRPC when you need lower latency inference requests. To learn more about the REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).
-
-## Conclusion
-
-In this guide you learned how to create a deployment.

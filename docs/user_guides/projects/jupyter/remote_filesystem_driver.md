@@ -12,7 +12,3 @@ We provide two ways to access and persist files in HopsFS from a jupyter noteboo
 
 ## Configuring the driver
 To configure the driver you need to have admin role and set the `jupyter_remote_fs_driver` to either `hdfscontentsmanager` or `hopsfsmount`. The default driver is `hdfscontentsmanager`.
-
-## Conclusion
-
-In this guide you learned about the filesystem drivers for jupyter notebooks and how to configure them.

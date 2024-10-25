@@ -82,6 +82,6 @@ git_api.set_provider(PROVIDER, GITHUB_USER, API_TOKEN)
 
 [GitProvider](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/git_provider/)
 
-## Conclusion
+## Going Further
 
-In this guide you learned how configure your git provider credentials. You can now use the credentials to [clone a repository](clone_repo.md) from the configured provider.
+You can now use the credentials to [clone a repository](clone_repo.md) from the configured provider.

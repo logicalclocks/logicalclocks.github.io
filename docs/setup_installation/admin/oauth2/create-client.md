@@ -71,6 +71,3 @@ redirect to your identity provider.
     endpoint of the provider. The well-known URL, will typically be the _Connection URL_ plus 
     `.well-known/openid-configuration`. For the above client it would be 
     `https://dev-86723251.okta.com/.well-known/openid-configuration`.
-
-## Conclusion
-In this guide you learned how to register an identity provider in Hopsworks.
