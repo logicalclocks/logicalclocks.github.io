@@ -214,7 +214,6 @@ nav:
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
           - Configure Alerts: setup_installation/admin/alert.md
-          - Manage Services: setup_installation/admin/services.md
           - Monitoring:
              - Services Dashboards: setup_installation/admin/monitoring/grafana.md
              - Export metrics: setup_installation/admin/monitoring/export-metrics.md
