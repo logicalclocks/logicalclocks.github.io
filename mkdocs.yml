@@ -236,7 +236,7 @@ nav:
           - Audit:
              - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
              - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
-  - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/hopsworks-api/4.0/javadoc">Feature Store JavaDoc</a> </div></div>: https://docs.hopsworks.ai
+  - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/hopsworks-api/dev/javadoc">Feature Store JavaDoc</a> </div></div>: https://docs.hopsworks.ai
   - Community ↗: https://community.hopsworks.ai/
 
 theme:
