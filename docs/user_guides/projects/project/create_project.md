@@ -93,7 +93,3 @@ INTEGER, PRECISION, VIEWS, TIME, NUMERIC, SYNC, BASE, PYTHON37, FILEBEAT.
 
 And any word containing _FEATURESTORE.
 ```
-
-## Conclusion
-
-In this guide you learned how to create a project.

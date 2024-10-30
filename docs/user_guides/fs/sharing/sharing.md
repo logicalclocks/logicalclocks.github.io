@@ -92,7 +92,3 @@ fg_a = project_feature_store.get_or_create_feature_group(
 # join above feature groups
 query = shared_fg.select_all().join(fg_a.select_all())
 ```
-
-## Conclusion
-
-In this guide, you learned how to share a feature store and how to join features from different feature stores.

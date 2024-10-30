@@ -38,6 +38,3 @@ After your account is created an administrator needs to validate your account be
     <img width="400px" src="../../../../assets/images/auth/account-created.png" alt="Register" />
     <figcaption>Account created</figcaption>
   </figure>
-
-## Conclusion
-In this guide you learned how to create an account in Hopsworks.

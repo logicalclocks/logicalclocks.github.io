@@ -5,7 +5,7 @@ Hopsworks supports different methods of authentication. Here we will look at aut
 
 ## Prerequisites
 A Hopsworks cluster with LDAP authentication. 
-See [Configure LDAP](../../../../admin/ldap/configure-ldap) on how to configure LDAP on your cluster.
+See [Configure LDAP](../../../../setup_installation/admin/ldap/configure-ldap) on how to configure LDAP on your cluster.
 
 ### Step 1: Log in with LDAP
 If LDAP is configured you will see a _Log in using_ alternative on the login page. Choose LDAP and type in your 
@@ -38,6 +38,3 @@ After clicking on **Register** you will be redirected to the landing page:
 
 In the landing page, you will find two buttons. Use these buttons to either create a 
 _demo project_ or [a new project](../../../projects/project/create_project).
-
-## Conclusion
-In this guide you learned how to log in to Hopsworks using LDAP.

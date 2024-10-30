@@ -63,7 +63,7 @@ fg_prod.save_expectation_suite(
     validation_ingestion_policy="STRICT")
 ```
 
-In this setup, Hopsworks will abort inserting a DataFrame that does not successfully fullfill all expectations in the attached Expectation Suite. This ensures data quality standards are upheld for every insertion and provide downstream users with strong guarantees.
+In this setup, Hopsworks will abort inserting a DataFrame that does not successfully fulfill all expectations in the attached Expectation Suite. This ensures data quality standards are upheld for every insertion and provide downstream users with strong guarantees.
 
 ### Avoid Data Loss on materialization jobs
 
@@ -101,7 +101,7 @@ timeseries = pd.DataFrame(
 
 While checking your feature engineering pipeline executed properly in the morning can be good enough in the development phase, it won't make the cut for demanding production use-cases. In Hopsworks, you can setup alerts if ingestion fails or succeeds.
 
-First you will need to configure your preferred communication endpoint: slack, email or pagerduty. Check out [this page](../../../admin/alert.md) for more information on how to set it up. A typical use-case would be to add an alert on ingestion success to a Feature Group you created to hold data that failed validation. Here is a quick walkthrough:
+First you will need to configure your preferred communication endpoint: slack, email or pagerduty. Check out [this page](../../../setup_installation/admin/alert.md) for more information on how to set it up. A typical use-case would be to add an alert on ingestion success to a Feature Group you created to hold data that failed validation. Here is a quick walkthrough:
 
 1. Go the Feature Group page in the UI
 2. Scroll down and click on the `Add an alert` button.

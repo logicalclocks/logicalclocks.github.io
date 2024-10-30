@@ -1,5 +1,5 @@
-# Python Environment History
-The Hopsworks installation ships with a Miniconda environment that comes preinstalled with the most popular libraries you can find in a data scientist toolkit, including TensorFlow, PyTorch and sci-kit-learn. The environment may be managed using the Hopsworks Python service to install or manage libraries which may then be used in Jupyter or the Jobs service in the platform.
+# Environment History
+Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases. Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
 
 The Python virtual environment is shared by different members of the project. When a member of the project introduces a change to the environment i.e., installs/uninstalls a library, a new environment is created and it becomes a defacto environment for everyone in the project. It is therefore important to track how the environment has been changing over time i.e., what libraries were installed, uninstalled, upgraded, or downgraded when the environment was created and who introduced the changes. 
 
@@ -21,6 +21,3 @@ If you had built the environment using custom commands you can go back to see wh
     <figcaption>Figure 2:  You can see custom commands that were used to create the environment by clicking on the button pointed. </figcaption>
   </figure>
 </p>
-
-# Conclusion
-In this guide, you have learned how you can track the changes of your Python environment.

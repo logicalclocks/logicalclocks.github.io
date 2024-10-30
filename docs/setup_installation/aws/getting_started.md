@@ -1,266 +1,380 @@
-# Getting started with managed.hopsworks.ai (AWS)
+# AWS - Getting started
 
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) is our managed platform for running Hopsworks and the Feature Store
-in the cloud. It integrates seamlessly with third-party platforms such as Databricks,
-SageMaker and KubeFlow. This guide shows how to set up [managed.hopsworks.ai](https://managed.hopsworks.ai) with your organization's AWS account.
+Kubernetes and Helm are used to install & run Hopsworks and the Feature Store
+in the cloud. They both integrate seamlessly with third-party platforms such as Databricks,
+SageMaker and KubeFlow. This guide shows how to set up the Hopsworks platform in your organization's AWS account.
 
 ## Prerequisites
-To run the commands in this guide, you must have the AWS CLI installed and configured and your user must have at least the set of permission listed below. See the [Getting started guide](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html) in the AWS CLI User Guide for more information about installing and configuring the AWS CLI.
+
+To follow the instruction on this page you will need the following:
+
+- Kubernetes Version: Hopsworks can be deployed on AKS clusters running Kubernetes >= 1.27.0.
+- [aws-cli](https://aws.amazon.com/cli/) to provision the AWS resources 
+- [eksctl](https://eksctl.io/) to interact with the AWS APIs and provision the EKS cluster
+- [helm](https://helm.sh/) to deploy Hopsworks
+
+## ECR Registry
+
+Hopsworks allows users to customize the images used by Python jobs, Jupyter Notebooks and (Py)Spark applications running in their projects. The images are stored in ECR. Hopsworks needs access to an ECR repository to push the project images.
+
+## Permissions
+
+By default, the deployment requires cluster admin level access to be able to create a set of ClusterRoles, ServiceAccounts and ClusterRoleBindings. If you don’t have cluster admin level access, you can ask your administrator to provision the necessary ClusterRoles, ServiceAccounts and ClusterRoleBindings as described in the section below.
+
+A namespace is required to deploy the Hopsworks stack. If you don’t have permissions to create a namespace you should ask your K8s administrator to provision one for you.
+
+
+## EKS Deployment
+
+The following steps describe how to deploy an EKS cluster and related resources so that it’s compatible with Hopsworks.
+
+
+## Step 1: AWS EKS Setup
+
+### Step 1.1: Create S3 Bucket
+
+```bash
+aws s3 mb s3://BUCKET_NAME --region REGION --profile PROFILE
+```
+
+### Step 1.2: Create ECR Repository
+
+Create the repository to host the projects images. 
+
+```bash
+aws --profile PROFILE ecr create-repository --repository-name NAMESPACE/hopsworks-base --region REGION
+```
+
+### Step 1.3: Create IAM Policies
 
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "iam:CreateInstanceProfile",
-                "iam:PassRole",
-                "iam:CreateRole",
-                "iam:PutRolePolicy",
-                "iam:AddRoleToInstanceProfile",
-                "ec2:ImportKeyPair",
-                "ec2:CreateKeyPair",
-                "s3:CreateBucket"
-            ],
-            "Resource": "*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "hopsworksaiInstanceProfile",
+      "Effect": "Allow",
+      "Action": [
+        "S3:PutObject",
+        "S3:ListBucket",
+        "S3:GetObject",
+        "S3:DeleteObject",
+        "S3:AbortMultipartUpload",
+        "S3:ListBucketMultipartUploads",
+        "S3:PutLifecycleConfiguration",
+        "S3:GetLifecycleConfiguration",
+        "S3:PutBucketVersioning",
+        "S3:GetBucketVersioning",
+        "S3:ListBucketVersions",
+        "S3:DeleteObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME/*",
+        "arn:aws:s3:::BUCKET_NAME"
+      ]
+    },
+    {
+      "Sid": "AllowPushandPullImagesToUserRepo",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "ecr:CompleteLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:InitiateLayerUpload",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:PutImage",
+        "ecr:ListImages",
+        "ecr:BatchDeleteImage",
+        "ecr:GetLifecyclePolicy",
+        "ecr:PutLifecyclePolicy",
+        "ecr:TagResource"
+      ],
+      "Resource": [
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/hopsworks-base"
+      ]
+    }
+  ]
 }
 ```
 
-All the commands have unix-like quotation rules. These commands will need to be adapted to your terminal's quoting rules. See [Using quotation marks with strings](https://docs.aws.amazon.com/cli/v1/userguide/cli-usage-parameters-quoting-strings.html) in the AWS CLI User Guide.
+```bash
+aws --profile PROFILE iam create-policy --policy-name POLICY_NAME --policy-document file://policy.json
+```
 
-All the commands use the default AWS profile. Add the *--profile* parameter to use another profile. 
+### Step 1.4: Create EKS cluster using eksctl
 
-## Step 1: Connecting your AWS account
+When creating the cluster using eksctl the following parameters are required in the cluster configuration YAML file (eksctl.yaml):
 
-[Managed.hopsworks.ai](https://managed.hopsworks.ai) deploys Hopsworks clusters to your AWS account. To enable this you have to permit us to do so. This is done using an AWS cross-account role.
+- amiFamily should either be AmazonLinux2023 or Ubuntu2404
 
-<p align="center">
-  <iframe
-    title="Azure information video"
-    style="width:700px; height: 370px;"
-    src="https://www.youtube.com/embed/DLMBdA8d9nU"
-    frameBorder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowFullScreen
-  >
-  </iframe>
-</p>
+- Instance type should be Intel based or AMD (i.e not ARM)
 
-In [managed.hopsworks.ai](https://managed.hopsworks.ai/) click on *Connect to AWS* or go to *Settings* and click on *Configure* next to *AWS*. This will direct you to a page with the instructions needed to create the Cross account role and set up the connection. Follow the instructions.
+- The following policies are required: [IAM policies - eksctl](https://eksctl.io/usage/iam-policies/#attaching-policies-by-arn)
 
-!!! note 
-    it is possible to limit the permissions that are set up during this phase. For more details see [restrictive-permissions](restrictive_permissions.md).
-
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-role-instructions.png" alt="Screenshot of the instruction to create the cross account role">
-    <figcaption>Instructions to create the cross account role</figcaption>
-  </figure>
-</p>
-
-## Step 2: Creating storage
-
-!!! note 
-    If you prefer using terraform, you can skip this step and the remaining steps, and instead, follow [this guide](../common/terraform.md#getting-started-with-aws).
-
-The Hopsworks clusters deployed by [managed.hopsworks.ai](https://managed.hopsworks.ai) store their data in an S3 bucket in your AWS account.
-
-
-To create the bucket run the following command, replacing *BUCKET_NAME* with the name you want for your bucket and setting the region to the aws region in which you want to run your cluster.
-
-!!! warning
-    The bucket must be in the same region as the hopsworks cluster you are going to run
 
 ```bash
-aws s3 mb s3://BUCKET_NAME --region us-east-2
+- arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+- arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+- arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
 ```
 
-
-## Step 3: Creating Instance profile
-
-Hopsworks cluster nodes need access to certain resources such as the S3 bucket you created above, an ecr repository, and CloudWatch.
-
-
-First, create an instance profile by running:
-```bash
-aws iam create-instance-profile --instance-profile-name hopsworksai-instances
-```
-
-We will now create a role with the needed permissions for this instance profile. 
-Start by creating a file named *assume-role-policy.json* containing the following:
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Service": "ec2.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-        }
-    ]
-}
-```
-
-Run the following to create the role:
+The following is required if you are using the EKS AWS Load Balancer Controller to grant permissions to the controller to provision the necessary load balancers [Welcome: AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/)
 
 ```bash
-aws iam create-role --role-name hopsworksai-instances \
-   --description "Role for the hopsworks cluster instances" \
-   --assume-role-policy-document file://assume-role-policy.json
+      withAddonPolicies:
+        awsLoadBalancerController: true 
 ```
 
-Create a file called *instances-policy.json* containing the following permissions.
-{!setup_installation/aws/instance_profile_permissions.md!}
+You need to update the CLUSTER NAME and the POLICY ARN generated above
 
-Attach the permission to the role by running:
 ```bash
-aws iam put-role-policy --role-name hopsworksai-instances \
-   --policy-name hopsworksai-instances \
-   --policy-document file://instances-policy.json
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: CLUSTER_NAME
+  region: REGION
+  version: "1.29" 
+
+iam:
+  withOIDC: true
+
+managedNodeGroups:
+  - name: ng-1
+    amiFamily: AmazonLinux2023
+    instanceType: m6i.2xlarge
+    minSize: 1
+    maxSize: 4
+    desiredCapacity: 4
+    volumeSize: 100
+    ssh:
+      allow: true # will use ~/.ssh/id_rsa.pub as the default ssh key
+    iam:
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::827555229956:policy/POLICYNAME
+      withAddonPolicies:
+        awsLoadBalancerController: true
+addons:
+  - name: aws-ebs-csi-driver
+    wellKnownPolicies:      # add IAM and service account
+      ebsCSIController: true
 ```
 
-Finally, attach the role to the instance profile by running:
+You can create the EKS cluster using the following eksctl command:
+
 ```bash
-aws iam add-role-to-instance-profile \
-   --role-name hopsworksai-instances \
-   --instance-profile-name hopsworksai-instances
+eksctl create cluster -f eksctl.yaml --profile PROFILE
 ```
 
-## Step 4: Create an SSH key
-When deploying clusters, [managed.hopsworks.ai](https://managed.hopsworks.ai) installs an ssh key on the cluster's instances so that you can access them if necessary. For this purpose, you need to add an ssh key to your AWS EC2 environment. This can be done in two ways: [creating a new key pair](#step-31-create-a-new-key-pair) or [importing an existing key pair](#step-32-import-a-key-pair).
+Once the creation process is completed, you should be able to access the cluster using the kubectl CLI tool:
 
-### Step 4.1: Create a new key pair
-To create a new key pair run the following command replacing REGION by the region in which you want to run the hopsworks cluster.
 ```bash
-aws ec2 create-key-pair --key-name hopsworksai \
-    --region REGION
+kubectl get nodes
 ```
-The output is an ASCII version of the private key and key fingerprint. You need to save the key to a file.
 
-### Step 4.2: Import a key pair
-To import an existing key pair run the following command replacing *PATH_TO_PUBLIC_KEY* by the path to the public key on your machine and REGION by the region in which you want to run the hopsworks cluster.
+You should see the list of nodes provisioned for the cluster.
+
+### Step 1.4: Install the AWS LoadBalancer Addon
+
+For Hopsworks to provision the necessary network and application load balancers, we need to install the AWS LoadBalancer plugin (See [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html) )
 ```bash
-aws ec2 import-key-pair --key-name hopsworskai \
-   --public-key-material fileb://PATH_TO_PUBLIC_KEY \
-   --region REGION
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update eks
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=CLUSTER_NAME
 ```
 
-## Step 5: Deploying a Hopsworks cluster
+### Step 1.5: (Optional) Create GP3 Storage Class
 
-In [managed.hopsworks.ai](https://managed.hopsworks.ai), select *Create cluster*:
+By default EKS comes with GP2 as storage class. GP3 is more cost effective, we can use it with Hopsworks by creating the storage class
 
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance.png" alt="Create a Hopsworks cluster">
-    <figcaption>Create a Hopsworks cluster</figcaption>
-  </figure>
-</p>
+```bash
+kubectl apply -f - <<EOF
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-gp3
+provisioner: ebs.csi.aws.com
+parameters:
+  csi.storage.k8s.io/fstype: xfs
+  type: gp3
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+EOF
+```
 
-Select the *Region* in which you want your cluster to run (1), name your cluster (2).
+## Step 2: Hopsworks Deployment
 
-Select the *Instance type* (3) and *Local storage* (4) size for the cluster *Head node*.
+This section describes the steps required to deploy the Hopsworks stack using Helm.
 
-Check if you want to *Enable EBS encryption* (5)
+### Step 2.1: Add the Hopsworks Helm repository
 
-Enter the name of the *S3 bucket* (6) you created in [step 2](#step-2-creating-storage).
+- Configure Repo
 
-!!! note
-    The S3 bucket you are using must be empty.
+To obtain access to the Hopsworks helm chart repository, please obtain 
+an evaluation/startup licence [here](https://www.hopsworks.ai/try).
 
-Make sure that the *ECR AWS Account Id* (7) is correct. It is set by default to the AWS account id where you set the cross-account role and need to match the permissions you set in [step 3](#step-3-creating-instance-profile). 
-Press *Next*:
+Once you have the helm chart repository URL, replace the environment
+variable $HOPSWORKS_REPO in the following command with this URL.
 
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/create-instance-general.png" alt="Create a Hopsworks cluster, general Information">
-    <figcaption>Create a Hopsworks cluster, general information</figcaption>
-  </figure>
-</p>
+```bash
+helm repo add hopsworks $HOPSWORKS_REPO
+helm repo update hopsworks
+```
+
+- Create Hopsworks namespace 
+
+```bash
+kubectl create namespace hopsworks
+```
+
+- Update values.aws.yml
+
+```bash
+global:
+  _hopsworks:
+    storageClassName: ebs-gp3
+    cloudProvider: "AWS"
+    managedDockerRegistery:
+      enabled: true
+      domain: "ECR_AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com"
+      namespace: "NAMESPACE"
+      credHelper:
+        enabled: true
+        secretName: &awsregcred "awsregcred"
+    minio:
+      hopsfs:
+        enabled: false
+    externalLoadBalancers:
+      enabled: true
+      class: null
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+
+hopsworks:
+  variables:
+    docker_operations_managed_docker_secrets: *awsregcred
+    docker_operations_image_pull_secrets: "regcred"
+  dockerRegistry:
+    preset:
+      usePullPush: false
+      secrets:
+        - "regcred"
+        - *awsregcred
+  service:
+    worker:
+      external:
+        http:
+          type: NodePort
+  ingress:
+    enabled: true
+    ingressClassName: alb
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+   
+hopsfs:
+  objectStorage:
+    enabled: true
+    provider: "S3"
+    s3:
+      bucket: 
+        name: "BUCKET_NAME"
+      region: "REGION"
+
+consul:
+  consul:
+    server:
+      storageClass: ebs-gp3
+```
 
 
-Select the number of workers you want to start the cluster with (2).
-Select the *Instance type* (3) and *Local storage* size (4) for the *worker nodes*.
+- Run the Helm install 
 
-!!! note
-    It is possible to [add or remove workers](../common/adding_removing_workers.md) or to [enable autoscaling](../common/autoscaling.md) once the cluster is running.
-
-Press *Next*:
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/create-instance-workers-static.png" alt="Create a Hopsworks cluster, static workers configuration">
-    <figcaption>Create a Hopsworks cluster, static workers configuration</figcaption>
-  </figure>
-</p>
-
-Select the *SSH key* you created in [step 4](#step-4-create-an-ssh-key):
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-ssh.png" alt="Choose SSH key">
-    <figcaption>Choose SSH key</figcaption>
-  </figure>
-</p>
-
-Select the *Instance Profile* that you created in [step 3](#step-3-creating-instance-profile):
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-profile.png" alt="Choose the instance profile">
-    <figcaption>Choose the instance profile</figcaption>
-  </figure>
-</p>
-
-To backup the S3 bucket data when taking a cluster backup we need to set a retention policy for S3. You can deactivate the retention policy by setting this value to 0 but this will block you from taking any backup of your cluster. Choose the retention period in days and click on *Review and submit*:
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/azure/connect-azure-backup.png" alt="Choose the backup retention policy">
-    <figcaption>Choose the backup retention policy</figcaption>
-  </figure>
-</p>
-
-Review all information and select *Create*:
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/aws/connect-aws-review.png" alt="Review cluster information">
-    <figcaption>Review cluster information</figcaption>
-  </figure>
-</p>
-
-The cluster will start. This will take a few minutes:
-
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/booting.png" alt="Booting Hopsworks cluster">
-    <figcaption>Booting Hopsworks cluster</figcaption>
-  </figure>
-</p>
-
-As soon as the cluster has started, you will be able to log in to your new Hopsworks cluster. You will also be able to stop, restart, or terminate the cluster.
+```bash
+helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.aws.yaml --timeout=600s
+```
 
 
-<p align="center">
-  <figure>
-    <img style="border: 1px solid #000;width:700px" src="../../../assets/images/setup_installation/managed/common/running.png" alt="Running Hopsworks cluster">
-    <figcaption>Running Hopsworks cluster</figcaption>
-  </figure>
-</p>
+Using the kubectl CLI tool, you can track the deployment process. You can use the command below to track which pods are running and which ones are in the process of being provisioned. You can also use the command below to detect any failure.
 
-## Step 6: Next steps
+```bash
+kubectl -n hopsworks get pods
+```
+
+
+## Step 3: Resources Created
+
+Using the Helm chart and the values files the following resources are created:
+
+Load Balancers:
+```bash
+    externalLoadBalancers:
+      enabled: true
+      class: null
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+```
+
+Enabling the external load balancer in the values.yml file provisions the following load balancers for the following services:
+
+- arrowflight : This load balancer is used to send queries from external clients to the Hopsworks Query Service
+
+- kafka : This load balancer is used to send data to the Apache Kafka brokers for ingestion to the online feature store.
+
+- rdrs: This load balancer is used to query online feature store data using the REST APIs
+
+- mysql: This load balancer is used to query online feature store data using the MySQL APIs
+
+- opensearch : This load balancer is used to query the Hopsworks vector database
+
+
+On EKS using the AWS Load Balancers, the AWS controller deployed above will be responsible to provision the necessary load balancers. You can configure the load balancers using the annotations documented in the [AWS Load Balancer controller guide](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
+
+You can enable/disable individual load balancers provisioning using the following values in the values.yml file:
+
+- kafka.externalLoadBalancer.enabled
+
+- opensearch.externalLoadBalancer.enabled
+
+- rdrs.externalLoadBalancer.enabled
+
+- mysql.externalLoadBalancer.enabled
+
+Other load balancer providers are also supported by providing the appropriate controller, class and annotations.
+
+Ingress:
+
+```bash
+  ingress:
+    enabled: true
+    ingressClassName: alb
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+```
+
+Hopsworks UI and REST interface is available outside the K8s cluster using an Ingress. On AWS this is implemented by provisioning an application load balancer using the AWS load balancer controller.
+As per the load balancer above, the controller checks for the following annotations: [Annotations - AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
+
+HTTPS is required to access the Hopsworks UI, therefore you need to add the following annotation:
+
+```bash
+alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:xxxxx:certificate/xxxxxxx
+```
+
+To configure the TLS certificate the Application Load Balancer should use to terminate the connection. The certificate should be available in the [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)
+
+Cluster Roles and Cluster Role Bindings:
+
+By default a set of cluster roles are provisioned, if you don’t have permissions to provision cluster roles or cluster role bindings, you should reach out to your K8s administrator. You should then provide the appropriate resource names as value in the values.yml file.
+
+
+## Step 4: Next steps
 
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
-* Make Hopsworks services [accessible from outside services](../common/services.md)
 * Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
 * Follow one of our [tutorials](../../tutorials/index.md)
 * Follow one of our [Guide](../../user_guides/index.md)
-* Code examples and notebooks: [hops-examples](https://github.com/logicalclocks/hops-examples)

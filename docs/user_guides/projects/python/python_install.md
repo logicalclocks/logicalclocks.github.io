@@ -2,23 +2,35 @@
 
 ## Introduction
 
-The prepackaged python environment in Hopsworks contains a large number of libraries for data engineering, machine learning and more general data science development. But in some cases users want to install additional packages for their applications.
+Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases. Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
 
 In this guide, you will learn how to install Python packages using these different options.
 
 * PyPi, using pip package manager
 * A conda channel, using conda package manager
-* Packages saved in certain file formats, currently we support .whl or .egg
+* Packages contained in .whl format
 * A public or private git repository
 * A requirements.txt file to install multiple libraries at the same time using pip
-* An environment.yml file to install multiple libraries at the same time using conda and pip
-
-Under the `Project settings` section you can find the `Python libraries` setting.
 
 !!! notice "Notice"
     If your libraries require installing some extra OS-Level packages, refer to the guide custom commands guide on how to install OS-Level packages.
 
-### Name and version
+
+## Prerequisites
+
+In order to install a custom dependency one of the base environments must first be cloned, follow [this guide](python_env_clone.md) for that.
+
+### Step 1: Go to environments page
+
+Under the `Project settings` section select the `Python environment` setting.
+
+### Step 2: Select a CUSTOM environment
+
+Select the environment that you have previously cloned and want to modify.
+
+### Step 3: Installation options
+
+#### Name and version
 
 Enter the name and, optionally, the desired version to install.
 
@@ -29,7 +41,7 @@ Enter the name and, optionally, the desired version to install.
   </figure>
 </p>
 
-### Search
+#### Search
 
 Enter the search term and select a library and version to install.
 
@@ -40,7 +52,7 @@ Enter the search term and select a library and version to install.
   </figure>
 </p>
 
-### Distribution (.whl, .egg..)
+#### Distribution (.whl, .egg..)
 
 Install a python package by uploading the corresponding package file and selecting it in the file browser.
 
@@ -51,12 +63,20 @@ Install a python package by uploading the corresponding package file and selecti
   </figure>
 </p>
 
-### Git source
+#### Git source
 
-To install from a git repository simply provide the repository URL. The URL you should provide is the same as you would enter on the command line using `pip install git+{repo_url}`.
+The URL you should provide is the same as you would enter on the command line using `pip install git+{repo_url}`, where `repo_url` is the part that you enter in `Git URL`.
+
+For example to install matplotlib 3.7.2, the following are correct inputs:
+
+`matplotlib @ git+https://github.com/matplotlib/matplotlib@v3.7.2`
+
+`git+https://github.com/matplotlib/matplotlib@v3.7.2`
+
 In the case of a private git repository, also select whether it is a GitHub or GitLab repository and the preconfigured access token for the repository.
 
-**Note**: If you are installing from a git repository which is not GitHub or GitLab simply supply the access token in the URL. Keep in mind that in this case the access token may be visible in logs for other users in the same project to see.
+!!! notice "Keep your secrets safe"
+    If you are installing from a git repository which is not GitHub or GitLab simply supply the access token in the URL. Keep in mind that in this case the access token may be visible in logs for other users in the same project to see.
 
 <p align="center">
   <figure>
@@ -66,6 +86,6 @@ In the case of a private git repository, also select whether it is a GitHub or G
 </p>
 
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to install python libraries. Now you can use the library in a [Jupyter notebook](../jupyter/python_notebook.md) or a [Job](../jobs/python_job.md).
+Now you can use the library in a [Jupyter notebook](../jupyter/python_notebook.md) or a [Job](../jobs/python_job.md).

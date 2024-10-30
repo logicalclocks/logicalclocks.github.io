@@ -8,7 +8,7 @@ description: Documentation on how to configure and execute a Spark (Scala) job o
 
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
-- Python (*Hopsworks Enterprise only*)
+- Python
 - Apache Spark
 
 Launching a job of any type is very similar process, what mostly differs between job types is
@@ -43,7 +43,7 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job. Make sure `SPARK` is chocen.
+By default, the dialog will create a Spark job. Make sure `SPARK` is chosen.
 
 ### Step 4: Set the jar
 
@@ -85,6 +85,8 @@ Remember to handle the arguments inside your Spark script.
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
+* `Environment`: The environment to use, must be based on `spark-feature-pipeline`
+
 * `Driver memory`: Number of cores to allocate for the Spark driver
 
 * `Driver virtual cores`: Number of MBs to allocate for the Spark driver
@@ -98,8 +100,8 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
-    <figcaption>Resource configuration for the Spark kernels</figcaption>
+    <img src="../../../../assets/images/guides/jobs/spark_resource_and_compute.png" alt="Resource configuration for the Spark job">
+    <figcaption>Resource configuration for the Spark job</figcaption>
   </figure>
 </p>
 
@@ -115,8 +117,8 @@ Additional files or dependencies required for the Spark job can be configured.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
-    <figcaption>File configuration for the Spark kernels</figcaption>
+    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark job">
+    <figcaption>File configuration for the Spark job</figcaption>
   </figure>
 </p>
 
@@ -124,7 +126,7 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
+    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark job">
     <figcaption>Additional Spark configuration</figcaption>
   </figure>
 </p>
@@ -215,7 +217,3 @@ print(f_err.read())
 [Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
 [Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
-
-## Conclusion
-
-In this guide you learned how to create and run a Spark job.

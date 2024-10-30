@@ -85,6 +85,10 @@ By using partitioning the system will write the feature data in different subdir
 
 When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter. The currently support values are "HUDI", "DELTA", "NONE" (which defaults to Parquet). 
 
+##### Storage connector
+
+During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster. Currently, only [S3](../storage_connector/creation/s3.md) connectors and "DELTA" `time_travel_format` format is supported.
+
 
 #### Streaming Write API
 
@@ -212,7 +216,7 @@ The two things that influence the number of parquet files per partition are
 1. The number of feature group partitions written in a single insert
 2. The shuffle parallelism used by the table format
 
-For example, the inserted dataframe (unique combination of partition key values) will be parallised according to the following Hudi settings:
+For example, the inserted dataframe (unique combination of partition key values) will be parallelized according to the following Hudi settings:
 !!! example "Default Hudi partitioning"
     ```python
     write_options = {

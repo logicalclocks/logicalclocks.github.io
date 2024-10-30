@@ -34,15 +34,25 @@ If you have at least one model already trained and saved in the Model Registry, 
 
 Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
 
-### Step 2: Choose a model server
+### Step 2: Choose a framework
 
-A simplified creation form will appear, including the most common deployment fields from all available configurations. These fields include the [model server](#model-server) and [custom script](#custom-script) (for python models).
+A simplified creation form will appear, including the most common deployment fields from all available configurations. The first step is to select your model to serve, which is done by first selecting the framework the model was registered as in the model registry. 
+
+For example if you registered the model as a TensorFlow model using `ModelRegistry.tensorflow.create_model(...)` you select `Tensorflow` in the dropdown.
 
 <p align="center">
   <figure>
-    <img style="float: left; width: 45%; margin-right: 12px" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_tf.png" alt="Simplified deployment creation form for TensorFlow">
-    <img style="width: 45%;" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py.png" alt="Deployment simplified creation form for Python">
-    <figcaption>Simplified deployment creation forms for TensorFlow models (left) and Python models (right)</figcaption>
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_1.png" alt="Select the model framework">
+    <figcaption>Select the model framework</figcaption>
+  </figure>
+</p>
+
+All models registered for a specific framework will be listed in the model dropdown.
+
+<p align="center">
+  <figure>
+    <img style="max-width: 60%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_2.png" alt="Select the model">
+    <figcaption>Select the model</figcaption>
   </figure>
 </p>
 
@@ -59,13 +69,28 @@ For python models, if you want to use your own [predictor script](#step-2-option
   </figure>
 </p>
 
-### Step 4 (Optional): Enable KServe
+### Step 4 (Optional): Change predictor environment
+
+If you are using a predictor script it is also required to configure the inference environment for the predictor. This environment needs to have all the necessary dependencies installed to run your predictor script. 
+
+By default, we provide a set of environments like `tensorflow-inference-pipeline`, `torch-inference-pipeline` and `pandas-inference-pipeline` that serves this purpose for common machine learning frameworks. 
+
+To create your own it is recommended to [clone](../../projects/python/python_env_clone.md) the `minimal-inference-pipeline` and install additional dependencies for your use-case.
+
+<p align="center">
+  <figure>
+    <img style="max-width: 80%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_pred_env.png" alt="Predictor script in the simplified deployment form">
+    <figcaption>Select an environment for the predictor script</figcaption>
+  </figure>
+</p>
+
+### Step 5 (Optional): Enable KServe
 
 Other configuration such as the serving tool, is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>
-    <img style="max-width: 80%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <img style="max-width: 60%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
     <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
   </figure>
 </p>
@@ -79,7 +104,7 @@ Here, you change the [serving tool](#serving-tool) for your deployment by enabli
   </figure>
 </p>
 
-### Step 5 (Optional): Other advanced options 
+### Step 6 (Optional): Other advanced options 
 
 Additionally, you can adjust the default values of the rest of components:
 
@@ -154,7 +179,7 @@ my_predictor = ms.create_predictor(my_model,
                                    )
 ```
 
-### Step 3: Create a deployment with the predictor
+### Step 5: Create a deployment with the predictor
 
 ```python
 
@@ -184,7 +209,7 @@ Hopsworks Model Serving currently supports deploying models with a Flask server 
 ## Serving tool
 
 In Hopsworks, model servers can be deployed in three different ways: directly on Docker, on Kubernetes deployments or using KServe inference services.
-Although the same models can be deployed in either of our two serving tools (Python or KServe), the use of KServe is highly recommended. The following is a comparitive table showing the features supported by each of them.
+Although the same models can be deployed in either of our two serving tools (Python or KServe), the use of KServe is highly recommended. The following is a comparative table showing the features supported by each of them.
 
 ??? info "Show serving tools comparison"
 
@@ -251,7 +276,3 @@ Resources include the number of replicas for the deployment as well as the resou
 ## API protocol
 
 Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. In general, you use gRPC when you need lower latency inference requests. To learn more about the REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).
-
-## Conclusion
-
-In this guide you learned how to configure a predictor.

@@ -53,7 +53,7 @@ Identify your EMR EC2 instance profile in the EMR cluster summary:
 In the AWS Management Console, go to *IAM*, select *Roles* and then the EC2 instance profile used by your EMR cluster.
 Select *Add inline policy*. Choose *Secrets Manager* as a service, expand the *Read* access level and check *GetSecretValue*.
 Expand Resources and select *Add ARN*. Paste the ARN of the secret created in the previous step.
-Click on *Review*, give the policy a name und click on *Create policy*.
+Click on *Review*, give the policy a name and click on *Create policy*.
 
 <p align="center">
   <figure>

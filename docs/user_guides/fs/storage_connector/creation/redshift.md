@@ -22,7 +22,7 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **Database port:** The port of the cluster. Defaults to 5349.
 - **Authentication method:** There are three options available for authenticating with the Redshift cluster. The first option is to configure a username and a password. 
 The second option is to configure an IAM role. With IAM roles, Jobs or notebooks launched on Hopsworks do not need to explicitly authenticate with Redshift, as the HSFS library will transparently use the IAM role to acquire a temporary credential to authenticate the specified user. 
-Read more about IAM roles in our [AWS credentials passthrough guide](../../../../admin/roleChaining.md). Lastly, 
+Read more about IAM roles in our [AWS credentials pass-through guide](../../../../setup_installation/admin/roleChaining.md). Lastly, 
   option `Instance Role` will use the default ARN Role configured for the cluster instance.
 
 ## Creation in the UI
@@ -62,7 +62,7 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
     By default, the session duration that the role will be assumed for is 1 hour or 3600 seconds.
     This means if you want to use the storage connector for example to [read or create an external Feature Group from Redshift](../usage.md##creating-an-external-feature-group), the operation cannot take longer than one hour.
 
-    Your administrator can change the default session duration for AWS storage connectors, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming. And then changing the `fs_storage_connector_session_duration` [configuration property](../../../../admin/variables.md) to the appropriate value in seconds.
+    Your administrator can change the default session duration for AWS storage connectors, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming. And then changing the `fs_storage_connector_session_duration` [configuration property](../../../../setup_installation/admin/variables.md) to the appropriate value in seconds.
 
 ### Step 3: Upload the Redshift database driver (optional)
 

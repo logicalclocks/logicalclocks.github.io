@@ -59,7 +59,7 @@ When enabled you will be able to set the `CDC topic name` property.
   </figure>
 </p>
 
-### Update Feeature Group with Change Data Capture topic
+### Update Feature Group with Change Data Capture topic
 
 The notification topic name can be changed after creation by editing the feature group.
 By setting the `CDC topic name` value to empty the notifications will be disabled.

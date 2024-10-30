@@ -56,6 +56,6 @@ producer.flush(10)
 
 [KafkaTopic](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/kafka_topic/)
 
-## Conclusion
+## Going Further
 
-In this guide you learned how to produce messages to a Kafka Topic. Next step is to create a [Consumer](consume_messages.md) to read the messages from the topic.
+Now you can create a [Consumer](consume_messages.md) to read the messages from the topic.
