@@ -1,10 +1,28 @@
-# Provenance 
+# Provenance
 
-## Introduction 
+## Introduction
 
-Hopsworks feature store allows users to track provenance (lineage) between storage connectors, feature groups, feature views, training datasets and models. Tracking lineage allows users to determine where/if a feature group is being used. You can track if feature groups are being used to create additional (derived) feature groups or feature views.
+Hopsworks allows users to track provenance (lineage) between:
 
-You can interact with the provenance graph using the UI and the APIs.
+- storage connectors
+- feature groups
+- feature views
+- training datasets
+- models
+
+In the provenance pages we will call a provenance artifact or shortly artifact, any of the five entities above.
+
+When following the provenance graph:
+
+```
+storage connector -> feature group -> feature group -> feature view -> training dataset -> model
+```
+
+we will call the parent, the artifact to the left, and the child, the artifact to the right. So a feature view has a number of feature groups as parents and can have a number of training datasets as children.
+
+Tracking provenance allows users to determine where and if an artifact is being used. You can track, for example, if feature groups are being used to create additional (derived) feature groups or feature views, or if their data is eventually used to train models.
+
+You can interact with the provenance graph using the UI or the APIs.
 
 ## Step 1: Storage connector lineage
 
@@ -87,7 +105,7 @@ When creating a feature group, it is possible to specify a list of feature group
     # Retrieve the feature group
     profiles_fg = fs.get_external_feature_group("user_profiles", version=1)
 
-    # Do feature engineering 
+    # Do feature engineering
     age_df = transaction_df.merge(profiles_fg.read(), on="cc_num", how="left")
     transaction_df["age_at_transaction"] = (age_df["datetime"] - age_df["birthdate"]) / np.timedelta64(1, "Y")
 
@@ -103,7 +121,7 @@ When creating a feature group, it is possible to specify a list of feature group
     transaction_fg.insert(transaction_df)
     ```
 
-Another example use case for derived feature group is if you have a feature group containing features with daily resolution and you are using the content of that feature group to populate a second feature group with monthly resolution: 
+Another example use case for derived feature group is if you have a feature group containing features with daily resolution and you are using the content of that feature group to populate a second feature group with monthly resolution:
 
 === "Python"
 
@@ -112,7 +130,7 @@ Another example use case for derived feature group is if you have a feature grou
     daily_transaction_fg = fs.get_feature_group("daily_transaction", version=1)
     daily_transaction_df = daily_transaction_fg.read()
 
-    # Do feature engineering 
+    # Do feature engineering
     cc_group = daily_transaction_df[["cc_num", "amount", "datetime"]] \
                     .groupby("cc_num") \
                     .rolling("1M", on="datetime")
@@ -204,34 +222,16 @@ You can also traverse the provenance graph in the opposite direction. Starting f
     ```python
     lineage = transaction_fg.get_generated_feature_views()
 
-    # List all accessible downstream feature views 
+    # List all accessible downstream feature views
     lineage.accessible
 
-    # List all the inaccessible downstream feature views 
+    # List all the inaccessible downstream feature views
     lineage.inaccessible
     ```
 
-You can also traverse the provenance graph downstream to retrieve the models which use training datasets of this feature view as its parents.
-=== "Python"
+Users can call the [get_models_provenance](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#get_models_provenance) method which will return a [Link](#provenance-links) object.
 
-    ```python
-    models = fraud_fv.get_models_provenance()
-
-    # List all accessible models
-    lineage.accessible
-
-    # List all the inaccessible models
-    lineage.inaccessible
-    ```
-
-You can also retrieve only the models generated from specific training dataset versions:
-=== "Python"
-
-    ```python
-    models = fraud_fv.get_models_provenance(training_dataset_version: 1)
-    ```
-
-You can also retrive directly the accessible model objects, without the need to extract them from the provenance links object:
+You can also retrive directly the accessible models, without the need to extract them from the provenance links object:
 === "Python"
 
     ```python
@@ -252,7 +252,7 @@ Also we added a utility method to retrieve from the user's accessible models, th
     model = fraud_fv.get_newest_model(training_dataset_version: 1)
     ```
 
-### Using the UI 
+### Using the UI
 
 In the feature view overview UI you can explore the provenance graph of the feature view:
 
@@ -263,54 +263,10 @@ In the feature view overview UI you can explore the provenance graph of the feat
   </figure>
 </p>
 
-## Step 3: Model lineage
+## Provenance Links
 
-The relationship between feature views and models is captured automatically when you create a model. You can inspect the relationship between feature views and models using the APIs or the UI.
-=== "Python"
+All the `_provenance` methods return a `Link` dictionary object that contains `accessible`, `inaccesible`, `deleted` lists.
 
-    ```python
-    lineage = model.get_feature_view_provenance()
-
-    # List all accessible parent feature views
-    lineage.accessible
-
-    # List all deleted parent feature views
-    lineage.deleted
-
-    # List all the inaccessible parent feature views
-    lineage.inaccessible
-    ```
-
-You can also retrieve the training dataset provenance object.
-=== "Python"
-
-    ```python
-    lineage = model.get_training_dataset_provenance()
-
-    # List all accessible parent training datasets
-    lineage.accessible
-
-    # List all deleted parent training datasets
-    lineage.deleted
-
-    # List all the inaccessible parent training datasets
-    lineage.inaccessible
-    ```
-
-You can also retrieve directly the parent feature view object, without the need to extract them from the provenance links object
-=== "Python"
-
-    ```python
-    feature_view = model.get_feature_view()
-    ```
-This utility method also has the options to initialize the required components for batch or online retrieval of feature vectors. 
-=== "Python"
-
-    ```python
-    model.get_feature_view(init: bool = True, online: Optional[bool]: None)
-    ```
-
-By default, the base init for feature vector retrieval is enabled. In case you have a workflow that requires more particular options, you can disable this base init by setting the `init` to `false`.
-The method detects if it is running within a deployment and will initialize the feature vector retrieval for the serving.
-If the `online` argument is provided and `true` it will initialize for online feature vector retrieval.
-If the `online` argument is provided and `false` it will initialize the feature vector retrieval for batch scoring.
+- `accessible` - contains any artifact from the result, that the user has access to.
+- `inaccessible` - contains any artifacts that might have been shared at some point in the past, but where this sharing was retracted. Since the relation between artifacts is still maintained in the provenance, the user will only have access to limited metadata and the artifacts will be included in this `inaccessible` list.
+- `deleted` - contains artifacts that are deleted with children stil present in the system. There is minimum amount of metadata for the deleted allowing for some limited human readable identification.
