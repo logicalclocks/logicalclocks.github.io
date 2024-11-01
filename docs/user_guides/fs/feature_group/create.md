@@ -89,7 +89,7 @@ When you create a feature group, you can specify the table format you want to us
 
 During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster. Currently, only [S3](../storage_connector/creation/s3.md) connectors and "DELTA" `time_travel_format` format is supported.
 
-##### Online Config
+##### Online config
 
 While defining online-enabled feature groups it is also possible to configure an online table. You can specify [table options](https://docs.rondb.com/table_options/#table-options) by providing comments. Additionally, it is also possible to define whether online data is stored in memory or on disk using [table space](https://docs.rondb.com/disk_columns/#disk-columns).
 
