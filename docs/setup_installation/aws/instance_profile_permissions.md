@@ -48,7 +48,8 @@ Replace the following placeholders with their appropiate values
         "arn:aws:ecr:REGION:822623301872:repository/airflow",
         "arn:aws:ecr:REGION:822623301872:repository/git",
         "arn:aws:ecr:REGION:822623301872:repository/testconnector",
-        "arn:aws:ecr:REGION:822623301872:repository/flyingduck"
+        "arn:aws:ecr:REGION:822623301872:repository/flyingduck",
+        "arn:aws:ecr:REGION:822623301872:repository/rdrs"
       ]
     },
     {
@@ -81,7 +82,8 @@ Replace the following placeholders with their appropiate values
         "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/airflow",
         "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/git",
         "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/testconnector",
-        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/flyingduck"
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/flyingduck",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/rdrs"
       ]
     },
     {
