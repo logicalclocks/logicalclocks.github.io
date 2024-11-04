@@ -52,8 +52,8 @@ nav:
           - BI Tools: concepts/mlops/bi_tools.md
           - Data Transformations: concepts/mlops/data_transformations.md
       - Development:
-          - Outside Hopsworks: concepts/4.0/outside.md # api-keys
-          - Inside Hopsworks: concepts/4.0/inside.md
+          - Outside Hopsworks: concepts/dev/outside.md # api-keys
+          - Inside Hopsworks: concepts/dev/inside.md
   - Guides:
       - user_guides/index.md
       - Feature Store:
