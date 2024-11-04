@@ -17,7 +17,7 @@ from hsfs import embedding
 emb = embedding.EmbeddingIndex(index_name="news_fg")
 ```
 
-Then, add one or more embedding features to the index. Name and dimension of the embedding features are required for identifying which features should be indexed for k-nearest neighbor (KNN) search. In this example, we get the dimension of the embedding by taking the length of the value of the `embedding_heading` column in the first row of the dataframe `df`. Optionally, you can specify the similarity function among `l2_norm`, `cosine`, and `dot_product`. Refer to [add_embedding](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/embedding_index_api/#add_embedding) for the full list of arguments.
+Then, add one or more embedding features to the index. Name and dimension of the embedding features are required for identifying which features should be indexed for k-nearest neighbor (KNN) search. In this example, we get the dimension of the embedding by taking the length of the value of the `embedding_heading` column in the first row of the dataframe `df`. Optionally, you can specify the similarity function among `l2_norm`, `cosine`, and `dot_product`. Refer to [add_embedding](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/embedding_index_api/#add_embedding) for the full list of arguments.
 ```aidl
 # Add embedding feature to the index
 emb.add_embedding("embedding_heading", len(df["embedding_heading"][0]))
@@ -40,7 +40,7 @@ news_fg.insert(df)
 ```
 
 # Similarity Search for Feature Groups using Vector Embeddings
-You provide a vector embedding as a parameter to the search query using [`find_neighbors`](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#find_neighbors), and it returns the rows in the online feature group that have vector embedding values most similar to the provided vector embedding.
+You provide a vector embedding as a parameter to the search query using [`find_neighbors`](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#find_neighbors), and it returns the rows in the online feature group that have vector embedding values most similar to the provided vector embedding.
 
 It is also possible to filter rows by specifying a filter on any of the features in the feature group. The filter is pushed down to the vector database to improve query performance.
 

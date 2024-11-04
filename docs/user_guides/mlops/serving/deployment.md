@@ -40,7 +40,7 @@ After selecting the model, the rest of fields are filled automatically. We pick 
 !!! notice "Deployment name validation rules"
     A valid deployment name can only contain characters a-z, A-Z and 0-9.
 
-!!! info "Predictor script for Python models" 
+!!! info "Predictor script for Python models"
     For Python models, you can select a custom [predictor script](#predictor) to load and run the trained model by clicking on `From project` or `Upload new file`, to choose an existing script in the project file system or upload a new script, respectively.
 
 If you prefer, change the name of the deployment, model version or [artifact version](#model-artifact). Then, click on `Create new deployment` to create the deployment for your model.
@@ -135,7 +135,7 @@ Retrieve the trained model you want to deploy.
 my_model = mr.get_model("my_model", version=1)
 ```
 
-#### Option A: Using the model object 
+#### Option A: Using the model object
 
 ```python
 
@@ -159,7 +159,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Model Serving](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/)
+[Model Serving](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/model_serving_api/)
 
 ## Model Artifact
 

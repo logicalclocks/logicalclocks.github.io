@@ -57,4 +57,4 @@ And you can always also replace the dataframe contained within the Spine Group. 
 
 ### API Reference
 
-[SpineGroup](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/spine_group_api/#spinegroup)
+[SpineGroup](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/spine_group_api/#spinegroup)

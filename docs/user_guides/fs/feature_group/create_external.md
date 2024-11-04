@@ -26,7 +26,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
 
 ### Create an External Feature Group
 
-The first step is to instantiate the metadata through the `create_external_feature_group` method. Once you have defined the metadata, you can 
+The first step is to instantiate the metadata through the `create_external_feature_group` method. Once you have defined the metadata, you can
 [persist the metadata and create the feature group](#register-the-metadata) in Hopsworks by calling `fg.save()`.
 
 #### SQL based external feature group
@@ -37,7 +37,7 @@ The first step is to instantiate the metadata through the `create_external_featu
     query = """
         SELECT TO_NUMERIC(ss_store_sk) AS ss_store_sk
             , AVG(ss_net_profit) AS avg_ss_net_profit
-            , SUM(ss_net_profit) AS total_ss_net_profit 
+            , SUM(ss_net_profit) AS total_ss_net_profit
             , AVG(ss_list_price) AS avg_ss_list_price
             , AVG(ss_coupon_amt) AS avg_ss_coupon_amt
             , sale_date
@@ -58,7 +58,7 @@ The first step is to instantiate the metadata through the `create_external_featu
     fg.save()
     ```
 
-#### Data Lake based external feature group 
+#### Data Lake based external feature group
 
 === "Python"
 
@@ -75,13 +75,13 @@ The first step is to instantiate the metadata through the `create_external_featu
     fg.save()
     ```
 
-The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup). `name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
+The full method documentation is available [here](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup). `name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
 
 The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
 If the storage connector is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the storage connector is defined for a data lake, the location of the data as well as the format need to be provided.
 
-Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported. 
+Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported.
 
 ### Register the metadata
 
@@ -89,7 +89,7 @@ In the snippet above it's important that the created metadata object gets regist
 
 === "Python"
 
-    ```python 
+    ```python
     fg.save()
     ```
 
@@ -118,19 +118,19 @@ You can enable online storage for external feature groups, however, the sync fro
     external_fg.insert(df)
     ```
 
-The `insert()` method takes a DataFrame as parameter and writes it _only_ to the online feature store. Users can select which subset of the feature group data they want to make available on the online feature store by using the [query APIs](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/query_api/).
+The `insert()` method takes a DataFrame as parameter and writes it _only_ to the online feature store. Users can select which subset of the feature group data they want to make available on the online feature store by using the [query APIs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/query_api/).
 
 ### Limitations
 
 Hopsworks Feature Store does not support time-travel queries on external feature groups.
 
 Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
-Nevertheless, external feature groups defined top of any storage connector can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_validation_test_split)
+Nevertheless, external feature groups defined top of any storage connector can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_validation_test_split)
 
 
-### API Reference 
+### API Reference
 
-[External FeatureGroup](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup)
+[External FeatureGroup](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/external_feature_group_api/#externalfeaturegroup)
 
 ## Create using the UI
 
