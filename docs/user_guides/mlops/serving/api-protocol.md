@@ -93,4 +93,4 @@ my_deployment.save()
 
 ### API Reference
 
-[API Protocol](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/api-protocol/)
+[API Protocol](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/#api_protocol)

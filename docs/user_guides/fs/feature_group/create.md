@@ -2,7 +2,7 @@
 description: Documentation on how to create a Feature Group and the different APIs available to insert data to a Feature Group in Hopsworks.
 ---
 
-# How to create a Feature Group 
+# How to create a Feature Group
 
 ### Introduction
 
@@ -16,7 +16,7 @@ Before you begin this guide we suggest you read the [Feature Group](../../../con
 
 To create a feature group using the HSFS APIs, you need to provide a Pandas, Polars or Spark DataFrame. The DataFrame will contain all the features you want to register within the feature group, as well as the primary key, event time and partition key.
 
-### Create a Feature Group 
+### Create a Feature Group
 
 The first step to create a feature group is to create the API metadata object representing a feature group. Using the HSFS API you can execute:
 
@@ -36,15 +36,15 @@ The first step to create a feature group is to create the API metadata object re
     )
     ```
 
-The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup). If you need to create a feature group with vector similarity search supported, refer to [this guide](../vector_similarity_search.md#extending-feature-groups-with-similarity-search). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group. 
+The full method documentation is available [here](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup). If you need to create a feature group with vector similarity search supported, refer to [this guide](../vector_similarity_search.md#extending-feature-groups-with-similarity-search). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group.
 
-In the example above we created the first version of a feature group named *weather*, we provide a description to make it searchable to the other project members, as well as making the feature group available online. 
+In the example above we created the first version of a feature group named *weather*, we provide a description to make it searchable to the other project members, as well as making the feature group available online.
 
-Additionally we specify which columns of the DataFrame will be used as primary key, partition key and event time. Composite primary key and multi level partitioning is also supported. 
+Additionally we specify which columns of the DataFrame will be used as primary key, partition key and event time. Composite primary key and multi level partitioning is also supported.
 
-The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one. 
+The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
-The last parameter used in the examples above is `stream`. The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store. When using the APIs in a Python environment this behavior is the default and it requires the time travel format to be set to 'HUDI'.  
+The last parameter used in the examples above is `stream`. The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store. When using the APIs in a Python environment this behavior is the default and it requires the time travel format to be set to 'HUDI'.
 
 ##### Primary key
 
@@ -53,7 +53,7 @@ When writing data on the online feature store, existing rows with the same prima
 
 ##### Event time
 
-The event time column represents the time at which the event was generated. For example, with transaction data, the event time is the time at which a given transaction happened. 
+The event time column represents the time at which the event was generated. For example, with transaction data, the event time is the time at which a given transaction happened.
 In the context of feature pipelines, the event time is often also the end timestamp of the interval of events included in the feature computation. For example, computing the feature "number of purchases by customer last week", the event time should be the last day of this "last week" window.
 
 The event time is added to the primary key when writing to the offline feature store. This will make sure that the offline feature store has the entire history of feature values over time. As an example, if a user has made multiple purchases on a website, each of the purchases for a given user (identified by a user_id) will be saved in the feature group, with each purchase having a different event time (the combination of user_id and event_time makes up the primary key for the offline feature store).
@@ -66,9 +66,9 @@ The event time **is not** part of the primary key when writing to the online fea
 ##### Partition key
 
 It is best practice to add a partition key. When you specify a partition key, the data in the feature group will be stored under multiple directories based on the value of the partition column(s).
-All the rows with a given value as partition key will be stored in the same directory. 
+All the rows with a given value as partition key will be stored in the same directory.
 
-Choosing the correct partition key has significant impact on the query performance as the execution engine (Spark) will be able to skip listing and reading files belonging to partitions which are not included in the query. 
+Choosing the correct partition key has significant impact on the query performance as the execution engine (Spark) will be able to skip listing and reading files belonging to partitions which are not included in the query.
 As an example, if you have partitioned your feature group by day and you are creating a training dataset that includes only the last year of data, Spark will read only 365 partitions and not the entire history of data.
 On the other hand, if the partition key is too fine grained (e.g. timestamp at millisecond resolution) - a large number of small partitions will be generated. This will slow down query execution as Spark will need to list and read a large amount of small directories/files.
 
@@ -83,7 +83,7 @@ By using partitioning the system will write the feature data in different subdir
 
 ##### Table format
 
-When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter. The currently support values are "HUDI", "DELTA", "NONE" (which defaults to Parquet). 
+When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter. The currently support values are "HUDI", "DELTA", "NONE" (which defaults to Parquet).
 
 ##### Storage connector
 
@@ -279,19 +279,19 @@ advised to utilize separate topics when ingestions overlap or there is a large f
 
 The snippet above only created the metadata object on the Python interpreter running the code. To register the feature group metadata and to save the feature data with Hopsworks, you should invoke the `insert` method:
 
-```python 
+```python
 fg.insert(df)
 ```
 
-The save method takes in input a Pandas, Polars or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time. 
+The save method takes in input a Pandas, Polars or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time.
 
 The DataFrame *must* contain the columns specified as primary keys, partition key and event time in the `create_feature_group` call.
 
 If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.
 
-### API Reference 
+### API Reference
 
-[FeatureGroup](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup)
+[FeatureGroup](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup)
 
 ## Create using the UI
 

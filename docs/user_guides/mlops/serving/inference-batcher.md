@@ -94,7 +94,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Inference Batcher](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/inference_batcher_api/)
+[Inference Batcher](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/inference_batcher_api/)
 
 ## Compatibility matrix
 
