@@ -154,6 +154,7 @@ nav:
               - Run Python Job: user_guides/projects/jobs/python_job.md
               - Run Jupyter Notebook Job: user_guides/projects/jobs/notebook_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
+          - Kubernetes Scheduling: user_guides/projects/scheduling/kube_scheduler.md
           - Airflow: user_guides/projects/airflow/airflow.md
           - OpenSearch:
               - Connect: user_guides/projects/opensearch/connect.md
