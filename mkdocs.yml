@@ -147,11 +147,13 @@ nav:
           - Jupyter:
               - Run Python Notebook: user_guides/projects/jupyter/python_notebook.md
               - Run PySpark Notebook: user_guides/projects/jupyter/spark_notebook.md
+              - Run Ray Notebook: user_guides/projects/jupyter/ray_notebook.md
               - Remote Filesystem Driver: user_guides/projects/jupyter/remote_filesystem_driver.md
           - Jobs:
               - Run PySpark Job: user_guides/projects/jobs/pyspark_job.md
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
               - Run Python Job: user_guides/projects/jobs/python_job.md
+              - Run Ray Job: user_guides/projects/jobs/ray_job.md
               - Run Jupyter Notebook Job: user_guides/projects/jobs/notebook_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
           - Airflow: user_guides/projects/airflow/airflow.md
