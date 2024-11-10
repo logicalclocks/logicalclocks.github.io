@@ -89,6 +89,35 @@ When you create a feature group, you can specify the table format you want to us
 
 During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster. Currently, only [S3](../storage_connector/creation/s3.md) connectors and "DELTA" `time_travel_format` format is supported.
 
+##### Online Table Configuration
+
+When defining online-enabled feature groups it is also possible to configure the online table. You can specify [table options](https://docs.rondb.com/table_options/#table-options) by providing comments. Additionally, it is also possible to define whether online data is stored in memory or on disk using [table space](https://docs.rondb.com/disk_columns/#disk-columns).
+
+The code example shows the creation of an online-enabled feature group that stores online data on disk using `ts_1` table space and sets several table properties in the comment section.
+
+```
+fg = fs.create_feature_group(
+    name='air_quality',
+    description='Air Quality characteristics of each day',
+    version=1,
+    primary_key=['city','date'],
+    online_enabled=True,
+    online_config={'table_space': 'ts_1', 'online_comments': ['NDB_TABLE=READ_BACKUP=1', 'NDB_TABLE=PARTITION_BALANCE=FOR_RP_BY_LDM_X_2']}
+)
+```
+
+!!! note Table Space
+    The table space needs to be provisioned at system level before it can be used. You can do so by adding the following parameters to the values.yaml file used for your deployment with the Helm Charts:
+
+    ```yaml
+    rondb:
+      resources:
+        requests:
+          storage:
+            diskColumnGiB: 2
+    ```
+
+
 
 #### Streaming Write API
 
