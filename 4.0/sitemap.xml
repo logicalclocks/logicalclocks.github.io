@@ -166,11 +166,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://docs.hopsworks.ai/latest/reference_guides/</loc>
-         <lastmod>2024-11-10</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/</loc>
          <lastmod>2024-11-10</lastmod>
          <changefreq>daily</changefreq>
