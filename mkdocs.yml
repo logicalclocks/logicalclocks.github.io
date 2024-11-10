@@ -1,5 +1,5 @@
 site_name: "Hopsworks Documentation"
-site_description: "Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the 4.0elopment and operation of machine learning models at scale."
+site_description: "Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the development and operation of machine learning models at scale."
 site_author: "Hopsworks"
 site_url: "https://docs.hopsworks.ai/"
 
@@ -52,8 +52,8 @@ nav:
           - BI Tools: concepts/mlops/bi_tools.md
           - Data Transformations: concepts/mlops/data_transformations.md
       - Development:
-          - Outside Hopsworks: concepts/4.0/outside.md # api-keys
-          - Inside Hopsworks: concepts/4.0/inside.md
+          - Outside Hopsworks: concepts/dev/outside.md # api-keys
+          - Inside Hopsworks: concepts/dev/inside.md
   - Guides:
       - user_guides/index.md
       - Feature Store:
@@ -195,6 +195,7 @@ nav:
               - API Protocol: user_guides/mlops/serving/api-protocol.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
           - Vector Database: user_guides/mlops/vector_database/index.md
+          - Provenance: user_guides/mlops/provenance/provenance.md
       - Migration:
           - 3.X to 4.0: user_guides/migration/40_migration.md
   - Setup and Administration:

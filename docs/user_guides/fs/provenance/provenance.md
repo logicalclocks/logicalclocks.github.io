@@ -2,9 +2,27 @@
 
 ## Introduction
 
-Hopsworks feature store allows users to track provenance (lineage) between storage connectors, feature groups, feature views, training datasets and models. Tracking lineage allows users to determine where/if a feature group is being used. You can track if feature groups are being used to create additional (derived) feature groups or feature views.
+Hopsworks allows users to track provenance (lineage) between:
 
-You can interact with the provenance graph using the UI and the APIs.
+- storage connectors
+- feature groups
+- feature views
+- training datasets
+- models
+
+In the provenance pages we will call a provenance artifact or shortly artifact, any of the five entities above.
+
+With the following provenance graph:
+
+```
+storage connector -> feature group -> feature group -> feature view -> training dataset -> model
+```
+
+we will call the parent, the artifact to the left, and the child, the artifact to the right. So a feature view has a number of feature groups as parents and can have a number of training datasets as children.
+
+Tracking provenance allows users to determine where and if an artifact is being used. You can track, for example, if feature groups are being used to create additional (derived) feature groups or feature views, or if their data is eventually used to train models.
+
+You can interact with the provenance graph using the UI or the APIs.
 
 ## Step 1: Storage connector lineage
 
@@ -211,6 +229,29 @@ You can also traverse the provenance graph in the opposite direction. Starting f
     lineage.inaccessible
     ```
 
+Users can call the [get_models_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#get_models_provenance) method which will return a [Link](#provenance-links) object.
+
+You can also retrive directly the accessible models, without the need to extract them from the provenance links object:
+=== "Python"
+
+    ```python
+    #List all accessible models
+    models = fraud_fv.get_models()
+
+    #List accessible models trained from a specific training dataset version
+    models = fraud_fv.get_models(training_dataset_version: 1)
+    ```
+
+Also we added a utility method to retrieve from the user's accessible models, the last trained one. Last is determined based on timestamp when it was saved into the model registry.
+=== "Python"
+
+    ```python
+    #Retrieve newest model from all user's accessible models based on this feature view
+    model = fraud_fv.get_newest_model()
+    #Retrieve newest model from all user's accessible models based on this training dataset version
+    model = fraud_fv.get_newest_model(training_dataset_version: 1)
+    ```
+
 ### Using the UI
 
 In the feature view overview UI you can explore the provenance graph of the feature view:
@@ -221,3 +262,11 @@ In the feature view overview UI you can explore the provenance graph of the feat
     <figcaption>Feature view provenance graph</figcaption>
   </figure>
 </p>
+
+## Provenance Links
+
+All the `_provenance` methods return a `Link` dictionary object that contains `accessible`, `inaccesible`, `deleted` lists.
+
+- `accessible` - contains any artifact from the result, that the user has access to.
+- `inaccessible` - contains any artifacts that might have been shared at some point in the past, but where this sharing was retracted. Since the relation between artifacts is still maintained in the provenance, the user will only have access to limited metadata and the artifacts will be included in this `inaccessible` list.
+- `deleted` - contains artifacts that are deleted with children stil present in the system. There is minimum amount of metadata for the deleted allowing for some limited human readable identification.
