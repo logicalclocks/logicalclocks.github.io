@@ -195,6 +195,7 @@ nav:
               - API Protocol: user_guides/mlops/serving/api-protocol.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
           - Vector Database: user_guides/mlops/vector_database/index.md
+          - Provenance: user_guides/mlops/provenance/provenance.md
       - Migration:
           - 3.X to 4.0: user_guides/migration/40_migration.md
   - Setup and Administration:
