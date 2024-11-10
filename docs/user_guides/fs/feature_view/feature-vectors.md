@@ -1,10 +1,10 @@
 # Feature Vectors
-The Hopsworks Platform integrates real-time capabilities with its Online Store. Based on [RonDB](https://www.rondb.com/), your feature vectors are served at scale at in-memory latency (~1-10ms). Checkout the benchmarks results [here](https://www.hopsworks.ai/post/feature-store-benchmark-comparison-hopsworks-and-feast#images-2) and the code [here](https://github.com/featurestoreorg/featurestore-benchmarks). The same Feature View which was used to create training datasets can be used to retrieve feature vectors for real-time predictions. This allows you to serve the same features to your model in training and serving, ensuring consistency and reducing boilerplate. Whether you are either inside the Hopsworks platform, a model serving platform, or in an external environment, such as your application server. 
+The Hopsworks Platform integrates real-time capabilities with its Online Store. Based on [RonDB](https://www.rondb.com/), your feature vectors are served at scale at in-memory latency (~1-10ms). Checkout the benchmarks results [here](https://www.hopsworks.ai/post/feature-store-benchmark-comparison-hopsworks-and-feast#images-2) and the code [here](https://github.com/featurestoreorg/featurestore-benchmarks). The same Feature View which was used to create training datasets can be used to retrieve feature vectors for real-time predictions. This allows you to serve the same features to your model in training and serving, ensuring consistency and reducing boilerplate. Whether you are either inside the Hopsworks platform, a model serving platform, or in an external environment, such as your application server.
 
 Below is a practical guide on how to use the Online Store Python and Java Client. The aim is to get you started quickly by providing code snippets which illustrate various use cases and functionalities of the clients. If you need to get more familiar with the concept of feature vectors, you can read this [short introduction](../../../concepts/fs/feature_view/online_api.md) first.
 
 ## Retrieval
-You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view. Note that filters defined in feature view and training data will not be applied when feature vectors are returned. If you need to retrieve a complete value of feature vectors without missing values, the required `entry` are [feature_view.primary_keys](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#primary_keys). Alternative, you can provide the primary key of the feature groups as the key of the entry. It is also possible to provide a subset of the entry, which will be discussed [below](#partial-feature-retrieval).
+You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view. Note that filters defined in feature view and training data will not be applied when feature vectors are returned. If you need to retrieve a complete value of feature vectors without missing values, the required `entry` are [feature_view.primary_keys](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#primary_keys). Alternative, you can provide the primary key of the feature groups as the key of the entry. It is also possible to provide a subset of the entry, which will be discussed [below](#partial-feature-retrieval).
 
 === "Python"
     ```python
@@ -38,7 +38,7 @@ You can get back feature vectors from either python or java client by providing 
     ```
 
 ### Required entry
-Starting from python client v3.4, you can specify different values for the primary key of the same name which exists in multiple feature groups but are not joint by the same name. The table below summarises the value of `primary_keys` in different settings. Considering that you are joining 2 feature groups, namely, `left_fg` and `right_fg`, the feature groups have different primary keys, and features (`feature_*`) in each setting. Also, the 2 feature groups are [joint](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/query_api/#join) on different *join conditions* and *prefix* as `left_fg.join(right_fg, <join conditions>, prefix=<prefix>)`.
+Starting from python client v3.4, you can specify different values for the primary key of the same name which exists in multiple feature groups but are not joint by the same name. The table below summarises the value of `primary_keys` in different settings. Considering that you are joining 2 feature groups, namely, `left_fg` and `right_fg`, the feature groups have different primary keys, and features (`feature_*`) in each setting. Also, the 2 feature groups are [joint](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/query_api/#join) on different *join conditions* and *prefix* as `left_fg.join(right_fg, <join conditions>, prefix=<prefix>)`.
 
 For java client, and python client before v3.4, the `primary_keys` are the set of primary key of all the feature groups in the query. Python client is backward compatible. It means that the `primary_keys` used before v3.4 can be applied to python client of later versions as well.
 
@@ -118,12 +118,12 @@ If your model can handle missing value or if you want to impute the missing valu
 
 === "Python"
     ```python
-    # get a single vector with 
+    # get a single vector with
     feature_view.get_feature_vector(
         entry = {"pk1": 1},
         allow_missing=True
     )
-    
+
     # get multiple vectors
     feature_view.get_feature_vectors(
         entry = [
@@ -177,15 +177,15 @@ You can also use the parameter to provide values for all the features which are 
 === "Python"
     ```python
     # get a single vector, replace values from an entire feature group
-    # note how in this example you don't have to provide the value of 
+    # note how in this example you don't have to provide the value of
     # pk2, but you need to provide the features coming from that feature group
-    # in this case feature_b and feature_c 
+    # in this case feature_b and feature_c
 
     feature_view.get_feature_vector(
         entry = { "pk1": 1 },
         passed_features = {
-            "feature_a": "value_a", 
-            "feature_b": "value_b", 
+            "feature_a": "value_a",
+            "feature_b": "value_b",
             "feature_c": "value_c"
         }
     )
@@ -195,7 +195,7 @@ You can also use the parameter to provide values for all the features which are 
 
 The Online Store can be accessed via the **Python** or **Java** client allowing you to use your language of choice to connect to the Online Store. Additionally, the Python client provides two different implementations to fetch data: **SQL** or **REST**. The SQL client is the default implementation. It requires a direct SQL connection to your RonDB cluster and uses python asyncio to offer high performance even when your Feature View rows involve querying multiple different tables. The REST client is an alternative implementation connecting to [RonDB Feature Vector Server](./feature-server.md). Perfect if you want to avoid exposing ports of your database cluster directly to clients. This implementation is available as of Hopsworks 3.7.
 
-Initialise the client by calling the `init_serving` method on the Feature View object before starting to fetch feature vectors. This will initialise the chosen client, test the connection, and initialise the transformation functions registered with the Feature View. Note to use the REST client in the Hopsworks Cluster python environment you will need to provide an API key explicitly as JWT authentication is not yet supported. More configuration options can be found in the [API documentation](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#init_serving).
+Initialise the client by calling the `init_serving` method on the Feature View object before starting to fetch feature vectors. This will initialise the chosen client, test the connection, and initialise the transformation functions registered with the Feature View. Note to use the REST client in the Hopsworks Cluster python environment you will need to provide an API key explicitly as JWT authentication is not yet supported. More configuration options can be found in the [API documentation](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#init_serving).
 
 === "Python"
 ```python
@@ -214,7 +214,7 @@ Once the client is initialised, you can start fetching feature vector(s) via the
 
 === "Python"
 ```python
-# initialize both clients and set the default to REST 
+# initialize both clients and set the default to REST
 my_feature_view.init_serving(
     init_rest_client=True,
     init_sql_client=True,

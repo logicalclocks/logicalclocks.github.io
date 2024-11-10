@@ -32,7 +32,7 @@ A simplified creation form will appear including the most common deployment fiel
 
 ### Step 3: Configure resource allocation
 
-In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available). Moreover, you can choose the minimum number of replicas for each of these components. 
+In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available). Moreover, you can choose the minimum number of replicas for each of these components.
 
 ??? note "Scale-to-zero capabilities"
     Deployments with KServe enabled can scale to zero by choosing `0` as the number of instances.
@@ -105,7 +105,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Resource Allocation](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/resources_api/)
+[Resource Allocation](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/resources_api/)
 
 ## Compatibility matrix
 
