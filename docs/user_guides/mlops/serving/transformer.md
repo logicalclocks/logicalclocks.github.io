@@ -123,7 +123,7 @@ ms = project.get_model_serving()
 ### Step 3: Upload the script to your project
 
 !!! info "You can also use the UI to upload your transformer script. See [above](#step-3-advanced-deployment-form)"
- 
+
 ```python
 
 uploaded_file_path = dataset_api.upload("my_transformer.py", "Resources", overwrite=True)
@@ -157,7 +157,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Transformer](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/transformer_api/)
+[Transformer](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/transformer_api/)
 
 ## Resources
 

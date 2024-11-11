@@ -85,7 +85,7 @@ my_logger = InferenceLogger(kafka_topic=new_topic, mode="ALL")
 
 !!! notice "Use dict for simpler code"
     Similarly, you can create the same logger with:
-    
+
     ```python
 
     my_logger = InferenceLogger(kafka_topic={"name": "CREATE"}, mode="ALL")
@@ -110,11 +110,11 @@ my_deployment.save()
 
 ### API Reference
 
-[Inference Logger](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/inference_logger_api/)
+[Inference Logger](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/inference_logger_api/)
 
 ## Topic schema
 
-The schema of Kafka events varies depending on the serving tool. In KServe deployments, model inputs and predictions are logged in separate events, but sharing the same `requestId` field. In non-KServe deployments, the same event contains both the model input and prediction related to the same inference request. 
+The schema of Kafka events varies depending on the serving tool. In KServe deployments, model inputs and predictions are logged in separate events, but sharing the same `requestId` field. In non-KServe deployments, the same event contains both the model input and prediction related to the same inference request.
 
 ??? example "Show kafka topic schemas"
 

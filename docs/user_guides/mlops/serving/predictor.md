@@ -36,7 +36,7 @@ Once in the deployments page, you can create a new deployment by either clicking
 
 ### Step 2: Choose a framework
 
-A simplified creation form will appear, including the most common deployment fields from all available configurations. The first step is to select your model to serve, which is done by first selecting the framework the model was registered as in the model registry. 
+A simplified creation form will appear, including the most common deployment fields from all available configurations. The first step is to select your model to serve, which is done by first selecting the framework the model was registered as in the model registry.
 
 For example if you registered the model as a TensorFlow model using `ModelRegistry.tensorflow.create_model(...)` you select `Tensorflow` in the dropdown.
 
@@ -71,9 +71,9 @@ For python models, if you want to use your own [predictor script](#step-2-option
 
 ### Step 4 (Optional): Change predictor environment
 
-If you are using a predictor script it is also required to configure the inference environment for the predictor. This environment needs to have all the necessary dependencies installed to run your predictor script. 
+If you are using a predictor script it is also required to configure the inference environment for the predictor. This environment needs to have all the necessary dependencies installed to run your predictor script.
 
-By default, we provide a set of environments like `tensorflow-inference-pipeline`, `torch-inference-pipeline` and `pandas-inference-pipeline` that serves this purpose for common machine learning frameworks. 
+By default, we provide a set of environments like `tensorflow-inference-pipeline`, `torch-inference-pipeline` and `pandas-inference-pipeline` that serves this purpose for common machine learning frameworks.
 
 To create your own it is recommended to [clone](../../projects/python/python_env_clone.md) the `minimal-inference-pipeline` and install additional dependencies for your use-case.
 
@@ -104,7 +104,7 @@ Here, you change the [serving tool](#serving-tool) for your deployment by enabli
   </figure>
 </p>
 
-### Step 6 (Optional): Other advanced options 
+### Step 6 (Optional): Other advanced options
 
 Additionally, you can adjust the default values of the rest of components:
 
@@ -158,7 +158,7 @@ ms = project.get_model_serving()
 ### Step 3 (Optional): Upload the script to your project
 
 !!! info "You can also use the UI to upload your predictor script. See [above](#step-3-advanced-deployment-form)"
- 
+
 ```python
 
 uploaded_file_path = dataset_api.upload("my_predictor.py", "Resources", overwrite=True)
@@ -192,7 +192,7 @@ my_deployment.save()
 
 ### API Reference
 
-[Predictor](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
+[Predictor](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
 
 ## Model Server
 

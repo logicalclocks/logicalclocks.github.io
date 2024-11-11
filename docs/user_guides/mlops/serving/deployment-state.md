@@ -45,7 +45,7 @@ Once in the deployment overview page, you can find the aforementioned status ind
 
 ### Step 3: Check nº of running instances
 
-Additionally, you can find the nº of instances currently running by scrolling down to the `resource allocation` section. 
+Additionally, you can find the nº of instances currently running by scrolling down to the `resource allocation` section.
 
 <p align="center">
   <figure>
@@ -99,9 +99,9 @@ deployment.transformer.resources.describe()
 
 ### API Reference
 
-[Deployment](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/)
+[Deployment](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/)
 
-[PredictorState](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
+[PredictorState](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
 
 ## Deployment status
 
