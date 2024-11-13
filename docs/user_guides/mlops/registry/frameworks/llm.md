@@ -1,4 +1,4 @@
-# How To Export a LLM Model
+# How To Export an LLM Model
 
 ## Introduction
 
