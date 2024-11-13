@@ -178,6 +178,7 @@ nav:
               - Frameworks:
                   - TensorFlow: user_guides/mlops/registry/frameworks/tf.md
                   - Scikit-learn: user_guides/mlops/registry/frameworks/skl.md
+                  - LLM: user_guides/mlops/registry/frameworks/llm.md
                   - Python: user_guides/mlops/registry/frameworks/python.md
               - Model Schema: user_guides/mlops/registry/model_schema.md
               - Input Example: user_guides/mlops/registry/input_example.md

@@ -29,7 +29,7 @@ A simplified creation form will appear including the most common deployment fiel
 
 <p align="center">
   <figure>
-    <img  style="max-width: 85%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
     <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
   </figure>
 </p>
@@ -42,7 +42,7 @@ If you decide to create a new topic, select the number of partitions and number 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_logger.png" alt="Inference logger in advanced deployment form">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_logger.png" alt="Inference logger in advanced deployment form">
     <figcaption>Inference logging configuration with a new kafka topic</figcaption>
   </figure>
 </p>
@@ -55,33 +55,35 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+  ```python
+  import hopsworks
 
-project = hopsworks.login()
+  project = hopsworks.login()
 
-# get Hopsworks Model Registry handle
-mr = project.get_model_registry()
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
 
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
-```
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
 
 ### Step 2: Define an inference logger
 
-```python
+=== "Python"
+  ```python
 
-from hsml.inference_logger import InferenceLogger
-from hsml.kafka_topic import KafkaTopic
+  from hsml.inference_logger import InferenceLogger
+  from hsml.kafka_topic import KafkaTopic
 
-new_topic = KafkaTopic(name="CREATE",
-                       # optional
-                       num_partitions=1,
-                       num_replicas=1
-                       )
+  new_topic = KafkaTopic(name="CREATE",
+                        # optional
+                        num_partitions=1,
+                        num_replicas=1
+                        )
 
-my_logger = InferenceLogger(kafka_topic=new_topic, mode="ALL")
-```
+  my_logger = InferenceLogger(kafka_topic=new_topic, mode="ALL")
+  ```
 
 !!! notice "Use dict for simpler code"
     Similarly, you can create the same logger with:
@@ -93,20 +95,20 @@ my_logger = InferenceLogger(kafka_topic=new_topic, mode="ALL")
 
 ### Step 3: Create a deployment with the inference logger
 
-```python
+=== "Python"
+  ```python
+  my_model = mr.get_model("my_model", version=1)
 
-my_model = mr.get_model("my_model", version=1)
+  my_predictor = ms.create_predictor(my_model,
+                                    inference_logger=my_logger
+                                    )
+  my_predictor.deploy()
 
-my_predictor = ms.create_predictor(my_model,
-                                   inference_logger=my_logger
-                                   )
-my_predictor.deploy()
+  # or
 
-# or
-
-my_deployment = ms.create_deployment(my_predictor)
-my_deployment.save()
-```
+  my_deployment = ms.create_deployment(my_predictor)
+  my_deployment.save()
+  ```
 
 ### API Reference
 

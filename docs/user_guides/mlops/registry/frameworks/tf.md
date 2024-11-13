@@ -12,60 +12,59 @@ In this guide you will learn how to export a TensorFlow model and register it in
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+    ```python
+    import hopsworks
 
-project = hopsworks.login()
+    project = hopsworks.login()
 
-# get Hopsworks Model Registry handle
-mr = project.get_model_registry()
-```
+    # get Hopsworks Model Registry handle
+    mr = project.get_model_registry()
+    ```
 
 ### Step 2: Train
 
 Define your TensorFlow model and run the training loop.
 
-```python
-# Define a model
-model = tf.keras.Sequential()
+=== "Python"
+    ```python
+    # Define a model
+    model = tf.keras.Sequential()
 
-# Add layers
-model.add(..)
+    # Add layers
+    model.add(..)
 
-# Compile the model.
-model.compile(..)
-    
-# Train the model
-model.fit(..)
-
-```
+    # Compile the model.
+    model.compile(..)
+        
+    # Train the model
+    model.fit(..)
+    ```
 
 ### Step 3: Export to local path
 
 Export the TensorFlow model to a directory on the local filesystem.
 
-```python
+=== "Python"
+    ```python
+    model_dir = "./model"
 
-model_dir = "./model"
-
-tf.saved_model.save(model, model_dir)
-
-```
+    tf.saved_model.save(model, model_dir)
+    ```
 
 ### Step 4: Register model in registry
 
 Use the `ModelRegistry.tensorflow.create_model(..)` function to register a model as a TensorFlow model. Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.  
 
-```python
+=== "Python"
+    ```python
+    # Model evaluation metrics
+    metrics = {'accuracy': 0.92}
 
-# Model evaluation metrics
-metrics = {'accuracy': 0.92}
+    tf_model = mr.tensorflow.create_model("tf_model", metrics=metrics)
 
-tf_model = mr.tensorflow.create_model("tf_model", metrics=metrics)
-
-tf_model.save(model_dir)
-
-```
+    tf_model.save(model_dir)
+    ```
 
 ## Going Further
 

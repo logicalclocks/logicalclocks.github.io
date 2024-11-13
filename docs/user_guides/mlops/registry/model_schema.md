@@ -12,49 +12,49 @@ In this guide you will learn how to attach a model schema to your model. A model
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+    ```python
+    import hopsworks
 
-project = hopsworks.login()
+    project = hopsworks.login()
 
-# get Hopsworks Model Registry handle
-mr = project.get_model_registry()
-```
+    # get Hopsworks Model Registry handle
+    mr = project.get_model_registry()
+    ```
 
 ### Step 2: Create ModelSchema
 
 Create a ModelSchema for your inputs and outputs by passing in an example that your model is trained on and a valid prediction. Currently, we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list`.
 
-```python
+=== "Python"
+    ```python
+    # Import a Schema and ModelSchema definition
+    from hsml.utils.model_schema import ModelSchema
+    from hsml.utils.schema import Schema
 
-# Import a Schema and ModelSchema definition
-from hsml.utils.model_schema import ModelSchema
-from hsml.utils.schema import Schema
+    # Model inputs for MNIST dataset
+    inputs = [{'type': 'uint8', 'shape': [28, 28, 1], 'description': 'grayscale representation of 28x28 MNIST images'}]
 
-# Model inputs for MNIST dataset
-inputs = [{'type': 'uint8', 'shape': [28, 28, 1], 'description': 'grayscale representation of 28x28 MNIST images'}]
+    # Build the input schema
+    input_schema = Schema(inputs)
 
-# Build the input schema
-input_schema = Schema(inputs)
+    # Model outputs
+    outputs = [{'type': 'float32', 'shape': [10]}]
 
-# Model outputs
-outputs = [{'type': 'float32', 'shape': [10]}]
+    # Build the output schema
+    output_schema = Schema(outputs)
 
-# Build the output schema
-output_schema = Schema(outputs)
-
-# Create ModelSchema object
-model_schema = ModelSchema(input_schema=input_schema, output_schema=output_schema)
-
-```
+    # Create ModelSchema object
+    model_schema = ModelSchema(input_schema=input_schema, output_schema=output_schema)
+    ```
 
 ### Step 3: Set model_schema parameter
 
 Set the `model_schema` parameter in the `create_model` function and call `save()` to attaching it to the model and register it in the registry.
-```python
 
-model = mr.tensorflow.create_model(name="mnist",
-                                   model_schema=model_schema)
-model.save("./model")
-
-```
+=== "Python"
+    ```python
+    model = mr.tensorflow.create_model(name="mnist",
+                                    model_schema=model_schema)
+    model.save("./model")
+    ```
