@@ -58,4 +58,4 @@ Use the `ModelRegistry.python.create_model(..)` function to register a model as 
 
 ## Going Further
 
-You can attach an [Input Example](../input_example.md) and a [Model Schema](../input_example.md) to your model to document the shape and type of the data the model was trained on.
+You can attach an [Input Example](../input_example.md) and a [Model Schema](../model_schema.md) to your model to document the shape and type of the data the model was trained on.
