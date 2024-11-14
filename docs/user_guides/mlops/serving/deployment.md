@@ -7,12 +7,13 @@ In this guide, you will learn how to create a new deployment for a trained model
 !!! warning
     This guide assumes that a model has already been trained and saved into the Model Registry. To learn how to create a model in the Model Registry, see [Model Registry Guide](../registry/frameworks/tf.md)
 
-Deployments are used to unify the different components involved in making one or more trained models online and accessible to compute predictions on demand. In each deployment, there are three main components to consider:
+Deployments are used to unify the different components involved in making one or more trained models online and accessible to compute predictions on demand. For each deployment, there are four concepts to consider:
 
 !!! info ""
-    1. [Model artifact](#model-artifact)
-    2. [Predictor](#predictor)
-    3. [Transformer](#transformer)
+    1. [Model files](#model-files)
+    2. [Artifact files](#artifact-files)
+    3. [Predictor](#predictor)
+    4. [Transformer](#transformer)
 
 ## GUI
 
@@ -40,21 +41,21 @@ After selecting the model, the rest of fields are filled automatically. We pick 
 !!! notice "Deployment name validation rules"
     A valid deployment name can only contain characters a-z, A-Z and 0-9.
 
-!!! info "Predictor script for Python models"
-    For Python models, you can select a custom [predictor script](#predictor) to load and run the trained model by clicking on `From project` or `Upload new file`, to choose an existing script in the project file system or upload a new script, respectively.
+!!! info "Predictor script for Python models and LLMs"
+    For Python models and LLMs, you must select a custom [predictor script](#predictor) that loads and runs the trained model by clicking on `From project` or `Upload new file`, to choose an existing script in the project file system or upload a new script, respectively.
 
 If you prefer, change the name of the deployment, model version or [artifact version](#model-artifact). Then, click on `Create new deployment` to create the deployment for your model.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_1.png" alt="Select the model framework">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_1.png" alt="Select the model framework">
     <figcaption>Select the model framework</figcaption>
   </figure>
 </p>
 
 <p align="center">
   <figure>
-    <img style="max-width: 60%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_2.png" alt="Select the model">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_2.png" alt="Select the model">
     <figcaption>Select the model</figcaption>
   </figure>
 </p>
@@ -65,7 +66,7 @@ Optionally, you can access and adjust other parameters of the deployment configu
 
 <p align="center">
   <figure>
-    <img  style="max-width: 85%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
     <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
   </figure>
 </p>
@@ -117,65 +118,85 @@ After that, click on the new deployment to access the overview page.
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+  ```python
+  import hopsworks
 
-project = hopsworks.login()
+  project = hopsworks.login()
 
-# get Hopsworks Model Registry handle
-mr = project.get_model_registry()
-```
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
+  ```
 
 ### Step 2: Create deployment
 
 Retrieve the trained model you want to deploy.
 
-```python
-
-my_model = mr.get_model("my_model", version=1)
-```
+=== "Python"
+  ```python
+  my_model = mr.get_model("my_model", version=1)
+  ```
 
 #### Option A: Using the model object
 
-```python
-
-my_deployment = my_model.deploy()
-```
+=== "Python"
+  ```python
+  my_deployment = my_model.deploy()
+  ```
 
 #### Option B: Using the Model Serving handle
 
-```python
+=== "Python"
+  ```python
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
 
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
+  my_predictor = ms.create_predictor(my_model)
+  my_deployment = my_predictor.deploy()
 
-my_predictor = ms.create_predictor(my_model)
-my_deployment = my_predictor.deploy()
-
-# or
-my_deployment = ms.create_deployment(my_predictor)
-my_deployment.save()
-```
+  # or
+  my_deployment = ms.create_deployment(my_predictor)
+  my_deployment.save()
+  ```
 
 ### API Reference
 
 [Model Serving](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/model_serving_api/)
 
-## Model Artifact
+## Model Files
 
-A model artifact is a package containing all of the necessary files for the deployment of a model. It includes the model file(s) and/or custom scripts for loading the model (predictor script) or transforming the model inputs at inference time (the transformer script).
+Model files are the files exported when a specific version of a model is saved to the model registry (see [Model Registry](../registry/index.md)). These files are ==unique for each model version, but shared across model deployments== created for the same version of the model.
 
-When a new deployment is created, a model artifact is generated in two cases:
+Inside a model deployment, the local path to the model files is stored in the `MODEL_FILES_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)). Moreover, you can explore the model files under the `/Models/<model-name>/<model-version>/Files` directory using the File Browser.
+
+!!! warning
+    All files under `/Models` are managed by Hopsworks. Changes to model files cannot be reverted and can have an impact on existing model deployments.
+
+## Artifact Files
+
+Artifact files are files involved in the correct startup and running of the model deployment. The most important files are the **predictor** and **transformer scripts**. The former is used to load and run the model for making predictions. The latter is typically used to transform model inputs at inference time.
+
+Every model deployment runs a specific version of the artifact files, commonly referred to as artifact version. ==One or more model deployments can use the same artifact version== (i.e., same predictor and transformer scripts). Artifact versions are unique for the same model version.
+
+When a new deployment is created, a new artifact version is generated in two cases:
 
 - the artifact version in the predictor is set to `CREATE` (see [Artifact Version](../predictor/#artifact_version))
 - no model artifact with the same files has been created before.
+
+Inside a model deployment, the local path to the artifact files is stored in the `ARTIFACT_FILES_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)). Moreover, you can explore the artifact files under the `/Models/<model-name>/<model-version>/Artifacts/<artifact-version>` directory using the File Browser. 
+
+!!! warning
+    All files under `/Models` are managed by Hopsworks. Changes to artifact files cannot be reverted and can have an impact on existing model deployments.
+
+!!! tip "Additional files"
+    Currently, the artifact files only include predictor and transformer scripts. Support for additional files (e.g., configuration files or other resources) is coming soon.
 
 ## Predictor
 
 Predictors are responsible for running the model server that loads the trained model, listens to inference requests and returns prediction results. To learn more about predictors, see the [Predictor Guide](predictor.md)
 
 !!! note
-    Currently, only one predictor is supported in a deployment. Support for multiple predictors (the inference graphs) is coming soon.
+    Only one predictor is supported in a deployment.
 
 !!! info
     Model artifacts are assigned an incremental version number, being `0` the version reserved for model artifacts that do not contain predictor or transformer scripts (i.e., shared artifacts containing only the model files).
@@ -186,19 +207,3 @@ Transformers are used to apply transformations on the model inputs before sendin
 
 !!! warning
     Transformers are only supported in KServe deployments.
-
-## Inference logger
-
-Inference loggers are deployment components that log inference requests into a Kafka topic for later analysis. To learn about the different logging modes, see the [Inference Logger Guide](inference-logger.md)
-
-## Inference batcher
-
-Inference batcher are deployment component that apply batching to the incoming inference requests for a better throughput-latency trade-off. To learn about the different configuration available for the inference batcher, see the [Inference Batcher Guide](inference-batcher.md).
-
-## Resources
-
-Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica. To learn about the different combinations available, see the [Resources Guide](resources.md).
-
-## API protocol
-
-Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. In general, you use gRPC when you need lower latency inference requests. To learn more about the REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).

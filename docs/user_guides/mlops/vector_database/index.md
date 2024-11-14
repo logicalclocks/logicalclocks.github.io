@@ -15,118 +15,114 @@ In this guide, you will learn how to create a simple recommendation application,
 
 ### Step 1: Get the OpenSearch API
 
-```python
+=== "Python"
+    ```python
+    import hopsworks
 
-import hopsworks
+    project = hopsworks.login()
 
-project = hopsworks.login()
-
-opensearch_api = project.get_opensearch_api()
-
-```
+    opensearch_api = project.get_opensearch_api()
+    ```
 
 ### Step 2: Configure the opensearch-py client
 
-```python
+=== "Python"
+    ```python
+    from opensearchpy import OpenSearch
 
-from opensearchpy import OpenSearch
-
-client = OpenSearch(**opensearch_api.get_default_py_config())
-
-```
+    client = OpenSearch(**opensearch_api.get_default_py_config())
+    ```
 
 ### Step 3: Create an index
 
 Create an index to use by calling `opensearch_api.get_project_index(..)`.
 
-```python
+=== "Python"
+    ```python
+    knn_index_name = opensearch_api.get_project_index("demo_knn_index")
 
-knn_index_name = opensearch_api.get_project_index("demo_knn_index")
-
-index_body = {
-    "settings": {
-        "knn": True,
-        "knn.algo_param.ef_search": 100,
-    },
-    "mappings": {
-        "properties": {
-            "my_vector1": {
-                "type": "knn_vector",
-                "dimension": 2
+    index_body = {
+        "settings": {
+            "knn": True,
+            "knn.algo_param.ef_search": 100,
+        },
+        "mappings": {
+            "properties": {
+                "my_vector1": {
+                    "type": "knn_vector",
+                    "dimension": 2
+                }
             }
         }
     }
-}
 
-response = client.indices.create(knn_index_name, body=index_body)
+    response = client.indices.create(knn_index_name, body=index_body)
 
-print(response)
-
-```
+    print(response)
+    ```
 
 ### Step 4: Bulk ingestion of vectors
 
 Ingest 10 vectors in a bulk fashion to the index. These vectors represent the list of vectors to calculate the similarity for.
 
-```python
+=== "Python"
+    ```python
+    from opensearchpy.helpers import bulk
+    import random
 
-from opensearchpy.helpers import bulk
-import random
-
-actions = [
-    {
-        "_index": knn_index_name,
-        "_id": count,
-        "_source": {
-            "my_vector1": [random.uniform(0, 10), random.uniform(0, 10)],
+    actions = [
+        {
+            "_index": knn_index_name,
+            "_id": count,
+            "_source": {
+                "my_vector1": [random.uniform(0, 10), random.uniform(0, 10)],
+            }
         }
-    }
-    for count in range(0, 10)
-]
+        for count in range(0, 10)
+    ]
 
-bulk(
-    client,
-    actions,
-)
-
-```
+    bulk(
+        client,
+        actions,
+    )
+    ```
 
 ### Step 5: Score vector similarity
 
 Score the vector `[2.5, 3]` and find the 3 most similar vectors.
 
-```python
-
-# Define the search request
-query = {
-    "size": 3,
-    "query": {
-        "knn": {
-            "my_vector1": {
-                "vector": [2.5, 3],
-                "k": 3
+=== "Python"
+    ```python
+    # Define the search request
+    query = {
+        "size": 3,
+        "query": {
+            "knn": {
+                "my_vector1": {
+                    "vector": [2.5, 3],
+                    "k": 3
+                }
             }
         }
     }
-}
 
-# Perform the similarity search
-response = client.search(
-    body = query,
-    index = knn_index_name
-)
+    # Perform the similarity search
+    response = client.search(
+        body = query,
+        index = knn_index_name
+    )
 
-# Pretty print response
-import pprint
-pp = pprint.PrettyPrinter()
-pp.pprint(response)
-
-```
+    # Pretty print response
+    import pprint
+    pp = pprint.PrettyPrinter()
+    pp.pprint(response)
+    ```
 
 `Output` from the above script shows the score for each of the three most similar vectors that have been indexed.
 
 `[4.798869166444522, 4.069064892468535]` is the most similar vector to `[2.5, 3]` with a score of `0.1346312`.
 
+=== "Bash"
 ```bash
 
 2022-05-30 09:55:50,529 INFO: POST https://10.0.2.15:9200/my_project_demo_knn_index/_search [status:200 request:0.017s]
@@ -153,8 +149,6 @@ pp.pprint(response)
           'total': {'relation': 'eq', 'value': 3}},
  'timed_out': False,
  'took': 9}
-
-
 ```
 
 ### API Reference

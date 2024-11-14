@@ -61,41 +61,42 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+  ```python
+  import hopsworks
 
-project = hopsworks.login()
+  project = hopsworks.login()
 
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
-```
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
 
 ### Step 2: Retrieve an existing deployment
 
-```python
-
-deployment = ms.get_deployment("mydeployment")
-```
+=== "Python"
+  ```python
+  deployment = ms.get_deployment("mydeployment")
+  ```
 
 ### Step 3: Inspect deployment state
 
-```python
+=== "Python"
+  ```python
+  state = deployment.get_state()
 
-state = deployment.get_state()
-
-state.describe()
-```
+  state.describe()
+  ```
 
 ### Step 4: Check nº of running instances
 
-```python
+=== "Python"
+  ```python
+  # nº of predictor instances
+  deployment.resources.describe()
 
-# nº of predictor instances
-deployment.resources.describe()
-
-# nº of transformer instances
-deployment.transformer.resources.describe()
-```
+  # nº of transformer instances
+  deployment.transformer.resources.describe()
+  ```
 
 ### API Reference
 

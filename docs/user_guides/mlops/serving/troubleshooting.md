@@ -99,38 +99,38 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+  ```python
+  import hopsworks
 
-project = hopsworks.login()
+  project = hopsworks.login()
 
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
-```
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
 
 ### Step 2: Retrieve an existing deployment
 
-```python
-
-deployment = ms.get_deployment("mydeployment")
-```
+=== "Python"
+  ```python
+  deployment = ms.get_deployment("mydeployment")
+  ```
 
 ### Step 3: Get current deployment's predictor state
 
-```python
+=== "Python"
+  ```python
+  state = deployment.get_state()
 
-state = deployment.get_state()
-
-state.describe()
-```
+  state.describe()
+  ```
 
 ### Step 4: Explore transient logs
 
-```python
-
-deployment.get_logs(component="predictor|transformer", tail=10)
-```
-
+=== "Python"
+  ```python
+  deployment.get_logs(component="predictor|transformer", tail=10)
+  ```
 
 ### API Reference
 

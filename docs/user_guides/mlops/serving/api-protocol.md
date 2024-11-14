@@ -28,7 +28,7 @@ A simplified creation form will appear including the most common deployment fiel
 
 <p align="center">
   <figure>
-    <img  style="max-width: 85%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <img  style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
     <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
   </figure>
 </p>
@@ -39,15 +39,12 @@ Enabling gRPC as the API protocol for a model deployment requires KServe as the 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_kserve.png" alt="KServe enabled in advanced deployment form">
+    <img style="max-width: 85%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_kserve.png" alt="KServe enabled in advanced deployment form">
     <figcaption>Enable KServe in the advanced deployment form</figcaption>
   </figure>
 </p>
 
 Then, you can select the API protocol to be enabled in your model deployment.
-
-!!! info "Only one API protocol can be enabled for a model (they cannot support both gRPC and REST)"
-    Currently, KServe model deployments are limited to one API protocol at a time. Therefore, only one of REST or gRPC API protocols can be enabled at the same time on the same model deployment. You can change the API protocol of existing deployments.
 
 <p align="center">
   <figure>
@@ -56,40 +53,44 @@ Then, you can select the API protocol to be enabled in your model deployment.
   </figure>
 </p>
 
+!!! info "Only one API protocol can be enabled in a model deployment (they cannot support both gRPC and REST)"
+    Currently, KServe model deployments are limited to one API protocol at a time. Therefore, only one of REST or gRPC API protocols can be enabled at the same time on the same model deployment. You cannot change the API protocol of existing deployments.
+
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
 ## Code
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+  ```python
+  import hopsworks
 
-project = hopsworks.login()
+  project = hopsworks.login()
 
-# get Hopsworks Model Registry handle
-mr = project.get_model_registry()
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
 
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
-```
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
 
 ### Step 2: Create a deployment with a specific API protocol
 
-```python
+=== "Python"
+  ```python
+  my_model = mr.get_model("my_model", version=1)
 
-my_model = mr.get_model("my_model", version=1)
+  my_predictor = ms.create_predictor(my_model,
+                                    api_protocol="GRPC"  # defaults to "REST"
+                                    )
+  my_predictor.deploy()
 
-my_predictor = ms.create_predictor(my_model,
-                                   api_protocol="GRPC"  # defaults to "REST"
-                                   )
-my_predictor.deploy()
+  # or
 
-# or
-
-my_deployment = ms.create_deployment(my_predictor)
-my_deployment.save()
-```
+  my_deployment = ms.create_deployment(my_predictor)
+  my_deployment.save()
+  ```
 
 ### API Reference
 
