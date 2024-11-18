@@ -5,7 +5,7 @@
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 
 * Supports JupyterLab and the classic Jupyter front-end
-* Configured with Python and PySpark kernels
+* Configured with Python3, PySpark and Ray kernels
 
 
 ## Step 1: Jupyter dashboard
@@ -34,7 +34,8 @@ You can easily refer to the green ticks as to what kernels are available in whic
 
 ## Step 3 (Optional): Configure spark properties
 
-Next step is to configure the Spark properties to be used in Jupyter, Click `edit configuration` to get to the configuration page and select `Spark`.
+Next step is to configure the Ray properties to be used in Jupyter, Click `edit configuration` to get to the 
+configuration page and select `Ray`.
 
 ### Resource and compute
 
