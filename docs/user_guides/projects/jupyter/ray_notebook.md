@@ -1,3 +1,6 @@
+---
+description: Documentation on how to run Ray applications on Jupyter on Hopsworks.
+---
 # How To Run A Ray Notebook
 
 ### Introduction
@@ -7,6 +10,15 @@ Jupyter is provided as a service in Hopsworks, providing the same user experienc
 * Supports JupyterLab and the classic Jupyter front-end
 * Configured with Python3, PySpark and Ray kernels
 
+!!!warning "Enable Ray"
+
+    Support for Ray needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
+    
+    ```yaml
+    global:
+      ray:
+        enabled: true
+    ```
 
 ## Step 1: Jupyter dashboard
 
@@ -30,17 +42,15 @@ Jupyter. Click `edit configuration` to get to the configuration page and select 
 
 Resource allocation for the Driver and Workers can be configured.
 
-!!! important
-    The resources you will configure are for the cluster that will be created when you start a Ray session inside the 
-    Jupyter notebook. You can still provide extra configuration later in your code specify the resources you would  
-    like to use in the created cluster for a particular task (i.e., model training) using `ScalingConfig` i.e.,
-    `ScalingConfig(num_workers=4, trainer_resources={"CPU": 1}, use_gpu=True)`.
+!!! notice "Using the resources in the Ray script"
+    The resource configurations describe the cluster that will be provisioned when launching the Ray job. User can still 
+    provide extra configurations in the job script using `ScalingConfig`, i.e. `ScalingConfig(num_workers=4, trainer_resources={"CPU": 1}, use_gpu=True)`.
 
-* `Driver memory`: Number of MBs to allocate for Driver
+* `Driver memory`: Memory in MBs to allocate for Driver
 
 * `Driver virtual cores`: Number of cores to allocate for the Driver
 
-* `Worker memory`: Number of MBs to allocate for each worker
+* `Worker memory`: Memory in MBs to allocate for each worker
 
 * `Worker cores`: Number of cores to allocate for each worker
 
@@ -56,12 +66,10 @@ the Ray kernels">
   </figure>
 </p>
 
-### Runtime environment and Additional files required for the Ray job can also be provided.
+Runtime environment and Additional files required for the Ray job can also be provided.
 
-* `Runtime Environment (Optional)`:  A runtime environment describes the dependencies required for the Ray session
-  including files, packages, environment variables, and more. This is useful when you need to install specific
-  packages and set environment variables for this particular Ray session. It should be provided as a YAML file. You can
-  select the file from the project or upload a new one.
+* `Runtime Environment (Optional)`:  A [runtime environment](https://docs.ray.io/en/latest/ray-core/handling-dependencies.html#runtime-environments) describes the dependencies required for the Ray job including files, packages, environment variables, and more. This is useful when you need to install specific packages and set environment variables for this particular Ray job. It should be provided as a YAML file. You can select the file from the project or upload a new one.
+
 
 * `Additional files`: List of other files required for the Ray job. These files will be placed in `/srv/hops/ray/job`.
 
@@ -120,11 +128,11 @@ Once the Jupyter instance is started, you can create a new notebook by clicking 
 
 ## Step 6: Access Ray Dashboard
 
-When you start a Ray session in Jupyter, a new application will appear in the Jupyter page. A notebook name from 
-which the session was started is displayed. You can access the  Ray UI by clicking on the `Ray Dashboard` and a new 
-tab will be opened. The Ray dashboard is only available the notebook or the kernel it was started from is running. 
-You can kill the Ray session to free up resources by shutting down the kernel in Jupyter.  In the Ray Dashboard, you can monitor 
-the resources used  by code you are running, the number of workers, logs, and the tasks that are running.
+When you start a Ray session in Jupyter, a new application will appear in the Jupyter page.
+The notebook name from which the session was started is displayed. You can access the Ray UI by clicking on the `Ray Dashboard` and a new 
+tab will be opened. The Ray dashboard is only available while the Ray kernel is running. 
+You can kill the Ray session to free up resources by shutting down the kernel in Jupyter. 
+In the Ray Dashboard, you can monitor the resources used  by code you are running, the number of workers, logs, and the tasks that are running.
 
 <p align="center">
   <figure>
@@ -132,8 +140,3 @@ the resources used  by code you are running, the number of workers, logs, and th
     <figcaption>Access Ray Dashboard for Jupyter Ray session</figcaption>
   </figure>
 </p>
-
-## Conclusion
-
-In this guide you learned how to configure and run a Ray application in Jupyter. You can now follow this [guide](..
-/python/python_install.md) to install a library that can be used in a notebook.

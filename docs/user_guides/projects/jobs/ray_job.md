@@ -17,6 +17,15 @@ the various configuration parameters each job type comes with. Hopsworks support
 e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
 checkout [our Scheduling guide](schedule_job.md).
 
+!!!warning "Enable Ray"
+
+    Support for Ray needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
+    
+    ```yaml
+    global:
+      ray:
+        enabled: true
+    ```
 
 ## UI
 
@@ -62,15 +71,14 @@ Next step is to select the program to run. You can either select `From project`,
 Resource allocation for the Driver and Workers can be configured.
 
 !!! notice "Using the resources in the Ray script"
-    The resources you will configure are for the cluster that will be created when you start a Ray job. You can still 
-    provide extra configuration later in your script to use the resources in the created cluster using `ScalingConfig` i.e.,
-    `ScalingConfig(num_workers=4, trainer_resources={"CPU": 1}, use_gpu=True)`.
+    The resource configurations describe the cluster that will be provisioned when launching the Ray job. User can still 
+    provide extra configurations in the job script using `ScalingConfig`, i.e. `ScalingConfig(num_workers=4, trainer_resources={"CPU": 1}, use_gpu=True)`.
 
-* `Driver memory`: Number of MBs to allocate for Driver
+* `Driver memory`: Memory in MBs to allocate for Driver
 
 * `Driver virtual cores`: Number of cores to allocate for the Driver
 
-* `Worker memory`: Number of MBs to allocate for each worker
+* `Worker memory`: Memory in MBs to allocate for each worker
 
 * `Worker cores`: Number of cores to allocate for each worker
 
@@ -89,10 +97,7 @@ for Ray Job">
 
 Runtime environment and Additional files required for the Ray job can also be provided.
 
-* `Runtime Environment (Optional)`:  A runtime environment describes the dependencies required for the Ray job 
-including files, packages, environment variables, and more. This is useful when you need to install specific
-  packages and set environment variables for this particular Ray job. It should be provided as a YAML file. You can 
-  select the file from the project or upload a new one.
+* `Runtime Environment (Optional)`:  A [runtime environment](https://docs.ray.io/en/latest/ray-core/handling-dependencies.html#runtime-environments) describes the dependencies required for the Ray job including files, packages, environment variables, and more. This is useful when you need to install specific packages and set environment variables for this particular Ray job. It should be provided as a YAML file. You can select the file from the project or upload a new one.
 
 * `Additional files`: List of other files required for the Ray job. These files will be placed in `/srv/hops/ray/job`.
 
@@ -108,7 +113,6 @@ environment and additional files">
 
 Now click the `Run` button to start the execution of the job, and then click on `Executions` to see the list of all executions.
 
-
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/jobs/start_ray_job.png" alt="Start job execution">
@@ -117,9 +121,8 @@ Now click the `Run` button to start the execution of the job, and then click on 
 </p>
 
 ## Ray Dashboard
-When the Ray job is running, you can access the Ray dashboard to monitor the job. To open the Ray Dashboard click on 
-the `Ray Dashboard` link under the execution and a new tab will be opened. The Ray  dashboard is accessible from the 
-`Executions` page. The Ray dashboard is only available when the job execution is running. In the Ray Dashboard, 
+When the Ray job is running, you can access the Ray dashboard to monitor the job. The Ray dashboard is accessible from the 
+`Executions` page. Please note that the Ray dashboard is only available when the job execution is running. In the Ray Dashboard, 
 you can monitor the resources used by the job, the number of workers, logs, and the tasks that are running.
 <p align="center">
   <figure>
@@ -205,7 +208,3 @@ print(f_err.read())
 [Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
 [Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
-
-## Conclusion
-
-In this guide you learned how to create and run a Ray job.
