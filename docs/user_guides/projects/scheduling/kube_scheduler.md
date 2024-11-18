@@ -1,34 +1,33 @@
+---
+description: Documentation on how to configure Kubernetes scheduling options for Hopsworks workloads.
+---
 # Scheduler
 
-This page explains how we provide the user with access to Kubernetes properties when running Hopsworks computation on top of Kubernetes. Currently these capabilities include:
+## Introduction
 
-- [Affinity](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/)
-- [Priority Classes](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass)
+Hopsworks allows users to configure [Affinity](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/) and [Priority Classes](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass) when running workloads on Hopsworks, this includes jobs, jupyter notebooks and model deployments.
 
-These capabilities require some configuration from a Hopsworks Admin - as can be seen in the [Cluster configuration](#cluster-configuration), [Default Project configuration](#default-project-configuration) and [Custom Project configuration](#custom-project-configuration) section. Some further configuration on defaults can be done by Hopsworks data owners - as can be seen in the [Project defaults](#project-defaults) section. Finally, these capabilities can be used by all members of a project within:
+Hopsworks Admins can control which labels and priority classes can be used the cluster (see [Cluster configuration](#cluster-configuration) section) and by which project (see [Default Project configuration](#default-project-configuration) section) 
 
-- Jobs
-- Jupyter Notebooks
-- Model Deployments
+Within a project, data owners can set defaults for jobs and Jupyter notebooks running within that project (see: [Project defaults](#project-defaults) section). 
 
-## Node Labels, Node Affinity and Node Anti-Affinity
+### Node Labels, Node Affinity and Node Anti-Affinity
 
-Labels in Kubernetes are key-value pairs used to organize and select resources. In this particular page we will show how labels applied to nodes can be used for pod-node affinity to determine where the pod can (or cannot) run.
-
-Some base uses cases where labels and affinity can be used:
+Labels in Kubernetes are key-value pairs used to organize and select resources. Hopsworks relies on labels applied to nodes for pod-node affinity to determine where the pod can (or cannot) run.
+Some uses cases where labels and affinity can be used include:
 
 - Hardware constraints (GPU, SSD)
 - Environment separation (prod/dev)
 - Co-locating related pods
 - Spreading pods for high availability
 
-In Hopsworks we make use of the node affinity `IN` operator for the Hopsworks Node Affinity and the `NOT IN` operator for the Hopsworks Node Anti Affinity.
+Hopsworks uses the node affinity `IN` operator for the Hopsworks Node Affinity and the `NOT IN` operator for the Hopsworks Node Anti Affinity.
 
 For more information on Kubernetes Affinity, you can check the Kubernetes [Affinity documentation](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/) page.
 
-## Priority Classes
+### Priority Classes
 
-PriorityClasses in Kubernetes determine the scheduling and eviction priority of pods.
+Priority classes in Kubernetes determine the scheduling and eviction priority of pods.
 
 Pods with higher priority:
 
@@ -47,53 +46,51 @@ For more information on Priority Classes, you can check the Kubernetes [Priority
 
 ## Cluster Configuration
 
-The first step in configuring Affinity and Priority Classes is by a Hopsworks Admin through the page found under: `Cluster Settings -> Scheduler` as we can see in the image below.
+Hopsworks admins can control the affinity labels and priority classes available on the Hopsworks cluster from the `Cluster Settings -> Scheduler` page:
 
 ![Cluster Configuration - Node Labels and Priority Classes](../../../assets/images/guides/project/scheduler/admin_cluster_scheduler.png)
 
-When we want to configure the use of labels and priority classes there are a number of levels which require filtering: `kubernetes -> hopsworks cluster -> hopsworks project`
+Hopsworks Cluster can run within a shared Kubernets Cluster. The first configuration level is to limit the subset of labels and priority classes that can be used within the Hopsworks Cluster. This can be done from the `Available in Hopsworks` sub-section.
 
-The Hopsworks Cluster tipycally runs inside a Kubernets Cluster and is not always the only inhabitant. So the first configuration level is to limit the subset of node labels and priority classes that can be used within the Hopsworks Cluster. This can be done from the `Available in Hopsworks` sub-section.
+!!! note "Permissions"
 
-In order to be able to list all the Kubernetes Node Labels, Hopsworks requires this cluster role:
+    In order to be able to list all the Kubernetes Node Labels, Hopsworks requires the following cluster role:
 
-```
-    - apiGroups: [""]
-    resources: ["nodes"]
-    verbs: ["get", "list"]
-```
+    ```
+        - apiGroups: [""]
+        resources: ["nodes"]
+        verbs: ["get", "list"]
+    ```
 
-In order to be able to list all the Kubernetes Cluster Priority Classes, Hopsworsk requires this cluster role:
+    In order to be able to list all the Kubernetes Cluster Priority Classes, Hopsworsk requires this cluster role:
 
-```
-    - apiGroups: ["scheduling.k8s.io"]
-    resources: ["priorityclasses"]
-    verbs: ["get", "list"]
-```
+    ```
+        - apiGroups: ["scheduling.k8s.io"]
+        resources: ["priorityclasses"]
+        verbs: ["get", "list"]
+    ```
 
-If the roles above are configured properly (by default configured with the Hopsworks installation) the Admin can only select values from the drop down menu. If the roles are missing, the Admin would require to enter them as free text and should be careful about typos. Any typos here will be propagated in the other configuration and use levels leading to errors or missbehaviour when running computation.
+    If the roles above are configured properly (default behaviour), admins can only select values from the drop down menu. If the roles are missing, admins would be required to enter them as free text and should be careful about typos. Any typos here will be propagated in the other configuration and use levels leading to errors or missbehaviour when running computation.
 
-## Default Project Configuration
+## Project Configuration
 
-The second level of configuration we can do is project configuration. At this level, the Hopsworks Admin restricts the Node Labels and Priority Classes that can be used within a project. This will be a subset of the ones configured for Hopsworks.
-In the figure above, in the sub-section `Available in Project` the Hopsworks Admin can configure the Node Labels and Priority Classes available by default in any Hopsworks Project.
+Hopsworks admins can configure the labels and priority classes that can be used by default within a project. This will be a subset of the ones configured for Hopsworks.
+In the figure above, in the sub-section `Available in Project` Hopsworks admins can configure the labels and priority classes available by default in any Hopsworks Project.
 
-## Custom Project Configuration
-
-The Project level configuration, can be customised further and the Hopsworks Admin can configure per project Node Labels and Priority Classes selection in the menu option: `Cluster Settings -> Project -> <ProjectName> -> edit configuration`
+Hopsworks admins can also override the default project configuration on a per-project basis. That is, Hopsworks admins can make certain labels and priority classes available only to certain projects. This can be achieved from the `Cluster Settings -> Project -> <ProjectName> -> edit configuration` configuration page:
 
 ![Custom Project Configuration - Node Labels and Priority Classes](../../../assets/images/guides/project/scheduler/admin_project_scheduler.png)
 
 ## Project defaults
 
-Every Member of a project with the role `Data Owner` can then set the default values for the project. These defaults will be set in the Advanced configuration of Jobs, Notebooks, and Deployments, but they can of course be modified if so required.
-The default Label will be used for the default Node Affinity for Jobs, Nodes, and Deployments.
+Within a project, different jobs, Jupyter notebooks and model deployments can run with different labels and/or priority classes. `Data Owners` in a project can specify the default values from the project settings:
+The default Label will be used for the default Node Affinity for jobs, notebooks, and model deployments.
 
 ![ Project Default - Labels and Priority Classes](../../../assets/images/guides/project/scheduler/project_default.png)
 
 ## Configuration of Jobs, Notebooks, and Deployments
 
-In the Advance configuration of Job, Notebook, and Deployments, we can set Affinity, Anti Affinity, and Priority Class. The Affinity and Anti Affinity can be selected from the list of allowed labels.
+In the advanced configuration sections for job, notebook, and model deployments, users can set affinity, anti affinity and priority class. The Affinity and Anti Affinity can be selected from the list of allowed labels.
 
 `Affinity` configures on which nodes this pod can run. If a node has any of the labels present in the Affinity option, the pod can be scheduler to run to run there.
 
