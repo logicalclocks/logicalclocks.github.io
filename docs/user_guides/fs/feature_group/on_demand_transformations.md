@@ -5,7 +5,9 @@
 ## On Demand Transformation Function Creation
 
 
-An on-demand transformation function can be created by attaching a [transformation function](../transformation_functions.md) to a feature group. Each on-demand transformation function creates one on-demand feature having the same name as the transformation function. For instance, in the example below, the on-demand transformation function `transaction_age` will generate one on-demand feature called `transaction_age`. Hence, only one-to-one or many-to-one transformation functions can be used to create an on-demand transformation functions.
+An on-demand transformation function may be created by associating a [transformation function](../transformation_functions.md) with a feature group. Each on-demand transformation function generates a single on-demand feature, which, by default, is assigned the same name as the associated transformation function. For instance, in the example below, the on-demand transformation function `transaction_age` produces an on-demand feature named transaction_age. Alternatively, the name of the resulting on-demand feature can be explicitly defined using the [`alias`](../transformation_functions.md#specifying-output-features–names-for-transformation-functions) function.
+
+It is important to note that only one-to-one or many-to-one transformation functions are compatible with the creation of on-demand transformation functions.
 
 !!! warning "On-demand transformation"
     All on-demand transformation functions attached to a feature group must have unique names and, in contrast to model-dependent transformations, they do not have access to training dataset statistics.
