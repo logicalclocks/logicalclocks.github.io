@@ -9,15 +9,11 @@ SageMaker and KubeFlow. This guide shows how to set up the Hopsworks platform in
 
 To follow the instruction on this page you will need the following:
 
-- Kubernetes Version: Hopsworks can be deployed on AKS clusters running Kubernetes >= 1.27.0.
-- The [gcloud CLI](https://cloud.google.com/sdk/gcloud)
-- The [gsutil tool](https://cloud.google.com/storage/docs/gsutil)
-- kubectl (to manage the AKS cluster)
-- helm (to deploy Hopsworks)
+- Kubernetes Version: Hopsworks can be deployed on GKE clusters running Kubernetes >= 1.27.0.
+- [gcloud CLI](https://cloud.google.com/sdk/gcloud) to provision the GCP resources 
+- [gke-gcloud-auth-plugin](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke) to manage authentication with the GKE cluster
+- [helm](https://helm.sh/) to deploy Hopsworks
 
-## GCR Registry
-
-Hopsworks allows users to customize images for Python jobs, Jupyter Notebooks, and (Py)Spark applications. These images should be stored in Google Container Registry (GCR). The GKE cluster needs access to a GCR repository to push project images.
 
 ### Permissions
 
@@ -38,7 +34,7 @@ gsutil mb -l $region gs://$bucket_name
 
 ### Step 1.2: Create Service Account
 
-Create a file named hopsworksai_role.yaml with the following content:
+Create a file named `hopsworksai_role.yaml` with the following content:
 
 ```bash
 title: Hopsworks AI Instances
@@ -67,56 +63,54 @@ includedPermissions:
 Execute the following gcloud command to create a custom role from the file. Replace $PROJECT_ID with your GCP project id:
 
 ```bash
-gcloud iam roles create hopsworksai_instances --project=$PROJECT_ID --file=hopsworksai_role.yaml
+gcloud iam roles create hopsworksai_instances \
+  --project=$PROJECT_ID \
+  --file=hopsworksai_role.yaml
 ```
-
-Create a service account:
 
 Execute the following gcloud command to create a service account for Hopsworks AI instances. Replace $PROJECT_ID with your GCP project id:
 
 ```bash
-gcloud iam service-accounts create hopsworksai_instances --project=$PROJECT_ID --description="Service account for Hopsworks AI instances" --display-name="Hopsworks AI instances"
+gcloud iam service-accounts create hopsworksai_instances \
+  --project=$PROJECT_ID \
+  --description="Service account for Hopsworks AI instances" \
+  --display-name="Hopsworks AI instances"
 ```
 
 Execute the following gcloud command to bind the custom role to the service account. Replace all occurrences $PROJECT_ID with your GCP project id:
 
 ```bash
-gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:hopsworks-ai-instances@$PROJECT_ID.iam.gserviceaccount.com" --role="projects/$PROJECT_ID/roles/hopsworksai_instances"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:hopsworks-ai-instances@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="projects/$PROJECT_ID/roles/hopsworksai_instances"
 ```
-
 
 ### Step 1.3: Create a GKE Cluster
 
 ```bash
-gcloud container clusters create <cluster-name> --zone <zone> --machine-type n2-standard-8 --num-nodes 3 --enable-ip-alias --service-account my-service-account@my-project.iam.gserviceaccount.com
+gcloud container clusters create <cluster-name> \
+  --zone <zone> \
+  --machine-type n2-standard-8 \
+  --num-nodes 1 \
+  --enable-ip-alias \
+  --service-account my-service-account@my-project.iam.gserviceaccount.com
+```
+Once the creation process is completed, you should be able to access the cluster using the kubectl CLI tool:
+
+```bash
+kubectl get nodes
 ```
 
 ### Step 1.4: Create GCR repository
 
+Hopsworks allows users to customize images for Python jobs, Jupyter Notebooks, and (Py)Spark applications. These images should be stored in Google Container Registry (GCR). The GKE cluster needs access to a GCR repository to push project images.
+
 Enable Artifact Registry and create a GCR repository to store images:
 
 ```bash
-gcloud artifacts repositories create <repo-name> --repository-format=docker --location=<region>
-```
-
-### Step 1.5: Link the GCS bucket and the GCR repository
-
-```bash
-gsutil iam ch serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com:objectViewer gs://YOUR_BUCKET_NAME
-gsutil iam ch serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com:objectAdmin gs://YOUR_BUCKET_NAME
-
-gsutil iam ch serviceAccount:YOUR_EMAIL_ADDRESS:objectViewer gs://YOUR_BUCKET_NAME
-gsutil iam ch serviceAccount:YOUR_EMAIL_ADDRESS:objectAdmin gs://YOUR_BUCKET_NAME
-
-gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" --role="roles/storage.objectViewer"
-```
-
-## Step 2: Configure kubectl
-
-```bash
-gcloud auth configure-docker
-
-kubectl get pods
+gcloud artifacts repositories create <repo-name> \
+  --repository-format=docker \
+  --location=<region>
 ```
 
 ## Step 3: Setup Hopsworks for Deployment
@@ -177,7 +171,10 @@ global:
 Deploy Hopsworks in the created namespace.
 
 ```bash
-helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.gcp.yaml --timeout=600s
+helm install hopsworks hopsworks/hopsworks \
+  --namespace hopsworks \
+  --values values.gcp.yaml \
+  --timeout=600s
 ```
 
 Check that Hopsworks is installing on your provisioned AKS cluster.
@@ -193,7 +190,6 @@ Upon completion (circa 20 minutes), setup a load balancer to access Hopsworks:
 ```bash
 kubectl expose deployment hopsworks --type=LoadBalancer --name=hopsworks-service --namespace <namespace>
 ```
-
 
 ## Step 5: Next steps
 

@@ -8,21 +8,20 @@ SageMaker and KubeFlow. This guide shows how to set up the Hopsworks platform in
 
 To follow the instruction on this page you will need the following:
 
-- Kubernetes Version: Hopsworks can be deployed on AKS clusters running Kubernetes >= 1.27.0.
+- Kubernetes Version: Hopsworks can be deployed on EKS clusters running Kubernetes >= 1.27.0.
 - [aws-cli](https://aws.amazon.com/cli/) to provision the AWS resources 
 - [eksctl](https://eksctl.io/) to interact with the AWS APIs and provision the EKS cluster
 - [helm](https://helm.sh/) to deploy Hopsworks
 
-## ECR Registry
+### ECR Registry
 
 Hopsworks allows users to customize the images used by Python jobs, Jupyter Notebooks and (Py)Spark applications running in their projects. The images are stored in ECR. Hopsworks needs access to an ECR repository to push the project images.
 
-## Permissions
+### Permissions
 
-By default, the deployment requires cluster admin level access to be able to create a set of ClusterRoles, ServiceAccounts and ClusterRoleBindings. If you don’t have cluster admin level access, you can ask your administrator to provision the necessary ClusterRoles, ServiceAccounts and ClusterRoleBindings as described in the section below.
+- The deployment requires cluster admin access to create ClusterRoles, ServiceAccounts, and ClusterRoleBindings.
 
-A namespace is required to deploy the Hopsworks stack. If you don’t have permissions to create a namespace you should ask your K8s administrator to provision one for you.
-
+- A namespace is required to deploy the Hopsworks stack. If you don’t have permissions to create a namespace, ask your GKE administrator to provision one.
 
 ## EKS Deployment
 
