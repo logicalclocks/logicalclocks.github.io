@@ -21,7 +21,7 @@ Hopsworks allows users to customize the images used by Python jobs, Jupyter Note
 
 - The deployment requires cluster admin access to create ClusterRoles, ServiceAccounts, and ClusterRoleBindings.
 
-- A namespace is required to deploy the Hopsworks stack. If you don’t have permissions to create a namespace, ask your GKE administrator to provision one.
+- A namespace is required to deploy the Hopsworks stack. If you don’t have permissions to create a namespace, ask your EKS administrator to provision one.
 
 ## EKS Deployment
 
