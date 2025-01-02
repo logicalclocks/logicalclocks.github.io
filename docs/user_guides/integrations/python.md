@@ -56,7 +56,7 @@ fs = project.get_feature_store()        # Get the project's default feature stor
 
 !!! note "Engine"
 
-    `Hopsworks` leverage several engines depending on whether you are running using Apache Spark or Pandas/Polars. The default behaviour of the library is to use the `spark` engine if you do not specify any `engine` option in the `login` method and if the `PySpark` library is available in the environment.
+    `Hopsworks` leverages several engines depending on whether you are running using Apache Spark or Pandas/Polars. The default behaviour of the library is to use the `spark` engine if you do not specify any `engine` option in the `login` method and if the `PySpark` library is available in the environment.
 
     Please refer to the [Spark integration guide](spark.md) to configure your PySpark cluster to interact with Hopsworks.
 
