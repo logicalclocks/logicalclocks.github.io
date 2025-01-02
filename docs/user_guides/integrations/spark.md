@@ -72,20 +72,20 @@ For instructions on how to generate an API key follow this [user guide](../proje
 You are now ready to connect to the Hopsworks Feature Store from Spark:
 
 ```python
-import hsfs
-conn = hsfs.connection(
+import hopsworks 
+project = hopsworks.login(
     host='my_instance',                 # DNS of your Feature Store instance
     port=443,                           # Port to reach your Hopsworks instance, defaults to 443
     project='my_project',               # Name of your Hopsworks Feature Store project
     api_key_value='api_key',            # The API key to authenticate with the feature store
     hostname_verification=True          # Disable for self-signed certificates
 )
-fs = conn.get_feature_store()           # Get the project's default feature store
+fs = project.get_feature_store()           # Get the project's default feature store
 ```
 
 !!! note "Engine"
 
-    `HSFS` uses either Apache Spark or Pandas/Polars on Python as an execution engine to perform queries against the feature store. The `engine` option of the connection let's you overwrite the default behaviour by setting it to `"python"` or `"spark"`. By default, `HSFS` will try to use Spark as engine if PySpark is available, hence, no further action should be required if you setup Spark correctly as described above.
+    `Hopsworks` leverage several engines depending on whether you are running using Apache Spark or Pandas/Polars. The default behaviour of the library is to use the `spark` engine if you do not specify any `engine` option in the `login` method and if the `PySpark` library is available in the environment.
 
 ## Next Steps
 

@@ -27,11 +27,12 @@ HDInsight requires Hopsworks connectors to be able to communicate with the Hopsw
 The script action needs to be applied head and worker nodes and can be applied during cluster creation or to an existing cluster. Ensure to persist the script action so that it is run on newly created nodes. For more information about how to use script actions, see [Customize Azure HDInsight clusters by using script actions](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-linux).
 
 !!! attention "Matching Hopsworks version"
-    The **major version of `HSFS`** needs to match the **major version of Hopsworks**. Check [PyPI](https://pypi.org/project/hsfs/#history) for available releases.
+
+    We recommend that the major and minor version of the Python library match the major and minor version of the Hopsworks deployment.
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
+            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
         </figure>
     </p>
@@ -42,14 +43,14 @@ set -e
 
 HOST="MY_INSTANCE.cloud.hopsworks.ai" # DNS of your Feature Store instance
 PROJECT="MY_PROJECT"                  # Port to reach your Hopsworks instance, defaults to 443
-HSFS_VERSION="MY_VERSION"             # The major version of HSFS needs to match the major version of Hopsworks
+HOPSWORKS_VERSION="MY_VERSION"        # The major version of Hopsworks library needs to match the major version of Hopsworks
 API_KEY="MY_API_KEY"                  # The API key to authenticate with Hopsworks
 CONDA_ENV="MY_CONDA_ENV"              # py35 is the default for HDI 3.6
 
 apt-get --assume-yes install python3-dev
 apt-get --assume-yes install jq
 
-/usr/bin/anaconda/envs/$CONDA_ENV/bin/pip install hsfs==$HSFS_VERSION
+/usr/bin/anaconda/envs/$CONDA_ENV/bin/pip install hopsworks==$HOPSWORKS_VERSION
 
 PROJECT_ID=$(curl -H "Authorization: ApiKey ${API_KEY}" https://$HOST/hopsworks-api/api/project/getProjectInfo/$PROJECT | jq -r .projectId)
 
@@ -120,25 +121,25 @@ hive.metastore.uris=thrift://MY_HOPSWORKS_INSTANCE_PRIVATE_IP:9083
 You are now ready to connect to the Hopsworks Feature Store, for instance using a Jupyter notebook in HDInsight with a PySpark3 kernel:
 
 ```python
-import hsfs
+import hopsworks
 
 # Put the API key into Key Vault for any production setup:
 # See, https://azure.microsoft.com/en-us/services/key-vault/
 secret_value = 'MY_API_KEY'
 
 # Create a connection
-conn = hsfs.connection(
+project = hopsworks.login(
     host='MY_INSTANCE.cloud.hopsworks.ai', # DNS of your Feature Store instance
     port=443,                              # Port to reach your Hopsworks instance, defaults to 443
-    project='MY_PROJECT',                  # Name of your Hopsworks Feature Store project
+    project='MY_PROJECT',                  # Name of your Hopsworks project
     api_key_value=secret_value,            # The API key to authenticate with Hopsworks
     hostname_verification=True             # Disable for self-signed certificates
 )
 
 # Get the feature store handle for the project's feature store
-fs = conn.get_feature_store()
+fs = project.get_feature_store()
 ```
 
 ## Next Steps
 
-For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.
+For more information on how to use the Hopsworks API check out the other guides or the [API Reference](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/connection_api/). 

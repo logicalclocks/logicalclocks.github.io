@@ -1,6 +1,6 @@
 # Azure Machine Learning Designer Integration
 
-Connecting to the Feature Store from the Azure Machine Learning Designer requires setting up a Feature Store API key for the Designer and installing the **HSFS** on the Designer. This guide explains step by step how to connect to the Feature Store from Azure Machine Learning Designer.
+Connecting to the Hopsworks from the Azure Machine Learning Designer requires setting up a Hopsworks API key for the Designer and installing the **Hopsworks** Python library on the Designer. This guide explains step by step how to connect to the Feature Store from Azure Machine Learning Designer.
 
 !!! info "Network Connectivity"
 
@@ -15,9 +15,9 @@ For instructions on how to generate an API key follow this [user guide](../proje
   3. job
   4. kafka
 
-## Connect to the Feature Store
+## Connect to Hopsworks 
 
-To connect to the Feature Store from the Azure Machine Learning Designer, create a new pipeline or open an existing one:
+To connect to Hopsworks from the Azure Machine Learning Designer, create a new pipeline or open an existing one:
 
 <p align="center">
   <figure>
@@ -30,18 +30,18 @@ In the pipeline, add a new `Execute Python Script` step and replace the Python s
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-2.png" alt="Add the code to access the Feature Store">
-    <figcaption>Add the code to access the Feature Store</figcaption>
+    <img src="../../../../assets/images/guides/integrations/azure/designer/step-2.png" alt="Add the code to access the Hopsworks">
+    <figcaption>Add the code to access the Hopsworks</figcaption>
   </figure>
 </p>
 
 !!! info "Updating the script"
 
-    Replace MY_VERSION, MY_API_KEY, MY_INSTANCE, MY_PROJECT and MY_FEATURE_GROUP with the respective values. The major version set for MY_VERSION needs to match the major version of Hopsworks. Check [PyPI](https://pypi.org/project/hsfs/#history) for available releases.
+    Replace MY_VERSION, MY_API_KEY, MY_INSTANCE, MY_PROJECT and MY_FEATURE_GROUP with the respective values. The major version set for MY_VERSION needs to match the major version of Hopsworks. Check [PyPI](https://pypi.org/project/hopsworks/#history) for available releases.
 
     <p align="center">
     <figure>
-        <img src="../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
+        <img src="../../../assets/images/hopsworks-version.png" alt="Hopsworks version needs to match the major version of Hopsworks">
         <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
     </figure>
     </p>
@@ -51,7 +51,7 @@ import os
 import importlib.util
 
 
-package_name = 'hsfs'
+package_name = 'hopsworks'
 version = 'MY_VERSION'
 spec = importlib.util.find_spec(package_name)
 if spec is None:
@@ -67,16 +67,16 @@ secret_value = 'MY_API_KEY'
 
 def azureml_main(dataframe1 = None, dataframe2 = None):
 
-    import hsfs
-    conn = hsfs.connection(
-        host='MY_INSTANCE.cloud.hopsworks.ai', # DNS of your Feature Store instance
+    import hopsworks
+    project = hopsworks.login(
+        host='MY_INSTANCE.cloud.hopsworks.ai', # DNS of your Hopsworks instance
         port=443,                              # Port to reach your Hopsworks instance, defaults to 443
-        project='MY_PROJECT',                  # Name of your Hopsworks Feature Store project
+        project='MY_PROJECT',                  # Name of your Hopsworks project
         api_key_value=secret_value,            # The API key to authenticate with Hopsworks
         hostname_verification=True,            # Disable for self-signed certificates
         engine='python'                        # Choose python as engine
     )
-    fs = conn.get_feature_store()              # Get the project's default feature store
+    fs = project.get_feature_store()              # Get the project's default feature store
 
     return fs.get_feature_group('MY_FEATURE_GROUP', version=1).read(),
 ```
@@ -121,7 +121,7 @@ Finally, submit the pipeline and wait for it to finish:
 
 !!! info "Performance on the first execution"
 
-    The `Execute Python Script` step can be slow when being executed for the first time as the HSFS library needs to be installed on the compute target. Subsequent executions on the same compute target should use the already installed library.
+    The `Execute Python Script` step can be slow when being executed for the first time as the Hopsworks library needs to be installed on the compute target. Subsequent executions on the same compute target should use the already installed library.
 
 <p align="center">
   <figure>
@@ -132,4 +132,4 @@ Finally, submit the pipeline and wait for it to finish:
 
 ## Next Steps
 
-For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.
+For more information on how to use the Hopsworks API check out the other guides or the [API Reference](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/connection_api/). 

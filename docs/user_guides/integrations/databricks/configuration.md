@@ -96,31 +96,29 @@ Once the cluster is running users can establish a connection to the Hopsworks Fe
 === "AWS"
 
     ```python
-    import hsfs
-    conn = hsfs.connection(
+    import hopsworks 
+    project = hopsworks.connection(
         'my_instance',                      # DNS of your Feature Store instance
         443,                                # Port to reach your Hopsworks instance, defaults to 443
         'my_project',                       # Name of your Hopsworks Feature Store project
-        secrets_store='secretsmanager',     # Either parameterstore or secretsmanager
+        api_key_value='apikey',             # The API key to authenticate with Hopsworks
         hostname_verification=True         # Disable for self-signed certificates
     )
-    fs = conn.get_feature_store()           # Get the project's default feature store
+    fs = project.get_feature_store()           # Get the project's default feature store
     ```
 
 === "Azure"
 
     ```python
-    import hsfs
-    conn = hsfs.connection(
+    import hopsworks 
+    project = hopsworks.connection(
         'my_instance',                      # DNS of your Feature Store instance
         443,                                # Port to reach your Hopsworks instance, defaults to 443
         'my_project',                       # Name of your Hopsworks Feature Store project
-        secrets_store='local',
-        api_key_file="featurestore.key",    # For Azure, store the API key locally
-        secrets_store = "local",
+        api_key_value='apikey',             # The API key to authenticate with Hopsworks
         hostname_verification=True          # Disable for self-signed certificates
     )
-    fs = conn.get_feature_store()           # Get the project's default feature store
+    fs = project.get_feature_store()           # Get the project's default feature store
     ```
 
 ## Next Steps
