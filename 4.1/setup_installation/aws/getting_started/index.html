@@ -103,6 +103,7 @@ helm<span class=w> </span>install<span class=w> </span>aws-load-balancer-control
 <span class=s>  type: gp3</span>
 <span class=s>reclaimPolicy: Delete</span>
 <span class=s>volumeBindingMode: WaitForFirstConsumer</span>
+<span class=s>allowVolumeExpansion: true</span>
 <span class=s>EOF</span>
 </code></pre></div> <h2 id=step-2-hopsworks-deployment>Step 2: Hopsworks Deployment<a class=headerlink href=#step-2-hopsworks-deployment title="Permanent link">#</a></h2> <p>This section describes the steps required to deploy the Hopsworks stack using Helm.</p> <h3 id=step-21-add-the-hopsworks-helm-repository>Step 2.1: Add the Hopsworks Helm repository<a class=headerlink href=#step-21-add-the-hopsworks-helm-repository title="Permanent link">#</a></h3> <ul> <li>Configure Repo</li> </ul> <p>To obtain access to the Hopsworks helm chart repository, please obtain an evaluation/startup licence <a href=https://www.hopsworks.ai/try>here</a>.</p> <p>Once you have the helm chart repository URL, replace the environment variable $HOPSWORKS_REPO in the following command with this URL.</p> <div class=highlight><pre><span></span><code>helm<span class=w> </span>repo<span class=w> </span>add<span class=w> </span>hopsworks<span class=w> </span><span class=nv>$HOPSWORKS_REPO</span>
 helm<span class=w> </span>repo<span class=w> </span>update<span class=w> </span>hopsworks
