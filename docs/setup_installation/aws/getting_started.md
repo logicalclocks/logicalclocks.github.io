@@ -202,6 +202,7 @@ parameters:
   type: gp3
 reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
 EOF
 ```
 
