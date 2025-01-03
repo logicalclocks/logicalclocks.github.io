@@ -64,12 +64,12 @@ To access features from a shared feature store you need to first retrieve the ha
 To retrieve the handle use the get_feature_store() method and provide the name of the shared feature store
 
 ```python
-import hsfs
+import hopsworks 
 
-connection = hsfs.connection()
+project = hopsworks.login()
 
-project_feature_store = connection.get_feature_store()
-shared_feature_store = connection.get_feature_store(name="name_of_shared_feature_store")
+project_feature_store = project.get_feature_store()
+shared_feature_store = project.get_feature_store(name="name_of_shared_feature_store")
 ```
 
 ### Step 2: Fetch feature groups
