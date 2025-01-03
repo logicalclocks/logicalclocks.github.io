@@ -6,7 +6,7 @@ Connecting to the Hopsworks from Azure Machine Learning Notebooks requires setti
 
     To be able to connect to the Feature Store, please ensure that the Network Security Group of your Hopsworks instance on Azure is configured to allow incoming traffic from your compute target on ports 443, 9083 and 9085 (443,9083,9085). See [Network security groups](https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview) for more information. If your compute target is not in the same VNet as your Hopsworks instance and the Hopsworks instance is not accessible from the internet then you will need to configure [Virtual Network Peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering).
 
-## Install Python Library
+## Install Hopsworks Python Library
 
 To be able to interact with Hopsworks from a Python environment you need to install the `Hopsworks` Python library. The library is available on [PyPi](https://pypi.org/project/hopsworks/) and can be installed using `pip`: 
 

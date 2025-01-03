@@ -5,10 +5,19 @@ description: Documentation on how to install the Hopsworks Python and Java libra
 
 ## Hopsworks Python library 
 
-The Hopsworks Python client library is required to connect to the Hopsworks Feature Store and MLOps services from your local machine or any other Python environment such as Google Colab or AWS Sagemaker. Execute the following command to install the Hopsworks client library in your Python environment:
+The Hopsworks Python client library is required to connect to Hopsworks from your local machine or any other Python environment such as Google Colab or AWS Sagemaker. Execute the following command to install the Hopsworks client library in your Python environment:
 
 !!! note "Virtual environment"
     It is recommended to use a virtual python environment instead of the system environment used by your operating system, in order to avoid any side effects regarding interfering dependencies.
+
+!!! attention "Windows/Conda Installation"
+
+    On Windows systems you might need to install twofish manually before installing hopsworks, if you don't have the Microsoft Visual C++ Build Tools installed. In that case, it is recommended to use a conda environment and run the following commands:
+    
+    ```bash
+    conda install twofish
+    pip install hopsworks[python]
+    ```
 
 ```bash
 pip install hopsworks[python]

@@ -24,7 +24,6 @@ For instructions on how to generate an API key follow this [user guide](../../pr
         port=443,                           # Port to reach your Hopsworks instance, defaults to 443
         project='my_project',               # Name of your Hopsworks Feature Store project
         api_key_value='apikey',             # The API key to authenticate with Hopsworks
-        hostname_verification=True          # Disable for self-signed certificates
     )
     fs = project.get_feature_store()           # Get the project's default feature store
 ```

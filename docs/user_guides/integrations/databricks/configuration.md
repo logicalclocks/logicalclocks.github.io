@@ -90,36 +90,16 @@ When a cluster is configured for a specific project user, all the operations wit
 At the end of the configuration, Hopsworks will start the cluster.
 Once the cluster is running users can establish a connection to the Hopsworks Feature Store from Databricks:
 
-!!! note "API key on Azure"
-    Please note, for Azure it is necessary to store the Hopsworks API key locally on the cluster as a file. As we currently do not support storing the API key on an Azure Secret Management Service as we do for AWS. Consult the [API key guide for Azure](api_key.md#azure), for more information.
-
-=== "AWS"
-
-    ```python
-    import hopsworks 
-    project = hopsworks.connection(
-        'my_instance',                      # DNS of your Feature Store instance
-        443,                                # Port to reach your Hopsworks instance, defaults to 443
-        'my_project',                       # Name of your Hopsworks Feature Store project
-        api_key_value='apikey',             # The API key to authenticate with Hopsworks
-        hostname_verification=True         # Disable for self-signed certificates
-    )
-    fs = project.get_feature_store()           # Get the project's default feature store
-    ```
-
-=== "Azure"
-
-    ```python
-    import hopsworks 
-    project = hopsworks.connection(
-        'my_instance',                      # DNS of your Feature Store instance
-        443,                                # Port to reach your Hopsworks instance, defaults to 443
-        'my_project',                       # Name of your Hopsworks Feature Store project
-        api_key_value='apikey',             # The API key to authenticate with Hopsworks
-        hostname_verification=True          # Disable for self-signed certificates
-    )
-    fs = project.get_feature_store()           # Get the project's default feature store
-    ```
+```python
+import hopsworks 
+project = hopsworks.login(
+    host='my_instance',                 # DNS of your Hopsworks instance
+    port=443,                           # Port to reach your Hopsworks instance, defaults to 443
+    project='my_project',               # Name of your Hopsworks project
+    api_key_value='apikey',             # The API key to authenticate with Hopsworks
+)
+fs = project.get_feature_store()           # Get the project's default feature store
+```
 
 ## Next Steps
 

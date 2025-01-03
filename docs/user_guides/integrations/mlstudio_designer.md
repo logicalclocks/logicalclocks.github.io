@@ -1,6 +1,6 @@
 # Azure Machine Learning Designer Integration
 
-Connecting to the Hopsworks from the Azure Machine Learning Designer requires setting up a Hopsworks API key for the Designer and installing the **Hopsworks** Python library on the Designer. This guide explains step by step how to connect to the Feature Store from Azure Machine Learning Designer.
+Connecting to Hopsworks from the Azure Machine Learning Designer requires setting up a Hopsworks API key for the Designer and installing the **Hopsworks** Python library on the Designer. This guide explains step by step how to connect to the Feature Store from Azure Machine Learning Designer.
 
 !!! info "Network Connectivity"
 
