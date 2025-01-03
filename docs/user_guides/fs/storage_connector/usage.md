@@ -14,11 +14,10 @@ We retrieve a storage connector simply by its unique name.
 
 === "PySpark"
     ```python
-    import hsfs
+    import hopsworks 
     # Connect to the Hopsworks feature store
-    hsfs_connection = hsfs.connection()
-    # Retrieve the metadata handle
-    feature_store = hsfs_connection.get_feature_store()
+    project = hopsworks.login()
+    feature_store = project.get_feature_store()
     # Retrieve storage connector
     connector = feature_store.get_storage_connector('connector_name')
     ```

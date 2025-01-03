@@ -107,8 +107,10 @@ nav:
           - Compute Engines: user_guides/fs/compute_engines.md
           - Client Integrations:
               - user_guides/integrations/index.md
-              - Python: user_guides/integrations/python.md
-              - AWS Sagemaker: user_guides/integrations/sagemaker.md
+              - Python / SageMaker / Kubeflow : user_guides/integrations/python.md
+              - AWS EMR:
+                - Networking: user_guides/integrations/emr/networking.md
+                - Configure EMR for Hopsworks: user_guides/integrations/emr/emr_configuration.md
               - Azure HDInsight: user_guides/integrations/hdinsight.md
               - Azure Machine Learning:
                   - Designer: user_guides/integrations/mlstudio_designer.md
