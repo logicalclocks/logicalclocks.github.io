@@ -53,7 +53,7 @@ Identify your EMR EC2 instance profile in the EMR cluster summary:
 In the AWS Management Console, go to *IAM*, select *Roles* and then the EC2 instance profile used by your EMR cluster.
 Select *Add inline policy*. Choose *Secrets Manager* as a service, expand the *Read* access level and check *GetSecretValue*.
 Expand Resources and select *Add ARN*. Paste the ARN of the secret created in the previous step.
-Click on *Review*, give the policy a name und click on *Create policy*.
+Click on *Review*, give the policy a name and click on *Create policy*.
 
 <p align="center">
   <figure>
@@ -166,17 +166,19 @@ echo -n $(curl -H "Authorization: ApiKey ${API_KEY}" https://$HOST/hopsworks-api
 
 chmod -R o-rwx /usr/lib/hopsworks
 
-sudo pip3 install --upgrade hsfs~=X.X.0
-```
-!!! note
-    Don't forget to replace X.X.0 with the major and minor version of your Hopsworks deployment.
+sudo pip3 install --upgrade hopsworks~=X.X.0
 
-<p align="center">
-    <figure>
-      <img src="../../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
-      <figcaption>To find your Hopsworks version, enter any of your projects and go to the settings tab inside your project.</figcaption>
-    </figure>
-</p>
+```
+!!! attention "Matching Hopsworks version"
+
+    We recommend that the major and minor version of the Python library match the major and minor version of the Hopsworks deployment.
+
+    <p align="center">
+        <figure>
+            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
+        </figure>
+    </p>
 
 Add the bootstrap actions when configuring your EMR cluster. Provide 3 arguments to the bootstrap action: The name of the API key secret e.g., `hopsworks/featurestore`,
 the public DNS name of your Hopsworks cluster, such as `ad005770-33b5-11eb-b5a7-bfabd757769f.cloud.hopsworks.ai`, and the name of your Hopsworks project, e.g. `demo_fs_meb10179`.
@@ -192,4 +194,4 @@ Your EMR cluster will now be able to access your Hopsworks Feature Store.
 
 ## Next Steps
 
-Use the [Connection API](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/connection_api/) to connect to the Hopsworks Feature Store. For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.
+Use the [Connection API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/connection_api/) to connect to the Hopsworks Feature Store. For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.

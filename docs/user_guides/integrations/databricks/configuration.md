@@ -31,7 +31,7 @@ Users can get a valid Databricks API key by following the [Databricks Documentat
 
 ## Register a new Databricks Instance
 
-To register a new Databricks instance, first navigate to `Project settings`, which can be found on the left-hand side of a Project's landing page, then select the `Integrations` tab. 
+To register a new Databricks instance, first navigate to `Project settings`, which can be found on the left-hand side of a Project's landing page, then select the `Integrations` tab.
 
 <p align="center">
   <figure>
@@ -80,6 +80,9 @@ During the cluster configuration the following steps will be taken:
 - Install `hsfs` python library
 - Configure the necessary Spark properties to authenticate and communicate with the Feature Store
 
+!!! note "HopsFS configuration"
+    It is not necessary to configure HopsFS if data is stored outside the Hopsworks file system. To do this define [Storage Connectors](../../fs/storage_connector/index.md) and link them to [Feature Groups](../../fs/feature_group/create.md) and [Training Datasets](../../fs/feature_view/training-data.md).
+
 When a cluster is configured for a specific project user, all the operations with the Hopsworks Feature Store will be executed as that project user. If another user needs to re-use the same cluster, the cluster can be reconfigured by following the same steps above.
 
 ## Connecting to the Feature Store
@@ -87,39 +90,17 @@ When a cluster is configured for a specific project user, all the operations wit
 At the end of the configuration, Hopsworks will start the cluster.
 Once the cluster is running users can establish a connection to the Hopsworks Feature Store from Databricks:
 
-!!! note "API key on Azure"
-    Please note, for Azure it is necessary to store the Hopsworks API key locally on the cluster as a file. As we currently do not support storing the API key on an Azure Secret Management Service as we do for AWS. Consult the [API key guide for Azure](api_key.md#azure), for more information.
-
-=== "AWS"
-
-    ```python
-    import hsfs
-    conn = hsfs.connection(
-        'my_instance',                      # DNS of your Feature Store instance
-        443,                                # Port to reach your Hopsworks instance, defaults to 443
-        'my_project',                       # Name of your Hopsworks Feature Store project
-        secrets_store='secretsmanager',     # Either parameterstore or secretsmanager
-        hostname_verification=True         # Disable for self-signed certificates
-    )
-    fs = conn.get_feature_store()           # Get the project's default feature store
-    ```
-
-=== "Azure"
-
-    ```python
-    import hsfs
-    conn = hsfs.connection(
-        'my_instance',                      # DNS of your Feature Store instance
-        443,                                # Port to reach your Hopsworks instance, defaults to 443
-        'my_project',                       # Name of your Hopsworks Feature Store project
-        secrets_store='local',
-        api_key_file="featurestore.key",    # For Azure, store the API key locally
-        secrets_store = "local",
-        hostname_verification=True          # Disable for self-signed certificates
-    )
-    fs = conn.get_feature_store()           # Get the project's default feature store
-    ```
+```python
+import hopsworks 
+project = hopsworks.login(
+    host='my_instance',                 # DNS of your Hopsworks instance
+    port=443,                           # Port to reach your Hopsworks instance, defaults to 443
+    project='my_project',               # Name of your Hopsworks project
+    api_key_value='apikey',             # The API key to authenticate with Hopsworks
+)
+fs = project.get_feature_store()           # Get the project's default feature store
+```
 
 ## Next Steps
 
-For more information about how to connect, see the [Connection](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/connection_api/) API reference. Or continue with the Data Source guide to import your own data to the Feature Store.
+For more information about how to connect, see the [Connection](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/connection_api/) API reference. Or continue with the Data Source guide to import your own data to the Feature Store.

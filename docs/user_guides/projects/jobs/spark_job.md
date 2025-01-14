@@ -8,11 +8,14 @@ description: Documentation on how to configure and execute a Spark (Scala) job o
 
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
-- Python (*Hopsworks Enterprise only*)
+- Python
 - Apache Spark
 
 Launching a job of any type is very similar process, what mostly differs between job types is
-the various configuration parameters each job type comes with. After following this guide you will be able to create a Spark job.
+the various configuration parameters each job type comes with. Hopsworks support scheduling to run jobs on a regular basis,
+e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
+checkout [our Scheduling guide](schedule_job.md).
+
 
 ## UI
 
@@ -29,7 +32,7 @@ The image below shows the Jobs overview page in Hopsworks and is accessed by cli
 
 ### Step 2: Create new job dialog
 
-To configure a  job, click `Advanced options`, which will open up the advanced configuration page for the job.
+Click `New Job` and the following dialog will appear.
 
 <p align="center">
   <figure>
@@ -38,25 +41,18 @@ To configure a  job, click `Advanced options`, which will open up the advanced c
   </figure>
 </p>
 
-### Step 3: Set the jar
+### Step 3: Set the job type
 
-Next step is to select the program to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. After that set the name for the job.
+By default, the dialog will create a Spark job. Make sure `SPARK` is chosen.
+
+### Step 4: Set the jar
+
+Next step is to select the program to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. After that set the name for the job. By default, the job name is the same as the file name, but you can customize it here.
 
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/jobs/upload_job_spark_file.gif" alt="Configure program">
     <figcaption>Configure program</figcaption>
-  </figure>
-</p>
-
-### Step 4: Set the job type
-
-Next step is to set the job type to `SPARK` to indicate it should be executed as a spark job. Then specify [additional configuration](#step-5-optional-additional-configuration) or click `Create New Job` to create the job.
-
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/jobs/advanced_configuration_spark.png" alt="Set the job type">
-    <figcaption>Set the job type</figcaption>
   </figure>
 </p>
 
@@ -71,10 +67,25 @@ Next step is to set the main class for the application. Then specify [advanced c
   </figure>
 </p>
 
+Then click `Create job` to create the job.
 
-### Step 6 (optional): Advanced configuration
+### Step 6 (optional): Set the Spark script arguments
+
+In the job settings, you can specify arguments for your Spark script.
+Remember to handle the arguments inside your Spark script.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jobs/job_spark_args.png" alt="Configure Spark script arguments">
+    <figcaption>Configure Spark script arguments</figcaption>
+  </figure>
+</p>
+
+### Step 7 (optional): Advanced configuration
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
+
+* `Environment`: The environment to use, must be based on `spark-feature-pipeline`
 
 * `Driver memory`: Number of cores to allocate for the Spark driver
 
@@ -89,8 +100,8 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_resource_and_compute.png" alt="Resource configuration for the Spark kernels">
-    <figcaption>Resource configuration for the Spark kernels</figcaption>
+    <img src="../../../../assets/images/guides/jobs/spark_resource_and_compute.png" alt="Resource configuration for the Spark job">
+    <figcaption>Resource configuration for the Spark job</figcaption>
   </figure>
 </p>
 
@@ -106,8 +117,8 @@ Additional files or dependencies required for the Spark job can be configured.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark kernels">
-    <figcaption>File configuration for the Spark kernels</figcaption>
+    <img src="../../../../assets/images/guides/jupyter/spark_additional_files.png" alt="File configuration for the Spark job">
+    <figcaption>File configuration for the Spark job</figcaption>
   </figure>
 </p>
 
@@ -115,24 +126,24 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark kernels">
+    <img src="../../../../assets/images/guides/jupyter/spark_properties.png" alt="File configuration for the Spark job">
     <figcaption>Additional Spark configuration</figcaption>
   </figure>
 </p>
 
-### Step 7: Execute the job
+### Step 8: Execute the job
 
 Now click the `Run` button to start the execution of the job, and then click on `Executions` to see the list of all executions.
 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jobs/start_job_py.gif" alt="Start job execution">
+    <img src="../../../../assets/images/guides/jobs/start_job_spark.gif" alt="Start job execution">
     <figcaption>Start job execution</figcaption>
   </figure>
 </p>
 
-### Step 8: Application logs
+### Step 9: Application logs
 
 To monitor logs while the execution is running, click `Spark UI` to open the Spark UI in a separate tab.
 
@@ -206,7 +217,3 @@ print(f_err.read())
 [Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
 [Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
-
-## Conclusion
-
-In this guide you learned how to create and run a Spark job.

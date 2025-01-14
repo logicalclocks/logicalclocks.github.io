@@ -12,11 +12,13 @@ Predictors are the main component of deployments. They are responsible for runni
 !!! info ""
     1. [Model server](#model-server)
     2. [Serving tool](#serving-tool)
-    3. [Custom script](#custom-script)
-    4. [Transformer](#transformer)
-    5. [Inference Logger](#inference-logger)
-    6. [Inference Batcher](#inference-batcher)
-    7. [Resources](#resources)
+    3. [User-provided script](#user-provided-script)
+    4. [Python environments](#python-environments)
+    5. [Transformer](#transformer)
+    6. [Inference Logger](#inference-logger)
+    7. [Inference Batcher](#inference-batcher)
+    8. [Resources](#resources)
+    9. [API protocol](#api-protocol)
 
 ## GUI
 
@@ -31,17 +33,27 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, click on `New deployment` if there are not existing deployments or on `Create new deployment` at the top-right corner to open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
 
-### Step 2: Choose a model server
+### Step 2: Choose a backend
 
-A simplified creation form will appear, including the most common deployment fields among all the configuration possible. These fields include the [model server](#model-server) and [custom script](#custom-script) (for python models).
+A simplified creation form will appear, including the most common deployment fields from all available configurations. The first step is to choose a ==backend== for your model deployment. The backend will filter the models shown below according to the framework that the model was registered with in the model registry.
+
+For example if you registered the model as a TensorFlow model using `ModelRegistry.tensorflow.create_model(...)` you select `Tensorflow Serving` in the dropdown.
 
 <p align="center">
   <figure>
-    <img style="float: left; width: 45%; margin-right: 12px" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_tf.png" alt="Simplified deployment creation form for TensorFlow">
-    <img style="width: 45%;" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py.png" alt="Deployment simplified creation form for Python">
-    <figcaption>Simplified deployment creation forms for TensorFlow models (left) and Python models (right)</figcaption>
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_1.png" alt="Select the model framework">
+    <figcaption>Select the backend</figcaption>
+  </figure>
+</p>
+
+All models compatible with the selected backend will be listed in the model dropdown.
+
+<p align="center">
+  <figure>
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_2.png" alt="Select the model">
+    <figcaption>Select the model</figcaption>
   </figure>
 </p>
 
@@ -53,18 +65,33 @@ For python models, if you want to use your own [predictor script](#step-2-option
 
 <p align="center">
   <figure>
-    <img style="max-width: 80%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_pred.png" alt="Predictor script in the simplified deployment form">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_pred.png" alt="Predictor script in the simplified deployment form">
     <figcaption>Select a predictor script in the simplified deployment form</figcaption>
   </figure>
 </p>
 
-### Step 4 (Optional): Enable KServe
+### Step 4 (Optional): Change predictor environment
+
+If you are using a predictor script it is also required to configure the inference environment for the predictor. This environment needs to have all the necessary dependencies installed to run your predictor script.
+
+By default, we provide a set of environments like `tensorflow-inference-pipeline`, `torch-inference-pipeline` and `pandas-inference-pipeline` that serves this purpose for common machine learning frameworks.
+
+To create your own it is recommended to [clone](../../projects/python/python_env_clone.md) the `minimal-inference-pipeline` and install additional dependencies for your use-case.
+
+<p align="center">
+  <figure>
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_pred_env.png" alt="Predictor script in the simplified deployment form">
+    <figcaption>Select an environment for the predictor script</figcaption>
+  </figure>
+</p>
+
+### Step 5 (Optional): Enable KServe
 
 Other configuration such as the serving tool, is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>
-    <img style="max-width: 80%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
     <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
   </figure>
 </p>
@@ -73,12 +100,12 @@ Here, you change the [serving tool](#serving-tool) for your deployment by enabli
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_kserve.png" alt="KServe in advanced deployment form">
+    <img style="max-width: 85%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_kserve.png" alt="KServe in advanced deployment form">
     <figcaption>KServe checkbox in the advanced deployment form</figcaption>
   </figure>
 </p>
 
-### Step 5 (Optional): Other advanced options 
+### Step 6 (Optional): Other advanced options
 
 Additionally, you can adjust the default values of the rest of components:
 
@@ -87,6 +114,7 @@ Additionally, you can adjust the default values of the rest of components:
     2. [Inference logger](#inference-logger)
     3. [Inference batcher](#inference-batcher)
     4. [Resources](#resources)
+    5. [API protocol](#api-protocol)
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -94,35 +122,71 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
-
-project = hopsworks.login()
-
-# get Hopsworks Model Registry handle
-mr = project.get_model_registry()
-
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
-```
-
-### Step 2 (Optional): Implement predictor script
-
 === "Python"
+  ```python
+  import hopsworks
 
+  project = hopsworks.login()
+
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
+
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
+
+### Step 2 (Optional): Implement a predictor script
+
+=== "Predictor"
     ``` python
-    class Predict(object):
+    class Predictor():
 
         def __init__(self):
-            """ Initialization code goes here:
-                - Download the model artifact
-                - Load the model
-            """
+            """ Initialization code goes here"""
             pass
 
         def predict(self, inputs):
             """ Serve predictions using the trained model"""
             pass
+    ```
+=== "Generate (vLLM deployments only)"
+    ``` python
+    from typing import Iterable, AsyncIterator, Union
+
+    from vllm import LLM
+
+    from kserve.protocol.rest.openai import (
+        CompletionRequest,
+        ChatPrompt,
+        ChatCompletionRequestMessage,
+    )
+    from kserve.protocol.rest.openai.types import Completion
+
+    class Predictor():
+
+        def __init__(self):
+            """ Initialization code goes here"""
+        # initialize vLLM backend
+        self.llm = LLM(os.environ["MODEL_FILES_PATH])
+
+        # initialize tokenizer if needed
+        # self.tokenizer = ...
+
+        def apply_chat_template(
+            self,
+            messages: Iterable[ChatCompletionRequestMessage,],
+        ) -> ChatPrompt:
+          pass
+
+        async def create_completion(
+            self, request: CompletionRequest
+        ) -> Union[Completion, AsyncIterator[Completion]]:
+        """Generate responses using the LLM"""
+
+        # Completion: used for returning a single answer (batch)
+        # AsyncIterator[Completion]: used for returning a stream of answers
+
+        pass
     ```
 
 !!! info "Jupyter magic"
@@ -131,87 +195,91 @@ ms = project.get_model_serving()
 ### Step 3 (Optional): Upload the script to your project
 
 !!! info "You can also use the UI to upload your predictor script. See [above](#step-3-advanced-deployment-form)"
- 
-```python
 
-uploaded_file_path = dataset_api.upload("my_predictor.py", "Resources", overwrite=True)
-predictor_script_path = os.path.join("/Projects", project.name, uploaded_file_path)
-```
+=== "Python"
+  ```python
+  uploaded_file_path = dataset_api.upload("my_predictor.py", "Resources", overwrite=True)
+  predictor_script_path = os.path.join("/Projects", project.name, uploaded_file_path)
+  ```
 
 ### Step 4: Define predictor
 
-```python
+=== "Python"
+  ```python
+  my_model = mr.get_model("my_model", version=1)
 
-my_model = mr.get_model("my_model", version=1)
+  my_predictor = ms.create_predictor(my_model,
+                                    # optional
+                                    model_server="PYTHON",
+                                    serving_tool="KSERVE",
+                                    script_file=predictor_script_path
+                                    )
+  ```
 
-my_predictor = ms.create_predictor(my_model,
-                                   # optional
-                                   model_server="PYTHON",
-                                   serving_tool="KSERVE",
-                                   script_file=predictor_script_path
-                                   )
-```
+### Step 5: Create a deployment with the predictor
 
-### Step 3: Create a deployment with the predictor
+=== "Python"
+  ```python
+  my_deployment = my_predictor.deploy()
 
-```python
-
-my_deployment = my_predictor.deploy()
-
-# or
-my_deployment = ms.create_deployment(my_predictor)
-my_deployment.save()
-```
+  # or
+  my_deployment = ms.create_deployment(my_predictor)
+  my_deployment.save()
+  ```
 
 ### API Reference
 
-[Predictor](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/predictor/)
+[Predictor](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
 
 ## Model Server
 
-Hopsworks Model Serving currently supports deploying models with a Flask server for python-based models or TensorFlow Serving for TensorFlow / Keras models. Support for TorchServe for running PyTorch models is coming soon. Today, you can deploy PyTorch models as python-based models.
+Hopsworks Model Serving supports deploying models with a Flask server for python-based models, TensorFlow Serving for TensorFlow / Keras models and vLLM for Large Language Models (LLMs). Today, you can deploy PyTorch models as python-based models.
 
 ??? info "Show supported model servers"
 
-    | Model Server       | Supported | ML Frameworks                                    |
-    | ------------------ | --------- | ------------------------------------------------ |
-    | Flask              | ✅        | python-based (scikit-learn, xgboost, pytorch...) |
-    | TensorFlow Serving | ✅        | keras, tensorflow                                |
-    | TorchServe         | ❌        | pytorch                                          |
+    | Model Server       | Supported | ML Models and Frameworks                                                                        |
+    | ------------------ | --------- | ----------------------------------------------------------------------------------------------- |
+    | Flask              | ✅         | python-based (scikit-learn, xgboost, pytorch...)                                                |
+    | TensorFlow Serving | ✅         | keras, tensorflow                                                                               |
+    | TorchServe         | ❌         | pytorch                                                                                         |
+    | vLLM               | ✅         | vLLM-supported models (see [list](https://docs.vllm.ai/en/latest/models/supported_models.html)) |
 
 ## Serving tool
 
-In Hopsworks, model servers can be deployed in three different ways: directly on Docker, on Kubernetes deployments or using KServe inference services.
-Although the same models can be deployed in either of our two serving tools (Python or KServe), the use of KServe is highly recommended. The following is a comparitive table showing the features supported by each of them.
+In Hopsworks, model servers are deployed on Kubernetes. There are two options for deploying models on Kubernetes: using [KServe](https://kserve.github.io/website/latest/) inference services or Kubernetes built-in deployments. ==KServe is the recommended way to deploy models in Hopsworks==.
+
+The following is a comparative table showing the features supported by each of them.
 
 ??? info "Show serving tools comparison"
 
-    | Feature / requirement                          | Docker       | Kubernetes (enterprise) | KServe (enterprise)         |
-    | ---------------------------------------------- | ------------ | ----------------------- | --------------------------- |
-    | Autoscaling (scale-out)                        | ❌           | ✅                      | ✅                          |
-    | Resource allocation                            | ➖ fixed     | ➖ min. resources       | ✅ min / max. resources     |
-    | Inference logging                              | ➖ simple    | ➖ simple               | ✅ fine-grained             |
-    | Inference batching                             | ➖ partially | ➖ partially            | ✅                          |
-    | Scale-to-zero                                  | ❌           | ❌                      | ✅ after 30s of inactivity) |
-    | Transformers                                   | ❌           | ❌                      | ✅                          |
-    | Low-latency predictions                        | ❌           | ❌                      | ✅                          |
-    | Multiple models                                | ❌           | ❌                      | ➖ (python-based)           |
-    | Custom predictor required <br /> (python-only) | ✅           | ✅                      | ❌                          |
+    | Feature / requirement                                 | Kubernetes (enterprise) | KServe (enterprise)       |
+    | ----------------------------------------------------- | ----------------------- | ------------------------- |
+    | Autoscaling (scale-out)                               | ✅                       | ✅                         |
+    | Resource allocation                                   | ➖ min. resources        | ✅ min / max. resources    |
+    | Inference logging                                     | ➖ simple                | ✅ fine-grained            |
+    | Inference batching                                    | ➖ partially             | ✅                         |
+    | Scale-to-zero                                         | ❌                       | ✅ after 30s of inactivity |
+    | Transformers                                          | ❌                       | ✅                         |
+    | Low-latency predictions                               | ❌                       | ✅                         |
+    | Multiple models                                       | ❌                       | ➖ (python-based)          |
+    | User-provided predictor required <br /> (python-only) | ✅                       | ❌                         |
 
-## Custom script
+## User-provided script
 
-Depending on the model server and serving tool used in the deployment, you can provide your own python script to load the model and make predictions.
+Depending on the model server and serving platform used in the model deployment, you can (or need) to provide your own python script to load the model and make predictions.
+This script is referred to as **predictor script**, and is included in the [artifact files](../serving/deployment.md#artifact-files) of the model deployment.
 
-??? info "Show supported custom predictors"
+The predictor script needs to implement a given template depending on the model server of the model deployment. See the templates in [Step 2](#step-2-optional-implement-a-predictor-script).
 
-    | Serving tool | Model server       | Custom predictor script |
-    | ------------ | ------------------ | ----------------------- |
-    | Docker       | Flask              | ✅ (required)           |
-    |              | TensorFlow Serving | ❌                      |
-    | Kubernetes   | Flask              | ✅ (required)           |
-    |              | TensorFlow Serving | ❌                      |
-    | KServe       | Flask              | ✅ (only required for artifacts with multiple models)   |
-    |              | TensorFlow Serving | ❌                      |
+??? info "Show supported user-provided predictors"
+
+    | Serving tool | Model server       | User-provided predictor script                       |
+    | ------------ | ------------------ | ---------------------------------------------------- |
+    | Kubernetes   | Flask server       | ✅ (required)                                         |
+    |              | TensorFlow Serving | ❌                                                    |
+    | KServe       | Fast API           | ✅ (only required for artifacts with multiple models) |
+    |              | TensorFlow Serving | ❌                                                    |
+    |              | vLLM               | ✅ (required)                                         |
 
 ### Environment variables
 
@@ -219,19 +287,37 @@ A number of different environment variables is available in the predictor to eas
 
 ??? info "Show environment variables"
 
-    | Name | Description |
-    | ------------ | ------------------ |
-    | ARTIFACT_FILES_PATH       | Local path to the model artifact files |
-    | DEPLOYMENT_NAME | Name of the current deployment |
-    | MODEL_NAME   | Name of the model being served by the current deployment |
-    | MODEL_VERSION | Version of the model being served by the current deployment |
-    | ARTIFACT_VERSION       | Version of the model artifact being served by the current deployment |
+    | Name                | Description                                                          |
+    | ------------------- | -------------------------------------------------------------------- |
+    | MODEL_FILES_PATH    | Local path to the model files                                        |
+    | ARTIFACT_FILES_PATH | Local path to the artifact files                                     |
+    | DEPLOYMENT_NAME     | Name of the current deployment                                       |
+    | MODEL_NAME          | Name of the model being served by the current deployment             |
+    | MODEL_VERSION       | Version of the model being served by the current deployment          |
+    | ARTIFACT_VERSION    | Version of the model artifact being served by the current deployment |
+
+## Python environments
+
+Depending on the model server and serving tool used in the model deployment, you can select the Python environment where the predictor and transformer scripts will run. To create a new Python environment see [Python Environments](../../projects/python/python_env_overview.md).
+
+??? info "Show supported Python environments"
+
+    | Serving tool | Model server       | Editable | Predictor                           | Transformer                    |
+    | ------------ | ------------------ | -------- | ----------------------------------- | ------------------------------ |
+    | Kubernetes   | Flask server       | ❌        | `pandas-inference-pipeline` only    | ❌                              |
+    |              | TensorFlow Serving | ❌        | (official) tensorflow serving image | ❌                              |
+    | KServe       | Fast API           | ✅        | any `inference-pipeline` image      | any `inference-pipeline` image |
+    |              | TensorFlow Serving | ✅        | (official) tensorflow serving image | any `inference-pipeline` image |
+    |              | vLLM               | ✅        | `vllm-inference-pipeline` only      | any `inference-pipeline` image |
+
+!!! note 
+    The selected Python environment is used for both predictor and transformer. Support for selecting a different Python environment for the predictor and transformer is coming soon.
 
 ## Transformer
 
 Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model. To learn more about transformers, see the [Transformer Guide](transformer.md).
 
-!!! warning
+!!! note
     Transformers are only supported in KServe deployments.
 
 ## Inference logger
@@ -246,6 +332,6 @@ Inference batcher are deployment component that apply batching to the incoming i
 
 Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica. To learn about the different combinations available, see the [Resources Guide](resources.md).
 
-## Conclusion
+## API protocol
 
-In this guide you learned how to configure a predictor.
+Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. In general, you use gRPC when you need lower latency inference requests. To learn more about the REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).

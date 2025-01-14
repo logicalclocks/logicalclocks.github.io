@@ -6,7 +6,7 @@ Hopsworks supports different methods of authentication. Here we will look at aut
 ## Prerequisites
 
 A Hopsworks cluster with Kerberos authentication. 
-See [Configure Kerberos](../../../../admin/ldap/configure-krb) on how to configure Kerberos on your cluster.
+See [Configure Kerberos](../../../../setup_installation/admin/ldap/configure-krb) on how to configure Kerberos on your cluster.
 
 ### Step 1: Log in with Kerberos
 If Kerberos is configured you will see a _Log in using_ alternative on the login page. Choose Kerberos and click on 
@@ -54,6 +54,3 @@ After clicking on **Register** you will be redirected to the landing page:
 
 In the landing page, you will find two buttons. Use these buttons to either create a 
 _demo project_ or [a new project](../../../projects/project/create_project).
-
-## Conclusion
-In this guide you learned how to log in to Hopsworks using Kerberos.

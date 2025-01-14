@@ -20,5 +20,5 @@ Hopsworks provides a vector database (or embedding store) based on [OpenSearch k
 Hopsworks provides a data-mesh architecture for managing ML assets and teams, with multi-tenant projects. Not unlike a GitHub repository, a project is a sandbox containing team members, data, and ML assets. In Hopsworks, all ML assets (features, models, training data) are versioned, taggable, lineage-tracked, and support free-text search. Data can be also be securely shared between projects.
 
 ## Data Science Platform
-You can develop feature engineering pipelines and training pipelines in Hopsworks. There is support for version control (GitHub, GitLab, BitBucket), Jupyter notebooks, a shared distributed file system, per project conda environments for managing python dependencies without needing to write Dockerfiles, jobs (Python, Spark, Flink), and workflow orchestration with Airflow.
+You can develop feature engineering, model training and inference pipelines in Hopsworks. There is support for version control (GitHub, GitLab, BitBucket), Jupyter notebooks, a shared distributed file system, many bundled modular project python environments for managing python dependencies without needing to write Dockerfiles, jobs (Python, Spark, Flink), and workflow orchestration with Airflow.
 

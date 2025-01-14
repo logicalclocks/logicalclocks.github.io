@@ -155,7 +155,7 @@ pointer-events: initial;
             <div class="rec_frame_main">
               <div class="text_and_icon">
                 <div class="svg_icon w-embed"><img alt="svgImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iNjQiIGhlaWdodD0iNjQiCnZpZXdCb3g9IjAgMCA1MTIgNTEyIgpzdHlsZT0iIGZpbGw6I3VuZGVmaW5lZDsiPjxwYXRoIGQ9Ik01MyA0MTUuNjQ1YTMwLjAzNCAzMC4wMzQgMCAwMDMwIDMwSDQyOWEzMC4wMzQgMzAuMDM0IDAgMDAzMC0zMFYxNjcuNTEzSDUzek0zMDIuNjY3IDI2My41MzdhMTAgMTAgMCAxMTE0LjAwOC0xNC4yNzZsNDQuMTM3IDQzLjMxYTEwIDEwIDAgMDEwIDE0LjI3NmwtNDQuMTM3IDQzLjMwOWExMCAxMCAwIDExLTE0LjAwOC0xNC4yNzZsMzYuODYyLTM2LjE3MXptLTgwLjkgMTA5LjVsMzguMjU3LTE1MC41YTEwIDEwIDAgMTExOS4zODMgNC45MjdsLTM4LjI1NyAxNTAuNWExMCAxMCAwIDAxLTE5LjM4My00LjkyN3ptLTc3LjA3NC04MC40NjVsNDQuMTM3LTQzLjMxYTEwIDEwIDAgMTExNC4wMDggMTQuMjc2bC0zNi44NjIgMzYuMTcyIDM2Ljg2MiAzNi4xNzFhMTAgMTAgMCAwMS0xNC4wMDggMTQuMjc2bC00NC4xMzctNDMuMzA5YTEwIDEwIDAgMDEwLTE0LjI3NnpNNDI5IDY2LjM1NUg4M2EzMC4wMzQgMzAuMDM0IDAgMDAtMzAgMzB2NTEuMTU3SDQ1OVY5Ni4zNTVBMzAuMDM0IDMwLjAzNCAwIDAwNDI5IDY2LjM1NXoiPjwvcGF0aD48L3N2Zz4="></div>
-                <div class="name_item_02"><a href="./concepts/projects/search/">Search</a>, <a href="./concepts/fs/feature_group/versioning/">Versioning</a>, <a href="./concepts/fs/feature_group/fg_statistics/">Statistics</a></div>
+                <div class="name_item_02"><a href="./concepts/projects/search/">Search</a>, <a href="./concepts/fs/feature_group/versioning/">Versioning</a>, <a href="./concepts/fs/feature_group/fg_statistics/">Statistics</a>, <a href="./concepts/fs/feature_group/feature_monitoring/">Monitoring</a></div>
               </div>
             </div>
             <div class="rec_frame_main">
@@ -185,7 +185,7 @@ pointer-events: initial;
               </a>
             </div>
             <div id="w-node-_4a479fbb-90c7-9f47-d439-20aa6a224339-46672785" class="infra">
-              <a href="./setup_installation/on_prem/hopsworks_installer/">
+              <a href="./setup_installation/on_prem/contact_hopsworks/">
                 <img src="images/icons8-database.svg" loading="lazy" alt="" class="infra-icon">
                 <div class="name_item small">On-premise</div>
               </a>
@@ -219,7 +219,7 @@ pointer-events: initial;
               </div>
               <div class="frame_with_arrow">
                 <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/mlops/kserve/">Model Serving</a></div>
+                  <div class="name_item"><a href="./concepts/mlops/serving/">Model Serving</a></div>
                 </div>
               </div>
             </div>
@@ -247,7 +247,7 @@ pointer-events: initial;
 
 <img src="images/hopsworks-logo-2022.svg" loading="lazy" alt="" class="image_logo_02">
 
-Hopsworks is a data platform for ML with a Python-centric Feature Store and MLOps capabilities. Hopsworks is a modular platform. You can use it as a standalone Feature Store, you can use it to manage, govern, and serve your models, and you can even use it to develop and operate feature pipelines and training pipelines. Hopsworks brings collaboration for ML teams, providing a secure, governed platform for developing, managing, and sharing ML assets - features, models, training data, batch scoring data, logs, and more. 
+Hopsworks is a data platform for ML with a Python-centric Feature Store and MLOps capabilities. Hopsworks is a modular platform. You can use it as a standalone Feature Store, you can use it to manage, govern, and serve your models, and you can even use it to develop and operate feature, training and inference pipelines. Hopsworks brings collaboration for ML teams, providing a secure, governed platform for developing, managing, and sharing ML assets - features, models, training data, batch scoring data, logs, and more. 
 
 ## Python-Centric Feature Store
 Hopsworks is widely used as a standalone Feature Store. Hopsworks breaks the monolithic model development pipeline into separate feature and training pipelines, enabling both feature reuse and better tested ML assets. You can develop features by building feature pipelines in any Python (or Spark or Flink) environment, either inside or outside Hopsworks. You can use the Python frameworks you are familiar with to build production feature pipelines. You can compute aggregations in Pandas, validate feature data with Great Expectations, reduce your data dimensionality with embeddings and PCA, test your feature logic and features end-to-end with PyTest, and transform your categorical and numerical features with Scikit-Learn, TensorFlow, and PyTorch. You can orchestrate your feature pipelines with your Python framework of choice, including Hopsworks' own Airflow support.
@@ -262,10 +262,10 @@ Hopsworks provides model serving capabilities through KServe, with additional su
 Hopsworks provides projects as a secure sandbox in which teams can collaborate and share ML assets. Hopsworks' unique multi-tenant project model even enables sensitive data to be stored in a shared cluster, while still providing fine-grained sharing capabilities for ML assets across project boundaries.  Projects can be used to structure teams so that they have end-to-end responsibility from raw data to managed features and models. Projects can also be used to create development, staging, and production environments for data teams. All ML assets support versioning, lineage, and provenance provide all Hopsworks users with a complete view of the MLOps life cycle, from feature engineering through model serving. 
 
 ## Development and Operations
-Hopsworks provides development tools for Data Science, including conda environments for Python, Jupyter notebooks, jobs, or even notebooks as jobs. You can build production pipelines with the bundled Airflow, and even run ML training pipelines with GPUs in notebooks on Airflow. You can train models on as many GPUs as are installed in a Hopsworks cluster and easily share them among users. You can also run Spark, Spark Streaming, or Flink programs on Hopsworks, with support for elastic workers in the cloud (add/remove workers dynamically).
+Hopsworks provides a FTI (feature/training/inference) pipeline architecture for ML systems. Each part of the pipeline is defined in a Hopsworks job which corresponds to a Jupyter notebook, a python script or a jar. The production pipelines are then orchestrated with Airflow which is bundled in Hopsworks. Hopsworks provides several python environments that can be used and customized for each part of the FTI pipeline, for example switching between using PyTorch or TensorFlow in the training pipeline. You can train models on as many GPUs as are installed in a Hopsworks cluster and easily share them among users. You can also run Spark, Spark Streaming, or Flink programs on Hopsworks. JupyterLab is also bundled which can be used to run Python and Spark interactively. 
 
 ## Available on any Platform
-Hopsworks is available as a both managed platform in the cloud on AWS, Azure, and GCP, and can be installed on any Linux-based virtual machines (Ubuntu/Redhat compatible), even in air-gapped data centers. Hopsworks is also available as a serverless platform that manages and serves both your features and models.
+Hopsworks is available to be installed on a kubernetes cluster in the cloud on AWS, Azure, and GCP, and On-Prem (Ubuntu/Redhat compatible), even in air-gapped data centers. Hopsworks is also available as a serverless platform that manages and serves both your features and models.
 
 ## Join the community
 - Ask questions and give us feedback in the [Hopsworks Community](https://community.hopsworks.ai/)
@@ -274,7 +274,7 @@ Hopsworks is available as a both managed platform in the cloud on AWS, Azure, an
 - Join our public [slack-channel](https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA )
 
 ## Contribute
-We are building the most complete and modular ML platform available in the market, and we count on your support to continuously improve Hopsworks. Feel free to [give us suggestions](https://github.com/logicalclocks/hopsworks), [report bugs](https://github.com/logicalclocks/hopsworks/issues) and [add features to our library](https://github.com/logicalclocks/feature-store-api) anytime.
+We are building the most complete and modular ML platform available in the market, and we count on your support to continuously improve Hopsworks. Feel free to [give us suggestions](https://github.com/logicalclocks/hopsworks), [report bugs](https://github.com/logicalclocks/hopsworks/issues) and [add features to our library](https://github.com/logicalclocks/hopsworks-api) anytime.
 
 ## Open-Source
 Hopsworks is available under the AGPL-V3 license. In plain English this means that you are free to use Hopsworks and even build paid services on it, but if you modify the source code, you should also release back your changes and any systems built around it as AGPL-V3.

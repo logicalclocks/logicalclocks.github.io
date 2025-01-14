@@ -10,7 +10,7 @@ This guide will cover how to configure an Hopsworks cluster to leverage an exter
 
 ## Configure the external Kafka cluster integration
 
-To enable the integration with an external Kafka cluster, you should set the `enable_bring_your_own_kafka` [configuration option](../../admin/variables.md) to `true`.
+To enable the integration with an external Kafka cluster, you should set the `enable_bring_your_own_kafka` [configuration option](../admin/variables.md) to `true`.
 This can also be achieved in the cluster definition by setting the following attribute:
 
 ```
@@ -51,7 +51,7 @@ sasl.mechanism=PLAIN
 
 #### Topic configuration
 
-As mentioned above, when configuring Hopsworks to use an external Kafka cluster, Hopsworks will not provision the topics for the different projects. Instead, when creating a project, users will be aksed to provide the topic name to use for the feature store operations.
+As mentioned above, when configuring Hopsworks to use an external Kafka cluster, Hopsworks will not provision the topics for the different projects. Instead, when creating a project, users will be asked to provide the topic name to use for the feature store operations.
 
 <p align="center">
   <figure>

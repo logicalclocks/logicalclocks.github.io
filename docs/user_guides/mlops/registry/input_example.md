@@ -1,3 +1,7 @@
+---
+description: Documentation on how to attach an input example to a model.
+---
+
 # How To Attach An Input Example
 
 ## Introduction
@@ -8,37 +12,34 @@ In this guide you will learn how to attach an input example to a model. An input
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+    ```python
+    import hopsworks
 
-project = hopsworks.login()
+    project = hopsworks.login()
 
-# get Hopsworks Model Registry handle
-mr = project.get_model_registry()
-```
+    # get Hopsworks Model Registry handle
+    mr = project.get_model_registry()
+    ```
 
 ### Step 2: Generate an input example
 
 Generate an input example which corresponds to a valid input to your model. Currently we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list` to be passed as input example.
 
-```python
-import numpy as np
+=== "Python"
+    ```python
+    import numpy as np
 
-input_example = np.random.randint(0, high=256, size=784, dtype=np.uint8)
-
-```
+    input_example = np.random.randint(0, high=256, size=784, dtype=np.uint8)
+    ```
 
 ### Step 3: Set input_example parameter
 
 Set the `input_example` parameter in the `create_model` function and call `save()` to attaching it to the model and register it in the registry.
-```python
 
-model = mr.tensorflow.create_model(name="mnist",
-                                   input_example=input_example)
-model.save("./model")
-
-```
-
-## Conclusion
-
-In this guide you learned how to attach an input example to your model.
+=== "Python"
+    ```python
+    model = mr.tensorflow.create_model(name="mnist",
+                                    input_example=input_example)
+    model.save("./model")
+    ```

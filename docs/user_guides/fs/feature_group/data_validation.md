@@ -56,15 +56,15 @@ The `Validation Reports` tab in the Expectations section displays a brief histor
 
 Hopsworks python client interfaces with the Great Expectations library to enable you to add data validation to your feature engineering pipeline. In this section, we show you how in a single line you enable automatic validation on each insertion of new data into your Feature Group. Whether you have an existing Feature Group you want to add validation to or Follow the guide or get your hands dirty by running our [tutorial data validation notebook](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/integrations/great_expectations/fraud_batch_data_validation.ipynb) in google colab.
 
-First checkout the pre-requisite and hospworks setup to follow the guide below. Create a project, install the hopsworks client and connect via the generated API key. You are ready to load your data in a DataFrame. The second step is a short introduction to the relevant Great Expectations API to build data validation suited to your data. Third and final step shows how to attach your Expectation Suite to the Feature Group to benefit from automatic validation on insertion capabilities.
+First checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the hopsworks client and connect via the generated API key. You are ready to load your data in a DataFrame. The second step is a short introduction to the relevant Great Expectations API to build data validation suited to your data. Third and final step shows how to attach your Expectation Suite to the Feature Group to benefit from automatic validation on insertion capabilities.
 
 ### Step 1: Pre-requisite
 
 In order to define and validate an expectation when writing to a Feature Group, you will need:
 
-- A Hopsworks project. If you don't have a project yet you can go to [managed.hopsworks.ai](https://managed.hopsworks.ai), signup with your email and create your first project.
-- An API key, you can get one by following the instructions [here](../../../setup_installation/common/api_key.md)
-- The [hopsworks python library](../../client_installation/index.md) installed in your client
+- A Hopsworks project. If you don't have a project yet you can go to [app.hopsworks.ai](https://app.hopsworks.ai), signup with your email and create your first project.
+- An API key, you can get one by going to "Account Settings" on [app.hopsworks.ai](https://app.hopsworks.ai).
+- The [Hopsworks Python library](https://pypi.org/project/hopsworks) installed in your client. See the [installation guide](../../client_installation/index.md).
 
 #### Connect your notebook to Hopsworks
 
@@ -174,7 +174,7 @@ That is all there is to it. Hopsworks will now automatically use your suite to v
 job, validation_report = fg.insert(df.head(5))
 ```
 
-As you can see, Hopsworks runs the validation in the client before attempting to insert the data. By default, Hopsworks will try to insert the data even if validation fails to prevent data loss. However it can be configured for production setup to be more restrictive, checkout the [data validation advanced guide](advanced_data_validation.md).
+As you can see, Hopsworks runs the validation in the client before attempting to insert the data. By default, Hopsworks will try to insert the data even if validation fails to prevent data loss. However it can be configured for production setup to be more restrictive, checkout the [data validation advanced guide](data_validation_advanced.md).
 
 !!!info
 	Note that once the Expectation Suite is attached to the Feature Group, any subsequent attempt to insert to this Feature Group will apply the Data Validation step even from a different client or in a scheduled job.
@@ -212,6 +212,6 @@ You can find the expectationIds in the UI or using `fg.get_expectation_suite` an
 
 The integration between Hopsworks and Great Expectations makes it simple to add a data validation step to your feature engineering pipeline. Build your Expectation Suite and attach it to your Feature Group with a single line of code. No need to add any code to your pipeline or job scripts, calling `fg.insert` will now automatically validate the data before inserting them in the Feature Group. The validation reports are stored along your data in Hopsworks allowing us to provide basic monitoring capabilities to quickly spot a data quality issue in the UI.
 
-## Going further
+## Going Further
 
-If you wish to find out more about how to use the data validation API or best practices for development or production pipelines in Hopsworks, checkout the [advanced guide](advanced_data_validation.md).
+If you wish to find out more about how to use the data validation API or best practices for development or production pipelines in Hopsworks, checkout the [advanced guide](data_validation_advanced.md) and [best practices guide](data_validation_best_practices.md).

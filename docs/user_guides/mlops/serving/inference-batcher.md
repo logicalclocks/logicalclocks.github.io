@@ -17,15 +17,15 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, click on `New deployment` if there are not existing deployments or on `Create new deployment` at the top-right corner to open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
 
 ### Step 2: Go to advanced options
 
-A simplified creation form will appear including the most common deployment fields among all the configuration possible. Inference batching is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
+A simplified creation form will appear including the most common deployment fields from all available configurations. Inference batching is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>
-    <img  style="max-width: 85%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <img  style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
     <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
   </figure>
 </p>
@@ -49,52 +49,54 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+  ```python
+  import hopsworks
 
-project = hopsworks.login()
+  project = hopsworks.login()
 
-# get Hopsworks Model Registry handle
-mr = project.get_model_registry()
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
 
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
-```
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
 
 ### Step 2: Define an inference logger
 
-```python
+=== "Python"
+  ```python
+  from hsml.inference_batcher import InferenceBatcher
 
-from hsml.inference_batcher import InferenceBatcher
-
-my_batcher = InferenceBatcher(enabled=True,
-                              # optional
-                              max_batch_size=32,
-                              max_latency=5000, # milliseconds
-                              timeout=5 # seconds
-                              )
-```
+  my_batcher = InferenceBatcher(enabled=True,
+                                # optional
+                                max_batch_size=32,
+                                max_latency=5000, # milliseconds
+                                timeout=5 # seconds
+                                )
+  ```
 
 ### Step 3: Create a deployment with the inference batcher
 
-```python
+=== "Python"
+  ```python
 
-my_model = mr.get_model("my_model", version=1)
+  my_model = mr.get_model("my_model", version=1)
 
-my_predictor = ms.create_predictor(my_model,
-                                   inference_batcher=my_batcher
-                                   )
-my_predictor.deploy()
+  my_predictor = ms.create_predictor(my_model,
+                                    inference_batcher=my_batcher
+                                    )
+  my_predictor.deploy()
 
-# or
+  # or
 
-my_deployment = ms.create_deployment(my_predictor)
-my_deployment.save()
-```
+  my_deployment = ms.create_deployment(my_predictor)
+  my_deployment.save()
+  ```
 
 ### API Reference
 
-[Inference Batcher](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/inference-batcher/)
+[Inference Batcher](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/inference_batcher_api/)
 
 ## Compatibility matrix
 

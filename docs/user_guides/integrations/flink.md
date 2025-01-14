@@ -3,35 +3,7 @@ description: Documentation on how to configure an external Flink cluster to writ
 ---
 # Flink Integration
 
-Connecting to the Feature Store from an external Flink cluster, such as AWS EMR and GCP DataProc requires configuring it with the Hopsworks certificates. This guide explains step by step how to connect to the Feature Store from an external Flink cluster.
-
-## Download the Hopsworks Certificates
-In the *Project Settings*, select the *integration* tab and scroll to the *Configure Spark Integration* section. Click on *Download certificates*. 
-
-<p align="center">
-    <figure>
-        <img src="../../../assets/images/guides/integrations/spark_integration.png" alt="Spark integration tab">
-        <figcaption>The Spark Integration gives access to Jars and configuration for an external Spark cluster</figcaption>
-    </figure>
-</p>
-
-Hopsworks uses X.509 certificates for authentication and authorization. If you are interested in the Hopsworks security model, you can read more about it in this [blog post](https://www.hopsworks.ai/post/how-we-secure-your-data-with-hopsworks).
-The certificates are composed of three different components: the `keyStore.jks` containing the private key and the certificate for your project user, the `trustStore.jks` containing the certificates for the Hopsworks certificates authority, and a password to unlock the private key in the `keyStore.jks`. The password is displayed in a pop-up when downloading the certificate and should be saved in a file named `material_passwd`.
-
-!!! warning
-    When you copy-paste the password to the `material_passwd` file, pay attention to not introduce additional empty spaces or new lines.
-
-The three files (`keyStore.jks`, `trustStore.jks` and `material_passwd`) should be accessible by your Flink application.
-
-## Configure your Flink cluster
-
-Add the following configuration to the `flink-conf.yaml`:
-
-```
-flink.hadoop.hops.ssl.keystore.name: replace_this_with_actual_path/keyStore.jks
-flink.hadoop.hops.ssl.truststore.name: replace_this_with_actual_path/trustStore.jks
-flink.hadoop.hops.ssl.keystores.passwd.name: replace_this_with_actual_path/material_passwd
-```
+Connecting to the Feature Store from an external Flink cluster, such as AWS EMR and GCP DataProc requires configuring it with the Hopsworks certificates, done automatically when using Hopsworks API. This guide explains how to connect to the Feature Store from an external Flink cluster.
 
 ## Generating an API Key
 

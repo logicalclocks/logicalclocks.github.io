@@ -7,6 +7,16 @@ A feature group is a table of features, where each feature group has a primary k
 
 ### Online and offline Storage
 
-Feature groups can be stored in a low-latency "online" database and/or in low cost, high throughput  "offline" storage, typically a data lake or data warehouse. The online store stores only the latest values of features for a feature group. It is used to serve pre-computed features to models at runtime. The offline store stores the historical values of features for a feature group, so it may store many times more data than the online store. Offline feature groups are used, typically, to create training data for models, but also to retrieve data for batch scoring of models:
+Feature groups can be stored in a low-latency "online" database and/or in low cost, high throughput "offline" storage, typically a data lake or data warehouse.
 
 <img src="../../../../assets/images/concepts/fs/feature-storage.svg">
+
+#### Online Storage
+
+The online store stores only the latest values of features for a feature group. It is used to serve pre-computed features to models at runtime.
+
+#### Offline Storage
+
+The offline store stores the historical values of features for a feature group so that it may store much more data than the online store. Offline feature groups are used, typically, to create training data for models, but also to retrieve data for batch scoring of models.
+
+In most cases, offline data is stored in Hopsworks, but through the implementation of storage connectors, it can reside in an external file system. The externally stored data can be managed by Hopsworks by defining ordinary feature groups or it can be used for reading only by defining [External Feature Group](external_fg.md).

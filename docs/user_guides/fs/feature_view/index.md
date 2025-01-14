@@ -8,4 +8,7 @@ This section serves to provide guides and examples for the common usage of abstr
 - [Feature Vectors](feature-vectors.md)
 - [Feature Server](feature-server.md)
 - [Query](query.md)
-- [Transformation Functions](transformation-function.md)
+- [Helper columns](helper-columns.md)
+- [Model-Dependent Transformation Functions](model-dependent-transformations.md)
+- [Spines](spine-query.md)
+- [Feature Monitoring](feature_monitoring.md)

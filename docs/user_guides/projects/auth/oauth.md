@@ -5,7 +5,7 @@ Hopsworks supports different methods of authentication. Here we will look at aut
 
 ## Prerequisites
 A Hopsworks cluster with OAuth authentication. 
-See [Configure OAuth2](../../../../admin/oauth2/create-client) on how to configure OAuth on your cluster.
+See [Configure OAuth2](../../../../setup_installation/admin/oauth2/create-client) on how to configure OAuth on your cluster.
 
 ### Step 1: Log in with OAuth
 If OAuth is configured a **Login with ** button will appear in the login page. Use this button to log in to Hopsworks
@@ -33,6 +33,3 @@ After clicking on **Register** you will be redirected to the landing page:
 
 In the landing page, you will find two buttons. Use these buttons to either create a 
 _demo project_ or [a new project](../../../projects/project/create_project).
-
-## Conclusion
-In this guide you learned how to log in to Hopsworks using Third-party Identity Provider.

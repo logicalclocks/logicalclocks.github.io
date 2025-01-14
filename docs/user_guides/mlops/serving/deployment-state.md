@@ -45,7 +45,7 @@ Once in the deployment overview page, you can find the aforementioned status ind
 
 ### Step 3: Check nº of running instances
 
-Additionally, you can find the nº of instances currently running by scrolling down to the `resource allocation` section. 
+Additionally, you can find the nº of instances currently running by scrolling down to the `resource allocation` section.
 
 <p align="center">
   <figure>
@@ -61,47 +61,48 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+  ```python
+  import hopsworks
 
-project = hopsworks.login()
+  project = hopsworks.login()
 
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
-```
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
 
 ### Step 2: Retrieve an existing deployment
 
-```python
-
-deployment = ms.get_deployment("mydeployment")
-```
+=== "Python"
+  ```python
+  deployment = ms.get_deployment("mydeployment")
+  ```
 
 ### Step 3: Inspect deployment state
 
-```python
+=== "Python"
+  ```python
+  state = deployment.get_state()
 
-state = deployment.get_state()
-
-state.describe()
-```
+  state.describe()
+  ```
 
 ### Step 4: Check nº of running instances
 
-```python
+=== "Python"
+  ```python
+  # nº of predictor instances
+  deployment.resources.describe()
 
-# nº of predictor instances
-deployment.resources.describe()
-
-# nº of transformer instances
-deployment.transformer.resources.describe()
-```
+  # nº of transformer instances
+  deployment.transformer.resources.describe()
+  ```
 
 ### API Reference
 
-[Deployment](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/deployment/)
+[Deployment](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/)
 
-[PredictorState](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/predictor-state/)
+[PredictorState](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
 
 ## Deployment status
 

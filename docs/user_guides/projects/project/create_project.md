@@ -62,13 +62,13 @@ Once the project is created the overview page for it will appear.
 ```python
 import hopsworks
 
-connection = hopsworks.connection()
+hopsworks.login()
 ```
 
 ### Step 2: Create project
 
 ```python
-project = connection.create_project("my_project")
+project = hopsworks.create_project("my_project")
 ```
 
 ### API Reference
@@ -93,7 +93,3 @@ INTEGER, PRECISION, VIEWS, TIME, NUMERIC, SYNC, BASE, PYTHON37, FILEBEAT.
 
 And any word containing _FEATURESTORE.
 ```
-
-## Conclusion
-
-In this guide you learned how to create a project.

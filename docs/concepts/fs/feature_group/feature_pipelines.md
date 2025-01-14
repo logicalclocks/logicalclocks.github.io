@@ -21,7 +21,7 @@ Transformations are covered in more detail in [training/inference pipelines](../
 <img src="../../../../assets/images/concepts/fs/feature-pipelines-with-transformations.svg">
 
 ### Feature Engineering in Python
-Python is the most widely used framework for feature engineering due to its extensive library support for aggregations (Pandas), data validation (Great Expectations), and dimensionality reduction (embeddings, PCA), and transformations (in Scikit-Learn, TensorFlow, PyTorch). Python also supports open-source feature engineering frameworks used for automated feature engineering, such as [featuretools](https://www.featuretools.com/) that supports relational and temporal sources.
+Python is the most widely used framework for feature engineering due to its extensive library support for aggregations (Pandas/Polars), data validation (Great Expectations), and dimensionality reduction (embeddings, PCA), and transformations (in Scikit-Learn, TensorFlow, PyTorch). Python also supports open-source feature engineering frameworks used for automated feature engineering, such as [featuretools](https://www.featuretools.com/) that supports relational and temporal sources.
 
 
 ### Feature Engineering in Spark/PySpark

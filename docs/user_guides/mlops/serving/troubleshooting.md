@@ -47,12 +47,12 @@ However, when the deployment fails to start futher details might be needed depen
 
 ### Step 3: Explore transient logs
 
-Each deployment is composed of several components depending on its configuration and the model being served. Transient logs refer to component-specific logs that are directly retrieved from the component itself. Therefore, these logs can only be retrieved as long as the deployment components are reachable. 
+Each deployment is composed of several components depending on its configuration and the model being served. Transient logs refer to component-specific logs that are directly retrieved from the component itself. Therefore, these logs can only be retrieved as long as the deployment components are reachable.
 
 !!! info ""
     Transient logs are informative and fast to retrieve, facilitating the troubleshooting of deployment components at a glance
 
-Transient logs are convenient when access to the most recent logs of a deployment is needed. 
+Transient logs are convenient when access to the most recent logs of a deployment is needed.
 
 !!! info
     When a deployment is in idle state, there are no components running (i.e., scaled to zero) and, thus, no transient logs are available.
@@ -69,7 +69,7 @@ Transient logs are continuously collected and stored in OpenSearch, where they b
 
 Historical logs are convenient when a deployment fails occasionally, either at inference time or without a clear reason. In this case, narrowing the inspection of component-specific logs at a concrete point in time and searching for keywords can be helpful.
 
-To access the OpenSearch Dashboards, click on the `See logs` button at the top of the deployment overview page. 
+To access the OpenSearch Dashboards, click on the `See logs` button at the top of the deployment overview page.
 
 <p align="center">
   <figure>
@@ -99,41 +99,41 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
 ### Step 1: Connect to Hopsworks
 
-```python
-import hopsworks
+=== "Python"
+  ```python
+  import hopsworks
 
-project = hopsworks.login()
+  project = hopsworks.login()
 
-# get Hopsworks Model Serving handle
-ms = project.get_model_serving()
-```
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
 
 ### Step 2: Retrieve an existing deployment
 
-```python
+=== "Python"
+  ```python
+  deployment = ms.get_deployment("mydeployment")
+  ```
 
-deployment = ms.get_deployment("mydeployment")
-```
+### Step 3: Get current deployment's predictor state
 
-### Step 3: Get current deployment state
+=== "Python"
+  ```python
+  state = deployment.get_state()
 
-```python
-
-state = deployment.get_state()
-
-state.describe()
-```
+  state.describe()
+  ```
 
 ### Step 4: Explore transient logs
 
-```python
-
-deployment.get_logs(component="predictor|transformer", tail=10)
-```
-
+=== "Python"
+  ```python
+  deployment.get_logs(component="predictor|transformer", tail=10)
+  ```
 
 ### API Reference
 
-[Deployment](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/deployment/)
+[Deployment](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/)
 
-[PredictorState](https://docs.hopsworks.ai/machine-learning-api/{{{ hopsworks_version }}}/generated/api/predictor-state/)
+[PredictorState](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_state_api/)

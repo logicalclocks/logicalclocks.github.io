@@ -27,6 +27,7 @@ nav:
               - External Feature Groups: concepts/fs/feature_group/external_fg.md
               - Spine Group: concepts/fs/feature_group/spine_group.md
               - Data Validation/Stats/Alerts: concepts/fs/feature_group/fg_statistics.md
+              - Feature Monitoring: concepts/fs/feature_group/feature_monitoring.md
               - Versioning: concepts/fs/feature_group/versioning.md
               - On-Demand Feature: concepts/fs/feature_group/on_demand_feature.md
           - Feature Views:
@@ -35,6 +36,7 @@ nav:
               - Online API: concepts/fs/feature_view/online_api.md
               - Consistent Transformations: concepts/fs/feature_view/training_inference_pipelines.md
               - Statistics: concepts/fs/feature_view/statistics.md
+              - Feature Monitoring: concepts/fs/feature_view/feature_monitoring.md
               - Versioning: concepts/fs/feature_view/versioning.md
       - Projects:
           - Governance: concepts/projects/governance.md
@@ -45,9 +47,10 @@ nav:
           - Prediction Services: concepts/mlops/prediction_services.md
           - Model Training: concepts/mlops/training.md
           - Model Registry: concepts/mlops/registry.md
-          - Model Serving: concepts/mlops/kserve.md # create, read, version
+          - Model Serving: concepts/mlops/serving.md
           - Vector Database: concepts/mlops/opensearch.md
           - BI Tools: concepts/mlops/bi_tools.md
+          - Data Transformations: concepts/mlops/data_transformations.md
       - Development:
           - Outside Hopsworks: concepts/dev/outside.md # api-keys
           - Inside Hopsworks: concepts/dev/inside.md
@@ -72,11 +75,18 @@ nav:
               - user_guides/fs/feature_group/index.md
               - Create: user_guides/fs/feature_group/create.md
               - Create External: user_guides/fs/feature_group/create_external.md
-              - Deprecating: user_guides/fs/feature_group/deprecation.md
+              - Deprecate: user_guides/fs/feature_group/deprecation.md
               - Data Types and Schema management: user_guides/fs/feature_group/data_types.md
               - Statistics: user_guides/fs/feature_group/statistics.md
-              - Data Validation: user_guides/fs/feature_group/data_validation.md
-              - Advanced Data Validation: user_guides/fs/feature_group/advanced_data_validation.md
+              - Data Validation:
+                  - Getting started: user_guides/fs/feature_group/data_validation.md
+                  - Advanced guide: user_guides/fs/feature_group/data_validation_advanced.md
+                  - Best practices: user_guides/fs/feature_group/data_validation_best_practices.md
+              - Feature Monitoring:
+                  - Getting started: user_guides/fs/feature_group/feature_monitoring.md
+                  - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
+              - Notification: user_guides/fs/feature_group/notification.md
+              - On-Demand Transformations: user_guides/fs/feature_group/on_demand_transformations.md
           - Feature View:
               - user_guides/fs/feature_view/index.md
               - Overview: user_guides/fs/feature_view/overview.md
@@ -86,20 +96,21 @@ nav:
               - Feature server: user_guides/fs/feature_view/feature-server.md
               - Query: user_guides/fs/feature_view/query.md
               - Helper Columns: user_guides/fs/feature_view/helper-columns.md
-              - Transformation Functions: user_guides/fs/feature_view/transformation-function.md
+              - Model-Dependent Transformation Functions: user_guides/fs/feature_view/model-dependent-transformations.md
               - Spines: user_guides/fs/feature_view/spine-query.md
+              - Feature Monitoring:
+                  - Getting started: user_guides/fs/feature_view/feature_monitoring.md
+                  - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
+              - Feature Logging: user_guides/fs/feature_view/feature_logging.md
+          - Vector Similarity Search: user_guides/fs/vector_similarity_search.md
+          - Transformation Functions: user_guides/fs/transformation_functions.md
           - Compute Engines: user_guides/fs/compute_engines.md
           - Client Integrations:
               - user_guides/integrations/index.md
-              - Python: user_guides/integrations/python.md
-              - Databricks:
-                  - Networking: user_guides/integrations/databricks/networking.md
-                  - Hopsworks API Key: user_guides/integrations/databricks/api_key.md
-                  - Configuration: user_guides/integrations/databricks/configuration.md
-              - AWS Sagemaker: user_guides/integrations/sagemaker.md
+              - Python / SageMaker / Kubeflow : user_guides/integrations/python.md
               - AWS EMR:
-                  - Networking: user_guides/integrations/emr/networking.md
-                  - Configure EMR for the Hopsworks Feature Store: user_guides/integrations/emr/emr_configuration.md
+                - Networking: user_guides/integrations/emr/networking.md
+                - Configure EMR for Hopsworks: user_guides/integrations/emr/emr_configuration.md
               - Azure HDInsight: user_guides/integrations/hdinsight.md
               - Azure Machine Learning:
                   - Designer: user_guides/integrations/mlstudio_designer.md
@@ -110,6 +121,11 @@ nav:
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
           - Provenance: user_guides/fs/provenance/provenance.md
+          - Feature Monitoring:
+              - user_guides/fs/feature_monitoring/index.md
+              - Scheduled Statistics: user_guides/fs/feature_monitoring/scheduled_statistics.md
+              - Statistics Comparison: user_guides/fs/feature_monitoring/statistics_comparison.md
+              - Interactive Graph: user_guides/fs/feature_monitoring/interactive_graph.md
       - Projects:
           - user_guides/projects/index.md
           - Authentication:
@@ -124,20 +140,25 @@ nav:
               - Create Project: user_guides/projects/project/create_project.md
               - Add Members: user_guides/projects/project/add_members.md
           - Python:
+              - Environments Overview: user_guides/projects/python/python_env_overview.md
+              - Clone Environment: user_guides/projects/python/python_env_clone.md
               - Install Library: user_guides/projects/python/python_install.md
-              - Export environment: user_guides/projects/python/python_env_export.md
-              - Recreate environment: user_guides/projects/python/python_env_recreate.md
+              - Export Environment: user_guides/projects/python/python_env_export.md
               - Custom Commands: user_guides/projects/python/custom_commands.md
-              - Python Environment History: user_guides/projects/python/environment_history.md
+              - Environment History: user_guides/projects/python/environment_history.md
           - Jupyter:
-              - Run Spark Notebook: user_guides/projects/jupyter/spark_notebook.md
               - Run Python Notebook: user_guides/projects/jupyter/python_notebook.md
+              - Run PySpark Notebook: user_guides/projects/jupyter/spark_notebook.md
+              - Run Ray Notebook: user_guides/projects/jupyter/ray_notebook.md
               - Remote Filesystem Driver: user_guides/projects/jupyter/remote_filesystem_driver.md
           - Jobs:
               - Run PySpark Job: user_guides/projects/jobs/pyspark_job.md
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
               - Run Python Job: user_guides/projects/jobs/python_job.md
+              - Run Ray Job: user_guides/projects/jobs/ray_job.md
+              - Run Jupyter Notebook Job: user_guides/projects/jobs/notebook_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
+          - Kubernetes Scheduling: user_guides/projects/scheduling/kube_scheduler.md
           - Airflow: user_guides/projects/airflow/airflow.md
           - OpenSearch:
               - Connect: user_guides/projects/opensearch/connect.md
@@ -162,9 +183,11 @@ nav:
               - Frameworks:
                   - TensorFlow: user_guides/mlops/registry/frameworks/tf.md
                   - Scikit-learn: user_guides/mlops/registry/frameworks/skl.md
+                  - LLM: user_guides/mlops/registry/frameworks/llm.md
                   - Python: user_guides/mlops/registry/frameworks/python.md
               - Model Schema: user_guides/mlops/registry/model_schema.md
               - Input Example: user_guides/mlops/registry/input_example.md
+              - Model Evaluation Images: user_guides/mlops/registry/model_evaluation_images.md
           - Model Serving:
               - user_guides/mlops/serving/index.md
               - Deployment:
@@ -175,93 +198,57 @@ nav:
               - Resource Allocation: user_guides/mlops/serving/resources.md
               - Inference Logger: user_guides/mlops/serving/inference-logger.md
               - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
+              - API Protocol: user_guides/mlops/serving/api-protocol.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
           - Vector Database: user_guides/mlops/vector_database/index.md
+          - Provenance: user_guides/mlops/provenance/provenance.md
       - Migration:
-          - 3.0: user_guides/migration/30_migration.md
-  - Setup and Installation:
+          - 3.X to 4.0: user_guides/migration/40_migration.md
+  - Setup and Administration:
       - setup_installation/index.md
       - Client Installation:
           - user_guides/client_installation/index.md
-      - AWS:
-          - Getting Started: setup_installation/aws/getting_started.md
-          - Cluster Creation: setup_installation/aws/cluster_creation.md
-          - EKS integration: setup_installation/aws/eks_ecr_integration.md
-          - Limiting Permissions: setup_installation/aws/restrictive_permissions.md
-          - Custom Domain: setup_installation/aws/custom_domain_name.md
-          - Cluster upgrade:
-              - Version 3.0 or newer: setup_installation/aws/upgrade_3.0.md
-              - Version 2.4 or newer: setup_installation/aws/upgrade_2.4.md
-              - Version 2.2 or older: setup_installation/aws/upgrade.md
-          - Troubleshooting: setup_installation/aws/troubleshooting.md
-      - Azure:
-          - Getting Started: setup_installation/azure/getting_started.md
-          - Cluster Creation: setup_installation/azure/cluster_creation.md
-          - AKS integration: setup_installation/azure/aks_acr_integration.md
-          - Limiting Permissions: setup_installation/azure/restrictive_permissions.md
-          - Cluster upgrade:
-              - Version 3.0 or newer: setup_installation/azure/upgrade_3.0.md
-              - Version 2.4 or newer: setup_installation/azure/upgrade_2.4.md
-              - Version 2.2 or older: setup_installation/azure/upgrade.md
-      - GCP:
-          - Getting Started: setup_installation/gcp/getting_started.md
-          - Cluster Creation: setup_installation/gcp/cluster_creation.md
-          - Limiting Permissions: setup_installation/gcp/restrictive_permissions.md
-      - Common:
-          - The dashboard: setup_installation/common/dashboard.md
-          - Settings: setup_installation/common/settings.md
-          - Services: setup_installation/common/services.md
-          - Adding and Removing workers: setup_installation/common/adding_removing_workers.md
-          - Autoscaling: setup_installation/common/autoscaling.md
-          - Backup: setup_installation/common/backup.md
-          - Scaling up: setup_installation/common/scalingup.md
-          - User management: setup_installation/common/user_management.md
-          - Managed RonDB: setup_installation/common/rondb.md
-          - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
-          - Single Sign On:
-              - Hopsworks:
-                  - OAuth2: setup_installation/common/sso/oauth.md
-                  - LDAP: setup_installation/common/sso/ldap.md
-          - API Key: setup_installation/common/api_key.md
-          - Terraform: setup_installation/common/terraform.md
+      - Cloud Installation:
+          - AWS - Getting Started: setup_installation/aws/getting_started.md
+          - Azure - Getting Started: setup_installation/azure/getting_started.md
+          - GCP - Getting Started: setup_installation/gcp/getting_started.md
       - On-Prem:
-          - Hopsworks Installer: setup_installation/on_prem/hopsworks_installer.md
-          - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md 
-  - Administration:
-      - Introduction: admin/index.md
-      - Cluster Configuration: admin/variables.md
-      - User Management: admin/user.md
-      - Project Management: admin/project.md
-      - Configure Alerts: admin/alert.md
-      - Manage Services: admin/services.md
-      - IAM Role Chaining: admin/roleChaining.md
-      - Monitoring:
-          - Services Dashboards: admin/monitoring/grafana.md
-          - Export metrics: admin/monitoring/export-metrics.md
-          - Services Logs: admin/monitoring/services-logs.md
-      - Authentication:
-          - Configure Authentication: admin/auth.md
-          - Configure OAuth2:
-              - Register an Identity Provider: admin/oauth2/create-client.md
-              - Create Okta Client: admin/oauth2/create-okta-client.md
-              - Create Azure Client: admin/oauth2/create-azure-client.md
-          - Configure LDAP/Kerberos:
-              - Configure LDAP: admin/ldap/configure-ldap.md
-              - Configure Kerberos: admin/ldap/configure-krb.md
-              - Configure server for LDAP and Kerberos: admin/ldap/configure-server.md
-              - Configure Project Mapping: admin/ldap/configure-project-mapping.md
-      - High availability / Disaster Recovery:
-          - Overview: admin/ha-dr/intro.md
-          - High Availability: admin/ha-dr/ha.md
-          - Disaster Recovery: admin/ha-dr/dr.md
-      - Audit:
-          - Access Audit Logs: admin/audit/audit-logs.md
-          - Export Audit Logs: admin/audit/export-audit-logs.md
-  - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_api_link" href="https://docs.hopsworks.ai/feature-store-api/dev">Feature Store API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/feature-store-api/dev/javadoc">Feature Store JavaDoc</a> <a id="hsml_api_link" href="https://docs.hopsworks.ai/machine-learning-api/dev">MLOps API</a> </div></div>: https://docs.hopsworks.ai
+          - Background: setup_installation/on_prem/contact_hopsworks.md
+          - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
+      - Administration:
+          - Cluster Configuration: setup_installation/admin/variables.md
+          - Introduction: setup_installation/admin/index.md
+          - User Management: setup_installation/admin/user.md
+          - Project Management: setup_installation/admin/project.md
+          - Configure Alerts: setup_installation/admin/alert.md
+          - Monitoring:
+             - Services Dashboards: setup_installation/admin/monitoring/grafana.md
+             - Export metrics: setup_installation/admin/monitoring/export-metrics.md
+             - Services Logs: setup_installation/admin/monitoring/services-logs.md
+          - Authentication:
+             - Configure Authentication: setup_installation/admin/auth.md
+             - Configure OAuth2:
+                 - Register an Identity Provider: setup_installation/admin/oauth2/create-client.md
+                 - Create Okta Client: setup_installation/admin/oauth2/create-okta-client.md
+                 - Create Azure Client: setup_installation/admin/oauth2/create-azure-client.md
+             - Configure LDAP/Kerberos:
+                 - Configure LDAP: setup_installation/admin/ldap/configure-ldap.md
+                 - Configure Kerberos: setup_installation/admin/ldap/configure-krb.md
+                 - Configure server for LDAP and Kerberos: setup_installation/admin/ldap/configure-server.md
+                 - Configure Project Mapping: setup_installation/admin/ldap/configure-project-mapping.md
+          - High availability / Disaster Recovery:
+             - Overview: setup_installation/admin/ha-dr/intro.md
+             - High Availability: setup_installation/admin/ha-dr/ha.md
+             - Disaster Recovery: setup_installation/admin/ha-dr/dr.md
+          - Audit:
+             - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
+             - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
+  - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/hopsworks-api/dev/javadoc">Feature Store JavaDoc</a> </div></div>: https://docs.hopsworks.ai
   - Community ↗: https://community.hopsworks.ai/
 
 theme:
   name: material
+  custom_dir: docs/overrides
   favicon: assets/images/favicon.ico
   logo: assets/images/hops-logo.png
   icon:
@@ -271,6 +258,7 @@ theme:
     code: "IBM Plex Mono"
   palette:
     accent: teal
+    scheme: hopsworks
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -281,6 +269,7 @@ extra:
   hopsworks_version: dev
   version:
     provider: mike
+    default: latest
   generator: false
   social:
     - icon: fontawesome/brands/twitter
@@ -338,6 +327,7 @@ markdown_extensions:
   - pymdownx.critic
   - attr_list
   - md_in_html
+  - def_list
   - toc:
       permalink: "#"
   - pymdownx.tasklist:
@@ -345,5 +335,5 @@ markdown_extensions:
   - markdown_include.include:
       base_path: docs
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg

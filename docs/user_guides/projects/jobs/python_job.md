@@ -8,16 +8,13 @@ description: Documentation on how to configure and execute a Python job on Hopsw
 
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
-- Python (*Hopsworks Enterprise only*)
+- Python
 - Apache Spark
 
 Launching a job of any type is very similar process, what mostly differs between job types is
-the various configuration parameters each job type comes with. After following this guide you will be able to create a Python job.
-
-!!! note "Kubernetes integration required"
-    Python Jobs are only available if Hopsworks has been integrated with a Kubernetes cluster.
-
-    Hopsworks can be integrated with [Amazon EKS](../../../setup_installation/aws/eks_ecr_integration.md), [Azure AKS](../../../setup_installation/azure/aks_acr_integration.md) and on-premise Kubernetes clusters.
+the various configuration parameters each job type comes with. Hopsworks support scheduling jobs to run on a regular basis,
+e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
+checkout [our Scheduling guide](schedule_job.md).
 
 ## UI
 
@@ -34,7 +31,7 @@ The image below shows the Jobs overview page in Hopsworks and is accessed by cli
 
 ### Step 2: Create new job dialog
 
-By default, the dialog will create a Spark job. To instead configure a Python job, click `Advanced options`, which will open up the advanced configuration page for the job.
+Click `New Job` and the following dialog will appear.
 
 <p align="center">
   <figure>
@@ -43,9 +40,20 @@ By default, the dialog will create a Spark job. To instead configure a Python jo
   </figure>
 </p>
 
-### Step 3: Set the script
+### Step 3: Set the job type
 
-Next step is to select the python script to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below.
+By default, the dialog will create a Spark job. To instead configure a Python job, select `PYTHON`.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jobs/jobs_select_python.gif" alt="Select Python job type">
+    <figcaption>Select Python job type</figcaption>
+  </figure>
+</p>
+
+### Step 4: Set the script
+
+Next step is to select the python script to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown. 
 
 <p align="center">
   <figure>
@@ -54,38 +62,39 @@ Next step is to select the python script to run. You can either select `From pro
   </figure>
 </p>
 
-### Step 4: Set the job type
+### Step 5 (optional): Set the Python script arguments
 
-Next step is to set the job type to `PYTHON` to indicate it should be executed as a simple python script. Then click `Create New Job` to create the job. 
+In the job settings, you can specify arguments for your Python script.
+Remember to handle the arguments inside your Python script.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jobs/advanced_configuration_py.gif" alt="Set the job type">
-    <figcaption>Set the job type</figcaption>
+    <img src="../../../../assets/images/guides/jobs/job_notebook_args.png" alt="Configure Python script arguments">
+    <figcaption>Configure Python script arguments</figcaption>
   </figure>
 </p>
 
-### Step 5 (optional): Additional configuration
+### Step 6 (optional): Additional configuration
 
 It is possible to also set following configuration settings for a `PYTHON` job.
 
+* `Environment`: The python environment to use
 * `Container memory`: The amount of memory in MB to be allocated to the Python script
 * `Container cores`: The number of cores to be allocated for the Python script
 * `Additional files`: List of files that will be locally accessible by the application
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jobs/configure_py.png" alt="Set the job type">
-    <figcaption>Set the job type</figcaption>
+    <img src="../../../../assets/images/guides/jobs/configure_py.png" alt="Additional configuration">
+    <figcaption>Additional configuration</figcaption>
   </figure>
 </p>
 
-### Step 6: Execute the job
+### Step 7: Execute the job
 
-Now click the `Run` button to start the execution of the job, and then click on `Executions` to see the list of all executions.
+Now click the `Run` button to start the execution of the job. You will be redirected to the `Executions` page where you can see the list of all executions.
 
 Once the execution is finished, click on `Logs` to see the logs for the execution.
-
 
 <p align="center">
   <figure>
@@ -114,10 +123,9 @@ uploaded_file_path = dataset_api.upload("script.py", "Resources")
 
 ```
 
-
 ### Step 2: Create Python job
 
-In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the python script to run and create the `Job` object.
+In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the python script and override the environment to run in, and finally create the `Job` object.
 
 ```python
 
@@ -125,7 +133,11 @@ jobs_api = project.get_jobs_api()
 
 py_job_config = jobs_api.get_configuration("PYTHON")
 
+# Set the application file
 py_job_config['appPath'] = uploaded_file_path
+
+# Override the python job environment
+py_job_config['environmentName'] = "python-feature-pipeline"
 
 job = jobs_api.create_job("py_job", py_job_config)
 
@@ -156,7 +168,3 @@ print(f_err.read())
 [Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
 [Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
-
-## Conclusion
-
-In this guide you learned how to create and run a Python job.

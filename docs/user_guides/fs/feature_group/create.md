@@ -2,7 +2,7 @@
 description: Documentation on how to create a Feature Group and the different APIs available to insert data to a Feature Group in Hopsworks.
 ---
 
-# How to create a Feature Group 
+# How to create a Feature Group
 
 ### Introduction
 
@@ -14,9 +14,9 @@ Before you begin this guide we suggest you read the [Feature Group](../../../con
 
 ## Create using the HSFS APIs
 
-To create a feature group using the HSFS APIs, you need to provide a Pandas or Spark DataFrame. The DataFrame will contain all the features you want to register within the feature group, as well as the primary key, event time and partition key.
+To create a feature group using the HSFS APIs, you need to provide a Pandas, Polars or Spark DataFrame. The DataFrame will contain all the features you want to register within the feature group, as well as the primary key, event time and partition key.
 
-### Create a Feature Group 
+### Create a Feature Group
 
 The first step to create a feature group is to create the API metadata object representing a feature group. Using the HSFS API you can execute:
 
@@ -32,27 +32,28 @@ The first step to create a feature group is to create the API metadata object re
         primary_key=['location_id'],
         partition_key=['day'],
         event_time='event_time',
+        time_travel_format='DELTA',
     )
     ```
 
-The full method documentation is available [here](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group. 
+The full method documentation is available [here](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup). If you need to create a feature group with vector similarity search supported, refer to [this guide](../vector_similarity_search.md#extending-feature-groups-with-similarity-search). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group.
 
-In the example above we created the first version of a feature group named *weather*, we provide a description to make it searchable to the other project members, as well as making the feature group available online. 
+In the example above we created the first version of a feature group named *weather*, we provide a description to make it searchable to the other project members, as well as making the feature group available online.
 
-Additionally we specify which columns of the DataFrame will be used as primary key, partition key and event time. Composite primary key and multi level partitioning is also supported. 
+Additionally we specify which columns of the DataFrame will be used as primary key, partition key and event time. Composite primary key and multi level partitioning is also supported.
 
-The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one. 
+The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
-The last parameter used in the examples above is `stream`. The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store. When using the APIs in a Python environment this behavior is the default and it requires the time travel format to be set to 'HUDI'.  
+The last parameter used in the examples above is `stream`. The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store. When using the APIs in a Python environment this behavior is the default and it requires the time travel format to be set to 'HUDI'.
 
 ##### Primary key
 
-A primary key is required when using the default Hudi file format to store offline feature data. When inserting data in a feature group on the offline feature store, the DataFrame you are writing is checked against the existing data in the feature group. If a row with the same primary key is found in the feature group, the row will be updated. If the primary key is not found, the row is appended to the feature group.
+A primary key is required when using the default table format (Hudi) to store offline feature data. When inserting data in a feature group on the offline feature store, the DataFrame you are writing is checked against the existing data in the feature group. If a row with the same primary key is found in the feature group, the row will be updated. If the primary key is not found, the row is appended to the feature group.
 When writing data on the online feature store, existing rows with the same primary key will be overwritten by new rows with the same primary key.
 
 ##### Event time
 
-The event time column represents the time at which the event was generated. For example, with transaction data, the event time is the time at which a given transaction happened. 
+The event time column represents the time at which the event was generated. For example, with transaction data, the event time is the time at which a given transaction happened.
 In the context of feature pipelines, the event time is often also the end timestamp of the interval of events included in the feature computation. For example, computing the feature "number of purchases by customer last week", the event time should be the last day of this "last week" window.
 
 The event time is added to the primary key when writing to the offline feature store. This will make sure that the offline feature store has the entire history of feature values over time. As an example, if a user has made multiple purchases on a website, each of the purchases for a given user (identified by a user_id) will be saved in the feature group, with each purchase having a different event time (the combination of user_id and event_time makes up the primary key for the offline feature store).
@@ -65,9 +66,9 @@ The event time **is not** part of the primary key when writing to the online fea
 ##### Partition key
 
 It is best practice to add a partition key. When you specify a partition key, the data in the feature group will be stored under multiple directories based on the value of the partition column(s).
-All the rows with a given value as partition key will be stored in the same directory. 
+All the rows with a given value as partition key will be stored in the same directory.
 
-Choosing the correct partition key has significant impact on the query performance as the execution engine (Spark) will be able to skip listing and reading files belonging to partitions which are not included in the query. 
+Choosing the correct partition key has significant impact on the query performance as the execution engine (Spark) will be able to skip listing and reading files belonging to partitions which are not included in the query.
 As an example, if you have partitioned your feature group by day and you are creating a training dataset that includes only the last year of data, Spark will read only 365 partitions and not the entire history of data.
 On the other hand, if the partition key is too fine grained (e.g. timestamp at millisecond resolution) - a large number of small partitions will be generated. This will slow down query execution as Spark will need to list and read a large amount of small directories/files.
 
@@ -79,6 +80,44 @@ MaxDirectoryItemsExceededException - The directory item limit is exceeded: limit
 ```
 
 By using partitioning the system will write the feature data in different subdirectories, thus allowing you to write 10240 files per partition.
+
+##### Table format
+
+When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter. The currently support values are "HUDI", "DELTA", "NONE" (which defaults to Parquet).
+
+##### Storage connector
+
+During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster. Currently, only [S3](../storage_connector/creation/s3.md) connectors and "DELTA" `time_travel_format` format is supported.
+
+##### Online Table Configuration
+
+When defining online-enabled feature groups it is also possible to configure the online table. You can specify [table options](https://docs.rondb.com/table_options/#table-options) by providing comments. Additionally, it is also possible to define whether online data is stored in memory or on disk using [table space](https://docs.rondb.com/disk_columns/#disk-columns).
+
+The code example shows the creation of an online-enabled feature group that stores online data on disk using `ts_1` table space and sets several table properties in the comment section.
+
+```
+fg = fs.create_feature_group(
+    name='air_quality',
+    description='Air Quality characteristics of each day',
+    version=1,
+    primary_key=['city','date'],
+    online_enabled=True,
+    online_config={'table_space': 'ts_1', 'online_comments': ['NDB_TABLE=READ_BACKUP=1', 'NDB_TABLE=PARTITION_BALANCE=FOR_RP_BY_LDM_X_2']}
+)
+```
+
+!!! note Table Space
+    The table space needs to be provisioned at system level before it can be used. You can do so by adding the following parameters to the values.yaml file used for your deployment with the Helm Charts:
+
+    ```yaml
+    rondb:
+      resources:
+        requests:
+          storage:
+            diskColumnGiB: 2
+    ```
+
+
 
 #### Streaming Write API
 
@@ -95,6 +134,7 @@ For Python environments, only the stream API is supported (stream=True).
         primary_key=['location_id'],
         partition_key=['day'],
         event_time='event_time'
+        time_travel_format='HUDI',
     )
     ```
 
@@ -108,6 +148,7 @@ For Python environments, only the stream API is supported (stream=True).
         primary_key=['location_id'],
         partition_key=['day'],
         event_time='event_time',
+        time_travel_format='HUDI',
         stream=True
     )
     ```
@@ -132,8 +173,8 @@ By default, feature groups in hopsworks will share a project-wide topic.
 #### Best Practices for Writing
 
 When designing a feature group, it is worth taking a look at how this feature group will be queried in the future, in order to optimize it for those query patterns.
-At the same time, Spark and Hudi tend to overpartition writes, creatingtoo many small parquet files, which is inefficient and slowing down the write.
-But they also slow down queries, because file listings are taking more time, but also reading many small files is usually slower.
+At the same time, Spark and Hudi tend to overpartition writes, creating too many small parquet files, which is inefficient and slows down writes.
+But they also slow down queries, because file listings take more time and reading many small files is slower than fewer larger files.
 The best practices described in this section hold both for the Streaming API and the Batch API.
 
 Four main considerations influence the write and the query performance:
@@ -145,8 +186,7 @@ Four main considerations influence the write and the query performance:
 
 ##### Partitioning on a feature group level
 
-**Partitioning on the feature group level** allows Hopsworks and Hudi to push down filters to the filesystem during training dataset or batch data generation.
-In practice that means, less directories need to be listed and less files need to be read, speeding up queries.
+**Partitioning on the feature group level** allows Hopsworks and the table format (Hudi or Delta) to push down filters to the filesystem when reading from feature groups. In practice that means, less directories need to be listed and less files need to be read, speeding up queries.
 
 For example, most commonly, filtering is done on the event time column of a feature group when generating training data or batches of data:
 ```python
@@ -199,13 +239,13 @@ fg = feature_store.create_feature_group(...
 ##### Parquet file size within a feature group partition
 
 Once you have decided on the feature group level partitioning and you start inserting data to the feature group, there are multiple ways in order to
-influence how Hudi will **split the data between parquet files within the feature group partitions**.
+influence how the table format (Hudi or Delta) will **split the data between parquet files within the feature group partitions**.
 The two things that influence the number of parquet files per partition are
 
 1. The number of feature group partitions written in a single insert
-2. The shuffle parallelism used by Hudi
+2. The shuffle parallelism used by the table format
 
-In general, the inserted dataframe (unique combination of partition key values) will be parallised according to the following Hudi settings:
+For example, the inserted dataframe (unique combination of partition key values) will be parallelized according to the following Hudi settings:
 !!! example "Default Hudi partitioning"
     ```python
     write_options = {
@@ -261,26 +301,26 @@ In that case you can increase the Hudi shuffle parallelism accordingly.
 
 When creating a feature group that uses streaming write APIs for data ingestion it is possible to define the Kafka topics that should be utilized.
 The default approach of using a project-wide topic functions great for use cases involving little to no overlap when producing data. However,
-concurrently inserting into multiple feature groups could cause read amplification for the Hudi delta streamer job. Therefore, it is
+concurrently inserting into multiple feature groups could cause read amplification for the offline materialization job (e.g., Hudi Delta Streamer). Therefore, it is
 advised to utilize separate topics when ingestions overlap or there is a large frequently running insertion into a specific feature group.
 
 ### Register the metadata and save the feature data
 
 The snippet above only created the metadata object on the Python interpreter running the code. To register the feature group metadata and to save the feature data with Hopsworks, you should invoke the `insert` method:
 
-```python 
+```python
 fg.insert(df)
 ```
 
-The save method takes in input a Pandas or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time. 
+The save method takes in input a Pandas, Polars or Spark DataFrame. HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time.
 
 The DataFrame *must* contain the columns specified as primary keys, partition key and event time in the `create_feature_group` call.
 
 If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.
 
-### API Reference 
+### API Reference
 
-[FeatureGroup](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup)
+[FeatureGroup](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup)
 
 ## Create using the UI
 

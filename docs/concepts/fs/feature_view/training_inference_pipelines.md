@@ -1,4 +1,4 @@
-A *training pipeline* is a program that orchestrates the training of a machine learning model. For supervised machine learning, a training pipeline requires both features and labels, and these can typically be retrieved from the feature store as either in-memory Pandas DataFrames or read as training data files, created from the feature store. An *inference pipeline* is a program that takes user input, optionally enriches it with features from the feature store, and builds a feature vector (or batch of feature vectors) with with it uses a model to make a prediction.
+A *training pipeline* is a program that orchestrates the training of a machine learning model. For supervised machine learning, a training pipeline requires both features and labels, and these can typically be retrieved from the feature store as either in-memory Pandas/Polars DataFrames or read as training data files, created from the feature store. An *inference pipeline* is a program that takes user input, optionally enriches it with features from the feature store, and builds a feature vector (or batch of feature vectors) with with it uses a model to make a prediction.
 
 
 ## Transformations

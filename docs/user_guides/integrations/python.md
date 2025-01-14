@@ -1,29 +1,33 @@
-# Python Environments (Local or Kubeflow)
+---
+description: Documentation on how to connect to Hopsworks from a Python environment (e.g. from Sagemaker, Google Colab, Kubeflow or local environment)
+---
 
-Connecting to the Feature Store from any Python environment requires setting up a Feature Store API key and installing the library. This guide explains step by step how to connect to the Feature Store from any Python environment such as your local environment or KubeFlow.
+# Python Environments (Local, AWS SageMaker, Google Colab or Kubeflow)
 
-## Install **HSFS**
+This guide explains step by step how to connect to Hopsworks from any Python environment such as your local environment, AWS SageMaker, Google Colab or Kubeflow.
 
-To be able to access the Hopsworks Feature Store, the `HSFS` Python library needs to be installed in the environment from which you want to connect to the Feature Store. You can install the library through pip. We recommend using a Python environment manager such as *virtualenv* or *conda*.
+## Install Python Library
+
+To be able to interact with Hopsworks from a Python environment you need to install the `Hopsworks` Python library. The library is available on [PyPi](https://pypi.org/project/hopsworks/) and can be installed using `pip`: 
 
 ```
-pip install hsfs[python]~=[HOPSWORKS_VERSION]
+pip install hopsworks[python]~=[HOPSWORKS_VERSION]
 ```
 
-!!! attention "Hive Dependencies"
+!!! attention "Python Profile"
 
-    By default, `HSFS` assumes Spark/EMR is used as execution engine and therefore Hive dependencies are not installed. Hence, on a local Python evnironment, if you are planning to use a regular Python Kernel **without Spark/EMR**, make sure to install the **"python"** extra dependencies (`hsfs[python]`).
+    By default, `pip install hopsworks`, does not install all the necessary dependencies required to use the Hopsworks library from a pure Python environment. To ensure that all the dependencies are installed, you should install the library using with the Python profile `pip install hopsworks[python]`.
 
 !!! attention "Matching Hopsworks version"
-The **major version of `HSFS`** needs to match the **major version of Hopsworks**.
 
+    We recommend that the major and minor version of the Python library match the major and minor version of the Hopsworks deployment.
 
-<p align="center">
-    <figure>
-        <img src="../../../../assets/images/hopsworks-version.png" alt="HSFS version needs to match the major version of Hopsworks">
-        <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
-    </figure>
-</p>
+    <p align="center">
+        <figure>
+            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
+        </figure>
+    </p>
 
 ## Generate an API key
 
@@ -36,31 +40,26 @@ For instructions on how to generate an API key follow this [user guide](../proje
 
 ## Connect to the Feature Store
 
-You are now ready to connect to the Hopsworks Feature Store from your Python environment:
+You are now ready to connect to Hopsworks from your Python environment:
 
 ```python
-import hsfs
-conn = hsfs.connection(
-    host='my_instance',                 # DNS of your Feature Store instance
+import hopsworks 
+project = hopsworks.login(
+    host='my_instance',                 # DNS of your Hopsworks instance
     port=443,                           # Port to reach your Hopsworks instance, defaults to 443
-    project='my_project',               # Name of your Hopsworks Feature Store project
+    project='my_project',               # Name of your Hopsworks project
     api_key_value='apikey',             # The API key to authenticate with Hopsworks
-    hostname_verification=True,         # Disable for self-signed certificates
-    engine="python"                     # Set to "spark" if you are using Spark/EMR
+    engine='python',                    # Use the Python engine
 )
-fs = conn.get_feature_store()           # Get the project's default feature store
+fs = project.get_feature_store()        # Get the project's default feature store
 ```
 
 !!! note "Engine"
 
-    `HSFS` uses either Apache Spark or Pandas on Python as an execution engine to perform queries against the feature store. The `engine` option of the connection let's you overwrite the default behaviour by setting it to `"python"` or `"spark"`. By default, `HSFS` will try to use Spark as engine if PySpark is available. So if you have PySpark installed in your local Python environment, but you have not configured Spark, you will have to set `engine='python'`. Please refer to the [Spark integration guide](spark.md) to configure your local Spark cluster to be able to connect to the Hopsworks Feature Store.
+    `Hopsworks` leverages several engines depending on whether you are running using Apache Spark or Pandas/Polars. The default behaviour of the library is to use the `spark` engine if you do not specify any `engine` option in the `login` method and if the `PySpark` library is available in the environment.
 
-!!! info "Ports"
-
-    If you have trouble to connect, please ensure that your Feature Store can receive incoming traffic from your Python environment on ports 443, 9083 and 9085 (443,9083,9085).
-
-    If you deployed your Hopsworks Feature Store instance with [managed.hopsworks.ai](https://managed.hopsworks.ai), it suffices to enable [outside access of the Feature Store and Online Feature Store services](https://docs.hopsworks.ai/hopsworks-cloud/latest/services/#outside-access-to-the-feature-store).
+    Please refer to the [Spark integration guide](spark.md) to configure your PySpark cluster to interact with Hopsworks.
 
 ## Next Steps
 
-For more information about how to connect, see the [Connection](https://docs.hopsworks.ai/feature-store-api/{{{ hopsworks_version }}}/generated/api/connection_api/) API reference. Or continue with the Data Source guide to import your own data to the Feature Store.
+For more information on how to use the Hopsworks API check out the other guides or the [API Reference](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/connection_api/). 

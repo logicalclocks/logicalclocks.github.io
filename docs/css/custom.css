@@ -1,5 +1,5 @@
-:root {
-  --md-primary-fg-color: #1EB382;
+[data-md-color-scheme="hopsworks"] {
+  --md-primary-fg-color: #1eb382;
   --md-secondary-fg-color: #188a64;
   --md-tertiary-fg-color: #0d493550;
   --md-quaternary-fg-color: #fdfdfd;
@@ -7,52 +7,64 @@
 }
 
 .md-footer__inner:not([hidden]) {
-  display: none
+  display: none;
 }
-
 /* Lex did stuff here */
-.svg_topnav{
+.svg_topnav {
   width: 12px;
   filter: invert(100);
 }
-.svg_topnav:hover{
+.svg_topnav:hover {
   width: 12px;
   filter: invert(10);
 }
 
-.md-header[data-md-state=shadow] {
+.md-header[data-md-state="shadow"] {
   box-shadow: 0 0 0 0;
+}
+
+.md-tabs__item {
+  min-width: 2.5rem;
 }
 
 .md-tabs__item:hover {
   background-color: var(--md-tertiary-fg-color);
   transition: background-color 450ms;
-
 }
 
-.md-sidebar__scrollwrap{
+.md-sidebar__scrollwrap {
   background-color: var(--md-quaternary-fg-color);
   padding: 15px 5px 5px 5px;
   border-radius: var(--border-radius-variable);
 }
 
-
-.image_logo_02{
-  width:450px;
+.image_logo_02 {
+  width: 450px;
 }
 
 /* End of Lex did stuff here */
 
+/* no-icon style for admonitions */
+.md-typeset .no-icon > .admonition-title::before,
+.md-typeset .no-icon > summary::before {
+  display: none;
+}
+.md-typeset .no-icon > :is(.admonition-title, summary) {
+  padding-left: 1rem;
+}
+/* end of no-icon style */
+
 .md-header__button.md-logo {
-  margin: .1rem;
-  padding: .1rem;
+  margin: 0.1rem;
+  padding: 0.1rem;
 }
 
-.md-header__button.md-logo img, .md-header__button.md-logo svg {
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
   display: block;
   width: 1.8rem;
   height: 1.8rem;
-  fill: currentColor;
+  fill: rgba(43, 155, 70, 0.1);
 }
 
 .md-tabs {
@@ -63,7 +75,6 @@
   transition: background-color 250ms;
 }
 
-
 .wrapper {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -72,9 +83,9 @@
 }
 
 .wrapper * {
-    border: 2px solid green;
-    text-align: center;
-    padding: 70px 0;
+  border: 2px solid green;
+  text-align: center;
+  padding: 70px 0;
 }
 
 .one {
@@ -107,13 +118,12 @@
   display: none !important;
 }
 
-
-@media screen and (max-width: 479px){
- .md-sidebar--primary, .md-sidebar {
-  z-index: 50 !important;
- }
- .md-logo {
-  visibility: hidden;
- }
-  
+@media screen and (max-width: 479px) {
+  .md-sidebar--primary,
+  .md-sidebar {
+    z-index: 50 !important;
+  }
+  .md-logo {
+    visibility: hidden;
+  }
 }
