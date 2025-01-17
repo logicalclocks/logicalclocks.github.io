@@ -28,8 +28,7 @@ To edit a configuration variable, you can click on the edit button (:material-pe
 
     | Name                  | Description                                                                                                                                                                                             |
     | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | audit_log_count       | the number of files to keep when rotating logs (java.util.logging.FileHandler.count)                                                                                                                    |
-    | audit_log_dir         | the path where audit logs are saved                                                                                                                                                                     |
+    | audit_log_count       | the number of files to keep when rotating logs (java.util.logging.FileHandler count)                                                                                                                    |                                                                                                                                                                  |
     | audit_log_file_format | log file name pattern. (java.util.logging.FileHandler.pattern)                                                                                                                                          |
     | audit_log_file_type   | the output format of the log file. Can be one of java.util.logging.SimpleFormatter (default), io.hops.hopsworks.audit.helper.JSONLogFormatter, or io.hops.hopsworks.audit.helper.HtmlLogFormatter.      |
     | audit_log_size_limit  | the maximum number of bytes to write to any one file. (java.util.logging.FileHandler.limit)                                                                                                             |
@@ -40,7 +39,7 @@ To edit a configuration variable, you can click on the edit button (:material-pe
  
 ## Step 2: Access the Logs
  
-To access the audit logs, SSH into the **head node** of your Hopsworks cluster and navigate to the path set in the _audit\_log\_dir_ configuration variable.
+To access the audit logs, SSH into the **instance pod** of your Hopsworks cluster and navigate to the path ```/opt/payara/appserver/glassfish/nodes/<node name>/<instance name>/logs/audit```.
  
 Audit logs follow the format set in the _audit\_log\_file\_type_ configuration variable.
 
