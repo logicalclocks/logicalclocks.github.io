@@ -44,7 +44,7 @@ If you want to understand more about the concept of feature view, you can refer 
                                             .build();
     ```
 
-You can refer to [query](./query.md) and [transformation function](./model-dependent-transformations.md) for creating `query` and `transformation_function`. To see a full example of how to create a feature view, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/fraud_batch/2_feature_view_creation.ipynb).
+You can refer to [query](./query.md) and [transformation function](./model-dependent-transformations.md) for creating `query` and `transformation_function`. To see a full example of how to create a feature view, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/2_fraud_batch_training_pipeline.ipynb).
 
 ## Retrieval
 Once you have created a feature view, you can retrieve it by its name and version.
