@@ -24,9 +24,9 @@ This is a batch use case variant of the fraud tutorial, it will give you a high 
 
 | Notebooks   |                                      |
 | ----------- | ------------------------------------ |
-| 1. How to load, engineer and create feature groups | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/1_fraud_batch_feature_pipeline.ipynb){:target="_blank"}        |
-| 2. How to create training datasets                 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/2_fraud_batch_training_pipeline.ipynb){:target="_blank"} |
-| 3. How to train a model from the feature store     | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/3_fraud_batch_inference.ipynb){:target="_blank"}        |
+| 1. [How to load, engineer and create feature groups](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/1_fraud_batch_feature_pipeline.ipynb){:target="_blank"}        |
+| 2. [How to create training datasets](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/2_fraud_batch_training_pipeline.ipynb){:target="_blank"} |
+| 3. [How to train a model from the feature store](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/3_fraud_batch_inference.ipynb){:target="_blank"}        |
 
 ### Online
 This is a online use case variant of the fraud tutorial, it is similar to the batch use case, however, in this tutorial you will get introduced to the usage of Feature Groups which are kept in online storage, and how to access single feature vectors from the online storage
@@ -34,9 +34,9 @@ at low latency. Additionally, the model will be deployed as a model serving inst
 
 | Notebooks   |                                      |
 | ----------- | ------------------------------------ |
-| 1. How to load, engineer and create feature groups | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/1_fraud_online_feature_pipeline.ipynb){:target="_blank"}        |
-| 2. How to create training datasets                 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/2_fraud_online_training_pipeline.ipynb){:target="_blank"} |
-| 3. How to train a model from the feature store and deploying it as a serving instance together with the online feature store | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/3_fraud_online_inference_pipeline.ipynb){:target="_blank"}        |
+| 1. [How to load, engineer and create feature groups](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/1_fraud_online_feature_pipeline.ipynb){:target="_blank"}        |
+| 2. [How to create training datasets](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/2_fraud_online_training_pipeline.ipynb){:target="_blank"} |
+| 3. [How to train a model from the feature store and deploying it as a serving instance together with the online feature store](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/3_fraud_online_inference_pipeline.ipynb){:target="_blank"}        |
 
 ## Churn Tutorial
 
