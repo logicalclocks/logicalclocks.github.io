@@ -9,7 +9,7 @@ Before continuing with this guide, see the [Feature monitoring guide](../feature
 
 ## Code
 
-In this section, we show you how to setup feature monitoring in a Feature Group using the ==Hopsworks Python library==. Alternatively, you can get started quickly by running our [tutorial for feature monitoring](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/integrations/feature-monitoring/feature-monitoring.ipynb).
+In this section, we show you how to setup feature monitoring in a Feature Group using the ==Hopsworks Python library==. Alternatively, you can get started quickly by running our [tutorial for feature monitoring](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/api_examples/feature_monitoring.ipynb).
 
 First, checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the [Hopsworks Python library](https://pypi.org/project/hopsworks) in your environment, connect via the generated API key. The second step is to start a new configuration for feature monitoring. 
 
