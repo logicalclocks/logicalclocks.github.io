@@ -10,10 +10,7 @@ As such, Hopsworks supports five computational engines:
 2. [Python](https://www.python.org/): For pure Python environments without dependencies on Spark, Hopsworks supports [Pandas Dataframes](https://pandas.pydata.org/) and [Polars Dataframes](https://pola.rs/).
 3. [Apache Flink](https://flink.apache.org): Flink Data Streams are currently supported as an experimental feature from Java/Scala environments.
 4. [Apache Beam](https://beam.apache.org/) *experimental*: Beam Data Streams are currently supported as an experimental feature from Java/Scala environments.
-<<<<<<< HEAD
-=======
 5. [Java](https://www.java.com): For pure Java environments without dependencies on Spark, Hopsworks supports writing using List of POJO Objects. 
->>>>>>> b5aed0ee (compute engine java)
 
 Hopsworks supports running [compute on the platform itself](../../concepts/dev/inside.md) in the form of [Jobs](../projects/jobs/pyspark_job.md) or in [Jupyter Notebooks](../projects/jupyter/python_notebook.md).
 Alternatively, you can also connect to Hopsworks using Python or Spark from [external environments](../../concepts/dev/outside.md), given that there is network connectivity.
@@ -81,11 +78,6 @@ Apache Beam integration with Hopsworks feature store was only tested using Dataf
 For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/beam).
 
 ## Java
-<<<<<<< HEAD
-It is also possible to interact to Hopsworks feature store using  pure Java environments without dependencies on Spark, Flink or Beam. 
-However, this is limited to retrieval of feature vector(s) from the online Feature Store. 
-=======
 It is also possible to interact to Hopsworks feature store using  pure Java environments without dependencies on Spark, Flink or Beam.
->>>>>>> b5aed0ee (compute engine java)
 
 For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/java).
