@@ -76,7 +76,7 @@ You can also use webhooks to send alerts. A Webhook Alert is sent as an HTTP POS
 Click on the _Configure_ button on the left side of the **webhook** row and fill out the form that pops up. 
 
 <figure>
-  <img src="../../assets/images/alerts/webhook-config.png" alt="Configure Webhook Alerts"/>
+  <img src="../../../assets/images/alerts/webhook-config.png" alt="Configure Webhook Alerts"/>
   <figcaption>Configure Webhook Alerts</figcaption>
 </figure>
 
