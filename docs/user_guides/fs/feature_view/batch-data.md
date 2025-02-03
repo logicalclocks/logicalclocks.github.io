@@ -54,3 +54,16 @@ feature_view.init_batch_scoring(training_dataset_version=1)
 ```
 
 It is important to note that in addition to the filters defined in feature view, [extra filters](./training-data.md#Extra-filters) will be applied if they are defined in the given training dataset version.
+
+
+## Passing Context Variables to Transformation Functions
+After [defining a transformation function using a context variable](../transformation_functions.md#passing-context-variables-to-transformation-function), you can pass the necessary context variables through the `transformation_context` parameter when fetching batch data.
+
+
+=== "Python"   
+    !!! example "Passing context variables while fetching batch data."
+        ```python
+        # Passing context variable to IN-MEMORY Training Dataset.
+        batch_data = feature_view.get_batch_data(transformation_context={"context_parameter":10})
+
+        ```
