@@ -5,16 +5,12 @@
 ## On Demand Transformation Function Creation
 
 
-An on-demand transformation function may be created by associating a [transformation function](../transformation_functions.md) with a feature group. Each on-demand transformation function generates a single on-demand feature, which, by default, is assigned the same name as the associated transformation function. For instance, in the example below, the on-demand transformation function `transaction_age` produces an on-demand feature named transaction_age. Alternatively, the name of the resulting on-demand feature can be explicitly defined using the [`alias`](../transformation_functions.md#specifying-output-features–names-for-transformation-functions) function.
-
-It is important to note that only one-to-one or many-to-one transformation functions are compatible with the creation of on-demand transformation functions.
+An on-demand transformation function may be created by associating a [transformation function](../transformation_functions.md) with a feature group. Each on-demand transformation function can generate one or multiple on-demand features. If the on-demand transformation function returns a single feature, it is automatically assigned the same name as the transformation function. However, if it returns multiple features, they are by default named using the format `functionName_outputColumnNumber`. For instance, in the example below, the on-demand transformation function `transaction_age` produces an on-demand feature named `transaction_age` and the on-demand transformation function `stripped_strings` produces the on-demand features names `stripped_strings_0` and `stripped_strings_1`. Alternatively, the name of the resulting on-demand feature can be explicitly defined using the [`alias`](../transformation_functions.md#specifying-output-features–names-for-transformation-functions) function.
 
 !!! warning "On-demand transformation"
     All on-demand transformation functions attached to a feature group must have unique names and, in contrast to model-dependent transformations, they do not have access to training dataset statistics.
 
 Each on-demand transformation function can map specific features to its arguments by explicitly providing their names as arguments to the transformation function. If no feature names are provided, the transformation function will default to using features that match the name of the transformation function's argument.
-
-
 
 === "Python"    
 !!! example "Creating on-demand transformation functions."
@@ -24,6 +20,10 @@ Each on-demand transformation function can map specific features to its argument
     def transaction_age(transaction_date, current_date):
         return (current_date - transaction_date).dt.days
 
+    @hopsworks.udf(return_type=[str, str], drop=["current_date"])
+    def stripped_strings(country, city):
+        return county.strip(), city.strip()
+
     # Attach transformation function to feature group to create on-demand transformation function.
     fg = feature_store.create_feature_group(name="fg_transactions",
                 version=1,
@@ -31,7 +31,7 @@ Each on-demand transformation function can map specific features to its argument
                 online_enabled=True,
                 primary_key=['id'],
                 event_time='event_time'
-                transformation_functions=[transaction_age]
+                transformation_functions=[transaction_age, stripped_strings]
                 )
     ```
 

@@ -228,6 +228,21 @@ The `TransformationStatistics` instance contains separate objects with the sam
             return argument + argument2 + argument3 + statistics.argument1.mean + statistics.argument2.mean + statistics.argument3.mean
         ```
 
+### Passing context variables to transformation function
+
+The `context` keyword argument can be defined in a transformation function to access shared context variables. These variables contain common data used across transformation functions. By including the context argument, you can pass the necessary data as a dictionary into the into the `context` argument of the transformation function during [training dataset creation](feature_view/training-data.md#passing-context-variables-to-transformation-functions) or [feature vector retrieval](feature_view/feature-vectors.md#passing-context-variables-to-transformation-functions) or [batch data retrieval](feature_view/batch-data.md#passing-context-variables-to-transformation-functions).
+
+
+=== "Python"   
+    !!! example "Creation of a transformation function in Hopsworks that accepts context variables"
+        ```python
+        from hopsworks import udf
+
+        @udf(int)
+        def add_features(argument1, context):
+            return argument + context["value_to_add"]
+        ```
+
 
 ## Saving to the Feature Store
 
