@@ -35,11 +35,16 @@ The `FEATURE ENGINEERING` environments can be used in [Jupyter notebooks](../jup
 
 ### Model training
 
-The `MODEL TRAINING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md) or a [Python job](../jobs/python_job.md).
+The `MODEL TRAINING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md) or a [Python job](../jobs/python_job.md) or in a [Ray job](../jobs/ray_job.md). 
 
 * `tensorflow-training-pipeline` to train TensorFlow models
 * `torch-training-pipeline` to train PyTorch models
 * `pandas-training-pipeline` to train XGBoost, Catboost and Sklearn models
+* `ray_training_pipeline` a general purpose environment for distributed training using Ray framework to train 
+  XGBoost and Sklearn models. Should be used in [Ray job](../jobs/ray_job.md). It can be customized to install 
+  additional dependencies of your choice.
+* `ray_torch_training_pipeline` for distributed training of PyTorch models using Ray framework in a [Ray job](../jobs/ray_job.md)
+* `ray_tensorflow_training_pipeline` for distributed training of TensorFlow models using Ray framework in a [Ray job](../jobs/ray_job.md)
 
 ### Model inference
 
