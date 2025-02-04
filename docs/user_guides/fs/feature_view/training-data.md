@@ -94,6 +94,30 @@ X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_da
 X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validation_test_split(training_dataset_version=1)
 ```
 
+## Passing Context Variables to Transformation Functions
+Once you have [defined a transformation function using a context variable](../transformation_functions.md#passing-context-variables-to-transformation-function), you can pass the required context variables using the `transformation_context` parameter when generating IN-MEMORY training data or materializing a training dataset.
+
+!!! note
+    Passing context variables for materializing a training dataset is only supported in the PySpark Kernel.
+
+
+=== "Python"   
+    !!! example "Passing context variables while creating training data."
+        ```python
+        # Passing context variable to IN-MEMORY Training Dataset.
+        X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_dataset_version=1, 
+                                                                         primary_key=True,
+                                                                         event_time=True,
+                                                                         transformation_context={"context_parameter":10})
+
+        # Passing context variable to Materialized Training Dataset.
+        version, job = feature_view.get_train_test_split(training_dataset_version=1, 
+                                                                         primary_key=True,
+                                                                         event_time=True,
+                                                                         transformation_context={"context_parameter":10})
+
+        ```
+
 ## Read training data with primary key(s) and event time
 For certain use cases, e.g. time series models, the input data needs to be sorted according to the primary key(s) and event time combination. 
 Primary key(s) and event time are not usually included in the feature view query as they are not features used for training.
