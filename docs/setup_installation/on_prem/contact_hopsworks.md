@@ -1,11 +1,63 @@
----
-description: Requirements and instructions on how to install the Hopsworks on-premises.
----
+# Hopsworks Quick Setup Guide
 
-# Hopsworks On-Premise Installation
+## Quick Start Script
+Get up and running with a single command:
+```bash
+curl -O https://raw.githubusercontent.com/logicalclocks/hopsworks-k8s-installer/master/install-hopsworks.py
+python3 install-hopsworks.py
+```
 
-It is possible to use Hopsworks on-premises, which means that companies can run their machine learning workloads on their own hardware and infrastructure, rather than relying on a cloud provider. This can provide greater flexibility, control, and cost savings, as well as enabling companies to meet specific compliance and security requirements.
+## Essential Information
+Hopsworks is an enterprise-grade distributed AI Lakehouse platform with a feature store. Currently supports:
 
-Working on-premises with Hopsworks typically involves collaboration with the Hopsworks engineering teams, as each infrastructure is unique and requires a tailored approach to deployment and configuration. The process begins with an assessment of the company's existing infrastructure and requirements, including network topology, security policies, and hardware specifications.
+* Amazon Web Services (EKS)
 
-For further details about on-premise installations; [contact us](https://www.hopsworks.ai/contact).
+* Google Cloud Platform (GKE)
+
+* Microsoft Azure (AKS)
+
+* OVHCloud
+
+## Technical Requirements
+
+* Kubernetes cluster version ≥ 1.27.0
+
+* 4-5 nodes minimum
+
+* Required tools:
+  * kubectl
+  * helm
+  * Cloud CLI (aws/gcloud/az)
+
+## For the Startups and Enthusiasts
+Want to dive deeper? Here's what you need:
+
+### Default Setup
+
+* AWS: m6i.2xlarge instances, EBS GP3 storage
+
+* GCP: n2-standard-8 instances
+
+* Azure: Standard_D8_v4 instances
+
+### Access Points
+Once installed, find your services at:
+
+* UI: https://<load-balancer>:28181
+
+* API: https://<load-balancer>:8182
+
+* Default login: admin@hopsworks.ai / admin
+
+## Enterprise & Production
+For enterprise deployment, including:
+
+* Production environments
+
+* Custom configurations
+
+* Enterprise SLAs
+
+* Sovereign cloud options
+
+[Contact our team](https://www.hopsworks.ai/contact) for enterprise deployment options.
