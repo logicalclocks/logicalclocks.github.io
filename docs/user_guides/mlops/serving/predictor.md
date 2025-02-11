@@ -13,12 +13,13 @@ Predictors are the main component of deployments. They are responsible for runni
     1. [Model server](#model-server)
     2. [Serving tool](#serving-tool)
     3. [User-provided script](#user-provided-script)
-    4. [Python environments](#python-environments)
-    5. [Transformer](#transformer)
-    6. [Inference Logger](#inference-logger)
-    7. [Inference Batcher](#inference-batcher)
-    8. [Resources](#resources)
-    9. [API protocol](#api-protocol)
+    4. [Server configuration file](#server-configuration-file)
+    5. [Python environments](#python-environments)
+    6. [Transformer](#transformer)
+    7. [Inference Logger](#inference-logger)
+    8. [Inference Batcher](#inference-batcher)
+    9. [Resources](#resources)
+    10. [API protocol](#api-protocol)
 
 ## GUI
 
@@ -85,7 +86,22 @@ To create your own it is recommended to [clone](../../projects/python/python_env
   </figure>
 </p>
 
-### Step 5 (Optional): Enable KServe
+
+### Step 5 (Optional): Select a configuration file
+
+!!! note
+    Only available for LLM deployments.
+
+You can select a configuration file to be added to the [artifact files](deployment.md#artifact-files). If a predictor script is provided, this configuration file will be available inside the model deployment at the local path stored in the `CONFIG_FILE_PATH` environment variable. If a predictor script is **not** provided, this configuration file will be directly passed to the vLLM server. You can find all configuration parameters supported by the vLLM server in the [vLLM documentation](https://docs.vllm.ai/en/v0.6.4/serving/openai_compatible_server.html).
+
+<p align="center">
+  <figure>
+    <img style="max-width: 78%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_vllm_conf_file.png" alt="Server configuration file in the simplified deployment form">
+    <figcaption>Select a configuration file in the simplified deployment form</figcaption>
+  </figure>
+</p>
+
+### Step 6 (Optional): Enable KServe
 
 Other configuration such as the serving tool, is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
 
@@ -105,7 +121,7 @@ Here, you change the [serving tool](#serving-tool) for your deployment by enabli
   </figure>
 </p>
 
-### Step 6 (Optional): Other advanced options
+### Step 7 (Optional): Other advanced options
 
 Additionally, you can adjust the default values of the rest of components:
 
@@ -143,50 +159,71 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
         def __init__(self):
             """ Initialization code goes here"""
-            pass
+            # Model files can be found at os.environ["MODEL_FILES_PATH"]
+            # self.model = ... # load your model
 
         def predict(self, inputs):
             """ Serve predictions using the trained model"""
-            pass
+            # Use the model to make predictions
+            # return self.model.predict(inputs)
     ```
-=== "Generate (vLLM deployments only)"
+=== "Predictor (vLLM deployments only)"
     ``` python
-    from typing import Iterable, AsyncIterator, Union
-
-    from vllm import LLM
-
+    import os
+    from vllm import __version__, AsyncEngineArgs, AsyncLLMEngine
+    from typing import Iterable, AsyncIterator, Union, Optional
     from kserve.protocol.rest.openai import (
         CompletionRequest,
         ChatPrompt,
         ChatCompletionRequestMessage,
     )
     from kserve.protocol.rest.openai.types import Completion
+    from kserve.protocol.rest.openai.types.openapi import ChatCompletionTool
+
 
     class Predictor():
 
         def __init__(self):
             """ Initialization code goes here"""
-        # initialize vLLM backend
-        self.llm = LLM(os.environ["MODEL_FILES_PATH])
+  
+            # (optional) if any, access the configuration file via os.environ["CONFIG_FILE_PATH"]
+            config = ...
+          
+            print("Starting vLLM backend...")
+            engine_args = AsyncEngineArgs(
+                model=os.environ["MODEL_FILES_PATH"],
+                **config
+            )
 
-        # initialize tokenizer if needed
-        # self.tokenizer = ...
+            # "self.vllm_engine" is required as the local variable with the vllm engine handler
+            self.vllm_engine = AsyncLLMEngine.from_engine_args(engine_args)
 
-        def apply_chat_template(
-            self,
-            messages: Iterable[ChatCompletionRequestMessage,],
-        ) -> ChatPrompt:
-          pass
+        #
+        # NOTE: Default implementations of the apply_chat_template and create_completion methods are already provided.
+        #       If needed, you can override these methods as shown below
+        #
 
-        async def create_completion(
-            self, request: CompletionRequest
-        ) -> Union[Completion, AsyncIterator[Completion]]:
-        """Generate responses using the LLM"""
+        #def apply_chat_template(
+        #    self,
+        #    messages: Iterable[ChatCompletionRequestMessage],
+        #    chat_template: Optional[str] = None,
+        #    tools: Optional[list[ChatCompletionTool]] = None,
+        #) -> ChatPrompt:
+        #    """Converts a prompt or list of messages into a single templated prompt string"""
 
-        # Completion: used for returning a single answer (batch)
-        # AsyncIterator[Completion]: used for returning a stream of answers
+        #    prompt = ... # apply chat template on the message to build the prompt
+        #    return ChatPrompt(prompt=prompt)
 
-        pass
+        #async def create_completion(
+        #    self, request: CompletionRequest
+        #) -> Union[Completion, AsyncIterator[Completion]]:
+        #    """Generate responses using the vLLM engine"""
+        #    
+        #    generators = self.vllm_engine.generate(...)
+        #
+        #    # Completion: used for returning a single answer (batch)
+        #    # AsyncIterator[Completion]: used for returning a stream of answers
+        #    return ...
     ```
 
 !!! info "Jupyter magic"
@@ -242,7 +279,7 @@ Hopsworks Model Serving supports deploying models with a Flask server for python
     | Flask              | ✅         | python-based (scikit-learn, xgboost, pytorch...)                                                |
     | TensorFlow Serving | ✅         | keras, tensorflow                                                                               |
     | TorchServe         | ❌         | pytorch                                                                                         |
-    | vLLM               | ✅         | vLLM-supported models (see [list](https://docs.vllm.ai/en/latest/models/supported_models.html)) |
+    | vLLM               | ✅         | vLLM-supported models (see [list](https://docs.vllm.ai/en/v0.6.4/models/supported_models.html)) |
 
 ## Serving tool
 
@@ -279,7 +316,17 @@ The predictor script needs to implement a given template depending on the model 
     |              | TensorFlow Serving | ❌                                                    |
     | KServe       | Fast API           | ✅ (only required for artifacts with multiple models) |
     |              | TensorFlow Serving | ❌                                                    |
-    |              | vLLM               | ✅ (required)                                         |
+    |              | vLLM               | ✅ (optional)                                         |
+
+### Server configuration file
+
+Depending on the model server, a **server configuration file** can be selected to help detach configuration used within the model deployment from the model server or the implementation of the predictor and transformer scripts. In other words, by modifying the configuration file of an existing model deployment you can adjust its settings without making changes to the predictor or transformer scripts. Inside a model deployment, the local path to the configuration file is stored in the `CONFIG_FILE_PATH` environment variable (see [environment variables](#environment-variables)). 
+
+!!! warning "Configuration file format"
+    The configuration file can be of any format, except in vLLM deployments **without a predictor script** for which a YAML file is ==required==.
+
+!!! note "Passing arguments to vLLM via configuration file"
+    For vLLM deployments **without a predictor script**, the server configuration file is ==required== and it is used to configure the vLLM server. For example, you can use this configuration file to specify the chat template  or LoRA modules to be loaded by the vLLM server. See all available parameters in the [official documentation](https://docs.vllm.ai/en/v0.6.4/serving/openai_compatible_server.html#command-line-arguments-for-the-server).
 
 ### Environment variables
 
@@ -291,6 +338,7 @@ A number of different environment variables is available in the predictor to eas
     | ------------------- | -------------------------------------------------------------------- |
     | MODEL_FILES_PATH    | Local path to the model files                                        |
     | ARTIFACT_FILES_PATH | Local path to the artifact files                                     |
+    | CONFIG_FILE_PATH    | Local path to the configuration file                                 |
     | DEPLOYMENT_NAME     | Name of the current deployment                                       |
     | MODEL_NAME          | Name of the model being served by the current deployment             |
     | MODEL_VERSION       | Version of the model being served by the current deployment          |
@@ -302,13 +350,13 @@ Depending on the model server and serving tool used in the model deployment, you
 
 ??? info "Show supported Python environments"
 
-    | Serving tool | Model server       | Editable | Predictor                           | Transformer                    |
-    | ------------ | ------------------ | -------- | ----------------------------------- | ------------------------------ |
-    | Kubernetes   | Flask server       | ❌        | `pandas-inference-pipeline` only    | ❌                              |
-    |              | TensorFlow Serving | ❌        | (official) tensorflow serving image | ❌                              |
-    | KServe       | Fast API           | ✅        | any `inference-pipeline` image      | any `inference-pipeline` image |
-    |              | TensorFlow Serving | ✅        | (official) tensorflow serving image | any `inference-pipeline` image |
-    |              | vLLM               | ✅        | `vllm-inference-pipeline` only      | any `inference-pipeline` image |
+    | Serving tool | Model server       | Editable | Predictor                                  | Transformer                    |
+    | ------------ | ------------------ | -------- | ------------------------------------------ | ------------------------------ |
+    | Kubernetes   | Flask server       | ❌        | `pandas-inference-pipeline` only           | ❌                              |
+    |              | TensorFlow Serving | ❌        | (official) tensorflow serving image        | ❌                              |
+    | KServe       | Fast API           | ✅        | any `inference-pipeline` image             | any `inference-pipeline` image |
+    |              | TensorFlow Serving | ✅        | (official) tensorflow serving image        | any `inference-pipeline` image |
+    |              | vLLM               | ✅        | `vllm-inference-pipeline` or `vllm-openai` | any `inference-pipeline` image |
 
 !!! note 
     The selected Python environment is used for both predictor and transformer. Support for selecting a different Python environment for the predictor and transformer is coming soon.

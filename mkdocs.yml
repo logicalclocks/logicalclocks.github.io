@@ -182,6 +182,7 @@ nav:
               - user_guides/mlops/registry/index.md
               - Frameworks:
                   - TensorFlow: user_guides/mlops/registry/frameworks/tf.md
+                  - Torch: user_guides/mlops/registry/frameworks/tch.md
                   - Scikit-learn: user_guides/mlops/registry/frameworks/skl.md
                   - LLM: user_guides/mlops/registry/frameworks/llm.md
                   - Python: user_guides/mlops/registry/frameworks/python.md
