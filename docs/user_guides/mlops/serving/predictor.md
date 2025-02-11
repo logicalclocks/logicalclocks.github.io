@@ -92,7 +92,7 @@ To create your own it is recommended to [clone](../../projects/python/python_env
 !!! note
     Only available for LLM deployments.
 
-You can select a configuration file to be added to the [artifact files](deployment.md#artifact-files). If a predictor script is provided, this configuration file will be available inside the model deployment at the local path stored in the `CONFIG_FILE_PATH` environment variable. If a predictor script is **not** provided, this configuration file will be directly passed to the vLLM server. You can find all configuration parameters supported by the vLLM server in the [vLLM documentation](https://docs.vllm.ai/en/v0.6.4/serving/openai_compatible_server.html).
+You can select a configuration file to be added to the [artifact files](deployment.md#artifact-files). If a predictor script is provided, this configuration file will be available inside the model deployment at the local path stored in the `CONFIG_FILE_PATH` environment variable. If a predictor script is **not** provided, this configuration file will be directly passed to the vLLM server. You can find all configuration parameters supported by the vLLM server in the [vLLM documentation](https://docs.vllm.ai/en/v0.7.1/serving/openai_compatible_server.html).
 
 <p align="center">
   <figure>
@@ -279,7 +279,7 @@ Hopsworks Model Serving supports deploying models with a Flask server for python
     | Flask              | ✅         | python-based (scikit-learn, xgboost, pytorch...)                                                |
     | TensorFlow Serving | ✅         | keras, tensorflow                                                                               |
     | TorchServe         | ❌         | pytorch                                                                                         |
-    | vLLM               | ✅         | vLLM-supported models (see [list](https://docs.vllm.ai/en/v0.6.4/models/supported_models.html)) |
+    | vLLM               | ✅         | vLLM-supported models (see [list](https://docs.vllm.ai/en/v0.7.1/models/supported_models.html)) |
 
 ## Serving tool
 
@@ -326,7 +326,7 @@ Depending on the model server, a **server configuration file** can be selected t
     The configuration file can be of any format, except in vLLM deployments **without a predictor script** for which a YAML file is ==required==.
 
 !!! note "Passing arguments to vLLM via configuration file"
-    For vLLM deployments **without a predictor script**, the server configuration file is ==required== and it is used to configure the vLLM server. For example, you can use this configuration file to specify the chat template  or LoRA modules to be loaded by the vLLM server. See all available parameters in the [official documentation](https://docs.vllm.ai/en/v0.6.4/serving/openai_compatible_server.html#command-line-arguments-for-the-server).
+    For vLLM deployments **without a predictor script**, the server configuration file is ==required== and it is used to configure the vLLM server. For example, you can use this configuration file to specify the chat template  or LoRA modules to be loaded by the vLLM server. See all available parameters in the [official documentation](https://docs.vllm.ai/en/v0.7.1/serving/openai_compatible_server.html#command-line-arguments-for-the-server).
 
 ### Environment variables
 
