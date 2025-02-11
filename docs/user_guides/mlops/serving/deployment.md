@@ -5,7 +5,7 @@
 In this guide, you will learn how to create a new deployment for a trained model.
 
 !!! warning
-    This guide assumes that a model has already been trained and saved into the Model Registry. To learn how to create a model in the Model Registry, see [Model Registry Guide](../registry/frameworks/tf.md)
+    This guide assumes that a model has already been trained and saved into the Model Registry. To learn how to create a model in the Model Registry, see [Model Registry Guide](../registry/index.md#exporting-a-model)
 
 Deployments are used to unify the different components involved in making one or more trained models online and accessible to compute predictions on demand. For each deployment, there are four concepts to consider:
 
@@ -41,8 +41,8 @@ After selecting the model, the rest of fields are filled automatically. We pick 
 !!! notice "Deployment name validation rules"
     A valid deployment name can only contain characters a-z, A-Z and 0-9.
 
-!!! info "Predictor script for Python models and LLMs"
-    For Python models and LLMs, you must select a custom [predictor script](#predictor) that loads and runs the trained model by clicking on `From project` or `Upload new file`, to choose an existing script in the project file system or upload a new script, respectively.
+!!! info "Predictor script for Python models"
+    For Python models, you must select a custom [predictor script](#predictor) that loads and runs the trained model by clicking on `From project` or `Upload new file`, to choose an existing script in the project file system or upload a new script, respectively.
 
 If you prefer, change the name of the deployment, model version or [artifact version](#model-artifact). Then, click on `Create new deployment` to create the deployment for your model.
 
@@ -76,10 +76,10 @@ You will be redirected to a full-page deployment creation form where you can see
 !!! info "Deployment advanced options"
     1. [Predictor](#predictor)
     2. [Transformer](#transformer)
-    3. [Inference logger](#inference-logger)
-    4. [Inference batcher](#inference-batcher)
-    5. [Resources](#resources)
-    6. [API protocol](#api-protocol)
+    3. [Inference logger](predictor.md#inference-logger)
+    4. [Inference batcher](predictor.md#inference-batcher)
+    5. [Resources](predictor.md#resources)
+    6. [API protocol](predictor.md#api-protocol)
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -174,7 +174,12 @@ Inside a model deployment, the local path to the model files is stored in the `M
 
 ## Artifact Files
 
-Artifact files are files involved in the correct startup and running of the model deployment. The most important files are the **predictor** and **transformer scripts**. The former is used to load and run the model for making predictions. The latter is typically used to transform model inputs at inference time.
+Artifact files are files involved in the correct startup and running of the model deployment. The most important files are the **predictor** and **transformer scripts**. The former is used to load and run the model for making predictions. The latter is typically used to apply transformations on the model inputs at inference time before making predictions. Predictor and transformer scripts run on separate components and, therefore, scale independently of each other.
+
+!!! tip
+    Whenever you provide a predictor script, you can include the transformations of model inputs in the same script as far as they don't need to be scaled independently from the model inference process.
+
+Additionally, artifact files can also contain a **server configuration file** that helps detach configuration used within the model deployment from the model server or the implementation of the predictor and transformer scripts. Inside a model deployment, the local path to the configuration file is stored in the `CONFIG_FILE_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)).
 
 Every model deployment runs a specific version of the artifact files, commonly referred to as artifact version. ==One or more model deployments can use the same artifact version== (i.e., same predictor and transformer scripts). Artifact versions are unique for the same model version.
 
@@ -189,7 +194,7 @@ Inside a model deployment, the local path to the artifact files is stored in the
     All files under `/Models` are managed by Hopsworks. Changes to artifact files cannot be reverted and can have an impact on existing model deployments.
 
 !!! tip "Additional files"
-    Currently, the artifact files only include predictor and transformer scripts. Support for additional files (e.g., configuration files or other resources) is coming soon.
+    Currently, the artifact files can only include predictor and transformer scripts, and a configuration file. Support for additional files (e.g., other resources) is coming soon.
 
 ## Predictor
 
