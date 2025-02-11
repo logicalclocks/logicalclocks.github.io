@@ -78,6 +78,6 @@ Apache Beam integration with Hopsworks feature store was only tested using Dataf
 For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/beam).
 
 ## Java
-It is also possible to interact to Hopsworks feature store using  pure Java environments without dependencies on Spark, Flink or Beam.
+It is also possible to interact to Hopsworks feature store using pure Java environments without dependencies on Spark, Flink or Beam.
 
 For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/java).
