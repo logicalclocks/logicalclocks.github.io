@@ -123,9 +123,9 @@ Model-dependent transformation functions can also be manually applied to a featu
         fv.init_serving(training_dataset_version)
 
         # Get untransformed feature Vector
-        feature_vector = fv.get_feature_vector(entry={"index":10}, transformed=False, return_type="pandas")
+        feature_vector = fv.get_feature_vector(entry={"index":10}, transform=False, return_type="pandas")
 
         # Apply Model Dependent transformations
-        encode_feature_vector = fv.transform(feature_vector)
+        encoded_feature_vector = fv.transform(feature_vector)
         ```
 
