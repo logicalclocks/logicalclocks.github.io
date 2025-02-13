@@ -1,3 +1,7 @@
+---
+description: Documentation on how to export a Scikit-learn model to the model registry
+---
+
 # How To Export a Scikit-learn Model
 
 ## Introduction

@@ -1,4 +1,8 @@
-# How To Export an LLM Model
+---
+description: Documentation on how to export a Large Language Model (LLM) to the model registry
+---
+
+# How To Export a Large Language Model (LLM)
 
 ## Introduction
 
