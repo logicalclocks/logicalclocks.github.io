@@ -144,18 +144,18 @@ The `get_feature_vectors` function retrieves multiple feature vectors using a li
     )
     ```
 
-#### Retrieving untransformed feature vector
+#### Retrieving feature vector without on-demand features
 
-The `get_feature_vector` and `get_feature_vectors` can also return untransformed features vector without applying model-dependent transformations that contains on-demand features by setting the parameter `transform` to `False`.
+The `get_feature_vector` and `get_feature_vectors` methods can return untransformed feature vectors without on-demand features by disabling model-dependent transformations and excluding on-demand features. To achieve this, set the  parameters `transform` and `on_demand_features` to `False`.
 
 === "Python"    
 !!! example "Returning untransformed feature vectors"
     ```python
     untransformed_feature_vector = feature_view.get_feature_vector(
-        entry={"id": 1}, transform=False
+        entry={"id": 1}, transform=False, on_demand_features=False
     )
     untransformed_feature_vectors = feature_view.get_feature_vectors(
-        entry=[{"id": 1}, {"id": 2}], transform=False
+        entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
     )
     ```
 
@@ -170,7 +170,7 @@ The `request_parameter` in this case, can be a list of dictionaries that specifi
     ```python
     # Specify request parameters for each serving key.
     untransformed_feature_vector = feature_view.get_feature_vector(
-        entry={"id": 1}, transform=False
+        entry={"id": 1}, transform=False, on_demand_features=False
     )
 
     # re-compute and add on-demand features to the feature vector
@@ -187,7 +187,7 @@ The `request_parameter` in this case, can be a list of dictionaries that specifi
 
     # Specify request parameters for each serving key.
     untransformed_feature_vectors = feature_view.get_feature_vectors(
-        entry=[{"id": 1}, {"id": 2}], transform=False
+        entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
     )
 
     # re-compute and add on-demand features to the feature vectors - Specify unique request parameter for each feature vector
@@ -228,7 +228,7 @@ On-demand transformation functions can also be accessed and executed as normal f
     ```python
     # Specify request parameters for each serving key.
     feature_vector = feature_view.get_feature_vector(
-        entry={"id": 1}, transform=False, return_type="pandas"
+        entry={"id": 1}, transform=False, on_demand_features=False, return_type="pandas"
     )
 
     # Applying model dependent transformations

@@ -191,6 +191,41 @@ You can also use the parameter to provide values for all the features which are 
     )
     ```
 
+## Retrieving untransformed feature vectors
+
+By default, the `get_feature_vector` and `get_feature_vectors` functions return transformed feature vectors, which has model-dependent transformations applied and includes on-demand features.
+
+However, you can retrieve the untransformed feature vectors without applying model-dependent transformations while still including on-demand features by setting the `transform` parameter to False.
+
+=== "Python"    
+!!! example "Returning untransformed feature vectors"
+    ```python
+    # Fetching untransformed feature vector.
+    untransformed_feature_vector = feature_view.get_feature_vector(
+        entry={"id": 1}, transform=False
+    )
+
+    # Fetching untransformed feature vectors.
+    untransformed_feature_vectors = feature_view.get_feature_vectors(
+        entry=[{"id": 1}, {"id": 2}], transform=False
+    )
+    ```
+
+## Retrieving feature vector without on-demand features
+
+The `get_feature_vector` and `get_feature_vectors` methods can also return untransformed feature vectors without on-demand features by disabling model-dependent transformations and excluding on-demand features. To achieve this, set the  parameters `transform` and `on_demand_features` to `False`.
+
+=== "Python"    
+!!! example "Returning untransformed feature vectors"
+    ```python
+    untransformed_feature_vector = feature_view.get_feature_vector(
+        entry={"id": 1}, transform=False, on_demand_features=False
+    )
+    untransformed_feature_vectors = feature_view.get_feature_vectors(
+        entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
+    )
+    ```
+
 ## Passing Context Variables to Transformation Functions
 After [defining a transformation function using a context variable](../transformation_functions.md#passing-context-variables-to-transformation-function), you can pass the required context variables using the `transformation_context` parameter when fetching the feature vectors.
 
