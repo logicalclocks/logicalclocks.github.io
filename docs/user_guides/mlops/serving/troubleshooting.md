@@ -1,4 +1,8 @@
-# How To Troubleshoot A Deployment
+---
+description: Documentation on how to troubleshoot a model deployment
+---
+
+# How To Troubleshoot A Model Deployment
 
 ## Introduction
 

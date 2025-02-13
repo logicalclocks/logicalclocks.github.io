@@ -1,3 +1,7 @@
+---
+description: Documentation on how to configure a predictor for a model deployment
+---
+
 # How To Configure A Predictor
 
 ## Introduction
