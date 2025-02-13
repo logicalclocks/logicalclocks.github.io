@@ -57,7 +57,7 @@ It is important to note that in addition to the filters defined in feature view,
 
 ## Retrieving untransformed batch data
 
-The  `get_batch_data` function by default returns the batch data with model-dependent transformations applied. However it can also return untransformed batch data without applying model-dependent transformations but contains on-demand features by setting the parameter `transform` to `False`.
+By default, the `get_batch_data` function returns batch data with model-dependent transformations applied. However, you can retrieve untransformed batch data—while still including on-demand features—by setting the `transform` parameter to `False`.
 
 === "Python"    
 !!! example "Returning untransformed batch data"
