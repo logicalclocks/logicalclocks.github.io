@@ -55,6 +55,17 @@ feature_view.init_batch_scoring(training_dataset_version=1)
 
 It is important to note that in addition to the filters defined in feature view, [extra filters](./training-data.md#Extra-filters) will be applied if they are defined in the given training dataset version.
 
+## Retrieving untransformed batch data
+
+By default, the `get_batch_data` function returns batch data with model-dependent transformations applied. However, you can retrieve untransformed batch data—while still including on-demand features—by setting the `transform` parameter to `False`.
+
+=== "Python"    
+!!! example "Returning untransformed batch data"
+    ```python
+    # Fetching untransformed batch data.
+    untransformed_batch_data = feature_view.get_batch_data(transform=False)
+    ```
+
 
 ## Passing Context Variables to Transformation Functions
 After [defining a transformation function using a context variable](../transformation_functions.md#passing-context-variables-to-transformation-function), you can pass the necessary context variables through the `transformation_context` parameter when fetching batch data.

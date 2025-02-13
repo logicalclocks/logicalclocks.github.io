@@ -103,8 +103,13 @@ The `get_feature_vector` function retrieves a single feature vector based on the
 === "Python"    
 !!! example "Computing on-demand features while retrieving a feature vector"
     ```python
-
-    feature_vector = feature_view.get_feature_vector(entry={"id":1}, request_parameter={"transaction_time":datetime(2022, 12, 28, 23, 55, 59), "current_time":datetime.now()})
+    feature_vector = feature_view.get_feature_vector(
+        entry={"id": 1},
+        request_parameter={
+            "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
+            "current_time": datetime.now(),
+        },
+    )
     ```
 
 #### Retrieving feature vectors
@@ -114,24 +119,44 @@ The `get_feature_vectors` function retrieves multiple feature vectors using a li
 === "Python"    
 !!! example "Computing on-demand features while retrieving a feature vectors"
     ```python
-
     # Specify unique request parameters for each serving key.
-    feature_vector = feature_view.get_feature_vectors(entry=[{"id":1}, {"id":2}], request_parameter=[{"transaction_time":datetime(2022, 12, 28, 23, 55, 59), "current_time":datetime.now()}, 
-                                                                                                     {"transaction_time":datetime(2022, 11, 20, 12, 50, 00), "current_time":datetime.now()}])
+    feature_vector = feature_view.get_feature_vectors(
+        entry=[{"id": 1}, {"id": 2}],
+        request_parameter=[
+            {
+                "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
+                "current_time": datetime.now(),
+            },
+            {
+                "transaction_time": datetime(2022, 11, 20, 12, 50, 00),
+                "current_time": datetime.now(),
+            },
+        ],
+    )
 
     # Specify common request parameters for all serving key.
-    feature_vector = feature_view.get_feature_vectors(entry=[{"id":1}, {"id":2}], request_parameter={"transaction_time":datetime(2022, 12, 28, 23, 55, 59), "current_time":datetime.now()})
+    feature_vector = feature_view.get_feature_vectors(
+        entry=[{"id": 1}, {"id": 2}],
+        request_parameter={
+            "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
+            "current_time": datetime.now(),
+        },
+    )
     ```
 
-The `get_feature_vector` and `get_feature_vectors` can also return untransformed features by setting the parameter `transform` to `False`.
+#### Retrieving feature vector without on-demand features
+
+The `get_feature_vector` and `get_feature_vectors` methods can return untransformed feature vectors without on-demand features by disabling model-dependent transformations and excluding on-demand features. To achieve this, set the  parameters `transform` and `on_demand_features` to `False`.
 
 === "Python"    
 !!! example "Returning untransformed feature vectors"
     ```python
-
-    untransformed_feature_vector = feature_view.get_feature_vector(entry={"id":1}, transform=False)
-
-    untransformed_feature_vectors = feature_view.get_feature_vectors(entry=[{"id":1}, {"id":2}], transform=False)
+    untransformed_feature_vector = feature_view.get_feature_vector(
+        entry={"id": 1}, transform=False, on_demand_features=False
+    )
+    untransformed_feature_vectors = feature_view.get_feature_vectors(
+        entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
+    )
     ```
 
 #### Compute all on-demand features
@@ -143,27 +168,51 @@ The `request_parameter` in this case, can be a list of dictionaries that specifi
 === "Python"    
 !!! example "Computing all on-demand features and manually applying model dependent transformations."
     ```python
-
     # Specify request parameters for each serving key.
-    untransformed_feature_vector = feature_view.get_feature_vector(entry={"id":1}, transform=False)
+    untransformed_feature_vector = feature_view.get_feature_vector(
+        entry={"id": 1}, transform=False, on_demand_features=False
+    )
 
     # re-compute and add on-demand features to the feature vector
-    feature_vector_with_on_demand_features = fv.compute_on_demand_features(untransformed_feature_vector, 
-                                                                           request_parameter={"transaction_time":datetime(2022, 12, 28, 23, 55, 59), "current_time":datetime.now()})
+    feature_vector_with_on_demand_features = fv.compute_on_demand_features(
+        untransformed_feature_vector,
+        request_parameter={
+            "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
+            "current_time": datetime.now(),
+        },
+    )
 
     # Applying model dependent transformations
     encoded_feature_vector = fv.transform(feature_vector_with_on_demand_features)
 
     # Specify request parameters for each serving key.
-    untransformed_feature_vectors = feature_view.get_feature_vectors(entry=[{"id":1}, {"id":2}], transform=False)
+    untransformed_feature_vectors = feature_view.get_feature_vectors(
+        entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
+    )
 
     # re-compute and add on-demand features to the feature vectors - Specify unique request parameter for each feature vector
-    feature_vectors_with_on_demand_features = fv.compute_on_demand_features(untransformed_feature_vectors, 
-                                                                            request_parameter=[{"transaction_time":datetime(2022, 12, 28, 23, 55, 59), "current_time":datetime.now()}, 
-                                                                                               {"transaction_time":datetime(2022, 11, 20, 12, 50, 00), "current_time":datetime.now()}])
+    feature_vectors_with_on_demand_features = fv.compute_on_demand_features(
+        untransformed_feature_vectors,
+        request_parameter=[
+            {
+                "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
+                "current_time": datetime.now(),
+            },
+            {
+                "transaction_time": datetime(2022, 11, 20, 12, 50, 00),
+                "current_time": datetime.now(),
+            },
+        ],
+    )
 
     # re-compute and add on-demand feature to the feature vectors - Specify common request parameter for all feature vectors
-    feature_vectors_with_on_demand_features = fv.compute_on_demand_features(untransformed_feature_vectors, request_parameter={"transaction_time":datetime(2022, 12, 28, 23, 55, 59), "current_time":datetime.now()})
+    feature_vectors_with_on_demand_features = fv.compute_on_demand_features(
+        untransformed_feature_vectors,
+        request_parameter={
+            "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
+            "current_time": datetime.now(),
+        },
+    )
 
     # Applying model dependent transformations
     encoded_feature_vector = fv.transform(feature_vectors_with_on_demand_features)
@@ -177,10 +226,14 @@ On-demand transformation functions can also be accessed and executed as normal f
 === "Python"    
 !!! example "Executing each on-demand transformation function"
     ```python
-
     # Specify request parameters for each serving key.
-    feature_vector = feature_view.get_feature_vector(entry={"id":1}, transform=False, return_type="pandas")
+    feature_vector = feature_view.get_feature_vector(
+        entry={"id": 1}, transform=False, on_demand_features=False, return_type="pandas"
+    )
 
     # Applying model dependent transformations
-    feature_vector["on_demand_feature1"] = fv.on_demand_transformations["on_demand_feature1"](feature_vector["transaction_time"], datetime.now())
+    feature_vector["on_demand_feature1"] = fv.on_demand_transformations[
+        "on_demand_feature1"
+    ](feature_vector["transaction_time"], datetime.now())
+
     ```

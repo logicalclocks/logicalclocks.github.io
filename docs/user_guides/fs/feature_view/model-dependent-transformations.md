@@ -123,9 +123,32 @@ Model-dependent transformation functions can also be manually applied to a featu
         fv.init_serving(training_dataset_version)
 
         # Get untransformed feature Vector
-        feature_vector = fv.get_feature_vector(entry={"index":10}, transformed=False, return_type="pandas")
+        feature_vector = fv.get_feature_vector(entry={"index":10}, transform=False, return_type="pandas")
 
         # Apply Model Dependent transformations
-        encode_feature_vector = fv.transform(feature_vector)
+        encoded_feature_vector = fv.transform(feature_vector)
         ```
+
+#### Retrieving untransformed feature vector and batch inference data
+
+The `get_feature_vector`, `get_feature_vectors`, and `get_batch_data` methods can return untransformed feature vectors and batch data without applying model-dependent transformations while still including on-demand features. To achieve this, set the `transform` parameter to False.
+
+=== "Python"    
+!!! example "Returning untransformed feature vectors and batch data."
+    ```python
+    # Fetching untransformed feature vector.
+    untransformed_feature_vector = feature_view.get_feature_vector(
+        entry={"id": 1}, transform=False
+    )
+
+    # Fetching untransformed feature vectors.
+    untransformed_feature_vectors = feature_view.get_feature_vectors(
+        entry=[{"id": 1}, {"id": 2}], transform=False
+    )
+
+    # Fetching untransformed batch data.
+    untransformed_batch_data = feature_view.get_batch_data(
+        transform=False
+    )
+    ```
 
