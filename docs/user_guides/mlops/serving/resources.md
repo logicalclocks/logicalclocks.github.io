@@ -1,4 +1,8 @@
-# How To Allocate Resources For A Deployment
+---
+description: Documentation on how to allocate resources to a model deployment
+---
+
+# How To Allocate Resources To A Model Deployment
 
 ## Introduction
 

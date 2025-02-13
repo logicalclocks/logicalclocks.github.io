@@ -11,11 +11,13 @@ Follow these framework-specific guides to export a Model to the Model Registry.
 
 * [TensorFlow](frameworks/tf.md)
 
+* [Torch](frameworks/tch.md)
+
 * [Scikit-learn](frameworks/skl.md)
 
 * [LLM](frameworks/llm.md)
 
-* [Other frameworks](frameworks/python.md)
+* [Other Python frameworks](frameworks/python.md)
 
 
 ## Model Schema
