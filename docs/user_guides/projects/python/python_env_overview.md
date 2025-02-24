@@ -53,6 +53,7 @@ The `MODEL INFERENCE` environments can be used in a deployment using a custom pr
 * `tensorflow-inference-pipeline` to load and serve TensorFlow models
 * `torch-inference-pipeline` to load and serve PyTorch models
 * `pandas-inference-pipeline` to load and serve XGBoost, Catboost and Sklearn models
+* `vllm-inference-pipeline` to load and serve LLMs with vLLM inference engine
 * `minimal-inference-pipeline` to install your own custom framework, contains a minimal set of dependencies
 
 ## Next steps
