@@ -97,20 +97,12 @@ sleep 30  # give Azure some time to persist the new role
 az role assignment create --role hopsfs-storage-permissions --assignee $UA_IDENTITY_PRINCIPAL_ID --scope $STORAGE_ID
 ```
 
-Also, assign roles to pull/push images from/to the container registry:
-
-```bash
-az role assignment create --assignee $UA_IDENTITY_PRINCIPAL_ID --role AcrPull --scope $ACR_ID
-az role assignment create --assignee $UA_IDENTITY_PRINCIPAL_ID --role "AcrPush" --scope $ACR_ID
-az role assignment create --assignee $UA_IDENTITY_PRINCIPAL_ID --role "AcrDelete" --scope $ACR_ID
-```
-
 ### Step 1.5: Create Service Principal for Hopsworks services
 
 Create a service principal to grant Hopsworks applications with access to the container registry. For example, Hopsworks uses this service principal to push new Python environments created via the Hopsworks UI.
 
 ```bash
-export SP_PASSWORD=`az ad sp create-for-rbac --name $SP_NAME --scopes $ACR_ID --role acrpush --query "password" --output tsv`
+export SP_PASSWORD=`az ad sp create-for-rbac --name $SP_NAME --scopes $ACR_ID --role acrpush --years 1 --query "password" --output tsv`
 export SP_USER_NAME=`az ad sp list --display-name $SP_NAME --query "[].appId" --output tsv`
 ```
 
@@ -120,7 +112,7 @@ Provision an AKS cluster with a number of nodes:
 
 ```bash
 az aks create --resource-group $RESOURCE_GROUP --name $KUBERNETES_CLUSTER_NAME --network-plugin azure \
-    --enable-cluster-autoscaler --min-count 1 --max-count 4 --node-count 3 --node-vm-size Standard_D16_v4 \
+    --enable-cluster-autoscaler --min-count 1 --max-count 4 --node-count 3 --node-vm-size Standard_D8_v4 \
     --attach-acr $CONTAINER_REGISTRY_NAME \
     --assign-identity $UA_IDENTITY_RESOURCE_ID --assign-kubelet-identity $UA_IDENTITY_RESOURCE_ID \
     --enable-managed-identity --generate-ssh-keys
