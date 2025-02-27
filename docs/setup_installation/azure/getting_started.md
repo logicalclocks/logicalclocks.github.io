@@ -92,9 +92,7 @@ az role definition create --role-definition '{
   ]
 }'
 
-sleep 30  # give Azure some time to persist the new role
-
-az role assignment create --role hopsfs-storage-permissions --assignee $UA_IDENTITY_PRINCIPAL_ID --scope $STORAGE_ID
+az role assignment create --role hopsfs-storage-permissions --assignee-object-id $UA_IDENTITY_PRINCIPAL_ID --assignee-principal-type ServicePrincipal --scope $STORAGE_ID
 ```
 
 ### Step 1.5: Create Service Principal for Hopsworks services
@@ -102,8 +100,11 @@ az role assignment create --role hopsfs-storage-permissions --assignee $UA_IDENT
 Create a service principal to grant Hopsworks applications with access to the container registry. For example, Hopsworks uses this service principal to push new Python environments created via the Hopsworks UI.
 
 ```bash
-export SP_PASSWORD=`az ad sp create-for-rbac --name $SP_NAME --scopes $ACR_ID --role acrpush --years 1 --query "password" --output tsv`
+export SP_PASSWORD=`az ad sp create-for-rbac --name $SP_NAME --scopes $ACR_ID --role AcrPush --years 1 --query "password" --output tsv`
 export SP_USER_NAME=`az ad sp list --display-name $SP_NAME --query "[].appId" --output tsv`
+export SP_RESOURCE_ID=`az ad sp list --display-name $SP_NAME --query "[].id" --output tsv`
+
+az role assignment create --role AcrDelete --assignee-object-id $SP_RESOURCE_ID --assignee-principal-type ServicePrincipal --scope $ACR_ID
 ```
 
 ### Step 1.6: Create an AKS Kubernetes Cluster
