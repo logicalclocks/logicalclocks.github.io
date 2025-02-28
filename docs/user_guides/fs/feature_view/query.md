@@ -114,6 +114,11 @@ features for the join key of the left and right feature group. The join key list
         .join(merchantDetailsFg.selectAll(), Seq("merchant_id"), Seq("id"), "inner"))
     ```
 
+!!! warning
+    If there is feature name clash in the query then prefixes will be automatically generated and applied. Generated prefix is feature group
+    alias in the query (e.g. fg1, fg2). Prefix is applied to the right feature group of the query.
+
+
 ### Data modeling in Hopsworks
 
 Since v4.0 Hopsworks Feature selection API supports both Star and Snowflake Schema data models.
