@@ -1,129 +1,341 @@
-[data-md-color-scheme="hopsworks"] {
-  --md-primary-fg-color: #1eb382;
-  --md-secondary-fg-color: #188a64;
-  --md-tertiary-fg-color: #0d493550;
-  --md-quaternary-fg-color: #fdfdfd;
-  --border-radius-variable: 5px;
+/* 
+ * Hopsworks Documentation Theme
+ * This CSS overrides the default MkDocs Material theme to align with Hopsworks product UI
+ * - NO border radius
+ * - Light backgrounds with white cards
+ * - GitHub-inspired UI elements
+ * - Added dark mode support
+ */
+
+/* Light mode variables */
+:root {
+  --md-hopsworks-primary: #1eb382;
+  --md-hopsworks-secondary: #188a64;
+  --md-hopsworks-text: #333333;
+  --md-hopsworks-text-light: #666666;
+  --md-hopsworks-border: #e5e5e5;
+  --md-hopsworks-background: #f5f5f5;
+  --md-hopsworks-card-bg: #ffffff;
+  --md-hopsworks-shadow: 0 0px 0px;
+  --md-hopsworks-radius: 0px;
+  --md-hopsworks-code-bg: #f6f8fa;
+  --md-hopsworks-table-header-bg: #f6f8fa;
+  --md-hopsworks-inline-code-bg: rgba(188, 188, 188, 0.2);
 }
 
-.md-footer__inner:not([hidden]) {
-  display: none;
+/* Dark mode variables */
+[data-md-color-scheme="slate"] {
+  --md-hopsworks-primary: #2be9ac;
+  --md-hopsworks-secondary: #23bd8e;
+  --md-hopsworks-text: #e0e0e0;
+  --md-hopsworks-text-light: #b0b0b0;
+  --md-hopsworks-border: #444444;
+  --md-hopsworks-background: #252525;
+  --md-hopsworks-card-bg: #323232;
+  --md-hopsworks-shadow: 0 0px 0px rgba();
+  --md-hopsworks-code-bg: #404040;
+  --md-hopsworks-table-header-bg: #313131;
+  --md-hopsworks-inline-code-bg: rgba(113, 113, 113, 0.3);
 }
-/* Lex did stuff here */
-.svg_topnav {
-  width: 12px;
-  filter: invert(100);
+
+/* Overall page background */
+.md-main, .md-content {
+  background-color: var(--md-hopsworks-background);
 }
-.svg_topnav:hover {
-  width: 12px;
-  filter: invert(10);
+
+/* Header styling to match Hopsworks app */
+.md-header {
+  background-color: var(--md-hopsworks-card-bg);
+  color: var(--md-hopsworks-text);
+  box-shadow: 0 0px 0 var(--md-hopsworks-border);
+  border-bottom: 1px solid var(--md-hopsworks-border);
 }
 
 .md-header[data-md-state="shadow"] {
-  box-shadow: 0 0 0 0;
+  box-shadow: 0 0px 0 var(--md-hopsworks-border);
 }
 
-.md-tabs__item {
-  min-width: 2.5rem;
+.md-header__title {
+  color: var(--md-hopsworks-text);
 }
 
-.md-tabs__item:hover {
-  background-color: var(--md-tertiary-fg-color);
-  transition: background-color 450ms;
+.md-header__button {
+  color: var(--md-hopsworks-text);
+}
+
+.md-header__button:hover {
+  color: var(--md-hopsworks-primary);
+}
+
+.md-header__topic .md-ellipsis {
+  font-weight: 500;
+}
+
+/* Search bar styling */
+.md-search__form {
+  background-color: var(--md-hopsworks-background);
+  border: 1px solid var(--md-hopsworks-border);
+  border-radius: var(--md-hopsworks-radius);
+}
+
+.md-search__input {
+  color: var(--md-hopsworks-text);
+}
+
+.md-search__input::placeholder {
+  color: var(--md-hopsworks-text-light);
+}
+
+.md-search__icon {
+  color: var(--md-hopsworks-text-light);
+}
+
+/* Navigation tabs */
+.md-tabs {
+  background-color: var(--md-hopsworks-card-bg);
+  color: var(--md-hopsworks-text);
+  border-bottom: 1px solid var(--md-hopsworks-border);
+}
+
+.md-tabs__link {
+  opacity: 0.8;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.md-tabs__link--active,
+.md-tabs__link:hover {
+  color: var(--md-hopsworks-primary);
+  opacity: 1;
+}
+
+/* Sidebar styling */
+.md-nav {
+  font-size: 0.8rem;
+}
+
+.md-nav__title {
+  color: var(--md-hopsworks-text);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.md-nav__link {
+  color: var(--md-hopsworks-text);
+  margin: 0.3rem 0;
+}
+
+.md-nav__link:hover, 
+.md-nav__link:focus,
+.md-nav__link--active {
+  color: var(--md-hopsworks-primary);
+}
+
+.md-sidebar {
+  background-color: var(--md-hopsworks-background);
 }
 
 .md-sidebar__scrollwrap {
-  background-color: var(--md-quaternary-fg-color);
-  padding: 15px 5px 5px 5px;
-  border-radius: var(--border-radius-variable);
+  background-color: var(--md-hopsworks-card-bg);
+  border: 1px solid var(--md-hopsworks-border);
+  border-radius: var(--md-hopsworks-radius);
+  margin: 1rem;
+}
+
+/* Typography adjustments */
+.md-typeset {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--md-hopsworks-text);
+}
+
+.md-typeset h1 {
+  color: var(--md-hopsworks-text);
+  font-weight: 600;
+  font-size: 1.8rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.md-typeset h2 {
+  color: var(--md-hopsworks-text);
+  font-weight: 600;
+  font-size: 1.4rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.md-typeset h3 {
+  color: var(--md-hopsworks-text);
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.md-typeset h4 {
+  color: var(--md-hopsworks-text);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Link styling */
+.md-typeset a {
+  color: var(--md-hopsworks-primary);
+  text-decoration: none;
+}
+
+.md-typeset a:hover {
+  text-decoration: underline;
+}
+
+/* Code styling */
+.md-typeset code {
+  background-color: var(--md-hopsworks-inline-code-bg);
+  border-radius: var(--md-hopsworks-radius);
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+}
+
+.md-typeset pre > code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.md-typeset pre {
+  background-color: var(--md-hopsworks-code-bg);
+  border: 1px solid var(--md-hopsworks-border);
+  border-radius: var(--md-hopsworks-radius);
+}
+
+/* Table styling - GitHub-inspired */
+.md-typeset table:not([class]) {
+  font-size: 0.8rem;
+  border: 1px solid var(--md-hopsworks-border);
+  border-radius: var(--md-hopsworks-radius);
+  box-shadow: none;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-hopsworks-table-header-bg);
+  color: var(--md-hopsworks-text);
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+}
+
+.md-typeset table:not([class]) td {
+  padding: 0.6rem 1rem;
+  border-top: 1px solid var(--md-hopsworks-border);
+}
+
+/* Card styling for documentation content */
+.docs-card {
+  background-color: var(--md-hopsworks-card-bg);
+  border: 1px solid var(--md-hopsworks-border);
+  border-radius: var(--md-hopsworks-radius);
+  box-shadow: var(--md-hopsworks-shadow);
+  transition: all 0.2s ease;
+}
+
+.docs-card:hover {
+  border-color: var(--md-hopsworks-primary);
+}
+
+.docs-card__title {
+  font-weight: 600;
+  margin-top: 0;
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+  color: var(--md-hopsworks-text);
+}
+
+.docs-card__content {
+  font-size: 0.85rem;
+  color: var(--md-hopsworks-text-light);
+}
+
+/* Buttons */
+.md-button {
+  background-color: var(--md-hopsworks-card-bg);
+  color: var(--md-hopsworks-text);
+  border: 1px solid var(--md-hopsworks-border);
+  border-radius: var(--md-hopsworks-radius);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.md-button:hover {
+  background-color: var(--md-hopsworks-background);
+  border-color: var(--md-hopsworks-primary);
+  color: var(--md-hopsworks-text);
+}
+
+.md-button--primary {
+  background-color: var(--md-hopsworks-primary);
+  color: var(--md-hopsworks-card-bg);
+  border-color: var(--md-hopsworks-primary);
+}
+
+.md-button--primary:hover {
+  background-color: var(--md-hopsworks-secondary);
+  border-color: var(--md-hopsworks-secondary);
+  color: var(--md-hopsworks-card-bg);
+}
+
+/* Footer styling */
+.md-footer {
+  background-color: var(--md-hopsworks-card-bg);
+  color: var(--md-hopsworks-text);
+  border-top: 1px solid var(--md-hopsworks-border);
+}
+
+.md-footer-meta {
+  background-color: var(--md-hopsworks-background);
+}
+
+/* Admonitions (notes, warnings, etc.) */
+.md-typeset .admonition {
+  border: 1px solid var(--md-hopsworks-border);
+  border-radius: var(--md-hopsworks-radius);
+  box-shadow: var(--md-hopsworks-shadow);
+}
+
+.md-typeset .admonition-title {
+  font-weight: 600;
+}
+
+/* Material theme colorscheme override */
+[data-md-color-scheme="default"], 
+[data-md-color-scheme="hopsworks"] {
+  --md-primary-fg-color: var(--md-hopsworks-primary);
+  --md-primary-fg-color--light: var(--md-hopsworks-primary);
+  --md-primary-fg-color--dark: var(--md-hopsworks-secondary);
+  --md-accent-fg-color: var(--md-hopsworks-primary);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: var(--md-hopsworks-primary);
+  --md-primary-fg-color--light: var(--md-hopsworks-primary);
+  --md-primary-fg-color--dark: var(--md-hopsworks-secondary);
+  --md-accent-fg-color: var(--md-hopsworks-primary);
+  --md-typeset-a-color: var(--md-hopsworks-primary);
+}
+
+/* Light/dark toggle */
+.md-header__button.md-icon {
+  color: var(--md-hopsworks-text);
+}
+
+.md-header__button.md-icon:hover {
+  color: var(--md-hopsworks-primary);
 }
 
 .image_logo_02 {
-  width: 450px;
-}
-
-/* End of Lex did stuff here */
-
-/* no-icon style for admonitions */
-.md-typeset .no-icon > .admonition-title::before,
-.md-typeset .no-icon > summary::before {
-  display: none;
-}
-.md-typeset .no-icon > :is(.admonition-title, summary) {
-  padding-left: 1rem;
-}
-/* end of no-icon style */
-
-.md-header__button.md-logo {
-  margin: 0.1rem;
-  padding: 0.1rem;
-}
-
-.md-header__button.md-logo img,
-.md-header__button.md-logo svg {
+  width: 400px;
+  height: 200px;
+  margin: 0 auto;
   display: block;
-  width: 1.8rem;
-  height: 1.8rem;
-  fill: rgba(43, 155, 70, 0.1);
 }
 
-.md-tabs {
-  width: 100%;
-  overflow: auto;
-  color: var(--md-primary-bg-color);
-  background-color: var(--md-secondary-fg-color);
-  transition: background-color 250ms;
-}
-
-.wrapper {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  grid-auto-rows: minmax(100px, auto);
-}
-
-.wrapper * {
-  border: 2px solid green;
-  text-align: center;
-  padding: 70px 0;
-}
-
-.one {
-  grid-column: 1 / 2;
-  grid-row: 1;
-}
-.two {
-  grid-column: 2 / 3;
-  grid-row: 1;
-}
-.three {
-  grid-column: 3 / 4;
-  grid-row: 1;
-}
-.four {
-  grid-column: 4 / 5;
-  grid-row: 1;
-}
-.five {
-  grid-column: 1 / 3;
-  grid-row: 2;
-}
-.six {
-  grid-column: 3 / 5;
-  grid-row: 2;
-}
-
-/* Jupyter Stuff */
-.jupyter-wrapper .jp-CodeCell .jp-Cell-inputWrapper .jp-InputPrompt {
-  display: none !important;
-}
-
-@media screen and (max-width: 479px) {
-  .md-sidebar--primary,
-  .md-sidebar {
-    z-index: 50 !important;
-  }
-  .md-logo {
-    visibility: hidden;
-  }
+/* Styling overrides for Hopsworks documentation */
+.md-grid {
+  max-width: 1200px; /* Wider content area */
 }
