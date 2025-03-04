@@ -15,7 +15,7 @@ full_width: true
 <!-- Hero Section with Architecture Diagram -->
 <div class="hero-section">
   <div class="hero-content">
-    <h1 class="hero-title">Hopsworks AI Platform</h1>
+    <h1 class="hero-title">Hopsworks AI Lakehouse</h1>
     <p class="hero-subtitle">A production-grade ML platform with a Python-centric Feature Store and enterprise MLOps capabilities</p>
     <div class="hero-buttons">
       <a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb" class="hero-button primary">Try Quickstart</a>
