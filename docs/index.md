@@ -12,11 +12,23 @@ full_width: true
   }
 </style>
 
+<!-- Hero Section with Architecture Diagram -->
+<div class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">Hopsworks AI Platform</h1>
+    <p class="hero-subtitle">A production-grade ML platform with a Python-centric Feature Store and enterprise MLOps capabilities</p>
+    <div class="hero-buttons">
+      <a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb" class="hero-button primary">Try Quickstart</a>
+      <a href="./concepts/fs/index/" class="hero-button secondary">Explore Features</a>
+    </div>
+  </div>
+</div>
+
 <!-- Modern Architecture Diagram -->
 <div class="platform-architecture">
   <div class="architecture-header">
-    <h2 class="arch-title">Hopsworks AI Platform Architecture</h2>
-    <p class="arch-subtitle">A comprehensive ML platform with a modular design approach for data storage, feature engineering, model management, and deployment</p>
+    <h2 class="arch-title">Platform Architecture</h2>
+    <p class="arch-subtitle">A comprehensive ML platform with modular components for the entire machine learning lifecycle</p>
   </div>
   
   <div class="architecture-tiers">
@@ -93,11 +105,16 @@ full_width: true
   </div>
 </div>
 
-<!-- Interlude Text -->
-<div class="interlude-text">
-  <h2 class="interlude-title">Python-centric ML Platform</h2>
-  <p class="interlude-description">
-    Hopsworks breaks the monolithic model development pipeline into separate feature and training pipelines, enabling both feature reuse and better tested ML assets. Use the frameworks you already know to build production pipelines, from feature engineering to model deployment.
+<!-- Visual Divider -->
+<div class="visual-divider">
+  <div class="divider-line"></div>
+</div>
+
+<!-- Platform Description -->
+<div class="platform-description">
+  <h2 class="description-title">Modern ML Platform for Every Team</h2>
+  <p class="description-text">
+    Hopsworks breaks the monolithic ML development pipeline into separate feature and training pipelines, enabling both feature reuse and better tested ML assets. Use the frameworks you already know to build production pipelines, from feature engineering to model deployment.
   </p>
 </div>
 

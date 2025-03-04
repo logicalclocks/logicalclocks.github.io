@@ -1,58 +1,104 @@
-/* Dropdown Button */
-.dropbtn {
+/* Modal-style API dropdown */
+#api-modal-btn {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: transparent;
   color: var(--md-hopsworks-text);
-  padding: 0;
-  font-size: 0.8rem;
+  padding: 0.7rem 0rem; /* Match md-tabs__link padding */
+  margin: 0;
+  font-size: 0.75rem;  /* Match md-tabs__link font-size */
   border: none;
   cursor: pointer;
-  font-weight: 400;
-  position: relative;
-  z-index: 100; /* High z-index for the button */
+  font-weight: 500;  /* Match md-tabs__link font-weight */
+  opacity: 0.8;  /* Match the opacity of md-tabs__link */
+  transition: opacity, color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.6; /* Match md-tabs__link line-height */
 }
 
-/* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
-  color: var(--md-hopsworks-primary);
-}
-
-/* The dropdown container */
-.dropdown {
-  position: relative;
+/* Down arrow indicator */
+#api-modal-btn::after {
+  content: "";
   display: inline-block;
-  z-index: 100; /* Ensure the container itself has a high z-index */
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+  margin-top: 2px;
 }
 
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
+#api-modal-btn:hover {
+  color: var(--md-hopsworks-primary);
+  opacity: 1;  /* Match the opacity of md-tabs__link:hover */
+}
+
+/* The dropdown container (no overlay) */
+#api-modal-container {
   display: none;
-  position: absolute;
-  background-color: var(--md-hopsworks-card-bg);
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-  border: 1px solid var(--md-hopsworks-border);
-  z-index: 100; /* Very high z-index to ensure it appears above all content */
+  position: fixed;
+  z-index: 9999;
 }
 
-/* Links inside the dropdown */
-.dropdown-content a {
+/* Modal content box */
+#api-modal-content {
+  position: relative;
+  width: 220px;
+  background-color: var(--md-hopsworks-card-bg);
+  border: 1px solid var(--md-hopsworks-border);
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 0;
+}
+
+/* Links inside the modal */
+#api-modal-content a {
   color: var(--md-hopsworks-text);
-  padding: 12px 16px;
+  padding: 10px 15px;
   text-decoration: none;
   display: block;
-  font-size: 0.8rem;
-  position: relative;
-  z-index: 100; /* Ensure links have high z-index too */
+  font-size: 0.75rem; /* Match navigation font size */
+  font-weight: 500; /* Match navigation font weight */
+  border-bottom: 1px solid var(--md-hopsworks-border);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {
+#api-modal-content a:last-child {
+  border-bottom: none;
+}
+
+/* Change color of links on hover */
+#api-modal-content a:hover {
   background-color: var(--md-hopsworks-background);
   color: var(--md-hopsworks-primary);
 }
 
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
+/* Close button */
+#api-modal-close {
+  color: var(--md-hopsworks-text-light);
+  font-size: 1rem;
+  font-weight: bold;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+}
+
+#api-modal-close:hover {
+  color: var(--md-hopsworks-text);
+}
+
+/* Modal header */
+#api-modal-header {
+  padding: 10px 15px;
+  background-color: var(--md-hopsworks-background);
+  border-bottom: 1px solid var(--md-hopsworks-border);
+  font-weight: 500;
+  position: relative;
+  display: none; /* Hide header to make it look more like a dropdown */
+}
+
+/* Legacy dropdown classes for compatibility */
+.dropdown, .dropdown-content, .dropbtn {
+  display: none !important;
 }
