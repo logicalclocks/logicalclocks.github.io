@@ -12,4 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+  
+  // Apply full-width class to content area if page has full_width frontmatter
+  const contentInner = document.querySelector('.md-content__inner');
+  if (document.body.hasAttribute('data-full-width')) {
+    contentInner.classList.add('full-width');
+  }
 });

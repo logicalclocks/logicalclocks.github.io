@@ -25,4 +25,18 @@ window.addEventListener("DOMContentLoaded", function () {
         document.getElementById("hopsworks_api_link").href = "https://docs.hopsworks.ai/hopsworks-api/" + majorVersion + "/generated/api/login/";
         document.getElementById("hsfs_javadoc_link").href = "https://docs.hopsworks.ai/hopsworks-api/" + majorVersion + "/javadoc";
     }
+    
+    // Fix for API dropdown z-index issues
+    // Make sure the dropdown is higher in the stacking context than the content area
+    var apiDropdown = document.querySelector('.dropdown');
+    if (apiDropdown) {
+        // Force the dropdown to have a higher stacking context by setting explicit z-index styles
+        apiDropdown.style.zIndex = "1000";
+        
+        // Also ensure the content inside the dropdown has high z-index
+        var dropdownContent = apiDropdown.querySelector('.dropdown-content');
+        if (dropdownContent) {
+            dropdownContent.style.zIndex = "1000";
+        }
+    }
 });

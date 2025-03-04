@@ -43,6 +43,14 @@
   background-color: var(--md-hopsworks-background);
 }
 
+.md-content__inner {
+  padding-top: 0.5rem;
+}
+
+.md-content__inner > :first-child {
+  margin-top: 0;
+}
+
 /* Header styling to match Hopsworks app */
 .md-header {
   background-color: var(--md-hopsworks-card-bg);
@@ -57,6 +65,7 @@
 
 .md-header__title {
   color: var(--md-hopsworks-text);
+  margin-left:0rem !important;
 }
 
 .md-header__button {
@@ -90,11 +99,17 @@
   color: var(--md-hopsworks-text-light);
 }
 
+/* Fix for white magnifying glass in light theme */
+[data-md-color-scheme="default"] .md-search__icon, 
+[data-md-color-scheme="hopsworks"] .md-search__icon {
+  color: #666666;
+}
+
 /* Navigation tabs */
 .md-tabs {
   background-color: var(--md-hopsworks-card-bg);
   color: var(--md-hopsworks-text);
-  border-bottom: 1px solid var(--md-hopsworks-border);
+  border-top: 1px solid color-mix(in srgb, var(--md-hopsworks-border) 30%, transparent);
 }
 
 .md-tabs__link {
@@ -153,7 +168,7 @@
   color: var(--md-hopsworks-text);
   font-weight: 600;
   font-size: 1.8rem;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
   margin-bottom: 1rem;
 }
 
@@ -161,7 +176,7 @@
   color: var(--md-hopsworks-text);
   font-weight: 600;
   font-size: 1.4rem;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   margin-bottom: 0.8rem;
 }
 
@@ -169,12 +184,14 @@
   color: var(--md-hopsworks-text);
   font-weight: 500;
   font-size: 1.2rem;
+  margin-top: 0.8rem;
 }
 
 .md-typeset h4 {
   color: var(--md-hopsworks-text);
   font-weight: 500;
   font-size: 1rem;
+  margin-top: 0.6rem;
 }
 
 /* Link styling */
@@ -233,6 +250,7 @@
   border-radius: var(--md-hopsworks-radius);
   box-shadow: var(--md-hopsworks-shadow);
   transition: all 0.2s ease;
+  margin-top: 0.5rem;
 }
 
 .docs-card:hover {
@@ -338,4 +356,236 @@
 /* Styling overrides for Hopsworks documentation */
 .md-grid {
   max-width: 1200px; /* Wider content area */
+}
+
+/* Make sure index and content pages have consistent widths */
+.md-content__inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1; /* Lower z-index for content */
+}
+
+/* Modern Architecture Diagram */
+.platform-architecture {
+  max-width: 1000px;
+  margin: 20px auto 40px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* For full width pages */
+.md-content__inner.full-width {
+  max-width: none;
+  z-index: 1; /* Keep z-index low */
+}
+
+.architecture-header {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.arch-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--md-hopsworks-text);
+}
+
+.arch-subtitle {
+  font-size: 0.95rem;
+  color: var(--md-hopsworks-text-light);
+  margin: 0;
+}
+
+.architecture-tiers {
+  display: flex;
+  gap: 15px;
+  height: 300px;
+}
+
+.architecture-tier {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--md-hopsworks-border);
+  background-color: var(--md-hopsworks-card-bg);
+}
+
+.tier-header {
+  padding: 15px;
+  border-bottom: 1px solid var(--md-hopsworks-border);
+  background-color: var(--md-hopsworks-background);
+}
+
+.tier-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  color: var(--md-hopsworks-text);
+}
+
+.tier-description {
+  font-size: 0.85rem;
+  margin: 5px 0 0 0;
+  color: var(--md-hopsworks-text-light);
+}
+
+.tier-components {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.tier-component {
+  padding: 10px;
+  border: 1px solid var(--md-hopsworks-border);
+  background-color: var(--md-hopsworks-background);
+}
+
+.component-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0 0 5px 0;
+  color: var(--md-hopsworks-text);
+}
+
+.component-description {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--md-hopsworks-text-light);
+}
+
+/* Interlude Text */
+.interlude-text {
+  max-width: 1000px;
+  margin: 30px auto 40px;
+  text-align: left;
+}
+
+.interlude-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--md-hopsworks-text);
+}
+
+.interlude-description {
+  font-size: 0.95rem;
+  color: var(--md-hopsworks-text-light);
+  line-height: 1.5;
+}
+
+/* Feature Navigation Grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 30px auto;
+  max-width: 1000px;
+}
+
+.feature-card {
+  border: 1px solid var(--md-hopsworks-border);
+  background-color: var(--md-hopsworks-card-bg);
+  padding: 25px;
+  transition: all 0.2s ease;
+}
+
+.feature-card:hover {
+  border-color: var(--md-hopsworks-primary);
+}
+
+.feature-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--md-hopsworks-text);
+}
+
+.feature-description {
+  font-size: 0.85rem;
+  color: var(--md-hopsworks-text-light);
+  margin-bottom: 15px;
+}
+
+.feature-links {
+  margin-top: 10px;
+}
+
+.feature-link {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--md-hopsworks-primary);
+  margin-bottom: 5px;
+  text-decoration: none;
+}
+
+.feature-link:hover {
+  text-decoration: underline;
+}
+
+/* Deployment Options */
+.deployment-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin: 30px auto;
+  max-width: 1000px;
+}
+
+.deployment-option {
+  border: 1px solid var(--md-hopsworks-border);
+  background-color: var(--md-hopsworks-card-bg);
+  padding: 20px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.deployment-option:hover {
+  border-color: var(--md-hopsworks-primary);
+}
+
+.placeholder-icon {
+  width: 40px;
+  height: 40px;
+  background-color: var(--md-hopsworks-background);
+  margin: 0 auto 10px;
+}
+
+.deployment-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--md-hopsworks-text);
+}
+
+/* Inner MLOps Components Grid */
+.mlops-components {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.mlops-component {
+  border: 1px solid var(--md-hopsworks-border);
+  background-color: var(--md-hopsworks-background);
+  padding: 15px;
+}
+
+.component-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--md-hopsworks-text);
+}
+
+.component-description {
+  font-size: 0.8rem;
+  color: var(--md-hopsworks-text-light);
 }
