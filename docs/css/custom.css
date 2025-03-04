@@ -759,7 +759,6 @@
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(180deg, var(--md-hopsworks-card-bg) 0%, var(--md-hopsworks-background) 100%);
   padding: 50px 20px;
   text-align: center;
   margin-bottom: 40px;
@@ -1164,4 +1163,42 @@ img[data-zoomable="true"] {
 
 .img-modal:hover .zoom-info-text {
   opacity: 1;
+}
+
+
+
+
+
+.md-nav__link[href^="http"]:not([href*="docs.hopsworks.ai"])::after {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 4px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23666666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link[href^="http"]:not([href*="docs.hopsworks.ai"])::after {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23aaaaaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>');
+}
+
+/* External links styling - just dotted underline */
+a[href^="http"]:not([href*="docs.hopsworks.ai"]):not(.md-button):not(.md-logo):not(.md-source) {
+  border-bottom: 1px dotted var(--md-hopsworks-text-light);
+}
+
+/* Navbar external links */
+.md-tabs__link[href^="http"]:not([href*="docs.hopsworks.ai"]),
+.md-nav__link[href^="http"]:not([href*="docs.hopsworks.ai"]) {
+  border-bottom: 1px dotted var(--md-hopsworks-text-light);
+}
+
+/* Dark mode */
+[data-md-color-scheme="slate"] a[href^="http"]:not([href*="docs.hopsworks.ai"]):not(.md-button):not(.md-logo):not(.md-source),
+[data-md-color-scheme="slate"] .md-tabs__link[href^="http"]:not([href*="docs.hopsworks.ai"]),
+[data-md-color-scheme="slate"] .md-nav__link[href^="http"]:not([href*="docs.hopsworks.ai"]) {
+  border-bottom-color: rgba(170, 170, 170, 0.5);
 }
