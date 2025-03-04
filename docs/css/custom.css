@@ -153,74 +153,6 @@
   opacity: 1;
 }
 
-/* Sidebar styling */
-.md-nav {
-  font-size: 0.8rem;
-}
-
-.md-nav__title {
-  color: var(--md-hopsworks-text);
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.md-nav__link {
-  color: var(--md-hopsworks-text);
-  margin: 0.3rem 0;
-}
-
-.md-nav__link:hover, 
-.md-nav__link:focus,
-.md-nav__link--active {
-  color: var(--md-hopsworks-primary);
-}
-
-/* Fix blue highlight in sidebar */
-.md-nav__item .md-nav__link--active {
-  color: var(--md-hopsworks-primary);
-  font-weight: 500;
-}
-
-/* Remove blue background from sidebar active item */
-.md-nav__item--active>.md-nav__link {
-  color: var(--md-hopsworks-primary);
-}
-
-/* Remove sidebar item shadow */
-[dir=ltr] .md-nav__item--active>.md-nav__link {
-  box-shadow: none !important;
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* Fix sidebar blue gradient in dark mode */
-.md-nav__item .md-nav__link[data-md-state=active] {
-  background-color: transparent !important;
-  background-image: none !important;
-  color: var(--md-hopsworks-primary);
-}
-
-.md-nav__item--nested .md-nav__link {
-  background-image: none !important;
-}
-
-/* Fix tab blue gradient in dark mode */
-.md-tabs__link--active,
-.md-tabs__link:hover {
-  background-image: none !important;
-  background-color: transparent !important;
-}
-
-.md-sidebar {
-  background-color: var(--md-hopsworks-background);
-}
-
-.md-sidebar__scrollwrap {
-  background-color: var(--md-hopsworks-card-bg);
-  border: 1px solid var(--md-hopsworks-border);
-  border-radius: var(--md-hopsworks-radius);
-  margin: 1rem;
-}
 
 /* Typography adjustments */
 .md-typeset {
@@ -453,22 +385,136 @@
   display: block;
 }
 
-/* Styling overrides for Hopsworks documentation */
+/* Balanced layout for documentation */
 .md-grid {
-  max-width: 1200px; /* Wider content area */
+  max-width: 1400px; /* Overall container width */
 }
 
-/* Make sure index and content pages have consistent widths */
+/* Main layout structure */
+.md-main__inner {
+  display: flex;
+  margin-top: 0;
+}
+
+/* Content area styling */
+.md-content {
+  max-width: 100%;
+  flex-grow: 1;
+}
+
+/* Content inner container - centered with reasonable width */
 .md-content__inner {
+  max-width: 50rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive adjustment */
+@media screen and (max-width: 960px) {
+  .md-content__inner {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}
+
+/* Remove sidebar backgrounds and gradients */
+.md-nav__title,
+.md-nav__item--nested .md-nav__toggle ~ .md-nav,
+.md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link,
+.md-nav--lifted > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav,
+.md-sidebar,
+.md-sidebar__scrollwrap,
+.md-sidebar .md-nav__container {
+  background: none !important;
+  box-shadow: none !important;
+  background-image: none !important;
+  border: none !important;
+}
+
+/* Add minimal styling to links */
+.md-nav__link {
+  color: var(--md-hopsworks-text);
+}
+
+.md-nav__link:hover,
+.md-nav__link--active {
+  color: var(--md-hopsworks-primary);
+}
+
+/* Style top-level section titles in primary sidebar */
+.md-sidebar--primary .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav__link {
+  font-weight: 500;
+  color: var(--md-hopsworks-text);
+  padding-top: 0.75rem;
+  margin-top: 0.4rem;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  font-size: 0.85rem;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav > .md-nav__list > .md-nav__item--nested > .md-nav__link {
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+/* First item doesn't need the top border */
+.md-sidebar--primary .md-nav > .md-nav__list > .md-nav__item--nested:first-child > .md-nav__link {
+  border-top: none;
+  margin-top: 0;
+}
+
+/* Hide only the navigation titles in primary sidebar */
+.md-sidebar--primary .md-nav__title,
+.md-sidebar--primary .md-nav:not([data-md-level="0"]) > .md-nav__title {
+  display: none;
+}
+
+/* Style the TOC title */
+.md-sidebar--secondary .md-nav__title {
+  color: var(--md-hopsworks-text);
+  font-weight: 500;
+  padding: 0.75rem 0.8rem;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+/* TOC icon */
+.md-sidebar--secondary .md-nav__title::before {
+  content: "≡";
+  margin-right: 0.5rem;
+  font-size: 1.2em;
+  font-weight: bold;
+  opacity: 0.7;
+}
+
+/* TOC visual hierarchy indicators - simple dot style */
+.md-sidebar--secondary .md-nav__item .md-nav__link {
   position: relative;
-  z-index: 1; /* Lower z-index for content */
+  padding-left: 1.5rem;
+  margin-left: 0;
+}
+
+/* First level items */
+.md-sidebar--secondary .md-nav__item .md-nav__link::before {
+  content: "•";
+  position: absolute;
+  left: 0.7rem;
+  color: var(--md-hopsworks-text);
+  opacity: 0.8;
+}
+
+/* Nested levels - slight indentation */
+.md-sidebar--secondary .md-nav__item .md-nav__item .md-nav__link {
+  padding-left: 2.2rem;
+}
+
+/* Nested level dots */
+.md-sidebar--secondary .md-nav__item .md-nav__item .md-nav__link::before {
+  content: "◦";
+  left: 1.4rem;
+  opacity: 0.6;
 }
 
 /* Custom version dropdown that appears in the header */
-
-.md-main__inner{
-  margin-top:0px;
-}
 .md-version-select {
   position: relative;
   display: flex;
@@ -558,16 +604,6 @@
   height: auto !important;
 }
 
-/* Fix table of contents color inconsistencies */
-.md-nav--secondary .md-nav__link {
-  color: var(--md-hopsworks-text);
-}
-
-.md-nav--secondary .md-nav__link:hover,
-.md-nav--secondary .md-nav__link:focus,
-.md-nav--secondary .md-nav__link--active {
-  color: var(--md-hopsworks-primary);
-}
 
 /* Fix pagination colors */
 .md-footer__link {
