@@ -12,7 +12,7 @@ full_width: true
   }
 </style>
 
-<!-- Hero Section with Architecture Diagram -->
+<!-- Hero Section with improved content -->
 <div class="hero-section">
   <div class="hero-content">
     <h1 class="hero-title">Hopsworks AI Lakehouse</h1>
@@ -20,6 +20,7 @@ full_width: true
     <div class="hero-buttons">
       <a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb" class="hero-button primary">Try Quickstart</a>
       <a href="./concepts/fs/index/" class="hero-button secondary">Explore Features</a>
+      <a href="https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs" class="hero-button secondary">MLOps Dictionary</a>
     </div>
   </div>
 </div>
@@ -40,7 +41,7 @@ full_width: true
       <div class="tier-components">
         <div class="tier-component">
           <h4 class="component-title">Storage Connectors</h4>
-          <p class="component-description">Snowflake, BigQuery, Redshift, S3, ADLS</p>
+          <p class="component-description">Seamlessly connect to Snowflake, BigQuery, Redshift, S3, ADLS</p>
         </div>
         <div class="tier-component">
           <h4 class="component-title">Table Format</h4>
@@ -101,6 +102,53 @@ full_width: true
           <p class="component-description">High-throughput feature vectors via RonDB</p>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Getting Started Section -->
+<div class="getting-started-section">
+  <div class="getting-started-content">
+    <h2 class="getting-started-title">Getting Started with Hopsworks</h2>
+    <p class="getting-started-description">Begin your ML journey with these simple steps</p>
+    
+    <div class="steps-container">
+      <div class="step-item">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3 class="step-title">Try the Quickstart</h3>
+          <p class="step-description">Explore key features with our interactive Colab notebook</p>
+        </div>
+      </div>
+      
+      <div class="step-item">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3 class="step-title">Deploy Hopsworks</h3>
+          <p class="step-description">Set up on your preferred cloud provider or on-premises</p>
+        </div>
+      </div>
+      
+      <div class="step-item">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3 class="step-title">Build Feature Pipeline</h3>
+          <p class="step-description">Create reusable features for your ML models</p>
+        </div>
+      </div>
+      
+      <div class="step-item">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3 class="step-title">Deploy Models</h3>
+          <p class="step-description">Serve models with online and batch inference</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="hero-buttons getting-started-buttons">
+      <a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb" class="hero-button primary">Launch Quickstart</a>
+      <a href="./tutorials/index/" class="hero-button secondary">Browse Tutorials</a>
     </div>
   </div>
 </div>
@@ -186,27 +234,57 @@ full_width: true
   </div>
 </div>
 
-<!-- Deployment Options -->
-<div class="deployment-options">
-  <a href="./setup_installation/aws/getting_started/" class="deployment-option">
-    <div class="placeholder-icon"></div>
-    <h3 class="deployment-title">AWS</h3>
-  </a>
+<!-- Deployment Options with descriptions -->
+<div class="deployment-section">
+  <h2 class="deployment-section-title">Deployment Options</h2>
+  <p class="deployment-section-description">Choose the deployment that best fits your organization</p>
   
-  <a href="./setup_installation/azure/getting_started/" class="deployment-option">
-    <div class="placeholder-icon"></div>
-    <h3 class="deployment-title">Azure</h3>
-  </a>
+  <div class="deployment-options">
+    <a href="./setup_installation/aws/getting_started/" class="deployment-option">
+      <div class="placeholder-icon"></div>
+      <h3 class="deployment-title">AWS</h3>
+      <p class="deployment-description">Deploy on Amazon Web Services</p>
+    </a>
+    
+    <a href="./setup_installation/azure/getting_started/" class="deployment-option">
+      <div class="placeholder-icon"></div>
+      <h3 class="deployment-title">Azure</h3>
+      <p class="deployment-description">Deploy on Microsoft Azure</p>
+    </a>
+    
+    <a href="./setup_installation/gcp/getting_started/" class="deployment-option">
+      <div class="placeholder-icon"></div>
+      <h3 class="deployment-title">Google Cloud</h3>
+      <p class="deployment-description">Deploy on Google Cloud Platform</p>
+    </a>
+    
+    <a href="./setup_installation/on_prem/contact_hopsworks/" class="deployment-option">
+      <div class="placeholder-icon"></div>
+      <h3 class="deployment-title">On-Premise</h3>
+      <p class="deployment-description">Deploy in your data center</p>
+    </a>
+  </div>
+</div>
+
+<!-- Community Links -->
+<div class="community-section">
+  <h2 class="community-title">Join the Hopsworks Community</h2>
+  <p class="community-description">Connect with other users and get support</p>
   
-  <a href="./setup_installation/gcp/getting_started/" class="deployment-option">
-    <div class="placeholder-icon"></div>
-    <h3 class="deployment-title">Google Cloud</h3>
-  </a>
-  
-  <a href="./setup_installation/on_prem/contact_hopsworks/" class="deployment-option">
-    <div class="placeholder-icon"></div>
-    <h3 class="deployment-title">On-Premise</h3>
-  </a>
+  <div class="community-links">
+    <a href="https://github.com/logicalclocks/hopsworks" class="community-link">
+      <span class="community-icon github-icon"></span>
+      GitHub
+    </a>
+    <a href="https://community.hopsworks.ai/" class="community-link">
+      <span class="community-icon forum-icon"></span>
+      Community Forum
+    </a>
+    <a href="https://bit.ly/publichopsworks" class="community-link">
+      <span class="community-icon slack-icon"></span>
+      Slack Channel
+    </a>
+  </div>
 </div>
 
 # Hopsworks AI Platform
