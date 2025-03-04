@@ -35,20 +35,23 @@ full_width: true
   <div class="architecture-tiers">
     <div class="architecture-tier">
       <div class="tier-header">
-        <h3 class="tier-title">AI Lakehouse</h3>
+        <div class="tier-title-container">
+          <span class="tier-icon">▧</span>
+          <h3 class="tier-title">AI Lakehouse</h3>
+        </div>
         <p class="tier-description">Unified storage with table formats</p>
       </div>
       <div class="tier-components">
         <div class="tier-component">
-          <h4 class="component-title">Storage Connectors</h4>
+          <h4 class="component-title"><span class="component-icon">⬦</span> Storage Connectors</h4>
           <p class="component-description">Seamlessly connect to Snowflake, BigQuery, Redshift, S3, ADLS</p>
         </div>
         <div class="tier-component">
-          <h4 class="component-title">Table Format</h4>
-          <p class="component-description">Hudi tables with time travel capabilities</p>
+          <h4 class="component-title"><span class="component-icon">◨</span> Table Formats</h4>
+          <p class="component-description">Support for Hudi, Delta, Iceberg with time travel</p>
         </div>
         <div class="tier-component">
-          <h4 class="component-title">Compute Portability</h4>
+          <h4 class="component-title"><span class="component-icon">⬗</span> Compute Portability</h4>
           <p class="component-description">Python, Spark, Flink, SQL</p>
         </div>
       </div>
@@ -56,24 +59,27 @@ full_width: true
     
     <div class="architecture-tier">
       <div class="tier-header">
-        <h3 class="tier-title">MLOps Platform</h3>
+        <div class="tier-title-container">
+          <span class="tier-icon">◆</span>
+          <h3 class="tier-title">MLOps Platform</h3>
+        </div>
         <p class="tier-description">Full machine learning lifecycle</p>
       </div>
       <div class="tier-components">
         <div class="tier-component">
-          <h4 class="component-title">Model Registry</h4>
+          <h4 class="component-title"><span class="component-icon">◧</span> Model Registry</h4>
           <p class="component-description">Version, store, and manage ML models</p>
         </div>
         <div class="tier-component">
-          <h4 class="component-title">Model Serving</h4>
+          <h4 class="component-title"><span class="component-icon">⇄</span> Model Serving</h4>
           <p class="component-description">KServe-based online and batch inference</p>
         </div>
         <div class="tier-component">
-          <h4 class="component-title">GPU Management</h4>
+          <h4 class="component-title"><span class="component-icon">⚬</span> GPU Management</h4>
           <p class="component-description">Optimize training and inference workloads</p>
         </div>
         <div class="tier-component">
-          <h4 class="component-title">Vector Database</h4>
+          <h4 class="component-title"><span class="component-icon">◎</span> Vector Database</h4>
           <p class="component-description">Similarity search via OpenSearch</p>
         </div>
       </div>
@@ -81,24 +87,27 @@ full_width: true
     
     <div class="architecture-tier">
       <div class="tier-header">
-        <h3 class="tier-title">Feature Store</h3>
+        <div class="tier-title-container">
+          <span class="tier-icon">◩</span>
+          <h3 class="tier-title">Feature Store</h3>
+        </div>
         <p class="tier-description">Feature engineering and serving</p>
       </div>
       <div class="tier-components">
         <div class="tier-component">
-          <h4 class="component-title">Feature Groups</h4>
+          <h4 class="component-title"><span class="component-icon">◫</span> Feature Groups</h4>
           <p class="component-description">Logical collections of features</p>
         </div>
         <div class="tier-component">
-          <h4 class="component-title">Feature Views</h4>
+          <h4 class="component-title"><span class="component-icon">◨</span> Feature Views</h4>
           <p class="component-description">Training data and inference vectors</p>
         </div>
         <div class="tier-component">
-          <h4 class="component-title">Data Validation</h4>
+          <h4 class="component-title"><span class="component-icon">▣</span> Data Validation</h4>
           <p class="component-description">Statistics, expectations and monitoring</p>
         </div>
         <div class="tier-component">
-          <h4 class="component-title">Online Storage</h4>
+          <h4 class="component-title"><span class="component-icon">◉</span> Online Storage</h4>
           <p class="component-description">High-throughput feature vectors via RonDB</p>
         </div>
       </div>
@@ -112,36 +121,38 @@ full_width: true
     <h2 class="getting-started-title">Getting Started with Hopsworks</h2>
     <p class="getting-started-description">Begin your ML journey with these simple steps</p>
     
-    <div class="steps-container">
-      <div class="step-item">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <h3 class="step-title">Try the Quickstart</h3>
-          <p class="step-description">Explore key features with our interactive Colab notebook</p>
+    <div class="steps-timeline">
+      <div class="timeline-track"></div>
+      
+      <div class="timeline-step">
+        <div class="timeline-number">1</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title"><a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb">Try the Quickstart</a></h3>
+          <p class="timeline-description">Explore key features with our interactive Colab notebook</p>
         </div>
       </div>
       
-      <div class="step-item">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h3 class="step-title">Deploy Hopsworks</h3>
-          <p class="step-description">Set up on your preferred cloud provider or on-premises</p>
+      <div class="timeline-step">
+        <div class="timeline-number">2</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title"><a href="./setup_installation/">Deploy Hopsworks</a></h3>
+          <p class="timeline-description">Set up on your preferred cloud provider or on-premises</p>
         </div>
       </div>
       
-      <div class="step-item">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <h3 class="step-title">Build Feature Pipeline</h3>
-          <p class="step-description">Create reusable features for your ML models</p>
+      <div class="timeline-step">
+        <div class="timeline-number">3</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title"><a href="./concepts/fs/feature_group/feature_pipelines/">Build Feature Pipeline</a></h3>
+          <p class="timeline-description">Create reusable features for your ML models</p>
         </div>
       </div>
       
-      <div class="step-item">
-        <div class="step-number">4</div>
-        <div class="step-content">
-          <h3 class="step-title">Deploy Models</h3>
-          <p class="step-description">Serve models with online and batch inference</p>
+      <div class="timeline-step">
+        <div class="timeline-number">4</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title"><a href="./concepts/mlops/serving/">Deploy Models</a></h3>
+          <p class="timeline-description">Serve models with online and batch inference</p>
         </div>
       </div>
     </div>
@@ -241,25 +252,25 @@ full_width: true
   
   <div class="deployment-options">
     <a href="./setup_installation/aws/getting_started/" class="deployment-option">
-      <div class="placeholder-icon"></div>
+      <div class="cloud-icon"></div>
       <h3 class="deployment-title">AWS</h3>
       <p class="deployment-description">Deploy on Amazon Web Services</p>
     </a>
     
     <a href="./setup_installation/azure/getting_started/" class="deployment-option">
-      <div class="placeholder-icon"></div>
+      <div class="cloud-icon"></div>
       <h3 class="deployment-title">Azure</h3>
       <p class="deployment-description">Deploy on Microsoft Azure</p>
     </a>
     
     <a href="./setup_installation/gcp/getting_started/" class="deployment-option">
-      <div class="placeholder-icon"></div>
+      <div class="cloud-icon"></div>
       <h3 class="deployment-title">Google Cloud</h3>
       <p class="deployment-description">Deploy on Google Cloud Platform</p>
     </a>
     
     <a href="./setup_installation/on_prem/contact_hopsworks/" class="deployment-option">
-      <div class="placeholder-icon"></div>
+      <div class="cloud-icon"></div>
       <h3 class="deployment-title">On-Premise</h3>
       <p class="deployment-description">Deploy in your data center</p>
     </a>
@@ -267,21 +278,21 @@ full_width: true
 </div>
 
 <!-- Community Links -->
-<div class="community-section">
-  <h2 class="community-title">Join the Hopsworks Community</h2>
-  <p class="community-description">Connect with other users and get support</p>
+<div class="deployment-section community-section">
+  <h2 class="deployment-section-title">Join the Hopsworks Community</h2>
+  <p class="deployment-section-description">Connect with other users and get support</p>
   
   <div class="community-links">
     <a href="https://github.com/logicalclocks/hopsworks" class="community-link">
-      <span class="community-icon github-icon"></span>
+      <span class="community-icon"></span>
       GitHub
     </a>
     <a href="https://community.hopsworks.ai/" class="community-link">
-      <span class="community-icon forum-icon"></span>
+      <span class="community-icon"></span>
       Community Forum
     </a>
     <a href="https://bit.ly/publichopsworks" class="community-link">
-      <span class="community-icon slack-icon"></span>
+      <span class="community-icon"></span>
       Slack Channel
     </a>
   </div>
