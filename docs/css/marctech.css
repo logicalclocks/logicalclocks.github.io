@@ -92,7 +92,6 @@
 
 /* Enhanced Deployment Section */
 .deployment-section {
-  max-width: 1000px;
   margin: 40px auto 60px;
   text-align: center;
   padding: 0 20px;
@@ -119,12 +118,9 @@
 
 /* Community Section */
 .community-section {
-  max-width: 800px;
   margin: 60px auto;
   text-align: center;
   padding: 30px 20px;
-  background-color: var(--md-hopsworks-card-bg);
-  border: 1px solid var(--md-hopsworks-border);
 }
 
 .community-title {
@@ -152,8 +148,7 @@
   align-items: center;
   gap: 10px;
   padding: 12px 20px;
-  background-color: var(--md-hopsworks-background);
-  border: 1px solid var(--md-hopsworks-border);
+  border: 1px solid var(--md-hopsworks-primary);
   color: var(--md-hopsworks-text);
   text-decoration: none;
   transition: all 0.2s ease;
