@@ -143,6 +143,21 @@ The byte size of each column is determined by its data type and calculated as fo
 | BLOB                            | 256          |
 | other                           | 8            |
 
+
+#### Pre-insert schema validation for online feature groups
+
+The input dataframe can be validated for schema as per the valid online schema data types before online ingestion. The most important checks are mentioned below along with possible corrective actions. It is enabled by setting the keyword argument `validation_options={'run_validation':True}` in the `insert()` API of feature groups.
+
+
+
+| Error type                    | Requirement                                                                                                                                                                                                                                             | Suggested corrections                                                   |
+|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| Primary key contains null values       | Primary key column should not cannot any null values. If the primary key is composite key then all columns of primary key are checked for null.                                                                                                                       | Remove the null rows from dataframe. OR impute the null values as applicable. |
+| Primary key column is missing | The dataframe to be inserted must contain all the features of the defined the primary key as per the feature group schema.                                                                                                                              | Add all the primary key columns in the dataframe.                             |
+| Event time column is missing  | The dataframe to be inserted must contain an event time column if it was specified in the schema while feature group creation.                                                                                                                          | Add the event time column in the dataframe.                                   |
+| String length exceeded        | The character length of a string row exceeds the maximum length specified in feature online schema. However, if the feature group is not created and if no explicit schema was provided during feature group creation, then the length will be auto-increased to the maximum length found in a string column. This is handled during the first data ingestion and no user action is needed in this case. **Note:** The maximum row size in bytes should be less than 30000. | Trim the string values to fit within maximum set during feature group creation. OR remove the invalid rows. If the lengths are very long consider changing the feature schema to **TEXT** or **BLOB.**            |
+
+
 ### Timestamps and Timezones
 
 All timestamp features are stored in Hopsworks in UTC time. Also, all timestamp-based functions (such as [point-in-time joins](../../../concepts/fs/feature_view/offline_api.md#point-in-time-correct-training-data)) use UTC time.
