@@ -14,8 +14,7 @@ Hopsworks supports free-text search to discover machine-learning assets:
 You can use the search bar at the top of your project to free-text search for the names or descriptions of any ML asset. You can also search using keywords or tags that are attached to an ML asset.
 
 You can search for assets within a specific project or across all projects in a Hopsworks deployment, including those you are not a member of. This allows for easier discoverability and reusability of assets within an organization. 
-To avoid users gaining unauthorized access to data, if a search result is in a project you are **not** a member of, the information displayed of is limited to: name, descriptions, tags, asset creator and create date. If the search result is within a project you are a member of, you are also able to inspect recent activities on the asset as well as statistics.
-
+To avoid users gaining unauthorized access to data, if a search result is in a project you are **not** a member of, the information displayed is limited to: name, descriptions, tags, asset creator and create date. If the search result is within a project you are a member of, you are also able to inspect recent activities on the asset as well as statistics.
 ## Tags
 
 A keyword is a single user-defined word attached to an ML asset. Keywords can be used to help it make it easier to find ML assets or understand the context in which they should be used (for example, *PII* could be used to indicate that the ML asset is based on personally identifiable information.
