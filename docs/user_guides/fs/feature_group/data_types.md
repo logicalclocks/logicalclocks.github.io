@@ -120,7 +120,7 @@ When a feature is being used as a primary key, certain types are not allowed.
 Examples of such types are *FLOAT*, *DOUBLE*, *TEXT* and *BLOB*.
 Additionally, the size of the sum of the primary key online data types storage requirements **should not exceed 4KB**.
 
-#### Online restrictions for row size
+####  Online restrictions for row size
 
 The online feature store supports **up to 500 columns** and all column types combined **should not exceed 30000 Bytes**.
 The byte size of each column is determined by its data type and calculated as follows:
@@ -145,18 +145,74 @@ The byte size of each column is determined by its data type and calculated as fo
 
 
 #### Pre-insert schema validation for online feature groups
+For online enabled feature groups, the dataframe to be ingested needs to adhere to the online schema definitions. The input dataframe is validated for schema checks accordingly.
+The validation is enabled by setting below property when calling `insert()`
+=== "Python"
+    ```python
+    feature_group.insert(df, validation_options={'run_validation':True})
+    ```
+The most important validation checks or error messages are mentioned below along with possible corrective actions. 
 
-The input dataframe can be validated for schema as per the valid online schema data types before online ingestion. The most important checks are mentioned below along with possible corrective actions. It is enabled by setting the keyword argument `validation_options={'run_validation':True}` in the `insert()` API of feature groups.
+1. Primary key contains null values 
 
+    - **Rule** Primary key column should not contain any null values.
+    - **Example correction** Drop the rows containing null primary keys. Alternatively, find the null values and assign them an unique value as per preferred strategy for data imputation.
+        
+        === "Pandas"
+        ```python
+        # Assuming 'id' is the primary key column
+        df = df.dropna(subset=['id'])
+        # For composite keys
+        df = df.dropna(subset=['id1', 'id2'])
+        ```
 
+2. Primary key column missing
 
-| Error type                    | Requirement                                                                                                                                                                                                                                             | Suggested corrections                                                   |
-|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| Primary key contains null values       | Primary key columns must not contain any null values. For composite keys, all primary key columns are checked for nulls.                                                                                                                       | Remove the null rows from dataframe. OR impute the null values as applicable. |
-| Primary key column is missing | The dataframe to be inserted must contain all the features defined in the primary key as per the feature group schema.                                                                                                                              | Add all the primary key columns in the dataframe.                             |
-| Event time column is missing  | The dataframe to be inserted must contain an event time column if it was specified in the schema while feature group creation.                                                                                                                          | Add the event time column in the dataframe.                                   |
-| String length exceeded        | The character length of a string row exceeds the maximum length specified in feature online schema. However, if the feature group is not created and if no explicit schema was provided during feature group creation, then the length will be auto-increased to the maximum length found in a string column. This is handled during the first data ingestion and no user action is needed in this case. **Note:** The maximum row size in bytes should be less than 30000. | Trim the string values to fit within maximum set during feature group creation. OR remove the invalid rows. If the lengths are very long consider changing the feature schema to **TEXT** or **BLOB.**            |
+    - **Rule** The dataframe to be inserted must contain all the columns defined as primary key(s) in the feature group.
+    - **Example correction** Add all the primary key columns in the dataframe.
+        
+        === "Pandas"
+        ```python
+        # Add missing primary key column
+        df['id'] = some_value
+        # If primary key is an auto-incrementing
+        df['id'] = range(1, len(df) + 1)
+        ```
 
+3. String length exceeded
+
+    - **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature. If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe. 
+    - **Example correction**
+    Trim the string values to fit within maximum limit set during feature group creation.
+        
+        === "Pandas"
+        ```python
+        max_length = 100
+        df['text_column'] = df['text_column'].str.slice(0, max_length)
+        ```
+
+        !!!note  
+            The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size). In such cases it is possible to define the feature as **TEXT** or **BLOB**.
+            Below is an example of explicitly defining the string column as TEXT as online type.
+
+        === "Pandas"
+        ```python
+        import pandas as pd
+        # example dummy datafrane with the string column
+        df = pd.DataFrame(columns=['id', 'string_col'])
+        from hsfs.feature import Feature
+        features = [
+        Feature(name="id",type="bigint",online_type="bigint"),
+        Feature(name="string_col",type="string",online_type="text")
+        ]
+
+        fg = fs.get_or_create_feature_group(name="fg_manual_text_schema",
+                                    version=1,
+                                    features=features,
+                                    online_enabled=True,
+                                    primary_key=['id'])
+        fg.insert(df)
+        ```
 
 ### Timestamps and Timezones
 
