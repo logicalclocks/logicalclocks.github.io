@@ -104,31 +104,20 @@ To push metrics with this method we use the `remote_write` configuration.
 We will only give a sample configuration as `remote_write` is extensively documented in Prometheus [documentation](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write)
 In the example below we push metrics to a custom service listening on port 9096 which transforms the metrics and forwards them.
 
-#### Step 1
-First we need to identify the name of the *ConfigMap* storing the Prometheus configuration. The guide assumes Hopsworks runs at
-`hopsworks` Namespace.
-
-```bash
-export NAMESPACE=hopsworks
-configMapName=$(kubectl -n ${NAMESPACE} get configmap -l app.kubernetes.io/name=prometheus,app.kubernetes.io/component=server -ojsonpath='{.items[0].metadata.name}')
-```
-
-#### Step 2
-Using the name of the ConfigMap from Step 1 edit the configuration
-
-```bash
-kubectl -n ${NAMESPACE} edit configmap ${configMapName}
-```
-
-Find the key `prometheus.yml` and add the following
+In order to configure Prometheus to push metrics to a remote HTTP service we need to customize our Helm chart values file with the following snippet after changing the *url* accordingly. You can also tweak other configuration parameters to your needs.
 
 ```yaml
-remote_write:
-  - url: "http://localhost:9096"
-    queue_config:
-      capacity: 10000
-      max_samples_per_send: 5000
-      batch_send_deadline: 60s
+prometheus:
+  prometheus:
+    server:
+      remoteWrite:
+      - url: "http://localhost:9096"
+        queue_config:
+          capacity: 10000
+          max_samples_per_send: 5000
+          batch_send_deadline: 60s
 ```
 
-Save your changes, Prometheus will automatically reload the new configuration.
+If the section already exists, then append the `remoteWrite` section.
+
+Run `helm install` or `helm upgrade` if it's the first time you install Hopsworks or you want to apply the change to an existing cluster respectively.
