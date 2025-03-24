@@ -4,7 +4,7 @@ on: pull_request
 
 jobs:
   test-docs-build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout main repo
@@ -17,7 +17,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install ubuntu dependencies
-        run: sudo apt-get install -y libxml2-dev libxslt-dev
+        run: sudo apt update && sudo apt-get install -y libxml2-dev libxslt-dev
 
       - name: install deps
         run: pip3 install -r requirements-docs.txt
