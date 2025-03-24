@@ -79,4 +79,4 @@ fs = project.get_feature_store()
 
 ## Next Steps
 
-For more information on how to use the Hopsworks API check out the other guides or the [API Reference](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/connection_api/). 
+For more information on how to use the Hopsworks API check out the other guides or the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/). 
