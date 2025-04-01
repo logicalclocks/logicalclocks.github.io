@@ -1,4 +1,7 @@
 User-agent: *
-Disallow:
+Disallow: /
+Allow: /4.1/
+Allow: /latest/
 
-Sitemap: https://docs.hopsworks.ai/3.2/sitemap.xml
+Allow: /hopsworks-api/4.1/
+Allow: /hopsworks-api/latest/
