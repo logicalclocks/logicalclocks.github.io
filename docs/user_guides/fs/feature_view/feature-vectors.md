@@ -191,6 +191,19 @@ You can also use the parameter to provide values for all the features which are 
     )
     ```
 
+## Passing Context Variables to Transformation Functions
+After [defining a transformation function using a context variable](../transformation_functions.md#passing-context-variables-to-transformation-function), you can pass the required context variables using the `transformation_context` parameter when fetching the feature vectors.
+
+=== "Python"   
+    !!! example "Passing context variables while fetching batch data."
+        ```python
+        # Passing context variable to IN-MEMORY Training Dataset.
+        batch_data = feature_view.get_feature_vectors(
+            entry = [{ "pk1": 1 }],
+            transformation_context={"context_parameter":10}
+        )
+        ```
+
 ## Choose the right Client
 
 The Online Store can be accessed via the **Python** or **Java** client allowing you to use your language of choice to connect to the Online Store. Additionally, the Python client provides two different implementations to fetch data: **SQL** or **REST**. The SQL client is the default implementation. It requires a direct SQL connection to your RonDB cluster and uses python asyncio to offer high performance even when your Feature View rows involve querying multiple different tables. The REST client is an alternative implementation connecting to [RonDB Feature Vector Server](./feature-server.md). Perfect if you want to avoid exposing ports of your database cluster directly to clients. This implementation is available as of Hopsworks 3.7.

@@ -93,14 +93,14 @@ To attach built-in transformation functions from the `hopsworks` module they can
 
     !!! example "Creating model-dependent transformation using built-in transformation functions imported from hopsworks"
         ```python
-        from hopsworks.builtin_transformations import min_max_scaler, label_encoder, robust_scaler, standard_scaler
+        from hopsworks.hsfs.builtin_transformations import min_max_scaler, label_encoder, robust_scaler, standard_scaler
         
         feature_view = fs.create_feature_view(
             name='transactions_view',
             query=query,
             labels=["fraud_label"],
             transformation_functions = [
-                label_encoder("category": ),
+                label_encoder("category"),
                 robust_scaler("amount"),
                 min_max_scaler("loc_delta"),
                 standard_scaler("age_at_transaction")
