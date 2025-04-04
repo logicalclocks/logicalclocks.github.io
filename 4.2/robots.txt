@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /
+Allow: /4.1/
+Allow: /latest/
+
+Allow: /hopsworks-api/4.1/
+Allow: /hopsworks-api/latest/
+
+Allow: /hopsworks-api/4.1/javadoc/
+Allow: /hopsworks-api/latest/javadoc/
