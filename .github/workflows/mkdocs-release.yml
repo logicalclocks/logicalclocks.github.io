@@ -29,5 +29,5 @@ jobs:
           git config --global user.email mike@docs.hopsworks.ai
 
       # Put this back and increment version when cutting a new release branch
-      # - name: mike deploy docs
-      #  run: mike deploy 3.0 latest -u --push
+      - name: mike deploy docs
+        run: mike deploy 4.2 latest -u --push
