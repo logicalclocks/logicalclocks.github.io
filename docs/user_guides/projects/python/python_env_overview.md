@@ -26,6 +26,9 @@ Environments listed under `FEATURE ENGINEERING` corresponds to environments you 
   </figure>
 </p>
 
+!!! note "Python version"
+    The python version used in all the environments is 3.10.
+
 ### Feature engineering
 
 The `FEATURE ENGINEERING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md), a [Python job](../jobs/python_job.md) or a [PySpark job](../jobs/pyspark_job.md).
