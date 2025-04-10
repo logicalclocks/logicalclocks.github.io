@@ -46,7 +46,7 @@ spark.driver.extraClassPath=/usr/lib/hopsworks/client/*
 spark.sql.hive.metastore.jars=path
 spark.sql.hive.metastore.jars.path=/usr/lib/hopsworks/apache-hive-bin/lib/*
 </code></pre></div></p> <p>Spark hive-site.xml: <div class=highlight><pre><span></span><code>hive.metastore.uris=thrift://MY_HOPSWORKS_INSTANCE_PRIVATE_IP:9083
-</code></pre></div></p> <div class="admonition info"> <p class=admonition-title>Info</p> <p>Replace MY_HOPSWORKS_INSTANCE_PRIVATE_IP with the private IP address of you Hopsworks Feature Store.</p> </div> <h2 id=step-5-connect-to-the-feature-store>Step 5: Connect to the Feature Store<a class=headerlink href=#step-5-connect-to-the-feature-store title="Permanent link">#</a></h2> <p>You are now ready to connect to the Hopsworks Feature Store, for instance using a Jupyter notebook in HDInsight with a PySpark3 kernel:</p> <div class=highlight><pre><span></span><code><span class=kn>import</span> <span class=nn>hsfs</span>
+</code></pre></div></p> <div class="admonition info"> <p class=admonition-title>Info</p> <p>Replace MY_HOPSWORKS_INSTANCE_PRIVATE_IP with the private IP address of you Hopsworks Feature Store.</p> </div> <h2 id=step-5-connect-to-the-feature-store>Step 5: Connect to the Feature Store<a class=headerlink href=#step-5-connect-to-the-feature-store title="Permanent link">#</a></h2> <p>You are now ready to connect to the Hopsworks Feature Store, for instance using a Jupyter notebook in HDInsight with a PySpark3 kernel:</p> <div class=highlight><pre><span></span><code><span class=kn>import</span><span class=w> </span><span class=nn>hsfs</span>
 
 <span class=c1># Put the API key into Key Vault for any production setup:</span>
 <span class=c1># See, https://azure.microsoft.com/en-us/services/key-vault/</span>
