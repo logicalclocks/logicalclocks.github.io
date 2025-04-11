@@ -160,10 +160,20 @@ The most important validation checks or error messages are mentioned below along
         
         === "Pandas"
         ```python
-        # Assuming 'id' is the primary key column
+        # Drop rows: assuming 'id' is the primary key column
         df = df.dropna(subset=['id'])
         # For composite keys
         df = df.dropna(subset=['id1', 'id2'])
+
+        # Data imputation: replace null values with incrementing last interger id
+        # existing max id 
+        max_id = df['id'].max()
+        # counter to generate new id
+        next_id = max_id + 1
+        # for each null id, assign the next id incrementally
+        for idx in df[df['id'].isna()].index:
+            df.loc[idx, 'id'] = next_id
+            next_id += 1
         ```
 
 2. Primary key column missing
@@ -173,9 +183,7 @@ The most important validation checks or error messages are mentioned below along
         
         === "Pandas"
         ```python
-        # Add missing primary key column
-        df['id'] = some_value
-        # If primary key is an auto-incrementing
+        # increamenting primary key upto the length of dataframe
         df['id'] = range(1, len(df) + 1)
         ```
 
@@ -183,13 +191,17 @@ The most important validation checks or error messages are mentioned below along
 
     - **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature. If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe. 
     - **Example correction**
-    Trim the string values to fit within maximum limit set during feature group creation.
+    
+        - Trim the string values to fit within maximum limit set during feature group creation.
         
         === "Pandas"
         ```python
         max_length = 100
         df['text_column'] = df['text_column'].str.slice(0, max_length)
         ```
+        
+        - Another option is to simply [create new version of the feature group](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) and insert the dataframe.
+
 
         !!!note  
             The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size). In such cases it is possible to define the feature as **TEXT** or **BLOB**.
@@ -198,7 +210,7 @@ The most important validation checks or error messages are mentioned below along
         === "Pandas"
         ```python
         import pandas as pd
-        # example dummy datafrane with the string column
+        # example dummy dataframe with the string column
         df = pd.DataFrame(columns=['id', 'string_col'])
         from hsfs.feature import Feature
         features = [
