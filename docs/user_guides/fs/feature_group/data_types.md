@@ -149,7 +149,7 @@ For online enabled feature groups, the dataframe to be ingested needs to adhere 
 The validation is enabled by setting below property when calling `insert()`
 === "Python"
     ```python
-    feature_group.insert(df, validation_options={'run_validation':True})
+    feature_group.insert(df, validation_options={'online_schema_validation':True})
     ```
 The most important validation checks or error messages are mentioned below along with possible corrective actions. 
 
