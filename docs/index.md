@@ -184,29 +184,32 @@ full_width: true
   <div class="hero-content">
     <h1 class="hero-title">Hopsworks Documentation</h1>
     <p class="hero-subtitle">Complete guides for building production ML systems with <br> the Hopsworks AI platform</p>
-    <div class="hero-buttons">
-      <a href="https://app.hopsworks.ai" target="_blank" class="hero-button primary">Hopsworks Serverless</a>
-      <a href="./tutorials" class="hero-button secondary">Browse Tutorials</a>
-      <a href="./concepts/fs" class="hero-button secondary">Explore Capabilities</a>
+    
+        <!-- Button array for getting started options -->
+    <div style="display: flex; gap: 20px; margin-top: 40px; justify-content: center; flex-wrap: wrap;">
+      <a href="https://app.hopsworks.ai" target="_blank" class="hero-button primary" style="min-width: 200px;">Hopsworks Serverless</a>
+      <a href="./tutorials" class="hero-button secondary" style="min-width: 160px;">Browse Tutorials</a>
+      <a href="./concepts/fs" class="hero-button secondary" style="min-width: 160px;">Explore Capabilities</a>
+    </div>
+    
+    <!-- Python Installation Section with consistent width -->
+    <div style="max-width: 800px; margin: 60px auto 0; text-align: center; padding: 0 20px;">
+      <h3 style="font-size: 1.3rem; margin-bottom: 20px; font-weight: 500;">Access Hopsworks from Python</h3>
+      
+      <p style="margin-bottom: 20px; color: var(--md-hopsworks-text-light);">
+        Install the Hopsworks Python library to interact with the platform from your Python environment.
+        The Python profile ensures all required dependencies are installed.
+      </p>
+      
+      <div style="margin: 20px auto; max-width: 500px; padding: 16px; background-color: var(--md-hopsworks-code-bg); text-align: left; border: 1px solid var(--md-hopsworks-border);">
+        <code style="font-size: 1rem;">pip install hopsworks[python]</code>
+      </div>
+      
+      <a href="./user_guides/client_installation/" class="hero-button secondary" style="display: inline-block; min-width: 200px;">
+        Client Installation Guide
+      </a>
     </div>
   </div>
-</div>
-
-<!-- Python Installation Section -->
-<div class="section" style="text-align: center;">
-  <h2 class="section-title">Installing the Python Library</h2>
-  
-  <p>To interact with Hopsworks from a Python environment, install the <code>Hopsworks</code> Python library from PyPI:</p>
-  
-  <div style="margin: 30px auto; max-width: 500px; padding: 16px; background-color: var(--md-hopsworks-code-bg);">
-    <code style="font-size: 1rem;">pip install hopsworks[python]</code>
-  </div>
-  
-  <p style="color: var(--md-hopsworks-text-light);">The Python profile ensures all required dependencies are installed for a pure Python environment.</p>
-  
-  <a href="./user_guides/client_installation/" class="hero-button secondary">
-    View Client Installation Guide
-  </a>
 </div>
 
 
