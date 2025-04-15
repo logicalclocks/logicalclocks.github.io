@@ -7,279 +7,653 @@ full_width: true
 ---
 
 <style>
+  /* Typography system */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  
   .md-typeset h1 {
-      font-size: 2em;
+    font-size: 2.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem !important;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+    line-height: 1.5; 
+    color: var(--md-hopsworks-text-light);
+  }
+  
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  /* Spacing system */
+  .section {
+    margin: 80px auto;
+    max-width: 1200px;
+    padding: 0 24px;
+  }
+  
+  /* Feature cards */
+  .feature-grid {
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 24px;
+  }
+  
+  .feature-card {
+    padding: 32px;
+    border: 1px solid var(--md-hopsworks-border);
+    background-color: var(--md-hopsworks-card-bg);
+    height: 100%;
+  }
+  
+  .feature-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: var(--md-hopsworks-text);
+    padding-bottom: 0;
+  }
+  
+  /* Remove green underline */
+  .feature-title::after {
+    display: none;
+  }
+  
+  /* Feature links */
+  .feature-link {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--md-hopsworks-primary);
+    margin-bottom: 16px;
+    padding-left: 16px;
+    line-height: 1.5;
+    position: relative;
+    text-decoration: none;
+  }
+  
+  .feature-link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: var(--md-hopsworks-primary);
+  }
+  
+  /* Component styling */
+  .tier-component {
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid var(--md-hopsworks-border);
+    background-color: var(--md-hopsworks-card-bg);
+  }
+  
+  .component-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .component-icon {
+    margin-right: 10px;
+    color: var(--md-hopsworks-primary);
+  }
+  
+  .component-description {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--md-hopsworks-text-light);
+  }
+  
+  /* Consistent buttons */
+  .hero-button {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--md-hopsworks-primary);
+  }
+  
+  .hero-button.primary {
+    background-color: var(--md-hopsworks-primary);
+    color: white;
+  }
+  
+  .hero-button.secondary {
+    background-color: transparent;
+    color: var(--md-hopsworks-primary);
+  }
+  
+  .hero-button:hover {
+    opacity: 0.9;
+  }
+  
+  /* Code blocks */
+  code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+    background-color: var(--md-hopsworks-code-bg);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 960px) {
+    .feature-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .hero-title {
+      font-size: 2rem !important;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .feature-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
-<!-- Documentation Header -->
+<!-- Hero Section -->
 <div class="hero-section">
   <div class="hero-content">
     <h1 class="hero-title">Hopsworks Documentation</h1>
-    <p class="hero-subtitle">Complete guides, tutorials, and references for the Hopsworks AI Lakehouse platform</p>
+    <p class="hero-subtitle">Complete guides for building production ML systems with <br> the Hopsworks AI platform</p>
     <div class="hero-buttons">
-      <a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb" class="hero-button primary">Try Quickstart</a>
-      <a href="./tutorials/index/" class="hero-button secondary">Browse Tutorials</a>
-      <a href="./concepts/fs/index/" class="hero-button secondary">Read Concepts</a>
+      <a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb" class="hero-button primary">Start with Colab</a>
+      <a href="./tutorials" class="hero-button secondary">Browse Tutorials</a>
+      <a href="./concepts/fs" class="hero-button secondary">Explore Features</a>
     </div>
   </div>
 </div>
 
-<!-- Documentation Overview -->
-<div class="platform-description">
-  <h2 class="description-title">About Hopsworks AI Platform</h2>
-  <p class="description-text">
-    Hopsworks is a modular AI platform with a Python-centric Feature Store and enterprise MLOps capabilities. This documentation will help you get started, learn concepts, follow guides, and configure your deployment.
-  </p>
+<!-- Python Installation Section -->
+<div class="section" style="text-align: center;">
+  <h2 class="section-title">Installing the Python Library</h2>
+  
+  <p>To interact with Hopsworks from a Python environment, install the <code>Hopsworks</code> Python library from PyPI:</p>
+  
+  <div style="margin: 30px auto; max-width: 500px; padding: 16px; background-color: var(--md-hopsworks-code-bg);">
+    <code style="font-size: 1rem;">pip install hopsworks[python]</code>
+  </div>
+  
+  <p style="color: var(--md-hopsworks-text-light);">The Python profile ensures all required dependencies are installed for a pure Python environment.</p>
+  
+  <a href="./user_guides/client_installation/" class="hero-button secondary">
+    View Client Installation Guide
+  </a>
 </div>
 
-<!-- Documentation Categories Grid -->
+
+<!-- Quick Access Section -->
 <div class="feature-grid">
   <div class="feature-card">
     <h3 class="feature-title">Getting Started</h3>
-    <p class="feature-description">Begin your journey with Hopsworks</p>
     <div class="feature-links">
-      <a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb" class="feature-link">Quickstart Notebook</a>
-      <a href="./tutorials/index/" class="feature-link">Tutorials</a>
-      <a href="./setup_installation/" class="feature-link">Installation Guide</a>
       <a href="./concepts/hopsworks/" class="feature-link">Platform Overview</a>
+      <a href="./setup_installation/" class="feature-link">Installation Guide</a>
+      <a href="./user_guides/client_installation/index/" class="feature-link">Client Setup</a>
+      <a href="./tutorials/" class="feature-link">Tutorials</a>
     </div>
   </div>
   
   <div class="feature-card">
-    <h3 class="feature-title">Feature Store</h3>
-    <p class="feature-description">Learn about feature engineering & serving</p>
+    <h3 class="feature-title">Popular Guides</h3>
     <div class="feature-links">
-      <a href="./concepts/fs/index/" class="feature-link">Architecture</a>
       <a href="./concepts/fs/feature_group/fg_overview/" class="feature-link">Feature Groups</a>
       <a href="./concepts/fs/feature_view/fv_overview/" class="feature-link">Feature Views</a>
-      <a href="./user_guides/fs/index/" class="feature-link">User Guide</a>
-    </div>
-  </div>
-  
-  <div class="feature-card">
-    <h3 class="feature-title">MLOps</h3>
-    <p class="feature-description">Model training, registry & serving</p>
-    <div class="feature-links">
-      <a href="./concepts/mlops/training/" class="feature-link">Model Training</a>
-      <a href="./concepts/mlops/registry/" class="feature-link">Model Registry</a>
       <a href="./concepts/mlops/serving/" class="feature-link">Model Serving</a>
-      <a href="./user_guides/mlops/index/" class="feature-link">User Guide</a>
+      <a href="./concepts/mlops/opensearch/" class="feature-link">Vector Database</a>
     </div>
   </div>
   
   <div class="feature-card">
-    <h3 class="feature-title">Projects & Development</h3>
-    <p class="feature-description">Organize teams and ML workspaces</p>
+    <h3 class="feature-title">Developer Resources</h3>
     <div class="feature-links">
-      <a href="./concepts/projects/governance/" class="feature-link">Governance</a>
-      <a href="./user_guides/projects/project/create_project/" class="feature-link">Create Project</a>
-      <a href="./user_guides/projects/jupyter/python_notebook/" class="feature-link">Run Notebooks</a>
-      <a href="./user_guides/projects/jobs/python_job/" class="feature-link">Run Jobs</a>
-    </div>
-  </div>
-  
-  <div class="feature-card">
-    <h3 class="feature-title">Administration</h3>
-    <p class="feature-description">Deploy and manage Hopsworks clusters</p>
-    <div class="feature-links">
-      <a href="./setup_installation/admin/index/" class="feature-link">Admin Overview</a>
-      <a href="./setup_installation/admin/user/" class="feature-link">User Management</a>
-      <a href="./setup_installation/admin/project/" class="feature-link">Project Management</a>
-      <a href="./setup_installation/admin/monitoring/grafana/" class="feature-link">Monitoring</a>
-    </div>
-  </div>
-  
-  <div class="feature-card">
-    <h3 class="feature-title">API References</h3>
-    <p class="feature-description">Technical documentation for developers</p>
-    <div class="feature-links">
-      <a href="https://docs.hopsworks.ai/hopsworks-api/dev" class="feature-link">Hopsworks API</a>
-      <a href="https://docs.hopsworks.ai/hopsworks-api/dev/javadoc" class="feature-link">Feature Store JavaDoc</a>
-      <a href="./user_guides/client_installation/index/" class="feature-link">Client Installation</a>
+      <a href="https://docs.hopsworks.ai/hopsworks-api/dev" class="feature-link">API Reference</a>
+      <a href="https://docs.hopsworks.ai/hopsworks-api/dev/javadoc" class="feature-link">Java SDK</a>
+      <a href="./user_guides/integrations/python/" class="feature-link">Python SDK</a>
       <a href="./user_guides/integrations/index/" class="feature-link">Integrations</a>
     </div>
   </div>
 </div>
 
-<!-- How to use this documentation -->
+<!-- Platform Architecture -->
+<div class="section">
+  <h2 class="section-title">Platform Architecture</h2>
+  <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: space-between;">
+    <div style="flex: 1; min-width: 320px; padding: 0 0 30px;">
+      <div style="display: flex; align-items: center; margin-bottom: 16px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 12px; color: var(--md-hopsworks-primary);">
+          <path d="M3 3h18v18H3z"></path>
+          <path d="M3 9h18"></path>
+          <path d="M9 21V9"></path>
+        </svg>
+        <h3 style="margin: 0; font-size: 1.35rem; font-weight: 600;">Feature Store</h3>
+      </div>
+      <p style="margin-top: 0; margin-bottom: 24px; color: var(--md-hopsworks-text-light); line-height: 1.5;">Feature engineering and serving</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            </svg>
+            <a href="./concepts/fs/feature_group/fg_overview/">Feature Groups</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">Organize and version your features</p>
+        </div>
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+            </svg>
+            <a href="./concepts/fs/feature_view/fv_overview/">Feature Views</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">Create training sets and feature vectors</p>
+        </div>
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+            <a href="./concepts/fs/feature_group/fg_statistics/">Data Validation</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">Statistics, expectations, and monitoring</p>
+        </div>
+      </div>
+    </div>
+    
+    <div style="flex: 1; min-width: 320px; padding: 0 0 30px;">
+      <div style="display: flex; align-items: center; margin-bottom: 16px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 12px; color: var(--md-hopsworks-primary);">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+          <rect x="8" y="7" width="8" height="8" rx="1"></rect>
+          <path d="M6 11h12"></path>
+        </svg>
+        <h3 style="margin: 0; font-size: 1.35rem; font-weight: 600;">MLOps</h3>
+      </div>
+      <p style="margin-top: 0; margin-bottom: 24px; color: var(--md-hopsworks-text-light); line-height: 1.5;">Model management and operations</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+            <a href="./concepts/mlops/registry/">Model Registry</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">Version, store, and manage ML models</p>
+        </div>
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <a href="./concepts/mlops/serving/">Model Serving</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">Deploy models for online and batch inference</p>
+        </div>
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+            <a href="./concepts/mlops/opensearch/">Vector Database</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">Similarity search and vector embeddings</p>
+        </div>
+      </div>
+    </div>
+    
+    <div style="flex: 1; min-width: 320px; padding: 0 0 30px;">
+      <div style="display: flex; align-items: center; margin-bottom: 16px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 12px; color: var(--md-hopsworks-primary);">
+          <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M15 3h6v6"></path>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        <h3 style="margin: 0; font-size: 1.35rem; font-weight: 600;">Infrastructure</h3>
+      </div>
+      <p style="margin-top: 0; margin-bottom: 24px; color: var(--md-hopsworks-text-light); line-height: 1.5;">Platform foundation and connectivity</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path>
+            </svg>
+            <a href="./user_guides/fs/storage_connector/index/">Storage Connectors</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">Connect to external data platforms</p>
+        </div>
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+            <a href="./user_guides/fs/compute_engines/">Compute Engines</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">Python, Spark, Flink processing</p>
+        </div>
+        <div class="tier-component" style="padding: 20px;">
+          <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
+            <svg class="component-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <rect x="2" y="3" width="20" height="18" rx="2"></rect>
+              <path d="M8 7v10"></path>
+              <path d="M16 7v10"></path>
+              <path d="M12 7v10"></path>
+            </svg>
+            <a href="./setup_installation/admin/project/">Resource Management</a>
+          </h4>
+          <p class="component-description" style="margin: 0; line-height: 1.5;">GPU allocation and project governance</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Kubernetes Installer Section -->
+<div class="callout-box" style="margin-top: 50px;">
+  <h2 style="font-size: 1.5rem; margin-top: 0;">Hopsworks K8s Installer</h2>
+  <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 30px; align-items: flex-start;">
+    <div>
+      <p>Hopsworks is an enterprise-grade distributed AI Lakehouse platform with a feature store. Deploy a distributed system on your Kubernetes cluster with our installer:</p>
+      
+      <div class="code-block">
+        <code>curl -O https://raw.githubusercontent.com/logicalclocks/hopsworks-k8s-installer/master/install-hopsworks.py<br>python3 install-hopsworks.py</code>
+      </div>
+      
+      <h4>Minimum Requirements:</h4>
+      <ul>
+        <li>Supported Platforms: AWS (EKS), Google Cloud (GKE), Azure (AKS), or OVHCloud</li>
+        <li>Kubernetes cluster version ≥ 1.27.0</li>
+        <li>Minimum of 4-5 nodes recommended</li>
+        <li>Administrative access to your cloud platform</li>
+      </ul>
+      
+      <h4>Required Tools:</h4>
+      <ul>
+        <li>Kubernetes CLI (<code>kubectl</code>)</li>
+        <li>Package manager (<code>helm</code>)</li>
+        <li>Respective cloud CLI tool (<code>aws</code>/<code>gcloud</code>/<code>az</code>)</li>
+        <li>Other libraries (<code>boto3, PyYAML</code>)</li>
+      </ul>
+      
+      <a href="https://github.com/logicalclocks/hopsworks-k8s-installer" target="_blank" class="hero-button secondary" style="display: inline-block; margin-top: 10px; padding: 8px 15px; font-size: 0.9rem;">
+        View on GitHub ↗
+      </a>
+    </div>
+    
+    <div style="background-color: var(--md-hopsworks-card-bg); padding: 20px; border: 1px solid var(--md-hopsworks-border);">
+      <h4 style="margin-top: 0; font-size: 1rem; color: var(--md-hopsworks-primary);">Enterprise Deployment</h4>
+      <p>For production and development deployment of Hopsworks Enterprise, we offer options on global or sovereign clouds with Enterprise SLAs.</p>
+      
+      <h4 style="font-size: 1rem; color: var(--md-hopsworks-primary);">Deployment Options</h4>
+      <ul style="padding-left: 20px; margin-bottom: 15px;">
+        <li>Any cloud provider</li>
+        <li>On-premises infrastructure</li>
+        <li>Hybrid setups</li>
+      </ul>
+      
+      <a href="https://www.hopsworks.ai/contact" target="_blank" class="hero-button primary" style="display: block; text-align: center; margin-top: 15px;">
+        Contact for Enterprise License
+      </a>
+      <a href="https://www.hopsworks.ai/startup-license" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 10px;">
+        Startup License
+      </a>
+      <a href="https://www.hopsworks.ai/evaluation-license" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 10px;">
+        Evaluation License  
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Hopsworks Academy Video Section -->
 <div class="getting-started-section">
-  <div class="getting-started-content">
-    <h2 class="getting-started-title">How to Use This Documentation</h2>
-    <p class="getting-started-description">Navigate through our documentation with these simple steps</p>
+  <div class="getting-started-content" style="max-width: 1100px;">    
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 40px;">
+      <!-- Main Featured Video -->
+      <div style="border: 1px solid var(--md-hopsworks-border); transition: all 0.2s ease;">
+        <div style="position: relative;">
+          <img src="https://img.youtube.com/vi/s20w8nKCK2o/maxresdefault.jpg" style="width: 100%; height: auto; display: block;">
+          <a href="https://www.youtube.com/watch?v=s20w8nKCK2o" target="_blank" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+            <div style="width: 80px; height: 80px; background-color: rgba(0,0,0,0.7); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="white" stroke="none">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </div>
+          </a>
+        </div>
+        <div style="padding: 20px;">
+          <h3 style="margin: 0 0 10px 0; color: var(--md-hopsworks-text); font-size: 1.2rem; font-weight: 600;">Introduction to Hopsworks</h3>
+          <p style="margin: 0 0 15px 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem; line-height: 1.5;">Get started with the Hopsworks platform and learn about its core capabilities for ML projects.</p>
+          <div style="display: flex; gap: 15px; font-size: 0.8rem; color: var(--md-hopsworks-text-light);">
+            <div style="display: flex; align-items: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px;">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Watch Now
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Playlist Column -->
+      <div style="border: 1px solid var(--md-hopsworks-border); max-height: 500px; overflow-y: auto;">
+        <div style="position: sticky; top: 0; background: var(--md-hopsworks-card-bg); padding: 15px; border-bottom: 1px solid var(--md-hopsworks-border); z-index: 10;">
+          <h3 style="margin: 0; color: var(--md-hopsworks-text); font-size: 1rem; font-weight: 600;">Featured Tutorials</h3>
+        </div>
+        
+        <!-- Scrollable playlist items -->
+        <div>
+          <!-- Video 1 (Main video) -->
+          <a href="https://www.youtube.com/watch?v=s20w8nKCK2o" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s; background-color: rgba(30, 179, 130, 0.08);">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+              <img src="https://img.youtube.com/vi/s20w8nKCK2o/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
+            </div>
+            <div>
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Introduction to Hopsworks</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Get started with Hopsworks platform</p>
+            </div>
+          </a>
+          
+          <!-- Video 2 -->
+          <a href="https://www.youtube.com/watch?v=v3n_8s_qpF8&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+              <img src="https://img.youtube.com/vi/v3n_8s_qpF8/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
+            </div>
+            <div>
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Model Serving in Hopsworks</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Deploy models for online inference</p>
+            </div>
+          </a>
+          
+          <!-- Video 3 -->
+          <a href="https://www.youtube.com/watch?v=N-hUC3b0IQs&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+              <img src="https://img.youtube.com/vi/N-hUC3b0IQs/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
+            </div>
+            <div>
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Feature Store Workshop</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Introduction to the Hopsworks Feature Store</p>
+            </div>
+          </a>
+          
+          <!-- Video 4 -->
+          <a href="https://www.youtube.com/watch?v=ccYe1MU4R2U&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+              <img src="https://img.youtube.com/vi/ccYe1MU4R2U/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
+            </div>
+            <div>
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Feature Views Explained</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Creating and using Feature Views for ML</p>
+            </div>
+          </a>
+          
+          <!-- Video 5 -->
+          <a href="https://www.youtube.com/watch?v=8Axs0q1AY7o&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+              <img src="https://img.youtube.com/vi/8Axs0q1AY7o/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
+            </div>
+            <div>
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Getting Started with Hopsworks</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">First steps with the Hopsworks platform</p>
+            </div>
+          </a>
+          
+          <!-- Video 6 -->
+          <a href="https://www.youtube.com/watch?v=_X0U0z1TAcI&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+              <img src="https://img.youtube.com/vi/_X0U0z1TAcI/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
+            </div>
+            <div>
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Data Validation in Feature Store</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Ensuring data quality in feature pipelines</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
     
-    <div class="steps-timeline">
-      <div class="timeline-track"></div>
-      
-      <div class="timeline-step">
-        <div class="timeline-number">1</div>
-        <div class="timeline-content">
-          <h3 class="timeline-title">Start with Concepts</h3>
-          <p class="timeline-description">Learn about the architecture and core components of Hopsworks</p>
-        </div>
-      </div>
-      
-      <div class="timeline-step">
-        <div class="timeline-number">2</div>
-        <div class="timeline-content">
-          <h3 class="timeline-title">Follow User Guides</h3>
-          <p class="timeline-description">Step-by-step instructions for specific tasks and workflows</p>
-        </div>
-      </div>
-      
-      <div class="timeline-step">
-        <div class="timeline-number">3</div>
-        <div class="timeline-content">
-          <h3 class="timeline-title">Try Tutorials</h3>
-          <p class="timeline-description">Complete end-to-end examples with sample code and explanations</p>
-        </div>
-      </div>
-      
-      <div class="timeline-step">
-        <div class="timeline-number">4</div>
-        <div class="timeline-content">
-          <h3 class="timeline-title">Consult API References</h3>
-          <p class="timeline-description">Technical details for programmatic access to Hopsworks</p>
-        </div>
-      </div>
+    <div style="margin-top: 30px; text-align: center;">
+      <a href="https://www.youtube.com/playlist?list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" class="hero-button secondary" style="display: inline-block; padding: 10px 20px; font-size: 0.9rem;">
+        View Full Academy Playlist
+      </a>
     </div>
   </div>
 </div>
 
-<!-- Key Components Overview (Simplified Architecture) -->
-<div class="platform-architecture">
-  <div class="architecture-header">
-    <h2 class="arch-title">Platform Components</h2>
-    <p class="arch-subtitle">Explore the key components of the Hopsworks AI Platform</p>
+<!-- Role-Based Documentation -->
+<div class="section" style="padding-bottom: 0;">
+  <h2 class="section-title">Documentation by Role</h2>
+</div>
+<div class="feature-grid" style="margin-top: 0;">
+  <div class="feature-card">
+    <h3 class="feature-title">For Data Engineers</h3>
+    <p class="feature-description">Build and optimize feature pipelines</p>
+    <div class="feature-links">
+      <a href="./concepts/fs/feature_group/feature_pipelines/" class="feature-link">Feature Pipelines</a>
+      <a href="./user_guides/fs/feature_group/create/" class="feature-link">Create Feature Groups</a>
+      <a href="./user_guides/fs/feature_group/data_validation/" class="feature-link">Data Validation</a>
+      <a href="./user_guides/fs/storage_connector/index/" class="feature-link">Storage Connectors</a>
+    </div>
   </div>
   
-  <div class="architecture-tiers">
-    <div class="architecture-tier">
-      <div class="tier-header">
-        <div class="tier-title-container">
-          <span class="tier-icon">◩</span>
-          <h3 class="tier-title">Feature Store</h3>
-        </div>
-        <p class="tier-description">Feature engineering and serving</p>
-      </div>
-      <div class="tier-components">
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">◫</span> Feature Groups</h4>
-          <p class="component-description">Logical collections of features</p>
-        </div>
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">◨</span> Feature Views</h4>
-          <p class="component-description">Training data and inference vectors</p>
-        </div>
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">▣</span> Data Validation</h4>
-          <p class="component-description">Statistics, expectations and monitoring</p>
-        </div>
-      </div>
+  <div class="feature-card">
+    <h3 class="feature-title">For Data Scientists</h3>
+    <p class="feature-description">Build models using high-quality features</p>
+    <div class="feature-links">
+      <a href="./user_guides/fs/feature_view/training-data/" class="feature-link">Create Training Datasets</a>
+      <a href="./user_guides/projects/jupyter/python_notebook/" class="feature-link">Jupyter Notebooks</a>
+      <a href="./user_guides/mlops/registry/frameworks/tf/" class="feature-link">Register TensorFlow Models</a>
+      <a href="./user_guides/fs/vector_similarity_search/" class="feature-link">Vector Similarity Search</a>
     </div>
-    
-    <div class="architecture-tier">
-      <div class="tier-header">
-        <div class="tier-title-container">
-          <span class="tier-icon">◆</span>
-          <h3 class="tier-title">MLOps Platform</h3>
-        </div>
-        <p class="tier-description">Full machine learning lifecycle</p>
-      </div>
-      <div class="tier-components">
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">◧</span> Model Registry</h4>
-          <p class="component-description">Version, store, and manage ML models</p>
-        </div>
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">⇄</span> Model Serving</h4>
-          <p class="component-description">KServe-based online and batch inference</p>
-        </div>
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">◎</span> Vector Database</h4>
-          <p class="component-description">Similarity search via OpenSearch</p>
-        </div>
-      </div>
-    </div>
-    
-    <div class="architecture-tier">
-      <div class="tier-header">
-        <div class="tier-title-container">
-          <span class="tier-icon">▧</span>
-          <h3 class="tier-title">Infrastructure</h3>
-        </div>
-        <p class="tier-description">Compute and storage foundation</p>
-      </div>
-      <div class="tier-components">
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">⬦</span> Storage Connectors</h4>
-          <p class="component-description">Connect to Snowflake, BigQuery, S3, ADLS</p>
-        </div>
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">⬗</span> Compute Engines</h4>
-          <p class="component-description">Python, Spark, Flink, SQL</p>
-        </div>
-        <div class="tier-component">
-          <h4 class="component-title"><span class="component-icon">⚬</span> GPU Management</h4>
-          <p class="component-description">Optimize training and inference workloads</p>
-        </div>
-      </div>
+  </div>
+  
+  <div class="feature-card">
+    <h3 class="feature-title">For MLOps Engineers</h3>
+    <p class="feature-description">Deploy and monitor ML systems</p>
+    <div class="feature-links">
+      <a href="./user_guides/mlops/serving/deployment/" class="feature-link">Deploy Models</a>
+      <a href="./user_guides/mlops/serving/api-protocol/" class="feature-link">Serving APIs</a>
+      <a href="./user_guides/fs/feature_view/feature_monitoring/" class="feature-link">Feature Monitoring</a>
+      <a href="./user_guides/projects/scheduling/kube_scheduler/" class="feature-link">Kubernetes Scheduling</a>
     </div>
   </div>
 </div>
 
-<!-- Deployment Options with Documentation Links -->
-<div class="deployment-section">
-  <h2 class="deployment-section-title">Deployment Documentation</h2>
-  <p class="deployment-section-description">Setup guides for different environments</p>
-  
-  <div class="deployment-options">
-    <a href="./setup_installation/aws/getting_started/" class="deployment-option">
-      <div class="cloud-icon"></div>
-      <h3 class="deployment-title">AWS</h3>
-      <p class="deployment-description">Deploy on Amazon Web Services</p>
+<!-- Deployment Options -->
+<div class="section">
+  <h2 class="section-title">Deployment Options</h2>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin-top: 40px;">
+    <a href="./setup_installation/aws/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 30px 20px; text-align: center; transition: all 0.2s ease;">
+      <img src="../images/icons8-aws-240.png" style="width: 80px; height: 80px; margin-bottom: 15px;">
+      <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; color: var(--md-hopsworks-text);">AWS</h3>
+      <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem;">Amazon Web Services</p>
+    </a>
+    <a href="./setup_installation/azure/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 30px 20px; text-align: center; transition: all 0.2s ease;">
+      <img src="../images/azure_logo.png" style="width: 80px; height: 80px; margin-bottom: 15px; object-fit: contain;">
+      <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; color: var(--md-hopsworks-text);">Azure</h3>
+      <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem;">Microsoft Azure</p>
     </a>
     
-    <a href="./setup_installation/azure/getting_started/" class="deployment-option">
-      <div class="cloud-icon"></div>
-      <h3 class="deployment-title">Azure</h3>
-      <p class="deployment-description">Deploy on Microsoft Azure</p>
+    <a href="./setup_installation/gcp/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 30px 20px; text-align: center; transition: all 0.2s ease;">
+      <img src="../images/gcp_logo.png" style="width: 80px; height: 80px; margin-bottom: 15px; object-fit: contain;">
+      <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; color: var(--md-hopsworks-text);">GCP</h3>
+      <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem;">Google Cloud Platform</p>
     </a>
     
-    <a href="./setup_installation/gcp/getting_started/" class="deployment-option">
-      <div class="cloud-icon"></div>
-      <h3 class="deployment-title">Google Cloud</h3>
-      <p class="deployment-description">Deploy on Google Cloud Platform</p>
-    </a>
-    
-    <a href="./setup_installation/on_prem/contact_hopsworks/" class="deployment-option">
-      <div class="cloud-icon"></div>
-      <h3 class="deployment-title">On-Premise</h3>
-      <p class="deployment-description">Deploy in your data center</p>
+    <a href="./setup_installation/on_prem/contact_hopsworks/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 30px 20px; text-align: center; transition: all 0.2s ease;">
+      <img src="../images/server_logo.png" style="width: 80px; height: 80px; margin-bottom: 15px; object-fit: contain;">
+      <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; color: var(--md-hopsworks-text);">On-Premise</h3>
+      <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem;">Your data center</p>
     </a>
   </div>
 </div>
 
-<!-- Community and Support Resources -->
-<div class="deployment-section community-section">
-  <h2 class="deployment-section-title">Get Help & Join the Community</h2>
-  <p class="deployment-section-description">Resources for questions and collaboration</p>
-  
-  <div class="community-links">
-    <a href="https://github.com/logicalclocks/hopsworks" class="community-link">
-      <span class="community-icon"></span>
+<!-- Community Links -->
+<div class="section">
+  <h2 class="section-title">Community Resources</h2>
+  <div style="display: flex; justify-content: center; gap: 25px; margin-top: 30px;">
+    <a href="https://github.com/logicalclocks/hopsworks" style="display: flex; align-items: center; text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 16px 24px; transition: all 0.2s ease; color: var(--md-hopsworks-text);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 10px; color: var(--md-hopsworks-primary);">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+      </svg>
       GitHub
     </a>
-    <a href="https://community.hopsworks.ai/" class="community-link">
-      <span class="community-icon"></span>
-      Community Forum
+    
+    <a href="https://community.hopsworks.ai/" style="display: flex; align-items: center; text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 16px 24px; transition: all 0.2s ease; color: var(--md-hopsworks-text);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 10px; color: var(--md-hopsworks-primary);">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+      </svg>
+      Forum
     </a>
-    <a href="https://bit.ly/publichopsworks" class="community-link">
-      <span class="community-icon"></span>
-      Slack Channel
+    
+    <a href="https://bit.ly/publichopsworks" style="display: flex; align-items: center; text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 16px 24px; transition: all 0.2s ease; color: var(--md-hopsworks-text);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 10px; color: var(--md-hopsworks-primary);">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+      </svg>
+      Slack
     </a>
-    <a href="https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs" class="community-link">
-      <span class="community-icon"></span>
+    
+    <a href="https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs" style="display: flex; align-items: center; text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 16px 24px; transition: all 0.2s ease; color: var(--md-hopsworks-text);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 10px; color: var(--md-hopsworks-primary);">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+      </svg>
       MLOps Dictionary
     </a>
   </div>
