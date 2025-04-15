@@ -201,8 +201,8 @@ full_width: true
         The Python profile ensures all required dependencies are installed.
       </p>
       
-      <div style="margin: 20px auto; max-width: 500px; padding: 16px; background-color: var(--md-hopsworks-code-bg); text-align: left; border: 1px solid var(--md-hopsworks-border);">
-        <code style="font-size: 1rem;">pip install hopsworks[python]</code>
+      <div class="highlight" style="margin: 20px auto; max-width: 500px;">
+      <pre style="margin: 0;"><code class="language-bash">pip install hopsworks[python]</code></pre>
       </div>
       
       <a href="./user_guides/client_installation/" class="hero-button secondary" style="display: inline-block; min-width: 200px;">
@@ -394,10 +394,17 @@ full_width: true
     <div>
       <p>Hopsworks is an enterprise-grade distributed AI Lakehouse platform with a feature store. Deploy a distributed system on your Kubernetes cluster with our installer:</p>
       
-      <div class="code-block">
-        <code>curl -O https://raw.githubusercontent.com/logicalclocks/hopsworks-k8s-installer/master/install-hopsworks.py<br>python3 install-hopsworks.py</code>
-      </div>
-      
+      <!-- Code block outside of HTML structure to ensure proper rendering -->
+</div></div>
+
+```bash
+curl -O https://raw.githubusercontent.com/logicalclocks/hopsworks-k8s-installer/master/install-hopsworks.py
+python3 install-hopsworks.py
+```
+
+<div class="callout-box" style="margin-top: 0;">
+  <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 30px; align-items: flex-start;">
+    <div>
       <h4>Minimum Requirements:</h4>
       <ul>
         <li>Supported Platforms: AWS (EKS), Google Cloud (GKE), Azure (AKS), or OVHCloud</li>

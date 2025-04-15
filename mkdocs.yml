@@ -274,6 +274,7 @@ theme:
     - navigation.tabs.sticky
     - navigation.sections
     - navigation.indexes
+    - content.code.copy
     
 extra:
   hopsworks_version: dev
