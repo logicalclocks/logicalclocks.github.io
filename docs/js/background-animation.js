@@ -4,19 +4,29 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Only run on the index page
+  // Only run on the index page - strict check
   const currentPath = window.location.pathname;
   console.log("Current path:", currentPath);
   
-  // Check if we're on the homepage/index
-  // This will match paths like /, /index.html, /latest/, /latest/index.html
-  if (!currentPath.endsWith('/') && 
-      !currentPath.endsWith('/index.html') && 
-      !currentPath.match(/\/(?:latest|[\d\.]+)\/?$/) && 
-      !currentPath.match(/\/(?:latest|[\d\.]+)\/index\.html$/)) {
+  // Get the pathname without version part
+  const pathParts = currentPath.split('/').filter(part => part);
+  
+  // Strict check for index paths only
+  // Should match exactly: /, /index.html, /latest/, /latest/index.html
+  // And equivalent version paths like /3.0/, /4.0/index.html
+  const isIndexPath = (
+    currentPath === '/' || 
+    currentPath === '/index.html' ||
+    (pathParts.length === 1 && pathParts[0].match(/^(latest|\d+\.\d+)$/)) ||
+    (pathParts.length === 2 && pathParts[0].match(/^(latest|\d+\.\d+)$/) && pathParts[1] === 'index.html')
+  );
+  
+  if (!isIndexPath) {
     console.log("Not on index page, skipping animation");
     return;
   }
+  
+  console.log("On index page, running animation");
   
   // Create canvas element
   const canvas = document.createElement('canvas');
@@ -148,8 +158,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Initialize canvas and animation
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-  initNodes();
-  draw();
+  // Final check - we should only reach this code on the index page
+  // Only initialize if we have a hero section
+  if (document.querySelector('.hero-section')) {
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    initNodes();
+    draw();
+    console.log("Animation started successfully");
+  } else {
+    console.warn("Hero section not found, animation not started");
+  }
 });
