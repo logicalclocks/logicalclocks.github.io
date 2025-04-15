@@ -241,7 +241,7 @@ nav:
              - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
              - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
   - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/hopsworks-api/dev/javadoc">Feature Store JavaDoc</a> </div></div>: https://docs.hopsworks.ai
-  - Getting Started ↗: https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb
+  - Serverless ↗: https://app.hopsworks.ai
   - Community ↗: https://community.hopsworks.ai?utm_source=web&utm_medium=docs
   - Dictionary ↗: https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs
 

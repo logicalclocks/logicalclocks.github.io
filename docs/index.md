@@ -185,9 +185,9 @@ full_width: true
     <h1 class="hero-title">Hopsworks Documentation</h1>
     <p class="hero-subtitle">Complete guides for building production ML systems with <br> the Hopsworks AI platform</p>
     <div class="hero-buttons">
-      <a href="https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb" class="hero-button primary">Start with Colab</a>
+      <a href="https://app.hopsworks.ai" target="_blank" class="hero-button primary">Hopsworks Serverless</a>
       <a href="./tutorials" class="hero-button secondary">Browse Tutorials</a>
-      <a href="./concepts/fs" class="hero-button secondary">Explore Features</a>
+      <a href="./concepts/fs" class="hero-button secondary">Explore Capabilities</a>
     </div>
   </div>
 </div>
