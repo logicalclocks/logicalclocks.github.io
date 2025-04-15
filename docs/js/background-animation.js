@@ -87,7 +87,9 @@ document.addEventListener('DOMContentLoaded', function() {
         radius: Math.random() * 4 + 2, // Larger radius for better visibility
         speedX: (Math.random() - 0.5) * 0.3, // Slightly faster movement
         speedY: (Math.random() - 0.5) * 0.3,
-        opacity: Math.random() * 0.6 + 0.4 // Higher opacity
+        opacity: Math.random() * 0.6 + 0.4, // Higher opacity
+        rotation: Math.random() * Math.PI * 2, // Random initial rotation
+        rotationSpeed: (Math.random() - 0.5) * 0.02 // Very slow rotation
       });
     }
   }
@@ -109,15 +111,27 @@ document.addEventListener('DOMContentLoaded', function() {
       node.x += node.speedX;
       node.y += node.speedY;
       
+      // Update rotation
+      node.rotation += node.rotationSpeed;
+      
       // Bounce off edges
       if (node.x < 0 || node.x > canvas.width) node.speedX *= -1;
       if (node.y < 0 || node.y > canvas.height) node.speedY *= -1;
       
-      // Draw node
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+      // Draw node as a rotated square
+      ctx.save();
+      ctx.translate(node.x, node.y);
+      ctx.rotate(node.rotation);
+      
       ctx.fillStyle = `rgba(${hexToRgb(primaryColor)}, ${node.opacity})`;
-      ctx.fill();
+      ctx.fillRect(
+        -node.radius, 
+        -node.radius, 
+        node.radius * 2, 
+        node.radius * 2
+      );
+      
+      ctx.restore();
       
       // Draw connections to nearby nodes
       for (let j = i + 1; j < nodes.length; j++) {
