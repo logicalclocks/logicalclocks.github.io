@@ -422,16 +422,17 @@ full_width: true
       
       <h4 style="font-size: 1rem; color: var(--md-hopsworks-primary);">Deployment Options</h4>
       <ul style="padding-left: 20px; margin-bottom: 15px;">
+        <li>Serverless (fastest way to start)</li>
         <li>Any cloud provider</li>
         <li>On-premises infrastructure</li>
         <li>Hybrid setups</li>
       </ul>
       
-      <a href="https://www.hopsworks.ai/contact" target="_blank" class="hero-button primary" style="display: block; text-align: center; margin-top: 15px;">
-        Contact for Enterprise License
+      <a href="https://app.hopsworks.ai" target="_blank" class="hero-button primary" style="display: block; text-align: center; margin-top: 15px;">
+        Hopsworks Serverless
       </a>
-      <a href="https://www.hopsworks.ai/startup-license" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 10px;">
-        Startup License
+      <a href="https://www.hopsworks.ai/contact" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 10px;">
+        Contact for Enterprise License
       </a>
       <a href="https://www.hopsworks.ai/evaluation-license" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 10px;">
         Evaluation License  
