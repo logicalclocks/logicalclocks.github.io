@@ -34,13 +34,13 @@ full_width: true
   .section-title {
     font-size: 1.6rem;
     font-weight: 600;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     text-align: center;
   }
   
   /* Spacing system */
   .section {
-    margin: 80px auto;
+    margin: 60px auto;
     max-width: 1200px;
     padding: 0 24px;
   }
@@ -101,14 +101,14 @@ full_width: true
   
   /* Component styling */
   .tier-component {
-    padding: 24px;
+    padding: 20px;
     margin-bottom: 16px;
     border: 1px solid var(--md-hopsworks-border);
     background-color: var(--md-hopsworks-card-bg);
   }
   
   .component-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 500;
     margin: 0 0 10px 0;
     line-height: 1.4;
@@ -180,28 +180,28 @@ full_width: true
 </style>
 
 <!-- Hero Section -->
-<div class="hero-section">
+<div class="hero-section" style="position: relative; overflow: hidden; width: 100vw; max-width: 100vw; margin-left: calc(-50vw + 50%);">
   <div class="hero-content">
     <h1 class="hero-title">Hopsworks Documentation</h1>
     <p class="hero-subtitle">Complete guides for building production ML systems with <br> the Hopsworks AI platform</p>
     
         <!-- Button array for getting started options -->
-    <div style="display: flex; gap: 20px; margin-top: 40px; justify-content: center; flex-wrap: wrap;">
+    <div style="display: flex; gap: 16px; margin-top: 40px; justify-content: center; flex-wrap: wrap;">
       <a href="https://app.hopsworks.ai" target="_blank" class="hero-button primary" style="min-width: 200px;">Hopsworks Serverless</a>
-      <a href="./tutorials" class="hero-button secondary" style="min-width: 160px;">Browse Tutorials</a>
-      <a href="./concepts/fs" class="hero-button secondary" style="min-width: 160px;">Explore Capabilities</a>
+      <a href="./tutorials" class="hero-button secondary" style="min-width: 170px;">Browse Tutorials</a>
+      <a href="./concepts/fs" class="hero-button secondary" style="min-width: 170px;">Explore Capabilities</a>
     </div>
     
     <!-- Python Installation Section with consistent width -->
-    <div style="max-width: 800px; margin: 60px auto 0; text-align: center; padding: 0 20px;">
-      <h3 style="font-size: 1.3rem; margin-bottom: 20px; font-weight: 500;">Access Hopsworks from Python</h3>
+    <div style="max-width: 800px; margin: 60px auto 0; text-align: center; padding: 0 24px;">
+      <h3 style="font-size: 1.3rem; margin-bottom: 20px; font-weight: 600;">Access Hopsworks from Python</h3>
       
       <p style="margin-bottom: 20px; color: var(--md-hopsworks-text-light);">
         Install the Hopsworks Python library to interact with the platform from your Python environment.
         The Python profile ensures all required dependencies are installed.
       </p>
       
-      <div class="highlight" style="margin: 20px auto; max-width: 500px;">
+      <div class="highlight" style="margin: 24px auto; max-width: 500px;">
       <pre style="margin: 0;"><code class="language-bash">pip install hopsworks[python]</code></pre>
       </div>
       
@@ -248,7 +248,6 @@ full_width: true
 
 <!-- Platform Architecture -->
 <div class="section">
-  <h2 class="section-title">Platform Architecture</h2>
   <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: space-between;">
     <div style="flex: 1; min-width: 320px; padding: 0 0 30px;">
       <div style="display: flex; align-items: center; margin-bottom: 16px;">
@@ -257,10 +256,9 @@ full_width: true
           <path d="M3 9h18"></path>
           <path d="M9 21V9"></path>
         </svg>
-        <h3 style="margin: 0; font-size: 1.35rem; font-weight: 600;">Feature Store</h3>
+        <h3 style="margin: 0; font-size: 1.3rem; font-weight: 600;">Feature Store</h3>
       </div>
       <p style="margin-top: 0; margin-bottom: 24px; color: var(--md-hopsworks-text-light); line-height: 1.5;">Feature engineering and serving</p>
-      
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <div class="tier-component" style="padding: 20px;">
           <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
@@ -292,7 +290,6 @@ full_width: true
         </div>
       </div>
     </div>
-    
     <div style="flex: 1; min-width: 320px; padding: 0 0 30px;">
       <div style="display: flex; align-items: center; margin-bottom: 16px;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 12px; color: var(--md-hopsworks-primary);">
@@ -300,10 +297,9 @@ full_width: true
           <rect x="8" y="7" width="8" height="8" rx="1"></rect>
           <path d="M6 11h12"></path>
         </svg>
-        <h3 style="margin: 0; font-size: 1.35rem; font-weight: 600;">MLOps</h3>
+        <h3 style="margin: 0; font-size: 1.3rem; font-weight: 600;">MLOps</h3>
       </div>
       <p style="margin-top: 0; margin-bottom: 24px; color: var(--md-hopsworks-text-light); line-height: 1.5;">Model management and operations</p>
-      
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <div class="tier-component" style="padding: 20px;">
           <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
@@ -338,7 +334,6 @@ full_width: true
         </div>
       </div>
     </div>
-    
     <div style="flex: 1; min-width: 320px; padding: 0 0 30px;">
       <div style="display: flex; align-items: center; margin-bottom: 16px;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 12px; color: var(--md-hopsworks-primary);">
@@ -346,10 +341,9 @@ full_width: true
           <path d="M15 3h6v6"></path>
           <line x1="10" y1="14" x2="21" y2="3"></line>
         </svg>
-        <h3 style="margin: 0; font-size: 1.35rem; font-weight: 600;">Infrastructure</h3>
+        <h3 style="margin: 0; font-size: 1.3rem; font-weight: 600;">Infrastructure</h3>
       </div>
       <p style="margin-top: 0; margin-bottom: 24px; color: var(--md-hopsworks-text-light); line-height: 1.5;">Platform foundation and connectivity</p>
-      
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <div class="tier-component" style="padding: 20px;">
           <h4 class="component-title" style="margin-top: 0; margin-bottom: 10px;">
@@ -388,32 +382,33 @@ full_width: true
 </div>
 
 <!-- Kubernetes Installer Section -->
-<div class="callout-box" style="margin-top: 50px;">
-  <h2 style="font-size: 1.5rem; margin-top: 0;">Hopsworks K8s Installer</h2>
-  <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 30px; align-items: flex-start;">
-    <div>
-      <p>Hopsworks is an enterprise-grade distributed AI Lakehouse platform with a feature store. Deploy a distributed system on your Kubernetes cluster with our installer:</p>
-      
-      <!-- Code block outside of HTML structure to ensure proper rendering -->
-</div></div>
+<div class="callout-box" >
+  <h2 style="font-size: 1.6rem; font-weight: 600; margin-top: 0; margin-bottom: 2rem; text-align: center;">Hopsworks K8s Installer</h2>
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <p style="text-align: center; margin-bottom: 20px;">Hopsworks is an enterprise-grade distributed AI Lakehouse platform with a feature store. Deploy a distributed system on your Kubernetes cluster with our installer:</p>
+    
+    <!-- Code block outside of HTML structure to ensure proper rendering -->
+</div>
 
+<div style="max-width: 1200px; margin: 0 auto;">
 ```bash
 curl -O https://raw.githubusercontent.com/logicalclocks/hopsworks-k8s-installer/master/install-hopsworks.py
 python3 install-hopsworks.py
 ```
+</div>
+</div>
 
-<div class="callout-box" style="margin-top: 0;">
-  <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 30px; align-items: flex-start;">
+<div class="callout-box" style="margin-top: 24px;">
+  <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 24px; align-items: flex-start; max-width: 1200px; margin: 0 auto;">
     <div>
-      <h4>Minimum Requirements:</h4>
+      <h4 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 16px;">Minimum Requirements:</h4>
       <ul>
         <li>Supported Platforms: AWS (EKS), Google Cloud (GKE), Azure (AKS), or OVHCloud</li>
         <li>Kubernetes cluster version ≥ 1.27.0</li>
         <li>Minimum of 4-5 nodes recommended</li>
         <li>Administrative access to your cloud platform</li>
       </ul>
-      
-      <h4>Required Tools:</h4>
+      <h4 style="font-size: 1.1rem; margin-bottom: 16px;">Required Tools:</h4>
       <ul>
         <li>Kubernetes CLI (<code>kubectl</code>)</li>
         <li>Package manager (<code>helm</code>)</li>
@@ -421,30 +416,30 @@ python3 install-hopsworks.py
         <li>Other libraries (<code>boto3, PyYAML</code>)</li>
       </ul>
       
-      <a href="https://github.com/logicalclocks/hopsworks-k8s-installer" target="_blank" class="hero-button secondary" style="display: inline-block; margin-top: 10px; padding: 8px 15px; font-size: 0.9rem;">
+      <a href="https://github.com/logicalclocks/hopsworks-k8s-installer" target="_blank" class="hero-button secondary" style="display: inline-block; margin-top: 16px; padding: 8px 16px; font-size: 0.9rem;">
         View on GitHub ↗
       </a>
     </div>
     
-    <div style="background-color: var(--md-hopsworks-card-bg); padding: 20px; border: 1px solid var(--md-hopsworks-border);">
-      <h4 style="margin-top: 0; font-size: 1rem; color: var(--md-hopsworks-primary);">Enterprise Deployment</h4>
+    <div style="background-color: var(--md-hopsworks-card-bg); padding: 24px; border: 1px solid var(--md-hopsworks-border);">
+      <h4 style="margin-top: 0; font-size: 1.1rem; color: var(--md-hopsworks-primary); margin-bottom: 16px;">Enterprise Deployment</h4>
       <p>For production and development deployment of Hopsworks Enterprise, we offer options on global or sovereign clouds with Enterprise SLAs.</p>
       
-      <h4 style="font-size: 1rem; color: var(--md-hopsworks-primary);">Deployment Options</h4>
-      <ul style="padding-left: 20px; margin-bottom: 15px;">
+      <h4 style="font-size: 1.1rem; color: var(--md-hopsworks-primary); margin-bottom: 16px;">Deployment Options</h4>
+      <ul style="padding-left: 20px; margin-bottom: 16px;">
         <li>Serverless (fastest way to start)</li>
         <li>Any cloud provider</li>
         <li>On-premises infrastructure</li>
         <li>Hybrid setups</li>
       </ul>
       
-      <a href="https://app.hopsworks.ai" target="_blank" class="hero-button primary" style="display: block; text-align: center; margin-top: 15px;">
+      <a href="https://app.hopsworks.ai" target="_blank" class="hero-button primary" style="display: block; text-align: center; margin-top: 16px;">
         Hopsworks Serverless
       </a>
-      <a href="https://www.hopsworks.ai/contact" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 10px;">
+      <a href="https://www.hopsworks.ai/contact" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 12px;">
         Contact for Enterprise License
       </a>
-      <a href="https://www.hopsworks.ai/evaluation-license" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 10px;">
+      <a href="https://www.hopsworks.ai/evaluation-license" target="_blank" class="hero-button secondary" style="display: block; text-align: center; margin-top: 12px;">
         Evaluation License  
       </a>
     </div>
@@ -452,115 +447,115 @@ python3 install-hopsworks.py
 </div>
 
 <!-- Hopsworks Academy Video Section -->
-<div class="getting-started-section">
-  <div class="getting-started-content" style="max-width: 1100px;">    
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 40px;">
+<div class="getting-started-section" style="margin-top: 30px;">
+  <div class="getting-started-content" style="max-width: 1200px;">
+    <h2 style="font-size: 1.6rem; font-weight: 600; margin-bottom: 1.5rem; text-align: center;">Hopsworks Academy</h2>
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: stretch;">
       <!-- Main Featured Video -->
       <div style="border: 1px solid var(--md-hopsworks-border); transition: all 0.2s ease;">
-        <div style="position: relative;">
-          <img src="https://img.youtube.com/vi/s20w8nKCK2o/maxresdefault.jpg" style="width: 100%; height: auto; display: block;">
-          <a href="https://www.youtube.com/watch?v=s20w8nKCK2o" target="_blank" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
-            <div style="width: 80px; height: 80px; background-color: rgba(0,0,0,0.7); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="white" stroke="none">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-            </div>
-          </a>
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+          <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+            src="https://www.youtube.com/embed/s20w8nKCK2o" 
+            title="Introduction to Hopsworks" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
         </div>
-        <div style="padding: 20px;">
-          <h3 style="margin: 0 0 10px 0; color: var(--md-hopsworks-text); font-size: 1.2rem; font-weight: 600;">Introduction to Hopsworks</h3>
-          <p style="margin: 0 0 15px 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem; line-height: 1.5;">Get started with the Hopsworks platform and learn about its core capabilities for ML projects.</p>
-          <div style="display: flex; gap: 15px; font-size: 0.8rem; color: var(--md-hopsworks-text-light);">
+        <div style="padding: 20px; text-align: left;">
+          <h3 style="margin: 0 0 10px 0; color: var(--md-hopsworks-text); font-size: 1.2rem; font-weight: 600; text-align: left;">Introduction to Hopsworks</h3>
+          <p style="margin: 0 0 15px 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem; line-height: 1.5; text-align: left;">Get started with the Hopsworks platform and learn about its core capabilities for ML projects.</p>
+          <div style="display: flex; gap: 15px; font-size: 0.8rem; color: var(--md-hopsworks-text-light); text-align: left;">
             <div style="display: flex; align-items: center;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px;">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
-              Watch Now
+              Playing Now
             </div>
           </div>
         </div>
       </div>
       
       <!-- Playlist Column -->
-      <div style="border: 1px solid var(--md-hopsworks-border); max-height: 500px; overflow-y: auto;">
-        <div style="position: sticky; top: 0; background: var(--md-hopsworks-card-bg); padding: 15px; border-bottom: 1px solid var(--md-hopsworks-border); z-index: 10;">
-          <h3 style="margin: 0; color: var(--md-hopsworks-text); font-size: 1rem; font-weight: 600;">Featured Tutorials</h3>
+      <div style="border: 1px solid var(--md-hopsworks-border); height: 100%; overflow-y: auto;">
+        <div style="position: sticky; top: 0; background: var(--md-hopsworks-card-bg); padding: 16px; border-bottom: 1px solid var(--md-hopsworks-border); z-index: 10; text-align: left;">
+          <h3 style="margin: 0; color: var(--md-hopsworks-text); font-size: 1.1rem; font-weight: 600; text-align: left;">Featured Tutorials</h3>
         </div>
         
         <!-- Scrollable playlist items -->
         <div>
           <!-- Video 1 (Main video) -->
-          <a href="https://www.youtube.com/watch?v=s20w8nKCK2o" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s; background-color: rgba(30, 179, 130, 0.08);">
-            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+          <a href="https://www.youtube.com/watch?v=s20w8nKCK2o" target="_blank" style="display: flex; padding: 16px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s; background-color: rgba(30, 179, 130, 0.08);">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 16px;">
               <img src="https://img.youtube.com/vi/s20w8nKCK2o/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
             </div>
-            <div>
-              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Introduction to Hopsworks</h4>
-              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Get started with Hopsworks platform</p>
+            <div style="text-align: left;">
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3; text-align: left;">Introduction to Hopsworks</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3; text-align: left;">Get started with Hopsworks platform</p>
             </div>
           </a>
           
           <!-- Video 2 -->
-          <a href="https://www.youtube.com/watch?v=v3n_8s_qpF8&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
-            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+          <a href="https://www.youtube.com/watch?v=v3n_8s_qpF8&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 16px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 16px;">
               <img src="https://img.youtube.com/vi/v3n_8s_qpF8/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
             </div>
-            <div>
-              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Model Serving in Hopsworks</h4>
-              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Deploy models for online inference</p>
+            <div style="text-align: left;">
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3; text-align: left;">Model Serving in Hopsworks</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3; text-align: left;">Deploy models for online inference</p>
             </div>
           </a>
           
           <!-- Video 3 -->
-          <a href="https://www.youtube.com/watch?v=N-hUC3b0IQs&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
-            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+          <a href="https://www.youtube.com/watch?v=N-hUC3b0IQs&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 16px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 16px;">
               <img src="https://img.youtube.com/vi/N-hUC3b0IQs/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
             </div>
-            <div>
-              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Feature Store Workshop</h4>
-              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Introduction to the Hopsworks Feature Store</p>
+            <div style="text-align: left;">
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3; text-align: left;">Feature Store Workshop</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3; text-align: left;">Introduction to the Hopsworks Feature Store</p>
             </div>
           </a>
           
           <!-- Video 4 -->
-          <a href="https://www.youtube.com/watch?v=ccYe1MU4R2U&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
-            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+          <a href="https://www.youtube.com/watch?v=ccYe1MU4R2U&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 16px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 16px;">
               <img src="https://img.youtube.com/vi/ccYe1MU4R2U/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
             </div>
-            <div>
-              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Feature Views Explained</h4>
-              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Creating and using Feature Views for ML</p>
+            <div style="text-align: left;">
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3; text-align: left;">Feature Views Explained</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3; text-align: left;">Creating and using Feature Views for ML</p>
             </div>
           </a>
           
           <!-- Video 5 -->
-          <a href="https://www.youtube.com/watch?v=8Axs0q1AY7o&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
-            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+          <a href="https://www.youtube.com/watch?v=8Axs0q1AY7o&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 16px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 16px;">
               <img src="https://img.youtube.com/vi/8Axs0q1AY7o/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
             </div>
-            <div>
-              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Getting Started with Hopsworks</h4>
-              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">First steps with the Hopsworks platform</p>
+            <div style="text-align: left;">
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3; text-align: left;">Getting Started with Hopsworks</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3; text-align: left;">First steps with the Hopsworks platform</p>
             </div>
           </a>
           
           <!-- Video 6 -->
-          <a href="https://www.youtube.com/watch?v=_X0U0z1TAcI&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
-            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 15px;">
+          <a href="https://www.youtube.com/watch?v=_X0U0z1TAcI&list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" style="display: flex; padding: 16px; text-decoration: none; border-bottom: 1px solid var(--md-hopsworks-border); transition: background-color 0.2s;">
+            <div style="width: 120px; min-width: 120px; position: relative; margin-right: 16px;">
               <img src="https://img.youtube.com/vi/_X0U0z1TAcI/mqdefault.jpg" style="width: 100%; height: auto; display: block;">
             </div>
-            <div>
-              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3;">Data Validation in Feature Store</h4>
-              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3;">Ensuring data quality in feature pipelines</p>
+            <div style="text-align: left;">
+              <h4 style="margin: 0 0 5px 0; color: var(--md-hopsworks-text); font-size: 0.9rem; font-weight: 500; line-height: 1.3; text-align: left;">Data Validation in Feature Store</h4>
+              <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.75rem; line-height: 1.3; text-align: left;">Ensuring data quality in feature pipelines</p>
             </div>
           </a>
         </div>
       </div>
     </div>
     
-    <div style="margin-top: 30px; text-align: center;">
-      <a href="https://www.youtube.com/playlist?list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" class="hero-button secondary" style="display: inline-block; padding: 10px 20px; font-size: 0.9rem;">
+    <div style="margin-top: 24px; text-align: center;">
+      <a href="https://www.youtube.com/playlist?list=PLgN6fhzkSui_YzFsY6E1f_U86OATEYLC6" target="_blank" class="hero-button secondary" style="display: inline-block; padding: 12px 24px; font-size: 0.9rem; min-width: 220px;">
         View Full Academy Playlist
       </a>
     </div>
@@ -568,10 +563,7 @@ python3 install-hopsworks.py
 </div>
 
 <!-- Role-Based Documentation -->
-<div class="section" style="padding-bottom: 0;">
-  <h2 class="section-title">Documentation by Role</h2>
-</div>
-<div class="feature-grid" style="margin-top: 0;">
+<div class="feature-grid" style="margin-top: 30px;">
   <div class="feature-card">
     <h3 class="feature-title">For Data Engineers</h3>
     <p class="feature-description">Build and optimize feature pipelines</p>
@@ -608,29 +600,23 @@ python3 install-hopsworks.py
 
 <!-- Deployment Options -->
 <div class="section">
-  <h2 class="section-title">Deployment Options</h2>
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin-top: 40px;">
-    <a href="./setup_installation/aws/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 30px 20px; text-align: center; transition: all 0.2s ease;">
-      <img src="../images/icons8-aws-240.png" style="width: 80px; height: 80px; margin-bottom: 15px;">
+  <h2 style="font-size: 1.6rem; font-weight: 600; margin-bottom: 1.5rem; text-align: center;">Deployment Options</h2>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+    <a href="./setup_installation/aws/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 32px 24px; text-align: center; transition: all 0.2s ease;">
+      <img src="../images/icons8-aws-240.png" style="width: 72px; height: 72px; margin-bottom: 16px;">
       <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; color: var(--md-hopsworks-text);">AWS</h3>
-      <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem;">Amazon Web Services</p>
     </a>
-    <a href="./setup_installation/azure/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 30px 20px; text-align: center; transition: all 0.2s ease;">
-      <img src="../images/azure_logo.png" style="width: 80px; height: 80px; margin-bottom: 15px; object-fit: contain;">
+    <a href="./setup_installation/azure/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 32px 24px; text-align: center; transition: all 0.2s ease;">
+      <img src="../images/azure_logo.png" style="width: 72px; height: 72px; margin-bottom: 16px; object-fit: contain;">
       <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; color: var(--md-hopsworks-text);">Azure</h3>
-      <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem;">Microsoft Azure</p>
     </a>
-    
-    <a href="./setup_installation/gcp/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 30px 20px; text-align: center; transition: all 0.2s ease;">
-      <img src="../images/gcp_logo.png" style="width: 80px; height: 80px; margin-bottom: 15px; object-fit: contain;">
+    <a href="./setup_installation/gcp/getting_started/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 32px 24px; text-align: center; transition: all 0.2s ease;">
+      <img src="../images/gcp_logo.png" style="width: 72px; height: 72px; margin-bottom: 16px; object-fit: contain;">
       <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; color: var(--md-hopsworks-text);">GCP</h3>
-      <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem;">Google Cloud Platform</p>
     </a>
-    
-    <a href="./setup_installation/on_prem/contact_hopsworks/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 30px 20px; text-align: center; transition: all 0.2s ease;">
-      <img src="../images/server_logo.png" style="width: 80px; height: 80px; margin-bottom: 15px; object-fit: contain;">
+    <a href="./setup_installation/on_prem/contact_hopsworks/" style="text-decoration: none; border: 1px solid var(--md-hopsworks-border); padding: 32px 24px; text-align: center; transition: all 0.2s ease;">
+      <img src="../images/server_logo.png" style="width: 72px; height: 72px; margin-bottom: 16px; object-fit: contain;">
       <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; color: var(--md-hopsworks-text);">On-Premise</h3>
-      <p style="margin: 0; color: var(--md-hopsworks-text-light); font-size: 0.9rem;">Your data center</p>
     </a>
   </div>
 </div>

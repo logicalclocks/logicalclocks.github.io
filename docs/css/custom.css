@@ -852,6 +852,11 @@
   text-align: center;
   margin-bottom: 0;
   border-bottom: 1px solid var(--md-hopsworks-border);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  left: 0;
+  right: 0;
 }
 
 .hero-content {
@@ -964,7 +969,7 @@
   gap: 30px;
   margin: 60px auto;
   max-width: 1200px;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
 .feature-card {
@@ -1474,5 +1479,7 @@ a[href^="http"]:not([href*="docs.hopsworks.ai"]):not(.md-button):not(.md-logo):n
 
 /* Generic callout-box */ 
 .callout-box {
-  padding: 80px;
+  padding: 40px 24px;
+  max-width: 1200px;
+  margin: 30px auto;
 }

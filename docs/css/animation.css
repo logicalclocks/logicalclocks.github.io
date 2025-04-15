@@ -1,0 +1,25 @@
+/**
+ * Styles for background animation
+ */
+
+.hero-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-animation-canvas {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw; /* Use viewport width instead of percentage */
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Ensure content sits above the animation */
+.hero-content {
+  position: relative;
+  z-index: 1;
+}

@@ -299,11 +299,13 @@ extra_css:
   - css/custom.css
   - css/marctech.css
   - css/dropdown.css
+  - css/animation.css
 
 extra_javascript:
   - js/inject-api-links.js
   - js/dropdown.js
   - js/quickstart-fullscreen.js
+  - js/background-animation.js
 
 plugins:
   - search
