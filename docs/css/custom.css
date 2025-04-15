@@ -421,8 +421,7 @@
 .md-content {
   max-width: 100%;
   flex-grow: 1;
-  border-right: 1px solid var(--md-hopsworks-border);
-  border-left: 1px solid var(--md-hopsworks-border);
+  border: none;
 }
 
 /* Content inner container - centered with reasonable width */
