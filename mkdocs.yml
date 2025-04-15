@@ -222,6 +222,7 @@ nav:
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
           - Configure Alerts: setup_installation/admin/alert.md
+          - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Monitoring:
              - Services Dashboards: setup_installation/admin/monitoring/grafana.md
              - Export metrics: setup_installation/admin/monitoring/export-metrics.md
