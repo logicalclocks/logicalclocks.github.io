@@ -1,32 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Reorganize navigation links
+  // Setup API dropdown without reordering navigation
   const tabsContainer = document.querySelector('.md-tabs__list');
   if (!tabsContainer) return; // Safety check
   
-  const navItems = Array.from(tabsContainer.children);
-  
-  // Find navigation items we want to reorder
-  const gettingStartedIndex = navItems.findIndex(item => 
-    item.textContent.trim().includes('Getting Started')
-  );
-  
-  const communityIndex = navItems.findIndex(item => 
-    item.textContent.trim().includes('Community')
-  );
-  
-  const apiLinkIndex = navItems.findIndex(item => 
+  // Find API navigation item
+  const apiLinkIndex = Array.from(tabsContainer.children).findIndex(item => 
     item.textContent.trim().includes('API')
   );
   
-  // Only proceed if we found items to reposition
+  // Only proceed if we found the API item
   if (apiLinkIndex !== -1) {
     // Create API dropdown replacement
     setupApiDropdown(tabsContainer, apiLinkIndex);
-    
-    // Reorder external links if found
-    if (gettingStartedIndex !== -1 && communityIndex !== -1) {
-      reorderNavLinks(tabsContainer, gettingStartedIndex, communityIndex);
-    }
   }
 });
 
@@ -143,41 +128,4 @@ function setupApiDropdown(tabsContainer, apiLinkIndex) {
       apiBtn.setAttribute('aria-expanded', 'false');
     }
   });
-}
-
-/**
- * Reorders navigation links to move external links to the end
- */
-function reorderNavLinks(tabsContainer, gettingStartedIndex, communityIndex) {
-  // To avoid index shifting, we need to adjust indices when removing
-  // Clone the items first so we can re-add them in the right order
-  const gettingStartedItem = tabsContainer.children[gettingStartedIndex].cloneNode(true);
-  const communityItem = tabsContainer.children[communityIndex].cloneNode(true);
-  
-  // Check if there's an API item which we created
-  // Note: :has() selector might not be supported in all browsers, using alternative
-  const apiItem = Array.from(tabsContainer.querySelectorAll('li')).find(li => 
-    li.querySelector('#api-modal-btn')
-  );
-  
-  // Remove items (in reverse order to avoid index shifting)
-  if (communityIndex > gettingStartedIndex) {
-    tabsContainer.removeChild(tabsContainer.children[communityIndex]);
-    tabsContainer.removeChild(tabsContainer.children[gettingStartedIndex]);
-  } else {
-    tabsContainer.removeChild(tabsContainer.children[gettingStartedIndex]);
-    tabsContainer.removeChild(tabsContainer.children[communityIndex < gettingStartedIndex ? communityIndex : communityIndex - 1]);
-  }
-  
-  // If we have our API item, move it as well
-  if (apiItem) {
-    tabsContainer.removeChild(apiItem);
-  }
-  
-  // Add items in the desired order at the end
-  if (apiItem) {
-    tabsContainer.appendChild(apiItem);
-  }
-  tabsContainer.appendChild(gettingStartedItem);
-  tabsContainer.appendChild(communityItem);
 }

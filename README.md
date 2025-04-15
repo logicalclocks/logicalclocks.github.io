@@ -57,3 +57,8 @@ linkchecker http://127.0.0.1:8000/
 # If ok just kill the server
 kill -9 $SERVER_PID
 ```
+
+
+## Maintenance
+Always update the robot.txt to desintex previous versions of hopsworks documentation (located in doc/robots.txt) 
+

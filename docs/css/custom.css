@@ -44,8 +44,9 @@
 }
 
 .md-content__inner {
-  padding-top: 0.5rem;
+  padding-top: 1.8rem;
   margin-top: -7px;
+  /* margin-left: 1.2rem; */
 }
 
 .md-content__inner > :first-child {
@@ -420,6 +421,8 @@
 .md-content {
   max-width: 100%;
   flex-grow: 1;
+  border-right: 1px solid var(--md-hopsworks-border);
+  border-left: 1px solid var(--md-hopsworks-border);
 }
 
 /* Content inner container - centered with reasonable width */
@@ -438,6 +441,7 @@
 }
 
 /* Remove sidebar backgrounds and gradients */
+
 .md-nav__title,
 .md-nav__item--nested .md-nav__toggle ~ .md-nav,
 .md-nav--lifted > .md-nav__list > .md-nav__item--active > .md-nav__link,
@@ -848,7 +852,6 @@
   padding: 80px 20px 70px;
   text-align: center;
   margin-bottom: 0;
-  background: linear-gradient(to bottom, var(--md-hopsworks-card-bg), var(--md-hopsworks-background));
   border-bottom: 1px solid var(--md-hopsworks-border);
 }
 
@@ -968,7 +971,7 @@
 .feature-card {
   border: 1px solid var(--md-hopsworks-border);
   background-color: var(--md-hopsworks-card-bg);
-  padding: 30px;
+  padding: 35px 30px;
   transition: all 0.2s ease;
   border-radius: 0;
   box-shadow: none;
@@ -1007,6 +1010,14 @@
   margin-bottom: 20px;
   line-height: 1.5;
   flex-grow: 1;
+  display: none; /* Hide description */
+}
+
+/* Adjust spacing after title since descriptions are removed */
+.feature-title {
+  margin-bottom: 24px !important;
+  font-weight: 600 !important;
+  font-size: 1.2rem !important;
 }
 
 .feature-links {
@@ -1015,19 +1026,19 @@
 
 .feature-link {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--md-hopsworks-primary);
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   text-decoration: none;
   transition: all 0.2s ease;
   position: relative;
-  padding-left: 12px;
+  padding-left: 14px;
 }
 
 .feature-link::before {
   content: "→";
   position: absolute;
-  left: -10px;
+  left: -6px;
   transition: transform 0.2s ease;
 }
 
@@ -1069,12 +1080,11 @@
 .deployment-option {
   border: 1px solid var(--md-hopsworks-border);
   background-color: var(--md-hopsworks-card-bg);
-  padding: 25px 20px;
+  padding: 30px 20px;
   text-align: center;
   transition: all 0.3s ease;
   border-radius: 0;
   text-decoration: none;
-  box-shadow: none;
 }
 
 .deployment-option:hover {
@@ -1132,24 +1142,28 @@
   height: 20px;
   margin-right: 10px;
   display: inline-block;
-  background-color: var(--md-hopsworks-primary);
-  opacity: 0.1;
   transition: all 0.2s ease;
+  text-decoration: none;
 }
 
-.community-link:hover .community-icon {
+/* .community-link:hover .community-icon {
   opacity: 0.2;
-}
+} */
 
-.community-link:hover {
+/* .community-link:hover {
   border-color: var(--md-hopsworks-primary);
   color: var(--md-hopsworks-primary);
   transform: none;
-}
+} */
 
 /* Override footer link styling */
 .md-footer-meta.md-typeset a {
   color: #666666 !important;
+  text-decoration: none !important;
+}
+
+.md-footer-meta {
+  background-color: var(--md-default-bg-color) !important;
 }
 
 .md-footer-meta.md-typeset a:hover {
@@ -1456,4 +1470,10 @@ a[href^="http"]:not([href*="docs.hopsworks.ai"]):not(.md-button):not(.md-logo):n
 [data-md-color-scheme="slate"] .md-tabs__link[href^="http"]:not([href*="docs.hopsworks.ai"]),
 [data-md-color-scheme="slate"] .md-nav__link[href^="http"]:not([href*="docs.hopsworks.ai"]) {
   border-bottom-color: rgba(170, 170, 170, 0.5);
+}
+
+
+/* Generic callout-box */ 
+.callout-box {
+  padding: 80px;
 }

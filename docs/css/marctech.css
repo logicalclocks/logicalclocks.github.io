@@ -216,3 +216,69 @@
     font-size: 0.95rem;
   }
 }
+
+/* Fix for video playlist height matching the main video */
+.getting-started-section .max-w-4xl {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+/* Make the playlist column the same height as the video column */
+.getting-started-section .max-w-4xl > div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Make the playlist take remaining height */
+.getting-started-section .max-w-4xl > div:nth-child(2) > div:nth-child(2) {
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 0; /* This forces flex-grow to work properly */
+}
+
+/* Ensure consistent height for video thumbnails */
+.getting-started-section a[href^="https://www.youtube.com/watch"] {
+  display: flex;
+  height: 100%;
+}
+
+/* Other suggested improvements */
+
+/* Improve readability of feature links */
+.feature-link {
+  margin-bottom: 10px;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.feature-link:hover {
+  transform: translateX(3px);
+}
+
+/* Make architecture cards more visually distinct on hover */
+.architecture-tier:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Make component titles more clickable */
+.component-title a {
+  text-decoration: none;
+  display: block;
+  padding: 2px 0;
+}
+
+/* Improve mobile responsiveness */
+@media (max-width: 767px) {
+  .getting-started-section .max-w-4xl {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-title {
+    font-size: 2.2rem !important;
+  }
+}
