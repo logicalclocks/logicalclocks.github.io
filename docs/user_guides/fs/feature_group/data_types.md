@@ -146,10 +146,10 @@ The byte size of each column is determined by its data type and calculated as fo
 
 #### Pre-insert schema validation for online feature groups
 For online enabled feature groups, the dataframe to be ingested needs to adhere to the online schema definitions. The input dataframe is validated for schema checks accordingly.
-The validation is enabled by setting below property when calling `insert()`
+The validation is enabled by default and can be disabled by setting below key word argument when calling `insert()`
 === "Python"
     ```python
-    feature_group.insert(df, validation_options={'online_schema_validation':True})
+    feature_group.insert(df, validation_options={'online_schema_validation':False})
     ```
 The most important validation checks or error messages are mentioned below along with possible corrective actions. 
 
