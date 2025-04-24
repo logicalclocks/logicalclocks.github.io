@@ -10,7 +10,7 @@ use_directory_urls: true
 strict: false
 
 nav:
-  - Home: index.md
+  - index.md
   - Tutorials:
       - tutorials/index.md
   - Concepts:
