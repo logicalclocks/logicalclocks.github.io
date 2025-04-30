@@ -2,22 +2,47 @@
 
 ## Introduction
 
-When running Hopsworks in the cloud you have several options to give the Hopsworks user access to AWS resources. The simplest is to setup the EC2 instances running Hopsworks with an [instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html) giving access to the resources. But, this will make these resources accessible by all the Hopsworks users. To manage access to the resource on a project base you need to use [Role chaining](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html#iam-term-role-chaining).
+When running Hopsworks in Amazon EKS you have several options to give the Hopsworks user access to AWS resources. The simplest is to assign [Amazon EKS node IAM role](https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html) access to the resources. But, this will make these resources accessible by all users. To manage access to resources on a project base you need to use [Role chaining](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html#iam-term-role-chaining). 
 
 In this document we will see how to configure AWS and Hopsworks to use Role chaining in your Hopsworks projects.
 
 ## Prerequisites
 Before you begin this guide you'll need the following:
 
-- A Hopsworks cluster running on EC2.
-- Administrator account on a Hopsworks cluster.
+- A Hopsworks cluster running on EKS.
+- Enabled IAM OpenID Connect (OIDC) provider for your cluster.
+- Administrator account on the Hopsworks cluster.
 
-### Step 1: Create an instance profile role
-To use role chaining the head node need to be able to impersonate the roles you want to be linked to your project. For this you need to create an instance profile with assume role permissions and attach it to your head node. For more details about the creation of instance profile see the [aws documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html). 
+### Step 1: Create an IAM role and associate it with a Kubernetes service account
+To use role chaining the hopsworks instance pods need to be able to impersonate the roles you want to be linked to your project. For this you need to create an IAM role and associate it with your Kubernetes service accounts with assume role permissions and attach it to your hopsworks instance pods. 
+For more details on how to create an IAM roles for Kubernetes service accounts see the [aws documentation](https://docs.aws.amazon.com/eks/latest/userguide/associate-service-account-role.html). 
 
 
 !!!note 
-    To ensure that the Hopsworks users can't use the head node instance profile and impersonate the roles by their own means, you need to ensure that they can't execute code on the head node. This means having all jobs running on worker nodes and using EKS to run jupyter notebooks.
+    To ensure that users can't use the service account role and impersonate the roles by their own means, you need to ensure that the service account is only attached to the hopsworks instance pods.
+
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::$account_id:oidc-provider/$oidc_provider"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "$oidc_provider:aud": "sts.amazonaws.com",
+          "$oidc_provider:sub": "system:serviceaccount:$namespace:$service_account"
+        }
+      }
+    }
+  ]
+}
+```
+<figcaption>Example trust policy for a service account.</figcaption>
 
 ```json
 {
@@ -28,7 +53,7 @@ To use role chaining the head node need to be able to impersonate the roles you 
             "Effect": "Allow",
             "Action": "sts:AssumeRole",
             "Resource": [
-                "arn:aws:iam::123456789011:role/test-role",
+                "arn:aws:iam::123456789011:role/my-role",
                 "arn:aws:iam::xxxxxxxxxxxx:role/s3-role",
                 "arn:aws:iam::xxxxxxxxxxxx:role/dev-s3-role",
                 "arn:aws:iam::xxxxxxxxxxxx:role/redshift"
@@ -39,8 +64,16 @@ To use role chaining the head node need to be able to impersonate the roles you 
 ```
 <figcaption>Example policy for assuming four roles.</figcaption>
 
+The IAM role will need to add a trust policy to allow the service account to assume the role, and permissions to assume the different roles that will be used to access resources.
+
+To associate the IAM role with your Kubernetes service account you will need to annotate your service account with the Amazon Resource Name (ARN) of the IAM role that you want the service account to assume.
+
+```sh
+kubectl annotate serviceaccount -n $namespace $service_account eks.amazonaws.com/role-arn=arn:aws:iam::$account_id:role/my-role
+```
+
 ### Step 2: Create the resource roles
-For the instance profile to be able to impersonate the roles you need to configure the roles themselves to allow it. This is done by adding the instance profile to the role's [Trust relationships](https://docs.aws.amazon.com/directoryservice/latest/admin-guide/edit_trust.html).
+For the service account role to be able to impersonate the roles you also need to configure the roles themselves to allow it. This is done by adding the service account role to the role's [Trust relationships](https://docs.aws.amazon.com/directoryservice/latest/admin-guide/edit_trust.html).
 
 ```json
 {
@@ -49,7 +82,7 @@ For the instance profile to be able to impersonate the roles you need to configu
         {
         "Effect": "Allow",
         "Principal": {
-            "AWS": "arn:aws:iam::xxxxxxxxxxxx:role/instance-profile"
+            "AWS": "arn:aws:iam::xxxxxxxxxxxx:role/service-account-role"
         },
         "Action": "sts:AssumeRole"
         }
@@ -59,7 +92,7 @@ For the instance profile to be able to impersonate the roles you need to configu
 <figcaption>Example trust-policy document.</figcaption>
 
 ### Step 3: Create mappings
-Now that the head node can assume the roles we need to configure Hopsworks to delegate access to the roles on a project base.
+Now that the service account IAM role can assume the roles we need to configure Hopsworks to delegate access to the roles on a project base.
 
 In Hopsworks, click on your name in the top right corner of the navigation bar and choose _Cluster Settings_ from the dropdown menu.
 In the Cluster Settings' _IAM Role Chaining_ tab you can configure the mappings between projects and IAM roles.
