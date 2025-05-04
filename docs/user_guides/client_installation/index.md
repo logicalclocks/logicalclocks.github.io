@@ -69,6 +69,19 @@ The HSFS library is available on the Hopsworks' Maven repository. If you are usi
 
 The library has different builds targeting different environments: 
 
+### HSFS Java
+
+The `artifactId` for the HSFS Java build is `hsfs`, if you are using Maven as build tool, you can add the following dependency:
+
+```
+<dependency>
+    <groupId>com.logicalclocks</groupId>
+    <artifactId>hsfs</artifactId>
+    <version>${hsfs.version}</version>
+</dependency>
+```
+
+
 ### Spark
 
 The `artifactId` for the Spark build is `hsfs-spark-spark{spark.version}`, if you are using Maven as build tool, you can add the following dependency:
