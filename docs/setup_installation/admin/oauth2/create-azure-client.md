@@ -50,6 +50,15 @@ We will use it in [Identity Provider registration](../create-client) under the n
   </figure>
 </p>
 
+!!! note
+    If you have multiple tenants in your Azure Active Directory, the `OpenID Connect metadata document` endpoint might use `organizations`  instead of a specific tenant ID. In such cases, replace `organizations`  with your actual tenant ID to target a specific directory.
+
+    example:
+
+      ```
+      https://login.microsoftonline.com/organizations/oauth2/v2.0 --> https://login.microsoftonline.com/<YOUR_TENANT_ID>/oauth2/v2.0
+      ```
+
 Click on *Certificates & secrets*, then Click on *New client secret*.
 
 <p align="center">
