@@ -3,6 +3,7 @@
 Hopsworks is an open platform aiming to be accessible from a variety of tools. Learn in this section how to connect to Hopsworks from
 
 - [Python, AWS SageMaker, Google Colab, Kubeflow](python)
+- [Java](java)
 - [Databricks](databricks/networking)
 - [AWS EMR](emr/emr_configuration)
 - [Azure HDInsight](hdinsight)
