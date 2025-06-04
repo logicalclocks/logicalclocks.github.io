@@ -1,7 +1,7 @@
 # Authentication Methods
 
 ## Introduction
-Hopsworks can be configured to use different type of authentication methods. In this guide we will look at the 
+Hopsworks can be configured to use different types of authentication methods. In this guide we will look at the 
 different authentication methods available in Hopsworks.
 
 ## Prerequisites
