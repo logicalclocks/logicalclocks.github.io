@@ -183,7 +183,7 @@ In this snippet we get the `JobsApi` object to get the default job configuration
 
 ```python
 
-jobs_api = project.get_jobs_api()
+jobs_api = project.get_job_api()
 
 spark_config = jobs_api.get_configuration("SPARK")
 
@@ -212,7 +212,48 @@ print(f_err.read())
 
 ```
 
-### API Reference
+## Configuration
+The following table describes the JSON payload returned by `jobs_api.get_configuration("SPARK")`
+
+| Field                                      | Type           | Description                                             | Default                    |
+|--------------------------------------------| -------------- |---------------------------------------------------------| -------------------------- |
+| `type`                                     | string         | Type of the job configuration                           | `"sparkJobConfiguration"`  |
+| `appPath`                                  | string         | Project path to spark program (e.g `Resources/foo.jar`) | `null`            |
+| `mainClass`                                | string         | Name of the main class to run                           | `null`            |
+| `environmentName`                          | string         | Name of the project spark environment                   | `"spark-feature-pipeline"` |
+| `spark.driver.cores`                       | number (float) | Number of CPU cores allocated for the driver            | `1.0`                      |
+| `spark.driver.memory`                      | number (int)   | Memory allocated for the driver (in MB)                 | `2048`                     |
+| `spark.executor.instances`                 | number (int)   | Number of executor instances                            | `1`                        |
+| `spark.executor.cores`                     | number (float) | Number of CPU cores per executor                        | `1.0`                      |
+| `spark.executor.memory`                    | number (int)   | Memory allocated per executor (in MB)                   | `4096`                     |
+| `spark.dynamicAllocation.enabled`          | boolean        | Enable dynamic allocation of executors                  | `true`                     |
+| `spark.dynamicAllocation.minExecutors`     | number (int)   | Minimum number of executors with dynamic allocation     | `1`                        |
+| `spark.dynamicAllocation.maxExecutors`     | number (int)   | Maximum number of executors with dynamic allocation     | `2`                        |
+| `spark.dynamicAllocation.initialExecutors` | number (int)   | Initial number of executors with dynamic allocation     | `1`                        |
+| `spark.blacklist.enabled`                  | boolean        | Whether executor/node blacklisting is enabled           | `false`                    |
+
+## Accessing project data
+
+### Read directly from the filesystem (recommended)
+
+To read a dataset in your project using Spark, use the full filesystem path where the data is stored. For example, to read a CSV file named `data.csv` located in the `Resources` dataset of a project called `my_project`:
+
+```java
+Dataset<Row> df = spark.read()
+    .option("header", "true")       // CSV has header
+    .option("inferSchema", "true")  // Infer data types
+    .csv("/Projects/my_project/Resources/data.csv");
+
+df.show();
+```
+
+### Additional files
+
+Different file types can be attached to the spark job and made available in the `/srv/hops/artifacts` folder when the Spark job is started. This configuration is mainly useful when you need to add additional configuration such as jars that needs to be added to the CLASSPATH. 
+
+When reading data in your Spark job it is recommended to use the Spark read API as previously demonstrated, since this reads from the filesystem directly, whereas `Additional files` configuration options will download the files in its entirety and is not a scalable option.
+
+## API Reference
 
 [Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
