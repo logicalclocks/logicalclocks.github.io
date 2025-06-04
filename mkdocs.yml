@@ -201,6 +201,7 @@ nav:
               - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
               - API Protocol: user_guides/mlops/serving/api-protocol.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
+              - External Access: user_guides/mlops/serving/external-access.md
           - Vector Database: user_guides/mlops/vector_database/index.md
           - Provenance: user_guides/mlops/provenance/provenance.md
       - Migration:
