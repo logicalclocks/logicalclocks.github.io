@@ -219,7 +219,7 @@ The following table describes the JSON payload returned by `jobs_api.get_configu
 |--------------------------------------------| -------------- |---------------------------------------------------------| -------------------------- |
 | `type`                                     | string         | Type of the job configuration                           | `"sparkJobConfiguration"`  |
 | `appPath`                                  | string         | Project path to spark program (e.g `Resources/foo.jar`) | `null`            |
-| `mainClass`                                | string         | Name of the main class to run                           | `null`            |
+| `mainClass`                                | string         | Name of the main class to run  (e.g `org.company.Main`) | `null`            |
 | `environmentName`                          | string         | Name of the project spark environment                   | `"spark-feature-pipeline"` |
 | `spark.driver.cores`                       | number (float) | Number of CPU cores allocated for the driver            | `1.0`                      |
 | `spark.driver.memory`                      | number (int)   | Memory allocated for the driver (in MB)                 | `2048`                     |
