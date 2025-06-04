@@ -8,7 +8,7 @@ description: Documentation on how to configure and execute a Ray job on Hopswork
 
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
-- Python (*Hopsworks Enterprise only*)
+- Python
 - Apache Spark
 - Ray 
 
