@@ -11,7 +11,7 @@ Hopsworks supports role-based access control (RBAC) for project members within a
 However, there are cases where you might want to grant ==external users== with access to specific model deployments without them having to register into Hopsworks or to join the project which will give them access to all project ML assets. For these cases, Hopsworks supports fine-grained access control to model deployments based on ==user groups== managed by an external Identity Provider.
 
 !!! info "Authentication methods"
-    Hopsworks can be configured to use different type of authentication methods including OAuth2, LDAP and Kerberos. See the [Authentication Methods Guide](../../../setup_installation/admin/auth.md) for more information.
+    Hopsworks can be configured to use different types of authentication methods including OAuth2, LDAP and Kerberos. See the [Authentication Methods Guide](../../../setup_installation/admin/auth.md) for more information.
 
 ## GUI (for Hopsworks users)
 
@@ -114,7 +114,7 @@ Inference requests to model deployments are authenticated and authorized based o
 
 Depending on the type of model deployment, the URI of the model server can differ (e.g., `/chat/completions` for LLM deployments or `/predict` for traditional model deployments). You can find the corresponding URI on every model deployment card.
 
-In addition to the `Authorization` header containing the API key, the `Host` header needs to be set according to the model deployment where the inference requests is sent to. This header is used by the ingress to route the inference requests to the corresponding model deployment. You can find the `Host` header value in the model deployment card.
+In addition to the `Authorization` header containing the API key, the `Host` header needs to be set according to the model deployment where the inference requests are sent to. This header is used by the ingress to route the inference requests to the corresponding model deployment. You can find the `Host` header value in the model deployment card.
 
 !!! tip "Code snippets"
     For clients sending inference requests using libraries similar to curl or OpenAI API-compatible libraries (e.g., LangChain), you can find code snippet examples by clicking on the `Curl >_` and `LangChain >_` buttons.
