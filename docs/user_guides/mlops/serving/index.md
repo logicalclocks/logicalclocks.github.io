@@ -27,3 +27,7 @@ Configure the predictor to log inference requests and predictions, see the [Infe
 ### Troubleshooting
 
 Inspect the model server logs to troubleshoot your model deployments, see the [Troubleshooting Guide](troubleshooting.md).
+
+### External access
+
+Grant users authenticated by an external Identity Provider access to model deployments, see the [External Access Guide](external-access.md).
