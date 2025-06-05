@@ -135,6 +135,23 @@ Navigate back to Hopsworks and a Spark session will have appeared, click on the 
   </figure>
 </p>
 
+## Accessing project data
+
+### Read directly from the filesystem (recommended)
+
+To read a dataset in your project using Spark, use the full filesystem path where the data is stored. For example, to read a CSV file named `data.csv` located in the `Resources` dataset of a project called `my_project`:
+
+```python
+df = spark.read.csv("/Projects/my_project/Resources/data.csv", header=True, inferSchema=True)
+df.show()
+```
+
+### Additional files
+
+Different files can be attached to the jupyter session and made available in the `/srv/hops/artifacts` folder when the PySpark kernel is started. This configuration is mainly useful when you need to add additional configuration such as jars that needs to be added to the CLASSPATH.
+
+When reading data in your Spark application, it is recommended to use the Spark read API as previously demonstrated, since this reads from the filesystem directly, whereas `Additional files` configuration options will download the files in its entirety and is not a scalable option.
+
 ## Going Further
 
 You can learn how to [install a library](../python/python_install.md) so that it can be used in a notebook.

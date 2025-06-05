@@ -81,7 +81,8 @@ It is possible to also set following configuration settings for a `PYTHON` job.
 * `Environment`: The python environment to use
 * `Container memory`: The amount of memory in MB to be allocated to the Python script
 * `Container cores`: The number of cores to be allocated for the Python script
-* `Additional files`: List of files that will be locally accessible by the application
+* `Additional files`: List of files that will be locally accessible in the working directory of the application. Only recommended to use if project datasets are not mounted under `/hopsfs`.
+  You can always modify the arguments in the job settings.
 
 <p align="center">
   <figure>
@@ -129,7 +130,7 @@ In this snippet we get the `JobsApi` object to get the default job configuration
 
 ```python
 
-jobs_api = project.get_jobs_api()
+jobs_api = project.get_job_api()
 
 py_job_config = jobs_api.get_configuration("PYTHON")
 
@@ -163,7 +164,33 @@ print(f_err.read())
 
 ```
 
-### API Reference
+## Configuration
+The following table describes the JSON payload returned by `jobs_api.get_configuration("PYTHON")`
+
+| Field                   | Type           | Description                                     | Default                 |
+|-------------------------|----------------|-------------------------------------------------|--------------------------|
+| `type`                  | string         | Type of the job configuration                   | `"pythonJobConfiguration"` |
+| `appPath`               | string         | Project path to script (e.g `Resources/foo.py`) | `null`            |
+| `environmentName`       | string         | Name of the project python environment          | `"pandas-training-pipeline"` |
+| `resourceConfig.cores`  | number (float) | Number of CPU cores to be allocated             | `1.0`                    |
+| `resourceConfig.memory` | number (int)   | Number of MBs to be allocated                   | `2048`                   |
+| `resourceConfig.gpus`   | number (int)   | Number of GPUs to be allocated                  | `0`                      |
+| `logRedirection`        | boolean        | Whether logs are redirected                     | `true`                   |
+| `jobType`               | string         | Type of job                                     | `"PYTHON"`               |
+
+
+## Accessing project data
+!!! notice "Recommended approach if `/hopsfs` is mounted"
+    If your Hopsworks installation is configured to mount the project datasets under `/hopsfs`, which it is in most cases, then please refer to this section instead of the `Additional files` property to reference file resources.
+
+### Absolute paths
+The project datasets are mounted under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your script.
+
+### Relative paths
+The script's working directory is the folder it is located in. For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`. Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
+
+
+## API Reference
 
 [Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
