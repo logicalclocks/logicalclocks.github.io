@@ -8,7 +8,7 @@ description: Documentation on how to configure and execute a Ray job on Hopswork
 
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
-- Python (*Hopsworks Enterprise only*)
+- Python
 - Apache Spark
 - Ray 
 
@@ -168,7 +168,7 @@ In this snippet we get the `JobsApi` object to get the default job configuration
 
 ```python
 
-jobs_api = project.get_jobs_api()
+jobs_api = project.get_job_api()
 
 ray_config = jobs_api.get_configuration("RAY")
 
@@ -203,7 +203,12 @@ print(f_err.read())
 
 ```
 
-### API Reference
+## Accessing project data
+
+The project datasets are mounted under `/home/yarnapp/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/home/yarnapp/hopsfs/Resources/data.csv` in your script.
+
+
+## API Reference
 
 [Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
 
