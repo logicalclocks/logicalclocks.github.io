@@ -5,7 +5,7 @@
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 
 * Supports JupyterLab and the classic Jupyter front-end
-* Configured with Python and PySpark kernels
+* Configured with Python3, PySpark and Ray kernels
 
 ## Step 1: Jupyter dashboard
 
@@ -81,6 +81,17 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
     <figcaption>Starting Jupyter and running a Python notebook</figcaption>
   </figure>
 </p>
+
+## Accessing project data
+!!! notice "Recommended approach if `/hopsfs` is mounted"
+    If your Hopsworks installation is configured to mount the project datasets under `/hopsfs`, which it is in most cases, then please refer to this section.
+    If the file system is not mounted, then project files can be localized using the [download api](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/datasets/#download) to localize files in the current working directory.
+
+### Absolute paths
+The project datasets are mounted under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your notebook.
+
+### Relative paths
+The notebook's working directory is the folder it is located in. For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`. Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
 
 
 ## Going Further
