@@ -5,7 +5,7 @@
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 
 * Supports JupyterLab and the classic Jupyter front-end
-* Configured with Python and PySpark kernels
+* Configured with Python3, PySpark and Ray kernels
 
 ## Step 1: Jupyter dashboard
 

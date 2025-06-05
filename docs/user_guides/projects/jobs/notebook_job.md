@@ -82,7 +82,7 @@ It is possible to also set following configuration settings for a `PYTHON` job.
 * `Environment`: The python environment to use
 * `Container memory`: The amount of memory in MB to be allocated to the Jupyter Notebook script
 * `Container cores`: The number of cores to be allocated for the Jupyter Notebook script
-* `Additional files`: List of files that will be locally accessible by the application
+* `Additional files`: List of files that will be locally accessible in the working directory of the application. Only recommended to use if project datasets are not mounted under `/hopsfs`.
 You can always modify the arguments in the job settings.
 
 <p align="center">
