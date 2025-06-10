@@ -143,4 +143,4 @@ In the Ray Dashboard, you can monitor the resources used  by code you are runnin
 
 ## Accessing project data
 
-The project datasets are mounted under `/home/yarnapp/hopsfs` in the Ray containers, so you can access `data.csv` from the `Resources` dataset using `/home/yarnapp/hopsfs/Resources/data.csv`.
+The project datasets are mounted under `/hopsfs` in the Ray containers, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv`.
