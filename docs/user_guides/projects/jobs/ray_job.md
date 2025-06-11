@@ -205,7 +205,7 @@ print(f_err.read())
 
 ## Accessing project data
 
-The project datasets are mounted under `/home/yarnapp/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/home/yarnapp/hopsfs/Resources/data.csv` in your script.
+The project datasets are mounted under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your script.
 
 
 ## API Reference
