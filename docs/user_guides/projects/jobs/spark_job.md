@@ -231,6 +231,10 @@ The following table describes the JSON payload returned by `jobs_api.get_configu
 | `spark.dynamicAllocation.maxExecutors`     | number (int)   | Maximum number of executors with dynamic allocation     | `2`                        |
 | `spark.dynamicAllocation.initialExecutors` | number (int)   | Initial number of executors with dynamic allocation     | `1`                        |
 | `spark.blacklist.enabled`                  | boolean        | Whether executor/node blacklisting is enabled           | `false`                    |
+| `files`                     | string | Path to files to be provided to the Spark application. These will be added to the classpath.                                                        | `null`  |
+| `pyFiles`                   | string | Path to Python files to be provided to the Spark application. These will be added to the `PYTHONPATH` so they can be imported as modules in script. | `null`  |
+| `jars`                      | string | Path to JAR files to be provided to the Spark application. These will be added to the classpath.                                                    | `null`  |
+| `archives`                  | string | Path to archive files to be provided to the Spark application.                                                                                      | `null`  |
 
 ## Accessing project data
 
