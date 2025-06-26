@@ -1,14 +1,14 @@
-# How-To set up a Kafka Storage Connector
+# How-To set up a Kafka Data Source
 
 ## Introduction
 
 Apache Kafka is a distributed event store and stream-processing platform. It's a very popular framework for handling realtime data streams and is often used as a message broker for events coming from production systems until they are being processed and either loaded into a data warehouse or aggregated into features for Machine Learning.
 
-In this guide, you will configure a Storage Connector in Hopsworks to save all the authentication information needed in order to set up a connection to your Kafka cluster.
+In this guide, you will configure a Data Source in Hopsworks to save all the authentication information needed in order to set up a connection to your Kafka cluster.
 When you're finished, you'll be able to read from Kafka topics in your cluster using Spark through HSFS APIs.
 
 !!! note
-    Currently, it is only possible to create storage connectors in the Hopsworks UI. You cannot create a storage connector programmatically.
+    Currently, it is only possible to create data sources in the Hopsworks UI. You cannot create a data source programmatically.
 
 ## Prerequisites
 
@@ -16,16 +16,16 @@ Before you begin this guide you'll need to retrieve the following information fr
 
 - **Kafka Bootstrap servers:** It is the url of one of the Kafka brokers which you give to fetch the initial metadata about your Kafka cluster. The metadata consists of the topics, their partitions, the leader brokers for those partitions etc. Depending upon this metadata your producer or consumer produces or consumes the data.
 - **Security Protocol:** The security protocol you want to use to authenticate with your Kafka cluster. Make sure the chosen protocol is supported by your cluster. For an overview of the available protocols, please see the [Confluent Kafka Documentation](https://docs.confluent.io/platform/current/kafka/overview-authentication-methods.html).
-- **Certificates:** Depending on the chosen security protocol, you might need TrustStore and KeyStore files along with the corresponding key password. Contact your Kafka administrator, if you don't know how to retrieve these. If you want to setup a storage connector to Hopsworks' internal Kafka cluster, you can download the needed certificates from the integration tab in your project settings.
+- **Certificates:** Depending on the chosen security protocol, you might need TrustStore and KeyStore files along with the corresponding key password. Contact your Kafka administrator, if you don't know how to retrieve these. If you want to setup a data source to Hopsworks' internal Kafka cluster, you can download the needed certificates from the integration tab in your project settings.
 
 ## Creation in the UI
-### Step 1: Set up new storage connector
+### Step 1: Set up new data source
 
-Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
+Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/storage_connector_create.png)
-  <figcaption>The Storage Connector View in the User Interface</figcaption>
+  ![Storage Connector Creation](../../../../assets/images/guides/fs/data_sources/storage_connector_create.png)
+  <figcaption>The Data Source View in the User Interface</figcaption>
 </figure>
 
 ### Step 2: Enter Kafka Settings
@@ -58,13 +58,13 @@ Enter the details for your Kafka connector. Start by giving it a **name** and an
 
 4. The endpoint identification algorithm used by clients to validate server host name. The default value is `https`. Clients including client connections created by the broker for inter-broker communication verify that the broker host name matches the host name in the broker’s certificate.
 5. Optional additional key/value arguments.
-6. Click "Setup storage connector".
+6. Click "Setup data source".
 
 <figure markdown>
-  ![Kafka Connector Creation](../../../../assets/images/guides/fs/storage_connector/kafka_creation.png)
+  ![Kafka Connector Creation](../../../../assets/images/guides/fs/data_sources/kafka_creation.png)
   <figcaption>Kafka Connector Creation Form</figcaption>
 </figure>
 
 ## Next Steps
 
-Move on to the [usage guide for storage connectors](../usage.md) to see how you can use your newly created Kafka connector.
+Move on to the [usage guide for data sources](../usage.md) to see how you can use your newly created Kafka connector.

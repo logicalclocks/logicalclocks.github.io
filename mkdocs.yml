@@ -56,19 +56,19 @@ nav:
       - user_guides/index.md
       - Feature Store:
           - user_guides/fs/index.md
-          - Storage Connector:
-              - user_guides/fs/storage_connector/index.md
+          - Data Sources:
+              - user_guides/fs/data_sources/index.md
               - Configuration and Creation:
-                  - JDBC: user_guides/fs/storage_connector/creation/jdbc.md
-                  - Snowflake: user_guides/fs/storage_connector/creation/snowflake.md
-                  - Kafka: user_guides/fs/storage_connector/creation/kafka.md
-                  - HopsFS: user_guides/fs/storage_connector/creation/hopsfs.md
-                  - S3: user_guides/fs/storage_connector/creation/s3.md
-                  - Redshift: user_guides/fs/storage_connector/creation/redshift.md
-                  - ADLS: user_guides/fs/storage_connector/creation/adls.md
-                  - BigQuery: user_guides/fs/storage_connector/creation/bigquery.md
-                  - GCS: user_guides/fs/storage_connector/creation/gcs.md
-              - Usage: user_guides/fs/storage_connector/usage.md
+                  - JDBC: user_guides/fs/data_sources/creation/jdbc.md
+                  - Snowflake: user_guides/fs/data_sources/creation/snowflake.md
+                  - Kafka: user_guides/fs/data_sources/creation/kafka.md
+                  - HopsFS: user_guides/fs/data_sources/creation/hopsfs.md
+                  - S3: user_guides/fs/data_sources/creation/s3.md
+                  - Redshift: user_guides/fs/data_sources/creation/redshift.md
+                  - ADLS: user_guides/fs/data_sources/creation/adls.md
+                  - BigQuery: user_guides/fs/data_sources/creation/bigquery.md
+                  - GCS: user_guides/fs/data_sources/creation/gcs.md
+              - Usage: user_guides/fs/data_sources/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
               - Create: user_guides/fs/feature_group/create.md

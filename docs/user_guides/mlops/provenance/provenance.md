@@ -4,7 +4,7 @@
 
 Hopsworks allows users to track provenance (lineage) between:
 
-- storage connectors
+- data sources
 - feature groups
 - feature views
 - training datasets
@@ -15,7 +15,7 @@ In the provenance pages we will call a provenance artifact or shortly artifact, 
 With the following provenance graph:
 
 ```
-storage connector -> feature group -> feature group -> feature view -> training dataset -> model
+data source -> feature group -> feature group -> feature view -> training dataset -> model
 ```
 
 we will call the parent, the artifact to the left, and the child, the artifact to the right. So a feature view has a number of feature groups as parents and can have a number of training datasets as children.

@@ -60,8 +60,8 @@ As mentioned above, when configuring Hopsworks to use an external Kafka cluster,
   </figure>
 </p>
 
-#### Storage connector configuration 
+#### Data source configuration 
 
-Users should create a [Kafka storage connector](../../user_guides/fs/storage_connector/creation/kafka.md) named `kafka_connector` which is going to be used by the feature store clients to configure the necessary Kafka producers to send data.
+Users should create a [Kafka data source](../../user_guides/fs/data_sources/creation/kafka.md) named `kafka_connector` which is going to be used by the feature store clients to configure the necessary Kafka producers to send data.
 The configuration is done for each project to ensure its members have the necessary authentication/authorization.
-If the storage connector is not found in the project, default values referring to Hopsworks managed Kafka will be used.
+If the data source is not found in the project, default values referring to Hopsworks managed Kafka will be used.
