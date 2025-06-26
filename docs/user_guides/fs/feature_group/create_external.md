@@ -134,18 +134,40 @@ Nevertheless, external feature groups defined top of any storage connector can b
 
 ## Create using the UI
 
-You can also create a new feature group through the UI. For this, navigate to the `Feature Groups` section and press the `Create` button at the top-right corner.
+You can also create a new feature group through the UI. For this, navigate to the `Data Source ` section and select existing credentials or create new ones for your prefered data source. 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/feature_group/no_feature_group_list.png" alt="List of Feature Groups">
+    <img src="../../../../assets/images/guides/feature_group/data_source.png" style="border: 10px solid #f5f5f5" alt="Data Source UI">
   </figure>
 </p>
 
-Subsequently, you will be able to define its properties (such as name, mode, features, and more). Refer to the documentation above for an explanation of the parameters available, they are the same as when you create a feature group using the SDK. Finally, complete the creation by clicking `Create New Feature Group` at the bottom of the page.
+If you have existing credentials, simply proceed by clicking `Next: Select Tables `. If you not, create and save the credentials first. 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/feature_group/create_feature_group.png" alt="Create new Feature Group">
+    <img src="../../../../assets/images/guides/feature_group/credentials_selection.png" alt="setup credentials in Data Sources">
+  </figure>
+</p>
+
+The database navigation structure depends on your specific data source. You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery. In the UI you can select one or more tables, for each selected table, you must designate one or more primary keys before proceeding. You can also review the names and data types of individual columns you want to include.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/ext_table_selection.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources for External feature Group">
+  </figure>
+</p>
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/primary_key_selection.png" style="border: 10px solid #f5f5f5" alt="select details of external feature group">
+  </figure>
+</p>
+
+Complete the creation by clicking `Next: Review Configuration` at the bottom of the page, you will be prompted with a final validation window where you will be able to create a name for your external feature group. 
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/validation_ext_feature_group.png" alt="Validate the creation of a new external feature group">
   </figure>
 </p>
