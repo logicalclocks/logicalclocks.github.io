@@ -1,15 +1,16 @@
 ---
 description: Documentation on how to configure Kubernetes scheduling options for Hopsworks workloads.
 ---
+
 # Scheduler
 
 ## Introduction
 
-Hopsworks allows users to configure [Affinity](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/) and [Priority Classes](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass) when running workloads on Hopsworks, this includes jobs, jupyter notebooks and model deployments.
+Hopsworks allows users to configure some Kubernetes scheduler abstractions, such as [Affinity](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/) and [Priority Classes](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass). Hopsworks also supports additional scheduling abstractions backed by Kueue. This includes [Queues](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/), [Cohorts](https://kueue.sigs.k8s.io/docs/concepts/cohort/) and [Topologies](https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/). All these scheduling abstractions are supported in jobs, jupyter notebooks and model deployments. Kueue abstractions however, are currently not supported for Spark jobs.
 
-Hopsworks Admins can control which labels and priority classes can be used the cluster (see [Cluster configuration](#cluster-configuration) section) and by which project (see [Default Project configuration](#default-project-configuration) section) 
+Hopsworks Admins can control which labels and priority classes can be used the cluster (see [Cluster configuration](#cluster-configuration) section) and by which project (see [Default Project configuration](#default-project-configuration) section)
 
-Within a project, data owners can set defaults for jobs and Jupyter notebooks running within that project (see: [Project defaults](#project-defaults) section). 
+Within a project, data owners can set defaults for jobs and Jupyter notebooks running within that project (see: [Project defaults](#project-defaults) section).
 
 ### Node Labels, Node Affinity and Node Anti-Affinity
 
@@ -44,7 +45,31 @@ Common uses:
 
 For more information on Priority Classes, you can check the Kubernetes [Priority Classes documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass) page.
 
-## Cluster Configuration
+## Kueue
+
+Hopsworks adds the integration with Kueue to offer more advanced scheduling abstractions such as queues, cohorts and topologies.
+
+For a more detailed view on how Hopsworks uses the Kueue abstractions you can check the [Kueue details](./kueue_details.md) section.
+
+### Queues, Cohorts
+
+Jobs, notebooks and model deployments are submitted to these queues. Hopsworks administrator can define quotas on how many resources a queue can use. Queues can be grouped together in cohorts in order to add the ability to borrow resources from each other when the other queue does not use its resources.
+
+When creating a new job, the user can select a queue for the job in the `Advance configuration -> Scheduler section`.
+
+![Default queue for user and system jobs](../../../assets/images/guides/project/scheduler/job_queue.png)
+
+### Topologies
+
+The integration of Hopsworks with Kueue, also provides access to the topology abstraction. Topologies can be defined, so that the user can decide for the pods of jobs or model deployments to run somehow grouped together. The user could decide for example, that all pods of a job should run on the same host, because the pods need to transfer a lot of data between each other, and we want to avoid network traffic to lower the latency.
+
+The user can select the topology unit for jobs, notebooks and model deployments in the `Advance configuration -> Scheduler section`.
+
+![Default queue for user and system jobs](../../../assets/images/guides/project/scheduler/job_topology_unit.png)
+
+## Admin configuration
+
+### Affinity and priority classes
 
 Hopsworks admins can control the affinity labels and priority classes available on the Hopsworks cluster from the `Cluster Settings -> Scheduler` page:
 
@@ -71,6 +96,12 @@ Hopsworks Cluster can run within a shared Kubernets Cluster. The first configura
     ```
 
     If the roles above are configured properly (default behaviour), admins can only select values from the drop down menu. If the roles are missing, admins would be required to enter them as free text and should be careful about typos. Any typos here will be propagated in the other configuration and use levels leading to errors or missbehaviour when running computation.
+
+### Queues
+
+Every new project gets automatic access to the default Hopsworks queue. An administrator can define the default queue for projects user jobs and system jobs.
+
+![Default queue for user and system jobs](../../../assets/images/guides/project/scheduler/default_queue.png)
 
 ## Project Configuration
 
