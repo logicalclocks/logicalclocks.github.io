@@ -6,7 +6,7 @@ description: Kueue abstractions
 
 ## Introduction
 
-Hopsworks provides the integration with Kueue to provide the aditional scheduling abstractions. Hopsworks currently acts only as a "reader" to the Kueue abstractions and currently does not manage the lifecycle of Kueue abstraction with the exception of the default localqueue for each namespace. All the other abstractions are expected to be managed by the administrators of Hopsworks, directly on the Kubernetes cluster.
+Hopsworks provides the integration with Kueue to provide the additional scheduling abstractions. Hopsworks currently acts only as a "reader" to the Kueue abstractions and currently does not manage the lifecycle of Kueue abstraction with the exception of the default localqueue for each namespace. All the other abstractions are expected to be managed by the administrators of Hopsworks, directly on the Kubernetes cluster.
 
 However Hopsworks and Kueue integration currently only supports frameworks python and ray for jobs, notebooks and model deployments. The same queues are also used for Hopsworks internal jobs (zipping, git operations, python library installation). Spark is currently not supported, and thus will not be managed by Kueue for scheduling, and instead it will bypass the queues setup (important to note when thinking about queue quotas) and instead are managed directly by the Kubernetes Scheduler.
 
@@ -64,7 +64,7 @@ spec:
         nominalQuota: "0"
 ```
 
-The [preemption](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/#preemption) and [nominal quotas](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/#flavors-and-resources) are set to the minimal as this queue is designed to have lowest priority in getting resources allocated. If cluster is underutilized and there are resources available, it can still borrow up to the maximum resources present in the parent cohort, but by design this queue has no dedicated resources. The presumption is that other, more important queues, defined by the cluster administrator will have higher preference in getting resources.
+The [preemption](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/#preemption) and [nominal quotas](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/#flavors-and-resources) are set to the minimal as this queue is designed to have lowest priority in getting resources allocated. If a cluster is underutilized and there are resources available, it can still borrow up to the maximum resources present in the parent cohort, but by design this queue has no dedicated resources. The presumption is that other, more important queues, defined by the cluster administrator will have higher preference in getting resources.
 
 ### Local Queues
 
@@ -110,11 +110,11 @@ Cohorts can contain other cohorts and thus you can create a hierarchy of cohorts
     weight
 ```
 
-in the definition of a cohort, the user can control a priority towards borowing resources from other cohorts.
+in the definition of a cohort, the user can control a priority towards borrowing resources from other cohorts.
 
 ### Topologies
 
-[Topologies](https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/) defines a way of grouping together pods belonging to the same job/deployment so that they are colocated wihtin the same topology unit. Hopsworks defines a default topology:
+[Topologies](https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/) defines a way of grouping together pods belonging to the same job/deployment so that they are colocated within the same topology unit. Hopsworks defines a default topology:
 
 ```
 apiVersion: kueue.x-k8s.io/v1alpha1
