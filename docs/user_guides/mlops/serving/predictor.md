@@ -171,6 +171,23 @@ Once you are done with the changes, click on `Create new deployment` at the bott
             # Use the model to make predictions
             # return self.model.predict(inputs)
     ```
+=== "Async Predictor"
+    ``` python
+    class Predictor():
+
+        def __init__(self):
+            """ Initialization code goes here"""
+            # Model files can be found at os.environ["MODEL_FILES_PATH"]
+            # self.model = ... # load your model
+
+        async def predict(self, inputs):
+            """ Asynchronously serve predictions using the trained model"""
+            # Preform async operations that required
+            # result = await some_async_preprocessing(inputs)
+            
+            # Use the model to make predictions
+            # return self.model.predict(result)
+    ```
 === "Predictor (vLLM deployments only)"
     ``` python
     import os
