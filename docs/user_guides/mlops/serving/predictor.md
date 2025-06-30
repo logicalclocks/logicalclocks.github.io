@@ -171,7 +171,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
             # Use the model to make predictions
             # return self.model.predict(inputs)
     ```
-=== "Aysnc Predictor"
+=== "Async Predictor"
     ``` python
     class Predictor():
 
