@@ -127,7 +127,7 @@ The following is required if you are using the EKS AWS Load Balancer Controller 
 
 You need to update the CLUSTER NAME and the POLICY ARN generated above
 
-```bash
+```yaml
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
@@ -144,8 +144,8 @@ managedNodeGroups:
     amiFamily: AmazonLinux2023
     instanceType: m6i.2xlarge
     minSize: 1
-    maxSize: 4
-    desiredCapacity: 4
+    maxSize: 5
+    desiredCapacity: 5
     volumeSize: 100
     ssh:
       allow: true # will use ~/.ssh/id_rsa.pub as the default ssh key
@@ -154,7 +154,7 @@ managedNodeGroups:
         - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
         - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-        - arn:aws:iam::827555229956:policy/POLICYNAME
+        - arn:aws:iam::ECR_AWS_ACCOUNT_ID:policy/POLICYNAME
       withAddonPolicies:
         awsLoadBalancerController: true
 addons:
@@ -233,11 +233,12 @@ kubectl create namespace hopsworks
 
 - Update values.aws.yml
 
-```bash
+```yaml
 global:
   _hopsworks:
-    storageClassName: ebs-gp3
+    storageClassName: &storageClass ebs-gp3
     cloudProvider: "AWS"
+
     managedDockerRegistery:
       enabled: true
       domain: "ECR_AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com"
@@ -245,9 +246,21 @@ global:
       credHelper:
         enabled: true
         secretName: &awsregcred "awsregcred"
+    
+    managedObjectStorage:
+      enabled: true
+      s3:
+        bucket: 
+          name: &bucket "BUCKET_NAME"
+        region: &region "REGION"
+        secret:
+          name: &awscredentialsname "aws-credentials"
+          acess_key_id: &awskeyid "access-key-id"
+          secret_key_id: &awsaccesskey "secret-access-key"
+    
     minio:
-      hopsfs:
-        enabled: false
+      enabled: false
+
     externalLoadBalancers:
       enabled: true
       class: null
@@ -256,40 +269,56 @@ global:
 
 hopsworks:
   variables:
+    # awsregcred Secret contains the docker configuration to use Cloud
+    # specific docker login helper method instead of username/password
+    # Currently only AWS and GCP support this method
+    # Azure has deprecated it
     docker_operations_managed_docker_secrets: *awsregcred
-    docker_operations_image_pull_secrets: "regcred"
+    # We *need* to put awsregcred here because this is the list of
+    # Secrets that are copied from hopsworks namespace to Projects namespace
+    # during project creation.
+    docker_operations_image_pull_secrets: "awsregcred"
   dockerRegistry:
     preset:
       usePullPush: false
       secrets:
-        - "regcred"
         - *awsregcred
-  service:
-    worker:
-      external:
-        http:
-          type: NodePort
   ingress:
     enabled: true
     ingressClassName: alb
     annotations:
       alb.ingress.kubernetes.io/scheme: internet-facing
-   
+
+rondb:
+  rondb:
+    resources:
+      requests:
+        storage:
+          classes:
+            binlogFiles: *storageClass
+            default: *storageClass
+            diskColumns: *storageClass
+
 hopsfs:
   objectStorage:
     enabled: true
     provider: "S3"
     s3:
-      bucket: 
-        name: "BUCKET_NAME"
-      region: "REGION"
+      bucket:
+        name: *bucket
+      region: *region
 
 consul:
   consul:
     server:
-      storageClass: ebs-gp3
-```
+      storageClass: *storageClass
 
+prometheus:
+  prometheus:
+    server:
+      persistentVolume:
+        storageClass: *storageClass
+```
 
 - Run the Helm install 
 
@@ -310,7 +339,7 @@ kubectl -n hopsworks get pods
 Using the Helm chart and the values files the following resources are created:
 
 Load Balancers:
-```bash
+```yaml
     externalLoadBalancers:
       enabled: true
       class: null
@@ -347,7 +376,7 @@ Other load balancer providers are also supported by providing the appropriate co
 
 Ingress:
 
-```bash
+```yaml
   ingress:
     enabled: true
     ingressClassName: alb
