@@ -54,39 +54,39 @@
 -<span class=w> </span>arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
 </code></pre></div> <p>The following is required if you are using the EKS AWS Load Balancer Controller to grant permissions to the controller to provision the necessary load balancers <a href=https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/ >Welcome: AWS Load Balancer Controller</a></p> <div class=highlight><pre><span></span><code><span class=w>      </span>withAddonPolicies:
 <span class=w>        </span>awsLoadBalancerController:<span class=w> </span><span class=nb>true</span><span class=w> </span>
-</code></pre></div> <p>You need to update the CLUSTER NAME and the POLICY ARN generated above</p> <div class=highlight><pre><span></span><code>apiVersion:<span class=w> </span>eksctl.io/v1alpha5
-kind:<span class=w> </span>ClusterConfig
+</code></pre></div> <p>You need to update the CLUSTER NAME and the POLICY ARN generated above</p> <div class=highlight><pre><span></span><code><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">eksctl.io/v1alpha5</span>
+<span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ClusterConfig</span>
 
-metadata:
-<span class=w>  </span>name:<span class=w> </span>CLUSTER_NAME
-<span class=w>  </span>region:<span class=w> </span>REGION
-<span class=w>  </span>version:<span class=w> </span><span class=s2>&quot;1.29&quot;</span><span class=w> </span>
+<span class=nt>metadata</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">CLUSTER_NAME</span>
+<span class=w>  </span><span class=nt>region</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">REGION</span>
+<span class=w>  </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=s>&quot;1.29&quot;</span><span class=w> </span>
 
-iam:
-<span class=w>  </span>withOIDC:<span class=w> </span><span class=nb>true</span>
+<span class=nt>iam</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>withOIDC</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 
-managedNodeGroups:
-<span class=w>  </span>-<span class=w> </span>name:<span class=w> </span>ng-1
-<span class=w>    </span>amiFamily:<span class=w> </span>AmazonLinux2023
-<span class=w>    </span>instanceType:<span class=w> </span>m6i.2xlarge
-<span class=w>    </span>minSize:<span class=w> </span><span class=m>1</span>
-<span class=w>    </span>maxSize:<span class=w> </span><span class=m>4</span>
-<span class=w>    </span>desiredCapacity:<span class=w> </span><span class=m>4</span>
-<span class=w>    </span>volumeSize:<span class=w> </span><span class=m>100</span>
-<span class=w>    </span>ssh:
-<span class=w>      </span>allow:<span class=w> </span><span class=nb>true</span><span class=w> </span><span class=c1># will use ~/.ssh/id_rsa.pub as the default ssh key</span>
-<span class=w>    </span>iam:
-<span class=w>      </span>attachPolicyARNs:
-<span class=w>        </span>-<span class=w> </span>arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-<span class=w>        </span>-<span class=w> </span>arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-<span class=w>        </span>-<span class=w> </span>arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-<span class=w>        </span>-<span class=w> </span>arn:aws:iam::827555229956:policy/POLICYNAME
-<span class=w>      </span>withAddonPolicies:
-<span class=w>        </span>awsLoadBalancerController:<span class=w> </span><span class=nb>true</span>
-addons:
-<span class=w>  </span>-<span class=w> </span>name:<span class=w> </span>aws-ebs-csi-driver
-<span class=w>    </span>wellKnownPolicies:<span class=w>      </span><span class=c1># add IAM and service account</span>
-<span class=w>      </span>ebsCSIController:<span class=w> </span><span class=nb>true</span>
+<span class=nt>managedNodeGroups</span><span class=p>:</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ng-1</span>
+<span class=w>    </span><span class=nt>amiFamily</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">AmazonLinux2023</span>
+<span class=w>    </span><span class=nt>instanceType</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">m6i.2xlarge</span>
+<span class=w>    </span><span class=nt>minSize</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class=w>    </span><span class=nt>maxSize</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class=w>    </span><span class=nt>desiredCapacity</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class=w>    </span><span class=nt>volumeSize</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class=w>    </span><span class=nt>ssh</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>allow</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class=w> </span><span class=c1># will use ~/.ssh/id_rsa.pub as the default ssh key</span>
+<span class=w>    </span><span class=nt>iam</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>attachPolicyARNs</span><span class=p>:</span>
+<span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy</span>
+<span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy</span>
+<span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly</span>
+<span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:iam::ECR_AWS_ACCOUNT_ID:policy/POLICYNAME</span>
+<span class=w>      </span><span class=nt>withAddonPolicies</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>awsLoadBalancerController</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=nt>addons</span><span class=p>:</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">aws-ebs-csi-driver</span>
+<span class=w>    </span><span class=nt>wellKnownPolicies</span><span class=p>:</span><span class=w>      </span><span class=c1># add IAM and service account</span>
+<span class=w>      </span><span class=nt>ebsCSIController</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div> <p>You can create the EKS cluster using the following eksctl command:</p> <div class=highlight><pre><span></span><code>eksctl<span class=w> </span>create<span class=w> </span>cluster<span class=w> </span>-f<span class=w> </span>eksctl.yaml<span class=w> </span>--profile<span class=w> </span>PROFILE
 </code></pre></div> <p>Once the creation process is completed, you should be able to access the cluster using the kubectl CLI tool:</p> <div class=highlight><pre><span></span><code>kubectl<span class=w> </span>get<span class=w> </span>nodes
 </code></pre></div> <p>You should see the list of nodes provisioned for the cluster.</p> <h3 id=step-14-install-the-aws-loadbalancer-addon>Step 1.4: Install the AWS LoadBalancer Addon<a class=headerlink href=#step-14-install-the-aws-loadbalancer-addon title="Permanent link">#</a></h3> <p>For Hopsworks to provision the necessary network and application load balancers, we need to install the AWS LoadBalancer plugin (See <a href=https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html>AWS Documentation</a> ) <div class=highlight><pre><span></span><code>helm<span class=w> </span>repo<span class=w> </span>add<span class=w> </span>eks<span class=w> </span>https://aws.github.io/eks-charts
@@ -108,71 +108,99 @@ helm<span class=w> </span>install<span class=w> </span>aws-load-balancer-control
 </code></pre></div> <h2 id=step-2-hopsworks-deployment>Step 2: Hopsworks Deployment<a class=headerlink href=#step-2-hopsworks-deployment title="Permanent link">#</a></h2> <p>This section describes the steps required to deploy the Hopsworks stack using Helm.</p> <h3 id=step-21-add-the-hopsworks-helm-repository>Step 2.1: Add the Hopsworks Helm repository<a class=headerlink href=#step-21-add-the-hopsworks-helm-repository title="Permanent link">#</a></h3> <ul> <li>Configure Repo</li> </ul> <p>To obtain access to the Hopsworks helm chart repository, please obtain an evaluation/startup licence <a href=https://www.hopsworks.ai/try>here</a>.</p> <p>Once you have the helm chart repository URL, replace the environment variable $HOPSWORKS_REPO in the following command with this URL.</p> <div class=highlight><pre><span></span><code>helm<span class=w> </span>repo<span class=w> </span>add<span class=w> </span>hopsworks<span class=w> </span><span class=nv>$HOPSWORKS_REPO</span>
 helm<span class=w> </span>repo<span class=w> </span>update<span class=w> </span>hopsworks
 </code></pre></div> <ul> <li>Create Hopsworks namespace </li> </ul> <div class=highlight><pre><span></span><code>kubectl<span class=w> </span>create<span class=w> </span>namespace<span class=w> </span>hopsworks
-</code></pre></div> <ul> <li>Update values.aws.yml</li> </ul> <div class=highlight><pre><span></span><code>global:
-<span class=w>  </span>_hopsworks:
-<span class=w>    </span>storageClassName:<span class=w> </span>ebs-gp3
-<span class=w>    </span>cloudProvider:<span class=w> </span><span class=s2>&quot;AWS&quot;</span>
-<span class=w>    </span>managedDockerRegistery:
-<span class=w>      </span>enabled:<span class=w> </span><span class=nb>true</span>
-<span class=w>      </span>domain:<span class=w> </span><span class=s2>&quot;ECR_AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com&quot;</span>
-<span class=w>      </span>namespace:<span class=w> </span><span class=s2>&quot;NAMESPACE&quot;</span>
-<span class=w>      </span>credHelper:
-<span class=w>        </span>enabled:<span class=w> </span><span class=nb>true</span>
-<span class=w>        </span>secretName:<span class=w> </span><span class=p>&amp;</span>awsregcred<span class=w> </span><span class=s2>&quot;awsregcred&quot;</span>
-<span class=w>    </span>minio:
-<span class=w>      </span>hopsfs:
-<span class=w>        </span>enabled:<span class=w> </span><span class=nb>false</span>
-<span class=w>    </span>externalLoadBalancers:
-<span class=w>      </span>enabled:<span class=w> </span><span class=nb>true</span>
-<span class=w>      </span>class:<span class=w> </span>null
-<span class=w>      </span>annotations:
-<span class=w>        </span>service.beta.kubernetes.io/aws-load-balancer-scheme:<span class=w> </span>internet-facing
+</code></pre></div> <ul> <li>Update values.aws.yml</li> </ul> <div class=highlight><pre><span></span><code><span class=nt>global</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>_hopsworks</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>storageClassName</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;storageClass</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ebs-gp3</span>
+<span class=w>    </span><span class=nt>cloudProvider</span><span class=p>:</span><span class=w> </span><span class=s>&quot;AWS&quot;</span>
 
-hopsworks:
-<span class=w>  </span>variables:
-<span class=w>    </span>docker_operations_managed_docker_secrets:<span class=w> </span>*awsregcred
-<span class=w>    </span>docker_operations_image_pull_secrets:<span class=w> </span><span class=s2>&quot;regcred&quot;</span>
-<span class=w>  </span>dockerRegistry:
-<span class=w>    </span>preset:
-<span class=w>      </span>usePullPush:<span class=w> </span><span class=nb>false</span>
-<span class=w>      </span>secrets:
-<span class=w>        </span>-<span class=w> </span><span class=s2>&quot;regcred&quot;</span>
-<span class=w>        </span>-<span class=w> </span>*awsregcred
-<span class=w>  </span>service:
-<span class=w>    </span>worker:
-<span class=w>      </span>external:
-<span class=w>        </span>http:
-<span class=w>          </span>type:<span class=w> </span>NodePort
-<span class=w>  </span>ingress:
-<span class=w>    </span>enabled:<span class=w> </span><span class=nb>true</span>
-<span class=w>    </span>ingressClassName:<span class=w> </span>alb
-<span class=w>    </span>annotations:
-<span class=w>      </span>alb.ingress.kubernetes.io/scheme:<span class=w> </span>internet-facing
+<span class=w>    </span><span class=nt>managedDockerRegistery</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>      </span><span class=nt>domain</span><span class=p>:</span><span class=w> </span><span class=s>&quot;ECR_AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com&quot;</span>
+<span class=w>      </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=s>&quot;NAMESPACE&quot;</span>
+<span class=w>      </span><span class=nt>credHelper</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>        </span><span class=nt>secretName</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;awsregcred</span><span class=w> </span><span class=s>&quot;awsregcred&quot;</span>
 
-hopsfs:
-<span class=w>  </span>objectStorage:
-<span class=w>    </span>enabled:<span class=w> </span><span class=nb>true</span>
-<span class=w>    </span>provider:<span class=w> </span><span class=s2>&quot;S3&quot;</span>
-<span class=w>    </span>s3:
-<span class=w>      </span>bucket:<span class=w> </span>
-<span class=w>        </span>name:<span class=w> </span><span class=s2>&quot;BUCKET_NAME&quot;</span>
-<span class=w>      </span>region:<span class=w> </span><span class=s2>&quot;REGION&quot;</span>
+<span class=w>    </span><span class=nt>managedObjectStorage</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>      </span><span class=nt>s3</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>bucket</span><span class=p>:</span><span class=w> </span>
+<span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;bucket</span><span class=w> </span><span class=s>&quot;BUCKET_NAME&quot;</span>
+<span class=w>        </span><span class=nt>region</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;region</span><span class=w> </span><span class=s>&quot;REGION&quot;</span>
+<span class=w>        </span><span class=nt>secret</span><span class=p>:</span>
+<span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;awscredentialsname</span><span class=w> </span><span class=s>&quot;aws-credentials&quot;</span>
+<span class=w>          </span><span class=nt>acess_key_id</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;awskeyid</span><span class=w> </span><span class=s>&quot;access-key-id&quot;</span>
+<span class=w>          </span><span class=nt>secret_key_id</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;awsaccesskey</span><span class=w> </span><span class=s>&quot;secret-access-key&quot;</span>
 
-consul:
-<span class=w>  </span>consul:
-<span class=w>    </span>server:
-<span class=w>      </span>storageClass:<span class=w> </span>ebs-gp3
+<span class=w>    </span><span class=nt>minio</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class=w>    </span><span class=nt>externalLoadBalancers</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>      </span><span class=nt>class</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class=w>      </span><span class=nt>annotations</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>service.beta.kubernetes.io/aws-load-balancer-scheme</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">internet-facing</span>
+
+<span class=nt>hopsworks</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>variables</span><span class=p>:</span>
+<span class=w>    </span><span class=c1># awsregcred Secret contains the docker configuration to use Cloud</span>
+<span class=w>    </span><span class=c1># specific docker login helper method instead of username/password</span>
+<span class=w>    </span><span class=c1># Currently only AWS and GCP support this method</span>
+<span class=w>    </span><span class=c1># Azure has deprecated it</span>
+<span class=w>    </span><span class=nt>docker_operations_managed_docker_secrets</span><span class=p>:</span><span class=w> </span><span class=nv>*awsregcred</span>
+<span class=w>    </span><span class=c1># We *need* to put awsregcred here because this is the list of</span>
+<span class=w>    </span><span class=c1># Secrets that are copied from hopsworks namespace to Projects namespace</span>
+<span class=w>    </span><span class=c1># during project creation.</span>
+<span class=w>    </span><span class=nt>docker_operations_image_pull_secrets</span><span class=p>:</span><span class=w> </span><span class=s>&quot;awsregcred&quot;</span>
+<span class=w>  </span><span class=nt>dockerRegistry</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>preset</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>usePullPush</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class=w>      </span><span class=nt>secrets</span><span class=p>:</span>
+<span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nv>*awsregcred</span>
+<span class=w>  </span><span class=nt>ingress</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>    </span><span class=nt>ingressClassName</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">alb</span>
+<span class=w>    </span><span class=nt>annotations</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>alb.ingress.kubernetes.io/scheme</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">internet-facing</span>
+
+<span class=nt>rondb</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>rondb</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>resources</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>requests</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>storage</span><span class=p>:</span>
+<span class=w>          </span><span class=nt>classes</span><span class=p>:</span>
+<span class=w>            </span><span class=nt>default</span><span class=p>:</span><span class=w> </span><span class=nv>*storageClass</span>
+
+<span class=nt>hopsfs</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>objectStorage</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>    </span><span class=nt>provider</span><span class=p>:</span><span class=w> </span><span class=s>&quot;S3&quot;</span>
+<span class=w>    </span><span class=nt>s3</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>bucket</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=nv>*bucket</span>
+<span class=w>      </span><span class=nt>region</span><span class=p>:</span><span class=w> </span><span class=nv>*region</span>
+
+<span class=nt>consul</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>consul</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>server</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>storageClass</span><span class=p>:</span><span class=w> </span><span class=nv>*storageClass</span>
+
+<span class=nt>prometheus</span><span class=p>:</span>
+<span class=w>  </span><span class=nt>prometheus</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>server</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>persistentVolume</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>storageClass</span><span class=p>:</span><span class=w> </span><span class=nv>*storageClass</span>
 </code></pre></div> <ul> <li>Run the Helm install </li> </ul> <div class=highlight><pre><span></span><code>helm<span class=w> </span>install<span class=w> </span>hopsworks<span class=w> </span>hopsworks/hopsworks<span class=w> </span>--namespace<span class=w> </span>hopsworks<span class=w> </span>--values<span class=w> </span>values.aws.yaml<span class=w> </span>--timeout<span class=o>=</span>600s
 </code></pre></div> <p>Using the kubectl CLI tool, you can track the deployment process. You can use the command below to track which pods are running and which ones are in the process of being provisioned. You can also use the command below to detect any failure.</p> <div class=highlight><pre><span></span><code>kubectl<span class=w> </span>-n<span class=w> </span>hopsworks<span class=w> </span>get<span class=w> </span>pods
-</code></pre></div> <h2 id=step-3-resources-created>Step 3: Resources Created<a class=headerlink href=#step-3-resources-created title="Permanent link">#</a></h2> <p>Using the Helm chart and the values files the following resources are created:</p> <p>Load Balancers: <div class=highlight><pre><span></span><code><span class=w>    </span>externalLoadBalancers:
-<span class=w>      </span>enabled:<span class=w> </span><span class=nb>true</span>
-<span class=w>      </span>class:<span class=w> </span>null
-<span class=w>      </span>annotations:
-<span class=w>        </span>service.beta.kubernetes.io/aws-load-balancer-scheme:<span class=w> </span>internet-facing
-</code></pre></div></p> <p>Enabling the external load balancer in the values.yml file provisions the following load balancers for the following services:</p> <ul> <li> <p>arrowflight : This load balancer is used to send queries from external clients to the Hopsworks Query Service</p> </li> <li> <p>kafka : This load balancer is used to send data to the Apache Kafka brokers for ingestion to the online feature store.</p> </li> <li> <p>rdrs: This load balancer is used to query online feature store data using the REST APIs</p> </li> <li> <p>mysql: This load balancer is used to query online feature store data using the MySQL APIs</p> </li> <li> <p>opensearch : This load balancer is used to query the Hopsworks vector database</p> </li> </ul> <p>On EKS using the AWS Load Balancers, the AWS controller deployed above will be responsible to provision the necessary load balancers. You can configure the load balancers using the annotations documented in the <a href=https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/ >AWS Load Balancer controller guide</a></p> <p>You can enable/disable individual load balancers provisioning using the following values in the values.yml file:</p> <ul> <li> <p>kafka.externalLoadBalancer.enabled</p> </li> <li> <p>opensearch.externalLoadBalancer.enabled</p> </li> <li> <p>rdrs.externalLoadBalancer.enabled</p> </li> <li> <p>mysql.externalLoadBalancer.enabled</p> </li> </ul> <p>Other load balancer providers are also supported by providing the appropriate controller, class and annotations.</p> <p>Ingress:</p> <div class=highlight><pre><span></span><code><span class=w>  </span>ingress:
-<span class=w>    </span>enabled:<span class=w> </span><span class=nb>true</span>
-<span class=w>    </span>ingressClassName:<span class=w> </span>alb
-<span class=w>    </span>annotations:
-<span class=w>      </span>alb.ingress.kubernetes.io/scheme:<span class=w> </span>internet-facing
+</code></pre></div> <h2 id=step-3-resources-created>Step 3: Resources Created<a class=headerlink href=#step-3-resources-created title="Permanent link">#</a></h2> <p>Using the Helm chart and the values files the following resources are created:</p> <p>Load Balancers: <div class=highlight><pre><span></span><code><span class=w>    </span><span class=nt>externalLoadBalancers</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>      </span><span class=nt>class</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class=w>      </span><span class=nt>annotations</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>service.beta.kubernetes.io/aws-load-balancer-scheme</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">internet-facing</span>
+</code></pre></div></p> <p>Enabling the external load balancer in the values.yml file provisions the following load balancers for the following services:</p> <ul> <li> <p>arrowflight : This load balancer is used to send queries from external clients to the Hopsworks Query Service</p> </li> <li> <p>kafka : This load balancer is used to send data to the Apache Kafka brokers for ingestion to the online feature store.</p> </li> <li> <p>rdrs: This load balancer is used to query online feature store data using the REST APIs</p> </li> <li> <p>mysql: This load balancer is used to query online feature store data using the MySQL APIs</p> </li> <li> <p>opensearch : This load balancer is used to query the Hopsworks vector database</p> </li> </ul> <p>On EKS using the AWS Load Balancers, the AWS controller deployed above will be responsible to provision the necessary load balancers. You can configure the load balancers using the annotations documented in the <a href=https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/ >AWS Load Balancer controller guide</a></p> <p>You can enable/disable individual load balancers provisioning using the following values in the values.yml file:</p> <ul> <li> <p>kafka.externalLoadBalancer.enabled</p> </li> <li> <p>opensearch.externalLoadBalancer.enabled</p> </li> <li> <p>rdrs.externalLoadBalancer.enabled</p> </li> <li> <p>mysql.externalLoadBalancer.enabled</p> </li> </ul> <p>Other load balancer providers are also supported by providing the appropriate controller, class and annotations.</p> <p>Ingress:</p> <div class=highlight><pre><span></span><code><span class=w>  </span><span class=nt>ingress</span><span class=p>:</span>
+<span class=w>    </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class=w>    </span><span class=nt>ingressClassName</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">alb</span>
+<span class=w>    </span><span class=nt>annotations</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>alb.ingress.kubernetes.io/scheme</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">internet-facing</span>
 </code></pre></div> <p>Hopsworks UI and REST interface is available outside the K8s cluster using an Ingress. On AWS this is implemented by provisioning an application load balancer using the AWS load balancer controller. As per the load balancer above, the controller checks for the following annotations: <a href=https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/ >Annotations - AWS Load Balancer Controller</a></p> <p>HTTPS is required to access the Hopsworks UI, therefore you need to add the following annotation:</p> <div class=highlight><pre><span></span><code>alb.ingress.kubernetes.io/certificate-arn:<span class=w> </span>arn:aws:acm:us-west-2:xxxxx:certificate/xxxxxxx
 </code></pre></div> <p>To configure the TLS certificate the Application Load Balancer should use to terminate the connection. The certificate should be available in the <a href=https://aws.amazon.com/certificate-manager/ >AWS Certificate Manager</a></p> <p>Cluster Roles and Cluster Role Bindings:</p> <p>By default a set of cluster roles are provisioned, if you don’t have permissions to provision cluster roles or cluster role bindings, you should reach out to your K8s administrator. You should then provide the appropriate resource names as value in the values.yml file.</p> <h2 id=step-4-next-steps>Step 4: Next steps<a class=headerlink href=#step-4-next-steps title="Permanent link">#</a></h2> <p>Check out our other guides for how to get started with Hopsworks and the Feature Store:</p> <ul> <li>Get started with the <a href=https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb target=_blank>Hopsworks Feature Store</a></li> <li>Follow one of our <a href=../../../tutorials/ >tutorials</a></li> <li>Follow one of our <a href=../../../user_guides/ >Guide</a></li> </ul> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> </div> <div class=md-social> <a href=https://twitter.com/hopsworks target=_blank rel=noopener title=twitter.com class=md-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 512 512"><!-- Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg> </a> <a href=https://github.com/logicalclocks/hopsworks target=_blank rel=noopener title=github.com class=md-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 496 512"><!-- Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> </a> <a href=https://community.hopsworks.ai/ target=_blank rel=noopener title=community.hopsworks.ai class=md-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M225.9 32C103.3 32 0 130.5 0 252.1 0 256 .1 480 .1 480l225.8-.2c122.7 0 222.1-102.3 222.1-223.9C448 134.3 348.6 32 225.9 32zM224 384c-19.4 0-37.9-4.3-54.4-12.1L88.5 392l22.9-75c-9.8-18.1-15.4-38.9-15.4-61 0-70.7 57.3-128 128-128s128 57.3 128 128-57.3 128-128 128z"/></svg> </a> <a href=https://www.linkedin.com/company/hopsworks/ target=_blank rel=noopener title=www.linkedin.com class=md-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg> </a> <a href=https://bit.ly/publichopsworks target=_blank rel=noopener title=bit.ly class=md-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M94.12 315.1c0 25.9-21.16 47.06-47.06 47.06S0 341 0 315.1c0-25.9 21.16-47.06 47.06-47.06h47.06v47.06zm23.72 0c0-25.9 21.16-47.06 47.06-47.06s47.06 21.16 47.06 47.06v117.84c0 25.9-21.16 47.06-47.06 47.06s-47.06-21.16-47.06-47.06V315.1zm47.06-188.98c-25.9 0-47.06-21.16-47.06-47.06S139 32 164.9 32s47.06 21.16 47.06 47.06v47.06H164.9zm0 23.72c25.9 0 47.06 21.16 47.06 47.06s-21.16 47.06-47.06 47.06H47.06C21.16 243.96 0 222.8 0 196.9s21.16-47.06 47.06-47.06H164.9zm188.98 47.06c0-25.9 21.16-47.06 47.06-47.06 25.9 0 47.06 21.16 47.06 47.06s-21.16 47.06-47.06 47.06h-47.06V196.9zm-23.72 0c0 25.9-21.16 47.06-47.06 47.06-25.9 0-47.06-21.16-47.06-47.06V79.06c0-25.9 21.16-47.06 47.06-47.06 25.9 0 47.06 21.16 47.06 47.06V196.9zM283.1 385.88c25.9 0 47.06 21.16 47.06 47.06 0 25.9-21.16 47.06-47.06 47.06-25.9 0-47.06-21.16-47.06-47.06v-47.06h47.06zm0-23.72c-25.9 0-47.06-21.16-47.06-47.06 0-25.9 21.16-47.06 47.06-47.06h117.84c25.9 0 47.06 21.16 47.06 47.06 0 25.9-21.16 47.06-47.06 47.06H283.1z"/></svg> </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script> <script src=../../../assets/javascripts/bundle.1e8ae164.min.js></script> <script src=../../../js/inject-api-links.js></script> <script src=../../../js/dropdown.js></script> <script src=../../../js/quickstart-fullscreen.js></script> </body> </html>
