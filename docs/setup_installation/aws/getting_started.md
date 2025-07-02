@@ -297,7 +297,6 @@ rondb:
           classes:
             binlogFiles: *storageClass
             default: *storageClass
-            diskColumns: *storageClass
 
 hopsfs:
   objectStorage:
