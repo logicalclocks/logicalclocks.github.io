@@ -295,7 +295,6 @@ rondb:
       requests:
         storage:
           classes:
-            binlogFiles: *storageClass
             default: *storageClass
 
 hopsfs:
