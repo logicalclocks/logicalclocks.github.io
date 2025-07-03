@@ -1,7 +1,7 @@
-# Storage Connector Usage
-Here, we look at how to use a Storage Connector after it has been created.
-Storage Connectors provide an important first step for integrating with external data sources.
-The 3 fundamental functionalities where storage connectors are used are:
+# Data Source Usage
+Here, we look at how to use a Data Source after it has been created.
+Data Sources provide an important first step for integrating with external data.
+The 3 fundamental functionalities where data sources are used are:
 
 1. Reading data into Spark Dataframes
 2. Creating external feature groups
@@ -9,8 +9,8 @@ The 3 fundamental functionalities where storage connectors are used are:
 
 We will walk through each functionality in the sections below.
 
-## Retrieving a Storage Connector
-We retrieve a storage connector simply by its unique name.
+## Retrieving a Data Source
+We retrieve a data source simply by its unique name.
 
 === "PySpark"
     ```python
@@ -18,8 +18,8 @@ We retrieve a storage connector simply by its unique name.
     # Connect to the Hopsworks feature store
     project = hopsworks.login()
     feature_store = project.get_feature_store()
-    # Retrieve storage connector
-    connector = feature_store.get_storage_connector('connector_name')
+    # Retrieve data source
+    connector = feature_store.get_data_source('connector_name')
     ```
 
 === "Scala"
@@ -31,13 +31,13 @@ We retrieve a storage connector simply by its unique name.
     val connector = featureStore.getGcsConnector("connector_name")
     ```
 
-## Reading a Spark Dataframe from a Storage Connector
+## Reading a Spark Dataframe from a Data Source
 
-One of the most common usages of a Storage Connector is to read data directly into a Spark Dataframe.
+One of the most common usages of a Data Source is to read data directly into a Spark Dataframe.
 It's achieved via the `read` API of the connector object, which hides all the complexity of authentication and integration
 with a data storage source.
-The `read` API primarily has two parameters for specifying the data source, `path` and `query`, depending on the storage connector type.
-The exact behaviour could change depending on the storage connector type, but broadly they could be classified as below
+The `read` API primarily has two parameters for specifying the data source, `path` and `query`, depending on the data source type.
+The exact behaviour could change depending on the fdata source type, but broadly they could be classified as below
 
 ### Data lake/object based connectors
 
@@ -67,8 +67,8 @@ Instead, user can do this setup explicitly with the `prepare_spark` method and t
 use multiple connectors in one Spark session. `prepare_spark` handles only one bucket associated with that particular connector, however, it is possible to set up multiple connectors with different types as long as their Spark properties do not interfere with each other.
 So, for example a S3 connector and a Snowflake connector can be used in the same session, without calling `prepare_spark` multiple times, as the properties don’t interfere with each other.
 
-If the storage connector is used in another API call, `prepare_spark` gets implicitly invoked, for example,
-when a user materialises a training dataset using a storage connector or uses the storage connector to set up an External Feature Group.
+If the data source is used in another API call, `prepare_spark` gets implicitly invoked, for example,
+when a user materialises a training dataset using a data source or uses the data source to set up an External Feature Group.
 So users do not need to call `prepare_spark` every time they do an operation with a connector, it is only necessary when reading directly using Spark . Using `prepare_spark` is also
 not necessary when using the `read` API.
 
@@ -104,7 +104,7 @@ passing any SQL query to the `query` argument. This is mostly relevant for Googl
 
 ### Streaming based connector
 
-For reading data streams, the Kafka Storage Connector supports reading a Kafka topic into Spark Structured Streaming Dataframes
+For reading data streams, the Kafka Data Source supports reading a Kafka topic into Spark Structured Streaming Dataframes
 instead of a static Dataframe as in other connector types.
 
 === "PySpark"
@@ -115,26 +115,26 @@ instead of a static Dataframe as in other connector types.
 
 ## Creating an External Feature Group
 
-Another important aspect of a storage connector is its ability to facilitate creation of external feature groups with
+Another important aspect of a data source is its ability to facilitate creation of external feature groups with
 the [Connector API](../../../concepts/fs/feature_group/external_fg.md). [External feature groups](../feature_group/create_external.md) are basically offline feature groups
 and essentially stored as tables on external data sources.
-The `Connector API` relies on storage connectors behind the scenes to integrate with external datasource.
-This enables seamless integration with any data source as long as there is a storage connector defined.
+The `Connector API` relies on data sources behind the scenes to integrate with external datasource.
+This enables seamless integration with any data source as long as there is a data source defined.
 
 To create an external feature group, we use the `create_external_feature_group` API, also known as `Connector API`,
-and simply pass the storage connector created before to the `storage_connector` argument.
-Depending on the external data source, we should set either the `query` argument for data warehouse based data sources, or
+and simply pass the data source created before to the `data_source` argument.
+Depending on the external source, we should set either the `query` argument for data warehouse based sources, or
 the `path` and `data_format` arguments for data lake based sources, similar to reading into dataframes as explained in above section.
 
-Example for any data warehouse/SQL based external sources, we set the desired SQL to `query` argument, and set the `storage_connector`
-argument to the storage connector object of desired data source.
+Example for any data warehouse/SQL based external sources, we set the desired SQL to `query` argument, and set the `data_source`
+argument to the data source object of desired data source.
 === "PySpark"
     ```python
     fg = feature_store.create_external_feature_group(name="sales",
         version=1
         description="Physical shop sales features",
         query="SELECT * FROM TABLE",
-        storage_connector=connector,
+        data_source=connector,
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
@@ -146,8 +146,8 @@ For more information on `Connector API`, read detailed guide about [external fea
 
 ## Writing Training Data
 
-Storage connectors are also used while writing training data to external sources. While calling the
-[Feature View](../../../concepts/fs/feature_view/fv_overview.md) API `create_training_data` , we can pass the `storage_connector` argument which is necessary to materialise
+Data Sources are also used while writing training data to external sources. While calling the
+[Feature View](../../../concepts/fs/feature_view/fv_overview.md) API `create_training_data` , we can pass the `data_source` argument which is necessary to materialise
 the data to external sources, as shown below.
 
 === "PySpark"
@@ -157,14 +157,14 @@ the data to external sources, as shown below.
         description = 'describe training data',
         data_format = 'spark_data_format', # e.g. data_format = "parquet" or data_format = "csv"
         write_options = {"wait_for_job": False},
-        storage_connector = connector
+        data_source = connector
     )
     ```
 
 Read more about training data creation [here](../feature_view/training-data.md).
 
 ## Next Steps
-We have gone through the basic use cases of a storage connector.
+We have gone through the basic use cases of a data source.
 For more details about the API functionality for any specific connector type,
 checkout the [API section](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#storage-connector).
 

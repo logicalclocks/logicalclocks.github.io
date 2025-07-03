@@ -1,4 +1,4 @@
-# How-To set up a Redshift Storage Connector
+# How-To set up a Redshift Data Source
 
 ## Introduction
 
@@ -6,11 +6,11 @@ Amazon Redshift is a popular managed data warehouse on AWS, used as a data wareh
 
 Data warehouses are often the source of raw data for feature engineering pipelines and Redshift supports scalable feature computation with SQL. However, Redshift is not viable as an online feature store that serves features to models in production, with its columnar database layout its latency is too high compared to OLTP databases or key-value stores.
 
-In this guide, you will configure a Storage Connector in Hopsworks to save all the authentication information needed in order to set up a connection to your AWS Redshift cluster.
+In this guide, you will configure a Data Source in Hopsworks to save all the authentication information needed in order to set up a connection to your AWS Redshift cluster.
 When you're finished, you'll be able to query the database using Spark through HSFS APIs.
 
 !!! note
-    Currently, it is only possible to create storage connectors in the Hopsworks UI. You cannot create a storage connector programmatically.
+    Currently, it is only possible to create data sources in the Hopsworks UI. You cannot create a data source programmatically.
 
 ## Prerequisites
 
@@ -26,13 +26,13 @@ Read more about IAM roles in our [AWS credentials pass-through guide](../../../.
   option `Instance Role` will use the default ARN Role configured for the cluster instance.
 
 ## Creation in the UI
-### Step 1: Set up new storage connector
+### Step 1: Set up new Data Source
 
-Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
+Head to the Data Source View on Hopsworks (1) and set up a new Data Source (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
-  <figcaption>The Storage Connector View in the User Interface</figcaption>
+  ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
+  <figcaption>The Data Source View in the User Interface</figcaption>
 </figure>
 
 ### Step 2: Enter The Connector Information
@@ -55,15 +55,15 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
 10. Click on "Save Credentials". 
 
 <figure markdown>
-  ![Redshift Connector Creation](../../../../assets/images/guides/fs/storage_connector/redshift_creation.png)
+  ![Redshift Connector Creation](../../../../assets/images/guides/fs/data_source/redshift_creation.png)
   <figcaption>Redshift Connector Creation Form</figcaption>
 </figure>
 
 !!! warning "Session Duration"
     By default, the session duration that the role will be assumed for is 1 hour or 3600 seconds.
-    This means if you want to use the storage connector for example to [read or create an external Feature Group from Redshift](../usage.md##creating-an-external-feature-group), the operation cannot take longer than one hour.
+    This means if you want to use the data source for example to [read or create an external Feature Group from Redshift](../usage.md##creating-an-external-feature-group), the operation cannot take longer than one hour.
 
-    Your administrator can change the default session duration for AWS storage connectors, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming. And then changing the `fs_storage_connector_session_duration` [configuration property](../../../../setup_installation/admin/variables.md) to the appropriate value in seconds.
+    Your administrator can change the default session duration for AWS data sources, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming. And then changing the `fs_data_source_session_duration` [configuration property](../../../../setup_installation/admin/variables.md) to the appropriate value in seconds.
 
 ### Step 3: Upload the Redshift database driver (optional)
 
@@ -80,7 +80,7 @@ You can now add the driver file to the default job and Jupyter configuration. Th
 4. Under "Additional Jars" choose "Upload new file" to upload the driver jar file.
 
 <figure markdown>
-  ![Redshift Driver Job and Jupyter Configuration](../../../../assets/images/guides/fs/storage_connector/jupyter_config.png)
+  ![Redshift Driver Job and Jupyter Configuration](../../../../assets/images/guides/fs/data_source/jupyter_config.png)
   <figcaption>Attaching the Redshift Driver to all Jobs and Jupyter Instances of the Project</figcaption>
 </figure>
 
@@ -92,7 +92,7 @@ file, you can select it using the "From Project" option. To upload the jar file 
    3. Upload the jar file
 
 <figure markdown>
-  ![Redshift Driver Upload](../../../../assets/images/guides/fs/storage_connector/driver_upload.png)
+  ![Redshift Driver Upload](../../../../assets/images/guides/fs/data_source/driver_upload.png)
   <figcaption>Redshift Driver Upload in the File Browser</figcaption>
 </figure>
 
@@ -107,4 +107,4 @@ file, you can select it using the "From Project" option. To upload the jar file 
 
 ## Next Steps
 
-Move on to the [usage guide for storage connectors](../usage.md) to see how you can use your newly created Redshift connector.
+Move on to the [usage guide for data sources](../usage.md) to see how you can use your newly created Redshift connector.

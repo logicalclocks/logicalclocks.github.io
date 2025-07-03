@@ -1,23 +1,23 @@
-# How-To set up a BigQuery Storage Connector
+# How-To set up a BigQuery Data Source
 
 ## Introduction
 
-A BigQuery storage connector provides integration to Google Cloud BigQuery.
+A BigQuery data source provides integration to Google Cloud BigQuery.
 BigQuery is Google Cloud's managed data warehouse supporting that lets you run analytics and 
 execute SQL queries over large scale data. Such data warehouses are often the source of raw data for feature 
 engineering pipelines.
 
-In this guide, you will configure a Storage Connector in Hopsworks to connect to your BigQuery project by saving the
+In this guide, you will configure a Data Source in Hopsworks to connect to your BigQuery project by saving the
 necessary information.
 When you're finished, you'll be able to execute queries and read results of BigQuery using Spark through 
 HSFS APIs.
 
-The storage connector uses the Google `spark-bigquery-connector` behind the scenes.
+The data source uses the Google `spark-bigquery-connector` behind the scenes.
 To read more about the spark connector, like the spark options or usage, check [Apache Spark SQL connector for Google BigQuery.](https://github.com/GoogleCloudDataproc/spark-bigquery-connector#usage
 'github.com/GoogleCloudDataproc/spark-bigquery-connector')
 
 !!! note
-        Currently, it is only possible to create storage connectors in the Hopsworks UI. You cannot create a storage connector programmatically.
+        Currently, it is only possible to create data sources in the Hopsworks UI. You cannot create a data source programmatically.
 
 ## Prerequisites
 
@@ -35,24 +35,24 @@ Before you begin this guide you'll need to retrieve the following information ab
         To read data, the BigQuery service account user needs permission to `create read sesssion` which is available in **BigQuery Admin role**.
 
 ## Creation in the UI
-### Step 1: Set up new storage connector
+### Step 1: Set up new Data Source
 
-Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
+Head to the Data Source View on Hopsworks (1) and set up a new Data Source (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
-  <figcaption>The Storage Connector View in the User Interface</figcaption>
+  ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
+  <figcaption>The Data Source View in the User Interface</figcaption>
 </figure>
 
 
-### Step 2: Enter connector details
-Enter the details for your BigQuery connector. Start by giving
+### Step 2: Enter source details
+Enter the details for your BigQuery storage. Start by giving
 it a unique **name** and an optional
 **description**.
 
 <figure markdown>
-  ![BigQuery Connector Creation](../../../../assets/images/guides/fs/storage_connector/bigquery_creation.png)
-  <figcaption>BigQuery Connector Creation Form</figcaption>
+  ![BigQuery Creation](../../../../assets/images/guides/fs/data_source/bigquery_creation.png)
+  <figcaption>BigQuery Creation Form</figcaption>
 </figure>
 
 1. Select "Google BigQuery" as the storage.
@@ -76,5 +76,5 @@ it a unique **name** and an optional
 
 ## Next Steps
 
-Move on to the [usage guide for storage connectors](../usage.md) to see how you can use your newly created BigQuery 
+Move on to the [usage guide for data sources](../usage.md) to see how you can use your newly created BigQuery 
 connector.

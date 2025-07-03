@@ -40,49 +40,49 @@ hide:
               </div>
             </div>
             <div class="side-content">
-              <div class="name_item ingrey">Storage connectors</div>
+              <div class="name_item ingrey">Data Sources</div>
               <div class="w-layout-grid">
                 <div class="db_frame">
                   <div class="icondb">
                     <div class="db_frame-top"></div>
                     <div class="db_frame-mid"></div>
                   </div>
-                  <div class="name_item db"><a href="./user_guides/fs/storage_connector/creation/jdbc/">JDBC</a></div>
+                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/jdbc/">JDBC</a></div>
                 </div>
                 <div class="db_frame">
                   <div class="icondb">
                     <div class="db_frame-top"></div>
                     <div class="db_frame-mid"></div>
                   </div>
-                  <div class="name_item db"><a href="./user_guides/fs/storage_connector/creation/bigquery/">BigQuery</a></div>
+                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/bigquery/">BigQuery</a></div>
                 </div>
                 <div class="db_frame">
                   <div class="icondb">
                     <div class="db_frame-top"></div>
                     <div class="db_frame-mid"></div>
                   </div>
-                  <div class="name_item db"><a href="./user_guides/fs/storage_connector/creation/s3/">Object Store</a></div>
+                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/s3/">Object Store</a></div>
                 </div>
                 <div class="db_frame">
                   <div class="icondb">
                     <div class="db_frame-top"></div>
                     <div class="db_frame-mid"></div>
                   </div>
-                  <div class="name_item db"><a href="./user_guides/fs/storage_connector/creation/snowflake/">Snowflake</a></div>
+                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/snowflake/">Snowflake</a></div>
                 </div>
                 <div class="db_frame">
                   <div class="icondb">
                     <div class="db_frame-top"></div>
                     <div class="db_frame-mid"></div>
                   </div>
-                  <div class="name_item db"><a href="./user_guides/fs/storage_connector/creation/redshift/">RedShift</a></div>
+                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/redshift/">RedShift</a></div>
                 </div>
                 <div class="db_frame">
                   <div class="icondb">
                     <div class="db_frame-top"></div>
                     <div class="db_frame-mid"></div>
                   </div>
-                  <div class="name_item db"><a href="./user_guides/fs/storage_connector/creation/rds/">RDS</a></div>
+                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/rds/">RDS</a></div>
                 </div>
               </div>
             </div>

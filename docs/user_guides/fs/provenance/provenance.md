@@ -4,7 +4,7 @@
 
 Hopsworks allows users to track provenance (lineage) between:
 
-- storage connectors
+- data sources
 - feature groups
 - feature views
 - training datasets
@@ -15,7 +15,7 @@ In the provenance pages we will call a provenance artifact or shortly artifact, 
 With the following provenance graph:
 
 ```
-storage connector -> feature group -> feature group -> feature view -> training dataset -> model
+data source -> feature group -> feature group -> feature view -> training dataset -> model
 ```
 
 we will call the parent, the artifact to the left, and the child, the artifact to the right. So a feature view has a number of feature groups as parents and can have a number of training datasets as children.
@@ -24,21 +24,21 @@ Tracking provenance allows users to determine where and if an artifact is being 
 
 You can interact with the provenance graph using the UI or the APIs.
 
-## Step 1: Storage connector lineage
+## Step 1: Data Source lineage
 
-The relationship between storage connectors and feature groups is captured automatically when you create an external feature group. You can inspect the relationship between storage connectors and feature groups using the APIs.
+The relationship between data sources and feature groups is captured automatically when you create an external feature group. You can inspect the relationship between data sources and feature groups using the APIs.
 
 === "Python"
 
     ```python
-    # Retrieve the storage connector
-    snowflake_sc = fs.get_storage_connector("snowflake_sc")
+    # Retrieve the data source
+    snowflake_sc = fs.get_data_source("snowflake_sc")
 
     # Create the user profiles feature group
     user_profiles_fg = fs.create_external_feature_group(
         name="user_profiles",
         version=1,
-        storage_connector=snowflake_sc,
+        data_source=snowflake_sc,
         query="SELECT * FROM USER_PROFILES"
     )
     user_profiles_fg.save()
@@ -46,37 +46,37 @@ The relationship between storage connectors and feature groups is captured autom
 
 ### Using the APIs
 
-Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the storage connectors that are part of the feature group. To do so, you can use the [get_storage_connector_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_storage_connector_provenance) method.
+Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the data sources that are part of the feature group. To do so, you can use the [get_data_source_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_data_source_provenance) method.
 
 === "Python"
 
     ```python
-    # Returns all storage connectors linked to the provided feature group
-    lineage = user_profiles_fg.get_storage_connector_provenance()
+    # Returns all data sources linked to the provided feature group
+    lineage = user_profiles_fg.get_data_source_provenance()
 
-    # List all accessible parent storage connectors
+    # List all accessible parent data sources
     lineage.accessible
 
-    # List all deleted parent storage connectors
+    # List all deleted parent data sources
     lineage.deleted
 
-    # List all the inaccessible parent storage connectors
+    # List all the inaccessible parent data sources
     lineage.inaccessible
     ```
 
 === "Python"
 
     ```python
-    # Returns an accessible storage connector linked to the feature group (if it exists)
-    user_profiles_fg.get_storage_connector()
+    # Returns an accessible data source linked to the feature group (if it exists)
+    user_profiles_fg.get_data_source()
     ```
 
-To traverse the provenance graph in the opposite direction (i.e. from the storage connector to the feature group), you can use the [get_feature_groups_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method. When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
+To traverse the provenance graph in the opposite direction (i.e. from the data source to the feature group), you can use the [get_feature_groups_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method. When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
 
 === "Python"
 
     ```python
-    # Returns all feature groups linked to the provided storage connector
+    # Returns all feature groups linked to the provided data source
     lineage = snowflake_sc.get_feature_groups_provenance()
 
     # List all accessible downstream feature groups
@@ -89,7 +89,7 @@ To traverse the provenance graph in the opposite direction (i.e. from the storag
 === "Python"
 
     ```python
-    # Returns all accessible feature groups linked to the storage connector (if any exists)
+    # Returns all accessible feature groups linked to the data source (if any exists)
     snowflake_sc.get_feature_groups()
     ```
 
@@ -183,7 +183,7 @@ To traverse the provenance graph in the opposite direction (i.e. from the parent
     lineage.inaccessible
     ```
 
-You can also visualize the relationship between the parent and child feature groups in the UI. In each feature group overview page you can find a provenance section with the graph of parent storage connectors/feature groups and child feature groups/feature views.
+You can also visualize the relationship between the parent and child feature groups in the UI. In each feature group overview page you can find a provenance section with the graph of parent data source/feature groups and child feature groups/feature views.
 
 <p align="center">
   <figure>
