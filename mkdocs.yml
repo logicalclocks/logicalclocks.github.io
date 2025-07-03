@@ -68,6 +68,7 @@ nav:
                   - ADLS: user_guides/fs/storage_connector/creation/adls.md
                   - BigQuery: user_guides/fs/storage_connector/creation/bigquery.md
                   - GCS: user_guides/fs/storage_connector/creation/gcs.md
+                  - RDS: user_guides/fs/storage_connector/creation/rds.md
               - Usage: user_guides/fs/storage_connector/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
