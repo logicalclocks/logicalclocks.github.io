@@ -40,7 +40,7 @@ Before you begin this guide you'll need to retrieve the following information ab
 Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/storage_connector_create.png)
+  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
   <figcaption>The Storage Connector View in the User Interface</figcaption>
 </figure>
 
@@ -55,22 +55,24 @@ it a unique **name** and an optional
   <figcaption>BigQuery Connector Creation Form</figcaption>
 </figure>
 
-1. Choose `Google BigQuery` from the connector options.
+1. Select "Google BigQuery" as the storage.
 2. Next, set the name of the parent BigQuery project. This is used for billing by GCP.
 3. Authentication: Here you should upload your `JSON keyfile for service 
    account` used for authentication. You can choose to either
    upload from your local using `Upload new file` or choose an existing file within project using `From Project`.
-4. Read Options: There are two ways to read via BigQuery, using the **BigQuery Table** or **BigQuery Query** option:
-   
-      1. **BigQuery Table** - This option reads directly from BigQuery table reference. Note that it can only be used in `read` API for reading data from BigQuery. Creating external Feature Groups using this option is not yet supported. In the UI set the below fields, 
-         1. *BigQuery Project*: The BigQuery project
-         2. *BigQuery Dataset*: The dataset of the table
-         3. *BigQuery Table*: The table to read
-      2. **BigQuery Query** - This option executes a SQL query at runtime. It can be used for both reading data and **creating external Feature Groups**. 
-         1. *Materialization Dataset*: Temporary dataset used by BigQuery for writing. It must be set to a dataset where the GCP user has table creation permission. The queried table must be in the same location as the `materializationDataset` (e.g 'EU' or 'US'). Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]` 
+4. Read Options:
+  In the UI set the below fields, 
+    1. *BigQuery Project*: The BigQuery project to read
+    2. *BigQuery Dataset*: The dataset of the table (Optional)
+    3. *BigQuery Table*: The table to read (Optional)
+
+
+!!! note
+    *Materialization Dataset*: Temporary dataset used by BigQuery for writing. It must be set to a dataset where the GCP user has table creation permission. The queried table must be in the same location as the `materializationDataset` (e.g 'EU' or 'US'). Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]` 
          (Read more details from Google documentation on usage of query for BigQuery spark connector [here](https://github.com/GoogleCloudDataproc/spark-bigquery-connector#reading-data-from-a-bigquery-query)).
 
 5. Spark Options: Optionally, you can set additional spark options using the `Key - Value` pairs.
+6. Click on "Save Credentials". 
 
 ## Next Steps
 

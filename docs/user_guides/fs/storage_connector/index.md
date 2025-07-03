@@ -14,7 +14,7 @@ Storage connectors provide two main mechanisms for authentication: using credent
 By default, each project is created with three default Storage Connectors: A JDBC connector to the online feature store, a HopsFS connector to the Training Datasets directory of the project and a JDBC connector to the offline feature store.
 
 <figure markdown>
-  ![Image title](../../../assets/images/guides/fs/storage_connector/storage_connector_overview.png)
+  ![Image title](../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
   <figcaption>The Storage Connector View in the User Interface</figcaption>
 </figure>
 

@@ -39,7 +39,7 @@ mydb.abcdefg1234.us-west-2.rds.amazonaws.com
 Navigate to the Storage Connector View in Hopsworks and click to create a new storage connector.
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/storage_connector_create.png)
+  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
   <figcaption>The Storage Connector View in the User Interface</figcaption>
 </figure>
 
@@ -52,12 +52,12 @@ Enter the details for your Amazon RDS database.
   <figcaption>RDS Connector Creation Form</figcaption>
 </figure>
 
-1. Select `RDS` as the storage.
+1. Select "RDS" as the storage.
 2. Paste the Host details.
 3. Enter the database name.
 4. Specify which port to use.
 5. Provide the username and password.
-6. Click "Save credentials".
+6. Click on "Save Credentials".
 
 ## Next Steps
 
