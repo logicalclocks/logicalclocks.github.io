@@ -19,7 +19,7 @@ We retrieve a data source simply by its unique name.
     project = hopsworks.login()
     feature_store = project.get_feature_store()
     # Retrieve data source
-    connector = feature_store.get_data_source('connector_name')
+    connector = feature_store.get_storage_connector('connector_name')
     ```
 
 === "Scala"
@@ -122,11 +122,11 @@ The `Connector API` relies on data sources behind the scenes to integrate with e
 This enables seamless integration with any data source as long as there is a data source defined.
 
 To create an external feature group, we use the `create_external_feature_group` API, also known as `Connector API`,
-and simply pass the data source created before to the `data_source` argument.
+and simply pass the data source created before to the `storage_connector` argument.
 Depending on the external source, we should set either the `query` argument for data warehouse based sources, or
 the `path` and `data_format` arguments for data lake based sources, similar to reading into dataframes as explained in above section.
 
-Example for any data warehouse/SQL based external sources, we set the desired SQL to `query` argument, and set the `data_source`
+Example for any data warehouse/SQL based external sources, we set the desired SQL to `query` argument, and set the `storage_connector`
 argument to the data source object of desired data source.
 === "PySpark"
     ```python
@@ -134,7 +134,7 @@ argument to the data source object of desired data source.
         version=1
         description="Physical shop sales features",
         query="SELECT * FROM TABLE",
-        data_source=connector,
+        storage_connector=connector,
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
@@ -147,7 +147,7 @@ For more information on `Connector API`, read detailed guide about [external fea
 ## Writing Training Data
 
 Data Sources are also used while writing training data to external sources. While calling the
-[Feature View](../../../concepts/fs/feature_view/fv_overview.md) API `create_training_data` , we can pass the `data_source` argument which is necessary to materialise
+[Feature View](../../../concepts/fs/feature_view/fv_overview.md) API `create_training_data` , we can pass the `storage_connector` argument which is necessary to materialise
 the data to external sources, as shown below.
 
 === "PySpark"
@@ -157,7 +157,7 @@ the data to external sources, as shown below.
         description = 'describe training data',
         data_format = 'spark_data_format', # e.g. data_format = "parquet" or data_format = "csv"
         write_options = {"wait_for_job": False},
-        data_source = connector
+        storage_connector = connector
     )
     ```
 
@@ -166,5 +166,5 @@ Read more about training data creation [here](../feature_view/training-data.md).
 ## Next Steps
 We have gone through the basic use cases of a data source.
 For more details about the API functionality for any specific connector type,
-checkout the [API section](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/data_source_api/#storage-connector).
+checkout the [API section](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#storage-connector).
 
