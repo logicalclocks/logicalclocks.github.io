@@ -14,14 +14,14 @@ Before you begin this guide we suggest you read the [External Feature Group](../
 
 ## Create using the HSFS APIs
 
-### Retrieve the storage connector
+### Retrieve the Data Source
 
-To create an external feature group using the HSFS APIs you need to provide an existing [storage connector](../storage_connector/index.md).
+To create an external feature group using the HSFS APIs you need to provide an existing [data source](../data_source/index.md).
 
 === "Python"
 
     ```python
-    connector = feature_store.get_storage_connector("connector_name")
+    connector = feature_store.get_data_source("connector_name")
     ```
 
 ### Create an External Feature Group
@@ -50,7 +50,7 @@ The first step is to instantiate the metadata through the `create_external_featu
         version=1,
         description="Physical shop sales features",
         query=query,
-        storage_connector=connector,
+        data_source=connector,
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
@@ -67,7 +67,7 @@ The first step is to instantiate the metadata through the `create_external_featu
         version=1,
         description="Physical shop sales features",
         data_format="parquet",
-        storage_connector=connector,
+        data_source=connector,
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
@@ -79,7 +79,7 @@ The full method documentation is available [here](https://docs.hopsworks.ai/hops
 
 The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
-If the storage connector is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the storage connector is defined for a data lake, the location of the data as well as the format need to be provided.
+If the data source is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the data source is defined for a data lake, the location of the data as well as the format need to be provided.
 
 Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported.
 
@@ -105,7 +105,7 @@ You can enable online storage for external feature groups, however, the sync fro
                 version=1,
                 description="Physical shop sales features",
                 query=query,
-                storage_connector=connector,
+                data_source=connector,
                 primary_key=['ss_store_sk'],
                 event_time='sale_date',
                 online_enabled=True)
@@ -125,7 +125,7 @@ The `insert()` method takes a DataFrame as parameter and writes it _only_ to the
 Hopsworks Feature Store does not support time-travel queries on external feature groups.
 
 Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
-Nevertheless, external feature groups defined top of any storage connector can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_validation_test_split)
+Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_validation_test_split)
 
 
 ### API Reference

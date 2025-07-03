@@ -1,14 +1,14 @@
-# How-To set up a ADLS Storage Connector
+# How-To set up a ADLS Data Source
 
 ## Introduction
 
-Azure Data Lake Storage (ADLS) Gen2 is a HDFS-compatible filesystem on Azure for data analytics. The ADLS Gen2 filesystem stores its data in Azure Blob storage, ensuring low-cost storage, high availability, and disaster recovery. In Hopsworks, you can access ADLS Gen2 by defining a Storage Connector and creating and granting permissions to a service principal.
+Azure Data Lake Storage (ADLS) Gen2 is a HDFS-compatible filesystem on Azure for data analytics. The ADLS Gen2 filesystem stores its data in Azure Blob storage, ensuring low-cost storage, high availability, and disaster recovery. In Hopsworks, you can access ADLS Gen2 by defining a Data Source and creating and granting permissions to a service principal.
 
-In this guide, you will configure a Storage Connector in Hopsworks to save all the authentication information needed in order to set up a connection to your Azure ADLS filesystem.
+In this guide, you will configure a Data Source in Hopsworks to save all the authentication information needed in order to set up a connection to your Azure ADLS filesystem.
 When you're finished, you'll be able to read files using Spark through HSFS APIs. You can also use the connector to write out training data from the Feature Store, in order to make it accessible by third parties.
 
 !!! note
-    Currently, it is only possible to create storage connectors in the Hopsworks UI. You cannot create a storage connector programmatically.
+    Currently, it is only possible to create data sources in the Hopsworks UI. You cannot create a data source programmatically.
 
 ## Prerequisites
 
@@ -19,16 +19,16 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **Service Principal Registration:** Register the service principal, granting it a role assignment such as Storage Blob Data Contributor, on the Azure Data Lake Storage Gen2 account.
 
 !!! info
-    When you specify the 'container name' in the ADLS storage connector, you need to have previously created that container - the Hopsworks Feature Store will not create that storage container for you.
+    When you specify the 'container name' in the ADLS data source, you need to have previously created that container - the Hopsworks Feature Store will not create that storage container for you.
 
 ## Creation in the UI
-### Step 1: Set up new storage connector
+### Step 1: Set up new Data Source
 
-Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
+Head to the Data Source View on Hopsworks (1) and set up a new Data Source (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
-  <figcaption>The Storage Connector View in the User Interface</figcaption>
+  ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
+  <figcaption>The Data Source View in the User Interface</figcaption>
 </figure>
 
 ### Step 2: Enter ADLS Information
@@ -36,7 +36,7 @@ Head to the Storage Connector View on Hopsworks (1) and set up a new storage con
 Enter the details for your ADLS connector. Start by giving it a **name** and an optional **description**.
 
 <figure markdown>
-  ![ADLS Connector Creation](../../../../assets/images/guides/fs/storage_connector/adls_creation.png)
+  ![ADLS Connector Creation](../../../../assets/images/guides/fs/data_source/adls_creation.png)
   <figcaption>ADLS Connector Creation Form</figcaption>
 </figure>
 
@@ -48,20 +48,20 @@ When programmatically signing in, you need to pass the tenant ID with your authe
 2. From App registrations in Azure AD, select your application.
 3. Copy the Directory (tenant) ID and store it in your application code.
     <figure markdown>
-    ![ADLS select tenant-id](../../../../assets/images/guides/fs/storage_connector/adls-copy-tenant-id.png)
-    <figcaption>You need to copy the Directory (tenant) id and paste it to the Hopsworks ADLS storage connector  "Directory id" text field.</figcaption>
+    ![ADLS select tenant-id](../../../../assets/images/guides/fs/data_source/adls-copy-tenant-id.png)
+    <figcaption>You need to copy the Directory (tenant) id and paste it to the Hopsworks ADLS Data Source "Directory id" text field.</figcaption>
     </figure>
 
 4. Copy the Application ID and store it in your application code.
     <figure markdown>
-    ![ADLS select app-id](../../../../assets/images/guides/fs/storage_connector/adls-copy-app-id.png)
-    <figcaption>>You need to copy the Application id and paste it to the Hopsworks ADLS storage connector "Application id" text field.</figcaption>
+    ![ADLS select app-id](../../../../assets/images/guides/fs/data_source/adls-copy-app-id.png)
+    <figcaption>>You need to copy the Application id and paste it to the Hopsworks ADLS Data Source "Application id" text field.</figcaption>
     </figure>
 
 5. Create an Application Secret and copy it into the Service Credential field.
     <figure markdown>
-    ![ADLS enter application secret](../../../../assets/images/guides/fs/storage_connector/adls-copy-secret.png)
-    <figcaption>You need to copy the Application Secret and paste it to the Hopsworks ADLS storage connector "Service Credential" text field.</figcaption>
+    ![ADLS enter application secret](../../../../assets/images/guides/fs/data_source/adls-copy-secret.png)
+    <figcaption>You need to copy the Application Secret and paste it to the Hopsworks ADLS Data Source "Service Credential" text field.</figcaption>
     </figure>
 
 #### Common Problems
@@ -76,4 +76,4 @@ If you get an error "StatusCode=404 StatusDescription=The specified filesystem d
 
 ## Next Steps
 
-Move on to the [usage guide for storage connectors](../usage.md) to see how you can use your newly created ADLS connector.
+Move on to the [usage guide for data sources](../usage.md) to see how you can use your newly created ADLS connector.
