@@ -164,10 +164,10 @@ Furthermore, the functionality provided by the `model` and `serving` module in `
 
 This list is meant to serve as a starting point to explore the new features of the Hopsworks 3.0 release, which can significantly improve your workflows.
 
-### Added new Storage Connectors: GCS, BigQuery and Kafka
-With the added support for Google Cloud, we added also two new [storage connectors](../fs/storage_connector/index.md): [Google Cloud Storage](../fs/storage_connector/creation/gcs.md) and [Google BigQuery](../fs/storage_connector/creation/bigquery.md). Users can use these connectors to create external feature groups or write out training data.
+### Added new Data Sources: GCS, BigQuery and Kafka
+With the added support for Google Cloud, we added also two new [data sources](../fs/data_source/index.md): [Google Cloud Storage](../fs/data_source/creation/gcs.md) and [Google BigQuery](../fs/data_source/creation/bigquery.md). Users can use these connectors to create external feature groups or write out training data.
 
-Additionally, to make it easier for users to get started with Spark Streaming applications, we added a [Kafka connector](../fs/storage_connector/creation/kafka.md), which let’s you easily read a Kafka topic into a Spark Streaming Dataframe.
+Additionally, to make it easier for users to get started with Spark Streaming applications, we added a [Kafka connector](../fs/data_source/creation/kafka.md), which let’s you easily read a Kafka topic into a Spark Streaming Dataframe.
 
 ### Optimized Default Hudi Options
 By default, Hudi tends to over-partition input, and therefore the layout of Feature Groups. The default parallelism is 200, to ensure each Spark partition stays within the 2GB limit for inputs up to 500GB. The new default is the following for all insert/upsert operations:
