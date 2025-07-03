@@ -31,7 +31,7 @@ Read more about IAM roles in our [AWS credentials pass-through guide](../../../.
 Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/storage_connector_create.png)
+  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
   <figcaption>The Storage Connector View in the User Interface</figcaption>
 </figure>
 
@@ -39,7 +39,7 @@ Head to the Storage Connector View on Hopsworks (1) and set up a new storage con
 
 Enter the details for your Redshift connector. Start by giving it a **name** and an optional **description**.
 
-1. Select "Redshift" as connector protocol.
+1. Select "Redshift" as the storage.
 2. The name of the cluster.
 3. The database endpoint. Should be in the format `[UUID].eu-west-1.redshift.amazonaws.com`. For example, if the endpoint info 
    displayed in Redshift is `cluster-id.uuid.eu-north-1.redshift.amazonaws.com:5439/dev` the value to enter 
@@ -51,7 +51,8 @@ Enter the details for your Redshift connector. Start by giving it a **name** and
    included in Hopsworks or set a different driver (More on this later).
 8. Optionally provide the database group and table for the connector. A database group is the group created 
    for the user if applicable. More information, at [redshift documentation](https://docs.aws.amazon.com/redshift/latest/dg/r_Groups.html)
-9. Set the appropriate authentication method. 
+9. Set the appropriate authentication method.
+10. Click on "Save Credentials". 
 
 <figure markdown>
   ![Redshift Connector Creation](../../../../assets/images/guides/fs/storage_connector/redshift_creation.png)

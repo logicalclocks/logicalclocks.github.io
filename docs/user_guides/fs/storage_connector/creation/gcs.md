@@ -41,7 +41,7 @@ Before you begin this guide you'll need to retrieve the following information ab
 Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/storage_connector_create.png)
+  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
   <figcaption>The Storage Connector View in the User Interface</figcaption>
 </figure>
 
@@ -56,13 +56,14 @@ it a unique **name** and an optional
   <figcaption>GCS Connector Creation Form</figcaption>
 </figure>
 
-1. Choose `Google Cloud Storage` from the connector options.
+1. Select "Google Cloud Storage" as the storage.
 2. Next, set the name of the GCS Bucket you wish to connect with.
 3. Authentication: Here you should upload your `JSON keyfile for service
    account` used for authentication. You can choose to either
    upload from your local using `Upload new file` or choose an existing file within project using `From Project`.
 4. GCS Server Side Encryption: You can leave this to `Default Encryption` if you do not wish to provide explicit encrypting keys. Otherwise, 
 optionally you can set the encryption setting for `AES-256` and provide the encryption key and hash when selected.
+5. Click on "Save Credentials".
 
 ## Next Steps
 

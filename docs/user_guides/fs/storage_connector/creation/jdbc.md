@@ -28,7 +28,7 @@ jdbc:mysql://10.0.2.15:3306/[databaseName]?useSSL=false&allowPublicKeyRetrieval=
 Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/storage_connector_create.png)
+  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
   <figcaption>The Storage Connector View in the User Interface</figcaption>
 </figure>
 
@@ -41,7 +41,7 @@ Enter the details for your JDBC enabled database.
   <figcaption>JDBC Connector Creation Form</figcaption>
 </figure>
 
-1. Select "JDBC" as connector protocol.
+1. Select "JDBC" as the storage.
 2. Enter the JDBC connection url. This can for example also contain the username and password.
 3. Add additional key/value arguments to be passed to the connection, such as username or password. These might differ by database.
 
@@ -50,7 +50,7 @@ Enter the details for your JDBC enabled database.
         Driver class name is a mandatory argument even if using the default MySQL driver. Add it by specifying a property with the name `driver` and class name as value. The driver class name will differ based on the database. For MySQL databases, the class name is `com.mysql.cj.jdbc.Driver`, as shown in the example image.
 
 
-4. Click "Setup storage connector".
+4. Click on "Save Credentials". 
 
 
 !!! note

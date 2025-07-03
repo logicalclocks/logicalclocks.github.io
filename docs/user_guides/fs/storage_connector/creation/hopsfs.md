@@ -20,7 +20,7 @@ Before you begin this guide you'll need to identify a **directory on the filesys
 Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/storage_connector_create.png)
+  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
   <figcaption>The Storage Connector View in the User Interface</figcaption>
 </figure>
 
@@ -28,9 +28,9 @@ Head to the Storage Connector View on Hopsworks (1) and set up a new storage con
 
 Enter the details for your HopsFS connector. Start by giving it a **name** and an optional **description**.
 
-1. Select "HopsFS" as connector protocol.
-2. Select the top-level directory to point the connector to.
-3. Click "Setup storage connector".
+1. Select "HopsFS" as the storage.
+2. Select the top-level dataset to point the connector to.
+3. Click on "Save Credentials". 
 
 <figure markdown>
   ![HopsFS Connector Creation](../../../../assets/images/guides/fs/storage_connector/hopsfs_creation.png)

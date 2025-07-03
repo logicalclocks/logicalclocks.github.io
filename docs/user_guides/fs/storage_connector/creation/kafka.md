@@ -24,7 +24,7 @@ Before you begin this guide you'll need to retrieve the following information fr
 Head to the Storage Connector View on Hopsworks (1) and set up a new storage connector (2).
 
 <figure markdown>
-  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/storage_connector_create.png)
+  ![Storage Connector Creation](../../../../assets/images/guides/fs/storage_connector/data_source_overview.png)
   <figcaption>The Storage Connector View in the User Interface</figcaption>
 </figure>
 
@@ -32,7 +32,7 @@ Head to the Storage Connector View on Hopsworks (1) and set up a new storage con
 
 Enter the details for your Kafka connector. Start by giving it a **name** and an optional **description**.
 
-1. Select "Kafka" as connector protocol.
+1. Select "Kafka" as the storage.
 2. Add all the bootstrap server addresses and ports that you want the consumers/producers to connect to. The client will make use of all servers irrespective of which servers are specified here for bootstrapping—this list only impacts the initial hosts used to discover the full set of servers.
 3. Choose the Security protocol.
 
@@ -58,7 +58,7 @@ Enter the details for your Kafka connector. Start by giving it a **name** and an
 
 4. The endpoint identification algorithm used by clients to validate server host name. The default value is `https`. Clients including client connections created by the broker for inter-broker communication verify that the broker host name matches the host name in the broker’s certificate.
 5. Optional additional key/value arguments.
-6. Click "Setup storage connector".
+6. Click on "Save Credentials". 
 
 <figure markdown>
   ![Kafka Connector Creation](../../../../assets/images/guides/fs/storage_connector/kafka_creation.png)
