@@ -10,7 +10,7 @@ In this document we will see how to configure AWS and Hopsworks to use Role chai
 Before you begin this guide you'll need the following:
 
 - A Hopsworks cluster running on EKS.
-- Enabled IAM OpenID Connect (OIDC) provider for your cluster.
+- Enabled IAM [OpenID Connect (OIDC) provider](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html) for your cluster.
 - Administrator account on the Hopsworks cluster.
 
 ### Step 1: Create an IAM role and associate it with a Kubernetes service account
@@ -21,6 +21,18 @@ For more details on how to create an IAM roles for Kubernetes service accounts s
 !!!note 
     To ensure that users can't use the service account role and impersonate the roles by their own means, you need to ensure that the service account is only attached to the hopsworks instance pods.
 
+```sh
+account_id=$(aws sts get-caller-identity --query "Account" --output text)
+oidc_provider=$(aws eks describe-cluster --name my-cluster --region $AWS_REGION --query "cluster.identity.oidc.issuer" --output text | sed -e "s/^https:\/\///")
+
+```
+
+
+```sh
+export namespace=hopsworks
+export service_account=my-service-account
+
+```
 
 ```json
 {
@@ -89,7 +101,7 @@ For the service account role to be able to impersonate the roles you also need t
     ]
 }
 ```
-<figcaption>Example trust-policy document.</figcaption>
+<figcaption>Example resource roles.</figcaption>
 
 ### Step 3: Create mappings
 Now that the service account IAM role can assume the roles we need to configure Hopsworks to delegate access to the roles on a project base.
