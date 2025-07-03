@@ -77,6 +77,13 @@ hide:
                   </div>
                   <div class="name_item db"><a href="./user_guides/fs/storage_connector/creation/redshift/">RedShift</a></div>
                 </div>
+                <div class="db_frame">
+                  <div class="icondb">
+                    <div class="db_frame-top"></div>
+                    <div class="db_frame-mid"></div>
+                  </div>
+                  <div class="name_item db"><a href="./user_guides/fs/storage_connector/creation/rds/">RDS</a></div>
+                </div>
               </div>
             </div>
           </div>
