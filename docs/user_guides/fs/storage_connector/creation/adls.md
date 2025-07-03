@@ -40,6 +40,14 @@ Enter the details for your ADLS connector. Start by giving it a **name** and an 
   <figcaption>ADLS Connector Creation Form</figcaption>
 </figure>
 
+1. Select "Azure Data Lake" as the storage.
+2. Set directory ID.
+3. Enter the Application ID.
+4. Paste the Service Credentials.
+5. Specify account name.
+6. Provide the container name.
+7. Click on "Save Credentials".
+
 ### Step 3: Azure Create an ADLS Resource
 
 When programmatically signing in, you need to pass the tenant ID with your authentication request and the application ID. You also need a certificate or an authentication key (described in the following section). To get those values, use the following steps:
