@@ -111,7 +111,13 @@ Hopsworks provides a variety of environments to run Jupyter notebooks. Select th
 In order to be able to run a Ray notebook, you need to select the environment that has the Ray kernel installed. 
 Environment with Ray kernel have a `Ray Enabled` label next to them.
 
-## Step 5: Start Jupyter
+## Step 5: (Kueue enabled) Select a Queue
+
+If the cluster is installed with Kueue enabled, you will need to select a queue in which the notebook should run. This can be done from `Advance configuration -> Scheduler section`.
+
+![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
+
+## Step 6: Start Jupyter
 
 Start the Jupyter instance by clicking the `Run Jupyter` button.
 
@@ -126,7 +132,7 @@ Once the Jupyter instance is started, you can create a new notebook by clicking 
   </figure>
 </p>
 
-## Step 6: Access Ray Dashboard
+## Step 7: Access Ray Dashboard
 
 When you start a Ray session in Jupyter, a new application will appear in the Jupyter page.
 The notebook name from which the session was started is displayed. You can access the Ray UI by clicking on the `Ray Dashboard` and a new 

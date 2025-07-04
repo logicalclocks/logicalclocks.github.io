@@ -87,7 +87,13 @@ You will be redirected to a full-page deployment creation form where you can see
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
-### Step 4: Deployment creation
+### Step 4: (Kueue enabled) Select a Queue
+
+If the cluster is installed with Kueue enabled, you will need to select a queue in which the deployment should run. This can be done from `Advance configuration -> Scheduler section`.
+
+![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
+
+### Step 5: Deployment creation
 
 Wait for the deployment creation process to finish.
 
@@ -98,7 +104,7 @@ Wait for the deployment creation process to finish.
   </figure>
 </p>
 
-### Step 5: Deployment overview
+### Step 6: Deployment overview
 
 Once the deployment is created, you will be redirected to the list of all your existing deployments in the project. You can use the filters on the top of the page to easily locate your new deployment.
 

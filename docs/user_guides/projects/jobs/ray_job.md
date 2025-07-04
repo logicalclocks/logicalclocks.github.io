@@ -109,7 +109,13 @@ environment and additional files">
   </figure>
 </p>
 
-### Step 6: Execute the job
+### Step 6: (Kueue enabled) Select a Queue
+
+If the cluster is installed with Kueue enabled, you will need to select a queue in which the job should run. This can be done from `Advance configuration -> Scheduler section`.
+
+![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
+
+### Step 7: Execute the job
 
 Now click the `Run` button to start the execution of the job, and then click on `Executions` to see the list of all executions.
 
@@ -120,7 +126,7 @@ Now click the `Run` button to start the execution of the job, and then click on 
   </figure>
 </p>
 
-## Ray Dashboard
+### Step 8: Ray Dashboard
 When the Ray job is running, you can access the Ray dashboard to monitor the job. The Ray dashboard is accessible from the 
 `Executions` page. Please note that the Ray dashboard is only available when the job execution is running. In the Ray Dashboard, 
 you can monitor the resources used by the job, the number of workers, logs, and the tasks that are running.
