@@ -14,7 +14,7 @@ This guide explains how to use these observability features for online feature g
 
 Before you begin this guide we suggest you read the [Feature Group](../../../concepts/fs/feature_group/fg_overview.md) concept page to understand what a feature group is and how it fits in the ML pipeline.
 
-## Using HSFS APIs
+## Using the Hopsworks API
 
 ### Create a Feature Group and Ingest Data
 
