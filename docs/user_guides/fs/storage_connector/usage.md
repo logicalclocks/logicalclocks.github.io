@@ -1,11 +1,12 @@
 # Data Source Usage
 Here, we look at how to use a Data Source after it has been created.
 Data Sources provide an important first step for integrating with external data.
-The 3 fundamental functionalities where data sources are used are:
+The 4 fundamental functionalities where data sources are used are:
 
 1. Reading data into Spark Dataframes
 2. Creating external feature groups
 3. Writing training data
+4. Creating managed feature groups
 
 We will walk through each functionality in the sections below.
 

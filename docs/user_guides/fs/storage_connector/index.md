@@ -2,7 +2,7 @@
 
 You can define data sources in Hopsworks for batch and streaming data sources. Data Sources securely store the authentication information about how to connect to an external data store. They can be used from programs within Hopsworks or externally.
 
-There are three main use cases for Data Sources:
+There are four main use cases for Data Sources:
 
 - Simply use it to read data from the storage into a dataframe.
 - [External (on-demand) Feature Groups](../../../concepts/fs/feature_group/external_fg.md) can be defined with data sources. This way, Hopsworks stores only the metadata about the features, but does not keep a copy of the data itself. This is also called the Connector API.
