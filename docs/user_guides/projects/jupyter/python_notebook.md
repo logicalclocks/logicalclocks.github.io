@@ -70,8 +70,14 @@ The root path from which to start the Jupyter instance can be configured. By def
   </figure>
 </p>
 
+## Step 4: (Kueue enabled) Select a Queue
 
-## Step 4: Start Jupyter
+If the cluster is installed with Kueue enabled, you will need to select a queue in which the notebook should run. This can be done from `Advance configuration -> Scheduler section`.
+
+![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
+
+
+## Step 5: Start Jupyter
 
 Start the Jupyter instance by clicking the `Run Jupyter` button.
 

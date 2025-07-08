@@ -131,7 +131,11 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
   </figure>
 </p>
 
-### Step 8: Execute the job
+### Step 8: (Kueue enabled) Select a Queue
+
+Currently we do not have Kueue support for Spark. You do not need to select a queue to run the job in.
+
+### Step 9: Execute the job
 
 Now click the `Run` button to start the execution of the job, and then click on `Executions` to see the list of all executions.
 
@@ -143,7 +147,7 @@ Now click the `Run` button to start the execution of the job, and then click on 
   </figure>
 </p>
 
-### Step 9: Application logs
+### Step 10: Application logs
 
 To monitor logs while the execution is running, click `Spark UI` to open the Spark UI in a separate tab.
 
