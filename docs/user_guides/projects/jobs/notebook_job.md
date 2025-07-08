@@ -92,7 +92,13 @@ You can always modify the arguments in the job settings.
   </figure>
 </p>
 
-### Step 7: Execute the job
+### Step 7: (Kueue enabled) Select a Queue
+
+If the cluster is installed with Kueue enabled, you will need to select a queue in which the job should run. This can be done from `Advance configuration -> Scheduler section`.
+
+![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
+
+### Step 8: Execute the job
 
 Now click the `Run` button to start the execution of the job. You will be redirected to the `Executions` page where you can see the list of all executions.
 
@@ -103,7 +109,7 @@ Now click the `Run` button to start the execution of the job. You will be redire
   </figure>
 </p>
 
-### Step 8: Visualize output notebook
+### Step 9: Visualize output notebook
 Once the execution is finished, click `Logs` and then `notebook out` to see the logs for the execution.
 
 <p align="center">
