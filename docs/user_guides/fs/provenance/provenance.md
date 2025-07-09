@@ -32,13 +32,13 @@ The relationship between data sources and feature groups is captured automatical
 
     ```python
     # Retrieve the data source
-    snowflake_sc = fs.get_data_source("snowflake_sc")
+    snowflake_sc = fs.get_storage_connector("snowflake_sc")
 
     # Create the user profiles feature group
     user_profiles_fg = fs.create_external_feature_group(
         name="user_profiles",
         version=1,
-        data_source=snowflake_sc,
+        storage_connector=snowflake_sc,
         query="SELECT * FROM USER_PROFILES"
     )
     user_profiles_fg.save()
@@ -46,13 +46,13 @@ The relationship between data sources and feature groups is captured automatical
 
 ### Using the APIs
 
-Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the data sources that are part of the feature group. To do so, you can use the [get_data_source_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_data_source_provenance) method.
+Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the data sources that are part of the feature group. To do so, you can use the [get_storage_connector_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_storage_connector_provenance) method.
 
 === "Python"
 
     ```python
     # Returns all data sources linked to the provided feature group
-    lineage = user_profiles_fg.get_data_source_provenance()
+    lineage = user_profiles_fg.get_storage_connector_provenance()
 
     # List all accessible parent data sources
     lineage.accessible
@@ -68,7 +68,7 @@ Starting from a feature group metadata object, you can traverse upstream the pro
 
     ```python
     # Returns an accessible data source linked to the feature group (if it exists)
-    user_profiles_fg.get_data_source()
+    user_profiles_fg.get_storage_connector()
     ```
 
 To traverse the provenance graph in the opposite direction (i.e. from the data source to the feature group), you can use the [get_feature_groups_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method. When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
