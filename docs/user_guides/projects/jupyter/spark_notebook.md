@@ -113,6 +113,10 @@ The root path from which to start the Jupyter instance can be configured. By def
 </p>
 
 
+## Step 5: (Kueue enabled) Select a Queue
+
+Currently we do not have Kueue support for Spark. You do not need to select a queue to run the notebook in.
+
 ## Step 5: Start Jupyter
 
 Start the Jupyter instance by clicking the `Run Jupyter` button.
