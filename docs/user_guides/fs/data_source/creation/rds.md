@@ -36,7 +36,7 @@ mydb.abcdefg1234.us-west-2.rds.amazonaws.com
 
 ### Step 1: Set up a new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new Data Source (2).
+Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)

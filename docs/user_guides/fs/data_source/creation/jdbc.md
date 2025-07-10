@@ -25,7 +25,7 @@ jdbc:mysql://10.0.2.15:3306/[databaseName]?useSSL=false&allowPublicKeyRetrieval=
 ## Creation in the UI
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new Data Source (2).
+Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
