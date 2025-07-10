@@ -164,7 +164,7 @@ The database navigation structure depends on your specific data source. You'll n
   </figure>
 </p>
 
-Complete the creation by clicking `Next: Review Configuration` at the bottom of the page, you will be prompted with a final validation window where you will be able to create a name for your external feature group. 
+Complete the creation by clicking `Next: Review Configuration` at the bottom of the page. As the last step, you will name the external feature groups and confirm their creation.
 
 <p align="center">
   <figure>
