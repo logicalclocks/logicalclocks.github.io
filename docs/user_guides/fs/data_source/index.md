@@ -4,7 +4,7 @@ You can define data sources in Hopsworks for batch and streaming data sources. D
 
 !!!warning
 
-    In previous version of hopsworks this used to be called a storage connector.
+    In the previous versions of Hopsworks, this used to be called a storage connector.
 
 There are four main use cases for Data Sources:
 
