@@ -56,7 +56,7 @@ it a unique **name** and an optional
   <figcaption>GCS Connector Creation Form</figcaption>
 </figure>
 
-1. Select "Google Cloud Storage" as the storage.
+1. Select `Google Cloud Storage` as the storage.
 2. Next, set the name of the GCS Bucket you wish to connect with.
 3. Authentication: Here you should upload your `JSON keyfile for service
    account` used for authentication. You can choose to either
