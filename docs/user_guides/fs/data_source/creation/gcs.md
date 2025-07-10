@@ -63,7 +63,7 @@ it a unique **name** and an optional
    upload from your local using `Upload new file` or choose an existing file within project using `From Project`.
 4. GCS Server Side Encryption: You can leave this to `Default Encryption` if you do not wish to provide explicit encrypting keys. Otherwise, 
 optionally you can set the encryption setting for `AES-256` and provide the encryption key and hash when selected.
-5. Click on "Save Credentials".
+5. Click on `Save Credentials`.
 
 ## Next Steps
 
