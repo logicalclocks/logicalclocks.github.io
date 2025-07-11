@@ -152,7 +152,7 @@ To create a feature group, proceed by clicking `Next: Select Tables` once all of
 
 The database navigation structure depends on your specific data source. You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
 
-In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding. You can also optionally select/designate a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
+In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding. You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
 
 <p align="center">
   <figure>
