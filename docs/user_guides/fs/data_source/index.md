@@ -37,6 +37,7 @@ For AWS the following storage systems are supported:
 
 1. [S3](creation/s3.md): Read data from a variety of file based storage in S3 such as parquet or CSV.
 2. [Redshift](creation/redshift.md): Query Redshift databases and tables using SQL.
+3. [RDS](creation/rds.md): Query Amazon RDS (Relational Database Service) using SQL.
 
 ## Azure
 

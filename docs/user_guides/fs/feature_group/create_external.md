@@ -134,40 +134,36 @@ Nevertheless, external feature groups defined top of any data source can be used
 
 ## Create using the UI
 
-You can also create a new feature group through the UI. For this, navigate to the `Data Source` section and select existing credentials or create new ones for your prefered data source. 
+You can also create a new feature group through the UI. For this, navigate to the `Data Source` section and make sure you have you have available Data Source for the desired platform or create [new](../data_source/index.md).
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/feature_group/data_source.png" style="border: 10px solid #f5f5f5" alt="Data Source UI">
+    <img src="../../../../assets/images/guides/fs/data_source/data_source.png" style="border: 10px solid #f5f5f5" alt="Data Source UI">
   </figure>
 </p>
 
-If you have existing credentials, simply proceed by clicking `Next: Select Tables`. If you not, create and save the credentials first. 
+To create a feature group, proceed by clicking `Next: Select Tables` once all of the necessary details have been provided.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/feature_group/credentials_selection.png" alt="setup credentials in Data Sources">
+    <img src="../../../../assets/images/guides/fs/data_source/edit.png" alt="use Data Source">
   </figure>
 </p>
 
-The database navigation structure depends on your specific data source. You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery. In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding. You can also optionally a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
+The database navigation structure depends on your specific data source. You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
+
+In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding. You can also optionally select/designate a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/feature_group/ext_table_selection.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources for External feature Group">
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources and specify features">
   </figure>
 </p>
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/feature_group/primary_key_selection.png" style="border: 10px solid #f5f5f5" alt="select details of external feature group">
-  </figure>
-</p>
-
-Complete the creation by clicking `Next: Review Configuration` at the bottom of the page. As the last step, you will name the external feature groups and confirm their creation.
+Complete the creation by clicking `Next: Review Configuration` at the bottom of the page. As the last step, you will be able to rename the feature groups and confirm their creation.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/feature_group/validation_ext_feature_group.png" alt="Validate the creation of a new external feature group">
+    <img src="../../../../assets/images/guides/fs/data_source/confirm_feature_group.png" alt="Confirm the creation of a new feature group">
   </figure>
 </p>

@@ -20,17 +20,15 @@ Before you begin, ensure you have the following information from your Amazon RDS
     2. Click on your DB instance.
     3. Under `Connectivity & security`, you'll find the endpoint
 
-Example:
+    Example:
 
-```
-mydb.abcdefg1234.us-west-2.rds.amazonaws.com
-```
+        mydb.abcdefg1234.us-west-2.rds.amazonaws.com
 
-- **Database:** You can specify which database to use
+    - **Database:** You can specify which database to use
 
-- **Port:** Provide the port to connect to
+    - **Port:** Provide the port to connect to
 
-- **Username and Password:** Obtain the username and password for your RDS database with the necessary permissions to access the required tables.
+    - **Username and Password:** Obtain the username and password for your RDS database with the necessary permissions to access the required tables.
 
 ## Creation in the UI
 

@@ -70,7 +70,7 @@ or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 4. Password for the Snowflake user or Token.
 5. The warehouse to connect to.
 6. The database to use for the connection.
-7. Add any additional optional arguments. For example, you can specify `Application`.
+7. Add any additional optional arguments. For example, you can specify `Schema`, `Table`, `Role`, and `Application`.
 8. Optional additional key/value arguments.
 9. Click on "Save Credentials".
 
