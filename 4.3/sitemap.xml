@@ -466,6 +466,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/online_ingestion_observability/</loc>
+         <lastmod>2025-07-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/statistics/</loc>
          <lastmod>2025-07-11</lastmod>
          <changefreq>daily</changefreq>
