@@ -14,14 +14,14 @@ Before you begin this guide we suggest you read the [External Feature Group](../
 
 ## Create using the HSFS APIs
 
-### Retrieve the storage connector
+### Retrieve the Data Source
 
-To create an external feature group using the HSFS APIs you need to provide an existing [storage connector](../storage_connector/index.md).
+To create an external feature group using the HSFS APIs you need to provide an existing [data source](../data_source/index.md).
 
 === "Python"
 
     ```python
-    connector = feature_store.get_storage_connector("connector_name")
+    connector = feature_store.get_storage_connector("data_source_name")
     ```
 
 ### Create an External Feature Group
@@ -79,7 +79,7 @@ The full method documentation is available [here](https://docs.hopsworks.ai/hops
 
 The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
-If the storage connector is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the storage connector is defined for a data lake, the location of the data as well as the format need to be provided.
+If the data source is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the data source is defined for a data lake, the location of the data as well as the format need to be provided.
 
 Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported.
 
@@ -125,7 +125,7 @@ The `insert()` method takes a DataFrame as parameter and writes it _only_ to the
 Hopsworks Feature Store does not support time-travel queries on external feature groups.
 
 Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
-Nevertheless, external feature groups defined top of any storage connector can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_validation_test_split)
+Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#create_train_validation_test_split)
 
 
 ### API Reference
@@ -134,18 +134,36 @@ Nevertheless, external feature groups defined top of any storage connector can b
 
 ## Create using the UI
 
-You can also create a new feature group through the UI. For this, navigate to the `Feature Groups` section and press the `Create` button at the top-right corner.
+You can also create a new feature group through the UI. For this, navigate to the `Data Source` section and make sure you have you have available Data Source for the desired platform or create [new](../data_source/index.md).
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/feature_group/no_feature_group_list.png" alt="List of Feature Groups">
+    <img src="../../../../assets/images/guides/fs/data_source/data_source.png" style="border: 10px solid #f5f5f5" alt="Data Source UI">
   </figure>
 </p>
 
-Subsequently, you will be able to define its properties (such as name, mode, features, and more). Refer to the documentation above for an explanation of the parameters available, they are the same as when you create a feature group using the SDK. Finally, complete the creation by clicking `Create New Feature Group` at the bottom of the page.
+To create a feature group, proceed by clicking `Next: Select Tables` once all of the necessary details have been provided.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/feature_group/create_feature_group.png" alt="Create new Feature Group">
+    <img src="../../../../assets/images/guides/fs/data_source/edit.png" alt="use Data Source">
+  </figure>
+</p>
+
+The database navigation structure depends on your specific data source. You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
+
+In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding. You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources and specify features">
+  </figure>
+</p>
+
+Complete the creation by clicking `Next: Review Configuration` at the bottom of the page. As the last step, you will be able to rename the feature groups and confirm their creation.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/fs/data_source/confirm_feature_group.png" alt="Confirm the creation of a new feature group">
   </figure>
 </p>
