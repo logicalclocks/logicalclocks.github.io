@@ -20,7 +20,7 @@ We retrieve a data source simply by its unique name.
     project = hopsworks.login()
     feature_store = project.get_feature_store()
     # Retrieve data source
-    connector = feature_store.get_storage_connector('connector_name')
+    connector = feature_store.get_storage_connector('data_source_name')
     ```
 
 === "Scala"
@@ -29,7 +29,7 @@ We retrieve a data source simply by its unique name.
     val connection = HopsworksConnection.builder().build();
     val featureStore = connection.getFeatureStore();
     // get directly via connector sub-type class e.g. for GCS type
-    val connector = featureStore.getGcsConnector("connector_name")
+    val connector = featureStore.getGcsConnector("data_source_name")
     ```
 
 ## Reading a Spark Dataframe from a Data Source

@@ -21,7 +21,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
 === "Python"
 
     ```python
-    connector = feature_store.get_storage_connector("connector_name")
+    connector = feature_store.get_storage_connector("data_source_name")
     ```
 
 ### Create an External Feature Group
