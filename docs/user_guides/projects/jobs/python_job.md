@@ -177,6 +177,7 @@ The following table describes the JSON payload returned by `jobs_api.get_configu
 | `resourceConfig.gpus`   | number (int)   | Number of GPUs to be allocated                  | `0`                      |
 | `logRedirection`        | boolean        | Whether logs are redirected                     | `true`                   |
 | `jobType`               | string         | Type of job                                     | `"PYTHON"`               |
+| `files`        | string   | HDFS path(s) to files to be provided to the Python Job. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/file1.py,hdfs:///Project/<project_name>/Resources/file2.txt"` | `null` |
 
 
 ## Accessing project data
