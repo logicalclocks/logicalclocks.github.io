@@ -24,6 +24,10 @@ Configure the predictor to batch inference requests, see the [Inference Batcher 
 
 Configure the predictor to log inference requests and predictions, see the [Inference Logger Guide](inference-logger.md).
 
+### REST API
+
+Send inference requests to deployed models using REST API, see the [Rest API Guide](rest-api.md).
+
 ### Troubleshooting
 
 Inspect the model server logs to troubleshoot your model deployments, see the [Troubleshooting Guide](troubleshooting.md).
