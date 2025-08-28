@@ -2,9 +2,9 @@
 
 ## Introduction
 
-Hopsworks provides model serving using [KServe](https://kserve.github.io/website/) as the deployment framework and [Istio]() as the ingress gateway to the Kubernetes cluster. 
+Hopsworks provides model serving capabilities by leveraging [KServe](https://kserve.github.io/website/) as the model serving platform and [Istio](https://istio.io/) as the ingress gateway to the model deployments. 
 
-This document explains how to interact with a deployed model endpoint via REST.
+This document explains how to interact with a model deployment via REST API.
 
 ## Base URL
 
