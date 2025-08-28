@@ -10,13 +10,7 @@ This document explains how to interact with a model deployment via REST API.
 
 Deployed models are accessible through the Istio ingress gateway. The URL to interact with a model deployment is provided on the model deployment page in the Hopsworks UI. 
 
-The URL follows this format:
-```text
-http://<ISTIO_GATEWAY_IP>/v1/models/<DEPLOYMENT_NAME>:predict
-```
-
-- `<ISTIO_GATEWAY_IP>`: External IP address of the Istio ingress gateway.
-- `<DEPLOYMENT_NAME>`: The name of the deployment.
+The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `RESOURCE_PATH` depends on the [model server](https://kserve.github.io/website/docs/intro#supported-model-frameworks) (e.g. vLLM, TensorFlow Serving, SKLearn ModelServer).
 
 <p align="center">
   <figure>
@@ -90,14 +84,6 @@ The request must be sent as a JSON object containing an `inputs` or `instances` 
               }'
     ```
 
-## Example Response
+## Response
 
-The model returns predictions in a JSON object. You can find more information [here](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#response-format).
-
-```json
-{
-  "predictions": [
-    "some_prediction_result"
-  ]
-}
-```
+The model returns predictions in a JSON object. The response depends on the model server implementation. You can find more information regarding specific model servers in the [Kserve documentation](https://kserve.github.io/website/docs/intro).
