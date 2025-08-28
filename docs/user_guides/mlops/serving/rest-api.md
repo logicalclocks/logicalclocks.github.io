@@ -8,7 +8,7 @@ This document explains how to interact with a model deployment via REST API.
 
 ## Base URL
 
-The deployed model is accessible through the Istio ingress gateway. The URL to access the model is provided on the deployment page inside the Hopsworks UI. 
+Deployed models are accessible through the Istio ingress gateway. The URL to interact with a model deployment is provided on the model deployment page in the Hopsworks UI. 
 
 The URL follows this format:
 ```text
