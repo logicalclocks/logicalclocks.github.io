@@ -26,7 +26,7 @@ Configure the predictor to log inference requests and predictions, see the [Infe
 
 ### REST API
 
-Send inference request to the models deployed using REST API, see the [Rest API Guide](rest-api.md).
+Send inference requests to deployed models using REST API, see the [Rest API Guide](rest-api.md).
 
 ### Troubleshooting
 
