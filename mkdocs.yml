@@ -165,6 +165,7 @@ nav:
           - Airflow: user_guides/projects/airflow/airflow.md
           - OpenSearch:
               - Connect: user_guides/projects/opensearch/connect.md
+              - KNN: user_guides/projects/opensearch/knn.md
           - Kafka:
               - Create Schema: user_guides/projects/kafka/create_schema.md
               - Create Topic: user_guides/projects/kafka/create_topic.md
@@ -205,7 +206,7 @@ nav:
               - API Protocol: user_guides/mlops/serving/api-protocol.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
               - External Access: user_guides/mlops/serving/external-access.md
-          - Vector Database: user_guides/mlops/vector_database/index.md
+          - Vector Database: user_guides/fs/vector_similarity_search.md
           - Provenance: user_guides/mlops/provenance/provenance.md
       - Migration:
           - 3.X to 4.0: user_guides/migration/40_migration.md
