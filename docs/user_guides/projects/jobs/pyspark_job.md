@@ -221,7 +221,7 @@ The following table describes the JSON payload returned by `jobs_api.get_configu
 | Field                                      | Type           | Description                                         | Default                    |
 | ------------------------------------------ | -------------- |-----------------------------------------------------| -------------------------- |
 | `type`                                     | string         | Type of the job configuration                       | `"sparkJobConfiguration"`  |
-| `appPath`               | string         | Project path to script (e.g `Resources/foo.py`) | `null`            |
+| `appPath`                                  | string         | Project path to script (e.g `Resources/foo.py`)     | `null`                     |
 | `environmentName`                          | string         | Name of the project spark environment               | `"spark-feature-pipeline"` |
 | `spark.driver.cores`                       | number (float) | Number of CPU cores allocated for the driver        | `1.0`                      |
 | `spark.driver.memory`                      | number (int)   | Memory allocated for the driver (in MB)             | `2048`                     |
@@ -233,6 +233,10 @@ The following table describes the JSON payload returned by `jobs_api.get_configu
 | `spark.dynamicAllocation.maxExecutors`     | number (int)   | Maximum number of executors with dynamic allocation | `2`                        |
 | `spark.dynamicAllocation.initialExecutors` | number (int)   | Initial number of executors with dynamic allocation | `1`                        |
 | `spark.blacklist.enabled`                  | boolean        | Whether executor/node blacklisting is enabled       | `false`                    |
+| `files`        | string   | HDFS path(s) to files to be provided to the Spark application. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/file1.py,hdfs:///Project/<project_name>/Resources/file2.txt"` | `null` |
+| `pyFiles`      | string   | HDFS path(s) to Python files to be provided to the Spark application. These will be added to the `PYTHONPATH` so they can be imported as modules. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/module1.py,hdfs:///Project/<project_name>/Resources/module2.py"` | `null` |
+| `jars`         | string   | HDFS path(s) to JAR files to be provided to the Spark application. These will be added to the classpath. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/lib1.jar,hdfs:///Project/<project_name>/Resources/lib2.jar"` | `null` |
+| `archives`     | string   | HDFS path(s) to archive files to be provided to the Spark application. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/archive1.zip,hdfs:///Project/<project_name>/Resources/archive2.tar.gz"` | `null` |
 
 
 ## Accessing project data
