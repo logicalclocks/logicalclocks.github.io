@@ -139,9 +139,21 @@ The byte size of each column is determined by its data type and calculated as fo
 | VARCHAR(LENGTH)                 | LENGTH * 4   |
 | VARCHAR(LENGTH) charset latin1; | LENGTH * 1   |
 | TEXT                            | 256          |
-| VARBINARY(LENGTH)               | LENGTH / 1.4 |
+| VARBINARY(LENGTH)               | LENGTH       |
 | BLOB                            | 256          |
 | other                           | 8            |
+
+!!! note "VARCHAR / VARBINARY overhead"
+
+    For VARCHAR and VARBINARY data types, an additional 1 byte is required if the size is less than 256 bytes. If the size is 256 bytes or greater, 2 additional bytes are required.
+
+    Memory allocation is performed in groups of 4 bytes. For example, a VARBINARY(100) requires 104 bytes of memory:
+
+    - 100 bytes for the data itself
+    - 1 byte of overhead
+    - Total = 101 bytes
+
+    Since memory is allocated in 4-byte groups, storing 101 bytes requires 26 groups (26 × 4 = 104 bytes) of allocated memory.
 
 
 #### Pre-insert schema validation for online feature groups
