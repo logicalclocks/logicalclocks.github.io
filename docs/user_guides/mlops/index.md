@@ -4,4 +4,4 @@ This section serves to provide guides and examples for the common usage of abstr
 
 - [Model Registry](registry/index.md)
 - [Model Serving](serving/index.md)
-- [Vector Database](vector_database/index.md)
+- [Vector Database](../fs/vector_similarity_search.md)
