@@ -10,7 +10,7 @@ This document explains how to interact with a model deployment via REST API.
 
 Deployed models are accessible through the Istio ingress gateway. The URL to interact with a model deployment is provided on the model deployment page in the Hopsworks UI. 
 
-The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `RESOURCE_PATH` depends on the [model server](https://kserve.github.io/website/docs/intro#supported-model-frameworks) (e.g. vLLM, TensorFlow Serving, SKLearn ModelServer).
+The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `RESOURCE_PATH` depends on the [model server](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/#model-server) (e.g. vLLM, TensorFlow Serving, SKLearn ModelServer).
 
 <p align="center">
   <figure>
@@ -39,38 +39,44 @@ Authorization: ApiKey <API_KEY_VALUE>
 
 ## Request Format
 
-The request must be sent as a JSON object containing an `inputs` or `instances` field. You can find more information on the request format [here](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#request-format).
+The request format depends on the model sever being used.
+
+For predictive inference (i.e. for Tensorflow or SkLearn or Python Serving). The request must be sent as a JSON object containing an `inputs` or `instances` field. You can find more information on the request format [here](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#request-format). An example for this is given below.
 
 === "Python"
-    ```python
-    import requests
 
-    data = {
-        "inputs": [
-            [
-                4641025220953719,
-                4920355418495856
+    !!! example "REST API example for Predictive Inference (Tensorflow or SkLearn or Python Serving)"
+        ```python
+        import requests
+
+        data = {
+            "inputs": [
+                [
+                    4641025220953719,
+                    4920355418495856
+                ]
             ]
-        ]
-    }
+        }
 
-    headers = {
-        "Host": "fraud.test.hopsworks.ai",
-        "Authorization": "ApiKey 8kDOlnRlJU4kiV1Y.RmFNJY3XKAUSqmJZ03kbUbXKMQSHveSBgMIGT84qrM5qXMjLib7hdlfGeg8fBQZp",
-        "Content-Type": "application/json"
-    }
+        headers = {
+            "Host": "fraud.test.hopsworks.ai",
+            "Authorization": "ApiKey 8kDOlnRlJU4kiV1Y.RmFNJY3XKAUSqmJZ03kbUbXKMQSHveSBgMIGT84qrM5qXMjLib7hdlfGeg8fBQZp",
+            "Content-Type": "application/json"
+        }
 
-    response = requests.post(
-        "http://10.87.42.108/v1/models/fraud:predict",
-        headers=headers,
-        json=data
-    )
-    print(response.json())
-    
-    ```
+        response = requests.post(
+            "http://10.87.42.108/v1/models/fraud:predict",
+            headers=headers,
+            json=data
+        )
+        print(response.json())
+        ```
+
 === "Curl"
-    ```bash
-    curl -X POST "http://10.87.42.108/v1/models/fraud:predict" \
+
+    !!! example "REST API example for Predictive Inference (Tensorflow or SkLearn or Python Serving)"
+        ```bash
+        curl -X POST "http://10.87.42.108/v1/models/fraud:predict" \
           -H "Host: fraud.test.hopsworks.ai" \
           -H "Authorization: ApiKey 8kDOlnRlJU4kiV1Y.RmFNJY3XKAUSqmJZ03kbUbXKMQSHveSBgMIGT84qrM5qXMjLib7hdlfGeg8fBQZp" \
           -H "Content-Type: application/json" \
@@ -82,7 +88,10 @@ The request must be sent as a JSON object containing an `inputs` or `instances` 
                   ]
                 ]
               }'
-    ```
+        ```
+
+For generative inference (i.e vLLM) the response follows the [OpenAI specification](https://platform.openai.com/docs/api-reference/chat/create). 
+
 
 ## Response
 
