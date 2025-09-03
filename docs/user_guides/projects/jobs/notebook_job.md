@@ -6,13 +6,18 @@ description: Documentation on how to configure and execute a Jupyter Notebook jo
 
 ## Introduction
 
+This guide describes how to configure a job to execute a Jupyter Notebook (.ipynb) and visualize the evaluated notebook.
+
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
 - Python
 - Apache Spark
+- Ray
 
 Launching a job of any type is very similar process, what mostly differs between job types is
-the various configuration parameters each job type comes with. After following this guide you will be able to create a Jupyter Notebook job.
+the various configuration parameters each job type comes with. Hopsworks support scheduling jobs to run on a regular basis,
+e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
+checkout [our Scheduling guide](schedule_job.md).
 
 ## UI
 
@@ -173,19 +178,22 @@ execution = job.run(args='-p a 2 -p b 5', await_termination=True)
 ```
 
 ## Configuration
-The following table describes the JSON payload returned by `jobs_api.get_configuration("PYTHON")`
+The following table describes the job configuration parameters for a PYTHON job.
 
-| Field                   | Type           | Description                                          | Default                 |
-|-------------------------|----------------|------------------------------------------------------|--------------------------|
-| `type`                  | string         | Type of the job configuration                        | `"pythonJobConfiguration"` |
-| `appPath`               | string         | Project path to notebook (e.g `Resources/foo.ipynb`) | `null`            |
-| `environmentName`       | string         | Name of the python environment                       | `"pandas-training-pipeline"` |
-| `resourceConfig.cores`  | number (float) | Number of CPU cores to be allocated                  | `1.0`                    |
-| `resourceConfig.memory` | number (int)   | Number of MBs to be allocated                        | `2048`                   |
-| `resourceConfig.gpus`   | number (int)   | Number of GPUs to be allocated                       | `0`                      |
-| `logRedirection`        | boolean        | Whether logs are redirected                          | `true`                   |
-| `jobType`               | string         | Type of job                                          | `"PYTHON"`               |
-| `files`        | string   | HDFS path(s) to files to be provided to the Notebook Job. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/file1.py,hdfs:///Project/<project_name>/Resources/file2.txt"` | `null` |
+`conf = jobs_api.get_configuration("PYTHON")`
+
+| Field | Type    | Description                                                                                                                                                               | Default |
+|-------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| <nobr>`conf['type']`</nobr> | string  | Type of the job configuration                                                                                                                                             | `"pythonJobConfiguration"` |
+| <nobr>`conf['appPath']`</nobr> | string  | Project relative path to notebook (e.g., `Resources/foo.ipynb`)                                                                                                           | `null` |
+| <nobr>`conf['defaultArgs']`</nobr> | string  | Arguments to pass to the notebook.<br>Will be overridden if arguments are passed explicitly via `Job.run(args="...")`.<br>Must conform to Papermill format `-p arg1 val1` | `null` |
+| <nobr>`conf['environmentName']`</nobr> | string  | Name of the project Python environment to use                                                                                                                             | `"pandas-training-pipeline"` |
+| <nobr>`conf['resourceConfig']['cores']`</nobr> | float   | Number of CPU cores to be allocated                                                                                                                                       | `1.0` |
+| <nobr>`conf['resourceConfig']['memory']`</nobr> | int     | Number of MBs to be allocated                                                                                                                                             | `2048` |
+| <nobr>`conf['resourceConfig']['gpus']`</nobr> | int     | Number of GPUs to be allocated                                                                                                                                            | `0` |
+| <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected                                                                                                                                               | `true` |
+| <nobr>`conf['jobType']`</nobr> | string  | Type of job                                                                                                                                                               | `"PYTHON"` |
+| <nobr>`conf['files']`</nobr> | string  | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...`                      | `null` |
 
 
 ## Accessing project data
