@@ -6,10 +6,13 @@ description: Documentation on how to configure and execute a Python job on Hopsw
 
 ## Introduction
 
+This guide will describe how to configure a job to execute a python script inside the cluster.
+
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
 - Python
 - Apache Spark
+- Ray
 
 Launching a job of any type is very similar process, what mostly differs between job types is
 the various configuration parameters each job type comes with. Hopsworks support scheduling jobs to run on a regular basis,
@@ -165,20 +168,22 @@ print(f_err.read())
 ```
 
 ## Configuration
-The following table describes the JSON payload returned by `jobs_api.get_configuration("PYTHON")`
+The following table describes the job configuration parameters for a PYTHON job.
 
-| Field                   | Type           | Description                                     | Default                 |
-|-------------------------|----------------|-------------------------------------------------|--------------------------|
-| `type`                  | string         | Type of the job configuration                   | `"pythonJobConfiguration"` |
-| `appPath`               | string         | Project path to script (e.g `Resources/foo.py`) | `null`            |
-| `environmentName`       | string         | Name of the project python environment          | `"pandas-training-pipeline"` |
-| `resourceConfig.cores`  | number (float) | Number of CPU cores to be allocated             | `1.0`                    |
-| `resourceConfig.memory` | number (int)   | Number of MBs to be allocated                   | `2048`                   |
-| `resourceConfig.gpus`   | number (int)   | Number of GPUs to be allocated                  | `0`                      |
-| `logRedirection`        | boolean        | Whether logs are redirected                     | `true`                   |
-| `jobType`               | string         | Type of job                                     | `"PYTHON"`               |
-| `files`        | string   | HDFS path(s) to files to be provided to the Python Job. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/file1.py,hdfs:///Project/<project_name>/Resources/file2.txt"` | `null` |
+`conf = jobs_api.get_configuration("PYTHON")`
 
+| Field | Type    | Description                                                                                                                                          | Default |
+|-------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| <nobr>`conf['type']`</nobr> | string  | Type of the job configuration                                                                                                                        | `"pythonJobConfiguration"` |
+| <nobr>`conf['appPath']`</nobr> | string  | Project relative path to script (e.g., `Resources/foo.py`)                                                                                           | `null` |
+| <nobr>`conf['defaultArgs']`</nobr> | string  | Arguments to pass to the script. Will be overridden if arguments are passed explicitly via `Job.run(args="...")`                                     | `null` |
+| <nobr>`conf['environmentName']`</nobr> | string  | Name of the project Python environment to use                                                                                                        | `"pandas-training-pipeline"` |
+| <nobr>`conf['resourceConfig']['cores']`</nobr> | float   | Number of CPU cores to be allocated                                                                                                                  | `1.0` |
+| <nobr>`conf['resourceConfig']['memory']`</nobr> | int     | Number of MBs to be allocated                                                                                                                        | `2048` |
+| <nobr>`conf['resourceConfig']['gpus']`</nobr> | int     | Number of GPUs to be allocated                                                                                                                       | `0` |
+| <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected                                                                                                                          | `true` |
+| <nobr>`conf['jobType']`</nobr> | string  | Type of job                                                                                                                                          | `"PYTHON"` |
+| <nobr>`conf['files']`</nobr> | string  | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
 
 ## Accessing project data
 !!! notice "Recommended approach if `/hopsfs` is mounted"

@@ -6,10 +6,13 @@ description: Documentation on how to configure and execute a Spark (Scala) job o
 
 ## Introduction
 
+This guide will describe how to configure a job to execute a spark program inside the cluster.
+
 All members of a project in Hopsworks can launch the following types of applications through a project's Jobs service:
 
 - Python
 - Apache Spark
+- Ray
 
 Launching a job of any type is very similar process, what mostly differs between job types is
 the various configuration parameters each job type comes with. Hopsworks support scheduling to run jobs on a regular basis,
@@ -213,28 +216,31 @@ print(f_err.read())
 ```
 
 ## Configuration
-The following table describes the JSON payload returned by `jobs_api.get_configuration("SPARK")`
+The following table describes the job configuration parameters for a SPARK job.
 
-| Field                                      | Type           | Description                                             | Default                    |
-|--------------------------------------------| -------------- |---------------------------------------------------------| -------------------------- |
-| `type`                                     | string         | Type of the job configuration                           | `"sparkJobConfiguration"`  |
-| `appPath`                                  | string         | Project path to spark program (e.g `Resources/foo.jar`) | `null`            |
-| `mainClass`                                | string         | Name of the main class to run  (e.g `org.company.Main`) | `null`            |
-| `environmentName`                          | string         | Name of the project spark environment                   | `"spark-feature-pipeline"` |
-| `spark.driver.cores`                       | number (float) | Number of CPU cores allocated for the driver            | `1.0`                      |
-| `spark.driver.memory`                      | number (int)   | Memory allocated for the driver (in MB)                 | `2048`                     |
-| `spark.executor.instances`                 | number (int)   | Number of executor instances                            | `1`                        |
-| `spark.executor.cores`                     | number (float) | Number of CPU cores per executor                        | `1.0`                      |
-| `spark.executor.memory`                    | number (int)   | Memory allocated per executor (in MB)                   | `4096`                     |
-| `spark.dynamicAllocation.enabled`          | boolean        | Enable dynamic allocation of executors                  | `true`                     |
-| `spark.dynamicAllocation.minExecutors`     | number (int)   | Minimum number of executors with dynamic allocation     | `1`                        |
-| `spark.dynamicAllocation.maxExecutors`     | number (int)   | Maximum number of executors with dynamic allocation     | `2`                        |
-| `spark.dynamicAllocation.initialExecutors` | number (int)   | Initial number of executors with dynamic allocation     | `1`                        |
-| `spark.blacklist.enabled`                  | boolean        | Whether executor/node blacklisting is enabled           | `false`                    
-| `files`        | string   | HDFS path(s) to files to be provided to the Spark application. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/file1.py,hdfs:///Project/<project_name>/Resources/file2.txt"` | `null` |
-| `pyFiles`      | string   | HDFS path(s) to Python files to be provided to the Spark application. These will be added to the `PYTHONPATH` so they can be imported as modules. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/module1.py,hdfs:///Project/<project_name>/Resources/module2.py"` | `null` |
-| `jars`         | string   | HDFS path(s) to JAR files to be provided to the Spark application. These will be added to the classpath. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/lib1.jar,hdfs:///Project/<project_name>/Resources/lib2.jar"` | `null` |
-| `archives`     | string   | HDFS path(s) to archive files to be provided to the Spark application. Multiple files can be included in a single string, separated by commas. <br>Example: `"hdfs:///Project/<project_name>/Resources/archive1.zip,hdfs:///Project/<project_name>/Resources/archive2.tar.gz"` | `null` |
+`conf = jobs_api.get_configuration("SPARK")`
+
+| Field                                              | Type    | Description                                                                                                                                                        | Default                    |
+|----------------------------------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|
+| <nobr>`conf['type']`</nobr>                        | string  | Type of the job configuration                                                                                                                                      | `"sparkJobConfiguration"`  |
+| <nobr>`conf['appPath']`</nobr>                     | string  | Project path to spark program (e.g., `Resources/foo.jar`)                                                                                                          | `null`                     |
+| <nobr>`conf['mainClass']`</nobr>                  | string  | Name of the main class to run (e.g., `org.company.Main`)                                                                                                           | `null`                     |
+| <nobr>`conf['defaultArgs']`</nobr>                | string  | Arguments to pass to the program. Will be overridden if arguments are passed explicitly via `Job.run(args="...")`                                                  | `null`                     |
+| <nobr>`conf['environmentName']`</nobr>            | string  | Name of the project spark environment to use                                                                                                                       | `"spark-feature-pipeline"` |
+| <nobr>`conf['spark.driver.cores']`</nobr>         | float   | Number of CPU cores allocated for the driver                                                                                                                       | `1.0`                      |
+| <nobr>`conf['spark.driver.memory']`</nobr>        | int     | Memory allocated for the driver (in MB)                                                                                                                            | `2048`                     |
+| <nobr>`conf['spark.executor.instances']`</nobr>   | int     | Number of executor instances                                                                                                                                       | `1`                        |
+| <nobr>`conf['spark.executor.cores']`</nobr>       | float   | Number of CPU cores per executor                                                                                                                                   | `1.0`                      |
+| <nobr>`conf['spark.executor.memory']`</nobr>      | int     | Memory allocated per executor (in MB)                                                                                                                              | `4096`                     |
+| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr>          | boolean | Enable dynamic allocation of executors                                                                                                                             | `true`                     |
+| <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr>     | int     | Minimum number of executors with dynamic allocation                                                                                                                | `1`                        |
+| <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr>     | int     | Maximum number of executors with dynamic allocation                                                                                                                | `2`                        |
+| <nobr>`conf['spark.dynamicAllocation.initialExecutors']`</nobr> | int     | Initial number of executors with dynamic allocation                                                                                                                | `1`                        |
+| <nobr>`conf['spark.blacklist.enabled']`</nobr>    | boolean | Whether executor/node blacklisting is enabled                                                                                                                      | `false`                    |
+| <nobr>`conf['files']`</nobr>                      | string  | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/file1.py,...`          | `null`                     |
+| <nobr>`conf['pyFiles']`</nobr>                    | string  | Comma-separated string of HDFS path(s) to Python modules to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/file1.py,...` | `null`                     |
+| <nobr>`conf['jars']`</nobr>                       | string  | Comma-separated string of HDFS path(s) to jars to be included in CLASSPATH. Example: `hdfs:///Project/<project_name>/Resources/app.jar,...`                        | `null`                     |
+| <nobr>`conf['archives']`</nobr>                   | string  | Comma-separated string of HDFS path(s) to archives to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/archive.zip,...`    | `null`                     |
 
 
 ## Accessing project data
