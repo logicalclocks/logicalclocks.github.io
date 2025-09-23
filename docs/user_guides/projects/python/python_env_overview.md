@@ -27,7 +27,7 @@ Environments listed under `FEATURE ENGINEERING` corresponds to environments you 
 </p>
 
 !!! note "Python version"
-    The python version used in all the environments is 3.10.
+    The python version used in all the environments is 3.11.
 
 ### Feature engineering
 
