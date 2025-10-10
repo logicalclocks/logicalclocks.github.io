@@ -22,7 +22,7 @@ The Hopsworks Python client library is required to connect to Hopsworks from you
 ```bash
 pip install hopsworks[python]
 ```
-Supported versions of Python: 3.9, 3.10, 3.11, 3.12 ([PyPI ↗](https://pypi.org/project/hopsworks/))
+Supported versions of Python: 3.9, 3.10, 3.11, 3.12, 3.13 ([PyPI ↗](https://pypi.org/project/hopsworks/))
 
 ### Profiles
 
