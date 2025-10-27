@@ -245,6 +245,7 @@ The following table describes the job configuration parameters for a SPARK job.
 | <nobr>`conf['pyFiles']`</nobr>                    | string  | Comma-separated string of HDFS path(s) to Python modules to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/file1.py,...` | `null`                     |
 | <nobr>`conf['jars']`</nobr>                       | string  | Comma-separated string of HDFS path(s) to jars to be included in CLASSPATH. Example: `hdfs:///Project/<project_name>/Resources/app.jar,...`                        | `null`                     |
 | <nobr>`conf['archives']`</nobr>                   | string  | Comma-separated string of HDFS path(s) to archives to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/archive.zip,...`    | `null`                     |
+| <nobr>`conf['properties']`</nobr>                 | string  | A new line separated (`\n`) list of properties to pass to the Spark application. The properties should be in the format `name=value`   | `null`                     |
 
 
 ## Accessing project data
