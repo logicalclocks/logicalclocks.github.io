@@ -343,6 +343,7 @@ theme:
         name: Switch to dark mode
     - scheme: slate
       media: "(prefers-color-scheme: dark)"
+      primary: hopsworks
       accent: teal
       toggle:
         icon: material/brightness-4
