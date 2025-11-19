@@ -129,6 +129,34 @@
 }
 
 /*******************************************************/
+/* Dark Theme */
+[data-md-color-scheme="slate"] {
+  --md-hue: 160;
+  --md-primary-fg-color: #1eb382;
+  --md-secondary-fg-color: #188a64;
+  --md-tertiary-fg-color: #0d493550;
+  --md-quaternary-fg-color: hsla(var(--md-hue), 0%, 14.5%, 1);
+  --border-radius-variable: 5px;
+
+  --md-default-fg-color:             hsla(var(--md-hue), 0%, 90%, 0.82);
+  --md-default-fg-color--light:      hsla(var(--md-hue), 0%, 90%, 0.56);
+  --md-default-fg-color--lighter:    hsla(var(--md-hue), 0%, 90%, 0.32);
+  --md-default-fg-color--lightest:   hsla(var(--md-hue), 0%, 90%, 0.12);
+  --md-default-bg-color:             hsla(var(--md-hue), 0%, 14%, 1);
+  --md-default-bg-color--light:      hsla(var(--md-hue), 0%, 14%, 0.54);
+  --md-default-bg-color--lighter:    hsla(var(--md-hue), 0%, 14%, 0.26);
+  --md-default-bg-color--lightest:   hsla(var(--md-hue), 0%, 14%, 0.07);
+
+  --md-code-fg-color:                hsla(var(--md-hue), 0%, 86%, 0.82);
+  --md-code-bg-color:                hsla(var(--md-hue), 0%, 18%, 1);
+  --md-code-bg-color--light:         hsla(var(--md-hue), 0%, 18%, 0.9);
+  --md-code-bg-color--lighter:       hsla(var(--md-hue), 0%, 18%, 0.54);
+
+  --md-footer-bg-color:              hsla(var(--md-hue), 0%, 10%, 0.87);
+  --md-footer-bg-color--dark:        hsla(var(--md-hue), 0%, 8%, 1);
+}
+
+/*******************************************************/
 /* Custom styles for syntax highlighting in signatures. */
 
 /* Fancier color for operators such as * and |. */

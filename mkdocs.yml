@@ -335,8 +335,18 @@ theme:
     text: "Roboto"
     code: "IBM Plex Mono"
   palette:
-    accent: teal
-    scheme: hopsworks
+    - scheme: hopsworks
+      media: "(prefers-color-scheme: light)"
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      media: "(prefers-color-scheme: dark)"
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   features:
     - navigation.tabs
     - navigation.tabs.sticky
