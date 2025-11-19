@@ -39,7 +39,7 @@ The documentation should now be available locally on the following URL: http://1
 
 ## Adding new pages
 
-The `mkdocs.yml` file of this repository defines the pages to show in the navigation. 
+The `mkdocs.yml` file of this repository defines the pages to show in the navigation.
 After adding your new page in the docs folder, you also need to add it to this file for it to show up in the navigation.
 
 ## Checking links
