@@ -25,7 +25,7 @@ In that case, it is recommended to use a conda environment and run the following
 pip install hopsworks[python]
 ```
 
-Supported versions of Python: 3.8, 3.9, 3.10, 3.11, 3.12 ([PyPI ↗](https://pypi.org/project/hopsworks/))
+Supported versions of Python: 3.9, 3.10, 3.11, 3.12, 3.13 ([PyPI ↗](https://pypi.org/project/hopsworks/))
 
 ### Profiles
 

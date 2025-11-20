@@ -13,8 +13,9 @@ These breaking changes can be categorized in the following areas:
 
 ### Python API
 
-A number of significant changes have been made in the Python API Hopsworks 4.0. Previously, in Hopsworks 3.X, there were 3 python libraries used (“hopsworks”, “hsfs” & “hsml”) to develop feature, training & inference pipelines, with the 4.0 release there is now one single “hopsworks” python library that can should be used.
-For backwards compatibility, it will still be possible to import both the “hsfs” & “hsml” libraries but these are now effectively aliases to the “hopsworks” python library and their use going forward should be considered as deprecated.
+A number of significant changes have been made in the Python API Hopsworks 4.0. Previously, in Hopsworks 3.X, there were 3 python libraries used (“hopsworks”, “hsfs” & “hsml”) to develop feature, training & inference pipelines, with the 4.0 release there is now one single “hopsworks” python library that should be used.
+For backwards compatibility, it is still possible to import both the “hsfs” & “hsml” packages directly, but the proper way to import them is to use “hopsworks.hsfs” & “hopsworks.hsml”.
+The direct imports will be deprecated later.
 
 Another significant change in the Hopsworks Python API is the use of optional extras to allow a developer to easily import exactly what is needed as part of their work.
 The main ones are great-expectations and polars.

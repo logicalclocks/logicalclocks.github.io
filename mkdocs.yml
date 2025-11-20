@@ -231,6 +231,7 @@ nav:
           - Project Management: setup_installation/admin/project.md
           - Configure Alerts: setup_installation/admin/alert.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
+          - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
@@ -241,6 +242,7 @@ nav:
                   - Register an Identity Provider: setup_installation/admin/oauth2/create-client.md
                   - Create Okta Client: setup_installation/admin/oauth2/create-okta-client.md
                   - Create Azure Client: setup_installation/admin/oauth2/create-azure-client.md
+                  - Configure Project Mapping: setup_installation/admin/oauth2/configure-project-mapping.md
               - Configure LDAP/Kerberos:
                   - Configure LDAP: setup_installation/admin/ldap/configure-ldap.md
                   - Configure Kerberos: setup_installation/admin/ldap/configure-krb.md
@@ -253,7 +255,7 @@ nav:
           - Audit:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
-  - Python API: '!import https://github.com/aversey/hopsworks-api?branch=multirepo-mkdocs'
+  - Python API: "!import https://github.com/aversey/hopsworks-api?branch=multirepo-mkdocs"
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
 

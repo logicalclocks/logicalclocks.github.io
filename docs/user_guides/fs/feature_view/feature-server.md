@@ -9,7 +9,7 @@ This API server allows users to retrieve single/batch feature vectors from a fea
 ## How to use
 
 From Hopsworks 3.3, you can connect to the Feature Vector Server via any REST client which supports POST requests.
-Set the X-API-HEADER to your Hopsworks API Key and send the request with a JSON body, [single](#single-feature-vector-request) or [batch](#batch-feature-vectors-request).
+Set the `X-API-KEY` to your Hopsworks API Key and send the request with a JSON body, [single](#single-feature-vector-request) or [batch](#batch-feature-vectors-request).
 By default, the server listens on the `0.0.0.0:4406` and the api version is set to `0.1.0`.
 Please refer to `/srv/hops/mysql-cluster/rdrs_config.json` config file located on machines running the REST Server for additional configuration parameters.
 
