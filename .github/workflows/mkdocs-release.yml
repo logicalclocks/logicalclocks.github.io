@@ -18,14 +18,14 @@ jobs:
     steps:
       - name: Extract branch name (push)
         if: ${{ github.event_name == 'push' }}
-        run: echo "BRANCH=${GITHUB_REF#refs/heads/}}" >> "$GITHUB_ENV"
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
 
       - name: Extract branch name (repository_dispatch)
         if: ${{ github.event_name == 'repository_dispatch' }}
         run: echo "BRANCH=${{ github.event.client_payload.branch }}" >> "$GITHUB_ENV"
 
       - name: Extract version from branch name
-        run: echo "HOPSWORKS_VERSION=${BRANCH#branch-}}" >> "$GITHUB_ENV"
+        run: echo "HOPSWORKS_VERSION=${BRANCH#branch-}" >> "$GITHUB_ENV"
 
       - name: Checkout main repo
         uses: actions/checkout@v4
