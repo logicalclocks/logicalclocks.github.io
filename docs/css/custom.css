@@ -156,15 +156,27 @@
   --md-footer-bg-color--dark:        hsla(var(--md-hue), 0%, 8%, 1);
 }
 
+[data-md-color-scheme="slate"] p img {
+  background-color: white;
+  padding: .4rem;
+  border-radius: var(--border-radius-variable);
+}
+[data-md-color-scheme="slate"] .marctech_main > div {
+  display: none;
+}
+[data-md-color-scheme="slate"] .marctech_main::after {
+  content: "Switch to the light theme to view the diagram.";
+}
+
 /*******************************************************/
 /* Fix spacing in navigation tab. */
-.md-nav__link {
+.md-nav__item--nested > .md-nav__link {
   margin-bottom: .4rem;
 }
-.md-nav__list .md-nav__list .md-nav__list .md-nav__item:first-child .md-nav__link {
+.md-nav__list .md-nav__list .md-nav__list .md-nav__item:first-child > .md-nav__link {
   margin-top: 0;
 }
-.md-nav__list .md-nav__list .md-nav__list .md-nav__item:last-child .md-nav__link {
+.md-nav__list .md-nav__list .md-nav__list .md-nav__item:last-child > .md-nav__link {
   margin-bottom: 0;
 }
 
