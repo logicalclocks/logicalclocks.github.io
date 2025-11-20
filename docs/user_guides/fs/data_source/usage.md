@@ -1,4 +1,5 @@
 # Data Source Usage
+
 Here, we look at how to use a Data Source after it has been created.
 Data Sources provide an important first step for integrating with external data.
 The 4 fundamental functionalities where data sources are used are:
@@ -11,11 +12,12 @@ The 4 fundamental functionalities where data sources are used are:
 We will walk through each functionality in the sections below.
 
 ## Retrieving a Data Source
+
 We retrieve a data source simply by its unique name.
 
 === "PySpark"
     ```python
-    import hopsworks 
+    import hopsworks
     # Connect to the Hopsworks feature store
     project = hopsworks.login()
     feature_store = project.get_feature_store()
@@ -165,7 +167,7 @@ the data to external sources, as shown below.
 Read more about training data creation [here](../feature_view/training-data.md).
 
 ## Next Steps
+
 We have gone through the basic use cases of a data source.
 For more details about the API functionality for any specific connector type,
-checkout the [API section](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/storage_connector_api/#storage-connector).
-
+checkout the [API section](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/storage_connector_api/#storage-connector).

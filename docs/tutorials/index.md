@@ -20,6 +20,7 @@ You can find the raw notebook files in our [tutorials repository](https://github
 This is a quick-start of the Hopsworks Feature Store; using a fraud use case we will load data into the feature store, create two feature groups from which we will make a training dataset and train a model.
 
 ### Batch
+
 This is a batch use case variant of the fraud tutorial, it will give you a high level view on how to use our python APIs and the UI to navigate the feature groups.
 
 | Notebooks   |                                      |
@@ -29,6 +30,7 @@ This is a batch use case variant of the fraud tutorial, it will give you a high 
 | 3. [How to train a model from the feature store](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/3_fraud_batch_inference.ipynb){:target="_blank"}        |
 
 ### Online
+
 This is a online use case variant of the fraud tutorial, it is similar to the batch use case, however, in this tutorial you will get introduced to the usage of Feature Groups which are kept in online storage, and how to access single feature vectors from the online storage
 at low latency. Additionally, the model will be deployed as a model serving instance, to provide a REST endpoint for real time serving.
 

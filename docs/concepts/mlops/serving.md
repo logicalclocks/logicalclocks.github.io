@@ -3,7 +3,6 @@ In Hopsworks, you can easily deploy models from the model registry in KServe or 
 **`Transformer`**
 
 :   A ^^pre-processing^^ and ^^post-processing^^ component that can transform model inputs before predictions are made, and predictions before these are delivered back to the client.
-    
 
 **`Predictor`**
 

@@ -90,7 +90,6 @@ To create your own it is recommended to [clone](../../projects/python/python_env
   </figure>
 </p>
 
-
 ### Step 5 (Optional): Select a configuration file
 
 !!! note
@@ -143,6 +142,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -191,7 +191,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Predictor (vLLM deployments only)"
     ``` python
     import os
-    from vllm import __version__, AsyncEngineArgs, AsyncLLMEngine
+    from vllm import **version**, AsyncEngineArgs, AsyncLLMEngine
     from typing import Iterable, AsyncIterator, Union, Optional
     from kserve.protocol.rest.openai import (
         CompletionRequest,
@@ -200,7 +200,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
     )
     from kserve.protocol.rest.openai.types import Completion
     from kserve.protocol.rest.openai.types.openapi import ChatCompletionTool
-
 
     class Predictor():
 
@@ -255,6 +254,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 !!! info "You can also use the UI to upload your predictor script. See [above](#step-3-advanced-deployment-form)"
 
 === "Python"
+
   ```python
   uploaded_file_path = dataset_api.upload("my_predictor.py", "Resources", overwrite=True)
   predictor_script_path = os.path.join("/Projects", project.name, uploaded_file_path)
@@ -263,6 +263,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 4: Define predictor
 
 === "Python"
+
   ```python
   my_model = mr.get_model("my_model", version=1)
 
@@ -277,6 +278,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 5: Create a deployment with the predictor
 
 === "Python"
+
   ```python
   my_deployment = my_predictor.deploy()
 
@@ -287,7 +289,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Predictor](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
+[Predictor](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/predictor_api/)
 
 ## Model Server
 
@@ -341,7 +343,7 @@ The predictor script needs to implement a given template depending on the model 
 
 ### Server configuration file
 
-Depending on the model server, a **server configuration file** can be selected to help detach configuration used within the model deployment from the model server or the implementation of the predictor and transformer scripts. In other words, by modifying the configuration file of an existing model deployment you can adjust its settings without making changes to the predictor or transformer scripts. Inside a model deployment, the local path to the configuration file is stored in the `CONFIG_FILE_PATH` environment variable (see [environment variables](#environment-variables)). 
+Depending on the model server, a **server configuration file** can be selected to help detach configuration used within the model deployment from the model server or the implementation of the predictor and transformer scripts. In other words, by modifying the configuration file of an existing model deployment you can adjust its settings without making changes to the predictor or transformer scripts. Inside a model deployment, the local path to the configuration file is stored in the `CONFIG_FILE_PATH` environment variable (see [environment variables](#environment-variables)).
 
 !!! warning "Configuration file format"
     The configuration file can be of any format, except in vLLM deployments **without a predictor script** for which a YAML file is ==required==.
@@ -379,7 +381,7 @@ Depending on the model server and serving tool used in the model deployment, you
     |              | TensorFlow Serving | ✅        | (official) tensorflow serving image        | any `inference-pipeline` image |
     |              | vLLM               | ✅        | `vllm-inference-pipeline` or `vllm-openai` | any `inference-pipeline` image |
 
-!!! note 
+!!! note
     The selected Python environment is used for both predictor and transformer. Support for selecting a different Python environment for the predictor and transformer is coming soon.
 
 ## Transformer

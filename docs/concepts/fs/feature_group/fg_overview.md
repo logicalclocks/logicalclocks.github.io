@@ -4,7 +4,6 @@ A feature group is a table of features, where each feature group has a primary k
 
 <img src="../../../../assets/images/concepts/fs/feature-group-table.png">
 
-
 ### Online and offline Storage
 
 Feature groups can be stored in a low-latency "online" database and/or in low cost, high throughput "offline" storage, typically a data lake or data warehouse.

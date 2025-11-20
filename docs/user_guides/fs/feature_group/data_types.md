@@ -101,9 +101,9 @@ When in doubt, use the TEXT type instead, but note that it comes with a potentia
 #### Complex online data types
 
 Hopsworks allows users to store complex types (e.g. *ARRAY<INT>*) in the online feature store. Hopsworks serializes the complex features transparently and stores them as VARBINARY in the online feature store.
-The serialization happens when calling the [save()](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#save),
-[insert()](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#insert) or [insert_stream()](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#insert_stream) methods.
-The deserialization will be executed when calling the [get_serving_vector()](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/training_dataset_api/#get_serving_vector) method to retrieve data from the online feature store.
+The serialization happens when calling the [save()](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#save),
+[insert()](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#insert) or [insert_stream()](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#insert_stream) methods.
+The deserialization will be executed when calling the [get_serving_vector()](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/training_dataset_api/#get_serving_vector) method to retrieve data from the online feature store.
 If users query directly the online feature store, for instance using the `fs.sql("SELECT ...", online=True)` statement, it will return a binary blob.
 
 On the feature store UI, the online feature type for complex features will be reported as *VARBINARY*.
@@ -120,7 +120,7 @@ When a feature is being used as a primary key, certain types are not allowed.
 Examples of such types are *FLOAT*, *DOUBLE*, *TEXT* and *BLOB*.
 Additionally, the size of the sum of the primary key online data types storage requirements **should not exceed 4KB**.
 
-####  Online restrictions for row size
+#### Online restrictions for row size
 
 The online feature store supports **up to 500 columns** and all column types combined **should not exceed 30000 Bytes**.
 The byte size of each column is determined by its data type and calculated as follows:
@@ -155,22 +155,23 @@ The byte size of each column is determined by its data type and calculated as fo
 
     Since memory is allocated in 4-byte groups, storing 101 bytes requires 26 groups (26 × 4 = 104 bytes) of allocated memory.
 
-
 #### Pre-insert schema validation for online feature groups
+
 For online enabled feature groups, the dataframe to be ingested needs to adhere to the online schema definitions. The input dataframe is validated for schema checks accordingly.
 The validation is enabled by default and can be disabled by setting below key word argument when calling `insert()`
 === "Python"
     ```python
     feature_group.insert(df, validation_options={'online_schema_validation':False})
     ```
-The most important validation checks or error messages are mentioned below along with possible corrective actions. 
+The most important validation checks or error messages are mentioned below along with possible corrective actions.
 
-1. Primary key contains null values 
+1. Primary key contains null values
 
-    - **Rule** Primary key column should not contain any null values.
-    - **Example correction** Drop the rows containing null primary keys. Alternatively, find the null values and assign them an unique value as per preferred strategy for data imputation.
-        
+    * **Rule** Primary key column should not contain any null values.
+    * **Example correction** Drop the rows containing null primary keys. Alternatively, find the null values and assign them an unique value as per preferred strategy for data imputation.
+
         === "Pandas"
+
         ```python
         # Drop rows: assuming 'id' is the primary key column
         df = df.dropna(subset=['id'])
@@ -190,10 +191,11 @@ The most important validation checks or error messages are mentioned below along
 
 2. Primary key column missing
 
-    - **Rule** The dataframe to be inserted must contain all the columns defined as primary key(s) in the feature group.
-    - **Example correction** Add all the primary key columns in the dataframe.
-        
+    * **Rule** The dataframe to be inserted must contain all the columns defined as primary key(s) in the feature group.
+    * **Example correction** Add all the primary key columns in the dataframe.
+
         === "Pandas"
+
         ```python
         # increamenting primary key upto the length of dataframe
         df['id'] = range(1, len(df) + 1)
@@ -201,25 +203,26 @@ The most important validation checks or error messages are mentioned below along
 
 3. String length exceeded
 
-    - **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature. If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe. 
-    - **Example correction**
-    
-        - Trim the string values to fit within maximum limit set during feature group creation.
-        
+    * **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature. If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe.
+    * **Example correction**
+
+        * Trim the string values to fit within maximum limit set during feature group creation.
+
         === "Pandas"
+
         ```python
         max_length = 100
         df['text_column'] = df['text_column'].str.slice(0, max_length)
         ```
-        
-        - Another option is to simply [create new version of the feature group](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) and insert the dataframe.
 
+        * Another option is to simply [create new version of the feature group](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) and insert the dataframe.
 
         !!!note  
             The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size). In such cases it is possible to define the feature as **TEXT** or **BLOB**.
             Below is an example of explicitly defining the string column as TEXT as online type.
 
         === "Pandas"
+
         ```python
         import pandas as pd
         # example dummy dataframe with the string column
@@ -242,7 +245,7 @@ The most important validation checks or error messages are mentioned below along
 
 All timestamp features are stored in Hopsworks in UTC time. Also, all timestamp-based functions (such as [point-in-time joins](../../../concepts/fs/feature_view/offline_api.md#point-in-time-correct-training-data)) use UTC time.
 This ensures consistency of timestamp features across different client timezones and simplifies working with timestamp-based functions in general.
-When ingesting timestamp features, the [Feature Store Write API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#insert) will automatically handle the conversion to UTC, if necessary.
+When ingesting timestamp features, the [Feature Store Write API](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#insert) will automatically handle the conversion to UTC, if necessary.
 The following table summarizes how different timestamp types are handled:
 
 | Data Frame (Data Type)                | Environment             | Handling                                                 |
@@ -251,7 +254,7 @@ The following table summarizes how different timestamp types are handled:
 | Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timezone-sensitive conversion from 'tz' to UTC            |
 | Spark (TimestampType)                 | PySpark and Spark       | interpreted as UTC, independent of the client's timezone |
 
-Timestamp features retrieved from the Feature Store, e.g. using the [Feature Store Read API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#read), use a timezone-unaware format:
+Timestamp features retrieved from the Feature Store, e.g. using the [Feature Store Read API](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#read), use a timezone-unaware format:
 
 | Data Frame (Data Type)                | Environment             | Timezone               |
 |---------------------------------------|-------------------------|------------------------|

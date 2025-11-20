@@ -34,7 +34,7 @@ By clicking on `Add expectation` one can choose an expectation type from a searc
 All default kwargs associated to the selected expectation type are populated as a json below the dropdown menu. Edit the arguments in the json to configure the Expectation. In particular, arguments such as `column`, `columnA`, `columnB`, `column_set` and `column_list` require valid feature name(s). Click the tick button to save the expectation configuration and append it to the Expectation Suite locally.
 
 !!! info
-	Click the `Save feature group` button to persist your changes!
+ Click the `Save feature group` button to persist your changes!
 
 You can use the button `Clear Expectation Suite` to clean up before saving changes if you changed your mind. If the Expectation Suite is already registered, it will instead show a button to delete the Expectation Suite.
 
@@ -147,7 +147,7 @@ expectation_suite_profiler, _ = ge_profiler.profile(ge.from_pandas(df))
 
 Once you have built an Expectation Suite you are satisfied with, it is time to create your first validation enabled Feature Group.
 
-### Step 3: Attach an Expectation Suite to your Feature Group to enable Automatic Validation on Insertion.
+### Step 3: Attach an Expectation Suite to your Feature Group to enable Automatic Validation on Insertion
 
 Writing data in Hopsworks is done using Feature Groups. Once a Feature Group is registered in the Feature Store, you can use it to insert your pandas DataFrames. For more information see [create Feature Group](create.md). To benefit from automatic validation on insertion, attach your newly created Expectation Suite when creating the Feature Group:
 
@@ -177,7 +177,7 @@ job, validation_report = fg.insert(df.head(5))
 As you can see, Hopsworks runs the validation in the client before attempting to insert the data. By default, Hopsworks will try to insert the data even if validation fails to prevent data loss. However it can be configured for production setup to be more restrictive, checkout the [data validation advanced guide](data_validation_advanced.md).
 
 !!!info
-	Note that once the Expectation Suite is attached to the Feature Group, any subsequent attempt to insert to this Feature Group will apply the Data Validation step even from a different client or in a scheduled job.
+ Note that once the Expectation Suite is attached to the Feature Group, any subsequent attempt to insert to this Feature Group will apply the Data Validation step even from a different client or in a scheduled job.
 
 ### Step 4: Data Quality Monitoring
 
@@ -206,7 +206,7 @@ validation_history = fg.get_validation_history(
 You can find the expectationIds in the UI or using `fg.get_expectation_suite` and looking it up in the expectation's meta field.
 
 !!! info
-	If Validation Reports or Results are too long, they can be truncated to fit in the database. A full version of the reports can be downloaded from the UI.
+ If Validation Reports or Results are too long, they can be truncated to fit in the database. A full version of the reports can be downloaded from the UI.
 
 ## Conclusion
 

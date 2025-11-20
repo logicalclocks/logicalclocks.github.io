@@ -52,7 +52,7 @@ The environment that Jupyter should run in needs to be configured. Select the en
   </figure>
 </p>
 
-The runtime of the Jupyter instance can be configured, this is useful to ensure that idle instances will not be hanging around and keep allocating resources. If a limited runtime is not desirable, this can be disabled by setting `no limit`. 
+The runtime of the Jupyter instance can be configured, this is useful to ensure that idle instances will not be hanging around and keep allocating resources. If a limited runtime is not desirable, this can be disabled by setting `no limit`.
 
 <p align="center">
   <figure>
@@ -76,7 +76,6 @@ If the cluster is installed with Kueue enabled, you will need to select a queue 
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 
-
 ## Step 5: Start Jupyter
 
 Start the Jupyter instance by clicking the `Run Jupyter` button.
@@ -89,16 +88,18 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
 </p>
 
 ## Accessing project data
+
 !!! notice "Recommended approach if `/hopsfs` is mounted"
     If your Hopsworks installation is configured to mount the project datasets under `/hopsfs`, which it is in most cases, then please refer to this section.
-    If the file system is not mounted, then project files can be localized using the [download api](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/datasets/#download) to localize files in the current working directory.
+    If the file system is not mounted, then project files can be localized using the [download api](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/datasets/#download) to localize files in the current working directory.
 
 ### Absolute paths
+
 The project datasets are mounted under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your notebook.
 
 ### Relative paths
-The notebook's working directory is the folder it is located in. For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`. Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
 
+The notebook's working directory is the folder it is located in. For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`. Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
 
 ## Going Further
 

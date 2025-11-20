@@ -36,7 +36,7 @@ The first step to create a feature group is to create the API metadata object re
     )
     ```
 
-The full method documentation is available [here](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup). If you need to create a feature group with vector similarity search supported, refer to [this guide](../vector_similarity_search.md#extending-feature-groups-with-similarity-search). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group.
+The full method documentation is available [here](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#featuregroup). If you need to create a feature group with vector similarity search supported, refer to [this guide](../vector_similarity_search.md#extending-feature-groups-with-similarity-search). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group.
 
 In the example above we created the first version of a feature group named *weather*, we provide a description to make it searchable to the other project members, as well as making the feature group available online.
 
@@ -117,8 +117,6 @@ fg = fs.create_feature_group(
             diskColumnGiB: 2
     ```
 
-
-
 #### Streaming Write API
 
 As explained above, the stream parameter controls whether to enable the streaming write APIs to the online and offline feature store.
@@ -189,6 +187,7 @@ Four main considerations influence the write and the query performance:
 **Partitioning on the feature group level** allows Hopsworks and the table format (Hudi or Delta) to push down filters to the filesystem when reading from feature groups. In practice that means, less directories need to be listed and less files need to be read, speeding up queries.
 
 For example, most commonly, filtering is done on the event time column of a feature group when generating training data or batches of data:
+
 ```python
 query = fg.select_all()
 
@@ -224,11 +223,13 @@ list and read the files in the directories of those six months that are being qu
 
 Additionally, if you are commonly training models for different categories of your data, you can add another level of partitioning for this. That is, if the query contains
 an additional filter:
+
 ```python
 query = fg.select_all().filter(fg.country_code == "US")
 ```
 
 The feature group can be created with the following partition key in order to push down filters also for the `country_code` category:
+
 ```python
 fg = feature_store.create_feature_group(...
     partition_key=['day', 'country_code'],
@@ -320,7 +321,7 @@ If a feature group is online enabled, the `insert` method will store the feature
 
 ### API Reference
 
-[FeatureGroup](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#featuregroup)
+[FeatureGroup](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#featuregroup)
 
 ## Create using the UI
 

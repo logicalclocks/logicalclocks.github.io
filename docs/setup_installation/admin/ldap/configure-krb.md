@@ -1,19 +1,22 @@
 # Configure Kerberos
 
 ## Introduction
+
 Kerberos is a network authentication protocol that allow nodes to communicating over a non-secure network to prove their identity to one another in a secure manner.
 This tutorial shows an administrator how to configure Kerberos authentication.
 
 Kerberos need some server configuration before you can enable it from the UI.
 
 ## Prerequisites
-A server configured with Kerberos. See [Server Configuration for Kerberos](../configure-server/#server-configuration-for-kerberos) for 
-instruction on how to do this. 
+
+A server configured with Kerberos. See [Server Configuration for Kerberos](../configure-server/#server-configuration-for-kerberos) for
+instruction on how to do this.
 
 ### Step 1: Enable Kerberos
+
 After configuring the server you can configure Authentication methods by clicking on your name in the top right
 corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
-In the _Authentication_ tab you can find in **Cluster Settings**, you can enable Kerberos by clicking on the Kerberos checkbox.
+In the *Authentication* tab you can find in **Cluster Settings**, you can enable Kerberos by clicking on the Kerberos checkbox.
 
 If LDAP/Kerberos checkbox is not checked, make sure that you configured your application server and enable it by
 clicking on the checkbox.
@@ -24,6 +27,7 @@ clicking on the checkbox.
 </figure>
 
 ### Step 2: Edit configuration
+
 Finally, click on edit configuration and fill in the attributes.
 
 <figure>
@@ -32,9 +36,9 @@ Finally, click on edit configuration and fill in the attributes.
 </figure>
 
 - Account status: the status a user will be assigned when logging in for the first time. If a user is assigned a status
-  different from _Activated_ an admin needs to manually activate each user from the [User management](../../user).
+  different from *Activated* an admin needs to manually activate each user from the [User management](../../user).
 - Group mapping: allows you to specify a mapping between LDAP groups and Hopsworks groups. The mapping is a
-  semicolon separated string in the form ```Directory Administrators->HOPS_ADMIN;IT People-> HOPS_USER```. Default 
+  semicolon separated string in the form ```Directory Administrators->HOPS_ADMIN;IT People-> HOPS_USER```. Default
   is empty. If no mapping is specified, users need to be assigned a role by an admin before they can log in.
 - User id: the id field in LDAP with a string placeholder. Default ```uid=%s```.
 - User given name: the given name field in LDAP. Default ```givenName```.

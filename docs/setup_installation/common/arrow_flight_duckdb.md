@@ -1,4 +1,5 @@
 # ArrowFlight Server with DuckDB
+
 By default, Hopsworks uses big data technologies (Spark or Hive) to create training data and read data for Python clients.
 This is great for large datasets, but for small or moderately sized datasets (think of the size of data that would fit in a Pandas
 DataFrame in your local Python environment), the overhead of starting a Spark or Hive job and doing distributed data processing can be significant.
@@ -8,11 +9,11 @@ and batch inference data from the Feature Store, as well as creating moderately-
 
 When the service is enabled, clients will automatically use it for the following operations:
 
-- [reading Feature Groups](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#read)
-- [reading Queries](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/query_api/#read)
-- [reading Training Datasets](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#get_training_data)
-- [creating In-Memory Training Datasets](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#training_data)
-- [reading Batch Inference Data](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_view_api/#get_batch_data)
+- [reading Feature Groups](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#read)
+- [reading Queries](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/query_api/#read)
+- [reading Training Datasets](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_view_api/#get_training_data)
+- [creating In-Memory Training Datasets](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_view_api/#training_data)
+- [reading Batch Inference Data](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_view_api/#get_batch_data)
 
 For larger datasets, clients can still make use of the Spark/Hive backend by explicitly setting
 `read_options={"use_hive": True}`.
@@ -50,4 +51,3 @@ To deploy ArrowFlight Server on a cluster:
   depending on the number of columns and size of the features (~2GB in parquet). The same instance will be able to create
   point-in-time correct training datasets with 1-10M rows, also depending on the number and the size of the features.
   Larger instances are able to handle larger datasets. The numbers scale roughly linearly with the instance size.
-

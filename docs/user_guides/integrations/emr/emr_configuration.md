@@ -2,6 +2,7 @@
 description: Documentation on how to configure an EMR cluster to read and write features from the Hopsworks Feature Store
 ---
 # Configure EMR for the Hopsworks Feature Store
+
 To enable EMR to access the Hopsworks Feature Store, you need to set up a Hopsworks API key, add a bootstrap action and configurations to your EMR cluster.
 
 !!! info
@@ -49,7 +50,6 @@ Identify your EMR EC2 instance profile in the EMR cluster summary:
   </figure>
 </p>
 
-
 In the AWS Management Console, go to *IAM*, select *Roles* and then the EC2 instance profile used by your EMR cluster.
 Select *Add inline policy*. Choose *Secrets Manager* as a service, expand the *Read* access level and check *GetSecretValue*.
 Expand Resources and select *Add ARN*. Paste the ARN of the secret created in the previous step.
@@ -65,6 +65,7 @@ Click on *Review*, give the policy a name and click on *Create policy*.
 ## Step 2: Configure your EMR cluster
 
 ### Add the Hopsworks Feature Store configuration to your EMR cluster
+
 In order for EMR to be able to talk to the Feature Store, you need to update the Hadoop and Spark configurations.
 Copy the configuration below and replace ip-XXX-XX-XX-XXX.XX-XXXX-X.compute.internal with the private DNS name of your Hopsworks master node.
 
@@ -169,6 +170,7 @@ chmod -R o-rwx /usr/lib/hopsworks
 sudo pip3 install --upgrade hopsworks~=X.X.0
 
 ```
+
 !!! attention "Matching Hopsworks version"
 
     We recommend that the major and minor version of the Python library match the major and minor version of the Hopsworks deployment.
@@ -194,4 +196,4 @@ Your EMR cluster will now be able to access your Hopsworks Feature Store.
 
 ## Next Steps
 
-Use the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/) to connect to the Hopsworks Feature Store. For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.
+Use the [Login API](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/login/) to connect to the Hopsworks Feature Store. For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.

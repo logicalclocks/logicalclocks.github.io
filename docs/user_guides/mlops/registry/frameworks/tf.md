@@ -11,7 +11,6 @@ In this guide you will learn how to export a TensorFlow model and register it in
 !!! notice "Save in SavedModel format"
     Make sure the model is saved in the [SavedModel](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/saved_model/README.md) format to be able to deploy it on TensorFlow Serving.
 
-
 ## Code
 
 ### Step 1: Connect to Hopsworks

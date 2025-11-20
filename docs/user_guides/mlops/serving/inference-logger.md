@@ -56,6 +56,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -71,6 +72,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 2: Define an inference logger
 
 === "Python"
+
   ```python
 
   from hsml.inference_logger import InferenceLogger
@@ -96,6 +98,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 3: Create a deployment with the inference logger
 
 === "Python"
+
   ```python
   my_model = mr.get_model("my_model", version=1)
 
@@ -112,7 +115,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Inference Logger](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/inference_logger_api/)
+[Inference Logger](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/inference_logger_api/)
 
 ## Topic schema
 

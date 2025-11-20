@@ -56,7 +56,7 @@ By default, the dialog will create a Spark job. To instead configure a Jupyter N
 
 ### Step 4: Set the notebook
 
-Next step is to select the Jupyter Notebook to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown. 
+Next step is to select the Jupyter Notebook to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown.
 
 <p align="center">
   <figure>
@@ -84,10 +84,10 @@ The next step is to read the arguments in the notebook which is explained in thi
 
 It is possible to also set following configuration settings for a `PYTHON` job.
 
-* `Environment`: The python environment to use
-* `Container memory`: The amount of memory in MB to be allocated to the Jupyter Notebook script
-* `Container cores`: The number of cores to be allocated for the Jupyter Notebook script
-* `Additional files`: List of files that will be locally accessible in the working directory of the application. Only recommended to use if project datasets are not mounted under `/hopsfs`.
+- `Environment`: The python environment to use
+- `Container memory`: The amount of memory in MB to be allocated to the Jupyter Notebook script
+- `Container cores`: The number of cores to be allocated for the Jupyter Notebook script
+- `Additional files`: List of files that will be locally accessible in the working directory of the application. Only recommended to use if project datasets are not mounted under `/hopsfs`.
 You can always modify the arguments in the job settings.
 
 <p align="center">
@@ -115,6 +115,7 @@ Now click the `Run` button to start the execution of the job. You will be redire
 </p>
 
 ### Step 9: Visualize output notebook
+
 Once the execution is finished, click `Logs` and then `notebook out` to see the logs for the execution.
 
 <p align="center">
@@ -130,7 +131,7 @@ You can directly edit and save the output notebook by clicking `Open Notebook`.
 
 ### Step 1: Upload the Jupyter Notebook script
 
-This snippet assumes the Jupyter Notebook script is in the current working directory and named `notebook.ipynb`. 
+This snippet assumes the Jupyter Notebook script is in the current working directory and named `notebook.ipynb`.
 
 It will upload the Jupyter Notebook script to the `Resources` dataset in your project.
 
@@ -145,7 +146,6 @@ dataset_api = project.get_dataset_api()
 uploaded_file_path = dataset_api.upload("notebook.ipynb", "Resources")
 
 ```
-
 
 ### Step 2: Create Jupyter Notebook job
 
@@ -178,6 +178,7 @@ execution = job.run(args='-p a 2 -p b 5', await_termination=True)
 ```
 
 ## Configuration
+
 The following table describes the job configuration parameters for a PYTHON job.
 
 `conf = jobs_api.get_configuration("PYTHON")`
@@ -195,20 +196,21 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['jobType']`</nobr> | string  | Type of job                                                                                                                                                               | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string  | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...`                      | `null` |
 
-
 ## Accessing project data
+
 !!! notice "Recommended approach if `/hopsfs` is mounted"
     If your Hopsworks installation is configured to mount the project datasets under `/hopsfs`, which it is in most cases, then please refer to this section instead of the `Additional files` property to reference file resources.
 
 ### Absolute paths
+
 The project datasets are mounted under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your notebook.
 
 ### Relative paths
-The notebook's working directory is the folder it is located in. For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`. Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
 
+The notebook's working directory is the folder it is located in. For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`. Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
 
 ## API Reference
 
-[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
+[Jobs](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/jobs/)
 
-[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
+[Executions](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/executions/)

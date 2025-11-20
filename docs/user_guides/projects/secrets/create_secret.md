@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A Secret is a key-value pair used to store encrypted information accessible only to the owner of the secret. 
+A Secret is a key-value pair used to store encrypted information accessible only to the owner of the secret.
 Also if you wish to, you can share the same secret API key with all the members of a Project.
 
 ## UI
@@ -64,4 +64,4 @@ secret = secrets_api.create_secret("my_secret", "Fk3MoPlQXCQvPo")
 
 ### API Reference
 
-[Secrets](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/secrets/)
+[Secrets](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/secrets/)

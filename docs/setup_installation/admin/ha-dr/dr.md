@@ -1,6 +1,7 @@
 # Disaster Recovery
 
 ## Backup
+
 The state of the Hopsworks cluster is divided into data and metadata and distributed across the different node groups. This section of the guide allows you to take a consistent backup between data in the offline and online feature store as well as the metadata.
 
 The following services contain critical state that should be backed up:
@@ -28,7 +29,7 @@ To take the backup of users and privileges you can run the following command fro
 /srv/hops/mysql/bin/mysqlpump -S /srv/hops/mysql-cluster/mysql.sock --exclude-databases=% --exclude-users=root,mysql.sys,mysql.session,mysql.infoschema --users > users.sql
 ```
 
-The second step is to trigger the backup of the data. This can be achieved by running the following command as user ‘mysql’ on one of the nodes of the head node group. 
+The second step is to trigger the backup of the data. This can be achieved by running the following command as user ‘mysql’ on one of the nodes of the head node group.
 
 ```sh
 /srv/hops/mysql-cluster/ndb/scripts/mgm-client.sh -e "START BACKUP [replace_backup_id] SNAPSHOTEND WAIT COMPLETED"
@@ -36,7 +37,7 @@ The second step is to trigger the backup of the data. This can be achieved by ru
 
 The backup ID is an integer greater or equal than 1. The script uses the following: `$(date +'%y%m%d%H%M')` instead of an integer as backup id to make it easier to identify backups over time.
 
-The command instructs each RonDB datanode to backup the data it is responsible for. The backup will be located locally on each datanode under the following path: 
+The command instructs each RonDB datanode to backup the data it is responsible for. The backup will be located locally on each datanode under the following path:
 
 ```sh
 /srv/hops/mysql-cluster/ndb/backups/BACKUP - the directory name will be BACKUP-[backup_id] 
@@ -46,10 +47,10 @@ A more comprehensive backup script is available [here](https://github.com/logica
 
 ### HopsFS Backup
 
-HopsFS is a distributed file system based on Apache HDFS. HopsFS stores its metadata in RonDB, as such metadata backup has already been discussed in the section above. The data is stored in the form of blocks on the different data nodes. 
+HopsFS is a distributed file system based on Apache HDFS. HopsFS stores its metadata in RonDB, as such metadata backup has already been discussed in the section above. The data is stored in the form of blocks on the different data nodes.
 For availability reasons, the blocks are replicated across three different data nodes.
 
-Within a node, the blocks are stored by default under the following directory, under the ownership of the ‘hdfs’ user: 
+Within a node, the blocks are stored by default under the following directory, under the ownership of the ‘hdfs’ user:
 
 ```sh
 /srv/hopsworks-data/hops/hopsdata/hdfs/dn/
@@ -71,7 +72,7 @@ The first step to redeploy the cluster is to redeploy the binaries and configura
 
 ### RonDB restore
 
-The deployment step above created a functioning empty cluster. To restore the cluster, the first step is to restore the metadata and online feature store data stored on RonDB. 
+The deployment step above created a functioning empty cluster. To restore the cluster, the first step is to restore the metadata and online feature store data stored on RonDB.
 To restore the state of RonDB, we first need to restore its schemas and tables, then its data, rebuild the indices, and finally restore the users and grants.
 
 #### Restore RonDB schemas and tables
@@ -109,7 +110,7 @@ In the backup phase, we took the backup of the user and grants separately. The l
 ### HopsFS restore
 
 With the metadata restored, you can now proceed to restore the file system blocks on HopsFS and restart the file system. When starting the datanode, it will advertise it’s ID/ClusterID and Storage ID based on the VERSION file that can be found in this directory:
- 
+
 ```sh
 /srv/hopsworks-data/hops/hopsdata/hdfs/dn/current
 ```
@@ -129,7 +130,7 @@ The script is deployed and configured during the platform deployment.
 
 ### Kafka topics rebuild
 
-The backup and restore plan doesn’t cover the data in transit in Kafka, for which the jobs producing it will have to be replayed. However, the RonDB backup contains the information necessary to recreate the topics of all the feature groups. 
+The backup and restore plan doesn’t cover the data in transit in Kafka, for which the jobs producing it will have to be replayed. However, the RonDB backup contains the information necessary to recreate the topics of all the feature groups.
 You can run the following command, as super user, to recreate all the topics with the correct partitioning and replication factors:
 
 ```sh

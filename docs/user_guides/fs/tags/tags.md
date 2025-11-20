@@ -1,4 +1,4 @@
-# Tags 
+# Tags
 
 ## Introduction
 
@@ -10,18 +10,18 @@ A tag is a `{key: value}` pair which provides additional information about the d
 
 Tags have a schema. Before you can attach a tag to an artifact and fill in the tag values, you first need to select an existing tag schema or create a new tag schema.
 
-Tag schemas can be defined by Hopsworks administrator in the `Cluster settings` section of the platform. Schemas are defined globally across all projects. When users attach tags to an artifact, the tag will be validated against a specific schema. This allows tags to be consistent no matter the project or the team generating them. 
+Tag schemas can be defined by Hopsworks administrator in the `Cluster settings` section of the platform. Schemas are defined globally across all projects. When users attach tags to an artifact, the tag will be validated against a specific schema. This allows tags to be consistent no matter the project or the team generating them.
 
 !!! warning "Immutable"
-    Tag schemas are immutable. Once defined, a tag schema cannot be edited nor deleted. 
+    Tag schemas are immutable. Once defined, a tag schema cannot be edited nor deleted.
 
 ## Step 1: Define a tag schema
 
-Tag schemas can be defined using the UI wizard in the `Cluster settings` > `Tag schemas` section. 
+Tag schemas can be defined using the UI wizard in the `Cluster settings` > `Tag schemas` section.
 Tag schemas have a name, the name is used to uniquely identify the schema. You can also provide an optional description.
 
 You can define a schema by using the UI tool or by providing the schema in JSON format.
-If you use the UI tool, you should provide the name of the property in the schema, the type of the property, whether or not the property is required and an optional description. 
+If you use the UI tool, you should provide the name of the property in the schema, the type of the property, whether or not the property is required and an optional description.
 
 <p align="center">
   <figure>
@@ -123,7 +123,7 @@ You can attach tags to feature groups and feature views directly from the UI. Yo
 
 ## Step 3: Search
 
-Hopsworks indexes the tags attached to feature groups, feature views and training datasets. The tags will then be searchable using the free text search box located at the top of the UI. 
+Hopsworks indexes the tags attached to feature groups, feature views and training datasets. The tags will then be searchable using the free text search box located at the top of the UI.
 
 <p align="center">
   <figure>

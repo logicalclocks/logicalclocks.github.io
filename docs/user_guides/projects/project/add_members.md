@@ -33,6 +33,7 @@ Subsequently, the selected project members can be assigned to 2 different roles,
 Data owners hold the highest authority in the project, having full control of its contents.
 
 They are allowed to:
+
 - Share a project
 - Manage the project and its members
 - Work with all feature store abstractions (such as Feature groups, Feature views, Data Sources, etc.)
@@ -44,6 +45,7 @@ It is worth mentioning that the project's creator (aka. `author`) is a special t
 Data scientists can be viewed as the users of data.
 
 They are allowed to:
+
 - Create feature views/training datasets using existing features
 - Manage the feature views/training datasets they have created
 

@@ -11,7 +11,7 @@ Before continuing with this guide, see the [Feature monitoring guide](../feature
 
 In this section, we show you how to setup feature monitoring in a Feature View using the ==Hopsworks Python library==. Alternatively, you can get started quickly by running our [tutorial for feature monitoring](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/api_examples/feature_monitoring.ipynb).
 
-First, checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the [Hopsworks Python library](https://pypi.org/project/hopsworks) in your environment and connect via the generated API key. The second step is to start a new configuration for feature monitoring. 
+First, checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the [Hopsworks Python library](https://pypi.org/project/hopsworks) in your environment and connect via the generated API key. The second step is to start a new configuration for feature monitoring.
 
 After that, you can optionally define a detection window of data to compute statistics on, or use the default detection window (i.e., whole feature data). If you want to setup scheduled statistics alone, you can jump to the last step to save your configuration. Otherwise, the third and fourth steps are also optional and show you how to setup the comparison of statistics on a schedule by defining a reference window and specifying the statistics metric to be compared.
 
@@ -122,7 +122,7 @@ By default, the computation of statistics is scheduled to run endlessly, every d
     fg_monitoring_config = trans_fv.create_statistics_monitoring(
         name="trans_fv_all_features_monitoring",
         description="Compute statistics on all data of all features of the Feature Group data on a weekly basis",
-        cron_expression="0 0 12 ? * MON *",  # weekly 
+        cron_expression="0 0 12 ? *MON*",  # weekly
         row_percentage=0.8,                  # use 80% of the data
     )
 
@@ -138,7 +138,7 @@ By default, the computation of statistics is scheduled to run endlessly, every d
 
 ### Step 3: (Optional) Define a detection window
 
-By default, the detection window is an _expanding window_ covering the whole Feature Group data. You can define a different detection window using the `window_length` and `time_offset` parameters provided in the `with_detection_window` method. Additionally, you can specify the percentage of feature data on which statistics will be computed using the `row_percentage` parameter.
+By default, the detection window is an *expanding window* covering the whole Feature Group data. You can define a different detection window using the `window_length` and `time_offset` parameters provided in the `with_detection_window` method. Additionally, you can specify the percentage of feature data on which statistics will be computed using the `row_percentage` parameter.
 
 === "Python"
     ```python3
@@ -180,7 +180,7 @@ In order to compare detection and reference statistics, you need to provide the 
 === "Python"
     ```python3
     fm_monitoring_config.compare_on(
-        metric="mean", 
+        metric="mean",
         threshold=0.2,  # a relative change over 20% is considered anomalous
         relative=True,  # relative or absolute change
         strict=False,   # strict or relaxed comparison
@@ -189,7 +189,6 @@ In order to compare detection and reference statistics, you need to provide the 
 
 !!! info "Difference values and thresholds"
     For more information about the computation of difference values and the comparison against threshold bounds see the [Comparison criteria section](../feature_monitoring/statistics_comparison.md#comparison-criteria) in the Statistics comparison guide.
-
 
 ### Step 6: Save configuration
 

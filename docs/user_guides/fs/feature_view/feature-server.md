@@ -6,13 +6,13 @@ description: Using Feature Store REST API Server for retrieving feature vectors
 
 This API server allows users to retrieve single/batch feature vectors from a feature view.
 
-## How to use 
+## How to use
 
 From Hopsworks 3.3, you can connect to the Feature Vector Server via any REST client which supports POST requests. Set the X-API-HEADER to your Hopsworks API Key and send the request with a JSON body, [single](#request) or [batch](#request-1). By default, the server listens on the `0.0.0.0:4406` and the api version is set to `0.1.0`. Please refer to `/srv/hops/mysql-cluster/rdrs_config.json` config file located on machines running the REST Server for additional configuration parameters.
 
 In Hopsworks 3.7, we introduced a python client for the Online Store REST API Server. The python client is available in the `hsfs` module and can be installed using `pip install hsfs`. This client can be used instead of the Online Store SQL client in the `FeatureView.get_feature_vector(s)` methods. Check the corresponding [documentation](./feature-vectors.md) for these methods.
 
-## Single feature vector 
+## Single feature vector
 
 ### Request
 
@@ -144,16 +144,16 @@ options            | objects     | Optional. Map of option as key and boolean as
 If `includeDetailedStatus` option is set to true, detailed status is returned in the response. Detailed status is a list of feature group id and http status code, corresponding to each read operations perform internally by RonDB. Meaning is as follows:
 
 - `featureGroupId`: Id of the feature group, used to identify which table the operation correspond from.
-- `httpStatus`: Http status code of the operation. 
-        * 200 means success
+- `httpStatus`: Http status code of the operation.
+        *200 means success
         * 400 means bad request, likely pk name is wrong or pk is incomplete. In particular, if pk for this table/feature group is not provided in the request, this http status is returned.
-        * 404 means no row corresponding to PK
+        *404 means no row corresponding to PK
         * 500 means internal error.
 
 Both `404` and `400` set the status to `MISSING` in the response. Examples below corresponds respectively to missing row and bad request.
 
-
 Missing Row: The pk name,value was correctly passed but the corresponding row was not found in the feature group.
+
 ```
 {
         "features": [
@@ -177,6 +177,7 @@ Missing Row: The pk name,value was correctly passed but the corresponding row wa
 ```
 
 Bad Request e.g pk name,value pair for FG2 not provided or the corresponding column names was incorrect.
+
 ```
 {
         "features": [

@@ -5,7 +5,7 @@ description: Administrator guide on how to integrate Hopsworks with an external 
 # External Kafka cluster
 
 Hopsworks uses [Apache Kafka](https://kafka.apache.org/) to ingest data to the feature store. Streaming applications and external clients send data to the Kafka cluster for ingestion to the online and offline feature store.
-By default, Hopsworks comes with an embedded Kafka cluster managed by Hopsworks itself, however, users can configure Hopsworks to leverage an existing external cluster. 
+By default, Hopsworks comes with an embedded Kafka cluster managed by Hopsworks itself, however, users can configure Hopsworks to leverage an existing external cluster.
 This guide will cover how to configure an Hopsworks cluster to leverage an external Kafka cluster.
 
 ## Configure the external Kafka cluster integration
@@ -32,7 +32,7 @@ OnlineFs can be configured to use these credentials by adding the following conf
       topic_list: "comma separated list of kafka topics to subscribe to"
 ```
 
-In particular, the `onlinefs/config_dir` should contain the credentials necessary for the Kafka consumers to authenticate. 
+In particular, the `onlinefs/config_dir` should contain the credentials necessary for the Kafka consumers to authenticate.
 Additionally the directory should contain a file name `onlinefs-kafka.properties` with the Kafka consumer configuration.
 The following is an example of the `onlinefs-kafka.properties` file:
 
@@ -60,7 +60,7 @@ As mentioned above, when configuring Hopsworks to use an external Kafka cluster,
   </figure>
 </p>
 
-#### Data Source configuration 
+#### Data Source configuration
 
 Users should create a [Kafka Data Source](../../user_guides/fs/data_source/creation/kafka.md) named `kafka_connector` which is going to be used by the feature store clients to configure the necessary Kafka producers to send data.
 The configuration is done for each project to ensure its members have the necessary authentication/authorization.

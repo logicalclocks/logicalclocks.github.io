@@ -9,7 +9,7 @@ SageMaker and KubeFlow. This guide shows how to set up the Hopsworks platform in
 To follow the instruction on this page you will need the following:
 
 - Kubernetes Version: Hopsworks can be deployed on AKS clusters running Kubernetes >= 1.27.0.
-- An Azure resource group in which the Hopsworks cluster will be deployed. 
+- An Azure resource group in which the Hopsworks cluster will be deployed.
 - The [azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) installed and [logged in](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli).
 - kubectl (to manage the AKS cluster)
 - helm (to deploy Hopsworks)
@@ -19,7 +19,7 @@ To follow the instruction on this page you will need the following:
 The deployment requires cluster admin access to create ClusterRoles, ServiceAccounts, and ClusterRoleBindings in AKS.
 
 A namespace is also required for deploying the Hopsworks stack. If you don’t have permissions to create a namespace, ask your AKS administrator to provision one for you.
-	
+
 To run all the commands on this page the user needs to have at least the following permissions on the Azure resource group:
 
 You will also need to have a role such as *Application Administrator* on the Azure Active Directory to be able to create the hopsworks.ai service principal.
@@ -149,7 +149,7 @@ kubectl create secret docker-registry azregcred \
 
 ### Step 4.1: Add the Hopsworks Helm repository
 
-To obtain access to the Hopsworks helm chart repository, please obtain 
+To obtain access to the Hopsworks helm chart repository, please obtain
 an evaluation/startup licence [here](https://www.hopsworks.ai/try).
 
 Once you have the helm chart repository URL, replace the environment
@@ -228,7 +228,6 @@ kubectl expose deployment hopsworks --type=LoadBalancer --name=hopsworks-service
 
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
-* Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
-* Follow one of our [tutorials](../../tutorials/index.md)
-* Follow one of our [Guide](../../user_guides/index.md)
-
+- Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
+- Follow one of our [tutorials](../../tutorials/index.md)
+- Follow one of our [Guide](../../user_guides/index.md)

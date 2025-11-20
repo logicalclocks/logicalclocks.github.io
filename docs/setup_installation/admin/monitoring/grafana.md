@@ -1,8 +1,8 @@
-# Services Dashboards 
+# Services Dashboards
 
 ## Introduction
 
-The Hopsworks platform is composed of different services. Hopsworks uses Prometheus to collect health and performance metrics from the different services and Grafana to display them to the Hopsworks administrators. 
+The Hopsworks platform is composed of different services. Hopsworks uses Prometheus to collect health and performance metrics from the different services and Grafana to display them to the Hopsworks administrators.
 
 In this guide you will learn how to access the Grafana dashboards to monitor the health of the cluster or to troubleshoot performance issues.
 
@@ -10,7 +10,7 @@ In this guide you will learn how to access the Grafana dashboards to monitor the
 
 To access the services dashboards in Grafana, you need to have an administrator account on the Hopsworks cluster.
 
-## Step 1: Access Grafana 
+## Step 1: Access Grafana
 
 You can access the admin page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing _Cluster Settings_ from the dropdown menu.
 

@@ -3,7 +3,7 @@ description: Documentation on how to install the Hopsworks Python and Java libra
 ---
 # Client Installation Guide
 
-## Hopsworks Python library 
+## Hopsworks Python library
 
 The Hopsworks Python client library is required to connect to Hopsworks from your local machine or any other Python environment such as Google Colab or AWS Sagemaker. Execute the following command to install the Hopsworks client library in your Python environment:
 
@@ -22,6 +22,7 @@ The Hopsworks Python client library is required to connect to Hopsworks from you
 ```bash
 pip install hopsworks[python]
 ```
+
 Supported versions of Python: 3.8, 3.9, 3.10, 3.11, 3.12 ([PyPI ↗](https://pypi.org/project/hopsworks/))
 
 ### Profiles
@@ -41,7 +42,7 @@ You can install all the above profiles with the following command:
 pip install hopsworks[python,great-expectations,polars]
 ```
 
-## HSFS Java Library:
+## HSFS Java Library
 
 If you want to interact with the Hopsworks Feature Store from environments such as Spark, Flink or Beam, you can use the Hopsworks Feature Store (HSFS) Java library.
 
@@ -67,7 +68,7 @@ The HSFS library is available on the Hopsworks' Maven repository. If you are usi
 </repositories>
 ```
 
-The library has different builds targeting different environments: 
+The library has different builds targeting different environments:
 
 ### HSFS Java
 
@@ -80,7 +81,6 @@ The `artifactId` for the HSFS Java build is `hsfs`, if you are using Maven as bu
     <version>${hsfs.version}</version>
 </dependency>
 ```
-
 
 ### Spark
 
@@ -127,4 +127,3 @@ If you are using a local python environment and want to connect to Hopsworks, yo
 ## Other environments
 
 The Hopsworks Feature Store client libraries can also be installed in external environments, such as Databricks, AWS Sagemaker, or Azure Machine Learning. For more information, see [Client Integrations](../integrations/index.md).
-

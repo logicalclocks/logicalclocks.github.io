@@ -75,7 +75,7 @@ Selecting features from a feature group is a lazy operation, returning a query w
 === "Scala"
     ```Scala
     val creditCardTransactionsFg = fs.getFeatureGroup("credit_card_transactions")
-    
+
     # Returns Query
     val selectedFeatures = creditCardTransactionsFg.select(Seq("amount", "latitude", "longitude"))
     ```
@@ -97,7 +97,7 @@ By default, Hopsworks will use the maximal matching subset of the primary keys o
     val selectedFeatures = creditCardTransactionsFg.join(accountDetailsFg)
     ```
 More complex joins are possible by selecting subsets of features from the joined feature groups and by specifying a join key and type.
-Possible join types are "inner", "left" or "right". By default`join_type` is `"left". Furthermore, it is possible to specify different 
+Possible join types are "inner", "left" or "right". By default`join_type` is `"left". Furthermore, it is possible to specify different
 features for the join key of the left and right feature group. The join key lists should contain the names of the features to join on.
 
 === "Python"
@@ -118,14 +118,13 @@ features for the join key of the left and right feature group. The join key list
     If there is feature name clash in the query then prefixes will be automatically generated and applied. Generated prefix is feature group
     alias in the query (e.g. fg1, fg2). Prefix is applied to the right feature group of the query.
 
-
 ### Data modeling in Hopsworks
 
 Since v4.0 Hopsworks Feature selection API supports both Star and Snowflake Schema data models.
 
 #### Star schema data model
 
-When choosing Star Schema data model all tables are children of the parent (the left most) feature group, which has all 
+When choosing Star Schema data model all tables are children of the parent (the left most) feature group, which has all
 foreign keys for its child feature groups.
 
 <p align="center">
@@ -144,7 +143,7 @@ foreign keys for its child feature groups.
         .join(cc_issuer_details.select_all())
     ```
 
-In online inference, when you want to retrieve features in your online model, you have to provide all foreign key values, 
+In online inference, when you want to retrieve features in your online model, you have to provide all foreign key values,
 known as the serving_keys, from the parent feature group to retrieve your precomputed feature values using the feature view.
 
 === "Python"
@@ -157,8 +156,9 @@ known as the serving_keys, from the parent feature group to retrieve your precom
         })
     ```
 
-#### Snowflake schema 
-Hopsworks also provides the possibility to define a feature view that consists of a nested tree of children (to up to a depth of 20) 
+#### Snowflake schema
+
+Hopsworks also provides the possibility to define a feature view that consists of a nested tree of children (to up to a depth of 20)
 from the root (left most) feature group. This is called  Snowflake Schema data model where you need to build nested tables (subtrees) using joins, and then join the
 subtrees to their parents iteratively until you reach the root node (the leftmost feature group in the feature selection):
 
@@ -186,7 +186,7 @@ to retrieve the precomputed features:
 === "Python"
     ```python
         feature vector = feature_view.get_feature_vector({
-          ‘cc_num’: “1234 5555 3333 8888”, 
+          ‘cc_num’: “1234 5555 3333 8888”,
           ‘merchant_id’: 44208484,
         })
     ```
@@ -305,7 +305,7 @@ However, this operation will not update the metadata and persist the updated que
     merchantDetailsFg = fs.getFeatureGroup("merchant_details", 1)
     accountDetailsFg = fs.getFeatureGroup("account_details", 1)
     creditCardTransactionsFg = fs.getFeatureGroup("credit_card_transactions", 1)
-    
+
     // fetch new feature view and its query instance
     val featureView = fs.getFeatureView(“credit_card_fraud”, version=1)
     

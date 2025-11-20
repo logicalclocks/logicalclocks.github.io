@@ -66,7 +66,9 @@ In the `File browser` page you can now browse the files of the cloned repository
 </p>
 
 ## Code
+
 You can also clone a repository through the hopsworks git API in python.
+
 ### Step 1: Get the git API
 
 ```python
@@ -91,14 +93,18 @@ BRANCH="master" # optional branch to clone
 examples_repo = git_api.clone(REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANCH)
 
 ```
+
 ### API Reference
+
 Api reference for git repositories is available here:
-[GitRepo](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/git_repo/)
+[GitRepo](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/git_repo/)
 
 A notebook for managing git can be found [here](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb).
 
 ## Errors and Troubleshooting
-###     Invalid credentials
+
+### Invalid credentials
+
 This might happen when the credentials entered for the provider are incorrect. Try the following:
 
 - Confirm that the settings for the provider ( in Account Settings > Git providers) are correct. You must enter both your Git provider username and token.
@@ -107,9 +113,11 @@ This might happen when the credentials entered for the provider are incorrect. T
 - Ensure your personal access token has not expired.
 
 ### Timeout errors
+
 Cloning a large repo or checking out a large branch may hit timeout errors. You can try again later if the system was under heavy load at the time.
 
 ### Symlink errors
+
 Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail. You can create a separate branch to remove the symlinks, and clone from this branch.
 
 ## Going Further

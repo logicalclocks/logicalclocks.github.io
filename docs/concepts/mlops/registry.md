@@ -9,14 +9,15 @@ The model registry for KServe's capability are shown in the diagram below:
 The model registry centralizes model management, enabling models to be securely accessed and governed. Models are more than just the model itself - the registry also stores sample data for testing, configuration information, provenance information, environment variables, links to the code used to generate the model, the model version, and tags/descriptions). When you save a model, you can also save model metrics with the model, enabling users to understand, for example, performance of the model on test (or unseen) data.
 
 ## Model Package
+
 A ML model consists of a number of different components in a model package:
- - Model Input/Output Schema
- - Model artifacts
- - Model version information
- - Model format (based on the ML framework used to train the model - e.g., .pkl or .tb files)
+
+- Model Input/Output Schema
+- Model artifacts
+- Model version information
+- Model format (based on the ML framework used to train the model - e.g., .pkl or .tb files)
 
 You can also optionally include in your packaged model:
- - Sample data (used to test the model  in KServe)
- - The source notebook/program/experiment used to create the model
 
-
+- Sample data (used to test the model  in KServe)
+- The source notebook/program/experiment used to create the model

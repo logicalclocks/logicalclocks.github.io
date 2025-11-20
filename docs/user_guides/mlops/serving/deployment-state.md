@@ -62,6 +62,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -74,6 +75,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
 ### Step 2: Retrieve an existing deployment
 
 === "Python"
+
   ```python
   deployment = ms.get_deployment("mydeployment")
   ```
@@ -81,6 +83,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
 ### Step 3: Inspect deployment state
 
 === "Python"
+
   ```python
   state = deployment.get_state()
 
@@ -90,6 +93,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
 ### Step 4: Check nº of running instances
 
 === "Python"
+
   ```python
   # nº of predictor instances
   deployment.resources.describe()
@@ -100,9 +104,9 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 ### API Reference
 
-[Deployment](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/)
+[Deployment](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/deployment_api/)
 
-[PredictorState](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
+[PredictorState](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/predictor_api/)
 
 ## Deployment status
 
@@ -145,7 +149,6 @@ Status conditions contain three pieces of information: type, status and reason. 
     | READY       | `Unknown` | Connectivity is being set up.                                                                                                                              |
     |             | `False`   | Connectivity failed to be set up, mainly due to networking issues.                                                                                         |
     |             | `True`    | Connectivity has been set up and the deployment is ready                                                                                                   |
-
 
 The following are two diagrams with the state transitions of conditions in starting and stopping deployments, respectively.
 

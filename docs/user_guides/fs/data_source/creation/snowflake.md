@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Snowflake provides a cloud-based data storage and analytics service, used as a data warehouse in many enterprises. 
+Snowflake provides a cloud-based data storage and analytics service, used as a data warehouse in many enterprises.
 
 Data warehouses are often the source of raw data for feature engineering pipelines and Snowflake supports scalable feature computation with SQL. However, Snowflake is not viable as an online feature store that serves features to models in production, with its columnar database layout its latency is too high compared to OLTP databases or key-value stores.
 
@@ -18,14 +18,18 @@ Before you begin this guide you'll need to retrieve the following information fr
 
 - **Snowflake Connection URL:** Consult the documentation of your target snowflake account to determine the correct connection URL. This is usually some form of your [Snowflake account identifier](https://docs.snowflake.com/en/user-guide/admin-account-identifier.html).
 For example:
+
 ```
 <account_identifier>.snowflakecomputing.com
 ```
+
 OR:
+
 ```
 https://<orgname>-<account_name>.snowflakecomputing.com
 ```
-The account and organization details can be viewed in the Snowsight UI under **Admin > Account** or by querying it in 
+
+The account and organization details can be viewed in the Snowsight UI under **Admin > Account** or by querying it in
 SQL, as explained in [Snowflake
 documentation](https://docs.snowflake.com/en/user-guide/organizations-gs.html#viewing-the-name-of-your-organization-and-its-accounts).
 Below is an example of how to view the account and organization to get the account identifier from the Snowsight UI.
@@ -50,6 +54,7 @@ These are a few additional **optional** arguments:
 - **Application:** The application field can also be specified to have better observability in Snowflake with regards to which application is running which query. The application field can be a simple string like “Hopsworks” or, for instance, the project name, to track usage and queries from each Hopsworks project.
 
 ## Creation in the UI
+
 ### Step 1: Set up new Data Source
 
 Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
@@ -64,7 +69,7 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 Enter the details for your Snowflake connector. Start by giving it a **name** and an optional **description**.
 
 1. Select "Snowflake" as storage.
-2. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com` 
+2. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com`
 or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 3. Login name for the Snowflake user.
 4. Password for the Snowflake user or Token.

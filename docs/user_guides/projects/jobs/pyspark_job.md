@@ -19,7 +19,6 @@ the various configuration parameters each job type comes with. Hopsworks cluster
 e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
 checkout [our Scheduling guide](schedule_job.md).
 
-
 PySpark program can either be a `.py` script or a `.ipynb` file, however be mindful of how to access/create
 the spark session based on the extension you provide.
 
@@ -58,7 +57,7 @@ By default, the dialog will create a Spark job. Make sure `SPARK` is chosen.
 
 ### Step 4: Set the script
 
-Next step is to select the program to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown. 
+Next step is to select the program to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown.
 
 <p align="center">
   <figure>
@@ -85,18 +84,17 @@ Remember to handle the arguments inside your PySpark script.
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
-* `Environment`: The python environment to use, must be based on `spark-feature-pipeline`
+- `Environment`: The python environment to use, must be based on `spark-feature-pipeline`
 
-* `Driver memory`: Number of cores to allocate for the Spark driver
+- `Driver memory`: Number of cores to allocate for the Spark driver
 
-* `Driver virtual cores`: Number of MBs to allocate for the Spark driver
+- `Driver virtual cores`: Number of MBs to allocate for the Spark driver
 
-* `Executor memory`: Number of cores to allocate for each Spark executor
+- `Executor memory`: Number of cores to allocate for each Spark executor
 
-* `Executor virtual cores`: Number of MBs to allocate for each Spark executor
+- `Executor virtual cores`: Number of MBs to allocate for each Spark executor
 
-* `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
-
+- `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
 
 <p align="center">
   <figure>
@@ -107,13 +105,13 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 Additional files or dependencies required for the Spark job can be configured.
 
-* `Additional archives`: List of archives to be extracted into the working directory of each executor.
+- `Additional archives`: List of archives to be extracted into the working directory of each executor.
 
-* `Additional jars`: List of jars to be placed in the working directory of each executor.
+- `Additional jars`: List of jars to be placed in the working directory of each executor.
 
-* `Additional python dependencies`: List of python files and archives to be placed on each executor and added to PATH.
+- `Additional python dependencies`: List of python files and archives to be placed on each executor and added to PATH.
 
-* `Additional files`: List of files to be placed in the working directory of each executor.
+- `Additional files`: List of files to be placed in the working directory of each executor.
 
 <p align="center">
   <figure>
@@ -148,7 +146,7 @@ Now click the `Run` button to start the execution of the job. You will be redire
 
 ### Step 9: Application logs
 
-To monitor logs while the execution is running, click `Spark UI` to open the Spark UI in a separate tab. 
+To monitor logs while the execution is running, click `Spark UI` to open the Spark UI in a separate tab.
 
 Once the execution is finished, you can click on `Logs` to see the full logs for execution.
 
@@ -163,7 +161,7 @@ Once the execution is finished, you can click on `Logs` to see the full logs for
 
 ### Step 1: Upload the PySpark program
 
-This snippet assumes the program to run is in the current working directory and named `script.py`. 
+This snippet assumes the program to run is in the current working directory and named `script.py`.
 
 It will upload the python script to the `Resources` dataset in your project.
 
@@ -178,7 +176,6 @@ dataset_api = project.get_dataset_api()
 uploaded_file_path = dataset_api.upload("script.py", "Resources")
 
 ```
-
 
 ### Step 2: Create PySpark job
 
@@ -219,6 +216,7 @@ print(f_err.read())
 ```
 
 ## Configuration
+
 The following table describes the job configuration parameters for a PYSPARK job.
 
 `conf = jobs_api.get_configuration("PYSPARK")`
@@ -244,7 +242,6 @@ The following table describes the job configuration parameters for a PYSPARK job
 | <nobr>`conf['jars']`</nobr>                        | string  | Comma-separated string of HDFS path(s) to jars to be included in CLASSPATH. Example: `hdfs:///Project/<project_name>/Resources/app.jar,...`                        | `null`                     |
 | <nobr>`conf['archives']`</nobr>                   | string  | Comma-separated string of HDFS path(s) to archives to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/archive.zip,...`    | `null`                     |
 
-
 ## Accessing project data
 
 ### Read directly from the filesystem (recommended)
@@ -262,9 +259,8 @@ Different file types can be attached to the spark job and made available in the 
 
 When reading data in your Spark job it is recommended to use the Spark read API as previously demonstrated, since this reads from the filesystem directly, whereas `Additional files` configuration options will download the files in its entirety and is not a scalable option.
 
-
 ## API Reference
 
-[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
+[Jobs](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/jobs/)
 
-[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
+[Executions](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/executions/)

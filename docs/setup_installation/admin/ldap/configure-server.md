@@ -1,17 +1,19 @@
 # Configure Server for LDAP and Kerberos
 
 ## Introduction
-LDAP and Kerberos integration need some configuration in the helm charts for your 
+
+LDAP and Kerberos integration need some configuration in the helm charts for your
 cluster definition used to deploy your Hopsworks cluster. This tutorial shows an administrator how to configure the application
 server for LDAP and Kerberos integration.
 
 ## Prerequisites
-An accessible LDAP domain. 
+
+An accessible LDAP domain.
 A Kerberos Key Distribution Center (KDC) running on the same domain as Hopsworks (Only for Kerberos).
 
 ### Step 1: Server Configuration for LDAP
 
-The LDAP attributes below are used to configure JNDI external resource in Payara. The JNDI resource will communicate 
+The LDAP attributes below are used to configure JNDI external resource in Payara. The JNDI resource will communicate
 with your LDAP server to perform the authentication.
 
 ```yaml
@@ -34,8 +36,8 @@ ldap:
 - security_credentials: contains the password of the user that will be used to query LDAP.
 - referral: whether to follow or ignore an alternate location in which an LDAP Request may be processed.
 
-An already deployed instance can be configured to connect to LDAP. 
-Go to the payara admin UI and create a new JNDI external resource. The name of the resource should be __ldap/LdapResource__. 
+An already deployed instance can be configured to connect to LDAP.
+Go to the payara admin UI and create a new JNDI external resource. The name of the resource should be __ldap/LdapResource__.
 
 <figure>
   <img src="../../../../assets/images/admin/ldap/ldap-resource.png" alt="LDAP Resource" />
@@ -62,7 +64,7 @@ asadmin create-jndi-resource \
 ### Step 2: Server Configuration for Kerberos
 
 The Kerberos attributes are used to configure [SPNEGO](http://spnego.sourceforge.net/).
-SPNEGO is used to establish a secure context between the requester and the application server when using Kerberos 
+SPNEGO is used to establish a secure context between the requester and the application server when using Kerberos
 authentication.  
 
 ```yaml
@@ -85,10 +87,10 @@ ldap:
 
 Both Kerberos and LDAP attributes need to be specified to configure Kerberos. The LDAP attributes are explained above.
 
-- krb_conf_path: contains the path to the krb5.conf used by SPNEGO to get information about the default domain and the 
+- krb_conf_path: contains the path to the krb5.conf used by SPNEGO to get information about the default domain and the
   location of the Kerberos KDC. The file is copied by the recipe in to /srv/hops/domains/domain1/config.
 - krb_server_key_tab_path: contains the path to the Kerberos service keytab. The keytab is copied by the recipe in to
-  /srv/hops/domains/domain/config with the name set in the **krb_server_key_tab_name** attribute.
-- spnego_server_conf: contains the configuration that will be appended to Payara's (application serve used to host hopsworks) 
-  login.conf. In particular, it should contain useKeyTab=true, and the principal name to be used in the authentication phase. 
+  /srv/hops/domains/domain/config with the name set in the __krb_server_key_tab_name__ attribute.
+- spnego_server_conf: contains the configuration that will be appended to Payara's (application serve used to host hopsworks)
+  login.conf. In particular, it should contain useKeyTab=true, and the principal name to be used in the authentication phase.
   Initiator should be set to false.

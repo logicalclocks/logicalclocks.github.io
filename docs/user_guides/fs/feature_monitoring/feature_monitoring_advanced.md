@@ -6,11 +6,11 @@ An introduction to Feature Monitoring can be found in the guides for [Feature Gr
 
 ### From UI
 
-An overview of all feature monitoring configurations is listed in the ^^Feature Monitoring^^ section in the Feature Group and Feature View overview page. 
+An overview of all feature monitoring configurations is listed in the ^^Feature Monitoring^^ section in the Feature Group and Feature View overview page.
 
 ### From Python client
 
-You can retrieve one or more feature monitoring configurations from the Feature Group and Feature View Python objects and filter them by name, configuration id or feature name. 
+You can retrieve one or more feature monitoring configurations from the Feature Group and Feature View Python objects and filter them by name, configuration id or feature name.
 
 === "Python"
 

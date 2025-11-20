@@ -1,6 +1,5 @@
 # Model Dependent Transformation Functions
 
-
 [Model-dependent transformations](https://www.hopsworks.ai/dictionary/model-dependent-transformations) transform feature data for a specific model. Feature encoding is one example of such a transformations. Feature encoding is parameterized by statistics from the training dataset, and, as such, many model-dependent transformations require the training dataset statistics as a parameter. Hopsworks enhances the robustness of AI pipelines by preventing [training-inference skew](https://www.hopsworks.ai/dictionary/training-inference-skew) by ensuring that the same model-dependent transformations and statistical parameters are used during both training dataset generation and online inference.
 
 Additionally, Hopsworks offers built-in model-dependent transformation functions, such as `min_max_scaler`, `standard_scaler`, `robust_scaler`, `label_encoder`, and `one_hot_encoder`, which can be easily imported and declaratively applied to features in a feature view.
@@ -12,7 +11,6 @@ Hopsworks allows you to create a model-dependent transformation function by atta
 Each model-dependent transformation function can map specific features to its arguments by explicitly providing their names as arguments to the transformation function. If no feature names are provided, the transformation function will default to using features from the feature view that match the name of the transformation function's argument.
 
 Hopsworks by default generates default names of transformed features output by a model-dependent transformation function. The generated names follows a naming convention structured as `functionName_features_outputColumnNumber` if the transformation function outputs multiple columns and `functionName_features` if the transformation function outputs one column. For instance, for the function named `add_one_multiple` that outputs multiple columns in the example given below, produces output columns that would be labeled as  `add_one_multiple_feature1_feature2_feature3_0`,  `add_one_multiple_feature1_feature2_feature3_1`  and   `add_one_multiple_feature1_feature2_feature3_2`. The function named `add_two` that outputs a single column in the example given below, produces a single output column names as `add_two_feature`. Additionally, Hopsworks also allows users to specify custom names for transformed feature using the [`alias`](../transformation_functions.md#specifying-output-features–names-for-transformation-functions) function.
-
 
 === "Python"
 
@@ -42,8 +40,7 @@ Hopsworks by default generates default names of transformed features output by a
 
 ### Specifying input features
 
-The features to be used by a model-dependent transformation function can be specified by providing the feature names (from the feature view / feature group) as input to the transformation functions. 
-
+The features to be used by a model-dependent transformation function can be specified by providing the feature names (from the feature view / feature group) as input to the transformation functions.
 
 === "Python"
 
@@ -108,12 +105,11 @@ To attach built-in transformation functions from the `hopsworks` module they can
         )
         ```
 
-
 ## Using Model Dependent Transformations
 
-Model-dependent transformations attached to a feature view are automatically applied when you [create training data](./training-data.md#creation), [read training data](./training-data.md#read-training-data), [read batch inference data](./batch-data.md#creation-with-transformation), or [get feature vectors](./feature-vectors.md#retrieval-with-transformation). The generated data includes untransformed features, on-demand features, if any, and the transformed features. The transformed features are organized by their output column names in alphabetical order and are positioned after the untransformed and on-demand features. 
+Model-dependent transformations attached to a feature view are automatically applied when you [create training data](./training-data.md#creation), [read training data](./training-data.md#read-training-data), [read batch inference data](./batch-data.md#creation-with-transformation), or [get feature vectors](./feature-vectors.md#retrieval-with-transformation). The generated data includes untransformed features, on-demand features, if any, and the transformed features. The transformed features are organized by their output column names in alphabetical order and are positioned after the untransformed and on-demand features.
 
-Model-dependent transformation functions can also be manually applied to a feature vector using the `transform` function. 
+Model-dependent transformation functions can also be manually applied to a feature vector using the `transform` function.
 
 === "Python"
 
@@ -133,7 +129,7 @@ Model-dependent transformation functions can also be manually applied to a featu
 
 The `get_feature_vector`, `get_feature_vectors`, and `get_batch_data` methods can return untransformed feature vectors and batch data without applying model-dependent transformations while still including on-demand features. To achieve this, set the `transform` parameter to False.
 
-=== "Python"    
+=== "Python"
 !!! example "Returning untransformed feature vectors and batch data."
     ```python
     # Fetching untransformed feature vector.
@@ -151,4 +147,3 @@ The `get_feature_vector`, `get_feature_vectors`, and `get_batch_data` methods ca
         transform=False
     )
     ```
-

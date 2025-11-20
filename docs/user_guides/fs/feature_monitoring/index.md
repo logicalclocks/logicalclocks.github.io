@@ -22,16 +22,16 @@ in Hopsworks and enable the user to visualise the temporal evolution of statisti
 
 ## Statistics computation on windows of feature data
 
-Statistics are computed on feature data defined by windows. There are different types of windows depending on how they evolve over time. A window can have either a *fixed* length (e.g., static window) or *variable* length (e.g., expanding window). Moreover, windows can stick to a *specific point in time* (e.g., static window) or *move* over time (e.g., sliding or rolling window).
+Statistics are computed on feature data defined by windows. There are different types of windows depending on how they evolve over time. A window can have either a _fixed_ length (e.g., static window) or _variable_ length (e.g., expanding window). Moreover, windows can stick to a _specific point in time_ (e.g., static window) or _move_ over time (e.g., sliding or rolling window).
 
 ![Types of windows](../../../assets/images/guides/fs/feature_monitoring/fm-types-of-windows.png)
 
-!!! info "Specific values" 
+!!! info "Specific values"
     A specific value can be seen as a window of length 1 where the start and end of the window have the same value.
 
-These types of windows apply to both *detection* and *reference* windows. Different types of windows allows for different use cases depending on whether you enable feature monitoring on your Feature Groups or Feature Views. 
+These types of windows apply to both _detection_ and _reference_ windows. Different types of windows allows for different use cases depending on whether you enable feature monitoring on your Feature Groups or Feature Views.
 
-See more details about *detection* and *reference* windows in the [Detection windows](scheduled_statistics.md#detection-windows) and [Reference windows](statistics_comparison#reference-windows) guides.
+See more details about _detection_ and _reference_ windows in the [Detection windows](scheduled_statistics.md#detection-windows) and [Reference windows](statistics_comparison#reference-windows) guides.
 
 ## Visualize statistics on a time series
 
@@ -39,12 +39,11 @@ Hopsworks provides an interactive graph to make the exploration of statistics an
 
 ![Feature monitoring graph](../../../assets/images/guides/fs/feature_monitoring/fm-show-shifted-points-arrow.png)
 
-
 ## Alerting
 
 Moreover, feature monitoring integrates with the Hopsworks built-in system for [alerts](../../../setup_installation/admin/alert.md), enabling you to setup alerts that will notify you as soon as shift is detected in your feature values. You can setup alerts for feature monitoring at a Feature Group, Feature View, and project level.
 
-!!! tip "Select the correct trigger" 
+!!! tip "Select the correct trigger"
     When configuring alerts for feature monitoring, make sure you select the `feature monitoring-shift detected` or `feature monitoring-shift undetected` trigger.
 
 ![Feature monitoring alerts](../../../assets/images/guides/fs/feature_monitoring/fm-alerts.png)

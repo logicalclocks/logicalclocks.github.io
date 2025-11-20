@@ -14,7 +14,7 @@ Once configured, you will be able to query your RDS database.
 
 Before you begin, ensure you have the following information from your Amazon RDS instance:
 
-- **Host:** You can find the endpoint for your RDS instance in the AWS Console. 
+- **Host:** You can find the endpoint for your RDS instance in the AWS Console.
 
     1. Go to the AWS Console → `Aurora and RDS`
     2. Click on your DB instance.
@@ -24,11 +24,11 @@ Before you begin, ensure you have the following information from your Amazon RDS
 
         mydb.abcdefg1234.us-west-2.rds.amazonaws.com
 
-    - **Database:** You can specify which database to use
+  - **Database:** You can specify which database to use
 
-    - **Port:** Provide the port to connect to
+  - **Port:** Provide the port to connect to
 
-    - **Username and Password:** Obtain the username and password for your RDS database with the necessary permissions to access the required tables.
+  - **Username and Password:** Obtain the username and password for your RDS database with the necessary permissions to access the required tables.
 
 ## Creation in the UI
 

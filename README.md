@@ -1,6 +1,6 @@
 # Documentation landing page
 
-This is the source of the landing page for https://docs.hopsworks.ai
+This is the source of the landing page for <https://docs.hopsworks.ai>
 
 ## Build instructions
 
@@ -35,7 +35,7 @@ Use mkdocs to build the documentation and serve it locally
 {PY_ENV}/bin/mkdocs serve
 ```
 
-The documentation should now be available locally on the following URL: http://127.0.0.1:8000/
+The documentation should now be available locally on the following URL: <http://127.0.0.1:8000/>
 
 ## Adding new pages
 

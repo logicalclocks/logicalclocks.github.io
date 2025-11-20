@@ -1,6 +1,7 @@
 # Cluster Configuration
 
 ## Introduction
+
 Whether you run Hopsworks on-premise, or on the cloud using kubernetes, it is possible to change a variety of configurations on the cluster, changing its default behaviour.
 This section is not going into detail for every setting, since every Hopsworks cluster comes with a robust default setup. However, this guide is to explain where to find the configurations and if necessary, how to change them.
 
@@ -8,6 +9,7 @@ This section is not going into detail for every setting, since every Hopsworks c
     In most cases you will be only be prompted to change these configurations by a Hopsworks Solutions Engineer or similar.
 
 ## Prerequisites
+
 An administrator account on a Hopsworks cluster.
 
 ### Step 1: The configuration page

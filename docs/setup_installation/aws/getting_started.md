@@ -9,7 +9,7 @@ SageMaker and KubeFlow. This guide shows how to set up the Hopsworks platform in
 To follow the instruction on this page you will need the following:
 
 - Kubernetes Version: Hopsworks can be deployed on EKS clusters running Kubernetes >= 1.27.0.
-- [aws-cli](https://aws.amazon.com/cli/) to provision the AWS resources 
+- [aws-cli](https://aws.amazon.com/cli/) to provision the AWS resources
 - [eksctl](https://eksctl.io/) to interact with the AWS APIs and provision the EKS cluster
 - [helm](https://helm.sh/) to deploy Hopsworks
 
@@ -27,7 +27,6 @@ Hopsworks allows users to customize the images used by Python jobs, Jupyter Note
 
 The following steps describe how to deploy an EKS cluster and related resources so that it’s compatible with Hopsworks.
 
-
 ## Step 1: AWS EKS Setup
 
 ### Step 1.1: Create S3 Bucket
@@ -38,7 +37,7 @@ aws s3 mb s3://BUCKET_NAME --region REGION --profile PROFILE
 
 ### Step 1.2: Create ECR Repository
 
-Create the repository to host the projects images. 
+Create the repository to host the projects images.
 
 ```bash
 aws --profile PROFILE ecr create-repository --repository-name NAMESPACE/hopsworks-base --region REGION
@@ -111,7 +110,6 @@ When creating the cluster using eksctl the following parameters are required in 
 
 - The following policies are required: [IAM policies - eksctl](https://eksctl.io/usage/iam-policies/#attaching-policies-by-arn)
 
-
 ```bash
 - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
 - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
@@ -180,6 +178,7 @@ You should see the list of nodes provisioned for the cluster.
 ### Step 1.4: Install the AWS LoadBalancer Addon
 
 For Hopsworks to provision the necessary network and application load balancers, we need to install the AWS LoadBalancer plugin (See [AWS Documentation](https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html) )
+
 ```bash
 helm repo add eks https://aws.github.io/eks-charts
 helm repo update eks
@@ -214,7 +213,7 @@ This section describes the steps required to deploy the Hopsworks stack using He
 
 - Configure Repo
 
-To obtain access to the Hopsworks helm chart repository, please obtain 
+To obtain access to the Hopsworks helm chart repository, please obtain
 an evaluation/startup licence [here](https://www.hopsworks.ai/try).
 
 Once you have the helm chart repository URL, replace the environment
@@ -225,7 +224,7 @@ helm repo add hopsworks $HOPSWORKS_REPO
 helm repo update hopsworks
 ```
 
-- Create Hopsworks namespace 
+- Create Hopsworks namespace
 
 ```bash
 kubectl create namespace hopsworks
@@ -318,12 +317,11 @@ prometheus:
         storageClass: *storageClass
 ```
 
-- Run the Helm install 
+- Run the Helm install
 
 ```bash
 helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.aws.yaml --timeout=600s
 ```
-
 
 Using the kubectl CLI tool, you can track the deployment process. You can use the command below to track which pods are running and which ones are in the process of being provisioned. You can also use the command below to detect any failure.
 
@@ -331,12 +329,12 @@ Using the kubectl CLI tool, you can track the deployment process. You can use th
 kubectl -n hopsworks get pods
 ```
 
-
 ## Step 3: Resources Created
 
 Using the Helm chart and the values files the following resources are created:
 
 Load Balancers:
+
 ```yaml
     externalLoadBalancers:
       enabled: true
@@ -356,7 +354,6 @@ Enabling the external load balancer in the values.yml file provisions the follow
 - mysql: This load balancer is used to query online feature store data using the MySQL APIs
 
 - opensearch : This load balancer is used to query the Hopsworks vector database
-
 
 On EKS using the AWS Load Balancers, the AWS controller deployed above will be responsible to provision the necessary load balancers. You can configure the load balancers using the annotations documented in the [AWS Load Balancer controller guide](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
 
@@ -397,11 +394,10 @@ Cluster Roles and Cluster Role Bindings:
 
 By default a set of cluster roles are provisioned, if you don’t have permissions to provision cluster roles or cluster role bindings, you should reach out to your K8s administrator. You should then provide the appropriate resource names as value in the values.yml file.
 
-
 ## Step 4: Next steps
 
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
-* Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
-* Follow one of our [tutorials](../../tutorials/index.md)
-* Follow one of our [Guide](../../user_guides/index.md)
+- Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
+- Follow one of our [tutorials](../../tutorials/index.md)
+- Follow one of our [Guide](../../user_guides/index.md)

@@ -63,6 +63,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -78,6 +79,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 2: Create a deployment with a specific API protocol
 
 === "Python"
+
   ```python
   my_model = mr.get_model("my_model", version=1)
 
@@ -94,4 +96,4 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[API Protocol](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/#api_protocol)
+[API Protocol](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/deployment_api/#api_protocol)

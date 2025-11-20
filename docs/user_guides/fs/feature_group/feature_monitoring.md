@@ -11,7 +11,7 @@ Before continuing with this guide, see the [Feature monitoring guide](../feature
 
 In this section, we show you how to setup feature monitoring in a Feature Group using the ==Hopsworks Python library==. Alternatively, you can get started quickly by running our [tutorial for feature monitoring](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/api_examples/feature_monitoring.ipynb).
 
-First, checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the [Hopsworks Python library](https://pypi.org/project/hopsworks) in your environment, connect via the generated API key. The second step is to start a new configuration for feature monitoring. 
+First, checkout the pre-requisite and Hopsworks setup to follow the guide below. Create a project, install the [Hopsworks Python library](https://pypi.org/project/hopsworks) in your environment, connect via the generated API key. The second step is to start a new configuration for feature monitoring.
 
 After that, you can optionally define a detection window of data to compute statistics on, or use the default detection window (i.e., whole feature data). If you want to setup scheduled statistics alone, you can jump to the last step to save your configuration. Otherwise, the third and fourth steps are also optional and show you how to setup the comparison of statistics on a schedule by defining a reference window and specifying the statistics metric to monitor.
 
@@ -175,7 +175,6 @@ In order to compare detection and reference statistics, you need to provide the 
 
 !!! info "Difference values and thresholds"
     For more information about the computation of difference values and the comparison against threshold bounds see the [Comparison criteria section](../feature_monitoring/statistics_comparison.md#comparison-criteria) in the Statistics comparison guide.
-
 
 ### Step 6: Save configuration
 

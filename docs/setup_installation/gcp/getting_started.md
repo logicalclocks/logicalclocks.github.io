@@ -4,23 +4,20 @@ Kubernetes and Helm are used to install & run Hopsworks and the Feature Store
 in the cloud. They both integrate seamlessly with third-party platforms such as Databricks,
 SageMaker and KubeFlow. This guide shows how to set up the Hopsworks platform in your organization's Google Cloud Platform's (GCP) account.
 
-
 ## Prerequisites
 
 To follow the instruction on this page you will need the following:
 
 - Kubernetes Version: Hopsworks can be deployed on GKE clusters running Kubernetes >= 1.27.0.
-- [gcloud CLI](https://cloud.google.com/sdk/gcloud) to provision the GCP resources 
+- [gcloud CLI](https://cloud.google.com/sdk/gcloud) to provision the GCP resources
 - [gke-gcloud-auth-plugin](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke) to manage authentication with the GKE cluster
 - [helm](https://helm.sh/) to deploy Hopsworks
-
 
 ### Permissions
 
 - The deployment requires cluster admin access to create ClusterRoles, ServiceAccounts, and ClusterRoleBindings.
 
 - A namespace is required to deploy the Hopsworks stack. If you don’t have permissions to create a namespace, ask your GKE administrator to provision one.
-
 
 ## Step 1: GCP GKE Setup
 
@@ -95,6 +92,7 @@ gcloud container clusters create <cluster-name> \
   --enable-ip-alias \
   --service-account my-service-account@my-project.iam.gserviceaccount.com
 ```
+
 Once the creation process is completed, you should be able to access the cluster using the kubectl CLI tool:
 
 ```bash
@@ -117,7 +115,7 @@ gcloud artifacts repositories create <repo-name> \
 
 ### Step 3.1: Add the Hopsworks Helm repository
 
-To obtain access to the Hopsworks helm chart repository, please obtain 
+To obtain access to the Hopsworks helm chart repository, please obtain
 an evaluation/startup licence [here](https://www.hopsworks.ai/try).
 
 Once you have the helm chart repository URL, replace the environment
@@ -195,6 +193,6 @@ kubectl expose deployment hopsworks --type=LoadBalancer --name=hopsworks-service
 
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
-* Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
-* Follow one of our [tutorials](../../tutorials/index.md)
-* Follow one of our [Guide](../../user_guides/index.md)
+- Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
+- Follow one of our [tutorials](../../tutorials/index.md)
+- Follow one of our [Guide](../../user_guides/index.md)

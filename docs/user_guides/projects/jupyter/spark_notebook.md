@@ -7,7 +7,6 @@ Jupyter is provided as a service in Hopsworks, providing the same user experienc
 * Supports JupyterLab and the classic Jupyter front-end
 * Configured with Python3, PySpark and Ray kernels
 
-
 ## Step 1: Jupyter dashboard
 
 The image below shows the Jupyter service page in Hopsworks and is accessed by clicking `Jupyter` in the sidebar.
@@ -34,7 +33,7 @@ You can easily refer to the green ticks as to what kernels are available in whic
 
 ## Step 3 (Optional): Configure spark properties
 
-Next step is to configure the Ray properties to be used in Jupyter, Click `edit configuration` to get to the 
+Next step is to configure the Ray properties to be used in Jupyter, Click `edit configuration` to get to the
 configuration page and select `Ray`.
 
 ### Resource and compute
@@ -50,7 +49,6 @@ Resource allocation for the Spark driver and executors can be configured, also t
 * `Executor virtual cores`: Number of MBs to allocate for each Spark executor
 
 * `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
-
 
 <p align="center">
   <figure>
@@ -87,7 +85,6 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
   </figure>
 </p>
 
-
 Click `Save` to save the new configuration.
 
 ## Step 4 (Optional): Configure root folder and automatic shutdown
@@ -111,7 +108,6 @@ The root path from which to start the Jupyter instance can be configured. By def
     <figcaption>Configure root folder</figcaption>
   </figure>
 </p>
-
 
 ## Step 5: (Kueue enabled) Select a Queue
 

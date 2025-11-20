@@ -55,6 +55,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -70,6 +71,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 2: Define the predictor resource configuration
 
 === "Python"
+
   ```python
   from hsml.resources import PredictorResources, Resources
 
@@ -82,6 +84,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 3 (Optional): Define the transformer resource configuration
 
 === "Python"
+
   ```python
   from hsml.resources import TransformerResources
 
@@ -94,6 +97,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 4: Create a deployment with the resource configuration
 
 === "Python"
+
   ```python
   my_model = mr.get_model("my_model", version=1)
 
@@ -112,7 +116,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Resource Allocation](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/resources_api/)
+[Resource Allocation](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/resources_api/)
 
 ## Compatibility matrix
 

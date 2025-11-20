@@ -6,7 +6,6 @@ description: Documentation on how to connect to Hopsworks from a Java client.
 
 This guide explains step by step how to connect to Hopsworks from a Java client.
 
-
 ## Generate an API key
 
 For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the Java client to work correctly make sure you add the following scopes to your API key:
@@ -48,4 +47,5 @@ List<Object> singleVector = fv.getFeatureVector(new HashMap<String, Object>() {{
 ```
 
 ## Next Steps
+
 For more information how to interact from Java client with the Hopsworks Feature store follow this [tutorial](https://github.com/logicalclocks/hopsworks-tutorials/tree/java_engine/java).

@@ -19,6 +19,7 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **Certificates:** Depending on the chosen security protocol, you might need TrustStore and KeyStore files along with the corresponding key password. Contact your Kafka administrator, if you don't know how to retrieve these. If you want to setup a data source to Hopsworks' internal Kafka cluster, you can download the needed certificates from the integration tab in your project settings.
 
 ## Creation in the UI
+
 ### Step 1: Set up new Data Source
 
 Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
@@ -54,11 +55,9 @@ Enter the details for your Kafka connector. Start by giving it a **name** and an
         SASL authentication can be enabled concurrently with TLS/SSL encryption (TLS/SSL client authentication will be disabled).
         For more information, please refer to the offical [Apache Kafka Guide for SASL authentication](https://docs.confluent.io/platform/current/kafka/authentication_sasl/index.html).
 
-
-
 4. The endpoint identification algorithm used by clients to validate server host name. The default value is `https`. Clients including client connections created by the broker for inter-broker communication verify that the broker host name matches the host name in the broker’s certificate.
 5. Optional additional key/value arguments.
-6. Click on "Save Credentials". 
+6. Click on "Save Credentials".
 
 <figure markdown>
   ![Kafka Connector Creation](../../../../assets/images/guides/fs/data_source/kafka_creation.png)

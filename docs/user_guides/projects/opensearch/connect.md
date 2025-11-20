@@ -7,10 +7,9 @@ Text here
 !!! notice "Limited to internal Jobs and Notebooks"
     Currently it's only possible to configure the opensearch-py client in a job or jupyter notebook running inside the Hopsworks cluster.
 
-
 ## Code
 
-In this guide, you will learn how to connect to the OpenSearch cluster using an [opensearch-py](https://opensearch.org/docs/1.3/clients/python/) client. 
+In this guide, you will learn how to connect to the OpenSearch cluster using an [opensearch-py](https://opensearch.org/docs/1.3/clients/python/) client.
 
 ### Step 1: Get the OpenSearch API
 
@@ -36,7 +35,7 @@ client = OpenSearch(**opensearch_api.get_default_py_config())
 
 ### API Reference
 
-[OpenSearch](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/opensearch/)
+[OpenSearch](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/opensearch/)
 
 ## Going Further
 

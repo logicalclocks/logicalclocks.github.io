@@ -1,6 +1,6 @@
 Hopsworks scheduled statistics allows you to monitor your feature data once they have been ingested into the Feature Store. You can define a ==detection window== over your data for which Hopsworks will compute the statistics on a regular basis. Statistics can be computed on all or a subset of feature values, and on one or more features simultaneously.
 
-Hopsworks stores the computed statistics and enable you to visualise the temporal evolution of statistical metrics on your data. 
+Hopsworks stores the computed statistics and enable you to visualise the temporal evolution of statistical metrics on your data.
 
 ![Detection statistics visualization](../../../assets/images/guides/fs/feature_monitoring/fm-detection-plot.png)
 
@@ -17,7 +17,7 @@ For **Feature Views**, scheduled statistics enables you to analyze the statistic
 
 ## Detection windows
 
-Statistics are computed in a scheduled basis on a pre-defined detection window of feature data. Detection windows can be defined on the whole feature data or a subset of feature data depending on the `time_offset` and `window_length` parameters of the `with_detection_window` method. 
+Statistics are computed in a scheduled basis on a pre-defined detection window of feature data. Detection windows can be defined on the whole feature data or a subset of feature data depending on the `time_offset` and `window_length` parameters of the `with_detection_window` method.
 
 ![Types of detection windows](../../../assets/images/guides/fs/feature_monitoring/fm-detection-windows.png)
 
@@ -28,5 +28,5 @@ In [a previous section](index.md#statistics-computation-on-windows-of-feature-da
 
 See more details on how to define a detection window for your Feature Groups and Feature Views in the Feature Monitoring Guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
 
-!!! info "Next steps" 
+!!! info "Next steps"
     You can also define a reference window to be used as a baseline to compare against the detection window. See more details in the [Statistics comparison guide](statistics_comparison.md).

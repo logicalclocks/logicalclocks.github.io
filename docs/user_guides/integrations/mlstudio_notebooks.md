@@ -8,7 +8,7 @@ Connecting to the Hopsworks from Azure Machine Learning Notebooks requires setti
 
 ## Install Hopsworks Python Library
 
-To be able to interact with Hopsworks from a Python environment you need to install the `Hopsworks` Python library. The library is available on [PyPi](https://pypi.org/project/hopsworks/) and can be installed using `pip`: 
+To be able to interact with Hopsworks from a Python environment you need to install the `Hopsworks` Python library. The library is available on [PyPi](https://pypi.org/project/hopsworks/) and can be installed using `pip`:
 
 ```
 pip install hopsworks[python]~=[HOPSWORKS_VERSION]
@@ -49,7 +49,7 @@ To access Hopsworks from Azure Machine Learning, open a Python notebook and proc
   </figure>
 </p>
 
-### Connect to Hopsworks 
+### Connect to Hopsworks
 
 You are now ready to connect to Hopsworks Feature Store from the notebook:
 
@@ -79,4 +79,4 @@ fs = project.get_feature_store()
 
 ## Next Steps
 
-For more information on how to use the Hopsworks API check out the other guides or the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/). 
+For more information on how to use the Hopsworks API check out the other guides or the [Login API](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/login/).

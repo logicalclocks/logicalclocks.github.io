@@ -2,13 +2,13 @@
 
 ## Introduction
 
-Hopsworks provides model serving capabilities by leveraging [KServe](https://kserve.github.io/website/) as the model serving platform and [Istio](https://istio.io/) as the ingress gateway to the model deployments. 
+Hopsworks provides model serving capabilities by leveraging [KServe](https://kserve.github.io/website/) as the model serving platform and [Istio](https://istio.io/) as the ingress gateway to the model deployments.
 
 This document explains how to interact with a model deployment via REST API.
 
 ## Base URL
 
-Deployed models are accessible through the Istio ingress gateway. The URL to interact with a model deployment is provided on the model deployment page in the Hopsworks UI. 
+Deployed models are accessible through the Istio ingress gateway. The URL to interact with a model deployment is provided on the model deployment page in the Hopsworks UI.
 
 The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `RESOURCE_PATH` depends on the [model server](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/#model-server) (e.g. vLLM, TensorFlow Serving, SKLearn ModelServer).
 
@@ -19,12 +19,12 @@ The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `R
   </figure>
 </p>
 
-
 ## Authentication
 
-All requests must include an API Key for authentication. You can create an API by following this [guide](../../projects/api_key/create_api_key.md). 
+All requests must include an API Key for authentication. You can create an API by following this [guide](../../projects/api_key/create_api_key.md).
 
 Include the key in the Authorization header:
+
 ```text
 Authorization: ApiKey <API_KEY_VALUE>
 ```
@@ -90,8 +90,7 @@ For predictive inference (i.e. for Tensorflow or SkLearn or Python Serving). The
               }'
         ```
 
-For generative inference (i.e vLLM) the response follows the [OpenAI specification](https://platform.openai.com/docs/api-reference/chat/create). 
-
+For generative inference (i.e vLLM) the response follows the [OpenAI specification](https://platform.openai.com/docs/api-reference/chat/create).
 
 ## Response
 

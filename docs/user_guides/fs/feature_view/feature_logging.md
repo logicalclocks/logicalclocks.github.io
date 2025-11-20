@@ -62,6 +62,7 @@ feature_view.log(features,
 #### Example 3: Log Both Transformed and Untransformed Features
 
 **Batch Features**
+
 ```python
 untransformed_df = fv.get_batch_data(transformed=False)
 # then apply the transformations after:
@@ -73,6 +74,7 @@ feature_view.log(transformed_features=transformed_df)
 ```
 
 **Real-time Features**
+
 ```python
 untransformed_vector = fv.get_feature_vector({"id": 1}, transform=False)
 # then apply the transformations after:
@@ -194,7 +196,7 @@ When log data is no longer needed, you might want to delete it to free up space 
 
 ### Delete Logs
 
-Remove all log entries (both transformed and untransformed logs), optionally specifying whether to delete transformed (transformed=True) or untransformed (transformed=False) logs. 
+Remove all log entries (both transformed and untransformed logs), optionally specifying whether to delete transformed (transformed=True) or untransformed (transformed=False) logs.
 
 ```python
 # Delete all log entries

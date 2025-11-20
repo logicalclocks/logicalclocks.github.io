@@ -91,6 +91,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -129,6 +130,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 !!! info "You can also use the UI to upload your transformer script. See [above](#step-3-advanced-deployment-form)"
 
 === "Python"
+
   ```python
   uploaded_file_path = dataset_api.upload("my_transformer.py", "Resources", overwrite=True)
   transformer_script_path = os.path.join("/Projects", project.name, uploaded_file_path)
@@ -137,6 +139,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 4: Define a transformer
 
 === "Python"
+
   ```python
   my_transformer = ms.create_transformer(script_file=uploaded_file_path)
 
@@ -150,6 +153,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 5: Create a deployment with the transformer
 
 === "Python"
+
   ```python
   my_predictor = ms.create_predictor(transformer=my_transformer)
   my_deployment = my_predictor.deploy()
@@ -161,7 +165,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Transformer](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/transformer_api/)
+[Transformer](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/transformer_api/)
 
 ## Resources
 

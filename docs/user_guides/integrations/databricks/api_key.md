@@ -16,7 +16,6 @@ For instructions on how to generate an API key follow this [user guide](../../pr
 !!! hint "API key as Argument"
     To get started quickly, without saving the Hopsworks API in a secret storage, you can simply supply it as an argument when instantiating a connection:
 
-
 ```python hl_lines="6"
     import hopsworks 
     project = hopsworks.login(

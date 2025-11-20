@@ -22,6 +22,7 @@ Before you begin this guide you'll need to retrieve the following information fr
     When you specify the 'container name' in the ADLS data source, you need to have previously created that container - the Hopsworks Feature Store will not create that storage container for you.
 
 ## Creation in the UI
+
 ### Step 1: Set up new Data Source
 
 Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
@@ -80,7 +81,7 @@ If you get an error "StatusCode=404 StatusDescription=The specified filesystem d
 
 #### References
 
-* [How to create a service principal on Azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)
+- [How to create a service principal on Azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)
 
 ## Next Steps
 

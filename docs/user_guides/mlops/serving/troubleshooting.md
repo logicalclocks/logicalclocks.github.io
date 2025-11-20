@@ -82,7 +82,6 @@ To access the OpenSearch Dashboards, click on the `See logs` button at the top o
   </figure>
 </p>
 
-
 !!! note
     In case you are not familiar with the interface, you may find the [official documentation](https://opensearch.org/docs/latest/dashboards/index/) useful.
 
@@ -104,6 +103,7 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -116,6 +116,7 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 ### Step 2: Retrieve an existing deployment
 
 === "Python"
+
   ```python
   deployment = ms.get_deployment("mydeployment")
   ```
@@ -123,6 +124,7 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 ### Step 3: Get current deployment's predictor state
 
 === "Python"
+
   ```python
   state = deployment.get_state()
 
@@ -132,12 +134,13 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 ### Step 4: Explore transient logs
 
 === "Python"
+
   ```python
   deployment.get_logs(component="predictor|transformer", tail=10)
   ```
 
 ### API Reference
 
-[Deployment](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/)
+[Deployment](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/deployment_api/)
 
-[PredictorState](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_state_api/)
+[PredictorState](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/predictor_state_api/)

@@ -15,7 +15,7 @@ For instructions on how to generate an API key follow this [user guide](../proje
   3. job
   4. kafka
 
-## Connect to Hopsworks 
+## Connect to Hopsworks
 
 To connect to Hopsworks from the Azure Machine Learning Designer, create a new pipeline or open an existing one:
 
@@ -132,4 +132,4 @@ Finally, submit the pipeline and wait for it to finish:
 
 ## Next Steps
 
-For more information on how to use the Hopsworks API check out the other guides or the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/). 
+For more information on how to use the Hopsworks API check out the other guides or the [Login API](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/login/).

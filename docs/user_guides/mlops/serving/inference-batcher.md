@@ -50,6 +50,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -65,6 +66,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 2: Define an inference logger
 
 === "Python"
+
   ```python
   from hsml.inference_batcher import InferenceBatcher
 
@@ -79,6 +81,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 3: Create a deployment with the inference batcher
 
 === "Python"
+
   ```python
 
   my_model = mr.get_model("my_model", version=1)
@@ -96,7 +99,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Inference Batcher](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/inference_batcher_api/)
+[Inference Batcher](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/inference_batcher_api/)
 
 ## Compatibility matrix
 

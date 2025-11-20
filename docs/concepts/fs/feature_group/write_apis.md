@@ -9,7 +9,6 @@ There are 3 APIs for writing to feature groups, as shown in the table below:
 | Flink | X  | -  | - |
 | External Table | - | - | X |
 
-
 ## Stream API
 
 The Stream API is the only API for Python and Flink clients, and is
@@ -18,13 +17,11 @@ The Stream API first writes data to be ingested to a Kafka topic, and then Hopsw
 
 <img src="../../../../assets/images/concepts/fs/fg-stream-api.svg">
 
-
 ## Batch API
 
 For very large updates to feature groups, such as when you are backfilling large amounts of data to an offline feature group, it is often preferential to write directly to the Hudi tables in Hopsworks, instead of via Kafka - thus reducing write amplification. Spark clients can write directly to Hudi tables on Hopsworks with Hopsworks libraries and certificates using a HDFS API. This requires network connectivity between the Spark clients and the datanodes in Hopsworks.
 
 <img src="../../../../assets/images/concepts/fs/fg-batch-api.svg">
-
 
 ## Connector API
 

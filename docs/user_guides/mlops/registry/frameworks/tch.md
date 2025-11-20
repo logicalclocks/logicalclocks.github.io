@@ -8,7 +8,6 @@ description: Documentation on how to export a Pytorch model to the model registr
 
 In this guide you will learn how to export a Torch model and register it in the Model Registry.
 
-
 ## Code
 
 ### Step 1: Connect to Hopsworks

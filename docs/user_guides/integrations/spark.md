@@ -32,7 +32,6 @@ The three files (`keyStore.jks`, `trustStore.jks` and `material_passwd`) should 
 
     Currently Spark version 3.3.x is suggested to be able to use the full suite of Hopsworks Feature Store capabilities.
 
-
 Add the following configuration to the Spark application:
 
 ```
@@ -89,4 +88,4 @@ fs = project.get_feature_store()           # Get the project's default feature s
 
 ## Next Steps
 
-For more information about how to connect, see the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/) API reference. Or continue with the Data Source guide to import your own data to the Feature Store.
+For more information about how to connect, see the [Login API](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/login/) API reference. Or continue with the Data Source guide to import your own data to the Feature Store.

@@ -129,6 +129,7 @@ After that, click on the new deployment to access the overview page.
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -143,6 +144,7 @@ After that, click on the new deployment to access the overview page.
 Retrieve the trained model you want to deploy.
 
 === "Python"
+
   ```python
   my_model = mr.get_model("my_model", version=1)
   ```
@@ -150,6 +152,7 @@ Retrieve the trained model you want to deploy.
 #### Option A: Using the model object
 
 === "Python"
+
   ```python
   my_deployment = my_model.deploy()
   ```
@@ -157,6 +160,7 @@ Retrieve the trained model you want to deploy.
 #### Option B: Using the Model Serving handle
 
 === "Python"
+
   ```python
   # get Hopsworks Model Serving handle
   ms = project.get_model_serving()
@@ -171,7 +175,7 @@ Retrieve the trained model you want to deploy.
 
 ### API Reference
 
-[Model Serving](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/model_serving_api/)
+[Model Serving](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/model_serving_api/)
 
 ## Model Files
 
@@ -198,7 +202,7 @@ When a new deployment is created, a new artifact version is generated in two cas
 - the artifact version in the predictor is set to `CREATE` (see [Artifact Version](../predictor/#artifact_version))
 - no model artifact with the same files has been created before.
 
-Inside a model deployment, the local path to the artifact files is stored in the `ARTIFACT_FILES_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)). Moreover, you can explore the artifact files under the `/Models/<model-name>/<model-version>/Artifacts/<artifact-version>` directory using the File Browser. 
+Inside a model deployment, the local path to the artifact files is stored in the `ARTIFACT_FILES_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)). Moreover, you can explore the artifact files under the `/Models/<model-name>/<model-version>/Artifacts/<artifact-version>` directory using the File Browser.
 
 !!! warning
     All files under `/Models` are managed by Hopsworks. Changes to artifact files cannot be reverted and can have an impact on existing model deployments.

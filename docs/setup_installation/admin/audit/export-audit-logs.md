@@ -4,7 +4,7 @@
 
 Audit logs can be exported to your storage of preference. In case audit logs have not been configured yet in your Hopsworks cluster, please see [Access Audit Logs](../audit/audit-logs.md).
 
-!!! note 
+!!! note
         As an example, in this guide we will show how to export audit logs to BigQuery using the ```bq``` command-line tool.
 
 ## Prerequisites
@@ -18,19 +18,19 @@ Create a dataset and a table in [BigQuery](https://cloud.google.com/bigquery/doc
 The table schema is shown below.
 
 ```
-fullname	      mode	    type	    description
-pathInfo	      NULLABLE	STRING	
-methodName	      NULLABLE	STRING	
-caller	          NULLABLE	RECORD	
-dateTime	      NULLABLE	TIMESTAMP	bq-datetime
-userAgent	      NULLABLE	STRING	
-clientIp	      NULLABLE	STRING	
-outcome	          NULLABLE	STRING	
-parameters	      NULLABLE	STRING	
-className	      NULLABLE	STRING	
-caller.userId	  NULLABLE	STRING	
-caller.email	  NULLABLE	STRING	
-caller.username	  NULLABLE	STRING
+fullname       mode     type     description
+pathInfo       NULLABLE STRING 
+methodName       NULLABLE STRING 
+caller           NULLABLE RECORD 
+dateTime       NULLABLE TIMESTAMP bq-datetime
+userAgent       NULLABLE STRING 
+clientIp       NULLABLE STRING 
+outcome           NULLABLE STRING 
+parameters       NULLABLE STRING 
+className       NULLABLE STRING 
+caller.userId   NULLABLE STRING 
+caller.email   NULLABLE STRING 
+caller.username   NULLABLE STRING
 ```
 
 ## Step 2: Export Audit Logs to the BigQuery Table

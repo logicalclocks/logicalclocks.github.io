@@ -16,5 +16,3 @@ In addition to scheduled statistics, you can enable the comparison of statistics
 
 !!! info "Feature Monitoring Guide"
     More information can be found in the [Feature monitoring guide](../../../user_guides/fs/feature_monitoring/index.md).
-
-

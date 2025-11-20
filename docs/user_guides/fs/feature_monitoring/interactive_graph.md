@@ -23,7 +23,7 @@ Multiple feature monitoring configurations can be visualized at the same time on
 
 ### Show reference statistics
 
-In feature monitoring configurations with reference windows, you can also visualize the reference values by enabling the ^^Reference values^^ checkbox on the controls menu. Reference values can be either statistics computed over time or a specific value shown as an horizontal line. 
+In feature monitoring configurations with reference windows, you can also visualize the reference values by enabling the ^^Reference values^^ checkbox on the controls menu. Reference values can be either statistics computed over time or a specific value shown as an horizontal line.
 
 !!! note
     The same statistics metric will be visualized for both detection and reference values.
@@ -42,10 +42,9 @@ In addition to reference windows, you can define thresholds to automate the iden
 !!! info
     More details about statistics comparison options can be found in [Comparison criteria](statistics_comparison.md#comparison-criteria).
 
-
 ### Highlight shifted data points
 
-If a reference window and threshold are provided, data points that fall out of the threshold bounds are considered anomalous values. You can highlight these data points by enabling the ^^Shift detected^^ checkbox on the controls menu. 
+If a reference window and threshold are provided, data points that fall out of the threshold bounds are considered anomalous values. You can highlight these data points by enabling the ^^Shift detected^^ checkbox on the controls menu.
 
 ![Highlight shifted data points](../../../assets/images/guides/fs/feature_monitoring/fm-show-shifted-points-arrow.png)
 

@@ -73,25 +73,24 @@ Next step is to select the program to run. You can either select `From project`,
 Resource allocation for the Driver and Workers can be configured.
 
 !!! notice "Using the resources in the Ray script"
-    The resource configurations describe the cluster that will be provisioned when launching the Ray job. User can still 
+    The resource configurations describe the cluster that will be provisioned when launching the Ray job. User can still
     provide extra configurations in the job script using `ScalingConfig`, i.e. `ScalingConfig(num_workers=4, trainer_resources={"CPU": 1}, use_gpu=True)`.
 
-* `Driver memory`: Memory in MBs to allocate for Driver
+- `Driver memory`: Memory in MBs to allocate for Driver
 
-* `Driver virtual cores`: Number of cores to allocate for the Driver
+- `Driver virtual cores`: Number of cores to allocate for the Driver
 
-* `Worker memory`: Memory in MBs to allocate for each worker
+- `Worker memory`: Memory in MBs to allocate for each worker
 
-* `Worker cores`: Number of cores to allocate for each worker
+- `Worker cores`: Number of cores to allocate for each worker
 
-* `Min workers`: Minimum number of workers to start with
+- `Min workers`: Minimum number of workers to start with
 
-* `Max workers`: Maximum number of workers to scale up to
-
+- `Max workers`: Maximum number of workers to scale up to
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jobs/resource_configuration_ray.png" alt="Resource configuration 
+    <img src="../../../../assets/images/guides/jobs/resource_configuration_ray.png" alt="Resource configuration
 for Ray Job">
     <figcaption>Resource configuration for the Ray Job</figcaption>
   </figure>
@@ -99,13 +98,13 @@ for Ray Job">
 
 Runtime environment and Additional files required for the Ray job can also be provided.
 
-* `Runtime Environment (Optional)`:  A [runtime environment](https://docs.ray.io/en/latest/ray-core/handling-dependencies.html#runtime-environments) describes the dependencies required for the Ray job including files, packages, environment variables, and more. This is useful when you need to install specific packages and set environment variables for this particular Ray job. It should be provided as a YAML file. You can select the file from the project or upload a new one.
+- `Runtime Environment (Optional)`:  A [runtime environment](https://docs.ray.io/en/latest/ray-core/handling-dependencies.html#runtime-environments) describes the dependencies required for the Ray job including files, packages, environment variables, and more. This is useful when you need to install specific packages and set environment variables for this particular Ray job. It should be provided as a YAML file. You can select the file from the project or upload a new one.
 
-* `Additional files`: List of other files required for the Ray job. These files will be placed in `/srv/hops/ray/job`.
+- `Additional files`: List of other files required for the Ray job. These files will be placed in `/srv/hops/ray/job`.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jobs/ray_runtime_env_and_additional_files.png" alt="Runtime 
+    <img src="../../../../assets/images/guides/jobs/ray_runtime_env_and_additional_files.png" alt="Runtime
 environment and additional files">
     <figcaption>Runtime configuration and additional files for Ray job</figcaption>
   </figure>
@@ -129,8 +128,9 @@ Now click the `Run` button to start the execution of the job, and then click on 
 </p>
 
 ### Step 8: Ray Dashboard
-When the Ray job is running, you can access the Ray dashboard to monitor the job. The Ray dashboard is accessible from the 
-`Executions` page. Please note that the Ray dashboard is only available when the job execution is running. In the Ray Dashboard, 
+
+When the Ray job is running, you can access the Ray dashboard to monitor the job. The Ray dashboard is accessible from the
+`Executions` page. Please note that the Ray dashboard is only available when the job execution is running. In the Ray Dashboard,
 you can monitor the resources used by the job, the number of workers, logs, and the tasks that are running.
 <p align="center">
   <figure>
@@ -140,6 +140,7 @@ you can monitor the resources used by the job, the number of workers, logs, and 
 </p>
 
 ### Step 9: Application logs
+
 Once the execution is finished, you can click on `Logs` to see the full logs for execution.
 
 <p align="center">
@@ -168,7 +169,6 @@ dataset_api = project.get_dataset_api()
 uploaded_file_path = dataset_api.upload("ray_job.py", "Resources")
 
 ```
-
 
 ### Step 2: Create Ray job
 
@@ -212,6 +212,7 @@ print(f_err.read())
 ```
 
 ## Configuration
+
 The following table describes the job configuration parameters for a RAY job.
 
 `conf = jobs_api.get_configuration("RAY")`
@@ -233,14 +234,12 @@ The following table describes the job configuration parameters for a RAY job.
 | <nobr>`conf['jobType']`</nobr>         | string | Type of job                                                                                                                                          | `"RAY"`                      |
 | <nobr>`conf['files']`</nobr>           | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null`                       |
 
-
 ## Accessing project data
 
 The project datasets are mounted under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your script.
 
-
 ## API Reference
 
-[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
+[Jobs](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/jobs/)
 
-[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
+[Executions](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/executions/)

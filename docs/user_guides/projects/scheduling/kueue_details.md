@@ -25,7 +25,7 @@ spec:
   topologyName: default
 ```
 
-Node labels filter the available nodes to this resource flavor and is required for [topologies](#Topologies)
+Node labels filter the available nodes to this resource flavor and is required for [topologies](#topologies)
 
 ### Cluster Queues
 

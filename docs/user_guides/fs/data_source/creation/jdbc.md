@@ -23,6 +23,7 @@ jdbc:mysql://10.0.2.15:3306/[databaseName]?useSSL=false&allowPublicKeyRetrieval=
 - **Username and Password:** Typically, you will need to add username and password in your JDBC URL or as key/value parameters. So make sure you have retrieved a username and password with the suitable permissions for the database and table you want to query.
 
 ## Creation in the UI
+
 ### Step 1: Set up new Data Source
 
 Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
@@ -45,17 +46,13 @@ Enter the details for your JDBC enabled database.
 2. Enter the JDBC connection url. This can for example also contain the username and password.
 3. Add additional key/value arguments to be passed to the connection, such as username or password. These might differ by database.
 
-
-    !!! note 
+    !!! note
         Driver class name is a mandatory argument even if using the default MySQL driver. Add it by specifying a property with the name `driver` and class name as value. The driver class name will differ based on the database. For MySQL databases, the class name is `com.mysql.cj.jdbc.Driver`, as shown in the example image.
 
-
-4. Click on "Save Credentials". 
-
+4. Click on "Save Credentials".
 
 !!! note
     To be able to use the connector, you need to upload the driver JAR file to the [Jupyter configuration](../../../projects/jupyter/spark_notebook.md) or [Job configuration](../../../projects/jobs/pyspark_job.md) in `Addtional Jars`.  For MySQL connections the default JDBC driver is already included in Hopsworks so this step can be skipped.
-
 
 ## Next Steps
 

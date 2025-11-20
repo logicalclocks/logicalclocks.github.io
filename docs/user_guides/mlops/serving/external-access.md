@@ -50,7 +50,6 @@ You can find the external access configuration by clicking on `External access` 
 
 In this section, you can add and remove user groups by clicking on `edit external user groups` and typing the group name in the **text-free** input field or **selecting** one of the existing ones in the dropdown list. After that, click on the `save` button to persist the changes.
 
-
 !!! Warn "Case sensitivity"
     Inference requests are authorized using a ==case-sensitive exact match== between the group names of the user making the request and the group names granted access to the model deployment. Therefore, a user assigned to the group `lab1` won't have access to a model deployment accessible by group `LAB1`.
 
@@ -130,9 +129,9 @@ In addition to the `Authorization` header containing the API key, the `Host` hea
 
 Every time an external user signs in to Hopsworks using a pre-configured [authentication method](../../../setup_installation/admin/auth.md), Hopsworks fetches the external user groups and updates the internal state accordingly. Given that groups can be added/removed from users at any time by the Identity Provider, Hopsworks needs to periodically fetch the external user groups to keep the state updated.
 
-Therefore, external users that want to access model deployments are **required to login periodically** to ensure they are still part of the allowed groups. The timespan between logins is controlled by the configuration parameter `requireExternalUserLoginAfterHours` available during the Hopsworks installation and upgrade. 
+Therefore, external users that want to access model deployments are **required to login periodically** to ensure they are still part of the allowed groups. The timespan between logins is controlled by the configuration parameter `requireExternalUserLoginAfterHours` available during the Hopsworks installation and upgrade.
 
-The `requireExternalUserLoginAfterHours` configuration parameter controls the ==number of hours== after which external users are required to sign in to Hopsworks to refresh their external user groups. 
+The `requireExternalUserLoginAfterHours` configuration parameter controls the ==number of hours== after which external users are required to sign in to Hopsworks to refresh their external user groups.
 
 !!! info "Configuring `requireExternalUserLoginAfterHours`"
     Allowed values are -1, 0 and greater than 0, where -1 disables the periodic login requirement and 0 disables external access completely for every model deployment.

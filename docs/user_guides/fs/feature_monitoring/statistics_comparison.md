@@ -1,6 +1,6 @@
 Hopsworks feature monitoring allows you to monitor your feature data once they have been ingested into the Feature Store. You can define ==detection and reference windows== over your data for which Hopsworks will compute the statistics on a regular basis, compare them, and optionally trigger alerts when significant differences are detected. Statistics can be computed on all or a subset of feature values, and on one or more features simultaneously. Also, you can specify the criteria under which statistics will be compared and set thresholds used to classify feature values as anomalous.
 
-Hopsworks stores both detection and reference statistics and enable you to visualise the temporal evolution of statistical metrics. 
+Hopsworks stores both detection and reference statistics and enable you to visualise the temporal evolution of statistical metrics.
 
 ![Reference statistics visualization](../../../assets/images/guides/fs/feature_monitoring/fm-reference-plot.png)
 
@@ -24,7 +24,7 @@ To compare statistics computed on a _detection window_ against a baseline, you n
 In [a previous section](index.md#statistics-computation-on-windows-of-feature-data) we described different types of windows available. Taking a Feature View as an example, the figure above describes how these windows are applied to Feature Group data read by a Feature View query and Training data, resulting in the following applications:
 
 - A _expanding window_ covering the whole Feature Group data from its creation until the time when statistics are computing. It can be seen as an snapshot of the latest version of your feature data. This reference window is useful when you want to compare the statistics of **newly inserted feature data against all the Feature Group data**.
-- A _rolling window_ covering a variable subset of feature data (e.g., feature data written last week). It helps you compare the properties of **feature data inserted at different cadences** (e.g., feature data inserted last month and two months ago). 
+- A _rolling window_ covering a variable subset of feature data (e.g., feature data written last week). It helps you compare the properties of **feature data inserted at different cadences** (e.g., feature data inserted last month and two months ago).
 - A _static window_ representing a snapshot of Feature Group data read using the Feature View query at a specific point in time (i.e., Training Dataset). It helps you compare **newly inserted feature data** into your Feature Groups **against a Training Dataset version**.
 - A _specific value_. It helps you target the analysis of feature data to a **specific feature and statistics metric**.
 
@@ -49,7 +49,6 @@ After defining the detection and reference windows, you can specify the criteria
     - **Absolute**: _$detection value - reference value$_
     - **Relative**: _$(detection value - reference value) / reference value$_
 
-
 ??? no-icon "Strict or relaxed"
 
     Threshold bounds set the limits under which the amount of change between detection and reference values is ==normal==. These bounds can be strict (`<` or `>`) or relaxed (`<=` and `=>`), as defined in the `strict` parameter when calling the `compare_on` method.
@@ -58,5 +57,5 @@ Hopsworks stores the results of each statistics comparison and enables you to vi
 
 ![Threshold and shift visualization](../../../assets/images/guides/fs/feature_monitoring/fm-threshold-plot.png)
 
-!!! info "Next steps" 
+!!! info "Next steps"
     You can setup alerts that will notify you whenever anomalies are detected on your feature data. See more details in the [alerting section](index.md#alerting) of the feature monitoring guide.

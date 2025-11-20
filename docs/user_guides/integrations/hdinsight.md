@@ -2,6 +2,7 @@
 description: Documentation on how to configure an HDInsight cluster to read and write features from the Hopsworks Feature Store
 ---
 # Configure HDInsight for the Hopsworks Feature Store
+
 To enable HDInsight to access the Hopsworks Feature Store, you need to set up a Hopsworks API key, add a script action and configurations to your HDInsight cluster.
 
 !!! info "Prerequisites"
@@ -38,6 +39,7 @@ The script action needs to be applied head and worker nodes and can be applied d
     </p>
 
 Feature Store script action:
+
 ```bash
 set -e
 
@@ -84,11 +86,13 @@ The Hadoop and Spark installations of the HDInsight cluster need to be configure
     HDInsight clusters cannot use their local Hive when being configured for the Feature Store as the Feature Store relies on custom Hive binaries and its own Metastore which will overwrite the local one. If you rely on Hive for feature engineering then it is advised to write your data to an external data storage such as ADLS from your main HDInsight cluster and in the Feature Store, create an [on-demand](https://docs.hopsworks.ai/overview/#feature-groups) Feature Group on the storage container in ADLS.
 
 Hadoop hadoop-env.sh:
+
 ```
 export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hopsworks/client/*
 ```
 
 Hadoop core-site.xml:
+
 ```
 hops.ipc.server.ssl.enabled=true
 fs.hopsfs.impl=io.hops.hopsfs.client.HopsFileSystem
@@ -101,6 +105,7 @@ hops.ssl.trustore.name=/usr/lib/hopsworks/trustStore.jks
 ```
 
 Spark spark-defaults.conf:
+
 ```
 spark.executor.extraClassPath=/usr/lib/hopsworks/client/*
 spark.driver.extraClassPath=/usr/lib/hopsworks/client/*
@@ -109,6 +114,7 @@ spark.sql.hive.metastore.jars.path=/usr/lib/hopsworks/apache-hive-bin/lib/*
 ```
 
 Spark hive-site.xml:
+
 ```
 hive.metastore.uris=thrift://MY_HOPSWORKS_INSTANCE_PRIVATE_IP:9083
 ```
@@ -142,4 +148,4 @@ fs = project.get_feature_store()
 
 ## Next Steps
 
-For more information on how to use the Hopsworks API check out the other guides or the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/). 
+For more information on how to use the Hopsworks API check out the other guides or the [Login API](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/login/).

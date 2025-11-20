@@ -1,6 +1,7 @@
 # Adding extra configuration with generic bash commands
 
 ## Introduction
+
 Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases. Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
 
 Some Python libraries require the installation of some OS-Level libraries. In some cases, you may need to add more complex configuration to your environment. This demands writing your own commands and executing them on top of the existing environment.
@@ -12,11 +13,13 @@ In this guide, you will learn how to run custom bash commands that can be used t
 In order to install a custom dependency one of the base environments must first be cloned, follow [this guide](python_env_clone.md) for that.
 
 ## Running bash commands
+
 In this section, we will see how you can run custom bash commands in Hopsworks to configure your Python environment.
 
 In Hopsworks, we maintain a docker image built on top of Ubuntu Linux distribution. You can run generic bash commands on top of the project environment from the UI or REST API.
 
 ### Setting up the bash script and artifacts from the UI
+
 To use the UI, navigate to the Python environment in the Project settings. In the Python environment page, navigate to custom commands. From the UI, you can write the bash commands in the textbox provided. These bash commands will be uploaded and executed when building your new environment. You can include build artifacts e.g., binaries that you would like to execute or include when building the environment. See Figure 1.
 
 <p align="center">
@@ -27,7 +30,9 @@ To use the UI, navigate to the Python environment in the Project settings. In th
 </p>
 
 ## Code
+
 You can also run the custom commands using the REST API. From the REST API, you should provide the path, in HOPSFS, to the bash script and the artifacts(comma separated string of paths in HopsFs). The REST API endpoint for running custom commands is: `hopsworks-api/api/project/<projectId>/python/environments/<environmentName>/commands/custom` and the body should look like this:
+
 ```python
 {
     "commandsFile": "<pathToYourBashScriptInHopsFS>",
@@ -37,6 +42,7 @@ You can also run the custom commands using the REST API. From the REST API, you 
 ```
 
 ## What to include in the bash script
+
 There are few important things to be aware of when writing the bash script:
 
 * The first line of your bash script should always be `#!/bin/bash` (known as shebang) so that the script can be interpreted and executed using the Bash shell.

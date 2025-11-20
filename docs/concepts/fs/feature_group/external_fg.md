@@ -3,4 +3,3 @@ External feature groups are offline feature groups where their data is stored in
 In the image below, we can see that HSFS currently supports a large number of data sources, including any JDBC-enabled source, Snowflake, Data Lake, Redshift, BigQuery, S3, ADLS, GCS, RDS, and Kafka
 
 <img src="../../../../assets/images/concepts/fs/fg-connector-api.svg">
-

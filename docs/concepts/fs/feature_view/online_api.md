@@ -9,4 +9,3 @@ A feature vector is a row of features (without the primary key(s) and event time
 It may be the case that for any given feature vector, not all features will come pre-engineered from the feature store. Some features will be provided by the client (or at least the raw data to compute the feature will come from the client). We call these 'passed' features and, similar to precomputed features from the feature store, they can also be transformed by the HSFS client in the method:
 
 * feature_view.get_feature_vector(entry, passed_features={...})
-

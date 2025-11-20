@@ -15,6 +15,7 @@ When you're finished, you'll be able to write training data to different locatio
 Before you begin this guide you'll need to identify a **directory on the filesystem** of Hopsworks, to which you want to point the Data Source that you are going to create.
 
 ## Creation in the UI
+
 ### Step 1: Set up new Data Source
 
 Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
@@ -30,7 +31,7 @@ Enter the details for your HopsFS connector. Start by giving it a **name** and a
 
 1. Select "HopsFS" as the storage.
 2. Select the top-level dataset to point the connector to.
-3. Click on "Save Credentials". 
+3. Click on "Save Credentials".
 
 <figure markdown>
   ![HopsFS Connector Creation](../../../../assets/images/guides/fs/data_source/hopsfs_creation.png)

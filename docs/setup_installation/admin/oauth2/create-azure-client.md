@@ -1,10 +1,12 @@
-# Create An Application in Azure Active Directory.
+# Create An Application in Azure Active Directory
 
 ## Introduction
-This example uses Azure Active Directory as the identity provider, but the same can be done with any identity provider 
+
+This example uses Azure Active Directory as the identity provider, but the same can be done with any identity provider
 supporting OAuth2 OpenID Connect protocol.
 
 ## Prerequisites
+
 Azure account.
 
 ### Step 1: Register Hopsworks as an application in your identity provider
@@ -30,7 +32,8 @@ Enter a name for the client such as *hopsworks_oauth_client*. Verify the Support
 </p>
 
 ### Step 2: Get the necessary fields for client registration
-In the Overview section, copy the *Application (client) ID field*. We will use it in 
+
+In the Overview section, copy the *Application (client) ID field*. We will use it in
 [Identity Provider registration](../create-client) under the name *Client id*.
 
 <p align="center">
@@ -40,7 +43,7 @@ In the Overview section, copy the *Application (client) ID field*. We will use i
   </figure>
 </p>
 
-Click on *Endpoints* and copy the *OpenId Connect metadata document* endpoint excluding the *.well-known/openid-configuration* part. 
+Click on *Endpoints* and copy the *OpenId Connect metadata document* endpoint excluding the *.well-known/openid-configuration* part.
 We will use it in [Identity Provider registration](../create-client) under the name *Connection URL*.
 
 <p align="center">
@@ -77,7 +80,7 @@ Add a *description* of the secret. Select an expiration period. And, Click *Add*
   </figure>
 </p>
 
-Copy the secret. This will be used in [Identity Provider registration](../create-client) under the name 
+Copy the secret. This will be used in [Identity Provider registration](../create-client) under the name
 *Client Secret*.
 
 <p align="center">

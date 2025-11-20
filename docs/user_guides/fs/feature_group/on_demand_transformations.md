@@ -4,7 +4,6 @@
 
 ## On Demand Transformation Function Creation
 
-
 An on-demand transformation function may be created by associating a [transformation function](../transformation_functions.md) with a feature group. Each on-demand transformation function can generate one or multiple on-demand features. If the on-demand transformation function returns a single feature, it is automatically assigned the same name as the transformation function. However, if it returns multiple features, they are by default named using the format `functionName_outputColumnNumber`. For instance, in the example below, the on-demand transformation function `transaction_age` produces an on-demand feature named `transaction_age` and the on-demand transformation function `stripped_strings` produces the on-demand features names `stripped_strings_0` and `stripped_strings_1`. Alternatively, the name of the resulting on-demand feature can be explicitly defined using the [`alias`](../transformation_functions.md#specifying-output-features–names-for-transformation-functions) function.
 
 !!! warning "On-demand transformation"
@@ -12,7 +11,7 @@ An on-demand transformation function may be created by associating a [transforma
 
 Each on-demand transformation function can map specific features to its arguments by explicitly providing their names as arguments to the transformation function. If no feature names are provided, the transformation function will default to using features that match the name of the transformation function's argument.
 
-=== "Python"    
+=== "Python"
 !!! example "Creating on-demand transformation functions."
     ```python
     # Define transformation function
@@ -35,12 +34,11 @@ Each on-demand transformation function can map specific features to its argument
                 )
     ```
 
-
 ### Specifying input features
 
-The features to be used by the on-demand transformation function can be specified by providing the feature names as input to the transformation functions. 
+The features to be used by the on-demand transformation function can be specified by providing the feature names as input to the transformation functions.
 
-=== "Python"    
+=== "Python"
 !!! example "Creating on-demand transformations by specifying features to be passed to transformation function."
     ```python
     fg = feature_store.create_feature_group(name="fg_transactions",
@@ -55,7 +53,7 @@ The features to be used by the on-demand transformation function can be specifie
 
 ## Usage
 
-On-demand transformation functions attached to a feature group are automatically executed in the feature pipeline when you [insert data](../create/#batch-write-api) into a feature group and [by the Python client while retrieving feature vectors](../feature_view/feature-vectors.md#retrieval) for online inference using feature views that contain on-demand features. 
+On-demand transformation functions attached to a feature group are automatically executed in the feature pipeline when you [insert data](../create/#batch-write-api) into a feature group and [by the Python client while retrieving feature vectors](../feature_view/feature-vectors.md#retrieval) for online inference using feature views that contain on-demand features.
 
 The on-demand features computed by on-demand transformation functions are positioned after all other features in a feature group and are ordered alphabetically by their names.
 
@@ -69,7 +67,7 @@ Inserting on-demand features as historical features saves time and computational
 
 A feature view can include on-demand features from feature groups by selecting them in the [query](../feature_view/query.md) used to create the feature view. These on-demand features are equivalent to regular features, and [model-dependent transformations](../feature_view/model-dependent-transformations.md) can be applied to them if required.
 
-=== "Python"    
+=== "Python"
 !!! example "Creating feature view with on-demand features"
     ```python
 
@@ -100,7 +98,7 @@ The values for the input parameters required to compute on-demand features can b
 
 The `get_feature_vector` function retrieves a single feature vector based on the feature view's serving key(s). The on-demand features in the feature vector can be computed using real-time data by passing a dictionary that associates the name of each input parameter needed for the on-demand transformation function with its respective new value to the `request_parameter` argument.
 
-=== "Python"    
+=== "Python"
 !!! example "Computing on-demand features while retrieving a feature vector"
     ```python
     feature_vector = feature_view.get_feature_vector(
@@ -116,7 +114,7 @@ The `get_feature_vector` function retrieves a single feature vector based on the
 
 The `get_feature_vectors` function retrieves multiple feature vectors using a list of feature view serving keys. The `request_parameter` in this case, can be a list of dictionaries that specifies the input parameters for the computation of on-demand features for each serving key or can be a dictionary if the on-demand transformations require the same parameters for all serving keys.
 
-=== "Python"    
+=== "Python"
 !!! example "Computing on-demand features while retrieving a feature vectors"
     ```python
     # Specify unique request parameters for each serving key.
@@ -148,7 +146,7 @@ The `get_feature_vectors` function retrieves multiple feature vectors using a li
 
 The `get_feature_vector` and `get_feature_vectors` methods can return untransformed feature vectors without on-demand features by disabling model-dependent transformations and excluding on-demand features. To achieve this, set the  parameters `transform` and `on_demand_features` to `False`.
 
-=== "Python"    
+=== "Python"
 !!! example "Returning untransformed feature vectors"
     ```python
     untransformed_feature_vector = feature_view.get_feature_vector(
@@ -165,7 +163,7 @@ The `compute_on_demand_features` function computes all on-demand features attach
 
 The `request_parameter` in this case, can be a list of dictionaries that specifies the input parameters for the computation of on-demand features for each feature vector given as input to the function or can be a dictionary if the on-demand transformations require the same parameters for all input feature vectors.
 
-=== "Python"    
+=== "Python"
 !!! example "Computing all on-demand features and manually applying model dependent transformations."
     ```python
     # Specify request parameters for each serving key.
@@ -223,7 +221,7 @@ The `request_parameter` in this case, can be a list of dictionaries that specifi
 
 On-demand transformation functions can also be accessed and executed as normal functions by using the dictionary `on_demand_transformations` that maps the on-demand features to their corresponding on-demand transformation function.
 
-=== "Python"    
+=== "Python"
 !!! example "Executing each on-demand transformation function"
     ```python
     # Specify request parameters for each serving key.

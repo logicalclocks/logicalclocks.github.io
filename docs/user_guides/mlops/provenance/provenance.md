@@ -26,7 +26,7 @@ You can interact with the provenance graph using the UI or the APIs.
 
 ## Model provenance
 
-The relationship between feature views and models is captured in the model [constructor](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model_registry/model_api/#create_model). If you do not provide at least the feature view object to the constructor, the provenance will not capture this relation and you will not be able to navigate from model to the feature view it used or from the feature view to this model.
+The relationship between feature views and models is captured in the model [constructor](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model_registry/model_api/#create_model). If you do not provide at least the feature view object to the constructor, the provenance will not capture this relation and you will not be able to navigate from model to the feature view it used or from the feature view to this model.
 
 You can provide the feature view object and have the training dataset version be inferred.
 

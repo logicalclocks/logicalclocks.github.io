@@ -19,7 +19,6 @@ the various configuration parameters each job type comes with. Hopsworks support
 e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
 checkout [our Scheduling guide](schedule_job.md).
 
-
 ## UI
 
 ### Step 1: Jobs overview
@@ -88,18 +87,17 @@ Remember to handle the arguments inside your Spark script.
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
-* `Environment`: The environment to use, must be based on `spark-feature-pipeline`
+- `Environment`: The environment to use, must be based on `spark-feature-pipeline`
 
-* `Driver memory`: Number of cores to allocate for the Spark driver
+- `Driver memory`: Number of cores to allocate for the Spark driver
 
-* `Driver virtual cores`: Number of MBs to allocate for the Spark driver
+- `Driver virtual cores`: Number of MBs to allocate for the Spark driver
 
-* `Executor memory`: Number of cores to allocate for each Spark executor
+- `Executor memory`: Number of cores to allocate for each Spark executor
 
-* `Executor virtual cores`: Number of MBs to allocate for each Spark executor
+- `Executor virtual cores`: Number of MBs to allocate for each Spark executor
 
-* `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
-
+- `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
 
 <p align="center">
   <figure>
@@ -110,13 +108,13 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 Additional files or dependencies required for the Spark job can be configured.
 
-* `Additional archives`: List of archives to be extracted into the working directory of each executor.
+- `Additional archives`: List of archives to be extracted into the working directory of each executor.
 
-* `Additional jars`: List of jars to be placed in the working directory of each executor.
+- `Additional jars`: List of jars to be placed in the working directory of each executor.
 
-* `Additional python dependencies`: List of python files and archives to be placed on each executor and added to PATH.
+- `Additional python dependencies`: List of python files and archives to be placed on each executor and added to PATH.
 
-* `Additional files`: List of files to be placed in the working directory of each executor.
+- `Additional files`: List of files to be placed in the working directory of each executor.
 
 <p align="center">
   <figure>
@@ -142,7 +140,6 @@ Currently we do not have Kueue support for Spark. You do not need to select a qu
 
 Now click the `Run` button to start the execution of the job, and then click on `Executions` to see the list of all executions.
 
-
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/jobs/start_job_spark.gif" alt="Start job execution">
@@ -167,7 +164,7 @@ Once the execution is finished, you can click on `Logs` to see the full logs for
 
 ### Step 1: Upload the Spark jar
 
-This snippet assumes the Spark program is in the current working directory and named `sparkpi.jar`. 
+This snippet assumes the Spark program is in the current working directory and named `sparkpi.jar`.
 
 It will upload the jar to the `Resources` dataset in your project.
 
@@ -182,7 +179,6 @@ dataset_api = project.get_dataset_api()
 uploaded_file_path = dataset_api.upload("sparkpi.jar", "Resources")
 
 ```
-
 
 ### Step 2: Create Spark job
 
@@ -220,6 +216,7 @@ print(f_err.read())
 ```
 
 ## Configuration
+
 The following table describes the job configuration parameters for a SPARK job.
 
 `conf = jobs_api.get_configuration("SPARK")`
@@ -246,7 +243,6 @@ The following table describes the job configuration parameters for a SPARK job.
 | <nobr>`conf['jars']`</nobr>                       | string  | Comma-separated string of HDFS path(s) to jars to be included in CLASSPATH. Example: `hdfs:///Project/<project_name>/Resources/app.jar,...`                        | `null`                     |
 | <nobr>`conf['archives']`</nobr>                   | string  | Comma-separated string of HDFS path(s) to archives to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/archive.zip,...`    | `null`                     |
 
-
 ## Accessing project data
 
 ### Read directly from the filesystem (recommended)
@@ -264,12 +260,12 @@ df.show();
 
 ### Additional files
 
-Different file types can be attached to the spark job and made available in the `/srv/hops/artifacts` folder when the Spark job is started. This configuration is mainly useful when you need to add additional configuration such as jars that needs to be added to the CLASSPATH. 
+Different file types can be attached to the spark job and made available in the `/srv/hops/artifacts` folder when the Spark job is started. This configuration is mainly useful when you need to add additional configuration such as jars that needs to be added to the CLASSPATH.
 
 When reading data in your Spark job it is recommended to use the Spark read API as previously demonstrated, since this reads from the filesystem directly, whereas `Additional files` configuration options will download the files in its entirety and is not a scalable option.
 
 ## API Reference
 
-[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/jobs/)
+[Jobs](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/jobs/)
 
-[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/executions/)
+[Executions](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/executions/)

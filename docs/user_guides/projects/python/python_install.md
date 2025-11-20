@@ -15,7 +15,6 @@ In this guide, you will learn how to install Python packages using these differe
 !!! notice "Notice"
     If your libraries require installing some extra OS-Level packages, refer to the guide custom commands guide on how to install OS-Level packages.
 
-
 ## Prerequisites
 
 In order to install a custom dependency one of the base environments must first be cloned, follow [this guide](python_env_clone.md) for that.
@@ -84,7 +83,6 @@ In the case of a private git repository, also select whether it is a GitHub or G
     <figcaption>Installing library from git repo</figcaption>
   </figure>
 </p>
-
 
 ## Going Further
 
