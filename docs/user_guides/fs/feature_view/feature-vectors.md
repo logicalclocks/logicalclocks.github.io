@@ -61,21 +61,21 @@ For java client, and python client before v3.4, the `primary_keys` are the set o
 Python client is backward compatible.
 It means that the `primary_keys` used before v3.4 can be applied to python client of later versions as well.
 
-| Setting | primary key of `left_fg` | primary key of `right_fg` | join conditions                            | prefix | primary_keys                                   | note                                                     |
-|------|----------------------------|-----------------------------|-------------------------------------------|--------|-----------------------------------------------|----------------------------------------------------------|
-|   1  | id                        | id                         | ```on=["id"]```                               |        | id                                           | Same feature name is used in the join.                        |
-|   2  | id1                        | id2                         | `left_on=["id1"], right_on=["id2"]`        |        | id1                                           |  Different feature names are used in the join.               |
-|   3  | id1, id2                   | id1                         | `on=["id1"]`                               |        | id1, id2                                      | `id2` is not part of the join conditions                  |
-|   4  | id, user_id                | id                          | `left_on=["user_id"], right_on=["id"]`     |        | id, user_id                                   | Value of `user_id` is used for retrieving features from `right_fg` |
-|   5  | id1                        | id1, id2                    | `on=["id1"]`                               |        | id1, id2                                      | `id2` is not part of the join conditions                  |
-|   6  | id                         | id, user_id                 | `left_on=["id"], right_on=["user_id"]`     | “right_“| id, “right_id“ | Value of “right_id“ and "id" are used for retrieving features from `right_fg` |
-|   7  | id                         | id, user_id                 | `left_on=["id"], right_on=["user_id"]`     |         | id, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id“ and "id" are used for retrieving features from `right_fg`. See note below. |
-|   8  | id                        | id                         | `left_on=["id"], right_on=["feature_1"]`  | “right_“ | id, “right_id“                              | No primary key from `right_fg` is used in the join. Value of `right_id` is used for retrieving features from `right_fg` |
-|   9  | id                        | id                         | `left_on=["id"], right_on=["feature_1"]`  |          | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `right_fg` is used in the join. Value of "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id" is used for retrieving features from "right_fg`. See note below. |
-|   10  | id                        | id                         | `left_on=["feature_1"], right_on=["id"]` | “right_“ | id, “right_id“                              | No primary key from `left_fg` is used in the join. Value of `right_id` is used for retrieving features from `right_fg` |
-|   11  | id                        | id                         | `left_on=["feature_1"], right_on=["id"]` |          | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `left_fg` is used in the join. Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” is used for retrieving features from `right_fg`. See note below. |
-|   12  | user, year                 | user, year                  | `left_on=["user"], right_on=["user"]`     | “right_“ | user, year, “right_year“                   | Value of "user" and "right_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`. |
-|   13  | user, year                 | user, year                  | `left_on=["user"], right_on=["user"]`     |        | user, year, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year” | Value of "user" and "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`. See note below. |
+| Setting | primary key of `left_fg` | primary key of `right_fg` | join conditions | prefix | primary_keys | note |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | id | id | ```on=["id"]``` | | id | Same feature name is used in the join. |
+| 2 | id1 | id2 | `left_on=["id1"], right_on=["id2"]` | | id1 | Different feature names are used in the join. |
+| 3 | id1, id2 | id1 | `on=["id1"]` | | id1, id2 | `id2` is not part of the join conditions |
+| 4 | id, user_id | id | `left_on=["user_id"], right_on=["id"]` | | id, user_id | Value of `user_id` is used for retrieving features from `right_fg` |
+| 5 | id1 | id1, id2 | `on=["id1"]` | | id1, id2 | `id2` is not part of the join conditions |
+| 6 | id | id, user_id | `left_on=["id"], right_on=["user_id"]` | “right_“ | id, “right_id“ | Value of “right_id“ and "id" are used for retrieving features from `right_fg` |
+| 7 | id | id, user_id | `left_on=["id"], right_on=["user_id"]` | | id, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id“ and "id" are used for retrieving features from `right_fg`. See note below. |
+| 8 | id | id | `left_on=["id"], right_on=["feature_1"]` | “right_“ | id, “right_id“ | No primary key from `right_fg` is used in the join. Value of `right_id` is used for retrieving features from `right_fg` |
+| 9 | id | id | `left_on=["id"], right_on=["feature_1"]` | | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `right_fg` is used in the join. Value of "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id" is used for retrieving features from "right_fg`. See note below. |
+| 10 | id | id | `left_on=["feature_1"], right_on=["id"]` | “right_“ | id, “right_id“ | No primary key from `left_fg` is used in the join. Value of `right_id` is used for retrieving features from `right_fg` |
+| 11 | id | id | `left_on=["feature_1"], right_on=["id"]` | | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `left_fg` is used in the join. Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” is used for retrieving features from `right_fg`. See note below. |
+| 12 | user, year | user, year | `left_on=["user"], right_on=["user"]` | “right_“ | user, year, “right_year“ | Value of "user" and "right_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`. |
+| 13 | user, year | user, year | `left_on=["user"], right_on=["user"]` | | user, year, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year” | Value of "user" and "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`. See note below. |
 
 Note:
 

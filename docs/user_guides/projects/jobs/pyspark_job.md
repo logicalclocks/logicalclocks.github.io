@@ -229,26 +229,26 @@ The following table describes the job configuration parameters for a PYSPARK job
 
 `conf = jobs_api.get_configuration("PYSPARK")`
 
-| Field                                              | Type    | Description                                                                                                                                                        | Default                    |
-|----------------------------------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|
-| <nobr>`conf['type']`</nobr>                        | string  | Type of the job configuration                                                                                                                                      | `"sparkJobConfiguration"`  |
-| <nobr>`conf['appPath']`</nobr>                     | string  | Project path to spark program (e.g `Resources/foo.py`)                                                                                                             | `null`                     |
-| <nobr>`conf['defaultArgs']`</nobr>                 | string  | Arguments to pass to the program. Will be overridden if arguments are passed explicitly via `Job.run(args="...")`                                                  | `null`                     |
-| <nobr>`conf['environmentName']`</nobr>             | string  | Name of the project spark environment to use                                                                                                                       | `"spark-feature-pipeline"` |
-| <nobr>`conf['spark.driver.cores']`</nobr>          | float   | Number of CPU cores allocated for the driver                                                                                                                       | `1.0`                      |
-| <nobr>`conf['spark.driver.memory']`</nobr>         | int     | Memory allocated for the driver (in MB)                                                                                                                            | `2048`                     |
-| <nobr>`conf['spark.executor.instances']`</nobr>    | int     | Number of executor instances                                                                                                                                       | `1`                        |
-| <nobr>`conf['spark.executor.cores']`</nobr>        | float   | Number of CPU cores per executor                                                                                                                                   | `1.0`                      |
-| <nobr>`conf['spark.executor.memory']`</nobr>       | int     | Memory allocated per executor (in MB)                                                                                                                              | `4096`                     |
-| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr>          | boolean | Enable dynamic allocation of executors                                                                                                                             | `true`                     |
-| <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr>     | int     | Minimum number of executors with dynamic allocation                                                                                                                | `1`                        |
-| <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr>     | int     | Maximum number of executors with dynamic allocation                                                                                                                | `2`                        |
-| <nobr>`conf['spark.dynamicAllocation.initialExecutors']`</nobr> | int     | Initial number of executors with dynamic allocation                                                                                                                | `1`                        |
-| <nobr>`conf['spark.blacklist.enabled']`</nobr>     | boolean | Whether executor/node blacklisting is enabled                                                                                                                      | `false`                    |
-| <nobr>`conf['files']`</nobr>                       | string  | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/file1.py,...`          | `null`                     |
-| <nobr>`conf['pyFiles']`</nobr>                     | string  | Comma-separated string of HDFS path(s) to python modules to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/file1.py,...` | `null`                     |
-| <nobr>`conf['jars']`</nobr>                        | string  | Comma-separated string of HDFS path(s) to jars to be included in CLASSPATH. Example: `hdfs:///Project/<project_name>/Resources/app.jar,...`                        | `null`                     |
-| <nobr>`conf['archives']`</nobr>                   | string  | Comma-separated string of HDFS path(s) to archives to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/archive.zip,...`    | `null`                     |
+| Field | Type | Description | Default |
+| --- | --- | --- | --- |
+| <nobr>`conf['type']`</nobr> | string | Type of the job configuration | `"sparkJobConfiguration"` |
+| <nobr>`conf['appPath']`</nobr> | string | Project path to spark program (e.g `Resources/foo.py`) | `null` |
+| <nobr>`conf['defaultArgs']`</nobr> | string | Arguments to pass to the program. Will be overridden if arguments are passed explicitly via `Job.run(args="...")` | `null` |
+| <nobr>`conf['environmentName']`</nobr> | string | Name of the project spark environment to use | `"spark-feature-pipeline"` |
+| <nobr>`conf['spark.driver.cores']`</nobr> | float | Number of CPU cores allocated for the driver | `1.0` |
+| <nobr>`conf['spark.driver.memory']`</nobr> | int | Memory allocated for the driver (in MB) | `2048` |
+| <nobr>`conf['spark.executor.instances']`</nobr> | int | Number of executor instances | `1` |
+| <nobr>`conf['spark.executor.cores']`</nobr> | float | Number of CPU cores per executor | `1.0` |
+| <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
+| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors | `true` |
+| <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr> | int | Minimum number of executors with dynamic allocation | `1` |
+| <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr> | int | Maximum number of executors with dynamic allocation | `2` |
+| <nobr>`conf['spark.dynamicAllocation.initialExecutors']`</nobr> | int | Initial number of executors with dynamic allocation | `1` |
+| <nobr>`conf['spark.blacklist.enabled']`</nobr> | boolean | Whether executor/node blacklisting is enabled | `false` |
+| <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/file1.py,...` | `null` |
+| <nobr>`conf['pyFiles']`</nobr> | string | Comma-separated string of HDFS path(s) to python modules to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/file1.py,...` | `null` |
+| <nobr>`conf['jars']`</nobr> | string | Comma-separated string of HDFS path(s) to jars to be included in CLASSPATH. Example: `hdfs:///Project/<project_name>/Resources/app.jar,...` | `null` |
+| <nobr>`conf['archives']`</nobr> | string | Comma-separated string of HDFS path(s) to archives to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/archive.zip,...` | `null` |
 
 ## Accessing project data
 

@@ -48,15 +48,15 @@ Check the corresponding [documentation](./feature-vectors.md) for these methods.
 
 #### Single Feature Vector Request Parameters
 
-| **parameter**      | **type**    | **note** |
-|------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| featureStoreName   | string      | |
-| featureViewName    | string      | |
+| **parameter** | **type** | **note** |
+| --- | --- | --- |
+| featureStoreName | string | |
+| featureViewName | string | |
 | featureViewVersion | number(int) | |
-| entries            | objects     | Map of serving key of feature view as key and value of serving key as value. Serving key are a set of the primary key of feature groups which are included in the feature view query. If feature groups are joint with prefix, the primary key needs to be attached with prefix. |
-| passedFeatures     | objects     | Optional. Map of feature name as key and feature value as value. This overwrites feature values in the response. |
-| metadataOptions    | objects     | Optional. Map of metadataoption as key and boolean as value. Default metadata option is false. Metadata is returned on request. Metadata options available: 1\. featureName 2\. featureType  |
-| options            | objects     | Optional. Map of option as key and boolean as value. Default option is false. Options available: 1\. validatePassedFeatures 2\. includeDetailedStatus |
+| entries | objects | Map of serving key of feature view as key and value of serving key as value. Serving key are a set of the primary key of feature groups which are included in the feature view query. If feature groups are joint with prefix, the primary key needs to be attached with prefix. |
+| passedFeatures | objects | Optional. Map of feature name as key and feature value as value. This overwrites feature values in the response. |
+| metadataOptions | objects | Optional. Map of metadataoption as key and boolean as value. Default metadata option is false. Metadata is returned on request. Metadata options available: 1\. featureName 2\. featureType |
+| options | objects | Optional. Map of option as key and boolean as value. Default option is false. Options available: 1\. validatePassedFeatures 2\. includeDetailedStatus |
 
 ### Single Feature Vector Response
 
@@ -102,13 +102,13 @@ Check the corresponding [documentation](./feature-vectors.md) for these methods.
 
 ### Single Feature Vector Errors
 
-| **Code** | **reason**                            | **response** |
+| **Code** | **reason**                            | **response**                         |
 | -------- | ------------------------------------- | ------------------------------------ |
-| 200      |                                       | |
-| 400      | Requested metadata does not exist     | |
-| 400      | Error in pk or passed feature value   | |
+| 200      |                                       |                                      |
+| 400      | Requested metadata does not exist     |                                      |
+| 400      | Error in pk or passed feature value   |                                      |
 | 401      | Access denied                         | Access unshared feature store failed |
-| 500      | Failed to read feature store metadata | |
+| 500      | Failed to read feature store metadata |                                      |
 
 #### Response with PK/pass feature error
 
@@ -255,15 +255,15 @@ Bad Request, e.g., when PK name-value pair for FG2 not provided or the correspon
 
 #### Batch Feature Vectors Request Parameters
 
-| **parameter**      | **type**         | **note** |
-| ------------------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| featureStoreName   | string           | |
-| featureViewName    | string           | |
-| featureViewVersion | number(int)      | |
-| entries            | `array<objects>` | Each items is a map of serving key as key and value of serving key as value. Serving key of feature view. |
-| passedFeatures     | `array<objects>` | Optional. Each items is a map of feature name as key and feature value as value. This overwrites feature values in the response. If provided, its size and order has to be equal to the size of entries. Item can be null. |
-| metadataOptions    | objects          | Optional. Map of metadataoption as key and boolean as value. Default metadata option is false. Metadata is returned on request. Metadata options available: 1\. featureName 2\. featureType |
-| options            | objects          | Optional. Map of option as key and boolean as value. Default option is false. Options available: 1\. validatePassedFeatures 2\. includeDetailedStatus |
+| **parameter** | **type** | **note** |
+| --- | --- | --- |
+| featureStoreName | string | |
+| featureViewName | string | |
+| featureViewVersion | number(int) | |
+| entries | `array<objects>` | Each items is a map of serving key as key and value of serving key as value. Serving key of feature view. |
+| passedFeatures | `array<objects>` | Optional. Each items is a map of feature name as key and feature value as value. This overwrites feature values in the response. If provided, its size and order has to be equal to the size of entries. Item can be null. |
+| metadataOptions | objects | Optional. Map of metadataoption as key and boolean as value. Default metadata option is false. Metadata is returned on request. Metadata options available: 1\. featureName 2\. featureType |
+| options | objects | Optional. Map of option as key and boolean as value. Default option is false. Options available: 1\. validatePassedFeatures 2\. includeDetailedStatus |
 
 ### Batch Feature Vectors Response
 
@@ -355,13 +355,13 @@ note: Order of the returned features are the same as the order of entries in the
 
 ### Batch Feature Vectors Errors
 
-| **Code** | **reason**                            | **response** |
+| **Code** | **reason**                            | **response**                         |
 | -------- | ------------------------------------- | ------------------------------------ |
-| 200      |                                       | |
-| 400      | Requested metadata does not exist     | |
-| 404      | Missing row corresponding to pk value | |
+| 200      |                                       |                                      |
+| 400      | Requested metadata does not exist     |                                      |
+| 404      | Missing row corresponding to pk value |                                      |
 | 401      | Access denied                         | Access unshared feature store failed |
-| 500      | Failed to read feature store metadata | |
+| 500      | Failed to read feature store metadata |                                      |
 
 #### Response with partial failure
 

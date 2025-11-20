@@ -255,11 +255,11 @@ This ensures consistency of timestamp features across different client timezones
 When ingesting timestamp features, the [Feature Store Write API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#insert) will automatically handle the conversion to UTC, if necessary.
 The following table summarizes how different timestamp types are handled:
 
-| Data Frame (Data Type)                | Environment             | Handling                                                 |
-|---------------------------------------|-------------------------|----------------------------------------------------------|
-| Pandas DataFrame (datetime64[ns])     | Python-only and PySpark | interpreted as UTC, independent of the client's timezone |
-| Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timezone-sensitive conversion from 'tz' to UTC            |
-| Spark (TimestampType)                 | PySpark and Spark       | interpreted as UTC, independent of the client's timezone |
+| Data Frame (Data Type) | Environment | Handling |
+| --- | --- | --- |
+| Pandas DataFrame (datetime64[ns]) | Python-only and PySpark | interpreted as UTC, independent of the client's timezone |
+| Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timezone-sensitive conversion from 'tz' to UTC |
+| Spark (TimestampType) | PySpark and Spark | interpreted as UTC, independent of the client's timezone |
 
 Timestamp features retrieved from the Feature Store, e.g., using the [Feature Store Read API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#read), use a timezone-unaware format:
 

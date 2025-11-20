@@ -35,7 +35,7 @@ Authorization: ApiKey <API_KEY_VALUE>
 
 | Header          | Description                                 | Example Value                        |
 | --------------- | ------------------------------------------- | ------------------------------------ |
-| `Host`          | Model’s hostname, provided in Hopsworks UI. | `fraud.test.hopsworks.ai` |
+| `Host`          | Model’s hostname, provided in Hopsworks UI. | `fraud.test.hopsworks.ai`            |
 | `Authorization` | API key for authentication.                 | `ApiKey <your_api_key>`              |
 | `Content-Type`  | Request payload type (always JSON).         | `application/json`                   |
 

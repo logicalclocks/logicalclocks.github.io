@@ -233,22 +233,22 @@ The following table describes the job configuration parameters for a RAY job.
 
 `conf = jobs_api.get_configuration("RAY")`
 
-| Field                                  | Type  | Description                                                                                                                                          | Default                      |
-|----------------------------------------|-------|------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
-| <nobr>`conf['type']`</nobr>            | string | Type of the job configuration                                                                                                                        | `"rayJobConfiguration"`      |
-| <nobr>`conf['appPath']`</nobr>         | string | Project relative path to script (e.g., `Resources/foo.py`)                                                                                           | `null`                       |
-| <nobr>`conf['defaultArgs']`</nobr>     | string | Arguments to pass to the script. Will be overridden if arguments are passed explicitly via `Job.run(args="...")`                                     | `null`                       |
-| <nobr>`conf['environmentName']`</nobr> | string | Name of the project Python environment to use                                                                                                        | `"pandas-training-pipeline"` |
-| <nobr>`conf['driverCores']`</nobr>     | float | Number of CPU cores to be allocated for the Ray head process                                                                                         | `1.0`                        |
-| <nobr>`conf['driverMemory']`</nobr>    | int   | Number of MBs to be allocated for the Ray head process                                                                                               | `2048`                       |
-| <nobr>`conf['driverGpus']`</nobr>      | int   | Number of GPUs to be allocated for the Ray head process                                                                                              | `0`                          |
-| <nobr>`conf['workerCores']`</nobr>     | float   | Number of CPU cores to be allocated for each Ray worker process                                                                                      | `1.0`                        |
-| <nobr>`conf['workerMemory']`</nobr>    | int | Number of MBs to be allocated for each Ray worker process                                                                                            | `4096`                       |
-| <nobr>`conf['workerGpus']`</nobr>      | int   | Number of GPUs to be allocated for each Ray worker process                                                                                           | `0`                          |
-| <nobr>`conf['workerMinInstances']`</nobr>      | int   | Minimum number of Ray workers                                                                                                                        | `1`                          |
-| <nobr>`conf['workerMaxInstances']`</nobr>      | int   | Maximum number of Ray workers                                                                                                                        | `1`                          |
-| <nobr>`conf['jobType']`</nobr>         | string | Type of job                                                                                                                                          | `"RAY"`                      |
-| <nobr>`conf['files']`</nobr>           | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null`                       |
+| Field | Type | Description | Default |
+| --- | --- | --- | --- |
+| <nobr>`conf['type']`</nobr> | string | Type of the job configuration | `"rayJobConfiguration"` |
+| <nobr>`conf['appPath']`</nobr> | string | Project relative path to script (e.g., `Resources/foo.py`) | `null` |
+| <nobr>`conf['defaultArgs']`</nobr> | string | Arguments to pass to the script. Will be overridden if arguments are passed explicitly via `Job.run(args="...")` | `null` |
+| <nobr>`conf['environmentName']`</nobr> | string | Name of the project Python environment to use | `"pandas-training-pipeline"` |
+| <nobr>`conf['driverCores']`</nobr> | float | Number of CPU cores to be allocated for the Ray head process | `1.0` |
+| <nobr>`conf['driverMemory']`</nobr> | int | Number of MBs to be allocated for the Ray head process | `2048` |
+| <nobr>`conf['driverGpus']`</nobr> | int | Number of GPUs to be allocated for the Ray head process | `0` |
+| <nobr>`conf['workerCores']`</nobr> | float | Number of CPU cores to be allocated for each Ray worker process | `1.0` |
+| <nobr>`conf['workerMemory']`</nobr> | int | Number of MBs to be allocated for each Ray worker process | `4096` |
+| <nobr>`conf['workerGpus']`</nobr> | int | Number of GPUs to be allocated for each Ray worker process | `0` |
+| <nobr>`conf['workerMinInstances']`</nobr> | int | Minimum number of Ray workers | `1` |
+| <nobr>`conf['workerMaxInstances']`</nobr> | int | Maximum number of Ray workers | `1` |
+| <nobr>`conf['jobType']`</nobr> | string | Type of job | `"RAY"` |
+| <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
 
 ## Accessing project data
 

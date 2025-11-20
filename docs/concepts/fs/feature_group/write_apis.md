@@ -2,11 +2,11 @@ You write to feature groups, and read from feature views.
 
 There are 3 APIs for writing to feature groups, as shown in the table below:
 
-|  | Stream API | Batch API  | Connector API  |
-|---|---|---|---|
-| Python | X  | -  | - |
+| | Stream API | Batch API | Connector API |
+| --- | --- | --- | --- |
+| Python | X | - | - |
 | Spark | X | X | - |
-| Flink | X  | -  | - |
+| Flink | X | - | - |
 | External Table | - | - | X |
 
 ## Stream API

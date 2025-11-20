@@ -31,12 +31,12 @@ Supported versions of Python: 3.8, 3.9, 3.10, 3.11, 3.12 ([PyPI ↗](https://pyp
 
 The Hopsworks library has several profiles that bring additional dependencies and enable additional functionalities:
 
-| Profile Name       | Description   |
-| ------------------ | ------------- |
-| No Profile         | This is the base installation. Supports interacting with the feature store metadata, model registry and deployments. It also supports reading and writing from the feature store from PySpark environments. |
-| `python`             | This profile enables reading and writing from/to the feature store from a Python environment |
+| Profile Name | Description |
+| --- | --- |
+| No Profile | This is the base installation. Supports interacting with the feature store metadata, model registry and deployments. It also supports reading and writing from the feature store from PySpark environments. |
+| `python` | This profile enables reading and writing from/to the feature store from a Python environment |
 | `great-expectations` | This profile installs the [Great Expectations](https://greatexpectations.io/) Python library and enables data validation on feature pipelines |
-| `polars`             | This profile installs the [Polars](https://pola.rs/) library and enables reading and writing Polars DataFrames |
+| `polars` | This profile installs the [Polars](https://pola.rs/) library and enables reading and writing Polars DataFrames |
 
 You can install all the above profiles with the following command:
 

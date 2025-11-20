@@ -192,18 +192,18 @@ The following table describes the job configuration parameters for a PYTHON job.
 
 `conf = jobs_api.get_configuration("PYTHON")`
 
-| Field | Type    | Description                                                                                                                                                               | Default |
-|-------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| <nobr>`conf['type']`</nobr> | string  | Type of the job configuration                                                                                                                                             | `"pythonJobConfiguration"` |
-| <nobr>`conf['appPath']`</nobr> | string  | Project relative path to notebook (e.g., `Resources/foo.ipynb`)                                                                                                           | `null` |
-| <nobr>`conf['defaultArgs']`</nobr> | string  | Arguments to pass to the notebook.<br>Will be overridden if arguments are passed explicitly via `Job.run(args="...")`.<br>Must conform to Papermill format `-p arg1 val1` | `null` |
-| <nobr>`conf['environmentName']`</nobr> | string  | Name of the project Python environment to use                                                                                                                             | `"pandas-training-pipeline"` |
-| <nobr>`conf['resourceConfig']['cores']`</nobr> | float   | Number of CPU cores to be allocated                                                                                                                                       | `1.0` |
-| <nobr>`conf['resourceConfig']['memory']`</nobr> | int     | Number of MBs to be allocated                                                                                                                                             | `2048` |
-| <nobr>`conf['resourceConfig']['gpus']`</nobr> | int     | Number of GPUs to be allocated                                                                                                                                            | `0` |
-| <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected                                                                                                                                               | `true` |
-| <nobr>`conf['jobType']`</nobr> | string  | Type of job                                                                                                                                                               | `"PYTHON"` |
-| <nobr>`conf['files']`</nobr> | string  | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...`                      | `null` |
+| Field | Type | Description | Default |
+| --- | --- | --- | --- |
+| <nobr>`conf['type']`</nobr> | string | Type of the job configuration | `"pythonJobConfiguration"` |
+| <nobr>`conf['appPath']`</nobr> | string | Project relative path to notebook (e.g., `Resources/foo.ipynb`) | `null` |
+| <nobr>`conf['defaultArgs']`</nobr> | string | Arguments to pass to the notebook.<br>Will be overridden if arguments are passed explicitly via `Job.run(args="...")`.<br>Must conform to Papermill format `-p arg1 val1` | `null` |
+| <nobr>`conf['environmentName']`</nobr> | string | Name of the project Python environment to use | `"pandas-training-pipeline"` |
+| <nobr>`conf['resourceConfig']['cores']`</nobr> | float | Number of CPU cores to be allocated | `1.0` |
+| <nobr>`conf['resourceConfig']['memory']`</nobr> | int | Number of MBs to be allocated | `2048` |
+| <nobr>`conf['resourceConfig']['gpus']`</nobr> | int | Number of GPUs to be allocated | `0` |
+| <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
+| <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
+| <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
 
 ## Accessing project data
 
