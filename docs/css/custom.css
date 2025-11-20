@@ -156,7 +156,8 @@
   --md-footer-bg-color--dark:        hsla(var(--md-hue), 0%, 8%, 1);
 }
 
-[data-md-color-scheme="slate"] p img {
+[data-md-color-scheme="slate"] p img,
+[data-md-color-scheme="slate"] figure img {
   background-color: white;
   padding: .4rem;
   border-radius: var(--border-radius-variable);
