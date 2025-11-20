@@ -170,6 +170,12 @@
 }
 
 /*******************************************************/
+/* Hide repo stats. */
+.md-source__fact--stars, .md-source__fact--forks {
+  display: none;
+}
+
+/*******************************************************/
 /* Fix spacing in navigation tab. */
 .md-nav__item--nested > .md-nav__link {
   margin-bottom: .4rem;

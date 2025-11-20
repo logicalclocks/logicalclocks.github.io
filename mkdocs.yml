@@ -5,6 +5,8 @@ site_url: "https://docs.hopsworks.ai/"
 
 # Repository
 edit_uri: "https://github.com/logicalclocks/logicalclocks.github.io"
+repo_url: "https://github.com/logicalclocks/hopsworks-api"
+repo_name: logicalclocks/hopsworks-api
 
 strict: false
 
