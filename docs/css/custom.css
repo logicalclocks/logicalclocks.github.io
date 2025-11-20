@@ -157,6 +157,18 @@
 }
 
 /*******************************************************/
+/* Fix spacing in navigation tab. */
+.md-nav__link {
+  margin-bottom: .4rem;
+}
+.md-nav__list .md-nav__list .md-nav__list .md-nav__item:first-child .md-nav__link {
+  margin-top: 0;
+}
+.md-nav__list .md-nav__list .md-nav__list .md-nav__item:last-child .md-nav__link {
+  margin-bottom: 0;
+}
+
+/*******************************************************/
 /* Custom styles for syntax highlighting in signatures. */
 
 /* Fancier color for operators such as * and |. */
