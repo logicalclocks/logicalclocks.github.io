@@ -251,77 +251,8 @@ nav:
           - Audit:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
-  - Python API:
-    - Login: api/docs/login.md
-    - Platform API:
-      - Alerts: api/docs/alerts.md
-      - Datasets: api/docs/datasets.md
-      - Environment: api/docs/environment.md
-      - Executions: api/docs/executions.md
-      - FlinkCluster: api/docs/flink_cluster.md
-      - GitProvider: api/docs/git_provider.md
-      - GitRemote: api/docs/git_remote.md
-      - GitRepo: api/docs/git_repo.md
-      - Jobs: api/docs/jobs.md
-      - KafkaSchema: api/docs/kafka_schema.md
-      - KafkaTopic: api/docs/kafka_topic.md
-      - OpenSearch: api/docs/opensearch.md
-      - Projects: api/docs/projects.md
-      - Secrets: api/docs/secrets.md
-      - Search: api/docs/search.md
-    - Feature Store API:
-      - Embedding:
-        - EmbeddingFeature: api/docs/embedding_feature_api.md
-        - EmbeddingIndex: api/docs/embedding_index_api.md
-        - SimilarityFunctionType: api/docs/similarity_function_type_api.md
-      - ExpectationSuite: api/docs/expectation_suite_api.md
-      - ExternalFeatureGroup: api/docs/external_feature_group_api.md
-      - Feature: api/docs/feature_api.md
-      - Feature Monitoring:
-        - Configuration: api/docs/feature_monitoring_config_api.md
-        - Result: api/docs/feature_monitoring_result_api.md
-        - Window: api/docs/feature_monitoring_window_config_api.md
-      - FeatureGroup: api/docs/feature_group_api.md
-      - FeatureStore: api/docs/feature_store_api.md
-      - FeatureView: api/docs/feature_view_api.md
-      - Provenance Links: api/docs/links.md
-      - Query: api/docs/query_api.md
-      - SpineGroup: api/docs/spine_group_api.md
-      - Statistics:
-        - Feature descriptive statistics: api/docs/feature_descriptive_statistics_api.md
-        - Split Statistics: api/docs/split_statistics_api.md
-        - Statistics: api/docs/statistics_api.md
-      - Storage Connector: api/docs/storage_connector_api.md
-      - TrainingDataset: api/docs/training_dataset_api.md
-      - Transformation Functions:
-        - HopsworksUDF: api/docs/hopsworks_udf.md
-        - Transformation Statistics:
-          - FeatureTransformationStatistics: api/docs/feature_transformation_statistics.md
-          - TransformationStatistics: api/docs/transformation_statistics.md
-        - TransformationFunction: api/docs/transformation_functions_api.md
-        - UDF: api/docs/udf.md
-      - ValidationReport: api/docs/validation_report_api.md
-      - Online Ingestion: api/docs/online_ingestion.md
-      - Online Ingestion Result: api/docs/online_ingestion_result.md
-    - Machine Learning API:
-      - Model Registry:
-        - Model: api/docs/model-registry/model_api.md
-        - Model Registry: api/docs/model-registry/model_registry_api.md
-        - Model Schema: api/docs/model-registry/model_schema_api.md
-      - Model Serving:
-        - Deployment: api/docs/model-serving/deployment_api.md
-        - Deployment state: api/docs/model-serving/predictor_state_api.md
-        - Deployment state condition: api/docs/model-serving/predictor_state_condition_api.md
-        - Inference Batcher: api/docs/model-serving/inference_batcher_api.md
-        - Inference Logger: api/docs/model-serving/inference_logger_api.md
-        - Model Serving: api/docs/model-serving/model_serving_api.md
-        - Predictor: api/docs/model-serving/predictor_api.md
-        - Resources: api/docs/model-serving/resources_api.md
-        - Transformer: api/docs/model-serving/transformer_api.md
-    # Added to allow navigation using the side drawer
-    - Feature Store JavaDoc: https://docs.hopsworks.ai/feature-store-javadoc/latest/
-    - Contributing: CONTRIBUTING.md
-  - Java API: api/javadoc
+  - Python API: '!import https://github.com/aversey/hopsworks-api?branch=multirepo-mkdocs'
+  - Java API: https://docs.hopsworks.ai/hopsworks-api/latest/javadoc/
   - Community ↗: https://community.hopsworks.ai/
 
 theme:
@@ -396,12 +327,7 @@ plugins:
       j2_variable_end_string: "}}}"
   - mike:
       canonical_version: latest
-  - multirepo:
-      nav_repos:
-        - name: api
-          # TODO: replace with the official docs repo when available
-          import_url: https://github.com/aversey/hopsworks-api?branch=multirepo-mkdocs
-          imports: [/docs/*]
+  - multirepo
   - mkdocstrings:
       custom_templates: docs/templates
       handlers:
