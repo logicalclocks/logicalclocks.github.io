@@ -43,7 +43,8 @@ Click `Save` to save the new configuration.
 
 Before starting the server there are three additional configurations that can be set next to the `Run Jupyter` button.
 
-The environment that Jupyter should run in needs to be configured. Select the environment that contains the necessary dependencies for your code.
+The environment that Jupyter should run in needs to be configured.
+Select the environment that contains the necessary dependencies for your code.
 
 <p align="center">
   <figure>
@@ -52,7 +53,8 @@ The environment that Jupyter should run in needs to be configured. Select the en
   </figure>
 </p>
 
-The runtime of the Jupyter instance can be configured, this is useful to ensure that idle instances will not be hanging around and keep allocating resources. If a limited runtime is not desirable, this can be disabled by setting `no limit`.
+The runtime of the Jupyter instance can be configured, this is useful to ensure that idle instances will not be hanging around and keep allocating resources.
+If a limited runtime is not desirable, this can be disabled by setting `no limit`.
 
 <p align="center">
   <figure>
@@ -61,7 +63,8 @@ The runtime of the Jupyter instance can be configured, this is useful to ensure 
   </figure>
 </p>
 
-The root path from which to start the Jupyter instance can be configured. By default it starts by setting the `/Jupyter` folder as the root.
+The root path from which to start the Jupyter instance can be configured.
+By default it starts by setting the `/Jupyter` folder as the root.
 
 <p align="center">
   <figure>
@@ -72,7 +75,8 @@ The root path from which to start the Jupyter instance can be configured. By def
 
 ## Step 4: (Kueue enabled) Select a Queue
 
-If the cluster is installed with Kueue enabled, you will need to select a queue in which the notebook should run. This can be done from `Advance configuration -> Scheduler section`.
+If the cluster is installed with Kueue enabled, you will need to select a queue in which the notebook should run.
+This can be done from `Advance configuration -> Scheduler section`.
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 
@@ -99,7 +103,9 @@ The project datasets are mounted under `/hopsfs`, so you can access `data.csv` f
 
 ### Relative paths
 
-The notebook's working directory is the folder it is located in. For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`. Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
+The notebook's working directory is the folder it is located in.
+For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`.
+Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
 
 ## Going Further
 

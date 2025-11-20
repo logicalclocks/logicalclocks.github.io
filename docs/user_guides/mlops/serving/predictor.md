@@ -9,9 +9,13 @@ description: Documentation on how to configure a predictor for a model deploymen
 In this guide, you will learn how to configure a predictor for a trained model.
 
 !!! warning
-    This guide assumes that a model has already been trained and saved into the Model Registry. To learn how to create a model in the Model Registry, see [Model Registry Guide](../registry/frameworks/tf.md)
+    This guide assumes that a model has already been trained and saved into the Model Registry.
+    To learn how to create a model in the Model Registry, see [Model Registry Guide](../registry/frameworks/tf.md)
 
-Predictors are the main component of deployments. They are responsible for running a model server that loads a trained model, handles inference requests and returns predictions. They can be configured to use different model servers, serving tools, log specific inference data or scale differently. In each predictor, you can configure the following components:
+Predictors are the main component of deployments.
+They are responsible for running a model server that loads a trained model, handles inference requests and returns predictions.
+They can be configured to use different model servers, serving tools, log specific inference data or scale differently.
+In each predictor, you can configure the following components:
 
 !!! info ""
     1. [Model server](#model-server)
@@ -38,11 +42,14 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
+Both options will open the deployment creation form.
 
 ### Step 2: Choose a backend
 
-A simplified creation form will appear, including the most common deployment fields from all available configurations. The first step is to choose a ==backend== for your model deployment. The backend will filter the models shown below according to the framework that the model was registered with in the model registry.
+A simplified creation form will appear, including the most common deployment fields from all available configurations.
+The first step is to choose a ==backend== for your model deployment.
+The backend will filter the models shown below according to the framework that the model was registered with in the model registry.
 
 For example if you registered the model as a TensorFlow model using `ModelRegistry.tensorflow.create_model(...)` you select `Tensorflow Serving` in the dropdown.
 
@@ -62,7 +69,8 @@ All models compatible with the selected backend will be listed in the model drop
   </figure>
 </p>
 
-Moreover, you can optionally select a predictor script (see [Step 3](#step-3-optional-select-a-predictor-script)), enable KServe (see [Step 4](#step-4-optional-enable-kserve)) or change other advanced configuration (see [Step 5](#step-5-optional-other-advanced-options)). Otherwise, click on `Create new deployment` to create the deployment for your model.
+Moreover, you can optionally select a predictor script (see [Step 3](#step-3-optional-select-a-predictor-script)), enable KServe (see [Step 4](#step-4-optional-enable-kserve)) or change other advanced configuration (see [Step 5](#step-5-optional-other-advanced-options)).
+Otherwise, click on `Create new deployment` to create the deployment for your model.
 
 ### Step 3 (Optional): Select a predictor script
 
@@ -77,7 +85,8 @@ For python models, if you want to use your own [predictor script](#step-2-option
 
 ### Step 4 (Optional): Change predictor environment
 
-If you are using a predictor script it is also required to configure the inference environment for the predictor. This environment needs to have all the necessary dependencies installed to run your predictor script.
+If you are using a predictor script it is also required to configure the inference environment for the predictor.
+This environment needs to have all the necessary dependencies installed to run your predictor script.
 
 By default, we provide a set of environments like `tensorflow-inference-pipeline`, `torch-inference-pipeline` and `pandas-inference-pipeline` that serves this purpose for common machine learning frameworks.
 
@@ -95,7 +104,10 @@ To create your own it is recommended to [clone](../../projects/python/python_env
 !!! note
     Only available for LLM deployments.
 
-You can select a configuration file to be added to the [artifact files](deployment.md#artifact-files). If a predictor script is provided, this configuration file will be available inside the model deployment at the local path stored in the `CONFIG_FILE_PATH` environment variable. If a predictor script is **not** provided, this configuration file will be directly passed to the vLLM server. You can find all configuration parameters supported by the vLLM server in the [vLLM documentation](https://docs.vllm.ai/en/v0.7.1/serving/openai_compatible_server.html).
+You can select a configuration file to be added to the [artifact files](deployment.md#artifact-files).
+If a predictor script is provided, this configuration file will be available inside the model deployment at the local path stored in the `CONFIG_FILE_PATH` environment variable.
+If a predictor script is **not** provided, this configuration file will be directly passed to the vLLM server.
+You can find all configuration parameters supported by the vLLM server in the [vLLM documentation](https://docs.vllm.ai/en/v0.7.1/serving/openai_compatible_server.html).
 
 <p align="center">
   <figure>
@@ -106,7 +118,8 @@ You can select a configuration file to be added to the [artifact files](deployme
 
 ### Step 6 (Optional): Enable KServe
 
-Other configuration such as the serving tool, is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
+Other configuration such as the serving tool, is part of the advanced options of a deployment.
+To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>
@@ -184,7 +197,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
             """ Asynchronously serve predictions using the trained model"""
             # Preform async operations that required
             # result = await some_async_preprocessing(inputs)
-            
+
             # Use the model to make predictions
             # return self.model.predict(result)
     ```
@@ -205,10 +218,10 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
         def __init__(self):
             """ Initialization code goes here"""
-  
+
             # (optional) if any, access the configuration file via os.environ["CONFIG_FILE_PATH"]
             config = ...
-          
+
             print("Starting vLLM backend...")
             engine_args = AsyncEngineArgs(
                 model=os.environ["MODEL_FILES_PATH"],
@@ -238,7 +251,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
         #    self, request: CompletionRequest
         #) -> Union[Completion, AsyncIterator[Completion]]:
         #    """Generate responses using the vLLM engine"""
-        #    
+        #
         #    generators = self.vllm_engine.generate(...)
         #
         #    # Completion: used for returning a single answer (batch)
@@ -293,7 +306,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ## Model Server
 
-Hopsworks Model Serving supports deploying models with a Flask server for python-based models, TensorFlow Serving for TensorFlow / Keras models and vLLM for Large Language Models (LLMs). Today, you can deploy PyTorch models as python-based models.
+Hopsworks Model Serving supports deploying models with a Flask server for python-based models, TensorFlow Serving for TensorFlow / Keras models and vLLM for Large Language Models (LLMs).
+Today, you can deploy PyTorch models as python-based models.
 
 ??? info "Show supported model servers"
 
@@ -306,7 +320,8 @@ Hopsworks Model Serving supports deploying models with a Flask server for python
 
 ## Serving tool
 
-In Hopsworks, model servers are deployed on Kubernetes. There are two options for deploying models on Kubernetes: using [KServe](https://kserve.github.io/website/latest/) inference services or Kubernetes built-in deployments. ==KServe is the recommended way to deploy models in Hopsworks==.
+In Hopsworks, model servers are deployed on Kubernetes.
+There are two options for deploying models on Kubernetes: using [KServe](https://kserve.github.io/website/latest/) inference services or Kubernetes built-in deployments. ==KServe is the recommended way to deploy models in Hopsworks==.
 
 The following is a comparative table showing the features supported by each of them.
 
@@ -329,7 +344,8 @@ The following is a comparative table showing the features supported by each of t
 Depending on the model server and serving platform used in the model deployment, you can (or need) to provide your own python script to load the model and make predictions.
 This script is referred to as **predictor script**, and is included in the [artifact files](../serving/deployment.md#artifact-files) of the model deployment.
 
-The predictor script needs to implement a given template depending on the model server of the model deployment. See the templates in [Step 2](#step-2-optional-implement-a-predictor-script).
+The predictor script needs to implement a given template depending on the model server of the model deployment.
+See the templates in [Step 2](#step-2-optional-implement-a-predictor-script).
 
 ??? info "Show supported user-provided predictors"
 
@@ -343,13 +359,17 @@ The predictor script needs to implement a given template depending on the model 
 
 ### Server configuration file
 
-Depending on the model server, a **server configuration file** can be selected to help detach configuration used within the model deployment from the model server or the implementation of the predictor and transformer scripts. In other words, by modifying the configuration file of an existing model deployment you can adjust its settings without making changes to the predictor or transformer scripts. Inside a model deployment, the local path to the configuration file is stored in the `CONFIG_FILE_PATH` environment variable (see [environment variables](#environment-variables)).
+Depending on the model server, a **server configuration file** can be selected to help detach configuration used within the model deployment from the model server or the implementation of the predictor and transformer scripts.
+In other words, by modifying the configuration file of an existing model deployment you can adjust its settings without making changes to the predictor or transformer scripts.
+Inside a model deployment, the local path to the configuration file is stored in the `CONFIG_FILE_PATH` environment variable (see [environment variables](#environment-variables)).
 
 !!! warning "Configuration file format"
     The configuration file can be of any format, except in vLLM deployments **without a predictor script** for which a YAML file is ==required==.
 
 !!! note "Passing arguments to vLLM via configuration file"
-    For vLLM deployments **without a predictor script**, the server configuration file is ==required== and it is used to configure the vLLM server. For example, you can use this configuration file to specify the chat template  or LoRA modules to be loaded by the vLLM server. See all available parameters in the [official documentation](https://docs.vllm.ai/en/v0.7.1/serving/openai_compatible_server.html#command-line-arguments-for-the-server).
+    For vLLM deployments **without a predictor script**, the server configuration file is ==required== and it is used to configure the vLLM server.
+    For example, you can use this configuration file to specify the chat template  or LoRA modules to be loaded by the vLLM server.
+    See all available parameters in the [official documentation](https://docs.vllm.ai/en/v0.7.1/serving/openai_compatible_server.html#command-line-arguments-for-the-server).
 
 ### Environment variables
 
@@ -369,7 +389,8 @@ A number of different environment variables is available in the predictor to eas
 
 ## Python environments
 
-Depending on the model server and serving tool used in the model deployment, you can select the Python environment where the predictor and transformer scripts will run. To create a new Python environment see [Python Environments](../../projects/python/python_env_overview.md).
+Depending on the model server and serving tool used in the model deployment, you can select the Python environment where the predictor and transformer scripts will run.
+To create a new Python environment see [Python Environments](../../projects/python/python_env_overview.md).
 
 ??? info "Show supported Python environments"
 
@@ -382,27 +403,34 @@ Depending on the model server and serving tool used in the model deployment, you
     |              | vLLM               | ✅        | `vllm-inference-pipeline` or `vllm-openai` | any `inference-pipeline` image |
 
 !!! note
-    The selected Python environment is used for both predictor and transformer. Support for selecting a different Python environment for the predictor and transformer is coming soon.
+    The selected Python environment is used for both predictor and transformer.
+    Support for selecting a different Python environment for the predictor and transformer is coming soon.
 
 ## Transformer
 
-Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model. To learn more about transformers, see the [Transformer Guide](transformer.md).
+Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
+To learn more about transformers, see the [Transformer Guide](transformer.md).
 
 !!! note
     Transformers are only supported in KServe deployments.
 
 ## Inference logger
 
-Inference loggers are deployment components that log inference requests into a Kafka topic for later analysis. To learn about the different logging modes, see the [Inference Logger Guide](inference-logger.md)
+Inference loggers are deployment components that log inference requests into a Kafka topic for later analysis.
+To learn about the different logging modes, see the [Inference Logger Guide](inference-logger.md)
 
 ## Inference batcher
 
-Inference batcher are deployment component that apply batching to the incoming inference requests for a better throughput-latency trade-off. To learn about the different configuration available for the inference batcher, see the [Inference Batcher Guide](inference-batcher.md).
+Inference batcher are deployment component that apply batching to the incoming inference requests for a better throughput-latency trade-off.
+To learn about the different configuration available for the inference batcher, see the [Inference Batcher Guide](inference-batcher.md).
 
 ## Resources
 
-Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica. To learn about the different combinations available, see the [Resources Guide](resources.md).
+Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica.
+To learn about the different combinations available, see the [Resources Guide](resources.md).
 
 ## API protocol
 
-Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments. In general, you use gRPC when you need lower latency inference requests. To learn more about the REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).
+Hopsworks supports both REST and gRPC as the API protocols to send inference requests to model deployments.
+In general, you use gRPC when you need lower latency inference requests.
+To learn more about the REST and gRPC API protocols for model deployments, see the [API Protocol Guide](api-protocol.md).

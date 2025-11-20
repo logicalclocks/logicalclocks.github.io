@@ -15,14 +15,16 @@ All members of a project in Hopsworks can launch the following types of applicat
 - Ray
 
 Launching a job of any type is very similar process, what mostly differs between job types is
-the various configuration parameters each job type comes with. Hopsworks support scheduling to run jobs on a regular basis,
-e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
+the various configuration parameters each job type comes with.
+Hopsworks support scheduling to run jobs on a regular basis,
+e.g backfilling a Feature Group by running your feature engineering pipeline nightly.
+Scheduling can be done both through the UI and the python API,
 checkout [our Scheduling guide](schedule_job.md).
 
 !!!warning "Enable Ray"
 
     Support for Ray needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
-    
+
     ```yaml
     global:
       ray:
@@ -55,11 +57,15 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job. Make sure `RAY` is chosen.
+By default, the dialog will create a Spark job.
+Make sure `RAY` is chosen.
 
 ### Step 4: Set the script
 
-Next step is to select the program to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. After that set the name for the job. By default, the job name is the same as the file name, but you can customize it here.
+Next step is to select the program to run.
+You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below.
+After that set the name for the job.
+By default, the job name is the same as the file name, but you can customize it here.
 
 <p align="center">
   <figure>
@@ -73,7 +79,8 @@ Next step is to select the program to run. You can either select `From project`,
 Resource allocation for the Driver and Workers can be configured.
 
 !!! notice "Using the resources in the Ray script"
-    The resource configurations describe the cluster that will be provisioned when launching the Ray job. User can still
+    The resource configurations describe the cluster that will be provisioned when launching the Ray job.
+    User can still
     provide extra configurations in the job script using `ScalingConfig`, i.e. `ScalingConfig(num_workers=4, trainer_resources={"CPU": 1}, use_gpu=True)`.
 
 - `Driver memory`: Memory in MBs to allocate for Driver
@@ -98,9 +105,13 @@ for Ray Job">
 
 Runtime environment and Additional files required for the Ray job can also be provided.
 
-- `Runtime Environment (Optional)`:  A [runtime environment](https://docs.ray.io/en/latest/ray-core/handling-dependencies.html#runtime-environments) describes the dependencies required for the Ray job including files, packages, environment variables, and more. This is useful when you need to install specific packages and set environment variables for this particular Ray job. It should be provided as a YAML file. You can select the file from the project or upload a new one.
+- `Runtime Environment (Optional)`:  A [runtime environment](https://docs.ray.io/en/latest/ray-core/handling-dependencies.html#runtime-environments) describes the dependencies required for the Ray job including files, packages, environment variables, and more.
+  This is useful when you need to install specific packages and set environment variables for this particular Ray job.
+  It should be provided as a YAML file.
+  You can select the file from the project or upload a new one.
 
-- `Additional files`: List of other files required for the Ray job. These files will be placed in `/srv/hops/ray/job`.
+- `Additional files`: List of other files required for the Ray job.
+  These files will be placed in `/srv/hops/ray/job`.
 
 <p align="center">
   <figure>
@@ -112,7 +123,8 @@ environment and additional files">
 
 ### Step 6: (Kueue enabled) Select a Queue
 
-If the cluster is installed with Kueue enabled, you will need to select a queue in which the job should run. This can be done from `Advance configuration -> Scheduler section`.
+If the cluster is installed with Kueue enabled, you will need to select a queue in which the job should run.
+This can be done from `Advance configuration -> Scheduler section`.
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 
@@ -129,8 +141,11 @@ Now click the `Run` button to start the execution of the job, and then click on 
 
 ### Step 8: Ray Dashboard
 
-When the Ray job is running, you can access the Ray dashboard to monitor the job. The Ray dashboard is accessible from the
-`Executions` page. Please note that the Ray dashboard is only available when the job execution is running. In the Ray Dashboard,
+When the Ray job is running, you can access the Ray dashboard to monitor the job.
+The Ray dashboard is accessible from the
+`Executions` page.
+Please note that the Ray dashboard is only available when the job execution is running.
+In the Ray Dashboard,
 you can monitor the resources used by the job, the number of workers, logs, and the tasks that are running.
 <p align="center">
   <figure>
@@ -154,7 +169,8 @@ Once the execution is finished, you can click on `Logs` to see the full logs for
 
 ### Step 1: Upload the Ray script
 
-This snippet assumes the Ray program is in the current working directory and named `ray_job.py`. If the file is already in the project, you can skip this step.
+This snippet assumes the Ray program is in the current working directory and named `ray_job.py`.
+If the file is already in the project, you can skip this step.
 
 It will upload the jar to the `Resources` dataset in your project.
 

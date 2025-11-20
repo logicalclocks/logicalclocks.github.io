@@ -22,16 +22,18 @@ In the guide below we assume **Prometheus A** is the service running in Hopswork
 
 #### Step 1
 
-**Prometheus B** needs to be able to connect to TCP port `9090` of **Prometheus A** to scrape metrics. If you have any firewall (or Security Group) in place, allow ingress for that port.
+**Prometheus B** needs to be able to connect to TCP port `9090` of **Prometheus A** to scrape metrics.
+If you have any firewall (or Security Group) in place, allow ingress for that port.
 
 #### Step 2
 
-The next step is to expose **Prometheus A** running inside Hopsworks Kubernetes cluster. If **Prometheus B** has direct access to **Prometheus A** then you can skip this step.
+The next step is to expose **Prometheus A** running inside Hopsworks Kubernetes cluster.
+If **Prometheus B** has direct access to **Prometheus A** then you can skip this step.
 
 We will create a Kubernetes *Service* of type *LoadBalancer* to expose port `9090`
 
 !!!Warning
-    If you need to apply custom **annotations**, then modify the Manifest below
+    If you need to apply custom **annotations**, then modify the Manifest below.
     The example below assumes Hopsworks is **installed** at Namespace *hopsworks*
 
 ```bash
@@ -55,7 +57,7 @@ spec:
 EOF
 ```
 
-Then we need to find the External IP address of the newly created Service
+Then we need to find the External IP address of the newly created Service:
 
 ```bash
 export NAMESPACE=hopsworks
@@ -63,17 +65,17 @@ kubectl -n $NAMESPACE get svc prometheus-external -ojsonpath='{.status.loadBalan
 ```
 
 !!!Warning
-    It will take a few seconds until an IP address is assigned to the Service
+    It will take a few seconds until an IP address is assigned to the Service.
 
-We will use this IP address in Step 2
+We will use this IP address in Step 2.
 
 #### Step 2
 
-Edit the configuration file of **Prometheus B** server and append the following Job under `scrape_configs`
+Edit the configuration file of **Prometheus B** server and append the following Job under `scrape_configs`:
 
 !!! note
     Replace IP_ADDRESS with the IP address from Step 1 or the IP address of Prometheus service if it is directly accessible.
-    The snippet below assumes Hopsworks services runs at Namespace **hopsworks**
+    The snippet below assumes Hopsworks services runs at Namespace **hopsworks**.
 
 ```yaml
 - job_name: 'federate'
@@ -91,8 +93,8 @@ Edit the configuration file of **Prometheus B** server and append the following 
       - 'IP_ADDRESS:9090'
 ```
 
-The configuration above will scrape for services metrics under the *hopsworks* Namespace. If you want to additionally
-scrape *user application* metrics then append `'{job="pushgateway"}'` to the matchers, for example:
+The configuration above will scrape for services metrics under the *hopsworks* Namespace.
+If you want to additionally scrape *user application* metrics then append `'{job="pushgateway"}'` to the matchers, for example:
 
 ```yaml
   params:
@@ -102,17 +104,19 @@ scrape *user application* metrics then append `'{job="pushgateway"}'` to the mat
 ```
 
 Depending on the Prometheus setup you might need to restart **Prometheus B** service to pick up the new configuration.
-For more details on federation visit Prometheus [documentation](https://prometheus.io/docs/prometheus/latest/federation/#cross-service-federation)
+For more details on federation visit Prometheus [documentation](https://prometheus.io/docs/prometheus/latest/federation/#cross-service-federation).
 
 ### Custom service
 
-Prometheus can push metrics to another custom resource via HTTP. The custom service is responsible for handling the received metrics.
+Prometheus can push metrics to another custom resource via HTTP.
+The custom service is responsible for handling the received metrics.
 To push metrics with this method we use the `remote_write` configuration.
 
-We will only give a sample configuration as `remote_write` is extensively documented in Prometheus [documentation](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write)
+We will only give a sample configuration as `remote_write` is extensively documented in Prometheus [documentation](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write).
 In the example below we push metrics to a custom service listening on port 9096 which transforms the metrics and forwards them.
 
-In order to configure Prometheus to push metrics to a remote HTTP service we need to customize our Helm chart values file with the following snippet after changing the *url* accordingly. You can also tweak other configuration parameters to your needs.
+In order to configure Prometheus to push metrics to a remote HTTP service we need to customize our Helm chart values file with the following snippet after changing the *url* accordingly.
+You can also tweak other configuration parameters to your needs.
 
 ```yaml
 prometheus:

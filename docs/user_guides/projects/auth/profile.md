@@ -2,7 +2,8 @@
 
 ## Introduction
 
-A profile is required to access Hopsworks. A profile is created when a user registers and can be updated via Account settings.
+A profile is required to access Hopsworks.
+A profile is created when a user registers and can be updated via Account settings.
 
 ## Prerequisites
 
@@ -13,9 +14,13 @@ to authenticate to Hopsworks.
 
 ### Step 1: Go to your Account settings
 
-After you have logged in, in the upper right-hand corner of the screen, you will see your name. Click on your name,
-then click on the menu item **Account settings**. The account settings page will open with profile tab selected. In this tab
-you can change your first and last name. You cannot change your email address and will need to create a new
+After you have logged in, in the upper right-hand corner of the screen, you will see your name.
+Click on your name,
+then click on the menu item **Account settings**.
+The account settings page will open with profile tab selected.
+In this tab
+you can change your first and last name.
+You cannot change your email address and will need to create a new
 account if you wish to change your email address.
 
   <figure>
@@ -33,7 +38,8 @@ To update your credential go to the **Authentication** tab as shown in the image
 
 ### Step 3: Enable/Reset Two-factor Authentication
 
-You can also change your two-factor setting in the **Authentication** tab. Two-factor authentication
+You can also change your two-factor setting in the **Authentication** tab.
+Two-factor authentication
 is only available if it is enabled from the cluster administration page.
 
   <figure>
@@ -41,7 +47,8 @@ is only available if it is enabled from the cluster administration page.
     <figcaption>Enable Two-factor Authentication</figcaption>
   </figure>
 
-After enabling or resetting two-factor you will be presented with a QR Code. You will then need to scan the QR code
+After enabling or resetting two-factor you will be presented with a QR Code.
+You will then need to scan the QR code
 to add it on your phone's authenticator application
 (example. [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en&gl=US)).
 

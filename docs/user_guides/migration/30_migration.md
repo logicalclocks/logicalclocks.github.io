@@ -4,7 +4,8 @@
 
 ### Feature View
 
-Feature View is a new core abstraction introduced in version 3.0. The Feature View extends and replaces the old Training Dataset. Feature views are now the gateway for users to access feature data from the feature store.
+Feature View is a new core abstraction introduced in version 3.0. The Feature View extends and replaces the old Training Dataset.
+Feature views are now the gateway for users to access feature data from the feature store.
 
 === "Pre-3.0"
     ```python
@@ -42,7 +43,11 @@ A feature view uses the Query abstraction to define the schema of the view, and 
 
 #### Required changes
 
-After the upgrade all existing training datasets will be located under a Feature View with the same name. The versions of the training datasets stay untouched. You can use `feature_view.get_training_data` to get back existing training datasets. Except that training datasets created directly from Spark Dataframe are not migrated to feature view. In this case, you can use the old APIs for retrieving these training datasets, so that your existing training pipelines are still functional.
+After the upgrade all existing training datasets will be located under a Feature View with the same name.
+The versions of the training datasets stay untouched.
+You can use `feature_view.get_training_data` to get back existing training datasets.
+Except that training datasets created directly from Spark Dataframe are not migrated to feature view.
+In this case, you can use the old APIs for retrieving these training datasets, so that your existing training pipelines are still functional.
 
 However, if you have any pipelines, that automatically create training datasets, you will have to adjust these to the above workflow. `fs.create_training_dataset()` has been removed.
 
@@ -50,7 +55,8 @@ To learn more about the new Feature View, have a look at the dedicated [concept]
 
 ### Deequ-based Data Validation in favour of Great Expectations
 
-Unfortunately, the [Deequ data validation library](https://github.com/awslabs/deequ) is no longer actively maintained which makes it impossible for us to maintain the functionality within Hopsworks. Therefore, we are dropping the entire support for Deequ as validation engine in Hopsworks 3.0 in favour of [Great Expectations](https://greatexpectations.io/) (GE).
+Unfortunately, the [Deequ data validation library](https://github.com/awslabs/deequ) is no longer actively maintained which makes it impossible for us to maintain the functionality within Hopsworks.
+Therefore, we are dropping the entire support for Deequ as validation engine in Hopsworks 3.0 in favour of [Great Expectations](https://greatexpectations.io/) (GE).
 
 This has the following advantages:
 
@@ -60,19 +66,26 @@ This has the following advantages:
 
 #### Required changes
 
-All APIs regarding data validation have been redesigned to accommodate the functionality of GE. This means that you will have to redesign your previous expectations in the form of GE expectation suites that you can attach to Feature Groups. Please refer to the [data validation guide](../fs/feature_group/data_validation.md) for a full specification of the functionality.
+All APIs regarding data validation have been redesigned to accommodate the functionality of GE.
+This means that you will have to redesign your previous expectations in the form of GE expectation suites that you can attach to Feature Groups.
+Please refer to the [data validation guide](../fs/feature_group/data_validation.md) for a full specification of the functionality.
 
 #### Limitations
 
-GE is a Python library and therefore we can support synchronous data validation only in Python and PySpark kernels and not on Java/Scala Spark kernels. However, you have the possibility to launch a job asynchronously after writing with Java/Scala in order to perform data validation.
+GE is a Python library and therefore we can support synchronous data validation only in Python and PySpark kernels and not on Java/Scala Spark kernels.
+However, you have the possibility to launch a job asynchronously after writing with Java/Scala in order to perform data validation.
 
 ## Deprecated Features
 
-These changes or new features introduce changes in APIs which might break your pipelines in the future. We try to keep old APIs around until the next major release in order to give you some time to adapt your pipelines, however, this is not always possible, and these methods might be removed in any upcoming release, so we recommend addressing these changes as soon as possible. For this reason, we list some of the changes as breaking change, even though they are still backwards compatible.
+These changes or new features introduce changes in APIs which might break your pipelines in the future.
+We try to keep old APIs around until the next major release in order to give you some time to adapt your pipelines, however, this is not always possible, and these methods might be removed in any upcoming release, so we recommend addressing these changes as soon as possible.
+For this reason, we list some of the changes as breaking change, even though they are still backwards compatible.
 
 ### On-Demand Feature Groups are now called External Feature Groups
 
-Most data engineers but also many data scientists have a background where they at least partially where exposed to database terminology. Therefore, we decided to rename On-Demand Feature Groups to simply External Feature Groups. We think this makes the abstraction clearer, as practitioners are usually familiar with the concept of External Tables in a database.
+Most data engineers but also many data scientists have a background where they at least partially where exposed to database terminology.
+Therefore, we decided to rename On-Demand Feature Groups to simply External Feature Groups.
+We think this makes the abstraction clearer, as practitioners are usually familiar with the concept of External Tables in a database.
 
 This lead to a change in HSFS APIs:
 
@@ -96,31 +109,38 @@ Note, pre-3.0 methods are marked as deprecated and still available in the librar
 
 Hopsworks provides [three write APIs](../../concepts/fs/feature_group/write_apis.md) to the Feature Store to accommodate the different use cases:
 
-1. **Batch Write:** This was the default mode prior to version 3.0. It involves writing a DataFrame in batch either to the offline feature store, or the online one, or both. This mode is still the default when you are writing Spark DataFrames on Hopsworks.
-2. **External connectors:** This mode allows users to mount external tables existing in DataWarehouses like Snowflake, Redshift and BigQuery as feature groups in Hopsworks. In this case the data is not moved and remains on the external data storage.
-3. **Stream Write:** This mode was introduced in version 2.0 and expanded in version 3.0. This mode has a "Kappa-style" architecture, where the DataFrame gets streamed into a Kafka topic and, as explained later in the post, the data is picked up from Kafka by Hopsworks and written into the desired stores. In Hopsworks 3.0 this is the default mode for Python clients.
+01. **Batch Write:** This was the default mode prior to version 3.0. It involves writing a DataFrame in batch either to the offline feature store, or the online one, or both.
+    This mode is still the default when you are writing Spark DataFrames on Hopsworks.
+02. **External connectors:** This mode allows users to mount external tables existing in DataWarehouses like Snowflake, Redshift and BigQuery as feature groups in Hopsworks.
+    In this case the data is not moved and remains on the external data storage.
+03. **Stream Write:** This mode was introduced in version 2.0 and expanded in version 3.0. This mode has a "Kappa-style" architecture, where the DataFrame gets streamed into a Kafka topic and, as explained later in the post, the data is picked up from Kafka by Hopsworks and written into the desired stores.
+    In Hopsworks 3.0 this is the default mode for Python clients.
 
 With 3.0 the stream API becomes the default for Feature Groups created from pure Python environments with Pandas Dataframes.
 
 This has the following advantages:
 
-1. **Reduced write amplification:** Instead of uploading data to Hopsworks and subsequently starting a Spark job to upsert the data on offline storage and writing it to Kafka for the online storage upsert, the data is directly written to Kafka and from there it’s being upserted directly to offline and/or online.
+01. **Reduced write amplification:** Instead of uploading data to Hopsworks and subsequently starting a Spark job to upsert the data on offline storage and writing it to Kafka for the online storage upsert, the data is directly written to Kafka and from there it’s being upserted directly to offline and/or online.
 
-2. **Fresher features:** Since new data gets written to Kafka directly without prior upload, the data ends up in the online feature store with subsecond latency, which is a massive improvement given it is written from Python without any Streaming framework.
+02. **Fresher features:** Since new data gets written to Kafka directly without prior upload, the data ends up in the online feature store with subsecond latency, which is a massive improvement given it is written from Python without any Streaming framework.
 
-3. **Batching of offline upserts:** You can control now yourself how often the Spark application that performs the upsert on the offline feature store is running. Either you run it synchronously with every new Dataframe ingestion, or you batch multiple Dataframes by launching the job less regularly.
+03. **Batching of offline upserts:** You can control now yourself how often the Spark application that performs the upsert on the offline feature store is running.
+    Either you run it synchronously with every new Dataframe ingestion, or you batch multiple Dataframes by launching the job less regularly.
 
 #### Required changes
 
-Your existing feature groups will not be affected by this change, that means all existing feature groups will continue to use the old upload path for ingestion. However, we strongly recommend creating new versions of your existing feature groups that use ingest to using Python, in order to leverage the above advantages.
+Your existing feature groups will not be affected by this change, that means all existing feature groups will continue to use the old upload path for ingestion.
+However, we strongly recommend creating new versions of your existing feature groups that use ingest to using Python, in order to leverage the above advantages.
 
 ### Built-in transformation functions don’t have to be registered explicitly for every project
 
-In Hopsworks 2.5 users had to register the built-in transformation functions (min-max scaler, standard scaler, label encoder and robust scaler) explicitly for every project by calling `fs.register_builtin_transformation_functions()`. This is no longer necessary, as all new projects will have the functions registered by default.
+In Hopsworks 2.5 users had to register the built-in transformation functions (min-max scaler, standard scaler, label encoder and robust scaler) explicitly for every project by calling `fs.register_builtin_transformation_functions()`.
+This is no longer necessary, as all new projects will have the functions registered by default.
 
 ### Hive installation extra deprecated in favour of Python extra
 
-In the past when using HSFS in pure Python environments without PySpark, users had to install the hive extra when installing the PyPi package. This extra got deprecated and users now have to install an extra called python to reflect the environment:
+In the past when using HSFS in pure Python environments without PySpark, users had to install the hive extra when installing the PyPi package.
+This extra got deprecated and users now have to install an extra called python to reflect the environment:
 
 === "Pre-3.0"
     ```bash
@@ -134,9 +154,11 @@ In the past when using HSFS in pure Python environments without PySpark, users h
 
 ### More restrictive feature types
 
-With Hopsworks 3.0 we made feature types more strict and therefore made ingestion pipelines more robust. Both Spark and Pandas are quite forgiving when it comes to types, which often led to schema incompatibilities when ingesting to a feature group.
+With Hopsworks 3.0 we made feature types more strict and therefore made ingestion pipelines more robust.
+Both Spark and Pandas are quite forgiving when it comes to types, which often led to schema incompatibilities when ingesting to a feature group.
 
-In this release we narrowed down the allowed Python types, and defined a clear mapping to Spark and Online Feature Store types. Please refer to the [feature type guide](../fs/feature_group/data_types.md) in the documentation for the exact mapping.
+In this release we narrowed down the allowed Python types, and defined a clear mapping to Spark and Online Feature Store types.
+Please refer to the [feature type guide](../fs/feature_group/data_types.md) in the documentation for the exact mapping.
 
 #### Required Changes
 
@@ -144,7 +166,8 @@ The most common Python/Pandas types are still supported, we recommend you double
 
 ### Deprecation of .save methods in favour of .insert together with .get_or_create_
 
-The `.save()` methods to create feature store entities has been deprecated in favour of `.insert()`. That means if there is no metadata for an entity in the feature store, a call to `.insert()` will create it.
+The `.save()` methods to create feature store entities has been deprecated in favour of `.insert()`.
+That means if there is no metadata for an entity in the feature store, a call to `.insert()` will create it.
 
 Together with the new `.get_or_create_ APIs` this will avoid that users have to change their code between creating entities and deploying the same code into production.
 
@@ -166,9 +189,11 @@ Together with the new `.get_or_create_ APIs` this will avoid that users have to 
 
 ### hops python library superseded by Hopsworks library
 
-The [hops](https://pypi.org/project/hops/) python library is now deprecated and is superseded by the [hopsworks](https://pypi.org/project/hopsworks/) python library. `hopsworks` is essentially a reimplementation of `hops`, but with an object-oriented API, similar in style with [hsfs](https://pypi.org/project/hsfs/). For guides on how to use the API follow the [Projects guides](../../user_guides/projects/index.md).
+The [hops](https://pypi.org/project/hops/) python library is now deprecated and is superseded by the [hopsworks](https://pypi.org/project/hopsworks/) python library. `hopsworks` is essentially a reimplementation of `hops`, but with an object-oriented API, similar in style with [hsfs](https://pypi.org/project/hsfs/).
+For guides on how to use the API follow the [Projects guides](../../user_guides/projects/index.md).
 
-Furthermore, the functionality provided by the `model` and `serving` module in `hops`, is now ported to the [hsml](https://pypi.org/project/hsml/) python library. To create models and serving follow the [MLOps guides](../../user_guides/mlops/index.md).
+Furthermore, the functionality provided by the `model` and `serving` module in `hops`, is now ported to the [hsml](https://pypi.org/project/hsml/) python library.
+To create models and serving follow the [MLOps guides](../../user_guides/mlops/index.md).
 
 ## New Feature Highlights
 
@@ -176,13 +201,16 @@ This list is meant to serve as a starting point to explore the new features of t
 
 ### Added new Data Sources: GCS, BigQuery and Kafka
 
-With the added support for Google Cloud, we added also two new [data sources](../fs/data_source/index.md): [Google Cloud Storage](../fs/data_source/creation/gcs.md) and [Google BigQuery](../fs/data_source/creation/bigquery.md). Users can use these connectors to create external feature groups or write out training data.
+With the added support for Google Cloud, we added also two new [data sources](../fs/data_source/index.md): [Google Cloud Storage](../fs/data_source/creation/gcs.md) and [Google BigQuery](../fs/data_source/creation/bigquery.md).
+Users can use these connectors to create external feature groups or write out training data.
 
 Additionally, to make it easier for users to get started with Spark Streaming applications, we added a [Kafka connector](../fs/data_source/creation/kafka.md), which let’s you easily read a Kafka topic into a Spark Streaming Dataframe.
 
 ### Optimized Default Hudi Options
 
-By default, Hudi tends to over-partition input, and therefore the layout of Feature Groups. The default parallelism is 200, to ensure each Spark partition stays within the 2GB limit for inputs up to 500GB. The new default is the following for all insert/upsert operations:
+By default, Hudi tends to over-partition input, and therefore the layout of Feature Groups.
+The default parallelism is 200, to ensure each Spark partition stays within the 2GB limit for inputs up to 500GB.
+The new default is the following for all insert/upsert operations:
 
 ```python
 extra_write_options = {
@@ -192,7 +220,8 @@ extra_write_options = {
 }
 ```
 
-In most of the cases, you will not have to change this default. For very large inputs you should bump this up accordingly, by passing it to the `write_options` argument of the Feature Group `.insert()` method:
+In most of the cases, you will not have to change this default.
+For very large inputs you should bump this up accordingly, by passing it to the `write_options` argument of the Feature Group `.insert()` method:
 
 ```python
 fg.insert(df, write_options=extra_write_options)
@@ -225,8 +254,10 @@ feature_view.get_feature_vectors(
 )
 ```
 
-This is useful, if some of the features values are only known at prediction time and cannot be computed and cached in the online feature store, you can provide those values as `passed_features` option. The `get_feature_vector` method is going to use the passed values to construct the final feature vector to submit to the model, it will also apply any transformations to the passed features attached to the respective features.
+This is useful, if some of the features values are only known at prediction time and cannot be computed and cached in the online feature store, you can provide those values as `passed_features` option.
+The `get_feature_vector` method is going to use the passed values to construct the final feature vector to submit to the model, it will also apply any transformations to the passed features attached to the respective features.
 
 ### Reading Training Data directly from HopsFS in Python environments
 
-In Hopsworks 3.0 we added support for [reading training data](../fs/feature_view/training-data.md#read-training-data) from Hopsworks directly into external Python environments. Previously, users had to write the training data to external storage like S3 in order to access it from external environment.
+In Hopsworks 3.0 we added support for [reading training data](../fs/feature_view/training-data.md#read-training-data) from Hopsworks directly into external Python environments.
+Previously, users had to write the training data to external storage like S3 in order to access it from external environment.

@@ -10,7 +10,8 @@ An account on a Hopsworks cluster.
 
 ### Step 1: Request password reset
 
-If you forget your password start by clicking on **Forgot password** on the login page. Enter your email and click on the
+If you forget your password start by clicking on **Forgot password** on the login page.
+Enter your email and click on the
 **Send reset link** button.
   <figure>
     <img width="400px" src="../../../../assets/images/auth/resetPassword.png" alt="Recover password">

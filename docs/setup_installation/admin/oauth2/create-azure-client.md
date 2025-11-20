@@ -11,9 +11,13 @@ Azure account.
 
 ### Step 1: Register Hopsworks as an application in your identity provider
 
-To use OAuth2 in Hopsworks you first need to create and configure an OAuth client in your identity provider. We will take the example of Azure AD for the remaining of this documentation, but equivalent steps can be taken on other identity providers.
+To use OAuth2 in Hopsworks you first need to create and configure an OAuth client in your identity provider.
+We will take the example of Azure AD for the remaining of this documentation, but equivalent steps can be taken on other identity providers.
 
-Navigate to the [Microsoft Azure Portal](https://portal.azure.com) and authenticate. Navigate to [Azure Active Directory](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview). Click on [App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps). Click on *New Registration*.
+Navigate to the [Microsoft Azure Portal](https://portal.azure.com) and authenticate.
+Navigate to [Azure Active Directory](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview).
+Click on [App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps).
+Click on *New Registration*.
 
 <p align="center">
   <figure>
@@ -22,7 +26,9 @@ Navigate to the [Microsoft Azure Portal](https://portal.azure.com) and authentic
   </figure>
 </p>
 
-Enter a name for the client such as *hopsworks_oauth_client*. Verify the Supported account type is set to *Accounts in this organizational directory only*. And Click Register.
+Enter a name for the client such as *hopsworks_oauth_client*.
+Verify the Supported account type is set to *Accounts in this organizational directory only*.
+Click Register.
 
 <p align="center">
   <figure>
@@ -33,8 +39,8 @@ Enter a name for the client such as *hopsworks_oauth_client*. Verify the Support
 
 ### Step 2: Get the necessary fields for client registration
 
-In the Overview section, copy the *Application (client) ID field*. We will use it in
-[Identity Provider registration](../create-client) under the name *Client id*.
+In the Overview section, copy the *Application (client) ID field*.
+We will use it in [Identity Provider registration](../create-client) under the name *Client id*.
 
 <p align="center">
   <figure>
@@ -54,7 +60,8 @@ We will use it in [Identity Provider registration](../create-client) under the n
 </p>
 
 !!! note
-    If you have multiple tenants in your Azure Active Directory, the `OpenID Connect metadata document` endpoint might use `organizations`  instead of a specific tenant ID. In such cases, replace `organizations`  with your actual tenant ID to target a specific directory.
+    If you have multiple tenants in your Azure Active Directory, the `OpenID Connect metadata document` endpoint might use `organizations`  instead of a specific tenant ID.
+    In such cases, replace `organizations`  with your actual tenant ID to target a specific directory.
 
     example:
 
@@ -71,7 +78,9 @@ Click on *Certificates & secrets*, then Click on *New client secret*.
   </figure>
 </p>
 
-Add a *description* of the secret. Select an expiration period. And, Click *Add*.
+Add a *description* of the secret.
+Select an expiration period.
+Click *Add*.
 
 <p align="center">
   <figure>
@@ -80,8 +89,8 @@ Add a *description* of the secret. Select an expiration period. And, Click *Add*
   </figure>
 </p>
 
-Copy the secret. This will be used in [Identity Provider registration](../create-client) under the name
-*Client Secret*.
+Copy the secret.
+This will be used in [Identity Provider registration](../create-client) under the name *Client Secret*.
 
 <p align="center">
   <figure>
@@ -90,7 +99,8 @@ Copy the secret. This will be used in [Identity Provider registration](../create
   </figure>
 </p>
 
-Click on *Authentication*. Then click on *Add a platform*
+Click on *Authentication*.
+Then click on *Add a platform*.
 
 <p align="center">
   <figure>
@@ -108,7 +118,8 @@ In *Configure platforms* click on *Web*.
   </figure>
 </p>
 
-Enter the *Redirect URI* and click on *Configure*. The redirect URI is *HOPSWORKS-URI/callback* with *HOPSWORKS-URI* the URI of your Hopsworks cluster.
+Enter the *Redirect URI* and click on *Configure*.
+The redirect URI is *HOPSWORKS-URI/callback* with *HOPSWORKS-URI* the URI of your Hopsworks cluster.
 
 <p align="center">
   <figure>

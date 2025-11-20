@@ -2,7 +2,8 @@
 
 ### Introduction
 
-Each of the python environments in a project can be exported to an `environment.yml` file. It can be useful to export it to keep a snapshot of all the installed libraries and their versions.
+Each of the python environments in a project can be exported to an `environment.yml` file.
+It can be useful to export it to keep a snapshot of all the installed libraries and their versions.
 
 In this guide, you will learn how to export a python environment.
 
@@ -12,7 +13,8 @@ Under the `Project settings` section you can find the `Python environment` setti
 
 ## Step 2: Select a CUSTOM environment
 
-Select the environment that you have previously cloned and want to export. Only a `CUSTOM` environment can be exported.
+Select the environment that you have previously cloned and want to export.
+Only a `CUSTOM` environment can be exported.
 
 ## Step 3: Click Export env
 

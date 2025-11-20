@@ -2,7 +2,8 @@
 
 ## Introduction
 
-Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases. Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
+Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases.
+Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
 
 In this guide, you will learn how to install Python packages using these different options.
 
@@ -75,7 +76,8 @@ For example to install matplotlib 3.7.2, the following are correct inputs:
 In the case of a private git repository, also select whether it is a GitHub or GitLab repository and the preconfigured access token for the repository.
 
 !!! notice "Keep your secrets safe"
-    If you are installing from a git repository which is not GitHub or GitLab simply supply the access token in the URL. Keep in mind that in this case the access token may be visible in logs for other users in the same project to see.
+    If you are installing from a git repository which is not GitHub or GitLab simply supply the access token in the URL.
+    Keep in mind that in this case the access token may be visible in logs for other users in the same project to see.
 
 <p align="center">
   <figure>

@@ -21,11 +21,14 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
+Both options will open the deployment creation form.
 
 ### Step 2: Go to advanced options
 
-A simplified creation form will appear including the most common deployment fields from all available configurations. Inference logging is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
+A simplified creation form will appear including the most common deployment fields from all available configurations.
+Inference logging is part of the advanced options of a deployment.
+To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>
@@ -36,7 +39,8 @@ A simplified creation form will appear including the most common deployment fiel
 
 ### Step 3: Configure inference logging
 
-To enable inference logging, choose `CREATE` as Kafka topic name to create a new topic, or select an existing topic. If you prefer, you can disable inference logging by selecting `NONE`.
+To enable inference logging, choose `CREATE` as Kafka topic name to create a new topic, or select an existing topic.
+If you prefer, you can disable inference logging by selecting `NONE`.
 
 If you decide to create a new topic, select the number of partitions and number of replicas for your topic, or use the default values.
 
@@ -119,7 +123,9 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ## Topic schema
 
-The schema of Kafka events varies depending on the serving tool. In KServe deployments, model inputs and predictions are logged in separate events, but sharing the same `requestId` field. In non-KServe deployments, the same event contains both the model input and prediction related to the same inference request.
+The schema of Kafka events varies depending on the serving tool.
+In KServe deployments, model inputs and predictions are logged in separate events, but sharing the same `requestId` field.
+In non-KServe deployments, the same event contains both the model input and prediction related to the same inference request.
 
 ??? example "Show kafka topic schemas"
 

@@ -2,7 +2,8 @@
 
 ### Introduction
 
-Hopsworks postulates that building ML systems following the FTI pipeline architecture is best practice. This architecture consists of three independently developed and operated ML pipelines:
+Hopsworks postulates that building ML systems following the FTI pipeline architecture is best practice.
+This architecture consists of three independently developed and operated ML pipelines:
 
 - Feature Pipeline: takes as input raw data that it transforms into features (and labels)
 - Training Pipeline: takes as input features (and labels) and outputs a trained model
@@ -43,9 +44,9 @@ The `MODEL TRAINING` environments can be used in [Jupyter notebooks](../jupyter/
 - `tensorflow-training-pipeline` to train TensorFlow models
 - `torch-training-pipeline` to train PyTorch models
 - `pandas-training-pipeline` to train XGBoost, Catboost and Sklearn models
-- `ray_training_pipeline` a general purpose environment for distributed training using Ray framework to train
-  XGBoost and Sklearn models. Should be used in [Ray job](../jobs/ray_job.md). It can be customized to install
-  additional dependencies of your choice.
+- `ray_training_pipeline` a general purpose environment for distributed training using Ray framework to train XGBoost and Sklearn models.
+  Should be used in [Ray job](../jobs/ray_job.md).
+  It can be customized to install additional dependencies of your choice.
 - `ray_torch_training_pipeline` for distributed training of PyTorch models using Ray framework in a [Ray job](../jobs/ray_job.md)
 - `ray_tensorflow_training_pipeline` for distributed training of TensorFlow models using Ray framework in a [Ray job](../jobs/ray_job.md)
 
@@ -61,4 +62,5 @@ The `MODEL INFERENCE` environments can be used in a deployment using a custom pr
 
 ## Next steps
 
-In this guide you learned how to find the bundled python environments and where they can be used. Now you can test out the environment in a [Jupyter notebook](../jupyter/python_notebook.md).
+In this guide you learned how to find the bundled python environments and where they can be used.
+Now you can test out the environment in a [Jupyter notebook](../jupyter/python_notebook.md).

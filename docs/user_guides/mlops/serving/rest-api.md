@@ -8,9 +8,10 @@ This document explains how to interact with a model deployment via REST API.
 
 ## Base URL
 
-Deployed models are accessible through the Istio ingress gateway. The URL to interact with a model deployment is provided on the model deployment page in the Hopsworks UI.
+Deployed models are accessible through the Istio ingress gateway.
+The URL to interact with a model deployment is provided on the model deployment page in the Hopsworks UI.
 
-The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `RESOURCE_PATH` depends on the [model server](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/#model-server) (e.g. vLLM, TensorFlow Serving, SKLearn ModelServer).
+The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `RESOURCE_PATH` depends on the [model server](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/#model-server) (e.g., vLLM, TensorFlow Serving, SKLearn ModelServer).
 
 <p align="center">
   <figure>
@@ -21,7 +22,8 @@ The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `R
 
 ## Authentication
 
-All requests must include an API Key for authentication. You can create an API by following this [guide](../../projects/api_key/create_api_key.md).
+All requests must include an API Key for authentication.
+You can create an API by following this [guide](../../projects/api_key/create_api_key.md).
 
 Include the key in the Authorization header:
 
@@ -41,7 +43,10 @@ Authorization: ApiKey <API_KEY_VALUE>
 
 The request format depends on the model sever being used.
 
-For predictive inference (i.e. for Tensorflow or SkLearn or Python Serving). The request must be sent as a JSON object containing an `inputs` or `instances` field. You can find more information on the request format [here](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#request-format). An example for this is given below.
+For predictive inference (i.e., for Tensorflow or SkLearn or Python Serving).
+The request must be sent as a JSON object containing an `inputs` or `instances` field.
+You can find more information on the request format [here](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#request-format).
+An example for this is given below.
 
 === "Python"
 
@@ -94,4 +99,6 @@ For generative inference (i.e vLLM) the response follows the [OpenAI specificati
 
 ## Response
 
-The model returns predictions in a JSON object. The response depends on the model server implementation. You can find more information regarding specific model servers in the [Kserve documentation](https://kserve.github.io/website/docs/intro).
+The model returns predictions in a JSON object.
+The response depends on the model server implementation.
+You can find more information regarding specific model servers in the [Kserve documentation](https://kserve.github.io/website/docs/intro).

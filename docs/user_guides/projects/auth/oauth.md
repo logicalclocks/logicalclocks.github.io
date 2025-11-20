@@ -2,7 +2,8 @@
 
 ## Introduction
 
-Hopsworks supports different methods of authentication. Here we will look at authentication using Third-party Identity Provider.
+Hopsworks supports different methods of authentication.
+Here we will look at authentication using Third-party Identity Provider.
 
 ## Prerequisites
 
@@ -11,7 +12,8 @@ See [Configure OAuth2](../../../../setup_installation/admin/oauth2/create-client
 
 ### Step 1: Log in with OAuth
 
-If OAuth is configured a **Login with** button will appear in the login page. Use this button to log in to Hopsworks
+If OAuth is configured a **Login with** button will appear in the login page.
+Use this button to log in to Hopsworks
 using your OAuth credentials.
 
   <figure>
@@ -35,5 +37,6 @@ After clicking on **Register** you will be redirected to the landing page:
     <figcaption>Landing page</figcaption>
   </figure>
 
-In the landing page, you will find two buttons. Use these buttons to either create a
+In the landing page, you will find two buttons.
+Use these buttons to either create a
 _demo project_ or [a new project](../../../projects/project/create_project).

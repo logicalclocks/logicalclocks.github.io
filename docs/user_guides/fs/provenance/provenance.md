@@ -18,15 +18,18 @@ With the following provenance graph:
 data source -> feature group -> feature group -> feature view -> training dataset -> model
 ```
 
-we will call the parent, the artifact to the left, and the child, the artifact to the right. So a feature view has a number of feature groups as parents and can have a number of training datasets as children.
+we will call the parent, the artifact to the left, and the child, the artifact to the right.
+So a feature view has a number of feature groups as parents and can have a number of training datasets as children.
 
-Tracking provenance allows users to determine where and if an artifact is being used. You can track, for example, if feature groups are being used to create additional (derived) feature groups or feature views, or if their data is eventually used to train models.
+Tracking provenance allows users to determine where and if an artifact is being used.
+You can track, for example, if feature groups are being used to create additional (derived) feature groups or feature views, or if their data is eventually used to train models.
 
 You can interact with the provenance graph using the UI or the APIs.
 
 ## Step 1: Data Source lineage
 
-The relationship between data sources and feature groups is captured automatically when you create an external feature group. You can inspect the relationship between data sources and feature groups using the APIs.
+The relationship between data sources and feature groups is captured automatically when you create an external feature group.
+You can inspect the relationship between data sources and feature groups using the APIs.
 
 === "Python"
 
@@ -46,7 +49,8 @@ The relationship between data sources and feature groups is captured automatical
 
 ### Using the APIs
 
-Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the data sources that are part of the feature group. To do so, you can use the [get_storage_connector_provenance](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_storage_connector_provenance) method.
+Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the data sources that are part of the feature group.
+To do so, you can use the [get_storage_connector_provenance](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_storage_connector_provenance) method.
 
 === "Python"
 
@@ -71,7 +75,8 @@ Starting from a feature group metadata object, you can traverse upstream the pro
     user_profiles_fg.get_storage_connector()
     ```
 
-To traverse the provenance graph in the opposite direction (i.e. from the data source to the feature group), you can use the [get_feature_groups_provenance](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method. When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
+To traverse the provenance graph in the opposite direction (i.e., from the data source to the feature group), you can use the [get_feature_groups_provenance](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method.
+When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
 
 === "Python"
 
@@ -97,7 +102,9 @@ To traverse the provenance graph in the opposite direction (i.e. from the data s
 
 ### Assign parents to a feature group
 
-When creating a feature group, it is possible to specify a list of feature groups used to create the derived features. For example, you could have an external feature group defined over a Snowflake or Redshift table, which you use to compute the features and save them in a feature group. You can mark the external feature group as parent of the feature group you are creating by using the `parents` parameter in the [get_or_create_feature_group](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) or [create_feature_group](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#create_feature_group) methods:
+When creating a feature group, it is possible to specify a list of feature groups used to create the derived features.
+For example, you could have an external feature group defined over a Snowflake or Redshift table, which you use to compute the features and save them in a feature group.
+You can mark the external feature group as parent of the feature group you are creating by using the `parents` parameter in the [get_or_create_feature_group](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) or [create_feature_group](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#create_feature_group) methods:
 
 === "Python"
 
@@ -150,7 +157,8 @@ Another example use case for derived feature group is if you have a feature grou
 
 ### List feature group parents
 
-You can query the provenance graph of a feature group using the UI and the APIs. From the APIs you can list the parent feature groups by calling the method [get_parent_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_parent_feature_groups)
+You can query the provenance graph of a feature group using the UI and the APIs.
+From the APIs you can list the parent feature groups by calling the method [get_parent_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_parent_feature_groups)
 
 === "Python"
 
@@ -167,9 +175,10 @@ You can query the provenance graph of a feature group using the UI and the APIs.
     lineage.inaccessible
     ```
 
-A parent is marked as `deleted` (and added to the deleted list) if the parent feature group was deleted. `inaccessible` if you no longer have access to the parent feature group (e.g. the parent feature group belongs to a project you no longer have access to).
+A parent is marked as `deleted` (and added to the deleted list) if the parent feature group was deleted. `inaccessible` if you no longer have access to the parent feature group (e.g., the parent feature group belongs to a project you no longer have access to).
 
-To traverse the provenance graph in the opposite direction (i.e. from the parent feature group to the child), you can use the [get_generate_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_generated_feature_groups) method. When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
+To traverse the provenance graph in the opposite direction (i.e., from the parent feature group to the child), you can use the [get_generate_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_generated_feature_groups) method.
+When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
 
 === "Python"
 
@@ -183,7 +192,8 @@ To traverse the provenance graph in the opposite direction (i.e. from the parent
     lineage.inaccessible
     ```
 
-You can also visualize the relationship between the parent and child feature groups in the UI. In each feature group overview page you can find a provenance section with the graph of parent data source/feature groups and child feature groups/feature views.
+You can also visualize the relationship between the parent and child feature groups in the UI.
+In each feature group overview page you can find a provenance section with the graph of parent data source/feature groups and child feature groups/feature views.
 
 <p align="center">
   <figure>
@@ -194,11 +204,13 @@ You can also visualize the relationship between the parent and child feature gro
 
 ## Step 3: Feature view lineage
 
-The relationship between feature groups and feature views is captured automatically when you create a feature view. You can inspect the relationship between feature groups and feature views using the APIs or the UI.
+The relationship between feature groups and feature views is captured automatically when you create a feature view.
+You can inspect the relationship between feature groups and feature views using the APIs or the UI.
 
 ### Using the APIs
 
-Starting from a feature view metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the feature groups that are part of the feature view. To do so, you can use the [get_parent_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_view_api/#get_parent_feature_groups) method.
+Starting from a feature view metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the feature groups that are part of the feature view.
+To do so, you can use the [get_parent_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_view_api/#get_parent_feature_groups) method.
 
 === "Python"
 
@@ -215,7 +227,10 @@ Starting from a feature view metadata object, you can traverse upstream the prov
     lineage.inaccessible
     ```
 
-You can also traverse the provenance graph in the opposite direction. Starting from a feature group you can navigate downstream and list all the feature views the feature group is used in. As for the derived feature group example above, when navigating the provenance graph downstream `deleted` feature views are not tracked. As such, the `deleted` property will always be empty.
+You can also traverse the provenance graph in the opposite direction.
+Starting from a feature group you can navigate downstream and list all the feature views the feature group is used in.
+As for the derived feature group example above, when navigating the provenance graph downstream `deleted` feature views are not tracked.
+As such, the `deleted` property will always be empty.
 
 === "Python"
 
@@ -242,7 +257,8 @@ You can also retrive directly the accessible models, without the need to extract
     models = fraud_fv.get_models(training_dataset_version: 1)
     ```
 
-Also we added a utility method to retrieve from the user's accessible models, the last trained one. Last is determined based on timestamp when it was saved into the model registry.
+Also we added a utility method to retrieve from the user's accessible models, the last trained one.
+Last is determined based on timestamp when it was saved into the model registry.
 === "Python"
 
     ```python
@@ -268,5 +284,7 @@ In the feature view overview UI you can explore the provenance graph of the feat
 All the `_provenance` methods return a `Link` dictionary object that contains `accessible`, `inaccesible`, `deleted` lists.
 
 - `accessible` - contains any artifact from the result, that the user has access to.
-- `inaccessible` - contains any artifacts that might have been shared at some point in the past, but where this sharing was retracted. Since the relation between artifacts is still maintained in the provenance, the user will only have access to limited metadata and the artifacts will be included in this `inaccessible` list.
-- `deleted` - contains artifacts that are deleted with children stil present in the system. There is minimum amount of metadata for the deleted allowing for some limited human readable identification.
+- `inaccessible` - contains any artifacts that might have been shared at some point in the past, but where this sharing was retracted.
+Since the relation between artifacts is still maintained in the provenance, the user will only have access to limited metadata and the artifacts will be included in this `inaccessible` list.
+- `deleted` - contains artifacts that are deleted with children stil present in the system.
+There is minimum amount of metadata for the deleted allowing for some limited human readable identification.

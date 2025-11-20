@@ -6,7 +6,9 @@ description: Documentation on how to allocate resources to a model deployment
 
 ## Introduction
 
-Depending on the serving tool used to deploy a trained model, resource allocation can be configured at different levels. While deployments on Docker containers only support a fixed number of resources (CPU and memory), using Kubernetes or KServe allows a better exploitation of the resources available in the platform, by enabling you to specify how many CPUs, GPUs, and memory are allocated to a deployment. See the [compatibility matrix](#compatibility-matrix).
+Depending on the serving tool used to deploy a trained model, resource allocation can be configured at different levels.
+While deployments on Docker containers only support a fixed number of resources (CPU and memory), using Kubernetes or KServe allows a better exploitation of the resources available in the platform, by enabling you to specify how many CPUs, GPUs, and memory are allocated to a deployment.
+See the [compatibility matrix](#compatibility-matrix).
 
 ## GUI
 
@@ -21,11 +23,14 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
+Both options will open the deployment creation form.
 
 ### Step 2: Go to advanced options
 
-A simplified creation form will appear including the most common deployment fields from all available configurations. Resource allocation is part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
+A simplified creation form will appear including the most common deployment fields from all available configurations.
+Resource allocation is part of the advanced options of a deployment.
+To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>
@@ -36,7 +41,8 @@ A simplified creation form will appear including the most common deployment fiel
 
 ### Step 3: Configure resource allocation
 
-In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available). Moreover, you can choose the minimum number of replicas for each of these components.
+In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
+Moreover, you can choose the minimum number of replicas for each of these components.
 
 ??? note "Scale-to-zero capabilities"
     Deployments with KServe enabled can scale to zero by choosing `0` as the number of instances.

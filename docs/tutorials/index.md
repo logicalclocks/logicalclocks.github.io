@@ -5,14 +5,18 @@ hide:
 
 # Tutorials
 
-We are happy to welcome you to our collection of tutorials dedicated to exploring the fundamentals of Hopsworks and Machine Learning development. In addition to offering different types of use cases and common subjects in the field, it facilitates navigation and use of models in a production environment using Hopsworks Feature Store.
+We are happy to welcome you to our collection of tutorials dedicated to exploring the fundamentals of Hopsworks and Machine Learning development.
+In addition to offering different types of use cases and common subjects in the field, it facilitates navigation and use of models in a production environment using Hopsworks Feature Store.
 
 ## How to run the tutorials
 
-In order to run the tutorials, you will need a Hopsworks account. To do so, go to [app.hopsworks.ai](https://app.hopsworks.ai) and create one. With a managed account, just run the Jupyter notebook from within Hopsworks.
+In order to run the tutorials, you will need a Hopsworks account.
+To do so, go to [app.hopsworks.ai](https://app.hopsworks.ai) and create one.
+With a managed account, just run the Jupyter notebook from within Hopsworks.
 Generally the notebooks contain the information you will need on how to interact with the Hopsworks Platform.
 
-The easiest way to get started is by using [Google Colab](https://colab.research.google.com/) to run the notebooks. However, you can also run them in your local Python environment with Jupyter.
+The easiest way to get started is by using [Google Colab](https://colab.research.google.com/) to run the notebooks.
+However, you can also run them in your local Python environment with Jupyter.
 You can find the raw notebook files in our [tutorials repository](https://github.com/logicalclocks/hopsworks-tutorials).
 
 ## Fraud Tutorial
@@ -32,7 +36,8 @@ This is a batch use case variant of the fraud tutorial, it will give you a high 
 ### Online
 
 This is a online use case variant of the fraud tutorial, it is similar to the batch use case, however, in this tutorial you will get introduced to the usage of Feature Groups which are kept in online storage, and how to access single feature vectors from the online storage
-at low latency. Additionally, the model will be deployed as a model serving instance, to provide a REST endpoint for real time serving.
+at low latency.
+Additionally, the model will be deployed as a model serving instance, to provide a REST endpoint for real time serving.
 
 | Notebooks   |                                      |
 | ----------- | ------------------------------------ |
@@ -42,8 +47,10 @@ at low latency. Additionally, the model will be deployed as a model serving inst
 
 ## Churn Tutorial
 
-This is a churn tutorial with the Hopsworks feature store and model serving to build a prediction service. In this tutorial you will get introduced to the usage of Feature Groups which are kept in online storage, and how to access single feature vectors from the online storage
-at low latency. Additionally, the model will be deployed as a model serving instance, to provide a REST endpoint for real time serving.
+This is a churn tutorial with the Hopsworks feature store and model serving to build a prediction service.
+In this tutorial you will get introduced to the usage of Feature Groups which are kept in online storage, and how to access single feature vectors from the online storage
+at low latency.
+Additionally, the model will be deployed as a model serving instance, to provide a REST endpoint for real time serving.
 
 | Notebooks   |                                      |
 | ----------- | ------------------------------------ |
@@ -53,11 +60,13 @@ at low latency. Additionally, the model will be deployed as a model serving inst
 
 ## Integration Tutorials
 
-Hopsworks is easily integrated with many tools, especially from the Python world. In this section you will find examples for some popular libraries and services.
+Hopsworks is easily integrated with many tools, especially from the Python world.
+In this section you will find examples for some popular libraries and services.
 
 ### Great Expectations
 
-Great Expectations is a library for data validation. You can use Great Expectations within Hopsworks to validate data which is to be inserted into the feature store, in order to ensure that only high-quality features end up in the feature store.
+Great Expectations is a library for data validation.
+You can use Great Expectations within Hopsworks to validate data which is to be inserted into the feature store, in order to ensure that only high-quality features end up in the feature store.
 
 | Notebooks   |                                      |
 | ----------- | ------------------------------------ |

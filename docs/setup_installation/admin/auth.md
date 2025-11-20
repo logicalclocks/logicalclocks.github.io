@@ -2,7 +2,8 @@
 
 ## Introduction
 
-Hopsworks can be configured to use different types of authentication methods. In this guide we will look at the
+Hopsworks can be configured to use different types of authentication methods.
+In this guide we will look at the
 different authentication methods available in Hopsworks.
 
 ## Prerequisites
@@ -18,24 +19,19 @@ To configure Authentication methods click on your name in the top right corner o
 
 In the **Cluster Settings** _Authentication_ tab you can configure how users authenticate.
 
-1. **TOTP Two-factor Authentication**: can be _disabled_, _optional_ or _mandatory_. If set to mandatory all users are
-   required to set up two-factor authentication when registering.
+1. **TOTP Two-factor Authentication**: can be _disabled_, _optional_ or _mandatory_.
+   If set to mandatory all users are required to set up two-factor authentication when registering.
 
-    !!! note
+   !!! note
+       If two-factor is set to _mandatory_ on a cluster with preexisting users all users will need to go through lost device recovery step to enable two-factor.
+       So consider setting it to _optional_ first and allow users to enable it before setting it to mandatory.
 
-        If two-factor is set to _mandatory_ on a cluster with preexisting users all users will need to go through  
-        lost device recovery step to enable two-factor. So consider setting it to _optional_ first and allow users to 
-        enable it before setting it to mandatory.
-
-2. **OAuth2**: if your organization already have an identity management system compatible with
-   [OpenID Connect (OIDC)](https://openid.net/connect/) you can configure Hopsworks to use your identity provider
-   by enabling **OAuth** as shown in the figure below. After enabling OAuth
-   you can register your identity provider by clicking on **Add Identity Provider** button. See
-   [Create client](../oauth2/create-client) for details.
-3. **LDAP/Kerberos**: if your organization is using LDAP or Kerberos to manage users and services you can configure
-   Hopsworks to use it as the user management system. You can enable LDAP/Kerberos by clicking on the checkbox,
-   as shown in the figure below, and choosing LDAP or Kerberos. For more information on how to configure LDAP and Kerberos see
-   [Configure LDAP](../ldap/configure-ldap) and [Configure Kerberos](../ldap/configure-krb).
+2. **OAuth2**: if your organization already have an identity management system compatible with [OpenID Connect (OIDC)](https://openid.net/connect/) you can configure Hopsworks to use your identity provider by enabling **OAuth** as shown in the figure below.
+   After enabling OAuth you can register your identity provider by clicking on **Add Identity Provider** button.
+   See [Create client](../oauth2/create-client) for details.
+3. **LDAP/Kerberos**: if your organization is using LDAP or Kerberos to manage users and services you can configure Hopsworks to use it as the user management system.
+   You can enable LDAP/Kerberos by clicking on the checkbox, as shown in the figure below, and choosing LDAP or Kerberos.
+   For more information on how to configure LDAP and Kerberos see [Configure LDAP](../ldap/configure-ldap) and [Configure Kerberos](../ldap/configure-krb).
 
 <figure>
   <img src="../../../assets/images/admin/auth-config.png" alt="Authentication config" />

@@ -1,4 +1,7 @@
-In Hopsworks, you can easily deploy models from the model registry in KServe or in Docker containers (for Hopsworks Community). KServe is the defacto open-source framework for model serving on Kubernetes. You can deploy models in either programs, using the HSML library, or in the UI. A KServe model deployment can include the following components:
+In Hopsworks, you can easily deploy models from the model registry in KServe or in Docker containers (for Hopsworks Community).
+KServe is the defacto open-source framework for model serving on Kubernetes.
+You can deploy models in either programs, using the HSML library, or in the UI.
+A KServe model deployment can include the following components:
 
 **`Transformer`**
 
@@ -18,7 +21,8 @@ In Hopsworks, you can easily deploy models from the model registry in KServe or 
 
 **`Istio Model Endpoint`**
 
-:   You can publish a model over ^^REST(HTTP)^^ or ^^gRPC^^ using a Hopsworks API key. API keys have scopes to ensure the principle of least privilege access control to resources managed by Hopsworks.
+:   You can publish a model over ^^REST(HTTP)^^ or ^^gRPC^^ using a Hopsworks API key.
+    API keys have scopes to ensure the principle of least privilege access control to resources managed by Hopsworks.
 
 Models deployed on KServe in Hopsworks can be easily integrated with the Hopsworks Feature Store using either a Transformer or Predictor Python script, that builds the predictor's input feature vector using the application input and pre-computed features from the Feature Store.
 

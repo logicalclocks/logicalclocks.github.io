@@ -9,13 +9,12 @@ Kerberos need some server configuration before you can enable it from the UI.
 
 ## Prerequisites
 
-A server configured with Kerberos. See [Server Configuration for Kerberos](../configure-server/#server-configuration-for-kerberos) for
-instruction on how to do this.
+A server configured with Kerberos.
+See [Server Configuration for Kerberos](../configure-server/#server-configuration-for-kerberos) for instruction on how to do this.
 
 ### Step 1: Enable Kerberos
 
-After configuring the server you can configure Authentication methods by clicking on your name in the top right
-corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
+After configuring the server you can configure Authentication methods by clicking on your name in the top right corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
 In the *Authentication* tab you can find in **Cluster Settings**, you can enable Kerberos by clicking on the Kerberos checkbox.
 
 If LDAP/Kerberos checkbox is not checked, make sure that you configured your application server and enable it by
@@ -35,23 +34,34 @@ Finally, click on edit configuration and fill in the attributes.
   <figcaption>Configure Kerberos</figcaption>
 </figure>
 
-- Account status: the status a user will be assigned when logging in for the first time. If a user is assigned a status
-  different from *Activated* an admin needs to manually activate each user from the [User management](../../user).
-- Group mapping: allows you to specify a mapping between LDAP groups and Hopsworks groups. The mapping is a
-  semicolon separated string in the form ```Directory Administrators->HOPS_ADMIN;IT People-> HOPS_USER```. Default
-  is empty. If no mapping is specified, users need to be assigned a role by an admin before they can log in.
-- User id: the id field in LDAP with a string placeholder. Default ```uid=%s```.
-- User given name: the given name field in LDAP. Default ```givenName```.
-- User surname: the surname field in LDAP. Default ```sn```.
-- User email: the email field in LDAP. Default ```mail```.
-- User search filter: the search filter for user. Default ```uid=%s```.
-- Principal search filter: the search filter for principal name. Default ```krbPrincipalName=%s```.
-- Group search filter: the search filter for groups. Default ```member=%d```.
-- Group target: the target to search for groups in the LDAP directory tree. Default ```cn```.
-- Dynamic group target: the target to search for dynamic groups in the LDAP directory tree. Default ```memberOf```.
-- User dn: specify the distinguished name (DN) of the container or base point where the users are stored. Default is
-  empty.
-- Group dn: specify the DN of the container or base point where the groups are stored. Default is empty.
+- Account status: the status a user will be assigned when logging in for the first time.
+  If a user is assigned a status different from *Activated* an admin needs to manually activate each user from the [User management](../../user).
+- Group mapping: allows you to specify a mapping between LDAP groups and Hopsworks groups.
+  The mapping is a semicolon separated string in the form ```Directory Administrators->HOPS_ADMIN;IT People-> HOPS_USER```.
+  Default is empty.
+  If no mapping is specified, users need to be assigned a role by an admin before they can log in.
+- User id: the id field in LDAP with a string placeholder.
+  Default ```uid=%s```.
+- User given name: the given name field in LDAP.
+  Default ```givenName```.
+- User surname: the surname field in LDAP.
+  Default ```sn```.
+- User email: the email field in LDAP.
+  Default ```mail```.
+- User search filter: the search filter for user.
+  Default ```uid=%s```.
+- Principal search filter: the search filter for principal name.
+  Default ```krbPrincipalName=%s```.
+- Group search filter: the search filter for groups.
+  Default ```member=%d```.
+- Group target: the target to search for groups in the LDAP directory tree.
+  Default ```cn```.
+- Dynamic group target: the target to search for dynamic groups in the LDAP directory tree.
+  Default ```memberOf```.
+- User dn: specify the distinguished name (DN) of the container or base point where the users are stored.
+  Default is empty.
+- Group dn: specify the DN of the container or base point where the groups are stored.
+  Default is empty.
 
 All defaults are taken from [OpenLDAP](https://www.openldap.org/).
 

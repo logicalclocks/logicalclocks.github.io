@@ -16,7 +16,8 @@ Before you begin this guide we suggest you read the [Spine Group](../../../conce
 
 ### Create a Spine Group
 
-Instead of using a feature group to save the label, you can also use a spine to use a Dataframe containing the labels on the fly. A spine is essentially a metadata object similar to a Feature Group, which tells the feature store the relevant event time column and primary key columns to perform point-in-time correct joins.
+Instead of using a feature group to save the label, you can also use a spine to use a Dataframe containing the labels on the fly.
+A spine is essentially a metadata object similar to a Feature Group, which tells the feature store the relevant event time column and primary key columns to perform point-in-time correct joins.
 
 Additionally, apart from primary key and event time information, a Spark dataframe is required in order to infer the schema of the group from.
 
@@ -41,7 +42,8 @@ Once created, note that you can inspect the dataframe in the Spine Group:
     trans_spine.dataframe.show()
     ```
 
-And you can always also replace the dataframe contained within the Spine Group. You just need to make sure it has the same schema.
+And you can always also replace the dataframe contained within the Spine Group.
+You just need to make sure it has the same schema.
 
 === "Python"
 
@@ -53,7 +55,8 @@ And you can always also replace the dataframe contained within the Spine Group. 
 
 !!! warning "Python support"
 
-    Currently the HSFS library does not support usage of Spine Groups for training data creation or batch data retrieval in the Python engine. However, it is supported to create Spine Groups from the Python engine.
+    Currently the HSFS library does not support usage of Spine Groups for training data creation or batch data retrieval in the Python engine.
+    However, it is supported to create Spine Groups from the Python engine.
 
 ### API Reference
 

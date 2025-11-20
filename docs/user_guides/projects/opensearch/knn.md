@@ -2,7 +2,8 @@
 
 ## Introduction
 
-The k-NN plugin enables users to search for the k-nearest neighbors to a query point across an index of vectors. To determine the neighbors, you can specify the space (the distance function) you want to use to measure the distance between points.
+The k-NN plugin enables users to search for the k-nearest neighbors to a query point across an index of vectors.
+To determine the neighbors, you can specify the space (the distance function) you want to use to measure the distance between points.
 
 Use cases include recommendations (for example, an “other songs you might like” feature in a music application), image recognition, and fraud detection.
 
@@ -63,7 +64,8 @@ Create an index to use by calling `opensearch_api.get_project_index(..)`.
 
 ### Step 4: Bulk ingestion of vectors
 
-Ingest 10 vectors in a bulk fashion to the index. These vectors represent the list of vectors to calculate the similarity for.
+Ingest 10 vectors in a bulk fashion to the index.
+These vectors represent the list of vectors to calculate the similarity for.
 
 === "Python"
     ```python

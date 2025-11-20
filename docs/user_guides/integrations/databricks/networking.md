@@ -1,6 +1,7 @@
 # Networking
 
-In order for Spark to communicate with the Feature Store from Databricks, networking needs to be set up correctly. This includes deploying the Hopsworks Instance to either the same VPC or enable VPC/VNet peering between the VPC/VNet of the Databricks Cluster and the Hopsworks Cluster.
+In order for Spark to communicate with the Feature Store from Databricks, networking needs to be set up correctly.
+This includes deploying the Hopsworks Instance to either the same VPC or enable VPC/VNet peering between the VPC/VNet of the Databricks Cluster and the Hopsworks Cluster.
 
 ## AWS
 
@@ -24,7 +25,8 @@ Identify your Databricks VPC by searching for VPCs containing Databricks in thei
 
 **Option 2: Set up VPC peering**
 
-Follow the guide [VPC Peering](https://docs.databricks.com/administration-guide/cloud-configurations/aws/vpc-peering.html) to set up VPC peering between the Feature Store cluster and Databricks. Get your Feature Store *VPC ID* and *CIDR* by searching for the Feature Store VPC in the AWS Management Console:
+Follow the guide [VPC Peering](https://docs.databricks.com/administration-guide/cloud-configurations/aws/vpc-peering.html) to set up VPC peering between the Feature Store cluster and Databricks.
+Get your Feature Store *VPC ID* and *CIDR* by searching for the Feature Store VPC in the AWS Management Console:
 
 !!! info "managed.hopsworks.ai"
     On **[managed.hopsworks.ai](https://managed.hopsworks.ai)**, the VPC is shown in the cluster details.
@@ -52,7 +54,8 @@ Open your feature store instance under EC2 in the AWS Management Console and ens
   </figure>
 </p>
 
-Connectivity from the Databricks Security Group can be allowed by opening the Security Group, adding a port to the Inbound rules and searching for *dbe-worker* in the source field. Selecting any of the *dbe-worker* Security Groups will be sufficient:
+Connectivity from the Databricks Security Group can be allowed by opening the Security Group, adding a port to the Inbound rules and searching for *dbe-worker* in the source field.
+Selecting any of the *dbe-worker* Security Groups will be sufficient:
 
 <p align="center">
   <figure>
@@ -86,9 +89,12 @@ Select *Add Peering*:
   </figure>
 </p>
 
-Name the peering and select the virtual network used by your Hopsworks cluster. The virtual network
-is shown in the cluster details on [managed.hopsworks.ai](https://managed.hopsworks.ai) (see the next picture). Ensure to press the copy button
-on the bottom of the page and save the value somewhere. Press *Add* and create the peering:
+Name the peering and select the virtual network used by your Hopsworks cluster.
+The virtual network
+is shown in the cluster details on [managed.hopsworks.ai](https://managed.hopsworks.ai) (see the next picture).
+Ensure to press the copy button
+on the bottom of the page and save the value somewhere.
+Press *Add* and create the peering:
 
 <p align="center">
   <figure>
@@ -143,8 +149,10 @@ Choose to add a peering connection:
   </figure>
 </p>
 
-Name the peering connection and select *I know my resource ID*. Paste the string copied when creating
-the peering from Databricks Azure. If you haven't copied that string, then manually select the virtual
+Name the peering connection and select *I know my resource ID*.
+Paste the string copied when creating
+the peering from Databricks Azure.
+If you haven't copied that string, then manually select the virtual
 network used by Databricks and press *OK* to create the peering:
 
 <p align="center">
@@ -163,7 +171,8 @@ The peering should now be *Updating*:
   </figure>
 </p>
 
-Wait for the peering to show up as *Connected*. There should now be bi-directional network connectivity between the Feature Store and Databricks:
+Wait for the peering to show up as *Connected*.
+There should now be bi-directional network connectivity between the Feature Store and Databricks:
 
 <p align="center">
   <figure>
@@ -174,7 +183,8 @@ Wait for the peering to show up as *Connected*. There should now be bi-direction
 
 ### Step 2: Configure the Network Security Group
 
-The virtual network peering will allow full access between the Hopsworks virtual network and the Databricks virtual network by default. However, if you have a different setup, ensure that the *Network Security Group* of the Feature Store is configured to allow traffic from your Databricks clusters.
+The virtual network peering will allow full access between the Hopsworks virtual network and the Databricks virtual network by default.
+However, if you have a different setup, ensure that the *Network Security Group* of the Feature Store is configured to allow traffic from your Databricks clusters.
 
 Ensure that ports *443*, *9083*, *9085*, *8020*, *50010*, and *9092* are reachable from the Databricks cluster *Network Security Group*.
 

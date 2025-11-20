@@ -6,7 +6,8 @@ description: Documentation on how to create an external feature group in Hopswor
 
 ### Introduction
 
-In this guide you will learn how to create and register an external feature group with Hopsworks. This guide covers creating an external feature group using the HSFS APIs as well as the user interface.
+In this guide you will learn how to create and register an external feature group with Hopsworks.
+This guide covers creating an external feature group using the HSFS APIs as well as the user interface.
 
 ## Prerequisites
 
@@ -26,7 +27,8 @@ To create an external feature group using the HSFS APIs you need to provide an e
 
 ### Create an External Feature Group
 
-The first step is to instantiate the metadata through the `create_external_feature_group` method. Once you have defined the metadata, you can
+The first step is to instantiate the metadata through the `create_external_feature_group` method.
+Once you have defined the metadata, you can
 [persist the metadata and create the feature group](#register-the-metadata) in Hopsworks by calling `fg.save()`.
 
 #### SQL based external feature group
@@ -79,13 +81,16 @@ The full method documentation is available [here](<https://docs.hopsworks.ai/hop
 
 The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
-If the data source is defined for a data warehouse (e.g. JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features. If the data source is defined for a data lake, the location of the data as well as the format need to be provided.
+If the data source is defined for a data warehouse (e.g., JDBC, Snowflake, Redshift) you need to provide a SQL statement that will be executed to compute the features.
+If the data source is defined for a data lake, the location of the data as well as the format need to be provided.
 
-Additionally we specify which columns of the DataFrame will be used as primary key, and event time. Composite primary keys are also supported.
+Additionally we specify which columns of the DataFrame will be used as primary key, and event time.
+Composite primary keys are also supported.
 
 ### Register the metadata
 
-In the snippet above it's important that the created metadata object gets registered in Hopsworks. To do so, you should invoke the `save` method:
+In the snippet above it's important that the created metadata object gets registered in Hopsworks.
+To do so, you should invoke the `save` method:
 
 === "Python"
 
@@ -95,7 +100,8 @@ In the snippet above it's important that the created metadata object gets regist
 
 ### Enable online storage
 
-You can enable online storage for external feature groups, however, the sync from the external storage to Hopsworks online storage is not automatic and needs to be setup manually. For an external feature group to be available online, during the creation of the feature group, the `online_enabled` option needs to be set to `True`.
+You can enable online storage for external feature groups, however, the sync from the external storage to Hopsworks online storage is not automatic and needs to be setup manually.
+For an external feature group to be available online, during the creation of the feature group, the `online_enabled` option needs to be set to `True`.
 
 === "Python"
 
@@ -118,7 +124,8 @@ You can enable online storage for external feature groups, however, the sync fro
     external_fg.insert(df)
     ```
 
-The `insert()` method takes a DataFrame as parameter and writes it _only_ to the online feature store. Users can select which subset of the feature group data they want to make available on the online feature store by using the [query APIs](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/query_api/).
+The `insert()` method takes a DataFrame as parameter and writes it _only_ to the online feature store.
+Users can select which subset of the feature group data they want to make available on the online feature store by using the [query APIs](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/query_api/).
 
 ### Limitations
 
@@ -133,7 +140,8 @@ Nevertheless, external feature groups defined top of any data source can be used
 
 ## Create using the UI
 
-You can also create a new feature group through the UI. For this, navigate to the `Data Source` section and make sure you have you have available Data Source for the desired platform or create [new](../data_source/index.md).
+You can also create a new feature group through the UI.
+For this, navigate to the `Data Source` section and make sure you have you have available Data Source for the desired platform or create [new](../data_source/index.md).
 
 <p align="center">
   <figure>
@@ -149,9 +157,11 @@ To create a feature group, proceed by clicking `Next: Select Tables` once all of
   </figure>
 </p>
 
-The database navigation structure depends on your specific data source. You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
+The database navigation structure depends on your specific data source.
+You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
 
-In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding. You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
+In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding.
+You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
 
 <p align="center">
   <figure>
@@ -159,7 +169,8 @@ In the UI you can select one or more tables, for each selected table, you must d
   </figure>
 </p>
 
-Complete the creation by clicking `Next: Review Configuration` at the bottom of the page. As the last step, you will be able to rename the feature groups and confirm their creation.
+Complete the creation by clicking `Next: Review Configuration` at the bottom of the page.
+As the last step, you will be able to rename the feature groups and confirm their creation.
 
 <p align="center">
   <figure>

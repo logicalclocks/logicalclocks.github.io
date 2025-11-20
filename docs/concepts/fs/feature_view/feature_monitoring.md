@@ -8,7 +8,8 @@ HSFS supports monitoring features on your Feature View by:
 
 ## Scheduled Statistics
 
-After creating a Feature View in HSFS, you can setup statistics monitoring to compute statistics over one or more features on a scheduled basis. Statistics are computed on the whole or a subset of feature data (i.e., detection window) using the Feature View query.
+After creating a Feature View in HSFS, you can setup statistics monitoring to compute statistics over one or more features on a scheduled basis.
+Statistics are computed on the whole or a subset of feature data (i.e., detection window) using the Feature View query.
 
 ## Statistics Comparison
 

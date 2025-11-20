@@ -1,10 +1,11 @@
 ---
-description: Administrator guide on how to integrate Hopsworks with an external Kafka cluster to handle data ingestion into the feature store. 
+description: Administrator guide on how to integrate Hopsworks with an external Kafka cluster to handle data ingestion into the feature store.
 ---
 
 # External Kafka cluster
 
-Hopsworks uses [Apache Kafka](https://kafka.apache.org/) to ingest data to the feature store. Streaming applications and external clients send data to the Kafka cluster for ingestion to the online and offline feature store.
+Hopsworks uses [Apache Kafka](https://kafka.apache.org/) to ingest data to the feature store.
+Streaming applications and external clients send data to the Kafka cluster for ingestion to the online and offline feature store.
 By default, Hopsworks comes with an embedded Kafka cluster managed by Hopsworks itself, however, users can configure Hopsworks to leverage an existing external cluster.
 This guide will cover how to configure an Hopsworks cluster to leverage an external Kafka cluster.
 
@@ -44,14 +45,16 @@ sasl.mechanism=PLAIN
 ```
 
 !!! note "Hopsworks will not provision topics"
-    Please note that when using an external Kafka cluster, Hopsworks will not provision the topics for the different projects. Users are responsible for provisioning the necessary topics and configure the projects accordingly (see next section).
+    Please note that when using an external Kafka cluster, Hopsworks will not provision the topics for the different projects.
+    Users are responsible for provisioning the necessary topics and configure the projects accordingly (see next section).
     Users should also specify the list of topics OnlineFS should subscribe to by providing the `onlinefs/kafka_consumers/topic_list` option in the cluster definition.
 
 ### Project configuration
 
 #### Topic configuration
 
-As mentioned above, when configuring Hopsworks to use an external Kafka cluster, Hopsworks will not provision the topics for the different projects. Instead, when creating a project, users will be asked to provide the topic name to use for the feature store operations.
+As mentioned above, when configuring Hopsworks to use an external Kafka cluster, Hopsworks will not provision the topics for the different projects.
+Instead, when creating a project, users will be asked to provide the topic name to use for the feature store operations.
 
 <p align="center">
   <figure>

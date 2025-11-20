@@ -2,7 +2,8 @@
 
 ## Introduction
 
-A Topic is a queue to which records are stored and published. Producer applications write data to topics and consumer applications read from topics.
+A Topic is a queue to which records are stored and published.
+Producer applications write data to topics and consumer applications read from topics.
 
 ## Prerequisites
 

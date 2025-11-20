@@ -15,8 +15,10 @@ All members of a project in Hopsworks can launch the following types of applicat
 - Ray
 
 Launching a job of any type is very similar process, what mostly differs between job types is
-the various configuration parameters each job type comes with. Hopsworks clusters support scheduling to run jobs on a regular basis,
-e.g backfilling a Feature Group by running your feature engineering pipeline nightly. Scheduling can be done both through the UI and the python API,
+the various configuration parameters each job type comes with.
+Hopsworks clusters support scheduling to run jobs on a regular basis,
+e.g backfilling a Feature Group by running your feature engineering pipeline nightly.
+Scheduling can be done both through the UI and the python API,
 checkout [our Scheduling guide](schedule_job.md).
 
 PySpark program can either be a `.py` script or a `.ipynb` file, however be mindful of how to access/create
@@ -53,11 +55,14 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job. Make sure `SPARK` is chosen.
+By default, the dialog will create a Spark job.
+Make sure `SPARK` is chosen.
 
 ### Step 4: Set the script
 
-Next step is to select the program to run. You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below. By default, the job name is the same as the file name, but you can customize it as shown.
+Next step is to select the program to run.
+You can either select `From project`, if the file was previously uploaded to Hopsworks, or `Upload new file` which lets you select a file from your local filesystem as demonstrated below.
+By default, the job name is the same as the file name, but you can customize it as shown.
 
 <p align="center">
   <figure>
@@ -120,7 +125,8 @@ Additional files or dependencies required for the Spark job can be configured.
   </figure>
 </p>
 
-Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.html) to be set for the Spark application. For example, changing the configuration variables for the Kryo Serializer or setting environment variables for the driver, you can set the properties as shown below.
+Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.html) to be set for the Spark application.
+For example, changing the configuration variables for the Kryo Serializer or setting environment variables for the driver, you can set the properties as shown below.
 
 <p align="center">
   <figure>
@@ -131,11 +137,13 @@ Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.ht
 
 ### Step 7: (Kueue enabled) Select a Queue
 
-Currently we do not have Kueue support for Spark. You do not need to select a queue to run the job in.
+Currently we do not have Kueue support for Spark.
+You do not need to select a queue to run the job in.
 
 ### Step 8: Execute the job
 
-Now click the `Run` button to start the execution of the job. You will be redirected to the `Executions` page where you can see the list of all executions.
+Now click the `Run` button to start the execution of the job.
+You will be redirected to the `Executions` page where you can see the list of all executions.
 
 <p align="center">
   <figure>
@@ -246,7 +254,8 @@ The following table describes the job configuration parameters for a PYSPARK job
 
 ### Read directly from the filesystem (recommended)
 
-To read a dataset in your project using Spark, use the full filesystem path where the data is stored. For example, to read a CSV file named `data.csv` located in the `Resources` dataset of a project called `my_project`:
+To read a dataset in your project using Spark, use the full filesystem path where the data is stored.
+For example, to read a CSV file named `data.csv` located in the `Resources` dataset of a project called `my_project`:
 
 ```python
 df = spark.read.csv("/Projects/my_project/Resources/data.csv", header=True, inferSchema=True)
@@ -255,7 +264,8 @@ df.show()
 
 ### Additional files
 
-Different file types can be attached to the spark job and made available in the `/srv/hops/artifacts` folder when the PySpark job is started. This configuration is mainly useful when you need to add additional setup, such as jars that needs to be added to the CLASSPATH.
+Different file types can be attached to the spark job and made available in the `/srv/hops/artifacts` folder when the PySpark job is started.
+This configuration is mainly useful when you need to add additional setup, such as jars that needs to be added to the CLASSPATH.
 
 When reading data in your Spark job it is recommended to use the Spark read API as previously demonstrated, since this reads from the filesystem directly, whereas `Additional files` configuration options will download the files in its entirety and is not a scalable option.
 

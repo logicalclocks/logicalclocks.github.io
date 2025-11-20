@@ -20,7 +20,8 @@ In the `Account Settings` page you can find the `Secrets` section showing a list
 
 ### Step 2: Create a Secret
 
-Click `New Secret` to bring up the dialog for secret creation. Enter a name for the secret to be used for lookup, and the secret value.
+Click `New Secret` to bring up the dialog for secret creation.
+Enter a name for the secret to be used for lookup, and the secret value.
 
 If the secret should be private to this user, select `Private`, to share the secret with all members of a project select `Project` and enter the project name.
 
@@ -33,7 +34,8 @@ If the secret should be private to this user, select `Private`, to share the sec
 
 ### Step 3: Secret created
 
-Click `New Secret` to bring up the dialog for secret creation. Enter a name for the secret to be used for lookup, and the secret value.
+Click `New Secret` to bring up the dialog for secret creation.
+Enter a name for the secret to be used for lookup, and the secret value.
 
 If the secret should be private to this user, select `Private`, to share the secret with all members of a project select `Project` and enter the project name.
 

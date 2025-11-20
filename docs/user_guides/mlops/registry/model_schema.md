@@ -6,7 +6,9 @@ description: Documentation on how to attach a model schema to a model.
 
 ## Introduction
 
-In this guide you will learn how to attach a model schema to your model. A model schema, describes the type and shape of inputs and outputs (predictions) for your model. Attaching a model schema to your model will give other users a better understanding of what data it expects.
+In this guide you will learn how to attach a model schema to your model.
+A model schema, describes the type and shape of inputs and outputs (predictions) for your model.
+Attaching a model schema to your model will give other users a better understanding of what data it expects.
 
 ## Code
 
@@ -24,7 +26,8 @@ In this guide you will learn how to attach a model schema to your model. A model
 
 ### Step 2: Create ModelSchema
 
-Create a ModelSchema for your inputs and outputs by passing in an example that your model is trained on and a valid prediction. Currently, we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list`.
+Create a ModelSchema for your inputs and outputs by passing in an example that your model is trained on and a valid prediction.
+Currently, we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list`.
 
 === "Python"
     ```python

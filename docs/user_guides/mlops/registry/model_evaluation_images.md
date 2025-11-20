@@ -6,7 +6,10 @@ description: Documentation on how to attach model evaluation images to a model.
 
 ## Introduction
 
-In this guide, you will learn how to attach ==model evaluation images== to a model. Model evaluation images are images that visually describe model performance metrics. For example, **confusion matrices**, **ROC curves**, **model bias tests**, and **training loss curves** are examples of common model evaluation images. By attaching model evaluation images to your versioned model, other users can better understand the model performance and evaluation metrics.
+In this guide, you will learn how to attach ==model evaluation images== to a model.
+Model evaluation images are images that visually describe model performance metrics.
+For example, **confusion matrices**, **ROC curves**, **model bias tests**, and **training loss curves** are examples of common model evaluation images.
+By attaching model evaluation images to your versioned model, other users can better understand the model performance and evaluation metrics.
 
 ## Code
 
@@ -42,7 +45,7 @@ Generate an image that visualizes model performance and evaluation metrics
 
     # Create a DataFrame for the confusion matrix results
     df_confusion_matrix = pd.DataFrame(
-        results, 
+        results,
         ['True Normal', 'True Fraud'],
         ['Pred Normal', 'Pred Fraud'],
     )

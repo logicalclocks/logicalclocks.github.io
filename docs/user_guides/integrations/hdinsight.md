@@ -6,15 +6,19 @@ description: Documentation on how to configure an HDInsight cluster to read and 
 To enable HDInsight to access the Hopsworks Feature Store, you need to set up a Hopsworks API key, add a script action and configurations to your HDInsight cluster.
 
 !!! info "Prerequisites"
-    A HDInsight cluster with cluster type Spark is required to connect to the Feature Store. You can either use an existing cluster or create a new one.
+    A HDInsight cluster with cluster type Spark is required to connect to the Feature Store.
+    You can either use an existing cluster or create a new one.
 
 !!! info "Network Connectivity"
 
-    To be able to connect to the Feature Store, please ensure that your HDInsight cluster and the Hopsworks Feature Store are either in the same [Virtual Network](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview) or [Virtual Network Peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering) is set up between the different networks. In addition, ensure that the Network Security Group of your Hopsworks instance is configured to allow incoming traffic from your HDInsight cluster on ports 443, 3306, 8020, 30010, 9083 and 9085 (443,3306,8020,30010,9083,9085). See [Network security groups](https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview) for more information.
+    To be able to connect to the Feature Store, please ensure that your HDInsight cluster and the Hopsworks Feature Store are either in the same [Virtual Network](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview) or [Virtual Network Peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering) is set up between the different networks.
+    In addition, ensure that the Network Security Group of your Hopsworks instance is configured to allow incoming traffic from your HDInsight cluster on ports 443, 3306, 8020, 30010, 9083 and 9085 (443,3306,8020,30010,9083,9085).
+    See [Network security groups](https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview) for more information.
 
 ## Step 1: Set up a Hopsworks API key
 
-For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the HDInsight integration to work correctly make sure you add the following scopes to your API key:
+For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md).
+For the HDInsight integration to work correctly make sure you add the following scopes to your API key:
 
   1. featurestore
   2. project
@@ -23,9 +27,14 @@ For instructions on how to generate an API key follow this [user guide](../proje
 
 ## Step 2:  Use a script action to install the Feature Store connector
 
-HDInsight requires Hopsworks connectors to be able to communicate with the Hopsworks Feature Store. These connectors can be installed with the script action shown below. Copy the content into a file, name the file `hopsworks.sh` and replace MY_INSTANCE, MY_PROJECT, MY_VERSION, MY_API_KEY and MY_CONDA_ENV with your values. Copy the `hopsworks.sh` file into any storage that is readable by your HDInsight clusters and take note of the URI of that file e.g., `https://account.blob.core.windows.net/scripts/hopsworks.sh`.
+HDInsight requires Hopsworks connectors to be able to communicate with the Hopsworks Feature Store.
+These connectors can be installed with the script action shown below.
+Copy the content into a file, name the file `hopsworks.sh` and replace MY_INSTANCE, MY_PROJECT, MY_VERSION, MY_API_KEY and MY_CONDA_ENV with your values.
+Copy the `hopsworks.sh` file into any storage that is readable by your HDInsight clusters and take note of the URI of that file e.g., `https://account.blob.core.windows.net/scripts/hopsworks.sh`.
 
-The script action needs to be applied head and worker nodes and can be applied during cluster creation or to an existing cluster. Ensure to persist the script action so that it is run on newly created nodes. For more information about how to use script actions, see [Customize Azure HDInsight clusters by using script actions](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-linux).
+The script action needs to be applied head and worker nodes and can be applied during cluster creation or to an existing cluster.
+Ensure to persist the script action so that it is run on newly created nodes.
+For more information about how to use script actions, see [Customize Azure HDInsight clusters by using script actions](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-linux).
 
 !!! attention "Matching Hopsworks version"
 
@@ -79,11 +88,14 @@ chown -R root:hadoop /usr/lib/hopsworks
 
 ## Step 3: Configure HDInsight for Feature Store access
 
-The Hadoop and Spark installations of the HDInsight cluster need to be configured in order to access the Feature Store. This can be achieved either by using a [bootstrap script](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-bootstrap) when creating clusters or using [Ambari](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-manage-ambari) on existing clusters. Apply the following configurations to your HDInsight cluster.
+The Hadoop and Spark installations of the HDInsight cluster need to be configured in order to access the Feature Store.
+This can be achieved either by using a [bootstrap script](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-bootstrap) when creating clusters or using [Ambari](https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-manage-ambari) on existing clusters.
+Apply the following configurations to your HDInsight cluster.
 
 !!! attention "Using Hive and the Feature Store"
 
-    HDInsight clusters cannot use their local Hive when being configured for the Feature Store as the Feature Store relies on custom Hive binaries and its own Metastore which will overwrite the local one. If you rely on Hive for feature engineering then it is advised to write your data to an external data storage such as ADLS from your main HDInsight cluster and in the Feature Store, create an [on-demand](https://docs.hopsworks.ai/overview/#feature-groups) Feature Group on the storage container in ADLS.
+    HDInsight clusters cannot use their local Hive when being configured for the Feature Store as the Feature Store relies on custom Hive binaries and its own Metastore which will overwrite the local one.
+    If you rely on Hive for feature engineering then it is advised to write your data to an external data storage such as ADLS from your main HDInsight cluster and in the Feature Store, create an [on-demand](https://docs.hopsworks.ai/overview/#feature-groups) Feature Group on the storage container in ADLS.
 
 Hadoop hadoop-env.sh:
 

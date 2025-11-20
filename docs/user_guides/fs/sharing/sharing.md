@@ -2,15 +2,18 @@
 
 ## Introduction
 
-Hopsworks allows artifacts (e.g. feature groups, feature views) to be shared between projects.
+Hopsworks allows artifacts (e.g., feature groups, feature views) to be shared between projects.
 There are two main use cases for sharing features between projects:
 
-- If you have multiple teams working on the same Hopsworks deployment. Each team works within its own set of projects.
+- If you have multiple teams working on the same Hopsworks deployment.
+  Each team works within its own set of projects.
   If team A wants to leverage features built by team B, they can do so by sharing the feature groups from a team A project to a team B project.
 
-- By creating different projects for the different stages of the development lifecycle (e.g. a dev project, a testing project, and a production project),
-  you can make sure that changes on the development project don't impact the features in the production project. At the same time, you might want to
-  leverage production features to develop new models or additional features. In this case, you can share the production feature store with the
+- By creating different projects for the different stages of the development lifecycle (e.g., a dev project, a testing project, and a production project),
+  you can make sure that changes on the development project don't impact the features in the production project.
+  At the same time, you might want to
+  leverage production features to develop new models or additional features.
+  In this case, you can share the production feature store with the
   development feature store in `read-only` mode.
 
 ### Step 1: Open the project of the feature store that you would like to share on Hopsworks
@@ -35,7 +38,8 @@ In the `Project` section choose project you wish to share the feature store with
   </figure>
 </p>
 
-Feature stores can be shared exclusively using `read-only` permission. This means that a member is not capable of enacting any changes on the shared project.
+Feature stores can be shared exclusively using `read-only` permission.
+This means that a member is not capable of enacting any changes on the shared project.
 
 ### Step 3: Accept the Invitation
 
@@ -64,7 +68,7 @@ To access features from a shared feature store you need to first retrieve the ha
 To retrieve the handle use the get_feature_store() method and provide the name of the shared feature store
 
 ```python
-import hopsworks 
+import hopsworks
 
 project = hopsworks.login()
 

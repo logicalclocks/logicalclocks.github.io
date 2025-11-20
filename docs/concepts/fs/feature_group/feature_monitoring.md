@@ -8,7 +8,8 @@ HSFS supports monitoring features on your Feature Group by:
 
 ## Scheduled Statistics
 
-After creating a Feature Group in HSFS, you can setup statistics monitoring to compute statistics over one or more features on a scheduled basis. Statistics are computed on the whole or a subset of feature data (i.e., detection window) already inserted into the Feature Group.
+After creating a Feature Group in HSFS, you can setup statistics monitoring to compute statistics over one or more features on a scheduled basis.
+Statistics are computed on the whole or a subset of feature data (i.e., detection window) already inserted into the Feature Group.
 
 ## Statistics Comparison
 

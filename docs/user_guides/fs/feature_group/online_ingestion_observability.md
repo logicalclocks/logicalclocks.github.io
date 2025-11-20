@@ -6,7 +6,8 @@ description: Documentation on Online ingestion observability in Hopsworks.
 
 ## Introduction
 
-Knowing when ingested data becomes available for online serving—and understanding the cause of any ingestion failures—is crucial for users. To address this, the Hopsworks API provides observability features for online ingestion, allowing you to monitor ingestion status and troubleshoot issues.
+Knowing when ingested data becomes available for online serving—and understanding the cause of any ingestion failures—is crucial for users.
+To address this, the Hopsworks API provides observability features for online ingestion, allowing you to monitor ingestion status and troubleshoot issues.
 
 This guide explains how to use these observability features for online feature groups in Hopsworks, with examples using both the HSFS APIs and the user interface.
 
@@ -69,7 +70,8 @@ Wait for the online ingestion to finish (equivalent to `fg.insert(fg_df, wait=Tr
 
 **Print mini-batch results**
 
-Check the results of the ingestion. If the status is `UPSERTED` and the number of rows matches your data, the ingestion was successful:
+Check the results of the ingestion.
+If the status is `UPSERTED` and the number of rows matches your data, the ingestion was successful:
 
 === "Python"
 

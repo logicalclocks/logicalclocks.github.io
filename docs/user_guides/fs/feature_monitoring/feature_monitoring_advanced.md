@@ -1,6 +1,7 @@
 # Advanced guide
 
-An introduction to Feature Monitoring can be found in the guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md). In addition, you can get started quickly by running our [tutorial for feature monitoring](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/api_examples/feature_monitoring.ipynb).
+An introduction to Feature Monitoring can be found in the guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
+In addition, you can get started quickly by running our [tutorial for feature monitoring](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/api_examples/feature_monitoring.ipynb).
 
 ## Retrieve feature monitoring configurations
 
@@ -87,7 +88,8 @@ To trigger the feature monitoring job once from the Python API, use the feature 
 
 ### From UI
 
-The easiest way to explore the statistics and comparison results is using the Hopsworks ==interactive graph== for Feature Monitoring. See more information on the [Interactive graph guide](interactive_graph.md).
+The easiest way to explore the statistics and comparison results is using the Hopsworks ==interactive graph== for Feature Monitoring.
+See more information on the [Interactive graph guide](interactive_graph.md).
 
 ![Visualize statistics on a time series](../../../assets/images/guides/fs/feature_monitoring/fm-reference-plot.png)
 

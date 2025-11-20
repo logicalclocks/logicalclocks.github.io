@@ -44,10 +44,9 @@ To deploy ArrowFlight Server on a cluster:
 3. Tick the checkbox `Enable ArrowFlight Server`.
 
 (*) The service should have at least the 2x the amount of memory available that a typical Python client would have.
-  Because RonDB and ArrowFlight Server share the same node we recommend selecting an instance type with at least 4x the
-  client memory. For example, if the service serves Python clients with typically 4GB of memory,
-  an instance with at least 16GB of memory should be selected.
-  An instance with 16GB of memory will be able to read feature groups and training datasets of up to 10-100M rows,
-  depending on the number of columns and size of the features (~2GB in parquet). The same instance will be able to create
-  point-in-time correct training datasets with 1-10M rows, also depending on the number and the size of the features.
-  Larger instances are able to handle larger datasets. The numbers scale roughly linearly with the instance size.
+  Because RonDB and ArrowFlight Server share the same node we recommend selecting an instance type with at least 4x the client memory.
+  For example, if the service serves Python clients with typically 4GB of memory, an instance with at least 16GB of memory should be selected.
+  An instance with 16GB of memory will be able to read feature groups and training datasets of up to 10-100M rows, depending on the number of columns and size of the features (~2GB in parquet).
+  The same instance will be able to create point-in-time correct training datasets with 1-10M rows, also depending on the number and the size of the features.
+  Larger instances are able to handle larger datasets.
+  The numbers scale roughly linearly with the instance size.

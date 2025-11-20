@@ -18,6 +18,7 @@ Hopsworks supports the versioning of ML assets, including:
 
 ## Pytest for feature logic and feature pipeline tests
 
-Pytest and Great Expectations can be used for testing feature pipelines. Pytest is used to test feature logic and for end-to-end feature pipeline tests, while Great Expectations is used for data validation tests.
+Pytest and Great Expectations can be used for testing feature pipelines.
+Pytest is used to test feature logic and for end-to-end feature pipeline tests, while Great Expectations is used for data validation tests.
 Here, we can see how a feature pipeline test uses sample data to compute features and validate they have been written successfully, first to a development feature store, and then they can be pushed to a staging feature store, before finally being promoted to production.
 <img src="../../../assets/images/concepts/projects/feature-pipeline-tests.svg">

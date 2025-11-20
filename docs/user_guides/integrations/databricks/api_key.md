@@ -4,7 +4,8 @@ In order for the Databricks cluster to be able to communicate with Hopsworks, cl
 
 ## Generate an API key
 
-For instructions on how to generate an API key follow this [user guide](../../projects/api_key/create_api_key.md). For the Databricks integration to work make sure you add the following scopes to your API key:
+For instructions on how to generate an API key follow this [user guide](../../projects/api_key/create_api_key.md).
+For the Databricks integration to work make sure you add the following scopes to your API key:
 
   1. featurestore
   2. project
@@ -17,7 +18,7 @@ For instructions on how to generate an API key follow this [user guide](../../pr
     To get started quickly, without saving the Hopsworks API in a secret storage, you can simply supply it as an argument when instantiating a connection:
 
 ```python hl_lines="6"
-    import hopsworks 
+    import hopsworks
     project = hopsworks.login(
         host='my_instance',                 # DNS of your Feature Store instance
         port=443,                           # Port to reach your Hopsworks instance, defaults to 443

@@ -76,7 +76,8 @@ Additional files or dependencies required for the Spark job can be configured.
   </figure>
 </p>
 
-Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.html) to be set for the Spark application. For example, changing the configuration variables for the Kryo Serializer or setting environment variables for the driver, you can set the properties as shown below.
+Line-separates [properties](https://spark.apache.org/docs/3.1.1/configuration.html) to be set for the Spark application.
+For example, changing the configuration variables for the Kryo Serializer or setting environment variables for the driver, you can set the properties as shown below.
 
 <p align="center">
   <figure>
@@ -91,7 +92,8 @@ Click `Save` to save the new configuration.
 
 Before starting the server there are two additional configurations that can be set next to the `Run Jupyter` button.
 
-The runtime of the Jupyter instance can be configured, this is useful to ensure that idle instances will not be hanging around and keep allocating resources. If a limited runtime is not desirable, this can be disabled by setting `no limit`.
+The runtime of the Jupyter instance can be configured, this is useful to ensure that idle instances will not be hanging around and keep allocating resources.
+If a limited runtime is not desirable, this can be disabled by setting `no limit`.
 
 <p align="center">
   <figure>
@@ -100,7 +102,8 @@ The runtime of the Jupyter instance can be configured, this is useful to ensure 
   </figure>
 </p>
 
-The root path from which to start the Jupyter instance can be configured. By default it starts by setting the `/Jupyter` folder as the root.
+The root path from which to start the Jupyter instance can be configured.
+By default it starts by setting the `/Jupyter` folder as the root.
 
 <p align="center">
   <figure>
@@ -111,7 +114,8 @@ The root path from which to start the Jupyter instance can be configured. By def
 
 ## Step 5: (Kueue enabled) Select a Queue
 
-Currently we do not have Kueue support for Spark. You do not need to select a queue to run the notebook in.
+Currently we do not have Kueue support for Spark.
+You do not need to select a queue to run the notebook in.
 
 ## Step 5: Start Jupyter
 
@@ -139,7 +143,8 @@ Navigate back to Hopsworks and a Spark session will have appeared, click on the 
 
 ### Read directly from the filesystem (recommended)
 
-To read a dataset in your project using Spark, use the full filesystem path where the data is stored. For example, to read a CSV file named `data.csv` located in the `Resources` dataset of a project called `my_project`:
+To read a dataset in your project using Spark, use the full filesystem path where the data is stored.
+For example, to read a CSV file named `data.csv` located in the `Resources` dataset of a project called `my_project`:
 
 ```python
 df = spark.read.csv("/Projects/my_project/Resources/data.csv", header=True, inferSchema=True)
@@ -148,7 +153,8 @@ df.show()
 
 ### Additional files
 
-Different files can be attached to the jupyter session and made available in the `/srv/hops/artifacts` folder when the PySpark kernel is started. This configuration is mainly useful when you need to add additional configuration such as jars that needs to be added to the CLASSPATH.
+Different files can be attached to the jupyter session and made available in the `/srv/hops/artifacts` folder when the PySpark kernel is started.
+This configuration is mainly useful when you need to add additional configuration such as jars that needs to be added to the CLASSPATH.
 
 When reading data in your Spark application, it is recommended to use the Spark read API as previously demonstrated, since this reads from the filesystem directly, whereas `Additional files` configuration options will download the files in its entirety and is not a scalable option.
 

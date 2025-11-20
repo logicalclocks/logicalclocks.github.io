@@ -1,8 +1,10 @@
 # AWS - Getting started
 
 Kubernetes and Helm are used to install & run Hopsworks and the Feature Store
-in the cloud. They both integrate seamlessly with third-party platforms such as Databricks,
-SageMaker and KubeFlow. This guide shows how to set up the Hopsworks platform in your organization's AWS account.
+in the cloud.
+They both integrate seamlessly with third-party platforms such as Databricks,
+SageMaker and KubeFlow.
+This guide shows how to set up the Hopsworks platform in your organization's AWS account.
 
 ## Prerequisites
 
@@ -15,13 +17,16 @@ To follow the instruction on this page you will need the following:
 
 ### ECR Registry
 
-Hopsworks allows users to customize the images used by Python jobs, Jupyter Notebooks and (Py)Spark applications running in their projects. The images are stored in ECR. Hopsworks needs access to an ECR repository to push the project images.
+Hopsworks allows users to customize the images used by Python jobs, Jupyter Notebooks and (Py)Spark applications running in their projects.
+The images are stored in ECR.
+Hopsworks needs access to an ECR repository to push the project images.
 
 ### Permissions
 
 - The deployment requires cluster admin access to create ClusterRoles, ServiceAccounts, and ClusterRoleBindings.
 
-- A namespace is required to deploy the Hopsworks stack. If you don’t have permissions to create a namespace, ask your EKS administrator to provision one.
+- A namespace is required to deploy the Hopsworks stack.
+If you don’t have permissions to create a namespace, ask your EKS administrator to provision one.
 
 ## EKS Deployment
 
@@ -120,7 +125,7 @@ The following is required if you are using the EKS AWS Load Balancer Controller 
 
 ```bash
       withAddonPolicies:
-        awsLoadBalancerController: true 
+        awsLoadBalancerController: true
 ```
 
 You need to update the CLUSTER NAME and the POLICY ARN generated above
@@ -132,7 +137,7 @@ kind: ClusterConfig
 metadata:
   name: CLUSTER_NAME
   region: REGION
-  version: "1.29" 
+  version: "1.29"
 
 iam:
   withOIDC: true
@@ -187,7 +192,8 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n ku
 
 ### Step 1.5: (Optional) Create GP3 Storage Class
 
-By default EKS comes with GP2 as storage class. GP3 is more cost effective, we can use it with Hopsworks by creating the storage class
+By default EKS comes with GP2 as storage class.
+GP3 is more cost effective, we can use it with Hopsworks by creating the storage class
 
 ```bash
 kubectl apply -f - <<EOF
@@ -245,18 +251,18 @@ global:
       credHelper:
         enabled: true
         secretName: &awsregcred "awsregcred"
-    
+
     managedObjectStorage:
       enabled: true
       s3:
-        bucket: 
+        bucket:
           name: &bucket "BUCKET_NAME"
         region: &region "REGION"
         secret:
           name: &awscredentialsname "aws-credentials"
           acess_key_id: &awskeyid "access-key-id"
           secret_key_id: &awsaccesskey "secret-access-key"
-    
+
     minio:
       enabled: false
 
@@ -323,7 +329,9 @@ prometheus:
 helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.aws.yaml --timeout=600s
 ```
 
-Using the kubectl CLI tool, you can track the deployment process. You can use the command below to track which pods are running and which ones are in the process of being provisioned. You can also use the command below to detect any failure.
+Using the kubectl CLI tool, you can track the deployment process.
+You can use the command below to track which pods are running and which ones are in the process of being provisioned.
+You can also use the command below to detect any failure.
 
 ```bash
 kubectl -n hopsworks get pods
@@ -355,7 +363,8 @@ Enabling the external load balancer in the values.yml file provisions the follow
 
 - opensearch : This load balancer is used to query the Hopsworks vector database
 
-On EKS using the AWS Load Balancers, the AWS controller deployed above will be responsible to provision the necessary load balancers. You can configure the load balancers using the annotations documented in the [AWS Load Balancer controller guide](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
+On EKS using the AWS Load Balancers, the AWS controller deployed above will be responsible to provision the necessary load balancers.
+You can configure the load balancers using the annotations documented in the [AWS Load Balancer controller guide](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
 
 You can enable/disable individual load balancers provisioning using the following values in the values.yml file:
 
@@ -379,7 +388,8 @@ Ingress:
       alb.ingress.kubernetes.io/scheme: internet-facing
 ```
 
-Hopsworks UI and REST interface is available outside the K8s cluster using an Ingress. On AWS this is implemented by provisioning an application load balancer using the AWS load balancer controller.
+Hopsworks UI and REST interface is available outside the K8s cluster using an Ingress.
+On AWS this is implemented by provisioning an application load balancer using the AWS load balancer controller.
 As per the load balancer above, the controller checks for the following annotations: [Annotations - AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
 
 HTTPS is required to access the Hopsworks UI, therefore you need to add the following annotation:
@@ -388,11 +398,13 @@ HTTPS is required to access the Hopsworks UI, therefore you need to add the foll
 alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:xxxxx:certificate/xxxxxxx
 ```
 
-To configure the TLS certificate the Application Load Balancer should use to terminate the connection. The certificate should be available in the [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)
+To configure the TLS certificate the Application Load Balancer should use to terminate the connection.
+The certificate should be available in the [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)
 
 Cluster Roles and Cluster Role Bindings:
 
-By default a set of cluster roles are provisioned, if you don’t have permissions to provision cluster roles or cluster role bindings, you should reach out to your K8s administrator. You should then provide the appropriate resource names as value in the values.yml file.
+By default a set of cluster roles are provisioned, if you don’t have permissions to provision cluster roles or cluster role bindings, you should reach out to your K8s administrator.
+You should then provide the appropriate resource names as value in the values.yml file.
 
 ## Step 4: Next steps
 

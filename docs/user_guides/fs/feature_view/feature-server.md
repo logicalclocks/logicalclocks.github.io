@@ -8,9 +8,15 @@ This API server allows users to retrieve single/batch feature vectors from a fea
 
 ## How to use
 
-From Hopsworks 3.3, you can connect to the Feature Vector Server via any REST client which supports POST requests. Set the X-API-HEADER to your Hopsworks API Key and send the request with a JSON body, [single](#request) or [batch](#request-1). By default, the server listens on the `0.0.0.0:4406` and the api version is set to `0.1.0`. Please refer to `/srv/hops/mysql-cluster/rdrs_config.json` config file located on machines running the REST Server for additional configuration parameters.
+From Hopsworks 3.3, you can connect to the Feature Vector Server via any REST client which supports POST requests.
+Set the X-API-HEADER to your Hopsworks API Key and send the request with a JSON body, [single](#request) or [batch](#request-1).
+By default, the server listens on the `0.0.0.0:4406` and the api version is set to `0.1.0`.
+Please refer to `/srv/hops/mysql-cluster/rdrs_config.json` config file located on machines running the REST Server for additional configuration parameters.
 
-In Hopsworks 3.7, we introduced a python client for the Online Store REST API Server. The python client is available in the `hsfs` module and can be installed using `pip install hsfs`. This client can be used instead of the Online Store SQL client in the `FeatureView.get_feature_vector(s)` methods. Check the corresponding [documentation](./feature-vectors.md) for these methods.
+In Hopsworks 3.7, we introduced a python client for the Online Store REST API Server.
+The python client is available in the `hsfs` module and can be installed using `pip install hsfs`.
+This client can be used instead of the Online Store SQL client in the `FeatureView.get_feature_vector(s)` methods.
+Check the corresponding [documentation](./feature-vectors.md) for these methods.
 
 ## Single feature vector
 
@@ -106,7 +112,7 @@ options            | objects     | Optional. Map of option as key and boolean as
 
 **Response with pk/pass feature error**
 
-```
+```json
 {
         "code": 12,
         "message": "Wrong primay-key column. Column: ts",
@@ -116,7 +122,7 @@ options            | objects     | Optional. Map of option as key and boolean as
 
 **Response with metadata error**
 
-```
+```json
 {
         "code": 2,
         "message": "",
@@ -126,7 +132,7 @@ options            | objects     | Optional. Map of option as key and boolean as
 
 **Pk value no match**
 
-```
+```json
 {
         "features": [
                 9876543,
@@ -141,20 +147,24 @@ options            | objects     | Optional. Map of option as key and boolean as
 
 **Detailed Status**
 
-If `includeDetailedStatus` option is set to true, detailed status is returned in the response. Detailed status is a list of feature group id and http status code, corresponding to each read operations perform internally by RonDB. Meaning is as follows:
+If `includeDetailedStatus` option is set to true, detailed status is returned in the response.
+Detailed status is a list of feature group id and http status code, corresponding to each read operations perform internally by RonDB.
+Meaning is as follows:
 
 - `featureGroupId`: Id of the feature group, used to identify which table the operation correspond from.
 - `httpStatus`: Http status code of the operation.
-        *200 means success
-        * 400 means bad request, likely pk name is wrong or pk is incomplete. In particular, if pk for this table/feature group is not provided in the request, this http status is returned.
-        *404 means no row corresponding to PK
-        * 500 means internal error.
+  - 200 means success
+  - 400 means bad request, likely pk name is wrong or pk is incomplete.
+    In particular, if pk for this table/feature group is not provided in the request, this http status is returned.
+  - 404 means no row corresponding to PK
+  - 500 means internal error.
 
-Both `404` and `400` set the status to `MISSING` in the response. Examples below corresponds respectively to missing row and bad request.
+Both `404` and `400` set the status to `MISSING` in the response.
+Examples below corresponds respectively to missing row and bad request.
 
 Missing Row: The pk name,value was correctly passed but the corresponding row was not found in the feature group.
 
-```
+```json
 {
         "features": [
                 36,
@@ -178,7 +188,7 @@ Missing Row: The pk name,value was correctly passed but the corresponding row wa
 
 Bad Request e.g pk name,value pair for FG2 not provided or the corresponding column names was incorrect.
 
-```
+```json
 {
         "features": [
                 36,
@@ -208,7 +218,7 @@ Bad Request e.g pk name,value pair for FG2 not provided or the corresponding col
 
 **Body**
 
-```
+```json
 {
         "featureStoreName": "fsdb002",
         "featureViewName": "sample_2",
@@ -257,9 +267,8 @@ options            | objects          | Optional. Map of option as key and boole
 
 ### Response
 
-```
+```json
 {
-        {
         "features": [
                 [
                         16,
@@ -356,7 +365,7 @@ note: Order of the returned features are the same as the order of entries in the
 
 **Response with partial failure**
 
-```
+```json
 {
         "features": [
                 [
@@ -398,4 +407,5 @@ note: Order of the returned features are the same as the order of entries in the
 
 ## Access control to feature store
 
-Currently, the REST API server only supports Hopsworks API Keys for authentication and authorization. Add the API key to the HTTP requests using the `X-API-KEY` header.
+Currently, the REST API server only supports Hopsworks API Keys for authentication and authorization.
+Add the API key to the HTTP requests using the `X-API-KEY` header.

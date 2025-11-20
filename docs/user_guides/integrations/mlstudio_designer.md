@@ -1,14 +1,18 @@
 # Azure Machine Learning Designer Integration
 
-Connecting to Hopsworks from the Azure Machine Learning Designer requires setting up a Hopsworks API key for the Designer and installing the **Hopsworks** Python library on the Designer. This guide explains step by step how to connect to the Feature Store from Azure Machine Learning Designer.
+Connecting to Hopsworks from the Azure Machine Learning Designer requires setting up a Hopsworks API key for the Designer and installing the **Hopsworks** Python library on the Designer.
+This guide explains step by step how to connect to the Feature Store from Azure Machine Learning Designer.
 
 !!! info "Network Connectivity"
 
-    To be able to connect to the Feature Store, please ensure that the Network Security Group of your Hopsworks instance on Azure is configured to allow incoming traffic from your compute target on ports 443, 9083 and 9085 (443,9083,9085). See [Network security groups](https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview) for more information. If your compute target is not in the same VNet as your Hopsworks instance and the Hopsworks instance is not accessible from the internet then you will need to configure [Virtual Network Peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering).
+    To be able to connect to the Feature Store, please ensure that the Network Security Group of your Hopsworks instance on Azure is configured to allow incoming traffic from your compute target on ports 443, 9083 and 9085 (443,9083,9085).
+    See [Network security groups](https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview) for more information.
+    If your compute target is not in the same VNet as your Hopsworks instance and the Hopsworks instance is not accessible from the internet then you will need to configure [Virtual Network Peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering).
 
 ## Generate an API key
 
-For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the Azure ML Designer integration to work correctly make sure you add the following scopes to your API key:
+For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md).
+For the Azure ML Designer integration to work correctly make sure you add the following scopes to your API key:
 
   1. featurestore
   2. project
@@ -37,7 +41,9 @@ In the pipeline, add a new `Execute Python Script` step and replace the Python s
 
 !!! info "Updating the script"
 
-    Replace MY_VERSION, MY_API_KEY, MY_INSTANCE, MY_PROJECT and MY_FEATURE_GROUP with the respective values. The major version set for MY_VERSION needs to match the major version of Hopsworks. Check [PyPI](https://pypi.org/project/hopsworks/#history) for available releases.
+    Replace MY_VERSION, MY_API_KEY, MY_INSTANCE, MY_PROJECT and MY_FEATURE_GROUP with the respective values.
+    The major version set for MY_VERSION needs to match the major version of Hopsworks.
+    Check [PyPI](https://pypi.org/project/hopsworks/#history) for available releases.
 
     <p align="center">
     <figure>
@@ -81,7 +87,8 @@ def azureml_main(dataframe1 = None, dataframe2 = None):
     return fs.get_feature_group('MY_FEATURE_GROUP', version=1).read(),
 ```
 
-Select a compute target and save the step. The step is now ready to use:
+Select a compute target and save the step.
+The step is now ready to use:
 
 <p align="center">
   <figure>
@@ -90,7 +97,8 @@ Select a compute target and save the step. The step is now ready to use:
   </figure>
 </p>
 
-As a next step, you have to connect the previously created `Execute Python Script` step with the next step in the pipeline. For instance, to export the features to a CSV file, create a `Export Data` step:
+As a next step, you have to connect the previously created `Execute Python Script` step with the next step in the pipeline.
+For instance, to export the features to a CSV file, create a `Export Data` step:
 
 <p align="center">
   <figure>
@@ -121,7 +129,8 @@ Finally, submit the pipeline and wait for it to finish:
 
 !!! info "Performance on the first execution"
 
-    The `Execute Python Script` step can be slow when being executed for the first time as the Hopsworks library needs to be installed on the compute target. Subsequent executions on the same compute target should use the already installed library.
+    The `Execute Python Script` step can be slow when being executed for the first time as the Hopsworks library needs to be installed on the compute target.
+    Subsequent executions on the same compute target should use the already installed library.
 
 <p align="center">
   <figure>

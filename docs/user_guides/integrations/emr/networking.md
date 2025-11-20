@@ -1,6 +1,7 @@
 # Networking
 
-In order for Spark to communicate with the Hopsworks Feature Store from EMR, networking needs to be set up correctly. This includes deploying the Hopsworks Feature Store to either the same VPC or enable VPC peering between the VPC of the EMR cluster and the Hopsworks Feature Store.
+In order for Spark to communicate with the Hopsworks Feature Store from EMR, networking needs to be set up correctly.
+This includes deploying the Hopsworks Feature Store to either the same VPC or enable VPC peering between the VPC of the EMR cluster and the Hopsworks Feature Store.
 
 ## Step 1: Ensure network connectivity
 
@@ -29,7 +30,8 @@ Identify your EMR VPC in the Summary of your EMR cluster:
 
 **Option 2: Set up VPC peering**
 
-Follow the guide [VPC Peering](https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html) to set up VPC peering between the Feature Store and EMR. Get your Feature Store *VPC ID* and *CIDR* by searching for the Feature Store VPC in the AWS Management Console:
+Follow the guide [VPC Peering](https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html) to set up VPC peering between the Feature Store and EMR.
+Get your Feature Store *VPC ID* and *CIDR* by searching for the Feature Store VPC in the AWS Management Console:
 
 <p align="center">
   <figure>

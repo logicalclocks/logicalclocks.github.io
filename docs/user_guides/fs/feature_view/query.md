@@ -1,10 +1,14 @@
 # Query vs DataFrame
 
-HSFS provides a DataFrame API to ingest data into the Hopsworks Feature Store. You can also retrieve feature data in a DataFrame, that can either be used directly to train models or [materialized to file(s)](./training-data.md) for later use to train models.
+HSFS provides a DataFrame API to ingest data into the Hopsworks Feature Store.
+You can also retrieve feature data in a DataFrame, that can either be used directly to train models or [materialized to file(s)](./training-data.md) for later use to train models.
 
-The idea of the Feature Store is to have pre-computed features available for both training and serving models. The key functionality required to generate training datasets from reusable features are: feature selection, joins, filters, and point in time queries. The Query object enables you to select features from different feature groups to join together to be used in a feature view.
+The idea of the Feature Store is to have pre-computed features available for both training and serving models.
+The key functionality required to generate training datasets from reusable features are: feature selection, joins, filters, and point in time queries.
+The Query object enables you to select features from different feature groups to join together to be used in a feature view.
 
-The joining functionality is heavily inspired by the APIs used by Pandas to merge DataFrames. The APIs allow you to specify which features to select from which feature group, how to join them and which features to use in join conditions.
+The joining functionality is heavily inspired by the APIs used by Pandas to merge DataFrames.
+The APIs allow you to specify which features to select from which feature group, how to join them and which features to use in join conditions.
 
 === "Python"
     ```python
@@ -20,7 +24,7 @@ The joining functionality is heavily inspired by the APIs used by Pandas to merg
 
     # save the query to feature view
     feature_view = fs.create_feature_view(
-        version=1, 
+        version=1,
         name='credit_card_fraud',
         labels=["is_fraud"],
         query=selected_features
@@ -54,7 +58,9 @@ The joining functionality is heavily inspired by the APIs used by Pandas to merg
     val query = featureView.getQuery()
     ```
 
-If a data scientist wants to modify a new feature that is not available in the feature store, she can write code to compute the new feature (using existing features or external data) and ingest the new feature values into the feature store. If the new feature is based solely on existing feature values in the Feature Store, we call it a derived feature. The same HSFS APIs can be used to compute derived features as well as features using external data sources.
+If a data scientist wants to modify a new feature that is not available in the feature store, she can write code to compute the new feature (using existing features or external data) and ingest the new feature values into the feature store.
+If the new feature is based solely on existing feature values in the Feature Store, we call it a derived feature.
+The same HSFS APIs can be used to compute derived features as well as features using external data sources.
 
 ## The Query Abstraction
 
@@ -82,7 +88,8 @@ Selecting features from a feature group is a lazy operation, returning a query w
 
 #### Join
 
-Similarly, joins return query objects. The simplest join in one where we join all of the features together from two different feature groups without specifying a join key - `HSFS` will infer the join key as a common primary key between the two feature groups.
+Similarly, joins return query objects.
+The simplest join in one where we join all of the features together from two different feature groups without specifying a join key - `HSFS` will infer the join key as a common primary key between the two feature groups.
 By default, Hopsworks will use the maximal matching subset of the primary keys of the two feature groups as joining key(s), if not specified otherwise.
 
 === "Python"
@@ -97,8 +104,11 @@ By default, Hopsworks will use the maximal matching subset of the primary keys o
     val selectedFeatures = creditCardTransactionsFg.join(accountDetailsFg)
     ```
 More complex joins are possible by selecting subsets of features from the joined feature groups and by specifying a join key and type.
-Possible join types are "inner", "left" or "right". By default`join_type` is `"left". Furthermore, it is possible to specify different
-features for the join key of the left and right feature group. The join key lists should contain the names of the features to join on.
+Possible join types are "inner", "left" or "right".
+By default`join_type` is `"left".
+Furthermore, it is possible to specify different
+features for the join key of the left and right feature group.
+The join key lists should contain the names of the features to join on.
 
 === "Python"
     ```python
@@ -115,8 +125,9 @@ features for the join key of the left and right feature group. The join key list
     ```
 
 !!! warning
-    If there is feature name clash in the query then prefixes will be automatically generated and applied. Generated prefix is feature group
-    alias in the query (e.g. fg1, fg2). Prefix is applied to the right feature group of the query.
+    If there is feature name clash in the query then prefixes will be automatically generated and applied.
+    Generated prefix is feature group alias in the query (e.g., fg1, fg2).
+    Prefix is applied to the right feature group of the query.
 
 ### Data modeling in Hopsworks
 
@@ -158,9 +169,8 @@ known as the serving_keys, from the parent feature group to retrieve your precom
 
 #### Snowflake schema
 
-Hopsworks also provides the possibility to define a feature view that consists of a nested tree of children (to up to a depth of 20)
-from the root (left most) feature group. This is called  Snowflake Schema data model where you need to build nested tables (subtrees) using joins, and then join the
-subtrees to their parents iteratively until you reach the root node (the leftmost feature group in the feature selection):
+Hopsworks also provides the possibility to define a feature view that consists of a nested tree of children (to up to a depth of 20) from the root (left most) feature group.
+This is called  Snowflake Schema data model where you need to build nested tables (subtrees) using joins, and then join the subtrees to their parents iteratively until you reach the root node (the leftmost feature group in the feature selection):
 
 <p align="center">
   <figure>
@@ -180,8 +190,7 @@ subtrees to their parents iteratively until you reach the root node (the leftmos
         .join(merchant_details.select_all())
     ```
 
-Now, you have the benefit that in online inference you only need to pass two serving key values (the foreign keys of the leftmost feature group)
-to retrieve the precomputed features:
+Now, you have the benefit that in online inference you only need to pass two serving key values (the foreign keys of the leftmost feature group) to retrieve the precomputed features:
 
 === "Python"
     ```python
@@ -195,7 +204,8 @@ to retrieve the precomputed features:
 
 In the same way as joins, applying filters to feature groups creates a query with the applied filter.
 
-Filters are constructed with Python Operators `==`, `>=`, `<=`, `!=`, `>`, `<` and additionally with the methods `isin` and `like`. Bitwise Operators `&` and `|` are used to construct conjunctions.
+Filters are constructed with Python Operators `==`, `>=`, `<=`, `!=`, `>`, `<` and additionally with the methods `isin` and `like`.
+Bitwise Operators `&` and `|` are used to construct conjunctions.
 For the Scala part of the API, equivalent methods are available in the `Feature` and `Filter` classes.
 
 === "Python"
@@ -247,7 +257,8 @@ The filters can be applied at any point of the query:
 #### Joins and/or Filters on feature view query
 
 The query retrieved from a feature view can be extended with new joins and/or new filters.
-However, this operation will not update the metadata and persist the updated query of the feature view itself. This query can then be used to create a new feature view.
+However, this operation will not update the metadata and persist the updated query of the feature view itself.
+This query can then be used to create a new feature view.
 
 === "Python"
     ```python
@@ -290,7 +301,7 @@ However, this operation will not update the metadata and persist the updated que
     feature_view.query.join(merchant_details_fg.select_all()) \
         .filter((credit_card_transactions_fg.category == "Cash Withdrawal")
 
-    # to apply new logic independent of purchase type from above 
+    # to apply new logic independent of purchase type from above
     # re-fetch new feature view and its query instance
     feature_view = fs.get_feature_view(“credit_card_fraud”, version=1)
 
@@ -308,15 +319,15 @@ However, this operation will not update the metadata and persist the updated que
 
     // fetch new feature view and its query instance
     val featureView = fs.getFeatureView(“credit_card_fraud”, version=1)
-    
+
     // apply join/filter logic based on purchase type
     featureView.getQuery.join(merchantDetailsFg.selectAll())
         .filter(creditCardTransactionsFg.getFeature("category").eq("Cash Withdrawal"))
-    
-    // to apply new logic independent of purchase type from above 
+
+    // to apply new logic independent of purchase type from above
     // re-fetch new feature view and its query instance
     val featureView = fs.getFeatureView(“credit_card_fraud”, 1)
-    
+
     // apply new join/filter logic based on account details
     featureView.getQuery.join(merchantDetailsFg.selectAll())
         .filter(accountDetailsFg.getFeature("gender").eq("F"))

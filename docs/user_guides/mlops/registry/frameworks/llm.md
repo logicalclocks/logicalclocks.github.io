@@ -24,7 +24,8 @@ In this guide you will learn how to export a [Large Language Model (LLM)](https:
 
 ### Step 2: Download the LLM
 
-Download your base or fine-tuned LLM. LLMs can typically be downloaded using the official frameworks provided by their creators (e.g., HuggingFace, Ollama, ...)
+Download your base or fine-tuned LLM.
+LLMs can typically be downloaded using the official frameworks provided by their creators (e.g., HuggingFace, Ollama, ...)
 
 === "Python"
     ```python
@@ -39,7 +40,8 @@ Download your base or fine-tuned LLM. LLMs can typically be downloaded using the
 
 ### Step 3: (Optional) Fine-tune LLM
 
-If necessary, fine-tune your LLM with an [instruction set](https://www.hopsworks.ai/dictionary/instruction-datasets-for-fine-tuning-llms). A LLM can be fine-tuned fully or using [Parameter Efficient Fine Tuning (PEFT)](https://www.hopsworks.ai/dictionary/parameter-efficient-fine-tuning-of-llms) methods such as LoRA or QLoRA.
+If necessary, fine-tune your LLM with an [instruction set](https://www.hopsworks.ai/dictionary/instruction-datasets-for-fine-tuning-llms).
+A LLM can be fine-tuned fully or using [Parameter Efficient Fine Tuning (PEFT)](https://www.hopsworks.ai/dictionary/parameter-efficient-fine-tuning-of-llms) methods such as LoRA or QLoRA.
 
 === "Python"
     ```python
@@ -49,7 +51,8 @@ If necessary, fine-tune your LLM with an [instruction set](https://www.hopsworks
 
 ### Step 4: Register model in registry
 
-Use the `ModelRegistry.llm.create_model(..)` function to register a model as LLM. Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
+Use the `ModelRegistry.llm.create_model(..)` function to register a model as LLM.
+Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
 
 === "Python"
     ```python
