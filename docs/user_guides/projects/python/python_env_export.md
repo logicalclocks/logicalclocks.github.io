@@ -1,6 +1,6 @@
 # How To Export Python Environment
 
-### Introduction
+## Introduction
 
 Each of the python environments in a project can be exported to an `environment.yml` file.
 It can be useful to export it to keep a snapshot of all the installed libraries and their versions.

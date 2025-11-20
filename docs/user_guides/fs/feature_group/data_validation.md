@@ -17,7 +17,7 @@ Note that validation is performed inline as part of your feature pipeline (on th
 ### Create a Feature Group (Pre-requisite)
 
 In the UI, you must create a Feature Group first before attaching an Expectation Suite.
-You can find out more information about creating a Feature Group [here](create.md).
+You can find out more information about [creating a Feature Group](create.md).
 You can attach at most one expectation suite to a Feature Group.
 Data validation is an optional step and is not required to write to a Feature Group.
 

@@ -45,7 +45,7 @@ The request format depends on the model sever being used.
 
 For predictive inference (i.e., for Tensorflow or SkLearn or Python Serving).
 The request must be sent as a JSON object containing an `inputs` or `instances` field.
-You can find more information on the request format [here](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#request-format).
+See [more information on the request format](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#request-format).
 An example for this is given below.
 
 === "Python"

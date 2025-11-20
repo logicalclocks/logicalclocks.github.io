@@ -41,7 +41,7 @@ for computing the [on-demand feature](../../../concepts/fs/feature_group/on_dema
         )
         ```
 
-### Retrieval
+### Inference Data Retrieval
 
 When retrieving data for model inference, helper columns will be omitted.
 However, they can be optionally fetched with inference or training data.
@@ -133,7 +133,7 @@ For example one might want to use feature like `category` of the purchased produ
         )
         ```
 
-### Retrieval
+### Training Data Retrieval
 
 When retrieving training data helper columns will be omitted.
 However, they can be optionally fetched.

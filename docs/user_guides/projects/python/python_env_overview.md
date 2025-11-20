@@ -1,6 +1,6 @@
 # Python Environments
 
-### Introduction
+## Introduction
 
 Hopsworks postulates that building ML systems following the FTI pipeline architecture is best practice.
 This architecture consists of three independently developed and operated ML pipelines:

@@ -133,7 +133,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 3: Upload the script to your project
 
-!!! info "You can also use the UI to upload your transformer script. See [above](#step-3-advanced-deployment-form)"
+!!! info "You can also use the UI to upload your transformer script. See [above](#step-3-select-a-transformer-script)"
 
 === "Python"
 
@@ -171,7 +171,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Transformer](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/transformer_api/)
+[Transformer](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/transformer_api/)
 
 ## Resources
 

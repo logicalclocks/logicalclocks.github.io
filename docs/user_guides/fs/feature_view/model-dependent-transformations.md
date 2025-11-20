@@ -141,7 +141,7 @@ Model-dependent transformation functions can also be manually applied to a featu
         encoded_feature_vector = fv.transform(feature_vector)
         ```
 
-#### Retrieving untransformed feature vector and batch inference data
+### Retrieving untransformed feature vector and batch inference data
 
 The `get_feature_vector`, `get_feature_vectors`, and `get_batch_data` methods can return untransformed feature vectors and batch data without applying model-dependent transformations while still including on-demand features.
 To achieve this, set the `transform` parameter to False.

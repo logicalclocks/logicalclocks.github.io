@@ -104,7 +104,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Inference Batcher](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/inference_batcher_api/)
+[Inference Batcher](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/inference_batcher_api/)
 
 ## Compatibility matrix
 

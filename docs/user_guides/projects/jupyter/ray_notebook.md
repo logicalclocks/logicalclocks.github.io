@@ -3,7 +3,7 @@ description: Documentation on how to run Ray applications on Jupyter on Hopswork
 ---
 # How To Run A Ray Notebook
 
-### Introduction
+## Introduction
 
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 

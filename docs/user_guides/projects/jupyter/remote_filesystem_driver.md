@@ -1,6 +1,6 @@
 # Configuring remote filesystem driver
 
-### Introduction
+## Introduction
 
 We provide two ways to access and persist files in HopsFS from a jupyter notebook:
 

@@ -5,7 +5,7 @@ It is a logical view over the feature groups, as the feature data is only stored
 Feature views are used to read feature data for both training and serving (online and batch).
 You can create [training datasets](training-data.md), create [batch data](batch-data.md) and get [feature vectors](feature-vectors.md).
 
-If you want to understand more about the concept of feature view, you can refer to [here](../../../concepts/fs/feature_view/fv_overview.md).
+If you want to understand more about the concept of feature view, you can refer to the [Feature View Overview](../../../concepts/fs/feature_view/fv_overview.md).
 
 ## Feature View Creation
 
@@ -87,7 +87,7 @@ It is important to mention that all training datasets (include all materialised 
 
 Feature views also support tags.
 You can attach, get, and remove tags.
-You can refer to [here]() if you want to learn more about how tags work.
+You can learn more in [Tags Guide](../tags/tags.md).
 
 === "Python"
     ```python

@@ -67,14 +67,14 @@ kubectl -n $NAMESPACE get svc prometheus-external -ojsonpath='{.status.loadBalan
 !!!Warning
     It will take a few seconds until an IP address is assigned to the Service.
 
-We will use this IP address in Step 2.
+We will use this IP address in Step 3.
 
-#### Step 2
+#### Step 3
 
 Edit the configuration file of **Prometheus B** server and append the following Job under `scrape_configs`:
 
 !!! note
-    Replace IP_ADDRESS with the IP address from Step 1 or the IP address of Prometheus service if it is directly accessible.
+    Replace IP_ADDRESS with the IP address from Step 2 or the IP address of Prometheus service if it is directly accessible.
     The snippet below assumes Hopsworks services runs at Namespace **hopsworks**.
 
 ```yaml

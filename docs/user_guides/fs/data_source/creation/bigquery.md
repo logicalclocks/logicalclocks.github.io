@@ -65,7 +65,8 @@ Start by giving it a unique **name** and an optional **description**.
        *Materialization Dataset*: Temporary dataset used by BigQuery for writing.
        It must be set to a dataset where the GCP user has table creation permission.
        The queried table must be in the same location as the `materializationDataset` (e.g 'EU' or 'US').
-       Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]` (Read more details from Google documentation on usage of query for BigQuery spark connector [here](https://github.com/GoogleCloudDataproc/spark-bigquery-connector#reading-data-from-a-bigquery-query)).
+       Also, if a table in the `SQL statement` is from project other than the `parentProject` then use the fully qualified table name i.e. `[project].[dataset].[table]`.
+       For details, read the Google documentation on [usage of query for BigQuery Spark connector](https://github.com/GoogleCloudDataproc/spark-bigquery-connector#reading-data-from-a-bigquery-query).
 
 5. Spark Options: Optionally, you can set additional spark options using the `Key - Value` pairs.
 6. Click on "Save Credentials".

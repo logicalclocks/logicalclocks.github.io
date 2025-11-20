@@ -27,8 +27,8 @@ This is a quick-start of the Hopsworks Feature Store; using a fraud use case we 
 
 This is a batch use case variant of the fraud tutorial, it will give you a high level view on how to use our python APIs and the UI to navigate the feature groups.
 
-| Notebooks   |                                      |
-| ----------- | ------------------------------------ |
+| Notebooks   |
+| ----------- |
 | 1. [How to load, engineer and create feature groups](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/1_fraud_batch_feature_pipeline.ipynb){:target="_blank"}        |
 | 2. [How to create training datasets](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/2_fraud_batch_training_pipeline.ipynb){:target="_blank"} |
 | 3. [How to train a model from the feature store](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/3_fraud_batch_inference.ipynb){:target="_blank"}        |
@@ -39,8 +39,8 @@ This is a online use case variant of the fraud tutorial, it is similar to the ba
 at low latency.
 Additionally, the model will be deployed as a model serving instance, to provide a REST endpoint for real time serving.
 
-| Notebooks   |                                      |
-| ----------- | ------------------------------------ |
+| Notebooks   |
+| ----------- |
 | 1. [How to load, engineer and create feature groups](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/1_fraud_online_feature_pipeline.ipynb){:target="_blank"}        |
 | 2. [How to create training datasets](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/2_fraud_online_training_pipeline.ipynb){:target="_blank"} |
 | 3. [How to train a model from the feature store and deploying it as a serving instance together with the online feature store](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/3_fraud_online_inference_pipeline.ipynb){:target="_blank"}        |

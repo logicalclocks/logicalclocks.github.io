@@ -38,4 +38,4 @@ my_topic = kafka_api.create_topic(TOPIC_NAME, SCHEMA_NAME, 1, replicas=1, partit
 
 ### API Reference
 
-[KafkaTopic](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/kafka_topic/)
+[KafkaTopic](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/kafka_topic/)

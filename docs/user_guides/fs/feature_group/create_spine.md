@@ -4,7 +4,7 @@ description: Documentation on how to create Spine Group in Hopsworks and the dif
 
 # How to create Spine Group
 
-### Introduction
+## Introduction
 
 In this guide you will learn how to create and register a Spine Group with Hopsworks.
 
@@ -60,4 +60,4 @@ You just need to make sure it has the same schema.
 
 ### API Reference
 
-[SpineGroup](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/spine_group_api/#spinegroup)
+[SpineGroup](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/spine_group_api/#spinegroup)

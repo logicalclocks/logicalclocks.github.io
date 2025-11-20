@@ -4,7 +4,7 @@ description: Documentation on how to create an external feature group in Hopswor
 
 # How to create an External Feature Group
 
-### Introduction
+## Introduction
 
 In this guide you will learn how to create and register an external feature group with Hopsworks.
 This guide covers creating an external feature group using the HSFS APIs as well as the user interface.
@@ -77,7 +77,8 @@ Once you have defined the metadata, you can
     fg.save()
     ```
 
-The full method documentation is available [here](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/external_feature_group_api/#externalfeaturegroup). `name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
+You can read [the full method documentation](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/external_feature_group_api/#externalfeaturegroup) for more details.
+`name` is a mandatory parameter of the `create_external_feature_group` and represents the name of the feature group.
 
 The version number is optional, if you don't specify the version number the APIs will create a new version by default with a version number equals to the highest existing version number plus one.
 
@@ -125,18 +126,18 @@ For an external feature group to be available online, during the creation of the
     ```
 
 The `insert()` method takes a DataFrame as parameter and writes it _only_ to the online feature store.
-Users can select which subset of the feature group data they want to make available on the online feature store by using the [query APIs](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/query_api/).
+Users can select which subset of the feature group data they want to make available on the online feature store by using the [query APIs](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/query_api/).
 
 ### Limitations
 
 Hopsworks Feature Store does not support time-travel queries on external feature groups.
 
 Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
-Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#create_train_validation_test_split)
+Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [create_training_data](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#create_training_data), [create_train_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#create_train_test_split) or the [create_train_validation_test_split](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#create_train_validation_test_split)
 
 ### API Reference
 
-[External FeatureGroup](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/external_feature_group_api/#externalfeaturegroup)
+[External FeatureGroup](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/external_feature_group_api/#externalfeaturegroup)
 
 ## Create using the UI
 

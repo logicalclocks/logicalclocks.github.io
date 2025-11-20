@@ -48,7 +48,7 @@ As an example, a 100MB file stored with a replication factor of 3, will consume 
 By default, all storage quotas are disabled and not enforced.
 Administrators can change this default by changing the following configuration in the [Configuration](../admin/variables.md) UI and/or the cluster definition:
 
-```
+```yaml
 hopsworks:
     featurestore_default_quota: [default quota in bytes, -1 to disable]
     hdfs_default_quota: [default quota in bytes, -1 to disable]
@@ -68,7 +68,7 @@ Currently, Hopsworks does not support defining quotas for compute scheduled on t
 By default, the compute quota is disabled.
 Administrators can change this default by changing the following configuration in the [Configuration](../admin/variables.md) UI and/or the cluster definition:
 
-```
+```yaml
 hopsworks:
     yarn_default_payment_type: [NOLIMIT to disable the quota, PREPAID to enable it]
     yarn_default_quota: [default quota in seconds]
@@ -95,7 +95,7 @@ By default, each user can create up to 10 projects.
 For production environments, the number of projects should be limited and controlled for resource allocation purposes as well as closer control over the data.
 Administrators can control how many projects a user can provision by setting the following configuration in the [Configuration](../admin/variables.md) UI and/or cluster definition:
 
-```
+```yaml
 hopsworks:
     max_num_proj_per_user: [Maximum number of projects each user can create]
 ```

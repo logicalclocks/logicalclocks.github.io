@@ -14,7 +14,7 @@ In the provenance pages we will call a provenance artifact or shortly artifact, 
 
 With the following provenance graph:
 
-```
+```plaintext
 data source -> feature group -> feature group -> feature view -> training dataset -> model
 ```
 
@@ -47,10 +47,10 @@ You can inspect the relationship between data sources and feature groups using t
     user_profiles_fg.save()
     ```
 
-### Using the APIs
+### Step 1, Using Python
 
 Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the data sources that are part of the feature group.
-To do so, you can use the [get_storage_connector_provenance](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_storage_connector_provenance) method.
+To do so, you can use the [get_storage_connector_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_storage_connector_provenance) method.
 
 === "Python"
 
@@ -75,7 +75,7 @@ To do so, you can use the [get_storage_connector_provenance](<https://docs.hopsw
     user_profiles_fg.get_storage_connector()
     ```
 
-To traverse the provenance graph in the opposite direction (i.e., from the data source to the feature group), you can use the [get_feature_groups_provenance](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method.
+To traverse the provenance graph in the opposite direction (i.e., from the data source to the feature group), you can use the [get_feature_groups_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/storage_connector_api/#get_feature_groups_provenance) method.
 When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
 
 === "Python"
@@ -104,7 +104,7 @@ When navigating the provenance graph downstream, the `deleted` feature groups ar
 
 When creating a feature group, it is possible to specify a list of feature groups used to create the derived features.
 For example, you could have an external feature group defined over a Snowflake or Redshift table, which you use to compute the features and save them in a feature group.
-You can mark the external feature group as parent of the feature group you are creating by using the `parents` parameter in the [get_or_create_feature_group](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_or_create_feature_group) or [create_feature_group](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#create_feature_group) methods:
+You can mark the external feature group as parent of the feature group you are creating by using the `parents` parameter in the [get_or_create_feature_group](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_or_create_feature_group) or [create_feature_group](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#create_feature_group) methods:
 
 === "Python"
 
@@ -158,7 +158,7 @@ Another example use case for derived feature group is if you have a feature grou
 ### List feature group parents
 
 You can query the provenance graph of a feature group using the UI and the APIs.
-From the APIs you can list the parent feature groups by calling the method [get_parent_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_parent_feature_groups)
+From the APIs you can list the parent feature groups by calling the method [get_parent_feature_groups](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_parent_feature_groups)
 
 === "Python"
 
@@ -177,7 +177,7 @@ From the APIs you can list the parent feature groups by calling the method [get_
 
 A parent is marked as `deleted` (and added to the deleted list) if the parent feature group was deleted. `inaccessible` if you no longer have access to the parent feature group (e.g., the parent feature group belongs to a project you no longer have access to).
 
-To traverse the provenance graph in the opposite direction (i.e., from the parent feature group to the child), you can use the [get_generate_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_generated_feature_groups) method.
+To traverse the provenance graph in the opposite direction (i.e., from the parent feature group to the child), you can use the [get_generate_feature_groups](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_generated_feature_groups) method.
 When navigating the provenance graph downstream, the `deleted` feature groups are not tracked by provenance, as such, the `deleted` property will always return an empty list.
 
 === "Python"
@@ -207,10 +207,10 @@ In each feature group overview page you can find a provenance section with the g
 The relationship between feature groups and feature views is captured automatically when you create a feature view.
 You can inspect the relationship between feature groups and feature views using the APIs or the UI.
 
-### Using the APIs
+### Step 3, Using Python
 
 Starting from a feature view metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the feature groups that are part of the feature view.
-To do so, you can use the [get_parent_feature_groups](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#get_parent_feature_groups) method.
+To do so, you can use the [get_parent_feature_groups](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#get_parent_feature_groups) method.
 
 === "Python"
 
@@ -244,7 +244,7 @@ As such, the `deleted` property will always be empty.
     lineage.inaccessible
     ```
 
-Users can call the [get_models_provenance](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#get_models_provenance) method which will return a [Link](#provenance-links) object.
+Users can call the [get_models_provenance](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#get_models_provenance) method which will return a [provenance Link object](#provenance-links).
 
 You can also retrive directly the accessible models, without the need to extract them from the provenance links object:
 === "Python"
@@ -268,7 +268,7 @@ Last is determined based on timestamp when it was saved into the model registry.
     model = fraud_fv.get_newest_model(training_dataset_version: 1)
     ```
 
-### Using the UI
+### Step 3, Using UI
 
 In the feature view overview UI you can explore the provenance graph of the feature view:
 

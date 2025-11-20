@@ -118,7 +118,7 @@ It will try to load the new configuration to the alertmanager and show any error
     If you make any changes to the configuration ensure that the changes are valid by reloading the configuration until the changes are loaded and visible in the advanced page.
 
 _Example:_ Adding the yaml snippet shown below in the global section of the alert manager configuration will
-have the same effect as creating the SMTP configuration as shown in [section 1](#1-email-alerts) above.
+have the same effect as creating the SMTP configuration as shown in [section 1](#step-2-configure-email-alerts) above.
 
 ```yaml
 global:

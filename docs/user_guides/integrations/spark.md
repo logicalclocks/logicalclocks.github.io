@@ -44,7 +44,7 @@ The three files (`keyStore.jks`, `trustStore.jks` and `material_passwd`) should 
 
 Add the following configuration to the Spark application:
 
-```
+```plaintext
 spark.hadoop.fs.hopsfs.impl                         io.hops.hopsfs.client.HopsFileSystem
 spark.hadoop.hops.ipc.server.ssl.enabled            true
 spark.hadoop.hops.ssl.hostname.verifier             ALLOW_ALL
@@ -100,5 +100,5 @@ fs = project.get_feature_store()           # Get the project's default feature s
 
 ## Next Steps
 
-For more information about how to connect, see the [Login API](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/login/) API reference.
+For more information about how to connect, see the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/login/) API reference.
 Or continue with the Data Source guide to import your own data to the Feature Store.

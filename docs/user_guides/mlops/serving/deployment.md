@@ -55,7 +55,7 @@ Moreover, we infer the deployment name from the model name.
 !!! info "Predictor script for Python models"
     For Python models, you must select a custom [predictor script](#predictor) that loads and runs the trained model by clicking on `From project` or `Upload new file`, to choose an existing script in the project file system or upload a new script, respectively.
 
-If you prefer, change the name of the deployment, model version or [artifact version](#model-artifact).
+If you prefer, change the name of the deployment, model version or [artifact version](#artifact-files).
 Then, click on `Create new deployment` to create the deployment for your model.
 
 <p align="center">
@@ -186,7 +186,7 @@ Retrieve the trained model you want to deploy.
 
 ### API Reference
 
-[Model Serving](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/model_serving_api/)
+[Model Serving](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/model_serving_api/)
 
 ## Model Files
 

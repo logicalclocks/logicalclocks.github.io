@@ -99,13 +99,13 @@ Apply the following configurations to your HDInsight cluster.
 
 Hadoop hadoop-env.sh:
 
-```
+```sh
 export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hopsworks/client/*
 ```
 
 Hadoop core-site.xml:
 
-```
+```ini
 hops.ipc.server.ssl.enabled=true
 fs.hopsfs.impl=io.hops.hopsfs.client.HopsFileSystem
 client.rpc.ssl.enabled.protocol=TLSv1.2
@@ -118,7 +118,7 @@ hops.ssl.trustore.name=/usr/lib/hopsworks/trustStore.jks
 
 Spark spark-defaults.conf:
 
-```
+```ini
 spark.executor.extraClassPath=/usr/lib/hopsworks/client/*
 spark.driver.extraClassPath=/usr/lib/hopsworks/client/*
 spark.sql.hive.metastore.jars=path
@@ -127,7 +127,7 @@ spark.sql.hive.metastore.jars.path=/usr/lib/hopsworks/apache-hive-bin/lib/*
 
 Spark hive-site.xml:
 
-```
+```ini
 hive.metastore.uris=thrift://MY_HOPSWORKS_INSTANCE_PRIVATE_IP:9083
 ```
 
@@ -160,4 +160,4 @@ fs = project.get_feature_store()
 
 ## Next Steps
 
-For more information on how to use the Hopsworks API check out the other guides or the [Login API](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/login/).
+For more information on how to use the Hopsworks API check out the other guides or the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/login/).

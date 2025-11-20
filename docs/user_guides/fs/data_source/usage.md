@@ -155,9 +155,9 @@ While calling the [Feature View](../../../concepts/fs/feature_view/fv_overview.m
     )
     ```
 
-Read more about training data creation [here](../feature_view/training-data.md).
+For a detailed walkthrough on managing and utilizing training data, refer to the [training data guide](../feature_view/training-data.md).
 
 ## Next Steps
 
 We have gone through the basic use cases of a data source.
-For more details about the API functionality for any specific connector type, checkout the [API section](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/storage_connector_api/#storage-connector).
+For more details about the API functionality for any specific connector type, checkout the [API section](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/storage_connector_api/#storage-connector).

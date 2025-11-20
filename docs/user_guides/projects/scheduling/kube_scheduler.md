@@ -12,7 +12,7 @@ This includes [Queues](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/), 
 All these scheduling abstractions are supported in jobs, jupyter notebooks and model deployments.
 Kueue abstractions however, are currently not supported for Spark jobs.
 
-Hopsworks Admins can control which labels and priority classes can be used the cluster (see [Cluster configuration](#cluster-configuration) section) and by which project (see [Default Project configuration](#default-project-configuration) section)
+Hopsworks Admins can control which labels and priority classes can be used in the cluster (see [Admin configuration](#admin-configuration) section) and by which project (see [Project Configuration](#project-configuration) section)
 
 Within a project, data owners can set defaults for jobs and Jupyter notebooks running within that project (see: [Project defaults](#project-defaults) section).
 

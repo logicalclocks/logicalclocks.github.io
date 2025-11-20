@@ -54,7 +54,8 @@ The backup will be located locally on each datanode under the following path:
 /srv/hops/mysql-cluster/ndb/backups/BACKUP - the directory name will be BACKUP-[backup_id]
 ```
 
-A more comprehensive backup script is available [here](https://github.com/logicalclocks/ndb-chef/blob/master/templates/default/native_ndb_backup.sh.erb) - The script includes the steps above as well as collecting all the partial RonDB backups on a single node.
+You can check out [a more comprehensive backup script](https://github.com/logicalclocks/ndb-chef/blob/master/templates/default/native_ndb_backup.sh.erb).
+The script includes the steps above as well as collecting all the partial RonDB backups on a single node.
 The script is a good starting point and can be adapted to ship the database backup outside the cluster.
 
 ### HopsFS Backup

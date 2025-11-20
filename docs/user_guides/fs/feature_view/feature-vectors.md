@@ -2,7 +2,7 @@
 
 The Hopsworks Platform integrates real-time capabilities with its Online Store.
 Based on [RonDB](https://www.rondb.com/), your feature vectors are served at scale at in-memory latency (~1-10ms).
-Checkout the benchmarks results [here](https://www.hopsworks.ai/post/feature-store-benchmark-comparison-hopsworks-and-feast#images-2) and the code [here](https://github.com/featurestoreorg/featurestore-benchmarks).
+Checkout [the benchmarks results](https://www.hopsworks.ai/post/feature-store-benchmark-comparison-hopsworks-and-feast#images-2) and [the benchmark code](https://github.com/featurestoreorg/featurestore-benchmarks).
 The same Feature View which was used to create training datasets can be used to retrieve feature vectors for real-time predictions.
 This allows you to serve the same features to your model in training and serving, ensuring consistency and reducing boilerplate.
 Whether you are either inside the Hopsworks platform, a model serving platform, or in an external environment, such as your application server.
@@ -15,7 +15,7 @@ If you need to get more familiar with the concept of feature vectors, you can re
 
 You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view.
 Note that filters defined in feature view and training data will not be applied when feature vectors are returned.
-If you need to retrieve a complete value of feature vectors without missing values, the required `entry` are [feature_view.primary_keys](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#primary_keys).
+If you need to retrieve a complete value of feature vectors without missing values, the required `entry` are [feature_view.primary_keys](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#primary_keys).
 Alternative, you can provide the primary key of the feature groups as the key of the entry.
 It is also possible to provide a subset of the entry, which will be discussed [below](#partial-feature-retrieval).
 
@@ -55,7 +55,7 @@ It is also possible to provide a subset of the entry, which will be discussed [b
 Starting from python client v3.4, you can specify different values for the primary key of the same name which exists in multiple feature groups but are not joint by the same name.
 The table below summarises the value of `primary_keys` in different settings.
 Considering that you are joining 2 feature groups, namely, `left_fg` and `right_fg`, the feature groups have different primary keys, and features (`feature_*`) in each setting.
-Also, the 2 feature groups are [joint](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/query_api/#join) on different *join conditions* and *prefix* as `left_fg.join(right_fg, <join conditions>, prefix=<prefix>)`.
+Also, the 2 feature groups are [joint](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/query_api/#join) on different *join conditions* and *prefix* as `left_fg.join(right_fg, <join conditions>, prefix=<prefix>)`.
 
 For java client, and python client before v3.4, the `primary_keys` are the set of primary key of all the feature groups in the query.
 Python client is backward compatible.
@@ -69,21 +69,13 @@ It means that the `primary_keys` used before v3.4 can be applied to python clien
 |   4  | id, user_id                | id                          | `left_on=["user_id"], right_on=["id"]`     |        | id, user_id                                   | Value of `user_id` is used for retrieving features from `right_fg` |
 |   5  | id1                        | id1, id2                    | `on=["id1"]`                               |        | id1, id2                                      | `id2` is not part of the join conditions                  |
 |   6  | id                         | id, user_id                 | `left_on=["id"], right_on=["user_id"]`     | “right_“| id, “right_id“ | Value of “right_id“ and "id" are used for retrieving features from `right_fg` |
-|   7  | id                         | id, user_id                 | `left_on=["id"], right_on=["user_id"]`     |         | id, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id“ and "id" are used for retrieving features from `right_fg`.
-See note below. |
-|   8  | id                        | id                         | `left_on=["id"], right_on=["feature_1"]`  | “right_“ | id, “right_id“                              | No primary key from `right_fg` is used in the join.
-Value of `right_id` is used for retrieving features from `right_fg` |
-|   9  | id                        | id                         | `left_on=["id"], right_on=["feature_1"]`  |          | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `right_fg` is used in the join.
-Value of "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id" is used for retrieving features from "right_fg`.
-See note below. |
-|   10  | id                        | id                         | `left_on=["feature_1"], right_on=["id"]` | “right_“ | id, “right_id“                              | No primary key from `left_fg` is used in the join.
-Value of `right_id` is used for retrieving features from `right_fg` |
-|   11  | id                        | id                         | `left_on=["feature_1"], right_on=["id"]` |          | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `left_fg` is used in the join.
-Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” is used for retrieving features from `right_fg`.
-See note below. |
+|   7  | id                         | id, user_id                 | `left_on=["id"], right_on=["user_id"]`     |         | id, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id“ and "id" are used for retrieving features from `right_fg`. See note below. |
+|   8  | id                        | id                         | `left_on=["id"], right_on=["feature_1"]`  | “right_“ | id, “right_id“                              | No primary key from `right_fg` is used in the join. Value of `right_id` is used for retrieving features from `right_fg` |
+|   9  | id                        | id                         | `left_on=["id"], right_on=["feature_1"]`  |          | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `right_fg` is used in the join. Value of "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id" is used for retrieving features from "right_fg`. See note below. |
+|   10  | id                        | id                         | `left_on=["feature_1"], right_on=["id"]` | “right_“ | id, “right_id“                              | No primary key from `left_fg` is used in the join. Value of `right_id` is used for retrieving features from `right_fg` |
+|   11  | id                        | id                         | `left_on=["feature_1"], right_on=["id"]` |          | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `left_fg` is used in the join. Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” is used for retrieving features from `right_fg`. See note below. |
 |   12  | user, year                 | user, year                  | `left_on=["user"], right_on=["user"]`     | “right_“ | user, year, “right_year“                   | Value of "user" and "right_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`. |
-|   13  | user, year                 | user, year                  | `left_on=["user"], right_on=["user"]`     |        | user, year, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year” | Value of "user" and "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`.
-See note below. |
+|   13  | user, year                 | user, year                  | `left_on=["user"], right_on=["user"]`     |        | user, year, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year” | Value of "user" and "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`. See note below. |
 
 Note:
 
@@ -293,7 +285,7 @@ This implementation is available as of Hopsworks 3.7.
 Initialise the client by calling the `init_serving` method on the Feature View object before starting to fetch feature vectors.
 This will initialise the chosen client, test the connection, and initialise the transformation functions registered with the Feature View.
 Note to use the REST client in the Hopsworks Cluster python environment you will need to provide an API key explicitly as JWT authentication is not yet supported.
-More configuration options can be found in the [API documentation](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#init_serving).
+More configuration options can be found in the [API documentation](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#init_serving).
 
 === "Python"
 

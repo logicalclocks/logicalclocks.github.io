@@ -5,11 +5,11 @@ In addition, you can get started quickly by running our [tutorial for feature mo
 
 ## Retrieve feature monitoring configurations
 
-### From UI
+### Retrieve feature monitoring configurations from UI
 
 An overview of all feature monitoring configurations is listed in the ^^Feature Monitoring^^ section in the Feature Group and Feature View overview page.
 
-### From Python client
+### Retrieve feature monitoring configurations from Python
 
 You can retrieve one or more feature monitoring configurations from the Feature Group and Feature View Python objects and filter them by name, configuration id or feature name.
 
@@ -40,13 +40,13 @@ You can retrieve one or more feature monitoring configurations from the Feature 
 
 You can enable or disable feature monitoring while keeping the historical statistics and comparison results.
 
-### From UI
+### Disable feature monitoring from UI
 
 In the overview page for feature monitoring, you can enable or disable a specific configuration by clicking on the ^^Disable^^ button.
 
 ![Disable button in a feature monitoring configuration](../../../assets/images/guides/fs/feature_monitoring/fm-config-disable-arrow.png)
 
-### From Python client
+### Disable feature monitoring from Python
 
 You can easily enable or disable a specific feature monitoring configuration using the Python object.
 
@@ -64,7 +64,7 @@ You can easily enable or disable a specific feature monitoring configuration usi
 
 You can trigger the feature monitoring job on demand, to compute and compare statistics on the detection and reference windows according to the feature monitoring configuration.
 
-### From UI
+### Run the statistics comparison manually from UI
 
 In the overview page for feature monitoring, you can trigger the computation and comparison of statistics for a specific configuration by clicking on the ^^Run once^^ button.
 
@@ -73,7 +73,7 @@ In the overview page for feature monitoring, you can trigger the computation and
 
 ![Run once button in a feature monitoring configuration](../../../assets/images/guides/fs/feature_monitoring/fm-config-run-once-arrow.png)
 
-### From Python client
+### Run the statistics comparison manually from Python
 
 To trigger the feature monitoring job once from the Python API, use the feature monitoring Python object as shown in the example below.
 
@@ -86,14 +86,14 @@ To trigger the feature monitoring job once from the Python API, use the feature 
 
 ## Get feature monitoring results
 
-### From UI
+### Get feature monitoring results from UI
 
 The easiest way to explore the statistics and comparison results is using the Hopsworks ==interactive graph== for Feature Monitoring.
 See more information on the [Interactive graph guide](interactive_graph.md).
 
 ![Visualize statistics on a time series](../../../assets/images/guides/fs/feature_monitoring/fm-reference-plot.png)
 
-### From Python client
+### Get feature monitoring results from Python
 
 Alternatively, you can retrieve all the statistics and comparison results using the feature monitoring configuration Python object as shown in the example below.
 
@@ -114,7 +114,7 @@ Alternatively, you can retrieve all the statistics and comparison results using 
 
 Deleting a feature monitoring configuration also deletes the historical statistics and comparison results attached to this configuration.
 
-### From Python client
+### Delete a feature monitoring configuration from Python
 
 You can delete feature monitoring configurations using the Python API only, as shown in the example below.
 

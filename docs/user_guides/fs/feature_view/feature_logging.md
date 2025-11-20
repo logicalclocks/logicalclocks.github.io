@@ -3,7 +3,7 @@
 Feature logging is essential for debugging, monitoring, and auditing the data your models use.
 This guide explains how to log features and predictions, and retrieve and manage these logs with feature view in Hopsworks.
 
-## Logging Features and Predictions
+## Feature and Prediction Logging
 
 After you have trained a model, you can log the features it uses and the predictions with the feature view used to create the training data for the model.
 You can log either transformed or/and untransformed features values.
@@ -74,7 +74,7 @@ feature_view.log(features,
 
 #### Example 3: Log Both Transformed and Untransformed Features
 
-**Batch Features**
+##### Batch Features
 
 ```python
 untransformed_df = fv.get_batch_data(transformed=False)
@@ -86,7 +86,7 @@ feature_view.log(untransformed_df)
 feature_view.log(transformed_features=transformed_df)
 ```
 
-**Real-time Features**
+##### Real-time Features
 
 ```python
 untransformed_vector = fv.get_feature_vector({"id": 1}, transform=False)

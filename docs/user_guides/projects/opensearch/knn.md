@@ -158,4 +158,4 @@ Score the vector `[2.5, 3]` and find the 3 most similar vectors.
 
 [k-NN plugin](https://opensearch.org/docs/1.3/search-plugins/knn/knn-index/)
 
-[OpenSearch](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/open_search/)
+[OpenSearch](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/open_search/)

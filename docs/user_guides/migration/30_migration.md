@@ -41,7 +41,7 @@ This has the following advantages:
 
 A feature view uses the Query abstraction to define the schema of the view, and therefore, the Query is a mandatory argument, this effectively removes the possibility to create a training dataset directly from a Spark Dataframe.
 
-#### Required changes
+#### Feature View: Required changes
 
 After the upgrade all existing training datasets will be located under a Feature View with the same name.
 The versions of the training datasets stay untouched.
@@ -64,7 +64,7 @@ This has the following advantages:
 2. Hopsworks is fully compatible with GE native objects, that means you can bring your existing expectation suites without the need for rewriting them.
 3. GE is both available for Spark and for Pandas Dataframes, whereas Deequ was only supporting Spark.
 
-#### Required changes
+#### Deequ-based Data Validation: Required changes
 
 All APIs regarding data validation have been redesigned to accommodate the functionality of GE.
 This means that you will have to redesign your previous expectations in the form of GE expectation suites that you can attach to Feature Groups.
@@ -127,7 +127,7 @@ This has the following advantages:
 03. **Batching of offline upserts:** You can control now yourself how often the Spark application that performs the upsert on the offline feature store is running.
     Either you run it synchronously with every new Dataframe ingestion, or you batch multiple Dataframes by launching the job less regularly.
 
-#### Required changes
+#### Streaming API: Required changes
 
 Your existing feature groups will not be affected by this change, that means all existing feature groups will continue to use the old upload path for ingestion.
 However, we strongly recommend creating new versions of your existing feature groups that use ingest to using Python, in order to leverage the above advantages.

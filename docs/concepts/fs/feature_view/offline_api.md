@@ -31,7 +31,7 @@ HSFS hides this complexity by performing the point-in-time JOIN transparently, s
 HSFS uses the event_time columns on both feature groups to determine the most recent (but not newer) feature values that are joined together with the feature values from the feature group containing the label.
 That is, the features in the feature group containing the label are the observation times for the features in the resulting training data, and we want feature values from the other feature groups that have the most recent timestamps, but not newer than the timestamp in the label-containing feature group.
 
-#### Spine Dataframes
+#### Spine Groups
 
 The left side of the point-in-time join is typically the set of training entities/primary key values for which the relevant features need to be retrieved.
 This left side of the join can also be replaced by a [spine group](../feature_group/spine_group.md).

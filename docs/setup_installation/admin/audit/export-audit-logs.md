@@ -18,20 +18,20 @@ Create a dataset and a table in [BigQuery](https://cloud.google.com/bigquery/doc
 
 The table schema is shown below.
 
-```
-fullname       mode     type     description
-pathInfo       NULLABLE STRING
-methodName       NULLABLE STRING
-caller           NULLABLE RECORD
-dateTime       NULLABLE TIMESTAMP bq-datetime
+```plaintext
+fullname        mode     type      description
+pathInfo        NULLABLE STRING
+methodName      NULLABLE STRING
+caller          NULLABLE RECORD
+dateTime        NULLABLE TIMESTAMP bq-datetime
 userAgent       NULLABLE STRING
-clientIp       NULLABLE STRING
-outcome           NULLABLE STRING
-parameters       NULLABLE STRING
+clientIp        NULLABLE STRING
+outcome         NULLABLE STRING
+parameters      NULLABLE STRING
 className       NULLABLE STRING
 caller.userId   NULLABLE STRING
-caller.email   NULLABLE STRING
-caller.username   NULLABLE STRING
+caller.email    NULLABLE STRING
+caller.username NULLABLE STRING
 ```
 
 ## Step 2: Export Audit Logs to the BigQuery Table

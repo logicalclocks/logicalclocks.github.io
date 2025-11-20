@@ -1,6 +1,6 @@
 # How To Add Members To A Project
 
-### Introduction
+## Introduction
 
 In this guide, you will learn how to add new members to your project as well as the different roles within a project.
 

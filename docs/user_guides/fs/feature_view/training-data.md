@@ -192,7 +192,7 @@ feature_view.recreate_training_dataset(training_dataset_version =1)
 ## Tags
 
 Similar to feature view, You can attach, get, and remove tags.
-You can refer to [here](../tags/tags.md) if you want to learn more about how tags work.
+You can learn more in [Tags Guide](../tags/tags.md).
 
 ```python
 # attach

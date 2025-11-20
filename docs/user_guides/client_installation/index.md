@@ -57,7 +57,7 @@ If you want to interact with the Hopsworks Feature Store from environments such 
 The HSFS library is available on the Hopsworks' Maven repository.
 If you are using Maven as build tool, you can add the following in your `pom.xml` file:
 
-```
+```xml
 <repositories>
     <repository>
         <id>Hops</id>
@@ -79,7 +79,7 @@ The library has different builds targeting different environments:
 
 The `artifactId` for the HSFS Java build is `hsfs`, if you are using Maven as build tool, you can add the following dependency:
 
-```
+```xml
 <dependency>
     <groupId>com.logicalclocks</groupId>
     <artifactId>hsfs</artifactId>
@@ -91,7 +91,7 @@ The `artifactId` for the HSFS Java build is `hsfs`, if you are using Maven as bu
 
 The `artifactId` for the Spark build is `hsfs-spark-spark{spark.version}`, if you are using Maven as build tool, you can add the following dependency:
 
-```
+```xml
 <dependency>
     <groupId>com.logicalclocks</groupId>
     <artifactId>hsfs-spark-spark3.1</artifactId>
@@ -105,7 +105,7 @@ Hopsworks provides builds for Spark 3.1, 3.3 and 3.5. The builds are also provid
 
 The `artifactId` for the Flink build is `hsfs-flink`, if you are using Maven as build tool, you can add the following dependency:
 
-```
+```xml
 <dependency>
     <groupId>com.logicalclocks</groupId>
     <artifactId>hsfs-flink</artifactId>
@@ -117,7 +117,7 @@ The `artifactId` for the Flink build is `hsfs-flink`, if you are using Maven as 
 
 The `artifactId` for the Beam build is `hsfs-beam`, if you are using Maven as build tool, you can add the following dependency:
 
-```
+```xml
 <dependency>
     <groupId>com.logicalclocks</groupId>
     <artifactId>hsfs-beam</artifactId>

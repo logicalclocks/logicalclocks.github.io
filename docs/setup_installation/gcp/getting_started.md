@@ -124,8 +124,7 @@ gcloud artifacts repositories create <repo-name> \
 
 ### Step 3.1: Add the Hopsworks Helm repository
 
-To obtain access to the Hopsworks helm chart repository, please obtain
-an evaluation/startup licence [here](https://www.hopsworks.ai/try).
+To obtain access to the Hopsworks helm chart repository, please [obtain](https://www.hopsworks.ai/try) an evaluation/startup licence.
 
 Once you have the helm chart repository URL, replace the environment
 variable $HOPSWORKS_REPO in the following command with this URL.

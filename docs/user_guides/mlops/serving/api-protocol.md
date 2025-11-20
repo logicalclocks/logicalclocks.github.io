@@ -104,4 +104,4 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[API Protocol](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/deployment_api/#api_protocol)
+[API Protocol](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/deployment_api/#api_protocol)

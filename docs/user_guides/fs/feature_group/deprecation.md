@@ -4,7 +4,7 @@ description: Documentation on how to deprecate a feature group in Hopsworks.
 
 # How to deprecate a Feature Group
 
-### Introduction
+## Introduction
 
 To discourage the usage of specific feature groups it is possible to deprecate them.
 When a feature group is deprecated, user will be warned when they try to use it or use a feature view that depends on it.

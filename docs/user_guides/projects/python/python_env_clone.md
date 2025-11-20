@@ -1,6 +1,6 @@
 # How To Clone Python Environment
 
-### Introduction
+## Introduction
 
 Cloning an environment in Hopsworks means creating a copy of one of the base environments.
 The base environments are immutable, meaning that it is required to clone an environment before you can make any change to it, such as installing your own libraries.

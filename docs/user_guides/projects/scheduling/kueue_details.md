@@ -20,7 +20,7 @@ When trying to define queues in Kueue, the first abstraction that needs to be de
 The resource flavor defines the resources that a queue will later manage.
 Hopsworks helm chart installs and uses a default ResourceFlavor
 
-```
+```yaml
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
@@ -38,7 +38,7 @@ Node labels filter the available nodes to this resource flavor and is required f
 [Cluster Queues](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/) are the actual queues for submitting jobs and model deployments to.
 The default hopsworks queue looks like:
 
-```
+```yaml
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ClusterQueue
 metadata:
@@ -89,7 +89,7 @@ An administrator can define the default queue for projects user jobs and system 
 [Cohorts](https://kueue.sigs.k8s.io/docs/concepts/cohort/) are groupings of cluster queues that have some meaning together and can share resources.
 Hopsworks defines a default `cluster` cohort
 
-```
+```yaml
 apiVersion: kueue.x-k8s.io/v1alpha1
 kind: Cohort
 metadata:
@@ -117,7 +117,7 @@ spec:
 Cohorts can contain other cohorts and thus you can create a hierarchy of cohorts.
 Cohorts can set [fair sharing weight](https://kueue.sigs.k8s.io/docs/concepts/admission_fair_sharing/) where using
 
-```
+```yaml
   fairSharing:
     weight
 ```
@@ -129,7 +129,7 @@ in the definition of a cohort, the user can control a priority towards borrowing
 [Topologies](https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/) defines a way of grouping together pods belonging to the same job/deployment so that they are colocated within the same topology unit.
 Hopsworks defines a default topology:
 
-```
+```yaml
 apiVersion: kueue.x-k8s.io/v1alpha1
 kind: Topology
 metadata:

@@ -1,7 +1,7 @@
 # Advanced Data Validation Options and Best Practices
 
-The introduction to the data validation guide can be found [here](data_validation.md).
-The notebook example to get started with Data Validation in Hopsworks can be found [here](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/integrations/great_expectations/fraud_batch_data_validation.ipynb).
+The introduction to the data validation guide can be found in the [Data Validation Guide](data_validation.md).
+The notebook example to get started with Data Validation in Hopsworks can be found in the [Fraud Batch Data Validation Tutorial](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/integrations/great_expectations/fraud_batch_data_validation.ipynb).
 
 ## Data Validation Configuration Options in Hopsworks
 
@@ -17,11 +17,11 @@ Switch behaviour by using the `validation_ingestion_policy` kwarg:
   Ideal to avoid "garbage-in, garbage-out" scenarios, at the price of a potential loss of data.
   Check out the best practice section for more on that.
 
-#### In the UI
+#### Validation Ingestion Policy in UI
 
 Go to the Feature Group edit page, in the Expectation section you can choose between the options above.
 
-#### In the python client
+#### Validation Ingestion Policy in Python
 
 ```python3
 fg.expectation_suite.validation_ingestion_policy = "ALWAYS" # "STRICT"
@@ -33,13 +33,13 @@ If your suite is registered with Hopsworks, it will persist the change to the se
 
 Should you wish to do so, you can disable data validation on a punctual basis or until further notice.
 
-#### In the UI
+#### Disable Data Validation in UI
 
 You can do it in the UI in the Expectation section of the Feature Group edit page.
 Simply tick or untick the enabled checkbox.
 This will be used as the default option but can be overriden via the API.
 
-#### In the python client
+#### Disable Data Validation in Python
 
 To disable data validation until further notice in the API, you can update the `run_validation` field of the expectation suite.
 If your suite is registered with Hopsworks, this will persist the change to the server.
@@ -63,13 +63,13 @@ The one constant in life is change.
 If you need to add, remove or edit an expectation you can do it both in the UI or via the python client.
 Note that changing the expectation type or its corresponding feature will throw an error in order to preserve a meaningful validation history.
 
-#### In Hopworks UI
+#### Edit Expectations in UI
 
 Go to the Feature Group edit page, in the expectation section.
 You can click on the expectation you want to edit and edit the json configuration.
 Check out Great Expectations documentation if you need more information on a particular expectation.
 
-#### In Hopsworks Python Client
+#### Edit Expectations in Python
 
 There are several way to edit an Expectation in the python client.
 You can use Great Expectations API or directly go through Hopsworks.
@@ -137,7 +137,7 @@ These reports can be stored in Hopsworks to save a validation history for the da
 The boilerplate of uploading report on insertion is taken care of by hopsworks, however for custom pipelines we provide an alternative method in the python client.
 The UI does not currently support upload of a validation report.
 
-#### In Hopsworks Python Client
+#### Save Validation Reports in Python
 
 ```python3
 fg.save_validation_report(ge_report)
@@ -148,12 +148,12 @@ fg.save_validation_report(ge_report)
 A summary of uploaded reports will then be available via an API call or in the Hopsworks UI enabling easy monitoring.
 For in-depth analysis, it is possible to download the complete report from the UI.
 
-#### In Hopsworks UI
+#### Monitor and Fetch Validation Reports in UI
 
 Open the Feature Group overview page and go to the Expectations section.
 One tab allows you to check the report history with general information, while the other tab allows you to explore a summary of the result for individual expectations.
 
-#### In Hopsworks Python Client
+#### Monitor and Fetch Validation Reports in Python
 
 ```python3
 # convenience method for rapid development
@@ -165,18 +165,18 @@ ge_latest_report = fg.get_latest_validation_report()
 validation_history = fg.get_validation_reports()
 ```
 
-### Validate your data manually
+### Validate Your Data Manually
 
 While Hopsworks provides automatic validation on insertion logic, we recognise that some use cases may require a more fine-grained control over the validation process.
 Therefore, Feature Group objects offers a convenience wrapper around Great Expectations to manually trigger validation using the registered Expectation Suite.
 
-#### In the UI
+#### Validate Your Data Manually in UI
 
 You can validate data already ingested in the Feature Group by going to the Feature Group overview page.
 In the top right corner is a button to trigger a validation.
 The button will launch a job which will read the Feature Group data, run validation and persist the associated report.
 
-#### In the python client
+#### Validate Your Data Manually in Python
 
 ```python3
 ge_report = fg.validate(df, ingestion_result="EXPERIMENT")

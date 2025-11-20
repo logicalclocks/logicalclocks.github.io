@@ -44,7 +44,7 @@ In such cases it is possible to provide the schema directly as JSON string.
 The JSON should follow the standard [https://json-schema.org](https://json-schema.org).
 An example of complex schema is the following:
 
-```
+```json
 {
   "type" : "object",
   "properties" :
@@ -65,7 +65,7 @@ An example of complex schema is the following:
 Additionally it is also possible to define a single property as tag.
 You can achieve this by defining a JSON schema like the following:
 
-```
+```json
 { "type" : "string" }
 ```
 

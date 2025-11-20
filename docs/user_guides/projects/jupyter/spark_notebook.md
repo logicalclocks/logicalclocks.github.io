@@ -1,6 +1,6 @@
 # How To Run A PySpark Notebook
 
-### Introduction
+## Introduction
 
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 

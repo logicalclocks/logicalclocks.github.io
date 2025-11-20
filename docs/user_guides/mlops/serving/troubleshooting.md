@@ -74,7 +74,7 @@ Transient logs are convenient when access to the most recent logs of a deploymen
 
 !!! note
     In the current version of Hopsworks, transient logs can only be accessed using the Hopsworks Machine Learning Python library.
-    See an example [here](#step-4-explore-transient-logs).
+    See [an example](#step-4-explore-transient-logs).
 
 ### Step 4: Explore historical logs
 
@@ -156,6 +156,6 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
 ### API Reference
 
-[Deployment](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/deployment_api/)
+[Deployment](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/deployment_api/)
 
-[PredictorState](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/predictor_state_api/)
+[PredictorState](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/predictor_state_api/)

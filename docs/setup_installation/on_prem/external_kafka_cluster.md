@@ -14,7 +14,7 @@ This guide will cover how to configure an Hopsworks cluster to leverage an exter
 To enable the integration with an external Kafka cluster, you should set the `enable_bring_your_own_kafka` [configuration option](../admin/variables.md) to `true`.
 This can also be achieved in the cluster definition by setting the following attribute:
 
-```
+```yaml
 hopsworks:
   enable_bring_your_own_kafka: "true"
 ```
@@ -26,7 +26,7 @@ This can be achieved by provisioning the necessary credentials for OnlineFS to s
 
 OnlineFs can be configured to use these credentials by adding the following configurations to the cluster definition used to deploy Hopsworks:
 
-```
+```yaml
   onlinefs:
     config_dir: "/home/ubuntu/cluster-definitions/byok"
     kafka_cosumers:
@@ -37,7 +37,7 @@ In particular, the `onlinefs/config_dir` should contain the credentials necessar
 Additionally the directory should contain a file name `onlinefs-kafka.properties` with the Kafka consumer configuration.
 The following is an example of the `onlinefs-kafka.properties` file:
 
-```
+```properties
 bootstrap.servers=cluster_identifier.us-east-2.aws.confluent.cloud:9092
 security.protocol=SASL_SSL
 sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";

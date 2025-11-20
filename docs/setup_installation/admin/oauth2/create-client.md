@@ -3,7 +3,7 @@
 ## Introduction
 
 Before registering your identity provider in Hopsworks you need to create a client application in your identity provider and acquire a _client id_ and a _client secret_.
-An example on how to create a client using [Okta](https://www.okta.com/) and [Azure Active Directory](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview) identity providers can be found [here](../create-okta-client) and [here](../create-azure-client) respectively.
+An example on how to create a client using [Okta](https://www.okta.com/) and [Azure Active Directory](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview) identity providers can be found in the following guides: [Create Okta Client](../create-okta-client) and [Create Azure Client](../create-azure-client).
 
 ## Prerequisites
 

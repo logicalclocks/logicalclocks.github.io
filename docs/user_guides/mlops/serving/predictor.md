@@ -69,12 +69,12 @@ All models compatible with the selected backend will be listed in the model drop
   </figure>
 </p>
 
-Moreover, you can optionally select a predictor script (see [Step 3](#step-3-optional-select-a-predictor-script)), enable KServe (see [Step 4](#step-4-optional-enable-kserve)) or change other advanced configuration (see [Step 5](#step-5-optional-other-advanced-options)).
+Moreover, you can optionally select a predictor script (see [Step 3 (Optional): Select a predictor script](#step-3-optional-select-a-predictor-script)), enable KServe (see [Step 4 (Optional): Enable KServe](#step-6-optional-enable-kserve)) or change other advanced configuration (see [Step 5 (Optional): Other advanced options](#step-7-optional-other-advanced-options)).
 Otherwise, click on `Create new deployment` to create the deployment for your model.
 
 ### Step 3 (Optional): Select a predictor script
 
-For python models, if you want to use your own [predictor script](#step-2-optional-implement-predictor-script) click on `From project` and navigate through the file system to find it, or click on `Upload new file` to upload a predictor script now.
+For python models, if you want to use your own [predictor script](#step-2-optional-implement-a-predictor-script) click on `From project` and navigate through the file system to find it, or click on `Upload new file` to upload a predictor script now.
 
 <p align="center">
   <figure>
@@ -264,7 +264,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 3 (Optional): Upload the script to your project
 
-!!! info "You can also use the UI to upload your predictor script. See [above](#step-3-advanced-deployment-form)"
+!!! info "You can also use the UI to upload your predictor script. See [above](#step-3-optional-select-a-predictor-script)"
 
 === "Python"
 
@@ -302,7 +302,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Predictor](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/predictor_api/)
+[Predictor](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/predictor_api/)
 
 ## Model Server
 

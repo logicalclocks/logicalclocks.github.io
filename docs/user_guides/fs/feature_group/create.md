@@ -4,7 +4,7 @@ description: Documentation on how to create a Feature Group and the different AP
 
 # How to create a Feature Group
 
-### Introduction
+## Introduction
 
 In this guide you will learn how to create and register a feature group with Hopsworks.
 This guide covers creating a feature group using the HSFS APIs as well as the user interface.
@@ -39,8 +39,9 @@ Using the HSFS API you can execute:
     )
     ```
 
-The full method documentation is available [here](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#featuregroup).
-If you need to create a feature group with vector similarity search supported, refer to [this guide](../vector_similarity_search.md#extending-feature-groups-with-similarity-search). `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group.
+You can read [the full method documentation](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#featuregroup) to get more details.
+If you need to create a feature group with vector similarity search supported, refer to [the vector similarity guide](../vector_similarity_search.md#extending-feature-groups-with-similarity-search).
+`name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group.
 
 In the example above we created the first version of a feature group named *weather*, we provide a description to make it searchable to the other project members, as well as making the feature group available online.
 
@@ -118,7 +119,7 @@ Additionally, it is also possible to define whether online data is stored in mem
 
 The code example shows the creation of an online-enabled feature group that stores online data on disk using `ts_1` table space and sets several table properties in the comment section.
 
-```
+```python
 fg = fs.create_feature_group(
     name='air_quality',
     description='Air Quality characteristics of each day',
@@ -352,7 +353,7 @@ If a feature group is online enabled, the `insert` method will store the feature
 
 ### API Reference
 
-[FeatureGroup](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#featuregroup)
+[FeatureGroup](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#featuregroup)
 
 ## Create using the UI
 

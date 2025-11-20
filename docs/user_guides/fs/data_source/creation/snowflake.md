@@ -22,13 +22,13 @@ Before you begin this guide you'll need to retrieve the following information fr
   This is usually some form of your [Snowflake account identifier](https://docs.snowflake.com/en/user-guide/admin-account-identifier.html).
 For example:
 
-```
+```plaintext
 <account_identifier>.snowflakecomputing.com
 ```
 
 OR:
 
-```
+```plaintext
 https://<orgname>-<account_name>.snowflakecomputing.com
 ```
 

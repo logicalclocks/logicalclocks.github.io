@@ -67,7 +67,7 @@ By default, the job name is the same as the file name, but you can customize it 
 ### Step 5: Set the main class
 
 Next step is to set the main class for the application.
-Then specify [advanced configuration](#step-6-optional-advanced-configuration) or click `Create New Job` to create the job.
+Then specify [advanced configuration](#step-7-optional-advanced-configuration) or click `Create New Job` to create the job.
 
 <p align="center">
   <figure>
@@ -277,6 +277,6 @@ When reading data in your Spark job it is recommended to use the Spark read API 
 
 ## API Reference
 
-[Jobs](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/jobs/)
+[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/jobs/)
 
-[Executions](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/executions/)
+[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/executions/)

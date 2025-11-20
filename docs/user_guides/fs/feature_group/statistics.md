@@ -1,6 +1,6 @@
 # How to compute statistics on feature data
 
-### Introduction
+## Introduction
 
 In this guide you will learn how to configure, compute and visualize statistics for the features registered with Hopsworks.
 

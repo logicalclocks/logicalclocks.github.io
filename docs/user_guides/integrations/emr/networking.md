@@ -9,7 +9,7 @@ The DataFrame API needs to be able to connect directly to the IP on which the Fe
 This means that if you deploy the Feature Store on AWS you will either need to deploy the Feature Store in the same VPC as your EMR
 cluster or to set up [VPC Peering](https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html) between your EMR VPC and the Feature Store VPC.
 
-**Option 1: Deploy the Feature Store in the EMR VPC**
+### Option 1: Deploy the Feature Store in the EMR VPC
 
 When deploying the Hopsworks Feature Store, select the EMR *VPC* and *Availability Zone* as the VPC and Availability Zone of your Feature Store.
 Identify your EMR VPC in the Summary of your EMR cluster:
@@ -28,7 +28,7 @@ Identify your EMR VPC in the Summary of your EMR cluster:
   </figure>
 </p>
 
-**Option 2: Set up VPC peering**
+### Option 2: Set up VPC peering
 
 Follow the guide [VPC Peering](https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html) to set up VPC peering between the Feature Store and EMR.
 Get your Feature Store *VPC ID* and *CIDR* by searching for the Feature Store VPC in the AWS Management Console:

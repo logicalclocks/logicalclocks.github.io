@@ -20,7 +20,7 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **JDBC Connection URL:** Consult the documentation of your target database to determine the correct JDBC URL and parameters.
   As an example, for MySQL the URL could be:
 
-```
+```plaintext
 jdbc:mysql://10.0.2.15:3306/[databaseName]?useSSL=false&allowPublicKeyRetrieval=true
 ```
 
