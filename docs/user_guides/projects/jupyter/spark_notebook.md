@@ -4,8 +4,8 @@
 
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 
-* Supports JupyterLab and the classic Jupyter front-end
-* Configured with Python3, PySpark and Ray kernels
+- Supports JupyterLab and the classic Jupyter front-end
+- Configured with Python3, PySpark and Ray kernels
 
 ## Step 1: Jupyter dashboard
 
@@ -40,15 +40,15 @@ configuration page and select `Ray`.
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
-* `Driver memory`: Number of cores to allocate for the Spark driver
+- `Driver memory`: Number of cores to allocate for the Spark driver
 
-* `Driver virtual cores`: Number of MBs to allocate for the Spark driver
+- `Driver virtual cores`: Number of MBs to allocate for the Spark driver
 
-* `Executor memory`: Number of cores to allocate for each Spark executor
+- `Executor memory`: Number of cores to allocate for each Spark executor
 
-* `Executor virtual cores`: Number of MBs to allocate for each Spark executor
+- `Executor virtual cores`: Number of MBs to allocate for each Spark executor
 
-* `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
+- `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
 
 <p align="center">
   <figure>
@@ -61,13 +61,13 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 Additional files or dependencies required for the Spark job can be configured.
 
-* `Additional archives`: List of zip or .tgz files that will be locally accessible by the application
+- `Additional archives`: List of zip or .tgz files that will be locally accessible by the application
 
-* `Additional jars`: List of .jar files to add to the CLASSPATH of the application
+- `Additional jars`: List of .jar files to add to the CLASSPATH of the application
 
-* `Additional python dependencies`: List of .py, .zip or .egg files that will be locally accessible by the application
+- `Additional python dependencies`: List of .py, .zip or .egg files that will be locally accessible by the application
 
-* `Additional files`: List of files that will be locally accessible by the application
+- `Additional files`: List of files that will be locally accessible by the application
 
 <p align="center">
   <figure>

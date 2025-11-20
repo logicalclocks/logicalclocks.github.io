@@ -13,9 +13,9 @@ We also suggest you familiarize yourself with the APIs to [create a feature grou
 
 When a feature is stored in both the online and offline feature stores, it will be stored in a data type native to each store.
 
-* **[Offline data type](#offline-data-types)**: The data type of the feature when stored on the offline feature store. The offline feature store is based on Apache Hudi and Hive Metastore, as such,
+- **[Offline data type](#offline-data-types)**: The data type of the feature when stored on the offline feature store. The offline feature store is based on Apache Hudi and Hive Metastore, as such,
   [Hive Data Types](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types) can be leveraged.
-* **[Online data type](#online-data-types)**: The data type of the feature when stored on the online feature store. The online storage is based on RonDB and hence,
+- **[Online data type](#online-data-types)**: The data type of the feature when stored on the online feature store. The online storage is based on RonDB and hence,
   [MySQL Data Types](https://dev.mysql.com/doc/refman/8.0/en/data-types.html) can be leveraged.
 
 The offline data type is always required, even if the feature group is stored only online. On the other hand, if the feature group is not *online_enabled*, its features will not have an online data type.
@@ -167,8 +167,8 @@ The most important validation checks or error messages are mentioned below along
 
 1. Primary key contains null values
 
-    * **Rule** Primary key column should not contain any null values.
-    * **Example correction** Drop the rows containing null primary keys. Alternatively, find the null values and assign them an unique value as per preferred strategy for data imputation.
+    - **Rule** Primary key column should not contain any null values.
+    - **Example correction** Drop the rows containing null primary keys. Alternatively, find the null values and assign them an unique value as per preferred strategy for data imputation.
 
         === "Pandas"
 
@@ -191,8 +191,8 @@ The most important validation checks or error messages are mentioned below along
 
 2. Primary key column missing
 
-    * **Rule** The dataframe to be inserted must contain all the columns defined as primary key(s) in the feature group.
-    * **Example correction** Add all the primary key columns in the dataframe.
+    - **Rule** The dataframe to be inserted must contain all the columns defined as primary key(s) in the feature group.
+    - **Example correction** Add all the primary key columns in the dataframe.
 
         === "Pandas"
 
@@ -203,10 +203,10 @@ The most important validation checks or error messages are mentioned below along
 
 3. String length exceeded
 
-    * **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature. If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe.
-    * **Example correction**
+    - **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature. If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe.
+    - **Example correction**
 
-        * Trim the string values to fit within maximum limit set during feature group creation.
+        - Trim the string values to fit within maximum limit set during feature group creation.
 
         === "Pandas"
 
@@ -215,7 +215,7 @@ The most important validation checks or error messages are mentioned below along
         df['text_column'] = df['text_column'].str.slice(0, max_length)
         ```
 
-        * Another option is to simply [create new version of the feature group](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) and insert the dataframe.
+        - Another option is to simply [create new version of the feature group](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) and insert the dataframe.
 
         !!!note  
             The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size). In such cases it is possible to define the feature as **TEXT** or **BLOB**.

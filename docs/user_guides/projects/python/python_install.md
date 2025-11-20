@@ -6,11 +6,11 @@ Hopsworks comes with several prepackaged Python environments that contain librar
 
 In this guide, you will learn how to install Python packages using these different options.
 
-* PyPi, using pip package manager
-* A conda channel, using conda package manager
-* Packages contained in .whl format
-* A public or private git repository
-* A requirements.txt file to install multiple libraries at the same time using pip
+- PyPi, using pip package manager
+- A conda channel, using conda package manager
+- Packages contained in .whl format
+- A public or private git repository
+- A requirements.txt file to install multiple libraries at the same time using pip
 
 !!! notice "Notice"
     If your libraries require installing some extra OS-Level packages, refer to the guide custom commands guide on how to install OS-Level packages.

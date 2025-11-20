@@ -6,10 +6,10 @@ description: "Documentation on the Hopsworks capabilities to discover machine-le
 
 Hopsworks supports free-text search to discover machine-learning assets:
 
-* features
-* feature groups
-* feature views
-* training data
+- features
+- feature groups
+- feature views
+- training data
 
 You can use the search bar at the top of your project to free-text search for the names or descriptions of any ML asset. You can also search using keywords or tags that are attached to an ML asset.
 

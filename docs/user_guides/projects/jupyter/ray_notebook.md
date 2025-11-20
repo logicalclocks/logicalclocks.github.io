@@ -7,8 +7,8 @@ description: Documentation on how to run Ray applications on Jupyter on Hopswork
 
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 
-* Supports JupyterLab and the classic Jupyter front-end
-* Configured with Python3, PySpark and Ray kernels
+- Supports JupyterLab and the classic Jupyter front-end
+- Configured with Python3, PySpark and Ray kernels
 
 !!!warning "Enable Ray"
 
@@ -46,17 +46,17 @@ Resource allocation for the Driver and Workers can be configured.
     The resource configurations describe the cluster that will be provisioned when launching the Ray job. User can still
     provide extra configurations in the job script using `ScalingConfig`, i.e. `ScalingConfig(num_workers=4, trainer_resources={"CPU": 1}, use_gpu=True)`.
 
-* `Driver memory`: Memory in MBs to allocate for Driver
+- `Driver memory`: Memory in MBs to allocate for Driver
 
-* `Driver virtual cores`: Number of cores to allocate for the Driver
+- `Driver virtual cores`: Number of cores to allocate for the Driver
 
-* `Worker memory`: Memory in MBs to allocate for each worker
+- `Worker memory`: Memory in MBs to allocate for each worker
 
-* `Worker cores`: Number of cores to allocate for each worker
+- `Worker cores`: Number of cores to allocate for each worker
 
-* `Min workers`: Minimum number of workers to start with
+- `Min workers`: Minimum number of workers to start with
 
-* `Max workers`: Maximum number of workers to scale up to
+- `Max workers`: Maximum number of workers to scale up to
 
 <p align="center">
   <figure>
@@ -68,9 +68,9 @@ the Ray kernels">
 
 Runtime environment and Additional files required for the Ray job can also be provided.
 
-* `Runtime Environment (Optional)`:  A [runtime environment](https://docs.ray.io/en/latest/ray-core/handling-dependencies.html#runtime-environments) describes the dependencies required for the Ray job including files, packages, environment variables, and more. This is useful when you need to install specific packages and set environment variables for this particular Ray job. It should be provided as a YAML file. You can select the file from the project or upload a new one.
+- `Runtime Environment (Optional)`:  A [runtime environment](https://docs.ray.io/en/latest/ray-core/handling-dependencies.html#runtime-environments) describes the dependencies required for the Ray job including files, packages, environment variables, and more. This is useful when you need to install specific packages and set environment variables for this particular Ray job. It should be provided as a YAML file. You can select the file from the project or upload a new one.
 
-* `Additional files`: List of other files required for the Ray job. These files will be placed in `/srv/hops/ray/job`.
+- `Additional files`: List of other files required for the Ray job. These files will be placed in `/srv/hops/ray/job`.
 
 <p align="center">
   <figure>

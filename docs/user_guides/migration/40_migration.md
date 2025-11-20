@@ -67,79 +67,64 @@ in the 4.0 release.
 
 === "Pre-4.0"
     ```python
- #################################################
+    #################################################
+    # Creating transformation funciton Hopsworks 3.8#
+    #################################################
 
-# Creating transformation funciton Hopsworks 3.8#
+    # Define custom transformation function
+    def add_one(feature):
+        return feature + 1
 
- #################################################
-
-# Define custom transformation function
-
- def add_one(feature):
-  return feature + 1
-
-# Create transformation function
-
- add_one = fs.create_transformation_function(add_one,
-  output_type=int,
+    # Create transformation function
+    add_one = fs.create_transformation_function(add_one,
+        output_type=int,
         version=1,
     )
 
-# Save transformation function
+    # Save transformation function
+    add_one.save()
 
- add_one.save()
+    # Retrieve transformation function
+    scaler = fs.get_transformation_function(
+        name="add_one",
+        version=1,
+    )
 
-# Retrieve transformation function
-
- scaler = fs.get_transformation_function(
-  name="add_one",
-  version=1,
- )
-
-# Create feature view
-
- feature_view = fs.get_or_create_feature_view(
-  name='serving_fv',
-  version=1,
-  query=selected_features,
-
-# Apply your custom transformation functions to the feature `feature_1`
-
-  transformation_functions={
-   "feature_1": add_one,
-  },
-  labels=['target'],
- )
+    # Create feature view
+    feature_view = fs.get_or_create_feature_view(
+        name='serving_fv',
+        version=1,
+        query=selected_features,
+        # Apply your custom transformation functions to the feature `feature_1`
+        transformation_functions={
+            "feature_1": add_one,
+        },
+        labels=['target'],
+    )
     ```
 
 === "4.0"
     ```python
- #################################################
+    #################################################
+    # Creating transformation funciton Hopsworks 4.0#
+    #################################################
 
-# Creating transformation funciton Hopsworks 4.0#
+    # Define custom transformation function
+    @hopsworks.udf(int)
+    def add_one(feature):
+        return feature + 1
 
- #################################################
-
-# Define custom transformation function
-
- @hopsworks.udf(int)
- def add_one(feature):
-  return feature + 1
-
-# Create feature view
-
- feature_view = fs.get_or_create_feature_view(
-  name='serving_fv',
-  version=1,
-  query=selected_features,
-
-# Apply the custom transformation functions defined to the feature `feature_1`
-
-  transformation_functions=[
-   add_one("feature_1"),
-  ],
-  labels=['target'],
- )
+    # Create feature view
+    feature_view = fs.get_or_create_feature_view(
+        name='serving_fv',
+        version=1,
+        query=selected_features,
+        # Apply the custom transformation functions defined to the feature `feature_1`
+        transformation_functions=[
+            add_one("feature_1"),
+        ],
+        labels=['target'],
+    )
     ```
 
 Note that the number of lines of code required has been significantly

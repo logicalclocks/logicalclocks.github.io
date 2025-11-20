@@ -6,8 +6,8 @@ The state of the Hopsworks cluster is divided into data and metadata and distrib
 
 The following services contain critical state that should be backed up:
 
-* **RonDB**: as mentioned above, the RonDB is used by Hopsworks to store the cluster metadata as well as the data for the online feature store.
-* **HopsFS**: HopsFS stores the data for the batch feature store as well as checkpoints and logs for feature engineering applications.
+- **RonDB**: as mentioned above, the RonDB is used by Hopsworks to store the cluster metadata as well as the data for the online feature store.
+- **HopsFS**: HopsFS stores the data for the batch feature store as well as checkpoints and logs for feature engineering applications.
 
 Backing up service/application metrics and services/applications logs are out of the scope of this guide. By default metrics and logs are rotated after 7 days. Application logs are available on HopsFS when the application has finished and, as such, are backed up with the rest of HopsFS’ data.
 

@@ -2,10 +2,10 @@ A prediction service is an end-to-end analytical or operational machine learning
 
 A prediction service consists of the following components:
 
-* feature pipeline(s),
-* training pipeline,
-* inference pipeline (for either batch predictions or online predictions)
-* a sink for predictions - either a store or a user-interface.
+- feature pipeline(s),
+- training pipeline,
+- inference pipeline (for either batch predictions or online predictions)
+- a sink for predictions - either a store or a user-interface.
 
 ## Analytical ML
 

@@ -6,13 +6,13 @@ In this guide you will learn how to configure, compute and visualize statistics 
 
 Hopsworks groups statistics in four categories:
 
-* **Descriptive**: These are the basic statistics Hopsworks computes. They include an _approximate_ count of the distinctive values and the completeness (i.e. the percentage of non null values). For numerical features Hopsworks also computes the minimum, maximum, mean, standard deviation and the sum of each feature. Enabled by default.
+- **Descriptive**: These are the basic statistics Hopsworks computes. They include an _approximate_ count of the distinctive values and the completeness (i.e. the percentage of non null values). For numerical features Hopsworks also computes the minimum, maximum, mean, standard deviation and the sum of each feature. Enabled by default.
 
-* **Histograms**: Hopsworks computes the distribution of the values of a feature. Exact histograms are computed as long as the number of distinct values is less than 20. If a feature has a numerical data type (e.g. integer, float, double, ...) and has more than 20 unique values, then the values are bucketed in 20 buckets and the histogram represents the distribution of values in those buckets. By default histograms are disabled.
+- **Histograms**: Hopsworks computes the distribution of the values of a feature. Exact histograms are computed as long as the number of distinct values is less than 20. If a feature has a numerical data type (e.g. integer, float, double, ...) and has more than 20 unique values, then the values are bucketed in 20 buckets and the histogram represents the distribution of values in those buckets. By default histograms are disabled.
 
-* **Correlation**: If enabled, Hopsworks computes the Pearson correlation between features of numerical data type within a feature group. By default correlation is disabled.
+- **Correlation**: If enabled, Hopsworks computes the Pearson correlation between features of numerical data type within a feature group. By default correlation is disabled.
 
-* **Exact Statistics**: Exact statistics are an enhancement of the descriptive statistics that provide an exact count of distinctive values, entropy, uniqueness and distinctiveness of the value of a feature. These statistics are more expensive to compute as they take into consideration all the values and they don't use approximations. By default they are disabled.
+- **Exact Statistics**: Exact statistics are an enhancement of the descriptive statistics that provide an exact count of distinctive values, entropy, uniqueness and distinctiveness of the value of a feature. These statistics are more expensive to compute as they take into consideration all the values and they don't use approximations. By default they are disabled.
 
 When statistics are enabled, they are computed every time new data is written into the _offline_ storage of a feature group. Statistics are then displayed on the Hopsworks UI and users can track how data has changed over time.
 

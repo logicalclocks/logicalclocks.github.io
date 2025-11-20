@@ -4,8 +4,8 @@
 
 Jupyter is provided as a service in Hopsworks, providing the same user experience and features as if run on your laptop.
 
-* Supports JupyterLab and the classic Jupyter front-end
-* Configured with Python3, PySpark and Ray kernels
+- Supports JupyterLab and the classic Jupyter front-end
+- Configured with Python3, PySpark and Ray kernels
 
 ## Step 1: Jupyter dashboard
 
@@ -24,9 +24,9 @@ From this page, you can configure various options and settings to start Jupyter 
 
 Next step is to configure Jupyter, Click `edit configuration` to get to the configuration page and select `Python`.
 
-* `Container cores`: Number of cores to allocate for the Jupyter instance
+- `Container cores`: Number of cores to allocate for the Jupyter instance
 
-* `Container memory`: Number of MBs to allocate for the Jupyter instance
+- `Container memory`: Number of MBs to allocate for the Jupyter instance
 
 !!! notice "Configured resource pool is shared by all running kernels. If a kernel crashes while executing a cell, try increasing the Container memory."
 
