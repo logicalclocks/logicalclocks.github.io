@@ -111,9 +111,9 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 ### API Reference
 
-[Deployment](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/deployment_api/)
+[Deployment](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/deployment_api/)
 
-[PredictorState](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/predictor_api/)
+[PredictorState](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/predictor_api/)
 
 ## Deployment status
 

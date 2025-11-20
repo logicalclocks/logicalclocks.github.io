@@ -160,4 +160,4 @@ Read more about training data creation [here](../feature_view/training-data.md).
 ## Next Steps
 
 We have gone through the basic use cases of a data source.
-For more details about the API functionality for any specific connector type, checkout the [API section](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/storage_connector_api/#storage-connector).
+For more details about the API functionality for any specific connector type, checkout the [API section](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/storage_connector_api/#storage-connector).

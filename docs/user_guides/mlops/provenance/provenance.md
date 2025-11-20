@@ -28,7 +28,7 @@ You can interact with the provenance graph using the UI or the APIs.
 
 ## Model provenance
 
-The relationship between feature views and models is captured in the model [constructor](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model_registry/model_api/#create_model).
+The relationship between feature views and models is captured in the model [constructor](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model_registry/model_api/#create_model).
 If you do not provide at least the feature view object to the constructor, the provenance will not capture this relation and you will not be able to navigate from model to the feature view it used or from the feature view to this model.
 
 You can provide the feature view object and have the training dataset version be inferred.
@@ -69,9 +69,9 @@ You can of course explicitly provide the training dataset version.
 
 Once the relation is stored in the provenance graph, you can navigate the graph from model to feature view or training dataset and the other way around.
 
-Users can call the [get_feature_view_provenance(https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model_registry/model_api/#get_feature_view_provenance) method or the [get_training_dataset_provenance(https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model_registry/model_api/#get_training_dataset_provenance) method which will each return a [Link](#provenance-links) object.
+Users can call the [get_feature_view_provenance(https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model_registry/model_api/#get_feature_view_provenance) method or the [get_training_dataset_provenance(https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model_registry/model_api/#get_training_dataset_provenance) method which will each return a [Link](#provenance-links) object.
 
-You can also retrieve directly the parent feature view object, without the need to extract them from the provenance links object, using the [get_feature_view(https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model_registry/model_api/#get_feature_view ) method
+You can also retrieve directly the parent feature view object, without the need to extract them from the provenance links object, using the [get_feature_view(https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model_registry/model_api/#get_feature_view ) method
 
 === "Python"
 

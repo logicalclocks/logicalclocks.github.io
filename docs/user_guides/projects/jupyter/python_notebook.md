@@ -95,7 +95,7 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
 
 !!! notice "Recommended approach if `/hopsfs` is mounted"
     If your Hopsworks installation is configured to mount the project datasets under `/hopsfs`, which it is in most cases, then please refer to this section.
-    If the file system is not mounted, then project files can be localized using the [download api](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/datasets/#download) to localize files in the current working directory.
+    If the file system is not mounted, then project files can be localized using the [download api](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/datasets/#download) to localize files in the current working directory.
 
 ### Absolute paths
 

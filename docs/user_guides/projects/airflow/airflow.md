@@ -113,4 +113,4 @@ If you do not specify the `access_control` option, project members will not be a
 
 You can leverage the [Git integration](../git/clone_repo.md) to track your Airflow DAGs in a git repository.
 Airflow will only consider the DAG files which are stored in the _Airflow_ Dataset in Hopsworks.
-After cloning the git repository in Hopsworks, you can automate the process of copying the DAG file in the _Airflow_ Dataset using the [copy method](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/datasets/#copy) of the Hopsworks API.
+After cloning the git repository in Hopsworks, you can automate the process of copying the DAG file in the _Airflow_ Dataset using the [copy method](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/datasets/#copy) of the Hopsworks API.

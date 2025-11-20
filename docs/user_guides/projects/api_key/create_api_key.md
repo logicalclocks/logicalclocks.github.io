@@ -44,4 +44,4 @@ Copy the value and save it in a secure location, such as a password manager.
 ## Login with API Key using SDK
 
 In this guide you learned how to create an API Key.
-You can now use the API Key to [login](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/login/) using the `hopsworks` python SDK.
+You can now use the API Key to [login](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/login/) using the `hopsworks` python SDK.

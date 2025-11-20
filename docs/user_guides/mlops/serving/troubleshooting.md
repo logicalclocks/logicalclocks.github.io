@@ -156,6 +156,6 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
 ### API Reference
 
-[Deployment](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/deployment_api/)
+[Deployment](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/deployment_api/)
 
-[PredictorState](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/model-serving/predictor_state_api/)
+[PredictorState](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/predictor_state_api/)

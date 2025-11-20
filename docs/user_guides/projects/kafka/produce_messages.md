@@ -55,7 +55,7 @@ producer.flush(10)
 
 ### API Reference
 
-[KafkaTopic](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/kafka_topic/)
+[KafkaTopic](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/kafka_topic/)
 
 ## Going Further
 

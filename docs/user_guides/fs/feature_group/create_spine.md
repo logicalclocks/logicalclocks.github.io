@@ -60,4 +60,4 @@ You just need to make sure it has the same schema.
 
 ### API Reference
 
-[SpineGroup](<https://docs.hopsworks.ai/hopsworks-api/{{{> hopsworks_version }}}/generated/api/spine_group_api/#spinegroup)
+[SpineGroup](<https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/spine_group_api/#spinegroup)
