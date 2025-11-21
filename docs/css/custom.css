@@ -183,6 +183,9 @@ header.md-header {
 .md-sidebar {
   z-index: 1000 !important;
 }
+.md-overlay {
+  z-index: 950 !important;
+}
 .md-search__overlay {
   z-index: 1100 !important;
 }
