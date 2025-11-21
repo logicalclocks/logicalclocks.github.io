@@ -183,6 +183,15 @@ header.md-header {
 .md-sidebar {
   z-index: 1000 !important;
 }
+.md-search__overlay {
+  z-index: 1100 !important;
+}
+.md-search__form {
+  z-index: 1200 !important;
+}
+.md-search__output {
+  z-index: 1100 !important;
+}
 
 /*******************************************************/
 /* Fix spacing in navigation tab. */
