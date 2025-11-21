@@ -255,7 +255,7 @@ nav:
           - Audit:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
-  - Python API: "!import https://github.com/aversey/hopsworks-api?branch=multirepo-mkdocs"
+  - Python API: "!import https://github.com/aversey/hopsworks-api?branch=branch-4.7"
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
 
