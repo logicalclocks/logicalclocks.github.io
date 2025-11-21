@@ -176,6 +176,12 @@
 }
 
 /*******************************************************/
+/* Fix header z-index. */
+header.md-header {
+  z-index: 1000 !important;
+}
+
+/*******************************************************/
 /* Fix spacing in navigation tab. */
 .md-nav__item--nested > .md-nav__link {
   margin-bottom: .4rem;
