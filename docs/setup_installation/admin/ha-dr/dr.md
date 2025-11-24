@@ -1,175 +1,266 @@
 # Disaster Recovery
 
 ## Backup
+The state of a Hopsworks cluster is split between data and metadata and distributed across multiple services. This section explains how to take consistent backups for the offline and online feature stores as well as cluster metadata.
 
-The state of the Hopsworks cluster is divided into data and metadata and distributed across the different node groups.
-This section of the guide allows you to take a consistent backup between data in the offline and online feature store as well as the metadata.
+In Hopsworks, a consistent backup should back up the following services:
 
-The following services contain critical state that should be backed up:
+* **RonDB**: cluster metadata and the online feature store data.
+* **HopsFS**: offline feature store data plus checkpoints and logs for feature engineering applications.
+* **Opensearch**: search metadata, logs, dashboards, and user embeddings.
+* **Kubernetes objects**: cluster credentials, backup metadata, serving metadata, and project namespaces with service accounts, roles, secrets, and configmaps.
 
-- **RonDB**: as mentioned above, the RonDB is used by Hopsworks to store the cluster metadata as well as the data for the online feature store.
-- **HopsFS**: HopsFS stores the data for the batch feature store as well as checkpoints and logs for feature engineering applications.
+Besides the above services, Hopsworks uses also Apache Kafka which carries in-flight data heading to the online feature store. In the event of a total cluster loss, running jobs with in-flight data must be replayed.
 
-Backing up service/application metrics and services/applications logs are out of the scope of this guide.
-By default metrics and logs are rotated after 7 days.
-Application logs are available on HopsFS when the application has finished and, as such, are backed up with the rest of HopsFS’ data.
+### Prerequisites
+When enabling backup in Hopsworks, cron jobs are configured for RonDB and Opensearch. For HopsFS, backups rely on versioning in the object store. For Kubernetes objects, Hopsworks uses Velero to snapshot the required resources. Before enabling backups:
 
-Apache Kafka and OpenSearch are additional services maintaining state.
-The OpenSearch metadata can be reconstructed from the metadata stored on RonDB.
+- Enable versioning on the S3-compatible bucket used for HopsFS.
+- Install and configure Velero with the AWS plugin (S3).
 
-Apache Kafka is used in Hopsworks to store the in-flight data that is on its way to the online feature store.
-In the event of a total loss of the cluster, running jobs with in-flight data will have to be replayed.
+#### Install Velero
+Velero provides backup and restore for Kubernetes resources. Install it with either the Velero CLI or Helm (Velero docs [here](https://velero.io/docs/v1.17/basic-install/)).
 
-### Configuration Backup
-
-Hopsworks adopts an Infrastructure-as-code philosophy, as such all the configuration files for the different Hopsworks services are generated during the deployment phase.
-Cluster-specific customizations should be centralized in the cluster definition used to deploy the cluster.
-As such the cluster definition should be backed up (e.g., by committing it to a git repository) to be able to recreate the same cluster in case it needs to be recreated.
-
-### RonDB Backup
-
-The RonDB backup is divided into two parts: user and privileges backup and data backup.
-
-To take the backup of users and privileges you can run the following command from any of the nodes in the head node group.
-This command generates a SQL file containing all the user definitions for both the metadata services (Hopsworks, HopsFS, Metastore) as well as the user and permission grants for the online feature store.
-This command needs to be run as user ‘mysql’ or with sudo privileges.
-
-```sh
-/srv/hops/mysql/bin/mysqlpump -S /srv/hops/mysql-cluster/mysql.sock --exclude-databases=% --exclude-users=root,mysql.sys,mysql.session,mysql.infoschema --users > users.sql
+- Using the Velero CLI, set up the CRDs and deployment:
+```bash
+velero install \
+    --plugins velero/velero-plugin-for-aws:v1.13.0 \
+    --no-default-backup-location \
+    --no-secret \
+    --use-volume-snapshots=false \
+    --wait
 ```
 
-The second step is to trigger the backup of the data.
-This can be achieved by running the following command as user ‘mysql’ on one of the nodes of the head node group.
+- Using the Velero Helm chart:
+```bash
+helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
+helm repo update
 
-```sh
-/srv/hops/mysql-cluster/ndb/scripts/mgm-client.sh -e "START BACKUP [replace_backup_id] SNAPSHOTEND WAIT COMPLETED"
+helm install velero vmware-tanzu/velero \
+  --namespace velero \
+  --create-namespace \
+  --set "initContainers[0].name=velero-plugin-for-aws" \
+  --set "initContainers[0].image=velero/velero-plugin-for-aws:v1.13.0" \
+  --set "initContainers[0].volumeMounts[0].mountPath=/target" \
+  --set "initContainers[0].volumeMounts[0].name=plugins" \
+  --set-json configuration.backupStorageLocation='[]' \
+  --set "credentials.useSecret=false" \
+  --set "snapshotsEnabled=false" \
+  --wait
 ```
 
-The backup ID is an integer greater or equal than 1. The script uses the following: `$(date +'%y%m%d%H%M')` instead of an integer as backup id to make it easier to identify backups over time.
+### Configuring Backup
+!!! Note
+    Backup is only supported for clusters that use S3-compatible object storage.
 
-The command instructs each RonDB datanode to backup the data it is responsible for.
-The backup will be located locally on each datanode under the following path:
+You can enable backups during installation or a later upgrade. Set the schedule with a cron expression in the values file:
 
-```sh
-/srv/hops/mysql-cluster/ndb/backups/BACKUP - the directory name will be BACKUP-[backup_id]
+```yaml
+global:
+  _hopsworks:    
+    backups:
+      enabled: true
+      schedule: "@weekly"      
 ```
 
-You can check out [a more comprehensive backup script](https://github.com/logicalclocks/ndb-chef/blob/master/templates/default/native_ndb_backup.sh.erb).
-The script includes the steps above as well as collecting all the partial RonDB backups on a single node.
-The script is a good starting point and can be adapted to ship the database backup outside the cluster.
+After configuring backups, go to the cluster settings and open the Backup tab. You should see `enabled` at the top level and for all services if everything is configured correctly.
 
-### HopsFS Backup
+<figure>
+  <img width="800px" src="../../../../assets/images/admin/ha_dr/backup.png" alt="Backup overview page"/>
+  <figcaption>Backup overview page</figcaption>
+</figure>
 
-HopsFS is a distributed file system based on Apache HDFS.
-HopsFS stores its metadata in RonDB, as such metadata backup has already been discussed in the section above.
-The data is stored in the form of blocks on the different data nodes.
-For availability reasons, the blocks are replicated across three different data nodes.
+If any service is misconfigured, the backup status shows as `partial`. In the example below, Velero is disabled because it was not configured correctly. Fix partial backups before relying on them for recovery.
 
-Within a node, the blocks are stored by default under the following directory, under the ownership of the ‘hdfs’ user:
-
-```sh
-/srv/hopsworks-data/hops/hopsdata/hdfs/dn/
-```
-
-To safely backup all the data, a copy of all the datanodes should be taken.
-As the data is replicated across the different nodes, excluding a set of nodes might result in data loss.
-
-Additionally, as HopsFS blocks are files on the file system and the filesystem can be quite large, the backup is not transactional.
-Consistency is dictated by the metadata.
-Blocks being added during the copying process will not be visible when restoring as they are not part of the metadata backup taken prior to cloning the HopsFS blocks.
-
-When the HopsFS data blocks are stored in a cloud block storage, for example, Amazon S3, then it is sufficient to only backup the metadata.
-The blob cloud storage service will ensure durability of the data blocks.
+<figure>
+  <img width="800px" src="../../../../assets/images/admin/ha_dr/backup_partial.png" alt="Backup overview page (partial setup)"/>
+  <figcaption>Backup overview page (partial setup)</figcaption>
+</figure>
 
 ## Restore
+!!! Note
+    Restore is only supported in a newly created cluster; in-place restore is not supported.
 
-As with the backup phase, the restore operation is broken down in different steps.
+The restore process has two phases:
 
-### Cluster deployment
+- Restore Kubernetes objects required for the cluster restore.
+- Install the cluster with Helm using the correct backup IDs.
 
-The first step to redeploy the cluster is to redeploy the binaries and configuration.
-You should reuse the same cluster definition used to deploy the first (original) cluster.
-This will re-create the same cluster with the same configuration.
+### Restore Kubernetes objects
+Restore the Kubernetes objects that were backed up using Velero.
 
-### RonDB restore
+- Ensure that Velero is installed and configured with the AWS plugin as described in the [prerequisites](#prerequisites).
+- Set up a [Velero backup storage location](https://velero.io/docs/v1.17/api-types/backupstoragelocation/) to point to the S3 bucket.
+    - If you are using AWS S3:
+    ```bash
+    kubectl apply -f - <<EOF
+    apiVersion: velero.io/v1
+    kind: BackupStorageLocation
+    metadata:
+    name: hopsworks-bsl
+    namespace: velero
+    spec:
+    provider: aws
+    config:
+        region: REGION
+    objectStorage:
+        bucket: BUCKET_NAME
+        prefix: k8s_backup
+    EOF
+    ```
+    - If you are using an S3-compatible object storage, provide credentials and endpoint:
+    ```bash
+    cat << EOF > bsl-credentials
+    [default]
+    aws_access_key_id=YOUR_ACCESS_KEY
+    aws_secret_access_key=YOUR_SECRET_KEY
+    EOF
 
-The deployment step above created a functioning empty cluster.
-To restore the cluster, the first step is to restore the metadata and online feature store data stored on RonDB.
-To restore the state of RonDB, we first need to restore its schemas and tables, then its data, rebuild the indices, and finally restore the users and grants.
+    kubectl create secret generic -n velero bsl-credentials --from-file=cloud=bsl-credentials
 
-#### Restore RonDB schemas and tables
+    kubectl apply -f - <<EOF
+    apiVersion: velero.io/v1
+    kind: BackupStorageLocation
+    metadata:
+    name: hopsworks-bsl
+    namespace: velero
+    spec:
+    provider: aws
+    config:
+        region: REGION
+        s3Url: ENDPOINT
+    credential:
+        key: cloud
+        name: bsl-credentials
+    objectStorage:
+        bucket: BUCKET_NAME
+        prefix: k8s_backup
+    EOF
+    ```
+- After the backup storage location becomes available, restore the backups. The following script restores the latest available backup. To restore a specific backup, set `backupName` instead of `scheduleName`.
 
-This command should be executed on one of the nodes in the head node group and is going to recreate the schemas, tables, and internal RonDB metadata.
-In the command below, you should replace the node_id with the id of the node you are running the command on, backup_id with the id of the backup you want to restore.
-Finally, you should replace the mgm_node_ip with the address of the node where the RonDB management service is running.
+```bash
+echo "=== Waiting for Velero BackupStorageLocation  hopsworks-bsl to become Available ==="
+until [ "$(kubectl get backupstoragelocations hopsworks-bsl -n velero -o jsonpath='{.status.phase}' 2>/dev/null)" = "Available" ]; do
+  echo "Still waiting..."; sleep 5;
+done
 
-```sh
-/srv/hops/mysql/bin/ndb_restore -n [node_id] -b [backup_id] -m --disable-indexes --ndb-connectstring=[mgm_node_ip]:1186 --backup_path=/srv/hops/mysql-cluster/ndb/backups/BACKUP/BACKUP-[backup_id]
+echo "=== Waiting for Velero to sync the backups from hopsworks-bsl ==="
+until [ "$(kubectl get backups -n velero -ojson | jq -r '[.items[] | select(.spec.storageLocation == "hopsworks-bsl")] | length' 2>/dev/null)" != "0" ]; do
+  echo "Still waiting..."; sleep 5;
+done
+
+
+# Restores the latest - if specific backup is needed then backupName instead
+echo "=== Creating Velero Restore object for k8s-backups-main ==="
+RESTORE_SUFFIX=$(date +%s)
+kubectl apply -f - <<EOF
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: k8s-backups-main-restore-$RESTORE_SUFFIX
+  namespace: velero
+spec:
+  scheduleName: k8s-backups-main
+EOF
+
+echo "=== Waiting for Velero restore to finish ==="
+until [ "$(kubectl get restore k8s-backups-main-restore-$RESTORE_SUFFIX -n velero -o jsonpath='{.status.phase}' 2>/dev/null)" = "Completed" ]; do
+  echo "Still waiting..."; sleep 5;
+done
+
+# Restores the latest - if specific backup is needed then backupName instead
+echo "=== Creating Velero Restore object for k8s-backups-users-resources ==="
+kubectl apply -f - <<EOF
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: k8s-backups-users-resources-restore-$RESTORE_SUFFIX 
+  namespace: velero
+spec:
+  scheduleName: k8s-backups-users-resources
+EOF
+
+echo "=== Waiting for Velero restore to finish ==="
+until [ "$(kubectl get restore k8s-backups-users-resources-restore-$RESTORE_SUFFIX -n velero -o jsonpath='{.status.phase}' 2>/dev/null)" = "Completed" ]; do
+  echo "Still waiting..."; sleep 5;
+done
 ```
 
-#### Restore RonDB data
+### Restore on Cluster installation 
+To restore a cluster during installation, configure the backup ID in the values YAML file:
 
-This command should be executed on all the RonDB datanodes.
-Each command should be customized with the node id of the node you are trying to restore (i.e., replace the node_id).
-As for the command above you should replace the backup_id and mgm_node_ip.
-
-```sh
-/srv/hops/mysql/bin/ndb_restore -n [node_id] -b [backup_id] -r --ndb-connectstring=[mgm_node_ip]:1186 --backup_path=/srv/hops/mysql-cluster/ndb/backups/BACKUP/BACKUP-[backup_id]
+```yaml
+global:
+  _hopsworks:    
+    backups:
+      enabled: true
+      schedule: "@weekly"    
+    restoreFromBackup:
+      backupId: "254811200"
 ```
 
-#### Rebuild the indices
+#### Customizations
+!!! Warning
+    Even if you override the backup IDs for RonDB and Opensearch, you must still set `.global._hopsworks.restoreFromBackup.backupId` to ensure HopsFS is restored.
 
-In the first command we disable the indices for recovery.
-This last command will take care of enabling them again.
-This command needs to run only once on one of the nodes of the head node group.
-As for the commands above, you should replace node_id, backup_id and mgm_node_id.
+To restore a different backup ID for RonDB:
 
-```sh
-/srv/hops/mysql/bin/ndb_restore -n [node_id] -b [backup_id] --rebuild-indexes --ndb-connectstring=[mgm_node_ip]:1186 --backup_path=/srv/hops/mysql-cluster/ndb/backups/BACKUP/BACKUP-[backup_ip]
+```yaml
+global:
+  _hopsworks:    
+    backups:
+      enabled: true
+      schedule: "@weekly"    
+    restoreFromBackup:
+      backupId: "254811200"
+
+rondb:
+  rondb:
+    restoreFromBackup:
+      backupId: "254811140"
 ```
 
-#### Restore Users and Grants
+To restore a different backup for Opensearch:
 
-In the backup phase, we took the backup of the user and grants separately.
-The last step of the RonDB restore process is to re-create all the users and grants both for Hopsworks services as well as for the online feature store users.
-This can be achieved by running the following command on one node of the head node group:
+```yaml
+global:
+  _hopsworks:    
+    backups:
+      enabled: true
+      schedule: "@weekly"    
+    restoreFromBackup:
+      backupId: "254811200"
 
-```sh
-/srv/hops/mysql-cluster/ndb/scripts/mysql-client.sh source users.sql
+olk:
+  opensearch:
+    restore:
+      repositories:
+        default:
+          snapshots:
+            default:
+              snapshot_name: "254811140"
 ```
 
-### HopsFS restore
+You can also customize the Opensearch restore process to skip specific indices:
 
-With the metadata restored, you can now proceed to restore the file system blocks on HopsFS and restart the file system.
-When starting the datanode, it will advertise it’s ID/ClusterID and Storage ID based on the VERSION file that can be found in this directory:
+```yaml
+global:
+  _hopsworks:    
+    backups:
+      enabled: true
+      schedule: "@weekly"    
+    restoreFromBackup:
+      backupId: "254811200"
 
-```sh
-/srv/hopsworks-data/hops/hopsdata/hdfs/dn/current
+olk:
+  opensearch:
+    restore:
+      repositories:
+        default:
+          snapshots:
+            default:
+              snapshot_name: "254811140"
+              payload:
+                indices: "-myindex"   
 ```
-
-It’s important that all the datanodes are restored and they report their block to the namenodes processes running on the head nodes.
-By default the namenodes in HopsFS will exit “SAFE MODE” (i.e., the mode that allows only read operations) only when the datanodes have reported 99.9% of the blocks the namenodes have in the metadata.  As such, the namenodes will not resume operations until all the file blocks have been restored.
-
-### OpenSearch state rebuild
-
-The OpenSearch state can be rebuilt using the Hopsworks metadata stored on RonDB.
-The rebuild process is done by using the re-indexing mechanism provided by ePipe.
-The re-indexing can be triggered by running the following command on the head node where ePipe is running:
-
-```sh
-/srv/hops/epipe/bin/reindex-epipe.sh
-```
-
-The script is deployed and configured during the platform deployment.
-
-### Kafka topics rebuild
-
-The backup and restore plan doesn’t cover the data in transit in Kafka, for which the jobs producing it will have to be replayed.
-However, the RonDB backup contains the information necessary to recreate the topics of all the feature groups.
-You can run the following command, as super user, to recreate all the topics with the correct partitioning and replication factors:
-
-```sh
-/srv/hops/kafka/bin/kafka-restore.sh
-```
-
-The script is deployed and configured during the platform deployment.
