@@ -110,13 +110,13 @@ Restore the Kubernetes objects that were backed up using Velero.
     ```
     - If you are using an S3-compatible object storage, provide credentials and endpoint:
     ```bash
-    cat << EOF > bsl-credentials
+    cat << EOF > hopsworks-bsl-credentials
     [default]
     aws_access_key_id=YOUR_ACCESS_KEY
     aws_secret_access_key=YOUR_SECRET_KEY
     EOF
 
-    kubectl create secret generic -n velero bsl-credentials --from-file=cloud=bsl-credentials
+    kubectl create secret generic -n velero hopsworks-bsl-credentials --from-file=cloud=hopsworks-bsl-credentials
 
     kubectl apply -f - <<EOF
     apiVersion: velero.io/v1
@@ -131,7 +131,7 @@ Restore the Kubernetes objects that were backed up using Velero.
         s3Url: ENDPOINT
     credential:
         key: cloud
-        name: bsl-credentials
+        name: hopsworks-bsl-credentials
     objectStorage:
         bucket: BUCKET_NAME
         prefix: k8s_backup
