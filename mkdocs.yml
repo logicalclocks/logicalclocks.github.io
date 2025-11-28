@@ -298,7 +298,7 @@ extra:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/hopsworks
     - icon: fontawesome/brands/github
-      link: https://github.com/logicalclocks/hopsworks
+      link: https://github.com/logicalclocks/hopsworks-api
     - icon: fontawesome/brands/discourse
       link: https://community.hopsworks.ai/
     - icon: fontawesome/brands/linkedin

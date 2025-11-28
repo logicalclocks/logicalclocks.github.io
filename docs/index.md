@@ -306,18 +306,14 @@ Hopsworks is also available as a serverless platform that manages and serves bot
 
 - Ask questions and give us feedback in the [Hopsworks Community](https://community.hopsworks.ai/)
 - Follow us on [Twitter](https://twitter.com/hopsworks)
-- Check out all our latest [product releases](https://github.com/logicalclocks/hopsworks/releases)
+- Check out all our latest [product releases](https://github.com/logicalclocks/hopsworks-api/releases)
 - Join our public [slack-channel](https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA )
 
 ## Contribute
 
 We are building the most complete and modular ML platform available in the market, and we count on your support to continuously improve Hopsworks.
-Feel free to [give us suggestions](https://github.com/logicalclocks/hopsworks), [report bugs](https://github.com/logicalclocks/hopsworks/issues) and [add features to our library](https://github.com/logicalclocks/hopsworks-api) anytime.
+Feel free to [add features to our library](https://github.com/logicalclocks/hopsworks-api) and [report bugs](https://github.com/logicalclocks/hopsworks-api/issues) anytime.
 
 ## Open-Source
 
-Hopsworks is available under the AGPL-V3 license.
-In plain English this means that you are free to use Hopsworks and even build paid services on it, but if you modify the source code, you should also release back your changes and any systems built around it as AGPL-V3.
-
-We're the best at what we do, and we strive to keep the same standard for our community!
-Our many thanks to the contributors of Hopsworks.
+Hopsworks Python API is available under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
