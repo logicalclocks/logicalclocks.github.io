@@ -77,6 +77,39 @@ If any service is misconfigured, the backup status shows as `partial`. In the ex
   <figcaption>Backup overview page (partial setup)</figcaption>
 </figure>
 
+#### Cleanup
+
+Use the backup time-to-live (`ttl`) flag to automatically prune backups older than the configured duration.
+
+```yaml
+global:
+  _hopsworks:    
+    backups:
+      enabled: true
+      schedule: "@weekly"
+      ttl: 60d     
+```
+
+For S3 object storage, you can also configure a bucket lifecycle policy to expire old object versions. Example for AWS S3:
+
+```json
+{
+  "Rules": [
+    {
+      "ID": "HopsFSBlocksRetentionPolicy",
+      "Status": "Enabled",
+      "Filter": {},
+      "Expiration": {
+        "ExpiredObjectDeleteMarker": true
+      },
+      "NoncurrentVersionExpiration": {
+        "NoncurrentDays": 60
+      }
+    }
+  ]
+}
+```
+
 ## Restore
 !!! Note
     Restore is only supported in a newly created cluster; in-place restore is not supported.
