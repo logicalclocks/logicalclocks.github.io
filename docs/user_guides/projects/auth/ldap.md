@@ -8,7 +8,7 @@ Here we will look at authentication using LDAP.
 ## Prerequisites
 
 A Hopsworks cluster with LDAP authentication.
-See [Configure LDAP](../../../../setup_installation/admin/ldap/configure-ldap) on how to configure LDAP on your cluster.
+See [Configure LDAP](../../../setup_installation/admin/ldap/configure-ldap.md) on how to configure LDAP on your cluster.
 
 ### Step 1: Log in with LDAP
 
@@ -46,4 +46,4 @@ After clicking on **Register** you will be redirected to the landing page:
 
 In the landing page, you will find two buttons.
 Use these buttons to either create a
-_demo project_ or [a new project](../../../projects/project/create_project).
+_demo project_ or [a new project](../../projects/project/create_project.md).

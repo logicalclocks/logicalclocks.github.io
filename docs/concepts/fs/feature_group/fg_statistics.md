@@ -6,7 +6,7 @@ HSFS supports monitoring, validation, and alerting for features:
 
 ### Statistics
 
-When you create a Feature Group in HSFS, you can configure it to compute statistics over the features inserted into the Feature Group by setting the `statistics_config` dict parameter, see [Feature Group Statistics](../../../../user_guides/fs/feature_group/statistics/) for details.
+When you create a Feature Group in HSFS, you can configure it to compute statistics over the features inserted into the Feature Group by setting the `statistics_config` dict parameter, see [Feature Group Statistics](../../../user_guides/fs/feature_group/statistics.md) for details.
 Every time you write to the Feature Group, new statistics will be computed over all of the data in the Feature Group.
 
 ### Data Validation

@@ -47,7 +47,7 @@ You can also create mappings from groups in Okta to groups in Hopsworks.
 To achieve this you need to configure Okta to send _Groups_ with user information.
 To do this go to _Applications_ and select your application name.
 In the _Sign On_ tab click edit _OpenID Connect ID Token_ and select **Filter** for _Groups claim type_, then for _Groups claim filter_ add **groups** as the claim name, select **Match Regex** from the dropdown and .* (dot star) as Regex to match all groups.
-See [Group mapping](../create-client/#group-mapping) on how to do the mapping in Hopsworks.
+See [Group mapping](./create-client.md#group-mapping) on how to do the mapping in Hopsworks.
 
   <figure>
     <img src="../../../../assets/images/admin/oauth2/okta-groups.png" alt="Group claim" />
@@ -57,7 +57,7 @@ See [Group mapping](../create-client/#group-mapping) on how to do the mapping in
 ### Step 2: Get the necessary fields for client registration
 
 After the application is created go back to _Applications_ and click on the application you just created.
-Use the _Okta domain_ (_Connection URL_), _client id_ and _client secret_ generated for your app in the [Identity Provider registration](../create-client) in Hopsworks.
+Use the _Okta domain_ (_Connection URL_), _client id_ and _client secret_ generated for your app in the [Identity Provider registration](./create-client.md) in Hopsworks.
 
   <figure>
     <img src="../../../../assets/images/admin/oauth2/overview.png" alt="Application overview" />
@@ -66,4 +66,4 @@ Use the _Okta domain_ (_Connection URL_), _client id_ and _client secret_ genera
 
 !!! note
 
-    When copying the domain in the figure above make sure to add the url scheme (http:// or https://) when using it in the _Connection URL_ in the [Identity Provider registration form](../create-client).
+    When copying the domain in the figure above make sure to add the url scheme (http:// or https://) when using it in the _Connection URL_ in the [Identity Provider registration form](./create-client.md).

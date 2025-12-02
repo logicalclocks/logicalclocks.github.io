@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Hopsworks services produce metrics which are centrally gathered by [Prometheus](https://prometheus.io/) and visualized in [Grafana](../grafana).
+Hopsworks services produce metrics which are centrally gathered by [Prometheus](https://prometheus.io/) and visualized in [Grafana](./grafana.md).
 Although the system is self-contained, it is possible for another *federated* Prometheus instance to scrape these metrics or directly push them to another system.
 This is useful if you have a centralized monitoring system with already configured alerts.
 

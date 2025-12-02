@@ -11,7 +11,7 @@ For example, if a user is removed from the LDAP group, they will also be removed
 
 ## Prerequisites
 
-1. A server configured with LDAP or Kerberos. See [Server Configuration for Kerberos](../configure-server/#server-configuration-for-kerberos) and [Server Configuration for LDAP](../configure-server/#server-configuration-for-ldap) for instructions on how to do this.
+1. A server configured with LDAP or Kerberos. See [Server Configuration for Kerberos](./configure-server.md#step-2-server-configuration-for-kerberos) and [Server Configuration for LDAP](./configure-server.md#step-1-server-configuration-for-ldap) for instructions on how to do this.
 2. LDAP group mapping sync enabled. This can be done by setting the variable ```ldap_group_mapping_sync_enabled=true```.
 
 See [Cluster Configuration](../variables.md) on how to change variable values in Hopsworks.

@@ -28,10 +28,10 @@ In the **Cluster Settings** _Authentication_ tab you can configure how users aut
 
 2. **OAuth2**: if your organization already have an identity management system compatible with [OpenID Connect (OIDC)](https://openid.net/connect/) you can configure Hopsworks to use your identity provider by enabling **OAuth** as shown in the figure below.
    After enabling OAuth you can register your identity provider by clicking on **Add Identity Provider** button.
-   See [Create client](../oauth2/create-client) for details.
+   See [Create client](./oauth2/create-client.md) for details.
 3. **LDAP/Kerberos**: if your organization is using LDAP or Kerberos to manage users and services you can configure Hopsworks to use it as the user management system.
    You can enable LDAP/Kerberos by clicking on the checkbox, as shown in the figure below, and choosing LDAP or Kerberos.
-   For more information on how to configure LDAP and Kerberos see [Configure LDAP](../ldap/configure-ldap) and [Configure Kerberos](../ldap/configure-krb).
+   For more information on how to configure LDAP and Kerberos see [Configure LDAP](./ldap/configure-ldap.md) and [Configure Kerberos](./ldap/configure-krb.md).
 
 <figure>
   <img src="../../../assets/images/admin/auth-config.png" alt="Authentication config" />

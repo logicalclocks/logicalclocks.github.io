@@ -10,7 +10,7 @@ and batch inference data from the Feature Store, as well as creating moderately-
 When the service is enabled, clients will automatically use it for the following operations:
 
 - [reading Feature Groups][hsfs.feature_group.FeatureGroup.read]
-- [reading Queries][hsfs.query.Query.read]
+- [reading Queries][hsfs.constructor.query.Query.read]
 - [reading Training Datasets][hsfs.feature_view.FeatureView.get_training_data]
 - [creating In-Memory Training Datasets](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#training_data)
 - [reading Batch Inference Data](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#get_batch_data)

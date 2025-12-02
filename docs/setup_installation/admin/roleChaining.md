@@ -138,4 +138,4 @@ And click on _Create new role chaining_
 Project member can now create connectors using _temporary credentials_ to assume the role you configured.
 More details about using temporary credentials can be found in the [Temporary Credentials section](../../user_guides/fs/data_source/creation/s3.md#temporary-credentials) of the S3 datasource creation guide.
 
-Project member can see the list of role they can assume by going the _Project Settings_ -> [Assuming IAM Roles](../../../user_guides/projects/iam_role/iam_role_chaining) page.
+Project member can see the list of role they can assume by going the _Project Settings_ -> [Assuming IAM Roles](../../user_guides/projects/iam_role/iam_role_chaining.md) page.

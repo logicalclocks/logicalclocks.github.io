@@ -10,7 +10,7 @@ LDAP need some server configuration before you can enable it from the UI.
 ## Prerequisites
 
 A server configured with LDAP.
-See [Server Configuration for LDAP](../configure-server/#server-configuration-for-ldap) for instruction on how to do this.
+See [Server Configuration for LDAP](./configure-server.md#step-1-server-configuration-for-ldap) for instruction on how to do this.
 
 ### Step 1: Enable LDAP
 
@@ -34,7 +34,7 @@ Finally, click on edit configuration and fill in the attributes.
 </figure>
 
 - Account status: the status a user will be assigned when logging in for the first time.
-  If a user is assigned a status different from *Activated* an admin needs to manually activate each user from the [User management](../../user).
+  If a user is assigned a status different from *Activated* an admin needs to manually activate each user from the [User management](../user.md).
 - Group mapping: allows you to specify a mapping between LDAP groups and Hopsworks groups.
   The mapping is a semicolon separated string in the form ```Directory Administrators->HOPS_ADMIN;IT People-> HOPS_USER```.
   Default is empty.

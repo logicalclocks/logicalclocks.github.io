@@ -40,7 +40,7 @@ Click Register.
 ### Step 2: Get the necessary fields for client registration
 
 In the Overview section, copy the *Application (client) ID field*.
-We will use it in [Identity Provider registration](../create-client) under the name *Client id*.
+We will use it in [Identity Provider registration](./create-client.md) under the name *Client id*.
 
 <p align="center">
   <figure>
@@ -50,7 +50,7 @@ We will use it in [Identity Provider registration](../create-client) under the n
 </p>
 
 Click on *Endpoints* and copy the *OpenId Connect metadata document* endpoint excluding the *.well-known/openid-configuration* part.
-We will use it in [Identity Provider registration](../create-client) under the name *Connection URL*.
+We will use it in [Identity Provider registration](./create-client.md) under the name *Connection URL*.
 
 <p align="center">
   <figure>
@@ -90,7 +90,7 @@ Click *Add*.
 </p>
 
 Copy the secret.
-This will be used in [Identity Provider registration](../create-client) under the name *Client Secret*.
+This will be used in [Identity Provider registration](./create-client.md) under the name *Client Secret*.
 
 <p align="center">
   <figure>

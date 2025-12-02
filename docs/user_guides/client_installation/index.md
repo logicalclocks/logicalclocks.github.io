@@ -52,7 +52,7 @@ If you want to interact with the Hopsworks Feature Store from environments such 
 
     The Java library only allows interaction with the Feature Store component of the Hopsworks platform.
     Additionally each environment might restrict the supported API operation.
-    You can see which API operation is supported by which environment [here](../fs/compute_engines)
+    You can see which API operation is supported by which environment [here](./fs/compute_engines.md)
 
 The HSFS library is available on the Hopsworks' Maven repository.
 If you are using Maven as build tool, you can add the following in your `pom.xml` file:

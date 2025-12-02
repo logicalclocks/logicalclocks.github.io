@@ -24,7 +24,7 @@ Roles let you manage the access rights of a user to the cluster.
 
 - User: users with this role are only allowed to use the cluster by creating a limited number of projects.
 - Admin: users with this role are allowed to manage the cluster.
-  This includes accepting new users to the cluster or blocking them, managing user quota, [configure alerts](../alert) and setting up [authentication methods](../auth).
+  This includes accepting new users to the cluster or blocking them, managing user quota, [configure alerts](./alert.md) and setting up [authentication methods](./auth.md).
 
 You can change the role of a user by clicking on the _select dropdown_ that shows the current role of the user.
 
