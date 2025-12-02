@@ -69,9 +69,9 @@ You can of course explicitly provide the training dataset version.
 
 Once the relation is stored in the provenance graph, you can navigate the graph from model to feature view or training dataset and the other way around.
 
-Users can call the [get_feature_view_provenance(https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model_registry/model_api/#get_feature_view_provenance) method or the [get_training_dataset_provenance(https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model_registry/model_api/#get_training_dataset_provenance) method which will each return a [provenance Link object](#provenance-links).
+Users can call the [`Model.get_feature_view_provenance`][hsml.model.Model.get_feature_view_provenance] method or the [`Model.get_training_dataset_provenance`][hsml.model.Model.get_training_dataset_provenance] method which will each return a [provenance Link object](#provenance-links).
 
-You can also retrieve directly the parent feature view object, without the need to extract them from the provenance links object, using the [get_feature_view(https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model_registry/model_api/#get_feature_view ) method
+You can also retrieve directly the parent feature view object, without the need to extract them from the provenance links object, using the [`Model.get_feature_view`][hsml.model.Model.get_feature_view] method.
 
 === "Python"
 
