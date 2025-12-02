@@ -206,5 +206,5 @@ Your EMR cluster will now be able to access your Hopsworks Feature Store.
 
 ## Next Steps
 
-Use the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/login/) to connect to the Hopsworks Feature Store.
+Use the [Login API][hopsworks.login] to connect to the Hopsworks Feature Store.
 For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.

@@ -91,9 +91,10 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   my_model = mr.get_model("my_model", version=1)
 
-  my_predictor = ms.create_predictor(my_model,
-                                    api_protocol="GRPC"  # defaults to "REST"
-                                    )
+  my_predictor = ms.create_predictor(
+      my_model,
+      api_protocol="GRPC"  # defaults to "REST"
+  )
   my_predictor.deploy()
 
   # or
@@ -104,4 +105,4 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[API Protocol](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/deployment_api/#api_protocol)
+[API Protocol][hsml.deployment.Deployment.api_protocol]

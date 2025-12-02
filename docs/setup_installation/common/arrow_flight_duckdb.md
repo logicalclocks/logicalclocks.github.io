@@ -12,8 +12,8 @@ When the service is enabled, clients will automatically use it for the following
 - [reading Feature Groups][hsfs.feature_group.FeatureGroup.read]
 - [reading Queries][hsfs.constructor.query.Query.read]
 - [reading Training Datasets][hsfs.feature_view.FeatureView.get_training_data]
-- [creating In-Memory Training Datasets](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#training_data)
-- [reading Batch Inference Data](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_view_api/#get_batch_data)
+- [creating In-Memory Training Datasets][hsfs.feature_view.FeatureView.training_data]
+- [reading Batch Inference Data][hsfs.feature_view.FeatureView.get_batch_data]
 For larger datasets, clients can still make use of the Spark/Hive backend by explicitly setting
 `read_options={"use_hive": True}`.
 

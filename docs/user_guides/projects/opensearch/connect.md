@@ -35,7 +35,7 @@ client = OpenSearch(**opensearch_api.get_default_py_config())
 
 ### API Reference
 
-[OpenSearch](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/opensearch/)
+[`OpenSearchApi`][hopsworks_common.core.opensearch_api.OpenSearchApi]
 
 ## Going Further
 

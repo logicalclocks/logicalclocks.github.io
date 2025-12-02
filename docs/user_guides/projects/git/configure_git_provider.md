@@ -86,7 +86,7 @@ git_api.set_provider(PROVIDER, GITHUB_USER, API_TOKEN)
 
 ### API Reference
 
-[GitProvider](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/git_provider/)
+[`GitProvider`][hopsworks_common.git_provider.GitProvider]
 
 ## Going Further
 

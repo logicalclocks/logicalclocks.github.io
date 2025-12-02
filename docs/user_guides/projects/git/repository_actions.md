@@ -71,4 +71,4 @@ git_repo = git_api.commit("Test commit")
 ### API Reference
 
 Api reference for repository actions is available here:
-[GitRepo](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/git_repo/)
+[`GitRepo`][hopsworks_common.git_repo.GitRepo]

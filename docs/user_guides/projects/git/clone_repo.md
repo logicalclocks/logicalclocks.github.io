@@ -110,7 +110,7 @@ examples_repo = git_api.clone(REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANC
 ### API Reference
 
 Api reference for git repositories is available here:
-[GitRepo](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/git_repo/)
+[`GitRepo`][hopsworks_common.git_repo.GitRepo]
 
 A notebook for managing git can be found in the [Git Management Tutorial](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb).
 

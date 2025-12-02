@@ -105,9 +105,9 @@ When in doubt, use the TEXT type instead, but note that it comes with a potentia
 
 Hopsworks allows users to store complex types (e.g. *ARRAY<INT>*) in the online feature store.
 Hopsworks serializes the complex features transparently and stores them as VARBINARY in the online feature store.
-The serialization happens when calling the [save()](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#save),
-[insert()](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#insert) or [insert_stream()](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#insert_stream) methods.
-The deserialization will be executed when calling the [get_serving_vector()](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/training_dataset_api/#get_serving_vector) method to retrieve data from the online feature store.
+The serialization happens when calling the [`FeatureGroup.save`][hsfs.feature_group.FeatureGroup.save],
+[`FeatureGroup.insert`][hsfs.feature_group.FeatureGroup.insert] or [`FeatureGroup.insert_stream`][hsfs.feature_group.FeatureGroup.insert_stream] methods.
+The deserialization will be executed when calling the [`TrainingDataset.get_serving_vector`][hsfs.training_dataset.TrainingDataset.get_serving_vector] method to retrieve data from the online feature store.
 If users query directly the online feature store, for instance using the `fs.sql("SELECT ...", online=True)` statement, it will return a binary blob.
 
 On the feature store UI, the online feature type for complex features will be reported as *VARBINARY*.
@@ -221,7 +221,7 @@ The most important validation checks or error messages are mentioned below along
           df['text_column'] = df['text_column'].str.slice(0, max_length)
           ```
 
-      - Another option is to simply [create new version of the feature group](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#get_or_create_feature_group) and insert the dataframe.
+      - Another option is to simply [create new version of the feature group][hsfs.feature_store.FeatureStore.get_or_create_feature_group] and insert the dataframe.
 
       !!!note
           The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size).
@@ -252,7 +252,7 @@ The most important validation checks or error messages are mentioned below along
 All timestamp features are stored in Hopsworks in UTC time.
 Also, all timestamp-based functions (such as [point-in-time joins](../../../concepts/fs/feature_view/offline_api.md#point-in-time-correct-training-data)) use UTC time.
 This ensures consistency of timestamp features across different client timezones and simplifies working with timestamp-based functions in general.
-When ingesting timestamp features, the [Feature Store Write API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#insert) will automatically handle the conversion to UTC, if necessary.
+When ingesting timestamp features, the [`FeatureGroup.insert`][hsfs.feature_group.FeatureGroup.insert] will automatically handle the conversion to UTC, if necessary.
 The following table summarizes how different timestamp types are handled:
 
 | Data Frame (Data Type) | Environment | Handling |
@@ -261,7 +261,7 @@ The following table summarizes how different timestamp types are handled:
 | Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timezone-sensitive conversion from 'tz' to UTC |
 | Spark (TimestampType) | PySpark and Spark | interpreted as UTC, independent of the client's timezone |
 
-Timestamp features retrieved from the Feature Store, e.g., using the [Feature Store Read API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#read), use a timezone-unaware format:
+Timestamp features retrieved from the Feature Store, e.g., using the [Feature Store Read API][hsfs.feature_group.FeatureGroup.read], use a timezone-unaware format:
 
 | Data Frame (Data Type)                | Environment             | Timezone               |
 |---------------------------------------|-------------------------|------------------------|

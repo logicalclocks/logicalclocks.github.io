@@ -112,5 +112,5 @@ fs = project.get_feature_store()           # Get the project's default feature s
 
 ## Next Steps
 
-For more information about how to connect, see the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/login/) API reference.
+For more information about how to connect, see the [Login API][hopsworks.login].
 Or continue with the Data Source guide to import your own data to the Feature Store.

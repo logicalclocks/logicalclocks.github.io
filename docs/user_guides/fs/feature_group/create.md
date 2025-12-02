@@ -39,7 +39,7 @@ Using the HSFS API you can execute:
     )
     ```
 
-You can read [the full method documentation](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#featuregroup) to get more details.
+You can read the full [`FeatureStore.create_feature_group`][hsfs.feature_store.FeatureStore.create_feature_group] documentation to get more details.
 If you need to create a feature group with vector similarity search supported, refer to [the vector similarity guide](../vector_similarity_search.md#extending-feature-groups-with-similarity-search).
 `name` is the only mandatory parameter of the `create_feature_group` and represents the name of the feature group.
 
@@ -353,7 +353,7 @@ If a feature group is online enabled, the `insert` method will store the feature
 
 ### API Reference
 
-[FeatureGroup](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/feature_group_api/#featuregroup)
+[`FeatureGroup`][hsfs.feature_group.FeatureGroup]
 
 ## Create using the UI
 

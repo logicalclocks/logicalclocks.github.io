@@ -302,7 +302,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Predictor](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/predictor_api/)
+[`Predictor`][hsml.predictor.Predictor]
 
 ## Model Server
 

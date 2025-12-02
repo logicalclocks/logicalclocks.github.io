@@ -119,7 +119,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Inference Logger](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/inference_logger_api/)
+[`InferenceLogger`][hsml.inference_logger.InferenceLogger]
 
 ## Topic schema
 

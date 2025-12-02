@@ -222,6 +222,6 @@ Also, if you write a local file, for example `output.txt`, it will be saved in t
 
 ## API Reference
 
-[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/jobs/)
+[`Job`][hopsworks_common.job.Job]
 
-[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/executions/)
+[`Execution`][hopsworks_common.execution.Execution]

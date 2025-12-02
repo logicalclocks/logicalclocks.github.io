@@ -256,6 +256,6 @@ The project datasets are mounted under `/hopsfs`, so you can access `data.csv` f
 
 ## API Reference
 
-[Jobs](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/jobs/)
+[`Job`][hopsworks_common.job.Job]
 
-[Executions](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/executions/)
+[`Execution`][hopsworks_common.execution.Execution]

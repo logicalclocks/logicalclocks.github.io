@@ -95,7 +95,7 @@ Apply the following configurations to your HDInsight cluster.
 !!! attention "Using Hive and the Feature Store"
 
     HDInsight clusters cannot use their local Hive when being configured for the Feature Store as the Feature Store relies on custom Hive binaries and its own Metastore which will overwrite the local one.
-    If you rely on Hive for feature engineering then it is advised to write your data to an external data storage such as ADLS from your main HDInsight cluster and in the Feature Store, create an [on-demand](https://docs.hopsworks.ai/overview/#feature-groups) Feature Group on the storage container in ADLS.
+    If you rely on Hive for feature engineering then it is advised to write your data to an external data storage such as ADLS from your main HDInsight cluster and in the Feature Store, create an [on-demand](../../concepts/fs/feature_group/on_demand_feature.md) Feature Group on the storage container in ADLS.
 
 Hadoop hadoop-env.sh:
 
@@ -160,4 +160,4 @@ fs = project.get_feature_store()
 
 ## Next Steps
 
-For more information on how to use the Hopsworks API check out the other guides or the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/login/).
+For more information on how to use the Hopsworks API check out the other guides or the [Login API][hopsworks.login].

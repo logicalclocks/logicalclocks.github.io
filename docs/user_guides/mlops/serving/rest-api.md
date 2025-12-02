@@ -11,7 +11,7 @@ This document explains how to interact with a model deployment via REST API.
 Deployed models are accessible through the Istio ingress gateway.
 The URL to interact with a model deployment is provided on the model deployment page in the Hopsworks UI.
 
-The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `RESOURCE_PATH` depends on the [model server](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/#model-server) (e.g., vLLM, TensorFlow Serving, SKLearn ModelServer).
+The URL follows the format `http://<ISTIO_GATEWAY_IP>/<RESOURCE_PATH>`, where `RESOURCE_PATH` depends on the [`Predictor.model_server`][hsml.predictor.Predictor.model_server] (e.g., vLLM, TensorFlow Serving, SKLearn ModelServer).
 
 <p align="center">
   <figure>

@@ -186,7 +186,7 @@ Retrieve the trained model you want to deploy.
 
 ### API Reference
 
-[Model Serving](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/model_serving_api/)
+[`ModelServing`][hsml.model_serving.ModelServing]
 
 ## Model Files
 

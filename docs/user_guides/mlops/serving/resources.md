@@ -122,7 +122,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Resource Allocation](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/model-serving/resources_api/)
+[`Resources`][hsml.resources.Resources]
 
 ## Compatibility matrix
 

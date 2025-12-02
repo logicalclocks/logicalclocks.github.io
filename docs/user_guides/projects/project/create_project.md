@@ -75,7 +75,7 @@ project = hopsworks.create_project("my_project")
 
 ### API Reference
 
-[Projects](https://docs.hopsworks.ai/hopsworks-api/{{{hopsworks_version}}}/generated/api/projects/)
+[`Project`][hopsworks_common.project.Project]
 
 ## Reserved project names
 
