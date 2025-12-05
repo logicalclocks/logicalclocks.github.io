@@ -20,6 +20,9 @@ jobs:
           ref: ${{ github.base_ref }}
           path: hopsworks-api
 
+      - name: Copy CONTRIBUTING.md
+        run: cp hopsworks-api/CONTRIBUTING.md hopsworks-api/docs/
+
       - name: Markdownlint
         uses: DavidAnson/markdownlint-cli2-action@v21
         with:
