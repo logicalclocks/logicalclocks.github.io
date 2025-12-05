@@ -176,41 +176,6 @@
 }
 
 /*******************************************************/
-/* Fix z-index. */
-header.md-header {
-  z-index: 900 !important;
-}
-.md-sidebar {
-  z-index: 1000 !important;
-}
-.md-overlay {
-  z-index: 950 !important;
-}
-.md-search__overlay {
-  z-index: 1100 !important;
-}
-.md-search__form {
-  z-index: 1200 !important;
-}
-.md-search__output {
-  z-index: 1100 !important;
-}
-
-/*******************************************************/
-/* Fix spacing in navigation tab. */
-@media screen and (min-width: 76.25em) {
-  .md-nav__item--nested > .md-nav__link {
-    margin-bottom: .4rem;
-  }
-  .md-nav__list .md-nav__list .md-nav__list .md-nav__item:first-child > .md-nav__link {
-    margin-top: 0;
-  }
-  .md-nav__list .md-nav__list .md-nav__list .md-nav__item:last-child > .md-nav__link {
-    margin-bottom: 0;
-  }
-}
-
-/*******************************************************/
 /* Custom styles for syntax highlighting in signatures. */
 
 /* Fancier color for operators such as * and |. */
