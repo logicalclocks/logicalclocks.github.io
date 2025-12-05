@@ -345,7 +345,7 @@ plugins:
             - https://pandas.pydata.org/docs/objects.inv
             - https://numpy.org/doc/stable/objects.inv
             - https://docs.python-requests.org/en/latest/objects.inv
-            - https://pydantic-docs.helpmanual.io/objects.inv
+            - https://docs.pydantic.dev/latest/objects.inv
             - https://fastapi.tiangolo.com/objects.inv
             - https://scikit-learn.org/stable/objects.inv
 
