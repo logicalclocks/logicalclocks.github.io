@@ -347,6 +347,7 @@ plugins:
             show_source: false
             link_source: true
             docstring_section_style: spacy
+            annotations_path: source
           inventories:
             - https://docs.python.org/3/objects.inv
             - https://pandas.pydata.org/docs/objects.inv
@@ -355,6 +356,7 @@ plugins:
             - https://docs.pydantic.dev/latest/objects.inv
             - https://fastapi.tiangolo.com/objects.inv
             - https://scikit-learn.org/stable/objects.inv
+            - https://docs.pola.rs/api/python/stable/objects.inv
 
 markdown_extensions:
   - admonition
