@@ -60,7 +60,7 @@ The features to be used by the on-demand transformation function can be specifie
 
 ## Usage
 
-On-demand transformation functions attached to a feature group are automatically executed in the feature pipeline when you [insert data](../create/#batch-write-api) into a feature group and [by the Python client while retrieving feature vectors](../feature_view/feature-vectors.md#retrieval) for online inference using feature views that contain on-demand features.
+On-demand transformation functions attached to a feature group are automatically executed in the feature pipeline when you [insert data](./create.md#batch-write-api) into a feature group and [by the Python client while retrieving feature vectors](../feature_view/feature-vectors.md#retrieval) for online inference using feature views that contain on-demand features.
 
 The on-demand features computed by on-demand transformation functions are positioned after all other features in a feature group and are ordered alphabetically by their names.
 

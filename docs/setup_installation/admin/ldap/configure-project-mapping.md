@@ -66,7 +66,9 @@ Finally, click on *Create mapping* and go back to mappings. You should see the n
 !!!Note
     If there are no groups in the *Remote group* drop down list check if **ldap_groups_search_filter** is correct by using the value in ```ldapsearch``` replacing ```%c``` with ```*```, as shown in the example below.
 
-    ```ldapsearch -LLL -H ldap:/// -b '<base dn>' -D '<user dn>' -w <password> '(&(objectClass=groupOfNames)(cn=*))'```
+    ```bash
+    ldapsearch -LLL -H ldap:/// -b '<base dn>' -D '<user dn>' -w <password> '(&(objectClass=groupOfNames)(cn=*))'
+    ```
 
     This should return all the groups in your LDAP.
     See [Cluster Configuration](../variables.md) on how to find and update the value of this variable.

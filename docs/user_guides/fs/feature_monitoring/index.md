@@ -38,7 +38,7 @@ Moreover, windows can stick to a _specific point in time_ (e.g., static window) 
 These types of windows apply to both _detection_ and _reference_ windows.
 Different types of windows allows for different use cases depending on whether you enable feature monitoring on your Feature Groups or Feature Views.
 
-See more details about _detection_ and _reference_ windows in the [Detection windows](scheduled_statistics.md#detection-windows) and [Reference windows](statistics_comparison#reference-windows) guides.
+See more details about _detection_ and _reference_ windows in the [Detection windows](./scheduled_statistics.md#detection-windows) and [Reference windows](./statistics_comparison.md#reference-windows) guides.
 
 ## Visualize statistics on a time series
 

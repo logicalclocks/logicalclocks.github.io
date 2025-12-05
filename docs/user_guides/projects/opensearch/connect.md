@@ -39,4 +39,4 @@ client = OpenSearch(**opensearch_api.get_default_py_config())
 
 ## Going Further
 
-You can now use the client to interact directly with the OpenSearch cluster, such as [vector database](../../mlops/vector_database/index.md).
+You can now use the client to interact directly with the OpenSearch cluster, such as [vector database](../../../concepts/mlops/opensearch.md).

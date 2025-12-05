@@ -48,11 +48,11 @@ pip install hopsworks[python,great-expectations,polars]
 
 If you want to interact with the Hopsworks Feature Store from environments such as Spark, Flink or Beam, you can use the Hopsworks Feature Store (HSFS) Java library.
 
-!!!note "Feature Store Only"
+!!! note "Feature Store Only"
 
     The Java library only allows interaction with the Feature Store component of the Hopsworks platform.
     Additionally each environment might restrict the supported API operation.
-    You can see which API operation is supported by which environment [here](./fs/compute_engines.md)
+    You can see which API operation is supported by which environment [here](../fs/compute_engines.md)
 
 The HSFS library is available on the Hopsworks' Maven repository.
 If you are using Maven as build tool, you can add the following in your `pom.xml` file:
