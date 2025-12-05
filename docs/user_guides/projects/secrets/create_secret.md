@@ -66,4 +66,4 @@ secret = secrets_api.create_secret("my_secret", "Fk3MoPlQXCQvPo")
 
 ### API Reference
 
-[`SecretsApi`][hopsworks_common.core.secrets_api.SecretsApi]
+[`SecretsApi`][hopsworks_common.core.secret_api.SecretsApi]
