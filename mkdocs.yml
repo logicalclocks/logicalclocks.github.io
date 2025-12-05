@@ -120,6 +120,11 @@ nav:
               - Apache Spark: user_guides/integrations/spark.md
               - Apache Flink: user_guides/integrations/flink.md
               - Apache Beam: user_guides/integrations/beam.md
+              - Java: user_guides/integrations/java.md
+              - Databricks:
+                  - Networking: user_guides/integrations/databricks/networking.md
+                  - Configure Databricks for Hopsworks: user_guides/integrations/databricks/configuration.md
+                  - API Key: user_guides/integrations/databricks/api_key.md
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
           - Provenance: user_guides/fs/provenance/provenance.md
@@ -255,6 +260,7 @@ nav:
           - Audit:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
+      - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
   - Python API: "!import https://github.com/aversey/hopsworks-api?branch=branch-4.7"
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
