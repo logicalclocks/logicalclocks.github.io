@@ -262,7 +262,7 @@ nav:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
       - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
-  - Python API: "!import https://github.com/aversey/hopsworks-api?branch=branch-4.7"
+  - Python API: "!import https://github.com/logicalclocks/hopsworks-api?branch=main"
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
 
@@ -379,5 +379,5 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: "!!python/name:material.extensions.emoji.twemoji"
+      emoji_generator: "!!python/name:material.extensions.emoji.to_svg"

@@ -36,8 +36,7 @@ jobs:
       - name: Checkout the API repo
         uses: actions/checkout@v4
         with:
-          # TODO: replace aversey with logicalclocks
-          repository: aversey/hopsworks-api
+          repository: logicalclocks/hopsworks-api
           ref: ${{ env.BRANCH }}
           path: hopsworks-api
 
