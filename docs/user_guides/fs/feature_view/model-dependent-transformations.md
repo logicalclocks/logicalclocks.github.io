@@ -23,7 +23,7 @@ Hopsworks by default generates default names of transformed features output by a
 The generated names follows a naming convention structured as `functionName_features_outputColumnNumber` if the transformation function outputs multiple columns and `functionName_features` if the transformation function outputs one column.
 For instance, for the function named `add_one_multiple` that outputs multiple columns in the example given below, produces output columns that would be labeled as  `add_one_multiple_feature1_feature2_feature3_0`,  `add_one_multiple_feature1_feature2_feature3_1`  and   `add_one_multiple_feature1_feature2_feature3_2`.
 The function named `add_two` that outputs a single column in the example given below, produces a single output column names as `add_two_feature`.
-Additionally, Hopsworks also allows users to specify custom names for transformed feature using the [`alias`](../transformation_functions.md#specifying-output-features–names-for-transformation-functions) function.
+Additionally, Hopsworks also allows users to specify custom names for transformed feature using the [`alias`](../transformation_functions.md#specifying-output-features-names-for-transformation-functions) function.
 
 === "Python"
 

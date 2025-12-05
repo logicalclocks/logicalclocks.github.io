@@ -219,7 +219,7 @@ Artifact versions are unique for the same model version.
 
 When a new deployment is created, a new artifact version is generated in two cases:
 
-- the artifact version in the predictor is set to `CREATE` (see [Artifact Version](./predictor.md#artifact_version))
+- the artifact version in the predictor is set to `CREATE` (see [Artifact Version](./predictor.md#environment-variables))
 - no model artifact with the same files has been created before.
 
 Inside a model deployment, the local path to the artifact files is stored in the `ARTIFACT_FILES_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)).

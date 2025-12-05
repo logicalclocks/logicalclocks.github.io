@@ -69,7 +69,7 @@ Start by giving it a **name** and an optional **description**.
 
 !!! warning "Session Duration"
     By default, the session duration that the role will be assumed for is 1 hour or 3600 seconds.
-    This means if you want to use the data source for example to [read or create an external Feature Group from Redshift](../usage.md##creating-an-external-feature-group), the operation cannot take longer than one hour.
+    This means if you want to use the data source for example to [read or create an external Feature Group from Redshift](../usage.md#creating-an-external-feature-group), the operation cannot take longer than one hour.
 
     Your administrator can change the default session duration for AWS data sources, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming.
     And then changing the `fs_data_source_session_duration` [configuration property](../../../../setup_installation/admin/variables.md) to the appropriate value in seconds.

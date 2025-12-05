@@ -10,7 +10,7 @@ Each on-demand transformation function can generate one or multiple on-demand fe
 If the on-demand transformation function returns a single feature, it is automatically assigned the same name as the transformation function.
 However, if it returns multiple features, they are by default named using the format `functionName_outputColumnNumber`.
 For instance, in the example below, the on-demand transformation function `transaction_age` produces an on-demand feature named `transaction_age` and the on-demand transformation function `stripped_strings` produces the on-demand features names `stripped_strings_0` and `stripped_strings_1`.
-Alternatively, the name of the resulting on-demand feature can be explicitly defined using the [`alias`](../transformation_functions.md#specifying-output-features–names-for-transformation-functions) function.
+Alternatively, the name of the resulting on-demand feature can be explicitly defined using the [`alias`](../transformation_functions.md#specifying-output-features-names-for-transformation-functions) function.
 
 !!! warning "On-demand transformation"
     All on-demand transformation functions attached to a feature group must have unique names and, in contrast to model-dependent transformations, they do not have access to training dataset statistics.

@@ -1,6 +1,6 @@
-# Documentation landing page
+# Hopsworks Documentation
 
-This is the source of the landing page for <https://docs.hopsworks.ai>
+This is the source of the Hopsworks Documentation published at <https://docs.hopsworks.ai>.
 
 ## Build instructions
 
@@ -56,4 +56,86 @@ linkchecker http://127.0.0.1:8000/
 
 # If ok just kill the server
 kill -9 $SERVER_PID
+```
+
+## Setup and Build Documentation
+
+We use `mkdocs` together with `mike` ([for versioning](https://github.com/jimporter/mike/)) to build the documentation and a plugin called `keras-autodoc` to auto generate Python API documentation from docstrings.
+
+**Background about `mike`:**
+`mike` builds the documentation and commits it as a new directory to the gh-pages branch.
+Each directory corresponds to one version of the documentation.
+Additionally, `mike` maintains a json in the root of gh-pages with the mappings of versions/aliases for each of the directories available.
+With aliases you can define extra names like `dev` or `latest`, to indicate stable and unstable releases.
+
+### Versioning on docs.hopsworks.ai
+
+On docs.hopsworks.ai we implement the following versioning scheme:
+
+- current master branches (e.g. of hopsworks corresponding to master of Hopsworks): rendered as current Hopsworks snapshot version, e.g. **4.0.0-SNAPSHOT [dev]**, where `dev` is an alias to indicate that this is an unstable version.
+- the latest release: rendered with full current version, e.g. **3.8.0 [latest]** with `latest` alias to indicate that this is the latest stable release.
+- previous stable releases: rendered without alias, e.g. **3.4.4**.
+
+### 4. Build Instructions
+
+For this you can either checkout and make a local copy of the `upstream/gh-pages` branch, where `mike` maintains the current state of docs.hopsworks.ai, or just build documentation for the branch you are updating:
+
+Building *one* branch:
+
+Checkout your dev branch with modified docs:
+
+```bash
+git checkout [dev-branch]
+```
+
+Generate API docs if necessary:
+
+```bash
+python auto_doc.py
+```
+
+Build docs with a version and alias
+
+```bash
+mike deploy [version] [alias] --update-alias
+
+# for example, if you are updating documentation to be merged to master,
+# which will become the new SNAPSHOT version:
+mike deploy 4.0.0-SNAPSHOT dev --update-alias
+
+# if you are updating docs of the latest stable release branch
+mike deploy [version] latest --update-alias
+
+# if you are updating docs of a previous stable release branch
+mike deploy [version]
+```
+
+If no gh-pages branch existed in your local repository, this will have created it.
+
+**Important**: If no previous docs were built, you will have to choose a version as default to be loaded as index, as follows
+
+```bash
+mike set-default [version-or-alias]
+```
+
+You can now checkout the gh-pages branch and serve:
+
+```bash
+git checkout gh-pages
+mike serve
+```
+
+You can also list all available versions/aliases:
+
+```bash
+mike list
+```
+
+Delete and reset your local gh-pages branch:
+
+```bash
+mike delete --all
+
+# or delete single version
+mike delete [version-or-alias]
 ```

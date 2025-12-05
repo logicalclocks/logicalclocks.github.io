@@ -64,7 +64,7 @@ Please note that transformed batch data can only be returned in the python clien
 feature_view.init_batch_scoring(training_dataset_version=1)
 ```
 
-It is important to note that in addition to the filters defined in feature view, [extra filters](./training-data.md#Extra-filters) will be applied if they are defined in the given training dataset version.
+It is important to note that in addition to the filters defined in feature view, [extra filters](./training-data.md#extra-filters) will be applied if they are defined in the given training dataset version.
 
 ## Retrieving untransformed batch data
 
