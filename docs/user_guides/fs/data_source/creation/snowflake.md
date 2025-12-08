@@ -67,7 +67,7 @@ Enter the details for your Snowflake connector. Start by giving it a **name** an
 2. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com` 
 or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 3. Login name for the Snowflake user.
-4. Password for the Snowflake user or Token.
+4. **Authentication** Choose between Password, Token or Private Key options. In case of private key, upload the user private key file. General information on snowflake key pair authentication and setup is at [Snowflake official docs](https://docs.snowflake.com/en/user-guide/key-pair-auth)
 5. The warehouse to connect to.
 6. The database to use for the connection.
 7. Add any additional optional arguments. For example, you can specify `Schema`, `Table`, `Role`, and `Application`.
