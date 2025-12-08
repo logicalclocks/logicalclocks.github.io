@@ -34,10 +34,9 @@ Below is an example of how to view the account and organization to get the accou
   <figcaption>Viewing Snowflake account identifier</figcaption>
 </figure>
 
-!!! warning "Token-based authentication or password based"
-    The Snowflake data source supports both username and password authentication as well as token-based authentication.
+!!! note "Authentication methods"
+    The Snowflake data source supports username and password, token-based and key-pair based authentication options. General information on snowflake key pair authentication and setup is at [Snowflake key-pair authentication](https://docs.snowflake.com/en/user-guide/key-pair-auth).
 
-    Currently token-based authentication is in beta phase. Users are advised to use username/password and/or create a service account for accessing Snowflake from Hopsworks.
 
 - **Username and Password:** Login name for the Snowflake user and password. This is often also referred to as `sfUser` and `sfPassword`.
 - **Warehouse:** The warehouse to use for the session after connecting
@@ -67,7 +66,7 @@ Enter the details for your Snowflake connector. Start by giving it a **name** an
 2. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com` 
 or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 3. Login name for the Snowflake user.
-4. **Authentication** Choose between Password, Token or Private Key options. In case of private key, upload the user private key file. General information on snowflake key pair authentication and setup is at [Snowflake official docs](https://docs.snowflake.com/en/user-guide/key-pair-auth)
+4. **Authentication** Choose between user account Password, Token or Private Key options. In case of private key, upload your snowflake user Private Key file and set Passphrase if applicable. 
 5. The warehouse to connect to.
 6. The database to use for the connection.
 7. Add any additional optional arguments. For example, you can specify `Schema`, `Table`, `Role`, and `Application`.
