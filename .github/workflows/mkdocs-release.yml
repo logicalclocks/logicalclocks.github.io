@@ -27,6 +27,24 @@ jobs:
       - name: Extract version from branch name
         run: echo "HOPSWORKS_VERSION=${BRANCH#branch-}" >> "$GITHUB_ENV"
 
+      - name: Is latest release?
+        id: is-latest
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const branches_url = context.payload.repository.branches_url
+            const branches_url_new = branches_url.replace("{/branch}", "")
+            const result = await github.request(branches_url_new)
+            const names = result.data.map(branch => branch.name)
+            const versions = names.filter(name => name.startsWith('branch-')).map(name => name.replace('branch-', ''))
+            const minorLength = Math.max(...versions.map(v => v.split('.')[1].length))
+            const convertVersionToNumber = (version) => {
+              const parts = version.split('.').map(Number)
+              return parts[0]*10**minorLength + parts[1]
+            }
+
+            return Math.max(...versions.map(convertVersionToNumber)) === convertVersionToNumber(process.env.HOPSWORKS_VERSION)
+
       - name: Checkout main repo
         uses: actions/checkout@v4
         with:
@@ -83,4 +101,8 @@ jobs:
           git config --global user.email mike@docs.hopsworks.ai
 
       - name: Deploy the docs with mike
-        run: mike deploy ${HOPSWORKS_VERSION} latest -u --push
+        run: mike deploy ${HOPSWORKS_VERSION} --push
+
+      - name: Update latest docs if needed
+        if: ${{ steps.is-latest.outputs.result == 'true' }}
+        run: mike alias ${HOPSWORKS_VERSION} latest --update-aliases --push
