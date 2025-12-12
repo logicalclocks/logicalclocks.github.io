@@ -41,11 +41,8 @@ Below is an example of how to view the account and organization to get the accou
   <figcaption>Viewing Snowflake account identifier</figcaption>
 </figure>
 
-!!! warning "Token-based authentication or password based"
-    The Snowflake data source supports both username and password authentication as well as token-based authentication.
-
-    Currently token-based authentication is in beta phase.
-    Users are advised to use username/password and/or create a service account for accessing Snowflake from Hopsworks.
+!!! note "Authentication methods"
+    The Snowflake data source supports username and password, token-based and key-pair based authentication options. General information on snowflake key pair authentication and setup is at [Snowflake key-pair authentication](https://docs.snowflake.com/en/user-guide/key-pair-auth).
 
 - **Username and Password:** Login name for the Snowflake user and password.
   This is often also referred to as `sfUser` and `sfPassword`.
@@ -78,7 +75,8 @@ Start by giving it a **name** and an optional **description**.
 01. Select "Snowflake" as storage.
 02. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com` or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 03. Login name for the Snowflake user.
-04. Password for the Snowflake user or Token.
+04. **Authentication** Choose between user account Password, Token or Private Key options.
+    In case of private key, upload your snowflake user Private Key file and set Passphrase if applicable.
 05. The warehouse to connect to.
 06. The database to use for the connection.
 07. Add any additional optional arguments.
