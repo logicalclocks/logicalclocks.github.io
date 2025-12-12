@@ -2,6 +2,7 @@
 description: Documentation on how to configure an EMR cluster to read and write features from the Hopsworks Feature Store
 ---
 # Configure EMR for the Hopsworks Feature Store
+
 To enable EMR to access the Hopsworks Feature Store, you need to set up a Hopsworks API key, add a bootstrap action and configurations to your EMR cluster.
 
 !!! info
@@ -9,7 +10,8 @@ To enable EMR to access the Hopsworks Feature Store, you need to set up a Hopswo
 
 ## Step 1: Set up a Hopsworks API key
 
-For instructions on how to generate an API key follow this [user guide](../../projects/api_key/create_api_key.md). For the EMR integration to work correctly make sure you add the following scopes to your API key:
+For instructions on how to generate an API key follow this [user guide](../../projects/api_key/create_api_key.md).
+For the EMR integration to work correctly make sure you add the following scopes to your API key:
 
   1. featurestore
   2. project
@@ -19,8 +21,10 @@ For instructions on how to generate an API key follow this [user guide](../../pr
 ### Store the API key in the AWS Secrets Manager
 
 In the AWS management console ensure that your active region is the region you use for EMR.
-Go to the *AWS Secrets Manager* and select *Store new secret*. Select *Other type of secrets* and add *api-key*
-as the key and paste the API key created in the previous step as the value. Click next.
+Go to the *AWS Secrets Manager* and select *Store new secret*.
+Select *Other type of secrets* and add *api-key*
+as the key and paste the API key created in the previous step as the value.
+Click next.
 
 <p align="center">
   <figure>
@@ -29,7 +33,8 @@ as the key and paste the API key created in the previous step as the value. Clic
   </figure>
 </p>
 
-As a secret name, enter *hopsworks/featurestore*. Select next twice and finally store the secret.
+As a secret name, enter *hopsworks/featurestore*.
+Select next twice and finally store the secret.
 Then click on the secret in the secrets list and take note of the *Secret ARN*.
 
 <p align="center">
@@ -49,10 +54,11 @@ Identify your EMR EC2 instance profile in the EMR cluster summary:
   </figure>
 </p>
 
-
 In the AWS Management Console, go to *IAM*, select *Roles* and then the EC2 instance profile used by your EMR cluster.
-Select *Add inline policy*. Choose *Secrets Manager* as a service, expand the *Read* access level and check *GetSecretValue*.
-Expand Resources and select *Add ARN*. Paste the ARN of the secret created in the previous step.
+Select *Add inline policy*.
+Choose *Secrets Manager* as a service, expand the *Read* access level and check *GetSecretValue*.
+Expand Resources and select *Add ARN*.
+Paste the ARN of the secret created in the previous step.
 Click on *Review*, give the policy a name and click on *Create policy*.
 
 <p align="center">
@@ -65,6 +71,7 @@ Click on *Review*, give the policy a name and click on *Create policy*.
 ## Step 2: Configure your EMR cluster
 
 ### Add the Hopsworks Feature Store configuration to your EMR cluster
+
 In order for EMR to be able to talk to the Feature Store, you need to update the Hadoop and Spark configurations.
 Copy the configuration below and replace ip-XXX-XX-XX-XXX.XX-XXXX-X.compute.internal with the private DNS name of your Hopsworks master node.
 
@@ -123,8 +130,11 @@ When you create your EMR cluster, add the configuration:
 
 ### Add the Bootstrap Action to your EMR cluster
 
-EMR requires Hopsworks connectors to be able to communicate with the Hopsworks Feature Store. These connectors can be installed with the
-bootstrap action shown below. Copy the content into a file and name the file `hopsworks.sh`. Copy that file into any S3 bucket that
+EMR requires Hopsworks connectors to be able to communicate with the Hopsworks Feature Store.
+These connectors can be installed with the
+bootstrap action shown below.
+Copy the content into a file and name the file `hopsworks.sh`.
+Copy that file into any S3 bucket that
 is readable by your EMR clusters and take note of the S3 URI of that file e.g., `s3://my-emr-init/hopsworks.sh`.
 
 ```bash
@@ -169,6 +179,7 @@ chmod -R o-rwx /usr/lib/hopsworks
 sudo pip3 install --upgrade hopsworks~=X.X.0
 
 ```
+
 !!! attention "Matching Hopsworks version"
 
     We recommend that the major and minor version of the Python library match the major and minor version of the Hopsworks deployment.
@@ -180,7 +191,8 @@ sudo pip3 install --upgrade hopsworks~=X.X.0
         </figure>
     </p>
 
-Add the bootstrap actions when configuring your EMR cluster. Provide 3 arguments to the bootstrap action: The name of the API key secret e.g., `hopsworks/featurestore`,
+Add the bootstrap actions when configuring your EMR cluster.
+Provide 3 arguments to the bootstrap action: The name of the API key secret e.g., `hopsworks/featurestore`,
 the public DNS name of your Hopsworks cluster, such as `ad005770-33b5-11eb-b5a7-bfabd757769f.cloud.hopsworks.ai`, and the name of your Hopsworks project, e.g. `demo_fs_meb10179`.
 
 <p align="center">
@@ -194,4 +206,5 @@ Your EMR cluster will now be able to access your Hopsworks Feature Store.
 
 ## Next Steps
 
-Use the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/) to connect to the Hopsworks Feature Store. For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.
+Use the [Login API][hopsworks.login] to connect to the Hopsworks Feature Store.
+For more information about how to use the Feature Store, see the [Quickstart Guide](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}.

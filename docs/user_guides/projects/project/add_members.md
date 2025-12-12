@@ -1,6 +1,6 @@
 # How To Add Members To A Project
 
-### Introduction
+## Introduction
 
 In this guide, you will learn how to add new members to your project as well as the different roles within a project.
 
@@ -17,7 +17,8 @@ On the `Project settings` page, you can find the `General` section, which lists 
 
 ## Step 2: Add a new member
 
-Next click `Add members` and a dialog where users can be invited will appear. Select the users to invite.
+Next click `Add members` and a dialog where users can be invited will appear.
+Select the users to invite.
 
 <p align="center">
   <figure>
@@ -33,17 +34,20 @@ Subsequently, the selected project members can be assigned to 2 different roles,
 Data owners hold the highest authority in the project, having full control of its contents.
 
 They are allowed to:
+
 - Share a project
 - Manage the project and its members
 - Work with all feature store abstractions (such as Feature groups, Feature views, Data Sources, etc.)
 
-It is worth mentioning that the project's creator (aka. `author`) is a special type of `Data owner`. He is the only user capable of deleting the project and it is impossible to change his role to `Data scientist`.
+It is worth mentioning that the project's creator (aka. `author`) is a special type of `Data owner`.
+He is the only user capable of deleting the project and it is impossible to change his role to `Data scientist`.
 
 ### Data scientist
 
 Data scientists can be viewed as the users of data.
 
 They are allowed to:
+
 - Create feature views/training datasets using existing features
 - Manage the feature views/training datasets they have created
 

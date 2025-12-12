@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A Secret is a key-value pair used to store encrypted information accessible only to the owner of the secret. 
+A Secret is a key-value pair used to store encrypted information accessible only to the owner of the secret.
 Also if you wish to, you can share the same secret API key with all the members of a Project.
 
 ## UI
@@ -20,7 +20,8 @@ In the `Account Settings` page you can find the `Secrets` section showing a list
 
 ### Step 2: Create a Secret
 
-Click `New Secret` to bring up the dialog for secret creation. Enter a name for the secret to be used for lookup, and the secret value.
+Click `New Secret` to bring up the dialog for secret creation.
+Enter a name for the secret to be used for lookup, and the secret value.
 
 If the secret should be private to this user, select `Private`, to share the secret with all members of a project select `Project` and enter the project name.
 
@@ -33,7 +34,8 @@ If the secret should be private to this user, select `Private`, to share the sec
 
 ### Step 3: Secret created
 
-Click `New Secret` to bring up the dialog for secret creation. Enter a name for the secret to be used for lookup, and the secret value.
+Click `New Secret` to bring up the dialog for secret creation.
+Enter a name for the secret to be used for lookup, and the secret value.
 
 If the secret should be private to this user, select `Private`, to share the secret with all members of a project select `Project` and enter the project name.
 
@@ -64,4 +66,4 @@ secret = secrets_api.create_secret("my_secret", "Fk3MoPlQXCQvPo")
 
 ### API Reference
 
-[Secrets](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/secrets/)
+[`SecretsApi`][hopsworks_common.core.secret_api.SecretsApi]

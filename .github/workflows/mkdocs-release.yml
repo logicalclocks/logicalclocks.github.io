@@ -2,7 +2,13 @@ name: mkdocs-release
 
 on:
   push:
-    branches: [branch-*\.*]
+    branches:
+    - branch-*
+    - main
+
+  repository_dispatch:
+    types:
+      - trigger-rebuild
 
 concurrency:
   group: ${{ github.workflow }}
@@ -13,25 +19,100 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Extract branch name (push)
+        if: ${{ github.event_name == 'push' }}
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
+
+      - name: Extract branch name (repository_dispatch)
+        if: ${{ github.event_name == 'repository_dispatch' }}
+        run: echo "BRANCH=${{ github.event.client_payload.branch }}" >> "$GITHUB_ENV"
+
+      - name: Extract version from branch name
+        if: ${{ env.BRANCH != 'main' }}
+        run: echo "HOPSWORKS_VERSION=${BRANCH#branch-}" >> "$GITHUB_ENV"
+
+      - name: Is latest release?
+        id: is-latest
+        uses: actions/github-script@v8
+        if: ${{ env.BRANCH != 'main' }}
+        with:
+          script: |
+            const branches_url = context.payload.repository.branches_url
+            const branches_url_new = branches_url.replace("{/branch}", "")
+            const result = await github.request(branches_url_new)
+            const names = result.data.map(branch => branch.name)
+            const versions = names.filter(name => name.startsWith('branch-')).map(name => name.replace('branch-', ''))
+            const minorLength = Math.max(...versions.map(v => v.split('.')[1].length))
+            const convertVersionToNumber = (version) => {
+              const parts = version.split('.').map(Number)
+              return parts[0]*10**minorLength + parts[1]
+            }
+
+            return Math.max(...versions.map(convertVersionToNumber)) === convertVersionToNumber(process.env.HOPSWORKS_VERSION)
+
+      - name: Checkout main repo
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ env.BRANCH }}
+
+      - name: Checkout the API repo
+        uses: actions/checkout@v4
+        with:
+          repository: logicalclocks/hopsworks-api
+          ref: ${{ env.BRANCH }}
+          path: hopsworks-api
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('java/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          java-version: "8"
+          distribution: "adopt"
+
+      - name: Build javadoc documentation
+        working-directory: hopsworks-api/java
+        run: mvn clean install javadoc:javadoc javadoc:aggregate -DskipTests && cp -r target/site/apidocs ../../docs/javadoc
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Install ubuntu dependencies
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+          working-directory: hopsworks-api/python
+
+      - name: Install Python API dependencies
+        run: uv sync --extra dev --group docs --project hopsworks-api/python
+
+      - name: Install Python dependencies
+        run: uv pip install -r requirements-docs.txt
+
+      - name: Install Ubuntu dependencies
         run: sudo apt update && sudo apt-get install -y libxml2-dev libxslt-dev
 
-      - name: install deps
-        run: pip3 install -r requirements-docs.txt
-
-      - name: setup git
+      - name: Setup git for mike
         run: |
           git config --global user.name Mike
           git config --global user.email mike@docs.hopsworks.ai
 
-      # Put this back and increment version when cutting a new release branch
-      # - name: mike deploy docs
-      #  run: mike deploy 3.0 latest -u --push
+      - name: Deploy the dev docs with mike
+        if: ${{ env.BRANCH == 'main' }}
+        run: mike deploy dev --set-prop hidden=true --push
+
+      - name: Deploy the release docs with mike
+        if: ${{ env.BRANCH != 'main' }}
+        run: mike deploy ${HOPSWORKS_VERSION} --push
+
+      - name: Update latest docs if needed
+        if: ${{ env.BRANCH != 'main' && steps.is-latest.outputs.result == 'true' }}
+        run: mike alias ${HOPSWORKS_VERSION} latest --update-aliases --push

@@ -5,13 +5,15 @@
 In this guide, you will learn how to create a new project.
 
 !!! notice "Project name validation rules"
-    A valid project name can only contain characters a-z, A-Z, 0-9 and special characters ‘_’ and ‘.’ but not ‘__’ (double underscore). There is also a number of [reserved project names](#reserved-project-names) that can not be used.
+    A valid project name can only contain characters a-z, A-Z, 0-9 and special characters ‘_’ and ‘.’ but not ‘__’ (double underscore).
+    There is also a number of [reserved project names](#reserved-project-names) that can not be used.
 
 ## GUI
 
 ### Step 1: Create a project
 
-If you log in to the platform and do not have any projects, you are presented with the following view. To run the Feature Store tour click `Run a demo project`, to create a new project click `Create new project`.
+If you log in to the platform and do not have any projects, you are presented with the following view.
+To run the Feature Store tour click `Run a demo project`, to create a new project click `Create new project`.
 
 For this guide click `Create new project` to continue.
 
@@ -73,7 +75,7 @@ project = hopsworks.create_project("my_project")
 
 ### API Reference
 
-[Projects](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/projects/)
+[`Project`][hopsworks_common.project.Project]
 
 ## Reserved project names
 

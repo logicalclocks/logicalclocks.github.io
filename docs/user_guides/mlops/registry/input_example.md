@@ -6,7 +6,9 @@ description: Documentation on how to attach an input example to a model.
 
 ## Introduction
 
-In this guide you will learn how to attach an input example to a model. An input example is simply an instance of a valid model input. Attaching an input example to your model will give other users a better understanding of what data it expects.
+In this guide you will learn how to attach an input example to a model.
+An input example is simply an instance of a valid model input.
+Attaching an input example to your model will give other users a better understanding of what data it expects.
 
 ## Code
 
@@ -24,7 +26,8 @@ In this guide you will learn how to attach an input example to a model. An input
 
 ### Step 2: Generate an input example
 
-Generate an input example which corresponds to a valid input to your model. Currently we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list` to be passed as input example.
+Generate an input example which corresponds to a valid input to your model.
+Currently we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list` to be passed as input example.
 
 === "Python"
     ```python

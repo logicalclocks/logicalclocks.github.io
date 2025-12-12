@@ -128,3 +128,4 @@ target/
 # Mac
 .DS_Store
 
+/temp_dir

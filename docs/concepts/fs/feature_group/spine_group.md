@@ -8,10 +8,12 @@ It is possible to maintain labels or prediction events among the regular feature
 with a feature pipeline updating the labels at a specific cadence.
 
 Often times, however, it is more convenient to provide the training events or entities in a Dataframe when reading
-feature data from the feature store through a feature view. We call such a Dataframe a Spine as it is the structure around which
+feature data from the feature store through a feature view.
+We call such a Dataframe a Spine as it is the structure around which
 the training data or batch data is built.
 In order to retrieve the correct feature values for the entities in the Dataframe, using
-a point-in-time correct join, some additional metadata apart from the Dataframe schema is necessary. Namely, the information about which
+a point-in-time correct join, some additional metadata apart from the Dataframe schema is necessary.
+Namely, the information about which
 columns define the **primary key**, and which column indicates the **event time** at which the label was valid.
 The spine Dataframe together with this additional metadata is what we call a **Spine Group**.
 

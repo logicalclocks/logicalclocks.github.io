@@ -48,7 +48,8 @@ Export the XGBoost model to a directory on the local filesystem.
 
 ### Step 4: Register model in registry
 
-Use the `ModelRegistry.python.create_model(..)` function to register a model as a Python model. Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
+Use the `ModelRegistry.python.create_model(..)` function to register a model as a Python model.
+Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
 
 === "Python"
     ```python
