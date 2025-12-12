@@ -19,6 +19,7 @@ On docs.hopsworks.ai we implement the following versioning scheme:
 
 - the latest release: rendered with full current version, e.g. **4.4 [latest]** with `latest` alias to indicate that this is the latest stable release.
 - previous stable releases: rendered without alias, e.g. **4.3**.
+- development version: it is built using main branches and is hidden from the version selector, but it is still accessible at <https://docs.hopsworks.ai/dev>.
 
 ### Step 1
 
