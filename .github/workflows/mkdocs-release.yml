@@ -2,7 +2,10 @@ name: mkdocs-release
 
 on:
   push:
-    branches: [branch-*\.*]
+    branches:
+    - branch-*
+    - main
+
   repository_dispatch:
     types:
       - trigger-rebuild
@@ -25,11 +28,13 @@ jobs:
         run: echo "BRANCH=${{ github.event.client_payload.branch }}" >> "$GITHUB_ENV"
 
       - name: Extract version from branch name
+        if: ${{ env.BRANCH != 'main' }}
         run: echo "HOPSWORKS_VERSION=${BRANCH#branch-}" >> "$GITHUB_ENV"
 
       - name: Is latest release?
         id: is-latest
         uses: actions/github-script@v8
+        if: ${{ env.BRANCH != 'main' }}
         with:
           script: |
             const branches_url = context.payload.repository.branches_url
@@ -100,9 +105,14 @@ jobs:
           git config --global user.name Mike
           git config --global user.email mike@docs.hopsworks.ai
 
-      - name: Deploy the docs with mike
+      - name: Deploy the dev docs with mike
+        if: ${{ env.BRANCH == 'main' }}
+        run: mike deploy dev --set-prop hidden=true --push
+
+      - name: Deploy the release docs with mike
+        if: ${{ env.BRANCH != 'main' }}
         run: mike deploy ${HOPSWORKS_VERSION} --push
 
       - name: Update latest docs if needed
-        if: ${{ steps.is-latest.outputs.result == 'true' }}
+        if: ${{ env.BRANCH != 'main' && steps.is-latest.outputs.result == 'true' }}
         run: mike alias ${HOPSWORKS_VERSION} latest --update-aliases --push
