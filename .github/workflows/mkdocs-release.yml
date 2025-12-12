@@ -107,7 +107,7 @@ jobs:
 
       - name: Deploy the dev docs with mike
         if: ${{ env.BRANCH == 'main' }}
-        run: mike deploy dev --set-prop hidden=true --push
+        run: mike deploy dev --prop-set hidden=true --push
 
       - name: Deploy the release docs with mike
         if: ${{ env.BRANCH != 'main' }}
