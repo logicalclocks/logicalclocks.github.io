@@ -1,45 +1,70 @@
-# Documentation landing page
+# Hopsworks Documentation
 
-This is the source of the landing page for https://docs.hopsworks.ai
+This is the source of the Hopsworks Documentation published at <https://docs.hopsworks.ai>.
 
 ## Build instructions
 
-### Step 1: Setup python environment
+We use `mkdocs` together with [`mike`]((https://github.com/jimporter/mike/) for versioning to build the documentation.
+We also use this two main mkdocs plugins: [`mkdocstrings`](https://mkdocstrings.github.io/) and [its Python handler](https://mkdocstrings.github.io/python/), and [`mkdocs-material`](https://squidfunk.github.io/mkdocs-material/) as the theme.
 
-Create a python 3.10 environment, using a python environment manager of your own choosing. For example `virtualenv` or `anaconda`.
+**Background about `mike`:**
+`mike` builds the documentation and commits it as a new directory to the `gh-pages` branch.
+Each directory corresponds to one version of the documentation.
+Additionally, `mike` maintains a json in the root of `gh-pages` with the mappings of versions/aliases for each of the directories available.
+With aliases, you can define extra names like `dev` or `latest`, to indicate stable and unstable releases.
 
-### Step 2
+### Versioning on docs.hopsworks.ai
 
-Clone this repository
+On docs.hopsworks.ai we implement the following versioning scheme:
+
+- the latest release: rendered with full current version, e.g. **4.4 [latest]** with `latest` alias to indicate that this is the latest stable release.
+- previous stable releases: rendered without alias, e.g. **4.3**.
+- development version: it is built using main branches and is hidden from the version selector, but it is still accessible at <https://docs.hopsworks.ai/dev>.
+
+### Step 1
+
+Clone this repository:
 
 ```bash
 git clone https://github.com/logicalclocks/logicalclocks.github.io.git
 ```
 
+### Step 2
+
+Create a python virtual environment to build the documentation:
+
+```bash
+uv venv
+uv pip install -r requirements-docs.txt
+# Install hopsworks-api for gathering docstrings for the API reference
+uv pip install git+https://github.com/logicalclocks/hopsworks-api.git@main#subdirectory=python
+```
+
+Alternatively, you can just activate the virtual environment you use for development of `hopsworks-api` (obtained via `uv sync`), this is the way it is done in the actions.
+Namely, in `.github/workflows/mkdocs-release.yml` and `.github/workflows/mkdocs-test.yml`, the `hopsworks-api` repo is cloned, and its uv virtual environment is used with `dev` extra and all development groups.
+
+A callback is set in `hopsworks-api` GitHub Actions, which triggers `.github/workflows/mkdocs-release.yml` on any pushes to release branches (that is, `branch-x.x`).
+
 ### Step 3
 
-Install the required dependencies to build the documentation in the python environment created in the previous step.
-
-**Note that {PY_ENV} is the path to your python environment.**
+Build and serve the docs using mike.
 
 ```bash
-cd logicalclocks.github.io
-{PY_ENV}/bin/pip3 install -r requirements-docs.txt
+# Use the current version instead of 4.4:
+mike deploy 4.4 latest --update-alias
+# Next, serve the docs to access them locally:
+mike serve
 ```
 
-### Step 4
-
-Use mkdocs to build the documentation and serve it locally
+**Important**: The first time you serve the docs, you have to choose a default version, as follows:
 
 ```bash
-{PY_ENV}/bin/mkdocs serve
+mike set-default latest
 ```
-
-The documentation should now be available locally on the following URL: http://127.0.0.1:8000/
 
 ## Adding new pages
 
-The `mkdocs.yml` file of this repository defines the pages to show in the navigation. 
+The `mkdocs.yml` file of this repository defines the pages to show in the navigation.
 After adding your new page in the docs folder, you also need to add it to this file for it to show up in the navigation.
 
 ## Checking links

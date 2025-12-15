@@ -2,8 +2,6 @@
 
 ## Introduction
 
-
-
 ## Code
 
 In this guide, you will learn how to create a Kafka Avro Schema in the Hopsworks Schema Registry.
@@ -60,4 +58,4 @@ my_schema = kafka_api.create_schema(SCHEMA_NAME, schema)
 
 ### API Reference
 
-[KafkaSchema](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/kafka_schema/)
+[`KafkaSchema`][hopsworks_common.kafka_schema.KafkaSchema]

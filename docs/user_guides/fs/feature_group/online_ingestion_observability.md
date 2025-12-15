@@ -6,7 +6,8 @@ description: Documentation on Online ingestion observability in Hopsworks.
 
 ## Introduction
 
-Knowing when ingested data becomes available for online serving—and understanding the cause of any ingestion failures—is crucial for users. To address this, the Hopsworks API provides observability features for online ingestion, allowing you to monitor ingestion status and troubleshoot issues.
+Knowing when ingested data becomes available for online serving—and understanding the cause of any ingestion failures—is crucial for users.
+To address this, the Hopsworks API provides observability features for online ingestion, allowing you to monitor ingestion status and troubleshoot issues.
 
 This guide explains how to use these observability features for online feature groups in Hopsworks, with examples using both the HSFS APIs and the user interface.
 
@@ -37,7 +38,7 @@ First, create an online-enabled feature group and insert data into it:
 
 After inserting data, you can monitor the ingestion progress:
 
-**Get the latest ingestion instance**
+#### Get the latest ingestion instance
 
 === "Python"
 
@@ -45,7 +46,7 @@ After inserting data, you can monitor the ingestion progress:
     oi = fg.get_latest_online_ingestion()
     ```
 
-**Get a specific ingestion by its ID**
+#### Get a specific ingestion by its ID
 
 === "Python"
 
@@ -57,7 +58,7 @@ After inserting data, you can monitor the ingestion progress:
 
 The online ingestion object provides methods to track and debug the ingestion process:
 
-**Wait for completion**
+#### Wait for completion
 
 Wait for the online ingestion to finish (equivalent to `fg.insert(fg_df, wait=True)`):
 
@@ -67,9 +68,10 @@ Wait for the online ingestion to finish (equivalent to `fg.insert(fg_df, wait=Tr
     oi.wait_for_completion()
     ```
 
-**Print mini-batch results**
+#### Print mini-batch results
 
-Check the results of the ingestion. If the status is `UPSERTED` and the number of rows matches your data, the ingestion was successful:
+Check the results of the ingestion.
+If the status is `UPSERTED` and the number of rows matches your data, the ingestion was successful:
 
 === "Python"
 
@@ -78,7 +80,7 @@ Check the results of the ingestion. If the status is `UPSERTED` and the number o
     # Example output: [{'onlineIngestionId': 1, 'status': 'UPSERTED', 'rows': 10}]
     ```
 
-**Print ingestion service logs**
+#### Print ingestion service logs
 
 Retrieve logs from the online ingestion service to diagnose any issues:
 

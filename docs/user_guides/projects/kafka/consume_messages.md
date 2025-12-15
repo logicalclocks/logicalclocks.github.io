@@ -2,7 +2,8 @@
 
 ## Introduction
 
-A Consumer is a process which reads messages from a Kafka topic. In Hopsworks, all user roles are capable of performing 'Read' and 'Describe' actions on Kafka topics within projects that they are a member of or are shared with them.
+A Consumer is a process which reads messages from a Kafka topic.
+In Hopsworks, all user roles are capable of performing 'Read' and 'Describe' actions on Kafka topics within projects that they are a member of or are shared with them.
 
 ## Prerequisites
 
@@ -52,4 +53,4 @@ for i in range(0, 10):
 
 ### API Reference
 
-[KafkaTopic](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/kafka_topic/)
+[`KafkaTopic`][hopsworks_common.kafka_topic.KafkaTopic]

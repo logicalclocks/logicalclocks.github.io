@@ -2,19 +2,19 @@
 
 ## Introduction
 
-Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases. Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
+Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases.
+Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
 
 In this guide, you will learn how to install Python packages using these different options.
 
-* PyPi, using pip package manager
-* A conda channel, using conda package manager
-* Packages contained in .whl format
-* A public or private git repository
-* A requirements.txt file to install multiple libraries at the same time using pip
+- PyPi, using pip package manager
+- A conda channel, using conda package manager
+- Packages contained in .whl format
+- A public or private git repository
+- A requirements.txt file to install multiple libraries at the same time using pip
 
 !!! notice "Notice"
     If your libraries require installing some extra OS-Level packages, refer to the guide custom commands guide on how to install OS-Level packages.
-
 
 ## Prerequisites
 
@@ -76,7 +76,8 @@ For example to install matplotlib 3.7.2, the following are correct inputs:
 In the case of a private git repository, also select whether it is a GitHub or GitLab repository and the preconfigured access token for the repository.
 
 !!! notice "Keep your secrets safe"
-    If you are installing from a git repository which is not GitHub or GitLab simply supply the access token in the URL. Keep in mind that in this case the access token may be visible in logs for other users in the same project to see.
+    If you are installing from a git repository which is not GitHub or GitLab simply supply the access token in the URL.
+    Keep in mind that in this case the access token may be visible in logs for other users in the same project to see.
 
 <p align="center">
   <figure>
@@ -84,7 +85,6 @@ In the case of a private git repository, also select whether it is a GitHub or G
     <figcaption>Installing library from git repo</figcaption>
   </figure>
 </p>
-
 
 ## Going Further
 

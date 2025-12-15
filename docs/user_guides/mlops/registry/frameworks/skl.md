@@ -47,7 +47,8 @@ Export the Scikit-learn model to a directory on the local filesystem.
 
 ### Step 4: Register model in registry
 
-Use the `ModelRegistry.sklearn.create_model(..)` function to register a model as a Scikit-learn model. Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
+Use the `ModelRegistry.sklearn.create_model(..)` function to register a model as a Scikit-learn model.
+Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
 
 === "Python"
     ```python

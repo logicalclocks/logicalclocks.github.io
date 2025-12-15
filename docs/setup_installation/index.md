@@ -1,6 +1,6 @@
 # Setup and Administration
 
-This section contains installation guides for the **Hopsworks Platform** using kubernetes, on 
+This section contains installation guides for the **Hopsworks Platform** using kubernetes, on
 
 - [AWS](aws/getting_started.md)
 - [Azure](azure/getting_started.md)

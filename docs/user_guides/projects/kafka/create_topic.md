@@ -2,12 +2,12 @@
 
 ## Introduction
 
-A Topic is a queue to which records are stored and published. Producer applications write data to topics and consumer applications read from topics.
+A Topic is a queue to which records are stored and published.
+Producer applications write data to topics and consumer applications read from topics.
 
 ## Prerequisites
 
 This guide requires that you have 'Data owner' role and have previously created a [Kafka Schema](create_schema.md) to be used for the topic.
-
 
 ## Code
 
@@ -38,4 +38,4 @@ my_topic = kafka_api.create_topic(TOPIC_NAME, SCHEMA_NAME, 1, replicas=1, partit
 
 ### API Reference
 
-[KafkaTopic](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/kafka_topic/)
+[`KafkaTopic`][hopsworks_common.kafka_topic.KafkaTopic]
