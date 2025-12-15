@@ -9,6 +9,7 @@ In Hopsworks, a consistent backup should back up the following services:
 * **HopsFS**: offline feature store data plus checkpoints and logs for feature engineering applications.
 * **Opensearch**: search metadata, logs, dashboards, and user embeddings.
 * **Kubernetes objects**: cluster credentials, backup metadata, serving metadata, and project namespaces with service accounts, roles, secrets, and configmaps.
+* **Python environments**: custom project environments are stored in your configured container registry. Back up the registry separately. If a project and its environment are deleted, you must recreate the environment after restore.
 
 Besides the above services, Hopsworks uses also Apache Kafka which carries in-flight data heading to the online feature store. In the event of a total cluster loss, running jobs with in-flight data must be replayed.
 
