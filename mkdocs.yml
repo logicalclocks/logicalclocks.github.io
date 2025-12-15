@@ -346,9 +346,10 @@ plugins:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             show_source: false
-            link_source: true
             docstring_section_style: spacy
             annotations_path: source
+            extra:
+              link_source: true
           inventories:
             - https://docs.python.org/3/objects.inv
             - https://pandas.pydata.org/docs/objects.inv
