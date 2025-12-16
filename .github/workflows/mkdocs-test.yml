@@ -86,4 +86,4 @@ jobs:
           git config --global user.email mike@docs.hopsworks.ai
 
       - name: Generate the docs with mike
-        run: mike deploy 3.2-SNAPSHOT dev -u
+        run: mike deploy test-version
