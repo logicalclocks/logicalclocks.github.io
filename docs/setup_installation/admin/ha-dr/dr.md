@@ -1,28 +1,32 @@
 # Disaster Recovery
 
 ## Backup
+
 The state of a Hopsworks cluster is split between data and metadata and distributed across multiple services. This section explains how to take consistent backups for the offline and online feature stores as well as cluster metadata.
 
 In Hopsworks, a consistent backup should back up the following services:
 
-* **RonDB**: cluster metadata and the online feature store data.
-* **HopsFS**: offline feature store data plus checkpoints and logs for feature engineering applications.
-* **Opensearch**: search metadata, logs, dashboards, and user embeddings.
-* **Kubernetes objects**: cluster credentials, backup metadata, serving metadata, and project namespaces with service accounts, roles, secrets, and configmaps.
-* **Python environments**: custom project environments are stored in your configured container registry. Back up the registry separately. If a project and its environment are deleted, you must recreate the environment after restore.
+- **RonDB**: cluster metadata and the online feature store data.
+- **HopsFS**: offline feature store data plus checkpoints and logs for feature engineering applications.
+- **Opensearch**: search metadata, logs, dashboards, and user embeddings.
+- **Kubernetes objects**: cluster credentials, backup metadata, serving metadata, and project namespaces with service accounts, roles, secrets, and configmaps.
+- **Python environments**: custom project environments are stored in your configured container registry. Back up the registry separately. If a project and its environment are deleted, you must recreate the environment after restore.
 
 Besides the above services, Hopsworks uses also Apache Kafka which carries in-flight data heading to the online feature store. In the event of a total cluster loss, running jobs with in-flight data must be replayed.
 
 ### Prerequisites
+
 When enabling backup in Hopsworks, cron jobs are configured for RonDB and Opensearch. For HopsFS, backups rely on versioning in the object store. For Kubernetes objects, Hopsworks uses Velero to snapshot the required resources. Before enabling backups:
 
 - Enable versioning on the S3-compatible bucket used for HopsFS.
 - Install and configure Velero with the AWS plugin (S3).
 
 #### Install Velero
-Velero provides backup and restore for Kubernetes resources. Install it with either the Velero CLI or Helm (Velero docs [here](https://velero.io/docs/v1.17/basic-install/)).
+
+Velero provides backup and restore for Kubernetes resources. Install it with either the Velero CLI or Helm (Velero docs: [Velero basic install guide](https://velero.io/docs/v1.17/basic-install/)).
 
 - Using the Velero CLI, set up the CRDs and deployment:
+
 ```bash
 velero install \
     --plugins velero/velero-plugin-for-aws:v1.13.0 \
@@ -33,6 +37,7 @@ velero install \
 ```
 
 - Using the Velero Helm chart:
+
 ```bash
 helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
 helm repo update
@@ -51,6 +56,7 @@ helm install velero vmware-tanzu/velero \
 ```
 
 ### Configuring Backup
+
 !!! Note
     Backup is only supported for clusters that use S3-compatible object storage.
 
@@ -58,10 +64,10 @@ You can enable backups during installation or a later upgrade. Set the schedule 
 
 ```yaml
 global:
-  _hopsworks:    
+  _hopsworks:
     backups:
       enabled: true
-      schedule: "@weekly"      
+      schedule: "@weekly"
 ```
 
 After configuring backups, go to the cluster settings and open the Backup tab. You should see `enabled` at the top level and for all services if everything is configured correctly.
@@ -84,11 +90,11 @@ Use the backup time-to-live (`ttl`) flag to automatically prune backups older th
 
 ```yaml
 global:
-  _hopsworks:    
+  _hopsworks:
     backups:
       enabled: true
       schedule: "@weekly"
-      ttl: 60d     
+      ttl: 60d
 ```
 
 For S3 object storage, you can also configure a bucket lifecycle policy to expire old object versions. Example for AWS S3:
@@ -112,6 +118,7 @@ For S3 object storage, you can also configure a bucket lifecycle policy to expir
 ```
 
 ## Restore
+
 !!! Note
     Restore is only supported in a newly created cluster; in-place restore is not supported.
 
@@ -121,11 +128,14 @@ The restore process has two phases:
 - Install the cluster with Helm using the correct backup IDs.
 
 ### Restore Kubernetes objects
+
 Restore the Kubernetes objects that were backed up using Velero.
 
 - Ensure that Velero is installed and configured with the AWS plugin as described in the [prerequisites](#prerequisites).
 - Set up a [Velero backup storage location](https://velero.io/docs/v1.17/api-types/backupstoragelocation/) to point to the S3 bucket.
-    - If you are using AWS S3:
+
+  - If you are using AWS S3:
+
     ```bash
     kubectl apply -f - <<EOF
     apiVersion: velero.io/v1
@@ -142,7 +152,9 @@ Restore the Kubernetes objects that were backed up using Velero.
         prefix: k8s_backup
     EOF
     ```
-    - If you are using an S3-compatible object storage, provide credentials and endpoint:
+
+  - If you are using an S3-compatible object storage, provide credentials and endpoint:
+
     ```bash
     cat << EOF > hopsworks-bsl-credentials
     [default]
@@ -171,6 +183,7 @@ Restore the Kubernetes objects that were backed up using Velero.
         prefix: k8s_backup
     EOF
     ```
+
 - After the backup storage location becomes available, restore the backups. The following script restores the latest available backup. To restore a specific backup, set `backupName` instead of `scheduleName`.
 
 ```bash
@@ -209,7 +222,7 @@ kubectl apply -f - <<EOF
 apiVersion: velero.io/v1
 kind: Restore
 metadata:
-  name: k8s-backups-users-resources-restore-$RESTORE_SUFFIX 
+  name: k8s-backups-users-resources-restore-$RESTORE_SUFFIX
   namespace: velero
 spec:
   scheduleName: k8s-backups-users-resources
@@ -221,20 +234,22 @@ until [ "$(kubectl get restore k8s-backups-users-resources-restore-$RESTORE_SUFF
 done
 ```
 
-### Restore on Cluster installation 
+### Restore on Cluster installation
+
 To restore a cluster during installation, configure the backup ID in the values YAML file:
 
 ```yaml
 global:
-  _hopsworks:    
+  _hopsworks:
     backups:
       enabled: true
-      schedule: "@weekly"    
+      schedule: "@weekly"
     restoreFromBackup:
       backupId: "254811200"
 ```
 
 #### Customizations
+
 !!! Warning
     Even if you override the backup IDs for RonDB and Opensearch, you must still set `.global._hopsworks.restoreFromBackup.backupId` to ensure HopsFS is restored.
 
@@ -242,10 +257,10 @@ To restore a different backup ID for RonDB:
 
 ```yaml
 global:
-  _hopsworks:    
+  _hopsworks:
     backups:
       enabled: true
-      schedule: "@weekly"    
+      schedule: "@weekly"
     restoreFromBackup:
       backupId: "254811200"
 
@@ -259,10 +274,10 @@ To restore a different backup for Opensearch:
 
 ```yaml
 global:
-  _hopsworks:    
+  _hopsworks:
     backups:
       enabled: true
-      schedule: "@weekly"    
+      schedule: "@weekly"
     restoreFromBackup:
       backupId: "254811200"
 
@@ -280,10 +295,10 @@ You can also customize the Opensearch restore process to skip specific indices:
 
 ```yaml
 global:
-  _hopsworks:    
+  _hopsworks:
     backups:
       enabled: true
-      schedule: "@weekly"    
+      schedule: "@weekly"
     restoreFromBackup:
       backupId: "254811200"
 
@@ -296,5 +311,5 @@ olk:
             default:
               snapshot_name: "254811140"
               payload:
-                indices: "-myindex"   
+                indices: "-myindex"
 ```
