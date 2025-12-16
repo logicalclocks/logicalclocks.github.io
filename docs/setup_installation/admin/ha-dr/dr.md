@@ -29,6 +29,7 @@ Velero provides backup and restore for Kubernetes resources. Install it with eit
 
 ```bash
 velero install \
+    --image velero/velero:v1.17.1 \
     --plugins velero/velero-plugin-for-aws:v1.13.0 \
     --no-default-backup-location \
     --no-secret \
@@ -44,6 +45,7 @@ helm repo update
 
 helm install velero vmware-tanzu/velero \
   --namespace velero \
+  --version 11.2.0 \
   --create-namespace \
   --set "initContainers[0].name=velero-plugin-for-aws" \
   --set "initContainers[0].image=velero/velero-plugin-for-aws:v1.13.0" \
