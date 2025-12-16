@@ -251,7 +251,6 @@ The following table describes the job configuration parameters for a PYSPARK job
 | <nobr>`conf['archives']`</nobr> | string | Comma-separated string of HDFS path(s) to archives to be made available to the application. Example: `hdfs:///Project/<project_name>/Resources/archive.zip,...` | `null` |
 | <nobr>`conf['properties']`</nobr> | string | A new line separated (`\n`) list of properties to pass to the Spark application. The properties should be in the format `name=value` | `null` |
 
-
 ## Accessing project data
 
 ### Read directly from the filesystem (recommended)

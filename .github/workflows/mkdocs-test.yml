@@ -67,8 +67,13 @@ jobs:
           mkdocs serve > /dev/null 2>&1 &
           SERVER_PID=$!
           echo "mk server in PID $SERVER_PID"
-          # Give enough time for deployment
-          sleep 30
+          # Give enough time for deployment (2min max)
+          for run in {1..120}; do
+            if curl --output /dev/null --silent --head --fail http://127.0.0.1:8000/; then
+              break
+            fi
+            sleep 1
+          done
           echo "Launching linkchecker"
           linkchecker --no-warnings --no-status http://127.0.0.1:8000/
 
@@ -81,4 +86,4 @@ jobs:
           git config --global user.email mike@docs.hopsworks.ai
 
       - name: Generate the docs with mike
-        run: mike deploy 3.2-SNAPSHOT dev -u
+        run: mike deploy test-version
