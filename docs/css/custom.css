@@ -174,9 +174,6 @@
 header.md-header {
   z-index: 900 !important;
 }
-.md-sidebar {
-  z-index: 1000 !important;
-}
 .md-overlay {
   z-index: 950 !important;
 }
