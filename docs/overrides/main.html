@@ -10,8 +10,8 @@ You're not viewing the latest version of the documentation.
     new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.attributeName === "hidden") {
-                document.body.style.borderBottom = '1px solid transparent';
-                setTimeout(function() { document.body.style.borderBottom = undefined; }, 1);
+                document.body.style.border = '1px solid transparent';
+                setTimeout(function() { document.body.style.border = undefined; }, 1);
             }
         });
     }).observe(document.querySelector("[data-md-component=outdated]"), { attributes: true });
