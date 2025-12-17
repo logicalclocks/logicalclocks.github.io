@@ -76,7 +76,7 @@ jobs:
           done
           echo "Launching linkchecker"
           # Ignore dejavu.css for now, it is a JDK bug.
-          linkchecker --no-warnings --no-status http://127.0.0.1:8000/ --ignore-url javadoc/resources/fonts/dejavu.css
+          linkchecker --no-warnings --no-status http://127.0.0.1:8000/ --ignore-url http://127.0.0.1:8000/javadoc/resources/fonts/dejavu.css
 
           # If ok just kill the server
           kill -9 $SERVER_PID
