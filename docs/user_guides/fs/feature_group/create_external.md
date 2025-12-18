@@ -22,7 +22,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
 === "Python"
 
     ```python
-    connector = feature_store.get_storage_connector("data_source_name")
+    ds = feature_store.get_data_source("data_source_name")
     ```
 
 ### Create an External Feature Group
@@ -52,7 +52,7 @@ Once you have defined the metadata, you can
         version=1,
         description="Physical shop sales features",
         query=query,
-        storage_connector=connector,
+        data_source=ds,
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
@@ -69,7 +69,7 @@ Once you have defined the metadata, you can
         version=1,
         description="Physical shop sales features",
         data_format="parquet",
-        storage_connector=connector,
+        data_source=ds,
         primary_key=['ss_store_sk'],
         event_time='sale_date'
     )
@@ -112,7 +112,7 @@ For an external feature group to be available online, during the creation of the
                 version=1,
                 description="Physical shop sales features",
                 query=query,
-                storage_connector=connector,
+                data_source=ds,
                 primary_key=['ss_store_sk'],
                 event_time='sale_date',
                 online_enabled=True)

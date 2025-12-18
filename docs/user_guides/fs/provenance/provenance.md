@@ -35,14 +35,14 @@ You can inspect the relationship between data sources and feature groups using t
 
     ```python
     # Retrieve the data source
-    snowflake_sc = fs.get_storage_connector("snowflake_sc")
+    ds = fs.get_data_source("snowflake_sc")
+    ds.query = "SELECT * FROM USER_PROFILES"
 
     # Create the user profiles feature group
     user_profiles_fg = fs.create_external_feature_group(
         name="user_profiles",
         version=1,
-        storage_connector=snowflake_sc,
-        query="SELECT * FROM USER_PROFILES"
+        data_source=ds
     )
     user_profiles_fg.save()
     ```
@@ -50,13 +50,13 @@ You can inspect the relationship between data sources and feature groups using t
 ### Step 1, Using Python
 
 Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the data sources that are part of the feature group.
-To do so, you can use the [`FeatureGroup.get_storage_connector_provenance`][hsfs.feature_group.FeatureGroup.get_storage_connector_provenance] method.
+To do so, you can use the [`FeatureGroup.get_data_source_provenance`][hsfs.feature_group.FeatureGroup.get_data_source_provenance] method.
 
 === "Python"
 
     ```python
     # Returns all data sources linked to the provided feature group
-    lineage = user_profiles_fg.get_storage_connector_provenance()
+    lineage = user_profiles_fg.get_data_source_provenance()
 
     # List all accessible parent data sources
     lineage.accessible
@@ -72,7 +72,7 @@ To do so, you can use the [`FeatureGroup.get_storage_connector_provenance`][hsfs
 
     ```python
     # Returns an accessible data source linked to the feature group (if it exists)
-    user_profiles_fg.get_storage_connector()
+    user_profiles_fg.get_data_source()
     ```
 
 To traverse the provenance graph in the opposite direction (i.e., from the data source to the feature group), you can use the [`StorageConnector.get_feature_groups_provenance`][hsfs.storage_connector.StorageConnector.get_feature_groups_provenance] method.
