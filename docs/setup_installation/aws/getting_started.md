@@ -254,14 +254,10 @@ global:
     managedObjectStorage:
       enabled: true
       s3:
-        bucket:
-          name: &bucket "BUCKET_NAME"
-        region: &region "REGION"
-        secret:
-          name: &awscredentialsname "aws-credentials"
-          acess_key_id: &awskeyid "access-key-id"
-          secret_key_id: &awsaccesskey "secret-access-key"
-
+        bucket: 
+          name: "BUCKET_NAME"
+        region: "REGION"
+    
     minio:
       enabled: false
 
@@ -292,6 +288,16 @@ hopsworks:
     ingressClassName: alb
     annotations:
       alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:xxxxx:certificate/xxxxxxx
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=300
+
+    host: &host HOST_DOMAIN
+    hosts:
+      - *host
+    tls:
+      - hosts:
+        - *host
 
 rondb:
   rondb:
@@ -300,15 +306,6 @@ rondb:
         storage:
           classes:
             default: *storageClass
-
-hopsfs:
-  objectStorage:
-    enabled: true
-    provider: "S3"
-    s3:
-      bucket:
-        name: *bucket
-      region: *region
 
 consul:
   consul:
