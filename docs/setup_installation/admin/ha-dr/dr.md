@@ -122,7 +122,7 @@ For S3 object storage, you can also configure a bucket lifecycle policy to expir
 ## Restore
 
 !!! Note
-    Restore is only supported in a newly created cluster; in-place restore is not supported.
+    Restore is only supported in a newly created cluster; in-place restore is not supported. Use the exact Hopsworks version that was used to create the backup.
 
 The restore process has two phases:
 
@@ -136,7 +136,7 @@ Restore the Kubernetes objects that were backed up using Velero.
 - Ensure that Velero is installed and configured with the AWS plugin as described in the [prerequisites](#prerequisites).
 - Set up a [Velero backup storage location](https://velero.io/docs/v1.17/api-types/backupstoragelocation/) to point to the S3 bucket.
 
-  - If you are using AWS S3:
+  - If you are using AWS S3 and access is controlled by an IAM role:
 
     ```bash
     kubectl apply -f - <<EOF
@@ -234,6 +234,18 @@ echo "=== Waiting for Velero restore to finish ==="
 until [ "$(kubectl get restore k8s-backups-users-resources-restore-$RESTORE_SUFFIX -n velero -o jsonpath='{.status.phase}' 2>/dev/null)" = "Completed" ]; do
   echo "Still waiting..."; sleep 5;
 done
+```
+
+After the restore completes, verify the restored resources in Kubernetes. RonDB and Opensearch store their backup metadata in the `rondb-backups-metadata` and `opensearch-backups-metadata` configmaps. Use the commands below to list successful backup IDs (newest first) that can be referenced during cluster installation.
+
+```bash
+kubectl get configmap rondb-backups-metadata -n hopsworks -o json \
+| jq -r '.data | to_entries[] | select(.value | fromjson | .state == "SUCCESS") | .key' \
+| sort -nr
+
+kubectl get configmap opensearch-backups-metadata -n hopsworks -o json \
+| jq -r '.data | to_entries[] | select(.value | fromjson | .state == "SUCCESS") | .key' \
+| sort -nr
 ```
 
 ### Restore on Cluster installation
