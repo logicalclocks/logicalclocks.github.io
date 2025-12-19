@@ -134,13 +134,9 @@ helm<span class=w> </span>repo<span class=w> </span>update<span class=w> </span>
 <span class=w>    </span><span class=nt>managedObjectStorage</span><span class=p>:</span>
 <span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class=w>      </span><span class=nt>s3</span><span class=p>:</span>
-<span class=w>        </span><span class=nt>bucket</span><span class=p>:</span>
-<span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;bucket</span><span class=w> </span><span class=s>&quot;BUCKET_NAME&quot;</span>
-<span class=w>        </span><span class=nt>region</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;region</span><span class=w> </span><span class=s>&quot;REGION&quot;</span>
-<span class=w>        </span><span class=nt>secret</span><span class=p>:</span>
-<span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;awscredentialsname</span><span class=w> </span><span class=s>&quot;aws-credentials&quot;</span>
-<span class=w>          </span><span class=nt>acess_key_id</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;awskeyid</span><span class=w> </span><span class=s>&quot;access-key-id&quot;</span>
-<span class=w>          </span><span class=nt>secret_key_id</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;awsaccesskey</span><span class=w> </span><span class=s>&quot;secret-access-key&quot;</span>
+<span class=w>        </span><span class=nt>bucket</span><span class=p>:</span><span class=w> </span>
+<span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s>&quot;BUCKET_NAME&quot;</span>
+<span class=w>        </span><span class=nt>region</span><span class=p>:</span><span class=w> </span><span class=s>&quot;REGION&quot;</span>
 
 <span class=w>    </span><span class=nt>minio</span><span class=p>:</span>
 <span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
@@ -172,6 +168,16 @@ helm<span class=w> </span>repo<span class=w> </span>update<span class=w> </span>
 <span class=w>    </span><span class=nt>ingressClassName</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">alb</span>
 <span class=w>    </span><span class=nt>annotations</span><span class=p>:</span>
 <span class=w>      </span><span class=nt>alb.ingress.kubernetes.io/scheme</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">internet-facing</span>
+<span class=w>      </span><span class=nt>alb.ingress.kubernetes.io/certificate-arn</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">arn:aws:acm:us-west-2:xxxxx:certificate/xxxxxxx</span>
+<span class=w>      </span><span class=nt>alb.ingress.kubernetes.io/target-type</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ip</span>
+<span class=w>      </span><span class=nt>alb.ingress.kubernetes.io/target-group-attributes</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=300</span>
+
+<span class=w>    </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;host</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">HOST_DOMAIN</span>
+<span class=w>    </span><span class=nt>hosts</span><span class=p>:</span>
+<span class=w>      </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nv>*host</span>
+<span class=w>    </span><span class=nt>tls</span><span class=p>:</span>
+<span class=w>      </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>hosts</span><span class=p>:</span>
+<span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nv>*host</span>
 
 <span class=nt>rondb</span><span class=p>:</span>
 <span class=w>  </span><span class=nt>rondb</span><span class=p>:</span>
@@ -180,15 +186,6 @@ helm<span class=w> </span>repo<span class=w> </span>update<span class=w> </span>
 <span class=w>        </span><span class=nt>storage</span><span class=p>:</span>
 <span class=w>          </span><span class=nt>classes</span><span class=p>:</span>
 <span class=w>            </span><span class=nt>default</span><span class=p>:</span><span class=w> </span><span class=nv>*storageClass</span>
-
-<span class=nt>hopsfs</span><span class=p>:</span>
-<span class=w>  </span><span class=nt>objectStorage</span><span class=p>:</span>
-<span class=w>    </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class=w>    </span><span class=nt>provider</span><span class=p>:</span><span class=w> </span><span class=s>&quot;S3&quot;</span>
-<span class=w>    </span><span class=nt>s3</span><span class=p>:</span>
-<span class=w>      </span><span class=nt>bucket</span><span class=p>:</span>
-<span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=nv>*bucket</span>
-<span class=w>      </span><span class=nt>region</span><span class=p>:</span><span class=w> </span><span class=nv>*region</span>
 
 <span class=nt>consul</span><span class=p>:</span>
 <span class=w>  </span><span class=nt>consul</span><span class=p>:</span>
