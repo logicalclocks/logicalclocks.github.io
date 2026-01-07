@@ -2,7 +2,8 @@
 
 ## Introduction
 
-An API key allows a user or a program to make API calls without having to authenticate with a username and password. To access an endpoint using an API key, a client should send the access token using the ApiKey authentication scheme.
+An API key allows a user or a program to make API calls without having to authenticate with a username and password.
+To access an endpoint using an API key, a client should send the access token using the ApiKey authentication scheme.
 
 The API Key can now be used when connecting to your Hopsworks instance using the `hopsworks`, `hsfs` or `hsml` python library or set in the `ApiKey` header for the REST API.
 
@@ -11,7 +12,9 @@ GET /resource HTTP/1.1
 Host: server.hopsworks.ai
 Authorization: ApiKey <api_key>
 ```
+
 ## UI
+
 In this guide, you will learn how to create an API key.
 
 ### Step 1: Navigate to API Keys
@@ -27,7 +30,7 @@ In the _Account Settings_ page you can find the _API_ section showing a list of 
 
 ### Step 2: Create an API Key
 
-Click `New Api key`, select the required scopes and create it by clicking `Create Api Key`. 
+Click `New Api key`, select the required scopes and create it by clicking `Create Api Key`.
 
 Copy the value and save it in a secure location, such as a password manager.
 
@@ -40,4 +43,5 @@ Copy the value and save it in a secure location, such as a password manager.
 
 ## Login with API Key using SDK
 
-In this guide you learned how to create an API Key. You can now use the API Key to [login](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/) using the `hopsworks` python SDK.
+In this guide you learned how to create an API Key.
+You can now use the API Key to [login][hopsworks.login] using the `hopsworks` python SDK.

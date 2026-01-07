@@ -1,6 +1,6 @@
 # How to manage schema and feature data types
 
-### Introduction
+## Introduction
 
 In this guide, you will learn how to manage the feature group schema and control the data type of the features in a feature group.
 
@@ -13,12 +13,13 @@ We also suggest you familiarize yourself with the APIs to [create a feature grou
 
 When a feature is stored in both the online and offline feature stores, it will be stored in a data type native to each store.
 
-* **[Offline data type](#offline-data-types)**: The data type of the feature when stored on the offline feature store. The offline feature store is based on Apache Hudi and Hive Metastore, as such,
-  [Hive Data Types](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types) can be leveraged.
-* **[Online data type](#online-data-types)**: The data type of the feature when stored on the online feature store. The online storage is based on RonDB and hence,
-  [MySQL Data Types](https://dev.mysql.com/doc/refman/8.0/en/data-types.html) can be leveraged.
+- **[Offline data type](#offline-data-types)**: The data type of the feature when stored on the offline feature store.
+  The offline feature store is based on Apache Hudi and Hive Metastore, as such, [Hive Data Types](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types) can be leveraged.
+- **[Online data type](#online-data-types)**: The data type of the feature when stored on the online feature store.
+  The online storage is based on RonDB and hence, [MySQL Data Types](https://dev.mysql.com/doc/refman/8.0/en/data-types.html) can be leveraged.
 
-The offline data type is always required, even if the feature group is stored only online. On the other hand, if the feature group is not *online_enabled*, its features will not have an online data type.
+The offline data type is always required, even if the feature group is stored only online.
+On the other hand, if the feature group is not *online_enabled*, its features will not have an online data type.
 
 The offline and online types for each feature are automatically inferred from the Spark or Pandas types of the input DataFrame as outlined in the following two sections.
 The default mapping, however, can be overwritten by using an [explicit schema definition](#explicit-schema-definition).
@@ -89,10 +90,12 @@ More on how Hopsworks handles [string types](#string-online-data-types),  [compl
 
 #### String online data types
 
-String types are stored as *VARCHAR(100)* by default. This type is fixed-size, meaning it can only hold as many characters as specified in the argument (e.g. VARCHAR(100) can hold up to 100 unicode characters).
-The size should thus be within the maximum string length of the input data. Furthermore, the VARCHAR size has to be in line with the [online restrictions for row size](#online-restrictions-for-row-size).
+String types are stored as *VARCHAR(100)* by default.
+This type is fixed-size, meaning it can only hold as many characters as specified in the argument (e.g., VARCHAR(100) can hold up to 100 unicode characters).
+The size should thus be within the maximum string length of the input data.
+Furthermore, the VARCHAR size has to be in line with the [online restrictions for row size](#online-restrictions-for-row-size).
 
-If the string size exceeds 100 characters, a larger type (e.g. VARCHAR(500)) can be specified via an [explicit schema definition](#explicit-schema-definition).
+If the string size exceeds 100 characters, a larger type (e.g., VARCHAR(500)) can be specified via an [explicit schema definition](#explicit-schema-definition).
 If the string size is unknown or if it exceeds the maximum row size, then the [TEXT type](https://docs.rondb.com/blobs/) can be used instead.
 
 String data that exceeds the specified VARCHAR size will lead to an error when data gets written to the online feature store.
@@ -100,15 +103,16 @@ When in doubt, use the TEXT type instead, but note that it comes with a potentia
 
 #### Complex online data types
 
-Hopsworks allows users to store complex types (e.g. *ARRAY<INT>*) in the online feature store. Hopsworks serializes the complex features transparently and stores them as VARBINARY in the online feature store.
-The serialization happens when calling the [save()](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#save),
-[insert()](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#insert) or [insert_stream()](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#insert_stream) methods.
-The deserialization will be executed when calling the [get_serving_vector()](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/training_dataset_api/#get_serving_vector) method to retrieve data from the online feature store.
+Hopsworks allows users to store complex types (e.g. *ARRAY<INT>*) in the online feature store.
+Hopsworks serializes the complex features transparently and stores them as VARBINARY in the online feature store.
+The serialization happens when calling the [`FeatureGroup.save`][hsfs.feature_group.FeatureGroup.save],
+[`FeatureGroup.insert`][hsfs.feature_group.FeatureGroup.insert] or [`FeatureGroup.insert_stream`][hsfs.feature_group.FeatureGroup.insert_stream] methods.
+The deserialization will be executed when calling the [`TrainingDataset.get_serving_vector`][hsfs.training_dataset.TrainingDataset.get_serving_vector] method to retrieve data from the online feature store.
 If users query directly the online feature store, for instance using the `fs.sql("SELECT ...", online=True)` statement, it will return a binary blob.
 
 On the feature store UI, the online feature type for complex features will be reported as *VARBINARY*.
 
-If the binary size exceeds 100 bytes, a larger type (e.g. VARBINARY(500)) can be specified via an [explicit schema definition](#explicit-schema-definition).
+If the binary size exceeds 100 bytes, a larger type (e.g., VARBINARY(500)) can be specified via an [explicit schema definition](#explicit-schema-definition).
 If the binary size is unknown of if it exceeds the maximum row size, then the [BLOB type](https://docs.rondb.com/blobs/) can be used instead.
 
 Binary data that exceeds the specified VARBINARY size will lead to an error when data gets written to the online feature store.
@@ -120,7 +124,7 @@ When a feature is being used as a primary key, certain types are not allowed.
 Examples of such types are *FLOAT*, *DOUBLE*, *TEXT* and *BLOB*.
 Additionally, the size of the sum of the primary key online data types storage requirements **should not exceed 4KB**.
 
-####  Online restrictions for row size
+#### Online restrictions for row size
 
 The online feature store supports **up to 500 columns** and all column types combined **should not exceed 30000 Bytes**.
 The byte size of each column is determined by its data type and calculated as follows:
@@ -145,9 +149,11 @@ The byte size of each column is determined by its data type and calculated as fo
 
 !!! note "VARCHAR / VARBINARY overhead"
 
-    For VARCHAR and VARBINARY data types, an additional 1 byte is required if the size is less than 256 bytes. If the size is 256 bytes or greater, 2 additional bytes are required.
+    For VARCHAR and VARBINARY data types, an additional 1 byte is required if the size is less than 256 bytes.
+    If the size is 256 bytes or greater, 2 additional bytes are required.
 
-    Memory allocation is performed in groups of 4 bytes. For example, a VARBINARY(100) requires 104 bytes of memory:
+    Memory allocation is performed in groups of 4 bytes.
+    For example, a VARBINARY(100) requires 104 bytes of memory:
 
     - 100 bytes for the data itself
     - 1 byte of overhead
@@ -155,114 +161,121 @@ The byte size of each column is determined by its data type and calculated as fo
 
     Since memory is allocated in 4-byte groups, storing 101 bytes requires 26 groups (26 × 4 = 104 bytes) of allocated memory.
 
-
 #### Pre-insert schema validation for online feature groups
-For online enabled feature groups, the dataframe to be ingested needs to adhere to the online schema definitions. The input dataframe is validated for schema checks accordingly.
+
+For online enabled feature groups, the dataframe to be ingested needs to adhere to the online schema definitions.
+The input dataframe is validated for schema checks accordingly.
 The validation is enabled by default and can be disabled by setting below key word argument when calling `insert()`
 === "Python"
     ```python
     feature_group.insert(df, validation_options={'online_schema_validation':False})
     ```
-The most important validation checks or error messages are mentioned below along with possible corrective actions. 
+The most important validation checks or error messages are mentioned below along with possible corrective actions.
 
-1. Primary key contains null values 
+01. Primary key contains null values
 
     - **Rule** Primary key column should not contain any null values.
-    - **Example correction** Drop the rows containing null primary keys. Alternatively, find the null values and assign them an unique value as per preferred strategy for data imputation.
-        
-        === "Pandas"
-        ```python
-        # Drop rows: assuming 'id' is the primary key column
-        df = df.dropna(subset=['id'])
-        # For composite keys
-        df = df.dropna(subset=['id1', 'id2'])
+    - **Example correction** Drop the rows containing null primary keys.
+      Alternatively, find the null values and assign them an unique value as per preferred strategy for data imputation.
 
-        # Data imputation: replace null values with incrementing last interger id
-        # existing max id 
-        max_id = df['id'].max()
-        # counter to generate new id
-        next_id = max_id + 1
-        # for each null id, assign the next id incrementally
-        for idx in df[df['id'].isna()].index:
-            df.loc[idx, 'id'] = next_id
-            next_id += 1
-        ```
+      === "Pandas"
+          ```python
+          # Drop rows: assuming 'id' is the primary key column
+          df = df.dropna(subset=['id'])
+          # For composite keys
+          df = df.dropna(subset=['id1', 'id2'])
 
-2. Primary key column missing
+          # Data imputation: replace null values with incrementing last interger id
+          # existing max id
+          max_id = df['id'].max()
+          # counter to generate new id
+          next_id = max_id + 1
+          # for each null id, assign the next id incrementally
+          for idx in df[df['id'].isna()].index:
+              df.loc[idx, 'id'] = next_id
+              next_id += 1
+          ```
+
+02. Primary key column missing
 
     - **Rule** The dataframe to be inserted must contain all the columns defined as primary key(s) in the feature group.
     - **Example correction** Add all the primary key columns in the dataframe.
-        
-        === "Pandas"
-        ```python
-        # increamenting primary key upto the length of dataframe
-        df['id'] = range(1, len(df) + 1)
-        ```
 
-3. String length exceeded
+      === "Pandas"
+          ```python
+          # increamenting primary key upto the length of dataframe
+          df['id'] = range(1, len(df) + 1)
+          ```
 
-    - **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature. If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe. 
+03. String length exceeded
+
+    - **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature.
+      If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe.
     - **Example correction**
-    
-        - Trim the string values to fit within maximum limit set during feature group creation.
-        
-        === "Pandas"
-        ```python
-        max_length = 100
-        df['text_column'] = df['text_column'].str.slice(0, max_length)
-        ```
-        
-        - Another option is to simply [create new version of the feature group](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#get_or_create_feature_group) and insert the dataframe.
 
+      - Trim the string values to fit within maximum limit set during feature group creation.
 
-        !!!note  
-            The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size). In such cases it is possible to define the feature as **TEXT** or **BLOB**.
-            Below is an example of explicitly defining the string column as TEXT as online type.
+      === "Pandas"
+          ```python
+          max_length = 100
+          df['text_column'] = df['text_column'].str.slice(0, max_length)
+          ```
 
-        === "Pandas"
-        ```python
-        import pandas as pd
-        # example dummy dataframe with the string column
-        df = pd.DataFrame(columns=['id', 'string_col'])
-        from hsfs.feature import Feature
-        features = [
-        Feature(name="id",type="bigint",online_type="bigint"),
-        Feature(name="string_col",type="string",online_type="text")
-        ]
+      - Another option is to simply [create new version of the feature group][hsfs.feature_store.FeatureStore.get_or_create_feature_group] and insert the dataframe.
 
-        fg = fs.get_or_create_feature_group(name="fg_manual_text_schema",
-                                    version=1,
-                                    features=features,
-                                    online_enabled=True,
-                                    primary_key=['id'])
-        fg.insert(df)
-        ```
+      !!!note
+          The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size).
+          In such cases it is possible to define the feature as **TEXT** or **BLOB**.
+          Below is an example of explicitly defining the string column as TEXT as online type.
+
+      === "Pandas"
+          ```python
+          import pandas as pd
+          # example dummy dataframe with the string column
+          df = pd.DataFrame(columns=['id', 'string_col'])
+          from hsfs.feature import Feature
+          features = [
+          Feature(name="id",type="bigint",online_type="bigint"),
+          Feature(name="string_col",type="string",online_type="text")
+          ]
+
+          fg = fs.get_or_create_feature_group(name="fg_manual_text_schema",
+                                      version=1,
+                                      features=features,
+                                      online_enabled=True,
+                                      primary_key=['id'])
+          fg.insert(df)
+          ```
 
 ### Timestamps and Timezones
 
-All timestamp features are stored in Hopsworks in UTC time. Also, all timestamp-based functions (such as [point-in-time joins](../../../concepts/fs/feature_view/offline_api.md#point-in-time-correct-training-data)) use UTC time.
+All timestamp features are stored in Hopsworks in UTC time.
+Also, all timestamp-based functions (such as [point-in-time joins](../../../concepts/fs/feature_view/offline_api.md#point-in-time-correct-training-data)) use UTC time.
 This ensures consistency of timestamp features across different client timezones and simplifies working with timestamp-based functions in general.
-When ingesting timestamp features, the [Feature Store Write API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#insert) will automatically handle the conversion to UTC, if necessary.
+When ingesting timestamp features, the [`FeatureGroup.insert`][hsfs.feature_group.FeatureGroup.insert] will automatically handle the conversion to UTC, if necessary.
 The following table summarizes how different timestamp types are handled:
 
-| Data Frame (Data Type)                | Environment             | Handling                                                 |
-|---------------------------------------|-------------------------|----------------------------------------------------------|
-| Pandas DataFrame (datetime64[ns])     | Python-only and PySpark | interpreted as UTC, independent of the client's timezone |
-| Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timezone-sensitive conversion from 'tz' to UTC            |
-| Spark (TimestampType)                 | PySpark and Spark       | interpreted as UTC, independent of the client's timezone |
+| Data Frame (Data Type) | Environment | Handling |
+| --- | --- | --- |
+| Pandas DataFrame (datetime64[ns]) | Python-only and PySpark | interpreted as UTC, independent of the client's timezone |
+| Pandas DataFrame (datetime64[ns, tz]) | Python-only and PySpark | timezone-sensitive conversion from 'tz' to UTC |
+| Spark (TimestampType) | PySpark and Spark | interpreted as UTC, independent of the client's timezone |
 
-Timestamp features retrieved from the Feature Store, e.g. using the [Feature Store Read API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#read), use a timezone-unaware format:
+Timestamp features retrieved from the Feature Store, e.g., using the [Feature Store Read API][hsfs.feature_group.FeatureGroup.read], use a timezone-unaware format:
 
 | Data Frame (Data Type)                | Environment             | Timezone               |
 |---------------------------------------|-------------------------|------------------------|
 | Pandas DataFrame (datetime64[ns])     | Python-only             | timezone-unaware (UTC) |
 | Spark (TimestampType)                 | PySpark and Spark       | timezone-unaware (UTC) |
 
-Note that our PySpark/Spark client automatically sets the Spark SQL session's timezone to UTC. This ensures that Spark SQL will correctly interpret all timestamps as UTC. The setting will only apply to the client's session, and you don't have to worry about setting/unsetting the configuration yourself.
+Note that our PySpark/Spark client automatically sets the Spark SQL session's timezone to UTC.
+This ensures that Spark SQL will correctly interpret all timestamps as UTC.
+The setting will only apply to the client's session, and you don't have to worry about setting/unsetting the configuration yourself.
 
 ## Explicit schema definition
 
-When creating a feature group it is possible for the user to control both the offline and online data type of each column. If users explicitly define the schema for the feature group, Hopsworks is going to use that schema to create the feature group, without performing any type mapping.
+When creating a feature group it is possible for the user to control both the offline and online data type of each column.
+If users explicitly define the schema for the feature group, Hopsworks is going to use that schema to create the feature group, without performing any type mapping.
 You can explicitly define the feature group schema as follows:
 
 === "Python"
@@ -282,7 +295,8 @@ You can explicitly define the feature group schema as follows:
 
 ## Append features to existing feature groups
 
-Hopsworks supports appending additional features to an existing feature group. Adding additional features to an existing feature group is not considered a breaking change.
+Hopsworks supports appending additional features to an existing feature group.
+Adding additional features to an existing feature group is not considered a breaking change.
 
 === "Python"
     ```python
@@ -297,4 +311,5 @@ Hopsworks supports appending additional features to an existing feature group. A
     fg.append_features(features)
     ```
 
-When adding additional features to a feature group, you can provide a default values for existing entries in the feature group. You can also backfill the new features for existing entries by running an `insert()` operation and update all existing combinations of *primary key* - *event time*.
+When adding additional features to a feature group, you can provide a default values for existing entries in the feature group.
+You can also backfill the new features for existing entries by running an `insert()` operation and update all existing combinations of *primary key* - *event time*.

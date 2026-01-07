@@ -1,6 +1,8 @@
 # Data Source Guides
 
-You can define data sources in Hopsworks for batch and streaming data sources. Data Sources securely store the authentication information about how to connect to an external data store. They can be used from programs within Hopsworks or externally.
+You can define data sources in Hopsworks for batch and streaming data sources.
+Data Sources securely store the authentication information about how to connect to an external data store.
+They can be used from programs within Hopsworks or externally.
 
 !!!warning
 
@@ -9,11 +11,15 @@ You can define data sources in Hopsworks for batch and streaming data sources. D
 There are four main use cases for Data Sources:
 
 - Simply use it to read data from the storage into a dataframe.
-- [External (on-demand) Feature Groups](../../../concepts/fs/feature_group/external_fg.md) can be defined with data sources. This way, Hopsworks stores only the metadata about the features, but does not keep a copy of the data itself. This is also called the Connector API.
+- [External (on-demand) Feature Groups](../../../concepts/fs/feature_group/external_fg.md) can be defined with data sources.
+  This way, Hopsworks stores only the metadata about the features, but does not keep a copy of the data itself.
+  This is also called the Connector API.
 - Write [training data](../../../concepts/fs/feature_view/offline_api.md) to an external storage system to make it accessible by third parties.
-- Managed [feature group](../../../user_guides/fs/feature_group/create.md) that stores offline data in an external storage system. Currently [S3](../data_source/creation/s3.md) and [GCS](../data_source/creation/gcs.md) connectors are supported.
+- Managed [feature group](../../../user_guides/fs/feature_group/create.md) that stores offline data in an external storage system.
+  Currently [S3](../data_source/creation/s3.md) and [GCS](../data_source/creation/gcs.md) connectors are supported.
 
-Data Sources provide two main mechanisms for authentication: using credentials or an authentication role (IAM Role on AWS or Managed Identity on Azure). Hopsworks supports both a single IAM role (AWS) or Managed Identity (Azure) for the whole Hopsworks cluster or multiple IAM roles (AWS) or Managed Identities (Azure) that can only be assumed by users with a specific role in a specific project.
+Data Sources provide two main mechanisms for authentication: using credentials or an authentication role (IAM Role on AWS or Managed Identity on Azure).
+Hopsworks supports both a single IAM role (AWS) or Managed Identity (Azure) for the whole Hopsworks cluster or multiple IAM roles (AWS) or Managed Identities (Azure) that can only be assumed by users with a specific role in a specific project.
 
 By default, each project is created with three default Data Sources: A JDBC connector to the online feature store, a HopsFS connector to the Training Datasets directory of the project and a JDBC connector to the offline feature store.
 

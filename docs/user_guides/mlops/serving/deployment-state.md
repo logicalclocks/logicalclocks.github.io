@@ -4,7 +4,8 @@
 
 In this guide, you will learn how to inspect the state of a deployment.
 
-A state can be seen as a snapshot of the current inner workings of a deployment. The following is the state transition diagram for deployments.
+A state can be seen as a snapshot of the current inner workings of a deployment.
+The following is the state transition diagram for deployments.
 
 <p align="center">
   <figure>
@@ -13,7 +14,8 @@ A state can be seen as a snapshot of the current inner workings of a deployment.
   </figure>
 </p>
 
-States are composed of a [status](#deployment-status) and a [condition](#deployment-conditions). While a status represents a high-level view of the state, conditions contain more detailed information closely related to infrastructure terms.
+States are composed of a [status](#deployment-status) and a [condition](#deployment-conditions).
+While a status represents a high-level view of the state, conditions contain more detailed information closely related to infrastructure terms.
 
 ## GUI
 
@@ -28,13 +30,17 @@ If you have at least one deployment already created, navigate to the deployments
   </figure>
 </p>
 
-Once in the deployments page, find the deployment you want to inspect. Next to the actions buttons, you can find an indicator showing the current status of the deployment. This indicator changes its color based on the status.
+Once in the deployments page, find the deployment you want to inspect.
+Next to the actions buttons, you can find an indicator showing the current status of the deployment.
+This indicator changes its color based on the status.
 
 To inspect the condition of the deployment, click on the name of the deployment to open the deployment overview page.
 
 ### Step 2: Inspect condition
 
-Once in the deployment overview page, you can find the aforementioned status indicator at the top of page. Below it, a one-line message is shown with a more detailed description of the deployment status. This message is built using the current [condition](#deployment-conditions) of the deployment.
+Once in the deployment overview page, you can find the aforementioned status indicator at the top of page.
+Below it, a one-line message is shown with a more detailed description of the deployment status.
+This message is built using the current [condition](#deployment-conditions) of the deployment.
 
 <p align="center">
   <figure>
@@ -55,13 +61,15 @@ Additionally, you can find the nº of instances currently running by scrolling d
 </p>
 
 !!! info "Scale-to-zero capabilities"
-    If scale-to-zero capabilities are enabled, you can see how the nº of instances of a running deployment goes to zero and the status changes to `idle`. To enable scale-to-zero in a deployment, see [Resource Allocation Guide](resources.md)
+    If scale-to-zero capabilities are enabled, you can see how the nº of instances of a running deployment goes to zero and the status changes to `idle`.
+    To enable scale-to-zero in a deployment, see [Resource Allocation Guide](resources.md)
 
 ## Code
 
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -74,6 +82,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
 ### Step 2: Retrieve an existing deployment
 
 === "Python"
+
   ```python
   deployment = ms.get_deployment("mydeployment")
   ```
@@ -81,6 +90,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
 ### Step 3: Inspect deployment state
 
 === "Python"
+
   ```python
   state = deployment.get_state()
 
@@ -90,6 +100,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
 ### Step 4: Check nº of running instances
 
 === "Python"
+
   ```python
   # nº of predictor instances
   deployment.resources.describe()
@@ -100,9 +111,9 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 ### API Reference
 
-[Deployment](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/deployment_api/)
+[`Deployment`][hsml.deployment.Deployment]
 
-[PredictorState](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/predictor_api/)
+[`PredictorState`][hsml.predictor_state.PredictorState]
 
 ## Deployment status
 
@@ -123,9 +134,12 @@ The status of a deployment is a high-level description of its current state.
 
 ## Deployment conditions
 
-A condition contains more specific information about the status of the deployment. They are mainly useful to track the progress of starting or stopping deployments.
+A condition contains more specific information about the status of the deployment.
+They are mainly useful to track the progress of starting or stopping deployments.
 
-Status conditions contain three pieces of information: type, status and reason. While the type describes the purpose of the condition, the status represents its progress. Additionally, a reason field is provided with a more descriptive message of the status.
+Status conditions contain three pieces of information: type, status and reason.
+While the type describes the purpose of the condition, the status represents its progress.
+Additionally, a reason field is provided with a more descriptive message of the status.
 
 ??? info "Show deployment conditions"
 
@@ -145,7 +159,6 @@ Status conditions contain three pieces of information: type, status and reason. 
     | READY       | `Unknown` | Connectivity is being set up.                                                                                                                              |
     |             | `False`   | Connectivity failed to be set up, mainly due to networking issues.                                                                                         |
     |             | `True`    | Connectivity has been set up and the deployment is ready                                                                                                   |
-
 
 The following are two diagrams with the state transitions of conditions in starting and stopping deployments, respectively.
 

@@ -4,7 +4,8 @@ description: Documentation on how to configure a Databricks cluster to read and 
 # Databricks Integration
 
 Users can configure their Databricks clusters to write the results of feature engineering pipelines in the Hopsworks Feature Store using HSFS.
-Configuring a Databricks cluster can be done from the Hopsworks Feature Store UI. This guide explains each step.
+Configuring a Databricks cluster can be done from the Hopsworks Feature Store UI.
+This guide explains each step.
 
 ## Prerequisites
 
@@ -16,7 +17,8 @@ If you haven't done so already, follow the networking guides for either [AWS](ne
 
 ### Hopsworks API key
 
-In order for the Feature Store API to be able to communicate with the user's Hopsworks instance, the client library (HSFS) needs to have access to a previously generated API key from Hopsworks. For ways to setup and store the Hopsworks API key, please refer to the [API key guide for Databricks](api_key.md).
+In order for the Feature Store API to be able to communicate with the user's Hopsworks instance, the client library (HSFS) needs to have access to a previously generated API key from Hopsworks.
+For ways to setup and store the Hopsworks API key, please refer to the [API key guide for Databricks](api_key.md).
 
 ## Databricks API key
 
@@ -27,7 +29,7 @@ Users can get a valid Databricks API key by following the [Databricks Documentat
 
 !!! warning "Cluster access control"
 
-    If users have enabled [Databricks Cluster access control](https://docs.databricks.com/security/access-control/cluster-acl.html#cluster-access-control), it is important that the users running the cluster configuration (i.e. the user generating the API key) has `Can Manage` privileges on the cluster they are trying to configure.
+    If users have enabled [Databricks Cluster access control](https://docs.databricks.com/security/access-control/cluster-acl.html#cluster-access-control), it is important that the users running the cluster configuration (i.e., the user generating the API key) has `Can Manage` privileges on the cluster they are trying to configure.
 
 ## Register a new Databricks Instance
 
@@ -51,11 +53,13 @@ The instance name corresponds to the address of the Databricks instance and shou
   </figure>
 </p>
 
-The API key will be stored in the Hopsworks secret store for the user and will be available only for that user.  If multiple users need to configure Databricks clusters, each has to generate an API key and register an instance. The Databricks instance registration does not have a project scope, meaning that once registered, the user can configure clusters for all projects they are part of.
+The API key will be stored in the Hopsworks secret store for the user and will be available only for that user.  If multiple users need to configure Databricks clusters, each has to generate an API key and register an instance.
+The Databricks instance registration does not have a project scope, meaning that once registered, the user can configure clusters for all projects they are part of.
 
 ## Databricks Cluster
 
-A cluster needs to exist before users can configure it using the Hopsworks UI. The cluster can be in any state prior to the configuration.
+A cluster needs to exist before users can configure it using the Hopsworks UI.
+The cluster can be in any state prior to the configuration.
 
 !!! warning "Runtime limitation"
 
@@ -64,7 +68,10 @@ A cluster needs to exist before users can configure it using the Hopsworks UI. T
 ## Configure a cluster
 
 Clusters are configured for a project user, which, in Hopsworks terms, means a user operating within the scope of a project.
-To configure a cluster, click on the `Configure` button. By default the cluster will be configured for the user making the request. If the user doesn't have `Can Manage` privilege on the cluster, they can ask a project `Data Owner` to configure it for them. Hopsworks `Data Owners` are allowed to configure clusters for other project users, as long as they have the required Databricks privileges.
+To configure a cluster, click on the `Configure` button.
+By default the cluster will be configured for the user making the request.
+If the user doesn't have `Can Manage` privilege on the cluster, they can ask a project `Data Owner` to configure it for them.
+Hopsworks `Data Owners` are allowed to configure clusters for other project users, as long as they have the required Databricks privileges.
 
 <p align="center">
   <figure>
@@ -81,9 +88,11 @@ During the cluster configuration the following steps will be taken:
 - Configure the necessary Spark properties to authenticate and communicate with the Feature Store
 
 !!! note "HopsFS configuration"
-    It is not necessary to configure HopsFS if data is stored outside the Hopsworks file system. To do this define [Data Sources](../../fs/data_source/index.md) and link them to [Feature Groups](../../fs/feature_group/create.md) and [Training Datasets](../../fs/feature_view/training-data.md).
+    It is not necessary to configure HopsFS if data is stored outside the Hopsworks file system.
+    To do this define [Data Sources](../../fs/data_source/index.md) and link them to [Feature Groups](../../fs/feature_group/create.md) and [Training Datasets](../../fs/feature_view/training-data.md).
 
-When a cluster is configured for a specific project user, all the operations with the Hopsworks Feature Store will be executed as that project user. If another user needs to re-use the same cluster, the cluster can be reconfigured by following the same steps above.
+When a cluster is configured for a specific project user, all the operations with the Hopsworks Feature Store will be executed as that project user.
+If another user needs to re-use the same cluster, the cluster can be reconfigured by following the same steps above.
 
 ## Connecting to the Feature Store
 
@@ -91,7 +100,7 @@ At the end of the configuration, Hopsworks will start the cluster.
 Once the cluster is running users can establish a connection to the Hopsworks Feature Store from Databricks:
 
 ```python
-import hopsworks 
+import hopsworks
 project = hopsworks.login(
     host='my_instance',                 # DNS of your Hopsworks instance
     port=443,                           # Port to reach your Hopsworks instance, defaults to 443
@@ -103,4 +112,5 @@ fs = project.get_feature_store()           # Get the project's default feature s
 
 ## Next Steps
 
-For more information about how to connect, see the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/) API reference. Or continue with the Data Source guide to import your own data to the Feature Store.
+For more information about how to connect, see the [Login API][hopsworks.login].
+Or continue with the Data Source guide to import your own data to the Feature Store.

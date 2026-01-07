@@ -1,18 +1,19 @@
 # Access Audit Logs
- 
+
 ## Introduction
- 
-Hopsworks collects audit logs on all URL requests to the application server. These logs are saved in Payara log directory under ```<payara-log-dir>/audit``` by default.
- 
+
+Hopsworks collects audit logs on all URL requests to the application server.
+These logs are saved in Payara log directory under ```<payara-log-dir>/audit``` by default.
+
 ## Prerequisites
 
-In order to access the audit logs you need the following: 
- 
+In order to access the audit logs you need the following:
+
 - Administrator account on the Hopsworks cluster.
 - SSH access to the Hopsworks cluster with a user in the ```glassfish``` group.
- 
+
 ## Step 1: Configure Audit logs
- 
+
 Audit logs can be configured from the _Cluster Settings_ Configuration tab.
 You can access the _Configuration_ page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing _Cluster Settings_ from the dropdown menu.
 
@@ -20,10 +21,10 @@ You can access the _Configuration_ page of your Hopsworks cluster by clicking on
  <img src="../../../../assets/images/admin/audit/audit-log-vars.png" alt="Audit log configuration" />
  <figcaption>Audit log configuration</figcaption>
 </figure>
- 
+
 Type _audit_ in the search box to see the configuration variables associated with audit logs.
 To edit a configuration variable, you can click on the edit button (:material-pencil:), insert the new value and save changes clicking on the check mark (:material-check:).
- 
+
 !!! info "Audit logs configuration variables"
 
     | Name                  | Description                                                                                                                                                                                             |
@@ -35,12 +36,13 @@ To edit a configuration variable, you can click on the edit button (:material-pe
     | audit_log_date_format | if io.hops.hopsworks.audit.helper.JSONLogFormatter is used as audit log file type, this will set the date format of the output JSON. The format should be java.text.SimpleDateFormat compatible string. |
 
 !!! warning
-    Hopsworks application needs to be reloaded for any changes to be applied. For doing that, go to the Payara admin panel (```https://<your-domain>:4848```), click on _Applications_ on the side menu and reload the _hopsworks-ear_ application.
- 
+    Hopsworks application needs to be reloaded for any changes to be applied.
+    For doing that, go to the Payara admin panel (```https://<your-domain>:4848```), click on _Applications_ on the side menu and reload the _hopsworks-ear_ application.
+
 ## Step 2: Access the Logs
- 
+
 To access the audit logs, SSH into the **instance pod** of your Hopsworks cluster and navigate to the path ```/opt/payara/appserver/glassfish/nodes/<node name>/<instance name>/logs/audit```.
- 
+
 Audit logs follow the format set in the _audit\_log\_file\_type_ configuration variable.
 
 !!! note "Example of audit logs using JSONLogFormatter"
@@ -64,7 +66,7 @@ Regardless the format, each line in the audit logs can contain the following var
     | userAgent  | the browser used by the client                                              |
     | pathInfo   | the URL path called by the client                                           |
     | dateTime   | time of the request                                                         |
- 
+
 ## Going Further
 
 You can [export audit logs](../audit/export-audit-logs.md) to use them outside Hopsworks.

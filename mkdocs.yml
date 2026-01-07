@@ -4,7 +4,9 @@ site_author: "Hopsworks"
 site_url: "https://docs.hopsworks.ai/"
 
 # Repository
-edit_uri: ""
+edit_uri: "https://github.com/logicalclocks/logicalclocks.github.io"
+repo_url: "https://github.com/logicalclocks/hopsworks-api"
+repo_name: logicalclocks/hopsworks-api
 
 strict: false
 
@@ -74,6 +76,7 @@ nav:
               - user_guides/fs/feature_group/index.md
               - Create: user_guides/fs/feature_group/create.md
               - Create External: user_guides/fs/feature_group/create_external.md
+              - Create Spine: user_guides/fs/feature_group/create_spine.md
               - Deprecate: user_guides/fs/feature_group/deprecation.md
               - Data Types and Schema management: user_guides/fs/feature_group/data_types.md
               - Statistics: user_guides/fs/feature_group/statistics.md
@@ -108,10 +111,10 @@ nav:
           - Compute Engines: user_guides/fs/compute_engines.md
           - Client Integrations:
               - user_guides/integrations/index.md
-              - Python / SageMaker / Kubeflow : user_guides/integrations/python.md
+              - Python / SageMaker / Kubeflow: user_guides/integrations/python.md
               - AWS EMR:
-                - Networking: user_guides/integrations/emr/networking.md
-                - Configure EMR for Hopsworks: user_guides/integrations/emr/emr_configuration.md
+                  - Networking: user_guides/integrations/emr/networking.md
+                  - Configure EMR for Hopsworks: user_guides/integrations/emr/emr_configuration.md
               - Azure HDInsight: user_guides/integrations/hdinsight.md
               - Azure Machine Learning:
                   - Designer: user_guides/integrations/mlstudio_designer.md
@@ -119,6 +122,12 @@ nav:
               - Apache Spark: user_guides/integrations/spark.md
               - Apache Flink: user_guides/integrations/flink.md
               - Apache Beam: user_guides/integrations/beam.md
+              - Java: user_guides/integrations/java.md
+            # TODO: update the docs and uncomment:
+            #   - Databricks:
+            #       - Networking: user_guides/integrations/databricks/networking.md
+            #       - Configure Databricks for Hopsworks: user_guides/integrations/databricks/configuration.md
+            #       - API Key: user_guides/integrations/databricks/api_key.md
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
           - Provenance: user_guides/fs/provenance/provenance.md
@@ -159,7 +168,7 @@ nav:
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
               - Run Ray Job: user_guides/projects/jobs/ray_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
-          - Kubernetes Scheduling: 
+          - Kubernetes Scheduling:
               - Base: user_guides/projects/scheduling/kube_scheduler.md
               - Kueue: user_guides/projects/scheduling/kueue_details.md
 
@@ -232,29 +241,31 @@ nav:
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Monitoring:
-             - Services Dashboards: setup_installation/admin/monitoring/grafana.md
-             - Export metrics: setup_installation/admin/monitoring/export-metrics.md
-             - Services Logs: setup_installation/admin/monitoring/services-logs.md
+              - Services Dashboards: setup_installation/admin/monitoring/grafana.md
+              - Export metrics: setup_installation/admin/monitoring/export-metrics.md
+              - Services Logs: setup_installation/admin/monitoring/services-logs.md
           - Authentication:
-             - Configure Authentication: setup_installation/admin/auth.md
-             - Configure OAuth2:
-                 - Register an Identity Provider: setup_installation/admin/oauth2/create-client.md
-                 - Create Okta Client: setup_installation/admin/oauth2/create-okta-client.md
-                 - Create Azure Client: setup_installation/admin/oauth2/create-azure-client.md
-                 - Configure Project Mapping: setup_installation/admin/oauth2/configure-project-mapping.md
-             - Configure LDAP/Kerberos:
-                 - Configure LDAP: setup_installation/admin/ldap/configure-ldap.md
-                 - Configure Kerberos: setup_installation/admin/ldap/configure-krb.md
-                 - Configure server for LDAP and Kerberos: setup_installation/admin/ldap/configure-server.md
-                 - Configure Project Mapping: setup_installation/admin/ldap/configure-project-mapping.md
+              - Configure Authentication: setup_installation/admin/auth.md
+              - Configure OAuth2:
+                  - Register an Identity Provider: setup_installation/admin/oauth2/create-client.md
+                  - Create Okta Client: setup_installation/admin/oauth2/create-okta-client.md
+                  - Create Azure Client: setup_installation/admin/oauth2/create-azure-client.md
+                  - Configure Project Mapping: setup_installation/admin/oauth2/configure-project-mapping.md
+              - Configure LDAP/Kerberos:
+                  - Configure LDAP: setup_installation/admin/ldap/configure-ldap.md
+                  - Configure Kerberos: setup_installation/admin/ldap/configure-krb.md
+                  - Configure server for LDAP and Kerberos: setup_installation/admin/ldap/configure-server.md
+                  - Configure Project Mapping: setup_installation/admin/ldap/configure-project-mapping.md
           - High availability / Disaster Recovery:
-             - Overview: setup_installation/admin/ha-dr/intro.md
-             - High Availability: setup_installation/admin/ha-dr/ha.md
-             - Disaster Recovery: setup_installation/admin/ha-dr/dr.md
+              - Overview: setup_installation/admin/ha-dr/intro.md
+              - High Availability: setup_installation/admin/ha-dr/ha.md
+              - Disaster Recovery: setup_installation/admin/ha-dr/dr.md
           - Audit:
-             - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
-             - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
-  - <div class="dropdown"><button class="dropbtn"> API </button> <div id="myDropdown" class="dropdown-content"> <a id="hopsworks_api_link" href="https://docs.hopsworks.ai/hopsworks-api/dev">Hopsworks API</a> <a id="hsfs_javadoc_link" href="https://docs.hopsworks.ai/hopsworks-api/dev/javadoc">Feature Store JavaDoc</a> </div></div>: https://docs.hopsworks.ai
+              - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
+              - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
+      - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
+  - Python API: "!import https://github.com/logicalclocks/hopsworks-api?branch=main"
+  - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
 
 theme:
@@ -268,8 +279,19 @@ theme:
     text: "Roboto"
     code: "IBM Plex Mono"
   palette:
-    accent: teal
-    scheme: hopsworks
+    - scheme: hopsworks
+      media: "(prefers-color-scheme: light)"
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      media: "(prefers-color-scheme: dark)"
+      primary: hopsworks
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -277,7 +299,6 @@ theme:
     - navigation.indexes
 
 extra:
-  hopsworks_version: dev
   version:
     provider: mike
     default: latest
@@ -286,7 +307,7 @@ extra:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/hopsworks
     - icon: fontawesome/brands/github
-      link: https://github.com/logicalclocks/hopsworks
+      link: https://github.com/logicalclocks/hopsworks-api
     - icon: fontawesome/brands/discourse
       link: https://community.hopsworks.ai/
     - icon: fontawesome/brands/linkedin
@@ -300,11 +321,8 @@ extra:
 extra_css:
   - css/custom.css
   - css/marctech.css
-  - css/dropdown.css
 
 extra_javascript:
-  - js/inject-api-links.js
-  - js/dropdown.js
   - js/quickstart-fullscreen.js
 
 plugins:
@@ -313,15 +331,35 @@ plugins:
       minify_html: true
       minify_css: true
       minify_js: true
-  - mkdocs-jupyter
-  - macros:
-      # have to use custom templating string otherwise it interferes with jupyter notebooks
-      j2_block_start_string: "{{{%"
-      j2_block_end_string: "%}}}"
-      j2_variable_start_string: "{{{"
-      j2_variable_end_string: "}}}"
   - mike:
       canonical_version: latest
+  - multirepo
+  - mkdocstrings:
+      custom_templates: docs/templates
+      handlers:
+        python:
+          options:
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            separate_signature: true
+            signature_crossrefs: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_source: false
+            docstring_section_style: spacy
+            annotations_path: source
+            extra:
+              link_source: true
+          inventories:
+            - https://docs.python.org/3/objects.inv
+            - https://pandas.pydata.org/docs/objects.inv
+            - https://numpy.org/doc/stable/objects.inv
+            - https://docs.python-requests.org/en/latest/objects.inv
+            - https://docs.pydantic.dev/latest/objects.inv
+            - https://fastapi.tiangolo.com/objects.inv
+            - https://scikit-learn.org/stable/objects.inv
+            - https://docs.pola.rs/api/python/stable/objects.inv
 
 markdown_extensions:
   - admonition
@@ -343,8 +381,6 @@ markdown_extensions:
       permalink: "#"
   - pymdownx.tasklist:
       custom_checkbox: true
-  - markdown_include.include:
-      base_path: docs
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg

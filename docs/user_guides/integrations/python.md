@@ -1,5 +1,5 @@
 ---
-description: Documentation on how to connect to Hopsworks from a Python environment (e.g. from Sagemaker, Google Colab, Kubeflow or local environment)
+description: Documentation on how to connect to Hopsworks from a Python environment (e.g., from Sagemaker, Google Colab, Kubeflow or local environment)
 ---
 
 # Python Environments (Local, AWS SageMaker, Google Colab or Kubeflow)
@@ -8,15 +8,17 @@ This guide explains step by step how to connect to Hopsworks from any Python env
 
 ## Install Python Library
 
-To be able to interact with Hopsworks from a Python environment you need to install the `Hopsworks` Python library. The library is available on [PyPi](https://pypi.org/project/hopsworks/) and can be installed using `pip`: 
+To be able to interact with Hopsworks from a Python environment you need to install the `Hopsworks` Python library.
+The library is available on [PyPi](https://pypi.org/project/hopsworks/) and can be installed using `pip`:
 
-```
+```sh
 pip install hopsworks[python]~=[HOPSWORKS_VERSION]
 ```
 
 !!! attention "Python Profile"
 
-    By default, `pip install hopsworks`, does not install all the necessary dependencies required to use the Hopsworks library from a pure Python environment. To ensure that all the dependencies are installed, you should install the library using with the Python profile `pip install hopsworks[python]`.
+    By default, `pip install hopsworks`, does not install all the necessary dependencies required to use the Hopsworks library from a pure Python environment.
+    To ensure that all the dependencies are installed, you should install the library using with the Python profile `pip install hopsworks[python]`.
 
 !!! attention "Matching Hopsworks version"
 
@@ -31,7 +33,8 @@ pip install hopsworks[python]~=[HOPSWORKS_VERSION]
 
 ## Generate an API key
 
-For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md). For the Python client to work correctly make sure you add the following scopes to your API key:
+For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md).
+For the Python client to work correctly make sure you add the following scopes to your API key:
 
   1. featurestore
   2. project
@@ -43,7 +46,7 @@ For instructions on how to generate an API key follow this [user guide](../proje
 You are now ready to connect to Hopsworks from your Python environment:
 
 ```python
-import hopsworks 
+import hopsworks
 project = hopsworks.login(
     host='my_instance',                 # DNS of your Hopsworks instance
     port=443,                           # Port to reach your Hopsworks instance, defaults to 443
@@ -56,10 +59,11 @@ fs = project.get_feature_store()        # Get the project's default feature stor
 
 !!! note "Engine"
 
-    `Hopsworks` leverages several engines depending on whether you are running using Apache Spark or Pandas/Polars. The default behaviour of the library is to use the `spark` engine if you do not specify any `engine` option in the `login` method and if the `PySpark` library is available in the environment.
+    `Hopsworks` leverages several engines depending on whether you are running using Apache Spark or Pandas/Polars.
+    The default behaviour of the library is to use the `spark` engine if you do not specify any `engine` option in the `login` method and if the `PySpark` library is available in the environment.
 
     Please refer to the [Spark integration guide](spark.md) to configure your PySpark cluster to interact with Hopsworks.
 
 ## Next Steps
 
-For more information on how to use the Hopsworks API check out the other guides or the [Login API](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/login/). 
+For more information on how to use the Hopsworks API check out the other guides or the [Login API][hopsworks.login].

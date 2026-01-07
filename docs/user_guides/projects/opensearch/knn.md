@@ -2,7 +2,8 @@
 
 ## Introduction
 
-The k-NN plugin enables users to search for the k-nearest neighbors to a query point across an index of vectors. To determine the neighbors, you can specify the space (the distance function) you want to use to measure the distance between points.
+The k-NN plugin enables users to search for the k-nearest neighbors to a query point across an index of vectors.
+To determine the neighbors, you can specify the space (the distance function) you want to use to measure the distance between points.
 
 Use cases include recommendations (for example, an “other songs you might like” feature in a music application), image recognition, and fraud detection.
 
@@ -63,7 +64,8 @@ Create an index to use by calling `opensearch_api.get_project_index(..)`.
 
 ### Step 4: Bulk ingestion of vectors
 
-Ingest 10 vectors in a bulk fashion to the index. These vectors represent the list of vectors to calculate the similarity for.
+Ingest 10 vectors in a bulk fashion to the index.
+These vectors represent the list of vectors to calculate the similarity for.
 
 === "Python"
     ```python
@@ -123,6 +125,7 @@ Score the vector `[2.5, 3]` and find the 3 most similar vectors.
 `[4.798869166444522, 4.069064892468535]` is the most similar vector to `[2.5, 3]` with a score of `0.1346312`.
 
 === "Bash"
+
 ```bash
 
 2022-05-30 09:55:50,529 INFO: POST https://10.0.2.15:9200/my_project_demo_knn_index/_search [status:200 request:0.017s]
@@ -155,4 +158,4 @@ Score the vector `[2.5, 3]` and find the 3 most similar vectors.
 
 [k-NN plugin](https://opensearch.org/docs/1.3/search-plugins/knn/knn-index/)
 
-[OpenSearch](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/open_search/)
+[`OpenSearchApi`][hopsworks_common.core.opensearch_api.OpenSearchApi]

@@ -8,7 +8,8 @@ description: Documentation on how to configure a KServe transformer for a model 
 
 In this guide, you will learn how to configure a transformer in a deployment.
 
-Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model. They run on a built-in Flask server provided by Hopsworks and require a user-provided python script implementing the [Transformer class](#step-2-implement-transformer-script).
+Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
+They run on a built-in Flask server provided by Hopsworks and require a user-provided python script implementing the [Transformer class](#step-2-implement-transformer-script).
 
 ???+ warning
     Transformers are only supported in deployments using KServe as serving tool.
@@ -34,11 +35,14 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner. Both options will open the deployment creation form.
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
+Both options will open the deployment creation form.
 
 ### Step 2: Go to advanced options
 
-A simplified creation form will appear including the most common deployment fields from all available configurations. Transformers are part of the advanced options of a deployment. To navigate to the advanced creation form, click on `Advanced options`.
+A simplified creation form will appear including the most common deployment fields from all available configurations.
+Transformers are part of the advanced options of a deployment.
+To navigate to the advanced creation form, click on `Advanced options`.
 
 <p align="center">
   <figure>
@@ -49,7 +53,8 @@ A simplified creation form will appear including the most common deployment fiel
 
 ### Step 3: Select a transformer script
 
-Transformers require KServe as the serving platform for the deployment. Make sure that KServe is enabled for this deployment by activating the corresponding checkbox.
+Transformers require KServe as the serving platform for the deployment.
+Make sure that KServe is enabled for this deployment by activating the corresponding checkbox.
 
 <p align="center">
   <figure>
@@ -68,7 +73,8 @@ Otherwise, you can click on `Upload new file` to upload the transformer script n
   </figure>
 </p>
 
-After selecting the transformer script, you can optionally configure resource allocation for your transformer (see [Step 4](#step-4-optional-configure-resource-allocation)). Otherwise, click on `Create new deployment` to create the deployment for your model.
+After selecting the transformer script, you can optionally configure resource allocation for your transformer (see [Step 4](#step-4-optional-configure-resource-allocation)).
+Otherwise, click on `Create new deployment` to create the deployment for your model.
 
 ### Step 4 (Optional): Configure resource allocation
 
@@ -91,6 +97,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
   ```python
   import hopsworks
 
@@ -126,9 +133,10 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 3: Upload the script to your project
 
-!!! info "You can also use the UI to upload your transformer script. See [above](#step-3-advanced-deployment-form)"
+!!! info "You can also use the UI to upload your transformer script. See [above](#step-3-select-a-transformer-script)"
 
 === "Python"
+
   ```python
   uploaded_file_path = dataset_api.upload("my_transformer.py", "Resources", overwrite=True)
   transformer_script_path = os.path.join("/Projects", project.name, uploaded_file_path)
@@ -137,6 +145,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 4: Define a transformer
 
 === "Python"
+
   ```python
   my_transformer = ms.create_transformer(script_file=uploaded_file_path)
 
@@ -150,6 +159,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 5: Create a deployment with the transformer
 
 === "Python"
+
   ```python
   my_predictor = ms.create_predictor(transformer=my_transformer)
   my_deployment = my_predictor.deploy()
@@ -161,11 +171,12 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[Transformer](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/model-serving/transformer_api/)
+[`Transformer`][hsml.transformer.Transformer]
 
 ## Resources
 
-Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica. To learn about the different combinations available, see the [Resources Guide](resources.md).
+Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica.
+To learn about the different combinations available, see the [Resources Guide](resources.md).
 
 ## Environment variables
 
