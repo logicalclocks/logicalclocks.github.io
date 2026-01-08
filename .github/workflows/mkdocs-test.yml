@@ -42,4 +42,4 @@ jobs:
           kill -9 $SERVER_PID
 
       - name: mike deploy docs
-        run: mike deploy 3.2-SNAPSHOT dev -u
+        run: mike deploy test-version
