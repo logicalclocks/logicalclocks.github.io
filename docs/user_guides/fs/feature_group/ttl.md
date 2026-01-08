@@ -64,7 +64,7 @@ fg.insert(
 fg.read(online=True)  # Returns empty DataFrame after TTL expires
 ```
 
-For detailed API reference on all possible types of TTL values, see the [FeatureStore.create_feature_group API documentation][hsfs.feature_store.FeatureStore.create_feature_group].
+For detailed API reference on all possible types of TTL values, see the [FeatureStore.create_feature_group API documentation](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_store_api/#create_feature_group).
 
 ---
 
@@ -140,4 +140,4 @@ fg.enable_ttl(ttl=60)
 ```
 
 Once enabled, TTL will apply to all data in the feature group based on the `event_time` column.
-For detailed API reference on all possible types of TTL values and additional options, see the [FeatureGroup.enable_ttl API documentation][hsfs.feature_group.FeatureGroup.enable_ttl].
+For detailed API reference on all possible types of TTL values and additional options, see the [FeatureGroup.enable_ttl API documentation](https://docs.hopsworks.ai/hopsworks-api/{{{ hopsworks_version }}}/generated/api/feature_group_api/#enable_ttl).
