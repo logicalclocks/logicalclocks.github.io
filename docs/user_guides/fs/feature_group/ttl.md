@@ -1,10 +1,12 @@
 ## Feature Group TTL Usage Guide
 
-Time To Live (TTL) is a feature that automatically expires data in feature groups after a specified time period. This guide explains when and how to use TTL in your feature groups.
+Time To Live (TTL) is a feature that automatically expires data in feature groups after a specified time period.
+This guide explains when and how to use TTL in your feature groups.
 
 ### Use Case: When to Use TTL
 
-TTL is particularly useful for feature groups that contain time-sensitive data that becomes stale or irrelevant after a certain period. Common use cases include:
+TTL is particularly useful for feature groups that contain time-sensitive data that becomes stale or irrelevant after a certain period.
+Common use cases include:
 
 - **Regulatory compliance**: Data that must be automatically purged after a retention period for privacy or compliance reasons (e.g., GDPR, HIPAA)
 - **Cost optimization**: Reducing storage costs by automatically removing outdated data that is no longer needed for model inference
@@ -18,8 +20,10 @@ For example, if you're building a recommendation system, you might want user int
 
 ### Creating a Feature Group with TTL
 
-When creating a new feature group, you can enable TTL by specifying the `ttl` parameter. The TTL value determines how long data will remain in the feature group before being automatically expired.
-The TTL is calculated based on the `event_time` column. Data rows where `event_time` is older than the TTL period will be automatically removed.
+When creating a new feature group, you can enable TTL by specifying the `ttl` parameter.
+The TTL value determines how long data will remain in the feature group before being automatically expired.
+The TTL is calculated based on the `event_time` column.
+Data rows where `event_time` is older than the TTL period will be automatically removed.
 
 ```python
 from datetime import datetime, timezone
@@ -68,7 +72,8 @@ For detailed API reference on all possible types of TTL values, see the [Feature
 
 ### Updating the TTL Value
 
-You can change the TTL value for an existing feature group at any time. This is useful when you need to adjust the retention period based on changing requirements.
+You can change the TTL value for an existing feature group at any time.
+This is useful when you need to adjust the retention period based on changing requirements.
 
 ```python
 # Get your existing feature group
@@ -114,7 +119,8 @@ fg.enable_ttl()
 fg.enable_ttl(ttl=90)
 ```
 
-**Important**: If TTL was never set on the feature group before, you must provide a TTL value when enabling it. Otherwise, TTL cannot be enabled.
+**Important**: If TTL was never set on the feature group before, you must provide a TTL value when enabling it.
+Otherwise, TTL cannot be enabled.
 
 ---
 
