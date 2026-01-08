@@ -107,14 +107,14 @@ When re-enabling TTL, you have two options:
 fg.enable_ttl()
 ```
 
-**Important**: If TTL was never set on the feature group before, you must provide a TTL value when enabling it. Otherwise, TTL cannot be enabled.
-
 2. **Re-enable with a new TTL value**: Specify a new TTL value when re-enabling.
 
 ```python
 # Re-enable TTL with a new value (90 seconds)
 fg.enable_ttl(ttl=90)
 ```
+
+**Important**: If TTL was never set on the feature group before, you must provide a TTL value when enabling it. Otherwise, TTL cannot be enabled.
 
 ---
 
