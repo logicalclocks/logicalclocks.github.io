@@ -148,7 +148,7 @@ nav:
               - Update Profile: user_guides/projects/auth/profile.md
           - Projects:
               - Create Project: user_guides/projects/project/create_project.md
-              - Add Members: user_guides/projects/project/add_members.md
+              - Manage Members: user_guides/projects/project/manage_members.md
           - Python:
               - Environments Overview: user_guides/projects/python/python_env_overview.md
               - Clone Environment: user_guides/projects/python/python_env_clone.md
