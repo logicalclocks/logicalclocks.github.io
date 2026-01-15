@@ -4,13 +4,9 @@
 
 Hopsworks allows artifacts (such as feature groups and feature views) to be shared between projects. There are two main use cases for sharing features:
 
-**Cross-team collaboration**
+- **Cross-team collaboration:** When multiple teams work on the same Hopsworks deployment, each team typically has its own set of projects. If team A wants to leverage features built by team B, team B can share their feature groups with team A's project.
 
-When multiple teams work on the same Hopsworks deployment, each team typically has its own set of projects. If team A wants to leverage features built by team B, team B can share their feature groups with team A's project.
-
-**Environment isolation**
-
-By creating separate projects for different stages of the development lifecycle (development, testing, and production), you can ensure that changes in the development project don't impact production features. At the same time, you can share production features to use them when developing new models or additional features.
+- **Environment isolation:** By creating separate projects for different stages of the development lifecycle (development, testing, and production), you can ensure that changes in the development project don't impact production features. At the same time, you can share production features to use them when developing new models or additional features.
 
 ## Sharing the entire feature store
 
