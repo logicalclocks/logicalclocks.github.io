@@ -1,6 +1,24 @@
 {% extends "_base/class.html.jinja" %}
 
 {% block heading scoped %}
+  {% block alias_anchors scoped %}
+    {% if class.hopsworks_aliases and class.hopsworks_aliases.aliases %}
+      {% for alias in class.hopsworks_aliases.aliases -%}
+        {% for path in alias.paths -%}
+          {%- set alias_id = path + "." + (alias.as_alias or alias.object_name) -%}
+          {% filter heading(
+            heading_level,
+            role="class",
+            id=alias_id,
+            class="doc doc-heading",
+            hidden=true,
+            skip_inventory=config.skip_local_inventory,
+          ) -%}{%- endfilter %}
+        {%- endfor %}
+      {%- endfor %}
+    {% endif %}
+  {% endblock alias_anchors %}
+
   {% block source_link scoped %}
     {% if config.extra.link_source and class.source_link %}
       <span style="float:right;font-size:.8rem;font-weight:400"><a href="{{ class.source_link }}">[source]</a></span>
@@ -10,3 +28,22 @@
   {{ super() }}
 
 {% endblock heading %}
+
+{% block contents scoped %}
+  {% block aliases scoped %}
+    {% if class.hopsworks_aliases and class.hopsworks_aliases.aliases %}
+      <p class="doc doc-class-aliases">
+        Aliases: {% for alias in class.hopsworks_aliases.aliases -%}
+          {% for path in alias.paths -%}
+            {%- set fullpath = path + "." + (alias.as_alias or alias.object_name) -%}
+            <a href="#{{fullpath}}"><code>{{fullpath}}</code></a>
+            {%- if not loop.last %}, {% endif %}
+          {%- endfor %}
+          {%- if not loop.last %}, {% endif %}
+        {%- endfor %}
+      </p>
+    {% endif %}
+  {% endblock aliases %}
+
+  {{ super() }}
+{% endblock contents %}

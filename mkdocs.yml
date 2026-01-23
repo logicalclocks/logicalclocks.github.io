@@ -264,7 +264,7 @@ nav:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
       - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
-  - Python API: "!import https://github.com/logicalclocks/hopsworks-api?branch=main"
+  - Python API: python-api
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
 
@@ -333,7 +333,15 @@ plugins:
       minify_js: true
   - mike:
       canonical_version: latest
-  - multirepo
+  - api-autonav:
+      modules:
+        - hopsworks
+        - hopsworks_common
+        - hsfs
+        - hsml
+      nav_section_title: Python API
+      api_root_uri: python-api
+      hide_empty: true
   - mkdocstrings:
       custom_templates: docs/templates
       handlers:
@@ -351,6 +359,8 @@ plugins:
             annotations_path: source
             extra:
               link_source: true
+            extensions:
+              - hopsworks_aliases.extension
           inventories:
             - https://docs.python.org/3/objects.inv
             - https://pandas.pydata.org/docs/objects.inv
