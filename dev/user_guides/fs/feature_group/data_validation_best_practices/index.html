@@ -40,7 +40,7 @@
 
 <span class=n>timeseries</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>(</span>
     <span class=p>{</span>
-        <span class=s2>&quot;observed_value&quot;</span><span class=p>:</span> <span class=p>[</span><span class=n>res</span><span class=o>.</span><span class=n>result</span><span class=p>[</span><span class=s2>&quot;observed_value&quot;</span><span class=p>]</span> <span class=k>for</span> <span class=n>res</span> <span class=ow>in</span> <span class=n>validation_histoy</span><span class=p>]],</span>
+        <span class=s2>&quot;observed_value&quot;</span><span class=p>:</span> <span class=p>[</span><span class=n>res</span><span class=o>.</span><span class=n>result</span><span class=p>[</span><span class=s2>&quot;observed_value&quot;</span><span class=p>]</span> <span class=k>for</span> <span class=n>res</span> <span class=ow>in</span> <span class=n>validation_history</span><span class=p>],</span>
         <span class=s2>&quot;validation_time&quot;</span><span class=p>:</span> <span class=p>[</span><span class=n>res</span><span class=o>.</span><span class=n>validation_time</span> <span class=k>for</span> <span class=n>res</span> <span class=ow>in</span> <span class=n>validation_history</span><span class=p>]</span>
     <span class=p>}</span>
 <span class=p>)</span>
