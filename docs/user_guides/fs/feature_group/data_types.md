@@ -185,7 +185,7 @@ The most important validation checks or error messages are mentioned below along
           # For composite keys
           df = df.dropna(subset=['id1', 'id2'])
 
-          # Data imputation: replace null values with incrementing last interger id
+          # Data imputation: replace null values with incrementing last integer id
           # existing max id
           max_id = df['id'].max()
           # counter to generate new id
@@ -203,7 +203,7 @@ The most important validation checks or error messages are mentioned below along
 
       === "Pandas"
           ```python
-          # increamenting primary key upto the length of dataframe
+          # incrementing primary key upto the length of dataframe
           df['id'] = range(1, len(df) + 1)
           ```
 

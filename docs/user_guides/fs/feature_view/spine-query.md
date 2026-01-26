@@ -85,7 +85,7 @@ You can now use the offline and online API of the feature stores to read feature
 Similarly to training dataset creation, every time you read up a new batch of data, you can pass a different spine dataframe.
 
 ```python
-feature_view_spine.get_batch_data(spine=scroing_spine_df).show()
+feature_view_spine.get_batch_data(spine=scoring_spine_df).show()
 ```
 
 ### Step 5: Online Feature Lookup
