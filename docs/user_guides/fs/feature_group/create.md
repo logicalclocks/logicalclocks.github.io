@@ -104,7 +104,7 @@ By using partitioning the system will write the feature data in different subdir
 ##### Table format
 
 When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter.
-The currently supported values are "HUDI", "DELTA", "NONE" (which defaults to Parquet)
+The currently supported values are "HUDI", "DELTA", "NONE" (which defaults to Parquet).
 
 ##### Data Source
 
