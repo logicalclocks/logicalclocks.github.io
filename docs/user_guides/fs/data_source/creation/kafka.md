@@ -67,7 +67,7 @@ Start by giving it a **name** and an optional **description**.
         Make use of the optional additional key/value arguments (5) to provide these.
 
         SASL authentication can be enabled concurrently with TLS/SSL encryption (TLS/SSL client authentication will be disabled).
-        For more information, please refer to the offical [Apache Kafka Guide for SASL authentication](https://docs.confluent.io/platform/current/kafka/authentication_sasl/index.html).
+        For more information, please refer to the official [Apache Kafka Guide for SASL authentication](https://docs.confluent.io/platform/current/kafka/authentication_sasl/index.html).
 
 04. The endpoint identification algorithm used by clients to validate server host name.
     The default value is `https`.

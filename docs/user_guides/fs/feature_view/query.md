@@ -268,7 +268,7 @@ This query can then be used to create a new feature view.
     feature_view = fs.get_feature_view(“credit_card_fraud”, version=1)
     feature_view.query \
         .join(merchant_details_fg.select_all()) \
-        .filter((credit_card_transactions_fg.category == "Cash Withdrawal")
+        .filter((credit_card_transactions_fg.category == "Cash Withdrawal"))
     ```
 
 === "Scala"
@@ -299,7 +299,7 @@ This query can then be used to create a new feature view.
 
     # apply join/filter logic based on purchase type
     feature_view.query.join(merchant_details_fg.select_all()) \
-        .filter((credit_card_transactions_fg.category == "Cash Withdrawal")
+        .filter((credit_card_transactions_fg.category == "Cash Withdrawal"))
 
     # to apply new logic independent of purchase type from above
     # re-fetch new feature view and its query instance

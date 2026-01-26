@@ -166,7 +166,7 @@ global:
         endpoint: &gcpendpoint "https://storage.cloud.google.com"
         secret:
           name: &gcpcredentials "gcp-credentials"
-          acess_key_id: &gcpaccesskey "access-key-id"
+          access_key_id: &gcpaccesskey "access-key-id"
           secret_key_id: &gcpsecretkey "secret-access-key"
     minio:
       enabled: false

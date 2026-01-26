@@ -126,7 +126,7 @@ Example for any data warehouse/SQL based external sources, we set the desired SQ
 === "PySpark"
     ```python
     fg = feature_store.create_external_feature_group(name="sales",
-        version=1
+        version=1,
         description="Physical shop sales features",
         query="SELECT * FROM TABLE",
         storage_connector=connector,
