@@ -45,7 +45,7 @@ The following is how transformation functions were used in previous versions of 
 === "Pre-4.0"
     ```python
     #################################################
-    # Creating transformation funciton Hopsworks 3.8#
+    # Creating transformation function Hopsworks 3.8#
     #################################################
 
     # Define custom transformation function
@@ -83,7 +83,7 @@ The following is how transformation functions were used in previous versions of 
 === "4.0"
     ```python
     #################################################
-    # Creating transformation funciton Hopsworks 4.0#
+    # Creating transformation function Hopsworks 4.0#
     #################################################
 
     # Define custom transformation function

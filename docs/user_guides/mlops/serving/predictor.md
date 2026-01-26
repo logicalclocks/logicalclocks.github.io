@@ -195,7 +195,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
         async def predict(self, inputs):
             """ Asynchronously serve predictions using the trained model"""
-            # Preform async operations that required
+            # Perform async operations that required
             # result = await some_async_preprocessing(inputs)
 
             # Use the model to make predictions
@@ -204,7 +204,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Predictor (vLLM deployments only)"
     ``` python
     import os
-    from vllm import **version**, AsyncEngineArgs, AsyncLLMEngine
+    from vllm import __version__, AsyncEngineArgs, AsyncLLMEngine
     from typing import Iterable, AsyncIterator, Union, Optional
     from kserve.protocol.rest.openai import (
         CompletionRequest,

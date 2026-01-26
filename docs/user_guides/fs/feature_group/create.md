@@ -52,11 +52,11 @@ The version number is optional, if you don't specify the version number the APIs
 
 The last parameter used in the examples above is `stream`.
 The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store.
-When using the APIs in a Python environment this behavior is the default and it requires the time travel format to be set to 'HUDI'.
+When using the APIs in a Python environment this behavior is the default and it requires the time travel format to be set to 'DELTA'.
 
 ##### Primary key
 
-A primary key is required when using the default table format (Hudi) to store offline feature data.
+A primary key is required when using the default table format (Delta) to store offline feature data.
 When inserting data in a feature group on the offline feature store, the DataFrame you are writing is checked against the existing data in the feature group.
 If a row with the same primary key is found in the feature group, the row will be updated.
 If the primary key is not found, the row is appended to the feature group.
@@ -104,12 +104,12 @@ By using partitioning the system will write the feature data in different subdir
 ##### Table format
 
 When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter.
-The currently support values are "HUDI", "DELTA", "NONE" (which defaults to Parquet).
+The currently supported values are "HUDI", "DELTA" (default), "NONE" (which defaults to Parquet).
 
 ##### Data Source
 
 During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster.
-Currently, [S3](../data_source/creation/s3.md) and [GCS](../data_source/creation/gcs.md) connectors and "DELTA" `time_travel_format` format is supported.
+Currently, [S3](../data_source/creation/s3.md) and [GCS](../data_source/creation/gcs.md) connectors with "DELTA" `time_travel_format` are supported.
 
 ##### Online Table Configuration
 
@@ -156,8 +156,8 @@ For Python environments, only the stream API is supported (stream=True).
         online_enabled=True,
         primary_key=['location_id'],
         partition_key=['day'],
-        event_time='event_time'
-        time_travel_format='HUDI',
+        event_time='event_time',
+        time_travel_format='DELTA',
     )
     ```
 
@@ -171,7 +171,7 @@ For Python environments, only the stream API is supported (stream=True).
         primary_key=['location_id'],
         partition_key=['day'],
         event_time='event_time',
-        time_travel_format='HUDI',
+        time_travel_format='DELTA',
         stream=True
     )
     ```
@@ -194,7 +194,7 @@ job.run()
 ```
 
 It is also possible to define the topics used for data ingestion, this can be done by setting the `topic_name` parameter with your preferred value.
-By default, feature groups in hopsworks will share a project-wide topic.
+By default, feature groups in Hopsworks will share a project-wide topic.
 
 #### Best Practices for Writing
 
@@ -213,7 +213,7 @@ Four main considerations influence the write and the query performance:
 ##### Partitioning on a feature group level
 
 **Partitioning on the feature group level** allows Hopsworks and the table format (Hudi or Delta) to push down filters to the filesystem when reading from feature groups.
-In practice that means, less directories need to be listed and less files need to be read, speeding up queries.
+In practice that means fewer directories need to be listed and fewer files need to be read, speeding up queries.
 
 For example, most commonly, filtering is done on the event time column of a feature group when generating training data or batches of data:
 
@@ -231,7 +231,7 @@ start_time = "2022-01-01"
 end_time = "2022-06-30"
 
 # create a training dataset
-version, job = feature_view.create_training_data(
+version, job = fv.create_training_data(
     start_time=start_time,
     end_time=end_time,
     description='Description of a dataset',
@@ -300,7 +300,7 @@ If the inserted Dataframe contains multiple feature group partitions, the parque
 
     Theoretically, this rule holds up to a partition size of 2GB, which is the limit of Spark.
     However, one should bump this up accordingly already for smaller inputs.
-    We recommend having shuffle parallelism `hoodie.[insert|upsert|bulkinsert].shuffle.parallelism` such that its at least input_data_size/500MB.
+    We recommend having shuffle parallelism `hoodie.[insert|upsert|bulkinsert].shuffle.parallelism` such that it's at least input_data_size/500MB.
 
     You can change the write options on every insert, depending also on the size of the data you are writing:
     ```python

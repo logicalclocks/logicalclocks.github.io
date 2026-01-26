@@ -39,7 +39,7 @@
           "Resource": "*"
       },
       {
-          "Sid": "AllowNetworkRessourcesCreation",
+          "Sid": "AllowNetworkResourcesCreation",
           "Effect": "Allow",
           "Action": [
               "ec2:CreateVpc",
@@ -55,7 +55,7 @@
           "Resource": "*"
       },
       {
-          "Sid": "AllowNetworkRessourcesDeletion",
+          "Sid": "AllowNetworkResourcesDeletion",
           "Effect": "Allow",
           "Action": [
               "ec2:DeleteSubnet",

@@ -82,7 +82,7 @@ X_train, X_val, X_test, y_train, y_val, y_test = feature_view.train_validation_t
 # materialise a training dataset
 version, job = feature_view.create_train_validation_test_split(
     validation_size = 0.3,
-    test_size = 0.2
+    test_size = 0.2,
     description = 'transactions fraud batch training dataset',
     data_format = 'csv'
 )
@@ -93,7 +93,7 @@ and you want to create a particular in-memory training dataset with Hive instead
 
 ```python
 # create a training dataset as DataFrame with Hive
-X_train, X_test, y_train, y_test = feature_view.train_test_split(test_size=0.2, read_options={"use_hive: True})
+X_train, X_test, y_train, y_test = feature_view.train_test_split(test_size=0.2, read_options={"use_hive": True})
 ```
 
 ## Read Training Data
@@ -199,7 +199,7 @@ You can learn more in [Tags Guide](../tags/tags.md).
 feature_view.add_training_dataset_tag(
     training_dataset_version=1,
     name="tag_schema",
-    value={"key", "value"}
+    value={"key": "value"}
 )
 
 # get
