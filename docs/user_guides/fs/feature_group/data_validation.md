@@ -205,7 +205,7 @@ fg = fs.create_feature_group(
   version=1,
   description="Validated data",
   primary_key=['foo_id'],
-  online_enabled=False
+  online_enabled=False,
   expectation_suite=expectation_suite
 )
 ```

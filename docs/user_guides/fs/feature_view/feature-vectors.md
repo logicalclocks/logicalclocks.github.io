@@ -47,7 +47,7 @@ It is also possible to provide a subset of the entry, which will be discussed [b
     Map<String, Object> entry2 = Maps.newHashMap();
     entry2.put("pk1", 3);
     entry2.put("pk2", 4);
-    featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2);
+    featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2));
     ```
 
 ### Required entry
@@ -125,7 +125,7 @@ When retrieving a batch of vectors, the behaviour is slightly different.
     Map<String, Object> entry3 = Maps.newHashMap();
     entry3.put("pk1", 5);
     entry3.put("pk2", 6);
-    featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2, entry3);
+    featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2, entry3));
     ```
 This call will raise an exception if for example for the third entry `pk1 = 5` OR `pk2 = 6` can't be found, however, it will simply not return a vector for this entry if `pk1 = 5` AND `pk2 = 6`
 can't be found.

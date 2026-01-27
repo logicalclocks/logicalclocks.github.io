@@ -93,7 +93,7 @@ However, they can be optionally fetched with inference or training data.
         # Fetch feature data for batch inference with helper columns
         df_with_inference_helpers = feature_view.get_batch_data(inference_helpers=True)
 
-        # here cc_num, longitute and lattitude are provided as parameters to the application
+        # here cc_num, longitude and latitude are provided as parameters to the application
         cc_num = ...
         transaction_date = ...
 

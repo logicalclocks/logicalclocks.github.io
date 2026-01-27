@@ -29,7 +29,7 @@ OnlineFs can be configured to use these credentials by adding the following conf
 ```yaml
   onlinefs:
     config_dir: "/home/ubuntu/cluster-definitions/byok"
-    kafka_cosumers:
+    kafka_consumers:
       topic_list: "comma separated list of kafka topics to subscribe to"
 ```
 

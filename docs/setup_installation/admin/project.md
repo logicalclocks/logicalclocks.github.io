@@ -76,7 +76,7 @@ hopsworks:
 
 The values specified will be set during project creation and administrators will be able to customize each project using this UI.
 
-### Kakfa Topics
+### Kafka Topics
 
 Kafka is used within Hopsworks to enable users to write data to the feature store in Real-Time and from a variety of different frameworks.
 If a user creates a feature group with the stream APIs enabled, then a Kafka topic will be created for that feature group.

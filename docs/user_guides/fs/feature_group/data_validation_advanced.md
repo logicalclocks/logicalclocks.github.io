@@ -37,7 +37,7 @@ Should you wish to do so, you can disable data validation on a punctual basis or
 
 You can do it in the UI in the Expectation section of the Feature Group edit page.
 Simply tick or untick the enabled checkbox.
-This will be used as the default option but can be overriden via the API.
+This will be used as the default option but can be overridden via the API.
 
 #### Disable Data Validation in Python
 

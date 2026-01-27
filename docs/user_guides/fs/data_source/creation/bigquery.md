@@ -27,7 +27,7 @@ Before you begin this guide you'll need to retrieve the following information ab
   For more information on service accounts and creating keyfile in GCP, read [Google Cloud documentation.](https://cloud.google.com/docs/authentication/production#create_service_account 'creating service account keyfile')
 
 !!! note
-        To read data, the BigQuery service account user needs permission to `create read sesssion` which is available in **BigQuery Admin role**.
+        To read data, the BigQuery service account user needs permission to `create read session` which is available in **BigQuery Admin role**.
 
 ## Creation in the UI
 
