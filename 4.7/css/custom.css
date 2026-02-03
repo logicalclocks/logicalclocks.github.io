@@ -1,0 +1,219 @@
+[data-md-color-scheme="hopsworks"] {
+  --md-primary-fg-color: #1eb382;
+  --md-secondary-fg-color: #188a64;
+  --md-tertiary-fg-color: #0d493550;
+  --md-quaternary-fg-color: #fdfdfd;
+  --border-radius-variable: 5px;
+}
+
+.md-footer__inner:not([hidden]) {
+  display: none;
+}
+/* Lex did stuff here */
+.svg_topnav {
+  width: 12px;
+  filter: invert(100);
+}
+.svg_topnav:hover {
+  width: 12px;
+  filter: invert(10);
+}
+
+.md-header[data-md-state="shadow"] {
+  box-shadow: 0 0 0 0;
+}
+
+.md-tabs__item {
+  min-width: 2.5rem;
+}
+
+.md-tabs__item:hover {
+  background-color: var(--md-tertiary-fg-color);
+  transition: background-color 450ms;
+}
+
+.md-sidebar__scrollwrap {
+  background-color: var(--md-quaternary-fg-color);
+  padding: 15px 5px 5px 5px;
+  border-radius: var(--border-radius-variable);
+}
+
+.image_logo_02 {
+  width: 450px;
+}
+
+/* End of Lex did stuff here */
+
+/* no-icon style for admonitions */
+.md-typeset .no-icon > .admonition-title::before,
+.md-typeset .no-icon > summary::before {
+  display: none;
+}
+.md-typeset .no-icon > :is(.admonition-title, summary) {
+  padding-left: 1rem;
+}
+/* end of no-icon style */
+
+.md-header__button.md-logo {
+  margin: 0.1rem;
+  padding: 0.1rem;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  display: block;
+  width: 1.8rem;
+  height: 1.8rem;
+  fill: rgba(43, 155, 70, 0.1);
+}
+
+.md-tabs {
+  width: 100%;
+  overflow: auto;
+  color: var(--md-primary-bg-color);
+  background-color: var(--md-secondary-fg-color);
+  transition: background-color 250ms;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.wrapper * {
+  border: 2px solid green;
+  text-align: center;
+  padding: 70px 0;
+}
+
+.one {
+  grid-column: 1 / 2;
+  grid-row: 1;
+}
+.two {
+  grid-column: 2 / 3;
+  grid-row: 1;
+}
+.three {
+  grid-column: 3 / 4;
+  grid-row: 1;
+}
+.four {
+  grid-column: 4 / 5;
+  grid-row: 1;
+}
+.five {
+  grid-column: 1 / 3;
+  grid-row: 2;
+}
+.six {
+  grid-column: 3 / 5;
+  grid-row: 2;
+}
+
+/* Jupyter Stuff */
+.jupyter-wrapper .jp-CodeCell .jp-Cell-inputWrapper .jp-InputPrompt {
+  display: none !important;
+}
+
+@media screen and (max-width: 479px) {
+  .md-sidebar--primary,
+  .md-sidebar {
+    z-index: 50 !important;
+  }
+  .md-logo {
+    visibility: hidden;
+  }
+}
+
+/*******************************************************/
+/* Dark Theme */
+[data-md-color-scheme="slate"] {
+  --md-hue: 160;
+  --md-primary-fg-color: #1eb382;
+  --md-secondary-fg-color: #188a64;
+  --md-tertiary-fg-color: #0d493550;
+  --md-quaternary-fg-color: hsla(var(--md-hue), 0%, 14.5%, 1);
+  --border-radius-variable: 5px;
+
+  --md-default-fg-color:             hsla(var(--md-hue), 0%, 90%, 0.82);
+  --md-default-fg-color--light:      hsla(var(--md-hue), 0%, 90%, 0.56);
+  --md-default-fg-color--lighter:    hsla(var(--md-hue), 0%, 90%, 0.32);
+  --md-default-fg-color--lightest:   hsla(var(--md-hue), 0%, 90%, 0.12);
+  --md-default-bg-color:             hsla(var(--md-hue), 0%, 14%, 1);
+  --md-default-bg-color--light:      hsla(var(--md-hue), 0%, 14%, 0.54);
+  --md-default-bg-color--lighter:    hsla(var(--md-hue), 0%, 14%, 0.26);
+  --md-default-bg-color--lightest:   hsla(var(--md-hue), 0%, 14%, 0.07);
+
+  --md-code-fg-color:                hsla(var(--md-hue), 0%, 86%, 0.82);
+  --md-code-bg-color:                hsla(var(--md-hue), 0%, 18%, 1);
+  --md-code-bg-color--light:         hsla(var(--md-hue), 0%, 18%, 0.9);
+  --md-code-bg-color--lighter:       hsla(var(--md-hue), 0%, 18%, 0.54);
+
+  --md-footer-bg-color:              hsla(var(--md-hue), 0%, 10%, 0.87);
+  --md-footer-bg-color--dark:        hsla(var(--md-hue), 0%, 8%, 1);
+}
+
+[data-md-color-scheme="slate"] p img,
+[data-md-color-scheme="slate"] figure img {
+  background-color: white;
+  padding: .4rem;
+  border-radius: var(--border-radius-variable);
+}
+[data-md-color-scheme="slate"] .marctech_main > div {
+  display: none;
+}
+[data-md-color-scheme="slate"] .marctech_main::after {
+  content: "Switch to the light theme to view the diagram.";
+}
+
+/*******************************************************/
+/* Fix z-index. */
+header.md-header {
+  z-index: 900 !important;
+}
+.md-sidebar {
+  z-index: 1000 !important;
+}
+.md-overlay {
+  z-index: 950 !important;
+}
+.md-search__overlay {
+  z-index: 1100 !important;
+}
+.md-search__form {
+  z-index: 1200 !important;
+}
+.md-search__output {
+  z-index: 1100 !important;
+}
+
+/*******************************************************/
+/* Hide repo stats. */
+.md-source__fact--stars, .md-source__fact--forks {
+  display: none;
+}
+
+/*******************************************************/
+/* Custom styles for syntax highlighting in signatures. */
+
+/* Fancier color for operators such as * and |. */
+.doc-signature .o {
+  color: var(--md-code-hl-special-color);
+}
+
+/* Fancier color for constants such as None, True, and False. */
+.doc-signature .kc {
+  color: var(--md-code-hl-constant-color);
+}
+
+/*******************************************************/
+/* Customization of mkdocs material theme */
+
+/* Mark external links as such. */
+a.external::after,
+a.autorefs-external::after {
+  content: "↗";
+}
