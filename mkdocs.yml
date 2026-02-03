@@ -264,7 +264,7 @@ nav:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
       - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
-  - Python API: "!import https://github.com/logicalclocks/hopsworks-api?branch=main"
+  - Python API: "!import https://github.com/logicalclocks/hopsworks-api?branch=branch-4.7"
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
 
