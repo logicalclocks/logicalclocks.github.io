@@ -333,15 +333,14 @@ plugins:
       minify_js: true
   - mike:
       canonical_version: latest
-  - api-autonav:
+  - hopsworks-apigen:
       modules:
-        - hopsworks
         - hopsworks_common
         - hsfs
         - hsml
+        - hopsworks
       nav_section_title: Python API
       api_root_uri: python-api
-      hide_empty: true
   - mkdocstrings:
       custom_templates: docs/templates
       handlers:
@@ -354,6 +353,7 @@ plugins:
             signature_crossrefs: true
             show_symbol_type_heading: true
             show_symbol_type_toc: true
+            members_order: source
             show_source: false
             docstring_section_style: spacy
             annotations_path: source
@@ -361,7 +361,7 @@ plugins:
             extra:
               link_source: true
             extensions:
-              - hopsworks_aliases.extension
+              - hopsworks_apigen.mkdocs
           inventories:
             - https://docs.python.org/3/objects.inv
             - https://pandas.pydata.org/docs/objects.inv

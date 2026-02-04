@@ -2,19 +2,17 @@
 
 {% block heading scoped %}
   {% block alias_anchors scoped %}
-    {% if class.hopsworks_aliases and class.hopsworks_aliases.aliases %}
-      {% for alias in class.hopsworks_aliases.aliases -%}
-        {% for path in alias.paths -%}
-          {%- set alias_id = path + "." + (alias.as_alias or alias.object_name) -%}
-          {% filter heading(
-            heading_level,
-            role="class",
-            id=alias_id,
-            class="doc doc-heading",
-            hidden=true,
-            skip_inventory=config.skip_local_inventory,
-          ) -%}{%- endfilter %}
-        {%- endfor %}
+    {% if class.extra.hopsworks_apigen and class.extra.hopsworks_apigen.aliases %}
+      {% for alias in class.extra.hopsworks_apigen.aliases if alias.is_public -%}
+        {%- set alias_id = alias.target_module + "." + alias.alias_name -%}
+        {% filter heading(
+          heading_level+9,
+          role="class",
+          id=alias_id,
+          class="doc doc-heading",
+          hidden=true,
+          skip_inventory=config.skip_local_inventory,
+        ) -%}{%- endfilter %}
       {%- endfor %}
     {% endif %}
   {% endblock alias_anchors %}
@@ -31,14 +29,11 @@
 
 {% block contents scoped %}
   {% block aliases scoped %}
-    {% if class.hopsworks_aliases and class.hopsworks_aliases.aliases %}
+    {% if class.extra.hopsworks_apigen and class.extra.hopsworks_apigen.aliases %}
       <p class="doc doc-class-aliases">
-        Aliases: {% for alias in class.hopsworks_aliases.aliases -%}
-          {% for path in alias.paths -%}
-            {%- set fullpath = path + "." + (alias.as_alias or alias.object_name) -%}
-            <a href="#{{fullpath}}"><code>{{fullpath}}</code></a>
-            {%- if not loop.last %}, {% endif %}
-          {%- endfor %}
+        Aliases: {% for alias in class.extra.hopsworks_apigen.aliases if alias.is_public -%}
+          {%- set fullpath = alias.target_module + "." + alias.alias_name -%}
+          <a href="#{{fullpath}}"><code>{{fullpath}}</code></a>
           {%- if not loop.last %}, {% endif %}
         {%- endfor %}
       </p>
