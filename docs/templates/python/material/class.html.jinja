@@ -3,8 +3,7 @@
 {% block heading scoped %}
   {% block alias_anchors scoped %}
     {% if class.extra.hopsworks_apigen and class.extra.hopsworks_apigen.aliases %}
-      {%- set public_aliases = class.extra.hopsworks_apigen.aliases | selectattr("is_public") | list -%}
-      {% for alias in public_aliases[1:] -%}
+      {% for alias in class.extra.hopsworks_apigen.aliases -%}
         {%- set alias_id = alias.target_module + "." + alias.alias_name -%}
         {% filter heading(
           9,
