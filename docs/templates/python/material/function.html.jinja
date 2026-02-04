@@ -4,15 +4,17 @@
   {% block alias_anchors scoped %}
     {% if function.extra.hopsworks_apigen and function.extra.hopsworks_apigen.aliases %}
       {% for alias in function.extra.hopsworks_apigen.aliases if alias.is_public -%}
-        {%- set alias_id = alias.target_module + "." + alias.alias_name -%}
-        {% filter heading(
-          heading_level+9,
-          role="function",
-          id=alias_id,
-          class="doc doc-heading",
-          hidden=true,
-          skip_inventory=config.skip_local_inventory,
-        ) -%}{%- endfilter %}
+        {% if not loop.first %}
+          {%- set alias_id = alias.target_module + "." + alias.alias_name -%}
+          {% filter heading(
+            heading_level+9,
+            role="function",
+            id=alias_id,
+            class="doc doc-heading",
+            hidden=true,
+            skip_inventory=config.skip_local_inventory,
+          ) -%}{%- endfilter %}
+        {% endif %}
       {%- endfor %}
     {% endif %}
   {% endblock alias_anchors %}
@@ -32,9 +34,11 @@
     {% if function.extra.hopsworks_apigen and function.extra.hopsworks_apigen.aliases %}
       <p class="doc doc-class-aliases">
         Aliases: {% for alias in function.extra.hopsworks_apigen.aliases if alias.is_public -%}
-          {%- set fullpath = alias.target_module + "." + alias.alias_name -%}
-          <a href="#{{fullpath}}"><code>{{fullpath}}</code></a>
-          {%- if not loop.last %}, {% endif %}
+          {% if not loop.first %}
+            {%- set fullpath = alias.target_module + "." + alias.alias_name -%}
+            <a href="#{{fullpath}}"><code>{{fullpath}}</code></a>
+            {%- if not loop.last %}, {% endif %}
+          {% endif %}
         {%- endfor %}
       </p>
     {% endif %}
