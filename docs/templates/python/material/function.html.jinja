@@ -15,6 +15,19 @@
         ) -%}{%- endfilter %}
       {%- endfor %}
     {% endif %}
+    {% if function.parent and function.parent.extra.hopsworks_apigen and function.parent.extra.hopsworks_apigen.aliases %}
+      {% for alias in function.parent.extra.hopsworks_apigen.aliases -%}
+        {%- set alias_id = alias.target_module + "." + alias.alias_name + "." + function.name -%}
+        {% filter heading(
+          9,
+          role="function",
+          id=alias_id,
+          class="doc doc-heading",
+          hidden=true,
+          skip_inventory=config.skip_local_inventory,
+        ) -%}{%- endfilter %}
+      {%- endfor %}
+    {% endif %}
   {% endblock alias_anchors %}
 
   {% block source_link scoped %}

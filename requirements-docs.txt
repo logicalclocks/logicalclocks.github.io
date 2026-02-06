@@ -7,4 +7,5 @@ mkdocs-minify-plugin>=0.2.0
 hopsworks-apigen@git+https://github.com/aversey/hopsworks-aliases.git
 mkdocstrings[python]==1.0.0
 mkdocstrings-python==2.0.1
+ruff==0.15.0
 linkchecker
