@@ -308,6 +308,141 @@ If only the `name` is provided, then the version will default to 1.
         plus_one_fn = fs.get_transformation_function(name="plus_one", version=2)
         ```
 
+## Testing Transformation Functions
+
+Hopsworks provides built-in support for unit testing transformation functions locally, without requiring a connection to the Hopsworks platform.
+This enables you to validate your transformation logic before deploying it to feature groups or feature views.
+
+### Quick testing with `execute`
+
+The `execute` method provides a convenient way to quickly test simple transformation functions that do not require statistics or context variables.
+It executes the transformation function in offline mode (batch processing).
+
+=== "Python"
+    !!! example "Quick testing of a transformation function"
+        ```python
+        from hopsworks import udf
+        import pandas as pd
+
+        @udf(return_type=float)
+        def add_one(value):
+            return value + 1
+
+        # Direct execution for simple tests
+        result = add_one.execute(pd.Series([1.0, 2.0, 3.0]))
+        assert result.tolist() == [2.0, 3.0, 4.0]
+        ```
+
+### Advanced testing with `executor`
+
+The `executor` method creates a reusable callable object for testing transformation functions that require statistics, context variables, or need to be tested in a specific execution mode.
+
+The `executor` method accepts three optional parameters:
+
+- **`statistics`**: Mock statistics for model-dependent transformations. Accepts three formats: a `TransformationStatistics` object, a `dict[str, dict[str, Any]]` mapping feature names to statistics, or a `list[FeatureDescriptiveStatistics]`.
+- **`context`**: A dictionary of contextual variables passed to the transformation function at runtime.
+- **`online`**: Whether to execute in online mode (single values) or offline mode (batch/vectorized). Only relevant for transformation functions using the `default` execution mode. Defaults to `False` (offline).
+
+=== "Python"
+    !!! example "Testing a transformation function with mocked statistics"
+        ```python
+        from hopsworks import udf
+        from hopsworks.transformation_statistics import TransformationStatistics
+        import pandas as pd
+
+        @udf(return_type=float)
+        def normalize(value, statistics=TransformationStatistics("value")):
+            return (value - statistics.value.mean) / statistics.value.std_dev
+
+        # Test with mock statistics provided as a dictionary
+        executor = normalize.executor(statistics={"value": {"mean": 100.0, "std_dev": 25.0}})
+        result = executor.execute(pd.Series([100.0, 125.0, 150.0]))
+        assert result.tolist() == [0.0, 1.0, 2.0]
+        ```
+
+=== "Python"
+    !!! example "Testing a transformation function with context variables"
+        ```python
+        from hopsworks import udf
+        import pandas as pd
+
+        @udf(return_type=float)
+        def apply_discount(price, context):
+            return price * (1 - context["discount_rate"])
+
+        executor = apply_discount.executor(context={"discount_rate": 0.1})
+        result = executor.execute(pd.Series([100.0, 200.0]))
+        assert result.tolist() == [90.0, 180.0]
+        ```
+
+### Testing online and offline execution modes
+
+Transformation functions using the `default` execution mode are executed as Pandas UDFs during batch processing and as Python UDFs during online inference.
+The `executor` method allows you to test both modes by setting the `online` parameter.
+
+=== "Python"
+    !!! example "Testing both online and offline execution modes"
+        ```python
+        from hopsworks import udf
+        import pandas as pd
+
+        @udf(return_type=float)
+        def double_value(value):
+            return value * 2
+
+        # Offline mode (batch processing with Pandas Series)
+        offline_executor = double_value.executor(online=False)
+        batch_result = offline_executor.execute(pd.Series([1.0, 2.0, 3.0]))
+
+        # Online mode (single value processing)
+        online_executor = double_value.executor(online=True)
+        single_result = online_executor.execute(5.0)
+        assert single_result == 10.0
+        ```
+
+!!! note
+    For transformation functions with a `mode` set to `python` or `pandas`, the `online` parameter has no effect since those modes always execute as the specified UDF type.
+
+### Accessing transformation functions by name
+
+Transformation functions attached to feature views and feature groups can be accessed by name using dictionary-style or attribute-style access.
+This is useful for testing individual transformation functions in isolation.
+
+=== "Python"
+    !!! example "Accessing transformation functions from a feature view"
+        ```python
+        # Access via dictionary-style syntax
+        normalize_udf = fv["normalize"]
+
+        # Access via attribute-style syntax
+        normalize_udf = fv.normalize
+
+        # Test the accessed transformation function
+        result = normalize_udf.execute(pd.Series([100.0, 125.0, 150.0]))
+        ```
+
+=== "Python"
+    !!! example "Accessing transformation functions from a feature group"
+        ```python
+        # Access via dictionary-style syntax
+        transaction_age_udf = fg["transaction_age"]
+
+        # Access via attribute-style syntax
+        transaction_age_udf = fg.transaction_age
+
+        # Test the accessed transformation function
+        result = transaction_age_udf.execute(pd.Series([datetime(2023, 1, 1)]), pd.Series([datetime(2023, 6, 1)]))
+        ```
+
+### Testing transformations attached to feature groups and feature views
+
+In addition to testing individual transformation functions, you can test all transformations attached to a feature group or feature view at once using the `execute_odts` and `execute_mdts` methods.
+These methods are described in their respective guides:
+
+- [Testing on-demand transformations on feature groups](./feature_group/on_demand_transformations.md#testing-on-demand-transformations-locally)
+- [Testing on-demand transformations on feature views](./feature_view/model-dependent-transformations.md#testing-on-demand-transformations-locally)
+- [Testing model-dependent transformations on feature views](./feature_view/model-dependent-transformations.md#testing-model-dependent-transformations-locally)
+
 ## Using transformation functions
 
 Transformation functions can be used by attaching it to a feature view to [create model-dependent transformations](./feature_view/model-dependent-transformations.md) or attached to feature groups to  [create on-demand transformations](./feature_group/on_demand_transformations.md)

@@ -164,3 +164,94 @@ To achieve this, set the `transform` parameter to False.
         transform=False
     )
     ```
+
+## Testing Transformations Locally
+
+Hopsworks allows you to test transformations attached to a feature view locally without requiring a connection to the Hopsworks platform.
+This is useful for validating transformation logic before deploying it to production.
+
+### Accessing transformation functions by name
+
+Transformation functions attached to a feature view can be accessed by name using dictionary-style or attribute-style access.
+This returns the underlying `HopsworksUdf` object, which can be tested using the `execute` or `executor` methods described in the [Testing Transformation Functions](../transformation_functions.md#testing-transformation-functions) guide.
+
+=== "Python"
+!!! example "Accessing and testing an individual transformation function from a feature view"
+    ```python
+    # Access via dictionary-style syntax
+    normalize_udf = fv["normalize"]
+
+    # Or access via attribute-style syntax
+    normalize_udf = fv.normalize
+
+    # Test with mocked statistics
+    executor = normalize_udf.executor(statistics={"amount": {"mean": 100.0, "std_dev": 25.0}})
+    result = executor.execute(pd.Series([100.0, 125.0, 150.0]))
+    ```
+
+### Testing model-dependent transformations locally
+
+The `execute_mdts` method applies all model-dependent transformations attached to the feature view to the provided data.
+This method requires that training data statistics have been initialized first, either by calling `create_training_data`, `init_batch_scoring`, or `init_serving`.
+
+=== "Python"
+!!! example "Testing model-dependent transformations on a feature view with a DataFrame"
+    ```python
+    from hopsworks import udf
+    from hopsworks.transformation_statistics import TransformationStatistics
+
+    @udf(return_type=float)
+    def normalize(amount, statistics=TransformationStatistics("amount")):
+        return (amount - statistics.amount.mean) / statistics.amount.std_dev
+
+    fv = fs.get_or_create_feature_view(
+        name="transactions_fv",
+        version=1,
+        query=fg.select_features(),
+        transformation_functions=[normalize("amount")]
+    )
+
+    # Initialize statistics by creating training data
+    features, labels = fv.create_training_data()
+
+    # Test with a DataFrame (offline mode)
+    test_df = pd.DataFrame({"amount": [100.0, 200.0, 300.0]})
+    result_df = fv.execute_mdts(test_df)
+    ```
+
+=== "Python"
+!!! example "Testing model-dependent transformations simulating online inference"
+    ```python
+    # Test with a dictionary (simulating online inference)
+    test_dict = {"amount": 100.0}
+    result_dict = fv.execute_mdts(test_dict, online=True)
+    ```
+
+The `execute_mdts` method accepts the following parameters:
+
+- **`data`**: Input data as a `pd.DataFrame`, `pl.DataFrame`, or `dict[str, Any]`.
+- **`online`**: Whether to execute in online mode (single values) or offline mode (batch). Defaults to offline mode.
+- **`transformation_context`**: A dictionary (or list of dictionaries for batch) mapping variable names to contextual values accessible via the `context` parameter in transformation functions.
+- **`request_parameters`**: A dictionary (or list of dictionaries for batch) of request parameters. These take highest priority when resolving feature values.
+
+### Testing on-demand transformations locally
+
+If the feature view includes on-demand features from its underlying feature groups, you can test those transformations using the `execute_odts` method.
+This method applies all on-demand transformations attached to the feature view on the provided data.
+
+=== "Python"
+!!! example "Testing on-demand transformations on a feature view"
+    ```python
+    # Test with a DataFrame (offline mode)
+    test_df = pd.DataFrame({
+        "amount": [100.0, 200.0, 300.0],
+        "quantity": [2, 4, 5]
+    })
+    result_df = fv.execute_odts(test_df)
+
+    # Test with a dictionary (simulating online inference)
+    test_dict = {"amount": 100.0, "quantity": 2}
+    result_dict = fv.execute_odts(test_dict, online=True)
+    ```
+
+The `execute_odts` method accepts the same parameters as `execute_mdts` described above.
