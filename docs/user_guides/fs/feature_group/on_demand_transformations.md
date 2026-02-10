@@ -28,7 +28,7 @@ If no feature names are provided, the transformation function will default to us
 
     @hopsworks.udf(return_type=[str, str], drop=["current_date"])
     def stripped_strings(country, city):
-        return county.strip(), city.strip()
+        return country.strip(), city.strip()
 
     # Attach transformation function to feature group to create on-demand transformation function.
     fg = feature_store.create_feature_group(name="fg_transactions",
@@ -36,7 +36,7 @@ If no feature names are provided, the transformation function will default to us
                 description="Transaction Features",
                 online_enabled=True,
                 primary_key=['id'],
-                event_time='event_time'
+                event_time='event_time',
                 transformation_functions=[transaction_age, stripped_strings]
                 )
     ```
@@ -53,7 +53,7 @@ The features to be used by the on-demand transformation function can be specifie
                 description="Transaction Features",
                 online_enabled=True,
                 primary_key=['id'],
-                event_time='event_time'
+                event_time='event_time',
                 transformation_functions=[age_transaction('transaction_time', 'current_time')]
                 )
     ```

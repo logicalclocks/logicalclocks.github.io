@@ -95,7 +95,7 @@ The creation of many-to-one transformation functions is similar to that of a one
 
         @udf(return_type=int)
         def add_features(feature1, feature2, feature3):
-            return feature + feature2 + feature3
+            return feature1 + feature2 + feature3
         ```
 
 ### One-to-many transformations
@@ -253,7 +253,7 @@ Upon instantiation, instances of `FeatureTransformationStatistics` contain `N
 
         @udf(int)
         def add_features(argument1, argument2, argument3, statistics=stats):
-            return argument + argument2 + argument3 + statistics.argument1.mean + statistics.argument2.mean + statistics.argument3.mean
+            return argument1 + argument2 + argument3 + statistics.argument1.mean + statistics.argument2.mean + statistics.argument3.mean
         ```
 
 ### Passing context variables to transformation function
@@ -269,7 +269,7 @@ By including the context argument, you can pass the necessary data as a dictiona
 
         @udf(int)
         def add_features(argument1, context):
-            return argument + context["value_to_add"]
+            return argument1 + context["value_to_add"]
         ```
 
 ## Saving to the Feature Store

@@ -19,7 +19,7 @@ Hopsworks provides an operator to execute jobs on Hopsworks and a sensor to wait
 Hopsworks deployments include a deployment of Apache Airflow.
 You can access it from the Hopsworks UI by clicking on the _Airflow_ button on the left menu.
 
-Airfow is configured to enforce Role Based Access Control (RBAC) to the Airflow DAGs.
+Airflow is configured to enforce Role Based Access Control (RBAC) to the Airflow DAGs.
 Admin users on Hopsworks have access to all the DAGs in the deployment.
 Regular users can access all the DAGs of the projects they are a member of.
 

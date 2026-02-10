@@ -84,7 +84,7 @@ Hopsworks admins can control the affinity labels and priority classes available 
 
 ![Cluster Configuration - Node Labels and Priority Classes](../../../assets/images/guides/project/scheduler/admin_cluster_scheduler.png)
 
-Hopsworks Cluster can run within a shared Kubernets Cluster.
+Hopsworks Cluster can run within a shared Kubernetes Cluster.
 The first configuration level is to limit the subset of labels and priority classes that can be used within the Hopsworks Cluster.
 This can be done from the `Available in Hopsworks` sub-section.
 

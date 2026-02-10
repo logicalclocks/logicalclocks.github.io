@@ -130,7 +130,7 @@ Example for any data warehouse/SQL based external sources, we set the desired SQ
     ds.query="SELECT * FROM TABLE"
 
     fg = feature_store.create_external_feature_group(name="sales",
-        version=1
+        version=1,
         description="Physical shop sales features",
         data_source = ds,
         primary_key=['ss_store_sk'],

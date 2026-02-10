@@ -47,7 +47,7 @@ For instance, when the cluster lacks enough allocatable resources to meet the de
   </figure>
 </p>
 
-However, when the deployment fails to start futher details might be needed depending on the source of failure.
+However, when the deployment fails to start further details might be needed depending on the source of failure.
 For example, failures in the initialization or starting steps will show a less relevant message.
 In those cases, you can explore the deployments logs in search of the cause of the problem.
 

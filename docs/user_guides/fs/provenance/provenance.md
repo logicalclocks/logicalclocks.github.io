@@ -246,7 +246,7 @@ As such, the `deleted` property will always be empty.
 
 Users can call the [`FeatureView.get_models_provenance`][hsfs.feature_view.FeatureView.get_models_provenance] method which will return a [provenance Link object](#provenance-links).
 
-You can also retrive directly the accessible models, without the need to extract them from the provenance links object:
+You can also retrieve directly the accessible models, without the need to extract them from the provenance links object:
 === "Python"
 
     ```python
@@ -281,10 +281,10 @@ In the feature view overview UI you can explore the provenance graph of the feat
 
 ## Provenance Links
 
-All the `_provenance` methods return a `Link` dictionary object that contains `accessible`, `inaccesible`, `deleted` lists.
+All the `_provenance` methods return a `Link` dictionary object that contains `accessible`, `inaccessible`, `deleted` lists.
 
 - `accessible` - contains any artifact from the result, that the user has access to.
 - `inaccessible` - contains any artifacts that might have been shared at some point in the past, but where this sharing was retracted.
 Since the relation between artifacts is still maintained in the provenance, the user will only have access to limited metadata and the artifacts will be included in this `inaccessible` list.
-- `deleted` - contains artifacts that are deleted with children stil present in the system.
+- `deleted` - contains artifacts that are deleted with children still present in the system.
 There is minimum amount of metadata for the deleted allowing for some limited human readable identification.

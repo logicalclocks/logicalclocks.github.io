@@ -90,6 +90,7 @@ nav:
               - Notification: user_guides/fs/feature_group/notification.md
               - On-Demand Transformations: user_guides/fs/feature_group/on_demand_transformations.md
               - Online Ingestion Observability: user_guides/fs/feature_group/online_ingestion_observability.md
+              - Time-To-Live (TTL): user_guides/fs/feature_group/ttl.md
           - Feature View:
               - user_guides/fs/feature_view/index.md
               - Overview: user_guides/fs/feature_view/overview.md
@@ -147,7 +148,7 @@ nav:
               - Update Profile: user_guides/projects/auth/profile.md
           - Projects:
               - Create Project: user_guides/projects/project/create_project.md
-              - Add Members: user_guides/projects/project/add_members.md
+              - Manage Members: user_guides/projects/project/manage_members.md
           - Python:
               - Environments Overview: user_guides/projects/python/python_env_overview.md
               - Clone Environment: user_guides/projects/python/python_env_clone.md
@@ -346,9 +347,10 @@ plugins:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             show_source: false
-            link_source: true
             docstring_section_style: spacy
             annotations_path: source
+            extra:
+              link_source: true
           inventories:
             - https://docs.python.org/3/objects.inv
             - https://pandas.pydata.org/docs/objects.inv

@@ -108,7 +108,7 @@ validation_history = fg.get_validation_history(
 
 timeseries = pd.DataFrame(
     {
-        "observed_value": [res.result["observed_value"] for res in validation_histoy]],
+        "observed_value": [res.result["observed_value"] for res in validation_history],
         "validation_time": [res.validation_time for res in validation_history]
     }
 )

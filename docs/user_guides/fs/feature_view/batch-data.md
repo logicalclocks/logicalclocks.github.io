@@ -49,7 +49,7 @@ If the service is enabled, and you want to read this particular batch data with 
 df = feature_view.get_batch_data(
     start_time = "20220620",
     end_time = "20220627",
-    read_options={"use_hive: True})
+    read_options={"use_hive": True}
 )
 ```
 

@@ -62,7 +62,7 @@ Enter the details for your JDBC enabled database.
 4. Click on "Save Credentials".
 
 !!! note
-    To be able to use the connector, you need to upload the driver JAR file to the [Jupyter configuration](../../../projects/jupyter/spark_notebook.md) or [Job configuration](../../../projects/jobs/pyspark_job.md) in `Addtional Jars`.
+    To be able to use the connector, you need to upload the driver JAR file to the [Jupyter configuration](../../../projects/jupyter/spark_notebook.md) or [Job configuration](../../../projects/jobs/pyspark_job.md) in `Additional Jars`.
     For MySQL connections the default JDBC driver is already included in Hopsworks so this step can be skipped.
 
 ## Next Steps

@@ -4,7 +4,7 @@ This is the source of the Hopsworks Documentation published at <https://docs.hop
 
 ## Build instructions
 
-We use `mkdocs` together with [`mike`]((https://github.com/jimporter/mike/) for versioning to build the documentation.
+We use `mkdocs` together with [`mike`](https://github.com/jimporter/mike/) for versioning to build the documentation.
 We also use this two main mkdocs plugins: [`mkdocstrings`](https://mkdocstrings.github.io/) and [its Python handler](https://mkdocstrings.github.io/python/), and [`mkdocs-material`](https://squidfunk.github.io/mkdocs-material/) as the theme.
 
 **Background about `mike`:**

@@ -2,97 +2,156 @@
 
 ## Introduction
 
-Hopsworks allows artifacts (e.g., feature groups, feature views) to be shared between projects.
-There are two main use cases for sharing features between projects:
+Hopsworks allows artifacts (such as feature groups and feature views) to be shared between projects. There are two main use cases for sharing features:
 
-- If you have multiple teams working on the same Hopsworks deployment.
-  Each team works within its own set of projects.
-  If team A wants to leverage features built by team B, they can do so by sharing the feature groups from a team A project to a team B project.
+- **Cross-team collaboration:** When multiple teams work on the same Hopsworks deployment, each team typically has its own set of projects. If team A wants to leverage features built by team B, team B can share their feature groups with team A's project.
 
-- By creating different projects for the different stages of the development lifecycle (e.g., a dev project, a testing project, and a production project),
-  you can make sure that changes on the development project don't impact the features in the production project.
-  At the same time, you might want to
-  leverage production features to develop new models or additional features.
-  In this case, you can share the production feature store with the
-  development feature store in `read-only` mode.
+- **Environment isolation:** By creating separate projects for different stages of the development lifecycle (development, testing, and production), you can ensure that changes in the development project don't impact production features. At the same time, you can share production features to use them when developing new models or additional features.
 
-### Step 1: Open the project of the feature store that you would like to share on Hopsworks
+## Sharing the entire feature store
 
-In the `Project Settings` navigate to the `Shared with other projects` section.
+You can share your project's entire feature store with another project, granting read-only access to all feature groups.
+
+### Step 1: Navigate to sharing settings
+
+Open the project containing the feature store you want to share. In `Project Settings`, navigate to the `Shared with other projects` section.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/project/share_with_other_projects.png" alt="Share Project">
+    <img src="../../../../assets/images/guides/project/sharing/share_with_other_projects.png" alt="Share Project">
+    <figcaption>Shared with other projects section in Project Settings</figcaption>
   </figure>
 </p>
 
-### Step 2: Share
+### Step 2: Share the feature store
 
-Click `Share feature store` to bring up the dialog for sharing.
-
-In the `Project` section choose project you wish to share the feature store with.
+Click `Share feature store` to open the sharing dialog, then select the target project.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/project/share_dialog.png" alt="Share Project Dialog">
+    <img src="../../../../assets/images/guides/project/sharing/share_project_dialog.png" alt="Share Project Dialog">
+    <figcaption>Share feature store dialog</figcaption>
   </figure>
 </p>
 
-Feature stores can be shared exclusively using `read-only` permission.
-This means that a member is not capable of enacting any changes on the shared project.
+!!! note "Read-only access"
+    Shared feature stores are always read-only. Members of the target project cannot modify any data in the shared feature store.
 
-### Step 3: Accept the Invitation
-
-In the project where the feature store was shared (step 2) go to `Project Settings` and navigate to the `Shared from other projects` section.
-Click `accept`.
+After clicking `Share`, the feature store appears under the `Shared with other projects` section.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/project/accept.png" alt="Accept">
+    <img src="../../../../assets/images/guides/project/sharing/list_of_shared_projects.png" alt="List of projects this project is shared with">
+    <figcaption>List of projects the feature store is shared with</figcaption>
   </figure>
 </p>
 
-After accepting the share, the shared feature store is listed under the `Shared from other projects` section.
+## Sharing a feature group with selected features
+
+For more granular control, you can share individual feature groups and select which features to expose. This allows you to share specific data without granting access to your entire feature store.
+
+### Step 1: Navigate to the feature group
+
+In the `Feature Groups` section, select the feature group you want to share and click the `Sharing` tab.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/project/list_of_shared_projects.png" alt="List of shared projects">
+    <img src="../../../../assets/images/guides/project/sharing/share_feature_group.png" alt="Share Feature Group">
+    <figcaption>Feature group sharing tab</figcaption>
   </figure>
 </p>
 
-## Use features from a shared feature store
+### Step 2: Share the feature group
 
-### Step 1: Get feature store handles
+Click `Share` to open the sharing dialog. You can share with either a project or an individual user with `Feature store restricted` role.
 
-To access features from a shared feature store you need to first retrieve the handle for the shared feature store.
-To retrieve the handle use the get_feature_store() method and provide the name of the shared feature store
+=== "Share with a project"
+
+    Select `Share with Project`, choose the target project, and select which features to share using `Select the features to share`.
+
+    <p align="center">
+      <figure>
+        <img src="../../../../assets/images/guides/project/sharing/share_feature_group_dialog_project.png" alt="Share Feature Group with Project Dialog">
+        <figcaption>Share feature group with project dialog</figcaption>
+      </figure>
+    </p>
+
+    After clicking `Share`, the project appears under the `This feature group is shared with X projects` section.
+
+    <p align="center">
+      <figure>
+        <img src="../../../../assets/images/guides/project/sharing/list_of_projects_feature_group_shared_with.png" alt="List of projects this Feature Group is shared with">
+        <figcaption>List of projects the feature group is shared with</figcaption>
+      </figure>
+    </p>
+
+=== "Share with a user"
+
+    Select `Share with User`, choose a user with the [Feature store restricted](../../projects/project/manage_members.md) role, and select which features to share.
+
+    <p align="center">
+      <figure>
+        <img src="../../../../assets/images/guides/project/sharing/share_feature_group_dialog_user.png" alt="Share Feature Group with User Dialog">
+        <figcaption>Share feature group with user dialog</figcaption>
+      </figure>
+    </p>
+
+    After clicking `Share`, the user appears under the `This feature group is shared with X users` section.
+
+    <p align="center">
+      <figure>
+        <img src="../../../../assets/images/guides/project/sharing/list_of_users_feature_group_shared_with.png" alt="List of users this Feature Group is shared with">
+        <figcaption>List of users the feature group is shared with</figcaption>
+      </figure>
+    </p>
+
+## Using shared features
+
+Once features have been shared with your project, you can access them through the UI or the API.
+
+### Using the UI
+
+Navigate to the project that has access to shared features. In the `Feature Groups` section, use the dropdown in the upper right corner to select which feature store to view.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/project/sharing/using_shared_feature_groups.png" alt="View shared feature groups">
+    <figcaption>Selecting a shared feature store in the UI</figcaption>
+  </figure>
+</p>
+
+### Using the API
+
+To access features from a shared feature store programmatically, retrieve the handle for the shared feature store using the Hopsworks API.
+
+#### Step 1: Get feature store handles
+
+Use the `get_feature_store()` method with the name of the shared feature store:
 
 ```python
 import hopsworks
 
 project = hopsworks.login()
 
+# Get your project's feature store
 project_feature_store = project.get_feature_store()
+
+# Get the shared feature store by name
 shared_feature_store = project.get_feature_store(name="name_of_shared_feature_store")
 ```
 
-### Step 2: Fetch feature groups
+#### Step 2: Fetch feature groups
 
 ```python
-# fetch feature group object from shared feature store
+# Fetch a feature group from the shared feature store
 shared_fg = shared_feature_store.get_feature_group(
     name="shared_fg_name",
-    version="1")
+    version=1
+)
 
-# fetch feature group object from project feature store
-fg_a = project_feature_store.get_or_create_feature_group(
+# Fetch a feature group from your project's feature store
+fg = project_feature_store.get_or_create_feature_group(
     name="feature_group_name",
-    version=1)
-```
-
-### Step 3: Join feature groups
-
-```python
-# join above feature groups
-query = shared_fg.select_all().join(fg_a.select_all())
+    version=1
+)
 ```

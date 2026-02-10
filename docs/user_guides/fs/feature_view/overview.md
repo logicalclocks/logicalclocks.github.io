@@ -41,15 +41,15 @@ For example, when a client reads a numerical feature, the feature value could be
     ```java
     // create a simple feature view
     FeatureView featureView = featureStore.createFeatureView()
-                                            .name("transactions_view)
+                                            .name("transactions_view")
                                             .query(query)
                                             .build();
 
     // create a feature view with label
     FeatureView featureView = featureStore.createFeatureView()
-                                            .name("transactions_view)
+                                            .name("transactions_view")
                                             .query(query)
-                                            .labels(Lists.newArrayList("fraud_label")
+                                            .labels(Lists.newArrayList("fraud_label"))
                                             .build();
     ```
 
@@ -92,7 +92,7 @@ You can learn more in [Tags Guide](../tags/tags.md).
 === "Python"
     ```python
     # attach
-    feature_view.add_tag(name="tag_schema", value={"key", "value"}
+    feature_view.add_tag(name="tag_schema", value={"key": "value"})
 
     # get
     feature_view.get_tag(name="tag_schema")
