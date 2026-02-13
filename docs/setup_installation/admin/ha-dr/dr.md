@@ -121,15 +121,22 @@ For S3 object storage, you can also configure a bucket lifecycle policy to expir
 
 ## Restore
 
-!!! Note
-    Restore is only supported in a newly created cluster; in-place restore is not supported. Use the exact Hopsworks version that was used to create the backup.
+Hopsworks supports two restore modes:
 
-The restore process has two phases:
+- **New cluster restore**: Install a fresh cluster and restore data from a backup during installation.
+- **In-place restore**: Restore data onto an existing running cluster via `helm upgrade`.
+
+!!! Note
+    Use the exact Hopsworks version that was used to create the backup.
+
+### New Cluster Restore
+
+The new cluster restore process has two phases:
 
 - Restore Kubernetes objects required for the cluster restore.
 - Install the cluster with Helm using the correct backup IDs.
 
-### Restore Kubernetes objects
+#### Restore Kubernetes objects
 
 Restore the Kubernetes objects that were backed up using Velero.
 
@@ -248,7 +255,7 @@ kubectl get configmap opensearch-backups-metadata -n hopsworks -o json \
 | sort -nr
 ```
 
-### Restore on Cluster installation
+#### Restore on Cluster installation
 
 To restore a cluster during installation, configure the backup ID in the values YAML file:
 
@@ -262,7 +269,7 @@ global:
       backupId: "254811200"
 ```
 
-#### Customizations
+##### Customizations
 
 !!! Warning
     Even if you override the backup IDs for RonDB and Opensearch, you must still set `.global._hopsworks.restoreFromBackup.backupId` to ensure HopsFS is restored.
@@ -327,3 +334,118 @@ olk:
               payload:
                 indices: "-myindex"
 ```
+
+### In-Place Restore
+
+In-place restore allows you to restore data onto an existing running cluster using `helm upgrade`. Unlike a new cluster restore, this does not require provisioning a fresh cluster — the existing stateful services are shut down, wiped if necessary, and restored from backup.
+
+!!! Warning
+    In-place restore **replaces all existing data** in the cluster with the backup data. Any data written after the backup was taken will be lost.
+
+#### Prerequisites
+
+- A running Hopsworks cluster deployed via Helm.
+- A previously created backup with a known backup ID.
+- Object storage configured and accessible with the backup data.
+- Velero installed and configured as described in the [prerequisites](#prerequisites).
+
+#### Identify the backup ID
+
+Get the backup ID from the **Cluster Settings > Backup** tab or by using the following commands.
+
+```bash
+# RonDB backup IDs (newest first)
+kubectl get configmap rondb-backups-metadata -n hopsworks -o json \
+| jq -r '.data | to_entries[] | select(.value | fromjson | .state == "SUCCESS") | .key' \
+| sort -nr
+
+# Opensearch backup IDs (newest first)
+kubectl get configmap opensearch-backups-metadata -n hopsworks -o json \
+| jq -r '.data | to_entries[] | select(.value | fromjson | .state == "SUCCESS") | .key' \
+| sort -nr
+
+# Velero backup IDs for the main schedule (newest first)
+kubectl get backups -n velero -o json \
+| jq -r '[.items[] | select(.spec.storageLocation == "hopsworks-bsl" and .metadata.labels["velero.io/schedule-name"] == "k8s-backups-main" and .status.phase == "Completed")] | sort_by(.status.completionTimestamp) | reverse[] | .metadata.name'
+
+# Velero backup IDs for the users schedule (newest first)
+kubectl get backups -n velero -o json \
+| jq -r '[.items[] | select(.spec.storageLocation == "hopsworks-bsl" and .metadata.labels["velero.io/schedule-name"] == "k8s-backups-users-resources" and .status.phase == "Completed")] | sort_by(.status.completionTimestamp) | reverse[] | .metadata.name'
+```
+
+#### Run the in-place restore
+
+Configure the restore in the values file and run `helm upgrade`:
+
+```yaml
+global:
+  _hopsworks:
+    backups:
+      enabled: true
+      schedule: "@weekly"
+    restoreFromBackup:
+      backupId: "254811200"
+      inPlace: true
+      forceDataClear: true
+
+# Optional: specify Velero backup IDs. If not set, the latest completed backup is used.
+hopsworks:
+  velero:
+    restore:
+      mainScheduleBackupId: "k8s-backups-main-20260213T153627Z"
+      usersScheduleBackupId: "k8s-backups-users-resources-20260213T153627Z"
+```
+
+Then run:
+
+```bash
+helm upgrade hopsworks --version <CHART_VERSION> \
+  --namespace hopsworks \
+  -f values.yaml \
+  --timeout 1200s
+```
+
+You can also pass the restore flags directly on the command line:
+
+```bash
+helm upgrade hopsworks --version <CHART_VERSION> \
+  --namespace hopsworks \
+  --set-string global._hopsworks.restoreFromBackup.backupId="254811200" \
+  --set global._hopsworks.restoreFromBackup.inPlace=true \
+  --set global._hopsworks.restoreFromBackup.forceDataClear=true \
+  --set-string hopsworks.velero.restore.mainScheduleBackupId="k8s-backups-main-20260213T153627Z" \
+  --set-string hopsworks.velero.restore.usersScheduleBackupId="k8s-backups-users-resources-20260213T153627Z" \
+  --timeout 1200s
+```
+
+The required flags are:
+
+| Parameter | Description |
+|-----------|-------------|
+| `global._hopsworks.restoreFromBackup.backupId` | The backup ID to restore from. |
+| `global._hopsworks.restoreFromBackup.inPlace` | Must be `true` to enable in-place restore mode. |
+| `global._hopsworks.restoreFromBackup.forceDataClear` | Must be `true` to confirm that existing data will be replaced. This is a safety mechanism to prevent accidental data loss. |
+
+The following flags are optional. If not set, the latest available Velero backup will be used:
+
+| Parameter | Description |
+|-----------|-------------|
+| `hopsworks.velero.restore.mainScheduleBackupId` | The Velero backup ID for the main schedule (`k8s-backups-main`). |
+| `hopsworks.velero.restore.usersScheduleBackupId` | The Velero backup ID for the users schedule (`k8s-backups-users-resources`). |
+
+#### Re-running an in-place restore
+
+In-place restore creates marker resources to prevent accidental re-runs. If you need to run the restore again with the same backup ID, delete the marker resources first:
+
+```bash
+# Delete the HopsFS restore job
+kubectl delete job hopsfs-inplace-restore-<BACKUP_ID> -n hopsworks --ignore-not-found=true
+
+# Delete the RonDB restore jobs
+kubectl delete job restore-native-backup-<BACKUP_ID> -n hopsworks --ignore-not-found=true
+kubectl delete job setup-mysqld-dont-remove-<BACKUP_ID> -n hopsworks --ignore-not-found=true
+```
+
+#### Customizations
+
+The same customization options for [RonDB and Opensearch](#customizations) backup IDs apply to in-place restore. You can override individual service backup IDs while keeping the global backup ID for HopsFS.
