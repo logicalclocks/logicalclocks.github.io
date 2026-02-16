@@ -119,7 +119,6 @@ Another important aspect of a data source is its ability to facilitate creation 
 The `Connector API` relies on data sources behind the scenes to integrate with external datasource.
 This enables seamless integration with any data source as long as there is a data source defined.
 
-
 To create an external feature group, we use the `create_external_feature_group` API, also known as `Connector API`, and simply pass the data source created before to the `data_source` argument.
 Depending on the external source, we should set either the `query` argument for data warehouse based sources, or the `path` and `data_format` arguments for data lake based sources, similar to reading into dataframes as explained in above section.
 
