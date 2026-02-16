@@ -59,7 +59,7 @@ jobs:
       - name: Checkout the API repo
         uses: actions/checkout@v4
         with:
-          repository: logicalclocks/hopsworks-api
+          repository: aversey/hopsworks-api
           ref: ${{ env.BRANCH }}
           path: hopsworks-api
 
