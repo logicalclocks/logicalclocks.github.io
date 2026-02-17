@@ -327,6 +327,7 @@ extra_javascript:
 
 plugins:
   - search
+  - autorefs
   - minify:
       minify_html: true
       minify_css: true
@@ -358,6 +359,7 @@ plugins:
             docstring_section_style: spacy
             annotations_path: source
             filters: public
+            backlinks: flat
             extra:
               link_source: true
             extensions:

@@ -4,8 +4,9 @@ mike==2.1.3
 markdown==3.9
 pymdown-extensions==10.17.2
 mkdocs-minify-plugin>=0.2.0
-hopsworks-apigen@git+https://github.com/aversey/hopsworks-aliases.git
-mkdocstrings[python]==1.0.0
-mkdocstrings-python==2.0.1
+hopsworks-apigen@git+https://github.com/logicalclocks/hopsworks-apigen.git
+mkdocstrings[python]==1.0.3
+mkdocstrings-python==2.0.2
+mkdocs-autorefs==1.4.4
 ruff==0.15.0
 linkchecker

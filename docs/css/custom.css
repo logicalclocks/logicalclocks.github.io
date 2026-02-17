@@ -194,6 +194,18 @@ header.md-header {
 }
 
 /*******************************************************/
+/* Hide empty backlinks. */
+.info-backlinks:has(.doc-backlink-list:empty) {
+  display: none;
+}
+
+/*******************************************************/
+/* Hide symbol type labels from backlinks. */
+.doc-backlink-crumb .doc-symbol {
+  display: none;
+}
+
+/*******************************************************/
 /* Custom styles for syntax highlighting in signatures. */
 
 /* Fancier color for operators such as * and |. */
