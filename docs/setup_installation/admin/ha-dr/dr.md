@@ -444,6 +444,13 @@ kubectl delete job hopsfs-inplace-restore-<BACKUP_ID> -n hopsworks --ignore-not-
 # Delete the RonDB restore jobs
 kubectl delete job restore-native-backup-<BACKUP_ID> -n hopsworks --ignore-not-found=true
 kubectl delete job setup-mysqld-dont-remove-<BACKUP_ID> -n hopsworks --ignore-not-found=true
+
+# Delete the Opensearch restore job
+kubectl delete job opensearch-restore-default-default-<BACKUP_ID> -n hopsworks --ignore-not-found=true
+
+# Delete the velero restore objects, use th exact backup name or schedule name
+kubectl delete restore.velero.io restore-k8s-backups-main -n velero --ignore-not-found=true
+kubectl delete restore.velero.io restore-k8s-backups-users-resources -n velero --ignore-not-found=true
 ```
 
 #### Customizations
