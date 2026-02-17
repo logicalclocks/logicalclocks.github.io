@@ -342,7 +342,7 @@ In-place restore allows you to restore data onto an existing running cluster usi
 !!! Warning
     In-place restore **replaces all existing data** in the cluster with the backup data. Any data written after the backup was taken will be lost.
 
-#### Prerequisites
+#### In-place restore prerequisites
 
 - A running Hopsworks cluster deployed via Helm.
 - A previously created backup with a known backup ID.
@@ -421,7 +421,7 @@ helm upgrade hopsworks --version <CHART_VERSION> \
 The required flags are:
 
 | Parameter | Description |
-|-----------|-------------|
+| --------- | ----------- |
 | `global._hopsworks.restoreFromBackup.backupId` | The backup ID to restore from. |
 | `global._hopsworks.restoreFromBackup.inPlace` | Must be `true` to enable in-place restore mode. |
 | `global._hopsworks.restoreFromBackup.forceDataClear` | Must be `true` to confirm that existing data will be replaced. This is a safety mechanism to prevent accidental data loss. |
@@ -429,7 +429,7 @@ The required flags are:
 The following flags are optional. If not set, the latest available Velero backup will be used:
 
 | Parameter | Description |
-|-----------|-------------|
+| --------- | ----------- |
 | `hopsworks.velero.restore.mainScheduleBackupId` | The Velero backup ID for the main schedule (`k8s-backups-main`). |
 | `hopsworks.velero.restore.usersScheduleBackupId` | The Velero backup ID for the users schedule (`k8s-backups-users-resources`). |
 
@@ -453,6 +453,6 @@ kubectl delete restore.velero.io restore-k8s-backups-main -n velero --ignore-not
 kubectl delete restore.velero.io restore-k8s-backups-users-resources -n velero --ignore-not-found=true
 ```
 
-#### Customizations
+#### In-place restore customizations
 
 The same customization options for [RonDB and Opensearch](#customizations) backup IDs apply to in-place restore. You can override individual service backup IDs while keeping the global backup ID for HopsFS.
