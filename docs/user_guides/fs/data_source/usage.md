@@ -143,7 +143,7 @@ For more information on `Connector API`, read detailed guide about [external fea
 
 ## Writing Training Data
 
-Data Sources are also used while writing training data to external sources. While calling the
+Data Sources are also used while writing training data to external sources. 
 While calling the [Feature View](../../../concepts/fs/feature_view/fv_overview.md) API `create_training_data` , we can pass the `data_source` argument which is necessary to materialise the data to external sources, as shown below.
 
 === "PySpark"
