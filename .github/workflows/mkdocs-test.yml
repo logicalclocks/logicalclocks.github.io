@@ -15,7 +15,7 @@ jobs:
       - name: Checkout the API repo
         uses: actions/checkout@v4
         with:
-          repository: aversey/hopsworks-api
+          repository: logicalclocks/hopsworks-api
           ref: ${{ github.base_ref }}
           path: hopsworks-api
 
