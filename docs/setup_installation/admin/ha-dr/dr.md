@@ -209,19 +209,18 @@ done
 
 # Restores the latest - if specific backup is needed then backupName instead
 echo "=== Creating Velero Restore object for k8s-backups-main ==="
-RESTORE_SUFFIX=$(date +%s)
 kubectl apply -f - <<EOF
 apiVersion: velero.io/v1
 kind: Restore
 metadata:
-  name: k8s-backups-main-restore-$RESTORE_SUFFIX
+  name: k8s-backups-main
   namespace: velero
 spec:
   scheduleName: k8s-backups-main
 EOF
 
 echo "=== Waiting for Velero restore to finish ==="
-until [ "$(kubectl get restore k8s-backups-main-restore-$RESTORE_SUFFIX -n velero -o jsonpath='{.status.phase}' 2>/dev/null)" = "Completed" ]; do
+until [ "$(kubectl get restore k8s-backups-main -n velero -o jsonpath='{.status.phase}' 2>/dev/null)" = "Completed" ]; do
   echo "Still waiting..."; sleep 5;
 done
 
@@ -231,14 +230,14 @@ kubectl apply -f - <<EOF
 apiVersion: velero.io/v1
 kind: Restore
 metadata:
-  name: k8s-backups-users-resources-restore-$RESTORE_SUFFIX
+  name: k8s-backups-users-resources
   namespace: velero
 spec:
   scheduleName: k8s-backups-users-resources
 EOF
 
 echo "=== Waiting for Velero restore to finish ==="
-until [ "$(kubectl get restore k8s-backups-users-resources-restore-$RESTORE_SUFFIX -n velero -o jsonpath='{.status.phase}' 2>/dev/null)" = "Completed" ]; do
+until [ "$(kubectl get restore k8s-backups-users-resources -n velero -o jsonpath='{.status.phase}' 2>/dev/null)" = "Completed" ]; do
   echo "Still waiting..."; sleep 5;
 done
 ```
@@ -399,7 +398,7 @@ hopsworks:
 Then run:
 
 ```bash
-helm upgrade hopsworks --version <CHART_VERSION> \
+helm upgrade hopsworks hopsworks/hopsworks --version <CHART_VERSION> \
   --namespace hopsworks \
   -f values.yaml \
   --timeout 1200s
@@ -408,7 +407,7 @@ helm upgrade hopsworks --version <CHART_VERSION> \
 You can also pass the restore flags directly on the command line:
 
 ```bash
-helm upgrade hopsworks --version <CHART_VERSION> \
+helm upgrade hopsworks hopsworks/hopsworks --version <CHART_VERSION> \
   --namespace hopsworks \
   --set-string global._hopsworks.restoreFromBackup.backupId="254811200" \
   --set global._hopsworks.restoreFromBackup.inPlace=true \
@@ -448,9 +447,9 @@ kubectl delete job setup-mysqld-dont-remove-<BACKUP_ID> -n hopsworks --ignore-no
 # Delete the Opensearch restore job
 kubectl delete job opensearch-restore-default-default-<BACKUP_ID> -n hopsworks --ignore-not-found=true
 
-# Delete the velero restore objects, use th exact backup name or schedule name
-kubectl delete restore.velero.io restore-k8s-backups-main -n velero --ignore-not-found=true
-kubectl delete restore.velero.io restore-k8s-backups-users-resources -n velero --ignore-not-found=true
+# Delete the velero restore objects, use the exact backup name or schedule name
+kubectl delete restore.velero.io k8s-backups-main -n velero --ignore-not-found=true
+kubectl delete restore.velero.io k8s-backups-users-resources -n velero --ignore-not-found=true
 ```
 
 #### In-place restore customizations
