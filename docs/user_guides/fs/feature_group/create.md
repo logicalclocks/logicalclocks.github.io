@@ -108,7 +108,7 @@ The currently supported values are "HUDI", "DELTA", "NONE" (which defaults to Pa
 
 ##### Data Source
 
-During the creation of a feature group, it is possible to define the `storage_connector` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster.
+During the creation of a feature group, it is possible to define the `data_source` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster.
 Currently, [S3](../data_source/creation/s3.md) and [GCS](../data_source/creation/gcs.md) connectors with "DELTA" `time_travel_format` are supported.
 
 ##### Online Table Configuration
