@@ -206,6 +206,12 @@ header.md-header {
 }
 
 /*******************************************************/
+/* Handle source links the nice way. */
+.source-link::after {
+  content: "[source]";
+}
+
+/*******************************************************/
 /* Custom styles for syntax highlighting in signatures. */
 
 /* Fancier color for operators such as * and |. */

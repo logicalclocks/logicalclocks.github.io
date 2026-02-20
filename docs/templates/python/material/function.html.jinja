@@ -84,7 +84,7 @@ Context:
 
           {% block source_link scoped %}
             {% if config.extra.link_source and function.source_link %}
-              <span style="float:right;font-size:.8rem;font-weight:400"><a href="{{ function.source_link }}">[source]</a></span>
+              <span style="float:right;font-size:.8rem;font-weight:400"><a href="{{ function.source_link }}" class="source-link"></a></span>
             {% endif %}
           {% endblock source_link %}
 
