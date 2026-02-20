@@ -64,7 +64,7 @@ jobs:
       - name: Check for broken links
         run: |
           # run the server
-          mkdocs serve 2>&1 &
+          mkdocs serve -q &
           SERVER_PID=$!
           echo "mk server in PID $SERVER_PID"
           # Give enough time for deployment (2min max)
