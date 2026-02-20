@@ -341,6 +341,9 @@ In-place restore allows you to restore data onto an existing running cluster usi
 !!! Warning
     In-place restore **replaces all existing data** in the cluster with the backup data. Any data written after the backup was taken will be lost.
 
+!!! Info
+    After a fresh install from backup (new cluster restore), in-place restores can only be performed using backups taken **after** that fresh install, because the cluster certificates are regenerated during installation. To restore to a backup that was taken **before** the fresh install, you must perform another new cluster restore from that backup instead of an in-place restore.
+
 #### In-place restore prerequisites
 
 - A running Hopsworks cluster deployed via Helm.
