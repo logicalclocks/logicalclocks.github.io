@@ -264,9 +264,9 @@ nav:
           - Audit:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
+          - Service Operations: setup_installation/admin/operationLogs.md
+          - Query Engine: setup_installation/admin/trino.md
       - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
-      - Service Operations: setup_installation/admin/operationLogs.md
-      - Query Engine: setup_installation/admin/trino.md
   - Python API: python-api
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/

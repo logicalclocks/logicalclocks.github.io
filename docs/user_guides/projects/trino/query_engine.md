@@ -133,7 +133,7 @@ Splits show how Trino parallelizes query execution. Each split represents a port
 The references tab lists all tables and data sources accessed by the query, helping you understand data dependencies.
 
 <figure>
-  <img src="../../../../assets/images/guides/trino/query-details-ref.png" alt="Query details referances" />
+  <img src="../../../../assets/images/guides/trino/query-details-ref.png" alt="Query details references" />
   <figcaption>Query details: references</figcaption>
 </figure>
 
