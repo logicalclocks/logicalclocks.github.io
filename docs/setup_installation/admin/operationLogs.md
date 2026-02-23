@@ -63,7 +63,6 @@ This allows the operation to retry sooner after you've resolved the underlying i
 
 Completed and failed operations are retained in the system for a configurable number of days. After the retention period expires, operations are automatically purged from history. This keeps the operation log manageable while preserving recent historical data for troubleshooting and auditing.
 
-
 ## Configuration
 
 Service Operations behavior can be customized through cluster configuration variables. To modify these settings, navigate to **Cluster Settings** → **Configuration** and search for the variable name.

@@ -33,6 +33,7 @@ The query history shows all queries executed across the Trino cluster, regardles
 - **Optimize performance**: Identify queries that may need optimization
 
 Each query entry displays:
+
 - Query ID and text
 - Project and user who executed it
 - Status (running, completed, failed)

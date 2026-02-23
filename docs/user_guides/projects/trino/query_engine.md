@@ -17,7 +17,7 @@ Navigate to the Query Engine from your project's left sidebar. The Query Engine 
 
 ## SQL Runner
 
-The SQL runner is where you write and execute SQL queries against your data. 
+The SQL runner is where you write and execute SQL queries against your data.
 
 **To run a query:**
 
