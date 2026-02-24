@@ -294,13 +294,12 @@ Context:
           {% if class.extra.hopsworks_apigen and class.extra.hopsworks_apigen.aliases %}
             <details class="info info-backlinks">
               <summary>Returned by</summary>
-              <ul class="doc doc-backlink-list">
-                <backlinks identifier="{{class.path}}" handler="python" />
+              <ul class="doc doc-backlink-list"><backlinks identifier="{{class.path}}" handler="python" />
                 {%- for alias in class.extra.hopsworks_apigen.aliases -%}
                   {%- set alias_id = alias.target_module + "." + alias.alias_name -%}
-                  {% if alias_id != class.path %}
+                  {%- if alias_id != class.path -%}
                     <backlinks identifier="{{alias_id}}" handler="python" />
-                  {% endif %}
+                  {%- endif -%}
                 {%- endfor -%}
               </ul>
             </details>
