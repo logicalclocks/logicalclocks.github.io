@@ -373,6 +373,7 @@ plugins:
             - https://fastapi.tiangolo.com/objects.inv
             - https://scikit-learn.org/stable/objects.inv
             - https://docs.pola.rs/api/python/stable/objects.inv
+            - https://arrow.apache.org/docs/objects.inv
 
 markdown_extensions:
   - admonition
