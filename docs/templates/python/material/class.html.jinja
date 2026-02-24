@@ -226,6 +226,23 @@ Context:
           {% endif %}
         {% endblock inheritance_diagram %}
 
+        {% block deprecation scoped %}
+          {% if class.extra.hopsworks_apigen and class.extra.hopsworks_apigen.deprecated %}
+            <details class="warning" open>
+              <summary>Deprecated</summary>
+              <p>
+                {%- set dep = class.extra.hopsworks_apigen.deprecated -%}
+                {%- set available_until = dep.available_until -%}
+                {%- set deprecated_by = dep.deprecated_by -%}
+                {%- set version = "version " + available_until if available_until else "a future release" -%}
+
+                <code>{{ class.name }}</code> is deprecated and will be removed in {{ version }} of Hopsworks.
+                Instead of it, consider using {% for rec in deprecated_by %}<autoref identifier="{{ rec }}"><code>{{ rec.split(".")[-2:] | join(".") }}</code></autoref>{% if not loop.last %}, {% endif %}{% endfor %}.
+              </p>
+            </details>
+          {% endif %}
+        {% endblock deprecation %}
+
         {% block docstring scoped %}
           {#- Docstring block.
 
