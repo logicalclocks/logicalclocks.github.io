@@ -42,6 +42,7 @@ Define your Torch model and run the training loop.
             ...
             return x
 
+
     # Instantiate the model
     net = Net()
 
@@ -71,7 +72,7 @@ Define a name, and attach optional metrics for your model, then invoke the `save
 
     ```python
     # Model evaluation metrics
-    metrics = {'accuracy': 0.92}
+    metrics = {"accuracy": 0.92}
 
     tch_model = mr.torch.create_model("tch_model", metrics=metrics)
 

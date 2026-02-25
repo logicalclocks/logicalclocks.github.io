@@ -9,13 +9,11 @@ In this guide, you will learn how to create a Kafka Avro Schema in the Hopsworks
 ### Step 1: Get the Kafka API
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
 
 kafka_api = project.get_kafka_api()
-
 ```
 
 ### Step 2: Define the schema
@@ -23,25 +21,14 @@ kafka_api = project.get_kafka_api()
 Define the Avro Schema, see [types](https://avro.apache.org/docs/current/spec.html#schema_primitive) for the format of the schema.
 
 ```python
-
 schema = {
     "type": "record",
     "name": "tutorial",
     "fields": [
-        {
-            "name": "id",
-            "type": "int"
-        },
-        {
-            "name": "data",
-            "type": "string"
-        }
-    ]
+        {"name": "id", "type": "int"},
+        {"name": "data", "type": "string"},
+    ],
 }
-
-
-
-
 ```
 
 ### Step 3: Create the schema
@@ -49,11 +36,9 @@ schema = {
 Create the schema in the Schema Registry.
 
 ```python
-
-SCHEMA_NAME="schema_example"
+SCHEMA_NAME = "schema_example"
 
 my_schema = kafka_api.create_schema(SCHEMA_NAME, schema)
-
 ```
 
 ### API Reference

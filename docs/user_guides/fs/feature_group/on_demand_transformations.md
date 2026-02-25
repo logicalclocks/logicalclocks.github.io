@@ -27,19 +27,22 @@ If no feature names are provided, the transformation function will default to us
         def transaction_age(transaction_date, current_date):
             return (current_date - transaction_date).dt.days
 
+
         @hopsworks.udf(return_type=[str, str], drop=["current_date"])
         def stripped_strings(country, city):
             return country.strip(), city.strip()
 
+
         # Attach transformation function to feature group to create on-demand transformation function.
-        fg = feature_store.create_feature_group(name="fg_transactions",
-                    version=1,
-                    description="Transaction Features",
-                    online_enabled=True,
-                    primary_key=['id'],
-                    event_time='event_time',
-                    transformation_functions=[transaction_age, stripped_strings]
-                    )
+        fg = feature_store.create_feature_group(
+            name="fg_transactions",
+            version=1,
+            description="Transaction Features",
+            online_enabled=True,
+            primary_key=["id"],
+            event_time="event_time",
+            transformation_functions=[transaction_age, stripped_strings],
+        )
         ```
 
 ### Specifying input features
@@ -50,14 +53,17 @@ The features to be used by the on-demand transformation function can be specifie
     === "Python"
 
         ```python
-        fg = feature_store.create_feature_group(name="fg_transactions",
-                    version=1,
-                    description="Transaction Features",
-                    online_enabled=True,
-                    primary_key=['id'],
-                    event_time='event_time',
-                    transformation_functions=[age_transaction('transaction_time', 'current_time')]
-                    )
+        fg = feature_store.create_feature_group(
+            name="fg_transactions",
+            version=1,
+            description="Transaction Features",
+            online_enabled=True,
+            primary_key=["id"],
+            event_time="event_time",
+            transformation_functions=[
+                age_transaction("transaction_time", "current_time")
+            ],
+        )
         ```
 
 ## Usage
@@ -84,17 +90,19 @@ These on-demand features are equivalent to regular features, and [model-dependen
 
         ```python
         # Selecting on-demand features in query
-        query = fg.select(["id", "feature1", "feature2", "on_demand_feature3", "on_demand_feature4"])
+        query = fg.select(
+            ["id", "feature1", "feature2", "on_demand_feature3", "on_demand_feature4"]
+        )
 
         # Creating a feature view using a query that contains on-demand transformations and model-dependent transformations
         feature_view = fs.create_feature_view(
-                name='transactions_view',
-                query=query,
-                transformation_functions=[
-                    min_max_scaler("feature1"),
-                    min_max_scaler("on_demand_feature3"),
-                ]
-            )
+            name="transactions_view",
+            query=query,
+            transformation_functions=[
+                min_max_scaler("feature1"),
+                min_max_scaler("on_demand_feature3"),
+            ],
+        )
         ```
 
 ### Computing on-demand features
@@ -251,7 +259,10 @@ On-demand transformation functions can also be accessed and executed as normal f
         ```python
         # Specify request parameters for each serving key.
         feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1}, transform=False, on_demand_features=False, return_type="pandas"
+            entry={"id": 1},
+            transform=False,
+            on_demand_features=False,
+            return_type="pandas",
         )
 
         # Applying model dependent transformations

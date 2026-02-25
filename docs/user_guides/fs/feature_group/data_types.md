@@ -170,7 +170,9 @@ The validation is enabled by default and can be disabled by setting below key wo
 === "Python"
 
     ```python
-    feature_group.insert(df, validation_options={'online_schema_validation':False})
+    feature_group.insert(
+        df, validation_options={"online_schema_validation": False}
+    )
     ```
 
 The most important validation checks or error messages are mentioned below along with possible corrective actions.
@@ -185,18 +187,18 @@ The most important validation checks or error messages are mentioned below along
 
           ```python
           # Drop rows: assuming 'id' is the primary key column
-          df = df.dropna(subset=['id'])
+          df = df.dropna(subset=["id"])
           # For composite keys
-          df = df.dropna(subset=['id1', 'id2'])
+          df = df.dropna(subset=["id1", "id2"])
 
           # Data imputation: replace null values with incrementing last integer id
           # existing max id
-          max_id = df['id'].max()
+          max_id = df["id"].max()
           # counter to generate new id
           next_id = max_id + 1
           # for each null id, assign the next id incrementally
-          for idx in df[df['id'].isna()].index:
-              df.loc[idx, 'id'] = next_id
+          for idx in df[df["id"].isna()].index:
+              df.loc[idx, "id"] = next_id
               next_id += 1
           ```
 
@@ -209,7 +211,7 @@ The most important validation checks or error messages are mentioned below along
 
           ```python
           # incrementing primary key upto the length of dataframe
-          df['id'] = range(1, len(df) + 1)
+          df["id"] = range(1, len(df) + 1)
           ```
 
 03. String length exceeded
@@ -224,7 +226,7 @@ The most important validation checks or error messages are mentioned below along
 
           ```python
           max_length = 100
-          df['text_column'] = df['text_column'].str.slice(0, max_length)
+          df["text_column"] = df["text_column"].str.slice(0, max_length)
           ```
 
       - Another option is to simply [create new version of the feature group][hsfs.feature_store.FeatureStore.get_or_create_feature_group] and insert the dataframe.
@@ -238,19 +240,23 @@ The most important validation checks or error messages are mentioned below along
 
           ```python
           import pandas as pd
+
           # example dummy dataframe with the string column
-          df = pd.DataFrame(columns=['id', 'string_col'])
+          df = pd.DataFrame(columns=["id", "string_col"])
           from hsfs.feature import Feature
+
           features = [
-          Feature(name="id",type="bigint",online_type="bigint"),
-          Feature(name="string_col",type="string",online_type="text")
+              Feature(name="id", type="bigint", online_type="bigint"),
+              Feature(name="string_col", type="string", online_type="text"),
           ]
 
-          fg = fs.get_or_create_feature_group(name="fg_manual_text_schema",
-                                      version=1,
-                                      features=features,
-                                      online_enabled=True,
-                                      primary_key=['id'])
+          fg = fs.get_or_create_feature_group(
+              name="fg_manual_text_schema",
+              version=1,
+              features=features,
+              online_enabled=True,
+              primary_key=["id"],
+          )
           fg.insert(df)
           ```
 
@@ -291,13 +297,13 @@ You can explicitly define the feature group schema as follows:
     from hsfs.feature import Feature
 
     features = [
-        Feature(name="id",type="int",online_type="int"),
-        Feature(name="name",type="string",online_type="varchar(20)")
+        Feature(name="id", type="int", online_type="int"),
+        Feature(name="name", type="string", online_type="varchar(20)"),
     ]
 
-    fg = fs.create_feature_group(name="fg_manual_schema",
-                                 features=features,
-                                 online_enabled=True)
+    fg = fs.create_feature_group(
+        name="fg_manual_schema", features=features, online_enabled=True
+    )
     fg.save(features)
     ```
 
@@ -312,8 +318,8 @@ Adding additional features to an existing feature group is not considered a brea
     from hsfs.feature import Feature
 
     features = [
-        Feature(name="id",type="int",online_type="int"),
-        Feature(name="name",type="string",online_type="varchar(20)")
+        Feature(name="id", type="int", online_type="int"),
+        Feature(name="name", type="string", online_type="varchar(20)"),
     ]
 
     fg = fs.get_feature_group(name="example", version=1)

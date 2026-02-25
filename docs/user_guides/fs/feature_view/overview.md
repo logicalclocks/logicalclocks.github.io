@@ -20,19 +20,18 @@ For example, when a client reads a numerical feature, the feature value could be
 
     ```python
     # create a simple feature view
-    feature_view = fs.create_feature_view(
-        name='transactions_view',
-        query=query
-    )
+    feature_view = fs.create_feature_view(name="transactions_view", query=query)
 
     # create a feature view with transformation and label
     feature_view = fs.create_feature_view(
-        name='transactions_view',
+        name="transactions_view",
         query=query,
         labels=["fraud_label"],
         transformation_functions={
-            "amount": fs.get_transformation_function(name="standard_scaler", version=1)
-        }
+            "amount": fs.get_transformation_function(
+                name="standard_scaler", version=1
+            )
+        },
     )
     ```
 
@@ -104,7 +103,7 @@ You can learn more in [Tags Guide](../tags/tags.md).
     # get
     feature_view.get_tag(name="tag_schema")
 
-    #remove
+    # remove
     feature_view.delete_tag(name="tag_schema")
     ```
 

@@ -11,9 +11,8 @@ The resultant DataFrame (or batch-scoring DataFrame) can then be fed to models t
     ```python
     # get batch data
     df = feature_view.get_batch_data(
-        start_time = "20220620",
-        end_time = "20220627"
-    ) # return a dataframe
+        start_time="20220620", end_time="20220627"
+    )  # return a dataframe
     ```
 
 === "Java"
@@ -34,11 +33,11 @@ To retrieve the primary key(s) and/or event time when retrieving batch data for 
     ```python
     # get batch data
     df = feature_view.get_batch_data(
-    start_time = "20220620",
-    end_time = "20220627",
-    primary_key=True,
-    event_time=True
-    ) # return a dataframe with primary keys and event time
+        start_time="20220620",
+        end_time="20220627",
+        primary_key=True,
+        event_time=True,
+    )  # return a dataframe with primary keys and event time
     ```
 !!! note
     All primary and event time columns of all the feature groups included in the feature view will be returned.
@@ -51,9 +50,7 @@ If the service is enabled, and you want to read this particular batch data with 
 ```python
 # get batch data with Hive
 df = feature_view.get_batch_data(
-    start_time = "20220620",
-    end_time = "20220627",
-    read_options={"use_hive": True}
+    start_time="20220620", end_time="20220627", read_options={"use_hive": True}
 )
 ```
 
@@ -92,5 +89,7 @@ After [defining a transformation function using a context variable](../transform
 
         ```python
         # Passing context variable to IN-MEMORY Training Dataset.
-        batch_data = feature_view.get_batch_data(transformation_context={"context_parameter":10})
+        batch_data = feature_view.get_batch_data(
+            transformation_context={"context_parameter": 10}
+        )
         ```

@@ -85,26 +85,26 @@ You can also clone a repository through the hopsworks git API in python.
 ### Step 1: Get the git API
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
 
 git_api = project.get_git_api()
-
 ```
 
 ### Step 2: Clone the repository
 
 ```python
+REPO_URL = (
+    "https://github.com/logicalclocks/hops-examples.git"  # git repository
+)
+HOPSWORKS_FOLDER = "Jupyter"  # path in Hopsworks filesystem to clone to
+PROVIDER = "GitHub"
+BRANCH = "master"  # optional branch to clone
 
-REPO_URL="https://github.com/logicalclocks/hops-examples.git" # git repository
-HOPSWORKS_FOLDER="Jupyter" # path in Hopsworks filesystem to clone to
-PROVIDER="GitHub"
-BRANCH="master" # optional branch to clone
-
-examples_repo = git_api.clone(REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANCH)
-
+examples_repo = git_api.clone(
+    REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANCH
+)
 ```
 
 ### API Reference

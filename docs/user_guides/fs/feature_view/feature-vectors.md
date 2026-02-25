@@ -23,17 +23,11 @@ It is also possible to provide a subset of the entry, which will be discussed [b
 
     ```python
     # get a single vector
-    feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2}
-    )
+    feature_view.get_feature_vector(entry={"pk1": 1, "pk2": 2})
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry = [
-            {"pk1": 1, "pk2": 2},
-            {"pk1": 3, "pk2": 4},
-            {"pk1": 5, "pk2": 6}
-        ]
+        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}]
     )
     ```
 
@@ -95,9 +89,7 @@ Take the above example assuming the feature view consists of two joined feature 
 
     ```python
     # get a single vector
-    feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2}
-    )
+    feature_view.get_feature_vector(entry={"pk1": 1, "pk2": 2})
     ```
 
 === "Java"
@@ -119,11 +111,7 @@ When retrieving a batch of vectors, the behaviour is slightly different.
     ```python
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry = [
-            {"pk1": 1, "pk2": 2},
-            {"pk1": 3, "pk2": 4},
-            {"pk1": 5, "pk2": 6}
-        ]
+        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}]
     )
     ```
 
@@ -156,18 +144,15 @@ If `pk2` is not provided, this returns feature values from the first feature gro
 
     ```python
     # get a single vector with
-    feature_view.get_feature_vector(
-        entry = {"pk1": 1},
-        allow_missing=True
-    )
+    feature_view.get_feature_vector(entry={"pk1": 1}, allow_missing=True)
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry = [
+        entry=[
             {"pk1": 1},
             {"pk1": 3},
         ],
-        allow_missing=True
+        allow_missing=True,
     )
     ```
 
@@ -199,22 +184,17 @@ Please note that passed features is only available in the python client but not 
     ```python
     # get a single vector
     feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2},
-        passed_features = {"feature_a": "value_a"}
+        entry={"pk1": 1, "pk2": 2}, passed_features={"feature_a": "value_a"}
     )
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry = [
-            {"pk1": 1, "pk2": 2},
-            {"pk1": 3, "pk2": 4},
-            {"pk1": 5, "pk2": 6}
-        ],
-        passed_features = [
+        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}],
+        passed_features=[
             {"feature_a": "value_a1"},
             {"feature_a": "value_a2"},
             {"feature_a": "value_a3"},
-        ]
+        ],
     )
     ```
 
@@ -230,12 +210,12 @@ In this second case, you do not have to provide the primary key value for that f
     # in this case feature_b and feature_c
 
     feature_view.get_feature_vector(
-        entry = { "pk1": 1 },
-        passed_features = {
+        entry={"pk1": 1},
+        passed_features={
             "feature_a": "value_a",
             "feature_b": "value_b",
-            "feature_c": "value_c"
-        }
+            "feature_c": "value_c",
+        },
     )
     ```
 
@@ -258,6 +238,8 @@ However, you can retrieve the untransformed feature vectors without applying mod
         untransformed_feature_vectors = feature_view.get_feature_vectors(
             entry=[{"id": 1}, {"id": 2}], transform=False
         )
+
+
         ```
 
 ## Retrieving feature vector without on-demand features
@@ -275,6 +257,8 @@ To achieve this, set the  parameters `transform` and `on_demand_features` to `Fa
         untransformed_feature_vectors = feature_view.get_feature_vectors(
             entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
         )
+
+
         ```
 
 ## Passing Context Variables to Transformation Functions
@@ -287,9 +271,10 @@ After [defining a transformation function using a context variable](../transform
         ```python
         # Passing context variable to IN-MEMORY Training Dataset.
         batch_data = feature_view.get_feature_vectors(
-            entry = [{ "pk1": 1 }],
-            transformation_context={"context_parameter":10}
+            entry=[{"pk1": 1}], transformation_context={"context_parameter": 10}
         )
+
+
         ```
 
 ## Choose the right Client
@@ -318,7 +303,7 @@ my_feature_view.init_serving(
     init_rest_client=True,
     config_rest_client={
         "api_key": "your_api_key",
-    }
+    },
 )
 ```
 
@@ -335,19 +320,18 @@ my_feature_view.init_serving(
     config_rest_client={
         "api_key": "your_api_key",
     },
-    default_client="rest"
+    default_client="rest",
 )
 
 # this will fetch a feature vector via REST
 try:
     my_feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2},
+        entry={"pk1": 1, "pk2": 2},
     )
 except TimeoutException:
     # if the REST client times out, the SQL client will be used
     my_feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2},
-        force_sql=True
+        entry={"pk1": 1, "pk2": 2}, force_sql=True
     )
 ```
 

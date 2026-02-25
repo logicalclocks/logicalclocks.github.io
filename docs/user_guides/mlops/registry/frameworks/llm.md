@@ -34,10 +34,7 @@ LLMs can typically be downloaded using the official frameworks provided by their
     # Download LLM (e.g., using huggingface to download Llama-3.1-8B base model)
     from huggingface_hub import snapshot_download
 
-    model_dir = snapshot_download(
-                    "meta-llama/Llama-3.1-8B",
-                    ignore_patterns="original/*"
-                )
+    model_dir = snapshot_download("meta-llama/Llama-3.1-8B", ignore_patterns="original/*")
     ```
 
 ### Step 3: (Optional) Fine-tune LLM
@@ -61,7 +58,7 @@ Define a name, and attach optional metrics for your model, then invoke the `save
 
     ```python
     # Model evaluation metrics
-    metrics = {'f1-score': 0.8, 'perplexity': 31.62, 'bleu-score': 0.73}
+    metrics = {"f1-score": 0.8, "perplexity": 31.62, "bleu-score": 0.73}
 
     llm_model = mr.llm.create_model("llm_model", metrics=metrics)
 

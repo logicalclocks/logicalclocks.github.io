@@ -77,7 +77,9 @@ Selecting features from a feature group is a lazy operation, returning a query w
     credit_card_transactions_fg = fs.get_feature_group("credit_card_transactions")
 
     # Returns Query
-    selected_features = credit_card_transactions_fg.select(["amount", "latitude", "longitude"])
+    selected_features = credit_card_transactions_fg.select(
+        ["amount", "latitude", "longitude"]
+    )
     ```
 
 === "Scala"
@@ -118,9 +120,16 @@ The join key lists should contain the names of the features to join on.
 === "Python"
 
     ```python
-    selected_features = credit_card_transactions_fg.select_all() \
-        .join(account_details_fg.select_all(), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"], join_type="inner")
+    selected_features = (
+        credit_card_transactions_fg.select_all()
+        .join(account_details_fg.select_all(), on=["cc_num"])
+        .join(
+            merchant_details_fg.select_all(),
+            left_on=["merchant_id"],
+            right_on=["id"],
+            join_type="inner",
+        )
+    )
     ```
 
 === "Scala"
@@ -222,7 +231,9 @@ For the Scala part of the API, equivalent methods are available in the `Feature`
 === "Python"
 
     ```python
-    filtered_credit_card_transactions = credit_card_transactions_fg.filter(credit_card_transactions_fg.category == "Grocery")
+    filtered_credit_card_transactions = credit_card_transactions_fg.filter(
+        credit_card_transactions_fg.category == "Grocery"
+    )
     ```
 
 === "Scala"
@@ -236,10 +247,19 @@ Filters are fully compatible with joins:
 === "Python"
 
     ```python
-    selected_features = credit_card_transactions_fg.select_all() \
-        .join(account_details_fg.select_all(), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"]) \
-        .filter((credit_card_transactions_fg.category == "Grocery") | (credit_card_transactions_fg.category == "Restaurant/Cafeteria"))
+    selected_features = (
+        credit_card_transactions_fg.select_all()
+        .join(account_details_fg.select_all(), on=["cc_num"])
+        .join(
+            merchant_details_fg.select_all(),
+            left_on=["merchant_id"],
+            right_on=["id"],
+        )
+        .filter(
+            (credit_card_transactions_fg.category == "Grocery")
+            | (credit_card_transactions_fg.category == "Restaurant/Cafeteria")
+        )
+    )
     ```
 
 === "Scala"
@@ -256,10 +276,21 @@ The filters can be applied at any point of the query:
 === "Python"
 
     ```python
-    selected_features = credit_card_transactions_fg.select_all() \
-        .join(accountDetails_fg.select_all().filter(accountDetails_fg.avg_temp >= 22), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"]) \
+    selected_features = (
+        credit_card_transactions_fg.select_all()
+        .join(
+            accountDetails_fg.select_all().filter(
+                accountDetails_fg.avg_temp >= 22
+            ),
+            on=["cc_num"],
+        )
+        .join(
+            merchant_details_fg.select_all(),
+            left_on=["merchant_id"],
+            right_on=["id"],
+        )
         .filter(credit_card_transactions_fg.category == "Grocery")
+    )
     ```
 
 === "Scala"

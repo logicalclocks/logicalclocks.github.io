@@ -177,7 +177,6 @@ echo -n $(curl -H "Authorization: ApiKey ${API_KEY}" https://$HOST/hopsworks-api
 chmod -R o-rwx /usr/lib/hopsworks
 
 sudo pip3 install --upgrade hopsworks~=X.X.0
-
 ```
 
 !!! attention "Matching Hopsworks version"

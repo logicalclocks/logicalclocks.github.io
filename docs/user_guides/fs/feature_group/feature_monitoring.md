@@ -39,7 +39,7 @@ Connect the client running your notebooks to Hopsworks.
 
 === "Python"
 
-    ```python3
+    ```python
     import hopsworks
 
     project = hopsworks.login()
@@ -60,7 +60,7 @@ The following is a code example for getting or creating a Feature Group with nam
 
 === "Python"
 
-    ```python3
+    ```python
     # Retrieve an existing feature group
     trans_fg = fs.get_feature_group("trans_fg", version=1)
 
@@ -83,7 +83,7 @@ You can setup statistics monitoring on a ==single feature or multiple features==
 
 === "Python"
 
-    ```python3
+    ```python
     # compute statistics for all the features
     fg_monitoring_config = trans_fg.create_statistics_monitoring(
         name="trans_fg_all_features_monitoring",
@@ -105,7 +105,7 @@ You can create multiple feature monitoring configurations for the same Feature G
 
 === "Python"
 
-    ```python3
+    ```python
     fg_monitoring_config = trans_fg.create_feature_monitoring(
         name="trans_fg_amount_monitoring",
         feature_name="amount",
@@ -120,12 +120,12 @@ You can modify the default schedule by adjusting the `cron_expression`, `start_d
 
 === "Python"
 
-    ```python3
+    ```python
     fg_monitoring_config = trans_fg.create_statistics_monitoring(
         name="trans_fg_all_features_monitoring",
         description="Compute statistics on all data of all features of the Feature Group on a weekly basis",
         cron_expression="0 0 12 ? * MON *",  # weekly
-        row_percentage=0.8,                  # use 80% of the data
+        row_percentage=0.8,  # use 80% of the data
     )
 
     # or
@@ -134,7 +134,7 @@ You can modify the default schedule by adjusting the `cron_expression`, `start_d
         feature_name="amount",
         description="Compute descriptive statistics on the amount Feature of the Feature Group on a weekly basis",
         cron_expression="0 0 12 ? * MON *",  # weekly
-        row_percentage=0.8,                  # use 80% of the data
+        row_percentage=0.8,  # use 80% of the data
     )
     ```
 
@@ -146,10 +146,10 @@ Additionally, you can specify the percentage of feature data on which statistics
 
 === "Python"
 
-    ```python3
+    ```python
     fm_monitoring_config.with_detection_window(
         window_length="1w",  # data ingested during one week
-        time_offset="1w",    # starting from last week
+        time_offset="1w",  # starting from last week
         row_percentage=0.8,  # use 80% of the data
     )
     ```
@@ -160,11 +160,11 @@ When setting up feature monitoring for a Feature Group, reference windows can be
 
 === "Python"
 
-    ```python3
+    ```python
     # compare statistics against a reference window
     fm_monitoring_config.with_reference_window(
         window_length="1w",  # data ingested during one week
-        time_offset="2w",    # starting from two weeks ago
+        time_offset="2w",  # starting from two weeks ago
         row_percentage=0.8,  # use 80% of the data
     )
 
@@ -182,12 +182,12 @@ Then, you can define a relative or absolute threshold using the `threshold` and 
 
 === "Python"
 
-    ```python3
+    ```python
     fm_monitoring_config.compare_on(
         metric="mean",
         threshold=0.2,  # a relative change over 20% is considered anomalous
         relative=True,  # relative or absolute change
-        strict=False,   # strict or relaxed comparison
+        strict=False,  # strict or relaxed comparison
     )
     ```
 
@@ -201,7 +201,7 @@ Once the configuration is saved, the schedule for the statistics computation and
 
 === "Python"
 
-    ```python3
+    ```python
     fm_monitoring_config.save()
     ```
 

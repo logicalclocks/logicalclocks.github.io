@@ -38,13 +38,19 @@ Currently, we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list`.
     from hsml.utils.schema import Schema
 
     # Model inputs for MNIST dataset
-    inputs = [{'type': 'uint8', 'shape': [28, 28, 1], 'description': 'grayscale representation of 28x28 MNIST images'}]
+    inputs = [
+        {
+            "type": "uint8",
+            "shape": [28, 28, 1],
+            "description": "grayscale representation of 28x28 MNIST images",
+        }
+    ]
 
     # Build the input schema
     input_schema = Schema(inputs)
 
     # Model outputs
-    outputs = [{'type': 'float32', 'shape': [10]}]
+    outputs = [{"type": "float32", "shape": [10]}]
 
     # Build the output schema
     output_schema = Schema(outputs)
@@ -60,7 +66,6 @@ Set the `model_schema` parameter in the `create_model` function and call `save()
 === "Python"
 
     ```python
-    model = mr.tensorflow.create_model(name="mnist",
-                                    model_schema=model_schema)
+    model = mr.tensorflow.create_model(name="mnist", model_schema=model_schema)
     model.save("./model")
     ```

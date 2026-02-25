@@ -54,27 +54,20 @@ An example for this is given below.
         ```python
         import requests
 
-        data = {
-            "inputs": [
-                [
-                    4641025220953719,
-                    4920355418495856
-                ]
-            ]
-        }
+        data = {"inputs": [[4641025220953719, 4920355418495856]]}
 
         headers = {
             "Host": "fraud.test.hopsworks.ai",
             "Authorization": "ApiKey 8kDOlnRlJU4kiV1Y.RmFNJY3XKAUSqmJZ03kbUbXKMQSHveSBgMIGT84qrM5qXMjLib7hdlfGeg8fBQZp",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         response = requests.post(
-            "http://10.87.42.108/v1/models/fraud:predict",
-            headers=headers,
-            json=data
+            "http://10.87.42.108/v1/models/fraud:predict", headers=headers, json=data
         )
         print(response.json())
+
+
         ```
 
     === "Curl"

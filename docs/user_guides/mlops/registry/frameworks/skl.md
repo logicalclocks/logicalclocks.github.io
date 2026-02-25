@@ -57,7 +57,7 @@ Define a name, and attach optional metrics for your model, then invoke the `save
 
     ```python
     # Model evaluation metrics
-    metrics = {'accuracy': 0.92}
+    metrics = {"accuracy": 0.92}
 
     skl_model = mr.sklearn.create_model("skl_model", metrics=metrics)
 

@@ -175,7 +175,6 @@ If the file is already in the project, you can skip this step.
 It will upload the jar to the `Resources` dataset in your project.
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
@@ -183,7 +182,6 @@ project = hopsworks.login()
 dataset_api = project.get_dataset_api()
 
 uploaded_file_path = dataset_api.upload("ray_job.py", "Resources")
-
 ```
 
 ### Step 2: Create Ray job
@@ -191,22 +189,20 @@ uploaded_file_path = dataset_api.upload("ray_job.py", "Resources")
 In this snippet we get the `JobsApi` object to get the default job configuration for a `RAY` job, set the python script to run and create the `Job` object.
 
 ```python
-
 jobs_api = project.get_job_api()
 
 ray_config = jobs_api.get_configuration("RAY")
 
-ray_config['appPath'] = uploaded_file_path
-ray_config['environmentName'] = "ray-training-pipeline"
-ray_config['driverCores'] = 2
-ray_config['driverMemory'] = 2048
-ray_config['workerCores'] = 2
-ray_config['workerMemory'] = 4096
-ray_config['minWorkers'] = 1
-ray_config['maxWorkers'] = 4
+ray_config["appPath"] = uploaded_file_path
+ray_config["environmentName"] = "ray-training-pipeline"
+ray_config["driverCores"] = 2
+ray_config["driverMemory"] = 2048
+ray_config["workerCores"] = 2
+ray_config["workerMemory"] = 4096
+ray_config["minWorkers"] = 1
+ray_config["maxWorkers"] = 4
 
 job = jobs_api.create_job("ray_job", ray_config)
-
 ```
 
 ### Step 3: Execute the job
@@ -214,7 +210,6 @@ job = jobs_api.create_job("ray_job", ray_config)
 In this snippet we execute the job synchronously, that is wait until it reaches a terminal state, and then download and print the logs.
 
 ```python
-
 execution = job.run(await_termination=True)
 
 out, err = execution.download_logs()
@@ -224,7 +219,6 @@ print(f_out.read())
 
 f_err = open(err, "r")
 print(f_err.read())
-
 ```
 
 ## Configuration

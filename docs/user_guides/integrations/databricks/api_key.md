@@ -19,13 +19,14 @@ For the Databricks integration to work make sure you add the following scopes to
 
 ```python hl_lines="6"
     import hopsworks
+
     project = hopsworks.login(
-        host='my_instance',                 # DNS of your Feature Store instance
-        port=443,                           # Port to reach your Hopsworks instance, defaults to 443
-        project='my_project',               # Name of your Hopsworks Feature Store project
-        api_key_value='apikey',             # The API key to authenticate with Hopsworks
+        host="my_instance",  # DNS of your Feature Store instance
+        port=443,  # Port to reach your Hopsworks instance, defaults to 443
+        project="my_project",  # Name of your Hopsworks Feature Store project
+        api_key_value="apikey",  # The API key to authenticate with Hopsworks
     )
-    fs = project.get_feature_store()           # Get the project's default feature store
+    fs = project.get_feature_store()  # Get the project's default feature store
 ```
 
 ## Next Steps

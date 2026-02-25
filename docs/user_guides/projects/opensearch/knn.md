@@ -51,13 +51,8 @@ Create an index to use by calling `opensearch_api.get_project_index(..)`.
             "knn.algo_param.ef_search": 100,
         },
         "mappings": {
-            "properties": {
-                "my_vector1": {
-                    "type": "knn_vector",
-                    "dimension": 2
-                }
-            }
-        }
+            "properties": {"my_vector1": {"type": "knn_vector", "dimension": 2}}
+        },
     }
 
     response = client.indices.create(knn_index_name, body=index_body)
@@ -73,8 +68,9 @@ These vectors represent the list of vectors to calculate the similarity for.
 === "Python"
 
     ```python
-    from opensearchpy.helpers import bulk
     import random
+
+    from opensearchpy.helpers import bulk
 
     actions = [
         {
@@ -82,7 +78,7 @@ These vectors represent the list of vectors to calculate the similarity for.
             "_id": count,
             "_source": {
                 "my_vector1": [random.uniform(0, 10), random.uniform(0, 10)],
-            }
+            },
         }
         for count in range(0, 10)
     ]
@@ -103,24 +99,15 @@ Score the vector `[2.5, 3]` and find the 3 most similar vectors.
     # Define the search request
     query = {
         "size": 3,
-        "query": {
-            "knn": {
-                "my_vector1": {
-                    "vector": [2.5, 3],
-                    "k": 3
-                }
-            }
-        }
+        "query": {"knn": {"my_vector1": {"vector": [2.5, 3], "k": 3}}},
     }
 
     # Perform the similarity search
-    response = client.search(
-        body = query,
-        index = knn_index_name
-    )
+    response = client.search(body=query, index=knn_index_name)
 
     # Pretty print response
     import pprint
+
     pp = pprint.PrettyPrinter()
     pp.pprint(response)
     ```

@@ -27,18 +27,21 @@ for computing the [on-demand feature](../../../concepts/fs/feature_group/on_dema
 
         ```python
         # define query object
-        query = label_fg.select("fraud_label")\
-                        .join(trans_fg.select(["amount", "days_valid", "expiry_date", "category"]))
+        query = label_fg.select("fraud_label").join(
+            trans_fg.select(["amount", "days_valid", "expiry_date", "category"])
+        )
 
         # define feature view with helper columns
         feature_view = fs.get_or_create_feature_view(
-            name='fv_with_helper_col',
+            name="fv_with_helper_col",
             version=1,
             query=query,
             labels=["fraud_label"],
             transformation_functions=transformation_functions,
             inference_helper_columns=["expiry_date"],
         )
+
+
         ```
 
 ### Inference Data Retrieval
@@ -52,24 +55,40 @@ However, they can be optionally fetched with inference or training data.
     === "Python"
 
         ```python
-
         # import feature functions
         from feature_functions import time_delta
 
         # Fetch feature view object
         feature_view = fs.get_feature_view(
-            name='fv_with_helper_col',
+            name="fv_with_helper_col",
             version=1,
         )
 
         # Fetch feature data for batch inference with helper columns
-        df = feature_view.get_batch_data(start_time=start_time, end_time=end_time, inference_helpers=True, event_time=True)
+        df = feature_view.get_batch_data(
+            start_time=start_time,
+            end_time=end_time,
+            inference_helpers=True,
+            event_time=True,
+        )
 
         # compute location delta
-        df['days_valid'] = df.apply(lambda row: time_delta(row['expiry_date'], row['transaction_date']), axis=1)
+        df["days_valid"] = df.apply(
+            lambda row: time_delta(row["expiry_date"], row["transaction_date"]), axis=1
+        )
 
         # prepare datatame for prediction
-        df = df[[f.name for f in feature_view.features if not (f.label or f.inference_helper_column or f.training_helper_column)]]
+        df = df[
+            [
+                f.name
+                for f in feature_view.features
+                if not (
+                    f.label or f.inference_helper_column or f.training_helper_column
+                )
+            ]
+        ]
+
+
         ```
 
 #### Online inference
@@ -82,7 +101,7 @@ However, they can be optionally fetched with inference or training data.
 
         # Fetch feature view object
         feature_view = fs.get_feature_view(
-            name='fv_with_helper_col',
+            name="fv_with_helper_col",
             version=1,
         )
 
@@ -97,16 +116,20 @@ However, they can be optionally fetched with inference or training data.
         transaction_date = ...
 
         # get previous transaction location of this credit card
-        inference_helper = feature_view.get_inference_helper({"cc_num": cc_num}, return_type="dict")
+        inference_helper = feature_view.get_inference_helper(
+            {"cc_num": cc_num}, return_type="dict"
+        )
 
         # compute location delta
-        days_valid = time_delta(transaction_date, inference_helper['expiry_date'])
+        days_valid = time_delta(transaction_date, inference_helper["expiry_date"])
 
         # Now get assembled feature vector for prediction
         feature_vector = feature_view.get_feature_vector(
             {"cc_num": cc_num},
             passed_features={"days_valid": days_valid},
         )
+
+
         ```
 
 ## Training Helper columns
@@ -119,18 +142,21 @@ For example one might want to use feature like `category` of the purchased produ
 
         ```python
         # define query object
-        query = label_fg.select("fraud_label")\
-                        .join(trans_fg.select(["amount", "days_valid", "expiry_date", "category"]))
+        query = label_fg.select("fraud_label").join(
+            trans_fg.select(["amount", "days_valid", "expiry_date", "category"])
+        )
 
         # define feature view with helper columns
         feature_view = fs.get_or_create_feature_view(
-            name='fv_with_helper_col',
+            name="fv_with_helper_col",
             version=1,
             query=query,
             labels=["fraud_label"],
             transformation_functions=transformation_functions,
-            training_helper_columns=["category"]
+            training_helper_columns=["category"],
         )
+
+
         ```
 
 ### Training Data Retrieval
@@ -147,23 +173,24 @@ However, they can be optionally fetched.
 
         # Fetch feature view object
         feature_view = fs.get_feature_view(
-            name='fv_with_helper_col',
+            name="fv_with_helper_col",
             version=1,
         )
 
         # Create and training data with training helper columns
         TEST_SIZE = 0.2
         X_train, X_test, y_train, y_test = feature_view.train_test_split(
-            description='transactions fraud training dataset',
+            description="transactions fraud training dataset",
             test_size=TEST_SIZE,
-                training_helper_columns=True
+            training_helper_columns=True,
         )
 
         # Get existing training data with training helper columns
         X_train, X_test, y_train, y_test = feature_view.get_train_test_split(
-                training_dataset_version=1,
-                training_helper_columns=True
+            training_dataset_version=1, training_helper_columns=True
         )
+
+
         ```
 
 !!! note

@@ -45,7 +45,6 @@ Set the `input_example` parameter in the `create_model` function and call `save(
 === "Python"
 
     ```python
-    model = mr.tensorflow.create_model(name="mnist",
-                                    input_example=input_example)
+    model = mr.tensorflow.create_model(name="mnist", input_example=input_example)
     model.save("./model")
     ```

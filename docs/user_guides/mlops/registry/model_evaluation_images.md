@@ -48,8 +48,8 @@ Generate an image that visualizes model performance and evaluation metrics
     # Create a DataFrame for the confusion matrix results
     df_confusion_matrix = pd.DataFrame(
         results,
-        ['True Normal', 'True Fraud'],
-        ['Pred Normal', 'Pred Fraud'],
+        ["True Normal", "True Fraud"],
+        ["Pred Normal", "Pred Fraud"],
     )
 
     # Create a heatmap using seaborn with annotations

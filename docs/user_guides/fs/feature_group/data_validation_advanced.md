@@ -23,8 +23,8 @@ Go to the Feature Group edit page, in the Expectation section you can choose bet
 
 #### Validation Ingestion Policy in Python
 
-```python3
-fg.expectation_suite.validation_ingestion_policy = "ALWAYS" # "STRICT"
+```python
+fg.expectation_suite.validation_ingestion_policy = "ALWAYS"  # "STRICT"
 ```
 
 If your suite is registered with Hopsworks, it will persist the change to the server.
@@ -44,15 +44,15 @@ This will be used as the default option but can be overridden via the API.
 To disable data validation until further notice in the API, you can update the `run_validation` field of the expectation suite.
 If your suite is registered with Hopsworks, this will persist the change to the server.
 
-```python3
+```python
 fg.expectation_suite.run_validation = False
 ```
 
 If you wish to override the default behaviour of the suite when inserting data in the Feature Group, you can do so via the `validate_options` kwarg.
 The example below will enable validation for this insertion only.
 
-```python3
-fg.insert(df_to_validate, validation_options={"run_validation" : True})
+```python
+fg.insert(df_to_validate, validation_options={"run_validation": True})
 ```
 
 We recommend to avoid using this option in scheduled job as it silently changes the expected behaviour that is displayed in the UI and prevents changes to the default behaviour to change the behaviour of the job.
@@ -79,20 +79,18 @@ Note that you must have inserted data in the FG and attached the expectation sui
 
 Get an expectation with a given id:
 
-```python3
+```python
 my_expectation = fg.expectation_suite.get_expectation(
-    expectation_id = my_expectation_id
+    expectation_id=my_expectation_id
 )
 ```
 
 Add a new expectation:
 
-```python3
+```python
 new_expectation = ge.core.ExpectationConfiguration(
     expectation_type="expect_column_values_not_to_be_null",
-    kwargs={
-        "mostly": 1
-    }
+    kwargs={"mostly": 1},
 )
 
 fg.expectation_suite.add_expectation(new_expectation)
@@ -100,7 +98,7 @@ fg.expectation_suite.add_expectation(new_expectation)
 
 Edit expectation kwargs of an existing expectation :
 
-```python3
+```python
 existing_expectation = fg.expectation_suite.get_expectation(
     expectation_id=existing_expectation_id
 )
@@ -112,7 +110,7 @@ fg.expectation_suite.replace_expectation(existing_expectation)
 
 Remove an expectation:
 
-```python3
+```python
 fg.expectation_suite.remove_expectation(
     expectation_id=id_of_expectation_to_delete
 )
@@ -120,7 +118,7 @@ fg.expectation_suite.remove_expectation(
 
 If you want to deal only with the Great Expectation API:
 
-```python3
+```python
 my_suite = fg.get_expectation_suite()
 
 my_suite.add_expectation(new_expectation)
@@ -139,7 +137,7 @@ The UI does not currently support upload of a validation report.
 
 #### Save Validation Reports in Python
 
-```python3
+```python
 fg.save_validation_report(ge_report)
 ```
 
@@ -155,7 +153,7 @@ One tab allows you to check the report history with general information, while t
 
 #### Monitor and Fetch Validation Reports in Python
 
-```python3
+```python
 # convenience method for rapid development
 ge_latest_report = fg.get_latest_validation_report()
 # fetching the latest summary prints a link to the UI
@@ -178,7 +176,7 @@ The button will launch a job which will read the Feature Group data, run validat
 
 #### Validate Your Data Manually in Python
 
-```python3
+```python
 ge_report = fg.validate(df, ingestion_result="EXPERIMENT")
 
 # set the save_report parameter to False to skip uploading the report to Hopsworks
@@ -188,13 +186,13 @@ ge_report = fg.validate(df, ingestion_result="EXPERIMENT")
 If you want to apply validation to the data already in the Feature Group you can call the `.validate` without providing data.
 It will read the data in the Feature Group.
 
-```python3
+```python
 report = fg.validate()
 ```
 
 As validation objects returned by Hopsworks are native Great Expectation objects you can run validation using the usual Great Expectations syntax:
 
-```python3
+```python
 ge_df = ge.from_pandas(df, expectation_suite=fg.get_expectation_suite())
 ge_report = ge_df.validate()
 ```

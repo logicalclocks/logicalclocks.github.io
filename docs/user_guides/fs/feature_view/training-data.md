@@ -19,16 +19,16 @@ You can monitor the job status in the [jobs overview UI](../../projects/jobs/pys
 ```python
 # create a training dataset as dataframe
 feature_df, label_df = feature_view.training_data(
-    description = 'transactions fraud batch training dataset',
+    description="transactions fraud batch training dataset",
 )
 
 # materialise a training dataset
 version, job = feature_view.create_training_data(
-    description = 'transactions fraud batch training dataset',
-    data_format = 'csv',
-    write_options = {"wait_for_job": False}
-) # By default, it is materialised to HopsFS
-print(job.id) # get the job's id and view the job status in the UI
+    description="transactions fraud batch training dataset",
+    data_format="csv",
+    write_options={"wait_for_job": False},
+)  # By default, it is materialised to HopsFS
+print(job.id)  # get the job's id and view the job status in the UI
 ```
 
 ### Extra filters
@@ -44,13 +44,14 @@ Examples below show how to create training data for different transaction catego
 ```python
 # Create a training dataset for Health/Beauty
 df_health = feature_view.training_data(
-    description = 'transactions fraud batch training dataset for Health/Beauty',
-    extra_filter = trans_fg.category == "Health/Beauty"
+    description="transactions fraud batch training dataset for Health/Beauty",
+    extra_filter=trans_fg.category == "Health/Beauty",
 )
 # Create a training dataset for Restaurant/Cafeteria and Holliday/Travel
 df_restaurant_travel = feature_view.training_data(
-    description = 'transactions fraud batch training dataset for Restaurant/Cafeteria and Holliday/Travel',
-    extra_filter = trans_fg.category == "Restaurant/Cafeteria" and trans_fg.category == "Holliday/Travel"
+    description="transactions fraud batch training dataset for Restaurant/Cafeteria and Holliday/Travel",
+    extra_filter=trans_fg.category == "Restaurant/Cafeteria"
+    and trans_fg.category == "Holliday/Travel",
 )
 ```
 
@@ -67,9 +68,9 @@ X_train, X_test, y_train, y_test = feature_view.train_test_split(test_size=0.2)
 
 # materialise a training dataset
 version, job = feature_view.create_train_test_split(
-    test_size = 0.2,
-    description = 'transactions fraud batch training dataset',
-    data_format = 'csv'
+    test_size=0.2,
+    description="transactions fraud batch training dataset",
+    data_format="csv",
 )
 ```
 
@@ -77,14 +78,18 @@ Create a training dataset (as in-memory DataFrames) or materialise a training da
 
 ```python
 # create a training dataset as DataFrame
-X_train, X_val, X_test, y_train, y_val, y_test = feature_view.train_validation_test_split(validation_size=0.3, test_size=0.2)
+X_train, X_val, X_test, y_train, y_val, y_test = (
+    feature_view.train_validation_test_split(
+        validation_size=0.3, test_size=0.2
+    )
+)
 
 # materialise a training dataset
 version, job = feature_view.create_train_validation_test_split(
-    validation_size = 0.3,
-    test_size = 0.2,
-    description = 'transactions fraud batch training dataset',
-    data_format = 'csv'
+    validation_size=0.3,
+    test_size=0.2,
+    description="transactions fraud batch training dataset",
+    data_format="csv",
 )
 ```
 
@@ -93,7 +98,9 @@ and you want to create a particular in-memory training dataset with Hive instead
 
 ```python
 # create a training dataset as DataFrame with Hive
-X_train, X_test, y_train, y_test = feature_view.train_test_split(test_size=0.2, read_options={"use_hive": True})
+X_train, X_test, y_train, y_test = feature_view.train_test_split(
+    test_size=0.2, read_options={"use_hive": True}
+)
 ```
 
 ## Read Training Data
@@ -105,13 +112,19 @@ That is, you can delete the training data files (for example, to reduce storage 
 
 ```python
 # get a training dataset
-feature_df, label_df = feature_view.get_training_data(training_dataset_version=1)
+feature_df, label_df = feature_view.get_training_data(
+    training_dataset_version=1
+)
 
 # get a training dataset with train and test splits
-X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_dataset_version=1)
+X_train, X_test, y_train, y_test = feature_view.get_train_test_split(
+    training_dataset_version=1
+)
 
 # get a training dataset with train, validation and test splits
-X_train, X_val, X_test, y_train, y_val, y_test = feature_view.get_train_validation_test_split(training_dataset_version=1)
+X_train, X_val, X_test, y_train, y_val, y_test = (
+    feature_view.get_train_validation_test_split(training_dataset_version=1)
+)
 ```
 
 ## Passing Context Variables to Transformation Functions
@@ -130,7 +143,7 @@ Once you have [defined a transformation function using a context variable](../tr
             training_dataset_version=1,
             primary_key=True,
             event_time=True,
-            transformation_context={"context_parameter":10},
+            transformation_context={"context_parameter": 10},
         )
 
         # Passing context variable to Materialized Training Dataset.
@@ -138,8 +151,10 @@ Once you have [defined a transformation function using a context variable](../tr
             training_dataset_version=1,
             primary_key=True,
             event_time=True,
-            transformation_context={"context_parameter":10},
+            transformation_context={"context_parameter": 10},
         )
+
+
         ```
 
 ## Read training data with primary key(s) and event time
@@ -192,7 +207,7 @@ feature_view.purge_all_training_data()
 To recreate a training dataset:
 
 ```python
-feature_view.recreate_training_dataset(training_dataset_version =1)
+feature_view.recreate_training_dataset(training_dataset_version=1)
 ```
 
 ## Tags
@@ -203,16 +218,18 @@ You can learn more in [Tags Guide](../tags/tags.md).
 ```python
 # attach
 feature_view.add_training_dataset_tag(
-    training_dataset_version=1,
-    name="tag_schema",
-    value={"key": "value"}
+    training_dataset_version=1, name="tag_schema", value={"key": "value"}
 )
 
 # get
-feature_view.get_training_dataset_tag(training_dataset_version=1, name="tag_schema")
+feature_view.get_training_dataset_tag(
+    training_dataset_version=1, name="tag_schema"
+)
 
-#remove
-feature_view.delete_training_dataset_tag(training_dataset_version=1, name="tag_schema")
+# remove
+feature_view.delete_training_dataset_tag(
+    training_dataset_version=1, name="tag_schema"
+)
 ```
 
 ## Next

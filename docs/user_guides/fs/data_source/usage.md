@@ -19,11 +19,12 @@ We retrieve a data source simply by its unique name.
 
     ```python
     import hopsworks
+
     # Connect to the Hopsworks feature store
     project = hopsworks.login()
     feature_store = project.get_feature_store()
     # Retrieve data source
-    ds = feature_store.get_data_source('data_source_name')
+    ds = feature_store.get_data_source("data_source_name")
     ```
 
 === "Scala"
@@ -51,7 +52,9 @@ For data sources based on object/file storage such as AWS S3, ADLS, GCS, we set 
 
     ```python
     # read data into dataframe using path
-    df = connector.read(data_format='data_format', path='fileScheme://bucket/path/')
+    df = connector.read(
+        data_format="data_format", path="fileScheme://bucket/path/"
+    )
     ```
 
 === "Scala"
@@ -117,7 +120,7 @@ For reading data streams, the Kafka Data Source supports reading a Kafka topic i
 === "PySpark"
 
     ```python
-    df = connector.read_stream(topic='kafka_topic_name')
+    df = connector.read_stream(topic="kafka_topic_name")
     ```
 
 ## Creating an External Feature Group
@@ -134,14 +137,15 @@ Example for any data warehouse/SQL based external sources, we set the desired SQ
 === "PySpark"
 
     ```python
-    ds.query="SELECT * FROM TABLE"
+    ds.query = "SELECT * FROM TABLE"
 
-    fg = feature_store.create_external_feature_group(name="sales",
+    fg = feature_store.create_external_feature_group(
+        name="sales",
         version=1,
         description="Physical shop sales features",
-        data_source = ds,
-        primary_key=['ss_store_sk'],
-        event_time='sale_date'
+        data_source=ds,
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
     )
     ```
 
@@ -159,10 +163,10 @@ While calling the [Feature View](../../../concepts/fs/feature_view/fv_overview.m
     ```python
     # materialise a training dataset
     version, job = feature_view.create_training_data(
-        description = 'describe training data',
-        data_format = 'spark_data_format', # e.g., data_format = "parquet" or data_format = "csv"
-        write_options = {"wait_for_job": False},
-        data_source = ds
+        description="describe training data",
+        data_format="spark_data_format",  # e.g., data_format = "parquet" or data_format = "csv"
+        write_options={"wait_for_job": False},
+        data_source=ds,
     )
     ```
 

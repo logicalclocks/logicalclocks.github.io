@@ -173,15 +173,14 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Predictor"
 
     ``` python
-    class Predictor():
-
+    class Predictor:
         def __init__(self):
-            """ Initialization code goes here"""
+            """Initialization code goes here"""
             # Model files can be found at os.environ["MODEL_FILES_PATH"]
             # self.model = ... # load your model
 
         def predict(self, inputs):
-            """ Serve predictions using the trained model"""
+            """Serve predictions using the trained model"""
             # Use the model to make predictions
             # return self.model.predict(inputs)
     ```
@@ -189,15 +188,14 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Async Predictor"
 
     ``` python
-    class Predictor():
-
+    class Predictor:
         def __init__(self):
-            """ Initialization code goes here"""
+            """Initialization code goes here"""
             # Model files can be found at os.environ["MODEL_FILES_PATH"]
             # self.model = ... # load your model
 
         async def predict(self, inputs):
-            """ Asynchronously serve predictions using the trained model"""
+            """Asynchronously serve predictions using the trained model"""
             # Perform async operations that required
             # result = await some_async_preprocessing(inputs)
 
@@ -274,8 +272,14 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-  uploaded_file_path = dataset_api.upload("my_predictor.py", "Resources", overwrite=True)
-  predictor_script_path = os.path.join("/Projects", project.name, uploaded_file_path)
+  uploaded_file_path = dataset_api.upload(
+      "my_predictor.py", "Resources", overwrite=True
+  )
+  predictor_script_path = os.path.join(
+      "/Projects", project.name, uploaded_file_path
+  )
+
+
   ```
 
 ### Step 4: Define predictor
@@ -285,12 +289,15 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   my_model = mr.get_model("my_model", version=1)
 
-  my_predictor = ms.create_predictor(my_model,
-                                    # optional
-                                    model_server="PYTHON",
-                                    serving_tool="KSERVE",
-                                    script_file=predictor_script_path
-                                    )
+  my_predictor = ms.create_predictor(
+      my_model,
+      # optional
+      model_server="PYTHON",
+      serving_tool="KSERVE",
+      script_file=predictor_script_path,
+  )
+
+
   ```
 
 ### Step 5: Create a deployment with the predictor
@@ -303,6 +310,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   # or
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
+
+
   ```
 
 ### API Reference

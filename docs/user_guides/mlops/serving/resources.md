@@ -84,7 +84,9 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   minimum_res = Resources(cores=1, memory=128, gpus=1)
   maximum_res = Resources(cores=2, memory=256, gpus=1)
 
-  predictor_res = PredictorResources(num_instances=1, requests=minimum_res, limits=maximum_res)
+  predictor_res = PredictorResources(
+      num_instances=1, requests=minimum_res, limits=maximum_res
+  )
   ```
 
 ### Step 3 (Optional): Define the transformer resource configuration
@@ -97,7 +99,11 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   minimum_res = Resources(cores=1, memory=128, gpus=1)
   maximum_res = Resources(cores=2, memory=256, gpus=1)
 
-  transformer_res = TransformerResources(num_instances=2, requests=minimum_res, limits=maximum_res)
+  transformer_res = TransformerResources(
+      num_instances=2, requests=minimum_res, limits=maximum_res
+  )
+
+
   ```
 
 ### Step 4: Create a deployment with the resource configuration
@@ -107,17 +113,20 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   my_model = mr.get_model("my_model", version=1)
 
-  my_predictor = ms.create_predictor(my_model,
-                                    resources=predictor_res,
-                                    # transformer=Transformer(script_file,
-                                    #                         resources=transformer_res)
-                                    )
+  my_predictor = ms.create_predictor(
+      my_model,
+      resources=predictor_res,
+      # transformer=Transformer(script_file,
+      #                         resources=transformer_res)
+  )
   my_predictor.deploy()
 
   # or
 
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
+
+
   ```
 
 ### API Reference

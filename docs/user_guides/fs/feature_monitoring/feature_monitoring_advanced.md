@@ -15,7 +15,7 @@ You can retrieve one or more feature monitoring configurations from the Feature 
 
 === "Python"
 
-    ```python3
+    ```python
     # retrieve all configurations
     fm_configs = trans_fg.get_feature_monitoring_configs()  # from a feature group
     fm_configs = trans_fv.get_feature_monitoring_configs()  # or a feature view
@@ -52,7 +52,7 @@ You can easily enable or disable a specific feature monitoring configuration usi
 
 === "Python"
 
-    ```python3
+    ```python
     # disable a specific feature monitoring configuration
     fm_config.disable()
 
@@ -79,7 +79,7 @@ To trigger the feature monitoring job once from the Python API, use the feature 
 
 === "Python"
 
-    ```python3
+    ```python
     # run the feature monitoring job once
     fm_config.run_job()
     ```
@@ -99,7 +99,7 @@ Alternatively, you can retrieve all the statistics and comparison results using 
 
 === "Python"
 
-    ```python3
+    ```python
     # retrieve all feature monitoring results from a specific config
     fm_results = fm_config.get_history()
 
@@ -120,6 +120,6 @@ You can delete feature monitoring configurations using the Python API only, as s
 
 === "Python"
 
-    ```python3
+    ```python
     fm_config.delete()
     ```

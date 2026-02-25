@@ -79,6 +79,7 @@ The transformation function should take one argument as input and return a Panda
         ```python
         from hopsworks import udf
 
+
         @udf(return_type=int)
         def add_one(feature):
             return feature + 1
@@ -93,6 +94,7 @@ The creation of many-to-one transformation functions is similar to that of a one
 
         ```python
         from hopsworks import udf
+
 
         @udf(return_type=int)
         def add_features(feature1, feature2, feature3):
@@ -109,7 +111,7 @@ The return types provided to the decorator must match the types of each column i
 
         ```python
         from hopsworks import udf
-        import pandas as pd
+
 
         @udf(return_type=[int, int])
         def add_one_and_two(feature1):
@@ -125,7 +127,7 @@ The creation of a many-to-many transformation function is similar to that of a o
 
         ```python
         from hopsworks import udf
-        import pandas as pd
+
 
         @udf(return_type=[int, int, int])
         def add_one_multiple(feature1, feature2, feature3):
@@ -148,12 +150,13 @@ In this mode, the transformation function is executed as a Pandas UDF during tra
 
         ```python
         from hopsworks import udf
-        import pandas as pd
+
 
         # "default" mode is used if the parameter `mode` is not explicitly set.
         @udf(return_type=[int, int, int])
         def add_one_multiple(feature1, feature2, feature3):
             return feature1 + 1, feature2 + 1, feature3 + 1
+
 
         @udf(return_type=[int, int, int], mode="default")
         def add_two_multiple(feature1, feature2, feature3):
@@ -169,9 +172,9 @@ The transformation function can be configured to always execute as a Python UDF 
 
         ```python
         from hopsworks import udf
-        import pandas as pd
 
-        @udf(return_type=[int, int, int], mode = "python")
+
+        @udf(return_type=[int, int, int], mode="python")
         def add_one_multiple(feature1, feature2, feature3):
             return feature1 + 1, feature2 + 1, feature3 + 1
         ```
@@ -184,13 +187,21 @@ The transformation function can be configured to always execute as a Pandas UDF 
     === "Python"
 
         ```python
-        from hopsworks import udf
         import pandas as pd
+        from hopsworks import udf
+
 
         # A Pandas UDF returning a Pandas DataFrame
-        @udf(return_type=[int, int, int], mode = "pandas")
+        @udf(return_type=[int, int, int], mode="pandas")
         def add_one_multiple(feature1, feature2, feature3):
-            return pd.DataFrame({"add_one_feature1":feature1 + 1, "add_one_feature2":feature2 + 1, "add_one_feature3":feature3 + 1})
+            return pd.DataFrame(
+                {
+                    "add_one_feature1": feature1 + 1,
+                    "add_one_feature2": feature2 + 1,
+                    "add_one_feature3": feature3 + 1,
+                }
+            )
+
 
         # A Pandas UDF returning multiple Pandas Series
         @udf(return_type=[int, int, int], mode="pandas")
@@ -208,7 +219,7 @@ In the example below, the columns mapped to the arguments `feature1` and `fea
 
         ```python
         from hopsworks import udf
-        import pandas as pd
+
 
         @udf(return_type=[int, int, int], drop=["feature1", "feature3"])
         def add_one_multiple(feature1, feature2, feature3):
@@ -226,14 +237,17 @@ If no name is provided via the `alias` function, Hopsworks generates default out
 
         ```python
         from hopsworks import udf
-        import pandas as pd
+
 
         @udf(return_type=[int, int, int], drop=["feature1", "feature3"])
         def add_one_multiple(feature1, feature2, feature3):
             return feature1 + 1, feature2 + 1, feature3 + 1
 
+
         # Specifying output feature names of the transformation function.
-        add_one_multiple.alias("transformed_feature1", "transformed_feature2", "transformed_feature3")
+        add_one_multiple.alias(
+            "transformed_feature1", "transformed_feature2", "transformed_feature3"
+        )
         ```
 
 ### Training dataset statistics
@@ -260,9 +274,17 @@ Upon instantiation, instances of `FeatureTransformationStatistics` contain `N
 
         stats = TransformationStatistics("argument1", "argument2", "argument3")
 
+
         @udf(int)
         def add_features(argument1, argument2, argument3, statistics=stats):
-            return argument1 + argument2 + argument3 + statistics.argument1.mean + statistics.argument2.mean + statistics.argument3.mean
+            return (
+                argument1
+                + argument2
+                + argument3
+                + statistics.argument1.mean
+                + statistics.argument2.mean
+                + statistics.argument3.mean
+            )
         ```
 
 ### Passing context variables to transformation function
@@ -276,6 +298,7 @@ By including the context argument, you can pass the necessary data as a dictiona
 
         ```python
         from hopsworks import udf
+
 
         @udf(int)
         def add_features(argument1, context):
@@ -292,8 +315,8 @@ The save function will throw an error if another transformation function with th
 
         ```python
         plus_one_meta = fs.create_transformation_function(
-                    transformation_function=add_one,
-                    version=1)
+            transformation_function=add_one, version=1
+        )
         plus_one_meta.save()
         ```
 
