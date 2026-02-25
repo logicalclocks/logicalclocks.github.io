@@ -171,6 +171,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 2 (Optional): Implement a predictor script
 
 === "Predictor"
+
     ``` python
     class Predictor():
 
@@ -184,7 +185,9 @@ Once you are done with the changes, click on `Create new deployment` at the bott
             # Use the model to make predictions
             # return self.model.predict(inputs)
     ```
+
 === "Async Predictor"
+
     ``` python
     class Predictor():
 
@@ -201,7 +204,9 @@ Once you are done with the changes, click on `Create new deployment` at the bott
             # Use the model to make predictions
             # return self.model.predict(result)
     ```
+
 === "Predictor (vLLM deployments only)"
+
     ``` python
     import os
     from vllm import **version**, AsyncEngineArgs, AsyncLLMEngine

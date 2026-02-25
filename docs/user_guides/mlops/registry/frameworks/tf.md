@@ -16,6 +16,7 @@ In this guide you will learn how to export a TensorFlow model and register it in
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
     ```python
     import hopsworks
 
@@ -30,6 +31,7 @@ In this guide you will learn how to export a TensorFlow model and register it in
 Define your TensorFlow model and run the training loop.
 
 === "Python"
+
     ```python
     # Define a model
     model = tf.keras.Sequential()
@@ -49,6 +51,7 @@ Define your TensorFlow model and run the training loop.
 Export the TensorFlow model to a directory on the local filesystem.
 
 === "Python"
+
     ```python
     model_dir = "./model"
 
@@ -61,6 +64,7 @@ Use the `ModelRegistry.tensorflow.create_model(..)` function to register a model
 Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
 
 === "Python"
+
     ```python
     # Model evaluation metrics
     metrics = {'accuracy': 0.92}

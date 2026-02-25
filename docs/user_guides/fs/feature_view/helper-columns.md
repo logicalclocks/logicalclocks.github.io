@@ -22,9 +22,9 @@ In this use case `expiry_date` is an inference helper column.
 It is not used for training but is necessary
 for computing the [on-demand feature](../../../concepts/fs/feature_group/on_demand_feature.md)`days_valid` feature.
 
-=== "Python"
+!!! example "Define inference columns for feature views."
+    === "Python"
 
-    !!! example "Define inference columns for feature views."
         ```python
         # define query object
         query = label_fg.select("fraud_label")\
@@ -48,9 +48,9 @@ However, they can be optionally fetched with inference or training data.
 
 #### Batch inference
 
-=== "Python"
+!!! example "Fetch inference helper column values and compute on-demand features during batch inference."
+    === "Python"
 
-    !!! example "Fetch inference helper column values and compute on-demand features during batch inference."
         ```python
 
         # import feature functions
@@ -74,11 +74,10 @@ However, they can be optionally fetched with inference or training data.
 
 #### Online inference
 
-=== "Python"
+!!! example "Fetch inference helper column values and compute on-demand features during online inference."
+    === "Python"
 
-    !!! example "Fetch inference helper column values and compute on-demand features during online inference."
         ```python
-
         from feature_functions import time_delta
 
         # Fetch feature view object
@@ -104,9 +103,10 @@ However, they can be optionally fetched with inference or training data.
         days_valid = time_delta(transaction_date, inference_helper['expiry_date'])
 
         # Now get assembled feature vector for prediction
-        feature_vector = feature_view.get_feature_vector({"cc_num": cc_num},
-                                                          passed_features={"days_valid": days_valid}
-                                                         )
+        feature_vector = feature_view.get_feature_vector(
+            {"cc_num": cc_num},
+            passed_features={"days_valid": days_valid},
+        )
         ```
 
 ## Training Helper columns
@@ -114,9 +114,9 @@ However, they can be optionally fetched with inference or training data.
 `training_helper_columns` are a list of feature names that are not the part of the model schema itself but are used during training for the extra information.
 For example one might want to use feature like `category` of the purchased product to assign different weights.
 
-=== "Python"
+!!! example "Define training helper columns for feature views."
+    === "Python"
 
-    !!! example "Define training helper columns for feature views."
         ```python
         # define query object
         query = label_fg.select("fraud_label")\
@@ -138,11 +138,10 @@ For example one might want to use feature like `category` of the purchased produ
 When retrieving training data helper columns will be omitted.
 However, they can be optionally fetched.
 
-=== "Python"
+!!! example "Fetch training data with or without inference helper column values."
+    === "Python"
 
-    !!! example "Fetch training data with or without inference helper column values."
         ```python
-
         # import feature functions
         from feature_functions import location_delta, time_delta
 
@@ -157,13 +156,13 @@ However, they can be optionally fetched.
         X_train, X_test, y_train, y_test = feature_view.train_test_split(
             description='transactions fraud training dataset',
             test_size=TEST_SIZE,
-             training_helper_columns=True
+                training_helper_columns=True
         )
 
         # Get existing training data with training helper columns
         X_train, X_test, y_train, y_test = feature_view.get_train_test_split(
-             training_dataset_version=1,
-             training_helper_columns=True
+                training_dataset_version=1,
+                training_helper_columns=True
         )
         ```
 

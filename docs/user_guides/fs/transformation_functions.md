@@ -73,9 +73,9 @@ Hopsworks supports four types of transformation functions across all execution m
 To create a one-to-one transformation function, the Hopsworks `@udf` decorator must be provided with the `return_type` as a single Python type.
 The transformation function should take one argument as input and return a Pandas Series.
 
-=== "Python"
+!!! example "Creation of a one-to-one transformation function in Hopsworks."
+    === "Python"
 
-    !!! example "Creation of a one-to-one transformation function in Hopsworks."
         ```python
         from hopsworks import udf
 
@@ -88,8 +88,9 @@ The transformation function should take one argument as input and return a Panda
 
 The creation of many-to-one transformation functions is similar to that of a one-to-one transformation function, the only difference being that the transformation function accepts multiple features as input.
 
-=== "Python"
-    !!! example "Creation of a many-to-one transformation function in Hopsworks."
+!!! example "Creation of a many-to-one transformation function in Hopsworks."
+    === "Python"
+
         ```python
         from hopsworks import udf
 
@@ -103,8 +104,9 @@ The creation of many-to-one transformation functions is similar to that of a one
 To create a one-to-many transformation function, the Hopsworks `@udf` decorator must be provided with the `return_type` as a list of Python types, and the transformation function should take one argument as input and return multiple features as a Pandas DataFrame.
 The return types provided to the decorator must match the types of each column in the returned Pandas DataFrame.
 
-=== "Python"
-    !!! example "Creation of a one-to-many transformation function in Hopsworks."
+!!! example "Creation of a one-to-many transformation function in Hopsworks."
+    === "Python"
+
         ```python
         from hopsworks import udf
         import pandas as pd
@@ -118,8 +120,9 @@ The return types provided to the decorator must match the types of each column i
 
 The creation of a many-to-many transformation function is similar to that of a one-to-many transformation function, the only difference being that the transformation function accepts multiple features as input.
 
-=== "Python"
-    !!! example "Creation of a many-to-many transformation function in Hopsworks."
+!!! example "Creation of a many-to-many transformation function in Hopsworks."
+    === "Python"
+
         ```python
         from hopsworks import udf
         import pandas as pd
@@ -134,14 +137,15 @@ The creation of a many-to-many transformation function is similar to that of a o
 The `mode` parameter of the `@udf` decorator can be used to specify the execution mode of the transformation function.
 It accepts three possible values `default`, `python` and `pandas`.  Each mode is explained in more detail below:
 
-#### Default
+#### Default Mode
 
 This execution mode assumes that the transformation function can be executed as either a Pandas UDF or a Python UDF.
 It serves as the default mode used when the `mode` parameter is not specified.
 In this mode, the transformation function is executed as a Pandas UDF during training and in the batch inference pipeline, while it operates as a Python UDF during online inference.
 
-=== "Python"
-    !!! example "Creating a many to many transformations function using the default execution mode"
+!!! example "Creating a many to many transformations function using the default execution mode"
+    === "Python"
+
         ```python
         from hopsworks import udf
         import pandas as pd
@@ -156,12 +160,13 @@ In this mode, the transformation function is executed as a Pandas UDF during tra
             return feature1 + 2, feature2 + 2, feature3 + 2
         ```
 
-#### Python
+#### Python Mode
 
 The transformation function can be configured to always execute as a Python UDF by setting the `mode` parameter of the `@udf` decorator to `python`.
 
-=== "Python"
-    !!! example "Creating a many to many transformation function as a Python UDF"
+!!! example "Creating a many to many transformation function as a Python UDF"
+    === "Python"
+
         ```python
         from hopsworks import udf
         import pandas as pd
@@ -171,12 +176,13 @@ The transformation function can be configured to always execute as a Python UDF 
             return feature1 + 1, feature2 + 1, feature3 + 1
         ```
 
-#### Pandas
+#### Pandas Mode
 
 The transformation function can be configured to always execute as a Pandas UDF by setting the `mode` parameter of the `@udf` decorator to `pandas`.
 
-=== "Python"
-    !!! example "Creating a many to many transformations function as a Pandas UDF"
+!!! example "Creating a many to many transformations function as a Pandas UDF"
+    === "Python"
+
         ```python
         from hopsworks import udf
         import pandas as pd
@@ -197,8 +203,9 @@ The transformation function can be configured to always execute as a Pandas UDF 
 The `drop` parameter of the `@udf` decorator is used to drop specific columns in the input DataFrame after transformation.  If any argument of the transformation function is passed to the `drop` parameter, then the column mapped to the argument is dropped after the transformation functions are applied.
 In the example below, the columns mapped to the arguments `feature1` and `feature3` are dropped after the application of all transformation functions.
 
-=== "Python"
-    !!! example "Specify arguments to drop after transformation"
+!!! example "Specify arguments to drop after transformation"
+    === "Python"
+
         ```python
         from hopsworks import udf
         import pandas as pd
@@ -214,8 +221,9 @@ The [`TransformationFunction.alias`][hsfs.transformation_function.Transformation
 Each name must be uniques and should be at-most 63 characters long.
 If no name is provided via the `alias` function, Hopsworks generates default output feature names when [on-demand](./feature_group/on_demand_transformations.md) or [model-dependent](./feature_view/model-dependent-transformations.md) transformation functions are created.
 
-=== "Python"
-    !!! example "Specifying output column names for transformation functions."
+!!! example "Specifying output column names for transformation functions."
+    === "Python"
+
         ```python
         from hopsworks import udf
         import pandas as pd
@@ -243,8 +251,9 @@ The `TransformationStatistics` instance contains separate objects with the sam
 These objects encapsulate statistics related to the argument as instances of the class [`FeatureTransformationStatistics`][hsfs.transformation_statistics.FeatureTransformationStatistics].
 Upon instantiation, instances of `FeatureTransformationStatistics` contain `None` values and are updated with the required statistics after the creation of a training dataset.
 
-=== "Python"
-    !!! example "Creation of a transformation function in Hopsworks that uses training dataset statistics"
+!!! example "Creation of a transformation function in Hopsworks that uses training dataset statistics"
+    === "Python"
+
         ```python
         from hopsworks import udf
         from hopsworks.transformation_statistics import TransformationStatistics
@@ -262,8 +271,9 @@ The `context` keyword argument can be defined in a transformation function to ac
 These variables contain common data used across transformation functions.
 By including the context argument, you can pass the necessary data as a dictionary into the into the `context` argument of the transformation function during [training dataset creation](feature_view/training-data.md#passing-context-variables-to-transformation-functions) or [feature vector retrieval](feature_view/feature-vectors.md#passing-context-variables-to-transformation-functions) or [batch data retrieval](feature_view/batch-data.md#passing-context-variables-to-transformation-functions).
 
-=== "Python"
-    !!! example "Creation of a transformation function in Hopsworks that accepts context variables"
+!!! example "Creation of a transformation function in Hopsworks that accepts context variables"
+    === "Python"
+
         ```python
         from hopsworks import udf
 
@@ -277,9 +287,9 @@ By including the context argument, you can pass the necessary data as a dictiona
 To save a transformation function to the feature store, use the function `create_transformation_function`. It creates a [`TransformationFunction`][hsfs.transformation_function.TransformationFunction] object which can then be saved by calling the save function.
 The save function will throw an error if another transformation function with the same name and version is already saved in the feature store.
 
-=== "Python"
+!!! example "Register transformation function `add_one` in the Hopsworks feature store"
+    === "Python"
 
-    !!! example "Register transformation function `add_one` in the Hopsworks feature store"
         ```python
         plus_one_meta = fs.create_transformation_function(
                     transformation_function=add_one,
@@ -294,9 +304,9 @@ To retrieve all transformation functions from the feature store, use the functio
 A specific transformation function can be retrieved using its `name` and `version` with the function `get_transformation_function`.
 If only the `name` is provided, then the version will default to 1.
 
-=== "Python"
+!!! example "Retrieving transformation functions from the feature store"
+    === "Python"
 
-    !!! example "Retrieving transformation functions from the feature store"
         ```python
         # get all transformation functions
         fs.get_transformation_functions()

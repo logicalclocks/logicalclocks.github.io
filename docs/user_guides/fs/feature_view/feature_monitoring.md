@@ -39,6 +39,7 @@ In order to setup feature monitoring for a Feature View, you will need:
 Connect the client running your notebooks to Hopsworks.
 
 === "Python"
+
     ```python3
     import hopsworks
 
@@ -97,6 +98,7 @@ The following is a code example for creating a training dataset with two splits 
 You can setup statistics monitoring on a ==single feature or multiple features== of your Feature Group data, included in your Feature View query.
 
 === "Python"
+
     ```python3
     # compute statistics for all the features
     fg_monitoring_config = trans_fv.create_statistics_monitoring(
@@ -118,6 +120,7 @@ When enabling the comparison of statistics in a feature monitoring configuration
 You can create multiple feature monitoring configurations on the same Feature View, but each of them should point to a single feature in the Feature View query.
 
 === "Python"
+
     ```python3
     fg_monitoring_config = trans_fv.create_feature_monitoring(
         name="trans_fv_amount_monitoring",
@@ -132,6 +135,7 @@ By default, the computation of statistics is scheduled to run endlessly, every d
 You can modify the default schedule by adjusting the `cron_expression`, `start_date_time` and `end_date_time` parameters.
 
 === "Python"
+
     ```python3
     fg_monitoring_config = trans_fv.create_statistics_monitoring(
         name="trans_fv_all_features_monitoring",
@@ -157,6 +161,7 @@ You can define a different detection window using the `window_length` and `time_
 Additionally, you can specify the percentage of feature data on which statistics will be computed using the `row_percentage` parameter.
 
 === "Python"
+
     ```python3
     fm_monitoring_config.with_detection_window(
         window_length="1w",  # data ingested during one week
@@ -170,6 +175,7 @@ Additionally, you can specify the percentage of feature data on which statistics
 When setting up feature monitoring for a Feature View, reference windows can be either a regular window, a specific value (i.e., window of size 1) or a training dataset.
 
 === "Python"
+
     ```python3
     # compare statistics against a reference window
     fm_monitoring_config.with_reference_window(
@@ -196,6 +202,7 @@ First, you select the metric to consider in the comparison using the `metric` pa
 Then, you can define a relative or absolute threshold using the `threshold` and `relative` parameters.
 
 === "Python"
+
     ```python3
     fm_monitoring_config.compare_on(
         metric="mean",
@@ -214,6 +221,7 @@ Finally, you can save your feature monitoring configuration by calling the `save
 Once the configuration is saved, the schedule for the statistics computation and comparison will be activated automatically.
 
 === "Python"
+
     ```python3
     fm_monitoring_config.save()
     ```

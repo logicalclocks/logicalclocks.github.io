@@ -13,6 +13,7 @@ In this guide you will learn how to export a Scikit-learn model and register it 
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
     ```python
     import hopsworks
 
@@ -27,6 +28,7 @@ In this guide you will learn how to export a Scikit-learn model and register it 
 Define your Scikit-learn model and run the training loop.
 
 === "Python"
+
     ```python
     # Define a model
     iris_knn = KNeighborsClassifier(..)
@@ -39,6 +41,7 @@ Define your Scikit-learn model and run the training loop.
 Export the Scikit-learn model to a directory on the local filesystem.
 
 === "Python"
+
     ```python
     model_file = "skl_knn.pkl"
 
@@ -51,6 +54,7 @@ Use the `ModelRegistry.sklearn.create_model(..)` function to register a model as
 Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
 
 === "Python"
+
     ```python
     # Model evaluation metrics
     metrics = {'accuracy': 0.92}

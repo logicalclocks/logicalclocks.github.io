@@ -7,6 +7,7 @@ Feature views support batch prediction by returning batch data as a DataFrame ov
 The resultant DataFrame (or batch-scoring DataFrame) can then be fed to models to make predictions.
 
 === "Python"
+
     ```python
     # get batch data
     df = feature_view.get_batch_data(
@@ -14,7 +15,9 @@ The resultant DataFrame (or batch-scoring DataFrame) can then be fed to models t
         end_time = "20220627"
     ) # return a dataframe
     ```
+
 === "Java"
+
     ```java
     Dataset<Row> ds = featureView.getBatchData("20220620", "20220627")
     ```
@@ -27,6 +30,7 @@ Primary key(s) and event time are not usually included in the feature view query
 To retrieve the primary key(s) and/or event time when retrieving batch data for inference, you need to set the parameters `primary_key=True` and/or `event_time=True`.
 
 === "Python"
+
     ```python
     # get batch data
     df = feature_view.get_batch_data(
@@ -71,19 +75,21 @@ It is important to note that in addition to the filters defined in feature view,
 By default, the `get_batch_data` function returns batch data with model-dependent transformations applied.
 However, you can retrieve untransformed batch data—while still including on-demand features—by setting the `transform` parameter to `False`.
 
-=== "Python"
 !!! example "Returning untransformed batch data"
-    ```python
-    # Fetching untransformed batch data.
-    untransformed_batch_data = feature_view.get_batch_data(transform=False)
-    ```
+    === "Python"
+
+        ```python
+        # Fetching untransformed batch data.
+        untransformed_batch_data = feature_view.get_batch_data(transform=False)
+        ```
 
 ## Passing Context Variables to Transformation Functions
 
 After [defining a transformation function using a context variable](../transformation_functions.md#passing-context-variables-to-transformation-function), you can pass the necessary context variables through the `transformation_context` parameter when fetching batch data.
 
-=== "Python"
-    !!! example "Passing context variables while fetching batch data."
+!!! example "Passing context variables while fetching batch data."
+    === "Python"
+
         ```python
         # Passing context variable to IN-MEMORY Training Dataset.
         batch_data = feature_view.get_batch_data(transformation_context={"context_parameter":10})

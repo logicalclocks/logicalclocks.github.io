@@ -15,6 +15,7 @@ Attaching a model schema to your model will give other users a better understand
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
     ```python
     import hopsworks
 
@@ -30,6 +31,7 @@ Create a ModelSchema for your inputs and outputs by passing in an example that y
 Currently, we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list`.
 
 === "Python"
+
     ```python
     # Import a Schema and ModelSchema definition
     from hsml.utils.model_schema import ModelSchema
@@ -56,6 +58,7 @@ Currently, we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list`.
 Set the `model_schema` parameter in the `create_model` function and call `save()` to attaching it to the model and register it in the registry.
 
 === "Python"
+
     ```python
     model = mr.tensorflow.create_model(name="mnist",
                                     model_schema=model_schema)

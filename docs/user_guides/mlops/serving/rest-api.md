@@ -48,9 +48,9 @@ The request must be sent as a JSON object containing an `inputs` or `instances` 
 See [more information on the request format](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#request-format).
 An example for this is given below.
 
-=== "Python"
+!!! example "REST API example for Predictive Inference (Tensorflow or SkLearn or Python Serving)"
+    === "Python"
 
-    !!! example "REST API example for Predictive Inference (Tensorflow or SkLearn or Python Serving)"
         ```python
         import requests
 
@@ -77,9 +77,8 @@ An example for this is given below.
         print(response.json())
         ```
 
-=== "Curl"
+    === "Curl"
 
-    !!! example "REST API example for Predictive Inference (Tensorflow or SkLearn or Python Serving)"
         ```bash
         curl -X POST "http://10.87.42.108/v1/models/fraud:predict" \
           -H "Host: fraud.test.hopsworks.ai" \

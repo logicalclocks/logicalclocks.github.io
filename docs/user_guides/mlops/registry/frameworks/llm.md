@@ -13,6 +13,7 @@ In this guide you will learn how to export a [Large Language Model (LLM)](https:
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
     ```python
     import hopsworks
 
@@ -28,6 +29,7 @@ Download your base or fine-tuned LLM.
 LLMs can typically be downloaded using the official frameworks provided by their creators (e.g., HuggingFace, Ollama, ...)
 
 === "Python"
+
     ```python
     # Download LLM (e.g., using huggingface to download Llama-3.1-8B base model)
     from huggingface_hub import snapshot_download
@@ -44,6 +46,7 @@ If necessary, fine-tune your LLM with an [instruction set](https://www.hopsworks
 A LLM can be fine-tuned fully or using [Parameter Efficient Fine Tuning (PEFT)](https://www.hopsworks.ai/dictionary/parameter-efficient-fine-tuning-of-llms) methods such as LoRA or QLoRA.
 
 === "Python"
+
     ```python
     # Fine-tune LLM using PEFT (LoRA, QLoRA) or other methods
     model_dir = ...
@@ -55,6 +58,7 @@ Use the `ModelRegistry.llm.create_model(..)` function to register a model as LLM
 Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
 
 === "Python"
+
     ```python
     # Model evaluation metrics
     metrics = {'f1-score': 0.8, 'perplexity': 31.62, 'bleu-score': 0.73}

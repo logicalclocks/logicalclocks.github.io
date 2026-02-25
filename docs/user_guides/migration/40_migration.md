@@ -43,6 +43,7 @@ With 4.0, On-Demand Transformation Functions are now better supported which has 
 The following is how transformation functions were used in previous versions of Hopsworks and the how transformation functions are used in the 4.0 release.
 
 === "Pre-4.0"
+
     ```python
     #################################################
     # Creating transformation function Hopsworks 3.8#
@@ -81,6 +82,7 @@ The following is how transformation functions were used in previous versions of 
     ```
 
 === "4.0"
+
     ```python
     #################################################
     # Creating transformation function Hopsworks 4.0#

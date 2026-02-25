@@ -17,6 +17,7 @@ In this guide, you will learn how to create a simple recommendation application,
 ### Step 1: Get the OpenSearch API
 
 === "Python"
+
     ```python
     import hopsworks
 
@@ -28,6 +29,7 @@ In this guide, you will learn how to create a simple recommendation application,
 ### Step 2: Configure the opensearch-py client
 
 === "Python"
+
     ```python
     from opensearchpy import OpenSearch
 
@@ -39,6 +41,7 @@ In this guide, you will learn how to create a simple recommendation application,
 Create an index to use by calling `opensearch_api.get_project_index(..)`.
 
 === "Python"
+
     ```python
     knn_index_name = opensearch_api.get_project_index("demo_knn_index")
 
@@ -68,6 +71,7 @@ Ingest 10 vectors in a bulk fashion to the index.
 These vectors represent the list of vectors to calculate the similarity for.
 
 === "Python"
+
     ```python
     from opensearchpy.helpers import bulk
     import random
@@ -94,6 +98,7 @@ These vectors represent the list of vectors to calculate the similarity for.
 Score the vector `[2.5, 3]` and find the 3 most similar vectors.
 
 === "Python"
+
     ```python
     # Define the search request
     query = {

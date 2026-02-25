@@ -121,21 +121,25 @@ Once you have [defined a transformation function using a context variable](../tr
 !!! note
     Passing context variables for materializing a training dataset is only supported in the PySpark Kernel.
 
-=== "Python"
-    !!! example "Passing context variables while creating training data."
+!!! example "Passing context variables while creating training data."
+    === "Python"
+
         ```python
         # Passing context variable to IN-MEMORY Training Dataset.
-        X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_dataset_version=1,
-                                                                         primary_key=True,
-                                                                         event_time=True,
-                                                                         transformation_context={"context_parameter":10})
+        X_train, X_test, y_train, y_test = feature_view.get_train_test_split(
+            training_dataset_version=1,
+            primary_key=True,
+            event_time=True,
+            transformation_context={"context_parameter":10},
+        )
 
         # Passing context variable to Materialized Training Dataset.
-        version, job = feature_view.get_train_test_split(training_dataset_version=1,
-                                                                         primary_key=True,
-                                                                         event_time=True,
-                                                                         transformation_context={"context_parameter":10})
-
+        version, job = feature_view.get_train_test_split(
+            training_dataset_version=1,
+            primary_key=True,
+            event_time=True,
+            transformation_context={"context_parameter":10},
+        )
         ```
 
 ## Read training data with primary key(s) and event time
@@ -146,9 +150,11 @@ To retrieve the primary key(s) and/or event time when retrieving training data, 
 
 ```python
 # get a training dataset
-X_train, X_test, y_train, y_test = feature_view.get_train_test_split(training_dataset_version=1,
-                                                                     primary_key=True,
-                                                                     event_time=True)
+X_train, X_test, y_train, y_test = feature_view.get_train_test_split(
+    training_dataset_version=1,
+    primary_key=True,
+    event_time=True,
+)
 ```
 
 !!! note

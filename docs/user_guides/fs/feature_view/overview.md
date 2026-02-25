@@ -61,10 +61,13 @@ To see a full example of how to create a feature view, you can read [this notebo
 Once you have created a feature view, you can retrieve it by its name and version.
 
 === "Python"
+
     ```python
     feature_view = fs.get_feature_view(name="transactions_view", version=1)
     ```
+
 === "Java"
+
     ```java
     FeatureView featureView = featureStore.getFeatureView("transactions_view", 1)
     ```
@@ -75,10 +78,13 @@ If there are some feature view instances which you do not use anymore, you can d
 It is important to mention that all training datasets (include all materialised hopsfs training data) will be deleted along with the feature view.
 
 === "Python"
+
     ```python
     feature_view.delete()
     ```
+
 === "Java"
+
     ```java
     featureView.delete()
     ```
@@ -90,6 +96,7 @@ You can attach, get, and remove tags.
 You can learn more in [Tags Guide](../tags/tags.md).
 
 === "Python"
+
     ```python
     # attach
     feature_view.add_tag(name="tag_schema", value={"key": "value"})
@@ -100,7 +107,9 @@ You can learn more in [Tags Guide](../tags/tags.md).
     #remove
     feature_view.delete_tag(name="tag_schema")
     ```
+
 === "Java"
+
     ```java
     // attach
     Map<String, String> tag = Maps.newHashMap();
