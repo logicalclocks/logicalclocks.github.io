@@ -372,8 +372,10 @@ plugins:
             - https://docs.pydantic.dev/latest/objects.inv
             - https://fastapi.tiangolo.com/objects.inv
             - https://scikit-learn.org/stable/objects.inv
-            - https://docs.pola.rs/api/python/stable/objects.inv
             - https://arrow.apache.org/docs/objects.inv
+            - https://docs.pola.rs/api/python/stable/objects.inv
+            - url: file:./docs/polars_patch.inv
+              base_url: https://docs.pola.rs/api/python/stable/
             - url: file:./docs/great_expectations.inv
               base_url: https://docs.greatexpectations.io/docs/0.18/reference/api/
 
