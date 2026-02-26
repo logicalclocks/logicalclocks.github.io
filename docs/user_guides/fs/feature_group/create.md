@@ -52,11 +52,11 @@ The version number is optional, if you don't specify the version number the APIs
 
 The last parameter used in the examples above is `stream`.
 The `stream` parameter controls whether to enable the streaming write APIs to the online and offline feature store.
-When using the APIs in a Python environment this behavior is the default and it requires the time travel format to be set to 'HUDI'.
+When using the APIs in a Python environment this behavior is the default and it requires the time travel format to be set to `"HUDI"` or `"DELTA"`.
 
 ##### Primary key
 
-A primary key is required when using the default table format (Hudi) to store offline feature data.
+A primary key is required when using the default table format (Hudi or Delta) to store offline feature data.
 When inserting data in a feature group on the offline feature store, the DataFrame you are writing is checked against the existing data in the feature group.
 If a row with the same primary key is found in the feature group, the row will be updated.
 If the primary key is not found, the row is appended to the feature group.
@@ -104,7 +104,7 @@ By using partitioning the system will write the feature data in different subdir
 ##### Table format
 
 When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter.
-The currently supported values are "HUDI", "DELTA", "NONE" (which defaults to Parquet).
+The currently supported values are `"HUDI"`, `"DELTA"`, and `"NONE"`. The parameter defaults to `None`, which resolves to `"DELTA"` if the `deltalake` package is installed, or `"HUDI"` otherwise.
 
 ##### Data Source
 
