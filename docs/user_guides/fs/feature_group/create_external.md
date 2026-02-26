@@ -160,7 +160,7 @@ To create a feature group, proceed by clicking `Next: Select Tables` once all of
 
 In the UI you can either select one or more tables or define a custom SQL query.
 
-#### Option A: Select tables
+### Option A: Select tables
 
 The database navigation structure depends on your specific data source.
 You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
@@ -174,7 +174,7 @@ You can also optionally select a single column as a timestamp for the row (suppo
   </figure>
 </p>
 
-#### Option B: Define a SQL query
+### Option B: Define a SQL query
 
 Instead of selecting a table, you can write a custom SQL query to define the feature group.
 This is useful when you need to join multiple tables or apply transformations at read time.
