@@ -374,6 +374,8 @@ plugins:
             - https://scikit-learn.org/stable/objects.inv
             - https://docs.pola.rs/api/python/stable/objects.inv
             - https://arrow.apache.org/docs/objects.inv
+            - url: file:./docs/great_expectations.inv
+              base_url: https://docs.greatexpectations.io/docs/0.18/reference/api/
 
 markdown_extensions:
   - admonition
