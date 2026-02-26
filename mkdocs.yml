@@ -70,7 +70,7 @@ nav:
                   - ADLS: user_guides/fs/data_source/creation/adls.md
                   - BigQuery: user_guides/fs/data_source/creation/bigquery.md
                   - GCS: user_guides/fs/data_source/creation/gcs.md
-                  - RDS: user_guides/fs/data_source/creation/rds.md
+                  - SQL: user_guides/fs/data_source/creation/sql.md
               - Usage: user_guides/fs/data_source/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
