@@ -158,15 +158,31 @@ To create a feature group, proceed by clicking `Next: Select Tables` once all of
   </figure>
 </p>
 
+In the UI you can either select one or more tables or define a custom SQL query.
+
+### Option A: Select tables
+
 The database navigation structure depends on your specific data source.
 You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
 
-In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding.
-You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
+Select one or more tables. For each selected table, you must designate one or more columns as primary keys before proceeding.
+You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), and edit names and data types of individual columns you want to include.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources and specify features">
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_table.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources and specify features">
+  </figure>
+</p>
+
+### Option B: Define a SQL query
+
+Instead of selecting a table, you can write a custom SQL query to define the feature group.
+This is useful when you need to join multiple tables or apply transformations at read time.
+As with the table option, you must designate one or more columns as primary keys and optionally select a timestamp column.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_query.png" style="border: 10px solid #f5f5f5" alt="Define a SQL query in Data Sources and specify features">
   </figure>
 </p>
 
