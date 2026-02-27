@@ -83,14 +83,15 @@ You are now ready to connect to the Hopsworks Feature Store from Spark:
 
 ```python
 import hopsworks
+
 project = hopsworks.login(
-    host='my_instance',                 # DNS of your Feature Store instance
-    port=443,                           # Port to reach your Hopsworks instance, defaults to 443
-    project='my_project',               # Name of your Hopsworks Feature Store project
-    api_key_value='api_key',            # The API key to authenticate with the feature store
-    hostname_verification=True          # Disable for self-signed certificates
+    host="my_instance",  # DNS of your Feature Store instance
+    port=443,  # Port to reach your Hopsworks instance, defaults to 443
+    project="my_project",  # Name of your Hopsworks Feature Store project
+    api_key_value="api_key",  # The API key to authenticate with the feature store
+    hostname_verification=True,  # Disable for self-signed certificates
 )
-fs = project.get_feature_store()           # Get the project's default feature store
+fs = project.get_feature_store()  # Get the project's default feature store
 ```
 
 !!! note "Engine"

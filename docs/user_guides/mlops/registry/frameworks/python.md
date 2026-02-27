@@ -13,6 +13,7 @@ In this guide you will learn how to export a generic Python model and register i
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
     ```python
     import hopsworks
 
@@ -27,6 +28,7 @@ In this guide you will learn how to export a generic Python model and register i
 Define your XGBoost model and run the training loop.
 
 === "Python"
+
     ```python
     # Define a model
     model = XGBClassifier()
@@ -40,6 +42,7 @@ Define your XGBoost model and run the training loop.
 Export the XGBoost model to a directory on the local filesystem.
 
 === "Python"
+
     ```python
     model_file = "model.json"
 
@@ -52,9 +55,10 @@ Use the `ModelRegistry.python.create_model(..)` function to register a model as 
 Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
 
 === "Python"
+
     ```python
     # Model evaluation metrics
-    metrics = {'accuracy': 0.92}
+    metrics = {"accuracy": 0.92}
 
     py_model = mr.python.create_model("py_model", metrics=metrics)
 

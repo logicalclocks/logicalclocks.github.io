@@ -47,14 +47,15 @@ You are now ready to connect to Hopsworks from your Python environment:
 
 ```python
 import hopsworks
+
 project = hopsworks.login(
-    host='my_instance',                 # DNS of your Hopsworks instance
-    port=443,                           # Port to reach your Hopsworks instance, defaults to 443
-    project='my_project',               # Name of your Hopsworks project
-    api_key_value='apikey',             # The API key to authenticate with Hopsworks
-    engine='python',                    # Use the Python engine
+    host="my_instance",  # DNS of your Hopsworks instance
+    port=443,  # Port to reach your Hopsworks instance, defaults to 443
+    project="my_project",  # Name of your Hopsworks project
+    api_key_value="apikey",  # The API key to authenticate with Hopsworks
+    engine="python",  # Use the Python engine
 )
-fs = project.get_feature_store()        # Get the project's default feature store
+fs = project.get_feature_store()  # Get the project's default feature store
 ```
 
 !!! note "Engine"

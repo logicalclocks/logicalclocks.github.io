@@ -29,13 +29,11 @@ For more details on how to create an IAM roles for Kubernetes service accounts s
 ```sh
 account_id=$(aws sts get-caller-identity --query "Account" --output text)
 oidc_provider=$(aws eks describe-cluster --name my-cluster --region $AWS_REGION --query "cluster.identity.oidc.issuer" --output text | sed -e "s/^https:\/\///")
-
 ```
 
 ```sh
 export namespace=hopsworks
 export service_account=my-service-account
-
 ```
 
 ```json

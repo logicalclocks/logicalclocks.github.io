@@ -28,14 +28,15 @@ Using the HSFS API you can execute:
 === "PySpark"
 
     ```python
-    fg = feature_store.create_feature_group(name="weather",
+    fg = feature_store.create_feature_group(
+        name="weather",
         version=1,
         description="Weather Features",
         online_enabled=True,
-        primary_key=['location_id'],
-        partition_key=['day'],
-        event_time='event_time',
-        time_travel_format='DELTA',
+        primary_key=["location_id"],
+        partition_key=["day"],
+        event_time="event_time",
+        time_travel_format="DELTA",
     )
     ```
 
@@ -121,12 +122,18 @@ The code example shows the creation of an online-enabled feature group that stor
 
 ```python
 fg = fs.create_feature_group(
-    name='air_quality',
-    description='Air Quality characteristics of each day',
+    name="air_quality",
+    description="Air Quality characteristics of each day",
     version=1,
-    primary_key=['city','date'],
+    primary_key=["city", "date"],
     online_enabled=True,
-    online_config={'table_space': 'ts_1', 'online_comments': ['NDB_TABLE=READ_BACKUP=1', 'NDB_TABLE=PARTITION_BALANCE=FOR_RP_BY_LDM_X_2']}
+    online_config={
+        "table_space": "ts_1",
+        "online_comments": [
+            "NDB_TABLE=READ_BACKUP=1",
+            "NDB_TABLE=PARTITION_BALANCE=FOR_RP_BY_LDM_X_2",
+        ],
+    },
 )
 ```
 
@@ -150,29 +157,31 @@ For Python environments, only the stream API is supported (stream=True).
 === "Python"
 
     ```python
-    fg = feature_store.create_feature_group(name="weather",
+    fg = feature_store.create_feature_group(
+        name="weather",
         version=1,
         description="Weather Features",
         online_enabled=True,
-        primary_key=['location_id'],
-        partition_key=['day'],
-        event_time='event_time',
-        time_travel_format='HUDI',
+        primary_key=["location_id"],
+        partition_key=["day"],
+        event_time="event_time",
+        time_travel_format="HUDI",
     )
     ```
 
 === "PySpark"
 
     ```python
-    fg = feature_store.create_feature_group(name="weather",
+    fg = feature_store.create_feature_group(
+        name="weather",
         version=1,
         description="Weather Features",
         online_enabled=True,
-        primary_key=['location_id'],
-        partition_key=['day'],
-        event_time='event_time',
-        time_travel_format='HUDI',
-        stream=True
+        primary_key=["location_id"],
+        partition_key=["day"],
+        event_time="event_time",
+        time_travel_format="HUDI",
+        stream=True,
     )
     ```
 
@@ -221,10 +230,7 @@ For example, most commonly, filtering is done on the event time column of a feat
 query = fg.select_all()
 
 # create a simple feature view
-fv = fs.create_feature_view(
-    name='transactions_view',
-    query=query
-)
+fv = fs.create_feature_view(name="transactions_view", query=query)
 
 # set up dates
 start_time = "2022-01-01"
@@ -234,7 +240,7 @@ end_time = "2022-06-30"
 version, job = fv.create_training_data(
     start_time=start_time,
     end_time=end_time,
-    description='Description of a dataset',
+    description="Description of a dataset",
 )
 ```
 
@@ -280,9 +286,9 @@ For example, the inserted dataframe (unique combination of partition key values)
 !!! example "Default Hudi partitioning"
     ```python
     write_options = {
-        'hoodie.bulkinsert.shuffle.parallelism': 5,
-        'hoodie.insert.shuffle.parallelism': 5,
-        'hoodie.upsert.shuffle.parallelism': 5
+        "hoodie.bulkinsert.shuffle.parallelism": 5,
+        "hoodie.insert.shuffle.parallelism": 5,
+        "hoodie.upsert.shuffle.parallelism": 5,
     }
     ```
 That means, using Spark, Hudi shuffles the data into five in-memory partitions, which each fill map to a task and finally a parquet file (see figure below).
@@ -305,9 +311,9 @@ If the inserted Dataframe contains multiple feature group partitions, the parque
     You can change the write options on every insert, depending also on the size of the data you are writing:
     ```python
     write_options = {
-        'hoodie.bulkinsert.shuffle.parallelism': 5,
-        'hoodie.insert.shuffle.parallelism': 5,
-        'hoodie.upsert.shuffle.parallelism': 5
+        "hoodie.bulkinsert.shuffle.parallelism": 5,
+        "hoodie.insert.shuffle.parallelism": 5,
+        "hoodie.upsert.shuffle.parallelism": 5,
     }
     fg.insert(df, write_options=write_options)
     ```

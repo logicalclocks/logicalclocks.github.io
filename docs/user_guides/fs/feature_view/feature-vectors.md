@@ -20,22 +20,19 @@ Alternative, you can provide the primary key of the feature groups as the key of
 It is also possible to provide a subset of the entry, which will be discussed [below](#partial-feature-retrieval).
 
 === "Python"
+
     ```python
     # get a single vector
-    feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2}
-    )
+    feature_view.get_feature_vector(entry={"pk1": 1, "pk2": 2})
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry = [
-            {"pk1": 1, "pk2": 2},
-            {"pk1": 3, "pk2": 4},
-            {"pk1": 5, "pk2": 6}
-        ]
+        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}]
     )
     ```
+
 === "Java"
+
     ```java
     // get a single vector
     Map<String, Object> entry1 = Maps.newHashMap();
@@ -87,14 +84,16 @@ In the example, it is 1 because `right_fg` is in the first join in the query `le
 It can happen that some of the primary key entries are not available in some or all of the feature groups used by a feature view.
 
 Take the above example assuming the feature view consists of two joined feature groups, first one with primary key column `pk1`, the second feature group with primary key column `pk2`.
+
 === "Python"
+
     ```python
     # get a single vector
-    feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2}
-    )
+    feature_view.get_feature_vector(entry={"pk1": 1, "pk2": 2})
     ```
+
 === "Java"
+
     ```java
     // get a single vector
     Map<String, Object> entry1 = Maps.newHashMap();
@@ -102,21 +101,22 @@ Take the above example assuming the feature view consists of two joined feature 
     entry1.put("pk2", 2);
     featureView.getFeatureVector(entry1);
     ```
+
 This call will raise an exception if `pk1 = 1` OR `pk2 = 2` can't be found but also if `pk1 = 1` AND `pk2 = 2` can't be found, meaning, it will not return a partial or empty feature vector.
 
 When retrieving a batch of vectors, the behaviour is slightly different.
+
 === "Python"
+
     ```python
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry = [
-            {"pk1": 1, "pk2": 2},
-            {"pk1": 3, "pk2": 4},
-            {"pk1": 5, "pk2": 6}
-        ]
+        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}]
     )
     ```
+
 === "Java"
+
     ```java
     // get multiple vectors
     Map<String, Object> entry2 = Maps.newHashMap();
@@ -127,6 +127,7 @@ When retrieving a batch of vectors, the behaviour is slightly different.
     entry3.put("pk2", 6);
     featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2, entry3));
     ```
+
 This call will raise an exception if for example for the third entry `pk1 = 5` OR `pk2 = 6` can't be found, however, it will simply not return a vector for this entry if `pk1 = 5` AND `pk2 = 6`
 can't be found.
 That means, `get_feature_vectors` will never return partial feature vector, but will omit empty feature vectors.
@@ -140,20 +141,18 @@ In the example below, let's say you join 2 feature groups by `fg1.join(fg2, left
 If `pk2` is not provided, this returns feature values from the first feature group and null values from the second feature group when using the option `allow_missing=True`, otherwise it raises exception.
 
 === "Python"
+
     ```python
     # get a single vector with
-    feature_view.get_feature_vector(
-        entry = {"pk1": 1},
-        allow_missing=True
-    )
+    feature_view.get_feature_vector(entry={"pk1": 1}, allow_missing=True)
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry = [
+        entry=[
             {"pk1": 1},
             {"pk1": 3},
         ],
-        allow_missing=True
+        allow_missing=True,
     )
     ```
 
@@ -165,6 +164,7 @@ Then you can follow the above examples and retrieve the feature vectors.
 Please note that transformed feature vectors can only be returned in the python client but not in the java client.
 
 === "Python"
+
     ```python
     feature_view.init_serving(training_dataset_version=1)
     ```
@@ -180,25 +180,21 @@ The feature view will apply the necessary transformations to the passed features
 Please note that passed features is only available in the python client but not in the java client.
 
 === "Python"
+
     ```python
     # get a single vector
     feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2},
-        passed_features = {"feature_a": "value_a"}
+        entry={"pk1": 1, "pk2": 2}, passed_features={"feature_a": "value_a"}
     )
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry = [
-            {"pk1": 1, "pk2": 2},
-            {"pk1": 3, "pk2": 4},
-            {"pk1": 5, "pk2": 6}
-        ],
-        passed_features = [
+        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}],
+        passed_features=[
             {"feature_a": "value_a1"},
             {"feature_a": "value_a2"},
             {"feature_a": "value_a3"},
-        ]
+        ],
     )
     ```
 
@@ -206,6 +202,7 @@ You can also use the parameter to provide values for all the features which are 
 In this second case, you do not have to provide the primary key value for that feature group as no data needs to be retrieved from the online feature store.
 
 === "Python"
+
     ```python
     # get a single vector, replace values from an entire feature group
     # note how in this example you don't have to provide the value of
@@ -213,12 +210,12 @@ In this second case, you do not have to provide the primary key value for that f
     # in this case feature_b and feature_c
 
     feature_view.get_feature_vector(
-        entry = { "pk1": 1 },
-        passed_features = {
+        entry={"pk1": 1},
+        passed_features={
             "feature_a": "value_a",
             "feature_b": "value_b",
-            "feature_c": "value_c"
-        }
+            "feature_c": "value_c",
+        },
     )
     ```
 
@@ -228,48 +225,56 @@ By default, the `get_feature_vector` and `get_feature_vectors` functions return 
 
 However, you can retrieve the untransformed feature vectors without applying model-dependent transformations while still including on-demand features by setting the `transform` parameter to False.
 
-=== "Python"
 !!! example "Returning untransformed feature vectors"
-    ```python
-    # Fetching untransformed feature vector.
-    untransformed_feature_vector = feature_view.get_feature_vector(
-        entry={"id": 1}, transform=False
-    )
+    === "Python"
 
-    # Fetching untransformed feature vectors.
-    untransformed_feature_vectors = feature_view.get_feature_vectors(
-        entry=[{"id": 1}, {"id": 2}], transform=False
-    )
-    ```
+        ```python
+        # Fetching untransformed feature vector.
+        untransformed_feature_vector = feature_view.get_feature_vector(
+            entry={"id": 1}, transform=False
+        )
+
+        # Fetching untransformed feature vectors.
+        untransformed_feature_vectors = feature_view.get_feature_vectors(
+            entry=[{"id": 1}, {"id": 2}], transform=False
+        )
+
+
+        ```
 
 ## Retrieving feature vector without on-demand features
 
 The `get_feature_vector` and `get_feature_vectors` methods can also return untransformed feature vectors without on-demand features by disabling model-dependent transformations and excluding on-demand features.
 To achieve this, set the  parameters `transform` and `on_demand_features` to `False`.
 
-=== "Python"
 !!! example "Returning untransformed feature vectors"
-    ```python
-    untransformed_feature_vector = feature_view.get_feature_vector(
-        entry={"id": 1}, transform=False, on_demand_features=False
-    )
-    untransformed_feature_vectors = feature_view.get_feature_vectors(
-        entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
-    )
-    ```
+    === "Python"
+
+        ```python
+        untransformed_feature_vector = feature_view.get_feature_vector(
+            entry={"id": 1}, transform=False, on_demand_features=False
+        )
+        untransformed_feature_vectors = feature_view.get_feature_vectors(
+            entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
+        )
+
+
+        ```
 
 ## Passing Context Variables to Transformation Functions
 
 After [defining a transformation function using a context variable](../transformation_functions.md#passing-context-variables-to-transformation-function), you can pass the required context variables using the `transformation_context` parameter when fetching the feature vectors.
 
-=== "Python"
-    !!! example "Passing context variables while fetching batch data."
+!!! example "Passing context variables while fetching batch data."
+    === "Python"
+
         ```python
         # Passing context variable to IN-MEMORY Training Dataset.
         batch_data = feature_view.get_feature_vectors(
-            entry = [{ "pk1": 1 }],
-            transformation_context={"context_parameter":10}
+            entry=[{"pk1": 1}], transformation_context={"context_parameter": 10}
         )
+
+
         ```
 
 ## Choose the right Client
@@ -298,7 +303,7 @@ my_feature_view.init_serving(
     init_rest_client=True,
     config_rest_client={
         "api_key": "your_api_key",
-    }
+    },
 )
 ```
 
@@ -315,19 +320,18 @@ my_feature_view.init_serving(
     config_rest_client={
         "api_key": "your_api_key",
     },
-    default_client="rest"
+    default_client="rest",
 )
 
 # this will fetch a feature vector via REST
 try:
     my_feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2},
+        entry={"pk1": 1, "pk2": 2},
     )
 except TimeoutException:
     # if the REST client times out, the SQL client will be used
     my_feature_view.get_feature_vector(
-        entry = {"pk1": 1, "pk2": 2},
-        force_sql=True
+        entry={"pk1": 1, "pk2": 2}, force_sql=True
     )
 ```
 

@@ -28,9 +28,9 @@ Additionally, apart from primary key and event time information, a Spark datafra
         name="spine_transactions",
         version=1,
         description="Transaction data",
-        primary_key=['cc_num'],
-        event_time='datetime',
-        dataframe=trans_df
+        primary_key=["cc_num"],
+        event_time="datetime",
+        dataframe=trans_df,
     )
     ```
 

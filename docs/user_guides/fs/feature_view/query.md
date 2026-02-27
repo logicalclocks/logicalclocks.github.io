@@ -11,6 +11,7 @@ The joining functionality is heavily inspired by the APIs used by Pandas to merg
 The APIs allow you to specify which features to select from which feature group, how to join them and which features to use in join conditions.
 
 === "Python"
+
     ```python
     fs = ...
     credit_card_transactions_fg = fs.get_feature_group(name="credit_card_transactions", version=1)
@@ -36,8 +37,8 @@ The APIs allow you to specify which features to select from which feature group,
     ```
 
 === "Scala"
-    ```scala
 
+    ```scala
     val fs = ...
     val creditCardTransactionsFg = fs.getFeatureGroup("credit_card_transactions", 1)
     val accountDetailsFg = fs.getFeatureGroup(name="account_details", version=1)
@@ -71,15 +72,19 @@ Most operations performed on `FeatureGroup` metadata objects will return a `Quer
 Selecting features from a feature group is a lazy operation, returning a query with the selected features only:
 
 === "Python"
+
     ```python
     credit_card_transactions_fg = fs.get_feature_group("credit_card_transactions")
 
     # Returns Query
-    selected_features = credit_card_transactions_fg.select(["amount", "latitude", "longitude"])
+    selected_features = credit_card_transactions_fg.select(
+        ["amount", "latitude", "longitude"]
+    )
     ```
 
 === "Scala"
-    ```Scala
+
+    ```scala
     val creditCardTransactionsFg = fs.getFeatureGroup("credit_card_transactions")
 
     # Returns Query
@@ -93,13 +98,15 @@ The simplest join in one where we join all of the features together from two dif
 By default, Hopsworks will use the maximal matching subset of the primary keys of the two feature groups as joining key(s), if not specified otherwise.
 
 === "Python"
+
     ```python
     # Returns Query
     selected_features = credit_card_transactions_fg.join(account_details_fg)
     ```
 
 === "Scala"
-    ```Scala
+
+    ```scala
     // Returns Query
     val selectedFeatures = creditCardTransactionsFg.join(accountDetailsFg)
     ```
@@ -111,13 +118,22 @@ features for the join key of the left and right feature group.
 The join key lists should contain the names of the features to join on.
 
 === "Python"
+
     ```python
-    selected_features = credit_card_transactions_fg.select_all() \
-        .join(account_details_fg.select_all(), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"], join_type="inner")
+    selected_features = (
+        credit_card_transactions_fg.select_all()
+        .join(account_details_fg.select_all(), on=["cc_num"])
+        .join(
+            merchant_details_fg.select_all(),
+            left_on=["merchant_id"],
+            right_on=["id"],
+            join_type="inner",
+        )
+    )
     ```
 
 === "Scala"
+
     ```scala
     val selectedFeatures = (creditCardTransactionsFg.selectAll()
         .join(accountDetailsFg.selectAll(), Seq("cc_num"))
@@ -146,6 +162,7 @@ foreign keys for its child feature groups.
 </p>
 
 === "Python"
+
     ```python
        selected_features = credit_card_transactions.select_all()
         .join(aggregated_cc_transactions.select_all())
@@ -158,6 +175,7 @@ In online inference, when you want to retrieve features in your online model, yo
 known as the serving_keys, from the parent feature group to retrieve your precomputed feature values using the feature view.
 
 === "Python"
+
     ```python
       feature vector = feature_view.get_feature_vector({
         ‘cc_num’: “1234 5555 3333 8888”,
@@ -180,6 +198,7 @@ This is called  Snowflake Schema data model where you need to build nested table
 </p>
 
 === "Python"
+
     ```python
         nested_selection = aggregated_cc_transactions.select_all()
         .join(account_details.select_all())
@@ -193,6 +212,7 @@ This is called  Snowflake Schema data model where you need to build nested table
 Now, you have the benefit that in online inference you only need to pass two serving key values (the foreign keys of the leftmost feature group) to retrieve the precomputed features:
 
 === "Python"
+
     ```python
         feature vector = feature_view.get_feature_vector({
           ‘cc_num’: “1234 5555 3333 8888”,
@@ -209,11 +229,15 @@ Bitwise Operators `&` and `|` are used to construct conjunctions.
 For the Scala part of the API, equivalent methods are available in the `Feature` and `Filter` classes.
 
 === "Python"
+
     ```python
-    filtered_credit_card_transactions = credit_card_transactions_fg.filter(credit_card_transactions_fg.category == "Grocery")
+    filtered_credit_card_transactions = credit_card_transactions_fg.filter(
+        credit_card_transactions_fg.category == "Grocery"
+    )
     ```
 
 === "Scala"
+
     ```scala
     val filteredCreditCardTransactions = creditCardTransactionsFg.filter(creditCardTransactionsFg.getFeature("category").eq("Grocery"))
     ```
@@ -221,14 +245,25 @@ For the Scala part of the API, equivalent methods are available in the `Feature`
 Filters are fully compatible with joins:
 
 === "Python"
+
     ```python
-    selected_features = credit_card_transactions_fg.select_all() \
-        .join(account_details_fg.select_all(), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"]) \
-        .filter((credit_card_transactions_fg.category == "Grocery") | (credit_card_transactions_fg.category == "Restaurant/Cafeteria"))
+    selected_features = (
+        credit_card_transactions_fg.select_all()
+        .join(account_details_fg.select_all(), on=["cc_num"])
+        .join(
+            merchant_details_fg.select_all(),
+            left_on=["merchant_id"],
+            right_on=["id"],
+        )
+        .filter(
+            (credit_card_transactions_fg.category == "Grocery")
+            | (credit_card_transactions_fg.category == "Restaurant/Cafeteria")
+        )
+    )
     ```
 
 === "Scala"
+
     ```scala
     val selectedFeatures = (creditCardTransactionsFg.selectAll()
         .join(accountDetailsFg.selectAll(), Seq("cc_num"))
@@ -239,14 +274,27 @@ Filters are fully compatible with joins:
 The filters can be applied at any point of the query:
 
 === "Python"
+
     ```python
-    selected_features = credit_card_transactions_fg.select_all() \
-        .join(accountDetails_fg.select_all().filter(accountDetails_fg.avg_temp >= 22), on=["cc_num"]) \
-        .join(merchant_details_fg.select_all(), left_on=["merchant_id"], right_on=["id"]) \
+    selected_features = (
+        credit_card_transactions_fg.select_all()
+        .join(
+            accountDetails_fg.select_all().filter(
+                accountDetails_fg.avg_temp >= 22
+            ),
+            on=["cc_num"],
+        )
+        .join(
+            merchant_details_fg.select_all(),
+            left_on=["merchant_id"],
+            right_on=["id"],
+        )
         .filter(credit_card_transactions_fg.category == "Grocery")
+    )
     ```
 
 === "Scala"
+
     ```scala
     val selectedFeatures = (creditCardTransactionsFg.selectAll()
         .join(accountDetailsFg.selectAll().filter(accountDetailsFg.getFeature("avg_temp").ge(22)), Seq("cc_num"))
@@ -261,6 +309,7 @@ However, this operation will not update the metadata and persist the updated que
 This query can then be used to create a new feature view.
 
 === "Python"
+
     ```python
     fs = ...
     merchant_details_fg = fs.get_feature_group(name="merchant_details", version=1)
@@ -272,6 +321,7 @@ This query can then be used to create a new feature view.
     ```
 
 === "Scala"
+
     ```scala
     val fs = ...
     val merchantDetailsFg = fs.getFeatureGroup("merchant_details", 1)
@@ -287,6 +337,7 @@ This query can then be used to create a new feature view.
     To successfully apply new join/filter logic it is recommended to refresh the query instance by re-fetching the feature view:
 
 === "Python"
+
     ```python
     fs = ...
 
@@ -311,6 +362,7 @@ This query can then be used to create a new feature view.
     ```
 
 === "Scala"
+
     ```scala
     fs = ...
     merchantDetailsFg = fs.getFeatureGroup("merchant_details", 1)

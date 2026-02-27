@@ -66,12 +66,14 @@ The Airflow DAGs are stored in the _Airflow_ dataset which you can access using 
 When writing the code for the DAG you can invoke the operator as follows:
 
 ```python
-HopsworksLaunchOperator(dag=dag,
- task_id="profiles_fg_0",
- project_name="airflow_doc",
- job_name="profiles_fg",
- job_arguments="",
- wait_for_completion=True)
+HopsworksLaunchOperator(
+    dag=dag,
+    task_id="profiles_fg_0",
+    project_name="airflow_doc",
+    job_name="profiles_fg",
+    job_arguments="",
+    wait_for_completion=True,
+)
 ```
 
 You should provide the name of the Airflow task (`task_id`) and the Hopsworks job information (`project_name`, `job_name`, `job_arguments`).
@@ -81,10 +83,12 @@ Similarly, you can invoke the sensor as shown below.
 You should provide the name of the Airflow task (`task_id`) and the Hopsworks job information (`project_name`, `job_name`)
 
 ```python
-HopsworksJobSuccessSensor(dag=dag,
-    task_id='wait_for_profiles_fg',
- project_name="airflow_doc",
-    job_name='profiles_fg')
+HopsworksJobSuccessSensor(
+    dag=dag,
+    task_id="wait_for_profiles_fg",
+    project_name="airflow_doc",
+    job_name="profiles_fg",
+)
 ```
 
 When writing the DAG file, you should also add the `access_control` parameter to the DAG configuration.
@@ -96,13 +100,12 @@ If you do not specify the `access_control` option, project members will not be a
 
 ```python
     dag = DAG(
-        dag_id = "example_dag",
-        default_args = args,
-        access_control = {
+        dag_id="example_dag",
+        default_args=args,
+        access_control={
             "project_name": {"can_dag_read", "can_dag_edit"},
         },
-
-        schedule_interval = "0 4 * * *"
+        schedule_interval="0 4 * * *",
     )
 ```
 
