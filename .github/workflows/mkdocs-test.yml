@@ -61,6 +61,9 @@ jobs:
       - name: Install Ubuntu dependencies
         run: sudo apt update && sudo apt-get install -y libxml2-dev libxslt-dev
 
+      - name: Check mkdocs warnings
+        run: mkdocs build -s
+
       - name: Check for broken links
         run: |
           # run the server

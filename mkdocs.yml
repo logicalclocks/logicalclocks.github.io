@@ -364,6 +364,10 @@ plugins:
               link_source: true
             extensions:
               - hopsworks_apigen.mkdocs
+            docstring_style: google
+            docstring_options:
+                ignore_init_summary: false
+            merge_init_into_class: false
           inventories:
             - https://docs.python.org/3/objects.inv
             - https://pandas.pydata.org/docs/objects.inv
