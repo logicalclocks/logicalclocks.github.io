@@ -190,6 +190,7 @@ nav:
           - Api Keys:
               - Create API Key: user_guides/projects/api_key/create_api_key.md
           - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
+          - Query Engine: user_guides/projects/trino/query_engine.md
       - MLOps:
           - user_guides/mlops/index.md
           - Model Registry:
@@ -263,6 +264,8 @@ nav:
           - Audit:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
+          - Service Operations: setup_installation/admin/operationLogs.md
+          - Query Engine: setup_installation/admin/trino.md
       - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
   - Python API: python-api
   - Java API: javadoc
