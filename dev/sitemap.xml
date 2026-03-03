@@ -313,10 +313,6 @@
          <lastmod>2026-03-03</lastmod>
     </url>
     <url>
-         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/rds/</loc>
-         <lastmod>2026-03-03</lastmod>
-    </url>
-    <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/redshift/</loc>
          <lastmod>2026-03-03</lastmod>
     </url>
@@ -326,6 +322,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/snowflake/</loc>
+         <lastmod>2026-03-03</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sql/</loc>
          <lastmod>2026-03-03</lastmod>
     </url>
     <url>
