@@ -113,18 +113,19 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 2: Implement transformer script
 
 === "Transformer"
+
     ```python
-    class Transformer():
+    class Transformer:
         def __init__(self):
-            """ Initialization code goes here"""
+            """Initialization code goes here"""
             pass
 
         def preprocess(self, inputs):
-            """ Transform the requests inputs here. The object returned by this method will be used as model input to make predictions. """
+            """Transform the requests inputs here. The object returned by this method will be used as model input to make predictions."""
             return inputs
 
         def postprocess(self, outputs):
-            """ Transform the predictions computed by the model before returning a response """
+            """Transform the predictions computed by the model before returning a response"""
             return outputs
     ```
 
@@ -138,8 +139,14 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-  uploaded_file_path = dataset_api.upload("my_transformer.py", "Resources", overwrite=True)
-  transformer_script_path = os.path.join("/Projects", project.name, uploaded_file_path)
+  uploaded_file_path = dataset_api.upload(
+      "my_transformer.py", "Resources", overwrite=True
+  )
+  transformer_script_path = os.path.join(
+      "/Projects", project.name, uploaded_file_path
+  )
+
+
   ```
 
 ### Step 4: Define a transformer
@@ -154,6 +161,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   from hsml.transformer import Transformer
 
   my_transformer = Transformer(script_file)
+
+
   ```
 
 ### Step 5: Create a deployment with the transformer
@@ -167,6 +176,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   # or
   my_deployment = ms.create_deployment(my_predictor, transformer=my_transformer)
   my_deployment.save()
+
+
   ```
 
 ### API Reference

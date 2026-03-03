@@ -16,16 +16,19 @@ We will walk through each functionality in the sections below.
 We retrieve a data source simply by its unique name.
 
 === "PySpark"
+
     ```python
     import hopsworks
+
     # Connect to the Hopsworks feature store
     project = hopsworks.login()
     feature_store = project.get_feature_store()
     # Retrieve data source
-    ds = feature_store.get_data_source('data_source_name')
+    ds = feature_store.get_data_source("data_source_name")
     ```
 
 === "Scala"
+
     ```scala
     import com.logicalclocks.hsfs._
     val connection = HopsworksConnection.builder().build();
@@ -46,12 +49,16 @@ The exact behaviour could change depending on the fdata source type, but broadly
 For data sources based on object/file storage such as AWS S3, ADLS, GCS, we set the full object path in the `path` argument and users should pass a Spark data format (parquet, csv, orc, hudi, delta) to the `data_format` argument.
 
 === "PySpark"
+
     ```python
     # read data into dataframe using path
-    df = connector.read(data_format='data_format', path='fileScheme://bucket/path/')
+    df = connector.read(
+        data_format="data_format", path="fileScheme://bucket/path/"
+    )
     ```
 
 === "Scala"
+
     ```scala
     // read data into dataframe using path
     val df = connector.read("", "data_format", new HashMap(), "fileScheme://bucket/path/")
@@ -75,6 +82,7 @@ Using `prepare_spark` is also not necessary when using the `read` API.
 For example, to read directly from a S3 connector, we use the `prepare_spark` as follows:
 
 === "PySpark"
+
     ```python
     connector.prepare_spark()
     spark.read.format("json").load("s3a://[bucket]/path")
@@ -90,6 +98,7 @@ Depending on the connector type, users can also just set the table path and read
 This is mostly relevant for Google BigQuery.
 
 === "PySpark"
+
     ```python
     # read results from a SQL
     df = connector.read(query="SELECT * FROM TABLE")
@@ -98,6 +107,7 @@ This is mostly relevant for Google BigQuery.
     ```
 
 === "Scala"
+
     ```scala
     // read results from a SQL
     val df = connector.read("SELECT * FROM TABLE", "" , new HashMap(),"")
@@ -110,7 +120,7 @@ For reading data streams, the Kafka Data Source supports reading a Kafka topic i
 === "PySpark"
 
     ```python
-    df = connector.read_stream(topic='kafka_topic_name')
+    df = connector.read_stream(topic="kafka_topic_name")
     ```
 
 ## Creating an External Feature Group
@@ -125,15 +135,17 @@ Depending on the external source, we should set either the `query` argument for 
 Example for any data warehouse/SQL based external sources, we set the desired SQL to `query` argument, and set the `data_source` argument to the data source object of desired data source.
 
 === "PySpark"
-    ```python
-    ds.query="SELECT * FROM TABLE"
 
-    fg = feature_store.create_external_feature_group(name="sales",
+    ```python
+    ds.query = "SELECT * FROM TABLE"
+
+    fg = feature_store.create_external_feature_group(
+        name="sales",
         version=1,
         description="Physical shop sales features",
-        data_source = ds,
-        primary_key=['ss_store_sk'],
-        event_time='sale_date'
+        data_source=ds,
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
     )
     ```
 
@@ -147,13 +159,14 @@ Data Sources are also used while writing training data to external sources.
 While calling the [Feature View](../../../concepts/fs/feature_view/fv_overview.md) API `create_training_data`, we can pass the `data_source` argument which is necessary to materialise the data to external sources, as shown below.
 
 === "PySpark"
+
     ```python
     # materialise a training dataset
     version, job = feature_view.create_training_data(
-        description = 'describe training data',
-        data_format = 'spark_data_format', # e.g., data_format = "parquet" or data_format = "csv"
-        write_options = {"wait_for_job": False},
-        data_source = ds
+        description="describe training data",
+        data_format="spark_data_format",  # e.g., data_format = "parquet" or data_format = "csv"
+        write_options={"wait_for_job": False},
+        data_source=ds,
     )
     ```
 

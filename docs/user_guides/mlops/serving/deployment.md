@@ -158,6 +158,8 @@ Retrieve the trained model you want to deploy.
 
   ```python
   my_model = mr.get_model("my_model", version=1)
+
+
   ```
 
 #### Option A: Using the model object
@@ -166,6 +168,8 @@ Retrieve the trained model you want to deploy.
 
   ```python
   my_deployment = my_model.deploy()
+
+
   ```
 
 #### Option B: Using the Model Serving handle
@@ -182,6 +186,8 @@ Retrieve the trained model you want to deploy.
   # or
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
+
+
   ```
 
 ### API Reference

@@ -48,13 +48,14 @@ Once you have defined the metadata, you can
         GROUP BY ss_store_sk, sales_date
     """
 
-    fg = feature_store.create_external_feature_group(name="sales",
+    fg = feature_store.create_external_feature_group(
+        name="sales",
         version=1,
         description="Physical shop sales features",
         query=query,
         data_source=ds,
-        primary_key=['ss_store_sk'],
-        event_time='sale_date'
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
     )
 
     fg.save()
@@ -65,13 +66,14 @@ Once you have defined the metadata, you can
 === "Python"
 
     ```python
-    fg = feature_store.create_external_feature_group(name="sales",
+    fg = feature_store.create_external_feature_group(
+        name="sales",
         version=1,
         description="Physical shop sales features",
         data_format="parquet",
         data_source=ds,
-        primary_key=['ss_store_sk'],
-        event_time='sale_date'
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
     )
 
     fg.save()
@@ -108,14 +110,15 @@ For an external feature group to be available online, during the creation of the
 
     ```python
     external_fg = fs.create_external_feature_group(
-                name="sales",
-                version=1,
-                description="Physical shop sales features",
-                query=query,
-                data_source=ds,
-                primary_key=['ss_store_sk'],
-                event_time='sale_date',
-                online_enabled=True)
+        name="sales",
+        version=1,
+        description="Physical shop sales features",
+        query=query,
+        data_source=ds,
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
+        online_enabled=True,
+    )
     external_fg.save()
 
     # read from external storage and filter data to sync to online

@@ -25,50 +25,59 @@ For instance, for the function named `add_one_multiple` that outputs multiple c
 The function named `add_two` that outputs a single column in the example given below, produces a single output column names as `add_two_feature`.
 Additionally, Hopsworks also allows users to specify custom names for transformed feature using the [`alias`](../transformation_functions.md#specifying-output-features-names-for-transformation-functions) function.
 
-=== "Python"
+!!! example "Creating model-dependent transformation functions"
+    === "Python"
 
-    !!! example "Creating model-dependent transformation functions"
         ```python
         # Defining a many to many transformation function.
         @udf(return_type=[int, int, int], drop=["feature1", "feature3"])
         def add_one_multiple(feature1, feature2, feature3):
-            return pd.DataFrame({"add_one_feature1":feature1 + 1, "add_one_feature2":feature2 + 1, "add_one_feature3":feature3 + 1})
+            return pd.DataFrame(
+                {
+                    "add_one_feature1": feature1 + 1,
+                    "add_one_feature2": feature2 + 1,
+                    "add_one_feature3": feature3 + 1,
+                }
+            )
+
 
         # Defining a one to one transformation function.
         @udf(return_type=int)
         def add_two(feature):
             return feature + 2
 
+
         # Creating model-dependent transformations by attaching transformation functions to feature views.
         feature_view = fs.create_feature_view(
-            name='transactions_view',
+            name="transactions_view",
             query=query,
             labels=["fraud_label"],
-            transformation_functions=[
-                add_two,
-                add_one_multiple
-            ]
+            transformation_functions=[add_two, add_one_multiple],
         )
+
+
         ```
 
 ### Specifying input features
 
 The features to be used by a model-dependent transformation function can be specified by providing the feature names (from the feature view / feature group) as input to the transformation functions.
 
-=== "Python"
+!!! example "Specifying input features to be passed to a model-dependent transformation function"
+    === "Python"
 
-    !!! example "Specifying input features to be passed to a model-dependent transformation function"
         ```python
         feature_view = fs.create_feature_view(
-            name='transactions_view',
+            name="transactions_view",
             query=query,
             labels=["fraud_label"],
             transformation_functions=[
                 add_two("feature_1"),
                 add_two("feature_2"),
-                add_one_multiple("feature_5", "feature_6", "feature_7")
-            ]
+                add_one_multiple("feature_5", "feature_6", "feature_7"),
+            ],
         )
+
+
         ```
 
 ### Using built-in transformations
@@ -76,9 +85,9 @@ The features to be used by a model-dependent transformation function can be spec
 Built-in transformation functions are attached in the same way.
 The only difference is that they can either be retrieved from the Hopsworks or imported from the `hopsworks` module.
 
-=== "Python"
+!!! example "Creating model-dependent transformation using built-in transformation functions retrieved from Hopsworks"
+    === "Python"
 
-    !!! example "Creating model-dependent transformation using built-in transformation functions retrieved from Hopsworks"
         ```python
         min_max_scaler = fs.get_transformation_function(name="min_max_scaler")
         standard_scaler = fs.get_transformation_function(name="standard_scaler")
@@ -86,37 +95,46 @@ The only difference is that they can either be retrieved from the Hopsworks or i
         label_encoder = fs.get_transformation_function(name="label_encoder")
 
         feature_view = fs.create_feature_view(
-            name='transactions_view',
+            name="transactions_view",
             query=query,
             labels=["fraud_label"],
-            transformation_functions = [
+            transformation_functions=[
                 label_encoder("category"),
                 robust_scaler("amount"),
                 min_max_scaler("loc_delta"),
-                standard_scaler("age_at_transaction")
-            ]
+                standard_scaler("age_at_transaction"),
+            ],
         )
+
+
         ```
 
 To attach built-in transformation functions from the `hopsworks` module they can be directly imported into the code from `hopsworks.builtin_transformations`.
 
-=== "Python"
+!!! example "Creating model-dependent transformation using built-in transformation functions imported from hopsworks"
+    === "Python"
 
-    !!! example "Creating model-dependent transformation using built-in transformation functions imported from hopsworks"
         ```python
-        from hopsworks.hsfs.builtin_transformations import min_max_scaler, label_encoder, robust_scaler, standard_scaler
+        from hopsworks.hsfs.builtin_transformations import (
+            label_encoder,
+            min_max_scaler,
+            robust_scaler,
+            standard_scaler,
+        )
 
         feature_view = fs.create_feature_view(
-            name='transactions_view',
+            name="transactions_view",
             query=query,
             labels=["fraud_label"],
-            transformation_functions = [
+            transformation_functions=[
                 label_encoder("category"),
                 robust_scaler("amount"),
                 min_max_scaler("loc_delta"),
-                standard_scaler("age_at_transaction")
-            ]
+                standard_scaler("age_at_transaction"),
+            ],
         )
+
+
         ```
 
 ## Using Model Dependent Transformations
@@ -127,18 +145,22 @@ The transformed features are organized by their output column names in alphabeti
 
 Model-dependent transformation functions can also be manually applied to a feature vector using the `transform` function.
 
-=== "Python"
+!!! example "Manually applying model-dependent transformations during online inference"
+    === "Python"
 
-    !!! example "Manually applying model-dependent transformations during online inference"
         ```python
         # Initialize the feature view with the correct training dataset version used for model-dependent transformations
         fv.init_serving(training_dataset_version)
 
         # Get untransformed feature Vector
-        feature_vector = fv.get_feature_vector(entry={"index":10}, transform=False, return_type="pandas")
+        feature_vector = fv.get_feature_vector(
+            entry={"index": 10}, transform=False, return_type="pandas"
+        )
 
         # Apply Model Dependent transformations
         encoded_feature_vector = fv.transform(feature_vector)
+
+
         ```
 
 ### Retrieving untransformed feature vector and batch inference data
@@ -146,21 +168,22 @@ Model-dependent transformation functions can also be manually applied to a featu
 The `get_feature_vector`, `get_feature_vectors`, and `get_batch_data` methods can return untransformed feature vectors and batch data without applying model-dependent transformations while still including on-demand features.
 To achieve this, set the `transform` parameter to False.
 
-=== "Python"
 !!! example "Returning untransformed feature vectors and batch data."
-    ```python
-    # Fetching untransformed feature vector.
-    untransformed_feature_vector = feature_view.get_feature_vector(
-        entry={"id": 1}, transform=False
-    )
+    === "Python"
 
-    # Fetching untransformed feature vectors.
-    untransformed_feature_vectors = feature_view.get_feature_vectors(
-        entry=[{"id": 1}, {"id": 2}], transform=False
-    )
+        ```python
+        # Fetching untransformed feature vector.
+        untransformed_feature_vector = feature_view.get_feature_vector(
+            entry={"id": 1}, transform=False
+        )
 
-    # Fetching untransformed batch data.
-    untransformed_batch_data = feature_view.get_batch_data(
-        transform=False
-    )
-    ```
+        # Fetching untransformed feature vectors.
+        untransformed_feature_vectors = feature_view.get_feature_vectors(
+            entry=[{"id": 1}, {"id": 2}], transform=False
+        )
+
+        # Fetching untransformed batch data.
+        untransformed_batch_data = feature_view.get_batch_data(transform=False)
+
+
+        ```

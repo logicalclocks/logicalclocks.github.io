@@ -143,15 +143,15 @@ import hopsworks
 
 # Put the API key into Key Vault for any production setup:
 # See, https://azure.microsoft.com/en-us/services/key-vault/
-secret_value = 'MY_API_KEY'
+secret_value = "MY_API_KEY"
 
 # Create a connection
 project = hopsworks.login(
-    host='MY_INSTANCE.cloud.hopsworks.ai', # DNS of your Feature Store instance
-    port=443,                              # Port to reach your Hopsworks instance, defaults to 443
-    project='MY_PROJECT',                  # Name of your Hopsworks project
-    api_key_value=secret_value,            # The API key to authenticate with Hopsworks
-    hostname_verification=True             # Disable for self-signed certificates
+    host="MY_INSTANCE.cloud.hopsworks.ai",  # DNS of your Feature Store instance
+    port=443,  # Port to reach your Hopsworks instance, defaults to 443
+    project="MY_PROJECT",  # Name of your Hopsworks project
+    api_key_value=secret_value,  # The API key to authenticate with Hopsworks
+    hostname_verification=True,  # Disable for self-signed certificates
 )
 
 # Get the feature store handle for the project's feature store

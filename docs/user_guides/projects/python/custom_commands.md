@@ -44,12 +44,11 @@ You can also run the custom commands using the REST API.
 From the REST API, you should provide the path, in HOPSFS, to the bash script and the artifacts(comma separated string of paths in HopsFs).
 The REST API endpoint for running custom commands is: `hopsworks-api/api/project/<projectId>/python/environments/<environmentName>/commands/custom` and the body should look like this:
 
-```python
+```json
 {
     "commandsFile": "<pathToYourBashScriptInHopsFS>",
     "artifacts": "<commaSeparatedListOfPathsToArtifactsInHopsFS>"
 }
-
 ```
 
 ## What to include in the bash script

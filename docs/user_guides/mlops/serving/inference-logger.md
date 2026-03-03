@@ -78,15 +78,15 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-
   from hsml.inference_logger import InferenceLogger
   from hsml.kafka_topic import KafkaTopic
 
-  new_topic = KafkaTopic(name="CREATE",
-                        # optional
-                        num_partitions=1,
-                        num_replicas=1
-                        )
+  new_topic = KafkaTopic(
+      name="CREATE",
+      # optional
+      num_partitions=1,
+      num_replicas=1,
+  )
 
   my_logger = InferenceLogger(kafka_topic=new_topic, mode="ALL")
   ```
@@ -95,7 +95,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
     Similarly, you can create the same logger with:
 
     ```python
-
     my_logger = InferenceLogger(kafka_topic={"name": "CREATE"}, mode="ALL")
     ```
 
@@ -106,15 +105,15 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   my_model = mr.get_model("my_model", version=1)
 
-  my_predictor = ms.create_predictor(my_model,
-                                    inference_logger=my_logger
-                                    )
+  my_predictor = ms.create_predictor(my_model, inference_logger=my_logger)
   my_predictor.deploy()
 
   # or
 
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
+
+
   ```
 
 ### API Reference

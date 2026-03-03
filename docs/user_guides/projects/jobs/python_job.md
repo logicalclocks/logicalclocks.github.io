@@ -130,7 +130,6 @@ This snippet assumes the python script is in the current working directory and n
 It will upload the python script to the `Resources` dataset in your project.
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
@@ -138,7 +137,6 @@ project = hopsworks.login()
 dataset_api = project.get_dataset_api()
 
 uploaded_file_path = dataset_api.upload("script.py", "Resources")
-
 ```
 
 ### Step 2: Create Python job
@@ -146,19 +144,17 @@ uploaded_file_path = dataset_api.upload("script.py", "Resources")
 In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the python script and override the environment to run in, and finally create the `Job` object.
 
 ```python
-
 jobs_api = project.get_job_api()
 
 py_job_config = jobs_api.get_configuration("PYTHON")
 
 # Set the application file
-py_job_config['appPath'] = uploaded_file_path
+py_job_config["appPath"] = uploaded_file_path
 
 # Override the python job environment
-py_job_config['environmentName'] = "python-feature-pipeline"
+py_job_config["environmentName"] = "python-feature-pipeline"
 
 job = jobs_api.create_job("py_job", py_job_config)
-
 ```
 
 ### Step 3: Execute the job
@@ -166,7 +162,6 @@ job = jobs_api.create_job("py_job", py_job_config)
 In this snippet we execute the job synchronously, that is wait until it reaches a terminal state, and then download and print the logs.
 
 ```python
-
 # Run the job
 execution = job.run(await_termination=True)
 
@@ -178,7 +173,6 @@ print(f_out.read())
 
 f_err = open(err, "r")
 print(f_err.read())
-
 ```
 
 ## Configuration

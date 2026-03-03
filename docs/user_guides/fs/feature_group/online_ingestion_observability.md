@@ -28,7 +28,7 @@ First, create an online-enabled feature group and insert data into it:
         name="feature_group_name",
         version=feature_group_version,
         primary_key=feature_group_primary_keys,
-        online_enabled=True
+        online_enabled=True,
     )
 
     fg.insert(fg_df)

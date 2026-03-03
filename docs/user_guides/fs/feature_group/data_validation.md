@@ -109,7 +109,7 @@ In order to define and validate an expectation when writing to a Feature Group, 
 
 Connect the client running your notebooks to Hopsworks.
 
-```python3
+```python
 import hopsworks
 
 project = hopsworks.login()
@@ -124,10 +124,13 @@ The `fs` Feature Store entity is now ready to be used to insert or read data fro
 
 Load your data in a DataFrame using the usual pandas API.
 
-```python3
+```python
 import pandas as pd
 
-df = pd.read_csv("https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/transactions.csv", parse_dates=["datetime"])
+df = pd.read_csv(
+    "https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/transactions.csv",
+    parse_dates=["datetime"],
+)
 
 df.head(3)
 ```
@@ -143,7 +146,7 @@ Everything is done using the Great Expectations API so you can re-use any prior 
 Create (or import an existing) expectation suite using the Great Expectations library.
 This suite will hold all the validation tests we want to perform on our data before inserting them into Hopsworks.
 
-```python3
+```python
 import great_expectations as ge
 
 expectation_suite = ge.core.ExpectationSuite(
@@ -156,26 +159,18 @@ expectation_suite = ge.core.ExpectationSuite(
 Add some expectation to your suite.
 Each expectation configuration corresponds to a validation test to be run against your data.
 
-```python3
+```python
 expectation_suite.add_expectation(
     ge.core.ExpectationConfiguration(
         expectation_type="expect_column_min_to_be_between",
-        kwargs={
-            "column": "foo_id",
-            "min_value": 0,
-            "max_value": 1
-        }
+        kwargs={"column": "foo_id", "min_value": 0, "max_value": 1},
     )
 )
 
 expectation_suite.add_expectation(
     ge.core.ExpectationConfiguration(
         expectation_type="expect_column_value_lengths_to_be_between",
-        kwargs={
-            "column": "bar_name",
-            "min_value": 3,
-            "max_value": 10
-        }
+        kwargs={"column": "bar_name", "min_value": 3, "max_value": 10},
     )
 )
 ```
@@ -185,7 +180,7 @@ expectation_suite.add_expectation(
 Building Expectation Suite by hand can be a major time commitment when you have dozens of Features.
 Great Expectations offers `Profiler` classes to inspect a sample of your data and infers a suitable Expectation Suite that you will be able to register with Hopsworks.
 
-```python3
+```python
 ge_profiler = ge.profile.BasicSuiteBuilderProfiler()
 expectation_suite_profiler, _ = ge_profiler.profile(ge.from_pandas(df))
 ```
@@ -199,20 +194,20 @@ Once a Feature Group is registered in the Feature Store, you can use it to inser
 For more information see [create Feature Group](create.md).
 To benefit from automatic validation on insertion, attach your newly created Expectation Suite when creating the Feature Group:
 
-```python3
+```python
 fg = fs.create_feature_group(
-  "fg_with_data_validation",
-  version=1,
-  description="Validated data",
-  primary_key=['foo_id'],
-  online_enabled=False,
-  expectation_suite=expectation_suite
+    "fg_with_data_validation",
+    version=1,
+    description="Validated data",
+    primary_key=["foo_id"],
+    online_enabled=False,
+    expectation_suite=expectation_suite,
 )
 ```
 
 or, if the Feature Group already exist, you can simply run:
 
-```python3
+```python
 fg.save_expectation_suite(expectation_suite)
 ```
 
@@ -220,7 +215,7 @@ That is all there is to it.
 Hopsworks will now automatically use your suite to validate the DataFrames you want to write to the Feature Group.
 Try it out!
 
-```python3
+```python
 job, validation_report = fg.insert(df.head(5))
 ```
 
@@ -242,7 +237,7 @@ As you can see, your Feature Group conveniently gather all in one place: your da
 
 Hopsworks client API allows you to retrieve validation reports for further analysis.
 
-```python3
+```python
 # load multiple reports
 validation_reports = fg.get_validation_reports()
 
@@ -252,10 +247,8 @@ ge_latest_report = fg.get_latest_validation_report()
 
 Similarly you can retrieve the historic of validation results for a particular expectation, e.g to plot a time-series of a given expectation observed value over time.
 
-```python3
-validation_history = fg.get_validation_history(
-    expectationId=1
-)
+```python
+validation_history = fg.get_validation_history(expectationId=1)
 ```
 
 You can find the expectationIds in the UI or using `fg.get_expectation_suite` and looking it up in the expectation's meta field.

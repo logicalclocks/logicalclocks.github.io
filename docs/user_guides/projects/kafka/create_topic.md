@@ -16,24 +16,22 @@ In this guide, you will learn how to create a Kafka Topic.
 ### Step 1: Get the Kafka API
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
 
 kafka_api = project.get_kafka_api()
-
 ```
 
 ### Step 2: Define the schema
 
 ```python
+TOPIC_NAME = "topic_example"
+SCHEMA_NAME = "schema_example"
 
-TOPIC_NAME="topic_example"
-SCHEMA_NAME="schema_example"
-
-my_topic = kafka_api.create_topic(TOPIC_NAME, SCHEMA_NAME, 1, replicas=1, partitions=1)
-
+my_topic = kafka_api.create_topic(
+    TOPIC_NAME, SCHEMA_NAME, 1, replicas=1, partitions=1
+)
 ```
 
 ### API Reference

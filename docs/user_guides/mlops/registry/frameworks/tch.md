@@ -13,6 +13,7 @@ In this guide you will learn how to export a Torch model and register it in the 
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
     ```python
     import hopsworks
 
@@ -27,6 +28,7 @@ In this guide you will learn how to export a Torch model and register it in the 
 Define your Torch model and run the training loop.
 
 === "Python"
+
     ```python
     # Define the model architecture
     class Net(nn.Module):
@@ -39,6 +41,7 @@ Define your Torch model and run the training loop.
             x = self.pool(F.relu(self.conv1(x)))
             ...
             return x
+
 
     # Instantiate the model
     net = Net()
@@ -53,6 +56,7 @@ Define your Torch model and run the training loop.
 Export the Torch model to a directory on the local filesystem.
 
 === "Python"
+
     ```python
     model_dir = "./model"
 
@@ -65,9 +69,10 @@ Use the `ModelRegistry.torch.create_model(..)` function to register a model as a
 Define a name, and attach optional metrics for your model, then invoke the `save()` function with the parameter being the path to the local directory where the model was exported to.
 
 === "Python"
+
     ```python
     # Model evaluation metrics
-    metrics = {'accuracy': 0.92}
+    metrics = {"accuracy": 0.92}
 
     tch_model = mr.torch.create_model("tch_model", metrics=metrics)
 

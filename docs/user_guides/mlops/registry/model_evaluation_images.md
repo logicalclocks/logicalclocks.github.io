@@ -16,6 +16,7 @@ By attaching model evaluation images to your versioned model, other users can be
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
     ```python
     import hopsworks
 
@@ -30,6 +31,7 @@ By attaching model evaluation images to your versioned model, other users can be
 Generate an image that visualizes model performance and evaluation metrics
 
 === "Python"
+
     ```python
     import seaborn
     from sklearn.metrics import confusion_matrix
@@ -46,8 +48,8 @@ Generate an image that visualizes model performance and evaluation metrics
     # Create a DataFrame for the confusion matrix results
     df_confusion_matrix = pd.DataFrame(
         results,
-        ['True Normal', 'True Fraud'],
-        ['Pred Normal', 'Pred Fraud'],
+        ["True Normal", "True Fraud"],
+        ["Pred Normal", "Pred Fraud"],
     )
 
     # Create a heatmap using seaborn with annotations
@@ -63,6 +65,7 @@ Generate an image that visualizes model performance and evaluation metrics
 Save the figure to a file with a common filename extension (for example, .png or .jpeg), and place it in a directory called `images` - a subdirectory of the model directory that is registered to Hopsworks.
 
 === "Python"
+
     ```python
     # Specify the directory name for saving the model and related artifacts
     model_dir = "./model"

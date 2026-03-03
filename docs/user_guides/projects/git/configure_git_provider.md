@@ -63,25 +63,21 @@ You can also configure a git provider using the hopsworks git API in python.
 ### Step 1: Get the git API
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
 
 git_api = project.get_git_api()
-
 ```
 
 ### Step 2: Configure git provider
 
 ```python
-
-PROVIDER="GitHub"
-GITHUB_USER="my_user"
-API_TOKEN="my_token"
+PROVIDER = "GitHub"
+GITHUB_USER = "my_user"
+API_TOKEN = "my_token"
 
 git_api.set_provider(PROVIDER, GITHUB_USER, API_TOKEN)
-
 ```
 
 ### API Reference

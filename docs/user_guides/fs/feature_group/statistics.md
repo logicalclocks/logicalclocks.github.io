@@ -45,20 +45,21 @@ By default the value is empty list `[]` and the statistics are computed for all 
 === "Python"
 
     ```python
-    fg = feature_store.create_feature_group(name="weather",
+    fg = feature_store.create_feature_group(
+        name="weather",
         version=1,
         description="Weather Features",
         online_enabled=True,
-        primary_key=['location_id'],
-        partition_key=['day'],
-        event_time='event_time',
+        primary_key=["location_id"],
+        partition_key=["day"],
+        event_time="event_time",
         statistics_config={
             "enabled": True,
             "histograms": True,
             "correlations": True,
             "exact_uniqueness": False,
-            "columns": []
-        }
+            "columns": [],
+        },
     )
     ```
 
@@ -75,7 +76,7 @@ Either to add or remove a class of statistics, or to change the set of features 
         "histograms": False,
         "correlations": False,
         "exact_uniqueness": False,
-        "columns": ['location_id', 'min_temp', 'max_temp']
+        "columns": ["location_id", "min_temp", "max_temp"],
     }
 
     fg.update_statistics_config()
@@ -98,7 +99,7 @@ As external feature groups are read only from an Hopsworks perspective, statisti
 === "Python"
 
     ```python
-    fg.compute_statistics(wallclock_time='20220611 20:00')
+    fg.compute_statistics(wallclock_time="20220611 20:00")
     ```
 
 ## Inspect statistics

@@ -27,6 +27,7 @@ Data rows where `event_time` is older than the TTL period will be automatically 
 
 ```python
 from datetime import datetime, timezone
+
 import pandas as pd
 
 # Assume you already have a feature store handle

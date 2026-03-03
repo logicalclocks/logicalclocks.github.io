@@ -26,11 +26,12 @@ To enable Change Data Capture for an online-enabled feature group using the HSFS
 
     ```python
     fg = fs.create_feature_group(
-      name="feature_group_name",
-      version=feature_group_version,
-      primary_key=feature_group_primary_keys,
-      online_enabled=True,
-      notification_topic_name="notification_topic_name")
+        name="feature_group_name",
+        version=feature_group_version,
+        primary_key=feature_group_primary_keys,
+        online_enabled=True,
+        notification_topic_name="notification_topic_name",
+    )
     ```
 
 ### Update Feature Group with Change Data Capture topic using Python
@@ -43,7 +44,8 @@ With the default configuration, it can take up to 30 minutes for these changes t
 
     ```python
     fg.update_notification_topic_name(
-      notification_topic_name="new_notification_topic_name")
+        notification_topic_name="new_notification_topic_name"
+    )
     ```
 
 ## Using UI

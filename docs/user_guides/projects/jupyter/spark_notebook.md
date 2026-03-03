@@ -147,7 +147,9 @@ To read a dataset in your project using Spark, use the full filesystem path wher
 For example, to read a CSV file named `data.csv` located in the `Resources` dataset of a project called `my_project`:
 
 ```python
-df = spark.read.csv("/Projects/my_project/Resources/data.csv", header=True, inferSchema=True)
+df = spark.read.csv(
+    "/Projects/my_project/Resources/data.csv", header=True, inferSchema=True
+)
 df.show()
 ```
 

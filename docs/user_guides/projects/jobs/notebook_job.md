@@ -145,7 +145,6 @@ This snippet assumes the Jupyter Notebook script is in the current working direc
 It will upload the Jupyter Notebook script to the `Resources` dataset in your project.
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
@@ -153,7 +152,6 @@ project = hopsworks.login()
 dataset_api = project.get_dataset_api()
 
 uploaded_file_path = dataset_api.upload("notebook.ipynb", "Resources")
-
 ```
 
 ### Step 2: Create Jupyter Notebook job
@@ -161,19 +159,17 @@ uploaded_file_path = dataset_api.upload("notebook.ipynb", "Resources")
 In this snippet we get the `JobsApi` object to get the default job configuration for a `PYTHON` job, set the jupyter notebook file and override the environment to run in, and finally create the `Job` object.
 
 ```python
-
 jobs_api = project.get_job_api()
 
 notebook_job_config = jobs_api.get_configuration("PYTHON")
 
 # Set the application file
-notebook_job_config['appPath'] = uploaded_file_path
+notebook_job_config["appPath"] = uploaded_file_path
 
 # Override the python job environment
-notebook_job_config['environmentName'] = "python-feature-pipeline"
+notebook_job_config["environmentName"] = "python-feature-pipeline"
 
 job = jobs_api.create_job("notebook_job", notebook_job_config)
-
 ```
 
 ### Step 3: Execute the job
@@ -181,9 +177,8 @@ job = jobs_api.create_job("notebook_job", notebook_job_config)
 In this code snippet, we execute the job with arguments and wait until it reaches a terminal state.
 
 ```python
-
 # Run the job
-execution = job.run(args='-p a 2 -p b 5', await_termination=True)
+execution = job.run(args="-p a 2 -p b 5", await_termination=True)
 ```
 
 ## Configuration

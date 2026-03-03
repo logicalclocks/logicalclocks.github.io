@@ -14,23 +14,19 @@ In this guide, you will learn how to connect to the OpenSearch cluster using an 
 ### Step 1: Get the OpenSearch API
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
 
 opensearch_api = project.get_opensearch_api()
-
 ```
 
 ### Step 2: Configure the opensearch-py client
 
 ```python
-
 from opensearchpy import OpenSearch
 
 client = OpenSearch(**opensearch_api.get_default_py_config())
-
 ```
 
 ### API Reference

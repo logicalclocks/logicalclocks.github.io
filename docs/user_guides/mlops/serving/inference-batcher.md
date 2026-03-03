@@ -75,12 +75,13 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   from hsml.inference_batcher import InferenceBatcher
 
-  my_batcher = InferenceBatcher(enabled=True,
-                                # optional
-                                max_batch_size=32,
-                                max_latency=5000, # milliseconds
-                                timeout=5 # seconds
-                                )
+  my_batcher = InferenceBatcher(
+      enabled=True,
+      # optional
+      max_batch_size=32,
+      max_latency=5000,  # milliseconds
+      timeout=5,  # seconds
+  )
   ```
 
 ### Step 3: Create a deployment with the inference batcher
@@ -88,18 +89,17 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-
   my_model = mr.get_model("my_model", version=1)
 
-  my_predictor = ms.create_predictor(my_model,
-                                    inference_batcher=my_batcher
-                                    )
+  my_predictor = ms.create_predictor(my_model, inference_batcher=my_batcher)
   my_predictor.deploy()
 
   # or
 
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
+
+
   ```
 
 ### API Reference

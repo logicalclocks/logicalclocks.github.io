@@ -364,6 +364,10 @@ plugins:
               link_source: true
             extensions:
               - hopsworks_apigen.mkdocs
+            docstring_style: google
+            docstring_options:
+              ignore_init_summary: false
+            merge_init_into_class: false
           inventories:
             - https://docs.python.org/3/objects.inv
             - https://pandas.pydata.org/docs/objects.inv
@@ -372,7 +376,12 @@ plugins:
             - https://docs.pydantic.dev/latest/objects.inv
             - https://fastapi.tiangolo.com/objects.inv
             - https://scikit-learn.org/stable/objects.inv
+            - https://arrow.apache.org/docs/objects.inv
             - https://docs.pola.rs/api/python/stable/objects.inv
+            - url: file:./docs/polars_patch.inv
+              base_url: https://docs.pola.rs/api/python/stable/
+            - url: file:./docs/great_expectations.inv
+              base_url: https://docs.greatexpectations.io/docs/0.18/reference/api/
 
 markdown_extensions:
   - admonition

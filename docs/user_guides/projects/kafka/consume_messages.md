@@ -16,39 +16,33 @@ In this guide, you will learn how to consume messages from a kafka topic.
 ### Step 1: Get the Kafka API
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
 
 kafka_api = project.get_kafka_api()
-
 ```
 
 ### Step 2: Configure confluent-kafka client
 
 ```python
-
 consumer_config = kafka_api.get_default_config()
-consumer_config['default.topic.config'] = {'auto.offset.reset': 'earliest'}
+consumer_config["default.topic.config"] = {"auto.offset.reset": "earliest"}
 
 from confluent_kafka import Consumer
 
 consumer = Consumer(consumer_config)
-
 ```
 
 ### Step 3: Consume messages from a topic
 
 ```python
-
 # Subscribe to topic
 consumer.subscribe(["my_topic"])
 
 for i in range(0, 10):
     msg = consumer.poll(timeout=10.0)
     print(msg.value())
-
 ```
 
 ### API Reference

@@ -46,10 +46,9 @@ You have a DataFrame of features you want to log.
 ```python
 import pandas as pd
 
-features = pd.DataFrame({
-    "feature1": [1.1, 2.2, 3.3],
-    "feature2": [4.4, 5.5, 6.6]
-})
+features = pd.DataFrame(
+    {"feature1": [1.1, 2.2, 3.3], "feature2": [4.4, 5.5, 6.6]}
+)
 
 # Log features
 feature_view.log(features)
@@ -60,15 +59,14 @@ feature_view.log(features)
 You can also log predictions, and optionally the training dataset and the model used for prediction.
 
 ```python
-predictions = pd.DataFrame({
-    "prediction": [0, 1, 0]
-})
+predictions = pd.DataFrame({"prediction": [0, 1, 0]})
 
 # Log features and predictions
-feature_view.log(features,
-                 predictions=predictions,
-                 training_dataset_version=1,
-                 model=Model(1, "model", version=1)
+feature_view.log(
+    features,
+    predictions=predictions,
+    training_dataset_version=1,
+    model=Model(1, "model", version=1),
 )
 ```
 
@@ -137,7 +135,9 @@ Accepted date format are: `%Y-%m-%d`, `%Y-%m-%d %H`, `%Y-%m-%d %H:%M`, `%Y-%m-%d
 
 ```python
 # Read log entries from January 2022
-log_entries = feature_view.read_log(start_time="2022-01-01", end_time="2022-01-31")
+log_entries = feature_view.read_log(
+    start_time="2022-01-01", end_time="2022-01-31"
+)
 print(log_entries)
 ```
 

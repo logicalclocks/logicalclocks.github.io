@@ -203,7 +203,6 @@ hopsfs:
         account: "STORAGE_ACCOUNT_NAME"
         container: "STORAGE_ACCOUNT_CONTAINER_NAME"
         identityClientId: "UA_IDENTITY_CLIENT_ID"
-
 ```
 
 ## Step 5: Deploy Hopsworks

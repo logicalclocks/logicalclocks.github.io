@@ -33,13 +33,19 @@ Context:
 
     {% set attribute_name = attribute.path if show_full_path else attribute.name %}
 
+    {% set label = config.toc_label if config.toc_label and root else attribute.name %}
+    {% if label | upper != label %}
+      {% set label = label.replace("A", "\u200bA").replace("B", "\u200bB").replace("C", "\u200bC").replace("D", "\u200bD").replace("E", "\u200bE").replace("F", "\u200bF").replace("G", "\u200bG").replace("H", "\u200bH").replace("I", "\u200bI").replace("J", "\u200bJ").replace("K", "\u200bK").replace("L", "\u200bL").replace("M", "\u200bM").replace("N", "\u200bN").replace("O", "\u200bO").replace("P", "\u200bP").replace("Q", "\u200bQ").replace("R", "\u200bR").replace("S", "\u200bS").replace("T", "\u200bT").replace("U", "\u200bU").replace("V", "\u200bV").replace("W", "\u200bW").replace("X", "\u200bX").replace("Y", "\u200bY").replace("Z", "\u200bZ") %}
+    {% endif %}
+    {% set label = label.replace("_", "\u200b_") %}
+
     {% if not root or config.show_root_heading %}
       {% filter heading(
           heading_level,
           role="data" if attribute.parent.kind.value == "module" else "attr",
           id=html_id,
           class="doc doc-heading",
-          toc_label=('<code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;'|safe if config.show_symbol_type_toc else '') + (config.toc_label if config.toc_label and root else attribute.name),
+          toc_label=('<code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;'|safe if config.show_symbol_type_toc else '') + label,
           skip_inventory=config.skip_local_inventory,
         ) %}
 
@@ -50,7 +56,7 @@ Context:
           -#}
           {% block source_link scoped %}
             {% if config.extra.link_source and attribute.source_link %}
-              <span style="float:right;font-size:.8rem;font-weight:400"><a href="{{ attribute.source_link }}">[source]</a></span>
+              <span style="float:right;font-size:.8rem;font-weight:400"><a href="{{ attribute.source_link }}" class="source-link"></a></span>
             {% endif %}
           {% endblock source_link %}
 
@@ -97,7 +103,7 @@ Context:
         {% filter heading(heading_level,
             role="data" if attribute.parent.kind.value == "module" else "attr",
             id=html_id,
-            toc_label=('<code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;'|safe if config.show_symbol_type_toc else '') + (config.toc_label if config.toc_label and root else attribute_name),
+            toc_label=('<code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;'|safe if config.show_symbol_type_toc else '') + label,
             hidden=True,
             skip_inventory=config.skip_local_inventory,
           ) %}

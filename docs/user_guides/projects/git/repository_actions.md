@@ -45,27 +45,23 @@ You can also perform the repository actions using the hopsworks git API in pytho
 ### Step 1: Get the git API
 
 ```python
-
 import hopsworks
 
 project = hopsworks.login()
 
 git_api = project.get_git_api()
-
 ```
 
 ### Step 2: Get the git repository
 
 ```python
 git_repo = git_api.get_repo(REPOSITORY_NAME)
-
 ```
 
 ### Step 3: Perform the git repository action e.g commit
 
 ```python
 git_repo = git_api.commit("Test commit")
-
 ```
 
 ### API Reference

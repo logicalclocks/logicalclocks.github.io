@@ -93,7 +93,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   my_predictor = ms.create_predictor(
       my_model,
-      api_protocol="GRPC"  # defaults to "REST"
+      api_protocol="GRPC",  # defaults to "REST"
   )
   my_predictor.deploy()
 
@@ -101,6 +101,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
+
+
   ```
 
 ### API Reference

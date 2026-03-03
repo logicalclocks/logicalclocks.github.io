@@ -64,19 +64,19 @@ import hopsworks
 
 # Put the API key into Key Vault for any production setup:
 # See, https://docs.microsoft.com/en-us/azure/machine-learning/how-to-use-secrets-in-runs
-#from azureml.core import Experiment, Run
-#run = Run.get_context()
-#secret_value = run.get_secret(name="fs-api-key")
-secret_value = 'MY_API_KEY'
+# from azureml.core import Experiment, Run
+# run = Run.get_context()
+# secret_value = run.get_secret(name="fs-api-key")
+secret_value = "MY_API_KEY"
 
 # Create a connection
 project = hopsworks.login(
-    host='MY_INSTANCE.cloud.hopsworks.ai', # DNS of your Hopsworks instance
-    port=443,                              # Port to reach your Hopsworks instance, defaults to 443
-    project='MY_PROJECT',                  # Name of your Hopsworks project
-    api_key_value=secret_value,            # The API key to authenticate with Hopsworks
-    hostname_verification=True,            # Disable for self-signed certificates
-    engine='python'                        # Choose Python as engine
+    host="MY_INSTANCE.cloud.hopsworks.ai",  # DNS of your Hopsworks instance
+    port=443,  # Port to reach your Hopsworks instance, defaults to 443
+    project="MY_PROJECT",  # Name of your Hopsworks project
+    api_key_value=secret_value,  # The API key to authenticate with Hopsworks
+    hostname_verification=True,  # Disable for self-signed certificates
+    engine="python",  # Choose Python as engine
 )
 
 # Get the feature store handle for the project's feature store
