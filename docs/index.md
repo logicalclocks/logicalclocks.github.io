@@ -82,7 +82,7 @@ hide:
                     <div class="db_frame-top"></div>
                     <div class="db_frame-mid"></div>
                   </div>
-                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/rds/">RDS</a></div>
+                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/sql/">SQL</a></div>
                 </div>
               </div>
             </div>
