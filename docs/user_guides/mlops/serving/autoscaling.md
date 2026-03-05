@@ -77,10 +77,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   from hsml.scaling_config import PredictorScalingConfig
 
   predictor_scaling = PredictorScalingConfig(
-      min_instances=1,
-      max_instances=5,
-      scale_metric="RPS",
-      target=100
+      min_instances=1, max_instances=5, scale_metric="RPS", target=100
   )
   ```
 
@@ -92,10 +89,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   from hsml.scaling_config import TransformerScalingConfig
 
   transformer_scaling = TransformerScalingConfig(
-      min_instances=1,
-      max_instances=3,
-      scale_metric="CONCURRENCY",
-      target=50
+      min_instances=1, max_instances=3, scale_metric="CONCURRENCY", target=50
   )
 
   my_transformer = ms.create_transformer(
