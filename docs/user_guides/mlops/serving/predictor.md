@@ -216,6 +216,7 @@ For Python model deployments, you need implement a predictor script that loads a
   ```
 
 ### Step 3: Pass predictor configuration to model deployment
+
 You can customize the default predictor settings when creating a model deployment.
 
 === "Python"
@@ -236,7 +237,7 @@ You can customize the default predictor settings when creating a model deploymen
 
 ## Model Server
 
-Hopsworks Model Serving supports deploying models with a Python model server for python-based models (scikit-learn, XGBoost , pytorch...), TensorFlow Serving for TensorFlow / Keras models and vLLM for Large Language Models (LLMs). 
+Hopsworks Model Serving supports deploying models with a Python model server for python-based models (scikit-learn, XGBoost , pytorch...), TensorFlow Serving for TensorFlow / Keras models and vLLM for Large Language Models (LLMs).
 
 !!! info "Supported model servers"
 
@@ -247,7 +248,7 @@ Hopsworks Model Serving supports deploying models with a Python model server for
     | TensorFlow Serving   | TensorFlow Serving runtime                    | Keras, TensorFlow                                                                                |
     | vLLM                 | vLLM openai-compatible server                 | vLLM-supported models (see [list](https://docs.vllm.ai/en/v0.10.2/models/supported_models.html)) |
 
-Each model server has specific requirements and supports different types of model artifacts, file formats, and configuration options. When deploying a model, ensure that your model files and configuration align with the expectations of the selected server. 
+Each model server has specific requirements and supports different types of model artifacts, file formats, and configuration options. When deploying a model, ensure that your model files and configuration align with the expectations of the selected server.
 
 !!! info "Model artifact requirements"
 
@@ -265,6 +266,7 @@ All deployments use [KServe](https://kserve.github.io/website/latest/) as the se
 For **Python model deployments** ==only==, you can provide a custom Python script—called a predictor script—to load your model and serve predictions. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must follow a specific template, as shown in [Step 2](#step-2-optional-implement-a-predictor-script).
 
 ## Server configuration file
+
 For **Python model deployments**, you can provide a server configuration file to separate deployment-specific settings from the logic in your predictor or transformer scripts. This approach allows you to update configuration parameters without modifying the code. Within the deployment, the configuration file is accessible at the path specified by the `CONFIG_FILE_PATH` environment variable (see [environment variables](#environment-variables)).
 
 For **vLLM deployments**, the server configuration file is ==required== and is used to configure the vLLM server. For example, you can use this configuration file to specify the chat template or LoRA modules to be loaded by the vLLM server. See all available parameters in the [official documentation](https://docs.vllm.ai/en/v0.10.2/serving/openai_compatible_server.html).
@@ -324,7 +326,6 @@ A number of different environment variables is available in the predictor to eas
         | `SECRETS_DIR`            | Path to secrets directory (`/keys`)                |
         | `MATERIAL_DIRECTORY`     | Path to TLS certificates (`/certs`)                |
         | `REQUESTS_VERIFY`        | SSL verification setting                           |
-
 
 ## Python environments
 

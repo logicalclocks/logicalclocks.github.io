@@ -194,7 +194,6 @@ A number of different environment variables is available in the Python deploymen
         | `MATERIAL_DIRECTORY`     | Path to TLS certificates (`/certs`)                |
         | `REQUESTS_VERIFY`        | SSL verification setting                           |
 
-
 ## Python environments
 
 Python deployments run in one of the `*-inference-pipeline` Python environments available in your project.

@@ -33,7 +33,7 @@ Authorization: ApiKey <API_KEY_VALUE>
 
 ## URL Paths
 
-Deployed models are accessible through the ==Istio ingress gateway== using **path-based** routing. The full URL is constructed by combining the base path with a model server-specific suffix. 
+Deployed models are accessible through the ==Istio ingress gateway== using **path-based** routing. The full URL is constructed by combining the base path with a model server-specific suffix.
 This URL is also provided on the model deployment page in the Hopsworks UI.
 
 !!! example ""
@@ -48,7 +48,7 @@ The base URL is composed of the **Istio ingress gateway IP**, the **project name
 !!! example ""
     **`https://<ISTIO_GATEWAY_IP>/v1/<project_name>/<deployment_name>`**
 
-!!! warning "Host-based routing (legacy)" 
+!!! warning "Host-based routing (legacy)"
     Prior to path-based routing, requests were routed using a `Host` header matching the model deployment hostname, and **`https://<ISTIO_GATEWAY_IP>`** as base url.
 
     ```
@@ -181,4 +181,3 @@ The Istio EnvoyFilter handles CORS preflight (`OPTIONS`) requests automatically.
 
 The model returns predictions in a JSON object.
 The response depends on the model server implementation.
-
