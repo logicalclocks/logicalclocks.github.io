@@ -1,16 +1,16 @@
 ---
-description: Documentation on how to troubleshoot a model deployment
+description: Documentation on how to troubleshoot a Python deployment
 ---
 
-# How To Troubleshoot A Model Deployment
+# How To Troubleshoot A Python Deployment
 
 ## Introduction
 
-In this guide, you will learn how to troubleshoot a deployment that is having issues to serve a trained model.
-But before that, it is important to understand how [deployment states](deployment-state.md) are defined and the possible transitions between conditions.
+In this guide, you will learn how to troubleshoot a deployment that is having issues running.
+But before that, it is important to understand how [deployment states](../../mlops/serving/deployment-state.md) are defined and the possible transitions between conditions.
 
 Before a deployment starts, it goes through a `CREATING` phase where deployment artifacts are prepared.
-When a deployment is starting, it follows an ordered sequence of [states](deployment-state.md#deployment-conditions) before becoming ready for serving predictions.
+When a deployment is starting, it follows an ordered sequence of [states](../../mlops/serving/deployment-state.md#deployment-conditions) before becoming ready for handling requests.
 Similarly, it follows an ordered sequence of states when being stopped, although with fewer steps.
 
 !!! warning "`FAILED` is a terminal state"
@@ -39,7 +39,7 @@ To inspect the condition of the deployment, click on the name of the deployment 
 
 At the top of page, you can find the same status indicator mentioned in the previous step.
 Below it, a one-line message is shown with a more detailed description of the deployment status.
-This message is built using the current status [condition](deployment-state.md#deployment-conditions) of the deployment.
+This message is built using the current status [condition](../../mlops/serving/deployment-state.md#deployment-conditions) of the deployment.
 
 Oftentimes, the status and the one-line description are enough to understand the current state of a deployment.
 For instance, when the cluster lacks enough allocatable resources to meet the deployment requirements, a meaningful error message will be shown with the root cause.
@@ -64,7 +64,7 @@ In those cases, you can explore the deployments logs in search of the cause of t
 
 ### Step 3: Explore transient logs
 
-Each deployment is composed of several components depending on its configuration and the model being served.
+Each deployment is composed of several components depending on its configuration.
 Transient logs refer to component-specific logs that are directly retrieved from the component itself.
 Therefore, these logs can only be retrieved as long as the deployment components are reachable.
 
@@ -89,7 +89,7 @@ However, there might be cases where transient logs could not be collected in tim
 !!! info ""
     Historical logs are persisted transient logs that can be queried, filtered and sorted using OpenSearch Dashboards, facilitating a more sophisticated exploration of past records.
 
-Historical logs are convenient when a deployment fails occasionally, either at inference time or without a clear reason.
+Historical logs are convenient when a deployment fails occasionally, either at runtime or without a clear reason.
 In this case, narrowing the inspection of component-specific logs at a concrete point in time and searching for keywords can be helpful.
 
 To access the OpenSearch Dashboards, click on the `See logs` button at the top of the deployment overview page.
@@ -110,11 +110,9 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
     | Filter         | Description                                                                                              |
     | -------------- | -------------------------------------------------------------------------------------------------------- |
-    | component      | Name of the deployment component (i.e., predictor or transformer)                                        |
-    | container_name | Name of the container within a component (i.e., kserve-container, storage-initializer, inference-logger) |
+    | component      | Name of the deployment component                                                                         |
+    | container_name | Name of the container within a component                                                                 |
     | serving_name   | Name of the deployment                                                                                   |
-    | model_name     | Name of the model being served                                                                           |
-    | model_version  | Version of the model being served                                                                        |
     | timestamp      | Timestamp when the record was reported                                                                   |
 
 ## Code
@@ -141,7 +139,7 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
   ```
 
-### Step 3: Get current deployment's predictor state
+### Step 3: Get current deployment state
 
 === "Python"
 
@@ -157,12 +155,10 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 === "Python"
 
   ```python
-  deployment.get_logs(component="predictor|transformer", tail=10)
+  deployment.get_logs(tail=10)
 
   ```
 
 ### API Reference
 
 [`Deployment`][hsml.deployment.Deployment]
-
-[`PredictorState`][hsml.predictor_state.PredictorState]

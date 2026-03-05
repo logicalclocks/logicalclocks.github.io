@@ -62,7 +62,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 !!! info "Scale-to-zero capabilities"
     If scale-to-zero capabilities are enabled, you can see how the nº of instances of a running deployment goes to zero and the status changes to `idle`.
-    To enable scale-to-zero in a deployment, see [Resource Allocation Guide](resources.md)
+    To enable scale-to-zero in a deployment, see [Resources Guide](resources.md)
 
 ## Code
 
@@ -86,7 +86,6 @@ Additionally, you can find the nº of instances currently running by scrolling d
   ```python
   deployment = ms.get_deployment("mydeployment")
 
-
   ```
 
 ### Step 3: Inspect deployment state
@@ -97,7 +96,6 @@ Additionally, you can find the nº of instances currently running by scrolling d
   state = deployment.get_state()
 
   state.describe()
-
 
   ```
 
@@ -111,7 +109,6 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
   # nº of transformer instances
   deployment.transformer.resources.describe()
-
 
   ```
 
@@ -127,16 +124,23 @@ The status of a deployment is a high-level description of its current state.
 
 ??? info "Show deployment status"
 
-    | Status   | Description                                                                                                              |
-    | -------- | ------------------------------------------------------------------------------------------------------------------------ |
-    | CREATED  | Deployment has never been started                                                                                        |
-    | STARTING | Deployment is starting                                                                                                   |
-    | RUNNING  | Deployment is ready and running. Predictions are served without additional latencies.                                    |
-    | IDLE     | Deployment is ready, but idle. Higher latencies (i.e., cold-start) are expected in the first incoming inference requests |
-    | FAILED   | Deployment is in a failed state, which can be due to multiple reasons. More details can be found in the condition        |
-    | UPDATING | Deployment is applying updates to the running instances                                                                  |
-    | STOPPING | Deployment is stopping                                                                                                   |
-    | STOPPED  | Deployment has been stopped                                                                                              |
+    | Status   | Description                                                                                                                                     |
+    | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+    | CREATING | Deployment artifacts are being prepared                                                                                                         |
+    | CREATED  | Deployment has never been started                                                                                                               |
+    | STARTING | Deployment is starting                                                                                                                          |
+    | RUNNING  | Deployment is ready and running. Predictions are served without additional latencies.                                                           |
+    | IDLE     | Deployment is ready but scaled to zero or has no active replicas. Higher latencies (cold-start) are expected on the first inference request.    |
+    | FAILED   | Terminal state. The deployment has encountered an unrecoverable error. More details can be found in the status condition.               |
+    | UPDATING | Deployment is applying updates to the running instances                                                                                         |
+    | STOPPING | Deployment is stopping                                                                                                                          |
+    | STOPPED  | Deployment has been stopped                                                                                                                     |
+
+## How States Are Determined
+
+Deployment state is determined from multiple sources: the database state (whether the deployment has been deployed and its revision), KServe InferenceService conditions, pod presence (available replicas for predictor and transformer), and the artifact filesystem (whether the deployment artifact files are ready).
+
+A revision ID and deployment version are used to distinguish between STARTING (first generation) and UPDATING (subsequent changes to a running deployment).
 
 ## Deployment conditions
 

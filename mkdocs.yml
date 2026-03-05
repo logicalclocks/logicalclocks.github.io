@@ -191,6 +191,10 @@ nav:
               - Create API Key: user_guides/projects/api_key/create_api_key.md
           - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
           - Query Engine: user_guides/projects/trino/query_engine.md
+          - Python Deployment:
+              - Deployment Creation: user_guides/projects/python-deployment/python-deployment.md
+              - REST API: user_guides/projects/python-deployment/rest-api.md
+              - Troubleshooting: user_guides/projects/python-deployment/troubleshooting.md
       - MLOps:
           - user_guides/mlops/index.md
           - Model Registry:
@@ -206,15 +210,17 @@ nav:
               - Model Evaluation Images: user_guides/mlops/registry/model_evaluation_images.md
           - Model Serving:
               - user_guides/mlops/serving/index.md
-              - Deployment:
-                  - Deployment creation: user_guides/mlops/serving/deployment.md
-                  - Deployment state: user_guides/mlops/serving/deployment-state.md
-              - Predictor: user_guides/mlops/serving/predictor.md
-              - Transformer: user_guides/mlops/serving/transformer.md
-              - Resource Allocation: user_guides/mlops/serving/resources.md
-              - Inference Logger: user_guides/mlops/serving/inference-logger.md
-              - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
-              - API Protocol: user_guides/mlops/serving/api-protocol.md
+              - Model Deployment:
+                  - Deployment Creation: user_guides/mlops/serving/deployment.md
+                  - Deployment State: user_guides/mlops/serving/deployment-state.md
+                  - Predictor (KServe): user_guides/mlops/serving/predictor.md
+                  - Transformer (KServe): user_guides/mlops/serving/transformer.md
+                  - Inference Logger: user_guides/mlops/serving/inference-logger.md
+                  - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
+                  - Resources: user_guides/mlops/serving/resources.md
+                  - Autoscaling: user_guides/mlops/serving/autoscaling.md
+                  - Scheduling: user_guides/mlops/serving/scheduling.md
+                  - API Protocol: user_guides/mlops/serving/api-protocol.md
               - REST API: user_guides/mlops/serving/rest-api.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
               - External Access: user_guides/mlops/serving/external-access.md
