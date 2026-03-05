@@ -76,7 +76,7 @@ Otherwise, click on `Create new deployment` to create the deployment for your mo
 
 ### Step 3 (Optional): Select a predictor script
 
-For python models, to select a [predictor script](#step-2-optional-implement-a-predictor-script) click on `From project` and navigate through the file system to find it, or click on `Upload new file` to upload a predictor script now.
+For python models, to select a [predictor script](#predictor-script) click on `From project` and navigate through the file system to find it, or click on `Upload new file` to upload a predictor script now.
 
 <p align="center">
   <figure>
@@ -131,7 +131,7 @@ To access the advanced deployment configuration, click on `Advanced options`.
 Here, you can further change the default values of the predictor:
 
 !!! info "Predictor configuration"
-    1. [Transformer](#transformer)
+    1. [Transformer](#transformer-script)
     2. [Inference logger](#inference-logger)
     3. [Inference batcher](#inference-batcher)
     4. [Resources](#resources)
@@ -263,7 +263,7 @@ All deployments use [KServe](https://kserve.github.io/website/latest/) as the se
 
 ## Predictor script
 
-For **Python model deployments** ==only==, you can provide a custom Python script—called a predictor script—to load your model and serve predictions. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must follow a specific template, as shown in [Step 2](#step-2-optional-implement-a-predictor-script).
+For **Python model deployments** ==only==, you can provide a custom Python script—called a predictor script—to load your model and serve predictions. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must follow a specific template, as shown in [Step 2](#step-21-optional-implement-a-predictor-script).
 
 ## Server configuration file
 

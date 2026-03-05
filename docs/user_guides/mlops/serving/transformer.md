@@ -67,7 +67,7 @@ Otherwise, you can click on `Upload new file` to upload the transformer script n
   </figure>
 </p>
 
-After selecting the transformer script, you can optionally configure resources and autoscaling for your transformer (see [Step 4](#step-4-optional-configure-resources)).
+After selecting the transformer script, you can optionally configure resources and autoscaling for your transformer (see [Step 4](#step-4-optional-other-advanced-options)).
 Otherwise, click on `Create new deployment` to create the deployment for your model.
 
 ### Step 4 (Optional): Other advanced options
