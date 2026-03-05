@@ -3,11 +3,7 @@
 ## Introduction
 
 Hopsworks supports both REST and gRPC as API protocols for sending inference requests to model deployments.
-While REST API protocol is supported in all types of model deployments, support for gRPC is only available for models served with [KServe](predictor.md#serving-tool).
-
-!!! warning
-    At the moment, the gRPC API protocol is only supported for **Python model deployments** (e.g., scikit-learn, xgboost).
-    Support for Tensorflow model deployments is coming soon.
+While REST API protocol is supported in all types of model deployments, gRPC is currently supported for **Python model deployments** only.
 
 ## GUI
 
@@ -40,17 +36,7 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 ### Step 3: Select the API protocol
 
-Enabling gRPC as the API protocol for a model deployment requires KServe as the serving platform for the deployment.
-Make sure that KServe is enabled by activating the corresponding checkbox.
-
-<p align="center">
-  <figure>
-    <img style="max-width: 85%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_kserve.png" alt="KServe enabled in advanced deployment form">
-    <figcaption>Enable KServe in the advanced deployment form</figcaption>
-  </figure>
-</p>
-
-Then, you can select the API protocol to be enabled in your model deployment.
+You can select the API protocol to be enabled in your model deployment in the advanced deployment form.
 
 <p align="center">
   <figure>
@@ -101,7 +87,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
-
 
   ```
 

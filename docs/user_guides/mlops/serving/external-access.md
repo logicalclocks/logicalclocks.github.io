@@ -6,7 +6,7 @@ description: Documentation on how to configure external access to a model deploy
 
 ## Introduction
 
-Hopsworks supports role-based access control (RBAC) for project members within a project, where a project ML assets can only be accessed by Hopsworks users that are members of that project (See [governance](../../../concepts/projects/governance.md)).
+Hopsworks supports **role-based access control (RBAC)** for project members within a project, where a project ML assets can only be accessed by Hopsworks users that are members of that project (See [governance](../../../concepts/projects/governance.md)).
 
 However, there are cases where you might want to grant ==external users== with access to specific model deployments without them having to register into Hopsworks or to join the project which will give them access to all project ML assets.
 For these cases, Hopsworks supports fine-grained access control to model deployments based on ==user groups== managed by an external Identity Provider.
@@ -116,12 +116,9 @@ You can create API keys to authenticate your inference requests by clicking on t
 
 ### Step 4: Send inference requests
 
-Depending on the type of model deployment, the URI of the model server can differ (e.g., `/chat/completions` for LLM deployments or `/predict` for traditional model deployments).
-You can find the corresponding URI on every model deployment card.
+The URI path for sending inference requests depends on the type of model deployment. For example, LLM deployments typically use `/chat/completions`, while traditional model deployments use `/predict`. You can find the exact URI path for each deployment on its model deployment card.
 
-In addition to the `Authorization` header containing the API key, the `Host` header needs to be set according to the model deployment where the inference requests are sent to.
-This header is used by the ingress to route the inference requests to the corresponding model deployment.
-You can find the `Host` header value in the model deployment card.
+For detailed instructions on constructing requests and handling authentication, refer to the [REST API Guide](rest-api.md).
 
 !!! tip "Code snippets"
     For clients sending inference requests using libraries similar to curl or OpenAI API-compatible libraries (e.g., LangChain), you can find code snippet examples by clicking on the `Curl >_` and `LangChain >_` buttons.

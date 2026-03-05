@@ -154,7 +154,6 @@ Once you have [defined a transformation function using a context variable](../tr
             transformation_context={"context_parameter": 10},
         )
 
-
         ```
 
 ## Read training data with primary key(s) and event time

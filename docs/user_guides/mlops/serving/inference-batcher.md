@@ -3,8 +3,9 @@
 ## Introduction
 
 Inference batching can be enabled to increase inference request throughput at the cost of higher latencies.
-The configuration of the inference batcher depends on the serving tool and the model server used in the deployment.
-See the [compatibility matrix](#compatibility-matrix).
+The configuration of the inference batcher depends on the model server used in the deployment.
+
+!!! warning "Inference batching is not supported for vLLM deployments."
 
 ## GUI
 
@@ -47,6 +48,9 @@ To enable inference batching, click on the `Request batching` checkbox.
 </p>
 
 If your deployment uses KServe, you can optionally set three additional parameters for the inference batcher: maximum batch size, maximum latency (ms) and timeout (s).
+
+!!! note "Timeout parameter"
+    The `timeout` parameter sets the request timeout in seconds for the inference batcher. If a batch is not filled within this time, the available requests are sent as a partial batch.
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -91,30 +95,10 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   my_model = mr.get_model("my_model", version=1)
 
-  my_predictor = ms.create_predictor(my_model, inference_batcher=my_batcher)
-  my_predictor.deploy()
-
-  # or
-
-  my_deployment = ms.create_deployment(my_predictor)
-  my_deployment.save()
-
+  my_model.deploy(inference_batcher=my_batcher)
 
   ```
 
 ### API Reference
 
 [`InferenceBatcher`][hsml.inference_batcher.InferenceBatcher]
-
-## Compatibility matrix
-
-??? info "Show supported inference batcher configuration"
-
-    | Serving tool | Model server       | Inference batching | Fine-grained configuration |
-    | ------------ | ------------------ | ------------------ | ------- |
-    | Docker       | Flask              | ❌                 |  -       |
-    |              | TensorFlow Serving | ✅                 | ❌        |
-    | Kubernetes   | Flask              | ❌                 |  -       |
-    |              | TensorFlow Serving | ✅                 | ❌        |
-    | KServe       | Flask              | ✅                 | ✅        |
-    |              | TensorFlow Serving | ✅                 | ✅        |

@@ -55,7 +55,6 @@ Additionally, Hopsworks also allows users to specify custom names for transforme
             transformation_functions=[add_two, add_one_multiple],
         )
 
-
         ```
 
 ### Specifying input features
@@ -76,7 +75,6 @@ The features to be used by a model-dependent transformation function can be spec
                 add_one_multiple("feature_5", "feature_6", "feature_7"),
             ],
         )
-
 
         ```
 
@@ -106,7 +104,6 @@ The only difference is that they can either be retrieved from the Hopsworks or i
             ],
         )
 
-
         ```
 
 To attach built-in transformation functions from the `hopsworks` module they can be directly imported into the code from `hopsworks.builtin_transformations`.
@@ -134,7 +131,6 @@ To attach built-in transformation functions from the `hopsworks` module they can
             ],
         )
 
-
         ```
 
 ## Using Model Dependent Transformations
@@ -160,7 +156,6 @@ Model-dependent transformation functions can also be manually applied to a featu
         # Apply Model Dependent transformations
         encoded_feature_vector = fv.transform(feature_vector)
 
-
         ```
 
 ### Retrieving untransformed feature vector and batch inference data
@@ -184,6 +179,5 @@ To achieve this, set the `transform` parameter to False.
 
         # Fetching untransformed batch data.
         untransformed_batch_data = feature_view.get_batch_data(transform=False)
-
 
         ```

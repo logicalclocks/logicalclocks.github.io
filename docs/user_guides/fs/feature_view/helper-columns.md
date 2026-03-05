@@ -41,7 +41,6 @@ for computing the [on-demand feature](../../../concepts/fs/feature_group/on_dema
             inference_helper_columns=["expiry_date"],
         )
 
-
         ```
 
 ### Inference Data Retrieval
@@ -88,7 +87,6 @@ However, they can be optionally fetched with inference or training data.
             ]
         ]
 
-
         ```
 
 #### Online inference
@@ -129,7 +127,6 @@ However, they can be optionally fetched with inference or training data.
             passed_features={"days_valid": days_valid},
         )
 
-
         ```
 
 ## Training Helper columns
@@ -155,7 +152,6 @@ For example one might want to use feature like `category` of the purchased produ
             transformation_functions=transformation_functions,
             training_helper_columns=["category"],
         )
-
 
         ```
 
@@ -189,7 +185,6 @@ However, they can be optionally fetched.
         X_train, X_test, y_train, y_test = feature_view.get_train_test_split(
             training_dataset_version=1, training_helper_columns=True
         )
-
 
         ```
 
