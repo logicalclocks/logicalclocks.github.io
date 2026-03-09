@@ -92,7 +92,7 @@ jobs:
           working-directory: hopsworks-api/python
 
       - name: Install Python API dependencies
-        run: uv sync --extra dev --group docs --project hopsworks-api/python
+        run: uv sync --extra dev --project hopsworks-api/python
 
       - name: Install Python dependencies
         run: uv pip install -r requirements-docs.txt

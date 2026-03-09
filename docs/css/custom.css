@@ -171,28 +171,37 @@
 
 /*******************************************************/
 /* Fix z-index. */
-header.md-header {
-  z-index: 900 !important;
+.md-overlay {
+  z-index: 800 !important;
 }
 .md-sidebar {
-  z-index: 1000 !important;
+  z-index: 900 !important;
 }
-.md-overlay {
-  z-index: 950 !important;
+header.md-header {
+  z-index: 1000 !important;
 }
 .md-search__overlay {
   z-index: 1100 !important;
 }
-.md-search__form {
+.md-search__inner {
   z-index: 1200 !important;
-}
-.md-search__output {
-  z-index: 1100 !important;
 }
 
 /*******************************************************/
 /* Hide repo stats. */
 .md-source__fact--stars, .md-source__fact--forks {
+  display: none;
+}
+
+/*******************************************************/
+/* Hide empty backlinks. */
+.info-backlinks:has(.doc-backlink-list:empty) {
+  display: none;
+}
+
+/*******************************************************/
+/* Hide symbol type labels from backlinks. */
+.doc-backlink-crumb .doc-symbol {
   display: none;
 }
 
