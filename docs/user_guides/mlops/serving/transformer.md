@@ -109,6 +109,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
     class Transformer:
         def __init__(self):
             """Initialization code goes here"""
+            # Optional __init__ params: project, deployment, model, async_logger
             pass
 
         def preprocess(self, inputs):
@@ -118,6 +119,26 @@ Once you are done with the changes, click on `Create new deployment` at the bott
         def postprocess(self, outputs):
             """Transform the predictions computed by the model before returning a response"""
             return outputs
+    ```
+
+!!! tip "Optional `__init__` parameters"
+    The `__init__` method supports optional parameters that are automatically injected at runtime:
+
+    | Parameter      | Class                | Description                                            |
+    | -------------- | -------------------- | ------------------------------------------------------ |
+    | `project`      | `Project`            | Hopsworks project handle                               |
+    | `deployment`   | `Deployment`         | Current model deployment handle                        |
+    | `model`        | `Model`              | Model handle                                           |
+    | `async_logger` | `AsyncFeatureLogger` | Async feature logger for logging features to Hopsworks |
+
+    You can add any combination of these parameters to your `__init__` method:
+
+    ```python
+    class Transformer:
+        def __init__(self, project, model):
+            # Access the project and model directly
+            self.project = project
+            self.model_metadata = model
     ```
 
 !!! info "Jupyter magic"

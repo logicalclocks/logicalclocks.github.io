@@ -167,34 +167,97 @@ For Python model deployments, you need implement a predictor script that loads a
 
     ``` python
     class Predictor:
-        def __init__(self):
-            """Initialization code goes here"""
-            # Model files can be found at os.environ["MODEL_FILES_PATH"]
-            # self.model = ... # load your model
+      def __init__(self):
+          """Initialization code goes here"""
+          # Optional __init__ params: project, deployment, model, async_logger
+          # Model files can be found at os.environ["MODEL_FILES_PATH"]
+          # self.model = ... # load your model
 
-        def predict(self, inputs):
-            """Serve predictions using the trained model"""
-            # Use the model to make predictions
-            # return self.model.predict(inputs)
+      def predict(self, inputs):
+          """Serve predictions using the trained model"""
+          # Use the model to make predictions
+          # return self.model.predict(inputs)
+    ```
+
+=== "Predictor with Feature Logging"
+
+    ``` python
+    class Predictor:
+      def __init__(self, async_logger, model, project):
+          """Initializes the serving state, reads a trained model"""
+          # Get feature view attached to model
+          ## self.model = model
+          ## self.feature_view = model.get_feature_view()
+
+          # Initialize feature view with async feature logger
+          ## self.feature_view.init_feature_logger(feature_logger=async_logger)
+
+      def predict(self, inputs):
+          """Serves a prediction request usign a trained model"""
+          # Extract serving keys and request parameters from inputs
+          ## serving_keys = ...
+          ## request_parameters = ...
+
+          # Fetch feature vector with logging metadata
+          ## vector = self.feature_view.get_feature_vector(serving_keys, 
+          ##                                               request_parameters=request_parameters, 
+          ##                                               logging_data=True)
+
+          # Make predictions
+          ## predictions = model.predict(vector)
+
+          # Log Predictions
+          ## self.feature_view.log(vector, 
+          ##                       predictions=predictions, 
+          ##                       model = self.model)
+
+          # Predictions
+          ## return predictions
     ```
 
 === "Async Predictor"
 
     ``` python
     class Predictor:
-        def __init__(self):
-            """Initialization code goes here"""
-            # Model files can be found at os.environ["MODEL_FILES_PATH"]
-            # self.model = ... # load your model
+      def __init__(self):
+          """Initialization code goes here"""
+          # Optional __init__ params: project, deployment, model, async_logger
+          # Model files can be found at os.environ["MODEL_FILES_PATH"]
+          # self.model = ... # load your model
 
-        async def predict(self, inputs):
-            """Asynchronously serve predictions using the trained model"""
-            # Perform async operations that required
-            # result = await some_async_preprocessing(inputs)
+      async def predict(self, inputs):
+          """Asynchronously serve predictions using the trained model"""
+          # Perform async operations that required
+          # result = await some_async_preprocessing(inputs)
 
-            # Use the model to make predictions
-            # return self.model.predict(result)
+          # Use the model to make predictions
+          # return self.model.predict(result)
     ```
+
+!!! tip "Optional `__init__` parameters"
+    The `__init__` method supports optional parameters that are automatically injected at runtime:
+
+    | Parameter      | Class                | Description                                            |
+    | -------------- | -------------------- | ------------------------------------------------------ |
+    | `project`      | `Project`            | Hopsworks project handle                               |
+    | `deployment`   | `Deployment`         | Current model deployment handle                        |
+    | `model`        | `Model`              | Model handle                                           |
+    | `async_logger` | `AsyncFeatureLogger` | Async feature logger for logging features to Hopsworks |
+
+    You can add any combination of these parameters to your `__init__` method:
+
+    ```python
+    class Predictor:
+        def __init__(self, project, model):
+            # Access the project and model directly
+            self.project = project
+            self.model = model
+    ```
+
+!!! tip "Feature logging"
+    The `async_logger` parameter enables asynchronous logging of features and predictions from your predictor script via the Feature View API. This is useful for debugging, monitoring, and auditing the data your models use in production. Logged features are periodically materialized to the offline feature store, and can be retrieved, filtered, and managed through the feature view.
+
+    See the [Feature and Prediction Logging](../../fs/feature_view/feature_logging.md) guide for details on enabling logging, retrieving logs, and managing the log lifecycle.
 
 !!! info "Jupyter magic"
     In a jupyter notebook, you can add `%%writefile my_predictor.py` at the top of the cell to save it as a local file.
