@@ -150,7 +150,8 @@ Retrieve the trained model you want to deploy using the Model Registry handle.
 
 ### Step 3: Deploy your trained model
 
-Create a deployment for your model by calling `.deploy()` on the model metadata object. This will create a deployment for your model with default values.
+Create a deployment for your model by calling `.deploy()` on the model metadata object.
+This will create a deployment for your model with default values.
 
 === "Python"
 
