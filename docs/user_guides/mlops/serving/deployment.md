@@ -8,7 +8,7 @@ description: Documentation on how to deployment Machine Learning (ML) models and
 
 In this guide, you will learn how to create a new deployment for a trained model.
 
-!!! note
+!!! info
     This guide covers model deployments, which require a model saved in the Model Registry.
     To learn how to create a model in the Model Registry, see [Model Registry Guide](../registry/index.md#exporting-a-model).
     For Python deployments (running a Python script without a model artifact), see [Python Deployments](../../projects/python-deployment/python-deployment.md).
