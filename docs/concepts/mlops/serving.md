@@ -8,7 +8,8 @@ A KServe model deployment can include the following components:
 
 **`Transformer (KServe component)`**
 
-:   A ^^pre-processing^^ and ^^post-processing^^ component that can transform model inputs before predictions are made, and predictions before these are delivered back to the client. Not available for vLLM deployments.
+:   A ^^pre-processing^^ and ^^post-processing^^ component that can transform model inputs before predictions are made, and predictions before these are delivered back to the client.
+    Not available for vLLM deployments.
 
 **`Inference Logger`**
 
