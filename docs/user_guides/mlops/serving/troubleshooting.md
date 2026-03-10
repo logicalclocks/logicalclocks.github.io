@@ -14,7 +14,8 @@ When a deployment is starting, it follows an ordered sequence of [states](deploy
 Similarly, it follows an ordered sequence of states when being stopped, although with fewer steps.
 
 !!! warning "`FAILED` is a terminal state"
-    If a deployment reaches the `FAILED` state, it cannot recover on its own. You must stop and restart the deployment to attempt recovery.
+    If a deployment reaches the `FAILED` state, it cannot recover on its own.
+    You must stop and restart the deployment to attempt recovery.
 
 ## GUI
 
