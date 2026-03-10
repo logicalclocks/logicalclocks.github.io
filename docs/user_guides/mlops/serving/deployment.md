@@ -70,7 +70,8 @@ After selecting the model, select a model version and give your model deployment
     For Python models, you must select a custom [predictor script](#predictor) that loads and runs the trained model by clicking on `From project` or `Upload new file`, to choose an existing script in the project file system or upload a new script, respectively.
 
 !!! info "Server configuration file for vLLM"
-    For vLLM deployments, a server configuration file is required. See the [Predictor Guide](predictor.md#server-configuration-file) for more details.
+    For vLLM deployments, a server configuration file is required.
+    See the [Predictor Guide](predictor.md#server-configuration-file) for more details.
 
 Lastly, click on `Create new deployment` to create the deployment for your model.
 
