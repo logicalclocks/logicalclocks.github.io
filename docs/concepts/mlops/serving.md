@@ -26,7 +26,8 @@ A KServe model deployment can include the following components:
     API keys have scopes to ensure the principle of least privilege access control to resources managed by Hopsworks.
 
     !!! warning "Host-based routing"
-        The Istio Model Endpoint supports host-based routing for inference requests; however, this approach is considered legacy. Path-based routing is recommended for new deployments.
+        The Istio Model Endpoint supports host-based routing for inference requests; however, this approach is considered legacy.
+        Path-based routing is recommended for new deployments.
 
 Models deployed on KServe in Hopsworks can be easily integrated with the Hopsworks Feature Store using either a Transformer or Predictor Python script, that builds the predictor's input feature vector using the application input and pre-computed features from the Feature Store.
 
