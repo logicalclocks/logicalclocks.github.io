@@ -13,7 +13,8 @@ A KServe model deployment can include the following components:
 
 **`Inference Logger`**
 
-:   Hopsworks logs inputs and outputs of transformers and predictors to a ^^Kafka topic^^ that is part of the same project as the model. Not available for vLLM deployments.
+:   Hopsworks logs inputs and outputs of transformers and predictors to a ^^Kafka topic^^ that is part of the same project as the model.
+    Not available for vLLM deployments.
 
 **`Inference Batcher`**
 
