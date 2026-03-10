@@ -8,7 +8,7 @@ description: Documentation on how to allocate resources to a model deployment
 
 Resource allocation can be configured ==per component== (predictor and transformer) in a deployment, allowing you to specify how many CPUs, GPUs, and memory are allocated. For each component, you can set minimum (requests) and maximum (limits) resources, as well as the number of instances.
 
-??? info "Show resource defaults"
+??? info "Resource defaults"
 
     | Field              | Default Request | Default Limit  | Validation                                         |
     | ------------------ | --------------- | -------------- | -------------------------------------------------- |
