@@ -10,7 +10,8 @@ Python deployments allow you to deploy a Python script as a service without requ
 This is useful for custom inference pipelines, feature view deployments, or any Python-based program that needs to be served behind an HTTP endpoint.
 
 !!! warning "Incoming requests are directed to port 8080"
-    Python deployments run your script directly on port 8080. Therefore, make sure your implementation listens to 8080 port for handling incoming requests.
+    Python deployments run your script directly on port 8080.
+    Therefore, make sure your implementation listens to 8080 port for handling incoming requests.
 
 !!! info "gRPC protocol not supported"
 
