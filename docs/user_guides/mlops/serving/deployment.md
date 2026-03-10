@@ -85,7 +85,8 @@ Optionally, you can access and adjust other parameters of the deployment configu
     <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
   </figure>
 </p>
-You will be redirected to a full-page deployment creation form, where you can review all default configuration values and customize them to fit your requirements. In addition to the basic settings, this form allows you to further configure the [Predictor](#predictor) and [Transformer](#transformer) KServe components of your model deployment.
+You will be redirected to a full-page deployment creation form, where you can review all default configuration values and customize them to fit your requirements.
+In addition to the basic settings, this form allows you to further configure the [Predictor](#predictor) and [Transformer](#transformer) KServe components of your model deployment.
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
