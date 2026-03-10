@@ -20,7 +20,7 @@ Resource allocation can be configured ==per component== (predictor and transform
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component (predictor or transformer) enables **scale-to-zero**. This means that all instances of the component will automatically scale down to zero after a default period of inactivity of 30 seconds.
 
-## GUI
+## Web UI
 
 ### Step 1: Create new deployment
 

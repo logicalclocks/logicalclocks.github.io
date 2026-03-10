@@ -26,7 +26,7 @@ In each Python deployment, you can configure the following:
     3. [Autoscaling](#autoscaling)
     4. [Scheduling](#scheduling)
 
-## GUI
+## Web UI
 
 ### Step 1: Create new deployment
 

@@ -15,7 +15,7 @@ For these cases, Hopsworks supports fine-grained access control to model deploym
     Hopsworks can be configured to use different types of authentication methods including OAuth2, LDAP and Kerberos.
     See the [Authentication Methods Guide](../../../setup_installation/admin/auth.md) for more information.
 
-## GUI (for Hopsworks users)
+## Web UI (for Hopsworks users)
 
 ### Step 1: Navigate to a model deployment
 
@@ -64,7 +64,7 @@ After that, click on the `save` button to persist the changes.
   </figure>
 </p>
 
-## GUI (for external users)
+## Web UI (for external users)
 
 ### Step 1: Login with the external identity provider
 
@@ -105,7 +105,7 @@ Inference requests to model deployments are authenticated and authorized based o
 You can create API keys to authenticate your inference requests by clicking on the `Create API Key` button.
 
 !!! info "Authorization header"
-    API keys are set in the `Authorization` header following the format `ApiKey <api-key-value>`
+    API keys are set in the `authorization` header following the format `ApiKey <api-key-value>`
 
 <p align="center">
   <figure>

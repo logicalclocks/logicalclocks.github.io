@@ -5,7 +5,7 @@
 Hopsworks supports both REST and gRPC as API protocols for sending inference requests to model deployments.
 While REST API protocol is supported in all types of model deployments, gRPC is currently supported for **Python model deployments** only.
 
-## GUI
+## Web UI
 
 ### Step 1: Create a new deployment
 

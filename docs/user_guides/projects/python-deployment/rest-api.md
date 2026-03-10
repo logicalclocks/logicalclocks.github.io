@@ -22,18 +22,18 @@ The full URL path is constructed by combining a base path with a resource path a
 All requests must include an API Key for authentication.
 You can create an API key by following this [guide](../../projects/api_key/create_api_key.md).
 
-Include the key in the `Authorization` header:
+Include the key in the `authorization` header:
 
 ```text
-Authorization: ApiKey <API_KEY_VALUE>
+authorization: ApiKey <API_KEY_VALUE>
 ```
 
 ### Headers
 
 | Header          | Description                 | Example Value           |
 | --------------- | --------------------------- | ----------------------- |
-| `Authorization` | API key for authentication. | `ApiKey <your_api_key>` |
-| `Content-Type`  | Request payload type.       | `application/json`      |
+| `authorization` | API key for authentication. | `ApiKey <your_api_key>` |
+| `content-type`  | Request payload type.       | `application/json`      |
 
 ## URL Paths
 
@@ -91,8 +91,8 @@ The request format depends entirely on your Python server implementation. There 
 
         ```bash
         curl -X POST "https://<ISTIO_GATEWAY_IP>/v1/my_project/pyserver/echo" \
-          -H "Authorization: ApiKey <your_api_key>" \
-          -H "Content-Type: application/json" \
+          -H "authorization: ApiKey <your_api_key>" \
+          -H "content-type: application/json" \
           -d '{"key": "value"}'
         ```
 

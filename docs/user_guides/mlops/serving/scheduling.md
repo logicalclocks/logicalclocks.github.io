@@ -6,13 +6,13 @@ description: Documentation on how to configure scheduling options for a model de
 
 ## Introduction
 
-Scheduling configuration determines how and where your model deployment pods are placed in the Kubernetes cluster.
-Hopsworks supports Kubernetes scheduler abstractions such as **node affinity**, **anti-affinity**, and **priority classes**, as well as advanced scheduling with **Kueue queues and topologies**.
+Scheduling configuration determines how and where your model deployment pods are placed in the Kubernetes cluster. 
+Hopsworks supports Kubernetes scheduler abstractions such as [node affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity), [anti-affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity), and [priority classes](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/), as well as advanced scheduling with [Kueue queues](https://kueue.sigs.k8s.io/docs/concepts/local_queue/) and [topologies](https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/).
 
 !!! tip "Scheduling available for all workloads"
     In addition to model deployments, all scheduling options are also available for jobs, Jupyter notebooks, and Python deployments.
 
-## GUI
+## Web UI
 
 ### Step 1: Create new deployment
 
@@ -70,22 +70,22 @@ If Kueue is ==enabled==, you can also select a [queue and topology](#queues-and-
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
+## Affinity, Anti-Affinity, and Priority Classes
+
+You can configure [node affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity), [anti-affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity), and [priority classes](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/) to control pod placement and scheduling priority for your deployment.
+
+- **Affinity**: Constrains which nodes the deployment pods can run on based on node labels (e.g., GPU nodes, specific zones).
+- **Anti-Affinity**: Prevents pods from running on nodes with specific labels.
+- **Priority Class**: Determines the scheduling and eviction priority of pods. Higher priority pods are scheduled first and can preempt lower priority pods.
+
 ## Queues and Topologies
 
 !!! warning "Kueue is required"
     This feature requires Kueue to be enabled in your cluster. If Kueue is not available, queue and topology options will not be accessible.
 
-If the cluster has Kueue enabled, you can select a queue for your deployment. **Queues** control resource allocation and scheduling priority across the cluster. Administrators define quotas on how many resources a queue can use, and queues can be grouped in cohorts to borrow resources from each other.
+If the cluster has Kueue enabled, you can select a queue for your deployment. [Queues](https://kueue.sigs.k8s.io/docs/concepts/local_queue/) control resource allocation and scheduling priority across the cluster. Administrators define quotas on how many resources a queue can use, and queues can be grouped in cohorts to borrow resources from each other.
 
-You can also select a **topology** unit to control how deployment pods are co-located. For example, you can require all pods to run on the same host to minimize network latency.
-
-## Affinity, Anti-Affinity, and Priority Classes
-
-You can configure node affinity, anti-affinity, and priority classes to control pod placement and scheduling priority for your deployment.
-
-- **Affinity**: Constrains which nodes the deployment pods can run on based on node labels (e.g., GPU nodes, specific zones).
-- **Anti-Affinity**: Prevents pods from running on nodes with specific labels.
-- **Priority Class**: Determines the scheduling and eviction priority of pods. Higher priority pods are scheduled first and can preempt lower priority pods.
+You can also select a [topology](https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/) unit to control how deployment pods are co-located. For example, you can require all pods to run on the same host to minimize network latency.
 
 ## Learn more
 

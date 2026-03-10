@@ -18,18 +18,18 @@ The full inference URL is constructed by combining a base path with a model serv
 All requests must include an API Key for authentication.
 You can create an API key by following this [guide](../../projects/api_key/create_api_key.md).
 
-Include the key in the `Authorization` header:
+Include the key in the `authorization` header:
 
 ```text
-Authorization: ApiKey <API_KEY_VALUE>
+authorization: ApiKey <API_KEY_VALUE>
 ```
 
 ### Headers
 
 | Header          | Description                         | Example Value           |
 | --------------- | ----------------------------------- | ----------------------- |
-| `Authorization` | API key for authentication.         | `ApiKey <your_api_key>` |
-| `Content-Type`  | Request payload type (always JSON). | `application/json`      |
+| `authorization` | API key for authentication.         | `ApiKey <your_api_key>` |
+| `content-type`  | Request payload type (always JSON). | `application/json`      |
 
 ## URL Paths
 
@@ -113,7 +113,7 @@ See [more information on the request format](https://kserve.github.io/website/do
 
         data = {"inputs": [[4641025220953719, 4920355418495856]]}
 
-        headers = {"Authorization": "ApiKey <your_api_key>", "Content-Type": "application/json"}
+        headers = {"authorization": "ApiKey <your_api_key>", "content-type": "application/json"}
 
         response = requests.post(
             "https://<ISTIO_GATEWAY_IP>/v1/my_project/fraud/v1/models/fraud:predict",
@@ -127,8 +127,8 @@ See [more information on the request format](https://kserve.github.io/website/do
 
         ```bash
         curl -X POST "https://<ISTIO_GATEWAY_IP>/v1/my_project/fraud/v1/models/fraud:predict" \
-          -H "Authorization: ApiKey <your_api_key>" \
-          -H "Content-Type: application/json" \
+          -H "authorization: ApiKey <your_api_key>" \
+          -H "content-type: application/json" \
           -d '{
                 "inputs": [
                   [4641025220953719, 4920355418495856]
@@ -149,7 +149,7 @@ For generative inference (vLLM), the request follows the [OpenAI specification](
             "messages": [{"role": "user", "content": "Hello, how are you?"}],
         }
 
-        headers = {"Authorization": "ApiKey <your_api_key>", "Content-Type": "application/json"}
+        headers = {"authorization": "ApiKey <your_api_key>", "content-type": "application/json"}
 
         response = requests.post(
             "https://<ISTIO_GATEWAY_IP>/v1/my_project/my-llm/v1/chat/completions",
@@ -163,8 +163,8 @@ For generative inference (vLLM), the request follows the [OpenAI specification](
 
         ```bash
         curl -X POST "https://<ISTIO_GATEWAY_IP>/v1/my_project/my-llm/v1/chat/completions" \
-        -H "Authorization: ApiKey <your_api_key>" \
-        -H "Content-Type: application/json" \
+        -H "authorization: ApiKey <your_api_key>" \
+        -H "content-type: application/json" \
         -d '{
                 "model": "my-llm",
                 "messages": [

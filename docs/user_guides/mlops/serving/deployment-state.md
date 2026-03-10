@@ -17,7 +17,7 @@ The following is the state transition diagram for deployments.
 States are composed of a [status](#deployment-status) and a [condition](#deployment-conditions).
 While a status represents a high-level view of the state, conditions contain more detailed information closely related to infrastructure terms.
 
-## GUI
+## Web UI
 
 ### Step 1: Inspect deployment status
 
@@ -122,19 +122,19 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 The status of a deployment is a high-level description of its current state.
 
-??? info "Show deployment status"
+??? info "Deployment statuses"
 
-    | Status   | Description                                                                                                                                     |
-    | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-    | CREATING | Deployment artifacts are being prepared                                                                                                         |
-    | CREATED  | Deployment has never been started                                                                                                               |
-    | STARTING | Deployment is starting                                                                                                                          |
-    | RUNNING  | Deployment is ready and running. Predictions are served without additional latencies.                                                           |
-    | IDLE     | Deployment is ready but scaled to zero or has no active replicas. Higher latencies (cold-start) are expected on the first inference request.    |
-    | FAILED   | Terminal state. The deployment has encountered an unrecoverable error. More details can be found in the status condition.               |
-    | UPDATING | Deployment is applying updates to the running instances                                                                                         |
-    | STOPPING | Deployment is stopping                                                                                                                          |
-    | STOPPED  | Deployment has been stopped                                                                                                                     |
+    | Status   | Description                                                                                                                                  |
+    | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+    | CREATING | Deployment artifacts are being prepared                                                                                                      |
+    | CREATED  | Deployment has never been started                                                                                                            |
+    | STARTING | Deployment is starting                                                                                                                       |
+    | RUNNING  | Deployment is ready and running. Predictions are served without additional latencies.                                                        |
+    | IDLE     | Deployment is ready but scaled to zero or has no active replicas. Higher latencies (cold-start) are expected on the first inference request. |
+    | FAILED   | Terminal state. The deployment has encountered an unrecoverable error. More details can be found in the status condition.                    |
+    | UPDATING | Deployment is applying updates to the running instances                                                                                      |
+    | STOPPING | Deployment is stopping                                                                                                                       |
+    | STOPPED  | Deployment has been stopped                                                                                                                  |
 
 ## How States Are Determined
 
@@ -151,7 +151,7 @@ Status conditions contain three pieces of information: type, status and reason.
 While the type describes the purpose of the condition, the status represents its progress.
 Additionally, a reason field is provided with a more descriptive message of the status.
 
-??? info "Show deployment conditions"
+??? info "Deployment conditions"
 
     | Type        | Status    | Description                                                                                                                                                |
     | ----------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -1,15 +1,14 @@
----
-description: Documentation on how to configure autoscaling for a deployment
----
-
 # How To Configure Scaling For A Deployment
 
 ## Introduction
 
-Deployments use [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/) to automatically scale the number of replicas based on traffic.
-See [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) for details on the available options.
+This guide explains how to set up **autoscaling** for model deployments using either the [web UI](#web-ui) or the [Python API](#code).
 
-## GUI
+Deployments use [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/) to automatically scale the number of replicas based on traffic. Autoscaling enables the deployment to use resources more efficiently, by growing and shrinking the allocated resources according to its actual, real-time usage. 
+
+See [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) for details on the available scaling options.
+
+## Web UI
 
 ### Step 1: Create new deployment
 
@@ -72,6 +71,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 2: Define the predictor scaling configuration
 
+You can use the [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig] class to configure the scaling options according to your preferences. Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections above.
+
 === "Python"
 
   ```python
@@ -84,6 +85,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 3 (Optional): Define the transformer scaling configuration
 
+If a transformer script is also provided, you can use the [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig] class to configure the scaling options according to your preferences. Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections above.
+
 === "Python"
 
   ```python
@@ -91,11 +94,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   transformer_scaling = TransformerScalingConfig(
       min_instances=1, max_instances=3, scale_metric="CONCURRENCY", target=50
-  )
-
-  my_transformer = ms.create_transformer(
-      script_file="Resources/my_transformer.py",
-      scaling_configuration=transformer_scaling
   )
   ```
 
@@ -106,9 +104,16 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   my_model = mr.get_model("my_model", version=1)
 
+  # optional
+  my_transformer = ms.create_transformer(
+      script_file="Resources/my_transformer.py",
+      scaling_configuration=transformer_scaling
+  )
+
   my_deployment = my_model.deploy(
     scaling_configuration=predictor_scaling,
-    # transformer=my_transformer
+    # optional:
+    transformer=my_transformer
   )
   ```
 

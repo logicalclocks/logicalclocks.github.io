@@ -30,7 +30,7 @@ In each predictor, you can decide the following configuration:
     10. [Scheduling](#scheduling)
     11. [API protocol](#api-protocol)
 
-## GUI
+## Web UI
 
 ### Step 1: Create new deployment
 

@@ -20,7 +20,7 @@ Hopsworks supports logging both inference requests and predictions as events to 
 !!! note "Kafka topic requirements"
     The Kafka topic must use the `inferenceschema` subject. Schema v4+ is required for KServe topics.
 
-## GUI
+## Web UI
 
 ### Step 1: Create new deployment
 

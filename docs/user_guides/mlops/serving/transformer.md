@@ -10,9 +10,9 @@ In this guide, you will learn how to configure a transformer script in a model d
 
 Transformer scripts are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model. They are user-provided Python scripts (`.py` or `.ipynb`) implementing the [Transformer class](#step-2-implement-transformer-script).
 
-!!! warning "Transformer scripts are not supported in vLLM deployments."
+!!! info "Transformer scripts are not supported in vLLM deployments."
 
-!!! info "Independent scaling"
+!!! tip "Independent scaling"
     The transformer has independent resources and autoscaling configuration from the predictor. This allows you to scale the pre/post-processing separately from the model inference.
 
 A transformer has the following configurable components:
@@ -26,7 +26,7 @@ A transformer has the following configurable components:
 
 See examples of transformer scripts in the serving [example notebooks](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/ml/serving).
 
-## GUI
+## Web UI
 
 ### Step 1: Create new deployment
 
@@ -197,7 +197,7 @@ Use the `transformer` parameter to set the transformer configuration when creati
 
 A transformer script is a custom Python script to apply pre/post-processing on the model inputs and outputs. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must implement the `Transformer` class, as shown in [Step 2](#step-2-implement-transformer-script).
 
-!!! warning "Transformer scripts are not supported in vLLM deployments."
+!!! info "Transformer scripts are not supported in vLLM deployments."
 
 ## Resources
 

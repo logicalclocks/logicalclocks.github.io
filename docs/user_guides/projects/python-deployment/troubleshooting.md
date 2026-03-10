@@ -16,7 +16,7 @@ Similarly, it follows an ordered sequence of states when being stopped, although
 !!! warning "`FAILED` is a terminal state"
     If a deployment reaches the `FAILED` state, it cannot recover on its own. You must stop and restart the deployment to attempt recovery.
 
-## GUI
+## Web UI
 
 ### Step 1: Inspect deployment status
 
@@ -106,14 +106,14 @@ To access the OpenSearch Dashboards, click on the `See logs` button at the top o
 
 Once in the OpenSearch Dashboards, you can search for keywords, apply multiple filters and sort the records by timestamp.
 
-??? info "Show available filters"
+??? info "Available filters"
 
-    | Filter         | Description                                                                                              |
-    | -------------- | -------------------------------------------------------------------------------------------------------- |
-    | component      | Name of the deployment component                                                                         |
-    | container_name | Name of the container within a component                                                                 |
-    | serving_name   | Name of the deployment                                                                                   |
-    | timestamp      | Timestamp when the record was reported                                                                   |
+    | Filter         | Description                              |
+    | -------------- | ---------------------------------------- |
+    | component      | Name of the deployment component         |
+    | container_name | Name of the container within a component |
+    | serving_name   | Name of the deployment                   |
+    | timestamp      | Timestamp when the record was reported   |
 
 ## Code
 

@@ -22,7 +22,7 @@ For each model deployment, there are four concepts to understand:
     3. [Predictor](#predictor)
     4. [Transformer](#transformer)
 
-## GUI
+## Web UI
 
 ### Step 1: Create a deployment
 
@@ -63,7 +63,7 @@ Then, select the model you want to deploy from the list of available models unde
 
 After selecting the model, select a model version and give your model deployment a name.
 
-!!! notice "Deployment name validation rules"
+!!! info "Deployment name validation rules"
     A valid deployment name can only contain characters a-z, A-Z and 0-9.
 
 !!! info "Predictor script for Python models"

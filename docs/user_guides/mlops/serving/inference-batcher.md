@@ -7,7 +7,7 @@ The configuration of the inference batcher depends on the model server used in t
 
 !!! warning "Inference batching is not supported for vLLM deployments."
 
-## GUI
+## Web UI
 
 ### Step 1: Create new deployment
 
