@@ -6,7 +6,8 @@ description: Documentation on how to configure autoscaling for a deployment
 
 ## Introduction
 
-Deployments use [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/) to automatically scale the number of replicas based on traffic. See [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) for details on the available options.
+Deployments use [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/) to automatically scale the number of replicas based on traffic.
+See [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) for details on the available options.
 
 ## GUI
 
