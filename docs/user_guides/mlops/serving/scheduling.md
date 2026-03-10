@@ -6,7 +6,8 @@ description: Documentation on how to configure scheduling options for a model de
 
 ## Introduction
 
-Scheduling configuration determines how and where your model deployment pods are placed in the Kubernetes cluster. Hopsworks supports Kubernetes scheduler abstractions such as **node affinity**, **anti-affinity**, and **priority classes**, as well as advanced scheduling with **Kueue queues and topologies**.
+Scheduling configuration determines how and where your model deployment pods are placed in the Kubernetes cluster.
+Hopsworks supports Kubernetes scheduler abstractions such as **node affinity**, **anti-affinity**, and **priority classes**, as well as advanced scheduling with **Kueue queues and topologies**.
 
 !!! tip "Scheduling available for all workloads"
     In addition to model deployments, all scheduling options are also available for jobs, Jupyter notebooks, and Python deployments.
