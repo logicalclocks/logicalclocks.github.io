@@ -4,7 +4,7 @@
 
 This guide explains how to set up **autoscaling** for model deployments using either the [web UI](#web-ui) or the [Python API](#code).
 
-Deployments use [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/) to automatically scale the number of replicas based on traffic. Autoscaling enables the deployment to use resources more efficiently, by growing and shrinking the allocated resources according to its actual, real-time usage. 
+Deployments use [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/) to automatically scale the number of replicas based on traffic. Autoscaling enables the deployment to use resources more efficiently, by growing and shrinking the allocated resources according to its actual, real-time usage.
 
 See [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) for details on the available scaling options.
 
