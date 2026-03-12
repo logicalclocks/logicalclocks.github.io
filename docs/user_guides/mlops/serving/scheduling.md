@@ -83,7 +83,8 @@ You can configure [node affinity](https://kubernetes.io/docs/concepts/scheduling
 ## Queues and Topologies
 
 !!! warning "Kueue is required"
-    This feature requires Kueue to be enabled in your cluster. If Kueue is not available, queue and topology options will not be accessible.
+    This feature requires Kueue to be enabled in your cluster.
+    If Kueue is not available, queue and topology options will not be accessible.
 
 If the cluster has Kueue enabled, you can select a queue for your deployment. [Queues](https://kueue.sigs.k8s.io/docs/concepts/local_queue/) control resource allocation and scheduling priority across the cluster. Administrators define quotas on how many resources a queue can use, and queues can be grouped in cohorts to borrow resources from each other.
 
