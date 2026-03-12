@@ -221,7 +221,8 @@ For full details on autoscaling parameters, see the [Autoscaling Guide](../../ml
 ## Scheduling
 
 !!! info "Kueue is required"
-    This feature requires Kueue to be enabled in your cluster. If Kueue is not available, queue and topology options will not be accessible.
+    This feature requires Kueue to be enabled in your cluster.
+    If Kueue is not available, queue and topology options will not be accessible.
 
 If the cluster has Kueue enabled, you can select a queue for your deployment from the advanced configuration. Queues control resource allocation and scheduling priority across the cluster.
 
