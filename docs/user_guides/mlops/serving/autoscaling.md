@@ -137,7 +137,8 @@ The autoscaler supports two metrics to determine when to scale. See [Knative aut
 
 ## Scaling parameters
 
-The following parameters can be used to fine-tune the autoscaling behavior. See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), [autoscaling concepts](https://knative.dev/docs/serving/autoscaling/autoscaling-concepts/) and [scale-to-zero](https://knative.dev/docs/serving/autoscaling/scale-to-zero/) in the Knative documentation for more details.
+The following parameters can be used to fine-tune the autoscaling behavior.
+See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), [autoscaling concepts](https://knative.dev/docs/serving/autoscaling/autoscaling-concepts/) and [scale-to-zero](https://knative.dev/docs/serving/autoscaling/scale-to-zero/) in the Knative documentation for more details.
 
 | Parameter                     | Default | Range  | Description                                 |
 | ----------------------------- | ------- | ------ | ------------------------------------------- |
