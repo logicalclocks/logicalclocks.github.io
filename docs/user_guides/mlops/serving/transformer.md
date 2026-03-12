@@ -211,7 +211,8 @@ To learn about the different combinations available, see the [Resources Guide](r
 
 ## Autoscaling
 
-The transformer has independent autoscaling from the predictor. Deployments use Knative Pod Autoscaler (KPA) to automatically scale the number of replicas based on traffic, including scale-to-zero.
+The transformer has independent autoscaling from the predictor.
+Deployments use Knative Pod Autoscaler (KPA) to automatically scale the number of replicas based on traffic, including scale-to-zero.
 
 To learn about the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).
 
