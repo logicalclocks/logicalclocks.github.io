@@ -77,7 +77,8 @@ You can configure [node affinity](https://kubernetes.io/docs/concepts/scheduling
 
 - **Affinity**: Constrains which nodes the deployment pods can run on based on node labels (e.g., GPU nodes, specific zones).
 - **Anti-Affinity**: Prevents pods from running on nodes with specific labels.
-- **Priority Class**: Determines the scheduling and eviction priority of pods. Higher priority pods are scheduled first and can preempt lower priority pods.
+- **Priority Class**: Determines the scheduling and eviction priority of pods.
+  Higher priority pods are scheduled first and can preempt lower priority pods.
 
 ## Queues and Topologies
 
