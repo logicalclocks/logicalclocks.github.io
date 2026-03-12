@@ -128,7 +128,8 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 
 ## Scale metrics
 
-The autoscaler supports two metrics to determine when to scale. See [Knative autoscaling metrics](https://knative.dev/docs/serving/autoscaling/autoscaling-metrics/) for more details.
+The autoscaler supports two metrics to determine when to scale.
+See [Knative autoscaling metrics](https://knative.dev/docs/serving/autoscaling/autoscaling-metrics/) for more details.
 
 | Scale Metric | Default Target | Description                     |
 | ------------ | -------------- | ------------------------------- |
