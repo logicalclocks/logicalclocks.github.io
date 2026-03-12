@@ -47,7 +47,8 @@ Choose a name for your Python deployment. Then, provide the script for you Pytho
 
 ### Step 3 (Optional): Change Python environment
 
-Python deployments run the scripts in one of the [Python Environments](../../projects/python/python_env_overview.md) available in your project. This environment must have all the necessary dependencies for your Python program.
+Python deployments run the scripts in one of the [Python Environments](../../projects/python/python_env_overview.md) available in your project.
+This environment must have all the necessary dependencies for your Python program.
 
 Hopsworks provide a collection of built-in environments like `minimal-inference-pipeline`, `pandas-inference-pipeline` or `torch-inference-pipeline` with different sets of libraries pre-installed.
 By default, the `pandas-inference-pipeline` Python environment is used in Python deployments.
