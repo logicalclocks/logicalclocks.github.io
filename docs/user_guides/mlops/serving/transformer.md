@@ -197,7 +197,9 @@ Use the `transformer` parameter to set the transformer configuration when creati
 
 ## Transformer script
 
-A transformer script is a custom Python script to apply pre/post-processing on the model inputs and outputs. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must implement the `Transformer` class, as shown in [Step 2](#step-2-implement-transformer-script).
+A transformer script is a custom Python script to apply pre/post-processing on the model inputs and outputs.
+This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment.
+The script must implement the `Transformer` class, as shown in [Step 2](#step-2-implement-transformer-script).
 
 !!! info "Transformer scripts are not supported in vLLM deployments."
 
