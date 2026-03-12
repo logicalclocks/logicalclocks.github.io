@@ -43,7 +43,8 @@ Then, click on `New Python deployment`.
 
 ### Step 2: Configure the deployment
 
-Choose a name for your Python deployment. Then, provide the script for you Python program by clicking on `From project` or `Upload new file`.
+Choose a name for your Python deployment.
+Then, provide the script for you Python program by clicking on `From project` or `Upload new file`.
 
 ### Step 3 (Optional): Change Python environment
 
