@@ -116,7 +116,9 @@ You can create API keys to authenticate your inference requests by clicking on t
 
 ### Step 4: Send inference requests
 
-The URI path for sending inference requests depends on the type of model deployment. For example, LLM deployments typically use `/chat/completions`, while traditional model deployments use `/predict`. You can find the exact URI path for each deployment on its model deployment card.
+The URI path for sending inference requests depends on the type of model deployment.
+For example, LLM deployments typically use `/chat/completions`, while traditional model deployments use `/predict`.
+You can find the exact URI path for each deployment on its model deployment card.
 
 For detailed instructions on constructing requests and handling authentication, refer to the [REST API Guide](rest-api.md).
 
