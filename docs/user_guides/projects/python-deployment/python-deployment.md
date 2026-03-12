@@ -207,7 +207,8 @@ To learn more about Python environments, see [Python Environments](../../project
 
 ## Resources
 
-Configure CPU, memory, and GPU allocation for your Python deployment. Each deployment component has separate request and limit values.
+Configure CPU, memory, and GPU allocation for your Python deployment.
+Each deployment component has separate request and limit values.
 
 For full details on resource configuration, see the [Resources Guide](../../mlops/serving/resources.md).
 
