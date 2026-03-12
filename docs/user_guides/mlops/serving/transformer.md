@@ -269,7 +269,8 @@ A number of different environment variables is available in the transformer to e
 
 ## Python environments
 
-Transformer scripts always run on `*-inference-pipeline` Python environments. To create a new Python environment see [Python Environments](../../projects/python/python_env_overview.md).
+Transformer scripts always run on `*-inference-pipeline` Python environments.
+To create a new Python environment see [Python Environments](../../projects/python/python_env_overview.md).
 
 !!! note
     For **Python model deployments**, the same Python environment is used for both predictor and transformer.
