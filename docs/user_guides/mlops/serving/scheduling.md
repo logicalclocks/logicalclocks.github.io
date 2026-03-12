@@ -43,7 +43,8 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 ### Step 3: Configure scheduling
 
-In the advanced creation form, go to the **Scheduler** section to set up scheduling options for your deployment. Here, you can specify [affinity, anti-affinity, and priority classes](#affinity-anti-affinity-and-priority-classes) to control how your deployment pods are scheduled within the cluster.
+In the advanced creation form, go to the **Scheduler** section to set up scheduling options for your deployment.
+Here, you can specify [affinity, anti-affinity, and priority classes](#affinity-anti-affinity-and-priority-classes) to control how your deployment pods are scheduled within the cluster.
 
 <p align="center">
   <figure>
