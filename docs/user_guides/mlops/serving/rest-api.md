@@ -34,7 +34,8 @@ authorization: ApiKey <API_KEY_VALUE>
 
 ## URL Paths
 
-Deployed models are accessible through the ==Istio ingress gateway== using **path-based** routing. The full URL is constructed by combining the base path with a model server-specific suffix.
+Deployed models are accessible through the ==Istio ingress gateway== using **path-based** routing.
+The full URL is constructed by combining the base path with a model server-specific suffix.
 This URL is also provided on the model deployment page in the Hopsworks UI.
 
 !!! example ""
