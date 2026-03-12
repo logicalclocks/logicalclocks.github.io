@@ -49,7 +49,8 @@ Choose a name for your Python deployment. Then, provide the script for you Pytho
 
 Python deployments run the scripts in one of the [Python Environments](../../projects/python/python_env_overview.md) available in your project. This environment must have all the necessary dependencies for your Python program.
 
-Hopsworks provide a collection of built-in environments like `minimal-inference-pipeline`, `pandas-inference-pipeline` or `torch-inference-pipeline` with different sets of libraries pre-installed. By default, the `pandas-inference-pipeline` Python environment is used in Python deployments.
+Hopsworks provide a collection of built-in environments like `minimal-inference-pipeline`, `pandas-inference-pipeline` or `torch-inference-pipeline` with different sets of libraries pre-installed.
+By default, the `pandas-inference-pipeline` Python environment is used in Python deployments.
 
 To create your own environment it is recommended to [clone](../../projects/python/python_env_clone.md) the `minimal-inference-pipeline` or `pandas-inference-pipeline` environment and install additional dependencies needed for your Python program.
 
