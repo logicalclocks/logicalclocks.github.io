@@ -101,7 +101,8 @@ There are no framework or protocol constraints — your server defines the expec
 
 ## CORS
 
-The Istio EnvoyFilter handles CORS preflight (`OPTIONS`) requests automatically. Allowed origins can be configured via `istio.envoyFilter.corsAllowedOrigins` in the Helm chart configuration.
+The Istio EnvoyFilter handles CORS preflight (`OPTIONS`) requests automatically.
+Allowed origins can be configured via `istio.envoyFilter.corsAllowedOrigins` in the Helm chart configuration.
 
 ## Response
 
