@@ -199,7 +199,8 @@ A number of different environment variables is available in the Python deploymen
 ## Python environments
 
 Python deployments run in one of the `*-inference-pipeline` Python environments available in your project.
-Hopsworks provides built-in environments like `minimal-inference-pipeline`, `pandas-inference-pipeline` or `torch-inference-pipeline` with different sets of libraries pre-installed. By default, the `pandas-inference-pipeline` environment is used.
+Hopsworks provides built-in environments like `minimal-inference-pipeline`, `pandas-inference-pipeline` or `torch-inference-pipeline` with different sets of libraries pre-installed.
+By default, the `pandas-inference-pipeline` environment is used.
 
 To create your own environment, it is recommended to [clone](../../projects/python/python_env_clone.md) the `minimal-inference-pipeline` or `pandas-inference-pipeline` environment and install additional dependencies needed for your Python program.
 To learn more about Python environments, see [Python Environments](../../projects/python/python_env_overview.md).
