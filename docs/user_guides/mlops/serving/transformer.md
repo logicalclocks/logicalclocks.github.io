@@ -8,7 +8,8 @@ description: Documentation on how to configure a KServe transformer for a model 
 
 In this guide, you will learn how to configure a transformer script in a model deployment.
 
-Transformer scripts are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model. They are user-provided Python scripts (`.py` or `.ipynb`) implementing the [Transformer class](#step-2-implement-transformer-script).
+Transformer scripts are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
+They are user-provided Python scripts (`.py` or `.ipynb`) implementing the [Transformer class](#step-2-implement-transformer-script).
 
 !!! info "Transformer scripts are not supported in vLLM deployments."
 
