@@ -74,7 +74,8 @@ The base URL is composed of the **Istio ingress gateway IP**, the **project name
 
 ## Request Format
 
-The request format depends entirely on your Python server implementation. There are no framework or protocol constraints — your server defines the expected HTTP methods, paths, and payload format.
+The request format depends entirely on your Python server implementation.
+There are no framework or protocol constraints — your server defines the expected HTTP methods, paths, and payload format.
 
 !!! example "REST API example"
     === "Python"
