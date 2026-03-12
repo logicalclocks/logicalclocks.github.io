@@ -13,7 +13,8 @@ Transformer scripts are used to apply transformations on the model inputs before
 !!! info "Transformer scripts are not supported in vLLM deployments."
 
 !!! tip "Independent scaling"
-    The transformer has independent resources and autoscaling configuration from the predictor. This allows you to scale the pre/post-processing separately from the model inference.
+    The transformer has independent resources and autoscaling configuration from the predictor.
+    This allows you to scale the pre/post-processing separately from the model inference.
 
 A transformer has the following configurable components:
 
