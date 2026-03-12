@@ -15,7 +15,8 @@ This document explains how to send requests to a Python deployment.
 
 ## Sending Requests through Istio Ingress
 
-The full URL path is constructed by combining a base path with a resource path available in the Python server. See [URL Paths](#url-paths) for the complete URL format and examples.
+The full URL path is constructed by combining a base path with a resource path available in the Python server.
+See [URL Paths](#url-paths) for the complete URL format and examples.
 
 ### Authentication
 
