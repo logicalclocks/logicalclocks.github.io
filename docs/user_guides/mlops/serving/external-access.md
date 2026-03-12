@@ -6,7 +6,7 @@ description: Documentation on how to configure external access to a model deploy
 
 ## Introduction
 
-Hopsworks supports role-based access control (RBAC) for project members within a project, where a project ML assets can only be accessed by Hopsworks users that are members of that project (See [governance](../../../concepts/projects/governance.md)).
+Hopsworks supports **role-based access control (RBAC)** for project members within a project, where a project ML assets can only be accessed by Hopsworks users that are members of that project (See [governance](../../../concepts/projects/governance.md)).
 
 However, there are cases where you might want to grant ==external users== with access to specific model deployments without them having to register into Hopsworks or to join the project which will give them access to all project ML assets.
 For these cases, Hopsworks supports fine-grained access control to model deployments based on ==user groups== managed by an external Identity Provider.
@@ -15,7 +15,7 @@ For these cases, Hopsworks supports fine-grained access control to model deploym
     Hopsworks can be configured to use different types of authentication methods including OAuth2, LDAP and Kerberos.
     See the [Authentication Methods Guide](../../../setup_installation/admin/auth.md) for more information.
 
-## GUI (for Hopsworks users)
+## Web UI (for Hopsworks users)
 
 ### Step 1: Navigate to a model deployment
 
@@ -64,7 +64,7 @@ After that, click on the `save` button to persist the changes.
   </figure>
 </p>
 
-## GUI (for external users)
+## Web UI (for external users)
 
 ### Step 1: Login with the external identity provider
 
@@ -105,7 +105,7 @@ Inference requests to model deployments are authenticated and authorized based o
 You can create API keys to authenticate your inference requests by clicking on the `Create API Key` button.
 
 !!! info "Authorization header"
-    API keys are set in the `Authorization` header following the format `ApiKey <api-key-value>`
+    API keys are set in the `authorization` header following the format `ApiKey <api-key-value>`
 
 <p align="center">
   <figure>
@@ -116,12 +116,11 @@ You can create API keys to authenticate your inference requests by clicking on t
 
 ### Step 4: Send inference requests
 
-Depending on the type of model deployment, the URI of the model server can differ (e.g., `/chat/completions` for LLM deployments or `/predict` for traditional model deployments).
-You can find the corresponding URI on every model deployment card.
+The URI path for sending inference requests depends on the type of model deployment.
+For example, LLM deployments typically use `/chat/completions`, while traditional model deployments use `/predict`.
+You can find the exact URI path for each deployment on its model deployment card.
 
-In addition to the `Authorization` header containing the API key, the `Host` header needs to be set according to the model deployment where the inference requests are sent to.
-This header is used by the ingress to route the inference requests to the corresponding model deployment.
-You can find the `Host` header value in the model deployment card.
+For detailed instructions on constructing requests and handling authentication, refer to the [REST API Guide](rest-api.md).
 
 !!! tip "Code snippets"
     For clients sending inference requests using libraries similar to curl or OpenAI API-compatible libraries (e.g., LangChain), you can find code snippet examples by clicking on the `Curl >_` and `LangChain >_` buttons.

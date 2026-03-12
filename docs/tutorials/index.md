@@ -25,7 +25,7 @@ This is a quick-start of the Hopsworks Feature Store; using a fraud use case we 
 
 ### Batch
 
-This is a batch use case variant of the fraud tutorial, it will give you a high level view on how to use our python APIs and the UI to navigate the feature groups.
+This is a batch use case variant of the fraud tutorial, it will give you a high level view on how to use our Python APIs and the UI to navigate the feature groups.
 
 | Notebooks |
 | --- |

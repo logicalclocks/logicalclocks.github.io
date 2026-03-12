@@ -6,11 +6,23 @@ description: Documentation on how to allocate resources to a model deployment
 
 ## Introduction
 
-Depending on the serving tool used to deploy a trained model, resource allocation can be configured at different levels.
-While deployments on Docker containers only support a fixed number of resources (CPU and memory), using Kubernetes or KServe allows a better exploitation of the resources available in the platform, by enabling you to specify how many CPUs, GPUs, and memory are allocated to a deployment.
-See the [compatibility matrix](#compatibility-matrix).
+Resource allocation can be configured ==per component== (predictor and transformer) in a deployment, allowing you to specify how many CPUs, GPUs, and memory are allocated.
+For each component, you can set minimum (requests) and maximum (limits) resources, as well as the number of instances.
 
-## GUI
+??? info "Resource defaults"
+
+    | Field              | Default Request | Default Limit  | Validation                                         |
+    | ------------------ | --------------- | -------------- | -------------------------------------------------- |
+    | CPU (cores)        | 0.2             | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
+    | Memory (MB)        | 32              | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
+    | GPUs               | 0               | 0              | Request must equal limit                           |
+    | Shared Memory (MB) | 128             | —              | —                                                  |
+
+!!! tip "Automatic downscale of inactive instances"
+    Setting the number of instances to **0** for a component (predictor or transformer) enables **scale-to-zero**.
+    This means that all instances of the component will automatically scale down to zero after a default period of inactivity of 30 seconds.
+
+## Web UI
 
 ### Step 1: Create new deployment
 
@@ -39,13 +51,13 @@ To navigate to the advanced creation form, click on `Advanced options`.
   </figure>
 </p>
 
-### Step 3: Configure resource allocation
+### Step 3: Configure resources
 
 In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
 Moreover, you can choose the minimum number of replicas for each of these components.
 
-??? note "Scale-to-zero capabilities"
-    Deployments with KServe enabled can scale to zero by choosing `0` as the number of instances.
+!!! note "Scale-to-zero capabilities"
+    Set the number of instances to **0** to enable scale-to-zero on the component.
 
 <p align="center">
   <figure>
@@ -103,7 +115,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
       num_instances=2, requests=minimum_res, limits=maximum_res
   )
 
-
   ```
 
 ### Step 4: Create a deployment with the resource configuration
@@ -126,22 +137,13 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
 
-
   ```
 
 ### API Reference
 
 [`Resources`][hsml.resources.Resources]
 
-## Compatibility matrix
+## Autoscaling
 
-??? info "Show supported resource allocation configuration"
-
-    | Serving tool | Component   | Resources                   |
-    | ------------ | ----------- | --------------------------- |
-    | Docker       | Predictor   | Fixed                       |
-    |              | Transformer | ❌                          |
-    | Kubernetes   | Predictor   | Minimum resources           |
-    |              | Transformer | ❌                          |
-    | KServe       | Predictor   | Minimum / maximum resources |
-    |              | Transformer | Minimum / maximum resources |
+Deployments can be configured to automatically scale the number of replicas based on traffic.
+To learn about the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).

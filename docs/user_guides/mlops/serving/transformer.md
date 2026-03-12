@@ -6,23 +6,29 @@ description: Documentation on how to configure a KServe transformer for a model 
 
 ## Introduction
 
-In this guide, you will learn how to configure a transformer in a deployment.
+In this guide, you will learn how to configure a transformer script in a model deployment.
 
-Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
-They run on a built-in Flask server provided by Hopsworks and require a user-provided python script implementing the [Transformer class](#step-2-implement-transformer-script).
+Transformer scripts are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
+They are user-provided Python scripts (`.py` or `.ipynb`) implementing the [Transformer class](#step-2-implement-transformer-script).
 
-???+ warning
-    Transformers are only supported in deployments using KServe as serving tool.
+!!! info "Transformer scripts are not supported in vLLM deployments."
 
-A transformer has two configurable components:
+!!! tip "Independent scaling"
+    The transformer has independent resources and autoscaling configuration from the predictor.
+    This allows you to scale the pre/post-processing separately from the model inference.
+
+A transformer has the following configurable components:
 
 !!! info ""
-    1. [User-provided script](#step-2-implement-transformer-script)
-    5. [Resources](#resources)
+    1. [Transformer script](#transformer-script)
+    2. [Resources](#resources)
+    3. [Autoscaling](#autoscaling)
+    4. [Python environments](#python-environments)
+    5. [Environment variables](#environment-variables)
 
 See examples of transformer scripts in the serving [example notebooks](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/ml/serving).
 
-## GUI
+## Web UI
 
 ### Step 1: Create new deployment
 
@@ -53,17 +59,7 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 ### Step 3: Select a transformer script
 
-Transformers require KServe as the serving platform for the deployment.
-Make sure that KServe is enabled for this deployment by activating the corresponding checkbox.
-
-<p align="center">
-  <figure>
-    <img style="max-width: 85%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_kserve.png" alt="KServe enabled in advanced deployment form">
-    <figcaption>Enable KServe in the advanced deployment form</figcaption>
-  </figure>
-</p>
-
-Then, if the transformer script is already located in Hopsworks, click on `From project` and navigate through the file system to find your script.
+If the transformer script is already located in Hopsworks, click on `From project` and navigate through the file system to find your script.
 Otherwise, you can click on `Upload new file` to upload the transformer script now.
 
 <p align="center">
@@ -73,15 +69,12 @@ Otherwise, you can click on `Upload new file` to upload the transformer script n
   </figure>
 </p>
 
-After selecting the transformer script, you can optionally configure resource allocation for your transformer (see [Step 4](#step-4-optional-configure-resource-allocation)).
+After selecting the transformer script, you can optionally configure resources and autoscaling for your transformer (see [Step 4](#step-4-optional-other-advanced-options)).
 Otherwise, click on `Create new deployment` to create the deployment for your model.
 
-### Step 4 (Optional): Configure resource allocation
+### Step 4 (Optional): Other advanced options
 
-At the end of the page, you can configure the resources to be allocated for the transformer, as well as the minimum and maximum number of replicas to be deployed.
-
-??? note "Scale-to-zero capabilities"
-    Deployments with KServe enabled can scale to zero by choosing `0` as the number of instances.
+In this page, you can also configure the [resources](resources.md) to be allocated for the transformer, as well as the [autoscaling](autoscaling.md) parameters to control how the transformer scales based on traffic.
 
 <p align="center">
   <figure>
@@ -106,8 +99,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   # get Dataset API instance
   dataset_api = project.get_dataset_api()
 
-  # get Hopsworks Model Serving handle
-  ms = project.get_model_serving()
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
   ```
 
 ### Step 2: Implement transformer script
@@ -118,6 +111,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
     class Transformer:
         def __init__(self):
             """Initialization code goes here"""
+            # Optional __init__ params: project, deployment, model, async_logger
             pass
 
         def preprocess(self, inputs):
@@ -127,6 +121,26 @@ Once you are done with the changes, click on `Create new deployment` at the bott
         def postprocess(self, outputs):
             """Transform the predictions computed by the model before returning a response"""
             return outputs
+    ```
+
+!!! tip "Optional `__init__` parameters"
+    The `__init__` method supports optional parameters that are automatically injected at runtime:
+
+    | Parameter      | Class                | Description                                            |
+    | -------------- | -------------------- | ------------------------------------------------------ |
+    | `project`      | `Project`            | Hopsworks project handle                               |
+    | `deployment`   | `Deployment`         | Current model deployment handle                        |
+    | `model`        | `Model`              | Model handle                                           |
+    | `async_logger` | `AsyncFeatureLogger` | Async feature logger for logging features to Hopsworks |
+
+    You can add any combination of these parameters to your `__init__` method:
+
+    ```python
+    class Transformer:
+        def __init__(self, project, model):
+            # Access the project and model directly
+            self.project = project
+            self.model_metadata = model
     ```
 
 !!! info "Jupyter magic"
@@ -146,7 +160,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
       "/Projects", project.name, uploaded_file_path
   )
 
-
   ```
 
 ### Step 4: Define a transformer
@@ -162,43 +175,111 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   my_transformer = Transformer(script_file)
 
-
   ```
 
 ### Step 5: Create a deployment with the transformer
 
+Use the `transformer` parameter to set the transformer configuration when creating the model deployment.
+
 === "Python"
 
   ```python
-  my_predictor = ms.create_predictor(transformer=my_transformer)
-  my_deployment = my_predictor.deploy()
+  my_model = mr.get_model("my_model", version=1)
 
-  # or
-  my_deployment = ms.create_deployment(my_predictor, transformer=my_transformer)
-  my_deployment.save()
-
-
+  my_deployment = my_model.deploy(
+      transformer=my_transformer
+  )
   ```
 
 ### API Reference
 
 [`Transformer`][hsml.transformer.Transformer]
 
+## Transformer script
+
+A transformer script is a custom Python script to apply pre/post-processing on the model inputs and outputs.
+This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment.
+The script must implement the `Transformer` class, as shown in [Step 2](#step-2-implement-transformer-script).
+
+!!! info "Transformer scripts are not supported in vLLM deployments."
+
 ## Resources
 
 Resources include the number of replicas for the deployment as well as the resources (i.e., memory, CPU, GPU) to be allocated per replica.
+
 To learn about the different combinations available, see the [Resources Guide](resources.md).
+
+## Autoscaling
+
+The transformer has independent autoscaling from the predictor.
+Deployments use Knative Pod Autoscaler (KPA) to automatically scale the number of replicas based on traffic, including scale-to-zero.
+
+To learn about the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).
 
 ## Environment variables
 
 A number of different environment variables is available in the transformer to ease its implementation.
 
-??? info "Show environment variables"
+!!! tip "Available environment variables"
 
-    | Name                | Description                                                          |
-    | ------------------- | -------------------------------------------------------------------- |
-    | ARTIFACT_FILES_PATH | Local path to the model artifact files                               |
-    | DEPLOYMENT_NAME     | Name of the current deployment                                       |
-    | MODEL_NAME          | Name of the model being served by the current deployment             |
-    | MODEL_VERSION       | Version of the model being served by the current deployment          |
-    | ARTIFACT_VERSION    | Version of the model artifact being served by the current deployment |
+    === "Deployment"
+
+        These variables are available in all deployments.
+
+        | Name                  | Description                      |
+        | --------------------- | -------------------------------- |
+        | `DEPLOYMENT_NAME`     | Name of the current deployment   |
+        | `DEPLOYMENT_VERSION`  | Version of the deployment        |
+        | `ARTIFACT_FILES_PATH` | Local path to the artifact files |
+
+    === "Transformer"
+
+        These variables are set for transformer components.
+
+        | Name               | Description                                        |
+        | ------------------ | -------------------------------------------------- |
+        | `SCRIPT_PATH`      | Full path to the transformer script                |
+        | `SCRIPT_NAME`      | Prefixed filename of the transformer script        |
+        | `CONFIG_FILE_PATH` | Local path to the configuration file (if provided) |
+        | `IS_TRANSFORMER`   | Set to `true` for transformer components           |
+
+    === "Model"
+
+        | Name            | Description                                                 |
+        | --------------- | ----------------------------------------------------------- |
+        | `MODEL_NAME`    | Name of the model being served by the current deployment    |
+        | `MODEL_VERSION` | Version of the model being served by the current deployment |
+
+    === "Others"
+
+        These variables are available in all deployments.
+
+        | Name                     | Description                                        |
+        | ------------------------ | -------------------------------------------------- |
+        | `REST_ENDPOINT`          | Hopsworks REST API endpoint                        |
+        | `HOPSWORKS_PROJECT_ID`   | ID of the project                                  |
+        | `HOPSWORKS_PROJECT_NAME` | Name of the project                                |
+        | `HOPSWORKS_PUBLIC_HOST`  | Hopsworks public hostname                          |
+        | `API_KEY`                | API key for authenticating with Hopsworks services |
+        | `PROJECT_ID`             | Project ID (for Feature Store access)              |
+        | `PROJECT_NAME`           | Project name (for Feature Store access)            |
+        | `SECRETS_DIR`            | Path to secrets directory (`/keys`)                |
+        | `MATERIAL_DIRECTORY`     | Path to TLS certificates (`/certs`)                |
+        | `REQUESTS_VERIFY`        | SSL verification setting                           |
+
+## Python environments
+
+Transformer scripts always run on `*-inference-pipeline` Python environments.
+To create a new Python environment see [Python Environments](../../projects/python/python_env_overview.md).
+
+!!! note
+    For **Python model deployments**, the same Python environment is used for both predictor and transformer.
+
+!!! info "Supported Python environments"
+
+    | Model server         | Predictor                        | Transformer                      |
+    | -------------------- | -------------------------------- | -------------------------------- |
+    | Python               | any `*-inference-pipeline` image | any `*-inference-pipeline` image |
+    | KServe sklearnserver | `sklearnserver`                  | any `*-inference-pipeline` image |
+    | TensorFlow Serving   | `tensorflow/serving`             | any `*-inference-pipeline` image |
+    | vLLM                 | `vllm-openai`                    | Not supported                    |

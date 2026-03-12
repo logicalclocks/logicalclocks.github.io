@@ -239,7 +239,6 @@ However, you can retrieve the untransformed feature vectors without applying mod
             entry=[{"id": 1}, {"id": 2}], transform=False
         )
 
-
         ```
 
 ## Retrieving feature vector without on-demand features
@@ -258,7 +257,6 @@ To achieve this, set the  parameters `transform` and `on_demand_features` to `Fa
             entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
         )
 
-
         ```
 
 ## Passing Context Variables to Transformation Functions
@@ -273,7 +271,6 @@ After [defining a transformation function using a context variable](../transform
         batch_data = feature_view.get_feature_vectors(
             entry=[{"pk1": 1}], transformation_context={"context_parameter": 10}
         )
-
 
         ```
 

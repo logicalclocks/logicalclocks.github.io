@@ -8,7 +8,7 @@ In this guide, you will learn how to create a new project.
     A valid project name can only contain characters a-z, A-Z, 0-9 and special characters ‘_’ and ‘.’ but not ‘__’ (double underscore).
     There is also a number of [reserved project names](#reserved-project-names) that can not be used.
 
-## GUI
+## Web UI
 
 ### Step 1: Create a project
 
