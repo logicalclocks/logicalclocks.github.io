@@ -213,7 +213,8 @@ For full details on resource configuration, see the [Resources Guide](../../mlop
 
 ## Autoscaling
 
-Deployments use **Knative Pod Autoscaler (KPA)** to automatically scale the number of replicas based on traffic. You can configure the minimum and maximum number of instances as well as the scale metric (requests per second or concurrency).
+Deployments use **Knative Pod Autoscaler (KPA)** to automatically scale the number of replicas based on traffic.
+You can configure the minimum and maximum number of instances as well as the scale metric (requests per second or concurrency).
 
 For full details on autoscaling parameters, see the [Autoscaling Guide](../../mlops/serving/autoscaling.md).
 
