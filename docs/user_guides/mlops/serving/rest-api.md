@@ -11,7 +11,8 @@ This document explains how to interact with a model deployment via REST API.
 
 ## Sending Inference Requests through Istio Ingress
 
-The full inference URL is constructed by combining a base path with a model server-specific suffix. See [URL Paths](#url-paths) for the complete URL format and examples.
+The full inference URL is constructed by combining a base path with a model server-specific suffix.
+See [URL Paths](#url-paths) for the complete URL format and examples.
 
 ### Authentication
 
