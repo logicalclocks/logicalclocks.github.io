@@ -23,7 +23,8 @@ A KServe model deployment can include the following components:
 **`Istio Model Endpoint`**
 
 :   You can publish a model over REST(HTTP) or gRPC using a Hopsworks API key, accessible via **path-based routing** through Istio.
-    API keys have scopes to ensure the principle of least privilege access control to resources managed by Hopsworks. For more details on path-based routing of requests through Istio, see [REST API Guide](../../user_guides/mlops/serving/rest-api.md).
+    API keys have scopes to ensure the principle of least privilege access control to resources managed by Hopsworks.
+    For more details on path-based routing of requests through Istio, see [REST API Guide](../../user_guides/mlops/serving/rest-api.md).
 
     !!! warning "Host-based routing"
         The Istio Model Endpoint supports host-based routing for inference requests; however, this approach is considered legacy.
