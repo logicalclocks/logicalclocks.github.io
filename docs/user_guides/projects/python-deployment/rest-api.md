@@ -38,7 +38,8 @@ authorization: ApiKey <API_KEY_VALUE>
 
 ## URL Paths
 
-Python deployments are accessible through the ==Istio ingress gateway== using **path-based** routing. The full URL is constructed by combining the base URL with the paths defined in your Python server.
+Python deployments are accessible through the ==Istio ingress gateway== using **path-based** routing.
+The full URL is constructed by combining the base URL with the paths defined in your Python server.
 
 !!! example ""
     **`<base_url>/<path>`**
