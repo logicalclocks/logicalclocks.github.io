@@ -129,3 +129,6 @@ target/
 .DS_Store
 
 /temp_dir
+
+# Local agent settings, user-specific
+/.claude/settings.local.json
