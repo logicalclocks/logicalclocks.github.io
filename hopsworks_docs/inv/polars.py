@@ -33,12 +33,12 @@ MISSING_CLASSES = {
 
 objects = [
     soi.DataObjStr(
-        name=name,
-        domain="py",
-        role="class",
-        priority="1",
-        uri=uri,
-        dispname="-",
+        name=name, # type: ignore
+        domain="py", # type: ignore
+        role="class", # type: ignore
+        priority="1", # type: ignore
+        uri=uri, # type: ignore
+        dispname="-", # type: ignore
     )
     for name, uri in MISSING_CLASSES.items()
 ]

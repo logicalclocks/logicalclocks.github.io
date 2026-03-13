@@ -32,6 +32,8 @@ import subprocess
 import sys
 import tempfile
 
+from invoke.context import Context
+
 
 # --- Configuration ---
 
@@ -72,15 +74,14 @@ sys.path.insert(0, str(GX_CLONE_PATH))
 
 # --- Step 2: Generate stubs and capture sidebar_entries ---
 
-import invoke  # noqa: E402
-from docs.sphinx_api_docs_source.build_sphinx_api_docs import (  # noqa: E402
+from docs.sphinx_api_docs_source.build_sphinx_api_docs import (  # noqa: E402 # type: ignore
     SidebarEntryType,
     SphinxInvokeDocsBuilder,
 )
 
 
 api_source = GX_CLONE_PATH / "docs" / "sphinx_api_docs_source"
-ctx = invoke.Context()
+ctx = Context()
 builder = SphinxInvokeDocsBuilder(
     ctx=ctx,
     api_docs_source_path=api_source,
@@ -123,7 +124,7 @@ print(f"  Sphinx objects.inv: {inv_path.stat().st_size} bytes")
 import sphobjinv as soi  # noqa: E402
 
 
-sphinx_inv = soi.Inventory(str(inv_path))
+sphinx_inv = soi.Inventory(str(inv_path)) # type: ignore
 print(f"  Sphinx inventory: {len(sphinx_inv.objects)} objects")
 
 remapped: list[soi.DataObjStr] = []
@@ -146,12 +147,12 @@ for obj in sphinx_inv.objects:
 
     remapped.append(
         soi.DataObjStr(
-            name=obj.name,
-            domain=obj.domain,
-            role=obj.role,
-            priority=str(obj.priority),
-            uri=full_uri,
-            dispname=obj.dispname or "-",
+            name=obj.name, # type: ignore
+            domain=obj.domain, # type: ignore
+            role=obj.role, # type: ignore
+            priority=str(obj.priority), # type: ignore
+            uri=full_uri, # type: ignore
+            dispname=obj.dispname or "-", # type: ignore
         )
     )
 

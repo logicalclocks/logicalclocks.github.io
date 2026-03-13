@@ -1,5 +1,6 @@
 [project]
 name = "hopsworks-docs"
+requires-python = "~=3.13.0"
 version = "0.1.0"
 readme = "README.md"
 
@@ -20,6 +21,14 @@ dependencies = [
 cli = [
     "typer",
     "rich",
+    "sphobjinv",
+    "great_expectations==0.18.22",
+    "sphinx~=5.3.0",
+    "pydata-sphinx-theme==0.11.0",
+    "myst-parser",
+    "docstring-parser==0.15",
+    "invoke",
+    "beautifulsoup4",
 ]
 
 [dependency-groups]
@@ -84,8 +93,7 @@ exclude = [
 line-length = 88
 indent-width = 4
 
-# Assume Python 3.9+ syntax.
-target-version = "py39"
+target-version = "py313"
 
 [tool.ruff.lint]
 select = [
