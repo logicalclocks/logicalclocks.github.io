@@ -32,6 +32,7 @@ import subprocess
 import sys
 import tempfile
 
+
 # --- Configuration ---
 
 REPO_ROOT = pathlib.Path(__file__).parent
@@ -53,7 +54,12 @@ if not GX_CLONE_PATH.exists():
     print(f"Cloning GX 0.18.x into {GX_CLONE_PATH} ...")
     subprocess.run(
         [
-            "git", "clone", "--depth", "1", "--branch", "0.18.x",
+            "git",
+            "clone",
+            "--depth",
+            "1",
+            "--branch",
+            "0.18.x",
             "https://github.com/great-expectations/great_expectations.git",
             str(GX_CLONE_PATH),
         ],
@@ -66,12 +72,12 @@ sys.path.insert(0, str(GX_CLONE_PATH))
 
 # --- Step 2: Generate stubs and capture sidebar_entries ---
 
+import invoke  # noqa: E402
 from docs.sphinx_api_docs_source.build_sphinx_api_docs import (  # noqa: E402
-    SphinxInvokeDocsBuilder,
     SidebarEntryType,
+    SphinxInvokeDocsBuilder,
 )
 
-import invoke  # noqa: E402
 
 api_source = GX_CLONE_PATH / "docs" / "sphinx_api_docs_source"
 ctx = invoke.Context()
@@ -115,6 +121,7 @@ print(f"  Sphinx objects.inv: {inv_path.stat().st_size} bytes")
 # --- Step 4: Remap entries ---
 
 import sphobjinv as soi  # noqa: E402
+
 
 sphinx_inv = soi.Inventory(str(inv_path))
 print(f"  Sphinx inventory: {len(sphinx_inv.objects)} objects")
@@ -164,6 +171,8 @@ print(f"Written {len(remapped)} entries to {OUT_INV}")
 
 builder._remove_md_stubs()
 import shutil  # noqa: E402
+
+
 shutil.rmtree(sphinx_out, ignore_errors=True)
 
 print("Done.")

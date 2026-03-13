@@ -1,0 +1,144 @@
+[project]
+name = "hopsworks-docs"
+version = "0.1.0"
+readme = "README.md"
+
+dependencies = [
+    "mkdocs==1.6.1",
+    "mkdocs-material==9.7.0",
+    "mike==2.1.3",
+    "markdown==3.9",
+    "pymdown-extensions==10.17.2",
+    "mkdocs-minify-plugin>=0.2.0",
+    "hopsworks-apigen==1.0.3",
+    "mkdocstrings[python]==1.0.3",
+    "mkdocstrings-python==2.0.2",
+    "mkdocs-autorefs==1.4.4",
+]
+
+[project.optional-dependencies]
+cli = [
+    "typer",
+    "rich",
+]
+
+[dependency-groups]
+dev = [
+    "ruff==0.15.6",
+    "linkchecker",
+    "pyright",
+]
+
+[project.scripts]
+hopsworks-docs = "hopsworks_docs:cli"
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+source-include = ["docs/**", "mkdocs.yml"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --suppress-no-test-exit-code -m 'not using_llm and not using_hopsworks' --benchmark-columns=mean --benchmark-time-unit=s -rP"
+markers = [
+    "using_llm: Mark test requiring a connection to one of the LLMs",
+    "using_hopsworks: Mark test requiring a connection to a Hopsworks cluster",
+    "benchmark: Mark test as a benchmark",
+]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.9+ syntax.
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "B",
+    "C4",
+    "ISC",
+    "PIE",
+    "PYI",
+    "Q",
+    "RSE",
+    "RET",
+    "SIM",
+    "TC",
+    "I",
+    "W",
+    "D2",
+    "D3",
+    "D4",
+    "INP",
+    "UP",
+    "FA",
+]
+ignore = [
+    "B905",  # zip has no strict kwarg until Python 3.10
+    "W505",  # Doc line too long
+    "E501",  # Line too long
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
