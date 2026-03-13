@@ -18,9 +18,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-cli = [
-    "typer",
-    "rich",
+cli = ["typer", "rich"]
+inv = [
     "sphobjinv",
     "great_expectations==0.18.12",
     "sphinx~=5.3.0",
@@ -32,11 +31,7 @@ cli = [
 ]
 
 [dependency-groups]
-dev = [
-    "ruff==0.15.6",
-    "linkchecker",
-    "pyright",
-]
+dev = ["ruff==0.15.6", "linkchecker", "pyright"]
 
 [project.scripts]
 hopsworks-docs = "hopsworks_docs.scripts:cli"
@@ -112,9 +107,9 @@ select = [
     "FA",
 ]
 ignore = [
-    "B905",  # zip has no strict kwarg until Python 3.10
-    "W505",  # Doc line too long
-    "E501",  # Line too long
+    "B905", # zip has no strict kwarg until Python 3.10
+    "W505", # Doc line too long
+    "E501", # Line too long
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
@@ -129,6 +124,7 @@ convention = "google"
 
 [tool.ruff.lint.isort]
 lines-after-imports = 2
+known-third-party = ["hopsworks_docs"]
 
 
 [tool.ruff.format]

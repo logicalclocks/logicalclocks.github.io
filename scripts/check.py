@@ -1,12 +1,14 @@
 import subprocess
-from pathlib import Path
 
-
-_DOCS_ROOT = Path(__file__).parent.parent
+from hopsworks_docs.scripts.shared.docs_root import _DOCS_ROOT
+from hopsworks_docs.scripts.shared.ensure_local import ensure_local
 
 
 def check():
     """Check the documentation."""
+    ensure_local(_DOCS_ROOT / "docs" / "great_expectations.inv")
+    ensure_local(_DOCS_ROOT / "docs" / "polars_patch.inv")
+
     subprocess.run(
         [
             "mkdocs",

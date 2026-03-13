@@ -124,7 +124,7 @@ print(f"  Sphinx objects.inv: {inv_path.stat().st_size} bytes")
 import sphobjinv as soi  # noqa: E402
 
 
-sphinx_inv = soi.Inventory(str(inv_path)) # type: ignore
+sphinx_inv = soi.Inventory(str(inv_path))  # type: ignore
 print(f"  Sphinx inventory: {len(sphinx_inv.objects)} objects")
 
 remapped: list[soi.DataObjStr] = []
@@ -147,12 +147,12 @@ for obj in sphinx_inv.objects:
 
     remapped.append(
         soi.DataObjStr(
-            name=obj.name, # type: ignore
-            domain=obj.domain, # type: ignore
-            role=obj.role, # type: ignore
-            priority=str(obj.priority), # type: ignore
-            uri=full_uri, # type: ignore
-            dispname=obj.dispname or "-", # type: ignore
+            name=obj.name,  # type: ignore
+            domain=obj.domain,  # type: ignore
+            role=obj.role,  # type: ignore
+            priority=str(obj.priority),  # type: ignore
+            uri=full_uri,  # type: ignore
+            dispname=obj.dispname or "-",  # type: ignore
         )
     )
 

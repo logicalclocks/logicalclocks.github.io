@@ -6,7 +6,7 @@ from .markdownlint import lint
 
 
 def snakeoil():
-    """Run all quality checks: lint, linkcheck."""
+    """Run snakeoil to check Python code blocks in Markdown files."""
     print(Rule("Snakeoil"))
     lint()
     linkcheck()

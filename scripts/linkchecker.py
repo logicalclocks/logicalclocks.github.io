@@ -1,11 +1,8 @@
 import subprocess
-from pathlib import Path
 
+from hopsworks_docs.scripts.shared.docs_root import _DOCS_ROOT
 from rich import print
 from rich.rule import Rule
-
-
-_DOCS_ROOT = Path(__file__).parent.parent
 
 
 def linkcheck():
