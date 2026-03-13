@@ -14,7 +14,11 @@ def ensure_local(path: Path) -> None:
                 p.mkdir()
 
         gipath = local_path.parent / ".gitignore"
-        gi = gipath.read_text() if gipath.exists() else "/.gitignore\n"
+        if gipath.exists():
+            gi = gipath.read_text()
+        else:
+            gi = "/.gitignore\n"
+            atexit.register(lambda: gipath.unlink())
         if "/" + local_path.name not in gi:
             gipath.write_text(gi + f"\n/{local_path.name}\n")
 
