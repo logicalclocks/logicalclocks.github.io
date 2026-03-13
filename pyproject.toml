@@ -42,21 +42,23 @@ dev = [
 hopsworks-docs = "hopsworks_docs:cli"
 
 [build-system]
-requires = ["uv_build"]
-build-backend = "uv_build"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
-[tool.uv.build-backend]
-module-root = ""
-source-include = ["docs/**", "mkdocs.yml"]
+[tool.setuptools]
+include-package-data = true
 
-[tool.pytest.ini_options]
-addopts = "--strict-markers --suppress-no-test-exit-code -m 'not using_llm and not using_hopsworks' --benchmark-columns=mean --benchmark-time-unit=s -rP"
-markers = [
-    "using_llm: Mark test requiring a connection to one of the LLMs",
-    "using_hopsworks: Mark test requiring a connection to a Hopsworks cluster",
-    "benchmark: Mark test as a benchmark",
+[tool.setuptools.package-dir]
+hopsworks_docs = "scripts"
+"hopsworks_docs.docs" = "docs"
+
+[tool.setuptools.packages.find]
+include = [
+    "mkdocs.yml",
+    "docs",
+    "scripts",
+    "README.md",
 ]
-asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
