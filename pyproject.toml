@@ -39,26 +39,17 @@ dev = [
 ]
 
 [project.scripts]
-hopsworks-docs = "hopsworks_docs:cli"
+hopsworks-docs = "hopsworks_docs.scripts:cli"
 
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-include-package-data = true
-
 [tool.setuptools.package-dir]
-hopsworks_docs = "scripts"
-"hopsworks_docs.docs" = "docs"
+hopsworks_docs = "."
 
-[tool.setuptools.packages.find]
-include = [
-    "mkdocs.yml",
-    "docs",
-    "scripts",
-    "README.md",
-]
+[tool.setuptools.package-data]
+"*" = ["*"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
