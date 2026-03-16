@@ -77,6 +77,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Registry handle
@@ -92,6 +93,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   ```python
   from hsml.resources import PredictorResources, Resources
+
 
   minimum_res = Resources(cores=1, memory=128, gpus=1)
   maximum_res = Resources(cores=2, memory=256, gpus=1)
@@ -114,7 +116,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   transformer_res = TransformerResources(
       num_instances=2, requests=minimum_res, limits=maximum_res
   )
-
   ```
 
 ### Step 4: Create a deployment with the resource configuration
@@ -136,7 +137,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
-
   ```
 
 ### API Reference

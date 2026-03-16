@@ -87,6 +87,7 @@ You can also clone a repository through the hopsworks git API in python.
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 git_api = project.get_git_api()

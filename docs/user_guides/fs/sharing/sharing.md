@@ -131,6 +131,7 @@ Use the `get_feature_store()` method with the name of the shared feature store:
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 # Get your project's feature store

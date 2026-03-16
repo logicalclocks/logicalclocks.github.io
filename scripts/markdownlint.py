@@ -53,7 +53,7 @@ def _run_markdownlint(glob: str, cwd: Path) -> None:
         )
 
 
-def lint() -> None:
+def markdownlint() -> None:
     """Lint markdown source files."""
     print(Rule("Markdown"))
     _ensure_markdownlint()

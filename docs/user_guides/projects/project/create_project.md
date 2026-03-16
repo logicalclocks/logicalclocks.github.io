@@ -64,6 +64,7 @@ Once the project is created the overview page for it will appear.
 ```python
 import hopsworks
 
+
 hopsworks.login()
 ```
 

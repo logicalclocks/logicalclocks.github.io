@@ -18,6 +18,7 @@ In this guide, you will learn how to consume messages from a kafka topic.
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 kafka_api = project.get_kafka_api()

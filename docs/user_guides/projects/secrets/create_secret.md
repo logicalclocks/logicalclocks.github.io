@@ -53,6 +53,7 @@ If the secret should be private to this user, select `Private`, to share the sec
 ```python
 import hopsworks
 
+
 hopsworks.login()
 
 secrets_api = hopsworks.get_secrets_api()

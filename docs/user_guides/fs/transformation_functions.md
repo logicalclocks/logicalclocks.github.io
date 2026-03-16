@@ -272,6 +272,7 @@ Upon instantiation, instances of `FeatureTransformationStatistics` contain `N
         from hopsworks import udf
         from hopsworks.transformation_statistics import TransformationStatistics
 
+
         stats = TransformationStatistics("argument1", "argument2", "argument3")
 
 

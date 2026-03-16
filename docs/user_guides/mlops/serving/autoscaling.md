@@ -61,6 +61,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Registry handle
@@ -80,6 +81,7 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
   ```python
   from hsml.scaling_config import PredictorScalingConfig
 
+
   predictor_scaling = PredictorScalingConfig(
       min_instances=1, max_instances=5, scale_metric="RPS", target=100
   )
@@ -94,6 +96,7 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 
   ```python
   from hsml.scaling_config import TransformerScalingConfig
+
 
   transformer_scaling = TransformerScalingConfig(
       min_instances=1, max_instances=3, scale_metric="CONCURRENCY", target=50

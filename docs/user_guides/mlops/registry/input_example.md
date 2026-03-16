@@ -19,6 +19,7 @@ Attaching an input example to your model will give other users a better understa
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     # get Hopsworks Model Registry handle
@@ -34,6 +35,7 @@ Currently we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list` to b
 
     ```python
     import numpy as np
+
 
     input_example = np.random.randint(0, high=256, size=784, dtype=np.uint8)
     ```

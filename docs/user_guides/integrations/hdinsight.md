@@ -141,6 +141,7 @@ You are now ready to connect to the Hopsworks Feature Store, for instance using 
 ```python
 import hopsworks
 
+
 # Put the API key into Key Vault for any production setup:
 # See, https://azure.microsoft.com/en-us/services/key-vault/
 secret_value = "MY_API_KEY"

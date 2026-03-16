@@ -76,6 +76,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Registry handle
@@ -92,6 +93,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   from hsml.inference_logger import InferenceLogger
   from hsml.kafka_topic import KafkaTopic
+
 
   new_topic = KafkaTopic(
       name="CREATE",
@@ -118,7 +120,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   my_model = mr.get_model("my_model", version=1)
 
   my_model.deploy(inference_logger=my_logger)
-
   ```
 
 ### API Reference

@@ -17,6 +17,7 @@ In this guide you will learn how to export a generic Python model and register i
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     # get Hopsworks Model Registry handle

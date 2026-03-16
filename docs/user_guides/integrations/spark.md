@@ -84,6 +84,7 @@ You are now ready to connect to the Hopsworks Feature Store from Spark:
 ```python
 import hopsworks
 
+
 project = hopsworks.login(
     host="my_instance",  # DNS of your Feature Store instance
     port=443,  # Port to reach your Hopsworks instance, defaults to 443

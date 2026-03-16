@@ -125,6 +125,7 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Serving handle
@@ -137,7 +138,6 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
   ```python
   deployment = ms.get_deployment("mydeployment")
-
   ```
 
 ### Step 3: Get current deployment state
@@ -148,7 +148,6 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
   state = deployment.get_state()
 
   state.describe()
-
   ```
 
 ### Step 4: Explore transient logs
@@ -157,7 +156,6 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
   ```python
   deployment.get_logs(tail=10)
-
   ```
 
 ### API Reference

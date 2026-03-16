@@ -147,6 +147,7 @@ It will upload the Jupyter Notebook script to the `Resources` dataset in your pr
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 dataset_api = project.get_dataset_api()

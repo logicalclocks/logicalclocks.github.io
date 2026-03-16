@@ -18,6 +18,7 @@ In this guide, you will learn how to produce messages to a kafka topic.
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 kafka_api = project.get_kafka_api()

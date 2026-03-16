@@ -113,6 +113,7 @@ See [more information on the request format](https://kserve.github.io/website/do
         ```python
         import requests
 
+
         data = {"inputs": [[4641025220953719, 4920355418495856]]}
 
         headers = {"authorization": "ApiKey <your_api_key>", "content-type": "application/json"}
@@ -145,6 +146,7 @@ For generative inference (vLLM), the request follows the [OpenAI specification](
 
         ```python
         import requests
+
 
         data = {
             "model": "my-llm",

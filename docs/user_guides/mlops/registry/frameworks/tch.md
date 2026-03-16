@@ -17,6 +17,7 @@ In this guide you will learn how to export a Torch model and register it in the 
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     # get Hopsworks Model Registry handle

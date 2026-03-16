@@ -47,6 +47,7 @@ You can also perform the repository actions using the hopsworks git API in pytho
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 git_api = project.get_git_api()

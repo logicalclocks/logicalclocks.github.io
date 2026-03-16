@@ -62,6 +62,7 @@ You are now ready to connect to Hopsworks Feature Store from the notebook:
 ```python
 import hopsworks
 
+
 # Put the API key into Key Vault for any production setup:
 # See, https://docs.microsoft.com/en-us/azure/machine-learning/how-to-use-secrets-in-runs
 # from azureml.core import Experiment, Run

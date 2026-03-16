@@ -43,6 +43,7 @@ Connect the client running your notebooks to Hopsworks.
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     fs = project.get_feature_store()

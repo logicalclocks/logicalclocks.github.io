@@ -150,6 +150,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Registry handle
@@ -275,7 +276,6 @@ For Python model deployments, you need implement a predictor script that loads a
   predictor_script_path = os.path.join(
       "/Projects", project.name, uploaded_file_path
   )
-
   ```
 
 ### Step 3: Pass predictor configuration to model deployment

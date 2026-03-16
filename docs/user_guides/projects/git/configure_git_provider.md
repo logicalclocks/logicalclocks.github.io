@@ -65,6 +65,7 @@ You can also configure a git provider using the hopsworks git API in python.
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 git_api = project.get_git_api()

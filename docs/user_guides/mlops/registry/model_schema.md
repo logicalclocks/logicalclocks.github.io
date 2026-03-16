@@ -19,6 +19,7 @@ Attaching a model schema to your model will give other users a better understand
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     # get Hopsworks Model Registry handle
@@ -36,6 +37,7 @@ Currently, we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list`.
     # Import a Schema and ModelSchema definition
     from hsml.utils.model_schema import ModelSchema
     from hsml.utils.schema import Schema
+
 
     # Model inputs for MNIST dataset
     inputs = [

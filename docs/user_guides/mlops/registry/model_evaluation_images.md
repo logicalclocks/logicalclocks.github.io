@@ -20,6 +20,7 @@ By attaching model evaluation images to your versioned model, other users can be
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     # get Hopsworks Model Registry handle
