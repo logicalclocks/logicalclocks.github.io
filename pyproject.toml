@@ -21,7 +21,7 @@ dependencies = [
 cli = ["typer", "rich"]
 
 [dependency-groups]
-dev = ["ruff==0.15.6", "linkchecker", "pyright"]
+dev = ["ruff==0.15.6", "linkchecker", "md-snakeoil", "pyright"]
 inv = [
     "sphobjinv",
     "great_expectations==0.18.12",

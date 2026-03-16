@@ -89,13 +89,12 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           activate-environment: true
-          working-directory: hopsworks-api/python
-
-      - name: Install Python API dependencies
-        run: uv sync --extra dev --project hopsworks-api/python
 
       - name: Install Python dependencies
-        run: uv pip install -r requirements-docs.txt
+        run: uv sync --extra cli
+
+      - name: Install Hopsworks Python API
+        run: uv pip install hopsworks-api/python
 
       - name: Install Ubuntu dependencies
         run: sudo apt update && sudo apt-get install -y libxml2-dev libxslt-dev
