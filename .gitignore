@@ -129,6 +129,7 @@ target/
 .DS_Store
 
 /temp_dir
+/uv.lock
 
 # Local agent settings, user-specific
 /.claude/settings.local.json

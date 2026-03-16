@@ -14,29 +14,31 @@ Usage:
 """
 
 import pathlib
+
 import sphobjinv as soi
+
 
 OUT = pathlib.Path(__file__).parent / "docs" / "polars_patch.inv"
 
 # Mapping: fully-qualified name -> relative URL (from docs.pola.rs/api/python/stable/)
 # $ means "use the object name as the anchor" (standard Sphinx convention)
 MISSING_CLASSES = {
-    "polars.Config":    "reference/config.html#$",
+    "polars.Config": "reference/config.html#$",
     "polars.DataFrame": "reference/dataframe/index.html#$",
-    "polars.DataType":  "reference/datatypes.html#$",
-    "polars.Expr":      "reference/expressions/index.html#$",
+    "polars.DataType": "reference/datatypes.html#$",
+    "polars.Expr": "reference/expressions/index.html#$",
     "polars.LazyFrame": "reference/lazyframe/index.html#$",
-    "polars.Series":    "reference/series/index.html#$",
+    "polars.Series": "reference/series/index.html#$",
 }
 
 objects = [
     soi.DataObjStr(
-        name=name,
-        domain="py",
-        role="class",
-        priority="1",
-        uri=uri,
-        dispname="-",
+        name=name,  # type: ignore
+        domain="py",  # type: ignore
+        role="class",  # type: ignore
+        priority="1",  # type: ignore
+        uri=uri,  # type: ignore
+        dispname="-",  # type: ignore
     )
     for name, uri in MISSING_CLASSES.items()
 ]

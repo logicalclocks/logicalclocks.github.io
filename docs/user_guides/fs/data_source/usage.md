@@ -20,6 +20,7 @@ We retrieve a data source simply by its unique name.
     ```python
     import hopsworks
 
+
     # Connect to the Hopsworks feature store
     project = hopsworks.login()
     feature_store = project.get_feature_store()

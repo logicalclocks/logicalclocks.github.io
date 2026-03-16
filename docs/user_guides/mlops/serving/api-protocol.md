@@ -61,6 +61,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Registry handle
@@ -87,7 +88,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   my_deployment = ms.create_deployment(my_predictor)
   my_deployment.save()
-
   ```
 
 ### API Reference

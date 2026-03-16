@@ -132,6 +132,7 @@ It will upload the python script to the `Resources` dataset in your project.
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 dataset_api = project.get_dataset_api()

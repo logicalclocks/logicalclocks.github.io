@@ -112,6 +112,7 @@ Connect the client running your notebooks to Hopsworks.
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 fs = project.get_feature_store()
@@ -126,6 +127,7 @@ Load your data in a DataFrame using the usual pandas API.
 
 ```python
 import pandas as pd
+
 
 df = pd.read_csv(
     "https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/transactions.csv",
@@ -148,6 +150,7 @@ This suite will hold all the validation tests we want to perform on our data bef
 
 ```python
 import great_expectations as ge
+
 
 expectation_suite = ge.core.ExpectationSuite(
     expectation_suite_name="validate_on_insert_suite"

@@ -94,6 +94,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Dataset API instance
@@ -159,7 +160,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   transformer_script_path = os.path.join(
       "/Projects", project.name, uploaded_file_path
   )
-
   ```
 
 ### Step 4: Define a transformer
@@ -174,7 +174,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   from hsml.transformer import Transformer
 
   my_transformer = Transformer(script_file)
-
   ```
 
 ### Step 5: Create a deployment with the transformer

@@ -83,6 +83,7 @@ Once you are done with the changes, click on `Create new Python deployment` at t
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     # get Hopsworks Model Serving handle
@@ -96,6 +97,7 @@ Once you are done with the changes, click on `Create new Python deployment` at t
     ```python
     import uvicorn
     from fastapi import FastAPI
+
 
     app = FastAPI()
 

@@ -48,6 +48,7 @@ You are now ready to connect to Hopsworks from your Python environment:
 ```python
 import hopsworks
 
+
 project = hopsworks.login(
     host="my_instance",  # DNS of your Hopsworks instance
     port=443,  # Port to reach your Hopsworks instance, defaults to 443

@@ -20,6 +20,7 @@ In this guide you will learn how to export a TensorFlow model and register it in
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     # get Hopsworks Model Registry handle

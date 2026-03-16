@@ -102,6 +102,7 @@ Once the cluster is running users can establish a connection to the Hopsworks Fe
 ```python
 import hopsworks
 
+
 project = hopsworks.login(
     host="my_instance",  # DNS of your Hopsworks instance
     port=443,  # Port to reach your Hopsworks instance, defaults to 443

@@ -1,0 +1,141 @@
+[project]
+name = "hopsworks-docs"
+requires-python = "~=3.13.0"
+version = "0.1.0"
+readme = "README.md"
+
+dependencies = [
+    "mkdocs==1.6.1",
+    "mkdocs-material==9.7.0",
+    "mike==2.1.3",
+    "markdown==3.9",
+    "pymdown-extensions==10.17.2",
+    "mkdocs-minify-plugin>=0.2.0",
+    "hopsworks-apigen>=1.0.4,<2.0.0",
+    "mkdocstrings[python]==1.0.3",
+    "mkdocstrings-python==2.0.2",
+    "mkdocs-autorefs==1.4.4",
+]
+
+[project.optional-dependencies]
+cli = ["typer", "rich"]
+
+[dependency-groups]
+dev = ["ruff==0.15.6", "linkchecker", "md-snakeoil", "pyright"]
+inv = [
+    "sphobjinv",
+    "great_expectations==0.18.12",
+    "sphinx~=5.3.0",
+    "pydata-sphinx-theme==0.11.0",
+    "myst-parser",
+    "docstring-parser==0.15",
+    "invoke",
+    "beautifulsoup4",
+]
+
+[project.scripts]
+hopsworks-docs = "hopsworks_docs.scripts:cli"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+hopsworks_docs = "."
+
+[tool.setuptools.package-data]
+"*" = ["*"]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "B",
+    "C4",
+    "ISC",
+    "PIE",
+    "PYI",
+    "Q",
+    "RSE",
+    "RET",
+    "SIM",
+    "TC",
+    "I",
+    "W",
+    "D2",
+    "D3",
+    "D4",
+    "INP",
+    "UP",
+    "FA",
+]
+ignore = [
+    "B905", # zip has no strict kwarg until Python 3.10
+    "W505", # Doc line too long
+    "E501", # Line too long
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+known-third-party = ["hopsworks_docs"]
+
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"

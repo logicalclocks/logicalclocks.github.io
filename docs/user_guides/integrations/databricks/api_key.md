@@ -20,6 +20,7 @@ For the Databricks integration to work make sure you add the following scopes to
 ```python hl_lines="6"
     import hopsworks
 
+
     project = hopsworks.login(
         host="my_instance",  # DNS of your Feature Store instance
         port=443,  # Port to reach your Hopsworks instance, defaults to 443

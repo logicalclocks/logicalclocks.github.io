@@ -32,6 +32,9 @@ import subprocess
 import sys
 import tempfile
 
+from invoke.context import Context
+
+
 # --- Configuration ---
 
 REPO_ROOT = pathlib.Path(__file__).parent
@@ -53,7 +56,12 @@ if not GX_CLONE_PATH.exists():
     print(f"Cloning GX 0.18.x into {GX_CLONE_PATH} ...")
     subprocess.run(
         [
-            "git", "clone", "--depth", "1", "--branch", "0.18.x",
+            "git",
+            "clone",
+            "--depth",
+            "1",
+            "--branch",
+            "0.18.x",
             "https://github.com/great-expectations/great_expectations.git",
             str(GX_CLONE_PATH),
         ],
@@ -66,15 +74,14 @@ sys.path.insert(0, str(GX_CLONE_PATH))
 
 # --- Step 2: Generate stubs and capture sidebar_entries ---
 
-from docs.sphinx_api_docs_source.build_sphinx_api_docs import (  # noqa: E402
-    SphinxInvokeDocsBuilder,
+from docs.sphinx_api_docs_source.build_sphinx_api_docs import (  # noqa: E402 # type: ignore
     SidebarEntryType,
+    SphinxInvokeDocsBuilder,
 )
 
-import invoke  # noqa: E402
 
 api_source = GX_CLONE_PATH / "docs" / "sphinx_api_docs_source"
-ctx = invoke.Context()
+ctx = Context()
 builder = SphinxInvokeDocsBuilder(
     ctx=ctx,
     api_docs_source_path=api_source,
@@ -116,7 +123,8 @@ print(f"  Sphinx objects.inv: {inv_path.stat().st_size} bytes")
 
 import sphobjinv as soi  # noqa: E402
 
-sphinx_inv = soi.Inventory(str(inv_path))
+
+sphinx_inv = soi.Inventory(str(inv_path))  # type: ignore
 print(f"  Sphinx inventory: {len(sphinx_inv.objects)} objects")
 
 remapped: list[soi.DataObjStr] = []
@@ -139,12 +147,12 @@ for obj in sphinx_inv.objects:
 
     remapped.append(
         soi.DataObjStr(
-            name=obj.name,
-            domain=obj.domain,
-            role=obj.role,
-            priority=str(obj.priority),
-            uri=full_uri,
-            dispname=obj.dispname or "-",
+            name=obj.name,  # type: ignore
+            domain=obj.domain,  # type: ignore
+            role=obj.role,  # type: ignore
+            priority=str(obj.priority),  # type: ignore
+            uri=full_uri,  # type: ignore
+            dispname=obj.dispname or "-",  # type: ignore
         )
     )
 
@@ -164,6 +172,8 @@ print(f"Written {len(remapped)} entries to {OUT_INV}")
 
 builder._remove_md_stubs()
 import shutil  # noqa: E402
+
+
 shutil.rmtree(sphinx_out, ignore_errors=True)
 
 print("Done.")

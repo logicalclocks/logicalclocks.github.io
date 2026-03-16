@@ -131,6 +131,7 @@ After that, click on the new deployment to access the overview page.
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Registry handle
@@ -145,7 +146,6 @@ Retrieve the trained model you want to deploy using the Model Registry handle.
 
   ```python
   my_model = mr.get_model("my_model", version=1)
-
   ```
 
 ### Step 3: Deploy your trained model

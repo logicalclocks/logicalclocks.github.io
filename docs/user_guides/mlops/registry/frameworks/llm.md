@@ -17,6 +17,7 @@ In this guide you will learn how to export a [Large Language Model (LLM)](https:
     ```python
     import hopsworks
 
+
     project = hopsworks.login()
 
     # get Hopsworks Model Registry handle
@@ -33,6 +34,7 @@ LLMs can typically be downloaded using the official frameworks provided by their
     ```python
     # Download LLM (e.g., using huggingface to download Llama-3.1-8B base model)
     from huggingface_hub import snapshot_download
+
 
     model_dir = snapshot_download("meta-llama/Llama-3.1-8B", ignore_patterns="original/*")
     ```

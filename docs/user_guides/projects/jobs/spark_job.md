@@ -180,6 +180,7 @@ It will upload the jar to the `Resources` dataset in your project.
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 dataset_api = project.get_dataset_api()

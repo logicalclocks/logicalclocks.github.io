@@ -19,40 +19,32 @@ jobs:
           ref: ${{ github.base_ref }}
           path: hopsworks-api
 
-      - name: Markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v21
-        with:
-          globs: '**/*.md'
-
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           activate-environment: true
-          working-directory: hopsworks-api/python
-
-      - name: Snakeoil (Python code blocks in markdown)
-        run: |
-          uv tool install md-snakeoil
-          snakeoil --line-length 88 --rules "E,F,B,C4,ISC,PIE,PYI,Q,RSE,RET,SIM,TC,I,W,D2,D3,D4,INP,UP,FA" docs
-          # Remove newlines added at the end of code blocks by snakeoil:
-          python3 -c 'import re,pathlib;sn=["python","py","Python","python3","py3"];inf="|".join(sn)+"| "+"| ".join(sn);p=rf"([ \t]*)(\`{{3}}(?:{inf})(?:[^\n]*)\n)(.*?)([ \t]*\`{{3}})";[f.write_text(re.sub(p,lambda m:m.group(1)+m.group(2)+(m.group(3)[:-1] if m.group(3).endswith("\n\n") else m.group(3))+m.group(4),f.read_text(),flags=re.DOTALL)) for f in pathlib.Path("docs").rglob("*.md")]'
-          git diff --exit-code
-
-      - name: Install Python API dependencies
-        run: uv sync --extra dev --project hopsworks-api/python
 
       - name: Install Python dependencies
-        run: uv pip install -r requirements-docs.txt
+        run: uv sync --extra cli
+
+      - name: Install Hopsworks Python API
+        run: uv pip install hopsworks-api/python
 
       - name: Install Ubuntu dependencies
         run: sudo apt update && sudo apt-get install -y libxml2-dev libxslt-dev
 
+      - name: Markdownlint
+        run: hopsworks-docs markdownlint
+
+      - name: Snakeoil (Python code blocks in markdown)
+        run: hopsworks-docs snakeoil
+
       - name: Check mkdocs warnings
-        run: touch docs/javadoc; mkdocs build -s; rm docs/javadoc
+        run: hopsworks-docs check
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -73,24 +65,7 @@ jobs:
         run: mvn clean install javadoc:javadoc javadoc:aggregate -DskipTests && cp -r target/site/apidocs ../../docs/javadoc
 
       - name: Check for broken links
-        run: |
-          # run the server
-          mkdocs serve -q &
-          SERVER_PID=$!
-          echo "mk server in PID $SERVER_PID"
-          # Give enough time for deployment (2min max)
-          for run in {1..120}; do
-            if curl --output /dev/null --silent --head --fail http://127.0.0.1:8000/; then
-              break
-            fi
-            sleep 1
-          done
-          echo "Launching linkchecker"
-          # Ignore dejavu.css for now, it is a JDK bug.
-          linkchecker --no-warnings --no-status http://127.0.0.1:8000/ --ignore-url http://127.0.0.1:8000/javadoc/resources/fonts/dejavu.css
-
-          # If ok just kill the server
-          kill -9 $SERVER_PID
+        run: hopsworks-docs linkchecker
 
       - name: Setup git for mike
         run: |

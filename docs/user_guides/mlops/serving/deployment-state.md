@@ -73,6 +73,7 @@ Additionally, you can find the nº of instances currently running by scrolling d
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Serving handle
@@ -85,7 +86,6 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
   ```python
   deployment = ms.get_deployment("mydeployment")
-
   ```
 
 ### Step 3: Inspect deployment state
@@ -96,7 +96,6 @@ Additionally, you can find the nº of instances currently running by scrolling d
   state = deployment.get_state()
 
   state.describe()
-
   ```
 
 ### Step 4: Check nº of running instances
@@ -109,7 +108,6 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
   # nº of transformer instances
   deployment.transformer.resources.describe()
-
   ```
 
 ### API Reference
