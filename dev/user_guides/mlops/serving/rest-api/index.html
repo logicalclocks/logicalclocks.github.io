@@ -17,6 +17,7 @@
 <span class=n>openai_url</span> <span class=o>=</span> <span class=n>deployment</span><span class=o>.</span><span class=n>get_openai_url</span><span class=p>()</span>
 </code></pre></div> </div> <h2 id=request-format>Request Format<a class=headerlink href=#request-format title="Permanent link">#</a></h2> <p>The request format depends on the model server being used.</p> <p>For predictive inference (TensorFlow, sklearn, or Python model server), the request must be sent as a JSON object containing an <code>inputs</code> or <code>instances</code> field. See <a href=https://kserve.github.io/website/docs/concepts/architecture/data-plane/v1-protocol#request-format>more information on the request format</a>.</p> <div class="admonition example"> <p class=admonition-title>REST API example for Predictive Inference (Tensorflow or SkLearn or Python Serving)</p> <div class="tabbed-set tabbed-alternate" data-tabs=1:2><input checked=checked id=__tabbed_1_1 name=__tabbed_1 type=radio><input id=__tabbed_1_2 name=__tabbed_1 type=radio><div class=tabbed-labels><label for=__tabbed_1_1>Python</label><label for=__tabbed_1_2>Curl</label></div> <div class=tabbed-content> <div class=tabbed-block> <div class=highlight><pre><span></span><code><span class=kn>import</span><span class=w> </span><span class=nn>requests</span>
 
+
 <span class=n>data</span> <span class=o>=</span> <span class=p>{</span><span class=s2>&quot;inputs&quot;</span><span class=p>:</span> <span class=p>[[</span><span class=mi>4641025220953719</span><span class=p>,</span> <span class=mi>4920355418495856</span><span class=p>]]}</span>
 
 <span class=n>headers</span> <span class=o>=</span> <span class=p>{</span><span class=s2>&quot;authorization&quot;</span><span class=p>:</span> <span class=s2>&quot;ApiKey &lt;your_api_key&gt;&quot;</span><span class=p>,</span> <span class=s2>&quot;content-type&quot;</span><span class=p>:</span> <span class=s2>&quot;application/json&quot;</span><span class=p>}</span>
@@ -36,6 +37,7 @@
 <span class=s1>        ]</span>
 <span class=s1>      }&#39;</span>
 </code></pre></div> </div> </div> </div> </div> <p>For generative inference (vLLM), the request follows the <a href=https://docs.vllm.ai/en/v0.10.2/serving/openai_compatible_server.html>OpenAI specification</a> supported by the vLLM OpenAI-compatible server.</p> <div class="admonition example"> <p class=admonition-title>vLLM chat completions</p> <div class="tabbed-set tabbed-alternate" data-tabs=2:2><input checked=checked id=__tabbed_2_1 name=__tabbed_2 type=radio><input id=__tabbed_2_2 name=__tabbed_2 type=radio><div class=tabbed-labels><label for=__tabbed_2_1>Python</label><label for=__tabbed_2_2>Curl</label></div> <div class=tabbed-content> <div class=tabbed-block> <div class=highlight><pre><span></span><code><span class=kn>import</span><span class=w> </span><span class=nn>requests</span>
+
 
 <span class=n>data</span> <span class=o>=</span> <span class=p>{</span>
     <span class=s2>&quot;model&quot;</span><span class=p>:</span> <span class=s2>&quot;my-llm&quot;</span><span class=p>,</span>
