@@ -19,6 +19,9 @@ dependencies = [
 
 [project.optional-dependencies]
 cli = ["typer", "rich"]
+
+[dependency-groups]
+dev = ["ruff==0.15.6", "linkchecker", "pyright"]
 inv = [
     "sphobjinv",
     "great_expectations==0.18.12",
@@ -29,9 +32,6 @@ inv = [
     "invoke",
     "beautifulsoup4",
 ]
-
-[dependency-groups]
-dev = ["ruff==0.15.6", "linkchecker", "pyright"]
 
 [project.scripts]
 hopsworks-docs = "hopsworks_docs.scripts:cli"
