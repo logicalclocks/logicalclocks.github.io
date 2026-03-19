@@ -34,5 +34,5 @@ Do not write prose in API reference pages in this repo — edit the docstrings i
 
 ## More
 
-- @.agent/content.md — writing conventions, Python code blocks, linking, assets
-- @.agent/caveats/README.md — known gotchas; add new ones as separate files
+- @docs/content.md — writing conventions, Python code blocks, linking, assets
+- @docs/caveats/README.md — known gotchas; add new ones as separate files
