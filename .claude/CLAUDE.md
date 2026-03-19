@@ -22,6 +22,6 @@ uv tool install md-snakeoil && snakeoil --line-length 88 --rules "E,F,B,C4,ISC,P
 
 ## Agent Docs
 
-- @.agent/README.md — full command reference, content structure, and links to detail docs
-- @.agent/content.md — writing conventions, code blocks, linking, and assets
-- @.agent/caveats/README.md — known gotchas; add new ones as separate files in this folder
+- @docs/README.md — full command reference, content structure, and links to detail docs
+- @docs/content.md — writing conventions, code blocks, linking, and assets
+- @docs/caveats/README.md — known gotchas; add new ones as separate files in this folder
