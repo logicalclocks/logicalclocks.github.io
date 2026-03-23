@@ -435,6 +435,10 @@ The following flags are optional. If not set, the latest available Velero backup
 | `hopsworks.velero.restore.mainScheduleBackupId` | The Velero backup ID for the main schedule (`k8s-backups-main`). |
 | `hopsworks.velero.restore.usersScheduleBackupId` | The Velero backup ID for the users schedule (`k8s-backups-users-resources`). |
 
+!!! Important
+    After a successful restore, remove the `restoreFromBackup` blocks from your values file and run `helm upgrade` to apply the change.
+    If left in place, these blocks can cause subsequent upgrades to fail or behave unexpectedly.
+
 #### Re-running an in-place restore
 
 In-place restore creates marker resources to prevent accidental re-runs. If you need to run the restore again with the same backup ID, delete the marker resources first:
