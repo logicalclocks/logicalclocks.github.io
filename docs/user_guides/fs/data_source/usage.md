@@ -171,7 +171,7 @@ This workflow is especially useful when you want to:
 - Use full-load or incremental ingestion strategies.
 - Build managed feature groups from SQL, CRM, or REST API sources.
 
-For the full workflow, including schema selection, ingestion job configuration, loading strategies, and REST pagination, see [Ingest Data with dltHub](../feature_group/ingest_with_dlthub.md).
+For the full workflow, including schema selection, ingestion job configuration, loading strategies, and REST pagination, see [Ingest Data with dltHub][ingest-data-with-dlthub].
 
 ## Writing Training Data
 

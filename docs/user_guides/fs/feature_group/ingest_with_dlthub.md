@@ -2,7 +2,7 @@
 description: Documentation on how to ingest data from a data source into a new feature group using dltHub in Hopsworks.
 ---
 
-# How to ingest data into a Feature Group with dltHub
+# How to ingest data into a Feature Group with dltHub { #ingest-data-with-dlthub }
 
 ## Introduction
 
@@ -278,9 +278,9 @@ After creation:
 
 ## Next Steps
 
-- Use the [Feature Group creation guide](create.md) to understand managed feature groups in more detail.
-- Use the [External Feature Group guide](create_external.md) if you want to query the source in place without copying data into Hopsworks.
-- Use the [Online Ingestion Observability guide](online_ingestion_observability.md) to monitor ingestion behavior for online-enabled feature groups.
+- Use the [Feature Group creation guide][create-feature-group] to understand managed feature groups in more detail.
+- Use the [External Feature Group guide][create-external-feature-group] if you want to query the source in place without copying data into Hopsworks.
+- Use the [Online Ingestion Observability guide][online-ingestion-observability] to monitor ingestion behavior for online-enabled feature groups.
 
 ## API support
 

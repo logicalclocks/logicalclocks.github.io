@@ -2,7 +2,7 @@
 description: Documentation on how to create an external feature group in Hopsworks and the different APIs available to interact with them.
 ---
 
-# How to create an External Feature Group
+# How to create an External Feature Group { #create-external-feature-group }
 
 ## Introduction
 

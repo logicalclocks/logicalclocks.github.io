@@ -2,7 +2,7 @@
 description: Documentation on how to create a Feature Group and the different APIs available to insert data to a Feature Group in Hopsworks.
 ---
 
-# How to create a Feature Group
+# How to create a Feature Group { #create-feature-group }
 
 ## Introduction
 
