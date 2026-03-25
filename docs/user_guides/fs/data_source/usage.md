@@ -154,6 +154,25 @@ Example for any data warehouse/SQL based external sources, we set the desired SQ
 This enables users to create feature groups within Hopsworks without the hassle of data migration.
 For more information on `Connector API`, read detailed guide about [external feature groups](../feature_group/create_external.md).
 
+## Ingesting Data into a Managed Feature Group
+
+Data Sources can also be used to create a managed feature group and ingest data from the source into Hopsworks.
+In this workflow, Hopsworks creates a sink-enabled feature group together with an ingestion job that copies data from the source into the feature group.
+
+This is different from an external feature group:
+
+- An **external feature group** keeps the data in the external source and stores only metadata in Hopsworks.
+- A **managed feature group with ingestion enabled** copies the source data into Hopsworks and can keep it synchronized through recurring ingestion jobs.
+
+This workflow is especially useful when you want to:
+
+- Materialize source data inside Hopsworks.
+- Schedule recurring ingestions.
+- Use full-load or incremental ingestion strategies.
+- Build managed feature groups from SQL, CRM, or REST API sources.
+
+For the full workflow, including schema selection, ingestion job configuration, loading strategies, and REST pagination, see [Ingest Data with dltHub](../feature_group/ingest_with_dlthub.md).
+
 ## Writing Training Data
 
 Data Sources are also used while writing training data to external sources.

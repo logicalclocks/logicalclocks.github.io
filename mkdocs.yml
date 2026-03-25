@@ -71,11 +71,14 @@ nav:
                   - BigQuery: user_guides/fs/data_source/creation/bigquery.md
                   - GCS: user_guides/fs/data_source/creation/gcs.md
                   - SQL: user_guides/fs/data_source/creation/sql.md
+                  - CRM, Sales & Analytics: user_guides/fs/data_source/creation/crm_sales_analytics.md
+                  - REST API: user_guides/fs/data_source/creation/rest_api.md
               - Usage: user_guides/fs/data_source/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
               - Create: user_guides/fs/feature_group/create.md
               - Create External: user_guides/fs/feature_group/create_external.md
+              - Ingest Data with dltHub: user_guides/fs/feature_group/ingest_with_dlthub.md
               - Create Spine: user_guides/fs/feature_group/create_spine.md
               - Deprecate: user_guides/fs/feature_group/deprecation.md
               - Data Types and Schema management: user_guides/fs/feature_group/data_types.md
