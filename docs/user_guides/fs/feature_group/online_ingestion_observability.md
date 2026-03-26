@@ -2,7 +2,7 @@
 description: Documentation on Online ingestion observability in Hopsworks.
 ---
 
-# Online ingestion observability
+# Online ingestion observability { #online-ingestion-observability }
 
 ## Introduction
 

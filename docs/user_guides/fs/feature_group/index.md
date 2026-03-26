@@ -4,6 +4,7 @@ This section serves to provide guides and examples for the common usage of abstr
 
 - [Create a Feature Group](create.md)
 - [Create an external Feature Group](create_external.md)
+- [Ingest Data with dltHub](ingest_with_dlthub.md)
 - [Deprecating Feature Group](deprecation.md)
 - [Data Types and Schema management](data_types.md)
 - [Statistics](statistics.md)
