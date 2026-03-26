@@ -305,6 +305,10 @@
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/crm_sales_analytics/</loc>
+         <lastmod>2026-03-26</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/gcs/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
@@ -322,6 +326,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/redshift/</loc>
+         <lastmod>2026-03-26</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/rest_api/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
@@ -374,6 +382,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/feature_monitoring/</loc>
+         <lastmod>2026-03-26</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/ingest_with_dlthub/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
