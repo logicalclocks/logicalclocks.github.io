@@ -336,6 +336,9 @@ olk:
 
 ### In-Place Restore
 
+!!! Note
+    In-place restore is available from Hopsworks version 4.8.0.
+
 In-place restore allows you to restore data onto an existing running cluster using `helm upgrade`. Unlike a new cluster restore, this does not require provisioning a fresh cluster — the existing stateful services are shut down, wiped if necessary, and restored from backup.
 
 !!! Warning
