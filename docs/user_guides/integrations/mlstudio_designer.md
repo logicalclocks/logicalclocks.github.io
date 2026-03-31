@@ -53,38 +53,40 @@ In the pipeline, add a new `Execute Python Script` step and replace the Python s
     </p>
 
 ```python
-import os
 import importlib.util
+import os
 
-
-package_name = 'hopsworks'
-version = 'MY_VERSION'
+package_name = "hopsworks"
+version = "MY_VERSION"
 spec = importlib.util.find_spec(package_name)
 if spec is None:
     import os
+
     os.system(f"pip install %s[python]==%s" % (package_name, version))
 
 # Put the API key into Key Vault for any production setup:
 # See, https://docs.microsoft.com/en-us/azure/machine-learning/how-to-use-secrets-in-runs
-#from azureml.core import Experiment, Run
-#run = Run.get_context()
-#secret_value = run.get_secret(name="fs-api-key")
-secret_value = 'MY_API_KEY'
+# from azureml.core import Experiment, Run
+# run = Run.get_context()
+# secret_value = run.get_secret(name="fs-api-key")
+secret_value = "MY_API_KEY"
 
-def azureml_main(dataframe1 = None, dataframe2 = None):
+
+def azureml_main(dataframe1=None, dataframe2=None):
 
     import hopsworks
-    project = hopsworks.login(
-        host='MY_INSTANCE.cloud.hopsworks.ai', # DNS of your Hopsworks instance
-        port=443,                              # Port to reach your Hopsworks instance, defaults to 443
-        project='MY_PROJECT',                  # Name of your Hopsworks project
-        api_key_value=secret_value,            # The API key to authenticate with Hopsworks
-        hostname_verification=True,            # Disable for self-signed certificates
-        engine='python'                        # Choose python as engine
-    )
-    fs = project.get_feature_store()              # Get the project's default feature store
 
-    return fs.get_feature_group('MY_FEATURE_GROUP', version=1).read(),
+    project = hopsworks.login(
+        host="MY_INSTANCE.cloud.hopsworks.ai",  # DNS of your Hopsworks instance
+        port=443,  # Port to reach your Hopsworks instance, defaults to 443
+        project="MY_PROJECT",  # Name of your Hopsworks project
+        api_key_value=secret_value,  # The API key to authenticate with Hopsworks
+        hostname_verification=True,  # Disable for self-signed certificates
+        engine="python",  # Choose python as engine
+    )
+    fs = project.get_feature_store()  # Get the project's default feature store
+
+    return (fs.get_feature_group("MY_FEATURE_GROUP", version=1).read(),)
 ```
 
 Select a compute target and save the step.

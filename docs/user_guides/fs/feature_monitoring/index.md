@@ -18,7 +18,7 @@ Hopsworks feature monitoring user interface is centered around two functionaliti
     To enable feature monitoring in Hopsworks, you need to set the `enable_feature_monitoring` [configuration option](../../../setup_installation/admin/variables.md) to `true`.
     This can also be achieved in the cluster definition by setting the following attribute:
 
-    ```
+    ```yaml
     hopsworks:
       enable_feature_monitoring: "true"
     ```

@@ -19,10 +19,32 @@ jobs:
           ref: ${{ github.base_ref }}
           path: hopsworks-api
 
-      - name: Markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v21
+      - uses: actions/setup-python@v5
         with:
-          globs: '**/*.md'
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+
+      - name: Install Python dependencies
+        run: uv sync --extra cli
+
+      - name: Install Hopsworks Python API
+        run: uv pip install hopsworks-api/python
+
+      - name: Install Ubuntu dependencies
+        run: sudo apt update && sudo apt-get install -y libxml2-dev libxslt-dev
+
+      - name: Markdownlint
+        run: hopsworks-docs markdownlint
+
+      - name: Snakeoil (Python code blocks in markdown)
+        run: hopsworks-docs snakeoil
+
+      - name: Check mkdocs warnings
+        run: hopsworks-docs check
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -42,44 +64,8 @@ jobs:
         working-directory: hopsworks-api/java
         run: mvn clean install javadoc:javadoc javadoc:aggregate -DskipTests && cp -r target/site/apidocs ../../docs/javadoc
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          activate-environment: true
-          working-directory: hopsworks-api/python
-
-      - name: Install Python API dependencies
-        run: uv sync --extra dev --group docs --project hopsworks-api/python
-
-      - name: Install Python dependencies
-        run: uv pip install -r requirements-docs.txt
-
-      - name: Install Ubuntu dependencies
-        run: sudo apt update && sudo apt-get install -y libxml2-dev libxslt-dev
-
       - name: Check for broken links
-        run: |
-          # run the server
-          mkdocs serve > /dev/null 2>&1 &
-          SERVER_PID=$!
-          echo "mk server in PID $SERVER_PID"
-          # Give enough time for deployment (2min max)
-          for run in {1..120}; do
-            if curl --output /dev/null --silent --head --fail http://127.0.0.1:8000/; then
-              break
-            fi
-            sleep 1
-          done
-          echo "Launching linkchecker"
-          # Ignore dejavu.css for now, it is a JDK bug.
-          linkchecker --no-warnings --no-status http://127.0.0.1:8000/ --ignore-url http://127.0.0.1:8000/javadoc/resources/fonts/dejavu.css
-
-          # If ok just kill the server
-          kill -9 $SERVER_PID
+        run: hopsworks-docs linkchecker
 
       - name: Setup git for mike
         run: |

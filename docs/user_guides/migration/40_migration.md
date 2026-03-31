@@ -43,6 +43,7 @@ With 4.0, On-Demand Transformation Functions are now better supported which has 
 The following is how transformation functions were used in previous versions of Hopsworks and the how transformation functions are used in the 4.0 release.
 
 === "Pre-4.0"
+
     ```python
     #################################################
     # Creating transformation function Hopsworks 3.8#
@@ -52,8 +53,10 @@ The following is how transformation functions were used in previous versions of 
     def add_one(feature):
         return feature + 1
 
+
     # Create transformation function
-    add_one = fs.create_transformation_function(add_one,
+    add_one = fs.create_transformation_function(
+        add_one,
         output_type=int,
         version=1,
     )
@@ -69,18 +72,19 @@ The following is how transformation functions were used in previous versions of 
 
     # Create feature view
     feature_view = fs.get_or_create_feature_view(
-        name='serving_fv',
+        name="serving_fv",
         version=1,
         query=selected_features,
         # Apply your custom transformation functions to the feature `feature_1`
         transformation_functions={
             "feature_1": add_one,
         },
-        labels=['target'],
+        labels=["target"],
     )
     ```
 
 === "4.0"
+
     ```python
     #################################################
     # Creating transformation function Hopsworks 4.0#
@@ -91,16 +95,17 @@ The following is how transformation functions were used in previous versions of 
     def add_one(feature):
         return feature + 1
 
+
     # Create feature view
     feature_view = fs.get_or_create_feature_view(
-        name='serving_fv',
+        name="serving_fv",
         version=1,
         query=selected_features,
         # Apply the custom transformation functions defined to the feature `feature_1`
         transformation_functions=[
             add_one("feature_1"),
         ],
-        labels=['target'],
+        labels=["target"],
     )
     ```
 

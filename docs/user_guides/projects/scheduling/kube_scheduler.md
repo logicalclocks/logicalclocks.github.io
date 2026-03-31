@@ -92,18 +92,18 @@ This can be done from the `Available in Hopsworks` sub-section.
 
     In order to be able to list all the Kubernetes Node Labels, Hopsworks requires the following cluster role:
 
-    ```
-        - apiGroups: [""]
-        resources: ["nodes"]
-        verbs: ["get", "list"]
+    ```yaml
+    - apiGroups: [""]
+      resources: ["nodes"]
+      verbs: ["get", "list"]
     ```
 
     In order to be able to list all the Kubernetes Cluster Priority Classes, Hopsworsk requires this cluster role:
 
-    ```
-        - apiGroups: ["scheduling.k8s.io"]
-        resources: ["priorityclasses"]
-        verbs: ["get", "list"]
+    ```yaml
+    - apiGroups: ["scheduling.k8s.io"]
+      resources: ["priorityclasses"]
+      verbs: ["get", "list"]
     ```
 
     If the roles above are configured properly (default behaviour), admins can only select values from the drop down menu.

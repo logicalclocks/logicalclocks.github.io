@@ -15,13 +15,17 @@ As often with data validation, the best piece of advice is to set it up early in
 Use this phase to build a history you can then use when it becomes time to set quality requirements for a project in production.
 We made a code snippet to help you get started quickly:
 
-```python3
+```python
 # Load sample data.
 # Replace it with your own!
-my_data_df = pd.read_csv("https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/credit_cards.csv")
+my_data_df = pd.read_csv(
+    "https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/credit_cards.csv"
+)
 
 # Use Great Expectation profiler (ignore deprecation warning)
-expectation_suite_profiled, validation_report = ge.from_pandas(my_data_df).profile(profiler=ge.profile.BasicSuiteBuilderProfiler)
+expectation_suite_profiled, validation_report = ge.from_pandas(
+    my_data_df
+).profile(profiler=ge.profile.BasicSuiteBuilderProfiler)
 
 # Create a Feature Group on hopsworks with an expectation suite attached.
 # Don't forget to change the primary key!
@@ -29,13 +33,14 @@ my_validated_data_fg = fs.get_or_create_feature_group(
     name="my_validated_data_fg",
     version=1,
     description="My data",
-    primary_key=['cc_num'],
-    expectation_suite=expectation_suite_profiled)
+    primary_key=["cc_num"],
+    expectation_suite=expectation_suite_profiled,
+)
 ```
 
 Any data you insert in the Feature Group from now will be validated and a report will be uploaded to Hopsworks.
 
-```python3
+```python
 # Insert and validate your data
 insert_job, validation_report = my_validated_data_fg.insert(my_data_df)
 ```
@@ -73,10 +78,8 @@ Below are some simple tips and snippets to make the most of your data validation
 
 Whether you use an existing or create a new (recommended) Feature Group for production, we recommend you set the validation ingestion policy of your Expectation Suite to `"STRICT"`.
 
-```python3
-fg_prod.save_expectation_suite(
-    my_suite,
-    validation_ingestion_policy="STRICT")
+```python
+fg_prod.save_expectation_suite(my_suite, validation_ingestion_policy="STRICT")
 ```
 
 In this setup, Hopsworks will abort inserting a DataFrame that does not successfully fulfill all expectations in the attached Expectation Suite.
@@ -87,7 +90,7 @@ This ensures data quality standards are upheld for every insertion and provide d
 Aborting insertions of DataFrames which do not satisfy the data quality standards can lead to data loss in your materialization job.
 To avoid such loss we recommend creating a duplicate Feature Group with the same Expectation Suite in `"ALWAYS"` mode which will hold the rejected data.
 
-```python3
+```python
 job, report = fg_prod.insert(df)
 
 if report["success"] is False:
@@ -99,17 +102,17 @@ if report["success"] is False:
 You can easily retrieve the validation history of a specific expectation to export it to your favourite visualisation tool.
 You can filter on time and on whether insertion was successful or not.
 
-```python3
+```python
 validation_history = fg.get_validation_history(
-    expectation_id=my_id,
-    filters=["REJECTED", "UNKNOWN"],
-    ge_type=False
+    expectation_id=my_id, filters=["REJECTED", "UNKNOWN"], ge_type=False
 )
 
 timeseries = pd.DataFrame(
     {
-        "observed_value": [res.result["observed_value"] for res in validation_history],
-        "validation_time": [res.validation_time for res in validation_history]
+        "observed_value": [
+            res.result["observed_value"] for res in validation_history
+        ],
+        "validation_time": [res.validation_time for res in validation_history],
     }
 )
 

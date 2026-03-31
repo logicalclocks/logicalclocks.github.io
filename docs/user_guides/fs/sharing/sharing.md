@@ -131,6 +131,7 @@ Use the `get_feature_store()` method with the name of the shared feature store:
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 
 # Get your project's feature store
@@ -145,13 +146,11 @@ shared_feature_store = project.get_feature_store(name="name_of_shared_feature_st
 ```python
 # Fetch a feature group from the shared feature store
 shared_fg = shared_feature_store.get_feature_group(
-    name="shared_fg_name",
-    version=1
+    name="shared_fg_name", version=1
 )
 
 # Fetch a feature group from your project's feature store
 fg = project_feature_store.get_or_create_feature_group(
-    name="feature_group_name",
-    version=1
+    name="feature_group_name", version=1
 )
 ```

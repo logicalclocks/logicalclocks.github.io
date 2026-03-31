@@ -35,14 +35,12 @@ You can inspect the relationship between data sources and feature groups using t
 
     ```python
     # Retrieve the data source
-    snowflake_sc = fs.get_storage_connector("snowflake_sc")
+    ds = fs.get_data_source("snowflake_sc")
+    ds.query = "SELECT * FROM USER_PROFILES"
 
     # Create the user profiles feature group
     user_profiles_fg = fs.create_external_feature_group(
-        name="user_profiles",
-        version=1,
-        storage_connector=snowflake_sc,
-        query="SELECT * FROM USER_PROFILES"
+        name="user_profiles", version=1, data_source=ds
     )
     user_profiles_fg.save()
     ```
@@ -50,13 +48,13 @@ You can inspect the relationship between data sources and feature groups using t
 ### Step 1, Using Python
 
 Starting from a feature group metadata object, you can traverse upstream the provenance graph to retrieve the metadata objects of the data sources that are part of the feature group.
-To do so, you can use the [`FeatureGroup.get_storage_connector_provenance`][hsfs.feature_group.FeatureGroup.get_storage_connector_provenance] method.
+To do so, you can use the [`FeatureGroup.get_data_source_provenance`][hsfs.feature_group.FeatureGroup.get_data_source_provenance] method.
 
 === "Python"
 
     ```python
     # Returns all data sources linked to the provided feature group
-    lineage = user_profiles_fg.get_storage_connector_provenance()
+    lineage = user_profiles_fg.get_data_source_provenance()
 
     # List all accessible parent data sources
     lineage.accessible
@@ -72,7 +70,7 @@ To do so, you can use the [`FeatureGroup.get_storage_connector_provenance`][hsfs
 
     ```python
     # Returns an accessible data source linked to the feature group (if it exists)
-    user_profiles_fg.get_storage_connector()
+    user_profiles_fg.get_data_source()
     ```
 
 To traverse the provenance graph in the opposite direction (i.e., from the data source to the feature group), you can use the [`StorageConnector.get_feature_groups_provenance`][hsfs.storage_connector.StorageConnector.get_feature_groups_provenance] method.
@@ -114,7 +112,9 @@ You can mark the external feature group as parent of the feature group you are c
 
     # Do feature engineering
     age_df = transaction_df.merge(profiles_fg.read(), on="cc_num", how="left")
-    transaction_df["age_at_transaction"] = (age_df["datetime"] - age_df["birthdate"]) / np.timedelta64(1, "Y")
+    transaction_df["age_at_transaction"] = (
+        age_df["datetime"] - age_df["birthdate"]
+    ) / np.timedelta64(1, "Y")
 
     # Create the transaction feature group
     transaction_fg = fs.get_or_create_feature_group(
@@ -123,7 +123,7 @@ You can mark the external feature group as parent of the feature group you are c
         description="Transaction features",
         primary_key=["cc_num"],
         event_time="datetime",
-        parents=[profiles_fg]
+        parents=[profiles_fg],
     )
     transaction_fg.insert(transaction_df)
     ```
@@ -138,10 +138,12 @@ Another example use case for derived feature group is if you have a feature grou
     daily_transaction_df = daily_transaction_fg.read()
 
     # Do feature engineering
-    cc_group = daily_transaction_df[["cc_num", "amount", "datetime"]] \
-                    .groupby("cc_num") \
-                    .rolling("1M", on="datetime")
-    monthly_transaction_df  = pd.DataFrame(cc_group.mean())
+    cc_group = (
+        daily_transaction_df[["cc_num", "amount", "datetime"]]
+        .groupby("cc_num")
+        .rolling("1M", on="datetime")
+    )
+    monthly_transaction_df = pd.DataFrame(cc_group.mean())
 
     # Create the transaction feature group
     monthly_transaction_fg = fs.get_or_create_feature_group(
@@ -150,7 +152,7 @@ Another example use case for derived feature group is if you have a feature grou
         description="Transaction features - monthly aggregates",
         primary_key=["cc_num"],
         event_time="datetime",
-        parents=[daily_transaction_fg]
+        parents=[daily_transaction_fg],
     )
     monthly_transaction_fg.insert(monthly_transaction_df)
     ```

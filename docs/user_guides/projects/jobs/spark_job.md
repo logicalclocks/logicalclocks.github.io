@@ -178,15 +178,14 @@ This snippet assumes the Spark program is in the current working directory and n
 It will upload the jar to the `Resources` dataset in your project.
 
 ```python
-
 import hopsworks
+
 
 project = hopsworks.login()
 
 dataset_api = project.get_dataset_api()
 
 uploaded_file_path = dataset_api.upload("sparkpi.jar", "Resources")
-
 ```
 
 ### Step 2: Create Spark job
@@ -194,16 +193,14 @@ uploaded_file_path = dataset_api.upload("sparkpi.jar", "Resources")
 In this snippet we get the `JobsApi` object to get the default job configuration for a `SPARK` job, set the python script to run and create the `Job` object.
 
 ```python
-
 jobs_api = project.get_job_api()
 
 spark_config = jobs_api.get_configuration("SPARK")
 
-spark_config['appPath'] = uploaded_file_path
-spark_config['mainClass'] = 'org.apache.spark.examples.SparkPi'
+spark_config["appPath"] = uploaded_file_path
+spark_config["mainClass"] = "org.apache.spark.examples.SparkPi"
 
 job = jobs_api.create_job("pyspark_job", spark_config)
-
 ```
 
 ### Step 3: Execute the job
@@ -211,7 +208,6 @@ job = jobs_api.create_job("pyspark_job", spark_config)
 In this snippet we execute the job synchronously, that is wait until it reaches a terminal state, and then download and print the logs.
 
 ```python
-
 execution = job.run(await_termination=True)
 
 out, err = execution.download_logs()
@@ -221,7 +217,6 @@ print(f_out.read())
 
 f_err = open(err, "r")
 print(f_err.read())
-
 ```
 
 ## Configuration

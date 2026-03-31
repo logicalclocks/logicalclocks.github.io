@@ -87,9 +87,9 @@ You can attach tags to feature groups and feature views by using the `add_tag()`
 
     # Define the tag
     tag = {
-        'business_unit': 'Fraud',
-        'data_owner': 'email@hopsworks.ai',
-        'pii': True
+        "business_unit": "Fraud",
+        "data_owner": "email@hopsworks.ai",
+        "pii": True,
     }
 
     # Attach the tag

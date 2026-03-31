@@ -16,16 +16,20 @@ We will walk through each functionality in the sections below.
 We retrieve a data source simply by its unique name.
 
 === "PySpark"
+
     ```python
     import hopsworks
+
+
     # Connect to the Hopsworks feature store
     project = hopsworks.login()
     feature_store = project.get_feature_store()
     # Retrieve data source
-    connector = feature_store.get_storage_connector('data_source_name')
+    ds = feature_store.get_data_source("data_source_name")
     ```
 
 === "Scala"
+
     ```scala
     import com.logicalclocks.hsfs._
     val connection = HopsworksConnection.builder().build();
@@ -46,12 +50,16 @@ The exact behaviour could change depending on the fdata source type, but broadly
 For data sources based on object/file storage such as AWS S3, ADLS, GCS, we set the full object path in the `path` argument and users should pass a Spark data format (parquet, csv, orc, hudi, delta) to the `data_format` argument.
 
 === "PySpark"
+
     ```python
     # read data into dataframe using path
-    df = connector.read(data_format='data_format', path='fileScheme://bucket/path/')
+    df = connector.read(
+        data_format="data_format", path="fileScheme://bucket/path/"
+    )
     ```
 
 === "Scala"
+
     ```scala
     // read data into dataframe using path
     val df = connector.read("", "data_format", new HashMap(), "fileScheme://bucket/path/")
@@ -75,6 +83,7 @@ Using `prepare_spark` is also not necessary when using the `read` API.
 For example, to read directly from a S3 connector, we use the `prepare_spark` as follows:
 
 === "PySpark"
+
     ```python
     connector.prepare_spark()
     spark.read.format("json").load("s3a://[bucket]/path")
@@ -90,6 +99,7 @@ Depending on the connector type, users can also just set the table path and read
 This is mostly relevant for Google BigQuery.
 
 === "PySpark"
+
     ```python
     # read results from a SQL
     df = connector.read(query="SELECT * FROM TABLE")
@@ -98,6 +108,7 @@ This is mostly relevant for Google BigQuery.
     ```
 
 === "Scala"
+
     ```scala
     // read results from a SQL
     val df = connector.read("SELECT * FROM TABLE", "" , new HashMap(),"")
@@ -110,7 +121,7 @@ For reading data streams, the Kafka Data Source supports reading a Kafka topic i
 === "PySpark"
 
     ```python
-    df = connector.read_stream(topic='kafka_topic_name')
+    df = connector.read_stream(topic="kafka_topic_name")
     ```
 
 ## Creating an External Feature Group
@@ -119,19 +130,23 @@ Another important aspect of a data source is its ability to facilitate creation 
 The `Connector API` relies on data sources behind the scenes to integrate with external datasource.
 This enables seamless integration with any data source as long as there is a data source defined.
 
-To create an external feature group, we use the `create_external_feature_group` API, also known as `Connector API`, and simply pass the data source created before to the `storage_connector` argument.
+To create an external feature group, we use the `create_external_feature_group` API, also known as `Connector API`, and simply pass the data source created before to the `data_source` argument.
 Depending on the external source, we should set either the `query` argument for data warehouse based sources, or the `path` and `data_format` arguments for data lake based sources, similar to reading into dataframes as explained in above section.
 
-Example for any data warehouse/SQL based external sources, we set the desired SQL to `query` argument, and set the `storage_connector` argument to the data source object of desired data source.
+Example for any data warehouse/SQL based external sources, we set the desired SQL to `query` argument, and set the `data_source` argument to the data source object of desired data source.
+
 === "PySpark"
+
     ```python
-    fg = feature_store.create_external_feature_group(name="sales",
+    ds.query = "SELECT * FROM TABLE"
+
+    fg = feature_store.create_external_feature_group(
+        name="sales",
         version=1,
         description="Physical shop sales features",
-        query="SELECT * FROM TABLE",
-        storage_connector=connector,
-        primary_key=['ss_store_sk'],
-        event_time='sale_date'
+        data_source=ds,
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
     )
     ```
 
@@ -139,19 +154,39 @@ Example for any data warehouse/SQL based external sources, we set the desired SQ
 This enables users to create feature groups within Hopsworks without the hassle of data migration.
 For more information on `Connector API`, read detailed guide about [external feature groups](../feature_group/create_external.md).
 
+## Ingesting Data into a Managed Feature Group
+
+Data Sources can also be used to create a managed feature group and ingest data from the source into Hopsworks.
+In this workflow, Hopsworks creates a sink-enabled feature group together with an ingestion job that copies data from the source into the feature group.
+
+This is different from an external feature group:
+
+- An **external feature group** keeps the data in the external source and stores only metadata in Hopsworks.
+- A **managed feature group with ingestion enabled** copies the source data into Hopsworks and can keep it synchronized through recurring ingestion jobs.
+
+This workflow is especially useful when you want to:
+
+- Materialize source data inside Hopsworks.
+- Schedule recurring ingestions.
+- Use full-load or incremental ingestion strategies.
+- Build managed feature groups from SQL, CRM, or REST API sources.
+
+For the full workflow, including schema selection, ingestion job configuration, loading strategies, and REST pagination, see [Ingest Data with dltHub][ingest-data-with-dlthub].
+
 ## Writing Training Data
 
 Data Sources are also used while writing training data to external sources.
-While calling the [Feature View](../../../concepts/fs/feature_view/fv_overview.md) API `create_training_data` , we can pass the `storage_connector` argument which is necessary to materialise the data to external sources, as shown below.
+While calling the [Feature View](../../../concepts/fs/feature_view/fv_overview.md) API `create_training_data`, we can pass the `data_source` argument which is necessary to materialise the data to external sources, as shown below.
 
 === "PySpark"
+
     ```python
     # materialise a training dataset
     version, job = feature_view.create_training_data(
-        description = 'describe training data',
-        data_format = 'spark_data_format', # e.g., data_format = "parquet" or data_format = "csv"
-        write_options = {"wait_for_job": False},
-        storage_connector = connector
+        description="describe training data",
+        data_format="spark_data_format",  # e.g., data_format = "parquet" or data_format = "csv"
+        write_options={"wait_for_job": False},
+        data_source=ds,
     )
     ```
 

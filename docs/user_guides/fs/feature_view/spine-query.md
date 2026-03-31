@@ -21,8 +21,9 @@ The first step before creating a Feature View, is to construct the query by sele
 
 ```python
 # Select features for training data.
-ds_query = trans_fg.select(["fraud_label"])\
-    .join(window_aggs_fg.select_except(["cc_num"]), on="cc_num")
+ds_query = trans_fg.select(["fraud_label"]).join(
+    window_aggs_fg.select_except(["cc_num"]), on="cc_num"
+)
 
 ds_query.show(5)
 ```
@@ -39,14 +40,15 @@ trans_spine = fs.get_or_create_spine_group(
     name="spine_transactions",
     version=1,
     description="Transaction data",
-    primary_key=['cc_num'],
-    event_time='datetime',
-    dataframe=trans_df
+    primary_key=["cc_num"],
+    event_time="datetime",
+    dataframe=trans_df,
 )
 
 # Select features for training data.
-ds_query_spine = trans_spine.select(["fraud_label"])\
-    .join(window_aggs_fg.select_except(["cc_num"]), on="cc_num")
+ds_query_spine = trans_spine.select(["fraud_label"]).join(
+    window_aggs_fg.select_except(["cc_num"]), on="cc_num"
+)
 ```
 
 Calling the `show()` or `read()` method of this query object will use the spine dataframe included in the Spine Group object to perform the join.
@@ -61,7 +63,7 @@ With the above defined query, we can continue to create the Feature View in the 
 
 ```python
 feature_view_spine = fs.get_or_create_feature_view(
-    name='transactions_view_spine',
+    name="transactions_view_spine",
     query=ds_query_spine,
     version=1,
     labels=["fraud_label"],
@@ -74,7 +76,9 @@ With the regular feature view, the labels are fetched from the feature store, bu
 Here you have the chance to pass a different set of entities to generate the training dataset.
 
 ```python
-X_train, X_test, y_train, y_test = feature_view_spine.train_test_split(0.2, spine=new_entities_df)
+X_train, X_test, y_train, y_test = feature_view_spine.train_test_split(
+    0.2, spine=new_entities_df
+)
 
 X_train.show()
 ```

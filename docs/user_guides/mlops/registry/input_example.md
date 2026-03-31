@@ -15,8 +15,10 @@ Attaching an input example to your model will give other users a better understa
 ### Step 1: Connect to Hopsworks
 
 === "Python"
+
     ```python
     import hopsworks
+
 
     project = hopsworks.login()
 
@@ -30,8 +32,10 @@ Generate an input example which corresponds to a valid input to your model.
 Currently we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list` to be passed as input example.
 
 === "Python"
+
     ```python
     import numpy as np
+
 
     input_example = np.random.randint(0, high=256, size=784, dtype=np.uint8)
     ```
@@ -41,8 +45,8 @@ Currently we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list` to b
 Set the `input_example` parameter in the `create_model` function and call `save()` to attaching it to the model and register it in the registry.
 
 === "Python"
+
     ```python
-    model = mr.tensorflow.create_model(name="mnist",
-                                    input_example=input_example)
+    model = mr.tensorflow.create_model(name="mnist", input_example=input_example)
     model.save("./model")
     ```

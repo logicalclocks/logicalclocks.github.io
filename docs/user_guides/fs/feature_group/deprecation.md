@@ -25,7 +25,9 @@ To deprecate a feature group using the HSFS APIs you need to provide a [Feature 
 === "Python"
 
     ```python
-    fg = fs.get_feature_group(name="feature_group_name", version=feature_group_version)
+    fg = fs.get_feature_group(
+        name="feature_group_name", version=feature_group_version
+    )
     ```
 
 ### Deprecate Feature Group

@@ -36,6 +36,8 @@ Cloud agnostic storage systems:
 2. [Snowflake](creation/snowflake.md): Query Snowflake databases and tables using SQL.
 3. [Kafka](creation/kafka.md): Read data from a Kafka cluster into a Spark Structured Streaming Dataframe.
 4. [HopsFS](creation/hopsfs.md): Easily connect and read from directories of Hopsworks' internal File System.
+5. [CRM, Sales & Analytics](creation/crm_sales_analytics.md): Connect to supported CRM, sales, and analytics platforms.
+6. [REST API](creation/rest_api.md): Connect to external HTTP APIs with configurable headers and authentication.
 
 ## AWS
 
@@ -43,7 +45,7 @@ For AWS the following storage systems are supported:
 
 1. [S3](creation/s3.md): Read data from a variety of file based storage in S3 such as parquet or CSV.
 2. [Redshift](creation/redshift.md): Query Redshift databases and tables using SQL.
-3. [RDS](creation/rds.md): Query Amazon RDS (Relational Database Service) using SQL.
+3. [SQL](creation/sql.md): Query Amazon SQL (Relational Database Service) using SQL.
 
 ## Azure
 

@@ -6,9 +6,21 @@ Once a model is deployed and starts making predictions as inference requests arr
 
 Hopsworks supports logging both inference requests and predictions as events to a Kafka topic for analysis.
 
-!!! warning "Topic schemas vary depending on the serving tool. See [below](#topic-schema)"
+!!! warning "Inference logging is not supported for vLLM deployments."
 
-## GUI
+!!! info "Logging modes"
+    Three logging modes are available:
+
+    | Mode         | Logger Mode | Description                 |
+    | ------------ | ----------- | --------------------------- |
+    | ALL          | `all`       | Log both inputs and outputs |
+    | PREDICTIONS  | `response`  | Log model outputs only      |
+    | MODEL_INPUTS | `request`   | Log model inputs only       |
+
+!!! note "Kafka topic requirements"
+    The Kafka topic must use the `inferenceschema` subject. Schema v4+ is required for KServe topics.
+
+## Web UI
 
 ### Step 1: Create new deployment
 
@@ -64,6 +76,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   import hopsworks
 
+
   project = hopsworks.login()
 
   # get Hopsworks Model Registry handle
@@ -78,15 +91,16 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-
   from hsml.inference_logger import InferenceLogger
   from hsml.kafka_topic import KafkaTopic
 
-  new_topic = KafkaTopic(name="CREATE",
-                        # optional
-                        num_partitions=1,
-                        num_replicas=1
-                        )
+
+  new_topic = KafkaTopic(
+      name="CREATE",
+      # optional
+      num_partitions=1,
+      num_replicas=1,
+  )
 
   my_logger = InferenceLogger(kafka_topic=new_topic, mode="ALL")
   ```
@@ -95,7 +109,6 @@ Once you are done with the changes, click on `Create new deployment` at the bott
     Similarly, you can create the same logger with:
 
     ```python
-
     my_logger = InferenceLogger(kafka_topic={"name": "CREATE"}, mode="ALL")
     ```
 
@@ -106,15 +119,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```python
   my_model = mr.get_model("my_model", version=1)
 
-  my_predictor = ms.create_predictor(my_model,
-                                    inference_logger=my_logger
-                                    )
-  my_predictor.deploy()
-
-  # or
-
-  my_deployment = ms.create_deployment(my_predictor)
-  my_deployment.save()
+  my_model.deploy(inference_logger=my_logger)
   ```
 
 ### API Reference
@@ -123,47 +128,23 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ## Topic schema
 
-The schema of Kafka events varies depending on the serving tool.
-In KServe deployments, model inputs and predictions are logged in separate events, but sharing the same `requestId` field.
-In non-KServe deployments, the same event contains both the model input and prediction related to the same inference request.
+Model inputs and predictions are logged in separate events, sharing the same `requestId` field.
 
-??? example "Show kafka topic schemas"
+!!! example "Kafka topic schema"
 
-    === "KServe"
-
-        ``` json
-        {
-            "fields": [
-                { "name": "servingId", "type": "int" },
-                { "name": "modelName", "type": "string" },
-                { "name": "modelVersion", "type": "int" },
-                { "name": "requestTimestamp", "type": "long" },
-                { "name": "responseHttpCode", "type": "int" },
-                { "name": "inferenceId", "type": "string" },
-                { "name": "messageType", "type": "string" },
-                { "name": "payload", "type": "string" }
-            ],
-            "name": "inferencelog",
-            "type": "record"
-        }
-        ```
-
-    === "Docker / Kubernetes"
-
-        ``` json
-        {
-            "fields": [
-                { "name": "modelId", "type": "int" },
-                { "name": "modelName", "type": "string" },
-                { "name": "modelVersion", "type": "int" },
-                { "name": "requestTimestamp", "type": "long" },
-                { "name": "responseHttpCode", "type": "int" },
-                { "name": "inferenceRequest", "type": "string" },
-                { "name": "inferenceResponse", "type": "string" },
-                { "name": "modelServer", "type": "string" },
-                { "name": "servingTool", "type": "string" }
-            ],
-            "name": "inferencelog",
-            "type": "record"
-        }
-        ```
+    ``` json
+    {
+        "fields": [
+            { "name": "servingId", "type": "int" },
+            { "name": "modelName", "type": "string" },
+            { "name": "modelVersion", "type": "int" },
+            { "name": "requestTimestamp", "type": "long" },
+            { "name": "responseHttpCode", "type": "int" },
+            { "name": "inferenceId", "type": "string" },
+            { "name": "messageType", "type": "string" },
+            { "name": "payload", "type": "string" }
+        ],
+        "name": "inferencelog",
+        "type": "record"
+    }
+    ```

@@ -9,10 +9,15 @@ description: Documentation on how to troubleshoot a model deployment
 In this guide, you will learn how to troubleshoot a deployment that is having issues to serve a trained model.
 But before that, it is important to understand how [deployment states](deployment-state.md) are defined and the possible transitions between conditions.
 
+Before a deployment starts, it goes through a `CREATING` phase where deployment artifacts are prepared.
 When a deployment is starting, it follows an ordered sequence of [states](deployment-state.md#deployment-conditions) before becoming ready for serving predictions.
 Similarly, it follows an ordered sequence of states when being stopped, although with fewer steps.
 
-## GUI
+!!! warning "`FAILED` is a terminal state"
+    If a deployment reaches the `FAILED` state, it cannot recover on its own.
+    You must stop and restart the deployment to attempt recovery.
+
+## Web UI
 
 ### Step 1: Inspect deployment status
 
@@ -102,7 +107,7 @@ To access the OpenSearch Dashboards, click on the `See logs` button at the top o
 
 Once in the OpenSearch Dashboards, you can search for keywords, apply multiple filters and sort the records by timestamp.
 
-??? info "Show available filters"
+??? info "Available filters"
 
     | Filter         | Description                                                                                              |
     | -------------- | -------------------------------------------------------------------------------------------------------- |
@@ -121,6 +126,7 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
   ```python
   import hopsworks
+
 
   project = hopsworks.login()
 

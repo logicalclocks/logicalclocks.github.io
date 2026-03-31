@@ -2,7 +2,7 @@
 description: Documentation on how to create an external feature group in Hopsworks and the different APIs available to interact with them.
 ---
 
-# How to create an External Feature Group
+# How to create an External Feature Group { #create-external-feature-group }
 
 ## Introduction
 
@@ -22,7 +22,7 @@ To create an external feature group using the HSFS APIs you need to provide an e
 === "Python"
 
     ```python
-    connector = feature_store.get_storage_connector("data_source_name")
+    ds = feature_store.get_data_source("data_source_name")
     ```
 
 ### Create an External Feature Group
@@ -48,13 +48,14 @@ Once you have defined the metadata, you can
         GROUP BY ss_store_sk, sales_date
     """
 
-    fg = feature_store.create_external_feature_group(name="sales",
+    fg = feature_store.create_external_feature_group(
+        name="sales",
         version=1,
         description="Physical shop sales features",
         query=query,
-        storage_connector=connector,
-        primary_key=['ss_store_sk'],
-        event_time='sale_date'
+        data_source=ds,
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
     )
 
     fg.save()
@@ -65,13 +66,14 @@ Once you have defined the metadata, you can
 === "Python"
 
     ```python
-    fg = feature_store.create_external_feature_group(name="sales",
+    fg = feature_store.create_external_feature_group(
+        name="sales",
         version=1,
         description="Physical shop sales features",
         data_format="parquet",
-        storage_connector=connector,
-        primary_key=['ss_store_sk'],
-        event_time='sale_date'
+        data_source=ds,
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
     )
 
     fg.save()
@@ -108,14 +110,15 @@ For an external feature group to be available online, during the creation of the
 
     ```python
     external_fg = fs.create_external_feature_group(
-                name="sales",
-                version=1,
-                description="Physical shop sales features",
-                query=query,
-                storage_connector=connector,
-                primary_key=['ss_store_sk'],
-                event_time='sale_date',
-                online_enabled=True)
+        name="sales",
+        version=1,
+        description="Physical shop sales features",
+        query=query,
+        data_source=ds,
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
+        online_enabled=True,
+    )
     external_fg.save()
 
     # read from external storage and filter data to sync to online
@@ -158,15 +161,31 @@ To create a feature group, proceed by clicking `Next: Select Tables` once all of
   </figure>
 </p>
 
+In the UI you can either select one or more tables or define a custom SQL query.
+
+### Option A: Select tables
+
 The database navigation structure depends on your specific data source.
 You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
 
-In the UI you can select one or more tables, for each selected table, you must designate one or more columns as primary keys before proceeding.
-You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), edit names and data types of individual columns you want to include.
+Select one or more tables. For each selected table, you must designate one or more columns as primary keys before proceeding.
+You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), and edit names and data types of individual columns you want to include.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources and specify features">
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_table.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources and specify features">
+  </figure>
+</p>
+
+### Option B: Define a SQL query
+
+Instead of selecting a table, you can write a custom SQL query to define the feature group.
+This is useful when you need to join multiple tables or apply transformations at read time.
+As with the table option, you must designate one or more columns as primary keys and optionally select a timestamp column.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_query.png" style="border: 10px solid #f5f5f5" alt="Define a SQL query in Data Sources and specify features">
   </figure>
 </p>
 

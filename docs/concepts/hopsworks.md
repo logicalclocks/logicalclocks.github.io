@@ -32,4 +32,4 @@ Data can be also be securely shared between projects.
 ## Data Science Platform
 
 You can develop feature engineering, model training and inference pipelines in Hopsworks.
-There is support for version control (GitHub, GitLab, BitBucket), Jupyter notebooks, a shared distributed file system, many bundled modular project python environments for managing python dependencies without needing to write Dockerfiles, jobs (Python, Spark, Flink), and workflow orchestration with Airflow.
+There is support for version control (GitHub, GitLab, BitBucket), Jupyter notebooks, a shared distributed file system, many bundled modular project Python environments for managing Python dependencies without needing to write Dockerfiles, jobs (Python, Spark, Flink), and workflow orchestration with Airflow.

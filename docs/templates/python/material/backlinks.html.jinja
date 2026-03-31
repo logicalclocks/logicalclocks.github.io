@@ -1,0 +1,25 @@
+{#- Template for backlinks.
+
+This template renders backlinks.
+
+Context:
+  backlinks (Mapping[str, Iterable[str]]): The backlinks to render.
+  config (dict): The configuration options.
+  verbose_type (Mapping[str, str]): The verbose backlink types.
+  default_crumb (BacklinkCrumb): A default, empty crumb.
+-#}
+
+{% macro render_crumb(crumb) %}
+  <span class="doc doc-backlink-crumb">
+    {% if crumb.url and crumb.title %}
+      <a href="{{ crumb.url }}"><code>{{ crumb.parent.title | replace("&nbsp;", "") | safe }}.{{ crumb.title | replace("&nbsp;", "") | safe }}</code></a>
+    {% endif %}
+  </span>
+{% endmacro %}
+
+
+{%- for backlink in backlinks["returned-by"] | sort(attribute="crumbs") -%}
+  <li class="doc doc-backlink">
+    {{ render_crumb(backlink.crumbs[-1]) }}
+  </li>
+{%- endfor -%}
