@@ -15,6 +15,7 @@ dependencies = [
     "mkdocstrings[python]==1.0.3",
     "mkdocstrings-python==2.0.2",
     "mkdocs-autorefs==1.4.4",
+    "pygments==2.19.2",
 ]
 
 [project.optional-dependencies]
