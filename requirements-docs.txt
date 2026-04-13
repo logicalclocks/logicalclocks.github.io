@@ -10,3 +10,4 @@ mkdocstrings-python==2.0.2
 mkdocs-autorefs==1.4.4
 ruff==0.15.0
 linkchecker
+pygments==2.19.2
