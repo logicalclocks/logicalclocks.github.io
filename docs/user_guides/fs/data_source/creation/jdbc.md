@@ -4,7 +4,8 @@
 
 JDBC is an API provided by many database systems.
 Using JDBC connections one can query and update data in a database, usually oriented towards relational databases.
-Examples of databases you can connect to using JDBC are MySQL, Postgres, Oracle, DB2, MongoDB or Microsoft SQLServer.
+Examples of databases you can connect to using JDBC are MySQL, Postgres, DB2, MongoDB or Microsoft SQLServer.
+For Oracle databases, see the dedicated [Oracle Data Source guide](oracle.md) which supports wallet-based authentication.
 
 In this guide, you will configure a Data Source in Hopsworks to save all the authentication information needed in order to set up a JDBC connection to your database of choice.
 When you're finished, you'll be able to query the database using Spark through HSFS APIs.
