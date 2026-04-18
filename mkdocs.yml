@@ -208,6 +208,7 @@ nav:
                   - Scikit-learn: user_guides/mlops/registry/frameworks/skl.md
                   - LLM: user_guides/mlops/registry/frameworks/llm.md
                   - Python: user_guides/mlops/registry/frameworks/python.md
+              - Import from HuggingFace: user_guides/mlops/registry/import_huggingface.md
               - Model Schema: user_guides/mlops/registry/model_schema.md
               - Input Example: user_guides/mlops/registry/input_example.md
               - Model Evaluation Images: user_guides/mlops/registry/model_evaluation_images.md
