@@ -86,6 +86,7 @@ The server handles the database connection — including Oracle wallet-based aut
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 feature_store = project.get_feature_store()
 ds = feature_store.get_data_source("my_sql_source")
@@ -100,6 +101,7 @@ For Oracle connections with a wallet configured, the wallet zip is automatically
 
 ```python
 import hopsworks
+
 
 project = hopsworks.login()
 feature_store = project.get_feature_store()
