@@ -34,11 +34,10 @@ Cloud agnostic storage systems:
 
 1. [JDBC](creation/jdbc.md): Connect to JDBC compatible databases and query them using SQL.
 2. [Snowflake](creation/snowflake.md): Query Snowflake databases and tables using SQL.
-3. [Oracle](creation/oracle.md): Connect to Oracle databases with optional wallet-based mTLS authentication.
-4. [Kafka](creation/kafka.md): Read data from a Kafka cluster into a Spark Structured Streaming Dataframe.
-5. [HopsFS](creation/hopsfs.md): Easily connect and read from directories of Hopsworks' internal File System.
-6. [CRM, Sales & Analytics](creation/crm_sales_analytics.md): Connect to supported CRM, sales, and analytics platforms.
-7. [REST API](creation/rest_api.md): Connect to external HTTP APIs with configurable headers and authentication.
+3. [Kafka](creation/kafka.md): Read data from a Kafka cluster into a Spark Structured Streaming Dataframe.
+4. [HopsFS](creation/hopsfs.md): Easily connect and read from directories of Hopsworks' internal File System.
+5. [CRM, Sales & Analytics](creation/crm_sales_analytics.md): Connect to supported CRM, sales, and analytics platforms.
+6. [REST API](creation/rest_api.md): Connect to external HTTP APIs with configurable headers and authentication.
 
 ## AWS
 

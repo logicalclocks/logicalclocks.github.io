@@ -71,7 +71,6 @@ nav:
                   - BigQuery: user_guides/fs/data_source/creation/bigquery.md
                   - GCS: user_guides/fs/data_source/creation/gcs.md
                   - SQL: user_guides/fs/data_source/creation/sql.md
-                  - Oracle: user_guides/fs/data_source/creation/oracle.md
                   - CRM, Sales & Analytics: user_guides/fs/data_source/creation/crm_sales_analytics.md
                   - REST API: user_guides/fs/data_source/creation/rest_api.md
               - Usage: user_guides/fs/data_source/usage.md
