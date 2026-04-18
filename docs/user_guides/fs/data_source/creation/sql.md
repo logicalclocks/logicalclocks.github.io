@@ -131,7 +131,7 @@ df = ds.read(query="SELECT * FROM my_schema.my_table")
       Spark JDBC supports timestamp precision up to seconds only.
       Sub-second precision from Oracle `TIMESTAMP` columns may be truncated.
 
-### Python Engine
+### Python engine (Arrow Flight)
 
 The Python engine reads data via the Hopsworks Arrow Flight service, which handles the database connection server-side.
 There are no client-side limitations specific to Oracle — wallet authentication, connection pooling, and query execution are all managed by the server.
