@@ -110,7 +110,7 @@ df = ds.read(query="SELECT * FROM my_schema.my_table")
 
 !!! note
     For Oracle, the JDBC driver JAR (e.g. `ojdbc11.jar`) must be available on the Spark classpath.
-    Upload it via the [Jupyter configuration](../../../projects/jupyter/spark_notebook.md) or [Job configuration](../../../projects/jobs/pyspark_job.md) in `Additional Jars`.
+    Upload it via the [Jupyter configuration][how-to-run-a-pyspark-notebook] or [Job configuration][how-to-run-a-pyspark-job] in `Additional Jars`.
     The MySQL driver is included in Hopsworks by default.
 
 ## Limitations
@@ -138,4 +138,4 @@ There are no client-side limitations specific to Oracle — wallet authenticatio
 
 ## Next Steps
 
-Move on to the [usage guide for data sources](../usage.md) to see how you can use your newly created SQL connector.
+Move on to the [usage guide for data sources][data-source-usage] to see how you can use your newly created SQL connector.
