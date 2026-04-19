@@ -171,6 +171,7 @@ nav:
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
               - Run Ray Job: user_guides/projects/jobs/ray_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
+              - Batch Feature Pipelines: user_guides/projects/jobs/batch_feature_pipeline.md
           - Kubernetes Scheduling:
               - Base: user_guides/projects/scheduling/kube_scheduler.md
               - Kueue: user_guides/projects/scheduling/kueue_details.md

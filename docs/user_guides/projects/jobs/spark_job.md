@@ -271,6 +271,32 @@ This configuration is mainly useful when you need to add additional configuratio
 
 When reading data in your Spark job it is recommended to use the Spark read API as previously demonstrated, since this reads from the filesystem directly, whereas `Additional files` configuration options will download the files in its entirety and is not a scalable option.
 
+## Environment variables
+
+User-defined environment variables can be attached to a Spark job under the
+*Environment variables* panel of the advanced configuration. Each entry is a
+`KEY=VALUE` pair that is set on the Spark driver container for every execution
+of the job.
+
+```python
+import os
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.getOrCreate()
+bucket = os.environ["MY_S3_BUCKET"]
+df = spark.read.parquet(f"s3a://{bucket}/events/")
+```
+
+Scheduled and backfill runs also receive `HOPS_LOGICAL_DATE`, `HOPS_START_TIME`
+and `HOPS_END_TIME` describing the data interval the run should process — see
+[Scheduling](./schedule_job.md#logical-time-and-data-intervals) and
+[Batch feature pipelines](./batch_feature_pipeline.md).
+
+!!! warning "Reserved names"
+    Names starting with `HOPS_` are reserved by the scheduler. Setting them in
+    the *Environment variables* panel overrides the scheduler value for every
+    execution — the UI shows a warning callout when you do this.
+
 ## API Reference
 
 [`Job`][hopsworks_common.job.Job]
