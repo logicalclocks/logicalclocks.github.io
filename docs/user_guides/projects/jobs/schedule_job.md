@@ -24,11 +24,13 @@ Schedules can be defined using the drop-down menus in the UI or a Quartz [cron](
 
 ## Logical time and data intervals
 
-When the scheduler fires a job, it attaches a **data interval** to the execution. The interval follows the same model as Apache Airflow:
+When the scheduler fires a job, it attaches a **data window** to the execution, expressed through three environment variables:
 
-- `HOPS_LOGICAL_DATE` — start of the data interval. With a cron schedule, this is the *previous* cron fire; for the first run of a schedule it clamps to the schedule's start time.
-- `HOPS_END_TIME`     — end of the data interval = the current cron fire.
-- `HOPS_START_TIME`   — by default equal to `HOPS_LOGICAL_DATE`. It can be shifted using `start_time_offset_seconds` (see [Advanced scheduling](#advanced-scheduling)).
+- `HOPS_START_TIME` — start of the data window. Computed as `cron_fire_time + start_time_offset_seconds`. Default offset is **-3600** (one hour before the fire).
+- `HOPS_END_TIME`   — end of the data window. Computed as `cron_fire_time + end_time_offset_seconds`. Default offset is **0** (at the fire).
+- `HOPS_LOGICAL_DATE` — the scheduler's dedup key for this interval (Airflow-style *start of interval* = previous cron fire). Useful as a stable identifier for the run.
+
+With the defaults on an hourly schedule firing at 10:00, the window is `[09:00, 10:00)` — the last hour of data. Change the offsets (see below) to shape a different window.
 
 These three values are injected into the job container as **environment variables** on every scheduled execution. In your program, read them like any other env var:
 
@@ -96,29 +98,33 @@ All times are in UTC.
   </figure>
 </p>
 
-### Advanced scheduling
+### Scheduling fields
 
-The *Advanced scheduling* section on the schedule form exposes fields that shape catch-up behaviour, concurrency and the emitted time-window.
+The Schedule form exposes these fields for controlling the data window, concurrency and catch-up behaviour:
 
 | Field | Default | Description |
 |---|---|---|
-| `catchup` | `false` | If `true`, on recovery after a scheduler outage the runs for every missed interval are created. If `false`, only the most recent missed interval is created. |
 | `max_active_runs` | `1` | Upper bound on concurrent executions for this job. |
-| `start_time_offset_seconds` | `0` | Shifts `HOPS_START_TIME` by this many seconds relative to the interval start. Negative values look further into the past. |
-| `end_time_offset_seconds` | `0` | Shifts `HOPS_END_TIME` by this many seconds relative to the interval end. |
+| `start_time_offset_seconds` | `-3600` | Seconds added to the cron fire time to produce `HOPS_START_TIME`. Negative values look backwards; positive values look forward. |
+| `end_time_offset_seconds` | `0` | Seconds added to the cron fire time to produce `HOPS_END_TIME`. |
+| `catchup` | `false` | If `true`, on recovery after a scheduler outage the runs for every missed interval are created. If `false`, only the most recent missed interval is created. |
 | `skip_to_date` | *unset* | When `catchup=true`, missed intervals strictly before this date are skipped during reconciliation. |
 | `max_catchup_runs` | *unset* | When `catchup=true`, caps how many missed intervals are replayed, keeping the most recent. |
 
 **Example — "process the previous day, not the previous hour"**
 
-An hourly job typically processes the last hour. To process "yesterday's data" every hour instead, shift both offsets back 24 hours:
+Defaults give you the last hour (`[fire-1h, fire)`). To process yesterday's data every hour instead, shift both offsets back 24 hours:
 
 ```
-start_time_offset_seconds = -86400
-end_time_offset_seconds   = -86400
+start_time_offset_seconds = -25 * 3600   # fire - 25 h
+end_time_offset_seconds   = -24 * 3600   # fire - 24 h
 ```
 
-At 11:00 UTC the container sees `HOPS_START_TIME = 09:00 (previous day)` and `HOPS_END_TIME = 10:00 (previous day)`.
+At 11:00 UTC the container sees `HOPS_START_TIME = 10:00 (previous day)` and `HOPS_END_TIME = 11:00 (previous day)`.
+
+**Example — window ending in the future**
+
+Positive offsets look forward. `start_time_offset_seconds = 0`, `end_time_offset_seconds = 3600` produces a window from the fire time to one hour after — useful when the pipeline reads forecasts rather than history.
 
 **Example — `catchup=false` after a 6-hour outage**
 
@@ -148,17 +154,17 @@ import hopsworks
 project = hopsworks.login()
 job = project.get_job_api().get_job("my_feature_pipeline")
 
-# Hourly, defaults: HOPS_START_TIME = previous fire, HOPS_END_TIME = current fire.
+# Hourly. Defaults yield HOPS_START_TIME = fire - 1 h, HOPS_END_TIME = fire (the last hour).
 job.schedule(
     cron_expression="0 0 * ? * * *",
     start_time=datetime(2026, 1, 1, tzinfo=timezone.utc),
 )
 
-# Hourly, shifted window — "process the previous hour one hour later".
+# Hourly, 2-hour window ending at the cron fire:
 job.schedule(
     cron_expression="0 0 * ? * * *",
-    start_time_offset_seconds=-3600,
-    end_time_offset_seconds=-3600,
+    start_time_offset_seconds=-2 * 3600,
+    end_time_offset_seconds=0,
     catchup=True,
     max_active_runs=2,
     max_catchup_runs=24,

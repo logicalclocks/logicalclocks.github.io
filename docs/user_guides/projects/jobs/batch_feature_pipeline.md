@@ -8,7 +8,7 @@ A **batch feature pipeline** is a job that processes a *time slice of data* — 
 
 Two operating modes cover the common cases:
 
-- **Incremental** — the pipeline runs on a recurring schedule. Each run sees a fresh `[HOPS_START_TIME, HOPS_END_TIME)` derived from the cron interval. Use this for production pipelines.
+- **Incremental** — the pipeline runs on a recurring schedule. Each run sees a fresh `[HOPS_START_TIME, HOPS_END_TIME)` computed as offsets from the cron fire time. Use this for production pipelines.
 - **Backfill** — a one-shot run over an explicit absolute time window. Use this to populate history or re-process a specific interval after a bug fix.
 
 Both modes emit the same `HOPS_*` environment variables, so the same pipeline code handles both.
@@ -19,9 +19,9 @@ On every scheduled or backfill execution, Hopsworks injects:
 
 | Variable | Meaning |
 |---|---|
-| `HOPS_LOGICAL_DATE` | Start of the data interval (ISO-8601 UTC). For a cron schedule, this is the previous fire. |
-| `HOPS_START_TIME`   | `HOPS_LOGICAL_DATE + start_time_offset_seconds`. Default offset is 0, i.e. the interval start. |
-| `HOPS_END_TIME`     | `data_interval_end + end_time_offset_seconds`. Default offset is 0, i.e. the current fire. |
+| `HOPS_START_TIME`   | `cron_fire_time + start_time_offset_seconds`. Default offset is `-3600` (one hour before the fire). |
+| `HOPS_END_TIME`     | `cron_fire_time + end_time_offset_seconds`. Default offset is `0` (at the fire). |
+| `HOPS_LOGICAL_DATE` | Scheduler dedup key for this interval (Airflow-style start of interval = previous cron fire). |
 
 For a manual (non-scheduled) run, these variables are only set if you explicitly pass a time window via the UI or API (see [Backfill](#backfill-one-shot-absolute-window) below).
 
@@ -33,7 +33,7 @@ For a manual (non-scheduled) run, these variables are only set if you explicitly
 Create or edit a job and configure its schedule under **Advanced scheduling**. Typical settings for a batch feature pipeline:
 
 - `cron_expression` — how often to run (e.g. `0 0 * ? * * *` for hourly).
-- `start_time_offset_seconds` / `end_time_offset_seconds` — shift the window if you want the job to process something other than "the previous cron interval". Leave both at 0 for the default.
+- `start_time_offset_seconds` / `end_time_offset_seconds` — seconds added to the cron fire time to produce the data window. Defaults are `-3600` / `0`, i.e. the previous hour. For a daily window, use `-86400` / `0`.
 - `catchup` — on by default *off*. Enable it if missed runs during an outage should be replayed one-per-missed-interval.
 - `max_active_runs` — raise above 1 if runs can safely execute in parallel.
 
