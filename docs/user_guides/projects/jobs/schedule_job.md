@@ -174,3 +174,40 @@ job.unschedule()
 ```
 
 See also [Batch feature pipelines](./batch_feature_pipeline.md) for one-shot backfill runs and the `Job.run(start_time=..., end_time=...)` API.
+
+## Differences from Apache Airflow
+
+Hopsworks follows the same [data-interval model as Airflow](https://airflow.apache.org/docs/apache-airflow/stable/authoring-and-scheduling/timetable.html): `logical_date` is the start of the data interval, `data_interval_end` is the cron fire time, runs are created at or after the interval end, and `catchup` controls whether missed intervals are replayed. However, a few behaviours differ — if you are coming from Airflow, these are the ones worth knowing.
+
+### First-run interval starts at `start_date`, not the next cron boundary
+
+If a schedule has `start_date = 10:05` and an hourly cron firing on `:00`, Airflow aligns `start_date` forward to `11:00` and the first run has `data_interval = [11:00, 12:00)`. Hopsworks clamps the previous fire to `start_date`, so the first run fires at `11:00` with `data_interval = [10:05, 11:00)` — a short first interval starting at `start_date` itself.
+
+If that offset would break the first run's computation (for example, a job that expects full hourly windows), set `start_date` to a cron-aligned time.
+
+### Manual runs don't automatically get a data interval
+
+Airflow always fills a data interval for manually triggered DagRuns via `infer_manual_data_interval`. Hopsworks sets `HOPS_LOGICAL_DATE` / `HOPS_START_TIME` / `HOPS_END_TIME` on a manual run **only if you explicitly pass them** — via the UI's *Run with time window* dialog, the Python `job.run(start_time=..., end_time=...)` kwargs, or the JSON execution endpoint. A plain "Run" with no time window leaves the env vars unset.
+
+This keeps the contract honest: a manual one-off either processes a specific window (opt in) or processes "whatever your code defines, independent of any window". It does mean job code shouldn't assume `HOPS_START_TIME` is always present — check for the var and fall back as appropriate.
+
+### Per-tick draining vs. one-per-loop
+
+Airflow's scheduler creates at most one DagRun per DAG per loop iteration, to keep many DAGs progressing in parallel. The Hopsworks scheduler will drain up to 20 past intervals for one schedule in a single timer tick (each tick is ~1 minute), then move on. In practice this means a schedule with a large backlog catches up in batches of 20 per minute rather than one per minute, while not blocking other schedules for more than one tick.
+
+You typically don't observe this unless `catchup=true` after a long outage: expect the backlog to drain at ~20 intervals/minute per schedule, not one.
+
+### No DST fold-hour handling
+
+Airflow treats cron schedules as timezone-aware and has explicit logic for the DST "fold hour" when clocks go back. Hopsworks evaluates schedules in UTC. If you need non-UTC semantics, express your cron in UTC — there is no equivalent of Airflow's timezone-aware timetable for DST. For almost all users this is a non-issue.
+
+### Reconciliation on schedule create / update, not just outage
+
+In Airflow, `catchup=true` kicks in only when the scheduler detects past intervals at runtime. Hopsworks also replays missed intervals at *creation* time — if you create a new schedule with `catchup=true` and a `start_date` in the past, past intervals run immediately rather than being implicitly skipped by the first-fire advancement. The same happens if you flip `catchup` from `false` to `true`, or re-enable a paused `catchup=true` schedule.
+
+This matches what most users expect ("turn on catchup ⇒ see the backfill"), but is a deliberate divergence — Airflow's equivalent behaviour is "the next DagRun after now is the earliest missed one, and subsequent loops fill in the rest over time".
+
+### Leader election via Payara, not advisory locks
+
+Airflow coordinates multiple schedulers with PostgreSQL advisory locks (`pg_try_advisory_xact_lock`). Hopsworks uses Payara's cluster primary election: the scheduler timer only fires on the primary node. Reconciliation happens on the first primary-owned tick after startup. Correctness is backed by a DB unique index on `(job_id, logical_date)`, so even during a leader failover window no duplicate runs are created.
+
