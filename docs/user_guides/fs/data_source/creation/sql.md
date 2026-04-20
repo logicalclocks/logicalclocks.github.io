@@ -74,58 +74,24 @@ Start by giving the connector a **name** and an optional **description**.
   <figcaption>SQL Connector Creation Form</figcaption>
 </figure>
 
-## Reading Data
+## Oracle-Specific Notes
 
-Once the data source is created, you can read data using a SQL query.
+The generic read, external feature group, and training data workflows are covered in the [usage guide for data sources][data-source-usage].
+The following notes apply only to Oracle.
 
-### Python Engine
+### JDBC driver on the Spark classpath
 
-When running outside of Spark (e.g. in a Hopsworks notebook or an external Python client), the Python engine reads data via the Hopsworks Arrow Flight service.
-The server handles the database connection — including Oracle wallet-based authentication — so no JDBC driver or wallet files are needed on the client side.
+The Oracle JDBC driver JAR (e.g. `ojdbc11.jar`) must be available on the Spark classpath.
+Upload it via the [Jupyter configuration][how-to-run-a-pyspark-notebook] or [Job configuration][how-to-run-a-pyspark-job] in `Additional Jars`.
+The MySQL and PostgreSQL drivers are included in Hopsworks by default.
 
-```python
-import hopsworks
-
-
-project = hopsworks.login()
-feature_store = project.get_feature_store()
-ds = feature_store.get_data_source("my_sql_source")
-
-df = ds.read(query="SELECT * FROM my_schema.my_table", dataframe_type="pandas")
-```
-
-### Spark Engine
-
-When running with PySpark, the data is read using the Spark JDBC DataSource with the appropriate JDBC driver.
-For Oracle connections with a wallet configured, the wallet zip is automatically downloaded from HopsFS and extracted on the Spark driver.
-
-```python
-import hopsworks
-
-
-project = hopsworks.login()
-feature_store = project.get_feature_store()
-ds = feature_store.get_data_source("my_sql_source")
-
-df = ds.read(query="SELECT * FROM my_schema.my_table")
-```
-
-!!! note
-    For Oracle, the JDBC driver JAR (e.g. `ojdbc11.jar`) must be available on the Spark classpath.
-    Upload it via the [Jupyter configuration][how-to-run-a-pyspark-notebook] or [Job configuration][how-to-run-a-pyspark-job] in `Additional Jars`.
-    The MySQL driver is included in Hopsworks by default.
-
-## Limitations
-
-### Oracle with Spark JDBC
+### Spark JDBC limitations
 
 !!! warning "Oracle Spark JDBC limitations"
-    When reading Oracle data via Spark, be aware of the following:
-
     - **Single-partition reads only.**
       All data is fetched through a single JDBC connection from the Spark driver.
       Spark's parallel JDBC read (via `numPartitions` / `partitionColumn`) is not supported.
-      For very large tables, consider filtering with a `WHERE` clause in your query.
+      For very large tables, filter with a `WHERE` clause in your query.
     - **Wallet available on the driver only.**
       When using wallet-based authentication, the wallet zip is downloaded from HopsFS and extracted on the Spark driver node.
       This is sufficient because reads are single-partition (driver-only).
@@ -133,10 +99,10 @@ df = ds.read(query="SELECT * FROM my_schema.my_table")
       Spark JDBC supports timestamp precision up to seconds only.
       Sub-second precision from Oracle `TIMESTAMP` columns may be truncated.
 
-### Python engine (Arrow Flight)
+### Python engine
 
-The Python engine reads data via the Hopsworks Arrow Flight service, which handles the database connection server-side.
-There are no client-side limitations specific to Oracle — wallet authentication, connection pooling, and query execution are all managed by the server.
+The Python engine reads Oracle via the Hopsworks Arrow Flight service, which handles the database connection server-side.
+No JDBC driver or wallet files are needed on the client, and the Spark JDBC limitations above do not apply.
 
 ## Next Steps
 
