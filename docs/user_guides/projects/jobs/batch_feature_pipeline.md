@@ -19,8 +19,8 @@ On every scheduled or backfill execution, Hopsworks injects:
 
 | Variable | Meaning |
 |---|---|
-| `HOPS_START_TIME`   | `cron_fire_time + start_time_offset_seconds`. Default offset is `-3600` (one hour before the fire). |
-| `HOPS_END_TIME`     | `cron_fire_time + end_time_offset_seconds`. Default offset is `0` (at the fire). |
+| `HOPS_START_TIME`   | Default `null` → previous cron fire (last execution time). Explicit int → `cron_fire + seconds` (negative = before, positive = after). |
+| `HOPS_END_TIME`     | Default `null` → cron fire time. Explicit int → `cron_fire + seconds`. |
 | `HOPS_LOGICAL_DATE` | Scheduler dedup key for this interval (Airflow-style start of interval = previous cron fire). |
 
 For a manual (non-scheduled) run, these variables are only set if you explicitly pass a time window via the UI or API (see [Backfill](#backfill-one-shot-absolute-window) below).
@@ -33,7 +33,7 @@ For a manual (non-scheduled) run, these variables are only set if you explicitly
 Create or edit a job and configure its schedule under **Advanced scheduling**. Typical settings for a batch feature pipeline:
 
 - `cron_expression` — how often to run (e.g. `0 0 * ? * * *` for hourly).
-- `start_time_offset_seconds` / `end_time_offset_seconds` — seconds added to the cron fire time to produce the data window. Defaults are `-3600` / `0`, i.e. the previous hour. For a daily window, use `-86400` / `0`.
+- `start_time_offset_seconds` / `end_time_offset_seconds` — default `null` gives the natural cron interval (previous fire → current fire). Set explicit seconds (negative = before fire, positive = after fire) if you need a different window.
 - `catchup` — on by default *off*. Enable it if missed runs during an outage should be replayed one-per-missed-interval.
 - `max_active_runs` — raise above 1 if runs can safely execute in parallel.
 

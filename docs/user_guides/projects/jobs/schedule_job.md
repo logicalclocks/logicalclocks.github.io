@@ -26,11 +26,17 @@ Schedules can be defined using the drop-down menus in the UI or a Quartz [cron](
 
 When the scheduler fires a job, it attaches a **data window** to the execution, expressed through three environment variables:
 
-- `HOPS_START_TIME` — start of the data window. Computed as `cron_fire_time + start_time_offset_seconds`. Default offset is **-3600** (one hour before the fire).
-- `HOPS_END_TIME`   — end of the data window. Computed as `cron_fire_time + end_time_offset_seconds`. Default offset is **0** (at the fire).
+- `HOPS_START_TIME` — start of the data window. Three modes:
+    - **Last execution time** *(default)* — the previous cron fire. This adapts to the schedule's cadence, so the window is always "everything since the previous run".
+    - **Before cron fire (hh:mm)** — `cron_fire - (hh*3600 + mm*60)` seconds.
+    - **After cron fire (hh:mm)** — `cron_fire + (hh*3600 + mm*60)` seconds.
+- `HOPS_END_TIME` — end of the data window. Three modes:
+    - **Cron fire time** *(default)* — the current fire.
+    - **Before cron fire (hh:mm)**.
+    - **After cron fire (hh:mm)**.
 - `HOPS_LOGICAL_DATE` — the scheduler's dedup key for this interval (Airflow-style *start of interval* = previous cron fire). Useful as a stable identifier for the run.
 
-With the defaults on an hourly schedule firing at 10:00, the window is `[09:00, 10:00)` — the last hour of data. Change the offsets (see below) to shape a different window.
+With the defaults on an hourly schedule firing at 10:00, the window is `[09:00, 10:00)` — the last hour of data. The same defaults on a daily schedule firing at 00:00 give `[yesterday 00:00, today 00:00)` — the last day. Change the modes (see below) to shape a different window.
 
 These three values are injected into the job container as **environment variables** on every scheduled execution. In your program, read them like any other env var:
 
@@ -105,15 +111,15 @@ The Schedule form exposes these fields for controlling the data window, concurre
 | Field | Default | Description |
 |---|---|---|
 | `max_active_runs` | `1` | Upper bound on concurrent executions for this job. |
-| `start_time_offset_seconds` | `-3600` | Seconds added to the cron fire time to produce `HOPS_START_TIME`. Negative values look backwards; positive values look forward. |
-| `end_time_offset_seconds` | `0` | Seconds added to the cron fire time to produce `HOPS_END_TIME`. |
+| `start_time_offset_seconds` | `null` *(last execution time)* | `null` → `HOPS_START_TIME` = previous cron fire. Integer → `cron_fire + seconds` (negative = before, positive = after). |
+| `end_time_offset_seconds` | `null` *(cron fire time)* | `null` → `HOPS_END_TIME` = cron fire time. Integer → `cron_fire + seconds`. |
 | `catchup` | `false` | If `true`, on recovery after a scheduler outage the runs for every missed interval are created. If `false`, only the most recent missed interval is created. |
 | `skip_to_date` | *unset* | When `catchup=true`, missed intervals strictly before this date are skipped during reconciliation. |
 | `max_catchup_runs` | *unset* | When `catchup=true`, caps how many missed intervals are replayed, keeping the most recent. |
 
 **Example — "process the previous day, not the previous hour"**
 
-Defaults give you the last hour (`[fire-1h, fire)`). To process yesterday's data every hour instead, shift both offsets back 24 hours:
+Defaults give you the natural cron interval (`[previous fire, current fire)`). To process yesterday's data every hour instead, pick explicit offsets (25 h and 24 h before fire):
 
 ```
 start_time_offset_seconds = -25 * 3600   # fire - 25 h
@@ -154,13 +160,15 @@ import hopsworks
 project = hopsworks.login()
 job = project.get_job_api().get_job("my_feature_pipeline")
 
-# Hourly. Defaults yield HOPS_START_TIME = fire - 1 h, HOPS_END_TIME = fire (the last hour).
+# Defaults (None, None): HOPS_START_TIME = previous cron fire (last execution time),
+# HOPS_END_TIME = cron fire time. Adapts to any cron — hourly gives the last hour,
+# daily gives the last day, etc.
 job.schedule(
     cron_expression="0 0 * ? * * *",
     start_time=datetime(2026, 1, 1, tzinfo=timezone.utc),
 )
 
-# Hourly, 2-hour window ending at the cron fire:
+# Fixed 2-hour window ending at the cron fire:
 job.schedule(
     cron_expression="0 0 * ? * * *",
     start_time_offset_seconds=-2 * 3600,
