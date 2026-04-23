@@ -73,6 +73,7 @@ nav:
                   - SQL: user_guides/fs/data_source/creation/sql.md
                   - CRM, Sales & Analytics: user_guides/fs/data_source/creation/crm_sales_analytics.md
                   - REST API: user_guides/fs/data_source/creation/rest_api.md
+                  - Unity Catalog: user_guides/fs/data_source/creation/unity_catalog.md
               - Usage: user_guides/fs/data_source/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
