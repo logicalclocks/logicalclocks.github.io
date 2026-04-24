@@ -67,7 +67,7 @@ Hopsworks picks the framework in this order:
     - `pytorch_model.bin`, `.safetensors`, `.pt`, `.pth` → `TORCH`
 5. **Fallback** → `PYTHON`.
 
-If the detected framework isn't right, you can change it later from the model's detail page — see [Editing the framework](#editing-the-framework) below.
+If the detected framework isn't right, you can change it later from the model's detail page — see [Editing the framework][editing-the-framework] below.
 
 !!! info "vLLM config for LLMs"
     When the framework is detected as `LLM`, Hopsworks writes a default `vllmconfig.yaml` alongside the model files (`dtype: "half"`, `gpu_memory_utilization: 0.96`). `max_model_len` is intentionally left out so vLLM uses the context window declared in the model's own `config.json`. Edit this file if you need a smaller context to fit your GPU.
@@ -134,5 +134,5 @@ For all terminal failures Hopsworks removes the partial model directory from Hop
 
 ## Going Further
 
-- Attach an [Input Example](input_example.md) and [Model Schema](model_schema.md) to your imported model.
-- Serve the imported model with [Model Serving](../serving/index.md) — LLMs auto-pick up the generated `vllmconfig.yaml`.
+- Attach an [Input Example][how-to-attach-an-input-example] and [Model Schema][how-to-attach-a-model-schema] to your imported model.
+- Serve the imported model with [Model Serving][model-serving-guide] — LLMs auto-pick up the generated `vllmconfig.yaml`.
