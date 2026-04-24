@@ -20,7 +20,7 @@ Schedules can be defined using the drop-down menus in the UI or a Quartz [cron](
 !!! note "Parallel executions"
     By default, at most one execution of a job runs at a time.
     If a fire time is reached while a previous execution is still running, the scheduler waits for the previous run to finish before starting the new one.
-    You can raise this cap with `max_active_runs` (see [Advanced scheduling](#advanced-scheduling)).
+    You can raise this cap with `max_active_runs` (see [Scheduling fields](#scheduling-fields)).
 
 ## Logical time and data intervals
 

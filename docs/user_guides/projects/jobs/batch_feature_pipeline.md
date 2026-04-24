@@ -37,7 +37,7 @@ Create or edit a job and configure its schedule under **Advanced scheduling**. T
 - `catchup` — on by default *off*. Enable it if missed runs during an outage should be replayed one-per-missed-interval.
 - `max_active_runs` — raise above 1 if runs can safely execute in parallel.
 
-See [How to schedule a job](./schedule_job.md#advanced-scheduling) for the full field reference.
+See [How to schedule a job](./schedule_job.md#scheduling-fields) for the full field reference.
 
 ### Reading the interval in your code
 
