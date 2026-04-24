@@ -26,15 +26,11 @@ Schedules can be defined using the drop-down menus in the UI or a Quartz [cron](
 
 When the scheduler fires a job, it attaches a **data window** to the execution, expressed through three environment variables:
 
-- `HOPS_START_TIME` — start of the data window. Three modes:
-    - **Last execution time** *(default)* — the previous cron fire. This adapts to the schedule's cadence, so the window is always "everything since the previous run".
-    - **Before cron fire (hh:mm)** — `cron_fire - (hh*3600 + mm*60)` seconds.
-    - **After cron fire (hh:mm)** — `cron_fire + (hh*3600 + mm*60)` seconds.
-- `HOPS_END_TIME` — end of the data window. Three modes:
-    - **Cron fire time** *(default)* — the current fire.
-    - **Before cron fire (hh:mm)**.
-    - **After cron fire (hh:mm)**.
-- `HOPS_LOGICAL_DATE` — the scheduler's dedup key for this interval (Airflow-style *start of interval* = previous cron fire). Useful as a stable identifier for the run.
+- `HOPS_START_TIME` — start of the data window. Two modes:
+    - **Last execution time** *(default — `start_time_offset_seconds = null`)* — the previous cron fire. Adapts to the schedule's cadence, so the window is always "everything since the previous run".
+    - **Before last execution (hh:mm)** — `previous_fire − (hh*3600 + mm*60)` seconds. Stored as a positive integer; the backend subtracts.
+- `HOPS_END_TIME` — end of the data window. **Always `HOPS_START_TIME + cron interval`** so consecutive scheduled runs tile the timeline with no gaps between them. `end_time_offset_seconds` is kept on the DTO for backward compatibility but is ignored.
+- `HOPS_LOGICAL_DATE` — the scheduler's stable identifier for this interval (Airflow-style *start of interval* = previous cron fire). Used for dedup and retries.
 
 With the defaults on an hourly schedule firing at 10:00, the window is `[09:00, 10:00)` — the last hour of data. The same defaults on a daily schedule firing at 00:00 give `[yesterday 00:00, today 00:00)` — the last day. Change the modes (see below) to shape a different window.
 
@@ -111,26 +107,22 @@ The Schedule form exposes these fields for controlling the data window, concurre
 | Field | Default | Description |
 |---|---|---|
 | `max_active_runs` | `1` | Upper bound on concurrent executions for this job. |
-| `start_time_offset_seconds` | `null` *(last execution time)* | `null` → `HOPS_START_TIME` = previous cron fire. Integer → `cron_fire + seconds` (negative = before, positive = after). |
-| `end_time_offset_seconds` | `null` *(cron fire time)* | `null` → `HOPS_END_TIME` = cron fire time. Integer → `cron_fire + seconds`. |
+| `start_time_offset_seconds` | `null` *(last execution time)* | `null` → `HOPS_START_TIME = previous cron fire`. Positive integer → `HOPS_START_TIME = previous fire − seconds` (shifts the window earlier). Must be ≥ 0. |
+| `end_time_offset_seconds` | *legacy; ignored* | Kept on the DTO for backward compatibility. The backend always sets `HOPS_END_TIME = HOPS_START_TIME + cron interval` — consecutive runs tile the timeline with no gaps. |
 | `catchup` | `false` | If `true`, on recovery after a scheduler outage the runs for every missed interval are created. If `false`, only the most recent missed interval is created. |
 | `skip_to_date` | *unset* | When `catchup=true`, missed intervals strictly before this date are skipped during reconciliation. |
 | `max_catchup_runs` | *unset* | When `catchup=true`, caps how many missed intervals are replayed, keeping the most recent. |
 
-**Example — "process the previous day, not the previous hour"**
+**Example — "process the previous 25 hours, not the previous hour"**
 
-Defaults give you the natural cron interval (`[previous fire, current fire)`). To process yesterday's data every hour instead, pick explicit offsets (25 h and 24 h before fire):
+Defaults give you the natural cron interval (`[previous fire, current fire)`). To process a 25-hour trailing window every hour (e.g. to include a little overlap for late-arriving data), shift `start` 24 hours earlier — the end stays at the current fire because it's `start + cron interval = start + 1 h`:
 
 ```
-start_time_offset_seconds = -25 * 3600   # fire - 25 h
-end_time_offset_seconds   = -24 * 3600   # fire - 24 h
+start_time_offset_seconds = 25 * 3600   # HOPS_START_TIME = previous fire − 25 h
+# end_time_offset_seconds is ignored; HOPS_END_TIME = HOPS_START_TIME + 1 h
 ```
 
-At 11:00 UTC the container sees `HOPS_START_TIME = 10:00 (previous day)` and `HOPS_END_TIME = 11:00 (previous day)`.
-
-**Example — window ending in the future**
-
-Positive offsets look forward. `start_time_offset_seconds = 0`, `end_time_offset_seconds = 3600` produces a window from the fire time to one hour after — useful when the pipeline reads forecasts rather than history.
+At 11:00 UTC on an hourly schedule the container sees `HOPS_START_TIME = 09:00 (previous day)` and `HOPS_END_TIME = 10:00 (previous day)`.
 
 **Example — `catchup=false` after a 6-hour outage**
 
@@ -168,11 +160,12 @@ job.schedule(
     start_time=datetime(2026, 1, 1, tzinfo=timezone.utc),
 )
 
-# Fixed 2-hour window ending at the cron fire:
+# Shift the window 1 hour earlier so each hourly run sees the previous-to-previous
+# hour. HOPS_END_TIME is always HOPS_START_TIME + cron interval (1 h here), so the
+# window remains 1 hour wide — only the anchor moves.
 job.schedule(
     cron_expression="0 0 * ? * * *",
-    start_time_offset_seconds=-2 * 3600,
-    end_time_offset_seconds=0,
+    start_time_offset_seconds=3600,   # previous fire − 1 h
     catchup=True,
     max_active_runs=2,
     max_catchup_runs=24,
@@ -223,5 +216,5 @@ This matches what most users expect ("turn on catchup ⇒ see the backfill"), bu
 
 ### Leader election via Payara, not advisory locks
 
-Airflow coordinates multiple schedulers with PostgreSQL advisory locks (`pg_try_advisory_xact_lock`). Hopsworks uses Payara's cluster primary election: the scheduler timer only fires on the primary node. Reconciliation happens on the first primary-owned tick after startup. Correctness is backed by a DB unique index on `(job_id, logical_date)`, so even during a leader failover window no duplicate runs are created.
+Airflow coordinates multiple schedulers with PostgreSQL advisory locks (`pg_try_advisory_xact_lock`). Hopsworks uses Payara's cluster primary election: the scheduler timer only fires on the primary node. Reconciliation happens on the first primary-owned tick after startup. Correctness is backed at the application layer — `executeWithCron` seeds `startingActive = countActiveByJob(...)` once per tick and tracks an additive `firedThisTick` counter, which is monotonic and independent of RonDB COUNT read-after-write lag. This replaces an earlier `(job_id, logical_date)` unique index that was too strict — it blocked legitimate retry / manual-rerun / re-backfill flows that share a logical_date.
 

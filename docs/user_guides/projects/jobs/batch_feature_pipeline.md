@@ -19,9 +19,9 @@ On every scheduled or backfill execution, Hopsworks injects:
 
 | Variable | Meaning |
 |---|---|
-| `HOPS_START_TIME`   | Default `null` → previous cron fire (last execution time). Explicit int → `cron_fire + seconds` (negative = before, positive = after). |
-| `HOPS_END_TIME`     | Default `null` → cron fire time. Explicit int → `cron_fire + seconds`. |
-| `HOPS_LOGICAL_DATE` | Scheduler dedup key for this interval (Airflow-style start of interval = previous cron fire). |
+| `HOPS_START_TIME`   | `start_time_offset_seconds = null` *(default)* → previous cron fire (last execution time). Positive integer → `previous fire − seconds` (shifts the start earlier). Must be ≥ 0. |
+| `HOPS_END_TIME`     | Always `HOPS_START_TIME + cron interval` so consecutive runs tile the timeline with no gaps. `end_time_offset_seconds` is kept on the DTO for backward compatibility but ignored. |
+| `HOPS_LOGICAL_DATE` | Stable identifier for this interval (Airflow-style start of interval = previous cron fire). Used for dedup and retries. |
 
 For a manual (non-scheduled) run, these variables are only set if you explicitly pass a time window via the UI or API (see [Backfill](#backfill-one-shot-absolute-window) below).
 
@@ -33,7 +33,7 @@ For a manual (non-scheduled) run, these variables are only set if you explicitly
 Create or edit a job and configure its schedule under **Advanced scheduling**. Typical settings for a batch feature pipeline:
 
 - `cron_expression` — how often to run (e.g. `0 0 * ? * * *` for hourly).
-- `start_time_offset_seconds` / `end_time_offset_seconds` — default `null` gives the natural cron interval (previous fire → current fire). Set explicit seconds (negative = before fire, positive = after fire) if you need a different window.
+- `start_time_offset_seconds` — default `null` gives the natural cron interval (`[previous fire, current fire)`). Set a positive integer to anchor the window earlier than the previous fire (e.g. `3600` makes each run see the window starting an hour before its predecessor); the window remains exactly one cron interval wide because `HOPS_END_TIME = HOPS_START_TIME + cron interval`.
 - `catchup` — on by default *off*. Enable it if missed runs during an outage should be replayed one-per-missed-interval.
 - `max_active_runs` — raise above 1 if runs can safely execute in parallel.
 
@@ -108,6 +108,15 @@ while cursor < end:
     job.run(start_time=cursor, end_time=nxt, await_termination=True)
     cursor = nxt
 ```
+
+### Batched backfill at job creation
+
+When creating a new job in the UI, the **Backfill** card lets you split one window into **N equal sub-windows** and fire one execution per sub-window. Tick *Run job on creation* to have the sub-windows fired as soon as the job is saved:
+
+- **Number of Batch Jobs** — how many sub-windows. `[start, end)` is tiled with no gaps or overlaps; the last sub-window absorbs any integer-division remainder so the union is exactly the original window. `1` means one execution covering the whole window (the default).
+- **Max parallel executions** — must be `≥ Number of Batch Jobs` today. Runtime concurrency enforcement (pause the next batch until a running one completes) is on the roadmap; until then the backend rejects smaller values with a `400` rather than silently over-firing. Setting it equal to the batch count fires everything in parallel.
+
+Each sub-window run receives `HOPS_START_TIME` / `HOPS_END_TIME` for its slice, so the same pipeline code used by the incremental schedule works unchanged.
 
 ## Precedence summary
 
