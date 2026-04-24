@@ -247,8 +247,8 @@ The following table describes the job configuration parameters for a RAY job.
 
 ## Accessing project data
 
-The project datasets are mounted under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your script.
-Shared datasets are accessible at `/hopsfs/shared-datasets/<source-project>/<dataset-name>` if HopsFS is mounted.
+If HopsFS is mounted, project datasets are available under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your script.
+If HopsFS is mounted, shared datasets are accessible at `/hopsfs/shared-datasets/<source-project>/<dataset-name>`.
 
 ## API Reference
 
