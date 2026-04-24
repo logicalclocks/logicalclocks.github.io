@@ -29,9 +29,27 @@ Click the **Import from HuggingFace** button in the toolbar at the top of the mo
 !!! tip "Gated models"
     If the model requires an access token and you don't supply one, the import fails fast and the modal prompts you to paste a token and retry — no download time is wasted.
 
+Click **Next** to inspect the repo on HuggingFace.
+
+### Step 4: Choose which weight formats to import
+
+Many HuggingFace repos ship the same weights in several interchangeable formats (Safetensors, PyTorch, TensorFlow, Flax, GGUF, ONNX, OpenVINO, Core ML, TensorFlow Lite).
+Downloading all of them wastes HopsFS storage and bandwidth — typically you only need one.
+
+The modal shows a checkbox for each weight format detected in the repo, with the following default precedence pre-selected:
+
+1. Safetensors
+2. PyTorch (`pytorch_model*.bin`)
+3. TensorFlow (`tf_model.h5`, `saved_model.pb`)
+4. Flax (`flax_model*.msgpack`)
+5. Otherwise the first format found (GGUF, ONNX, OpenVINO, Core ML, TensorFlow Lite)
+
+You can tick additional formats if you need more than one.
+Config, tokenizer, README and other small auxiliary files are always imported regardless of your selection.
+
 Click **Import** to start the download.
 
-### Step 4: Monitor progress
+### Step 5: Monitor progress
 
 The modal switches to a progress view polling the backend every few seconds. You'll see:
 
@@ -41,7 +59,7 @@ The modal switches to a progress view polling the backend every few seconds. You
 
 You can close the modal and the download continues in the background; re-opening the modal or navigating back to the Model Registry will not interrupt it. The job state is held for one hour after it finishes so you can still view the final status.
 
-### Step 5: Cancel (optional)
+### Step 6: Cancel (optional)
 
 Click **Cancel** while the download is in progress. You'll be asked whether to **Delete partially downloaded files**:
 
@@ -50,7 +68,7 @@ Click **Cancel** while the download is in progress. You'll be asked whether to *
 
 If you close the modal (X or click outside) while the download is in progress, Hopsworks prompts you to either **Continue in background** — the modal closes and the download keeps running server-side — or **Cancel download**.
 
-### Step 6: Success
+### Step 7: Success
 
 When all files have been downloaded, the model version is automatically registered in the Model Registry with an auto-detected framework. The modal shows a success screen and the new version appears in the Model Registry list.
 
