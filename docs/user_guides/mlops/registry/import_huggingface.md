@@ -48,6 +48,8 @@ Click **Cancel** while the download is in progress. You'll be asked whether to *
 - Leave the box **unchecked** to keep the files that have already been written to HopsFS (useful if you want to inspect what was downloaded so far).
 - Tick the box to have the server remove the partial `Models/{name}/{version}/` directory.
 
+If you close the modal (X or click outside) while the download is in progress, Hopsworks prompts you to either **Continue in background** — the modal closes and the download keeps running server-side — or **Cancel download**.
+
 ### Step 6: Success
 
 When all files have been downloaded, the model version is automatically registered in the Model Registry with an auto-detected framework. The modal shows a success screen and the new version appears in the Model Registry list.
@@ -65,10 +67,43 @@ Hopsworks picks the framework in this order:
     - `pytorch_model.bin`, `.safetensors`, `.pt`, `.pth` → `TORCH`
 5. **Fallback** → `PYTHON`.
 
-If the detected framework isn't right, you can change it later from the model's detail page.
+If the detected framework isn't right, you can change it later from the model's detail page — see [Editing the framework](#editing-the-framework) below.
 
 !!! info "vLLM config for LLMs"
     When the framework is detected as `LLM`, Hopsworks writes a default `vllmconfig.yaml` alongside the model files (`dtype: "half"`, `gpu_memory_utilization: 0.96`). `max_model_len` is intentionally left out so vLLM uses the context window declared in the model's own `config.json`. Edit this file if you need a smaller context to fit your GPU.
+
+## Editing the framework
+
+The framework is shown as a dropdown on the **Summary** panel of the model version page.
+Select a different value (`TENSORFLOW`, `TORCH`, `SKLEARN`, `LLM`, `PYTHON`, or *No framework*) and the change is persisted immediately.
+The dropdown is read-only for users with the `Observer` role.
+
+The framework is more than a label — the **Deploy this version** button on the same page uses it to pre-fill the deployment form:
+
+| Framework    | Model server        | Config file      | Environment match |
+| ------------ | ------------------- | ---------------- | ----------------- |
+| `LLM`        | vLLM                | `vllmconfig.yaml`| `vllm`            |
+| `TENSORFLOW` | TensorFlow Serving  | `predictor.py`   | `tensorflow`      |
+| `SKLEARN`    | Python              | `predictor.py`   | `sklearn`         |
+| Other        | Python              | `predictor.py`   | `python`          |
+
+If the corresponding config file (`vllmconfig.yaml` or `predictor.py`) already exists under the model's `Files/` directory, it is auto-selected in the deployment form.
+
+## Managing vLLM configs
+
+For models with the `LLM` framework, the model version page shows a **VLLM Configs** button that opens a dialog listing every `*-vllmconfig.yaml` file under the model's `Files/` directory — one per GPU type.
+A file named plain `vllmconfig.yaml` (no prefix) is labelled *Default*; others are keyed by the GPU they target, for example `NVIDIA-RTX-6000-vllmconfig.yaml`.
+
+Each entry can be inspected in-place and switched to edit mode.
+Saving an edit replaces the file in HopsFS and invalidates the cached content.
+
+### Generate a vLLM config with Brewer AI
+
+If the Brewer AI feature is enabled on the cluster, the model version page also shows a **Generate VLLM Config** button.
+Pick a GPU type from the dropdown (populated from the cluster's available GPUs) and Brewer returns a minimal YAML — `dtype`, `max_model_len`, `gpu_memory_utilization` — tuned for that GPU.
+The result is saved as `<gpu-type>-vllmconfig.yaml` next to the model files, and any legacy variants of the same name (with spaces or underscores) are cleaned up.
+
+The generator chat session is deleted as soon as the YAML has been uploaded, even if the generation fails.
 
 ## Model naming
 
