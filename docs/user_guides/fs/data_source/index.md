@@ -60,11 +60,13 @@ For GCP the following storage systems are supported:
 1. [BigQuery](creation/bigquery.md): Query BigQuery databases and tables using SQL.
 2. [GCS](creation/gcs.md): Read data from a variety of file based storage in Google Cloud Storage such as parquet or CSV.
 
-## Databricks
+## Databricks (AWS only)
 
-For Databricks the following storage systems are supported:
+For Databricks **on AWS** the following storage systems are supported:
 
 1. [Unity Catalog](creation/unity_catalog.md): Browse Unity Catalog catalogs, schemas, and Delta tables, and mount them as external feature groups.
+
+Databricks on Azure and Databricks on GCP are not supported yet — see the [Unity Catalog guide](creation/unity_catalog.md) for the specific reasons and the status of follow-up work.
 
 ## Next Steps
 

@@ -8,13 +8,14 @@ Unity Catalog is Databricks' unified governance layer for data and AI assets, or
 In this guide, you will configure a Data Source in Hopsworks that points at a Databricks workspace.
 Once configured, you can browse catalogs, schemas, and tables, and mount Delta tables as external Feature Groups whose data is read through the Arrow Flight query service.
 
-!!! note
-    Only Delta-formatted Unity Catalog tables are supported in this release.
-    Managed non-Delta tables are filtered out when browsing.
+!!! warning "Databricks on AWS only"
+    Unity Catalog is currently only supported on **Databricks on AWS**.
+    Databricks on Azure and Databricks on GCP are not supported in this release — their Unity Catalog temporary-table-credentials responses use cloud-specific credential shapes (Azure SAS tokens, GCP service-account tokens) that the Hopsworks Arrow Flight read path does not yet handle.
+    If you point this connector at a non-AWS Databricks workspace the browse flow may succeed but every preview and feature-group read will fail.
 
 !!! note
-    Only AWS-backed Unity Catalog metastores are supported in this release.
-    Azure ADLS and GCP GCS backed workspaces will surface a clear error and need follow-up work on the read path.
+    Only Delta-formatted Unity Catalog tables are supported in this release.
+    Managed non-Delta tables, Iceberg tables, views, streaming tables, and materialised views are filtered out when browsing.
 
 !!! note
     Currently, it is only possible to create data sources in the Hopsworks UI.
