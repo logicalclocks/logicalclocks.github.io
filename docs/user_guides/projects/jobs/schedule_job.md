@@ -9,7 +9,7 @@ description: Documentation on how to schedule a job on Hopsworks.
 Hopsworks clusters can run jobs on a schedule, allowing you to automate the execution.
 Whether you need to backfill your feature groups on a nightly basis or run a model training pipeline every week, the Hopsworks scheduler will help you automate these tasks.
 Each job can be configured to have a single schedule.
-For more advanced use cases, Hopsworks integrates with any DAG manager and directly with the open-source [Apache Airflow](https://airflow.apache.org/use-cases/); see our [Airflow Guide](../airflow/airflow.md).
+For more advanced use cases, Hopsworks integrates with any DAG manager and directly with the open-source [Apache Airflow](https://airflow.apache.org/use-cases/); see our [Airflow Guide][orchestrate-jobs-using-apache-airflow].
 
 Schedules can be defined using the drop-down menus in the UI or a Quartz [cron](https://en.wikipedia.org/wiki/Cron) expression.
 
@@ -27,8 +27,8 @@ Schedules can be defined using the drop-down menus in the UI or a Quartz [cron](
 When the scheduler fires a job, it attaches a **data window** to the execution, expressed through three environment variables:
 
 - `HOPS_START_TIME` — start of the data window. Two modes:
-    - **Last execution time** *(default — `start_time_offset_seconds = null`)* — the previous cron fire. Adapts to the schedule's cadence, so the window is always "everything since the previous run".
-    - **Before last execution (hh:mm)** — `previous_fire − (hh*3600 + mm*60)` seconds. Stored as a positive integer; the backend subtracts.
+  - **Last execution time** *(default — `start_time_offset_seconds = null`)* — the previous cron fire. Adapts to the schedule's cadence, so the window is always "everything since the previous run".
+  - **Before last execution (hh:mm)** — `previous_fire − (hh*3600 + mm*60)` seconds. Stored as a positive integer; the backend subtracts.
 - `HOPS_END_TIME` — end of the data window. **Always `HOPS_START_TIME + cron interval`** so consecutive scheduled runs tile the timeline with no gaps between them. `end_time_offset_seconds` is kept on the DTO for backward compatibility but is ignored.
 - `HOPS_LOGICAL_DATE` — the scheduler's stable identifier for this interval (Airflow-style *start of interval* = previous cron fire). Used for dedup and retries.
 
@@ -42,21 +42,24 @@ These three values are injected into the job container as **environment variable
     from datetime import datetime
 
     start = datetime.fromisoformat(os.environ["HOPS_START_TIME"])
-    end   = datetime.fromisoformat(os.environ["HOPS_END_TIME"])
+    end = datetime.fromisoformat(os.environ["HOPS_END_TIME"])
     print(f"Processing rows in [{start}, {end})")
     ```
 
 === "PySpark"
     ```python
     import os
+
+    from pyspark.sql import SparkSession
     from pyspark.sql import functions as F
 
+    spark = SparkSession.builder.getOrCreate()
+
     start = os.environ["HOPS_START_TIME"]
-    end   = os.environ["HOPS_END_TIME"]
+    end = os.environ["HOPS_END_TIME"]
 
     df = spark.read.table("events").where(
-        (F.col("event_ts") >= F.lit(start)) &
-        (F.col("event_ts") <  F.lit(end))
+        (F.col("event_ts") >= F.lit(start)) & (F.col("event_ts") < F.lit(end))
     )
     ```
 
@@ -105,7 +108,7 @@ All times are in UTC.
 The Schedule form exposes these fields for controlling the data window, concurrency and catch-up behaviour:
 
 | Field | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | `max_active_runs` | `1` | Upper bound on concurrent executions for this job. |
 | `start_time_offset_seconds` | `null` *(last execution time)* | `null` → `HOPS_START_TIME = previous cron fire`. Positive integer → `HOPS_START_TIME = previous fire − seconds` (shifts the window earlier). Must be ≥ 0. |
 | `end_time_offset_seconds` | *legacy; ignored* | Kept on the DTO for backward compatibility. The backend always sets `HOPS_END_TIME = HOPS_START_TIME + cron interval` — consecutive runs tile the timeline with no gaps. |
@@ -113,22 +116,22 @@ The Schedule form exposes these fields for controlling the data window, concurre
 | `skip_to_date` | *unset* | When `catchup=true`, missed intervals strictly before this date are skipped during reconciliation. |
 | `max_catchup_runs` | *unset* | When `catchup=true`, caps how many missed intervals are replayed, keeping the most recent. |
 
-**Example — "process the previous 25 hours, not the previous hour"**
+#### Example — "process the previous 25 hours, not the previous hour"
 
 Defaults give you the natural cron interval (`[previous fire, current fire)`). To process a 25-hour trailing window every hour (e.g. to include a little overlap for late-arriving data), shift `start` 24 hours earlier — the end stays at the current fire because it's `start + cron interval = start + 1 h`:
 
-```
+```text
 start_time_offset_seconds = 25 * 3600   # HOPS_START_TIME = previous fire − 25 h
 # end_time_offset_seconds is ignored; HOPS_END_TIME = HOPS_START_TIME + 1 h
 ```
 
 At 11:00 UTC on an hourly schedule the container sees `HOPS_START_TIME = 09:00 (previous day)` and `HOPS_END_TIME = 10:00 (previous day)`.
 
-**Example — `catchup=false` after a 6-hour outage**
+#### Example — `catchup=false` after a 6-hour outage
 
 With an hourly schedule and `catchup=false`, if the scheduler is unreachable from 00:00 to 06:00, on recovery the scheduler creates one execution — the 06:00 interval — not six. This matches Airflow's `catchup_by_default=False` semantics.
 
-**Example — bounded replay**
+#### Example — bounded replay
 
 With `catchup=true`, `max_catchup_runs=24` and a 1-week outage on an hourly schedule, only the most recent 24 missed intervals are replayed; older ones are dropped.
 
@@ -146,8 +149,10 @@ If you re-schedule a job after having deleted the previous schedule, even with t
 ## Python API
 
 ```python
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 import hopsworks
+
 
 project = hopsworks.login()
 job = project.get_job_api().get_job("my_feature_pipeline")
@@ -157,7 +162,7 @@ job = project.get_job_api().get_job("my_feature_pipeline")
 # daily gives the last day, etc.
 job.schedule(
     cron_expression="0 0 * ? * * *",
-    start_time=datetime(2026, 1, 1, tzinfo=timezone.utc),
+    start_time=datetime(2026, 1, 1, tzinfo=UTC),
 )
 
 # Shift the window 1 hour earlier so each hourly run sees the previous-to-previous
@@ -165,7 +170,7 @@ job.schedule(
 # window remains 1 hour wide — only the anchor moves.
 job.schedule(
     cron_expression="0 0 * ? * * *",
-    start_time_offset_seconds=3600,   # previous fire − 1 h
+    start_time_offset_seconds=3600,  # previous fire − 1 h
     catchup=True,
     max_active_runs=2,
     max_catchup_runs=24,
@@ -180,7 +185,7 @@ print(schedule.next_execution_date_time)
 job.unschedule()
 ```
 
-See also [Batch feature pipelines](./batch_feature_pipeline.md) for one-shot backfill runs and the `Job.run(start_time=..., end_time=...)` API.
+See also [Batch feature pipelines][batch-feature-pipelines] for one-shot backfill runs and the `Job.run(start_time=..., end_time=...)` API.
 
 ## Differences from Apache Airflow
 
@@ -217,4 +222,3 @@ This matches what most users expect ("turn on catchup ⇒ see the backfill"), bu
 ### Leader election via Payara, not advisory locks
 
 Airflow coordinates multiple schedulers with PostgreSQL advisory locks (`pg_try_advisory_xact_lock`). Hopsworks uses Payara's cluster primary election: the scheduler timer only fires on the primary node. Reconciliation happens on the first primary-owned tick after startup. Correctness is backed at the application layer — `executeWithCron` seeds `startingActive = countActiveByJob(...)` once per tick and tracks an additive `firedThisTick` counter, which is monotonic and independent of RonDB COUNT read-after-write lag. This replaces an earlier `(job_id, logical_date)` unique index that was too strict — it blocked legitimate retry / manual-rerun / re-backfill flows that share a logical_date.
-

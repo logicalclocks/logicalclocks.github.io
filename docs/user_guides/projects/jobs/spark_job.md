@@ -201,6 +201,7 @@ spark_config["appPath"] = uploaded_file_path
 spark_config["mainClass"] = "org.apache.spark.examples.SparkPi"
 
 job = jobs_api.create_job("pyspark_job", spark_config)
+
 ```
 
 ### Step 3: Execute the job
@@ -217,6 +218,7 @@ print(f_out.read())
 
 f_err = open(err, "r")
 print(f_err.read())
+
 ```
 
 ## Configuration
@@ -280,17 +282,20 @@ of the job.
 
 ```python
 import os
+
 from pyspark.sql import SparkSession
+
 
 spark = SparkSession.builder.getOrCreate()
 bucket = os.environ["MY_S3_BUCKET"]
 df = spark.read.parquet(f"s3a://{bucket}/events/")
+df.printSchema()
 ```
 
 Scheduled and backfill runs also receive `HOPS_LOGICAL_DATE`, `HOPS_START_TIME`
 and `HOPS_END_TIME` describing the data interval the run should process — see
-[Scheduling](./schedule_job.md#logical-time-and-data-intervals) and
-[Batch feature pipelines](./batch_feature_pipeline.md).
+[Scheduling][logical-time-and-data-intervals] and
+[Batch feature pipelines][batch-feature-pipelines].
 
 !!! warning "Reserved names"
     Names starting with `HOPS_` are reserved by the scheduler. Setting them in

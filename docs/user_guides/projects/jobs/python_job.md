@@ -159,6 +159,7 @@ py_job_config["appPath"] = uploaded_file_path
 py_job_config["environmentName"] = "python-feature-pipeline"
 
 job = jobs_api.create_job("py_job", py_job_config)
+
 ```
 
 ### Step 3: Execute the job
@@ -177,6 +178,7 @@ print(f_out.read())
 
 f_err = open(err, "r")
 print(f_err.read())
+
 ```
 
 ## Configuration
@@ -223,14 +225,16 @@ User-defined environment variables can be attached to a Python job under the
 # inside your Python job script
 import os
 
+
 api_key = os.environ["MY_API_KEY"]
-region  = os.environ.get("AWS_REGION", "us-east-1")
+region = os.environ.get("AWS_REGION", "us-east-1")
+print(f"Using {api_key[:4]}*** in {region}")
 ```
 
 Scheduled and backfill runs also receive `HOPS_LOGICAL_DATE`, `HOPS_START_TIME`
 and `HOPS_END_TIME` describing the data interval they should process — see
-[Scheduling](./schedule_job.md#logical-time-and-data-intervals) and
-[Batch feature pipelines](./batch_feature_pipeline.md).
+[Scheduling][logical-time-and-data-intervals] and
+[Batch feature pipelines][batch-feature-pipelines].
 
 !!! warning "Reserved names"
     Names starting with `HOPS_` are reserved by the scheduler. Setting them in

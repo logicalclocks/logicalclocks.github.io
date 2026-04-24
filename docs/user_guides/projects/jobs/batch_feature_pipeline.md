@@ -18,9 +18,9 @@ Both modes emit the same `HOPS_*` environment variables, so the same pipeline co
 On every scheduled or backfill execution, Hopsworks injects:
 
 | Variable | Meaning |
-|---|---|
-| `HOPS_START_TIME`   | `start_time_offset_seconds = null` *(default)* → previous cron fire (last execution time). Positive integer → `previous fire − seconds` (shifts the start earlier). Must be ≥ 0. |
-| `HOPS_END_TIME`     | Always `HOPS_START_TIME + cron interval` so consecutive runs tile the timeline with no gaps. `end_time_offset_seconds` is kept on the DTO for backward compatibility but ignored. |
+| --- | --- |
+| `HOPS_START_TIME` | `start_time_offset_seconds = null` *(default)* → previous cron fire (last execution time). Positive integer → `previous fire − seconds` (shifts the start earlier). Must be ≥ 0. |
+| `HOPS_END_TIME` | Always `HOPS_START_TIME + cron interval` so consecutive runs tile the timeline with no gaps. `end_time_offset_seconds` is kept on the DTO for backward compatibility but ignored. |
 | `HOPS_LOGICAL_DATE` | Stable identifier for this interval (Airflow-style start of interval = previous cron fire). Used for dedup and retries. |
 
 For a manual (non-scheduled) run, these variables are only set if you explicitly pass a time window via the UI or API (see [Backfill](#backfill-one-shot-absolute-window) below).
@@ -37,24 +37,30 @@ Create or edit a job and configure its schedule under **Advanced scheduling**. T
 - `catchup` — on by default *off*. Enable it if missed runs during an outage should be replayed one-per-missed-interval.
 - `max_active_runs` — raise above 1 if runs can safely execute in parallel.
 
-See [How to schedule a job](./schedule_job.md#scheduling-fields) for the full field reference.
+See [How to schedule a job][scheduling-fields] for the full field reference.
 
 ### Reading the interval in your code
 
 ```python
 import os
 from datetime import datetime
+
 import hopsworks
+
 
 project = hopsworks.login()
 fs = project.get_feature_store()
 fg = fs.get_feature_group("page_views", version=1)
+source = fs.get_storage_connector("my_source")
 
 start = datetime.fromisoformat(os.environ["HOPS_START_TIME"])
-end   = datetime.fromisoformat(os.environ["HOPS_END_TIME"])
+end = datetime.fromisoformat(os.environ["HOPS_END_TIME"])
 
-df = source.query(
-    f"SELECT * FROM events WHERE ts >= '{start.isoformat()}' AND ts < '{end.isoformat()}'"
+df = source.read(
+    query=(
+        "SELECT * FROM events "
+        f"WHERE ts >= '{start.isoformat()}' AND ts < '{end.isoformat()}'"
+    ),
 )
 fg.insert(df)
 ```
@@ -72,35 +78,42 @@ On the job's **Run** dialog, tick **Run with time window (one-shot backfill)** a
 ### From the Python SDK
 
 ```python
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 import hopsworks
+
 
 project = hopsworks.login()
 job = project.get_job_api().get_job("my_feature_pipeline")
 
 # Backfill March 2026
 job.run(
-    start_time=datetime(2026, 3, 1, tzinfo=timezone.utc),
-    end_time=datetime(2026, 4, 1, tzinfo=timezone.utc),
+    start_time=datetime(2026, 3, 1, tzinfo=UTC),
+    end_time=datetime(2026, 4, 1, tzinfo=UTC),
 )
 ```
 
 `Job.run()` accepts the following optional logical-time kwargs:
 
 | kwarg | Maps to |
-|---|---|
+| --- | --- |
 | `start_time` | `HOPS_START_TIME` + `logical_date` (data interval start) |
-| `end_time`   | `HOPS_END_TIME` + `data_interval_end` |
+| `end_time` | `HOPS_END_TIME` + `data_interval_end` |
 | `logical_date` | Override `HOPS_LOGICAL_DATE` independently (rare). |
 | `env_vars` | Arbitrary per-run env vars; highest precedence. |
 
 ### Chained monthly backfill
 
 ```python
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta
 
-start = datetime(2024, 1, 1, tzinfo=timezone.utc)
-end = datetime(2026, 1, 1, tzinfo=timezone.utc)
+import hopsworks
+
+project = hopsworks.login()
+job = project.get_job_api().get_job("my_feature_pipeline")
+
+start = datetime(2024, 1, 1, tzinfo=UTC)
+end = datetime(2026, 1, 1, tzinfo=UTC)
 
 cursor = start
 while cursor < end:
@@ -131,5 +144,5 @@ So setting `HOPS_END_TIME` in the Environment variables panel pins it for every 
 
 ## See also
 
-- [Schedule a job](./schedule_job.md) — full reference for cron + advanced scheduling fields.
-- [Python job](./python_job.md) / [Spark job](./spark_job.md) — adding generic env vars to a job configuration.
+- [Schedule a job][how-to-schedule-a-job] — full reference for cron + advanced scheduling fields.
+- [Python job][how-to-run-a-python-job] / [Spark job][how-to-run-a-spark-job] — adding generic env vars to a job configuration.
