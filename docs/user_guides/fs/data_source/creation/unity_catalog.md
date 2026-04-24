@@ -13,23 +13,41 @@ Once configured, you can browse catalogs, schemas, and tables, and mount Delta t
     Managed non-Delta tables are filtered out when browsing.
 
 !!! note
+    Only AWS-backed Unity Catalog metastores are supported in this release.
+    Azure ADLS and GCP GCS backed workspaces will surface a clear error and need follow-up work on the read path.
+
+!!! note
     Currently, it is only possible to create data sources in the Hopsworks UI.
     You cannot create a data source programmatically.
 
 !!! warning
     Direct Spark reads from Unity Catalog are not supported in this release.
-    Reads flow through the Arrow Flight query service, which uses DuckDB's `unity_catalog` and `delta` extensions.
+    Reads flow through the Arrow Flight query service, which resolves each Delta table via the Unity Catalog REST API and reads it using the `deltalake` Python package (delta-rs) against the S3 location that Databricks returns.
 
 ## Prerequisites
 
-Before you begin, you need:
+Before you begin you need all of the following — the first three are on the Databricks side and are the most common source of 400 / 403 errors from the read path.
+
+### Databricks side
+
+- **External Data Access enabled on the metastore.** In the Databricks account console, go to Catalog → the metastore backing your workspace → Details, and turn on "External data access". Without this toggle, every call to `/api/2.1/unity-catalog/temporary-table-credentials` returns `403 Forbidden` for any principal. This is an account-admin setting — workspace admin alone cannot flip it.
+- **`EXTERNAL USE SCHEMA` grant on the schemas you want to read.** In Databricks SQL:
+  ```sql
+  GRANT EXTERNAL USE SCHEMA ON SCHEMA <catalog>.<schema> TO `<principal>`;
+  ```
+  where `<principal>` is the user (or service principal) that owns the PAT you are about to paste into Hopsworks. Without this grant the temporary-table-credentials endpoint returns `400 Bad Request`.
+- **`USE CATALOG`, `USE SCHEMA`, and `SELECT` grants** on the specific catalog / schema / tables you want to mount.
+- **Delta format.** Unity Catalog tables backed by Iceberg, non-Delta file formats, views, or streaming / materialised views cannot be read through this connector in v1.
+
+### Hopsworks side
 
 - **Databricks workspace URL**, for example `https://<workspace>.cloud.databricks.com`.
-- **Personal access token** with at least `USE CATALOG`, `USE SCHEMA`, and `SELECT` privileges on the catalogs, schemas, and Delta tables you want to expose.
-- **A catalog name** containing Delta tables you want to mount, optionally set as the default catalog on the connector.
+- **Personal access token** for the principal to which the grants above were issued.
+- **A catalog name** containing the Delta tables you want to mount. It is optional but recommended to set this as the default catalog on the connector so the UI opens the browse view directly.
+- Optional: an **AWS region** (for example `us-west-2`). If you omit it, the backend guesses the region by parsing the STS session-token returned with the table credentials. For FIPS regions or for any workspace where the guess has been wrong once, set the region explicitly on the connector.
 
-The personal access token is stored encrypted in the Hopsworks secrets table — it is never written to the connector table in plaintext.
-Rotation is a manual operation in this release: when the token expires, edit the connector and paste in a fresh one.
+The personal access token is stored encrypted in the Hopsworks `secrets` table — it is never written to the connector table in plaintext.
+PAT rotation is manual in this release: when the token expires, edit the connector and paste in a fresh one. Unity Catalog PATs are typically short-lived (hours to a few days), so expect to do this periodically.
 
 ## Feature flag
 
@@ -56,8 +74,9 @@ Start by giving it a unique **name** and an optional **description**.
 2. **Databricks Workspace URL** — the full `https://` URL of your workspace.
 3. **Access Token** — a Databricks personal access token; the field is masked and stored encrypted.
 4. **Default Catalog** — optional; the Unity Catalog catalog to pre-select when browsing.
-5. **Arguments** — optional key/value pairs passed through to the query service.
-6. Click "Save Credentials".
+5. **AWS Region** — optional; set explicitly (for example `us-west-2`) when the backend's region guess from the STS session-token is wrong or your workspace is in a FIPS region. Leave empty to use the guess.
+6. **Arguments** — optional key/value pairs passed through to the query service.
+7. Click "Save Credentials".
 
 On save, Hopsworks calls the Unity Catalog `/catalogs` endpoint using the provided token; an HTTP 2xx response is required for the connector to be accepted.
 
