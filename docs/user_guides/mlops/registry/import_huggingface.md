@@ -97,10 +97,10 @@ A file named plain `vllmconfig.yaml` (no prefix) is labelled *Default*; others a
 Each entry can be inspected in-place and switched to edit mode.
 Saving an edit replaces the file in HopsFS and invalidates the cached content.
 
-### Generate a vLLM config with Brewer AI
+### Generate a vLLM config with Platform Intelligence
 
-If the Brewer AI feature is enabled on the cluster, the model version page also shows a **Generate VLLM Config** button.
-Pick a GPU type from the dropdown (populated from the cluster's available GPUs) and Brewer returns a minimal YAML — `dtype`, `max_model_len`, `gpu_memory_utilization` — tuned for that GPU.
+If the Platform Intelligence feature is enabled on the cluster, the model version page also shows a **Generate VLLM Config** button.
+Pick a GPU type from the dropdown (populated from the cluster's available GPUs) and Platform Intelligence returns a minimal YAML — `dtype`, `max_model_len`, `gpu_memory_utilization` — tuned for that GPU.
 The result is saved as `<gpu-type>-vllmconfig.yaml` next to the model files, and any legacy variants of the same name (with spaces or underscores) are cleaned up.
 
 The generator chat session is deleted as soon as the YAML has been uploaded, even if the generation fails.
