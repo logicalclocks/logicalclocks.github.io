@@ -92,6 +92,9 @@ It is possible to also set following configuration settings for a `PYTHON` job.
 - `Additional files`: List of files that will be locally accessible in the working directory of the application.
   Only recommended to use if project datasets are not mounted under `/hopsfs`.
   You can always modify the arguments in the job settings.
+- `Environment variables`: Custom `KEY=VALUE` pairs that are set on the container for every
+  execution of this job. Read them in your Python code with `os.environ["MY_KEY"]`. See
+  [Environment variables](#environment-variables) below.
 
 <p align="center">
   <figure>
@@ -209,6 +212,32 @@ The project datasets are mounted under `/hopsfs`, so you can access `data.csv` f
 The script's working directory is the folder it is located in.
 For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`.
 Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
+
+## Environment variables
+
+User-defined environment variables can be attached to a Python job under the
+*Environment variables* panel of the advanced configuration. Each entry is a
+`KEY=VALUE` pair that is set on the container for every execution of the job.
+
+```python
+# inside your Python job script
+import os
+
+
+api_key = os.environ["MY_API_KEY"]
+region = os.environ.get("AWS_REGION", "us-east-1")
+print(f"Using {api_key[:4]}*** in {region}")
+```
+
+Scheduled and backfill runs also receive `HOPS_LOGICAL_DATE`, `HOPS_START_TIME`
+and `HOPS_END_TIME` describing the data interval they should process — see
+[Scheduling][logical-time-and-data-intervals] and
+[Batch feature pipelines][batch-feature-pipelines].
+
+!!! warning "Reserved names"
+    Names starting with `HOPS_` are reserved by the scheduler. Setting them in
+    the *Environment variables* panel overrides the scheduler value for every
+    execution — the UI shows a warning callout when you do this.
 
 ## API Reference
 
