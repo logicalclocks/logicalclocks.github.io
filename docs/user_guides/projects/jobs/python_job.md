@@ -159,7 +159,6 @@ py_job_config["appPath"] = uploaded_file_path
 py_job_config["environmentName"] = "python-feature-pipeline"
 
 job = jobs_api.create_job("py_job", py_job_config)
-
 ```
 
 ### Step 3: Execute the job
@@ -178,7 +177,6 @@ print(f_out.read())
 
 f_err = open(err, "r")
 print(f_err.read())
-
 ```
 
 ## Configuration

@@ -109,6 +109,7 @@ from datetime import UTC, datetime, timedelta
 
 import hopsworks
 
+
 project = hopsworks.login()
 job = project.get_job_api().get_job("my_feature_pipeline")
 

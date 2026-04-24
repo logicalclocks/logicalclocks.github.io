@@ -41,6 +41,7 @@ These three values are injected into the job container as **environment variable
     import os
     from datetime import datetime
 
+
     start = datetime.fromisoformat(os.environ["HOPS_START_TIME"])
     end = datetime.fromisoformat(os.environ["HOPS_END_TIME"])
     print(f"Processing rows in [{start}, {end})")
@@ -52,6 +53,7 @@ These three values are injected into the job container as **environment variable
 
     from pyspark.sql import SparkSession
     from pyspark.sql import functions as F
+
 
     spark = SparkSession.builder.getOrCreate()
 

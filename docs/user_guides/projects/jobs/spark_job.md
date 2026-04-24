@@ -201,7 +201,6 @@ spark_config["appPath"] = uploaded_file_path
 spark_config["mainClass"] = "org.apache.spark.examples.SparkPi"
 
 job = jobs_api.create_job("pyspark_job", spark_config)
-
 ```
 
 ### Step 3: Execute the job
@@ -218,7 +217,6 @@ print(f_out.read())
 
 f_err = open(err, "r")
 print(f_err.read())
-
 ```
 
 ## Configuration
