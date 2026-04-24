@@ -121,14 +121,14 @@ If the model name already exists in the project, the import creates the next int
 
 If the import fails, the modal shows one of these reasons:
 
-| Error                        | Meaning                                                               |
-| ---------------------------- | --------------------------------------------------------------------- |
-| `auth_required`              | The repo is gated or private and the supplied token was missing or rejected. |
-| `model_not_found`            | The HuggingFace repo does not exist (or you mistyped the ID).         |
-| `no_disk_space`              | The project ran out of HopsFS storage quota while downloading.        |
-| `download_failed: <file>`    | A specific file failed to download (e.g. transient network issue).    |
-| `invalid_filename: <name>`   | The repo contained a filename with disallowed characters (e.g. `..`).|
-| `registration_failed: ...`   | The files downloaded but the final registration step failed.          |
+| Error                       | Meaning                                                                      |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `auth_required`             | The repo is gated or private and the supplied token was missing or rejected. |
+| `model_not_found`           | The HuggingFace repo does not exist (or you mistyped the ID).                |
+| `no_disk_space`             | The project ran out of HopsFS storage quota while downloading.               |
+| `download_failed: <file>`   | A specific file failed to download (e.g. transient network issue).           |
+| `invalid_filename: <name>`  | The repo contained a filename with disallowed characters (e.g. `..`).        |
+| `registration_failed: ...`  | The files downloaded but the final registration step failed.                 |
 
 For all terminal failures Hopsworks removes the partial model directory from HopsFS on a best-effort basis.
 
