@@ -47,6 +47,17 @@ The modal shows a checkbox for each weight format detected in the repo, with the
 You can tick additional formats if you need more than one.
 Config, tokenizer, README and other small auxiliary files are always imported regardless of your selection.
 
+#### Quantization variants
+
+Some repos — most commonly GGUF builds from `unsloth` — ship the same weights in several quantizations.
+The variants can be packaged either as files (`Qwen-Q4_K_M.gguf`, `Kimi.IQ4_XS.gguf`) or as subdirectories named after the quant (`UD-Q2_K_XL/`, `UD-Q4_K_XL/`).
+
+When variants are detected the modal adds a second checkbox group ("Quantization variant").
+Tick the variants you want — files belonging to unticked variants are skipped.
+Files that don't carry a variant tag (e.g., the root README or a base GGUF in the repo root) are not affected by the variant filter.
+
+The recogniser knows the common llama.cpp / unsloth tags: `BF16`, `F16`, `F32`, `FP16`, `FP32`, `Q2_K*`, `Q3_K*`, `Q4_0`, `Q4_K*`, `Q5_K*`, `Q6_K*`, `Q8_0`, `Q8_K*`, `IQ1_S`, `IQ1_M`, `IQ2_*`, `IQ3_*`, `IQ4_*`, `IQ5_K*`, `IQ6_K`, the `Q4_0_*_*` packed variants, and the `UD-Q*` unsloth dynamic series.
+
 Click **Import** to start the download.
 
 ### Step 5: Monitor progress
