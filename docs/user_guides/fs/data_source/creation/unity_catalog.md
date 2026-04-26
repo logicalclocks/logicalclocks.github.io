@@ -36,9 +36,11 @@ Before you begin you need all of the following — the first three are on the Da
   Without this toggle, every call to `/api/2.1/unity-catalog/temporary-table-credentials` returns `403 Forbidden` for any principal.
   This is an account-admin setting — workspace admin alone cannot flip it.
 - **`EXTERNAL USE SCHEMA` grant on the schemas you want to read.** In Databricks SQL:
+
   ```sql
   GRANT EXTERNAL USE SCHEMA ON SCHEMA <catalog>.<schema> TO `<principal>`;
   ```
+
   where `<principal>` is the user (or service principal) that owns the PAT you are about to paste into Hopsworks. Without this grant the temporary-table-credentials endpoint returns `400 Bad Request`.
 - **`USE CATALOG`, `USE SCHEMA`, and `SELECT` grants** on the specific catalog / schema / tables you want to mount.
 - **Delta format.** Unity Catalog tables backed by Iceberg, non-Delta file formats, views, or streaming / materialised views cannot be read through this connector in v1.
