@@ -3,13 +3,13 @@ description: Documentation on how to configure a Databricks cluster to read and 
 ---
 # Databricks Integration
 
-Users can configure their Databricks clusters to write the results of feature engineering pipelines in the Hopsworks Feature Store using HSFS.
+Users can configure their Databricks clusters to write the results of feature engineering pipelines in the Hopsworks Feature Store using Hopsworks.
 Configuring a Databricks cluster can be done from the Hopsworks Feature Store UI.
 This guide explains each step.
 
 ## Prerequisites
 
-In order to be able to configure a Databricks cluster to use the Feature Store of your Hopsworks instance, it is necessary to ensure networking is setup correctly between the instances and that the Databricks cluster has access to the Hopsworks API key to perform requests with HSFS from Databricks to Hopsworks.
+In order to be able to configure a Databricks cluster to use the Feature Store of your Hopsworks instance, it is necessary to ensure networking is setup correctly between the instances and that the Databricks cluster has access to the Hopsworks API key to perform requests with Hopsworks from Databricks to Hopsworks.
 
 ### Networking
 
@@ -17,7 +17,7 @@ If you haven't done so already, follow the networking guides for either [AWS](ne
 
 ### Hopsworks API key
 
-In order for the Feature Store API to be able to communicate with the user's Hopsworks instance, the client library (HSFS) needs to have access to a previously generated API key from Hopsworks.
+In order for the Feature Store API to be able to communicate with the user's Hopsworks instance, the client library (Hopsworks) needs to have access to a previously generated API key from Hopsworks.
 For ways to setup and store the Hopsworks API key, please refer to the [API key guide for Databricks](api_key.md).
 
 ## Databricks API key
@@ -82,7 +82,7 @@ Hopsworks `Data Owners` are allowed to configure clusters for other project user
 
 During the cluster configuration the following steps will be taken:
 
-- Upload an archive to DBFS containing the necessary Jars for HSFS and HopsFS to be able to read and write from the Hopsworks Feature Store
+- Upload an archive to DBFS containing the necessary Jars for Hopsworks and HopsFS to be able to read and write from the Hopsworks Feature Store
 - Add an initScript to configure the Jars when the cluster is started
 - Install `hsfs` python library
 - Configure the necessary Spark properties to authenticate and communicate with the Feature Store

@@ -10,7 +10,7 @@ When you create training datasets from features in the Feature Store the HopsFS 
 However, if you want to output data to a different dataset, you can define a new Data Source for that dataset.
 
 In this guide, you will configure a HopsFS Data Source in Hopsworks which points at a different directory on the file system than the Training Datasets directory.
-When you're finished, you'll be able to write training data to different locations in your cluster through HSFS APIs.
+When you're finished, you'll be able to write training data to different locations in your cluster through Hopsworks APIs.
 
 !!! note
     Currently, it is only possible to create data sources in the Hopsworks UI.

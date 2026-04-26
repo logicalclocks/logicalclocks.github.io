@@ -1,5 +1,5 @@
 A feature pipeline is a program that orchestrates the execution of a dataflow graph of data validation, aggregation, dimensionality reduction, transformation, and other feature engineering steps on input data to create and/or update feature data.
-With HSFS, you can write feature pipelines in different languages as shown in the figure below.
+With Hopsworks, you can write feature pipelines in different languages as shown in the figure below.
 
 <img src="../../../../assets/images/concepts/fs/feature-pipelines.svg">
 
@@ -13,7 +13,7 @@ SparkSQL, in contrast, can be used over tables that originate in different  data
 
 In order to be able to train and serve models that you can rely on, you need clean, high quality features.
 Data validation operations include removing bad data, removing or imputing missing values, and identifying problems such as feature shift.
-HSFS supports Great Expectations to specify data validation rules that are executed in the client before features are written to the Feature Store.
+Hopsworks supports Great Expectations to specify data validation rules that are executed in the client before features are written to the Feature Store.
 The validation results are collected and shown in Hopsworks.
 
 ### Aggregations

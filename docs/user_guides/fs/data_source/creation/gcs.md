@@ -10,7 +10,7 @@ These objects are stored in containers called as `buckets`.
 These types of storages are often the source for raw data from which features can be engineered.
 
 In this guide, you will configure a Data Source in Hopsworks to connect to your GCS bucket by saving the necessary information.
-When you're finished, you'll be able to read files from the GCS bucket using Spark through HSFS APIs.
+When you're finished, you'll be able to read files from the GCS bucket using Spark through Hopsworks APIs.
 
 The Data Source uses the Google `gcs-connector-hadoop` behind the scenes.
 For more information, check out [Google Cloud Data Source for Spark and Hadoop](https://github.com/GoogleCloudDataproc/hadoop-connectors/tree/master/gcs#google-cloud-storage-connector-for-spark-and-hadoop 'google-cloud-storage-connector-for-spark-and-hadoop').

@@ -11,7 +11,7 @@ This guide explains step by step how to connect to the Feature Store from an ext
 In the *Project Settings*, select the *integration* tab and scroll to the *Configure Spark Integration* section.
 Click on *Download client Jars*.
 This will start the download of the *client.tar.gz* archive.
-The archive contains two jar files for HopsFS, the Apache Hudi jar and the Java version of the HSFS library.
+The archive contains two jar files for HopsFS, the Apache Hudi jar and the Java version of the Hopsworks library.
 You should upload these libraries to your Spark cluster and attach them as local resources to your Job.
 If you are using `spark-submit`, you should specify the `--jar` option.
 For more details see: [Spark Dependency Management](https://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management).
@@ -62,10 +62,10 @@ spark.hadoop.hive.metastore.uris                    thrift://[metastore_ip]:[met
 
 ## PySpark
 
-To use PySpark, install the HSFS Python library which can be found on [PyPi](https://pypi.org/project/hsfs/).
+To use PySpark, install the Hopsworks Python library which can be found on [PyPi](https://pypi.org/project/hsfs/).
 
 !!! attention "Matching Hopsworks version"
-    The **major version of `HSFS`** needs to match the **major version of Hopsworks**.
+    The **major version of `Hopsworks`** needs to match the **major version of Hopsworks**.
 
 ## Generating an API Key
 

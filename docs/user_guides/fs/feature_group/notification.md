@@ -9,18 +9,18 @@ description: Documentation on Change Data Capture for feature groups in Hopswork
 Changes to online-enabled feature groups can be captured by listening to events on specified topics.
 This optimizes the user experience by allowing users to proactively make predictions as soon as there is an update on the features.
 
-In this guide you will learn how to enable Change Data Capture (CDC) for online feature groups within Hopsworks, showing examples in HSFS APIs as well as the user interface.
+In this guide you will learn how to enable Change Data Capture (CDC) for online feature groups within Hopsworks, showing examples in Hopsworks APIs as well as the user interface.
 
 ## Prerequisites
 
 Before you begin this guide we suggest you read the [Feature Group](../../../concepts/fs/feature_group/fg_overview.md) concept page to understand what a feature group is and how it fits in the ML pipeline.
 Subsequently [create a Kafka topic](../../projects/kafka/create_topic.md), this topic will be used for storing Change Data Capture events.
 
-## Using HSFS APIs
+## Using Hopsworks APIs
 
 ### Create a Feature Group with Change Data Capture using Python
 
-To enable Change Data Capture for an online-enabled feature group using the HSFS APIs you need to [create a feature group](./create.md) and set the `notification_topic_name` properties value to the previously created topic.
+To enable Change Data Capture for an online-enabled feature group using the Hopsworks APIs you need to [create a feature group](./create.md) and set the `notification_topic_name` properties value to the previously created topic.
 
 === "Python"
 

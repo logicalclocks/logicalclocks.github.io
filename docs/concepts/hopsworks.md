@@ -9,7 +9,7 @@ Hopsworks is a **modular** MLOps platform with:
 
 ## Standalone Feature Store
 
-Hopsworks was the first open-source and first enterprise feature store for ML.  You can use Hopsworks as a standalone feature store with the HSFS API.
+Hopsworks was the first open-source and first enterprise feature store for ML.  You can use Hopsworks as a standalone feature store with the Hopsworks API.
 
 ## Model Management
 

@@ -24,11 +24,11 @@ In this case, the application should know that predictions for this customer sho
 When you create training data from features in different feature groups, it is possible that the feature groups are updated at different cadences.
 For example, maybe one feature group is updated hourly, while another feature group is updated daily.
 It is very complex to write code that joins features together from such feature groups and ensures there is no data leakage in the resultant training data.
-HSFS hides this complexity by performing the point-in-time JOIN transparently, similar to the illustration below:
+Hopsworks hides this complexity by performing the point-in-time JOIN transparently, similar to the illustration below:
 
 <img src="../../../../assets/images/concepts/fs/feature-view-training-data.svg">
 
-HSFS uses the event_time columns on both feature groups to determine the most recent (but not newer) feature values that are joined together with the feature values from the feature group containing the label.
+Hopsworks uses the event_time columns on both feature groups to determine the most recent (but not newer) feature values that are joined together with the feature values from the feature group containing the label.
 That is, the features in the feature group containing the label are the observation times for the features in the resulting training data, and we want feature values from the other feature groups that have the most recent timestamps, but not newer than the timestamp in the label-containing feature group.
 
 #### Spine Groups
@@ -44,8 +44,8 @@ This is just one example where spines are helpful.
 
 ### Splitting Training Data
 
-You can create random train/validation/test splits of your training data using the HSFS API.
-You can also time-based splits with the HSFS API.
+You can create random train/validation/test splits of your training data using the Hopsworks API.
+You can also time-based splits with the Hopsworks API.
 
 ### Evaluation Sets
 

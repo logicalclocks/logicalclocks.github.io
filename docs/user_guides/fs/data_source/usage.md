@@ -71,7 +71,7 @@ Additionally, for reading file based data sources, another way to read the data 
 This method can be used if you are reading the data directly through Spark.
 
 Firstly, it handles the setup of all Spark configurations or properties necessary for a particular type of connector and prepares the absolute path to read from, along with bucket name and the appropriate file scheme of the data source.
-A Spark session can handle only one configuration setup at a time, so HSFS cannot set the Spark configurations when retrieving the connector since it would lead to only always initialising the last connector being retrieved.
+A Spark session can handle only one configuration setup at a time, so Hopsworks cannot set the Spark configurations when retrieving the connector since it would lead to only always initialising the last connector being retrieved.
 Instead, user can do this setup explicitly with the `prepare_spark` method and therefore potentially use multiple connectors in one Spark session. `prepare_spark` handles only one bucket associated with that particular connector, however, it is possible to set up multiple connectors with different types as long as their Spark properties do not interfere with each other.
 So, for example a S3 connector and a Snowflake connector can be used in the same session, without calling `prepare_spark` multiple times, as the properties don’t interfere with each other.
 

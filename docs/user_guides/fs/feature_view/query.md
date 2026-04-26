@@ -1,6 +1,6 @@
 # Query vs DataFrame
 
-HSFS provides a DataFrame API to ingest data into the Hopsworks Feature Store.
+Hopsworks provides a DataFrame API to ingest data into the Hopsworks Feature Store.
 You can also retrieve feature data in a DataFrame, that can either be used directly to train models or [materialized to file(s)](./training-data.md) for later use to train models.
 
 The idea of the Feature Store is to have pre-computed features available for both training and serving models.
@@ -61,7 +61,7 @@ The APIs allow you to specify which features to select from which feature group,
 
 If a data scientist wants to modify a new feature that is not available in the feature store, she can write code to compute the new feature (using existing features or external data) and ingest the new feature values into the feature store.
 If the new feature is based solely on existing feature values in the Feature Store, we call it a derived feature.
-The same HSFS APIs can be used to compute derived features as well as features using external data sources.
+The same Hopsworks APIs can be used to compute derived features as well as features using external data sources.
 
 ## The Query Abstraction
 
@@ -94,7 +94,7 @@ Selecting features from a feature group is a lazy operation, returning a query w
 #### Join
 
 Similarly, joins return query objects.
-The simplest join in one where we join all of the features together from two different feature groups without specifying a join key - `HSFS` will infer the join key as a common primary key between the two feature groups.
+The simplest join in one where we join all of the features together from two different feature groups without specifying a join key - `Hopsworks` will infer the join key as a common primary key between the two feature groups.
 By default, Hopsworks will use the maximal matching subset of the primary keys of the two feature groups as joining key(s), if not specified otherwise.
 
 === "Python"

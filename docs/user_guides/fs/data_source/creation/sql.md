@@ -7,7 +7,7 @@ Supported database types are **MySQL**, **PostgreSQL**, and **Oracle**.
 Using this connector, you can query and update data in your relational database from Hopsworks.
 
 In this guide, you will configure a Data Source in Hopsworks to securely store the authentication information needed to set up a connection to your database instance.
-When you're finished, you'll be able to query your SQL database using HSFS APIs.
+When you're finished, you'll be able to query your SQL database using Hopsworks APIs.
 
 !!! note
     Currently, it is only possible to create data sources in the Hopsworks UI.

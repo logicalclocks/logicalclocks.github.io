@@ -12,7 +12,7 @@ In this guide you will learn how to create and register a Spine Group with Hopsw
 
 Before you begin this guide we suggest you read the [Spine Group](../../../concepts/fs/feature_group/spine_group.md) concept page to understand what a Spine Group is and how it fits in the ML pipeline.
 
-## Create using the HSFS APIs
+## Create using the Hopsworks APIs
 
 ### Create a Spine Group
 
@@ -55,7 +55,7 @@ You just need to make sure it has the same schema.
 
 !!! warning "Python support"
 
-    Currently the HSFS library does not support usage of Spine Groups for training data creation or batch data retrieval in the Python engine.
+    Currently the Hopsworks library does not support usage of Spine Groups for training data creation or batch data retrieval in the Python engine.
     However, it is supported to create Spine Groups from the Python engine.
 
 ### API Reference

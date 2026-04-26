@@ -44,9 +44,9 @@ You can install all the above profiles with the following command:
 pip install hopsworks[python,great-expectations,polars]
 ```
 
-## HSFS Java Library
+## Hopsworks Java Library
 
-If you want to interact with the Hopsworks Feature Store from environments such as Spark, Flink or Beam, you can use the Hopsworks Feature Store (HSFS) Java library.
+If you want to interact with the Hopsworks Feature Store from environments such as Spark, Flink or Beam, you can use the Hopsworks Feature Store (Hopsworks) Java library.
 
 !!! note "Feature Store Only"
 
@@ -54,7 +54,7 @@ If you want to interact with the Hopsworks Feature Store from environments such 
     Additionally each environment might restrict the supported API operation.
     You can see which API operation is supported by which environment [here](../fs/compute_engines.md)
 
-The HSFS library is available on the Hopsworks' Maven repository.
+The Hopsworks library is available on the Hopsworks' Maven repository.
 If you are using Maven as build tool, you can add the following in your `pom.xml` file:
 
 ```xml
@@ -75,9 +75,9 @@ If you are using Maven as build tool, you can add the following in your `pom.xml
 
 The library has different builds targeting different environments:
 
-### HSFS Java
+### Hopsworks Java
 
-The `artifactId` for the HSFS Java build is `hsfs`, if you are using Maven as build tool, you can add the following dependency:
+The `artifactId` for the Hopsworks Java build is `hsfs`, if you are using Maven as build tool, you can add the following dependency:
 
 ```xml
 <dependency>

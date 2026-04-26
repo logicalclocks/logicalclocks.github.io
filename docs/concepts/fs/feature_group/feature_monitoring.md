@@ -1,6 +1,6 @@
 Feature Monitoring complements data validation capabilities by allowing you to monitor your feature data after it has been ingested into the Feature Store.
 
-HSFS supports monitoring features on your Feature Group by:
+Hopsworks supports monitoring features on your Feature Group by:
 
 - transparently **computing statistics** on the whole or a subset of feature data defined by a detection window.
 - **comparing statistics** against a reference window of feature data, and **configuring thresholds** to identify anomalous data.
@@ -8,7 +8,7 @@ HSFS supports monitoring features on your Feature Group by:
 
 ## Scheduled Statistics
 
-After creating a Feature Group in HSFS, you can setup statistics monitoring to compute statistics over one or more features on a scheduled basis.
+After creating a Feature Group in Hopsworks, you can setup statistics monitoring to compute statistics over one or more features on a scheduled basis.
 Statistics are computed on the whole or a subset of feature data (i.e., detection window) already inserted into the Feature Group.
 
 ## Statistics Comparison

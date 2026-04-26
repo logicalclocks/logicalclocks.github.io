@@ -7,17 +7,17 @@ description: Documentation on how to create an external feature group in Hopswor
 ## Introduction
 
 In this guide you will learn how to create and register an external feature group with Hopsworks.
-This guide covers creating an external feature group using the HSFS APIs as well as the user interface.
+This guide covers creating an external feature group using the Hopsworks APIs as well as the user interface.
 
 ## Prerequisites
 
 Before you begin this guide we suggest you read the [External Feature Group](../../../concepts/fs/feature_group/external_fg.md) concept page to understand what a feature group is and how it fits in the ML pipeline.
 
-## Create using the HSFS APIs
+## Create using the Hopsworks APIs
 
 ### Retrieve the Data Source
 
-To create an external feature group using the HSFS APIs you need to provide an existing [data source](../data_source/index.md).
+To create an external feature group using the Hopsworks APIs you need to provide an existing [data source](../data_source/index.md).
 
 === "Python"
 

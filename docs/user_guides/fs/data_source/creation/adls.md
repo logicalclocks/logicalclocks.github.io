@@ -7,7 +7,7 @@ The ADLS Gen2 filesystem stores its data in Azure Blob storage, ensuring low-cos
 In Hopsworks, you can access ADLS Gen2 by defining a Data Source and creating and granting permissions to a service principal.
 
 In this guide, you will configure a Data Source in Hopsworks to save all the authentication information needed in order to set up a connection to your Azure ADLS filesystem.
-When you're finished, you'll be able to read files using Spark through HSFS APIs.
+When you're finished, you'll be able to read files using Spark through Hopsworks APIs.
 You can also use the connector to write out training data from the Feature Store, in order to make it accessible by third parties.
 
 !!! note

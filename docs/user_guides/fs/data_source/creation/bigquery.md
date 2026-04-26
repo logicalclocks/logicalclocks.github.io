@@ -7,7 +7,7 @@ BigQuery is Google Cloud's managed data warehouse supporting that lets you run a
 Such data warehouses are often the source of raw data for feature engineering pipelines.
 
 In this guide, you will configure a Data Source in Hopsworks to connect to your BigQuery project by saving the necessary information.
-When you're finished, you'll be able to execute queries and read results of BigQuery using Spark through HSFS APIs.
+When you're finished, you'll be able to execute queries and read results of BigQuery using Spark through Hopsworks APIs.
 
 The data source uses the Google `spark-bigquery-connector` behind the scenes.
 To read more about the spark connector, like the spark options or usage, check [Apache Spark SQL connector for Google BigQuery.](https://github.com/GoogleCloudDataproc/spark-bigquery-connector#usage 'github.com/GoogleCloudDataproc/spark-bigquery-connector')

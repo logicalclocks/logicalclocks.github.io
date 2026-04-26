@@ -8,7 +8,7 @@ Data warehouses are often the source of raw data for feature engineering pipelin
 However, Snowflake is not viable as an online feature store that serves features to models in production, with its columnar database layout its latency is too high compared to OLTP databases or key-value stores.
 
 In this guide, you will configure a Data Source in Hopsworks to save all the authentication information needed in order to set up a connection to your Snowflake database.
-When you're finished, you'll be able to query the database using Spark through HSFS APIs.
+When you're finished, you'll be able to query the database using Spark through Hopsworks APIs.
 
 !!! note
     Currently, it is only possible to create data sources in the Hopsworks UI.

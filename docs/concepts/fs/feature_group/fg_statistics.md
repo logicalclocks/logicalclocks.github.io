@@ -1,4 +1,4 @@
-HSFS supports monitoring, validation, and alerting for features:
+Hopsworks supports monitoring, validation, and alerting for features:
 
 - transparently compute statistics over features on writing to a feature group;
 - validation of data written to feature groups using Great Expectations
@@ -6,7 +6,7 @@ HSFS supports monitoring, validation, and alerting for features:
 
 ### Statistics
 
-When you create a Feature Group in HSFS, you can configure it to compute statistics over the features inserted into the Feature Group by setting the `statistics_config` dict parameter, see [Feature Group Statistics](../../../user_guides/fs/feature_group/statistics.md) for details.
+When you create a Feature Group in Hopsworks, you can configure it to compute statistics over the features inserted into the Feature Group by setting the `statistics_config` dict parameter, see [Feature Group Statistics](../../../user_guides/fs/feature_group/statistics.md) for details.
 Every time you write to the Feature Group, new statistics will be computed over all of the data in the Feature Group.
 
 ### Data Validation
@@ -18,6 +18,6 @@ When you write to a feature group, the expectations are executed, then you can d
 
 ### Alerting
 
-HSFS also supports alerts, that can be triggered when there are problems in your feature pipelines, for example, when a write fails due to an error or a failed expectation.
+Hopsworks also supports alerts, that can be triggered when there are problems in your feature pipelines, for example, when a write fails due to an error or a failed expectation.
 You can send alerts to different alerting endpoints, such as email or Slack, that can be configured in the Hopsworks UI.
 For example, you can send a slack message if features being written to a feature group are missing some input data.

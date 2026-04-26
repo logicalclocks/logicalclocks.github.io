@@ -7,21 +7,21 @@ description: Documentation on how to create a Feature Group and the different AP
 ## Introduction
 
 In this guide you will learn how to create and register a feature group with Hopsworks.
-This guide covers creating a feature group using the HSFS APIs as well as the user interface.
+This guide covers creating a feature group using the Hopsworks APIs as well as the user interface.
 
 ## Prerequisites
 
 Before you begin this guide we suggest you read the [Feature Group](../../../concepts/fs/feature_group/fg_overview.md) concept page to understand what a feature group is and how it fits in the ML pipeline.
 
-## Create using the HSFS APIs
+## Create using the Hopsworks APIs
 
-To create a feature group using the HSFS APIs, you need to provide a Pandas, Polars or Spark DataFrame.
+To create a feature group using the Hopsworks APIs, you need to provide a Pandas, Polars or Spark DataFrame.
 The DataFrame will contain all the features you want to register within the feature group, as well as the primary key, event time and partition key.
 
 ### Create a Feature Group
 
 The first step to create a feature group is to create the API metadata object representing a feature group.
-Using the HSFS API you can execute:
+Using the Hopsworks API you can execute:
 
 #### Batch Write API
 
@@ -351,7 +351,7 @@ fg.insert(df)
 ```
 
 The save method takes in input a Pandas, Polars or Spark DataFrame.
-HSFS will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time.
+Hopsworks will use the DataFrame columns and types to determine the name and types of features, primary key, partition key and event time.
 
 The DataFrame *must* contain the columns specified as primary keys, partition key and event time in the `create_feature_group` call.
 

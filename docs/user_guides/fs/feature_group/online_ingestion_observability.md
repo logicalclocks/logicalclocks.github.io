@@ -9,7 +9,7 @@ description: Documentation on Online ingestion observability in Hopsworks.
 Knowing when ingested data becomes available for online serving—and understanding the cause of any ingestion failures—is crucial for users.
 To address this, the Hopsworks API provides observability features for online ingestion, allowing you to monitor ingestion status and troubleshoot issues.
 
-This guide explains how to use these observability features for online feature groups in Hopsworks, with examples using both the HSFS APIs and the user interface.
+This guide explains how to use these observability features for online feature groups in Hopsworks, with examples using both the Hopsworks APIs and the user interface.
 
 ## Prerequisites
 

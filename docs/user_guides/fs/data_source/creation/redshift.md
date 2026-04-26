@@ -8,7 +8,7 @@ Data warehouses are often the source of raw data for feature engineering pipelin
 However, Redshift is not viable as an online feature store that serves features to models in production, with its columnar database layout its latency is too high compared to OLTP databases or key-value stores.
 
 In this guide, you will configure a Data Source in Hopsworks to save all the authentication information needed in order to set up a connection to your AWS Redshift cluster.
-When you're finished, you'll be able to query the database using Spark through HSFS APIs.
+When you're finished, you'll be able to query the database using Spark through Hopsworks APIs.
 
 !!! note
     Currently, it is only possible to create data sources in the Hopsworks UI.
@@ -27,7 +27,7 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **Authentication method:** There are three options available for authenticating with the Redshift cluster.
   The first option is to configure a username and a password.
   The second option is to configure an IAM role.
-  With IAM roles, Jobs or notebooks launched on Hopsworks do not need to explicitly authenticate with Redshift, as the HSFS library will transparently use the IAM role to acquire a temporary credential to authenticate the specified user.
+  With IAM roles, Jobs or notebooks launched on Hopsworks do not need to explicitly authenticate with Redshift, as the Hopsworks library will transparently use the IAM role to acquire a temporary credential to authenticate the specified user.
   Read more about IAM roles in our [AWS credentials pass-through guide](../../../../setup_installation/admin/roleChaining.md).
   Lastly, option `Instance Role` will use the default ARN Role configured for the cluster instance.
 

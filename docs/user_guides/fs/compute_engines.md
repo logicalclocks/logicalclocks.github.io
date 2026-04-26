@@ -26,7 +26,7 @@ Hopsworks is aiming to provide functional parity between the computational engin
 | Data validation using Great Expectations for streaming dataframes | [`FeatureGroup.validate`][hsfs.feature_group.FeatureGroup.validate] <br/> [`FeatureGroup.insert_stream`][hsfs.feature_group.FeatureGroup.insert_stream] | - | - | - | - | - | `insert_stream` does not perform any data validation even when a expectation suite is attached. |
 | Stream ingestion | [`FeatureGroup.insert_stream`][hsfs.feature_group.FeatureGroup.insert_stream] | :white_check_mark: | - | :white_check_mark: | :white_check_mark: | :white_check_mark: | Python/Pandas/Polars has currently no notion of streaming. |
 | Reading from Streaming Storage Connectors | [`KafkaConnector.read_stream`][hsfs.storage_connector.KafkaConnector.read_stream] | :white_check_mark: | - | - | - | - | Python/Pandas/Polars has currently no notion of streaming. For Flink/Beam/Java only write operations are supported |
-| Reading training data from external storage other than S3 | [`FeatureView.get_training_data`][hsfs.feature_view.FeatureView.get_training_data] | :white_check_mark: | - | - | - | - | Reading training data that was written to external storage using a Storage Connector other than S3 can currently not be read using HSFS APIs, instead you will have to use the storage's native client. |
+| Reading training data from external storage other than S3 | [`FeatureView.get_training_data`][hsfs.feature_view.FeatureView.get_training_data] | :white_check_mark: | - | - | - | - | Reading training data that was written to external storage using a Storage Connector other than S3 can currently not be read using Hopsworks APIs, instead you will have to use the storage's native client. |
 | Reading External Feature Groups into Dataframe | [`ExternalFeatureGroup.read`][hsfs.feature_group.ExternalFeatureGroup.read] | :white_check_mark: | - | - | - | - | Reading an External Feature Group directly into a Pandas/Polars Dataframe is not supported, however, you can use the [Query API][hsfs.constructor.query.Query] to create Feature Views/Training Data containing External Feature Groups. |
 | Read Queries containing External Feature Groups into Dataframe | [`Query.read`][hsfs.constructor.query.Query.read] | :white_check_mark: | - | - | - | - | Reading a Query containing an External Feature Group directly into a Pandas/Polars Dataframe is not supported, however, you can use the Query to create Feature Views/Training Data and write the data to a Storage Connector, from where you can read up the data into a Pandas/Polars Dataframe. |
 
@@ -39,7 +39,7 @@ Head over to the [Getting Started Guide](https://colab.research.google.com/githu
 
 ### Python Outside Hopsworks
 
-Connecting to the Feature Store from any Python environment, such as your local environment or Google Colab, requires setting up an API Key and installing the HSFS Python client library.
+Connecting to the Feature Store from any Python environment, such as your local environment or Google Colab, requires setting up an API Key and installing the Hopsworks Python client library.
 The [Python integration guide](../integrations/python.md) explains step by step how to connect to the Feature Store from any Python environment.
 
 ## Spark
