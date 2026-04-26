@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A Unity Catalog data source provides integration to [Databricks Unity Catalog](https://docs.databricks.com/aws/en/data-governance/unity-catalog/).
+A Unity Catalog data source provides integration with [Databricks Unity Catalog](https://docs.databricks.com/aws/en/data-governance/unity-catalog/).
 Unity Catalog is Databricks' unified governance layer for data and AI assets, organised as a catalog → schema → table hierarchy.
 
 In this guide, you will configure a Data Source in Hopsworks that points at a Databricks workspace.
@@ -31,7 +31,10 @@ Before you begin you need all of the following — the first three are on the Da
 
 ### Databricks side
 
-- **External Data Access enabled on the metastore.** In the Databricks account console, go to Catalog → the metastore backing your workspace → Details, and turn on "External data access". Without this toggle, every call to `/api/2.1/unity-catalog/temporary-table-credentials` returns `403 Forbidden` for any principal. This is an account-admin setting — workspace admin alone cannot flip it.
+- **External Data Access enabled on the metastore.**
+  In the Databricks account console, go to Catalog → the metastore backing your workspace → Details, and turn on "External data access".
+  Without this toggle, every call to `/api/2.1/unity-catalog/temporary-table-credentials` returns `403 Forbidden` for any principal.
+  This is an account-admin setting — workspace admin alone cannot flip it.
 - **`EXTERNAL USE SCHEMA` grant on the schemas you want to read.** In Databricks SQL:
   ```sql
   GRANT EXTERNAL USE SCHEMA ON SCHEMA <catalog>.<schema> TO `<principal>`;

@@ -64,7 +64,7 @@ For GCP the following storage systems are supported:
 
 For Databricks **on AWS** the following storage systems are supported:
 
-1. [Unity Catalog](creation/unity_catalog.md): Browse Unity Catalog catalogs, schemas, and Delta tables, and mount them as external feature groups.
+1. [Unity Catalog](creation/unity_catalog.md): Browse Unity Catalog catalogs, schemas, and Delta tables, and mount them as external Feature Groups.
 
 Databricks on Azure and Databricks on GCP are not supported yet — see the [Unity Catalog guide](creation/unity_catalog.md) for the specific reasons and the status of follow-up work.
 
