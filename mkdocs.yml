@@ -369,7 +369,7 @@ plugins:
             signature_crossrefs: true
             show_symbol_type_heading: true
             show_symbol_type_toc: true
-            members_order: source
+            members_order: alphabetical
             show_source: false
             docstring_section_style: spacy
             annotations_path: source
