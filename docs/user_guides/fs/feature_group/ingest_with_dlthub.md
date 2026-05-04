@@ -31,6 +31,7 @@ Use `Ingest Data to New Feature Group` when you want to:
 This ingestion flow supports multiple data sources:
 
 - SQL-like sources can either create an external feature group or ingest data into a new feature group.
+- The SQL family currently includes Snowflake, BigQuery, Redshift, generic JDBC (MySQL, PostgreSQL, Oracle), and SAP HANA.
 - CRM and REST API sources use the ingestion path only.
 - Incremental loading is available for SQL and REST API sources.
 - CRM sources currently use full-load ingestion.
