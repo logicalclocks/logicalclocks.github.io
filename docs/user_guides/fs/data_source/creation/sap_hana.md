@@ -20,7 +20,9 @@ The following options are **mandatory**:
 
 - **Host**: The hostname of the SAP HANA endpoint, for example `hxehost.example.com` for an on-premise instance or the endpoint shown in SAP BTP for SAP HANA Cloud.
 - **Port**: The SQL port of the tenant database.
-The default is `30015` for the first tenant on a single-host system.
+The default is `39015`, the SQL port for the first tenant database on a default
+multi-tenant or HANA Express (HXE) install (instance number 90).
+For a non-tenant single-host install (instance 00) use `30015`.
 SAP HANA Cloud typically uses `443`.
 Consult your DBA if you are unsure.
 - **User**: The HANA database user that the connector authenticates as.
@@ -64,7 +66,7 @@ Start by giving it a **name** and an optional **description**.
 
 01. Select "SAP HANA" as storage.
 02. Specify the **Host** of your SAP HANA endpoint.
-03. Specify the **Port** the tenant SQL service listens on (default `30015`).
+03. Specify the **Port** the tenant SQL service listens on (default `39015`).
 04. Provide the **User** name of the HANA database user.
 05. Provide the **Password** for that user.
 06. Optionally fill in **Database**, **Schema**, **Table**, and **Application**.
