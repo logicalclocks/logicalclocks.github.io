@@ -35,7 +35,8 @@ The Hopsworks library has several profiles that bring additional dependencies an
 | --- | --- |
 | No Profile | This is the base installation. Supports interacting with the feature store metadata, model registry and deployments. It also supports reading and writing from the feature store from PySpark environments. |
 | `python` | This profile enables reading and writing from/to the feature store from a Python environment |
-| `great-expectations` | This profile installs the [Great Expectations](https://greatexpectations.io/) Python library and enables data validation on feature pipelines |
+| `great-expectations` | Installs [Great Expectations](https://greatexpectations.io/) 1.17.1 and enables data validation on feature pipelines |
+| `great-expectations-legacy` | Installs Great Expectations 0.18.12 instead of 1.x for projects that still rely on the 0.18 API. Mutually exclusive with `great-expectations` |
 | `polars` | This profile installs the [Polars](https://pola.rs/) library and enables reading and writing Polars DataFrames |
 
 You can install all the above profiles with the following command:

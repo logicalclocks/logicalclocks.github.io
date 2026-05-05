@@ -48,7 +48,7 @@ If your suite is registered with Hopsworks, this will persist the change to the 
 fg.expectation_suite.run_validation = False
 ```
 
-If you wish to override the default behaviour of the suite when inserting data in the Feature Group, you can do so via the `validate_options` kwarg.
+If you wish to override the default behaviour of the suite when inserting data in the Feature Group, you can do so via the `validation_options` kwarg.
 The example below will enable validation for this insertion only.
 
 ```python
@@ -88,13 +88,20 @@ my_expectation = fg.expectation_suite.get_expectation(
 Add a new expectation:
 
 ```python
-new_expectation = ge.core.ExpectationConfiguration(
-    expectation_type="expect_column_values_not_to_be_null",
-    kwargs={"mostly": 1},
+from great_expectations.expectations.expectation_configuration import (
+    ExpectationConfiguration,
+)
+
+new_expectation = ExpectationConfiguration(
+    type="expect_column_values_to_not_be_null",
+    kwargs={"column": "foo_id", "mostly": 1},
 )
 
 fg.expectation_suite.add_expectation(new_expectation)
 ```
+
+The single-expectation API on `fg.expectation_suite` accepts `ExpectationConfiguration` instances and plain dicts.
+On 0.18.x the same API still works with `ge.core.ExpectationConfiguration(expectation_type=...)`.
 
 Edit expectation kwargs of an existing expectation :
 
@@ -116,15 +123,18 @@ fg.expectation_suite.remove_expectation(
 )
 ```
 
-If you want to deal only with the Great Expectation API:
+If you want to deal only with the Great Expectations API:
 
 ```python
 my_suite = fg.get_expectation_suite()
 
-my_suite.add_expectation(new_expectation)
+my_suite.add_expectation_configuration(new_expectation)
 
 fg.save_expectation_suite(my_suite)
 ```
+
+`add_expectation_configuration` is the right method to call when you only have the suite in hand (no `DataContext`).
+On 0.18.x the equivalent method was `my_suite.add_expectation(new_expectation)`; in 1.x `add_expectation` instead requires an active `DataContext` and is meant for context-managed suites.
 
 ### Save Validation Reports
 
@@ -160,7 +170,7 @@ ge_latest_report = fg.get_latest_validation_report()
 # where you can download full report if summary is insufficient
 
 # or load multiple reports
-validation_history = fg.get_validation_reports()
+validation_history = fg.get_all_validation_reports()
 ```
 
 ### Validate Your Data Manually
@@ -190,11 +200,20 @@ It will read the data in the Feature Group.
 report = fg.validate()
 ```
 
-As validation objects returned by Hopsworks are native Great Expectation objects you can run validation using the usual Great Expectations syntax:
+As validation objects returned by Hopsworks are native Great Expectations objects you can also run validation directly through the Great Expectations API.
+Great Expectations 1.x removed `ge.from_pandas` and replaced it with the `Context → DataSource → Asset → Batch` pattern:
 
 ```python
-ge_df = ge.from_pandas(df, expectation_suite=fg.get_expectation_suite())
-ge_report = ge_df.validate()
+import great_expectations as gx
+
+context = gx.get_context(mode="ephemeral")
+data_source = context.data_sources.add_pandas("hopsworks_pandas")
+asset = data_source.add_dataframe_asset("hopsworks_asset")
+batch_definition = asset.add_batch_definition_whole_dataframe("hopsworks_batch")
+batch = batch_definition.get_batch(batch_parameters={"dataframe": df})
+ge_report = batch.validate(fg.get_expectation_suite())
 ```
+
+For most pipelines you should prefer `fg.validate(df)` — Hopsworks runs the same chain internally and uploads the report to the backend in a single call.
 
 Note that you should always use an expectation suite that has been saved to Hopsworks if you intend to upload the associated validation report.

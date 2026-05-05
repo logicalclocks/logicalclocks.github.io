@@ -112,7 +112,6 @@ Connect the client running your notebooks to Hopsworks.
 ```python
 import hopsworks
 
-
 project = hopsworks.login()
 
 fs = project.get_feature_store()
@@ -128,7 +127,6 @@ Load your data in a DataFrame using the usual pandas API.
 ```python
 import pandas as pd
 
-
 df = pd.read_csv(
     "https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/transactions.csv",
     parse_dates=["datetime"],
@@ -143,52 +141,73 @@ To validate the data, we will use the [Great Expectations](https://greatexpectat
 Below is a short introduction on how to build an Expectation Suite to validate your data.
 Everything is done using the Great Expectations API so you can re-use any prior knowledge you may have of the library.
 
+The Hopsworks `great-expectations` extra installs Great Expectations 1.17.1 by default.
+Examples in this guide target that version.
+If you have existing pipelines pinned to Great Expectations 0.18.x, see the [installation guide][profiles] for the `great-expectations-legacy` extra.
+
 #### Create an Expectation Suite
 
 Create (or import an existing) expectation suite using the Great Expectations library.
 This suite will hold all the validation tests we want to perform on our data before inserting them into Hopsworks.
 
 ```python
-import great_expectations as ge
+import great_expectations as gx
 
-
-expectation_suite = ge.core.ExpectationSuite(
-    expectation_suite_name="validate_on_insert_suite"
-)
+expectation_suite = gx.ExpectationSuite(name="validate_on_insert_suite")
 ```
 
 #### Add Expectations in the Source Code
 
-Add some expectation to your suite.
+Add some expectations to your suite.
 Each expectation configuration corresponds to a validation test to be run against your data.
 
 ```python
-expectation_suite.add_expectation(
-    ge.core.ExpectationConfiguration(
-        expectation_type="expect_column_min_to_be_between",
+from great_expectations.expectations.expectation_configuration import (
+    ExpectationConfiguration,
+)
+
+expectation_suite.add_expectation_configuration(
+    ExpectationConfiguration(
+        type="expect_column_min_to_be_between",
         kwargs={"column": "foo_id", "min_value": 0, "max_value": 1},
     )
 )
 
-expectation_suite.add_expectation(
-    ge.core.ExpectationConfiguration(
-        expectation_type="expect_column_value_lengths_to_be_between",
+expectation_suite.add_expectation_configuration(
+    ExpectationConfiguration(
+        type="expect_column_value_lengths_to_be_between",
         kwargs={"column": "bar_name", "min_value": 3, "max_value": 10},
     )
 )
 ```
 
-#### Using Great Expectations Profiler
+!!! info "Migrating from Great Expectations 0.18.x"
+    The constructor argument was renamed from `expectation_suite_name=` to `name=` in 1.0.
+    `ExpectationConfiguration` now takes `type=` instead of `expectation_type=` and was moved out of `great_expectations.core` to `great_expectations.expectations.expectation_configuration`.
+    The Hopsworks SDK normalizes both shapes on the wire, so suites stored under either version remain readable.
 
-Building Expectation Suite by hand can be a major time commitment when you have dozens of Features.
-Great Expectations offers `Profiler` classes to inspect a sample of your data and infers a suitable Expectation Suite that you will be able to register with Hopsworks.
+#### Build a Suite with Typed Expectation Classes
+
+Great Expectations 1.x also exposes a typed class for each expectation, which gives you IDE autocomplete on the kwargs.
+You can mix typed instances and `ExpectationConfiguration` instances in the same suite.
 
 ```python
-ge_profiler = ge.profile.BasicSuiteBuilderProfiler()
-expectation_suite_profiler, _ = ge_profiler.profile(ge.from_pandas(df))
+import great_expectations.expectations as gxe
+
+typed_suite = gx.ExpectationSuite(
+    name="validate_on_insert_suite",
+    expectations=[
+        gxe.ExpectColumnMinToBeBetween(
+            column="foo_id", min_value=0, max_value=1
+        ),
+        gxe.ExpectColumnValueLengthsToBeBetween(
+            column="bar_name", min_value=3, max_value=10
+        ),
+    ],
+)
 ```
 
-Once you have built an Expectation Suite you are satisfied with, it is time to create your first validation enabled Feature Group.
+Once you have built an Expectation Suite you are satisfied with, it is time to create your first validation-enabled Feature Group.
 
 ### Step 3: Attach an Expectation Suite to your Feature Group to enable Automatic Validation on Insertion
 
@@ -242,7 +261,7 @@ Hopsworks client API allows you to retrieve validation reports for further analy
 
 ```python
 # load multiple reports
-validation_reports = fg.get_validation_reports()
+validation_reports = fg.get_all_validation_reports()
 
 # convenience method for rapid development
 ge_latest_report = fg.get_latest_validation_report()
@@ -251,10 +270,10 @@ ge_latest_report = fg.get_latest_validation_report()
 Similarly you can retrieve the historic of validation results for a particular expectation, e.g to plot a time-series of a given expectation observed value over time.
 
 ```python
-validation_history = fg.get_validation_history(expectationId=1)
+validation_history = fg.get_validation_history(expectation_id=1)
 ```
 
-You can find the expectationIds in the UI or using `fg.get_expectation_suite` and looking it up in the expectation's meta field.
+You can find the expectation IDs in the UI or using `fg.get_expectation_suite()` and looking them up in the expectation's `meta` field under the `expectationId` key.
 
 !!! info
     If Validation Reports or Results are too long, they can be truncated to fit in the database.
