@@ -1,10 +1,10 @@
-# How-To set up a SAP HANA Data Source
+# How-To set up an SAP HANA Data Source { #data-source-sap-hana }
 
 ## Introduction
 
 SAP HANA is an in-memory relational database used by many enterprises as the system of record for ERP, CRM, and analytics workloads.
 
-A SAP HANA Data Source in Hopsworks stores the connection details required to read tables and views from a HANA tenant database.
+An SAP HANA Data Source in Hopsworks stores the connection details required to read tables and views from a HANA tenant database.
 Once configured, you can use the same data source as the basis for an external (on-demand) Feature Group, or as the source for a dltHub-driven ingestion job that materialises HANA data into a managed Feature Group.
 
 In this guide, you will configure a Data Source in Hopsworks that holds the authentication information needed to connect to your SAP HANA database.
@@ -20,23 +20,23 @@ The following options are **mandatory**:
 
 - **Host**: The hostname of the SAP HANA endpoint, for example `hxehost.example.com` for an on-premise instance or the endpoint shown in SAP BTP for SAP HANA Cloud.
 - **Port**: The SQL port of the tenant database.
-The default is `39015`, the SQL port for the first tenant database on a default
-multi-tenant or HANA Express (HXE) install (instance number 90).
-For a non-tenant single-host install (instance 00) use `30015`.
-SAP HANA Cloud typically uses `443`.
-Consult your DBA if you are unsure.
+    The default is `39015`, the SQL port for the first tenant database on a default
+    multi-tenant or HANA Express (HXE) install (instance number 90).
+    For a non-tenant single-host install (instance 00) use `30015`.
+    SAP HANA Cloud typically uses `443`.
+    Consult your DBA if you are unsure.
 - **User**: The HANA database user that the connector authenticates as.
 - **Password**: The password for that user.
 
 These are a few additional **optional** arguments:
 
 - **Database**: The tenant database name.
-Use this when your SAP HANA system hosts more than one tenant database and you need to target a specific one.
+    Use this when your SAP HANA system hosts more than one tenant database and you need to target a specific one.
 - **Schema**: The default schema applied to unqualified queries on the connection.
-If you leave this empty, queries must fully qualify table names with the schema prefix.
+    If you leave this empty, queries must fully qualify table names with the schema prefix.
 - **Table**: The default table the connector points at when no SQL query is provided.
 - **Application**: A short identifier surfaced in HANA's session tracing (`APPLICATION` session variable).
-This makes it easier to attribute load to Hopsworks in HANA monitoring tools.
+    This makes it easier to attribute load to Hopsworks in HANA monitoring tools.
 - **Additional arguments**: Free-form key/value options forwarded to the underlying SAP HANA Python driver (`hdbcli`) and the Spark JDBC reader.
 
 !!! info "Drivers"
@@ -67,12 +67,12 @@ Start by giving it a **name** and an optional **description**.
 05. Provide the **Password** for that user.
 06. Optionally fill in **Database**, **Schema**, **Table**, and **Application**.
 07. Optionally add additional key/value arguments.
-These are forwarded both to the Python driver used by the on-demand read path and to the Spark JDBC reader used by notebook jobs.
+    These are forwarded both to the Python driver used by the on-demand read path and to the Spark JDBC reader used by notebook jobs.
 08. Click on "Save Credentials".
 
 ## Use it as an ingestion source
 
-Once the SAP HANA data source exists, you can also use it with the dltHub-based ingestion workflow described in [Ingest Data with dltHub](../../feature_group/ingest_with_dlthub.md).
+Once the SAP HANA data source exists, you can also use it with the dltHub-based ingestion workflow described in [Ingest Data with dltHub][ingest-data-with-dlthub].
 SAP HANA is treated as a SQL-like source, so the ingestion job supports both full and incremental loading.
 
 ## Type mapping
@@ -113,8 +113,8 @@ Then set **Schema** in the data source to `HOPSDEMO` (or pick it from the schema
 
 ### Online ingestion requires non-null primary keys
 
-When you create a managed feature group fed from SAP HANA via DLT and enable online serving, online ingestion validates that every row has a non-null value in the feature group's primary-key column.
-If the source rows can carry `NULL` in that column, either filter them out at source, pick a different primary key on the feature group, or disable online serving for the feature group.
+When you create a managed Feature Group fed from SAP HANA via DLT and enable online serving, online ingestion validates that every row has a non-null value in the Feature Group's primary-key column.
+If the source rows can carry `NULL` in that column, either filter them out at source, pick a different primary key on the Feature Group, or disable online serving for the Feature Group.
 
 ### Authentication
 
@@ -123,4 +123,4 @@ Certificate-based and JWT authentication are tracked as follow-up work.
 
 ## Next Steps
 
-Move on to the [usage guide for data sources](../usage.md) to see how you can use your newly created SAP HANA connector.
+Move on to the [usage guide for data sources][data-source-usage] to see how you can use your newly created SAP HANA connector.
