@@ -81,7 +81,7 @@ Hopsworks reads each source column's HANA type from the cursor description and m
 The mapping preserves precision and scale where possible, so a source `DECIMAL(12, 2)` becomes a Hopsworks `decimal(12,2)` feature rather than collapsing to `bigint`.
 
 | SAP HANA type | Hopsworks offline feature type |
-|---------------|-------------------------------|
+| --- | --- |
 | `TINYINT` | `tinyint` |
 | `SMALLINT` | `smallint` |
 | `INTEGER` | `int` |
