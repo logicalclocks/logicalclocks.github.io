@@ -39,10 +39,6 @@ If you leave this empty, queries must fully qualify table names with the schema 
 This makes it easier to attribute load to Hopsworks in HANA monitoring tools.
 - **Additional arguments**: Free-form key/value options forwarded to the underlying SAP HANA Python driver (`hdbcli`) and the Spark JDBC reader.
 
-!!! note "Authentication"
-    The SAP HANA data source currently supports username and password authentication.
-    Certificate-based and JWT authentication are tracked as follow-up work.
-
 !!! info "Drivers"
     Hopsworks ships the SAP HANA drivers needed to read from HANA out of the box.
     The Hopsworks Spark image bundles the SAP `ngdbc` JDBC driver for Spark JDBC reads, and the dlt ingestion image and Arrow Flight server bundle SAP's `hdbcli` Python DBAPI driver.
@@ -78,6 +74,52 @@ These are forwarded both to the Python driver used by the on-demand read path an
 
 Once the SAP HANA data source exists, you can also use it with the dltHub-based ingestion workflow described in [Ingest Data with dltHub](../../feature_group/ingest_with_dlthub.md).
 SAP HANA is treated as a SQL-like source, so the ingestion job supports both full and incremental loading.
+
+## Type mapping
+
+Hopsworks reads each source column's HANA type from the cursor description and maps it to a Hopsworks offline feature type.
+The mapping preserves precision and scale where possible, so a source `DECIMAL(12, 2)` becomes a Hopsworks `decimal(12,2)` feature rather than collapsing to `bigint`.
+
+| SAP HANA type | Hopsworks offline feature type |
+|---------------|-------------------------------|
+| `TINYINT` | `tinyint` |
+| `SMALLINT` | `smallint` |
+| `INTEGER` | `int` |
+| `BIGINT` | `bigint` |
+| `DECIMAL(p, s)` | `decimal(p,s)` |
+| `REAL` | `float` |
+| `DOUBLE` | `double` |
+| `BOOLEAN` | `boolean` |
+| `DATE` | `date` |
+| `TIME` | `timestamp` |
+| `TIMESTAMP` / `SECONDDATE` / `LONGDATE` | `timestamp` |
+| `CHAR` / `VARCHAR` / `NCHAR` / `NVARCHAR` / `TEXT` / `CLOB` / `NCLOB` / `ALPHANUM` | `string` |
+| `BINARY` / `VARBINARY` / `BLOB` | `binary` |
+
+## Known limitations
+
+### Avoid the `SYSTEM` schema for source tables
+
+Place tables you intend to ingest or expose as feature groups in a regular user schema (for example a project-specific `MYAPP` or `HOPSDEMO`).
+Tables created under the system-owned `SYSTEM` schema do not reflect cleanly through the SQLAlchemy HANA dialect that powers DLT ingestion.
+A typical setup is:
+
+```sql
+CREATE SCHEMA HOPSDEMO;
+RENAME TABLE SYSTEM.MY_TABLE TO HOPSDEMO.MY_TABLE;
+```
+
+Then set **Schema** in the data source to `HOPSDEMO` (or pick it from the schema browser) and use that as the basis for any external feature group or DLT ingestion job.
+
+### Online ingestion requires non-null primary keys
+
+When you create a managed feature group fed from SAP HANA via DLT and enable online serving, online ingestion validates that every row has a non-null value in the feature group's primary-key column.
+If the source rows can carry `NULL` in that column, either filter them out at source, pick a different primary key on the feature group, or disable online serving for the feature group.
+
+### Authentication
+
+The SAP HANA data source currently supports username and password authentication.
+Certificate-based and JWT authentication are tracked as follow-up work.
 
 ## Next Steps
 
