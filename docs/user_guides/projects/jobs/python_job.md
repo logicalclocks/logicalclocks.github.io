@@ -206,6 +206,8 @@ The following table describes the job configuration parameters for a PYTHON job.
 ### Absolute paths
 
 The project datasets are mounted under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your script.
+Shared datasets are accessible at `/hopsfs/shared-datasets/<source-project>/<dataset-name>` if HopsFS is mounted.
+The shared datasets directory is also available through the `SHARED_DATASETS_DIR` environment variable.
 
 ### Relative paths
 
