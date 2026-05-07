@@ -38,6 +38,7 @@ Cloud agnostic storage systems:
 4. [HopsFS](creation/hopsfs.md): Easily connect and read from directories of Hopsworks' internal File System.
 5. [CRM, Sales & Analytics](creation/crm_sales_analytics.md): Connect to supported CRM, sales, and analytics platforms.
 6. [REST API](creation/rest_api.md): Connect to external HTTP APIs with configurable headers and authentication.
+7. [SAP HANA][data-source-sap-hana]: Query SAP HANA tenant databases using SQL.
 
 ## AWS
 
