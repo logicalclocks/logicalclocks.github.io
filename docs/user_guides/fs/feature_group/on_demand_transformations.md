@@ -259,10 +259,7 @@ On-demand transformation functions can also be accessed and executed as normal f
         ```python
         # Specify request parameters for each serving key.
         feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1},
-            transform=False,
-            on_demand_features=False,
-            return_type="pandas",
+            entry={"id": 1}, transform=False, on_demand_features=False, return_type="pandas"
         )
 
         # Applying model dependent transformations
@@ -270,3 +267,71 @@ On-demand transformation functions can also be accessed and executed as normal f
             "on_demand_feature1"
         ](feature_vector["transaction_time"], datetime.now())
         ```
+
+## Testing On-Demand Transformations Locally
+
+Hopsworks allows you to test on-demand transformations locally without requiring a connection to the Hopsworks platform.
+This is useful for validating transformation logic before deploying it to production.
+
+### Testing individual on-demand transformation functions
+
+Individual on-demand transformation functions can be accessed by name from the feature group and tested using the `execute` or `executor` methods.
+Refer to the [Testing Transformation Functions](../transformation_functions.md#testing-transformation-functions) guide for more details.
+
+!!! example "Accessing and testing an individual on-demand transformation function from a feature group"
+    === "Python"
+
+        ```python
+        # Access the transformation function by name
+        transaction_age_udf = fg["transaction_age"]
+
+        # Quick test
+        result = transaction_age_udf.execute(
+            pd.Series([datetime(2023, 1, 1)]),
+            pd.Series([datetime(2023, 6, 1)])
+        )
+        ```
+
+### Testing all on-demand transformations on a feature group
+
+The `execute_odts` method on a feature group applies all attached on-demand transformations to the provided data.
+This allows you to test the complete on-demand transformation pipeline locally.
+
+!!! example "Testing on-demand transformations on a feature group with a DataFrame"
+    === "Python"
+
+        ```python
+        @hopsworks.udf(return_type=float)
+        def compute_ratio(amount, quantity):
+            return amount / quantity
+
+        fg = fs.get_or_create_feature_group(
+            name="transactions",
+            version=1,
+            primary_key=["pk"],
+            transformation_functions=[compute_ratio("amount", "quantity")]
+        )
+
+        # Test with a DataFrame (offline mode)
+        test_df = pd.DataFrame({
+            "amount": [100.0, 200.0, 300.0],
+            "quantity": [2, 4, 5]
+        })
+        result_df = fg.execute_odts(test_df)
+        ```
+
+!!! example "Testing on-demand transformations on a feature group with a dictionary"
+    === "Python"
+
+        ```python
+        # Test with a dictionary (simulating online inference)
+        test_dict = {"amount": 100.0, "quantity": 2}
+        result_dict = fg.execute_odts(test_dict, online=True)
+        ```
+
+The `execute_odts` method accepts the following parameters:
+
+- **`data`**: Input data as a `pd.DataFrame`, `pl.DataFrame`, or `dict[str, Any]`.
+- **`online`**: Whether to execute in online mode (single values) or offline mode (batch). Defaults to offline mode.
+- **`transformation_context`**: A dictionary (or list of dictionaries for batch) mapping variable names to contextual values accessible via the `context` parameter in transformation functions.
+- **`request_parameters`**: A dictionary (or list of dictionaries for batch) of request parameters. These take highest priority when resolving feature values.
