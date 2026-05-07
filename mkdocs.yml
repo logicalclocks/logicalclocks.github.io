@@ -196,7 +196,8 @@ nav:
           - Api Keys:
               - Create API Key: user_guides/projects/api_key/create_api_key.md
           - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
-          - Query Engine: user_guides/projects/trino/query_engine.md
+          - Query Engine (Trino): user_guides/projects/trino/query_engine.md
+          - Superset: user_guides/projects/superset/superset.md
           - Python Deployment:
               - Deployment Creation: user_guides/projects/python-deployment/python-deployment.md
               - REST API: user_guides/projects/python-deployment/rest-api.md
@@ -278,7 +279,8 @@ nav:
               - Access Audit Logs: setup_installation/admin/audit/audit-logs.md
               - Export Audit Logs: setup_installation/admin/audit/export-audit-logs.md
           - Service Operations: setup_installation/admin/operationLogs.md
-          - Query Engine: setup_installation/admin/trino.md
+          - Query Engine (Trino): setup_installation/admin/trino.md
+          - Superset: setup_installation/admin/superset.md
       - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
   - Python API: python-api
   - Java API: javadoc
