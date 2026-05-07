@@ -75,6 +75,7 @@ variables**.
 ```python
 import hopsworks
 
+
 hopsworks.login()
 api = hopsworks.get_env_vars_api()
 
@@ -85,8 +86,8 @@ api.create_env_var("OPENAI_API_KEY", "sk-...")
 api.set_env_var("HF_TOKEN", "hf_...")
 
 # Read
-api.get("OPENAI_API_KEY")              # -> "sk-..." or None
-api.get_env_var("OPENAI_API_KEY")      # -> EnvVar object or None
+api.get("OPENAI_API_KEY")  # -> "sk-..." or None
+api.get_env_var("OPENAI_API_KEY")  # -> EnvVar object or None
 
 # List
 for v in api.get_env_vars():
