@@ -92,11 +92,8 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
 </p>
 
 !!! info "Account-level environment variables"
-    Variables defined under [Account settings → Environment variables][account-env-vars]
-    are injected into every Jupyter session you start. Read them in your
-    notebook with `os.environ["MY_KEY"]`.
-
-[account-env-vars]: ../env_vars/create.md
+    Variables defined under [Account settings → Environment variables][account-level-environment-variables] are injected into every Jupyter session you start.
+    Read them in your notebook with `os.environ["MY_KEY"]`.
 
 ## Accessing project data
 

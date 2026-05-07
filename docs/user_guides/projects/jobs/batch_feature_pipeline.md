@@ -29,11 +29,8 @@ For a manual (non-scheduled) run, these variables are only set if you explicitly
     If you set `HOPS_START_TIME` or `HOPS_END_TIME` in the job's envVars (or at launch time), your value wins over the scheduler-computed one for that execution. This is how backfill runs override the cron-derived interval.
 
 !!! info "Account-level variables also apply"
-    Variables defined under [Account settings → Environment variables][account-env-vars]
-    are also injected into every execution. A value set on the job overrides
-    the account-level value with the same name for this job only.
-
-[account-env-vars]: ../env_vars/create.md
+    Variables defined under [Account settings → Environment variables][account-level-environment-variables] are also injected into every execution.
+    A value set on the job overrides the account-level value with the same name for this job only.
 
 ## Incremental (recurring)
 

@@ -279,11 +279,8 @@ User-defined environment variables can be attached to a Spark job under the
 of the job.
 
 !!! info "Account-level variables also apply"
-    Variables defined under [Account settings → Environment variables][account-env-vars]
-    are also injected into the Spark driver and executors. A value set on the
-    job overrides the account-level value with the same name for this job only.
-
-[account-env-vars]: ../env_vars/create.md
+    Variables defined under [Account settings → Environment variables][account-level-environment-variables] are also injected into the Spark driver and executors.
+    A value set on the job overrides the account-level value with the same name for this job only.
 
 ```python
 import os

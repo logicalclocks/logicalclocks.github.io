@@ -220,11 +220,8 @@ User-defined environment variables can be attached to a Python job under the
 `KEY=VALUE` pair that is set on the container for every execution of the job.
 
 !!! info "Account-level variables also apply"
-    Variables defined under [Account settings → Environment variables][account-env-vars]
-    are also injected into this job. A value set on the job overrides the
-    account-level value with the same name for this job only.
-
-[account-env-vars]: ../env_vars/create.md
+    Variables defined under [Account settings → Environment variables][account-level-environment-variables] are also injected into this job.
+    A value set on the job overrides the account-level value with the same name for this job only.
 
 ```python
 # inside your Python job script
