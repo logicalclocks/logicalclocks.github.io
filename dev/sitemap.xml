@@ -161,6 +161,10 @@
          <lastmod>2026-05-07</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/superset/</loc>
+         <lastmod>2026-05-07</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/trino/</loc>
          <lastmod>2026-05-07</lastmod>
     </url>
@@ -838,6 +842,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/projects/secrets/create_secret/</loc>
+         <lastmod>2026-05-07</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/projects/superset/superset/</loc>
          <lastmod>2026-05-07</lastmod>
     </url>
     <url>
