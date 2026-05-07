@@ -192,6 +192,8 @@ nav:
               - Repository Actions: user_guides/projects/git/repository_actions.md
           - Secrets:
               - Create Secret: user_guides/projects/secrets/create_secret.md
+          - Environment variables:
+              - Account-level Environment Variables: user_guides/projects/env_vars/create.md
           - Api Keys:
               - Create API Key: user_guides/projects/api_key/create_api_key.md
           - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md

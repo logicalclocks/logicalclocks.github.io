@@ -88,6 +88,16 @@ Optionally, you can access and adjust other parameters of the deployment configu
 You will be redirected to a full-page deployment creation form, where you can review all default configuration values and customize them to fit your requirements.
 In addition to the basic settings, this form allows you to further configure the [Predictor](#predictor) and [Transformer](#transformer) KServe components of your model deployment.
 
+The form includes *Predictor environment variables* and *Transformer environment variables* sections. The predictor section is pre-filled with your account-level [Environment variables][account-env-vars]; values you change in the form become per-deployment overrides for that specific deployment, and account-level values for names you don't include continue to apply at runtime.
+
+!!! info "Account-level variables also apply"
+    Variables defined under [Account settings → Environment variables][account-env-vars]
+    are injected into every model deployment you start. A value set on the
+    deployment overrides the account-level value with the same name for that
+    deployment only.
+
+[account-env-vars]: ../../projects/env_vars/create.md
+
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
 ### Step 4: Deployment creation

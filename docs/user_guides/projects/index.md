@@ -12,3 +12,4 @@ This section serves to provide guides and examples for the common usage of servi
 - [Kafka](kafka/create_topic.md)
 - [OpenSearch](opensearch/connect.md)
 - [Secrets](secrets/create_secret.md)
+- [Environment Variables](env_vars/create.md)
