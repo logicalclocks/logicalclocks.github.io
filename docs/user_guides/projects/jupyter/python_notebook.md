@@ -91,6 +91,10 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
   </figure>
 </p>
 
+!!! info "Account-level environment variables"
+    Variables defined under [Account settings → Environment variables][account-level-environment-variables] are injected into every Jupyter session you start.
+    Read them in your notebook with `os.environ["MY_KEY"]`.
+
 ## Accessing project data
 
 !!! notice "Recommended approach if `/hopsfs` is mounted"
