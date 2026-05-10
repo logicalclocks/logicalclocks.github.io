@@ -889,6 +889,14 @@
          <lastmod>2026-05-10</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/chart_api/</loc>
+         <lastmod>2026-05-10</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/dashboard_api/</loc>
+         <lastmod>2026-05-10</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/dataset_api/</loc>
          <lastmod>2026-05-10</lastmod>
     </url>
@@ -942,6 +950,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/superset_api/</loc>
+         <lastmod>2026-05-10</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/tag_schemas_api/</loc>
          <lastmod>2026-05-10</lastmod>
     </url>
     <url>
@@ -1009,6 +1021,10 @@
          <lastmod>2026-05-10</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/spark/</loc>
+         <lastmod>2026-05-10</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/tag/</loc>
          <lastmod>2026-05-10</lastmod>
     </url>
@@ -1018,6 +1034,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/user/</loc>
+         <lastmod>2026-05-10</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks_common/core/rest/</loc>
          <lastmod>2026-05-10</lastmod>
     </url>
     <url>
@@ -1058,6 +1078,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_monitoring_result/</loc>
+         <lastmod>2026-05-10</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsfs/core/inferred_metadata/</loc>
          <lastmod>2026-05-10</lastmod>
     </url>
     <url>
