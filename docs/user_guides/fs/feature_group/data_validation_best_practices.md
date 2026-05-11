@@ -16,25 +16,47 @@ Use this phase to build a history you can then use when it becomes time to set q
 We made a code snippet to help you get started quickly:
 
 ```python
+import pandas as pd
+import great_expectations as gx
+from great_expectations.expectations.expectation_configuration import (
+    ExpectationConfiguration,
+)
+
 # Load sample data.
 # Replace it with your own!
 my_data_df = pd.read_csv(
     "https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/credit_cards.csv"
 )
 
-# Use Great Expectation profiler (ignore deprecation warning)
-expectation_suite_profiled, validation_report = ge.from_pandas(
-    my_data_df
-).profile(profiler=ge.profile.BasicSuiteBuilderProfiler)
+# Build a starter Expectation Suite that asserts every column exists and is
+# not null. This is a useful baseline; tighten it as you learn the data.
+# Build the list first and pass it to the constructor: GE 1.x's
+# add_expectation_configuration() deduplicates expect_column_to_exist entries,
+# but the constructor's expectations= argument preserves every entry.
+expectations = []
+for column in my_data_df.columns:
+    expectations.append(
+        ExpectationConfiguration(
+            type="expect_column_to_exist", kwargs={"column": column}
+        )
+    )
+    expectations.append(
+        ExpectationConfiguration(
+            type="expect_column_values_to_not_be_null", kwargs={"column": column}
+        )
+    )
+expectation_suite = gx.ExpectationSuite(
+    name="credit_cards_baseline", expectations=expectations
+)
 
-# Create a Feature Group on hopsworks with an expectation suite attached.
+# Create a Feature Group on Hopsworks with the suite attached.
 # Don't forget to change the primary key!
 my_validated_data_fg = fs.get_or_create_feature_group(
     name="my_validated_data_fg",
     version=1,
     description="My data",
     primary_key=["cc_num"],
-    expectation_suite=expectation_suite_profiled,
+    expectation_suite=expectation_suite,
 )
 ```
 
@@ -45,9 +67,12 @@ Any data you insert in the Feature Group from now will be validated and a report
 insert_job, validation_report = my_validated_data_fg.insert(my_data_df)
 ```
 
-Great Expectations profiler can inspect your data to build a standard Expectation Suite.
-You can attach this Expectation Suite directly when creating your Feature Group to make sure every piece of data finding its way in Hopsworks gets validated.
-Hopsworks will default to its `"ALWAYS"` ingestion policy, meaning data are ingested whether validation succeeds or not.
+Great Expectations 0.18.x shipped a `BasicSuiteBuilderProfiler` that auto-generated a starter suite from a sample DataFrame.
+That profiler was removed in 1.0 with no in-tree replacement, so the snippet above builds a minimal suite by hand.
+For real workloads, iterate on it: add `expect_column_(min/max/mean/stdev)_to_be_between`, `expect_column_values_to_be_unique`, and similar checks as you understand the distributions.
+
+Attaching the suite when creating the Feature Group ensures every piece of data finding its way into Hopsworks gets validated.
+Hopsworks defaults to its `"ALWAYS"` ingestion policy, meaning data is ingested whether validation succeeds or not.
 This way data validation is not a barrier, just a monitoring tool.
 
 ### Identify Unreliable Features
@@ -104,7 +129,7 @@ You can filter on time and on whether insertion was successful or not.
 
 ```python
 validation_history = fg.get_validation_history(
-    expectation_id=my_id, filters=["REJECTED", "UNKNOWN"], ge_type=False
+    expectation_id=my_id, filter_by=["REJECTED", "UNKNOWN"], ge_type=False
 )
 
 timeseries = pd.DataFrame(
