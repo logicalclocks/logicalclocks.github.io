@@ -141,9 +141,8 @@ To validate the data, we will use the [Great Expectations](https://greatexpectat
 Below is a short introduction on how to build an Expectation Suite to validate your data.
 Everything is done using the Great Expectations API so you can re-use any prior knowledge you may have of the library.
 
-The Hopsworks `great-expectations` extra installs Great Expectations 1.17.1 by default.
-Examples in this guide target that version.
-If you have existing pipelines pinned to Great Expectations 0.18.x, see the [installation guide][profiles] for the `great-expectations-legacy` extra.
+The Hopsworks `great-expectations` extra supports Great Expectations 0.18.12 and 1.17.1.
+We recommend 1.17.1, and examples in this guide target that version.
 
 #### Create an Expectation Suite
 
