@@ -210,9 +210,6 @@ Inside a model deployment, the local path to the artifact files is stored in the
     All files under `/Models` and `/Deployments` are managed by Hopsworks.
     Manual changes to these files cannot be reverted and can have an impact on existing model deployments.
 
-!!! tip "vLLM omni mode"
-    For vLLM deployments, the server configuration file supports a `#HOPSWORKS omni: true` directive to enable omni mode.
-
 ## Predictor
 
 Predictors are responsible for running the model server that loads the trained model, handles inference requests and returns prediction results.
