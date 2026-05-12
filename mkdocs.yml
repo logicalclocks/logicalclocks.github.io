@@ -172,6 +172,7 @@ nav:
               - Run PySpark Job: user_guides/projects/jobs/pyspark_job.md
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
               - Run Ray Job: user_guides/projects/jobs/ray_job.md
+              - Run Agent Job: user_guides/projects/jobs/agent_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
               - Batch Feature Pipelines: user_guides/projects/jobs/batch_feature_pipeline.md
           - Kubernetes Scheduling:
