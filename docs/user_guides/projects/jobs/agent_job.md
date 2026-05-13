@@ -133,6 +133,10 @@ artifact must be written). They are reserved for the platform, so you
 can't override them, but referencing them inside the prompt (e.g.
 `${AGENT_OUTPUT_PATH}/result.md`) is the intended pattern.
 
+The platform also injects `SHARED_DATASETS_DIR` pointing at the project's
+shared-datasets folder under `/hopsfs/`, so prompts can refer to it as
+`${SHARED_DATASETS_DIR}/...` without hard-coding the path.
+
 ### Step 7: Resources, environment, alerts
 
 The bottom of the form is shared with other job types:
@@ -237,7 +241,7 @@ spec.
 By default the agent writes to:
 
 ```text
-/hopsfs/Resources/agent-jobs/<job-name>/<execution-id>/
+/hopsfs/Resources/jobs/<job-name>/<execution-id>/
 ├── result.md         # primary, human-readable result — rendered by the UI
 ├── metadata.json     # { "exit_code": 0, "completed_at": "<ISO8601>" }
 └── (any other files the agent chose to write)
