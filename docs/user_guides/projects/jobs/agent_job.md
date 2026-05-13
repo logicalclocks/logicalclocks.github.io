@@ -71,7 +71,7 @@ post a Slack alert.
 ### Step 3: Pick the provider
 
 | Provider | When to use |
-|---|---|
+| --- | --- |
 | **Claude** (default) | Most tasks; supports hooks, max-turns and max-budget controls. |
 | **Codex** | When you want OpenAI's coding agent. Supports free-form CLI flag overrides via `cliArgs`. |
 
@@ -84,7 +84,7 @@ Permissions are an explicit allowlist of tools the agent may invoke — they map
 directly to the underlying CLI's tool patterns. Pick a preset for most jobs:
 
 | Preset | Effect |
-|---|---|
+| --- | --- |
 | `READ_ONLY` (default) | Inspect feature groups, feature views, models — no writes. |
 | `OPERATOR` | Run any `hops` CLI command + `python *`, plus write under `/hopsfs/*`. |
 | `FULL` | A curated allowlist of common shell commands (`ls`, `cat`, `grep`, `find`, `curl`, `wget`, `echo`, `mkdir`, `cp`, `mv`), plus `Read(*)` and `Write(/hopsfs/*)`. **Not** unrestricted shell access — pick **Custom** if you need that. |
@@ -101,7 +101,7 @@ Refs inject Hopsworks resource metadata into the agent pod as JSON files under
 without you having to spell every detail out in the prompt:
 
 | Ref type | Required version? | Context file |
-|---|---|---|
+| --- | --- | --- |
 | `feature_group` | yes | `/context/fg_<name>_v<version>.json` |
 | `feature_view` | yes | `/context/fv_<name>_v<version>.json` |
 | `model` | yes | `/context/model_<name>_v<version>.json` |
@@ -209,7 +209,7 @@ configuration payload, where `type` is `"agentJobConfiguration"` and the
 fields are:
 
 | Field | Type | Required | Default | Notes |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `type` | string | yes | — | Must be `"agentJobConfiguration"` |
 | `appName` | string | yes | — | Job name |
 | `prompt` | string | yes | — | The task |
