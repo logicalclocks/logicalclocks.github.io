@@ -88,16 +88,6 @@ Optionally, you can access and adjust other parameters of the deployment configu
 You will be redirected to a full-page deployment creation form, where you can review all default configuration values and customize them to fit your requirements.
 In addition to the basic settings, this form allows you to further configure the [Predictor](#predictor) and [Transformer](#transformer) KServe components of your model deployment.
 
-The form includes *Predictor environment variables* and *Transformer environment variables* sections. The predictor section is pre-filled with your account-level [Environment variables][account-env-vars]; values you change in the form become per-deployment overrides for that specific deployment, and account-level values for names you don't include continue to apply at runtime.
-
-!!! info "Account-level variables also apply"
-    Variables defined under [Account settings → Environment variables][account-env-vars]
-    are injected into every model deployment you start. A value set on the
-    deployment overrides the account-level value with the same name for that
-    deployment only.
-
-[account-env-vars]: ../../projects/env_vars/create.md
-
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
 ### Step 4: Deployment creation
@@ -213,12 +203,12 @@ Inside a model deployment, the local path to the artifact files is stored in the
 ## Predictor
 
 Predictors are responsible for running the model server that loads the trained model, handles inference requests and returns prediction results.
-To learn more about predictors, see the [Predictor (KServe) Guide](predictor.md)
+To learn more about predictors and how to configure them — including [environment variables](predictor.md#environment-variables), [resources](predictor.md#resources), and [autoscaling](predictor.md#autoscaling) — see the [Predictor (KServe) Guide](predictor.md).
 
 ## Transformer
 
 Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
-To learn more about transformers, see the [Transformer (KServe) Guide](transformer.md).
+To learn more about transformers and how to configure them — including [environment variables](transformer.md#environment-variables), [resources](transformer.md#resources), and [autoscaling](transformer.md#autoscaling) — see the [Transformer (KServe) Guide](transformer.md).
 
 !!! warning
     Transformers are not available for vLLM deployments.
