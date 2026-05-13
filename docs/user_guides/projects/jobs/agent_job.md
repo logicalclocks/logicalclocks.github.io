@@ -9,9 +9,10 @@ description: Documentation on how to configure and execute an Agent Job on Hopsw
 Agent Jobs are **fire-and-forget AI agents** that run as first-class Hopsworks jobs.
 You write a prompt, select a provider (Claude Code or OpenAI Codex), grant the
 agent a set of permissions, point it at the project resources it needs, and
-launch it. The agent runs to completion inside a Kubernetes pod, writes its
-results to HopsFS, and the pod terminates. No interactive UI, no WebSocket — the
-same lifecycle as a Python or Spark job.
+launch it.
+The agent runs to completion inside a Kubernetes pod, writes its results to
+HopsFS, and the pod terminates.
+No interactive UI, no WebSocket — the same lifecycle as a Python or Spark job.
 
 Common use cases:
 
@@ -55,9 +56,10 @@ job type.
 
 ### Step 2: Write the prompt
 
-The prompt is the task description — what you want the agent to do. Be explicit
-about the inputs (which Feature Group, which Model) and the expected output (a
-report file at `${AGENT_OUTPUT_PATH}/result.md`, a Slack message, etc).
+The prompt is the task description — what you want the agent to do.
+Be explicit about the inputs (which Feature Group, which Model) and the
+expected output (a report file at `${AGENT_OUTPUT_PATH}/result.md`, a Slack
+message, etc).
 
 ```text
 Inspect feature group `transactions` v3 for null spikes in the `amount` and
@@ -125,6 +127,11 @@ turn overrides anything in the secrets table.
 
 Reserved-name prefixes that you may **not** set: `HOPS_`, `HOPSWORKS_`,
 `HOPSFS_`, `AGENT_`.
+The platform injects several `AGENT_*` variables that you can *read* from
+your prompt — most usefully `AGENT_OUTPUT_PATH` (where your final
+artifact must be written). They are reserved for the platform, so you
+can't override them, but referencing them inside the prompt (e.g.
+`${AGENT_OUTPUT_PATH}/result.md`) is the intended pattern.
 
 ### Step 7: Resources, environment, alerts
 
@@ -248,5 +255,5 @@ visible via the Logs button on the execution row.
   reasonable runs don't trip it. Default 50.
 - **The image must be `agent-job` or a clone** — other Python environments
   don't ship the Claude/Codex CLIs and will be rejected at job-create time.
-- **Reserved env-var prefixes** (`HOPS_`, `HOPSWORKS_`, `HOPSFS_`, `AGENT_`)
-  are rejected — they belong to the platform.
+- **Reserved env-var prefixes** — see [Step 6](#step-6-environment-variables-optional);
+  `HOPS_`, `HOPSWORKS_`, `HOPSFS_`, and `AGENT_` are owned by the platform.
