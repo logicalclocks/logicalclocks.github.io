@@ -6,10 +6,13 @@
 uv venv && uv pip install -r requirements-docs.txt # setup
 uv pip install "git+https://github.com/logicalclocks/hopsworks-api.git@main#subdirectory=python" # install Python API (needed for API docs section)
 touch docs/javadoc; uv run mkdocs build -s; rm docs/javadoc # build (strict)
-uv run mkdocs serve # preview with live reload
+uv run mike deploy <version> latest --update-alias # build a versioned bundle to the gh-pages worktree (use repo's current version, e.g. 4.4); first time only: `uv run mike set-default latest`
+uv run mike serve # serve the gh-pages worktree locally (preview); does NOT live-reload from source — re-run `mike deploy` after edits
 npx markdownlint-cli2 "**/*.md" # lint Markdown (requires Node.js)
 uv tool install md-snakeoil && snakeoil --line-length 88 --rules "E,F,B,C4,ISC,PIE,PYI,Q,RSE,RET,SIM,TC,I,W,D2,D3,D4,INP,UP,FA" docs # lint Python code blocks
 ```
+
+`uv run mkdocs serve` is available too, but its livereload watcher does not fire rebuilds in this repo's plugin combination on macOS — `mike serve` is the canonical preview tool per the repo README.
 
 ## Rules
 
