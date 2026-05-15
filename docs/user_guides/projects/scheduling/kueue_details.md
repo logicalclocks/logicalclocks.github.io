@@ -2,7 +2,7 @@
 description: Kueue abstractions
 ---
 
-# Kueue
+# Kueue { #kueue-details }
 
 ## Introduction
 

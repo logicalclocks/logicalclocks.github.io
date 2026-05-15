@@ -177,6 +177,7 @@ nav:
           - Kubernetes Scheduling:
               - Base: user_guides/projects/scheduling/kube_scheduler.md
               - Kueue: user_guides/projects/scheduling/kueue_details.md
+              - Compute Resources Usage: user_guides/projects/scheduling/compute_resources.md
 
           - Airflow: user_guides/projects/airflow/airflow.md
           - OpenSearch:
@@ -257,6 +258,7 @@ nav:
           - Configure Alerts: setup_installation/admin/alert.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
+          - Configure Compute Resources Usage View: setup_installation/admin/compute_resources.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
