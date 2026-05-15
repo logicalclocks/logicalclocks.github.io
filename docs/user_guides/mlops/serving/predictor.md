@@ -371,7 +371,7 @@ Set it explicitly to pin a deployment to a specific image — useful when you ne
 The list of available versions per variant is advertised by the cluster administrator through the
 `kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions` Hopsworks variables.
 
-Hopsworks ships exactly one default image version for each of the **vLLM** and **vLLM-Omni** variants. 
+Hopsworks ships exactly one default image version for each of the **vLLM** and **vLLM-Omni** variants.
 Any additional versions exposed in the **Version** dropdown are managed by the cluster administrator.
 If a version you need is not listed, contact your administrator.
 
