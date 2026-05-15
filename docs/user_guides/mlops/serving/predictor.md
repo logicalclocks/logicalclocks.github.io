@@ -349,16 +349,14 @@ For **vLLM deployments**, the server configuration file is ==required== and is u
 For **vLLM deployments**, you can choose which **variant** of vLLM to run and, optionally, which **image version** to use.
 Both settings are stored on the deployment and can be edited later — they are first-class fields on the predictor configuration.
 
-!!! warning "Available image versions"
-    Hopsworks ships exactly one default image version for each of the **vLLM** and **vLLM-Omni** variants. Any additional versions exposed in the **Version** dropdown are managed by the cluster administrator.
-    If a version you need is not listed, contact your administrator.
-
 ### Variant
 
 | Variant          | Runtime                                                                                 | When to use                                                            |
 | ---------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | `VLLM` (default) | Standard `vllm-openai` server ([docker hub](https://hub.docker.com/r/vllm/vllm-openai)) | OpenAI-compatible inference with the upstream vLLM engine.             |
 | `VLLM_OMNI`      | Standard `vllm-omni` server ([docker hub](https://hub.docker.com/r/vllm/vllm-omni))     | OpenAI-compatible multi-modal inference with the upstream vLLM engine. |
+
+Both the `VLLM` and `VLLM_OMNI` variants run the official upstream vLLM images published on [Docker Hub](https://hub.docker.com): [`vllm/vllm-openai`](https://hub.docker.com/r/vllm/vllm-openai) and [`vllm/vllm-omni`](https://hub.docker.com/r/vllm/vllm-omni) respectively.
 
 !!! tip "Python SDK"
     From the Python SDK, the variant is selected with the `vllm_variant` keyword
@@ -373,9 +371,16 @@ Set it explicitly to pin a deployment to a specific image — useful when you ne
 The list of available versions per variant is advertised by the cluster administrator through the
 `kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions` Hopsworks variables.
 
-!!! info "Validation"
-    If the image version is set to a value that is not in the variant's advertised list (for example, the admin removed it),
-    the deployment fails with the `VLLM_VERSION_NOT_AVAILABLE` error. Pick a different version or ask the administrator to re-advertise the tag.
+Hopsworks ships exactly one default image version for each of the **vLLM** and **vLLM-Omni** variants. 
+Any additional versions exposed in the **Version** dropdown are managed by the cluster administrator.
+If a version you need is not listed, contact your administrator.
+
+!!! warning "Cluster registry access"
+    For any additional image version advertised in the **Version** dropdown to actually start, the official `docker.io` registry and the `vllm/vllm-openai` / `vllm/vllm-omni` repositories must be pullable from inside the cluster.
+    If the cluster has no egress to Docker Hub, ask your administrator to either grant access or mirror the upstream tags into the cluster's internal registry under the same repository path — otherwise the deployment will fail to pull the image.
+
+!!! note "Upstream tags"
+    Hopsworks does not repackage these images — the tag you select in the **Version** dropdown is the upstream ==Docker Hub tag==.
 
 !!! tip "Python SDK"
     From the Python SDK, the image version is selected with the `vllm_image_tag`
