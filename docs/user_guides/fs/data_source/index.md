@@ -39,6 +39,7 @@ Cloud agnostic storage systems:
 5. [CRM, Sales & Analytics](creation/crm_sales_analytics.md): Connect to supported CRM, sales, and analytics platforms.
 6. [REST API](creation/rest_api.md): Connect to external HTTP APIs with configurable headers and authentication.
 7. [SAP HANA][data-source-sap-hana]: Query SAP HANA tenant databases using SQL.
+8. [MongoDB][data-source-mongodb]: Read collections from a self-hosted MongoDB deployment or Atlas cluster.
 
 ## AWS
 
