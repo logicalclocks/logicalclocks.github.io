@@ -31,7 +31,7 @@ version, job = feature_view.create_training_data(
 print(job.id)  # get the job's id and view the job status in the UI
 ```
 
-### Extra filters
+### Extra filters {#training-data-extra-filters}
 
 Sometimes data scientists need to train different models using subsets of a dataset.
 For example, there can be different models for different countries, seasons, and different groups.
