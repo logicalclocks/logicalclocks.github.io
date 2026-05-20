@@ -53,12 +53,21 @@ They can:
 
 ### Feature store restricted
 
-Feature store restricted users have the most limited access, designed for users who only need to consume specific features that have been explicitly [shared](../../fs/sharing/sharing.md) with them.
+Feature store restricted users function similarly to Data scientists but with tighter restrictions on what data they can access.
+They are designed for users who should only work with features that have been explicitly shared with them.
+
+Key differences from Data scientist:
+
+- **No cross-project feature store access:** A Feature store restricted user cannot use feature groups from a shared project.
+  They can only work within the feature groups of their own project.
+- **Explicit sharing required:** A Feature store restricted user can only see and use feature groups that have been explicitly shared with them individually, not all feature groups in their project.
+- **Feature view access is gated by feature access:** A Feature store restricted user can only interact with a feature view if they have access to every feature group the feature view depends on.
+  If even one underlying feature group has not been shared with them, they cannot use that feature view.
 
 They can:
 
 - Access and use feature groups that have been explicitly shared with them
-- Create feature views and training datasets using shared features
+- Create feature views and training datasets using only the features they have been granted access to
 
 ## Step 3: Confirm member invitation
 
