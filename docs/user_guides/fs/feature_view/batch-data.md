@@ -54,6 +54,55 @@ df = feature_view.get_batch_data(
 )
 ```
 
+## Extra filters {#batch-data-extra-filters}
+
+`get_batch_data` accepts an `extra_filter` argument that lets you apply an arbitrary filter on top of the Feature View's own query filter and any training-dataset filter inherited from `init_batch_scoring`.
+Filters are combined with `AND`, pushed down to the storage layer, and apply equally to `get_batch_data`, `get_batch_query`, and `get_batch_query_string`.
+
+The simplest form uses a Feature Group handle to build the predicate:
+
+```python
+df = feature_view.get_batch_data(
+    start_time="20220620",
+    end_time="20220627",
+    extra_filter=(trans_fg.category == "Health/Beauty"),
+)
+```
+
+Combine multiple predicates with `&` (AND) and `|` (OR):
+
+```python
+df = feature_view.get_batch_data(
+    extra_filter=(trans_fg.amount > 100) & (trans_fg.country.isin(["SE", "NO"])),
+)
+```
+
+The Feature View's own query filter and any training-dataset filter from `init_batch_scoring` are AND-combined with `extra_filter` before the read.
+This is the same parameter that [training-data extra filters][training-data-extra-filters] exposes on training-data creation, so a filter expression works the same way in both APIs.
+
+### Building filters from the Feature View alone
+
+When you do not have the Feature Group handle in scope (for example when reading a Feature View in an inference script), use `feature_view.get_feature(name)` to obtain a `Feature` directly from the Feature View's query.
+The returned `Feature` supports the same comparison operators (`==`, `!=`, `<`, `<=`, `>`, `>=`) and helper methods (`.like`, `.isin`, `.contains`), so it slots into `extra_filter` the same way:
+
+```python
+df = feature_view.get_batch_data(
+    extra_filter=(feature_view.get_feature("amount") > 100),
+)
+```
+
+For Feature Views built from a join, `get_feature` accepts either the bare name or the prefixed name produced by the join.
+Bare names resolve against the left Feature Group when more than one side has the column; the prefixed form forces resolution against the joined Feature Group:
+
+```python
+df = feature_view.get_batch_data(
+    # `category` exists on both sides of the join — `sec_` selects the joined FG.
+    extra_filter=(feature_view.get_feature("sec_category") == "A"),
+)
+```
+
+If a bare name is ambiguous and no prefix is supplied, `get_feature` raises a `FeatureStoreException` listing the matching Feature Groups.
+
 ## Creation with transformation
 
 If you have specified transformation functions when creating a feature view, you will get back transformed batch data as well.
@@ -65,7 +114,7 @@ Please note that transformed batch data can only be returned in the python clien
 feature_view.init_batch_scoring(training_dataset_version=1)
 ```
 
-It is important to note that in addition to the filters defined in feature view, [extra filters](./training-data.md#extra-filters) will be applied if they are defined in the given training dataset version.
+It is important to note that in addition to the filters defined in Feature View, [extra filters][training-data-extra-filters] will be applied if they are defined in the given training dataset version.
 
 ## Retrieving untransformed batch data
 
