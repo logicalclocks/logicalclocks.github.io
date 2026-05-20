@@ -62,7 +62,7 @@ jobs:
 
       - name: Build javadoc documentation
         working-directory: hopsworks-api/java
-        run: mvn clean install javadoc:javadoc javadoc:aggregate -DskipTests && cp -r target/site/apidocs ../../docs/javadoc
+        run: mvn clean install javadoc:javadoc javadoc:aggregate -DskipTests -Dspark.version=3.5.5 -Dhudi.version=1.0.2 && cp -r target/site/apidocs ../../docs/javadoc
 
       - name: Check for broken links
         run: hopsworks-docs linkchecker
