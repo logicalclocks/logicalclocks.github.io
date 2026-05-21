@@ -19,7 +19,9 @@ In this guide, you will learn how to create an API key.
 
 ### Step 1: Navigate to API Keys
 
-In the _Account Settings_ page you can find the _API_ section showing a list of all API keys. The table shows each key's name, scope, prefix, creation date, last modification date, and expiration date. Keys with no expiration show _Never_ in the expiration column.
+In the _Account Settings_ page you can find the _API_ section showing a list of all API keys. 
+The table shows each key's name, scope, prefix, creation date, last modification date, and expiration date. 
+Keys with no expiration show _Never_ in the expiration column.
 
 <p align="center">
   <figure>
@@ -42,7 +44,8 @@ Click `New API key`, enter a name, optionally set an expiration, select the requ
 
 To change the expiration date of an existing key you must regenerate it — expiration cannot be updated after creation.
 
-Copy the key value and save it in a secure location, such as a password manager. It will not be shown again.
+Copy the key value and save it in a secure location, such as a password manager. 
+It will not be shown again.
 
 <p align="center">
   <figure>
