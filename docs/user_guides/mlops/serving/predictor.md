@@ -364,7 +364,7 @@ Both the `VLLM` and `VLLM_OMNI` variants run the official upstream vLLM images p
 
 ### Image version
 
-The image version is the runtime image tag (for example `v0.14.0`) used for the vLLM container.
+The image version is the runtime image tag (for example `v0.20.0`) used for the vLLM container.
 If not set, Hopsworks picks the **highest** image version advertised for the chosen variant at creation time.
 Set it explicitly to pin a deployment to a specific image — useful when you need a stable, reproducible runtime.
 
