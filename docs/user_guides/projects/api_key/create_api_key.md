@@ -35,7 +35,7 @@ Click `New API key`, enter a name, optionally set an expiration, select the requ
 **Expiration options:**
 
 | Option | Description |
-|--------|-------------|
+| -------- | ------------- |
 | No expiration | The key never expires (default). |
 | 7 / 30 / 60 / 90 days | The key expires the selected number of days from now. |
 | Custom | Pick a specific date using the date picker. |
