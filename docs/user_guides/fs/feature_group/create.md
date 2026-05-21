@@ -102,6 +102,60 @@ MaxDirectoryItemsExceededException - The directory item limit is exceeded: limit
 
 By using partitioning the system will write the feature data in different subdirectories, thus allowing you to write 10240 files per partition.
 
+##### Time-grain partitioning with `partitioned_by` (Delta only)
+
+When the partition columns are derived from the feature group's `event_time`, the Python client can hand the backend the desired time grains and let the storage engine generate the partition columns automatically.
+Pass `partitioned_by=[...]` with one or more grains drawn from `hour`, `day`, `week`, `month`, and `year`.
+
+```python
+fg = fs.get_or_create_feature_group(
+    name="transactions",
+    version=1,
+    primary_key=["tx_id"],
+    event_time="tx_ts",
+    partitioned_by=["year", "month", "day"],
+    time_travel_format="DELTA",
+)
+fg.insert(df)  # df does not need year/month/day — Delta derives them
+```
+
+The example above is equivalent to manually decomposing `tx_ts` into three columns and passing `partition_key=["year", "month", "day"]`.
+The backend creates the table via `CREATE TABLE … USING DELTA … GENERATED ALWAYS AS …`, so the derived columns live entirely inside the storage layer; the source dataframe never carries them.
+
+`partitioned_by` and `partition_key` are mutually exclusive.
+`partitioned_by` requires `event_time` to be set.
+
+###### Partition pruning
+
+Delta auto-derives partition predicates from the GENERATED expressions when the user filters on the source column.
+Filtering on `event_time` ranges therefore prunes partitions for free on hierarchical specs:
+
+| `partitioned_by` | Prunes on `event_time` range? | Prunes on `year` / `month` / `day` filter? |
+| --- | --- | --- |
+| `["year"]` | ✅ | ✅ |
+| `["year", "month"]` | ✅ | ✅ |
+| `["year", "month", "day"]` | ✅ | ✅ |
+| `["year", "month", "day", "hour"]` | ✅ | ✅ |
+| `["month"]` (no year) | ⚠️ no — month alone is ambiguous across years | ✅ filter on month works |
+| `["year", "week"]` | ⚠️ year only — week isn't directly derivable from a date range | ✅ both columns prune |
+| `["day"]` (no year/month) | ⚠️ no — day-of-month is ambiguous | ✅ filter on day works |
+
+Prefer hierarchical specs (`["year"]`, `["year", "month"]`, `["year", "month", "day"]`) — they line up with the typical batch-pipeline access pattern and prune naturally.
+
+###### Online feature store
+
+By default, the derived partition columns live only in the offline storage; the online feature store does not get them.
+Pass `online_partition_columns=True` to materialize them in the online row as well.
+
+While the online-store filter (the `onlinefs` consumer that drops `offline_only` columns from the RonDB write) is still pending, the backend rejects `partitioned_by` together with `online_enabled=true` and the default `online_partition_columns=false` to avoid writing the grain columns to RonDB by accident.
+The two workarounds: keep the feature group offline-only, or set `online_partition_columns=True` to materialize the grains online explicitly.
+
+###### Hudi
+
+`partitioned_by` on `time_travel_format="HUDI"` feature groups is not yet supported and the backend rejects it at creation.
+Hudi needs a different mechanism (a `CustomKeyGenerator` + server-side `Transformer`) and is tracked under a separate follow-up ticket.
+Until that lands, use `time_travel_format="DELTA"` to get time-grain partitioning, or partition Hudi groups explicitly via `partition_key=["year"]` with a `year` column the upstream pipeline computes.
+
 ##### Table format
 
 When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter.
