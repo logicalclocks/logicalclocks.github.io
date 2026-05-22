@@ -72,8 +72,11 @@ The Hopsworks operators and sensors are shipped in the `apache-airflow-providers
 Import them from the standard provider namespace:
 
 ```python
-from hopsworks.airflow.operators import HopsworksLaunchOperator
-from hopsworks.airflow.sensors import HopsworksJobSuccessSensor, HopsworksHdfsSensor
+from hopsworks.airflow.operators import HopsworksLaunchOperator  # noqa: F401
+from hopsworks.airflow.sensors import (  # noqa: F401
+    HopsworksHdfsSensor,
+    HopsworksJobSuccessSensor,
+)
 ```
 
 Launch a Hopsworks job:

@@ -43,8 +43,11 @@ rewrite tool ships with this release. Concrete things to change:
 The Hopsworks-provided operators are now exposed via a standard provider:
 
 ```python
-from hopsworks.airflow.operators import HopsworksLaunchOperator
-from hopsworks.airflow.sensors import HopsworksJobSuccessSensor, HopsworksHdfsSensor
+from hopsworks.airflow.operators import HopsworksLaunchOperator  # noqa: F401
+from hopsworks.airflow.sensors import (  # noqa: F401
+    HopsworksHdfsSensor,
+    HopsworksJobSuccessSensor,
+)
 ```
 
 `HopsworksHdfsSensor` replaces the legacy `HopsworksHdfsSensor` plugin from the 1.x shim.
