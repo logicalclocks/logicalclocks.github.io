@@ -21,14 +21,15 @@ In each predictor, you can decide the following configuration:
     1. [Model server](#model-server)
     2. [Predictor script](#predictor-script)
     3. [Server configuration file](#server-configuration-file)
-    4. [Python environments](#python-environments)
-    5. [Transformer script](#transformer-script)
-    6. [Inference Logger](#inference-logger)
-    7. [Inference Batcher](#inference-batcher)
-    8. [Resources](#resources)
-    9. [Autoscaling](#autoscaling)
-    10. [Scheduling](#scheduling)
-    11. [API protocol](#api-protocol)
+    4. [vLLM variant and image version](#vllm-variant-and-image-version)
+    5. [Python environments](#python-environments)
+    6. [Transformer script](#transformer-script)
+    7. [Inference Logger](#inference-logger)
+    8. [Inference Batcher](#inference-batcher)
+    9. [Resources](#resources)
+    10. [Autoscaling](#autoscaling)
+    11. [Scheduling](#scheduling)
+    12. [API protocol](#api-protocol)
 
 ## Web UI
 
@@ -131,13 +132,14 @@ To access the advanced deployment configuration, click on `Advanced options`.
 Here, you can further change the default values of the predictor:
 
 !!! info "Predictor configuration"
-    1. [Transformer](#transformer-script)
-    2. [Inference logger](#inference-logger)
-    3. [Inference batcher](#inference-batcher)
-    4. [Resources](#resources)
-    5. [Autoscaling](#autoscaling)
-    6. [Scheduling](#scheduling)
-    7. [API protocol](#api-protocol)
+    1. [vLLM variant and image version](#vllm-variant-and-image-version)
+    2. [Transformer](#transformer-script)
+    3. [Inference logger](#inference-logger)
+    4. [Inference batcher](#inference-batcher)
+    5. [Resources](#resources)
+    6. [Autoscaling](#autoscaling)
+    7. [Scheduling](#scheduling)
+    8. [API protocol](#api-protocol)
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -311,6 +313,10 @@ Hopsworks Model Serving supports deploying models with a Python model server for
     | TensorFlow Serving   | TensorFlow Serving runtime                    | Keras, TensorFlow                                                                                |
     | vLLM                 | vLLM openai-compatible server                 | vLLM-supported models (see [list](https://docs.vllm.ai/en/v0.10.2/models/supported_models.html)) |
 
+!!! note "vLLM variants"
+    The vLLM model server is available in two variants — standard **vLLM** and **vLLM-Omni** — and the image version can be pinned per deployment.
+    See [vLLM variant and image version](#vllm-variant-and-image-version).
+
 Each model server has specific requirements and supports different types of model artifacts, file formats, and configuration options. When deploying a model, ensure that your model files and configuration align with the expectations of the selected server.
 
 !!! info "Model artifact requirements"
@@ -338,9 +344,62 @@ For **vLLM deployments**, the server configuration file is ==required== and is u
     The configuration file can be of any format, except in **vLLM deployments** for which a YAML file (`.yml`/`.yaml`) is ==required==.
     When a predictor script is provided, any format is allowed as users can load it as necessary.
 
+## vLLM variant and image version
+
+For **vLLM deployments**, you can choose which **variant** of vLLM to run and, optionally, which **image version** to use.
+Both settings are stored on the deployment and can be edited later — they are first-class fields on the predictor configuration.
+
+### Variant
+
+| Variant          | Runtime                                                                                 | When to use                                                            |
+| ---------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `VLLM` (default) | Standard `vllm-openai` server ([docker hub](https://hub.docker.com/r/vllm/vllm-openai)) | OpenAI-compatible inference with the upstream vLLM engine.             |
+| `VLLM_OMNI`      | Standard `vllm-omni` server ([docker hub](https://hub.docker.com/r/vllm/vllm-omni))     | OpenAI-compatible multi-modal inference with the upstream vLLM engine. |
+
+Both the `VLLM` and `VLLM_OMNI` variants run the official upstream vLLM images published on [Docker Hub](https://hub.docker.com): [`vllm/vllm-openai`](https://hub.docker.com/r/vllm/vllm-openai) and [`vllm/vllm-omni`](https://hub.docker.com/r/vllm/vllm-omni) respectively.
+
+!!! tip "Python SDK"
+    From the Python SDK, the variant is selected with the `vllm_variant` keyword
+    argument. See [`Model.deploy()`][hsml.model.Model.deploy] in the API reference.
+
+### Image version
+
+The image version is the runtime image tag (for example `v0.14.0`) used for the vLLM container.
+If not set, Hopsworks picks the **highest** image version advertised for the chosen variant at creation time.
+Set it explicitly to pin a deployment to a specific image — useful when you need a stable, reproducible runtime.
+
+The list of available versions per variant is advertised by the cluster administrator through the
+`kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions` Hopsworks variables.
+
+Hopsworks ships exactly one default image version for each of the **vLLM** and **vLLM-Omni** variants.
+Any additional versions exposed in the **Version** dropdown are managed by the cluster administrator.
+If a version you need is not listed, contact your administrator.
+
+!!! warning "Cluster registry access"
+    For any additional image version advertised in the **Version** dropdown to actually start, the official `docker.io` registry and the `vllm/vllm-openai` / `vllm/vllm-omni` repositories must be pullable from inside the cluster.
+    If the cluster has no egress to Docker Hub, ask your administrator to either grant access or mirror the upstream tags into the cluster's internal registry under the same repository path — otherwise the deployment will fail to pull the image.
+
+!!! note "Upstream tags"
+    Hopsworks does not repackage these images — the tag you select in the **Version** dropdown is the upstream ==Docker Hub tag==.
+
+!!! tip "Python SDK"
+    From the Python SDK, the image version is selected with the `vllm_image_tag`
+    keyword argument. See [`Model.deploy()`][hsml.model.Model.deploy] in the API reference.
+
 ## Environment variables
 
-A number of different environment variables is available in the predictor to ease its implementation.
+Two kinds of environment variables are available in the predictor: user-defined variables that you set per deployment, and built-in variables that Hopsworks sets automatically at runtime.
+
+### User-defined environment variables
+
+In the advanced deployment form, the *Predictor environment variables* section lets you define environment variables that apply to the predictor component of this deployment.
+
+### Built-in environment variables
+
+A number of different environment variables are available in the predictor to ease its implementation.
+
+!!! warning
+    Built-in environment variables cannot be overwritten as they are meant for internal use.
 
 !!! tip "Available environment variables"
 

@@ -200,18 +200,15 @@ Inside a model deployment, the local path to the artifact files is stored in the
     All files under `/Models` and `/Deployments` are managed by Hopsworks.
     Manual changes to these files cannot be reverted and can have an impact on existing model deployments.
 
-!!! tip "vLLM omni mode"
-    For vLLM deployments, the server configuration file supports a `#HOPSWORKS omni: true` directive to enable omni mode.
-
 ## Predictor
 
 Predictors are responsible for running the model server that loads the trained model, handles inference requests and returns prediction results.
-To learn more about predictors, see the [Predictor (KServe) Guide](predictor.md)
+To learn more about predictors and how to configure them — including [environment variables](predictor.md#environment-variables), [resources](predictor.md#resources), and [autoscaling](predictor.md#autoscaling) — see the [Predictor (KServe) Guide](predictor.md).
 
 ## Transformer
 
 Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
-To learn more about transformers, see the [Transformer (KServe) Guide](transformer.md).
+To learn more about transformers and how to configure them — including [environment variables](transformer.md#environment-variables), [resources](transformer.md#resources), and [autoscaling](transformer.md#autoscaling) — see the [Transformer (KServe) Guide](transformer.md).
 
 !!! warning
     Transformers are not available for vLLM deployments.

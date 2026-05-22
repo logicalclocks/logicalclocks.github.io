@@ -217,7 +217,18 @@ To learn about the different autoscaling parameters, see the [Autoscaling Guide]
 
 ## Environment variables
 
-A number of different environment variables is available in the transformer to ease its implementation.
+Two kinds of environment variables are available in the transformer: user-defined variables that you set per deployment, and built-in variables that Hopsworks sets automatically at runtime.
+
+### User-defined environment variables
+
+In the advanced deployment form, the *Transformer environment variables* section lets you define environment variables specific to the transformer component of this deployment.
+
+### Built-in environment variables
+
+A number of different environment variables are available in the transformer to ease its implementation.
+
+!!! warning
+    Built-in environment variables cannot be overwritten as they are meant for internal use.
 
 !!! tip "Available environment variables"
 
