@@ -64,6 +64,10 @@ Hopsworks operators and sensors authenticate via the `HopsworksHook`, which reso
 The generated DAG file **never carries the API key** — the secret lives only in the Airflow Variables table (admin-only via `HopsworksAuthManager`), so the DAG `.py` is safe to inspect, version-control, or share.
 Re-generate the DAG from the Hopsworks UI to rotate the key.
 
+DAG files composed before this change still embed `os.environ.setdefault("HOPSWORKS_API_KEY", "<key>")` near the top of the file.
+They continue to work because the env-var path is the fourth tier in the hook's fallback, but the secret is in the file.
+Regenerate the DAG from the Hopsworks UI to drop the embed and switch to the Variable-fetch path.
+
 ## DAG identity
 
 The Airflow `dag_id` for a Hopsworks-composed DAG is now:
