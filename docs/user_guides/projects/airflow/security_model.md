@@ -45,8 +45,12 @@ dag-processors to close these gaps. Until then:
 
 - **Do not store project-private secrets in Airflow Variables or Connections.**
   Use the Hopsworks-side secrets API for per-project credentials.
-  Hopsworks operators obtain a short-lived project-scoped token at task runtime via the Execution-API token exchange, so they do not depend on Airflow Variables.
-  The one exception is the platform-managed per-DAG API key, which Hopsworks writes itself into an Airflow Variable named `hopsworks_api_key_<sha256(dag_id)[:16]>` on every compose; the variable value is Fernet-encrypted at rest and the variables list is admin-only, so project users cannot enumerate or read each other's keys.
+  Hopsworks operators obtain a short-lived project-scoped token at task runtime via the Execution-API token exchange, so the primary auth path does not depend on Airflow Variables.
+
+- **The per-DAG `hopsworks_api_key_<sha256(dag_id)[:16]>` Variable is a fallback only, and is not per-DAG isolated at runtime.**
+  Hopsworks writes it during compose so the task-token-exchange path has a working credential to fall back to if the task-instance JWT is unreachable for any reason.
+  The Variables UI is admin-only via `HopsworksAuthManager`, but inside a running task `Variable.get("hopsworks_api_key_<other-dag-sha>")` is not blocked — `dag_id` is non-secret and the hash is reproducible, so DAG code that calls `Variable.get` for another DAG's hashed name can read that key.
+  Until per-task secret isolation lands with KubernetesExecutor, treat the fallback path as a shared credential surface within the cluster: don't run untrusted DAG code, and prefer the task-token-exchange path which is signed per-task and not stored in the metadata DB.
 - **Do not assume DAG code is sandboxed at parse time.** Module-top-level
   code in a customer DAG can execute network calls and reach anything
   the dag-processor's ServiceAccount can reach.
