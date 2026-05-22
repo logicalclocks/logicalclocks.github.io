@@ -388,17 +388,11 @@ If a version you need is not listed, contact your administrator.
 
 ## Environment variables
 
-Two kinds of environment variables are available in the predictor: user-defined variables that you set per deployment or at the account level, and built-in variables that Hopsworks sets automatically at runtime.
+Two kinds of environment variables are available in the predictor: user-defined variables that you set per deployment, and built-in variables that Hopsworks sets automatically at runtime.
 
 ### User-defined environment variables
 
-In the advanced deployment form, the *Predictor environment variables* section is pre-filled with your account-level [Environment variables](../../projects/env_vars/create.md).
-Values you change in the form become per-deployment overrides for that deployment only.
-Account-level values for names you don't include in the form continue to apply at runtime.
-
-!!! info "Account-level variables also apply"
-    Variables defined under [Account settings → Environment variables](../../projects/env_vars/create.md) are injected into every model deployment you start.
-    A value set on the deployment overrides the account-level value with the same name for that deployment only.
+In the advanced deployment form, the *Predictor environment variables* section lets you define environment variables that apply to the predictor component of this deployment.
 
 ### Built-in environment variables
 

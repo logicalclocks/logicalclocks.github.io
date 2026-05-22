@@ -217,17 +217,11 @@ To learn about the different autoscaling parameters, see the [Autoscaling Guide]
 
 ## Environment variables
 
-Two kinds of environment variables are available in the transformer: user-defined variables that you set per deployment or at the account level, and built-in variables that Hopsworks sets automatically at runtime.
+Two kinds of environment variables are available in the transformer: user-defined variables that you set per deployment, and built-in variables that Hopsworks sets automatically at runtime.
 
 ### User-defined environment variables
 
-In the advanced deployment form, the *Transformer environment variables* section lets you define environment variables specific to the transformer component.
-Values you set in the form become per-deployment overrides for that deployment only.
-Account-level [Environment variables](../../projects/env_vars/create.md) for names you don't include in the form continue to apply at runtime.
-
-!!! info "Account-level variables also apply"
-    Variables defined under [Account settings → Environment variables](../../projects/env_vars/create.md) are injected into every model deployment you start.
-    A value set on the deployment overrides the account-level value with the same name for that deployment only.
+In the advanced deployment form, the *Transformer environment variables* section lets you define environment variables specific to the transformer component of this deployment.
 
 ### Built-in environment variables
 
