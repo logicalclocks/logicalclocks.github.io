@@ -84,6 +84,7 @@ Launch a Hopsworks job:
 ```python
 from hopsworks.airflow.operators import HopsworksLaunchOperator
 
+
 HopsworksLaunchOperator(
     task_id="profiles_fg_0",
     project_id=42,
@@ -101,6 +102,7 @@ Wait for a job's most recent execution to be successful:
 ```python
 from hopsworks.airflow.sensors import HopsworksJobSuccessSensor
 
+
 HopsworksJobSuccessSensor(
     task_id="wait_for_profiles_fg",
     project_id=42,
@@ -112,6 +114,7 @@ Wait for a HopsFS path to exist (replaces the Airflow 1.x `HopsworksHdfsSensor` 
 
 ```python
 from hopsworks.airflow.sensors import HopsworksHdfsSensor
+
 
 HopsworksHdfsSensor(
     task_id="wait_for_arrival",
