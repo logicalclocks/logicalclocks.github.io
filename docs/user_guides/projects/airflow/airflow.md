@@ -28,9 +28,9 @@ regular users see only DAGs of the projects they are a member of (DAGs, runs, lo
 The Audit Log is row-filtered for non-admins to events for DAGs in their projects.
 See the [security model](security_model.md) for the full surface-by-surface contract.
 
-The Hopsworks UI's Airflow page shows each DAG's most recent runs as colored dots in a **Last runs** column.
-Clicking anywhere on a DAG row opens the DAG in the Airflow UI;
-the pencil at the row's end opens the generated Python file in an in-app editor.
+The Hopsworks UI's Airflow page shows each DAG's most recent runs as colored squares in a **Last runs** column (green = success, red = failed, blue = running, yellow = queued / scheduled, gray = other).
+Clicking anywhere on a DAG row opens the DAG in the Airflow UI.
+The pencil at the row's end opens the generated Python file in an in-app editor.
 
 #### Hopsworks DAG Builder
 
@@ -82,6 +82,8 @@ from hopsworks.airflow.sensors import (  # noqa: F401
 Launch a Hopsworks job:
 
 ```python
+from hopsworks.airflow.operators import HopsworksLaunchOperator
+
 HopsworksLaunchOperator(
     task_id="profiles_fg_0",
     project_id=42,
@@ -97,6 +99,8 @@ Set `wait_for_completion=True` to block until the job execution finishes.
 Wait for a job's most recent execution to be successful:
 
 ```python
+from hopsworks.airflow.sensors import HopsworksJobSuccessSensor
+
 HopsworksJobSuccessSensor(
     task_id="wait_for_profiles_fg",
     project_id=42,
@@ -107,6 +111,8 @@ HopsworksJobSuccessSensor(
 Wait for a HopsFS path to exist (replaces the Airflow 1.x `HopsworksHdfsSensor` plugin):
 
 ```python
+from hopsworks.airflow.sensors import HopsworksHdfsSensor
+
 HopsworksHdfsSensor(
     task_id="wait_for_arrival",
     project_id=42,

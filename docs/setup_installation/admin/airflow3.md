@@ -1,7 +1,6 @@
 # Operator Notes: Airflow 3 on Hopsworks
 
-Administrative reference for cluster operators upgrading or installing
-Hopsworks with Airflow 3.
+Administrative reference for cluster operators upgrading or installing Hopsworks with Airflow 3.
 
 ## What the chart deploys
 
@@ -60,12 +59,14 @@ Snapshot HopsFS before the upgrade if you need a rollback path that preserves DA
 
 ## Reverse proxy contract
 
-`AirflowProxyServlet` in hopsworks-ee validates the Hopsworks JWT,
-forwards `Set-Cookie` from Airflow unchanged, and injects
-`X-Hopsworks-JWT` on every forwarded request so the AuthManager's
-`refresh_user` hook can refresh memberships without a separate refresh
-endpoint. The proxy does not rewrite cookie `Path=`; Airflow sets the
-cookie path from `[api] base_url` automatically.
+`AirflowProxyServlet` in hopsworks-ee validates the Hopsworks JWT and forwards `Set-Cookie` from Airflow unchanged.
+The proxy does not rewrite cookie `Path=`; Airflow sets the cookie path from `[api] base_url` automatically.
+
+Membership is **not** refreshed on every forwarded request.
+The Airflow JWT carries `project_ids` / `project_roles` / `is_admin` at mint time and is stable for the cookie's TTL (1 hour by default).
+Real-time membership changes are propagated by the Hopsworks backend pushing to `POST /auth/internal/invalidate`, which evicts the affected user's cached entry so the next login re-fetches the membership.
+A 60-second safety-net TTL on the cache catches drift even without an explicit invalidation.
+See [Airflow Security Model](../../user_guides/projects/airflow/security_model.md#token--cookie-behavior) for the full description.
 
 ## Metrics
 

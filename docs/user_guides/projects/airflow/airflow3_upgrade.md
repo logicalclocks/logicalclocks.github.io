@@ -25,8 +25,9 @@ Until then, do not put project-private secrets in Airflow Variables or Connectio
 
 ## What changed in the DAG API
 
-You **must rewrite** your existing 1.10 DAGs for Airflow 3. No automated
-rewrite tool ships with this release. Concrete things to change:
+You **must rewrite** your existing 1.10 DAGs for Airflow 3.
+No automated rewrite tool ships with this release.
+Concrete things to change:
 
 | Old (Airflow 1.10) | New (Airflow 3.0.6) |
 | --- | --- |

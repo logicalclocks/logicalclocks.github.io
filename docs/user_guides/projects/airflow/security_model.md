@@ -1,14 +1,11 @@
 # Airflow Security Model
 
-Hopsworks deploys Apache Airflow 3 with a custom auth manager that
-enforces per-Hopsworks-project DAG visibility. This page is the
-authoritative reference for what the security boundary covers and what
-it does not.
+Hopsworks deploys Apache Airflow 3 with a custom auth manager that enforces per-Hopsworks-project DAG visibility.
+This page is the authoritative reference for what the security boundary covers and what it does not.
 
 ## What is isolated
 
-Every authenticated request to the Airflow API server, every page in the
-Airflow UI, every CLI call:
+Every authenticated request to the Airflow API server, every page in the Airflow UI, every CLI call:
 
 | Surface | Behavior for a non-admin user |
 | --- | --- |
@@ -28,9 +25,9 @@ cannot move the DAG to a different project's namespace.
 
 ## What is **not** isolated
 
-The shared `dag-processor` parses DAGs from all projects. The shared
-LocalExecutor runs tasks from all projects in one process tree. As a
-consequence:
+The shared `dag-processor` parses DAGs from all projects.
+The shared LocalExecutor runs tasks from all projects in one process tree.
+As a consequence:
 
 - Tasks can read any Variable, Connection, or Pool present in the
   metadata DB.
@@ -61,7 +58,7 @@ The auth manager sets a `_token` cookie on UI logins.
 The cookie is `HttpOnly`, `Secure` (under TLS), `SameSite=Lax`, and scoped to `/hopsworks-api/airflow`.
 The Hopsworks proxy passes it through unchanged; cookie path scoping is set by Airflow itself from the `[api] base_url` config.
 
-The same auth manager mints bearer tokens for external clients via `POST /auth/token`.
+The same auth manager mints bearer tokens for external clients via `POST /hopsworks-api/airflow/auth/token` (the auth manager's `/auth` router is mounted under the Airflow `[api] base_url`, which the Hopsworks chart pins to `/hopsworks-api/airflow/`).
 The bearer token format and validation are identical to the cookie-borne token; only the carrier differs.
 
 The Airflow JWT carries the user's `project_ids`, `project_roles`, and `is_admin` flag at mint time.
