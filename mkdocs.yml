@@ -179,7 +179,10 @@ nav:
               - Base: user_guides/projects/scheduling/kube_scheduler.md
               - Kueue: user_guides/projects/scheduling/kueue_details.md
 
-          - Airflow: user_guides/projects/airflow/airflow.md
+          - Airflow:
+              - Overview: user_guides/projects/airflow/airflow.md
+              - Airflow 3 upgrade: user_guides/projects/airflow/airflow3_upgrade.md
+              - Security model: user_guides/projects/airflow/security_model.md
           - OpenSearch:
               - Connect: user_guides/projects/opensearch/connect.md
               - KNN: user_guides/projects/opensearch/knn.md
@@ -258,6 +261,7 @@ nav:
           - Configure Alerts: setup_installation/admin/alert.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
+          - Airflow 3 operator notes: setup_installation/admin/airflow3.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
