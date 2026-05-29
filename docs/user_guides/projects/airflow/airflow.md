@@ -31,6 +31,8 @@ See the [security model](security_model.md) for the full surface-by-surface cont
 The Hopsworks UI's Airflow page shows each DAG's most recent runs as colored squares in a **Last runs** column (green = success, red = failed, blue = running, yellow = queued / scheduled, gray = other).
 Clicking anywhere on a DAG row opens the DAG in the Airflow UI.
 The pencil at the row's end opens the generated Python file in an in-app editor.
+The trash icon deletes the DAG: a click-confirm dialog appears, and on confirm the Python file is removed from the project's `Airflow/` HopsFS dataset, the per-DAG `hopsworks_api_key_<sha256(dag_id)[:16]>` Variable is deleted from Airflow, the row in `dag_project_index` is dropped, and `airflow.api.common.delete_dag.delete_dag` is called so the `dag`, `dag_run`, `task_instance`, `xcom`, `log`, and related rows go with it.
+After delete the page reloads to reflect the new state.
 
 #### Hopsworks DAG Builder
 
@@ -43,6 +45,10 @@ You can create a new Airflow DAG to orchestrate jobs using the Hopsworks DAG bui
 Click on _New Workflow_ to create a new Airflow DAG.
 You should provide a name for the DAG as well as a schedule interval.
 You can define the schedule using the dropdown menus or by providing a cron expression.
+
+The schedule `@continuous` is rejected by both the UI form and the backend.
+A continuous DAG re-runs as soon as the previous run finishes, so a DAG that errors at parse time (for example, missing the per-DAG API key Variable) loops at wall-clock speed and OOM-kills the shared scheduler pod, taking every other project's DAGs down with it.
+Use a cron expression for periodic runs, or `@once` for one-shot DAGs.
 
 You can add to the DAG Hopsworks operators and sensors:
 

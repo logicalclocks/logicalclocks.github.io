@@ -23,6 +23,14 @@ DAG is composed or deleted, and stored in a table inside Airflow's own
 metadata DB. Editing a DAG file directly (e.g. changing `tags=[...]`)
 cannot move the DAG to a different project's namespace.
 
+### Active-project scoping
+
+Opening Airflow from a project's UI narrows visibility further to that project alone, even for users who are members of several.
+The Hopsworks proxy forwards the project context via a `?hopsworks_project=<id>` query parameter that the auth manager turns into an `active_project_id` claim on the issued Airflow JWT.
+The DAG list, the per-DAG endpoints, and the Audit Log are all filtered against the active project for the lifetime of the session.
+Switching project in the Hopsworks UI re-mints the Airflow JWT with the new active project; the previous session's cookie remains valid for its TTL but is scoped to the previous project.
+A Hopsworks admin opening Airflow without a project context sees every DAG; opening from a project still scopes to that project.
+
 ## What is **not** isolated
 
 The shared `dag-processor` parses DAGs from all projects.
