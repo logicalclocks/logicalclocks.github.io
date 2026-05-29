@@ -40,6 +40,7 @@ Concrete things to change:
 | `from airflow.models import BaseOperator` | `from airflow.sdk.bases.operator import BaseOperator` |
 | Custom Hopsworks operators imported via plugins | Provider package `apache-airflow-providers-hopsworks` |
 | Default `catchup_by_default = True` | Default `catchup=False`; set explicitly |
+| `schedule_interval='@continuous'` | Rejected by Hopsworks; use cron or `@once` |
 
 The Hopsworks-provided operators are now exposed via a standard provider:
 

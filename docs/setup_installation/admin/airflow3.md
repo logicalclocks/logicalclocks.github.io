@@ -68,6 +68,31 @@ Real-time membership changes are propagated by the Hopsworks backend pushing to 
 A 60-second safety-net TTL on the cache catches drift even without an explicit invalidation.
 See [Airflow Security Model](../../user_guides/projects/airflow/security_model.md#token--cookie-behavior) for the full description.
 
+## DAG reconciler
+
+`AirflowDagReconciler` is a Hopsworks-side singleton EJB that runs every 60 s (with a 30 s initial delay) on the Hopsworks admin pod.
+It walks `Projects/<P>/Airflow/*.py` for every project, derives the canonical `dag_id` (`p_<project_slug>_<project_id>__<dag_user_name>`), and reconciles `dag_project_index` against the on-disk truth:
+
+- A `.py` present on HopsFS without a matching index row triggers a row insert.
+  This is the path that picks up files uploaded via the Hopsworks File Browser or copied via `DatasetApi.copy`, without needing a backend restart.
+- An index row whose `.py` is gone triggers a row delete plus the same `airflow.api.common.delete_dag.delete_dag` cleanup the explicit delete button uses.
+
+The reconciler runs under `@TransactionAttribute(NOT_SUPPORTED)` because the Airflow auth-manager HTTP calls it makes do not participate in the EJB global transaction.
+Its logs appear in the admin pod under the logger `io.hops.hopsworks.common.airflow.AirflowDagReconciler`.
+
+## Orphan cleanup CronJob
+
+The chart deploys an `airflow-orphan-cleanup` CronJob (gated by `airflow.enabled`, no separate enable flag) that runs the SQL in `cleanup_orphans.sql` against the Airflow metadata DB.
+It deletes orphan rows in `dag_run`, `task_instance`, `task_instance_history`, `xcom`, `log`, `dag_warning`, `asset_dag_run_queue` (`target_dag_id`), `task_outlet_asset_reference` (`dag_id`), and `deadline` (both `dag_id` and `dagrun_id`) that point at a `dag_id` no longer in the `dag` table.
+This is the cleanup path Airflow itself does not run automatically when a DAG is hard-deleted out of band.
+Only the most recent successful run of the CronJob is retained in-namespace; older Pods are reaped by the CronJob's history limit.
+
+## OpenShift compatibility
+
+The airflow image is built to OpenShift's arbitrary-UID + GID-0 contract.
+`/etc/airflow` and `launcher.sh` are group-owned by root (`chown :0`) with the user permission bits mirrored onto the group (`chmod g=u`), so OpenShift's per-namespace UID (which always has GID 0) can read, write, and execute everything the `airflow` UID can on vanilla Kubernetes.
+No `runAsUser` override is needed when deploying on OpenShift; the chart's pod-spec works unchanged.
+
 ## Metrics
 
 The legacy `airflow-exporter` 1.3.0 does not support Airflow 3. Metrics
