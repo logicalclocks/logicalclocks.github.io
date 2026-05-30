@@ -7,25 +7,32 @@ description: Documentation on how to orchestrate Hopsworks jobs using Apache Air
 ## Introduction
 
 Hopsworks jobs can be orchestrated using [Apache Airflow](https://airflow.apache.org/).
-You can define a Airflow DAG (Directed Acyclic Graph) containing the dependencies between Hopsworks jobs.
+You can define an Airflow DAG (Directed Acyclic Graph) containing the dependencies between Hopsworks jobs.
 You can then schedule the DAG to be executed at a specific schedule using a [cron](https://en.wikipedia.org/wiki/Cron) expression.
 
 Airflow DAGs are defined as Python files.
 Within the Python file, different operators can be used to trigger different actions.
-Hopsworks provides an operator to execute jobs on Hopsworks and a sensor to wait for a specific job to finish.
+Hopsworks provides operators to execute jobs on Hopsworks and sensors to wait for a specific job to finish or for a HopsFS path to appear.
+
+Hopsworks ships **Airflow 3.0.6**.
+The DAG-authoring API differs significantly from Airflow 1.x; see [the Airflow 3 upgrade page](airflow3_upgrade.md) for a porting checklist.
 
 ### Use Apache Airflow in Hopsworks
 
 Hopsworks deployments include a deployment of Apache Airflow.
 You can access it from the Hopsworks UI by clicking on the _Airflow_ button on the left menu.
 
-Airflow is configured to enforce Role Based Access Control (RBAC) to the Airflow DAGs.
-Admin users on Hopsworks have access to all the DAGs in the deployment.
-Regular users can access all the DAGs of the projects they are a member of.
+Authorization is per Hopsworks project:
+admins on Hopsworks (`HOPS_ADMIN`) have access to all DAGs;
+regular users see only DAGs of the projects they are a member of (DAGs, runs, logs, triggers, edits — all surfaces).
+The Audit Log is row-filtered for non-admins to events for DAGs in their projects.
+See the [security model](security_model.md) for the full surface-by-surface contract.
 
-!!! note "Access Control"
-    Airflow does not have any knowledge of the Hopsworks project you are currently working on.
-    As such, when opening the Airflow UI, you will see all the DAGs all of the projects you are a member of.
+The Hopsworks UI's Airflow page shows each DAG's most recent runs as colored squares in a **Last runs** column (green = success, red = failed, blue = running, yellow = queued / scheduled, gray = other).
+Clicking anywhere on a DAG row opens the DAG in the Airflow UI.
+The pencil at the row's end opens the generated Python file in an in-app editor.
+The trash icon deletes the DAG: a click-confirm dialog appears, and on confirm the Python file is removed from the project's `Airflow/` HopsFS dataset, the per-DAG `hopsworks_api_key_<sha256(dag_id)[:16]>` Variable is deleted from Airflow, the row in `dag_project_index` is dropped, and `airflow.api.common.delete_dag.delete_dag` is called so the `dag`, `dag_run`, `task_instance`, `xcom`, `log`, and related rows go with it.
+After delete the page reloads to reflect the new state.
 
 #### Hopsworks DAG Builder
 
@@ -38,6 +45,10 @@ You can create a new Airflow DAG to orchestrate jobs using the Hopsworks DAG bui
 Click on _New Workflow_ to create a new Airflow DAG.
 You should provide a name for the DAG as well as a schedule interval.
 You can define the schedule using the dropdown menus or by providing a cron expression.
+
+The schedule `@continuous` is rejected by both the UI form and the backend.
+A continuous DAG re-runs as soon as the previous run finishes, so a DAG that errors at parse time (for example, missing the per-DAG API key Variable) loops at wall-clock speed and OOM-kills the shared scheduler pod, taking every other project's DAGs down with it.
+Use a cron expression for periodic runs, or `@once` for one-shot DAGs.
 
 You can add to the DAG Hopsworks operators and sensors:
 
@@ -63,54 +74,67 @@ You can then create the DAG and Hopsworks will generate the Python file.
 If you prefer to code the DAGs or you want to edit a DAG built with the builder tool, you can do so.
 The Airflow DAGs are stored in the _Airflow_ dataset which you can access using the file browser in the project settings.
 
-When writing the code for the DAG you can invoke the operator as follows:
+The Hopsworks operators and sensors are shipped in the `apache-airflow-providers-hopsworks` provider package that is preinstalled on Hopsworks-managed Airflow.
+Import them from the standard provider namespace:
 
 ```python
+from hopsworks.airflow.operators import HopsworksLaunchOperator  # noqa: F401
+from hopsworks.airflow.sensors import (  # noqa: F401
+    HopsworksHdfsSensor,
+    HopsworksJobSuccessSensor,
+)
+```
+
+Launch a Hopsworks job:
+
+```python
+from hopsworks.airflow.operators import HopsworksLaunchOperator
+
+
 HopsworksLaunchOperator(
-    dag=dag,
     task_id="profiles_fg_0",
-    project_name="airflow_doc",
+    project_id=42,
     job_name="profiles_fg",
-    job_arguments="",
+    args="",
     wait_for_completion=True,
 )
 ```
 
-You should provide the name of the Airflow task (`task_id`) and the Hopsworks job information (`project_name`, `job_name`, `job_arguments`).
-You can set the `wait_for_completion` flag to `True` if you want the operator to block and wait for the job execution to be finished.
+Provide the Airflow task name (`task_id`) and the Hopsworks job information (`project_id`, `job_name`, `args`).
+Set `wait_for_completion=True` to block until the job execution finishes.
 
-Similarly, you can invoke the sensor as shown below.
-You should provide the name of the Airflow task (`task_id`) and the Hopsworks job information (`project_name`, `job_name`)
+Wait for a job's most recent execution to be successful:
 
 ```python
+from hopsworks.airflow.sensors import HopsworksJobSuccessSensor
+
+
 HopsworksJobSuccessSensor(
-    dag=dag,
     task_id="wait_for_profiles_fg",
-    project_name="airflow_doc",
+    project_id=42,
     job_name="profiles_fg",
 )
 ```
 
-When writing the DAG file, you should also add the `access_control` parameter to the DAG configuration.
-The `access_control` parameter specifies which projects have access to the DAG and which actions the project members can perform on it.
-If you do not specify the `access_control` option, project members will not be able to see the DAG in the Airflow UI.
-
-!!! warning "Admin access"
-    The `access_control` configuration does not apply to Hopsworks admin users which have full access to all the DAGs even if they are not member of the project.
+Wait for a HopsFS path to exist (replaces the Airflow 1.x `HopsworksHdfsSensor` plugin):
 
 ```python
-    dag = DAG(
-        dag_id="example_dag",
-        default_args=args,
-        access_control={
-            "project_name": {"can_dag_read", "can_dag_edit"},
-        },
-        schedule_interval="0 4 * * *",
-    )
+from hopsworks.airflow.sensors import HopsworksHdfsSensor
+
+
+HopsworksHdfsSensor(
+    task_id="wait_for_arrival",
+    project_id=42,
+    path="Resources/landing/2026-05-22/_SUCCESS",
+)
 ```
 
-!!! note "Project Name"
-    You should replace the `project_name` in the snippet above with the name of your own project
+`project_id` can be replaced with `project_name=` if you prefer name-based lookup.
+
+!!! note "Authorization is automatic"
+    Airflow 3 on Hopsworks does not use Airflow's `access_control` parameter.
+    DAG visibility is enforced from the dag_id-to-project mapping that Hopsworks writes when the DAG is composed (see the [security model](security_model.md)); editing the DAG file cannot change ownership.
+    Hopsworks admins (`HOPS_ADMIN`) have full access to every DAG; project members access DAGs of their own projects.
 
 #### Manage Airflow DAGs using Git
 
