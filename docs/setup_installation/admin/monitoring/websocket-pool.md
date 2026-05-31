@@ -78,8 +78,12 @@ hopsworks:
   payara:
     executorService:
       websockets:
-        corePoolSize: 100      # threads kept alive
-        maximumPoolSize: 200   # hard ceiling = 2x maxConcurrentConnections
+        autoSize: false        # see "Auto-size" below; default keeps the static values
+        threadsPerCore:
+          core: 25             # used when autoSize=true; corePoolSize = cpu_cores * core
+          max: 50              # used when autoSize=true; maximumPoolSize = cpu_cores * max
+        corePoolSize: 100      # threads kept alive when autoSize=false (= core saturation)
+        maximumPoolSize: 200   # hard ceiling when autoSize=false; 2x maxConcurrentConnections
         taskQueueCapacity: 0   # do not queue; reject when full
         threadPriority: 8      # above default so pumps are not starved
 ```
@@ -88,6 +92,25 @@ Bump `corePoolSize` and `maximumPoolSize` together.
 `maximumPoolSize` must remain twice the number of concurrent WebSocket connections you want to serve, because of the two-threads-per-connection rule.
 Leave `taskQueueCapacity` at `0`.
 A non-zero queue with this workload causes users to wait on connections that will never become active threads; rejection is the safer behavior.
+
+## Auto-size
+
+When `autoSize: true`, the pool is sized from the `hopsworks-instance` pod's CPU resources rather than the static `corePoolSize` and `maximumPoolSize`.
+`corePoolSize` follows the CPU request (the always-on capacity) and `maximumPoolSize` follows the CPU limit (the burst ceiling), each multiplied by the corresponding entry under `threadsPerCore`.
+If the pod has no CPU limit, the burst ceiling falls back to `requests.cpu * noLimitBurstFactor` (default `10`).
+A memory cap derived from `resources.worker.jvm.memory.buffer` clamps the burst ceiling if the CPU formula would exceed the buffer.
+
+A few representative pod shapes at chart-default settings:
+
+| Worker CPU request | Worker CPU limit | core threads (= connections × 2) | max threads (= connections × 2) |
+| --- | --- | --- | --- |
+| 500m | 4000m (default ratio 1:8) | 12 (6 concurrent connections) | 200 (100 concurrent connections) |
+| 4000m | 4000m (Guaranteed QoS) | 100 | 200 |
+| 500m | unset | 12 | 250 |
+
+The rendered post-boot ConfigMap carries a comment explaining the derivation, so an admin reading the live cluster's `asadmin` settings can see which inputs produced the pool size, including whether the memory cap fired.
+Override `threadsPerCore` if your CPU-to-connection ratio differs from the default rule of thumb of 12.5 sustained connections per CPU core and 25 burst connections per CPU core (the chart-default multipliers are `core: 25` and `max: 50` threads-per-core, halved by the 2 threads-per-WebSocket-connection ratio).
+Raise `jvm.memory.buffer` alongside large CPU bumps so the memory cap doesn't trim the burst ceiling.
 
 Each thread is otherwise idle (it blocks on stream I/O), so the dominant resource cost of raising these numbers is JVM thread overhead in `hopsworks-instance` pods.
 A few hundred extra threads add a few tens of megabytes of stack memory at `-Xss512k`, which is small relative to the Payara JVM heap.
