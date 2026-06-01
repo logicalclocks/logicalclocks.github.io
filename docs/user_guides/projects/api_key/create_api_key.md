@@ -42,7 +42,7 @@ Click `New API key`, enter a name, optionally set an expiration, select the requ
 | 7 / 30 / 60 / 90 days | The key expires the selected number of days from now. |
 | Custom | Pick a specific date using the date picker. |
 
-To change the expiration date of an existing key you must regenerate it — expiration cannot be updated after creation.
+To change the expiration date of an existing key you must regenerate it. Expiration cannot be updated after creation.
 
 Copy the key value and save it in a secure location, such as a password manager.
 It will not be shown again.
