@@ -102,25 +102,8 @@ For pod-vs-Kubernetes-limit context (working set vs request and limit) see the `
 
 ## Grizzly timeouts
 
-Grizzly's HTTP listener applies two timeouts that affect WebSocket sessions, both overridden by the Hopsworks defaults:
+The chart leaves Payara / Grizzly `request-timeout-seconds` and `websockets-timeout-seconds` at their defaults.
+The first governs the HTTP request lifecycle (the Upgrade handshake through the 101 response); once a WebSocket is established the framing layer takes over, where `websockets-timeout-seconds` is the idle timer.
+A WebSocket session that sits idle past that default closes; JupyterLab and the terminal client both reconnect transparently, and the kernel / shell / Streamlit process running in its own pod is unaffected by the disconnect.
 
-```yaml
-hopsworks:
-  payara:
-    grizzly:
-      requestTimeoutSeconds: 3600    # max request lifetime; default 900
-      websocketsTimeoutSeconds: 1800 # WebSocket idle timeout; default 900
-```
-
-`requestTimeoutSeconds` caps the lifetime of any HTTP request on the listener.
-For a WebSocket session this means the underlying HTTP-upgrade request is allowed to live for one hour at the default; sessions are not killed mid-frame.
-
-`websocketsTimeoutSeconds` is Payara's WebSocket idle timeout, applied via the (plural) `websockets-timeout-seconds` attribute on `http-listener-2.http`.
-At the default of `1800`, a WebSocket session is closed if it sits idle for 30 minutes — short enough that an abandoned browser tab does not hold a slot in the pool indefinitely.
-
-The timeout closes the WebSocket transport, not the work behind it.
-The Jupyter kernel, terminal shell, or Streamlit process lives in its own Kubernetes pod and is unaffected by the disconnect.
-JupyterLab reconnects automatically and reattaches to the same kernel, so notebook variables, output cells, and the kernel's working directory are preserved across an idle-timeout close.
-A user whose tab disconnects only needs to refresh — they will not lose work.
-
-If your users routinely keep notebooks open across breaks longer than 30 minutes and you would rather they stayed connected than reconnect, raise `websocketsTimeoutSeconds` rather than `requestTimeoutSeconds` — only the former governs idle behavior once the WebSocket is established.
+If your users need a longer idle window, raise `network-config.protocols.protocol.http-listener-2.http.websockets-timeout-seconds` via a post-boot `asadmin` override or a future chart value — that attribute (note the plural) is what governs the established-WebSocket idle clock on Payara 6.
