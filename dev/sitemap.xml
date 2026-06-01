@@ -229,6 +229,10 @@
          <lastmod>2026-06-01</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/websocket-pool/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/configure-project-mapping/</loc>
          <lastmod>2026-06-01</lastmod>
     </url>
@@ -778,6 +782,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/remote_filesystem_driver/</loc>
+         <lastmod>2026-06-01</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/session_capacity_warnings/</loc>
          <lastmod>2026-06-01</lastmod>
     </url>
     <url>
