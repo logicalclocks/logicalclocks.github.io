@@ -21,7 +21,7 @@ The pod saturates at `maxSessionsPerApp` concurrent connections, which defaults 
 Unlike the previous proxy, there is no two-threads-per-connection accounting: the cap is a direct count of open sessions, not a derived thread number.
 
 There is no queue.
-Once a pod is at the cap, the next upgrade is closed immediately with a WebSocket `1013 TRY_AGAIN_LATER` close, and the platform surfaces a "Maximum number of WebSocket connections reached" error rather than blocking the user on a connection that will never attach.
+Once a pod is at the cap, the next upgrade is closed immediately with a WebSocket `1013 TRY_AGAIN_LATER` close whose reason string is `WebSocket session cap reached (maxSessionsPerApp)`, rather than blocking the user on a connection that will never attach.
 Rejecting cleanly protects the pod from connection-driven memory growth.
 
 ## Grafana panels
@@ -33,7 +33,7 @@ All read directly from metrics emitted by Payara on the `hopsworks-instance` pod
   Any non-zero value means at least one user was turned away from a Jupyter, terminal, or Streamlit session in the last minute.
   This is the alertable signal for "the cap is too low."
 
-- **WebSocket - duration (sliding-window percentiles)** plots p50, p95, and p99 of the duration of WebSocket connections after they close.
+- **WebSocket - duration (sliding window percentiles)** plots p50, p95, and p99 of the duration of WebSocket connections after they close.
   Values come from an exponentially-decaying sample reservoir with a roughly five-minute half-life, so closed long-lived sessions decay out of the percentiles quickly rather than dominating them forever.
 
 - **WebSocket - sessions** plots the current open-connection count per `hopsworks-instance` pod as solid lines, plus a single dashed red `Pool max (per instance)` line that shows the per-pod saturation point.

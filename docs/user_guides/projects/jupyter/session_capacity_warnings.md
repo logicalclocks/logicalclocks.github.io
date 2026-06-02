@@ -41,7 +41,8 @@ On a single-instance deployment the two badges always agree, since the only inst
 - `Run Jupyter`, `Start Terminal`, and per-row `Start App` buttons are disabled while the **cluster** badge is red (no instance has capacity to serve a new session).
   While only the instance badge is red the buttons stay enabled because refreshing or signing back in may land you on a different instance pod that still has capacity.
 - An already-running Jupyter server keeps working.
-  Opening a new notebook tab inside a running Jupyter server may still fail with a `WebSocket pool full` error if the proxy slot the new tab needs is unavailable.
+  Opening a new notebook tab inside a running Jupyter server may still fail if the pod that hosts it is at its per-session cap: the new tab's kernel WebSocket upgrade is closed with a `1013 TRY_AGAIN_LATER` close rather than attaching.
+  This is distinct from starting a new session (a Jupyter server, terminal, or Streamlit app), which is gated up front and rejected with a `WebSocket pool full` (HTTP 503) error when the pod has no free slot.
 - An already-running terminal session keeps working.
   Reconnecting after a network blip while the badge is red surfaces the error rather than silently retrying.
 
