@@ -53,12 +53,13 @@ On a single-instance deployment the two badges always agree, since the only inst
 - **Red on the instance badge, orange or no cluster badge**: a different pod has capacity.
   Refresh the page or sign out and back in to land on a different instance pod.
 - **Red on both badges**: the platform is at capacity.
-  Wait for active sessions to time out (the default WebSocket idle timeout is 30 minutes), close notebook tabs you are no longer using, or contact your administrator about raising the platform's pool sizing.
+  Close notebook tabs, terminals, and apps you are no longer using to free sessions, or contact your administrator about raising the platform's session cap.
+  By default the proxy does not reap idle sessions, so a slot is only released when its connection actually closes.
 
 ## Why the limits exist
 
-Each WebSocket session (a Jupyter kernel connection, a terminal connection, or a Streamlit app connection) occupies two threads in a dedicated pool inside the Hopsworks instance.
-The pool is sized so the platform can stay responsive when many users are active at once.
+Each WebSocket session (a Jupyter kernel connection, a terminal connection, or a Streamlit app connection) counts as one open connection against a per-pod cap inside the Hopsworks instance.
+The cap is sized so the platform can stay responsive when many users are active at once.
 Letting new sessions queue indefinitely would leave users staring at a loading spinner that never resolves; rejecting cleanly with the badge is the safer behavior.
 
 Administrators can change the pool sizing per cluster.
