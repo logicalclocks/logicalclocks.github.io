@@ -59,25 +59,25 @@ df_restaurant_travel = feature_view.training_data(
 
 When training data is materialised from a Feature View that joins multiple Feature Groups, the PIT join scans every historical partition of the root and every joined Feature Group.
 The `lookback` argument caps how far back the join is allowed to consider rows from the root and each joined Feature Group, so the engine can prune partitions before reading any files.
-Apply the same window uniformly with `Lookback`, or use `Lookbacks` for per-Feature-Group control; the argument shape mirrors the one accepted by `get_batch_data` (see [the batch-data lookback section][batch-data-lookback]).
+Apply the same window uniformly with `FeatureGroupLookback`, or use `Lookback` for per-Feature-Group control; the argument shape mirrors the one accepted by `get_batch_data` (see [the batch-data lookback section][batch-data-lookback]).
 
 ```python
 import datetime
-from hsfs.constructor.lookback import Lookback
+from hsfs.constructor.lookback import FeatureGroupLookback
 
 version, job = feature_view.create_training_data(
     start_time=datetime.date(2026, 5, 10),
     end_time=datetime.date(2026, 5, 17),
     description="fraud batch training data, weekly partition pruning",
-    lookback=Lookback(
-        key="partition_key",
+    lookback=FeatureGroupLookback(
+        key="PARTITION_KEY",
         start=datetime.date(2026, 5, 10),
         end=datetime.date(2026, 5, 17),
     ),
 )
 ```
 
-Equivalent dict form (no `Lookback` import, but `datetime` is still required for the bound values):
+Equivalent dict form (no `FeatureGroupLookback` import, but `datetime` is still required for the bound values):
 
 ```python
 import datetime
@@ -87,14 +87,14 @@ version, job = feature_view.create_training_data(
     end_time=datetime.date(2026, 5, 17),
     description="fraud batch training data, weekly partition pruning",
     lookback={
-        "key": "partition_key",
+        "key": "PARTITION_KEY",
         "start": datetime.date(2026, 5, 10),
         "end": datetime.date(2026, 5, 17),
     },
 )
 ```
 
-For different lookbacks per joined Feature Group, pass a `Lookbacks` — see the [per-feature-group lookback section][batch-data-lookback] of the batch-data guide for the full shape.
+For different lookbacks per joined Feature Group, pass a `Lookback` — see the [per-feature-group lookback section][batch-data-lookback] of the batch-data guide for the full shape.
 
 The resolved window is persisted with the training dataset, so re-reading the same training dataset version reconstructs the same per-join predicate.
 The same parameter is accepted by `create_train_test_split` and `create_train_validation_test_split`.

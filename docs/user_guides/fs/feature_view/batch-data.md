@@ -110,29 +110,29 @@ That predicate is a range comparison, not an equality, so partition pruning is d
 As Feature Groups grow with daily ingestion, this scan grows unboundedly.
 
 The `lookback` argument lets you cap how far back the join is allowed to consider rows from each joined Feature Group.
-The backend turns the window into a constant-bound predicate on the joined Feature Group so the ArrowFlight Server with DuckDB and Spark Catalyst pushdown can prune partitions before opening any files.
+Hopsworks turns the window into a constant-bound predicate on the joined Feature Group so the ArrowFlight Server with DuckDB and Spark Catalyst pushdown can prune partitions before opening any files.
 
 ### Uniform lookback
 
-Apply the same window to every joined Feature Group with a `Lookback` instance from `hsfs.constructor.lookback`, or the equivalent dict.
+Apply the same window to every joined Feature Group with a `FeatureGroupLookback` instance from `hsfs.constructor.lookback`, or the equivalent dict.
 Both forms accept `date` and `datetime` values.
 
 ```python
 import datetime
-from hsfs.constructor.lookback import Lookback
+from hsfs.constructor.lookback import FeatureGroupLookback
 
 df = feature_view.get_batch_data(
     start_time=datetime.date(2026, 5, 10),
     end_time=datetime.date(2026, 5, 17),
-    lookback=Lookback(
-        key="partition_key",
+    lookback=FeatureGroupLookback(
+        key="PARTITION_KEY",
         start=datetime.date(2026, 5, 10),
         end=datetime.date(2026, 5, 17),
     ),
 )
 ```
 
-Equivalent dict form, no `Lookback` import required (you still need `datetime` for the bound values):
+Equivalent dict form, no `FeatureGroupLookback` import required (you still need `datetime` for the bound values):
 
 ```python
 import datetime
@@ -141,7 +141,7 @@ df = feature_view.get_batch_data(
     start_time=datetime.date(2026, 5, 10),
     end_time=datetime.date(2026, 5, 17),
     lookback={
-        "key": "partition_key",
+        "key": "PARTITION_KEY",
         "start": datetime.date(2026, 5, 10),
         "end": datetime.date(2026, 5, 17),
     },
@@ -149,8 +149,8 @@ df = feature_view.get_batch_data(
 ```
 
 `key` selects which column the predicate is emitted against.
-`"partition_key"` targets the Feature Group's partition column so the engine can prune partitions before reading files; the Feature Group must have a single DATE partition column.
-`"event_time"` targets the Feature Group's `event_time` column and guarantees row-level correctness but offers only engine-dependent file pruning (Hudi or Delta column-stats indexing).
+`"PARTITION_KEY"` targets the Feature Group's partition column so the engine can prune partitions before reading files; the Feature Group must have a single DATE partition column.
+`"EVENT_TIME"` targets the Feature Group's `event_time` column and guarantees row-level correctness but offers only engine-dependent file pruning (Hudi or Delta column-stats indexing).
 
 `start` is required and emits a `>=` predicate.
 `end` is optional and emits a `<=` predicate when present.
@@ -161,7 +161,7 @@ import datetime
 
 df = feature_view.get_batch_data(
     lookback={
-        "key": "partition_key",
+        "key": "PARTITION_KEY",
         "start": datetime.date(2026, 5, 10),
     },
 )
@@ -169,25 +169,25 @@ df = feature_view.get_batch_data(
 
 ### Per-feature-group lookback
 
-When different Feature Groups need different windows, use `Lookbacks` to bind a `Lookback` to specific joined Feature Groups.
-An optional `default` applies to every Feature Group not listed in `feature_groups`.
+When different Feature Groups need different windows, use `Lookback` to bind a `FeatureGroupLookback` to specific joined Feature Groups.
+An optional `default` applies to every Feature Group not listed in `feature_group_lookbacks`.
 
 ```python
 import datetime
-from hsfs.constructor.lookback import Lookback, Lookbacks
+from hsfs.constructor.lookback import FeatureGroupLookback, Lookback
 
 df = feature_view.get_batch_data(
     start_time=datetime.date(2026, 5, 11),
     end_time=datetime.date(2026, 5, 17),
-    lookback=Lookbacks(
-        default=Lookback(
-            key="partition_key",
+    lookback=Lookback(
+        default=FeatureGroupLookback(
+            key="PARTITION_KEY",
             start=datetime.date(2026, 5, 5),
             end=datetime.date(2026, 5, 17),
         ),
-        feature_groups={
-            "transactions": Lookback(
-                key="event_time",
+        feature_group_lookbacks={
+            "transactions": FeatureGroupLookback(
+                key="EVENT_TIME",
                 start=datetime.datetime(2026, 5, 1, tzinfo=datetime.timezone.utc),
             ),
         },
@@ -201,17 +201,17 @@ Skip the `default` to apply lookbacks only to the listed Feature Groups; unliste
 df = feature_view.get_batch_data(
     start_time=datetime.date(2026, 5, 11),
     end_time=datetime.date(2026, 5, 17),
-    lookback=Lookbacks(
-        feature_groups={
-            "transactions": Lookback(
-                key="partition_key", start=datetime.date(2026, 5, 5)
+    lookback=Lookback(
+        feature_group_lookbacks={
+            "transactions": FeatureGroupLookback(
+                key="PARTITION_KEY", start=datetime.date(2026, 5, 5)
             ),
         }
     ),
 )
 ```
 
-`feature_groups` keys identify a Feature Group in one of two ways: by name (a bare string matches every version of the named Feature Group at any join site in the Feature View) or by passing the Feature Group instance itself (matches the exact `(name, version)` so a specific version can be targeted when multiple versions of the same Feature Group are joined).
+`feature_group_lookbacks` keys identify a Feature Group in one of two ways: by name (a bare string matches every version of the named Feature Group at any join site in the Feature View) or by passing the Feature Group instance itself (matches the exact `(name, version)` so a specific version can be targeted when multiple versions of the same Feature Group are joined).
 When both forms are supplied for the same name, the instance entry wins at its specific join site and the bare-string entry still applies elsewhere.
 
 Equivalent dict form:
@@ -224,13 +224,13 @@ df = feature_view.get_batch_data(
     end_time=datetime.date(2026, 5, 17),
     lookback={
         "default": {
-            "key": "partition_key",
+            "key": "PARTITION_KEY",
             "start": datetime.date(2026, 5, 5),
             "end": datetime.date(2026, 5, 17),
         },
-        "feature_groups": {
+        "feature_group_lookbacks": {
             "transactions": {
-                "key": "event_time",
+                "key": "EVENT_TIME",
                 "start": datetime.datetime(2026, 5, 1, tzinfo=datetime.timezone.utc),
             },
         },
