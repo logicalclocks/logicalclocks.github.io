@@ -27,7 +27,18 @@ Access Superset from your Hopsworks project:
   <figcaption>Accessing Superset from a Hopsworks project</figcaption>
 </figure>
 
-This opens the Superset interface with access to your project's data sources and any dashboards you have created or have permission to view.
+This opens the Superset dashboards page, which lists all dashboards available in your project.
+
+<figure>
+  <img src="../../../../assets/images/guides/superset/superset-dashboards.png" alt="Superset dashboards page" />
+  <figcaption>Superset dashboards page</figcaption>
+</figure>
+
+To open a specific dashboard, click its name in the list.
+The dashboard opens in a new browser tab.
+
+To open the full Superset application, click **Open Superset**.
+Superset opens in a new browser tab.
 
 ## Superset Interface
 
@@ -173,30 +184,50 @@ Users added as owners or through roles can view and interact with the dashboard.
 
 #### Making Dashboards Public
 
-To allow access to anonymous or unauthenticated users, add the Public role to the dashboard's Roles list:
+To make a dashboard accessible to unauthenticated viewers, use the public toggle on the project's Superset dashboards page in Hopsworks:
 
-1. Navigate to **Dashboards** and locate your dashboard
-2. Click the **edit icon** menu next to the dashboard name
-3. In the **Access** section, find the **Roles** dropdown
-4. Select **Public** from the roles list
-5. Click **Save** to apply the changes
+1. Open the **Superset** page in your project
+2. Locate the dashboard in the list
+3. Click the public toggle for that dashboard
+
+The dashboard is marked **public** and becomes viewable without a Superset login.
+Click the toggle again to remove public access.
+
+The toggle is enabled only when Superset's built-in **Public** role exists.
+If the role is missing, the toggle is disabled and labelled `The Superset Public role does not exist`, and you should contact your Hopsworks administrator.
+
+You can also add or remove the Public role from Superset's native dashboard **Access** dialog.
 
 <figure>
   <img src="../../../../assets/images/guides/superset/add-public-role.png" alt="Adding public role to dashboard" />
   <figcaption>Adding the Public role to make a dashboard accessible to unauthenticated users</figcaption>
 </figure>
 
-When the Public role is added, the dashboard becomes viewable by anyone, including unauthenticated users.
-
 !!! warning "Security Considerations"
-    Only add the Public role to dashboards containing non-sensitive data.
+    Only make a dashboard public when it contains non-sensitive data.
     Ensure the dashboard does not expose confidential or project-specific information.
+
+##### Anonymous access requirements
+
+Marking a dashboard public requires only the Public role to exist.
+For unauthenticated viewers to actually open public dashboards and permalinks, the Superset deployment must satisfy two further conditions.
+The dashboards page shows a warning that lists any condition that is not met:
+
+- The built-in **Public** role exists. Without it, dashboards cannot be made public.
+- Unauthenticated access to the dashboard list is enabled. This requires `AUTH_ROLE_PUBLIC = "Public"` in `superset_config.py`.
+- The Public role has the required permissions. Running `superset init` syncs the permissions, and the Public role must also have dataset access.
+
+If the warning appears, contact your Hopsworks administrator to complete the configuration.
+See the Apache Superset [public role documentation](https://superset.apache.org/admin-docs/security/#public) for background.
 
 ### Sharing Dashboard Permalinks
 
-Superset allows you to share a direct link to a dashboard, preserving the current view state including applied filters and parameter values.
+A permalink is a direct link to a dashboard that preserves the current view state, including applied filters and parameter values.
 
-To share a dashboard permalink:
+From the project's Superset dashboards page in Hopsworks, click the copy-permalink action on a dashboard to copy its permalink to your clipboard.
+You can then share the copied URL with other users.
+
+To create a permalink from within Superset instead:
 
 1. Open the dashboard you want to share
 2. Apply any filters or configure the view as desired
