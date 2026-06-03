@@ -32,6 +32,7 @@ All read directly from metrics emitted by Payara on the `hopsworks-instance` pod
 - **WebSocket - rejection rate** plots `sum(rate(ws_connection_rejections_total[1m]))`.
   Any non-zero value means at least one user was turned away from a Jupyter, terminal, or Streamlit session in the last minute.
   This is the alertable signal for "the cap is too low."
+  This counter covers cap-reached rejections only; a connection that is refused because its upstream pod is unreachable is counted separately under `ws_upstream_connect_failures_total` (see the metrics table), so this signal stays a clean measure of saturation.
 
 - **WebSocket - duration (sliding window percentiles)** plots p50, p95, and p99 of the duration of WebSocket connections after they close.
   Values come from an exponentially-decaying sample reservoir with a roughly five-minute half-life, so closed long-lived sessions decay out of the percentiles quickly rather than dominating them forever.
@@ -63,6 +64,7 @@ The metric names are unchanged from the previous proxy implementation, so existi
 | `ws_connection_in_flight_max_age_seconds` | gauge | Age, in seconds, of the oldest currently open connection. |
 | `ws_pool_max_connections` | gauge | Configured saturation point for one pod: the `maxSessionsPerApp` cap above which new upgrades are rejected with `1013 TRY_AGAIN_LATER`. |
 | `ws_connection_rejections_total` | counter | Cumulative count of connections rejected because the cap was reached. |
+| `ws_upstream_connect_failures_total` | counter | Cumulative count of sessions closed because the proxy could not reach the upstream (the kernel, shell, or app pod is not accepting connections). Distinct from `ws_connection_rejections_total` even though both close the browser with `1013 TRY_AGAIN_LATER`: this one means "the upstream is not up", not "the pod is saturated". |
 | `ws_connection_duration_seconds` | summary | Count, sum, max, mean, and quantile values for the duration of closed connections, in seconds. |
 | `ws_pool_cpu_cores` | gauge | CPU cores currently in use by the proxy's shared client transport threads. Computed from per-thread `ThreadMXBean.getThreadCpuTime` deltas divided by wall-clock dt; `1.0` means one full CPU core. `0` if the JVM does not support per-thread CPU accounting or on the first scrape after startup. |
 | `ws_pool_alloc_bytes_per_second` | gauge | Heap allocation rate, in bytes per second, summed over the proxy's client transport threads. Computed from per-thread `getThreadAllocatedBytes` deltas divided by wall dt. This is GC pressure produced by the forwarding work, not the memory it currently holds; per-thread heap residency is not measurable through standard `ThreadMXBean` APIs. `0` on JVMs without `com.sun.management.ThreadMXBean`. |
