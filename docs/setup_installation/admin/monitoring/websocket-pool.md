@@ -85,6 +85,7 @@ hopsworks:
       incomingBufferBytes: 33554432 # max single received frame, in bytes (32 MiB)
       grizzlyWorkerPoolMaxSize: 200 # cap on the shared client transport workers
       sessionIdleTimeoutMs: 0       # 0 = no idle reaper (sessions are long-lived)
+      heartbeatIntervalMs: 20000    # keepalive ping toward the browser; 0 disables
 ```
 
 Raise `maxSessionsPerApp` to serve more concurrent notebook, terminal, and Streamlit users per pod.
@@ -107,3 +108,10 @@ For pod-vs-Kubernetes-limit context (working set vs request and limit) see the `
 
 By default `sessionIdleTimeoutMs` is `0`, which disables the proxy's idle reaper: proxied sessions are legitimately long-lived (an open notebook can sit idle for hours), so the proxy does not close them on inactivity.
 Set a positive value (in milliseconds) only if you want the proxy itself to drop idle connections; JupyterLab and the terminal client both reconnect transparently after such a close, and the kernel, shell, or Streamlit process running in its own pod is unaffected by the disconnect.
+
+## Keepalive heartbeat
+
+The connection between the browser and the proxy runs through the ingress (nginx), whose default read timeout closes a WebSocket that carries no traffic for 60 seconds.
+An idle terminal or notebook would otherwise be dropped and reconnected about once a minute, because nothing keeps that hop active on its own: browsers do not send WebSocket pings, and the proxy answers the upstream's pings locally rather than relaying them to the browser.
+To prevent this, the proxy enables the Tyrus per-session heartbeat on the browser-facing connection: it sends an unsolicited pong every `heartbeatIntervalMs` (default `20000`, i.e. 20 seconds), which keeps the hop active so the ingress does not reap an idle session.
+Keep the interval comfortably below the ingress read timeout; set `heartbeatIntervalMs` to `0` to disable the heartbeat if your ingress does not impose an idle timeout.
