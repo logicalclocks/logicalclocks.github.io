@@ -17,7 +17,7 @@ To change the session cap or the proxy buffers, you need to be able to edit the 
 ## How the cap relates to concurrent users
 
 Each open browser WebSocket the proxy is bridging counts as one in-flight session, and all three WebSocket-backed components — Jupyter kernels, terminals, and Streamlit apps — draw from the same per-pod budget.
-The pod saturates at `maxSessionsPerApp` concurrent connections, which defaults to `800`.
+The pod saturates at `maxSessionsPerApp` concurrent connections, which defaults to `500`.
 Unlike the previous proxy, there is no two-threads-per-connection accounting: the cap is a direct count of open sessions, not a derived thread number.
 
 There is no queue.
@@ -81,7 +81,7 @@ The proxy is configured at install time through `values.yaml`:
 hopsworks:
   payara:
     websocketProxy:
-      maxSessionsPerApp: 800        # concurrent inbound WS sessions per pod
+      maxSessionsPerApp: 500        # concurrent inbound WS sessions per pod
       incomingBufferBytes: 33554432 # max single received frame, in bytes (32 MiB)
       grizzlyWorkerPoolMaxSize: 200 # cap on the shared client transport workers
       sessionIdleTimeoutMs: 0       # 0 = no idle reaper (sessions are long-lived)
