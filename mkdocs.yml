@@ -166,6 +166,7 @@ nav:
               - Run PySpark Notebook: user_guides/projects/jupyter/spark_notebook.md
               - Run Ray Notebook: user_guides/projects/jupyter/ray_notebook.md
               - Remote Filesystem Driver: user_guides/projects/jupyter/remote_filesystem_driver.md
+              - Session Capacity Warnings: user_guides/projects/jupyter/session_capacity_warnings.md
           - Jobs:
               - Run Python Job: user_guides/projects/jobs/python_job.md
               - Run Jupyter Notebook Job: user_guides/projects/jobs/notebook_job.md
@@ -266,6 +267,7 @@ nav:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
               - Services Logs: setup_installation/admin/monitoring/services-logs.md
+              - WebSocket Proxy Pool: setup_installation/admin/monitoring/websocket-pool.md
           - Authentication:
               - Configure Authentication: setup_installation/admin/auth.md
               - Configure OAuth2:
