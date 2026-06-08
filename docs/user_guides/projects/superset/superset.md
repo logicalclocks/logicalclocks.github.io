@@ -31,7 +31,7 @@ This opens the Superset dashboards page, which lists all dashboards available in
 
 <figure>
   <img src="../../../../assets/images/guides/superset/superset-dashboards.png" alt="Superset dashboards page" />
-  <figcaption>Superset dashboards page</figcaption>
+  <figcaption>Superset dashboards page, with per-dashboard public/shared status and actions</figcaption>
 </figure>
 
 To open a specific dashboard, click its name in the list.
@@ -167,8 +167,20 @@ Dashboards combine multiple charts into interactive visualization reports.
 
 ### Sharing Dashboards
 
-By default, dashboards are only accessible to the owner of the dashboard.
-To share a dashboard with other users, you need to explicitly grant access by adding them as owners or granting role-based access.
+By default, a dashboard is only accessible to its owner.
+The project's **Superset** page in Hopsworks lists every dashboard with two visibility columns and per-row actions for changing who can see it:
+
+- **public** column: `not public`, `project public` (visible to every member of the current project), or `public` (visible to unauthenticated viewers).
+- **shared** column: `Not shared`, or `Shared` (hover to see which other projects the dashboard is shared with).
+
+The per-row action icons, from left to right, are: share with other projects, share with all project members, make public, copy permalink, and delete.
+
+These sharing and visibility actions, along with delete, are available only to the dashboard's owner. Other users can still open a dashboard and copy its permalink.
+
+All sharing actions require the dashboard to be **published** in Superset first.
+A draft is invisible to the roles being granted access, so the sharing icons stay disabled until you publish it.
+
+You can also share with specific users or roles from Superset's native dashboard **Access** dialog, as described next.
 
 #### Adding Users to Share a Dashboard
 
@@ -182,19 +194,41 @@ To share a dashboard with specific users or roles:
 
 Users added as owners or through roles can view and interact with the dashboard.
 
+#### Sharing with All Project Members
+
+To make a dashboard visible to every member of the current project, click the **share with all project members** icon on the dashboard's row.
+Hopsworks grants the project's role access to the dashboard, and the **public** column changes to `project public`.
+Click the icon again to remove access; the column returns to `not public`.
+
+Project members can then open the dashboard from their own **Superset** page or through a [permalink][sharing-dashboard-permalinks].
+
+#### Sharing with Other Projects
+
+You can grant members of other projects access to a dashboard without making it public:
+
+1. Click the **share with other projects** icon on the dashboard's row
+2. In the **Share with other projects** dialog, find the target project by name
+3. Tick a project to share the dashboard with all of its members; untick it to stop sharing
+
+The **shared** column shows `Shared` once at least one other project has access.
+Hover over it to see the list of projects.
+
+You do not need to be a member of a project to share a dashboard with it.
+Sharing attaches that project's role to the dashboard, so its members can open it from their own **Superset** page.
+
 #### Making Dashboards Public
 
-To make a dashboard accessible to unauthenticated viewers, use the public toggle on the project's Superset dashboards page in Hopsworks:
+To make a dashboard accessible to unauthenticated viewers (anyone with the link, no Superset login), use the **make public** icon on the project's Superset dashboards page in Hopsworks:
 
 1. Open the **Superset** page in your project
 2. Locate the dashboard in the list
-3. Click the public toggle for that dashboard
+3. Click the **make public** icon for that dashboard
 
 The dashboard is marked **public** and becomes viewable without a Superset login.
-Click the toggle again to remove public access.
+Click the icon again to remove public access.
 
-The toggle is enabled only when Superset's built-in **Public** role exists.
-If the role is missing, the toggle is disabled and labelled `The Superset Public role does not exist`, and you should contact your Hopsworks administrator.
+The icon is enabled only when Superset's built-in **Public** role exists.
+If the role is missing, the icon is disabled and its tooltip reads `The Superset Public role does not exist`, and you should contact your Hopsworks administrator.
 
 You can also add or remove the Public role from Superset's native dashboard **Access** dialog.
 
