@@ -1221,6 +1221,10 @@
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/deployment_tracing_config/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/inference_batcher/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
