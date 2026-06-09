@@ -69,8 +69,7 @@ can inspect its status, logs, endpoints, and configuration.
 ## Small example
 
 The file below shows a compact agent program that uses LlamaIndex, FastAPI,
-and OpenTelemetry. The FastAPI app is there for local smoke testing; the same
-agent logic can live in your Hopsworks deployment entry file.
+and OpenTelemetry.
 
 Set `ANTHROPIC_API_KEY` in the deployment environment. Hopsworks injects the
 `OTEL_EXPORTER_OTLP_*` environment variables for the deployment, so the
@@ -179,20 +178,6 @@ def query(payload: dict):
 
 if __name__ == "__main__":
   uvicorn.run(agent_app, host="0.0.0.0", port=8080)
-```
-
-Example dependencies:
-
-```text
-llama-index-core
-llama-index-llms-openai
-fastapi
-uvicorn
-openinference-instrumentation-llama-index
-opentelemetry-api
-opentelemetry-sdk
-opentelemetry-exporter-otlp-proto-http
-opentelemetry-instrumentation-fastapi
 ```
 
 ## Tracing
