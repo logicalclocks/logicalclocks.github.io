@@ -72,7 +72,7 @@ The file below shows a compact agent program that uses LlamaIndex, FastAPI,
 and OpenTelemetry. The FastAPI app is there for local smoke testing; the same
 agent logic can live in your Hopsworks deployment entry file.
 
-Set `OPENAI_API_KEY` in the deployment environment. Hopsworks injects the
+Set `ANTHROPIC_API_KEY` in the deployment environment. Hopsworks injects the
 `OTEL_EXPORTER_OTLP_*` environment variables for the deployment, so the
 OpenTelemetry exporter can stay configuration-free.
 
@@ -83,7 +83,7 @@ import os
 from fastapi import FastAPI
 from llama_index.core.agent.workflow import ReActAgent
 from llama_index.core.tools import FunctionTool
-from llama_index.llms.openai import OpenAI
+from llama_index.llms.anthropic import Anthropic
 from openinference.instrumentation.llama_index import LlamaIndexInstrumentor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -91,74 +91,94 @@ from opentelemetry.sdk import trace as trace_sdk
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 import uvicorn
 
+
 def add(a: float, b: float) -> float:
-    """Adds two numbers."""
-    return a + b
+  """Adds two numbers."""
+  return a + b
 
 
 def subtract(a: float, b: float) -> float:
-    """Subtracts two numbers."""
-    return a - b
+  """Subtracts two numbers."""
+  return a - b
 
 
 def multiply(a: float, b: float) -> float:
-    """Multiplies two numbers."""
-    return a * b
+  """Multiplies two numbers."""
+  return a * b
 
 
 def divide(a: float, b: float) -> float:
-    """Divides two numbers."""
-    if b == 0:
-        raise ValueError("Cannot divide by zero.")
-    return a / b
+  """Divides two numbers."""
+  if b == 0:
+    raise ValueError("Cannot divide by zero.")
+  return a / b
 
 
 def build_tracer_provider():
-    endpoint = os.environ.get(
-        "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", "http://localhost:4318/v1/traces"
-    )
-    tracer_provider = trace_sdk.TracerProvider()
-    tracer_provider.add_span_processor(
-        SimpleSpanProcessor(OTLPSpanExporter(endpoint=endpoint))
-    )
-    return tracer_provider
+  endpoint = os.environ.get(
+    "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT",
+    "http://localhost:4318/v1/traces",
+  )
+
+  tracer_provider = trace_sdk.TracerProvider()
+  tracer_provider.add_span_processor(
+    SimpleSpanProcessor(OTLPSpanExporter(endpoint=endpoint))
+  )
+  return tracer_provider
 
 
 class AgentPredictor:
-    def __init__(self):
-        self.tracer_provider = build_tracer_provider()
-        LlamaIndexInstrumentor().instrument(tracer_provider=self.tracer_provider)
+  def __init__(self):
+    self.tracer_provider = build_tracer_provider()
 
-        llm = OpenAI(model="gpt-4o-mini")
-        tools = [
-            FunctionTool.from_defaults(add),
-            FunctionTool.from_defaults(subtract),
-            FunctionTool.from_defaults(multiply),
-            FunctionTool.from_defaults(divide),
-        ]
-        self.agent = ReActAgent(tools=tools, llm=llm)
+    LlamaIndexInstrumentor().instrument(
+      tracer_provider=self.tracer_provider
+    )
 
-    async def _predict_async(self, inputs):
-        prompt = inputs.get("prompt", "")
-        result = await self.agent.run(prompt)
-        return {"answer": str(result)}
+    llm = Anthropic(
+      model="claude-haiku-4-5-20251001",
+      max_tokens=1024,
+      temperature=0.0,
+    )
 
-    def predict(self, inputs):
-        return asyncio.run(self._predict_async(inputs))
+    tools = [
+      FunctionTool.from_defaults(add),
+      FunctionTool.from_defaults(subtract),
+      FunctionTool.from_defaults(multiply),
+      FunctionTool.from_defaults(divide),
+    ]
+
+    self.agent = ReActAgent(
+      tools=tools,
+      llm=llm,
+    )
+
+  async def _predict_async(self, inputs):
+    prompt = inputs.get("prompt", "")
+    result = await self.agent.run(prompt)
+    return {"answer": str(result)}
+
+  def predict(self, inputs):
+    return asyncio.run(self._predict_async(inputs))
 
 
 predictor = AgentPredictor()
+
 agent_app = FastAPI()
-FastAPIInstrumentor.instrument_app(agent_app, tracer_provider=predictor.tracer_provider)
+
+FastAPIInstrumentor.instrument_app(
+  agent_app,
+  tracer_provider=predictor.tracer_provider,
+)
 
 
 @agent_app.post("/query")
 def query(payload: dict):
-    return predictor.predict(payload)
+  return predictor.predict(payload)
 
 
 if __name__ == "__main__":
-    uvicorn.run(agent_app, host="0.0.0.0", port=8080)
+  uvicorn.run(agent_app, host="0.0.0.0", port=8080)
 ```
 
 Example dependencies:
