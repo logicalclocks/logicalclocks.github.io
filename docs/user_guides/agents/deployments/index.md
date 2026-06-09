@@ -7,9 +7,10 @@ description: Documentation on how to configure and run an Agent Deployment on Ho
 ## Introduction
 
 Agent Deployments are **server-only KServe deployments with no model attached**.
-You ship an entry script or package that exposes a predictor, and Hopsworks
-serves it behind an endpoint. Use Agent Deployments for interactive agents and
-LLM workflows, where the service needs to stay up and answer requests.
+You provide an entrypoint Python script that starts a REST server.
+Hopsworks exposes it behind an endpoint.
+Use Agent Deployments for interactive agents and LLM workflows.
+The service needs to stay up and answer requests.
 
 If you need a fire-and-forget background run, use [Agent Tasks](../tasks/index.md)
 instead.
