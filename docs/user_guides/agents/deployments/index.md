@@ -198,7 +198,7 @@ in a project creates them automatically if they do not already exist.
 After that, choose one of these storage modes:
 
 - `online` - the default; writes traces to only online
-- `offline` - writes traces to only offline. You will no be able to see the traces summaries in the UI, but you can 
+- `offline` - writes traces to only offline. You will no be able to see the traces summaries in the UI, but you can
   use the hopsworks-api to read the offline feature groups and reconstruct the traces from there.
 - `both` - export traces to both online and offline feature groups. This is the recommended option for production deployments, as it allows you to see the traces in the UI and also have them stored cost-effectively for long-term retention.
 
