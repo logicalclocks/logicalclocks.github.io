@@ -68,7 +68,7 @@ can inspect its status, logs, endpoints, and configuration.
 
 ## Small example
 
-The file below shows a compact agent program that uses LlamaIndex, FastAPI,
+The file below shows a simple agent program that uses LlamaIndex, FastAPI,
 and OpenTelemetry.
 
 Set `ANTHROPIC_API_KEY` in the deployment environment. Hopsworks injects the
