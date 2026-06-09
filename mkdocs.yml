@@ -173,7 +173,6 @@ nav:
               - Run PySpark Job: user_guides/projects/jobs/pyspark_job.md
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
               - Run Ray Job: user_guides/projects/jobs/ray_job.md
-              - Run Agent Job: user_guides/projects/jobs/agent_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
               - Batch Feature Pipelines: user_guides/projects/jobs/batch_feature_pipeline.md
           - Kubernetes Scheduling:
@@ -241,6 +240,12 @@ nav:
               - External Access: user_guides/mlops/serving/external-access.md
           - Vector Database: user_guides/fs/vector_similarity_search.md
           - Provenance: user_guides/mlops/provenance/provenance.md
+      - Agents:
+          - user_guides/agents/index.md
+          - Agent Tasks:
+              - user_guides/agents/tasks/index.md
+          - Agent Deployments:
+              - user_guides/agents/deployments/index.md
       - Migration:
           - 3.X to 4.0: user_guides/migration/40_migration.md
   - Setup and Administration:
