@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-cli = ["typer", "rich"]
+cli = ["typer", "rich", "pyyaml", "packaging"]
 
 [dependency-groups]
 dev = ["ruff==0.15.6", "linkchecker", "md-snakeoil", "pyright"]

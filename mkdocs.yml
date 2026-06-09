@@ -291,6 +291,7 @@ nav:
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
       - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
+      - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
   - Python API: python-api
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
