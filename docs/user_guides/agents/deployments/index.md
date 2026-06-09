@@ -47,7 +47,6 @@ Use `hops agent list` first to confirm auth and serving are reachable.
 
 ```python
 import hopsworks
-
 project = hopsworks.login()
 ms = project.get_model_serving()
 
