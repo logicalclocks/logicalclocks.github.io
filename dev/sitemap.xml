@@ -285,6 +285,18 @@
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/agents/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/agents/deployments/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/agents/tasks/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/client_installation/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
@@ -742,10 +754,6 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/projects/iam_role/iam_role_chaining/</loc>
-         <lastmod>2026-06-09</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/latest/user_guides/projects/jobs/agent_job/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
