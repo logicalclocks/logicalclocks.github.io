@@ -143,6 +143,7 @@ kubectl create namespace hopsworks
 ### Step 3.3: Create helm values file
 
 Below is a simplifield values.gcp.yaml file to get started which can be updated for improved performance and further customisation.
+See the [Helm chart values reference][helm-chart-values-reference] for the full list of configurable values.
 
 ```bash
 global:

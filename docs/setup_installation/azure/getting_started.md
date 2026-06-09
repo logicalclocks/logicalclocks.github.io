@@ -167,6 +167,7 @@ helm repo update hopsworks
 ### Step 4.2: Create helm values file
 
 Below is a simplifield values.azure.yaml file to get started which can be updated for improved performance and further customisation.
+See the [Helm chart values reference][helm-chart-values-reference] for the full list of configurable values.
 
 ```yaml
 global:
