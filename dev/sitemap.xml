@@ -937,10 +937,6 @@
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
-         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/flink_cluster_api/</loc>
-         <lastmod>2026-06-09</lastmod>
-    </url>
-    <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/git_api/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
@@ -998,10 +994,6 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/execution/</loc>
-         <lastmod>2026-06-09</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/flink_cluster/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
@@ -1065,7 +1057,11 @@
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
-         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks_common/core/rest/</loc>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsfs/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsfs/builtin_transformations/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
@@ -1082,6 +1078,14 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/query/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsfs/core/chart/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsfs/core/dashboard/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
@@ -1217,6 +1221,10 @@
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/client/exceptions/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/core/explicit_provenance/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
@@ -1238,6 +1246,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/inference_logger/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/llm/signature/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
@@ -1269,6 +1281,10 @@
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/python/signature/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/resources/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
@@ -1278,6 +1294,18 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/schema/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/sklearn/signature/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/tensorflow/signature/</loc>
+         <lastmod>2026-06-09</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/torch/signature/</loc>
          <lastmod>2026-06-09</lastmod>
     </url>
     <url>
