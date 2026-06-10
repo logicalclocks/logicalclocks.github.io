@@ -16,8 +16,8 @@
 <span class=c1># get Hopsworks Model Registry handle</span>
 <span class=n>mr</span> <span class=o>=</span> <span class=n>project</span><span class=o>.</span><span class=n>get_model_registry</span><span class=p>()</span>
 </code></pre></div> </div> </div> </div> <h3 id=step-2-create-modelschema>Step 2: Create ModelSchema<a class=headerlink href=#step-2-create-modelschema title="Permanent link">#</a></h3> <p>Create a ModelSchema for your inputs and outputs by passing in an example that your model is trained on and a valid prediction. Currently, we support <code>pandas.DataFrame, pandas.Series, numpy.ndarray, list</code>.</p> <div class="tabbed-set tabbed-alternate" data-tabs=2:1><input checked=checked id=__tabbed_2_1 name=__tabbed_2 type=radio><div class=tabbed-labels><label for=__tabbed_2_1>Python</label></div> <div class=tabbed-content> <div class=tabbed-block> <div class=highlight><pre><span></span><code><span class=c1># Import a Schema and ModelSchema definition</span>
-<span class=kn>from</span><span class=w> </span><span class=nn>hsml.utils.model_schema</span><span class=w> </span><span class=kn>import</span> <span class=n>ModelSchema</span>
-<span class=kn>from</span><span class=w> </span><span class=nn>hsml.utils.schema</span><span class=w> </span><span class=kn>import</span> <span class=n>Schema</span>
+<span class=kn>from</span><span class=w> </span><span class=nn>hsml.model_schema</span><span class=w> </span><span class=kn>import</span> <span class=n>ModelSchema</span>
+<span class=kn>from</span><span class=w> </span><span class=nn>hsml.schema</span><span class=w> </span><span class=kn>import</span> <span class=n>Schema</span>
 
 
 <span class=c1># Model inputs for MNIST dataset</span>
