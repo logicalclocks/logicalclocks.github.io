@@ -152,7 +152,7 @@ Keep the feature group offline-only to use `partitioned_by`.
 ###### Hudi
 
 `partitioned_by` on `time_travel_format="HUDI"` feature groups is not yet supported and the backend rejects it at creation.
-Hudi needs a different mechanism (a `CustomKeyGenerator` + server-side `Transformer`) and is tracked under a separate follow-up ticket.
+Hudi materializes the grain columns server-side in the streaming materialization job, and that work is tracked under a separate follow-up ticket.
 Until that lands, use `time_travel_format="DELTA"` to get time-grain partitioning, or partition Hudi groups explicitly via `partition_key=["year"]` with a `year` column the upstream pipeline computes.
 
 ##### Table format
