@@ -4,8 +4,16 @@ description: How to create, run, and manage Hopsworks Apps
 
 # Apps
 
-Apps are long-running Python applications that run as managed services in Hopsworks.
-Use them for Streamlit dashboards or custom Python web apps such as Flask, FastAPI, or Gradio.
+Apps are long-running applications that run as managed services in Hopsworks.
+Use them for Streamlit dashboards or custom web apps such as Flask, FastAPI, Gradio, or JavaScript apps like Express.
+Common uses include:
+
+- Interactive data apps that visualize model predictions or project data.
+- Predictive analytics dashboards.
+- Chatbot UIs for internal or external assistants.
+- GenAI front ends, such as a Gradio or Streamlit RAG assistant.
+- FastAPI services that expose inference or other application endpoints.
+
 Each app is backed by a Hopsworks job and a Kubernetes deployment, so it can be started, stopped, redeployed, and deleted like any other project service.
 
 ## Where to find Apps
@@ -36,8 +44,8 @@ The create dialog lets you choose the app type, source, runtime environment, res
 ### App types
 
 - **Streamlit** apps are the default choice for dashboards and interactive ML UIs.
-- **Custom** apps are any Python web service that listens on `APP_PORT`.
-  Common choices are Flask, FastAPI, and Gradio.
+- **Custom** apps are any web service that listens on `APP_PORT`.
+  Common choices are Flask, FastAPI, Gradio, and JavaScript frameworks such as Express.
 
 ### App sources
 
