@@ -167,6 +167,7 @@ nav:
               - Run Ray Notebook: user_guides/projects/jupyter/ray_notebook.md
               - Remote Filesystem Driver: user_guides/projects/jupyter/remote_filesystem_driver.md
               - Session Capacity Warnings: user_guides/projects/jupyter/session_capacity_warnings.md
+          - Apps: user_guides/projects/apps/index.md
           - Jobs:
               - Run Python Job: user_guides/projects/jobs/python_job.md
               - Run Jupyter Notebook Job: user_guides/projects/jobs/notebook_job.md
