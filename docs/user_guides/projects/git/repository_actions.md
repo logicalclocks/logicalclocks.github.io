@@ -62,7 +62,7 @@ git_repo = git_api.get_repo(REPOSITORY_NAME)
 ### Step 3: Perform the git repository action e.g commit
 
 ```python
-git_repo = git_api.commit("Test commit")
+git_repo.commit("Test commit")
 ```
 
 ### API Reference
