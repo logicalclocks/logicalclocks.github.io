@@ -41,8 +41,11 @@ uv python install 3.13
 # (`pyenv install 3.13` then `pyenv shell 3.13`) so uv resolves to the right interpreter.
 
 uv sync
-# Install hopsworks-api for gathering docstrings for the API reference
-uv pip install git+https://github.com/logicalclocks/hopsworks-api.git@main#subdirectory=python
+# Install hopsworks-api for gathering docstrings for the API reference.
+# The `[python]` extra is required: the hopsworks-apigen plugin dynamically
+# imports hsfs/hsml/hopsworks, and hsfs imports pyarrow at load time, so the
+# base install (without the extra) fails the build with ModuleNotFoundError.
+uv pip install "hopsworks[python] @ git+https://github.com/logicalclocks/hopsworks-api.git@main#subdirectory=python"
 ```
 
 Alternatively, you can just activate the virtual environment you use for development of `hopsworks-api` (obtained via `uv sync`), this is the way it is done in the actions.
@@ -86,6 +89,21 @@ uv run mike set-default latest
 
 The `mkdocs.yml` file of this repository defines the pages to show in the navigation.
 After adding your new page in the docs folder, you also need to add it to this file for it to show up in the navigation.
+
+## Helm chart values reference
+
+The `setup_installation/common/helm_chart_values.md` page renders a placeholder locally; its `## Values` table is injected at build time by the `hopsworks-docs gen-helm-values` step and is **never committed**.
+CI fetches the chart from Nexus rather than the (private) `hopsworks-helm` git repo: release builds (`branch-x.y`) read the public `hopsworks-helm` repo anonymously and pick the latest patch of the chart version matching the docs version, while the development build (`main`) reads the private `hopsworks-helm-dev` repo and uses its newest published chart.
+The development path requires the read-only `NEXUS_USER` and `NEXUS_PASSWORD` repository secrets; without them the `main` build's generation step fails.
+Older chart versions that predate the chart's `## Values` section keep the page placeholder (the build warns rather than failing).
+
+To preview the table locally against a chart checkout:
+
+```bash
+uv run --extra cli hopsworks-docs gen-helm-values --chart <path-to-hopsworks-helm>
+```
+
+This rewrites the page in place, so restore it (`git checkout docs/setup_installation/common/helm_chart_values.md`) before committing.
 
 ## Checking links
 
