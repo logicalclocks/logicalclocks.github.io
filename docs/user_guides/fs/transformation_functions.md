@@ -345,3 +345,98 @@ If only the `name` is provided, then the version will default to 1.
 ## Using transformation functions
 
 Transformation functions can be used by attaching it to a feature view to [create model-dependent transformations](./feature_view/model-dependent-transformations.md) or attached to feature groups to  [create on-demand transformations](./feature_group/on_demand_transformations.md)
+
+## Chained Transformation Functions
+
+Transformation functions can be chained: the output column of one transformation function can serve as the input to another.
+Hopsworks resolves the execution order automatically using a topological sort of the resulting DAG, so dependencies always run before their consumers.
+Chaining works for both on-demand transformations attached to a feature group and model-dependent transformations attached to a feature view.
+
+!!! example "Chained model-dependent transformations on a feature view"
+    === "Python"
+
+        ```python
+        from hopsworks import udf
+
+
+        @udf(int)
+        def add_one(col):
+            return col + 1
+
+
+        @udf(int)
+        def add(a, b):
+            return a + b
+
+
+        fv = fs.create_feature_view(
+            name="chained_mdts_fv",
+            query=fg.select_all(),
+            transformation_functions=[
+                add_one("data1").alias("data1_plus_one"),
+                add_one("data2").alias("data2_plus_one"),
+                add("data1_plus_one", "data2_plus_one").alias("sum_plus_two"),
+            ],
+            version=1,
+        )
+        ```
+
+The same DAG drives offline training data generation and online feature vector retrieval, so chains apply uniformly across both paths.
+A configuration with no valid execution order is rejected: a duplicate output column or a cycle between transformation functions raises an error naming the offending functions, which can be fixed by renaming outputs with `.alias()`.
+
+Cross-DAG chaining is implicit: an on-demand transformation's output column becomes a feature in its feature group, which a feature view can consume and feed into a model-dependent transformation.
+No additional setup is required.
+
+### Visualizing the execution DAG
+
+The execution DAG is shown in the Hopsworks UI on the feature view and feature group overview pages under "Transformation execution DAG."
+The same graph can be rendered from the SDK with `visualize_transformations()`, available on both feature views and feature groups.
+It renders as a Mermaid flowchart in Jupyter and as text elsewhere.
+
+!!! example "Visualizing transformation DAGs"
+    === "Python"
+
+        ```python
+        # Render both the model-dependent and on-demand DAGs.
+        fv.visualize_transformations()
+
+        # Render only the model-dependent DAG, top-to-bottom layout.
+        fv.visualize_transformations(kind="model_dependent", orient="TB")
+
+        # Render the on-demand DAG of a feature group.
+        fg.visualize_transformations()
+        ```
+
+### Transformation Functions Performance Tuning
+
+Transformation function execution is sequential by default.
+Independent transformation functions in the DAG are the unit of parallelism: with more than one worker process, transformations that do not depend on each other run concurrently, while a chained sequence always runs in dependency order.
+A strictly linear chain has nothing to overlap, so worker processes only add overhead there.
+
+The number of worker processes is controlled by the `n_processes` argument, accepted by the feature view and feature group entry points that execute transformations, such as `get_feature_vector`, `get_feature_vectors`, `get_batch_data`, `training_data`, and `transform`.
+Passing `n_processes=1` always forces sequential execution.
+
+When `n_processes` is not provided, execution is sequential: parallelism is strictly opt-in, because whether the worker-pool overhead pays off depends on the cost of your transformation functions, which only you can judge.
+A value above the DAG's maximum parallelism is capped to it, with a warning, because no more transformation functions can ever run concurrently than the DAG has independent branches.
+On the Spark engine `n_processes` is ignored because the whole DAG is pushed down to Spark, which distributes the work itself.
+
+For online serving, spawning the worker pool during the first request would add the pool startup cost to that request's latency.
+Passing `n_processes` to `init_serving` or `init_batch_scoring` pre-spawns the pool at initialization time and makes that value the default for subsequent retrieval calls; an explicit `n_processes` on an individual call still takes precedence.
+
+!!! example "Pre-spawning the worker pool for online serving"
+    === "Python"
+
+        ```python
+        fv.init_serving(training_dataset_version=1, n_processes=2)
+
+        # Served using the pool of two workers spawned at init time.
+        vector = fv.get_feature_vector(entry={"id": 1})
+        ```
+
+Parallel DataFrame execution stages the input once in Arrow shared memory, and each worker reads only the columns its transformation function needs.
+The worker pool start method defaults to `fork` on Linux and `spawn` on macOS and Windows, where forking after threaded native libraries have been loaded can deadlock the worker; set the `HSFS_TF_POOL_START_METHOD` environment variable to `fork`, `forkserver`, or `spawn` to override it.
+
+Two patterns hold across deployments:
+
+- For vectorized Pandas UDFs on small inputs, sequential execution is at least as fast as parallel because the pool overhead dominates.
+- For CPU-heavy UDF chains with independent branches, `n_processes >= 2` overlaps the branches and reduces tail latency.

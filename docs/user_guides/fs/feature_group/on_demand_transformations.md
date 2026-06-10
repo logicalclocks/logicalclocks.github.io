@@ -270,3 +270,40 @@ On-demand transformation functions can also be accessed and executed as normal f
             "on_demand_feature1"
         ](feature_vector["transaction_time"], datetime.now())
         ```
+
+## Chaining On-Demand Transformations
+
+On-demand transformations (ODTs) attached to the same feature group can be chained: one ODT's output column can serve as another ODT's input.
+The execution order is resolved automatically; the DAG is visible from the feature group overview page in the Hopsworks UI.
+An intermediate output consumed only by a downstream ODT can be dropped from the feature group; the full chain still executes during online serving, and the dropped column never becomes a stored feature.
+
+An ODT's output column becomes a regular feature in the feature group, which a downstream feature view can consume and pass into a model-dependent transformation.
+This is the implicit cross-DAG path between on-demand and model-dependent transformation chains: nothing extra to configure on either side.
+
+!!! example "ODT that consumes an upstream ODT's output"
+    === "Python"
+
+        ```python
+        from hopsworks import udf
+
+
+        @udf(int)
+        def add_one(col):
+            return col + 1
+
+
+        @udf(int)
+        def double(col):
+            return col * 2
+
+
+        fg = fs.create_feature_group(
+            name="chained_odt_fg",
+            version=1,
+            primary_key=["id"],
+            transformation_functions=[
+                add_one("raw").alias("raw_plus_one"),
+                double("raw_plus_one").alias("raw_plus_one_doubled"),
+            ],
+        )
+        ```
