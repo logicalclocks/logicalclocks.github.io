@@ -6,6 +6,7 @@ This section serves to provide guides and examples for the common usage of servi
 - [Authentication](auth/login.md)
 - [API Keys](api_key/create_api_key.md)
 - [Jupyter](jupyter/python_notebook.md)
+- [Apps](apps/index.md)
 - [Jobs](jobs/pyspark_job.md)
 - [Git](git/configure_git_provider.md)
 - [Python Environment](python/python_install.md)
