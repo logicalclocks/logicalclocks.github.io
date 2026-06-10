@@ -35,8 +35,8 @@ Currently, we support `pandas.DataFrame, pandas.Series, numpy.ndarray, list`.
 
     ```python
     # Import a Schema and ModelSchema definition
-    from hsml.utils.model_schema import ModelSchema
-    from hsml.utils.schema import Schema
+    from hsml.model_schema import ModelSchema
+    from hsml.schema import Schema
 
 
     # Model inputs for MNIST dataset
