@@ -150,7 +150,7 @@ df = feature_view.get_batch_data(
 
 `key` selects which column the predicate is emitted against.
 `"PARTITION_KEY"` targets the Feature Group's partition column so the engine can prune partitions before reading files; the Feature Group must have a single DATE partition column.
-`"EVENT_TIME"` targets the Feature Group's `event_time` column and guarantees row-level correctness but offers only engine-dependent file pruning (Hudi or Delta column-stats indexing).
+`"EVENT_TIME"` targets the Feature Group's `event_time` column and guarantees row-level correctness but offers only engine-dependent file pruning (Hudi, Delta, or Iceberg column-stats indexing).
 
 `start` is required and emits a `>=` predicate.
 `end` is optional and emits a `<=` predicate when present.
