@@ -57,7 +57,7 @@ When using `time_travel_format="HUDI"` in a Python environment this behavior is 
 
 ##### Primary key
 
-A primary key is required when using the default table format (Hudi, Delta, or Iceberg) to store offline feature data.
+A primary key is required when using a table format with time travel support (Hudi, Delta, or Iceberg) to store offline feature data.
 When inserting data in a feature group on the offline feature store, the DataFrame you are writing is checked against the existing data in the feature group.
 If a row with the same primary key is found in the feature group, the row will be updated.
 If the primary key is not found, the row is appended to the feature group.
@@ -111,7 +111,7 @@ The parameter defaults to `"DELTA"`.
 ##### Data Source
 
 During the creation of a feature group, it is possible to define the `data_source` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster.
-Currently, [S3](../data_source/creation/s3.md) and [GCS](../data_source/creation/gcs.md) connectors with `"DELTA"` or `"ICEBERG"` `time_travel_format` are supported.
+Currently, [S3][data-source-s3] and [GCS][data-source-gcs] connectors with `"DELTA"` or `"ICEBERG"` `time_travel_format` are supported.
 
 ##### Online Table Configuration
 
@@ -276,8 +276,7 @@ fg = feature_store.create_feature_group(...
 
 ##### Parquet file size within a feature group partition
 
-Once you have decided on the feature group level partitioning and you start inserting data to the feature group, there are multiple ways in order to
-influence how the table format (Hudi, Delta, or Iceberg) will **split the data between parquet files within the feature group partitions**.
+Once you have decided on the feature group level partitioning and you start inserting data to the feature group, there are multiple ways in order to influence how the table format (Hudi, Delta, or Iceberg) will **split the data between parquet files within the feature group partitions**.
 The two things that influence the number of parquet files per partition are
 
 1. The number of feature group partitions written in a single insert
