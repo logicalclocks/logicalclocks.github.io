@@ -210,6 +210,10 @@ The DAG is resolved automatically at execution time, so producers always run bef
         )
         ```
 
-Training dataset statistics for chained MDTs are computed in dependency order, so a statistics-based transformation such as a min-max scaler that consumes another MDT's output is fit on that intermediate output, not on the raw feature.
+### Statistics over chained transformations
+
+Statistics-based transformations participate in chains like any other transformation.
+A transformation that requires statistics on another transformation's output, such as a min-max scaler applied to an imputed column, is fit on that intermediate output rather than on the raw feature.
+During training dataset creation the statistics are computed in dependency order on the train split, each transformation executes exactly once, and the fitted statistics are persisted so that online serving applies the same values.
 
 See [Transformation Functions Performance Tuning][transformation-functions-performance-tuning] for `n_processes` semantics on chained DAGs.

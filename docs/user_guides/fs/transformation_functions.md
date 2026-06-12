@@ -382,10 +382,11 @@ Chaining works for both on-demand transformations attached to a feature group an
         ```
 
 The same DAG drives offline training data generation and online feature vector retrieval, so chains apply uniformly across both paths.
-A configuration with no valid execution order is rejected: a duplicate output column or a cycle between transformation functions raises an error naming the offending functions, which can be fixed by renaming outputs with `.alias()`.
+Statistics-based transformations participate in chains too: a transformation that requires statistics on another transformation's output is fit on that intermediate output, as described in [model-dependent transformations][chaining-model-dependent-transformations].
 
-Cross-DAG chaining is implicit: an on-demand transformation's output column becomes a feature in its feature group, which a feature view can consume and feed into a model-dependent transformation.
-No additional setup is required.
+Chaining also works across the two transformation types without additional setup: an on-demand transformation's output column becomes a feature in its feature group, which a feature view can consume and feed into a model-dependent transformation.
+
+A configuration with no valid execution order is rejected: a duplicate output column or a cycle between transformation functions raises an error naming the offending functions, which can be fixed by renaming outputs with `.alias()`.
 
 ### Visualizing the execution DAG
 
