@@ -409,19 +409,23 @@ It renders as a Mermaid flowchart in Jupyter and as text elsewhere.
 
 ### Transformation Functions Performance Tuning
 
-Transformation function execution is sequential by default.
-Independent transformation functions in the DAG are the unit of parallelism: with more than one worker process, transformations that do not depend on each other run concurrently, while a chained sequence always runs in dependency order.
-A strictly linear chain has nothing to overlap, so worker processes only add overhead there.
+Transformation functions execute sequentially unless the `n_processes` argument requests worker processes.
+The argument is accepted by the feature view and feature group entry points that execute transformations, such as `get_feature_vector`, `get_feature_vectors`, `get_batch_data`, `training_data`, and `transform`.
+Parallelism is strictly opt-in because whether the worker-pool overhead pays off depends on the cost of your transformation functions, which only you can judge.
 
-The number of worker processes is controlled by the `n_processes` argument, accepted by the feature view and feature group entry points that execute transformations, such as `get_feature_vector`, `get_feature_vectors`, `get_batch_data`, `training_data`, and `transform`.
-Passing `n_processes=1` always forces sequential execution.
-
-When `n_processes` is not provided, execution is sequential: parallelism is strictly opt-in, because whether the worker-pool overhead pays off depends on the cost of your transformation functions, which only you can judge.
-A value above the DAG's maximum parallelism is capped to it, with a warning, because no more transformation functions can ever run concurrently than the DAG has independent branches.
+With more than one worker process, independent transformation functions in the DAG run concurrently, while a chained sequence always runs in dependency order.
+The DAG therefore bounds the useful value: a value above the DAG's maximum parallelism is capped to it, with a warning, and a strictly linear chain has nothing to overlap, so worker processes only add overhead there.
 On the Spark engine `n_processes` is ignored because the whole DAG is pushed down to Spark, which distributes the work itself.
+
+Whether parallelism pays off depends on the call shape and the cost of the functions:
+
+- For batch and offline calls such as `get_feature_vectors`, `get_batch_data`, and `training_data`, CPU-heavy functions on independent branches benefit from `n_processes >= 2`: per-row work accumulates over the batch and the branches overlap.
+- For vectorized Pandas UDFs on small inputs, sequential execution is at least as fast because the pool overhead dominates.
+- For single feature vectors, sequential execution wins unless one transformation function alone costs more than the worker round trip, because dispatching the function and its inputs to a worker process is paid on every call.
 
 For online serving, spawning the worker pool during the first request would add the pool startup cost to that request's latency.
 Passing `n_processes` to `init_serving` or `init_batch_scoring` pre-spawns the pool at initialization time and makes that value the default for subsequent retrieval calls; an explicit `n_processes` on an individual call still takes precedence.
+Pre-spawning removes the startup cost but not the per-call dispatch cost described above.
 
 !!! example "Pre-spawning the worker pool for online serving"
     === "Python"
@@ -433,10 +437,8 @@ Passing `n_processes` to `init_serving` or `init_batch_scoring` pre-spawns the p
         vector = fv.get_feature_vector(entry={"id": 1})
         ```
 
-Parallel DataFrame execution stages the input once in Arrow shared memory, and each worker reads only the columns its transformation function needs.
-The worker pool start method defaults to `fork` on Linux and `spawn` on macOS and Windows, where forking after threaded native libraries have been loaded can deadlock the worker; set the `HSFS_TF_POOL_START_METHOD` environment variable to `fork`, `forkserver`, or `spawn` to override it.
+Two implementation details are relevant when measuring:
 
-Two patterns hold across deployments:
-
-- For vectorized Pandas UDFs on small inputs, sequential execution is at least as fast as parallel because the pool overhead dominates.
-- For CPU-heavy UDF chains with independent branches, `n_processes >= 2` overlaps the branches and reduces tail latency.
+- Parallel DataFrame execution stages the input once in Arrow shared memory, and each worker reads only the columns its transformation function needs, so the input is not copied per worker.
+- The worker pool start method defaults to `fork` on Linux and `spawn` on macOS and Windows, where forking after threaded native libraries have been loaded can deadlock the worker.
+  Set the `HSFS_TF_POOL_START_METHOD` environment variable to `fork`, `forkserver`, or `spawn` to override it.
