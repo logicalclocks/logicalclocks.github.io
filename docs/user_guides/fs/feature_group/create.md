@@ -102,11 +102,12 @@ MaxDirectoryItemsExceededException - The directory item limit is exceeded: limit
 
 By using partitioning the system will write the feature data in different subdirectories, thus allowing you to write 10240 files per partition.
 
-##### Time-grain partitioning with `partitioned_by` (Delta only)
+##### Time-grain partitioning with `partitioned_by` (Delta and Iceberg)
 
 Most time-series feature groups want to partition by a time grain derived from `event_time`.
 Instead of decomposing the timestamp into `year` / `month` / `day` columns yourself and passing them as `partition_key`, declare the grains with `partitioned_by` and let Hopsworks derive the partition columns for you.
 Pass one or more grains drawn from `hour`, `day`, `week`, `month`, and `year`.
+Supported on `time_travel_format="DELTA"` and `time_travel_format="ICEBERG"`.
 
 ```python
 fg = fs.get_or_create_feature_group(
@@ -201,8 +202,8 @@ Keep the feature group offline-only to use `partitioned_by`.
 
 ###### Hudi
 
-`partitioned_by` on `time_travel_format="HUDI"` feature groups is not yet supported and the backend rejects it at creation.
-Until Hudi support lands, use `time_travel_format="DELTA"` to get time-grain partitioning, or partition Hudi groups explicitly via `partition_key=["year"]` with a `year` column the upstream pipeline computes.
+`partitioned_by` on `time_travel_format="HUDI"` feature groups is not yet supported and the backend rejects it at creation; so is `time_travel_format="NONE"` (plain Hive/parquet), which has no grain-materialization step.
+Until Hudi support lands, use `time_travel_format="DELTA"` or `"ICEBERG"` to get time-grain partitioning, or partition Hudi groups explicitly via `partition_key=["year"]` with a `year` column the upstream pipeline computes.
 
 ##### Table format
 
