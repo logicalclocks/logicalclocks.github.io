@@ -102,12 +102,12 @@ MaxDirectoryItemsExceededException - The directory item limit is exceeded: limit
 
 By using partitioning the system will write the feature data in different subdirectories, thus allowing you to write 10240 files per partition.
 
-##### Time-grain partitioning with `partitioned_by` (Delta and Iceberg)
+##### Time-grain partitioning with `partitioned_by`
 
 Most time-series feature groups want to partition by a time grain derived from `event_time`.
 Instead of decomposing the timestamp into `year` / `month` / `day` columns yourself and passing them as `partition_key`, declare the grains with `partitioned_by` and let Hopsworks derive the partition columns for you.
 Pass one or more grains drawn from `hour`, `day`, `week`, `month`, and `year`.
-Supported on `time_travel_format="DELTA"` and `time_travel_format="ICEBERG"`.
+Supported on `time_travel_format="DELTA"`, `"ICEBERG"`, and `"HUDI"` for non-stream feature groups (see [Hudi](#hudi) and [Stream feature groups](#stream-feature-groups) below).
 
 ```python
 fg = fs.get_or_create_feature_group(
@@ -202,8 +202,15 @@ Keep the feature group offline-only to use `partitioned_by`.
 
 ###### Hudi
 
-`partitioned_by` on `time_travel_format="HUDI"` feature groups is not yet supported and the backend rejects it at creation; so is `time_travel_format="NONE"` (plain Hive/parquet), which has no grain-materialization step.
-Until Hudi support lands, use `time_travel_format="DELTA"` or `"ICEBERG"` to get time-grain partitioning, or partition Hudi groups explicitly via `partition_key=["year"]` with a `year` column the upstream pipeline computes.
+`partitioned_by` works on Hudi feature groups written directly by Spark (a non-stream feature group): the client materializes the grain columns and Hudi partitions on them.
+On the Python (non-Spark) engine a Hudi feature group is created as a stream feature group, which is not yet supported (see below); use `time_travel_format="DELTA"` or `"ICEBERG"` there.
+`time_travel_format="NONE"` (plain Hive/parquet) is rejected because it has no grain-materialization step.
+
+###### Stream feature groups
+
+`partitioned_by` is not yet supported on stream feature groups (`stream=True`).
+Stream feature groups materialize through the DeltaStreamer job, which does not derive the grain columns yet, so the backend rejects `partitioned_by` on them at creation.
+Create a non-stream feature group to use `partitioned_by`.
 
 ##### Table format
 
