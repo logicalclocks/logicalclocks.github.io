@@ -139,6 +139,7 @@ By default they are written only to the offline store (see [Online feature store
 - `partitioned_by`: ordered, non-empty list of grains from `{"hour", "day", "week", "month", "year"}`, no duplicates.
   Mutually exclusive with `partition_key`, and requires `event_time` to be set.
   A grain must not collide with `event_time` or an existing feature name.
+  The `hour` grain requires a `timestamp` `event_time`; it is rejected on a `date` `event_time`, which has no sub-day resolution.
 - `online_partition_columns` (default `False`): when `True`, the derived grain columns are also written to the online store; when `False` they are offline-only.
   Online serving with `partitioned_by` is not supported yet, so this is effectively always `False` today (see below).
 
@@ -199,6 +200,9 @@ fg.insert(clickstream_df)  # only event_id / event_time / event fields
 Online-enabled feature groups do not yet support `partitioned_by`.
 The online ingestion path does not exclude the offline-only grain columns from the Kafka/Avro schema, nor materialize them for the online write, so the backend rejects `partitioned_by` together with `online_enabled=True`, both at creation and when enabling online on an existing group.
 Keep the feature group offline-only to use `partitioned_by`.
+
+A feature view may still select the derived grain columns even when it also joins online-enabled feature groups.
+The grains are served from the offline store, so they appear in training data and batch inference, and they are excluded from the online feature vector, since online serving reads only the online store.
 
 ###### Hudi
 
