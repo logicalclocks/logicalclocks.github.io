@@ -222,6 +222,8 @@ When you create a feature group, you can specify the table format you want to us
 The currently supported values are `"HUDI"`, `"DELTA"`, `"ICEBERG"`, and `"NONE"` (which stores as Parquet without time travel support).
 The parameter defaults to `"DELTA"`.
 
+The feature group overview in the UI shows a **Table DDL** card with the generated Spark SQL `CREATE TABLE` statement for the offline table (including the table format and any partition columns), and, for online-enabled feature groups, the `CREATE TABLE` statement for the online (RonDB) table.
+
 ##### Data Source
 
 During the creation of a feature group, it is possible to define the `data_source` parameter, this allows for management of offline data in the desired table format outside the Hopsworks cluster.
