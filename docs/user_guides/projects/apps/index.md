@@ -35,6 +35,7 @@ The create dialog lets you choose the app type, source, runtime environment, app
 | Setting | Typical value |
 | --- | --- |
 | App type | `STREAMLIT` or `CUSTOM` |
+| Proxy routing mode | `Root routing` for new apps, `Compatibility prefix` for legacy apps |
 | App base path | `/` for the app root, `/myapp` for a subpath |
 | Readiness probe path | Leave empty to use the platform default |
 | Source | Project file or Git repository |
@@ -52,6 +53,8 @@ The create dialog lets you choose the app type, source, runtime environment, app
 Use `App base path` to choose where Hopsworks mounts the app.
 Set it to `/` for a root-based app or `/myapp` for a subpath.
 Legacy prefix routing is only for older apps that still depend on `APP_BASE_URL_PATH`.
+Use `Proxy routing mode` to switch between `Root routing` and `Compatibility prefix`.
+The compatibility mode is only for migrating older apps.
 
 ### App sources
 
@@ -72,6 +75,9 @@ If you set `App base path` to `/myapp`, the full public URL becomes `/hopsworks-
 Hopsworks strips the public mount prefix before forwarding requests upstream, so app code can stay root-based.
 
 Hopsworks forwards `X-Forwarded-Prefix` for frameworks that need to generate absolute links.
+
+The proxy routing mode controls whether Hopsworks strips that prefix or preserves the legacy browser path.
+Open **App Settings** and change `Proxy routing mode` under **App routing and readiness** to switch an app.
 
 Readiness is separate from browser routing.
 
@@ -139,6 +145,7 @@ if __name__ == "__main__":
 `APP_BASE_URL_PATH` is deprecated and should not be used in new apps.
 
 For new apps, use `App base path` in the UI or API and let Hopsworks handle the browser mount prefix.
+Keep `Proxy routing mode` set to `Root routing` for new apps.
 
 Examples:
 
@@ -148,6 +155,7 @@ Examples:
 - Express: `app.use("/", router)`
 
 If you are migrating an older app that still depends on `APP_BASE_URL_PATH`, keep the legacy pattern only until the app code can move to root-based routing.
+In that case, use `Compatibility prefix` in the app settings dialog during the migration period.
 
 See the matching examples in [appshopsworkstests](https://github.com/gibchikafa/appshopsworkstests).
 
@@ -197,7 +205,7 @@ The details page includes:
 
 - App details, type, and description
 - App URL
-- App base path and readiness probe path
+- App base path, proxy routing mode, and readiness probe path
 - Public access status for Streamlit apps
 - Git source details, if the app is Git-backed
 - Monitoring configuration
