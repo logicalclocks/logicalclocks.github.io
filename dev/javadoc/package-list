@@ -10,5 +10,6 @@ com.logicalclocks.hsfs.spark
 com.logicalclocks.hsfs.spark.constructor
 com.logicalclocks.hsfs.spark.engine
 com.logicalclocks.hsfs.spark.engine.hudi
+com.logicalclocks.hsfs.spark.engine.profile
 com.logicalclocks.hsfs.spark.util
 com.logicalclocks.hsfs.util
