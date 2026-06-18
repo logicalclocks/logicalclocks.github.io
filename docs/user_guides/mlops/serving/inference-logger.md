@@ -8,6 +8,10 @@ Hopsworks supports logging both inference requests and predictions as events to 
 
 !!! warning "Inference logging is not supported for vLLM deployments."
 
+!!! info "Inference logger vs. feature logging"
+    The inference logger described here stores model inputs and predictions from inference requests and responses into a Kafka topic, for later consumption and analysis.
+    It is separate from [feature logging](../../fs/feature_view/feature_logging.md), which supports more fine-grained logging of inference logs and features and powers [feature monitoring](../../fs/feature_monitoring/index.md) and [model monitoring](../model_monitoring/index.md).
+
 !!! info "Logging modes"
     Three logging modes are available:
 
