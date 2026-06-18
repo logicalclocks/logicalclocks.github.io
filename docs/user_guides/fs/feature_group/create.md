@@ -201,8 +201,10 @@ Online-enabled feature groups do not yet support `partitioned_by`.
 The online ingestion path does not exclude the offline-only grain columns from the Kafka/Avro schema, nor materialize them for the online write, so the backend rejects `partitioned_by` together with `online_enabled=True`, both at creation and when enabling online on an existing group.
 Keep the feature group offline-only to use `partitioned_by`.
 
-A feature view may still select the derived grain columns even when it also joins online-enabled feature groups.
-The grains are served from the offline store, so they appear in training data and batch inference, and they are excluded from the online feature vector, since online serving reads only the online store.
+A feature view may still select the derived grain columns; they appear in training data and batch inference, read from the offline store.
+They cannot be served online, however: the grain columns live only in the offline store, so [`FeatureView.get_feature_vector`][hsfs.feature_view.FeatureView.get_feature_vector] and [`FeatureView.get_feature_vectors`][hsfs.feature_view.FeatureView.get_feature_vectors] raise a `FeatureStoreException` when the feature view selects a derived grain column.
+When such a feature view also joins an online-enabled feature group, a warning is raised at feature-view creation to flag that the selected grain columns will not be retrievable online.
+To serve a feature view online, do not select the derived grain columns into it.
 
 ###### Hudi
 
