@@ -180,7 +180,7 @@ Non-hierarchical specs are still valid; they just do not prune on an `event_time
 
 ###### Example: clickstream partitioned by the hour
 
-A high-volume event stream partitioned down to the hour, so a query for a few hours reads only those partitions:
+A high-volume clickstream feature group partitioned down to the hour, so a query for a few hours reads only those partitions (this is a regular non-stream feature group; the name refers to the click-event data, not to `stream=True`):
 
 ```python
 fg = fs.get_or_create_feature_group(
