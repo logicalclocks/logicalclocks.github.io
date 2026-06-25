@@ -1,0 +1,124 @@
+{% extends "main.html" %}
+
+{% block content %}
+<h1>Page Not Found</h1>
+<p>The page you're looking for doesn't exist or has been moved.</p>
+<p>Redirecting you to the documentation...</p>
+<p>If you're not redirected, <a href="/latest/">click here</a>.</p>
+
+<script>
+(function() {
+  var path = window.location.pathname;
+  var defined = []; // explicit redirect maps can go here
+  var redirect = null;
+
+  // Pattern 1: Double latest - /*/latest/latest/* → /latest/*
+  var doubleLatest = path.match(/^\/[^\/]+\/latest\/latest\/(.*)$/);
+  if (doubleLatest) {
+    redirect = '/latest/' + doubleLatest[1];
+  }
+
+  // Pattern 2: Old versioned API repos with latest prefix
+  // e.g. /feature-store-api/latest/3.1.2/... → /latest/
+  // e.g. /hopsworks-api/latest/3.0.5/... → /latest/
+  if (!redirect) {
+    var oldApiLatestVersion = path.match(/^\/(feature-store-api|hopsworks-api|machine-learning-api|hopsworks-cloud|hopsworks)\/latest\/[\d.]+.*$/);
+    if (oldApiLatestVersion) {
+      redirect = '/latest/';
+    }
+  }
+
+  // Pattern 3: Old API repos (feature-store-api, hopsworks-api, machine-learning-api, hopsworks-cloud)
+  if (!redirect) {
+    var oldApiRepo = path.match(/^\/(feature-store-api|hopsworks-api|machine-learning-api|hopsworks-cloud)\//);
+    if (oldApiRepo) {
+      redirect = '/latest/';
+    }
+  }
+
+  // Pattern 4: Old /hopsworks/ paths with version numbers
+  if (!redirect) {
+    var oldHopsworks = path.match(/^\/hopsworks\/[\d.]+/);
+    if (oldHopsworks) {
+      redirect = '/latest/';
+    }
+  }
+
+  // Pattern 5: Old /hopsworks/latest/ paths
+  if (!redirect) {
+    var oldHopsworksLatest = path.match(/^\/hopsworks\/latest\//);
+    if (oldHopsworksLatest) {
+      redirect = '/latest/';
+    }
+  }
+
+  // Pattern 6: Root level /generated/ paths
+  if (!redirect) {
+    var rootGenerated = path.match(/^\/generated\//);
+    if (rootGenerated) {
+      redirect = '/latest/';
+    }
+  }
+
+  // Pattern 7: Root level /integrations/ paths
+  if (!redirect) {
+    var rootIntegrations = path.match(/^\/integrations\//);
+    if (rootIntegrations) {
+      redirect = '/latest/user_guides/integrations/';
+    }
+  }
+
+  // Pattern 8: Root level /latest/ old paths (hopsworksai, admin, etc.)
+  if (!redirect) {
+    var latestHopsworksai = path.match(/^\/latest\/hopsworksai\//);
+    if (latestHopsworksai) {
+      redirect = '/latest/';
+    }
+  }
+
+  if (!redirect) {
+    var latestAdmin = path.match(/^\/latest\/admin\//);
+    if (latestAdmin) {
+      redirect = '/latest/setup_installation/admin/';
+    }
+  }
+
+  // Pattern 9: Old /featurestore/ or /feature-store/ paths
+  if (!redirect) {
+    var oldFeaturestore = path.match(/^\/(featurestore|feature-store)\/?$/);
+    if (oldFeaturestore) {
+      redirect = '/latest/';
+    }
+  }
+
+  // Pattern 10: Old version numbers at root (e.g., /3.0/, /4.0/)
+  if (!redirect) {
+    var rootVersion = path.match(/^\/[\d.]+\//);
+    if (rootVersion) {
+      redirect = '/latest/';
+    }
+  }
+
+  // Pattern 11: /CONTRIBUTING/ anywhere
+  if (!redirect) {
+    var contributing = path.match(/\/CONTRIBUTING\/?$/i);
+    if (contributing) {
+      redirect = 'https://github.com/logicalclocks/hopsworks-api/blob/main/CONTRIBUTING.md';
+    }
+  }
+
+  // Default fallback: redirect to /latest/
+  if (!redirect) {
+    redirect = '/latest/';
+  }
+
+  // Clean up any trailing .md
+  redirect = redirect.replace(/\.md$/, '/');
+
+  // Perform redirect
+  if (redirect) {
+    window.location.replace(redirect);
+  }
+})();
+</script>
+{% endblock %}
