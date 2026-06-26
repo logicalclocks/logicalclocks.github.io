@@ -116,7 +116,7 @@ You can call `with_reference_training_dataset()` without arguments to make this 
 See the API reference for [`FeatureMonitoringConfig.with_reference_training_dataset`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_reference_training_dataset].
 
 !!! info "Training dataset version validation"
-    If you pass a specific version, it must match the model's recorded training dataset version, otherwise the call raises.
+    If you pass a specific version, it must match the model's recorded training dataset version, otherwise the call raises an exception.
     This guards against accidentally comparing production data against a training dataset the model was never trained on.
 
 ### Step 6.A: Compare on a scalar metric
