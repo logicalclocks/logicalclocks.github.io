@@ -33,12 +33,10 @@ By clicking on the _edit configuration_ link of a project you will be able to ed
 ### Storage
 
 Storage quota represents the amount of data a project can store.
-The storage quota is broken down in three different areas:
+The storage quota is broken down in two different areas:
 
 - **Feature Store**: This represents the storage quota for files and directories stored in the `_featurestore.db` dataset in the project.
 This dataset contains all the feature group offline data for the project.
-- **Hive DB**: This represents the storage quota for files and directories stored in the `[projectName].db` dataset in the project.
-This is a general purpose Hive database for the project that can be used for analytics.
 - **Project**: This represents the storage quota for all the data stored on any other dataset.
 
 Each storage quota is divided into space quota, i.e., how much space the files can consume, and namespace quota, i.e., how many files and directories there can be.
@@ -52,7 +50,6 @@ Administrators can change this default by changing the following configuration i
 hopsworks:
     featurestore_default_quota: [default quota in bytes, -1 to disable]
     hdfs_default_quota: [default quota in bytes, -1 to disable]
-    hive_default_quota: [default quota in bytes, -1 to disable]
 ```
 
 The values specified will be set during project creation and administrators will be able to customize each project using this UI.
