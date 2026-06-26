@@ -93,6 +93,10 @@
          <lastmod>2026-06-26</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/concepts/mlops/model_monitoring/</loc>
+         <lastmod>2026-06-26</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/concepts/mlops/opensearch/</loc>
          <lastmod>2026-06-26</lastmod>
     </url>
@@ -449,7 +453,7 @@
          <lastmod>2026-06-26</lastmod>
     </url>
     <url>
-         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/feature_monitoring_advanced/</loc>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/distribution_comparison/</loc>
          <lastmod>2026-06-26</lastmod>
     </url>
     <url>
@@ -586,6 +590,14 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/mlops/</loc>
+         <lastmod>2026-06-26</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/mlops/model_monitoring/</loc>
+         <lastmod>2026-06-26</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/mlops/model_monitoring/model_monitoring/</loc>
          <lastmod>2026-06-26</lastmod>
     </url>
     <url>
