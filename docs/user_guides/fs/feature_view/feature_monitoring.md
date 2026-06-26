@@ -7,36 +7,25 @@ Before continuing with this guide, see the [Feature monitoring guide](../feature
 
 !!! warning "Limited UI support"
     Currently, feature monitoring can only be configured using the [Hopsworks Python library](https://pypi.org/project/hopsworks).
-    However, you can enable/disable a feature monitoring configuration or trigger the statistics comparison manually from the UI, as shown in the [Advanced guide](../feature_monitoring/feature_monitoring_advanced.md).
+    However, you can enable/disable a feature monitoring configuration or trigger the statistics comparison manually from the UI.
 
 ## Code
 
-In this section, we show you how to setup feature monitoring in a Feature View using the ==Hopsworks Python library==.
+In this section, we show you how to set up feature monitoring on a Feature View using the ==Hopsworks Python library==.
 Alternatively, you can get started quickly by running our [tutorial for feature monitoring](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/api_examples/feature_monitoring.ipynb).
 
-First, checkout the pre-requisite and Hopsworks setup to follow the guide below.
-Create a project, install the [Hopsworks Python library](https://pypi.org/project/hopsworks) in your environment and connect via the generated API key.
-The second step is to start a new configuration for feature monitoring.
+!!! info "Prerequisites"
+    - A Hopsworks project.
+      If you don't have one yet, go to [app.hopsworks.ai](https://app.hopsworks.ai), sign up with your email and create your first project.
+    - An API key, which you can get from "Account Settings" on [app.hopsworks.ai](https://app.hopsworks.ai).
+    - The [Hopsworks Python library](https://pypi.org/project/hopsworks) installed in your client.
+      See the [installation guide](../../client_installation/index.md).
+    - A Feature View and a Training Dataset.
 
-After that, you can optionally define a detection window of data to compute statistics on, or use the default detection window (i.e., whole feature data).
-If you want to setup scheduled statistics alone, you can jump to the last step to save your configuration.
-Otherwise, the third and fourth steps are also optional and show you how to setup the comparison of statistics on a schedule by defining a reference window and specifying the statistics metric to be compared.
+### Step 1: Connect to Hopsworks
 
-### Step 1: Pre-requisite
-
-In order to setup feature monitoring for a Feature View, you will need:
-
-- A Hopsworks project.
-  If you don't have a project yet you can go to [app.hopsworks.ai](https://app.hopsworks.ai), signup with your email and create your first project.
-- An API key, you can get one by going to "Account Settings" on [app.hopsworks.ai](https://app.hopsworks.ai).
-- The [Hopsworks Python library](https://pypi.org/project/hopsworks) installed in your client.
-  See the [installation guide](../../client_installation/index.md).
-- A Feature View
-- A Training Dataset
-
-#### Connect your notebook to Hopsworks
-
-Connect the client running your notebooks to Hopsworks.
+Connect the client running your notebook to Hopsworks.
+You will be prompted to paste your API key to connect the notebook to your project.
 
 === "Python"
 
@@ -49,16 +38,12 @@ Connect the client running your notebooks to Hopsworks.
     fs = project.get_feature_store()
     ```
 
-You will be prompted to paste your API key to connect the notebook to your project.
-The `fs` Feature Store entity is now ready to be used to insert or read data from Hopsworks.
+See the API reference for [`hopsworks.login`][hopsworks.login] and [`Project.get_feature_store`][hopsworks_common.project.Project.get_feature_store].
 
-#### Get or create a Feature View
+### Step 2: Get or create a Feature View
 
 Feature monitoring can be enabled on already created Feature Views.
-We suggest you read the [Feature View](../../../concepts/fs/feature_view/fv_overview.md) concept page to understand what a feature view is.
-We also suggest you familiarize with the APIs to [create a feature view](overview.md) and how to create them using the [query abstraction](query.md).
-
-The following is a code example for getting or creating a Feature View with name `trans_fv` for transaction data.
+We suggest you read the [Feature View](../../../concepts/fs/feature_view/fv_overview.md) concept page and familiarize yourself with the APIs to [create a feature view](overview.md) using the [query abstraction](query.md).
 
 === "Python"
 
@@ -76,9 +61,11 @@ The following is a code example for getting or creating a Feature View with name
     )
     ```
 
-#### Get or create a Training Dataset
+See the API reference for [`FeatureStore.get_feature_view`][hsfs.feature_store.FeatureStore.get_feature_view] and [`FeatureStore.create_feature_view`][hsfs.feature_store.FeatureStore.create_feature_view].
 
-The following is a code example for creating a training dataset with two splits using a previously created feature view.
+### Step 3: Get or create a Training Dataset
+
+A Training Dataset can be used later as a reference window to compare against (see Step 6).
 
 === "Python"
 
@@ -92,73 +79,46 @@ The following is a code example for creating a training dataset with two splits 
     )
     ```
 
-### Step 2: Initialize configuration
+See the API reference for [`FeatureView.create_train_validation_test_split`][hsfs.feature_view.FeatureView.create_train_validation_test_split].
 
-#### Scheduled statistics
+### Step 4: Create a monitoring configuration
 
-You can setup statistics monitoring on a ==single feature or multiple features== of your Feature Group data, included in your Feature View query.
+Start a new configuration on the Feature View.
+Use `create_scheduled_statistics` to only compute statistics on a schedule, or `create_feature_monitoring` to also compare them against a reference.
 
-=== "Python"
+=== "Scheduled statistics"
 
     ```python
-    # compute statistics for all the features
-    fg_monitoring_config = trans_fv.create_statistics_monitoring(
+    # compute statistics on one or more features on a schedule
+    fm_monitoring_config = trans_fv.create_scheduled_statistics(
         name="trans_fv_all_features_monitoring",
-        description="Compute statistics on all data of all features of the Feature Group data on a daily basis",
-    )
-
-    # or for a single feature
-    fg_monitoring_config = trans_fv.create_statistics_monitoring(
-        name="trans_fv_amount_monitoring",
-        description="Compute statistics on all data of a single feature of the Feature Group data on a daily basis",
-        feature_name="amount",
+        description="Compute statistics on the Feature View data on a daily basis",
+        feature_names=["amount"],  # omit to monitor all features
     )
     ```
 
-#### Statistics comparison
-
-When enabling the comparison of statistics in a feature monitoring configuration, you need to specify a ==single feature== of your Feature Group data, included in your Feature View query.
-You can create multiple feature monitoring configurations on the same Feature View, but each of them should point to a single feature in the Feature View query.
-
-=== "Python"
+=== "Statistics comparison"
 
     ```python
-    fg_monitoring_config = trans_fv.create_feature_monitoring(
+    # the feature to compare is selected later in
+    # compare_on / compare_on_distribution (Step 7.A / 7.B), not here
+    fm_monitoring_config = trans_fv.create_feature_monitoring(
         name="trans_fv_amount_monitoring",
-        feature_name="amount",
-        description="Compute descriptive statistics on the amount Feature of the Feature Group data on a daily basis",
+        description="Compute and compare descriptive statistics on the Feature View data on a daily basis",
     )
     ```
 
-#### Custom schedule or percentage of window data
+See the API reference for [`FeatureView.create_scheduled_statistics`][hsfs.feature_view.FeatureView.create_scheduled_statistics] and [`FeatureView.create_feature_monitoring`][hsfs.feature_view.FeatureView.create_feature_monitoring].
 
-By default, the computation of statistics is scheduled to run endlessly, every day at 12PM.
-You can modify the default schedule by adjusting the `cron_expression`, `start_date_time` and `end_date_time` parameters.
+!!! info "Custom schedule"
+    By default, the computation of statistics is scheduled to run endlessly, every day at 12PM.
+    You can modify the default schedule by adjusting the `cron_expression`, `start_date_time` and `end_date_time` parameters (e.g., `cron_expression="0 0 12 ? * MON *"` for a weekly run).
+    To compute statistics on only a subset of the feature data, use the `row_percentage` parameter of `with_detection_window` (see Step 5).
 
-=== "Python"
+### Step 5: (Optional) Define a detection window
 
-    ```python
-    fg_monitoring_config = trans_fv.create_statistics_monitoring(
-        name="trans_fv_all_features_monitoring",
-        description="Compute statistics on all data of all features of the Feature Group data on a weekly basis",
-        cron_expression="0 0 12 ? *MON*",  # weekly
-        row_percentage=0.8,  # use 80% of the data
-    )
-
-    # or
-    fg_monitoring_config = trans_fv.create_feature_monitoring(
-        name="trans_fv_amount_monitoring",
-        feature_name="amount",
-        description="Compute descriptive statistics on the amount Feature of the Feature Group data on a weekly basis",
-        cron_expression="0 0 12 ? * MON *",  # weekly
-        row_percentage=0.8,  # use 80% of the data
-    )
-    ```
-
-### Step 3: (Optional) Define a detection window
-
-By default, the detection window is an *expanding window* covering the whole Feature Group data.
-You can define a different detection window using the `window_length` and `time_offset` parameters provided in the `with_detection_window` method.
+By default, the detection window is an _expanding window_ covering the whole Feature Group data.
+You can define a different detection window using the `window_length` and `time_offset` parameters of the `with_detection_window` method.
 Additionally, you can specify the percentage of feature data on which statistics will be computed using the `row_percentage` parameter.
 
 === "Python"
@@ -171,9 +131,14 @@ Additionally, you can specify the percentage of feature data on which statistics
     )
     ```
 
-### Step 4: (Optional) Define a reference window
+See the API reference for [`FeatureMonitoringConfig.with_detection_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_detection_window].
 
-When setting up feature monitoring for a Feature View, reference windows can be either a regular window, a specific value (i.e., window of size 1) or a training dataset.
+### Step 6: (Optional) Define a reference window
+
+When setting up feature monitoring for a Feature View, the reference can be either a reference window of feature data or a training dataset.
+
+!!! tip "Basis for Model Monitoring"
+    Using a training dataset as the reference is the basis for [Model Monitoring](../../mlops/model_monitoring/index.md), where a model's production inference data is compared against the distribution of its training dataset.
 
 === "Python"
 
@@ -185,27 +150,29 @@ When setting up feature monitoring for a Feature View, reference windows can be 
         row_percentage=0.8,  # use 80% of the data
     )
 
-    # or a specific value
-    fm_monitoring_config.with_reference_value(
-        value=100,
-    )
-
     # or a training dataset
     fm_monitoring_config.with_reference_training_dataset(
         training_dataset_version=1,  # use the training dataset used to train your production model
     )
     ```
 
-### Step 5: (Optional) Define the statistics comparison criteria
+See the API reference for [`FeatureMonitoringConfig.with_reference_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_reference_window] and [`FeatureMonitoringConfig.with_reference_training_dataset`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_reference_training_dataset].
+
+!!! info "Comparing against a specific value"
+    Instead of a reference window or training dataset, you can compare the detection statistics against a fixed reference value (i.e., a window of size 1).
+    In that case, skip this step and pass the `specific_value` parameter to `compare_on` in Step 7.
+
+### Step 7.A: (Optional) Compare on a scalar metric
 
 In order to compare detection and reference statistics, you need to provide the criteria for such comparison.
-First, you select the metric to consider in the comparison using the `metric` parameter.
+First, you select the feature and the metric to consider in the comparison using the `feature_name` and `metric` parameters.
 Then, you can define a relative or absolute threshold using the `threshold` and `relative` parameters.
 
 === "Python"
 
     ```python
     fm_monitoring_config.compare_on(
+        feature_name="amount",  # the feature to compare
         metric="mean",
         threshold=0.2,  # a relative change over 20% is considered anomalous
         relative=True,  # relative or absolute change
@@ -213,10 +180,33 @@ Then, you can define a relative or absolute threshold using the `threshold` and 
     )
     ```
 
+See the API reference for [`FeatureMonitoringConfig.compare_on`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.compare_on].
+
 !!! info "Difference values and thresholds"
     For more information about the computation of difference values and the comparison against threshold bounds see the [Comparison criteria section](../feature_monitoring/statistics_comparison.md#comparison-criteria) in the Statistics comparison guide.
 
-### Step 6: Save configuration
+### Step 7.B: (Optional) Compare on the whole distribution
+
+Alternatively, instead of a single scalar metric, you can detect drift in the shape of a feature's distribution using `compare_on_distribution`.
+Select a distribution distance metric (e.g., `PSI`) and a threshold.
+A reference window or training dataset (Step 6) is required for distribution comparison.
+
+=== "Python"
+
+    ```python
+    fm_monitoring_config.compare_on_distribution(
+        feature_name="amount",  # the feature to compare
+        metric="PSI",
+        threshold=0.2,  # a distance above 0.2 is considered a significant shift
+    )
+    ```
+
+See the API reference for [`FeatureMonitoringConfig.compare_on_distribution`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.compare_on_distribution].
+
+!!! tip "More distribution options"
+    See the [Distribution comparison guide](../feature_monitoring/distribution_comparison.md) for the full list of metrics and binning strategies.
+
+### Step 8: Save the configuration
 
 Finally, you can save your feature monitoring configuration by calling the `save` method.
 Once the configuration is saved, the schedule for the statistics computation and comparison will be activated automatically.
@@ -227,5 +217,62 @@ Once the configuration is saved, the schedule for the statistics computation and
     fm_monitoring_config.save()
     ```
 
-!!! info "Next steps"
-    See the [Advanced guide](../feature_monitoring/feature_monitoring_advanced.md) to learn how to delete, disable or trigger feature monitoring manually.
+See the API reference for [`FeatureMonitoringConfig.save`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.save].
+
+### Step 9: Retrieve configurations and history
+
+Once saved, you can retrieve your feature monitoring configurations and the results of past executions directly from the Feature View.
+
+=== "Python"
+
+    ```python
+    # fetch all configurations attached to the feature view
+    configs = trans_fv.get_feature_monitoring_configs()
+
+    # or a single configuration by name
+    config = trans_fv.get_feature_monitoring_configs(name="trans_fv_amount_monitoring")
+
+    # fetch the history of monitoring results (with computed statistics)
+    history = trans_fv.get_feature_monitoring_history(
+        config_name="trans_fv_amount_monitoring",
+        with_statistics=True,
+    )
+    ```
+
+See the API reference for [`FeatureView.get_feature_monitoring_configs`][hsfs.feature_view.FeatureView.get_feature_monitoring_configs] and [`FeatureView.get_feature_monitoring_history`][hsfs.feature_view.FeatureView.get_feature_monitoring_history].
+
+### API Reference
+
+[`FeatureView`][hsfs.feature_view.FeatureView]
+
+## Monitor a model in production
+
+A Feature View can also monitor the inference data of a model served in production, comparing it against the training dataset the model was trained on.
+This is the feature-view entry point to [Model Monitoring](../../mlops/model_monitoring/index.md).
+
+It targets the feature view's logging feature group, so feature logging must be enabled with `feature_view.enable_logging()`, and filters the detection window by the given model name and version.
+The reference defaults to the training dataset version used to train the model.
+
+=== "Python"
+
+    ```python
+    fm_monitoring_config = trans_fv.create_model_monitoring(
+        name="trans_fv_model_monitoring",
+        model_name="my_model",
+        model_version=1,
+    ).with_detection_window(
+        time_offset="1d",
+        window_length="1d",
+    ).with_reference_training_dataset(
+        # omitted -> defaults to the model's training dataset version
+    ).compare_on_distribution(
+        feature_name="amount",
+        metric="PSI",
+        threshold=0.2,
+    ).save()
+    ```
+
+See the API reference for [`FeatureView.create_model_monitoring`][hsfs.feature_view.FeatureView.create_model_monitoring].
+
+!!! info "Explore the API"
+    The [`FeatureMonitoringConfig`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig] reference documents the full set of available methods, such as enabling or disabling a configuration, triggering it manually, or deleting it.
