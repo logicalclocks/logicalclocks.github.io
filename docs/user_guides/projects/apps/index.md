@@ -30,11 +30,14 @@ The Apps page lists each app with its name, owner, state, UI link, uptime, and a
 
 ## Creating an app
 
-The create dialog lets you choose the app type, source, runtime environment, resources, monitoring, and per-app environment variables.
+The create dialog lets you choose the app type, source, runtime environment, app base path, readiness probe path, resources, monitoring, and per-app environment variables.
 
 | Setting | Typical value |
 | --- | --- |
 | App type | `STREAMLIT` or `CUSTOM` |
+| Proxy routing mode | `Root routing` for new apps, `Compatibility prefix` for legacy apps |
+| App base path | `/` for the app root, `/myapp` for a subpath |
+| Readiness probe path | Leave empty to use the platform default |
 | Source | Project file or Git repository |
 | Environment | `python-app-pipeline` |
 | Memory | `2048` MB |
@@ -47,6 +50,12 @@ The create dialog lets you choose the app type, source, runtime environment, res
 - **Custom** apps are any web service that listens on `APP_PORT`.
   Common choices are Flask, FastAPI, Gradio, and JavaScript frameworks such as Express.
 
+Use `App base path` to choose where Hopsworks mounts the app.
+Set it to `/` for a root-based app or `/myapp` for a subpath.
+Legacy prefix routing is only for older apps that still depend on `APP_BASE_URL_PATH`.
+Use `Proxy routing mode` to switch between `Root routing` and `Compatibility prefix`.
+The compatibility mode is only for migrating older apps.
+
 ### App sources
 
 - **Project file** means a file already stored in HopsFS or the project file browser.
@@ -57,6 +66,26 @@ The create dialog lets you choose the app type, source, runtime environment, res
 For Streamlit apps, a project file must be a `.py` file.
 For Git-backed Streamlit apps, you also need to provide the entrypoint script relative to the repository root.
 For custom apps, the entrypoint command is required and the app file is optional.
+
+### Routing and readiness
+
+The browser URL for every app is the public mount point under `/hopsworks-api/pythonapp/<project>/<app>/`.
+If you set `App base path` to `/myapp`, the full public URL becomes `/hopsworks-api/pythonapp/<project>/<app>/myapp/`.
+
+Hopsworks strips the public mount prefix before forwarding requests upstream, so app code can stay root-based.
+
+Hopsworks forwards `X-Forwarded-Prefix` for frameworks that need to generate absolute links.
+
+The proxy routing mode controls whether Hopsworks strips that prefix or preserves the legacy browser path.
+Open **App Settings** and change `Proxy routing mode` under **App routing and readiness** to switch an app.
+
+Readiness is separate from browser routing.
+
+Streamlit defaults to `/_stcore/health`.
+
+Custom apps default to `/`.
+
+You can override the readiness probe path in the app settings dialog or API when needed.
 
 ### Example structure
 
@@ -77,12 +106,15 @@ Most apps follow the same pattern:
 ### Streamlit apps
 
 Streamlit apps are launched with `streamlit run` behind the Hopsworks proxy.
+Hopsworks manages the mount prefix for you, so Streamlit apps can stay root-based.
 If the app is Git-backed, the entrypoint script is relative to the repository root.
+The default readiness probe for Streamlit is `/_stcore/health`.
 
 ### Custom apps
 
 Custom apps should bind to `0.0.0.0` and use the injected `APP_PORT`.
-If the app needs to build links back into itself, use `APP_BASE_URL_PATH` so the paths include the Hopsworks proxy prefix.
+Define routes at `/` and `/health`.
+Use legacy prefix-aware routes only while migrating an older app that still depends on `APP_BASE_URL_PATH`.
 
 ```python
 import os
@@ -91,46 +123,39 @@ import uvicorn
 from fastapi import FastAPI
 
 
-APP_BASE_URL_PATH = os.getenv("APP_BASE_URL_PATH", "").rstrip("/")
 app = FastAPI()
 
 
-@app.get(f"{APP_BASE_URL_PATH}/health")
+@app.get("/health")
 def health():
     return {"status": "ok"}
 
 
-@app.get(f"{APP_BASE_URL_PATH}/")
+@app.get("/")
 def home():
-    return {"status": "ready", "base_path": APP_BASE_URL_PATH or "/"}
+    return {"status": "ready"}
 
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ["APP_PORT"]))
 ```
 
-### Proxy-aware paths
+### App base path
 
-`APP_BASE_URL_PATH` is the proxy prefix that Hopsworks mounts your app under, for example:
+`APP_BASE_URL_PATH` is deprecated and should not be used in new apps.
 
-`/hopsworks-api/pythonapp/<project>/<app>`
+For new apps, use `App base path` in the UI or API and let Hopsworks handle the browser mount prefix.
+Keep `Proxy routing mode` set to `Root routing` for new apps.
 
-Use it whenever your app defines routes, health checks, or links that point back to itself.
-The value may be empty in local development, so a common pattern is to strip the trailing slash and fall back to `/` when rendering content.
+Examples:
 
-```python
-APP_BASE_URL_PATH = os.getenv("APP_BASE_URL_PATH", "").rstrip("/")
-base = APP_BASE_URL_PATH or "/"
-```
+- FastAPI: `@app.get("/health")`
+- Flask: `Blueprint(..., url_prefix="/")`
+- Gradio: `demo.launch(..., root_path=None)`
+- Express: `app.use("/", router)`
 
-Examples from Git-backed apps:
-
-- FastAPI: `@app.get(f"{APP_BASE_URL_PATH}/health")`
-- Flask: `Blueprint(..., url_prefix=APP_BASE_URL_PATH or None)`
-- Gradio: `demo.launch(..., root_path=APP_BASE_URL_PATH or None)`
-- Express: `app.use(APP_BASE_URL_PATH || "/", router)`
-
-If you hardcode `/` in those places, the app may work locally but break behind the Hopsworks proxy because the browser requests must include the proxy prefix.
+If you are migrating an older app that still depends on `APP_BASE_URL_PATH`, keep the legacy pattern only until the app code can move to root-based routing.
+In that case, use `Compatibility prefix` in the app settings dialog during the migration period.
 
 See the matching examples in [appshopsworkstests](https://github.com/gibchikafa/appshopsworkstests).
 
@@ -141,7 +166,7 @@ Per-app environment variables are applied every time the app starts.
 
 The platform injects app-specific variables such as:
 
-- `APP_BASE_URL_PATH`
+- `APP_BASE_URL_PATH` for legacy prefix-mode apps only
 - `APP_PORT`
 - `STREAMLIT_BASE_URL_PATH`
 - `STREAMLIT_PORT`
@@ -152,8 +177,10 @@ The platform injects app-specific variables such as:
 
 Git-backed apps also receive the Git URL, provider, branch, and Streamlit entrypoint script.
 
+`APP_BASE_URL_PATH` is only injected for legacy prefix-mode apps during migration.
+
 Some runtime names are reserved by the platform and cannot be overridden in the UI.
-That includes the app-path and proxy-path variables above, plus other platform-managed names that start with `HOPS_`, `HOPSWORKS_`, `HOPSFS_`, or `AGENT_`.
+That includes the app-path and routing variables above, plus other platform-managed names that start with `HOPS_`, `HOPSWORKS_`, `HOPSFS_`, or `AGENT_`.
 
 ## Managing an app
 
@@ -178,6 +205,7 @@ The details page includes:
 
 - App details, type, and description
 - App URL
+- App base path, proxy routing mode, and readiness probe path
 - Public access status for Streamlit apps
 - Git source details, if the app is Git-backed
 - Monitoring configuration
