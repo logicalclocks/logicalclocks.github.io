@@ -7,7 +7,7 @@ Before continuing with this guide, see the [Feature monitoring guide](../feature
 
 !!! warning "Limited UI support"
     Currently, feature monitoring can only be configured using the [Hopsworks Python library](https://pypi.org/project/hopsworks).
-    However, you can enable/disable a feature monitoring configuration or trigger the statistics comparison manually from the UI, as shown in the [Advanced guide](../feature_monitoring/feature_monitoring_advanced.md).
+    However, you can enable/disable a feature monitoring configuration or trigger the statistics comparison manually from the UI.
 
 ## Code
 
@@ -48,6 +48,8 @@ Connect the client running your notebooks to Hopsworks.
     fs = project.get_feature_store()
     ```
 
+See the API reference for [`hopsworks.login`][hopsworks.login] and [`Project.get_feature_store`][hopsworks_common.project.Project.get_feature_store].
+
 You will be prompted to paste your API key to connect the notebook to your project.
 The `fs` Feature Store entity is now ready to be used to insert or read data from Hopsworks.
 
@@ -76,6 +78,8 @@ The following is a code example for getting or creating a Feature Group with nam
     trans_fg.insert(transactions_df)
     ```
 
+See the API reference for [`FeatureStore.get_feature_group`][hsfs.feature_store.FeatureStore.get_feature_group] and [`FeatureStore.get_or_create_feature_group`][hsfs.feature_store.FeatureStore.get_or_create_feature_group].
+
 ### Step 2: Initialize configuration
 
 #### Scheduled statistics
@@ -86,56 +90,57 @@ You can setup statistics monitoring on a ==single feature or multiple features==
 
     ```python
     # compute statistics for all the features
-    fg_monitoring_config = trans_fg.create_statistics_monitoring(
+    fg_monitoring_config = trans_fg.create_scheduled_statistics(
         name="trans_fg_all_features_monitoring",
         description="Compute statistics on all data of all features of the Feature Group on a daily basis",
     )
 
-    # or for a single feature
-    fg_monitoring_config = trans_fg.create_statistics_monitoring(
+    # or for one or more specific features
+    fg_monitoring_config = trans_fg.create_scheduled_statistics(
         name="trans_fg_amount_monitoring",
-        description="Compute statistics on all data of a single feature of the Feature Group on a daily basis",
-        feature_name="amount",
+        description="Compute statistics on all data of selected features of the Feature Group on a daily basis",
+        feature_names=["amount"],
     )
     ```
 
+See the API reference for [`FeatureGroup.create_scheduled_statistics`][hsfs.feature_group.FeatureGroup.create_scheduled_statistics].
+
 #### Statistics comparison
 
-When enabling the comparison of statistics in a feature monitoring configuration, you need to specify a ==single feature== of your Feature Group.
-You can create multiple feature monitoring configurations for the same Feature Group, but each of them should point to a single feature in the Feature Group.
+When enabling the comparison of statistics in a feature monitoring configuration, the feature to compare is selected later in the `compare_on` (or `compare_on_distribution`) method, not in `create_feature_monitoring`.
+You can create multiple feature monitoring configurations for the same Feature Group.
 
 === "Python"
 
     ```python
     fg_monitoring_config = trans_fg.create_feature_monitoring(
         name="trans_fg_amount_monitoring",
-        feature_name="amount",
-        description="Compute descriptive statistics on the amount Feature of the Feature Group on a daily basis",
+        description="Compute and compare descriptive statistics on the Feature Group on a daily basis",
     )
     ```
 
-#### Custom schedule or percentage of window data
+See the API reference for [`FeatureGroup.create_feature_monitoring`][hsfs.feature_group.FeatureGroup.create_feature_monitoring].
+
+#### Custom schedule
 
 By default, the computation of statistics is scheduled to run endlessly, every day at 12PM.
 You can modify the default schedule by adjusting the `cron_expression`, `start_date_time` and `end_date_time` parameters.
+To compute statistics on only a subset of the feature data, use the `row_percentage` parameter of `with_detection_window` (see Step 3).
 
 === "Python"
 
     ```python
-    fg_monitoring_config = trans_fg.create_statistics_monitoring(
+    fg_monitoring_config = trans_fg.create_scheduled_statistics(
         name="trans_fg_all_features_monitoring",
         description="Compute statistics on all data of all features of the Feature Group on a weekly basis",
         cron_expression="0 0 12 ? * MON *",  # weekly
-        row_percentage=0.8,  # use 80% of the data
     )
 
     # or
     fg_monitoring_config = trans_fg.create_feature_monitoring(
         name="trans_fg_amount_monitoring",
-        feature_name="amount",
-        description="Compute descriptive statistics on the amount Feature of the Feature Group on a weekly basis",
+        description="Compute and compare descriptive statistics on the Feature Group on a weekly basis",
         cron_expression="0 0 12 ? * MON *",  # weekly
-        row_percentage=0.8,  # use 80% of the data
     )
     ```
 
@@ -155,9 +160,12 @@ Additionally, you can specify the percentage of feature data on which statistics
     )
     ```
 
+See the API reference for [`FeatureMonitoringConfig.with_detection_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_detection_window].
+
 ### Step 4: (Optional) Define a reference window
 
-When setting up feature monitoring for a Feature Group, reference windows can be either a regular window or a specific value (i.e., window of size 1).
+When setting up feature monitoring for a Feature Group, you can compare the detection statistics against a reference window of feature data.
+A reference window is defined with the `with_reference_window` method.
 
 === "Python"
 
@@ -168,32 +176,67 @@ When setting up feature monitoring for a Feature Group, reference windows can be
         time_offset="2w",  # starting from two weeks ago
         row_percentage=0.8,  # use 80% of the data
     )
-
-    # or a specific value
-    fm_monitoring_config.with_reference_value(
-        value=100,
-    )
     ```
 
-### Step 5: (Optional) Define the statistics comparison criteria
+See the API reference for [`FeatureMonitoringConfig.with_reference_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_reference_window].
+
+!!! info "Comparing against a specific value"
+    Instead of a reference window, you can compare the detection statistics against a fixed reference value (i.e., a window of size 1).
+    In that case, skip this step and pass the `specific_value` parameter to `compare_on` in Step 5.
+
+### Step 5.A: (Optional) Compare on a scalar metric
 
 In order to compare detection and reference statistics, you need to provide the criteria for such comparison.
-First, you select the metric to consider in the comparison using the `metric` parameter.
+First, you select the feature and the metric to consider in the comparison using the `feature_name` and `metric` parameters.
 Then, you can define a relative or absolute threshold using the `threshold` and `relative` parameters.
 
 === "Python"
 
     ```python
+    # compare against a reference window
     fm_monitoring_config.compare_on(
+        feature_name="amount",  # the feature to compare
         metric="mean",
         threshold=0.2,  # a relative change over 20% is considered anomalous
         relative=True,  # relative or absolute change
         strict=False,  # strict or relaxed comparison
     )
+
+    # or compare against a specific value instead of a reference window
+    fm_monitoring_config.compare_on(
+        feature_name="amount",
+        metric="mean",
+        specific_value=100,
+        threshold=0.2,
+        relative=True,
+    )
     ```
+
+See the API reference for [`FeatureMonitoringConfig.compare_on`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.compare_on].
 
 !!! info "Difference values and thresholds"
     For more information about the computation of difference values and the comparison against threshold bounds see the [Comparison criteria section](../feature_monitoring/statistics_comparison.md#comparison-criteria) in the Statistics comparison guide.
+
+### Step 5.B: (Optional) Compare on the whole distribution
+
+Alternatively, instead of a single scalar metric, you can detect drift in the shape of a feature's distribution using `compare_on_distribution`.
+Select a distribution distance metric (e.g., `PSI`) and a threshold.
+A reference window (Step 4) is required for distribution comparison.
+
+=== "Python"
+
+    ```python
+    fm_monitoring_config.compare_on_distribution(
+        feature_name="amount",  # the feature to compare
+        metric="PSI",
+        threshold=0.2,  # a distance above 0.2 is considered a significant shift
+    )
+    ```
+
+See the API reference for [`FeatureMonitoringConfig.compare_on_distribution`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.compare_on_distribution].
+
+!!! tip "More distribution options"
+    See the [Distribution comparison guide](../feature_monitoring/distribution_comparison.md) for the full list of metrics and binning strategies.
 
 ### Step 6: Save configuration
 
@@ -206,5 +249,29 @@ Once the configuration is saved, the schedule for the statistics computation and
     fm_monitoring_config.save()
     ```
 
-!!! info "Next steps"
-    See the [Advanced guide](../feature_monitoring/feature_monitoring_advanced.md) to learn how to delete, disable or trigger feature monitoring manually.
+See the API reference for [`FeatureMonitoringConfig.save`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.save].
+
+### Retrieve configurations and history
+
+Once saved, you can retrieve your feature monitoring configurations and the results of past executions directly from the Feature Group.
+
+=== "Python"
+
+    ```python
+    # fetch all configurations attached to the feature group
+    configs = trans_fg.get_feature_monitoring_configs()
+
+    # or a single configuration by name
+    config = trans_fg.get_feature_monitoring_configs(name="trans_fg_amount_monitoring")
+
+    # fetch the history of monitoring results (with computed statistics)
+    history = trans_fg.get_feature_monitoring_history(
+        config_name="trans_fg_amount_monitoring",
+        with_statistics=True,
+    )
+    ```
+
+See the API reference for [`FeatureGroup.get_feature_monitoring_configs`][hsfs.feature_group.FeatureGroup.get_feature_monitoring_configs] and [`FeatureGroup.get_feature_monitoring_history`][hsfs.feature_group.FeatureGroup.get_feature_monitoring_history].
+
+!!! info "Explore the API"
+    The [`FeatureMonitoringConfig`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig] reference documents the full set of available methods, such as enabling or disabling a configuration, triggering it manually, or deleting it.

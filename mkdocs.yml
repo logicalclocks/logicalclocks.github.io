@@ -48,6 +48,7 @@ nav:
           - Model Training: concepts/mlops/training.md
           - Model Registry: concepts/mlops/registry.md
           - Model Serving: concepts/mlops/serving.md
+          - Model Monitoring: concepts/mlops/model_monitoring.md
           - Vector Database: concepts/mlops/opensearch.md
           - BI Tools: concepts/mlops/bi_tools.md
           - Data Transformations: concepts/mlops/data_transformations.md
@@ -89,9 +90,7 @@ nav:
                   - Getting started: user_guides/fs/feature_group/data_validation.md
                   - Advanced guide: user_guides/fs/feature_group/data_validation_advanced.md
                   - Best practices: user_guides/fs/feature_group/data_validation_best_practices.md
-              - Feature Monitoring:
-                  - Getting started: user_guides/fs/feature_group/feature_monitoring.md
-                  - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
+              - Feature Monitoring: user_guides/fs/feature_group/feature_monitoring.md
               - Notification: user_guides/fs/feature_group/notification.md
               - On-Demand Transformations: user_guides/fs/feature_group/on_demand_transformations.md
               - Online Ingestion Observability: user_guides/fs/feature_group/online_ingestion_observability.md
@@ -107,9 +106,7 @@ nav:
               - Helper Columns: user_guides/fs/feature_view/helper-columns.md
               - Model-Dependent Transformation Functions: user_guides/fs/feature_view/model-dependent-transformations.md
               - Spines: user_guides/fs/feature_view/spine-query.md
-              - Feature Monitoring:
-                  - Getting started: user_guides/fs/feature_view/feature_monitoring.md
-                  - Advanced guide: user_guides/fs/feature_monitoring/feature_monitoring_advanced.md
+              - Feature Monitoring: user_guides/fs/feature_view/feature_monitoring.md
               - Feature Logging: user_guides/fs/feature_view/feature_logging.md
           - Vector Similarity Search: user_guides/fs/vector_similarity_search.md
           - Transformation Functions: user_guides/fs/transformation_functions.md
@@ -140,6 +137,7 @@ nav:
               - user_guides/fs/feature_monitoring/index.md
               - Scheduled Statistics: user_guides/fs/feature_monitoring/scheduled_statistics.md
               - Statistics Comparison: user_guides/fs/feature_monitoring/statistics_comparison.md
+              - Distribution Comparison: user_guides/fs/feature_monitoring/distribution_comparison.md
               - Interactive Graph: user_guides/fs/feature_monitoring/interactive_graph.md
       - Projects:
           - user_guides/projects/index.md
@@ -239,6 +237,9 @@ nav:
               - REST API: user_guides/mlops/serving/rest-api.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
               - External Access: user_guides/mlops/serving/external-access.md
+          - Model Monitoring:
+              - user_guides/mlops/model_monitoring/index.md
+              - Model Monitoring Creation: user_guides/mlops/model_monitoring/model_monitoring.md
           - Vector Database: user_guides/fs/vector_similarity_search.md
           - Provenance: user_guides/mlops/provenance/provenance.md
       - Agents:

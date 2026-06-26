@@ -14,6 +14,7 @@ Statistics are computed on the whole or a subset of feature data (i.e., detectio
 ## Statistics Comparison
 
 In addition to scheduled statistics, you can enable the comparison of statistics against a reference subset of feature data (i.e., reference window) and define the criteria for this comparison including the statistics metric to compare and a threshold to identify anomalous values.
+The comparison can be done on a single scalar metric (e.g., the mean) or on the whole feature distribution using distance metrics such as PSI or KL divergence.
 
 !!! info "Feature Monitoring Guide"
     More information can be found in the [Feature monitoring guide](../../../user_guides/fs/feature_monitoring/index.md).
