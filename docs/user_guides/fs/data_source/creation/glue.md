@@ -43,13 +43,27 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
   <figcaption>The Data Source View in the User Interface</figcaption>
 </figure>
 
-### Step 2: Enter Glue Information
+### Step 2: Enter Glue Settings
 
 Enter the details for your Glue connector.
-Start by giving it a **name** and an optional **description**.
-Then set the name of the Glue **database** you want to point the connector to, and the AWS **region** of the Glue Data Catalog and its backing S3 bucket.
 
-### Step 3: Configure Authentication
+01. Select "AWS Glue" as storage.
+02. Give the data source a **name** and an optional **description**.
+03. Set the name of the Glue **database** you want to point the connector to.
+04. Optionally set the **Catalog ID**, the AWS account ID that owns the Glue Data Catalog.
+    Leave it empty to use the catalog of the account the credentials belong to.
+05. Optionally set the AWS **region** of the Glue Data Catalog and its backing S3 bucket.
+06. Choose the **Authentication method**, see the options below.
+07. Optionally add **Spark options** as key-value pairs to pass to the Spark context at runtime.
+08. Click on "Save Credentials".
+
+<figure markdown>
+  ![Glue Connector Creation](../../../../assets/images/guides/fs/data_source/glue_creation.png)
+  <figcaption>Glue Connector Creation Form</figcaption>
+</figure>
+
+The credentials must grant access both to the Glue Data Catalog and to the backing S3 bucket.
+The available authentication methods are the same as for the [S3 Data Source](s3.md):
 
 #### Instance Role
 
@@ -72,13 +86,15 @@ For this role to appear in the list it needs to have been configured by an admin
 
 The most simple authentication method are Access Key/Secret, choose this option to get started quickly, if you are able to retrieve the keys using the IAM user administration.
 
-### Step 4: Save changes
-
-Click on "Save Credentials".
-
 ## Feature group path
 
 When creating a feature group from this Data Source and the Glue database has a location, the feature group path is generated automatically by appending the new table to that database location, so no path needs to be set.
+The database location is the **Location** set on the Glue database in the AWS console.
+
+<figure markdown>
+  ![Glue Database Location](../../../../assets/images/guides/fs/data_source/glue_database_location.png)
+  <figcaption>The Location of a Glue database in the AWS console</figcaption>
+</figure>
 
 Otherwise, the path must be set explicitly on the data source, for example:
 
