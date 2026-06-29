@@ -16,7 +16,7 @@ There are four main use cases for Data Sources:
   This is also called the Connector API.
 - Write [training data](../../../concepts/fs/feature_view/offline_api.md) to an external storage system to make it accessible by third parties.
 - Managed [feature group](../../../user_guides/fs/feature_group/create.md) that stores offline data in an external storage system.
-  Currently [S3](../data_source/creation/s3.md) and [GCS](../data_source/creation/gcs.md) connectors are supported.
+  Currently [S3](../data_source/creation/s3.md), [GCS](../data_source/creation/gcs.md) and [AWS Glue](../data_source/creation/glue.md) connectors are supported.
 
 Data Sources provide two main mechanisms for authentication: using credentials or an authentication role (IAM Role on AWS or Managed Identity on Azure).
 Hopsworks supports both a single IAM role (AWS) or Managed Identity (Azure) for the whole Hopsworks cluster or multiple IAM roles (AWS) or Managed Identities (Azure) that can only be assumed by users with a specific role in a specific project.
@@ -45,8 +45,9 @@ Cloud agnostic storage systems:
 For AWS the following storage systems are supported:
 
 1. [S3](creation/s3.md): Read data from a variety of file based storage in S3 such as parquet or CSV.
-2. [Redshift](creation/redshift.md): Query Redshift databases and tables using SQL.
-3. [SQL](creation/sql.md): Query Amazon SQL (Relational Database Service) using SQL.
+2. [AWS Glue](creation/glue.md): Integrate with the AWS Glue Data Catalog over S3, for Iceberg, Delta, Hudi and plain file formats.
+3. [Redshift](creation/redshift.md): Query Redshift databases and tables using SQL.
+4. [SQL](creation/sql.md): Query Amazon SQL (Relational Database Service) using SQL.
 
 ## Azure
 

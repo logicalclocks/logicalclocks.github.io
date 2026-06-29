@@ -67,6 +67,7 @@ nav:
                   - Kafka: user_guides/fs/data_source/creation/kafka.md
                   - HopsFS: user_guides/fs/data_source/creation/hopsfs.md
                   - S3: user_guides/fs/data_source/creation/s3.md
+                  - AWS Glue: user_guides/fs/data_source/creation/glue.md
                   - Redshift: user_guides/fs/data_source/creation/redshift.md
                   - ADLS: user_guides/fs/data_source/creation/adls.md
                   - BigQuery: user_guides/fs/data_source/creation/bigquery.md
