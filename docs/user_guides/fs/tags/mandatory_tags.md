@@ -27,7 +27,7 @@ Mandatory tags are configured in two scopes.
 
 For each mandatory tag you select the artifact types it applies to.
 A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, models and deployments.
-For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving feature store artifacts unaffected.
+For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving feature groups, feature views and training datasets unaffected.
 
 ## Missing mandatory tags on models and deployments
 
