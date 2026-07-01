@@ -127,7 +127,7 @@ The same APIs work for feature views and training dataset alike.
 The same `add_tag()`, `get_tag()`, `get_tags()` and `delete_tag()` methods are available on models and deployments.
 A tag value can be a single primitive value or a dictionary matching the tag schema.
 
-=== "Python"
+=== "Model (Python)"
 
     ```python
     # Retrieve a model from the model registry
@@ -147,7 +147,7 @@ A tag value can be a single primitive value or a dictionary matching the tag sch
     model.delete_tag("data_owner")
     ```
 
-=== "Python"
+=== "Deployment (Python)"
 
     ```python
     # Retrieve a deployment from the model serving

@@ -34,7 +34,7 @@ For example, a `data_owner` schema can be marked mandatory for models and deploy
 When a mandatory tag has not yet been set on a model or a deployment, Hopsworks surfaces it as a missing mandatory tag rather than blocking the artifact from existing.
 The list of missing mandatory tags is available on the model and deployment objects through the `missing_mandatory_tags` property, and is shown on the artifact page in the UI.
 
-=== "Python"
+=== "Model (Python)"
 
     ```python
     mr = project.get_model_registry()
@@ -48,7 +48,7 @@ The list of missing mandatory tags is available on the model and deployment obje
         model.add_tag("data_owner", "email@hopsworks.ai")
     ```
 
-=== "Python"
+=== "Deployment (Python)"
 
     ```python
     ms = project.get_model_serving()
