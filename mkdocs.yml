@@ -133,6 +133,7 @@ nav:
             #       - API Key: user_guides/integrations/databricks/api_key.md
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
+          - Mandatory Tags: user_guides/fs/tags/mandatory_tags.md
           - Provenance: user_guides/fs/provenance/provenance.md
           - Feature Monitoring:
               - user_guides/fs/feature_monitoring/index.md
