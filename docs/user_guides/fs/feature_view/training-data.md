@@ -147,6 +147,30 @@ X_train, X_test, y_train, y_test = feature_view.train_test_split(
 )
 ```
 
+## Appending to a Training Dataset
+
+A materialized training dataset can grow incrementally: `insert_training_data` appends a new batch of data to an existing training dataset version instead of rewriting it.
+Only the new batch is computed and written, as a separate increment under the same version, so a large (multi-terabyte) training dataset can grow with, for example, a new daily batch, without rewriting the data already materialized.
+The training dataset version and its metadata stay the same, and `get_training_data` returns all increments together.
+
+```python
+# append yesterday's batch to training dataset version 1
+job = feature_view.insert_training_data(
+    training_dataset_version=1,
+    start_time="2026-07-01 00:00:00",
+    end_time="2026-07-01 23:59:59",
+)
+```
+
+Passing `overwrite=True` rewrites the entire training dataset version for the given time range instead of appending.
+From a Python client the append is executed by the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md) service if enabled, otherwise a `PySparkJob` is launched, as for `create_training_data`.
+
+!!! note "Requirements and behavior"
+    - Appending is only supported for the `parquet` data format.
+    - Statistics are not recomputed on append; they are left as computed when the training dataset version was created.
+    - Training datasets with splits are appended per split: a random split re-splits each batch (for example 80/20), while a time-series split assigns the batch by the split's fixed time boundaries, so a recent batch usually lands entirely in the last split and a warning is raised.
+    - Training datasets materialized with an older Hopsworks version are not appendable; recreate the training dataset once, after which it can be appended to.
+
 ## Read Training Data
 
 Once you have created a training dataset, all its metadata are saved in Hopsworks.
