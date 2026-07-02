@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Hopsworks feature store enables users to attach tags to artifacts, such as feature groups, feature views or training datasets.
+Hopsworks feature store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, models or deployments.
 
 A tag is a `{key: value}` pair which provides additional information about the data managed by Hopsworks.
 Tags allow you to design custom metadata for your artifacts.
@@ -73,7 +73,7 @@ Where the type is a valid primitive type: `string`, `boolean`, `integer`, `numbe
 
 ## Step 2: Attach a tag to an artifact
 
-Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view or training datasets either using the feature store APIs, or by using the UI.
+Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, model or deployment either using the APIs, or by using the UI.
 
 ### Using the API
 
