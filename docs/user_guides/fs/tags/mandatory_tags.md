@@ -45,6 +45,48 @@ The missing tag is surfaced on read through the `missing_mandatory_tags` propert
 Pass the mandatory tag values in the `tags` argument of the create call so the create request carries them and passes validation.
 The `tags` argument takes the same shape as feature group tags: a `{"name": ..., "value": ...}` dictionary, a list of such dictionaries, or `Tag` objects, where the value is a single primitive or a dictionary matching the tag schema.
 
+=== "Feature Group (Python)"
+
+    ```python
+    fs = project.get_feature_store()
+
+    # data_owner is mandatory for feature groups; pass it at creation
+    fg = fs.create_feature_group(
+        name="transactions",
+        version=1,
+        primary_key=["id"],
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
+    )
+    fg.insert(df)
+    ```
+
+=== "Feature View (Python)"
+
+    ```python
+    fs = project.get_feature_store()
+    fg = fs.get_feature_group("transactions", version=1)
+
+    # data_owner is mandatory for feature views; pass it at creation
+    fv = fs.create_feature_view(
+        name="transactions_fv",
+        version=1,
+        query=fg.select_all(),
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
+    )
+    ```
+
+=== "Training Dataset (Python)"
+
+    ```python
+    fs = project.get_feature_store()
+    fv = fs.get_feature_view("transactions_fv", version=1)
+
+    # data_owner is mandatory for training datasets; pass it at creation
+    td_version, td_job = fv.create_training_data(
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
+    )
+    ```
+
 === "Model (Python)"
 
     ```python
