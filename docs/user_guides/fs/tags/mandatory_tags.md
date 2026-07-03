@@ -42,8 +42,8 @@ The missing tag is surfaced on read through the `missing_mandatory_tags` propert
 
 ## Attach mandatory tags at creation
 
-Pass the mandatory tag values in the `tags` dictionary of the create call so the create request carries them and passes validation.
-The dictionary maps a tag name to its value, where the value is a single primitive or a dictionary matching the tag schema.
+Pass the mandatory tag values in the `tags` argument of the create call so the create request carries them and passes validation.
+The `tags` argument takes the same shape as feature group tags: a `{"name": ..., "value": ...}` dictionary, a list of such dictionaries, or `Tag` objects, where the value is a single primitive or a dictionary matching the tag schema.
 
 === "Model (Python)"
 
@@ -54,14 +54,14 @@ The dictionary maps a tag name to its value, where the value is a single primiti
     model = mr.python.create_model(
         name="fraud_model",
         metrics={"accuracy": 0.94},
-        tags={"data_owner": "email@hopsworks.ai"},
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
     )
     model.save("/path/to/model_artifacts")
 
     # Deploy the model; pass the mandatory deployment tag on the deploy call
     deployment = model.deploy(
         name="fraudmodeldeployment",
-        tags={"data_owner": "email@hopsworks.ai"},
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
     )
     ```
 
@@ -77,12 +77,12 @@ The dictionary maps a tag name to its value, where the value is a single primiti
     deployment = ms.create_deployment(
         predictor,
         name="fraudmodeldeployment",
-        tags={"data_owner": "email@hopsworks.ai"},
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
     )
     deployment.save()
     ```
 
-Omitting a mandatory tag from the `tags` dictionary rejects the create request with the same HTTP 400 response shown in [Single-tag and bulk tag writes](#single-tag-and-bulk-tag-writes).
+Omitting a mandatory tag from the `tags` argument rejects the create request with the same HTTP 400 response shown in [Single-tag and bulk tag writes](#single-tag-and-bulk-tag-writes).
 
 ## Single-tag and bulk tag writes
 
