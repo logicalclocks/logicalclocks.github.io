@@ -120,44 +120,7 @@ Finally you can remove a tag from a given artifact by calling the `delete_tag()`
     fg.delete_tag("data_privacy")
     ```
 
-The same APIs work for feature views and training dataset alike.
-
-### Model and deployment tags
-
-The same `add_tag()`, `get_tag()`, `get_tags()` and `delete_tag()` methods are available on models and deployments.
-A tag value can be a single primitive value or a dictionary matching the tag schema.
-
-=== "Model (Python)"
-
-    ```python
-    # Retrieve a model from the model registry
-    mr = project.get_model_registry()
-    model = mr.get_model("fraud_model", version=1)
-
-    # Attach a single-property tag (schema: {"type": "string"})
-    model.add_tag("data_owner", "email@hopsworks.ai")
-
-    # Attach an object tag (schema with first_name, last_name, age properties)
-    model.add_tag(
-        "reviewer",
-        {"first_name": "Jane", "last_name": "Doe", "age": 42},
-    )
-
-    model.get_tags()
-    model.delete_tag("data_owner")
-    ```
-
-=== "Deployment (Python)"
-
-    ```python
-    # Retrieve a deployment from the model serving
-    ms = project.get_model_serving()
-    deployment = ms.get_deployment("fraudmodeldeployment")
-
-    deployment.add_tag("data_owner", "email@hopsworks.ai")
-    deployment.get_tags()
-    deployment.delete_tag("data_owner")
-    ```
+The same APIs work for feature views, training datasets, models and deployments alike.
 
 ### Using the UI
 
