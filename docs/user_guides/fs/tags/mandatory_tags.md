@@ -34,7 +34,7 @@ For example, a `data_owner` schema can be marked mandatory for models and deploy
 All five artifact types, feature groups, feature views, training datasets, models and deployments, enforce mandatory tags the same way.
 
 The create request is validated against the configured mandatory tags.
-If any mandatory tag is missing from the tags provided at creation, the artifact is not created and the request is rejected with the error response shown in [Single-tag and bulk tag writes](#single-tag-and-bulk-tag-writes).
+If any mandatory tag is missing from the tags provided at creation, the artifact is not created and the request is rejected with an HTTP 400 error that lists the missing tag names.
 The bulk tag endpoint applies the same validation.
 
 An artifact created before a tag was marked mandatory stays valid and is not deleted.
@@ -82,24 +82,7 @@ The `tags` argument takes the same shape as feature group tags: a `{"name": ...,
     deployment.save()
     ```
 
-Omitting a mandatory tag from the `tags` argument rejects the create request with the same HTTP 400 response shown in [Single-tag and bulk tag writes](#single-tag-and-bulk-tag-writes).
-
-## Single-tag and bulk tag writes
-
-Two write paths exist for tags, and only one of them is validated against mandatory tags.
-
-- Single-tag writes, such as the SDK `add_tag()` method, set one tag at a time and are not validated against mandatory tags.
-  They succeed for any tag that matches its schema.
-- The bulk tag REST endpoint (`PUT .../tags` with the full tag set) validates the submitted set against the mandatory tags configured for the artifact type.
-  If the submitted set omits a mandatory tag, the request is rejected with HTTP 400 and the response lists the missing tag names:
-
-```json
-{
-  "errorCode": 370008,
-  "errorMsg": "Invalid mandatory tag",
-  "usrMsg": "Missing mandatory tags: data_owner"
-}
-```
+Omitting a mandatory tag from the `tags` argument rejects the create request with an HTTP 400 error that lists the missing tag names.
 
 ## Missing mandatory tags on pre-existing artifacts
 
