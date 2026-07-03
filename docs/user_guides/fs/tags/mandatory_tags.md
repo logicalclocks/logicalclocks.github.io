@@ -31,19 +31,58 @@ For example, a `data_owner` schema can be marked mandatory for models and deploy
 
 ## Enforcement per artifact type
 
-Enforcement differs between the artifact types, so a mandatory tag on a feature group does not behave the same way as a mandatory tag on a model.
-
-### Feature groups, feature views and training datasets
+All five artifact types, feature groups, feature views, training datasets, models and deployments, enforce mandatory tags the same way.
 
 The create request is validated against the configured mandatory tags.
 If any mandatory tag is missing from the tags provided at creation, the artifact is not created and the request is rejected with the error response shown in [Single-tag and bulk tag writes](#single-tag-and-bulk-tag-writes).
 The bulk tag endpoint applies the same validation.
 
-### Models and deployments
+An artifact created before a tag was marked mandatory stays valid and is not deleted.
+The missing tag is surfaced on read through the `missing_mandatory_tags` property, described in [Missing mandatory tags on pre-existing artifacts](#missing-mandatory-tags-on-pre-existing-artifacts), and on the artifact page in the UI.
 
-Creation is not validated against mandatory tags, so a model or a deployment can exist with mandatory tags unset.
-The gap is surfaced on read through the `missing_mandatory_tags` property, described below, and on the artifact page in the UI.
-The bulk tag endpoint applies the same validation as for the other artifact types.
+## Attach mandatory tags at creation
+
+Pass the mandatory tag values in the `tags` dictionary of the create call so the create request carries them and passes validation.
+The dictionary maps a tag name to its value, where the value is a single primitive or a dictionary matching the tag schema.
+
+=== "Model (Python)"
+
+    ```python
+    mr = project.get_model_registry()
+
+    # data_owner is mandatory for models; pass it at creation
+    model = mr.python.create_model(
+        name="fraud_model",
+        metrics={"accuracy": 0.94},
+        tags={"data_owner": "email@hopsworks.ai"},
+    )
+    model.save("/path/to/model_artifacts")
+
+    # Deploy the model; pass the mandatory deployment tag on the deploy call
+    deployment = model.deploy(
+        name="fraudmodeldeployment",
+        tags={"data_owner": "email@hopsworks.ai"},
+    )
+    ```
+
+=== "Deployment (Python)"
+
+    ```python
+    ms = project.get_model_serving()
+
+    # Build a predictor for an already-saved model
+    predictor = ms.create_predictor(model)
+
+    # data_owner is mandatory for deployments; pass it at creation
+    deployment = ms.create_deployment(
+        predictor,
+        name="fraudmodeldeployment",
+        tags={"data_owner": "email@hopsworks.ai"},
+    )
+    deployment.save()
+    ```
+
+Omitting a mandatory tag from the `tags` dictionary rejects the create request with the same HTTP 400 response shown in [Single-tag and bulk tag writes](#single-tag-and-bulk-tag-writes).
 
 ## Single-tag and bulk tag writes
 
@@ -62,10 +101,13 @@ Two write paths exist for tags, and only one of them is validated against mandat
 }
 ```
 
-## Missing mandatory tags on models and deployments
+## Missing mandatory tags on pre-existing artifacts
 
-When a mandatory tag has not yet been set on a model or a deployment, Hopsworks surfaces it as a missing mandatory tag rather than blocking the artifact from existing.
-The list of missing mandatory tags is available on the model and deployment objects through the `missing_mandatory_tags` property, and is shown on the artifact page in the UI.
+Marking a tag mandatory does not retroactively reject artifacts that already exist without it.
+An artifact created before the tag became mandatory stays valid, and Hopsworks surfaces the gap on read rather than deleting the artifact.
+
+Fetching such an artifact emits a Python `UserWarning` listing the missing tag names.
+The same list is available on the fetched object through the `missing_mandatory_tags` property and is shown on the artifact page in the UI.
 The property is populated when the object is fetched from the backend and reflects the state at fetch time.
 Adding a tag does not update the property on the object in hand, so fetch the artifact again to see the updated list.
 
@@ -73,6 +115,9 @@ Adding a tag does not update the property on the object in hand, so fetch the ar
 
     ```python
     mr = project.get_model_registry()
+
+    # If data_owner is mandatory but was never set on this model,
+    # the fetch emits: UserWarning: Missing mandatory tags: ['data_owner']
     model = mr.get_model("fraud_model", version=1)
 
     # Names of mandatory tags that are required for this model but not yet set
@@ -83,15 +128,18 @@ Adding a tag does not update the property on the object in hand, so fetch the ar
         model.add_tag("data_owner", "email@hopsworks.ai")
 
     # missing_mandatory_tags reflects the state at fetch time,
-    # so fetch the model again to see the updated list
+    # so fetch the model again to see the updated list (no warning now)
     model = mr.get_model("fraud_model", version=1)
-    print(model.missing_mandatory_tags)
+    print(model.missing_mandatory_tags)  # []
     ```
 
 === "Deployment (Python)"
 
     ```python
     ms = project.get_model_serving()
+
+    # If data_owner is mandatory but was never set on this deployment,
+    # the fetch emits: UserWarning: Missing mandatory tags: ['data_owner']
     deployment = ms.get_deployment("fraudmodeldeployment")
 
     missing = [tag["name"] for tag in deployment.missing_mandatory_tags]
@@ -100,9 +148,9 @@ Adding a tag does not update the property on the object in hand, so fetch the ar
     if "data_owner" in missing:
         deployment.add_tag("data_owner", "email@hopsworks.ai")
 
-    # Fetch the deployment again to see the updated list
+    # Fetch the deployment again to see the updated list (no warning now)
     deployment = ms.get_deployment("fraudmodeldeployment")
-    print(deployment.missing_mandatory_tags)
+    print(deployment.missing_mandatory_tags)  # []
     ```
 
-After the tag is set, it no longer appears in `missing_mandatory_tags` on the next fetch.
+After the tag is set, it no longer appears in `missing_mandatory_tags` on the next fetch, and the fetch no longer warns.
