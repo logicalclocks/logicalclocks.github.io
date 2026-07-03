@@ -23,7 +23,7 @@ Mandatory tags are configured in two scopes.
 - Cluster-wide mandatory tags apply to every project on the cluster.
   They are configured by an administrator in the `Cluster settings` > `Tag schemas` section.
 - Project-specific mandatory tags apply only to a single project.
-  They are configured in the project's `Project Settings` > `Governance Policies` section.
+  They are configured by an administrator in the `Cluster settings` > `Projects` section, by selecting the project.
 
 For each mandatory tag you select the artifact types it applies to.
 A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, models and deployments.
