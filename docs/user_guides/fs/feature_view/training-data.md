@@ -163,7 +163,7 @@ job = feature_view.insert_training_data(
 ```
 
 Passing `overwrite=True` rewrites the entire training dataset version for the given time range instead of appending.
-From a Python client the append is executed by the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md) service if enabled, otherwise a `PySparkJob` is launched, as for `create_training_data`.
+From a Python client, the append is executed by the [ArrowFlight Server with DuckDB][arrowflight-server-with-duckdb] service if enabled, otherwise a `PySparkJob` is launched, as for `create_training_data`.
 
 !!! note "Requirements and behavior"
     - Appending is only supported for the `parquet` data format.

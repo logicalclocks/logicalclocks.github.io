@@ -22,9 +22,9 @@ In this case, the application should know that predictions for this customer sho
 ### Incremental Training Data
 
 Materialized training data does not have to be rewritten when new data arrives.
-A training dataset materialized in the parquet format can be appended to, keeping the same training dataset version: each append materializes only the new time range and stores it as a new increment of the dataset.
+A training dataset materialized in the `.parquet` format can be appended to, keeping the same training dataset version: each append materializes only the new time range and stores it as a new increment of the dataset.
 This allows very large training datasets to grow with, for example, a daily batch, without rewriting the data already materialized.
-See the [training data guide](../../../user_guides/fs/feature_view/training-data.md#appending-to-a-training-dataset) for details.
+See the [training data guide][appending-to-a-training-dataset] for details.
 
 ### Point-in-time Correct Training Data
 
