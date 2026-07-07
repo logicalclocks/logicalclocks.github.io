@@ -58,6 +58,69 @@ This information helps you understand cluster performance and capacity.
   <figcaption>Query Engine cluster overview</figcaption>
 </figure>
 
+## Managing Catalogs
+
+Catalogs connect the Query Engine to external data sources such as PostgreSQL, MySQL, BigQuery, or MongoDB.
+Project Data Owners can create, edit, and delete catalogs for their project from the Catalogs tab.
+A catalog you create is named `<project>__<name>` and is only queryable within your own project.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/catalogs-list.png" alt="Catalogs list" />
+  <figcaption>The Catalogs tab lists the shared default catalogs and your project's catalogs</figcaption>
+</figure>
+
+### Creating a Catalog
+
+Click "Create catalog", then provide the catalog details:
+
+1. Enter a name. The `<project>__` prefix is added automatically, so you type only the short name.
+2. Choose the connector type, for example `postgresql`, `mysql`, `bigquery`, or `mongodb`.
+3. Enter the connector properties, one `key=value` per line.
+
+Reference a Hopsworks secret with `${HOPSWORKS_SECRET:<name>}` instead of typing the value inline to keep the secret out of the stored catalog definition.
+Type `${HOPSWORKS_SECRET:` in the properties editor to pick from your own secrets.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/create-catalog.png" alt="Create catalog" />
+  <figcaption>Creating a catalog with the auto-prefixed name and connector properties</figcaption>
+</figure>
+
+### Testing the Connection
+
+Click "Test connection" to validate the configuration against the backing system before you save.
+The test creates a temporary catalog, lists its schemas, and reports the result, so you catch a wrong host, port, or credential immediately.
+
+When the connection cannot be established, the connector's own error is shown.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/test-connection-failed.png" alt="Test connection failed" />
+  <figcaption>A failed test reports the underlying connector error</figcaption>
+</figure>
+
+When the configuration is correct, the test confirms that the catalog connects.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/test-connection-success.png" alt="Test connection succeeded" />
+  <figcaption>A successful connection test</figcaption>
+</figure>
+
+### Availability After Creation
+
+A newly created catalog has the status Pending sync, meaning it is saved but not yet loaded by the running Query Engine.
+It becomes queryable only after an administrator syncs it and restarts Trino, because Trino reads catalogs only at startup.
+Until then the catalog is listed with its pending status and does not appear as a target in the SQL runner.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/catalog-pending-sync.png" alt="Catalog pending sync" />
+  <figcaption>A created catalog waits in Pending sync until an administrator applies it</figcaption>
+</figure>
+
+### Access to Catalog Tables
+
+Access to a user-created catalog is granted at the catalog level per project: a project's Data Owners can read and write, and Data Scientists can read.
+Trino's file-based access control provides no per-schema or per-table restriction for these catalogs, so access is all-or-nothing within the catalog.
+To limit what a catalog exposes, scope the database user in the connection credentials at the source database, since Trino reads the external system as that user and can only ever see what those credentials allow.
+
 ## Queries
 
 The Queries tab displays a history of all executed queries. For each query, you can see:

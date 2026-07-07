@@ -80,6 +80,43 @@ Use this detailed view to diagnose worker-specific issues and optimize resource 
   <figcaption>Trino worker status</figcaption>
 </figure>
 
+## Managing Catalogs
+
+Catalogs created by project Data Owners are saved to the database but are not loaded by the running cluster until an administrator applies them.
+Applying a catalog is a two-step, admin-gated workflow on the Catalogs tab under Cluster Settings, Query Engine: sync the pending changes, then restart Trino.
+
+The tab lists every catalog waiting to be applied, along with its status and the operation to apply (create, update, or remove).
+
+<figure>
+  <img src="../../../assets/images/admin/trino/catalogs-pending.png" alt="Pending catalogs" />
+  <figcaption>Catalogs awaiting sync and restart</figcaption>
+</figure>
+
+### Syncing
+
+Select the catalogs to apply and click "Sync selected".
+This writes the catalog definitions into the backend-owned ConfigMap that the cluster mounts.
+Any `${HOPSWORKS_SECRET:...}` reference is resolved to its value only at this step, so secrets are never stored in the catalog database rows.
+After syncing, a catalog moves to Pending restart, meaning it is present in the ConfigMap but not yet loaded by the running cluster.
+
+<figure>
+  <img src="../../../assets/images/admin/trino/catalogs-pending-restart.png" alt="Catalogs pending restart" />
+  <figcaption>Synced catalogs wait in Pending restart until the next restart</figcaption>
+</figure>
+
+### Restarting
+
+Trino reads catalogs only at startup, so synced changes take effect on the next restart.
+Click "Restart Trino" to roll out the coordinator and workers.
+The confirmation dialog reports how many queries are currently running or queued, because the restart interrupts them, so you can choose a low-traffic window before confirming.
+
+<figure>
+  <img src="../../../assets/images/admin/trino/restart-confirm.png" alt="Restart confirmation" />
+  <figcaption>The restart confirmation reports the running queries the restart will interrupt</figcaption>
+</figure>
+
+A restart is refused while another sync or restart is already running, and while a rollout is still in progress, so concurrent actions by different administrators cannot collide or trigger redundant restarts.
+
 ## Configuration
 
 Trino behavior can be customized through cluster configuration variables. To modify these settings, navigate to **Cluster Settings** → **Configuration** and search for the variable name.
@@ -88,6 +125,7 @@ Trino behavior can be customized through cluster configuration variables. To mod
 
 - **trino_enabled**: Enable or disable Trino cluster-wide (default: `true`)
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
+- **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.
 
