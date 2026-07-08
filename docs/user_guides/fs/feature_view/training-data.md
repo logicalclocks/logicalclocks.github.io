@@ -151,7 +151,10 @@ X_train, X_test, y_train, y_test = feature_view.train_test_split(
 
 A materialized training dataset can grow incrementally: `insert_training_data` appends a new batch of data to an existing training dataset version instead of rewriting it.
 Only the new batch is computed and written, as a separate increment under the same version, so a large (multi-terabyte) training dataset can grow with, for example, a new daily batch, without rewriting the data already materialized.
-The training dataset version and its metadata stay the same, and `get_training_data` returns all increments together.
+The training dataset version and its metadata stay the same, and `get_training_data` returns all increments together by default.
+
+The batch `start_time` also becomes the increment's key, making the training dataset time-addressable: `get_training_data` can read just a time range of increments, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
+Because the increments are keyed by time, batches must be appended in event-time order — a batch whose `start_time` is not later than the newest increment is rejected.
 
 ```python
 # append yesterday's batch to training dataset version 1
@@ -168,8 +171,32 @@ From a Python client, the append is executed by the [ArrowFlight Server with Duc
 !!! note "Requirements and behavior"
     - Appending is only supported for the `parquet` data format.
     - Statistics are not recomputed on append; they are left as computed when the training dataset version was created.
-    - Training datasets with splits are appended per split: a random split re-splits each batch (for example 80/20), while a time-series split assigns the batch by the split's fixed time boundaries, so a recent batch usually lands entirely in the last split and a warning is raised.
+    - Randomly split training datasets are appended per split: each batch is re-split (for example 80/20), which stays sound over many appends.
+    - Appending to a time-series-split training dataset is not supported and raises an error: the batch would land entirely in the last split (for example, test) while the earlier splits stay frozen, skewing the dataset. For time-series data, grow an unsplit training dataset and derive the train and test sets at read time instead, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
     - Training datasets materialized with an older Hopsworks version are not appendable; recreate the training dataset once, after which it can be appended to.
+
+### Reading a time range of an incremental training dataset
+
+Each appended batch is stored as an increment keyed by its `start_time`, so `get_training_data` can read only the increments whose batch start time falls inside a given range, without scanning the rest of the data.
+This replaces materialized time-series splits for growing datasets: the train/test boundary is chosen at read time, so both windows grow or shift automatically as new batches arrive — for example, a sliding training window after detecting model drift, or a test set that is always the most recent 30 days.
+
+```python
+# train on everything up to 30 days ago
+X_train, y_train = feature_view.get_training_data(
+    training_dataset_version=1,
+    end_time="2026-06-01",
+)
+
+# test on the most recent 30 days
+X_test, y_test = feature_view.get_training_data(
+    training_dataset_version=1,
+    start_time="2026-06-02",
+)
+```
+
+!!! note "Range semantics"
+    - Both bounds are inclusive and select whole increments by their batch `start_time`; rows are not filtered individually, so align the range with the appended batch boundaries (for example, day boundaries for daily batches).
+    - Only increments appended with a `start_time` can be matched by a time range; increments appended without one are never matched.
 
 ## Read Training Data
 
@@ -194,6 +221,8 @@ X_train, X_val, X_test, y_train, y_val, y_test = (
     feature_view.get_train_validation_test_split(training_dataset_version=1)
 )
 ```
+
+For an incrementally grown training dataset, `get_training_data` also accepts `start_time`/`end_time` to read only a time range of increments — see [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
 
 ## Passing Context Variables to Transformation Functions
 
