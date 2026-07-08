@@ -170,7 +170,8 @@ From a Python client, the append is executed by the [ArrowFlight Server with Duc
 
 !!! note "Requirements and behavior"
     - Appending is only supported for the `parquet` data format.
-    - Statistics are not recomputed on append; they are left as computed when the training dataset version was created.
+    - Statistics are not recomputed on append by default, since that reads the whole dataset back every time. Pass `compute_statistics=True` to `insert_training_data` to refresh the descriptive statistics over all increments after the batch is written, or call `feature_view.compute_training_dataset_statistics(training_dataset_version)` explicitly when fresh statistics are needed, for example periodically or right before retraining.
+    - Model-dependent transformation functions transform each appended batch with the statistics computed when the training dataset version was created, so all increments and serving stay consistent with each other. To refit those statistics, rebuild the version with `overwrite=True` or create a new training dataset version.
     - Randomly split training datasets are appended per split: each batch is re-split (for example 80/20), which stays sound over many appends.
     - Appending to a time-series-split training dataset is not supported and raises an error: the batch would land entirely in the last split (for example, test) while the earlier splits stay frozen, skewing the dataset. For time-series data, grow an unsplit training dataset and derive the train and test sets at read time instead, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
     - Training datasets materialized with an older Hopsworks version are not appendable; recreate the training dataset once, after which it can be appended to.
