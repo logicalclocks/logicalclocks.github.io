@@ -153,8 +153,9 @@ A materialized training dataset can grow incrementally: `insert_training_data` a
 Only the new batch is computed and written, as a separate increment under the same version, so a large (multi-terabyte) training dataset can grow with, for example, a new daily batch, without rewriting the data already materialized.
 The training dataset version and its metadata stay the same, and `get_training_data` returns all increments together by default.
 
-The batch `start_time` also becomes the increment's key, making the training dataset time-addressable: `get_training_data` can read just a time range of increments, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
-Because the increments are keyed by time, batches must be appended in event-time order — a batch whose `start_time` is not later than the newest increment is rejected.
+The materialized data is partitioned by each row's event time, at day granularity, making the training dataset time-addressable: `get_training_data` can read just a time range, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
+Because rows land in the day partitions they belong to, batches may be appended in any order: backfills and late-arriving events are supported.
+Note that appends are not deduplicated — re-appending a batch that was already materialized adds its rows again, as with feature group inserts.
 
 ```python
 # append yesterday's batch to training dataset version 1
@@ -178,7 +179,7 @@ From a Python client, the append is executed by the [ArrowFlight Server with Duc
 
 ### Reading a time range of an incremental training dataset
 
-Each appended batch is stored as an increment keyed by its `start_time`, so `get_training_data` can read only the increments whose batch start time falls inside a given range, without scanning the rest of the data.
+The materialized data is stored in Hive partitions keyed by each row's event time at day granularity, so `get_training_data` can read only the rows whose event time falls inside a given range, without scanning the rest of the data.
 This replaces materialized time-series splits for growing datasets: the train/test boundary is chosen at read time, so both windows grow or shift automatically as new batches arrive — for example, a sliding training window after detecting model drift, or a test set that is always the most recent 30 days.
 
 ```python
@@ -196,8 +197,8 @@ X_test, y_test = feature_view.get_training_data(
 ```
 
 !!! note "Range semantics"
-    - Both bounds are inclusive and select whole increments by their batch `start_time`; rows are not filtered individually, so align the range with the appended batch boundaries (for example, day boundaries for daily batches).
-    - Only increments appended with a `start_time` can be matched by a time range; increments appended without one are never matched.
+    - Both bounds are inclusive and select whole day partitions by the rows' event time; sub-day bounds do not filter rows within a day, so align the bounds with day boundaries.
+    - Only data materialized with an event time can be matched by a time range; if the feature view's left feature group defines no event-time column, the dataset stays appendable but cannot be read by time range.
 
 ## Read Training Data
 
