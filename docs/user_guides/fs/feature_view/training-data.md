@@ -153,7 +153,9 @@ A materialized training dataset can grow incrementally: `insert_training_data` a
 Only the new batch is computed and written, as a separate increment under the same version, so a large (multi-terabyte) training dataset can grow with, for example, a new daily batch, without rewriting the data already materialized.
 The training dataset version and its metadata stay the same, and `get_training_data` returns all increments together by default.
 
-The materialized data is partitioned by each row's event time, at day granularity, making the training dataset time-addressable: `get_training_data` can read just a time range, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
+The materialized data is partitioned by each row's UTC event date (a human-readable `YYYYMMDD` value), truncated to the `partition_precision` parameter — `day` by default, or `month`/`year` for coarser layouts with fewer partitions over long histories.
+This makes the training dataset time-addressable: `get_training_data` can read just a time range, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
+All materializations of a training dataset version must use the same precision.
 Because rows land in the day partitions they belong to, batches may be appended in any order: backfills and late-arriving events are supported.
 Note that appends are not deduplicated — re-appending a batch that was already materialized adds its rows again, as with feature group inserts.
 
@@ -179,7 +181,7 @@ From a Python client, the append is executed by the [ArrowFlight Server with Duc
 
 ### Reading a time range of an incremental training dataset
 
-The materialized data is stored in Hive partitions keyed by each row's event time at day granularity, so `get_training_data` can read only the rows whose event time falls inside a given range, without scanning the rest of the data.
+The materialized data is stored in Hive partitions keyed by each row's UTC event date, truncated to the dataset's partition precision, so `get_training_data` can read only the rows whose event date falls inside a given range, without scanning the rest of the data.
 This replaces materialized time-series splits for growing datasets: the train/test boundary is chosen at read time, so both windows grow or shift automatically as new batches arrive — for example, a sliding training window after detecting model drift, or a test set that is always the most recent 30 days.
 
 ```python
@@ -197,7 +199,7 @@ X_test, y_test = feature_view.get_training_data(
 ```
 
 !!! note "Range semantics"
-    - Both bounds are inclusive and select whole day partitions by the rows' event time; sub-day bounds do not filter rows within a day, so align the bounds with day boundaries.
+    - Both bounds are inclusive and select whole partitions by the rows' UTC event date at the dataset's partition precision; finer bounds do not filter rows within a partition, so align the bounds with the precision (day boundaries for `day`, month boundaries for `month`, and so on).
     - Only data materialized with an event time can be matched by a time range; if the feature view's left feature group defines no event-time column, the dataset stays appendable but cannot be read by time range.
 
 ## Read Training Data
