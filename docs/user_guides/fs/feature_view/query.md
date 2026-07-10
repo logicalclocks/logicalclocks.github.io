@@ -339,7 +339,8 @@ For example, a per-user transaction history ordered by event time uses the prima
 The ordering feature is not supplied as a serving key because the lookup identifies an entity rather than one event.
 
 Labels cannot be collected because a collected output is an input feature containing several historical rows.
-The value of `n` must be positive and cannot exceed the maximum configured by the Hopsworks administrator.
+Complex-typed value features (arrays, maps, structs, and binary) cannot be collected on an online-enabled feature group, because the online clients cannot yet decode them inside the collected rows.
+The value of `n` must be a positive integer and cannot exceed the maximum configured by the Hopsworks administrator.
 The product of `n` and the number of selected features is also capped, because point-in-time training data materializes that many values for every source event.
 
 When time-to-live is enabled on the source feature group, offline training data uses the same lookback horizon as online serving.
@@ -373,9 +374,16 @@ query = (
 
 Each feature and function pair creates one scalar output feature.
 For example, the query above creates `amount_count`, `amount_sum`, `amount_avg`, `count`, and `amount_fee_greatest`.
+The functions are type-checked when the feature view is created: `sum` and `avg` require numeric features, `min` and `max` accept any non-complex feature, and `greatest` and `least` require integer features.
 
-The optional `window` is a trailing event-time interval.
+The optional `window` is a trailing event-time interval, given as a whole number of seconds or a timedelta.
+A windowed aggregation requires the feature group to declare a TIMESTAMP event-time feature.
+Online serving anchors the window at the read time, while point-in-time training data anchors it at each training row's own event time, so a training row never includes source events that had already expired at that row's time.
 If the source feature group has time-to-live enabled, the aggregation window cannot exceed the time-to-live period because older rows are unavailable during online serving.
+
+For online feature groups, the primary key must contain the entity key followed by the event-time feature, exactly like `collect`, so the online store keeps per-entity history.
+In a feature view with point-in-time joins, a windowed aggregation must be joined directly to the root feature group with an inner or left join.
+Query shapes that cannot be computed point-in-time correct are rejected with an error when the feature view is created, instead of silently producing training data with future leakage.
 
 `aggregate` and `collect` are mutually exclusive on the same query node.
 Sub-entity grouping through `group_by` is not supported.

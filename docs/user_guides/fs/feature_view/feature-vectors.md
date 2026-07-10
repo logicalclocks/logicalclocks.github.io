@@ -97,6 +97,8 @@ amount_average = vector["amount_avg"].iloc[0]
 transaction_count = vector["count"].iloc[0]
 ```
 
+An entity with no rows in the aggregation window returns zero for count features and missing values for the other functions, in single and batch reads alike.
+
 The SQL and REST online clients compute the aggregation in the online store.
 With the REST client, batch retrieval groups entities into bounded requests when the serving key contains one feature.
 Composite serving keys use per-entry requests when the online query cannot safely group them.
