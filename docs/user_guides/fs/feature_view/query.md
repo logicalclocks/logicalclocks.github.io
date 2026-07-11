@@ -375,6 +375,7 @@ query = (
 Each feature and function pair creates one scalar output feature.
 For example, the query above creates `amount_count`, `amount_sum`, `amount_avg`, `count`, and `amount_fee_greatest`.
 The functions are type-checked when the feature view is created: `sum` and `avg` require numeric features, `min` and `max` accept any non-complex feature, and `greatest` and `least` require integer features.
+The output types are the same on every engine and path: `count` outputs are `bigint`; `sum` widens integer sources to `bigint`, float sources to `double`, and `decimal(p,s)` sources to `decimal(p+10,s)`; `avg` returns `double`, or `decimal(p+4,s+4)` for decimal sources; `min`, `max`, `greatest`, and `least` keep the source feature type.
 
 The optional `window` is a trailing event-time interval, given as a whole number of seconds or a timedelta.
 A windowed aggregation requires the feature group to declare a TIMESTAMP event-time feature.
