@@ -102,10 +102,13 @@ MaxDirectoryItemsExceededException - The directory item limit is exceeded: limit
 
 By using partitioning the system will write the feature data in different subdirectories, thus allowing you to write 10240 files per partition.
 
+`partition_key` is plain identity partitioning on existing columns.
+For partition transforms such as `day(ts)` or `bucket(16, customer_id)` on Iceberg and Hudi, liquid clustering on Delta (`clustered_by`), the Hudi bucket index (`bucket_index`), and z-ordering (`zorder_by`), see the [partitioning and clustering guide][partitioning-feature-group].
+
 ##### Table format
 
 When you create a feature group, you can specify the table format you want to use to store the data in your feature group by setting the `time_travel_format` parameter.
-The currently supported values are `"HUDI"`, `"DELTA"`, and `"NONE"` (which stores as Parquet without time travel support). The parameter defaults to `None`, which resolves to `"DELTA"` if the `deltalake` package is installed, or `"HUDI"` otherwise.
+The currently supported values are `"HUDI"`, `"DELTA"`, `"ICEBERG"`, and `"NONE"` (which stores as Parquet without time travel support). The parameter defaults to `None`, which resolves to `"DELTA"` if the `deltalake` package is installed, or `"HUDI"` otherwise.
 
 ##### Data Source
 

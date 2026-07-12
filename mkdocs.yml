@@ -79,6 +79,7 @@ nav:
           - Feature Group:
               - user_guides/fs/feature_group/index.md
               - Create: user_guides/fs/feature_group/create.md
+              - Partitioning and Clustering: user_guides/fs/feature_group/partitioning.md
               - Create External: user_guides/fs/feature_group/create_external.md
               - Ingest Data with dltHub: user_guides/fs/feature_group/ingest_with_dlthub.md
               - Create Spine: user_guides/fs/feature_group/create_spine.md
