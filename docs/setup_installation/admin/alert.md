@@ -100,7 +100,7 @@ A global receiver is created when a webhook is configured and can be used by any
 ### Step 6: Advanced configuration
 
 If you are familiar with Prometheus' [Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/)
-you can also configure alerts by editing the _yaml/json_ file directly by going to the advaced page and clicking the edit button.
+you can also configure alerts by editing the _yaml/json_ file directly by going to the advanced page and clicking the edit button.
 
 The advanced page shows the configuration currently loaded on the alert manager.
 After editing the configuration it takes some time to propagate changes to the alertmanager.
@@ -111,6 +111,17 @@ It will try to load the new configuration to the alertmanager and show any error
 <figure>
   <img src="../../../assets/images/alerts/advanced-config.png" alt="Advanced configuration"/>
   <figcaption>Advanced configuration</figcaption>
+</figure>
+
+A status indicator next to the _Advanced configuration_ heading shows whether the configuration Hopsworks has saved matches what the alert manager currently has loaded.
+
+- _Synced_: the loaded configuration matches the saved configuration.
+- _Pending reload_: a change has been saved but the alert manager has not loaded it yet. This is expected right after an edit because changes take some time to propagate.
+- _Warning_: the change has stayed unloaded past the timeout, which usually means the alert manager rejected the configuration. The reason reported by the alert manager is shown so you can find and fix the offending section.
+
+<figure>
+  <img src="../../../assets/images/alerts/advanced-config-status.png" alt="Advanced configuration load status"/>
+  <figcaption>Configuration load status next to the Advanced configuration heading</figcaption>
 </figure>
 
 !!!warning
@@ -130,7 +141,7 @@ global:
  ...
 ```
 
-To test the alerts by creating triggers from Jobs and Feature group validations see [Alerts](../../user_guides/fs/feature_group/data_validation_best_practices.md#setup-alerts).
+To manage a project's receivers and create alerts on Jobs and Feature group validations see [Alerts](../../user_guides/projects/alerts/index.md).
 
 The yaml syntax in the UI is slightly different in that it does not allow double quotes (it will ignore the values but give no error).
 Below is an example configuration, that can be used in the UI, with both email and slack receivers configured for system alerts.
