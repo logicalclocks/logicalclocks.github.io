@@ -96,6 +96,29 @@ jobs:
       - name: Install Hopsworks Python API
         run: uv pip install hopsworks-api/python
 
+      - name: Generate Helm values reference
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: |
+          if [ "$BRANCH" = "main" ]; then
+            # dev docs: latest chart from the (private) dev channel. Skip (keep
+            # the page placeholder) when the Nexus credentials are absent rather
+            # than failing the build.
+            if [ -n "$NEXUS_USER" ]; then
+              hopsworks-docs gen-helm-values \
+                --repo-url https://nexus.hops.works/repository/hopsworks-helm-dev
+            else
+              echo "Nexus credentials not available; keeping the values reference placeholder."
+            fi
+          else
+            # release docs: latest patch of the chart version (major.minor) for this docs version.
+            # The released repo is public, so fetch anonymously (clear any creds).
+            NEXUS_USER= NEXUS_PASSWORD= hopsworks-docs gen-helm-values \
+              --repo-url https://nexus.hops.works/repository/hopsworks-helm \
+              --chart-version "$HOPSWORKS_VERSION"
+          fi
+
       - name: Install Ubuntu dependencies
         run: sudo apt update && sudo apt-get install -y libxml2-dev libxslt-dev
 

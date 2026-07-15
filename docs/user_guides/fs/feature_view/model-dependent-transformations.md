@@ -175,3 +175,45 @@ To achieve this, set the `transform` parameter to False.
         # Fetching untransformed batch data.
         untransformed_batch_data = feature_view.get_batch_data(transform=False)
         ```
+
+## Chaining Model-Dependent Transformations
+
+A model-dependent transformation (MDT) can consume another MDT's output as its input.
+The DAG is resolved automatically at execution time, so producers always run before consumers.
+
+!!! example "Chaining two increments and a sum"
+    === "Python"
+
+        ```python
+        from hopsworks import udf
+
+
+        @udf(int)
+        def add_one(col):
+            return col + 1
+
+
+        @udf(int)
+        def add(a, b):
+            return a + b
+
+
+        fv = fs.create_feature_view(
+            name="chained_mdt_fv",
+            query=fg.select_all(),
+            transformation_functions=[
+                add_one("data1").alias("data1_plus_one"),
+                add_one("data2").alias("data2_plus_one"),
+                add("data1_plus_one", "data2_plus_one").alias("sum_plus_two"),
+            ],
+            version=1,
+        )
+        ```
+
+### Statistics over chained transformations
+
+Statistics-based transformations participate in chains like any other transformation.
+A transformation that requires statistics on another transformation's output, such as a min-max scaler applied to an imputed column, is fit on that intermediate output rather than on the raw feature.
+During training dataset creation the statistics are computed in dependency order on the train split, each transformation executes exactly once, and the fitted statistics are persisted so that online serving applies the same values.
+
+See [Transformation Functions Performance Tuning][transformation-functions-performance-tuning] for `n_processes` semantics on chained DAGs.

@@ -43,6 +43,30 @@ jobs:
       - name: Snakeoil (Python code blocks in markdown)
         run: hopsworks-docs snakeoil
 
+      - name: Generate Helm values reference
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ "$BASE_REF" = "main" ]; then
+            # dev docs: latest chart from the (private) dev channel. Fork PRs do
+            # not receive secrets, so skip (keep the page placeholder) when the
+            # Nexus credentials are absent rather than failing the build.
+            if [ -n "$NEXUS_USER" ]; then
+              hopsworks-docs gen-helm-values \
+                --repo-url https://nexus.hops.works/repository/hopsworks-helm-dev
+            else
+              echo "Nexus credentials not available (e.g. a fork PR); keeping the values reference placeholder."
+            fi
+          else
+            # release docs: latest patch of the chart version (major.minor) for this docs version.
+            # The released repo is public, so fetch anonymously (clear any creds).
+            NEXUS_USER= NEXUS_PASSWORD= hopsworks-docs gen-helm-values \
+              --repo-url https://nexus.hops.works/repository/hopsworks-helm \
+              --chart-version "${BASE_REF#branch-}"
+          fi
+
       - name: Check mkdocs warnings
         run: hopsworks-docs check
 

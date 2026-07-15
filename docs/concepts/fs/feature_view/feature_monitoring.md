@@ -14,6 +14,13 @@ Statistics are computed on the whole or a subset of feature data (i.e., detectio
 ## Statistics Comparison
 
 In addition to scheduled statistics, you can enable the comparison of statistics against a reference subset of feature data (i.e., reference window), typically a training dataset, and define the criteria for this comparison including the statistics metric to compare and a threshold to identify anomalous values.
+The comparison can be done on a single scalar metric (e.g., the mean) or on the whole feature distribution using distance metrics such as PSI or KL divergence.
+
+## Model Monitoring
+
+A Feature View backs the features served to a model in production.
+By comparing the model's logged inference data against the training dataset it was trained on, you can detect drift between training and serving and decide when to retrain.
+This is known as model monitoring and reuses the same statistics and distribution comparison machinery as feature monitoring.
 
 !!! info "Feature Monitoring Guide"
-    More information can be found in the [Feature monitoring guide](../../../user_guides/fs/feature_monitoring/index.md).
+    More information can be found in the [Feature monitoring guide](../../../user_guides/fs/feature_monitoring/index.md) and the [Model Monitoring guide](../../../user_guides/mlops/model_monitoring/index.md).

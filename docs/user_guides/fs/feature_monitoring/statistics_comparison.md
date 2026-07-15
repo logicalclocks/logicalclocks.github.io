@@ -16,8 +16,10 @@ Feature monitoring is a powerful tool that allows you to monitor your data over 
 It can be enabled in both Feature Groups and Feature Views, but for different purposes.
 
 For **Feature Groups**, feature monitoring helps you rapidly identify unexpected trends or anomalous values in your Feature Group data, facilitating the debugging of possible root causes such as newly introduced changes in your feature pipelines.
+See the [Feature Monitoring for Feature Groups](../feature_group/feature_monitoring.md) guide to configure it.
 
 For **Feature Views**, feature monitoring helps you quickly detect when newly inserted Feature Group data differs statistically from your existing training datasets, and decide whether to retrain your ML models using a new training dataset version or analyze possible issues in your feature pipelines or inference pipelines.
+See the [Feature Monitoring for Feature Views](../feature_view/feature_monitoring.md) guide to configure it.
 
 ## Reference windows
 
@@ -26,7 +28,7 @@ Reference windows can be defined in different ways depending on whether you are 
 
 ![Types of reference windows](../../../assets/images/guides/fs/feature_monitoring/fm-reference-windows.png)
 
-In [a previous section](index.md#statistics-computation-on-windows-of-feature-data) we described different types of windows available.
+In [a previous section](index.md#define-windows-over-feature-data) we described different types of windows available.
 Taking a Feature View as an example, the figure above describes how these windows are applied to Feature Group data read by a Feature View query and Training data, resulting in the following applications:
 
 - A _expanding window_ covering the whole Feature Group data from its creation until the time when statistics are computing.
@@ -44,6 +46,11 @@ See more details on how to define a reference window for your Feature Groups and
 ## Comparison criteria
 
 After defining the detection and reference windows, you can specify the criteria under which computed statistics will be compared.
+The criteria described below apply to the comparison of a single scalar metric using the `compare_on` method.
+
+!!! tip "Distribution comparison"
+    Alternatively, you can compare the whole distribution of a feature between the detection and reference windows using metrics such as PSI or KL divergence.
+    See the [Distribution comparison guide](distribution_comparison.md) for details.
 
 ??? no-icon "Statistics metric"
 
