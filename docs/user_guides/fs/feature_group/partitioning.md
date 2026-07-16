@@ -112,6 +112,31 @@ A sort order is applied through the Iceberg Java API, so creating a feature grou
 `sort_order` is the right choice when reads consistently filter or join on the same columns; `zorder_by` covers multi-dimensional point lookups instead.
 The two are mutually exclusive as stored defaults, because they prescribe conflicting file layouts (writes sorted linearly while maintenance rewrites on the z-curve); a one-off z-order on a sorted table stays available through `optimize(strategy="zorder", columns=[...])`.
 
+### Layout for point-in-time training data
+
+Training data from a feature view runs a point-in-time join: each feature group is joined to the label side on the primary key with an event-time inequality, and a rank window keeps the latest row per label.
+Inside that query shape, an event-time bound on the feature group is pushed into the Iceberg scan, so `day(event_ts)` partitioning prunes the history scan to the bounded window.
+Set the bound with a `lookback` on the feature view read (or an explicit `event_ts >=` query filter); without one, point-in-time correctness requires scanning all history, and no partitioning can prune it.
+
+The layout that serves this access pattern:
+
+```python
+fg = feature_store.create_feature_group(
+    ...,
+    time_travel_format="ICEBERG",
+    partitioned_by=["day(event_ts)", "bucket(16, customer_id)"],
+    sort_order=["customer_id asc", "event_ts desc"],
+)
+```
+
+- `day(event_ts)` prunes the scan to the lookback window.
+- `bucket(N, primary_key)` keeps each day's data grouped by key, bounding the rows any one join task reads.
+- `sort_order` (or `zorder_by` plus a scheduled `optimize()`) clusters rows by key inside each file, so file-level min/max statistics skip files for keys not present in the label set.
+- Prefer `insert` (append) over upserts for event history: the Iceberg upsert rewrites the table and discards the maintained clustering until the next `optimize()`.
+
+Size the partitioning to the data volume: each `(day, bucket)` combination becomes at least one file, so a small feature group with fine-grained partitioning produces many tiny files and the task overhead outweighs the pruning.
+As a rule of thumb, choose the day grain and bucket count so partitions land in the hundreds of megabytes; for small feature groups skip `bucket()` or use a coarser time grain.
+
 ## Delta: liquid clustering with clustered_by
 
 Delta has no partition transforms, so `partitioned_by` is rejected there; the layout mechanism is liquid clustering, configured with `clustered_by` as a plain column list.
@@ -229,6 +254,7 @@ Layout is not fixed at creation; each format's native evolution is exposed, and 
     ```python
     fg.update_partition_spec(add=["hour(ts)"], remove=["day(ts)"])
 
+
     ```
 
 - [`FeatureGroup.update_clustering`][hsfs.feature_group.FeatureGroup.update_clustering] changes the Delta clustering columns.
@@ -237,6 +263,7 @@ Layout is not fixed at creation; each format's native evolution is exposed, and 
     ```python
     fg.update_clustering(["ts", "customer_id"])
     fg.optimize(full=True)
+
 
     ```
 
