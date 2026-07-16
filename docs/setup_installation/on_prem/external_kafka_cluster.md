@@ -21,33 +21,28 @@ hopsworks:
 
 ### Online Feature Store service configuration
 
-In addition to the configuration changes above, you should also configure the Online Feature Store service (OnlineFS in short) to connect to the external Kafka cluster.
-This can be achieved by provisioning the necessary credentials for OnlineFS to subscribe and consume messages from Kafka topics used by the Hopsworks feature store.
-
-OnlineFs can be configured to use these credentials by adding the following configurations to the cluster definition used to deploy Hopsworks:
+In addition to the configuration change above, you should also enable per-project deployments of the Online Feature Store service (OnlineFS in short) by setting the `onlinefs_byok_deployments_enabled` [configuration option](../admin/variables.md) to `true`:
 
 ```yaml
-  onlinefs:
-    config_dir: "/home/ubuntu/cluster-definitions/byok"
-    kafka_consumers:
-      topic_list: "comma separated list of kafka topics to subscribe to"
+hopsworks:
+  enable_bring_your_own_kafka: "true"
+  onlinefs_byok_deployments_enabled: "true"
 ```
 
-In particular, the `onlinefs/config_dir` should contain the credentials necessary for the Kafka consumers to authenticate.
-Additionally the directory should contain a file name `onlinefs-kafka.properties` with the Kafka consumer configuration.
-The following is an example of the `onlinefs-kafka.properties` file:
+With both options enabled, Hopsworks automatically deploys a dedicated OnlineFS instance in the namespace of every project that has configured a `kafka_connector` data source (see below).
+The instance consumes the project's feature store topics from the external Kafka cluster using the connection settings, credentials, and options of the data source, and it is updated automatically whenever the data source changes.
+Deleting the data source removes the instance again.
 
-```properties
-bootstrap.servers=cluster_identifier.us-east-2.aws.confluent.cloud:9092
-security.protocol=SASL_SSL
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";
-sasl.mechanism=PLAIN
-```
+Each project instance only subscribes to its own project's topics, so multiple projects can safely share the same external Kafka cluster.
+Additional Kafka client settings, such as SASL authentication options, can be provided as additional options on the data source and are applied to both the producers and the OnlineFS consumers.
+
+Project members with the Data Owner role can further tune their project's OnlineFS instance under `Project Settings` → `OnlineFS Service`, including pausing ingestion, changing the number of replicas and resources, enabling vectorDB ingestion, and overriding any OnlineFS service or Kafka client setting.
+The available settings are the same as for the cluster-level instance, documented in the [OnlineFS service guide](../admin/onlinefs.md#configuration).
 
 !!! note "Hopsworks will not provision topics"
     Please note that when using an external Kafka cluster, Hopsworks will not provision the topics for the different projects.
     Users are responsible for provisioning the necessary topics and configure the projects accordingly (see next section).
-    Users should also specify the list of topics OnlineFS should subscribe to by providing the `onlinefs/kafka_consumers/topic_list` option in the cluster definition.
+    The OnlineFS instance discovers matching topics automatically; if a feature group uses a custom topic name that does not follow the default naming scheme, the subscription can be widened with a `kafkaConsumer.topicPattern` service setting override in `Project Settings` → `OnlineFS Service`.
 
 ### Project configuration
 
