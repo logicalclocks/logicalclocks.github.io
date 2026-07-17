@@ -19,6 +19,16 @@ You can apply filters when creating training data from a feature view:
 Note that filters are not applied when retrieving feature vectors using feature views, as we only look up features for a specific entity, like a customer.
 In this case, the application should know that predictions for this customer should be made on the model trained on customers in USA, for example.
 
+### Incremental Training Data
+
+Materialized training data does not have to be rewritten when new data arrives.
+A training dataset materialized in the `.parquet` format can be appended to, keeping the same training dataset version: each append materializes only the new time range and stores it as a new increment of the dataset.
+This allows very large training datasets to grow with, for example, a daily batch, without rewriting the data already materialized.
+
+The materialized data is partitioned by each row's UTC event date — at day, month or year precision — making the dataset time-addressable: reads can select a time range instead of the whole dataset, and batches may arrive in any order, so backfills and late-arriving events land in the partitions their rows belong to.
+For time-series models this replaces materialized time-series splits — the train/test boundary is chosen at read time, so both windows grow or shift automatically as new batches arrive (for example, a test set that is always the most recent 30 days, or a training window shifted after detecting model drift).
+See the [training data guide][appending-to-a-training-dataset] for details.
+
 ### Point-in-time Correct Training Data
 
 When you create training data from features in different feature groups, it is possible that the feature groups are updated at different cadences.

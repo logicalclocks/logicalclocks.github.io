@@ -147,6 +147,61 @@ X_train, X_test, y_train, y_test = feature_view.train_test_split(
 )
 ```
 
+## Appending to a Training Dataset
+
+A materialized training dataset can grow incrementally: `insert_training_data` appends a new batch of data to an existing training dataset version instead of rewriting it.
+Only the new batch is computed and written, as a separate increment under the same version, so a large (multi-terabyte) training dataset can grow with, for example, a new daily batch, without rewriting the data already materialized.
+The training dataset version and its metadata stay the same, and `get_training_data` returns all increments together by default.
+
+The materialized data is partitioned by each row's UTC event date (a human-readable `YYYYMMDD` value), truncated to the `partition_precision` parameter — `day` by default, or `month`/`year` for coarser layouts with fewer partitions over long histories.
+This makes the training dataset time-addressable: `get_training_data` can read just a time range, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
+All materializations of a training dataset version must use the same precision.
+Because rows land in the day partitions they belong to, batches may be appended in any order: backfills and late-arriving events are supported.
+Note that appends are not deduplicated — re-appending a batch that was already materialized adds its rows again, as with feature group inserts.
+
+```python
+# append yesterday's batch to training dataset version 1
+job = feature_view.insert_training_data(
+    training_dataset_version=1,
+    start_time="2026-07-01 00:00:00",
+    end_time="2026-07-01 23:59:59",
+)
+```
+
+Passing `overwrite=True` rewrites the entire training dataset version for the given time range instead of appending.
+From a Python client, the append is executed by the [ArrowFlight Server with DuckDB][arrowflight-server-with-duckdb] service if enabled, otherwise a `PySparkJob` is launched, as for `create_training_data`.
+
+!!! note "Requirements and behavior"
+    - Appending is only supported for the `parquet` data format.
+    - Statistics are not recomputed on append by default, since that reads the whole dataset back every time. Pass `compute_statistics=True` to `insert_training_data` to refresh the descriptive statistics over all increments after the batch is written, or call `feature_view.compute_training_dataset_statistics(training_dataset_version)` explicitly when fresh statistics are needed, for example periodically or right before retraining.
+    - Model-dependent transformation functions transform each appended batch with the statistics computed when the training dataset version was created, so all increments and serving stay consistent with each other. To refit those statistics, rebuild the version with `overwrite=True` or create a new training dataset version.
+    - Randomly split training datasets are appended per split: each batch is re-split (for example 80/20), which stays sound over many appends.
+    - Appending to a time-series-split training dataset is not supported and raises an error: the batch would land entirely in the last split (for example, test) while the earlier splits stay frozen, skewing the dataset. For time-series data, grow an unsplit training dataset and derive the train and test sets at read time instead, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
+    - Training datasets materialized with an older Hopsworks version are not appendable; recreate the training dataset once, after which it can be appended to.
+
+### Reading a time range of an incremental training dataset
+
+The materialized data is stored in Hive partitions keyed by each row's UTC event date, truncated to the dataset's partition precision, so `get_training_data` can read only the rows whose event date falls inside a given range, without scanning the rest of the data.
+This replaces materialized time-series splits for growing datasets: the train/test boundary is chosen at read time, so both windows grow or shift automatically as new batches arrive — for example, a sliding training window after detecting model drift, or a test set that is always the most recent 30 days.
+
+```python
+# train on everything up to 30 days ago
+X_train, y_train = feature_view.get_training_data(
+    training_dataset_version=1,
+    end_time="2026-06-01",
+)
+
+# test on the most recent 30 days
+X_test, y_test = feature_view.get_training_data(
+    training_dataset_version=1,
+    start_time="2026-06-02",
+)
+```
+
+!!! note "Range semantics"
+    - Both bounds are inclusive and select whole partitions by the rows' UTC event date at the dataset's partition precision; finer bounds do not filter rows within a partition, so align the bounds with the precision (day boundaries for `day`, month boundaries for `month`, and so on).
+    - Only data materialized with an event time can be matched by a time range; if the feature view's left feature group defines no event-time column, the dataset stays appendable but cannot be read by time range.
+
 ## Read Training Data
 
 Once you have created a training dataset, all its metadata are saved in Hopsworks.
@@ -170,6 +225,8 @@ X_train, X_val, X_test, y_train, y_val, y_test = (
     feature_view.get_train_validation_test_split(training_dataset_version=1)
 )
 ```
+
+For an incrementally grown training dataset, `get_training_data` also accepts `start_time`/`end_time` to read only a time range of increments — see [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
 
 ## Passing Context Variables to Transformation Functions
 
