@@ -59,7 +59,7 @@
   
       property
    (hsfs.core.multi_table_ingestion.MultiTableIngestionJob.job)" href=#hsfs.core.multi_table_ingestion.MultiTableIngestionJob.job>job</a></span><span class=o>.</span><span class=n><span title=hsfs.core.multi_table_ingestion.MultiTableIngestionJob.job.Job>Job</span></span>
-</code></pre></div> <div class="doc doc-contents "> <p>Create the ingestion job on the server from the collected targets.</p> <p>Sends every collected target in a single request, so the job is created atomically. Calling <code>save</code> again re-creates the job with the current set of targets.</p> <table> <thead> <tr> <th><span class=doc-section-title>RETURNS</span></th> <th><span>DESCRIPTION</span></th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <span class=doc-returns-annotation> <code><a class="autorefs autorefs-internal" title="            job
+</code></pre></div> <div class="doc doc-contents "> <p>Create the ingestion job on the server from the collected targets.</p> <p>Sends every collected target in a single request, so the job is created atomically. Calling <code>save</code> again updates the job with the current set of targets.</p> <table> <thead> <tr> <th><span class=doc-section-title>RETURNS</span></th> <th><span>DESCRIPTION</span></th> </tr> </thead> <tbody> <tr class=doc-section-item> <td> <span class=doc-returns-annotation> <code><a class="autorefs autorefs-internal" title="            job
 
 
   
