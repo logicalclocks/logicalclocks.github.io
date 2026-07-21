@@ -21,15 +21,7 @@ hopsworks:
 
 ### Online Feature Store service configuration
 
-In addition to the configuration change above, you should also enable per-project deployments of the Online Feature Store service (OnlineFS in short) by setting the `onlinefs_byok_deployments_enabled` [configuration option](../admin/variables.md) to `true`:
-
-```yaml
-hopsworks:
-  enable_bring_your_own_kafka: "true"
-  onlinefs_byok_deployments_enabled: "true"
-```
-
-With both options enabled, Hopsworks automatically deploys a dedicated OnlineFS instance in the namespace of every project that has configured a `kafka_connector` data source (see below).
+With the external Kafka cluster integration enabled, Hopsworks automatically deploys a dedicated Online Feature Store service (OnlineFS in short) instance in the namespace of every project that has configured a `kafka_connector` data source (see below).
 The instance consumes the project's feature store topics from the external Kafka cluster using the connection settings, credentials, and options of the data source, and it is updated automatically whenever the data source changes.
 Deleting the data source removes the instance again.
 
@@ -38,6 +30,7 @@ Additional Kafka client settings, such as SASL authentication options, can be pr
 
 Project members with the Data Owner role can further tune their project's OnlineFS instance under `Project Settings` → `OnlineFS Service`, including pausing ingestion, changing the number of replicas and resources, enabling vectorDB ingestion, and overriding any OnlineFS service or Kafka client setting.
 The available settings are the same as for the cluster-level instance, documented in the [OnlineFS service guide](../admin/onlinefs.md#configuration).
+Per-project instances are always managed by Hopsworks, independently of whether the cluster-level instance is Helm-managed or Hopsworks-managed.
 
 !!! note "Hopsworks will not provision topics"
     Please note that when using an external Kafka cluster, Hopsworks will not provision the topics for the different projects.
