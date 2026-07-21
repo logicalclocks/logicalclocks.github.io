@@ -12,8 +12,8 @@ For the per-project OnlineFS instances used with an external Kafka cluster, see 
 
 The cluster-level OnlineFS instance can be deployed in two ways, and only one is active at a time:
 
-* **Deployed by the `onlinefs` Helm chart.** This is the traditional deployment method and continues to be fully supported. If the `onlinefs` chart is installed, Hopsworks detects the resulting deployment and leaves it alone entirely: Hopsworks never creates, modifies or removes it, and the configuration described below is unavailable — configure the instance through the Helm chart's own values instead.
-* **Deployed and managed by Hopsworks itself.** If no `onlinefs` Helm release is present, Hopsworks deploys and reconciles the cluster-level instance automatically, using the configuration described below.
+- **Deployed by the `onlinefs` Helm chart.** This is the traditional deployment method and continues to be fully supported. If the `onlinefs` chart is installed, Hopsworks detects the resulting deployment and leaves it alone entirely: Hopsworks never creates, modifies or removes it, and the configuration described below is unavailable — configure the instance through the Helm chart's own values instead.
+- **Deployed and managed by Hopsworks itself.** If no `onlinefs` Helm release is present, Hopsworks deploys and reconciles the cluster-level instance automatically, using the configuration described below.
 
 Because of this precedence, installing the `onlinefs` Helm chart on a cluster where Hopsworks was previously managing the instance (or vice versa) is safe: whichever one is Helm-managed always wins, so the two never run at the same time.
 
@@ -32,6 +32,23 @@ A periodic reconciler additionally converges the deployment against the stored c
 The cluster-level OnlineFS instance is configured from the admin UI under `Cluster Settings` → `OnlineFS Service`, or through the `/admin/onlinefs/config` REST endpoint.
 This is only available while Hopsworks is managing the cluster-level instance itself (see above); while a Helm-managed instance is active, these settings have no effect.
 Empty fields use the platform defaults.
+
+<p align="center">
+  <figure>
+    <img src="../../../assets/images/guides/onlinefs/cluster_onlinefs.png" alt="Cluster-level OnlineFS Service configuration in Cluster Settings">
+    <figcaption>Cluster-level OnlineFS Service configuration in Cluster Settings</figcaption>
+  </figure>
+</p>
+
+The same set of settings is available for the per-project OnlineFS instances deployed when using an external Kafka cluster, under `Project Settings` → `OnlineFS Service`.
+See the [external Kafka cluster guide](../on_prem/external_kafka_cluster.md#online-feature-store-service-configuration) for details.
+
+<p align="center">
+  <figure>
+    <img src="../../../assets/images/guides/onlinefs/project_onlinefs.png" alt="Per-project OnlineFS Service configuration in Project Settings">
+    <figcaption>Per-project OnlineFS Service configuration in Project Settings</figcaption>
+  </figure>
+</p>
 
 | Field | Description |
 | --- | --- |
