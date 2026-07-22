@@ -21,14 +21,15 @@ hopsworks:
 
 ### Online Feature Store service configuration
 
-With the external Kafka cluster integration enabled, Hopsworks automatically deploys a dedicated Online Feature Store service (OnlineFS in short) instance in the namespace of every project that has configured a `kafka_connector` data source (see below).
-The instance consumes the project's feature store topics from the external Kafka cluster using the connection settings, credentials, and options of the data source, and it is updated automatically whenever the data source changes.
+With the external Kafka cluster integration enabled and a project's `kafka_connector` data source configured (see below), Hopsworks can deploy a dedicated Online Feature Store service (OnlineFS in short) instance in that project's namespace.
+Unlike the cluster-level instance, which is deployed by default, a per-project instance is opt-in: a Data Owner must explicitly enable it under `Project Settings` → `OnlineFS Service` (`Enabled` toggle) before it is deployed and starts ingesting.
+Once enabled, the instance consumes the project's feature store topics from the external Kafka cluster using the connection settings, credentials, and options of the data source, and it is updated automatically whenever the data source changes.
 Deleting the data source removes the instance again.
 
 Each project instance only subscribes to its own project's topics, so multiple projects can safely share the same external Kafka cluster.
 Additional Kafka client settings, such as SASL authentication options, can be provided as additional options on the data source and are applied to both the producers and the OnlineFS consumers.
 
-Project members with the Data Owner role can further tune their project's OnlineFS instance under `Project Settings` → `OnlineFS Service`, including pausing ingestion, changing the number of replicas and resources, enabling vectorDB ingestion, and overriding any OnlineFS service or Kafka client setting.
+Project members with the Data Owner role can enable and further tune their project's OnlineFS instance under `Project Settings` → `OnlineFS Service`, including pausing ingestion, changing the number of replicas and resources, enabling vectorDB ingestion, and overriding any OnlineFS service or Kafka client setting.
 The available settings are the same as for the cluster-level instance, documented in the [OnlineFS service guide](../admin/onlinefs.md#configuration).
 Per-project instances are always managed by Hopsworks, independently of whether the cluster-level instance is Helm-managed or Hopsworks-managed.
 

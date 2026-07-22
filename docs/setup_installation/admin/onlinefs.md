@@ -41,6 +41,7 @@ Empty fields use the platform defaults.
 </p>
 
 The same set of settings is available for the per-project OnlineFS instances deployed when using an external Kafka cluster, under `Project Settings` → `OnlineFS Service`.
+Unlike the cluster-level instance, which is enabled by default, per-project instances are opt-in: `Enabled` defaults to off and a Data Owner must turn it on before the instance is deployed.
 See the [external Kafka cluster guide](../on_prem/external_kafka_cluster.md#online-feature-store-service-configuration) for details.
 
 <p align="center">
@@ -52,7 +53,7 @@ See the [external Kafka cluster guide](../on_prem/external_kafka_cluster.md#onli
 
 | Field | Description |
 | --- | --- |
-| Enabled | Turning this off removes the OnlineFS deployment and pauses all ingestion; the configuration and consumer offsets are kept. |
+| Enabled | Turning this off removes the OnlineFS deployment and pauses all ingestion; the configuration and consumer offsets are kept. Defaults to on for the cluster-level instance, off for per-project instances. |
 | VectorDB ingestion | Also ingest embeddings into the vector database (OpenSearch). |
 | Replicas | Number of OnlineFS pods (0-10). Instances coordinate through a shared Kafka consumer group. |
 | CPU/Memory request and limit | Kubernetes resource quantities for the OnlineFS container, e.g. `500m` or `2Gi`. |
