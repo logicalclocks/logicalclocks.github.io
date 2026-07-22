@@ -29,8 +29,8 @@ Deleting the data source removes the instance again.
 Each project instance only subscribes to its own project's topics, so multiple projects can safely share the same external Kafka cluster.
 Additional Kafka client settings, such as SASL authentication options, can be provided as additional options on the data source and are applied to both the producers and the OnlineFS consumers.
 
-Project members with the Data Owner role can enable and further tune their project's OnlineFS instance under `Project Settings` → `OnlineFS Service`, including pausing ingestion, changing the number of replicas and resources, enabling vectorDB ingestion, and overriding any OnlineFS service or Kafka client setting.
-The available settings are the same as for the cluster-level instance, documented in the [OnlineFS service guide](../admin/onlinefs.md#configuration).
+Project members with the Data Owner role can enable and further tune their project's OnlineFS instance under `Project Settings` → `OnlineFS Service`, including pausing ingestion, changing the number of replicas and resources, enabling VectorDB ingestion, and overriding any OnlineFS service or Kafka client setting.
+The available settings are the same as for the cluster-level instance, documented in the [OnlineFS service guide][onlinefs-configuration].
 Per-project instances are always managed by Hopsworks, independently of whether the cluster-level instance is Helm-managed or Hopsworks-managed.
 
 !!! note "Hopsworks will not provision topics"

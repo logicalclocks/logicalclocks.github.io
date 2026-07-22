@@ -6,14 +6,17 @@ description: Administrator guide for configuring the Hopsworks-managed OnlineFS 
 
 The Online Feature Store service (OnlineFS in short) consumes feature data from Kafka and writes it to the online feature store (RonDB).
 This guide covers the cluster-level OnlineFS instance, which consumes from the Kafka cluster embedded in Hopsworks.
-For the per-project OnlineFS instances used with an external Kafka cluster, see the [external Kafka cluster guide](../on_prem/external_kafka_cluster.md).
+For the per-project OnlineFS instances used with an external Kafka cluster, see the [external Kafka cluster guide][online-feature-store-service-configuration].
 
 ## Helm-managed vs. Hopsworks-managed
 
 The cluster-level OnlineFS instance can be deployed in two ways, and only one is active at a time:
 
-- **Deployed by the `onlinefs` Helm chart.** This is the traditional deployment method and continues to be fully supported. If the `onlinefs` chart is installed, Hopsworks detects the resulting deployment and leaves it alone entirely: Hopsworks never creates, modifies or removes it, and the configuration described below is unavailable — configure the instance through the Helm chart's own values instead.
-- **Deployed and managed by Hopsworks itself.** If no `onlinefs` Helm release is present, Hopsworks deploys and reconciles the cluster-level instance automatically, using the configuration described below.
+- **Deployed by the `onlinefs` Helm chart.**
+  This is the traditional deployment method and continues to be fully supported.
+  If the `onlinefs` chart is installed, Hopsworks detects the resulting deployment and leaves it alone entirely: Hopsworks never creates, modifies or removes it, and the configuration described below is unavailable — configure the instance through the Helm chart's own values instead.
+- **Deployed and managed by Hopsworks itself.**
+  If no `onlinefs` Helm release is present, Hopsworks deploys and reconciles the cluster-level instance automatically, using the configuration described below.
 
 Because of this precedence, installing the `onlinefs` Helm chart on a cluster where Hopsworks was previously managing the instance (or vice versa) is safe: whichever one is Helm-managed always wins, so the two never run at the same time.
 
@@ -21,13 +24,14 @@ Cluster Settings → `OnlineFS Service` (and the `/admin/onlinefs/status` REST e
 
 ## The Hopsworks-managed deployment
 
-When there is no Helm-managed instance, Hopsworks deploys the cluster-level OnlineFS instance itself, on by default. It can be paused with the `Enabled` toggle in its configuration (see below).
+When there is no Helm-managed instance, Hopsworks deploys the cluster-level OnlineFS instance itself, on by default.
+It can be paused with the `Enabled` toggle in its configuration (see below).
 
 Hopsworks creates and reconciles all resources the service needs in the Hopsworks namespace: the deployment, its configuration, the metrics service scraped by Prometheus, the TLS material used to connect to the internal Kafka cluster, and the API key the service uses to call the Hopsworks REST API.
 Configuration changes roll the OnlineFS pods automatically.
 A periodic reconciler additionally converges the deployment against the stored configuration, so manual changes to the Kubernetes resources are reverted; the same reconciler also re-checks whether a Helm-managed instance has appeared or disappeared, and defers to it or takes over accordingly.
 
-## Configuration
+## Configuration {#onlinefs-configuration}
 
 The cluster-level OnlineFS instance is configured from the admin UI under `Cluster Settings` → `OnlineFS Service`, or through the `/admin/onlinefs/config` REST endpoint.
 This is only available while Hopsworks is managing the cluster-level instance itself (see above); while a Helm-managed instance is active, these settings have no effect.
@@ -42,7 +46,7 @@ Empty fields use the platform defaults.
 
 The same set of settings is available for the per-project OnlineFS instances deployed when using an external Kafka cluster, under `Project Settings` → `OnlineFS Service`.
 Unlike the cluster-level instance, which is enabled by default, per-project instances are opt-in: `Enabled` defaults to off and a Data Owner must turn it on before the instance is deployed.
-See the [external Kafka cluster guide](../on_prem/external_kafka_cluster.md#online-feature-store-service-configuration) for details.
+See the [external Kafka cluster guide][online-feature-store-service-configuration] for details.
 
 <p align="center">
   <figure>
@@ -146,6 +150,6 @@ The Hopsworks-managed deployment provisions `hopsworks.*` and `opensearch.*` aut
 
 ## VectorDB ingestion
 
-When vectorDB ingestion is enabled, OnlineFS runs an additional set of consumers that write embedding features to the vector database (OpenSearch).
+When VectorDB ingestion is enabled, OnlineFS runs an additional set of consumers that write embedding features to the vector database (OpenSearch).
 The OpenSearch endpoint and credentials are provisioned automatically from the cluster.
-The vectorDB consumers use their own Kafka consumer group and track their own offsets, so enabling vectorDB ingestion on an existing deployment starts consuming from the earliest available offset.
+The VectorDB consumers use their own Kafka consumer group and track their own offsets, so enabling VectorDB ingestion on an existing deployment starts consuming from the earliest available offset.
