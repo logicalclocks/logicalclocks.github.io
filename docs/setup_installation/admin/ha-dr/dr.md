@@ -129,6 +129,12 @@ After a restore, Hopsworks rebuilds the Trino password and group files from the 
 The rebuild runs on the primary backend instance shortly after startup and then periodically, so an existing project user can authenticate to Trino and holds exactly the access their restored project role grants.
 This means a restore recovers Trino authentication automatically, without an operator step.
 
+!!! note
+    This holds for backups taken after this feature was deployed.
+    A backup taken before it does not contain the Trino Secrets, because they were not yet labelled for the `k8s-backups-main` schedule, and an existing cluster first has such a backup only after its next backup cycle.
+    Restoring from an older backup still recovers all RonDB-derived authentication, because the reconciliation rebuilds the project users, their role groups, and the shared-dataset groups from the restored RonDB state.
+    It does not recover the admin and monitoring credential entries: those are re-rendered from the chart values on a fresh install, so any out-of-band rotation of them is lost and Prometheus may need its Trino monitoring credentials re-aligned.
+
 The Trino internal shared secret is deliberately not backed up.
 It has no coupling to user state and is regenerated on a fresh install, and restoring an old value onto a running cluster would break Trino internal communication until every Trino pod restarts.
 If you set `createSharedSecret: false` and manage this secret yourself, restore it from your own source and then restart all Trino pods together so the coordinator and workers share the same value.
