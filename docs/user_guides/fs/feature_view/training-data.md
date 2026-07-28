@@ -153,7 +153,7 @@ A materialized training dataset can grow incrementally: `insert_training_data` a
 Only the new batch is computed and written, as a separate increment under the same version, so a large (multi-terabyte) training dataset can grow with, for example, a new daily batch, without rewriting the data already materialized.
 The training dataset version and its metadata stay the same, and `get_training_data` returns all increments together by default.
 
-The materialized data is partitioned by each row's UTC event date (a human-readable `YYYYMMDD` value), truncated to the `partition_precision` parameter — `day` by default, or `month`/`year` for coarser layouts with fewer partitions over long histories.
+The materialized data is partitioned by each row's UTC event date (a human-readable `YYYYMMDD` value), truncated to the `partition_precision` parameter — `month` by default, or `day`/`year` for finer or coarser layouts.
 This makes the training dataset time-addressable: `get_training_data` can read just a time range, as shown in [Reading a time range](#reading-a-time-range-of-an-incremental-training-dataset).
 All materializations of a training dataset version must use the same precision.
 Because rows land in the day partitions they belong to, batches may be appended in any order: backfills and late-arriving events are supported.
