@@ -153,7 +153,7 @@ Navigate to **Cluster Settings** → **Configuration** and search for `superset`
 
 ### Available Variables
 
-#### superset_admin_users
+#### superset_admin_roles
 
 - **Description**: Comma-separated list of Superset roles Hopsworks Admins should be assigned.
 - **Default**: `Admin`
@@ -163,14 +163,14 @@ Navigate to **Cluster Settings** → **Configuration** and search for `superset`
 #### superset_enabled
 
 - **Description**: Enable or disable Superset cluster-wide
-- **Default**: `true`
+- **Default**: `false`
 - **Values**: `true` or `false`
 - When set to `false`, Superset becomes unavailable for all projects across the cluster.
 
 #### superset_user_roles
 
 - **Description**: Default roles automatically assigned to new Superset users
-- **Default**: `Gamma,sql_lab,Dataset,Examples`
+- **Default**: `Gamma,sql_lab`
 - **Format**: Comma-separated list of role names
 - These roles determine the initial permissions granted to users when they first access Superset from a project.
 
@@ -190,7 +190,7 @@ After modifying any configuration variable:
 
 ### Configuration Best Practices
 
-- **Limited admin access**: Only grant `superset_admin_users` to trusted administrators
+- **Limited admin access**: Only grant `superset_admin_roles` to trusted administrators
 - **Role defaults**: Set `superset_user_roles` to provide appropriate baseline permissions
 - **Testing changes**: Test configuration changes in a development environment first
 - **Documentation**: Document any custom configuration changes and update your Helm values accordingly.
