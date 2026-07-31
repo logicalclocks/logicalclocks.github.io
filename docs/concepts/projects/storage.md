@@ -7,7 +7,7 @@ Every project in Hopsworks has its own private assets:
 - a Model Registry
 - Model Deployments
 - Kafka topics
-- OpenSearch indexes (including KNN indexes - the vector DB)
+- OpenSearch indexes (including kNN indexes, the vector index)
 - a Hive Database
 
 Access control to these assets is controlled using project membership ACLs (access-control lists).

@@ -51,7 +51,7 @@ nav:
           - Model Registry: concepts/mlops/registry.md
           - Model Serving: concepts/mlops/serving.md
           - Model Monitoring: concepts/mlops/model_monitoring.md
-          - Vector Database: concepts/mlops/opensearch.md
+          - Vector Index: concepts/mlops/opensearch.md
           - BI Tools: concepts/mlops/bi_tools.md
           - Data Transformations: concepts/mlops/data_transformations.md
       - Development:

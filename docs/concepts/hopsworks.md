@@ -4,7 +4,7 @@ Hopsworks is a **modular** MLOps platform with:
 
 - a feature store (available as standalone)
 - model registry and model serving based on KServe
-- vector database based on OpenSearch
+- vector index based on OpenSearch
 - a data science and data engineering platform
 
 <figure class="hops-diagram">
@@ -126,11 +126,11 @@ Hopsworks was the first open-source and first enterprise feature store for ML.  
 Hopsworks includes support for model management, with model deployments using [the KServe framework](https://github.com/kserve/kserve) and a model registry designed for KServe.
 Hopsworks logs all inference requests to Kafka to enable easy monitoring of deployed models, and provides model metrics with grafana/prometheus.
 
-## Vector DB
+## Vector Index
 
-Hopsworks provides a vector database (or embedding store) based on [OpenSearch kNN](https://opensearch.org/docs/latest/search-plugins/knn/index/) ([FAISS](https://ai.facebook.com/tools/faiss/) and [nmslib](https://github.com/nmslib/nmslib)).
-Hopsworks Vector DB includes out-of-the-box support for authentication, access control, filtering, backup-and-restore, and horizontal scalability.
-Hopsworks' Feature Store and vector DB are often used together to build scalable recommender systems, such as ranking-and-retrieval for real-time recommendations.
+A feature group with an embedding column can have a vector index, based on [OpenSearch kNN](https://opensearch.org/docs/latest/search-plugins/knn/index/) ([FAISS](https://ai.facebook.com/tools/faiss/) and [nmslib](https://github.com/nmslib/nmslib)).
+The vector index includes out-of-the-box support for authentication, access control, filtering, backup-and-restore, and horizontal scalability.
+The Feature Store and its vector index are often used together to build scalable recommender systems, such as ranking-and-retrieval for real-time recommendations.
 
 ## Governance
 
