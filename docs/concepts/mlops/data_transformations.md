@@ -80,4 +80,7 @@ Additionally feature views, also compute and save statistics for the training da
 Hopsworks supports attaching transformations functions to feature views to [create model-dependent transformations](../../user_guides/fs/feature_view/model-dependent-transformations.md) that have no online-offline skew.
 These transformations get access to the same training dataset statistics during both training and inference ensuring their consistency.
 Additionally, feature views through lineage get access to the on-demand transformation used to create on-demand features if any are selected during the creation of the feature view.
+
+The registration locus is the cleanest way to remember where each transformation lives: on-demand transformations are registered on feature groups, model-dependent transformations on feature views.
+A Hopsworks transformation function is also mixed-mode: the same decorated Python function runs as a Pandas UDF offline, to create training data, and as a Python UDF online, to build a single feature vector, so one definition serves both pipelines with no skew.
 This allows for the computation of on-demand features in real-time during online-inference.

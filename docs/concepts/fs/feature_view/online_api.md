@@ -16,3 +16,14 @@ Some features will be provided by the client (or at least the raw data to comput
 We call these 'passed' features and, similar to precomputed features from the feature store, they can also be transformed by the Hopsworks client in the method:
 
 - feature_view.get_feature_vector(entry, passed_features={...})
+
+When you call `get_feature_vector`, Hopsworks builds the vector in a fixed order:
+
+1. retrieve the precomputed features from the online store using the serving keys,
+2. merge in any passed features,
+3. compute on-demand transformations (ODTs),
+4. compute model-dependent transformations (MDTs),
+5. drop the index and helper columns,
+6. return the feature vector.
+
+This ordering is the composition constraint: on-demand transformations run before model-dependent ones, which are always last, just before the model is called.

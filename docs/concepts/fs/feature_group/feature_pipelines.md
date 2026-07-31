@@ -18,6 +18,8 @@ In order to be able to train and serve models that you can rely on, you need cle
 Data validation operations include removing bad data, removing or imputing missing values, and identifying problems such as feature drift.
 Hopsworks supports Great Expectations to specify data validation rules that are executed in the client before features are written to the Feature Store.
 The validation results are collected and shown in Hopsworks.
+Data validation in ML is a shift-left property: data is validated before it is written to a feature group, since one bad data point could later fail a training or inference run.
+The default ingestion policy is STRICT, so a feature pipeline fails on a validation error rather than writing bad data.
 
 ## Aggregations
 

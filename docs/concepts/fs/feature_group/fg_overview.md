@@ -25,6 +25,7 @@ A feature group with an embedding column can also have a vector index, for simil
 
 By default, the online store keeps only the latest values of features for a feature group.
 It serves those precomputed features to models at runtime, and is backed by [RonDB](https://www.rondb.com), a low latency, high throughput, high availability data store.
+By including an event_time column and a time-to-live (TTL), the online store can instead keep many rows per entity, which is what shift-right on-demand aggregations need.
 
 ### Offline Storage
 
