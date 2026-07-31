@@ -467,7 +467,7 @@ html {
    Distinct background + right border, rounded items, green-tint hover and
    active (sidebar-accent #e6f2ee / dark-green text), collapsible sections. */
 :root {
-  --hops-sidebar-bg: #fafafa;
+  --hops-sidebar-bg: transparent;
   --hops-tint-fg: #145c44;
 }
 [data-md-color-scheme="slate"] {
@@ -494,4 +494,13 @@ html {
   background-color: var(--hops-primary-tint);
   color: var(--md-primary-fg-color);
   font-weight: 600;
+}
+
+/* The sticky nav title carries a white bg + white glow (Material's mask for
+   a white sidebar); blend it into the grey panel so it stops reading as a
+   floating box. */
+.md-sidebar--primary .md-nav__title {
+  background-color: var(--hops-sidebar-bg);
+  box-shadow: none;
+  color: var(--md-default-fg-color--light);
 }
