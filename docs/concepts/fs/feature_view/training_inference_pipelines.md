@@ -9,14 +9,15 @@ An *inference pipeline* is a program that takes user input, optionally enriches 
 Feature transformations are mathematical operations that change feature values with the goal of improving model convergence or performance properties.
 Transformation functions take as input a single value (or small number of values), they often require state (such as the mean value of a feature to normalize the input), and they output a single value or a list of values.
 
-## Training Serving Skew
+## Offline-Online Feature Skew
 
-It is crucial that the transformations performed when creating features (for training or serving) are consistent - use the same code - to avoid training/serving skew.
+Offline-online feature skew is a difference between the transformation code that runs in an offline (training) pipeline and the transformation code that runs in the corresponding inference pipeline.
+It is a code difference, not a data difference, so it cannot be detected by comparing distributions; the only way to avoid it is to run the same code in both pipelines.
 In the image below, you can see that transformations happen after the Feature Store, but that the implementation of the transformation functions need to be consistent between the training and inference pipelines.
 
 <img src="../../../../assets/images/concepts/fs/no-training-serving-skew.svg">
 
-There are 3 main approaches to prevent training/serving skew that we support in Hopsworks.
+There are 3 main approaches to prevent offline-online feature skew that we support in Hopsworks.
 These are (1) perform transformations in models, (2) perform transformations in pipelines (sklearn, TF, PyTorch) and use the model registry to save the transformation pipeline so that the same transformation is used in your inference pipeline, and (3) use Hopsworks transformations, defined as UDFs in Python.
 
 ### Transformations as Pre-Processing Layers in Models

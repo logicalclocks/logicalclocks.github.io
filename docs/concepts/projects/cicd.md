@@ -15,8 +15,12 @@ Hopsworks supports the versioning of ML assets, including:
 
 - Feature Groups: the version of its schema - breaking schema changes require a new version and backfilling the new version;
 - Feature Views:  the version of its schema, and breaking schema changes only require a new version;
-- Models: the version of a model;
-- Deployments: the version of the deployment of a model - a model with the same version can be found in >1 deployment.
+- Models: the version of a model.
+
+Deployments are the exception: they are not versioned.
+A deployment is mutable, a new deployment gets a new name, and upgrades and rollbacks are done with blue/green deployments.
+Clients depend on the deployment API, not on a deployment version number.
+A model deployment is also tightly coupled to the versioned feature views that supply its pre-computed features, so versioning the model alone is not enough.
 
 ## Pytest for feature logic and feature pipeline tests
 
