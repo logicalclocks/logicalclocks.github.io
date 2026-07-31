@@ -302,13 +302,12 @@ a.autorefs-external::after {
   padding: 0.8rem 0.4rem;
   border-radius: 0;
 }
-.md-nav__link {
+.md-nav--primary .md-nav__link {
   padding-top: 0.32rem;
   padding-bottom: 0.32rem;
   border-radius: 4px;
-  transition: color 0.12s ease;
+  transition: color 0.12s ease, background-color 0.12s ease;
 }
-.md-nav__link:hover { color: var(--md-primary-fg-color); }
 .md-nav__link--active,
 .md-nav__item--active > .md-nav__link {
   color: var(--md-primary-fg-color);
@@ -400,4 +399,99 @@ a.autorefs-external::after {
 .md-tabs__link {
   margin-top: 0.45rem;
   margin-bottom: 0.45rem;
+}
+
+/* ---- Platform-aligned interactions (links, nav, cards) ----
+   Mirrors the app: HoverableLink (colour -> primary + underline on hover),
+   sidebar hover (light-green tint), and hoverable cards (pointer + hover). */
+:root {
+  --hops-primary-tint: #e6f2ee;
+}
+[data-md-color-scheme="slate"] {
+  --hops-primary-tint: #1a3a2e;
+}
+
+/* Content links: underline with breathing room, colour to primary on hover. */
+.md-typeset a {
+  text-underline-offset: 0.18em;
+  transition: color 0.15s ease;
+}
+.md-content a:hover {
+  color: var(--md-primary-fg-color);
+  text-decoration: underline;
+}
+
+/* Sidebar nav hover: light-green tint + primary text, like the app sidebar. */
+.md-nav--primary .md-nav__link:hover {
+  color: var(--md-primary-fg-color);
+  background-color: var(--hops-primary-tint);
+}
+
+/* TOC stays tight (it is not the roomy sidebar) and hovers to primary. */
+.md-nav--secondary .md-nav__link {
+  padding-top: 0.12rem;
+  padding-bottom: 0.12rem;
+  transition: color 0.12s ease;
+}
+.md-nav--secondary .md-nav__link:hover {
+  color: var(--md-primary-fg-color);
+}
+
+/* Cards consistent with the platform Card, interactive on hover. */
+.md-typeset .grid.cards > :is(ul, ol) > li {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.625rem;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.md-typeset .grid.cards > :is(ul, ol) > li:hover {
+  border-color: var(--md-primary-fg-color);
+}
+.md-typeset .grid.cards > :is(ul, ol) > li.card-clickable {
+  cursor: pointer;
+}
+
+/* Anchor jumps stop below the sticky header (header 48 + tabs 37 = ~85px),
+   so clicking a TOC entry lands on and highlights the heading you clicked,
+   not the next one hidden under the sticky chrome. */
+html {
+  scroll-padding-top: 3.4rem;
+}
+
+/* Content links use the brand green at rest, like the app. */
+[data-md-color-scheme="hopsworks"],
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color: var(--md-primary-fg-color);
+}
+
+/* ---- Left nav as a distinct panel, mimicking the app sidebar ----
+   Distinct background + right border, rounded items, green-tint hover and
+   active (sidebar-accent #e6f2ee / dark-green text), collapsible sections. */
+:root {
+  --hops-sidebar-bg: #fafafa;
+  --hops-tint-fg: #145c44;
+}
+[data-md-color-scheme="slate"] {
+  --hops-sidebar-bg: hsla(160, 0%, 17%, 1);
+  --hops-tint-fg: #65d3af;
+}
+
+.md-sidebar--primary {
+  background-color: var(--hops-sidebar-bg);
+  border-right: 1px solid var(--md-default-fg-color--lightest);
+}
+.md-sidebar--primary .md-sidebar__scrollwrap {
+  background-color: transparent;
+}
+.md-nav--primary .md-nav__link {
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+}
+.md-nav--primary .md-nav__link:hover {
+  background-color: var(--hops-primary-tint);
+  color: var(--hops-tint-fg);
+}
+.md-nav--primary .md-nav__item .md-nav__link--active {
+  background-color: var(--hops-primary-tint);
+  color: var(--md-primary-fg-color);
+  font-weight: 600;
 }

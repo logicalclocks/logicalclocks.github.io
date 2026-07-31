@@ -332,10 +332,9 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.sections
     - navigation.indexes
+    - toc.follow
 
 extra:
   version:
@@ -363,6 +362,7 @@ extra_css:
 extra_javascript:
   - js/quickstart-fullscreen.js
   - js/llm-copy.js
+  - js/card-links.js
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
 # Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.

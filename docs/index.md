@@ -2,6 +2,7 @@
 description: "Hopsworks documentation: quickstart, architecture, guides by role and by task, deployment models, and API reference."
 hide:
   - navigation
+  - toc
 ---
 
 # Hopsworks Documentation
