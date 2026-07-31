@@ -31,6 +31,9 @@ The detection window covers the recently served inference data, and the referenc
 By comparing the two, on a scalar metric or on the whole feature distribution, Hopsworks detects feature drift over time.
 This comparison detects drift, not skew: offline-online feature skew is a difference in the transformation code between the offline and inference pipelines, so it is invisible to a distribution comparison and is prevented, not monitored.
 
+Feature drift is one kind of drift among several.
+Concept drift, in particular, is not detected by comparing distributions: you detect it by comparing the actual outcomes against the model's past predictions, once those outcomes are known.
+
 <figure class="hops-diagram">
 <svg viewBox="0 0 1000 420" role="img" aria-label="Drift detection over time. The training dataset distribution is the reference on the left. A detection window slides forward over the logged inference data and its distribution is compared against the reference. The resulting distance is plotted over time and crosses the alert threshold when the served data drifts away from the training data." xmlns="http://www.w3.org/2000/svg">
   <defs>

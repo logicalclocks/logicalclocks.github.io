@@ -7,6 +7,9 @@ Hopsworks is a **modular** MLOps platform with:
 - vector index based on OpenSearch
 - a data science and data engineering platform
 
+MLOps is a set of best practices for the automated testing, versioning, and monitoring of the ML pipelines and ML assets that power AI systems.
+Hopsworks is modular, so you can adopt the feature store on its own or use the full platform across the MLOps lifecycle.
+
 <figure class="hops-diagram">
 <svg viewBox="0 0 1000 470" role="img" aria-label="Hopsworks platform architecture: feature engineering feeds the feature store and MLOps layer, model training reads from it, all on a shared multi-tenant platform." xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:Roboto,system-ui,sans-serif">
 

@@ -31,13 +31,17 @@ For this, you can define a *schematized tag*, defining a list of key/value tags 
 In the figure below, you can see an example of a schematized tag with two key/value pairs: *pii* of type boolean (indicating if this feature group contains PII data), and *owner* of type string (indicating who the owner of the data in this feature group is).
 Note there is also a keyword defined for this feature group called *eu_region*, indicating the data has its origins in the EU.
 
+Schematized tags can also enforce policy, not just aid discovery.
+You could, for example, require that a model cannot be created in the production model registry unless its EU AI Act tag is filled in correctly.
+
 <img src="../../../assets/images/concepts/projects/tags-keywords.png">
 
 ## Lineage
 
 Hopsworks tracks the lineage (or provenance) of ML assets automatically for you.
-You can see what features are used in which feature view or training dataset.
-You can see what training dataset was used to train a given model.
+The lineage chain runs end to end: data source, feature group, feature view, training data, model, deployment.
+This is what makes governance answerable: from a biased model you can trace back to the exact feature groups and data sources that fed it.
+You can see what features are used in which feature view or training dataset, and what training dataset was used to train a given model.
 For assets that are managed outside of Hopsworks, there is support for the explicit definition of lineage dependencies.
 
 <img src="../../../assets/images/concepts/projects/provenance.png">
