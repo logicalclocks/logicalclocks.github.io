@@ -384,3 +384,20 @@ a.autorefs-external::after {
 [data-md-toggle="search"]:checked ~ .md-header .md-search__input::placeholder {
   color: var(--md-default-fg-color--light);
 }
+
+
+/* Slimmer top chrome: lighter logo, tighter sub-header tab band
+   (97px of header + tabs down to ~85px). */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.md-tabs__list,
+.md-tabs__item {
+  height: auto;
+}
+.md-tabs__link {
+  margin-top: 0.45rem;
+  margin-bottom: 0.45rem;
+}
