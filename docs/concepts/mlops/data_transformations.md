@@ -40,7 +40,68 @@ Backfilling on-demand features into the feature store eliminates the need to rec
 On-demand transformations are typically also model-independent transformations (model-dependent transformations can be applied after the on-demand transformation).
 
 Each of these transformations is employed within specific areas in a modular AI system and can be illustrated using the figure below.
-![Types of transformations in modular AI Pipeline](../../assets/images/concepts/mlops/transformation-in-modular-AI-pipeline.jpg)
+
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 400" role="img" aria-label="The three transformation types placed across the FTI pipeline. Model-independent transformations run in the feature pipeline and produce reusable features stored in the feature store. Model-dependent transformations run in the training pipeline and, again, in the online inference pipeline. On-demand transformations run in the online inference pipeline on request-time input, and can also run in the feature pipeline to backfill. Model-dependent and on-demand transformations therefore run in more than one pipeline, which is where online-offline skew can appear." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="tx-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
+
+  <!-- legend -->
+  <rect class="d-box-own" x="20" y="20" width="16" height="16" rx="3"/>
+  <text class="d-t d-sub" x="44" y="33">MIT, model-independent, reusable</text>
+  <rect class="d-box" x="360" y="20" width="16" height="16" rx="3"/>
+  <text class="d-t d-sub" x="384" y="33">MDT, model-dependent, per model</text>
+  <rect class="d-box-ext" x="700" y="20" width="16" height="16" rx="3"/>
+  <text class="d-t d-sub" x="724" y="33">ODT, on-demand, request-time</text>
+
+  <!-- feature pipeline -->
+  <rect class="d-box" x="20" y="104" width="230" height="116" rx="10"/>
+  <text class="d-t" x="135" y="128" text-anchor="middle">Feature pipeline</text>
+  <rect class="d-box-own" x="44" y="146" width="60" height="24" rx="5"/>
+  <text class="d-t d-sub" x="74" y="162" text-anchor="middle">MIT</text>
+  <rect class="d-box-ext" x="120" y="146" width="106" height="24" rx="5" stroke-dasharray="4 3"/>
+  <text class="d-t d-sub" x="173" y="162" text-anchor="middle">ODT (backfill)</text>
+  <text class="d-t d-sub" x="135" y="200" text-anchor="middle">new and historical data</text>
+
+  <!-- feature store -->
+  <rect class="d-box-own" x="320" y="116" width="170" height="92" rx="10"/>
+  <text class="d-t" x="405" y="156" text-anchor="middle">Feature store</text>
+  <text class="d-t d-sub" x="405" y="176" text-anchor="middle">reusable features</text>
+
+  <!-- training pipeline -->
+  <rect class="d-box" x="570" y="80" width="230" height="90" rx="10"/>
+  <text class="d-t" x="685" y="112" text-anchor="middle">Training pipeline</text>
+  <rect class="d-box" x="655" y="126" width="60" height="24" rx="5"/>
+  <text class="d-t d-sub" x="685" y="142" text-anchor="middle">MDT</text>
+
+  <!-- inference pipeline -->
+  <rect class="d-box" x="570" y="220" width="230" height="96" rx="10"/>
+  <text class="d-t" x="685" y="250" text-anchor="middle">Online inference pipeline</text>
+  <rect class="d-box-ext" x="600" y="266" width="60" height="24" rx="5"/>
+  <text class="d-t d-sub" x="630" y="282" text-anchor="middle">ODT</text>
+  <text class="d-t d-sub" x="676" y="282" text-anchor="middle">then</text>
+  <rect class="d-box" x="710" y="266" width="60" height="24" rx="5"/>
+  <text class="d-t d-sub" x="740" y="282" text-anchor="middle">MDT</text>
+
+  <!-- prediction request -->
+  <rect class="d-box-ext" x="320" y="238" width="170" height="60" rx="8"/>
+  <text class="d-t" x="405" y="264" text-anchor="middle">Prediction request</text>
+  <text class="d-t d-sub" x="405" y="282" text-anchor="middle">request-time input</text>
+
+  <!-- arrows -->
+  <path class="d-flow" d="M250 162 H320" marker-end="url(#tx-arrow)"/>
+  <path class="d-flow" d="M490 150 H530 V125 H570" marker-end="url(#tx-arrow)"/>
+  <path class="d-flow" d="M490 178 H530 V268 H570" marker-end="url(#tx-arrow)"/>
+  <path class="d-flow" d="M490 268 H570" marker-end="url(#tx-arrow)"/>
+
+  <!-- band -->
+  <rect class="d-band" x="20" y="348" width="780" height="40" rx="10"/>
+  <text class="d-t d-sub" x="40" y="373">MDTs and ODTs each run in more than one pipeline, which is where online-offline skew appears. Feature-view MDTs and feature-group ODTs remove it.</text>
+</svg>
+</figure>
 
 Model-independent transformations are utilized exclusively in areas where new and historical data arrives, typically within feature pipelines.
 Model-dependent transformations are necessary during the creation of training data, in training programs and must also be consistently applied in inference programs prior to making predictions.

@@ -76,8 +76,8 @@ Concept drift, in particular, is not detected by comparing distributions: you de
   <path class="d-flow" d="M300 262 V376"/>
   <path class="d-flow" d="M300 376 H962" marker-end="url(#mm-arrow)"/>
   <path class="d-flow" d="M880 194 V270" stroke-dasharray="3 4"/>
-  <path d="M300 296 H962" fill="none" stroke="#eb5757" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity=".85"/>
-  <text x="306" y="290" font-size="11" fill="#eb5757">alert threshold</text>
+  <path class="d-alert-line" d="M300 296 H962" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity=".85"/>
+  <text class="d-alert" x="306" y="290" font-size="11">alert threshold</text>
   <path class="d-flow" d="M320 358 L400 354 L480 348 L560 344 L640 336 L720 324 L800 308 L880 282 L940 264" stroke-width="2" stroke-opacity=".6"/>
   <circle cx="320" cy="358" r="3" fill="currentColor" fill-opacity=".45"/>
   <circle cx="400" cy="354" r="3" fill="currentColor" fill-opacity=".45"/>
@@ -86,9 +86,9 @@ Concept drift, in particular, is not detected by comparing distributions: you de
   <circle cx="640" cy="336" r="3" fill="currentColor" fill-opacity=".45"/>
   <circle cx="720" cy="324" r="3" fill="currentColor" fill-opacity=".45"/>
   <circle cx="800" cy="308" r="3" fill="currentColor" fill-opacity=".45"/>
-  <circle cx="880" cy="282" r="4" fill="#eb5757"/>
-  <circle cx="940" cy="264" r="4" fill="#eb5757"/>
-  <text x="956" y="252" font-size="11" fill="#eb5757" text-anchor="end">drift alert</text>
+  <circle class="d-alert" cx="880" cy="282" r="4"/>
+  <circle class="d-alert" cx="940" cy="264" r="4"/>
+  <text class="d-alert" x="956" y="252" font-size="11" text-anchor="end">drift alert</text>
   <text class="d-t d-sub" x="958" y="392" text-anchor="end">time</text>
 </svg>
 </figure>

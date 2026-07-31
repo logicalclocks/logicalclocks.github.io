@@ -282,6 +282,8 @@ a.autorefs-external::after {
 .hops-diagram .d-cap-ext { fill: #186781; }
 .hops-diagram .d-sub { font-size: 11px; fill: currentColor; fill-opacity: .6; }
 .hops-diagram .d-flow { stroke: currentColor; stroke-opacity: .3; fill: none; }
+.hops-diagram .d-alert { fill: #eb5757; }
+.hops-diagram .d-alert-line { stroke: #eb5757; fill: none; }
 .hops-diagram text { font-size: 13px; }
 .hops-diagram a.d-link { cursor: pointer; }
 .hops-diagram a.d-link > rect { transition: fill-opacity .12s, stroke-opacity .12s; }

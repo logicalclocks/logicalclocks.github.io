@@ -44,7 +44,7 @@ That is, the features in the feature group containing the label are the observat
       <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
     </marker>
     <marker id="pit-arrow-alert" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#eb5757" fill-opacity=".8"/>
+      <path class="d-alert" d="M0 0 L10 5 L0 10 z" fill-opacity=".8"/>
     </marker>
   </defs>
 
@@ -107,10 +107,10 @@ That is, the features in the feature group containing the label are the observat
   <!-- lookups for the first observation time -->
   <path class="d-flow" d="M414 188 C 396 164, 380 140, 368 120" stroke-dasharray="4 3" marker-end="url(#pit-arrow)"/>
   <path class="d-flow" d="M414 236 C 396 260, 384 288, 374 304" stroke-dasharray="4 3" marker-end="url(#pit-arrow)"/>
-  <path d="M470 188 C 486 168, 498 142, 506 120" fill="none" stroke="#eb5757" stroke-opacity=".7" stroke-dasharray="4 3" marker-end="url(#pit-arrow-alert)"/>
-  <path d="M470 236 C 490 258, 502 286, 512 304" fill="none" stroke="#eb5757" stroke-opacity=".7" stroke-dasharray="4 3" marker-end="url(#pit-arrow-alert)"/>
-  <text x="536" y="150" font-size="11" fill="#eb5757">excluded, newer than the label</text>
-  <text x="536" y="278" font-size="11" fill="#eb5757">excluded, newer than the label</text>
+  <path class="d-alert-line" d="M470 188 C 486 168, 498 142, 506 120" stroke-opacity=".7" stroke-dasharray="4 3" marker-end="url(#pit-arrow-alert)"/>
+  <path class="d-alert-line" d="M470 236 C 490 258, 502 286, 512 304" stroke-opacity=".7" stroke-dasharray="4 3" marker-end="url(#pit-arrow-alert)"/>
+  <text class="d-alert" x="536" y="150" font-size="11">excluded, newer than the label</text>
+  <text class="d-alert" x="536" y="278" font-size="11">excluded, newer than the label</text>
 
   <!-- lookups for the second observation time -->
   <path class="d-flow" d="M774 188 C 756 164, 728 138, 712 120" stroke-dasharray="4 3" marker-end="url(#pit-arrow)"/>

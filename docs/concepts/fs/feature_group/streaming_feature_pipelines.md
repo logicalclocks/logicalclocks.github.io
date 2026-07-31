@@ -41,9 +41,9 @@ For interactive, real-time systems it is often the freshness of a feature, not t
   <rect class="d-band" x="16" y="214" width="868" height="62" rx="10"/>
   <path class="d-flow" d="M92 245 H778" marker-start="url(#sf-arrow)" marker-end="url(#sf-arrow)"/>
   <text class="d-t d-sub" x="435" y="238" text-anchor="middle">total time from event read to feature available</text>
-  <circle cx="80" cy="245" r="4" fill="#41b7dc"/>
+  <circle cx="80" cy="245" r="4" fill="currentColor" fill-opacity=".55"/>
   <text class="d-t d-sub" x="80" y="268" text-anchor="middle">event read</text>
-  <circle cx="792" cy="245" r="4" fill="#21b182"/>
+  <circle cx="792" cy="245" r="4" fill="currentColor" fill-opacity=".55"/>
   <text class="d-t d-sub" x="792" y="268" text-anchor="middle">available to inference</text>
 </svg>
 </figure>
