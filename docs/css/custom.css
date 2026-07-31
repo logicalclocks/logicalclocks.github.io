@@ -351,3 +351,36 @@ a.autorefs-external::after {
 .md-typeset :is(.admonition, details) > :is(.admonition-title, summary)::before {
   background-color: var(--md-default-fg-color--light);
 }
+
+/* Flat, per the design system: no drop shadows. Kill the header shadow;
+   the 1px hairline under the tabs is the only separation. */
+.md-header,
+.md-tabs {
+  box-shadow: none;
+}
+
+/* Search: translucent white on the green header, not a muddy green box.
+   Turns solid white with dark text once focused (Material's open state). */
+.md-search__form {
+  background-color: rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+.md-search__form:hover {
+  background-color: rgba(255, 255, 255, 0.26);
+}
+.md-search__input {
+  color: #fff;
+}
+.md-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.72);
+}
+[data-md-toggle="search"]:checked ~ .md-header .md-search__form {
+  background-color: #fff;
+}
+[data-md-toggle="search"]:checked ~ .md-header .md-search__input {
+  color: var(--md-default-fg-color);
+}
+[data-md-toggle="search"]:checked ~ .md-header .md-search__input::placeholder {
+  color: var(--md-default-fg-color--light);
+}
