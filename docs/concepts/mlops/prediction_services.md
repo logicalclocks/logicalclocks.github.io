@@ -10,7 +10,7 @@ There are four classes:
 - **Real-time (interactive)**: a client sends a prediction request and an online inference pipeline computes and returns a prediction with low latency.
 - **Batch**: an inference pipeline runs on a schedule, scores a set of entities, and writes the predictions to an inference store.
 - **Stream processing**: an inference pipeline computes predictions continuously over an event stream.
-- **Agentic workflows**: an LLM-driven control flow decides which steps to run, retrieving the context and features it needs from the feature store.
+- **Agentic workflows**: an LLM-driven control flow decides which steps to run, retrieving the context and features it needs from the feature store. See [Agents and LLM Systems](agents.md).
 
 Whatever the class, an AI system is composed of the same parts:
 

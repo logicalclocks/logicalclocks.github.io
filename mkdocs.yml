@@ -29,6 +29,7 @@ nav:
           - Write APIs: concepts/fs/feature_group/write_apis.md
           - External Feature Groups: concepts/fs/feature_group/external_fg.md
           - Feature Pipelines: concepts/fs/feature_group/feature_pipelines.md
+          - Streaming Feature Pipelines: concepts/fs/feature_group/streaming_feature_pipelines.md
           - Data Transformations: concepts/mlops/data_transformations.md
       - Feature Views:
           - Overview: concepts/fs/feature_view/fv_overview.md
@@ -50,6 +51,7 @@ nav:
           - Model Serving: concepts/mlops/serving.md
           - Model Monitoring: concepts/mlops/model_monitoring.md
           - AI Systems: concepts/mlops/prediction_services.md
+          - Agents and LLM Systems: concepts/mlops/agents.md
       - More:
           - Vector Index: concepts/mlops/opensearch.md
           - Development Inside Hopsworks: concepts/dev/inside.md

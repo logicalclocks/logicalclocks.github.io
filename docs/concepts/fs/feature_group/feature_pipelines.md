@@ -2,6 +2,7 @@
 
 A feature pipeline is a program that orchestrates the execution of a dataflow graph of data validation, aggregation, dimensionality reduction, transformation, and other feature engineering steps on input data to create and/or update feature data.
 With Hopsworks, you can write feature pipelines in different languages as shown in the figure below.
+A feature pipeline can run on a schedule over a batch of data, or continuously over an event stream; see [Streaming Feature Pipelines](streaming_feature_pipelines.md).
 
 <img src="../../../../assets/images/concepts/fs/feature-pipelines.svg">
 
