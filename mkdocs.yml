@@ -433,7 +433,11 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.arithmatex
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.details
   - pymdownx.caret
   - pymdownx.mark
