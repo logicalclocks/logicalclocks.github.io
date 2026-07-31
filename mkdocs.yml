@@ -316,9 +316,7 @@ theme:
   logo: assets/images/hops-logo.png
   icon:
     repo: fontawesome/brands/github
-  font:
-    text: "Roboto"
-    code: "IBM Plex Mono"
+  font: false
   palette:
     - scheme: hopsworks
       media: "(prefers-color-scheme: light)"
