@@ -14,7 +14,7 @@ There are 3 APIs for writing to feature groups, as shown in the table below:
 The Stream API is the only API for Python and Flink clients, and is
 the preferred API for Spark, as it ensures consistent features between offline and online feature stores.
 The Stream API first writes data to be ingested to a Kafka topic, and then Hopsworks ensures that the data is synchronized to the Online and Offline Feature Groups through the OnlineFS service and Hudi DeltaStreamer jobs, respectively.
-The data in the feature groups is guaranteed to arrive at-most-once, through idempotent writes to the online feature group (only the latest values of features are stored there, and duplicates in Kafka only cause idempotent updates) and duplicate removal by Apache Hudi for the offline feature group.
+The Kafka transport delivers at-least-once, and Hopsworks upgrades this to exactly-once through idempotent writes to the online feature group (only the latest values of features are stored there, and duplicates in Kafka only cause idempotent updates) and duplicate removal by Apache Hudi for the offline feature group.
 
 <img src="../../../../assets/images/concepts/fs/fg-stream-api.svg">
 
