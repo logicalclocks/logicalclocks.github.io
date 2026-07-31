@@ -267,6 +267,7 @@ nav:
           - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
       - Administration:
           - Cluster Configuration: setup_installation/admin/variables.md
+          - Cluster Configuration Variables Reference: setup_installation/admin/configuration_reference.md
           - Introduction: setup_installation/admin/index.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
@@ -305,6 +306,7 @@ nav:
       - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
   - Python API: python-api
   - Java API: javadoc
+  - REST API Status Codes: reference/rest_error_codes.md
   - Community ↗: https://community.hopsworks.ai/
 
 theme:

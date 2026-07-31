@@ -1,6 +1,7 @@
 import typer
 
 from .check import check
+from .gen_config_vars import gen_config_vars
 from .helm_values import gen_helm_values
 from .linkchecker import linkchecker
 from .markdownlint import markdownlint
@@ -16,3 +17,4 @@ cli.command()(markdownlint)
 cli.command()(linkchecker)
 cli.command()(snakeoil)
 cli.command()(gen_helm_values)
+cli.command()(gen_config_vars)
