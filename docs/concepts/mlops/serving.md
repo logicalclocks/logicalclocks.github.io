@@ -1,6 +1,8 @@
 # Model Serving
 
 In Hopsworks, you can easily deploy models from the model registry using [KServe](https://kserve.github.io/website/latest/), the standard open-source framework for model serving on Kubernetes.
+You rarely deploy just a model.
+What you deploy is an online inference pipeline, of which the model is one part, alongside feature retrieval, transformations, and logging.
 You can deploy models programmatically using [`Model.deploy`][hsml.model.Model.deploy] or via the UI.
 A KServe model deployment can include the following components:
 
@@ -36,6 +38,20 @@ A KServe model deployment can include the following components:
 Models deployed on KServe in Hopsworks can be easily integrated with the Hopsworks Feature Store using either a Transformer or Predictor Python script, that builds the predictor's input feature vector using the application input and pre-computed features from the Feature Store.
 
 <img src="../../../assets/images/concepts/mlops/kserve.svg">
+
+## Deployment API
+
+The deployment API is the interface to the online inference pipeline that clients send prediction requests to.
+It is the deployment API, not the model signature, that clients should version against.
+The model signature (the input and output schema of the model) changes whenever you retrain with a different set of features, so coupling clients to it turns every model update into a breaking change.
+The deployment API is a stable contract that can stay the same across model versions.
+
+A client request to the deployment API carries two kinds of parameter:
+
+- **serving keys**: the entity IDs used to retrieve pre-computed features from the feature store.
+- **request parameters**: values known only at request time, sent in the request and used to build the feature vector or to compute on-demand features.
+
+Because clients depend on it, a deployment API should carry an SLO, typically a p99 latency target for online predictions.
 
 !!! info "Model Serving Guide"
     More information can be found in the [Model Serving guide](../../user_guides/mlops/serving/index.md).
