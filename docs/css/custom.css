@@ -20,9 +20,6 @@ pre {
 
 [data-md-color-scheme="hopsworks"] {
   --md-primary-fg-color: #1eb182;
-  --md-secondary-fg-color: #188a64;
-  --md-tertiary-fg-color: #0d493550;
-  --md-quaternary-fg-color: #fdfdfd;
   --border-radius-variable: 5px;
 }
 
@@ -37,25 +34,6 @@ pre {
 .svg_topnav:hover {
   width: 12px;
   filter: invert(10);
-}
-
-.md-header[data-md-state="shadow"] {
-  box-shadow: 0 0 0 0;
-}
-
-.md-tabs__item {
-  min-width: 2.5rem;
-}
-
-.md-tabs__item:hover {
-  background-color: var(--md-tertiary-fg-color);
-  transition: background-color 450ms;
-}
-
-.md-sidebar__scrollwrap {
-  background-color: var(--md-quaternary-fg-color);
-  padding: 15px 5px 5px 5px;
-  border-radius: var(--border-radius-variable);
 }
 
 /* End of Lex did stuff here */
@@ -83,14 +61,6 @@ pre {
   fill: rgba(43, 155, 70, 0.1);
 }
 
-.md-tabs {
-  width: 100%;
-  overflow: auto;
-  color: var(--md-primary-bg-color);
-  background-color: var(--md-secondary-fg-color);
-  transition: background-color 250ms;
-}
-
 /* Jupyter Stuff */
 .jupyter-wrapper .jp-CodeCell .jp-Cell-inputWrapper .jp-InputPrompt {
   display: none !important;
@@ -111,9 +81,6 @@ pre {
 [data-md-color-scheme="slate"] {
   --md-hue: 160;
   --md-primary-fg-color: #1eb182;
-  --md-secondary-fg-color: #188a64;
-  --md-tertiary-fg-color: #0d493550;
-  --md-quaternary-fg-color: hsla(var(--md-hue), 0%, 14.5%, 1);
   --border-radius-variable: 5px;
 
   --md-default-fg-color:             hsla(var(--md-hue), 0%, 90%, 0.82);
@@ -274,28 +241,6 @@ a.autorefs-external::after {
    to revert. Overrides earlier rules by cascade order.
    ========================================================= */
 
-/* One green band: the tabs strip is clean, not a second darker green. */
-.md-tabs {
-  background-color: var(--md-default-bg-color);
-  color: var(--md-default-fg-color);
-  border-bottom: 1px solid var(--md-default-fg-color--lightest);
-  box-shadow: none;
-}
-.md-tabs__link {
-  color: var(--md-default-fg-color--light);
-  opacity: 1;
-  margin-top: 0;
-  font-weight: 500;
-  transition: color 0.15s ease;
-}
-.md-tabs__link:focus,
-.md-tabs__link:hover,
-.md-tabs__item--active .md-tabs__link {
-  color: var(--md-primary-fg-color);
-}
-.md-tabs__item { min-width: auto; }
-.md-tabs__item:hover { background-color: transparent; }
-
 /* Left nav: de-boxed, more vertical rhythm, brand-green active. */
 .md-sidebar__scrollwrap {
   background-color: transparent;
@@ -351,10 +296,8 @@ a.autorefs-external::after {
   background-color: var(--md-default-fg-color--light);
 }
 
-/* Flat, per the design system: no drop shadows. Kill the header shadow;
-   the 1px hairline under the tabs is the only separation. */
-.md-header,
-.md-tabs {
+/* Flat, per the design system: no drop shadows on the header. */
+.md-header {
   box-shadow: none;
 }
 
@@ -385,20 +328,11 @@ a.autorefs-external::after {
 }
 
 
-/* Slimmer top chrome: lighter logo, tighter sub-header tab band
-   (97px of header + tabs down to ~85px). */
+/* Slimmer header: lighter logo. */
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
   width: 1.5rem;
   height: 1.5rem;
-}
-.md-tabs__list,
-.md-tabs__item {
-  height: auto;
-}
-.md-tabs__link {
-  margin-top: 0.45rem;
-  margin-bottom: 0.45rem;
 }
 
 /* ---- Platform-aligned interactions (links, nav, cards) ----
