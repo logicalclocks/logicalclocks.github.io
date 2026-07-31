@@ -2,6 +2,8 @@
 description: "Documentation on the Hopsworks capabilities to discover machine-learning assets"
 ---
 
+# Tags, Search, and Lineage
+
 ## Search
 
 Hopsworks supports free-text search to discover machine-learning assets:

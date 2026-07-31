@@ -1,6 +1,8 @@
+# Feature Group Versioning
+
 See here for <a href="../../../../concepts/fs/feature_view/versioning/">information about version of feature views</a>.
 
-### Schema Versioning
+## Schema Versioning
 
 The schema of feature groups is versioned.
 If you make a breaking change to the schema of a feature group, you need to increment the version of the feature group, and then backfill the new feature group.
@@ -13,7 +15,7 @@ A breaking schema change is when you:
 
 <img src="../../../../assets/images/concepts/fs/schema-versioning.svg">
 
-### Data Versioning for Feature Groups
+## Data Versioning for Feature Groups
 
 Data Versioning of a feature group involves tracking updates to the feature group, so that you can recover the state of the feature group at a given point-in-time in the past.
 

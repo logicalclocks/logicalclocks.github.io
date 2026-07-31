@@ -1,3 +1,5 @@
+# External Feature Groups
+
 External feature groups are offline feature groups where their data is stored in an external table.
 An external table requires a data source, defined with the Connector API (or more typically in the user interface), to enable Hopsworks to retrieve data from the external table.
 An external feature group doesn't allow for offline data ingestion or modification; instead, it includes a user-defined SQL string for retrieving data.

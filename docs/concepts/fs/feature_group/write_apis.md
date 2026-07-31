@@ -1,3 +1,5 @@
+# Write APIs
+
 You write to feature groups, and read from feature views.
 
 There are 3 APIs for writing to feature groups, as shown in the table below:

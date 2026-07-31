@@ -1,3 +1,5 @@
+# Model Registry
+
 Hopsworks Model Registry is designed with specific support for KServe and MLOps, through versioning.
 It enables developers to publish, test, monitor, govern and share models for collaboration with other teams.
 The model registry is where developers publish their models during the experimentation phase.

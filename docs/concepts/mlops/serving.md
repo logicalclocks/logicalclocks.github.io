@@ -1,3 +1,5 @@
+# Model Serving
+
 In Hopsworks, you can easily deploy models from the model registry using [KServe](https://kserve.github.io/website/latest/), the standard open-source framework for model serving on Kubernetes.
 You can deploy models programmatically using [`Model.deploy`][hsml.model.Model.deploy] or via the UI.
 A KServe model deployment can include the following components:

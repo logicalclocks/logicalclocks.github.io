@@ -1,3 +1,5 @@
+# The Hopsworks Platform
+
 Hopsworks is a **modular** MLOps platform with:
 
 - a feature store (available as standalone)

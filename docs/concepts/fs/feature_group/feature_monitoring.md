@@ -1,3 +1,5 @@
+# Feature Monitoring
+
 Feature Monitoring complements data validation capabilities by allowing you to monitor your feature data after it has been ingested into the Feature Store.
 
 Hopsworks supports monitoring features on your Feature Group by:

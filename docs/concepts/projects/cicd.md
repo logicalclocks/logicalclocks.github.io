@@ -1,3 +1,5 @@
+# CI/CD Support
+
 You can setup traditional development, staging, and production environment in Hopsworks using Projects.
 A project enables you provide access control for the different environments - just like a GitHub repository, owners of projects can add and remove members of projects and assign different roles to project members - the "data owner" role can write to feature store, while a "data scientist" can only read from the feature store and create training data.
 

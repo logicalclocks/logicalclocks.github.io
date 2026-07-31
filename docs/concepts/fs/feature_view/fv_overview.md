@@ -1,3 +1,5 @@
+# Feature Views
+
 A feature view is a logical view over (or interface to) a set of features that may come from different feature groups.
 You create a feature view by selecting features, starting from a root feature group and following foreign keys to join in features from other feature groups.
 When the feature view has a label for supervised learning, the root feature group is the label feature group, the one feature group that holds the labels.

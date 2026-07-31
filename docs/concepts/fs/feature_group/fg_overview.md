@@ -1,3 +1,5 @@
+# Features and Feature Groups
+
 As a programmer, you can consider a feature, in machine learning, to be a variable associated with some entity that contains a value that is useful for helping train a model to solve a prediction problem.
 That is, the feature is just a variable with predictive power for a machine learning problem, or task.
 
@@ -12,19 +14,19 @@ A feature group stores untransformed feature data, so the same feature can be re
 
 <img src="../../../../assets/images/concepts/fs/feature-group-table.png">
 
-### Online and offline Storage
+## Online and offline Storage
 
 Feature groups can be stored in a low-latency "online" database and/or in low cost, high throughput "offline" storage, typically a data lake or data warehouse.
 A feature group with an embedding column can also have a vector index, for similarity search from inference pipelines and agents.
 
 <img src="../../../../assets/images/concepts/fs/feature-storage.svg">
 
-#### Online Storage
+### Online Storage
 
 By default, the online store keeps only the latest values of features for a feature group.
 It serves those precomputed features to models at runtime, and is backed by [RonDB](https://www.rondb.com), a low latency, high throughput, high availability data store.
 
-#### Offline Storage
+### Offline Storage
 
 The offline store stores the historical values of features for a feature group so that it may store much more data than the online store.
 Offline feature groups are used, typically, to create training data for models, but also to retrieve data for batch scoring of models.

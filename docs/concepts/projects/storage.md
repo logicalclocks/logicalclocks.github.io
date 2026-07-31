@@ -1,3 +1,5 @@
+# Data Storage and Sharing
+
 Every project in Hopsworks has its own private assets:
 
 - a Feature Store (including both Online and Offline Stores)
