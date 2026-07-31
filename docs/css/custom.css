@@ -252,3 +252,16 @@ a.autorefs-external::after {
   color: var(--md-primary-bg-color, #fff);
   background: var(--md-primary-fg-color);
 }
+
+/* Inline architecture diagram on the platform concept page. */
+.md-typeset .hops-arch {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 1.5em 0;
+}
+.md-typeset .hops-arch svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
