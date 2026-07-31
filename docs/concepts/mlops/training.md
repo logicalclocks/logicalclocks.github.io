@@ -1,8 +1,18 @@
 # Model Training
 
+A training pipeline is a program that orchestrates the training of a machine learning model, reading features and labels from the feature store as training data.
 Hopsworks supports running model training pipelines on any Python environment, whether on an external Python client or on a Hopsworks cluster.
 The outputs of a training pipeline are typically experiment results, including logs, and possibly a trained model.
 You can plugin your own experimentation tracking platform or model registry, or you can use Hopsworks.
+
+A training pipeline typically runs five steps: select a feature view and a training dataset version, train the model, evaluate it, validate it, and register it in the model registry if it passes.
+
+## Evaluation and validation
+
+Model evaluation and model validation are not the same thing.
+Evaluation measures the model's performance on a held-out test set, using metrics such as accuracy or AUC.
+Validation is a pass/fail gate: the model is run against evaluation data, including bias slices of the holdout built with feature-view filters and training helper columns (a column such as gender used to slice results but dropped before training), and only a model that passes is registered.
+The output of validation is a model validation scorecard, and it is what decides whether the model reaches the registry.
 
 ## Training Pipelines on Hopsworks
 

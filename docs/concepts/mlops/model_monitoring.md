@@ -15,6 +15,11 @@ Model monitoring builds on two existing Hopsworks capabilities:
 - **Feature monitoring**: Hopsworks computes statistics over windows of feature data and compares them against a reference, optionally raising alerts on significant drift.
   See the [Feature Monitoring concept](../fs/feature_group/feature_monitoring.md).
 
+??? note "Log untransformed and transformed features"
+    Log both the untransformed and the transformed feature values.
+    Untransformed features drive feature monitoring and debugging, since drift is easiest to read on the raw values.
+    Transformed features drive model monitoring and SHAP explainability, since those are the values the model actually sees.
+
 !!! info "Feature logging vs. the inference logger"
     Hopsworks provides two separate inference logging mechanisms.
     The [inference logger](../../user_guides/mlops/serving/inference-logger.md) stores the model inputs and predictions from inference requests and responses into Kafka, for later consumption and analysis.

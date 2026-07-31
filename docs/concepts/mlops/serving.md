@@ -53,6 +53,12 @@ A client request to the deployment API carries two kinds of parameter:
 
 Because clients depend on it, a deployment API should carry an SLO, typically a p99 latency target for online predictions.
 
+## Testing model deployments
+
+Two release-safety mechanisms are often confused, because they test different things.
+A blue/green test tests the correctness and performance of the model deployment directly, running the new deployment alongside the old one so clients can be switched over with no risk.
+An A/B test does not test the deployment; it tests the model's effect on the application, measured against an application KPI, to decide whether the new model actually makes the product better.
+
 !!! info "Model Serving Guide"
     More information can be found in the [Model Serving guide](../../user_guides/mlops/serving/index.md).
 

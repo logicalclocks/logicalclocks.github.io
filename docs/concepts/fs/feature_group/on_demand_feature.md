@@ -12,3 +12,13 @@ In the image below shows an example of a housing price model that demonstrates h
 In your online application, longitude and latitude are provided as parameters to the application, and the same python function used to calculate the zip code in the feature pipeline is used to compute the zip code in the Online Inference pipeline.
 
 <img src="../../../../assets/images/concepts/fs/on-demand-feature.png">
+
+## Shift left or shift right
+
+Deciding to compute a feature on-demand is a shift-right decision, and it is one of the biggest feature-engineering choices you make.
+Shift left means precomputing a feature in a feature pipeline and storing it in the feature store for retrieval.
+Shift right means computing it at request time, in an on-demand or model-dependent transformation.
+
+Shift right when the feature depends on request-time input, such as the zip code computed from the longitude and latitude in a request, or when a precomputed value would be too stale to be useful.
+Shift left when the feature can be precomputed, to keep inference latency low and avoid repeating the computation on every request.
+The trade-off is latency and operational overhead against freshness.
