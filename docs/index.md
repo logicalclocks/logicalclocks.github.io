@@ -7,7 +7,7 @@ hide:
 # Hopsworks Documentation
 
 Hopsworks is a modular data platform for machine learning.
-It provides a Python-centric feature store, a model registry and model serving on KServe, a vector database, and project-based multi-tenancy for teams.
+It provides a Python-centric feature store, a model registry and model serving on KServe, a vector index, and project-based multi-tenancy for teams.
 You can run it as a standalone feature store, as an MLOps platform, or as both.
 
 <!-- markdownlint-disable MD007 MD030 -->

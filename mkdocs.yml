@@ -37,9 +37,6 @@ nav:
               - Offline API: concepts/fs/feature_view/offline_api.md
               - Online API: concepts/fs/feature_view/online_api.md
               - Consistent Transformations: concepts/fs/feature_view/training_inference_pipelines.md
-              - Statistics: concepts/fs/feature_view/statistics.md
-              - Feature Monitoring: concepts/fs/feature_view/feature_monitoring.md
-              - Versioning: concepts/fs/feature_view/versioning.md
       - Projects:
           - Governance: concepts/projects/governance.md
           - Data Storage/Sharing: concepts/projects/storage.md

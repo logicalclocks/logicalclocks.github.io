@@ -31,8 +31,8 @@ This requires network connectivity between the Spark clients and the datanodes i
 ## Connector API
 
 Hopsworks supports external tables as feature groups.
-You can mount a table from an external database as an offline feature group using the Connector API - you create an external table using the connector.
+You can mount a table from an external database as an offline feature group using the Connector API: you create an external table using the connector, without ingesting the data into Hopsworks.
 This enables you to use features from your external data source (Snowflake, Redshift, Delta Lake, etc) as you would any feature in an offline feature group in Hopsworks.
 You can, for example, join features from different feature groups (external or not) together to create feature views and training data for models.
 
-<img src="../../../../assets/images/concepts/fs/fg-connector-api.svg">
+See [External Feature Groups](external_fg.md) for the full list of supported data sources.

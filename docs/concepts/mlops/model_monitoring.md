@@ -12,8 +12,8 @@ Model monitoring builds on two existing Hopsworks capabilities:
 
 - **Feature logging**: a model deployment logs the features it serves and its predictions to the feature view's logging feature group through the Feature View logging APIs.
   See the [Feature Logging guide](../../user_guides/fs/feature_view/feature_logging.md).
-- **Feature monitoring**: Hopsworks computes statistics over windows of feature data and compares them against a reference, optionally raising alerts on significant shifts.
-  See the [Feature Monitoring concept](../fs/feature_view/feature_monitoring.md).
+- **Feature monitoring**: Hopsworks computes statistics over windows of feature data and compares them against a reference, optionally raising alerts on significant drift.
+  See the [Feature Monitoring concept](../fs/feature_group/feature_monitoring.md).
 
 !!! info "Feature logging vs. the inference logger"
     Hopsworks provides two separate inference logging mechanisms.

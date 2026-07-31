@@ -11,16 +11,9 @@ You can create dev, staging, and prod projects - either on the same cluster, but
 
 ## Versioning
 
-Hopsworks supports the versioning of ML assets, including:
-
-- Feature Groups: the version of its schema - breaking schema changes require a new version and backfilling the new version;
-- Feature Views:  the version of its schema, and breaking schema changes only require a new version;
-- Models: the version of a model.
-
-Deployments are the exception: they are not versioned.
-A deployment is mutable, a new deployment gets a new name, and upgrades and rollbacks are done with blue/green deployments.
-Clients depend on the deployment API, not on a deployment version number.
-A model deployment is also tightly coupled to the versioned feature views that supply its pre-computed features, so versioning the model alone is not enough.
+Automated promotion across dev, staging, and prod relies on every ML asset being versioned.
+Hopsworks versions feature groups, feature views, training data, and models, while deployments stay mutable behind the deployment API.
+See [Versioning](../fs/feature_group/versioning.md) for what is versioned and how.
 
 ## Pytest for feature logic and feature pipeline tests
 

@@ -2,7 +2,7 @@
 
 Hopsworks provides project-level multi-tenancy, a data mesh enabling technology.
 Think of it as a GitHub repository for your teams and ML assets.
-More specifically, a project is a sandbox for team members, ML assets (features, training data, models, vector database, model deployments), and optionally feature pipelines and training pipelines.
+More specifically, a project is a sandbox for team members, ML assets (features, training data, models, vector index, model deployments), and optionally feature pipelines and training pipelines.
 The ML assets can only be accessed by project members, and there is role-based access control (RBAC) for project members within a project.
 
 <img src="../../../assets/images/concepts/projects/projects-simple.svg">
