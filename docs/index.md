@@ -17,10 +17,10 @@ You can run it as a standalone feature store, as an MLOps platform, or as both.
 
     ---
 
-    Run the quickstart notebook in Colab against a free serverless project.
+    Sign in to the Hopsworks SaaS and create a project.
     Nothing to install.
 
-    [Open the quickstart notebook ↗](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb)
+    [Open run.hopsworks.ai ↗](https://run.hopsworks.ai)
 
 -   :material-package-variant: **Install the client**
 
@@ -88,14 +88,14 @@ Next: [create a feature group](user_guides/fs/feature_group/create.md),
 <!-- markdownlint-disable MD007 MD030 -->
 <div class="grid cards" markdown>
 
--   :material-cloud-outline: **Serverless**
+-   :material-cloud-outline: **SaaS**
 
     ---
 
     Managed by Hopsworks, free tier available.
     Nothing to install or operate.
 
-    [app.hopsworks.ai ↗](https://app.hopsworks.ai) ·
+    [run.hopsworks.ai ↗](https://run.hopsworks.ai) ·
     [Tutorials](tutorials/index.md)
 
 -   :material-kubernetes: **Managed Kubernetes**

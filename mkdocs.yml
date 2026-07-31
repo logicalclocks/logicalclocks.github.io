@@ -12,7 +12,7 @@ strict: false
 
 nav:
   - Home: index.md
-  - Getting Started ↗: https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb
+  - Getting Started ↗: https://run.hopsworks.ai
   - Tutorials:
       - tutorials/index.md
   - Concepts:
