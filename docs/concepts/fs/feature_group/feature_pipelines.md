@@ -12,7 +12,7 @@ SparkSQL, in contrast, can be used over tables that originate in different  data
 ### Data Validation
 
 In order to be able to train and serve models that you can rely on, you need clean, high quality features.
-Data validation operations include removing bad data, removing or imputing missing values, and identifying problems such as feature shift.
+Data validation operations include removing bad data, removing or imputing missing values, and identifying problems such as feature drift.
 Hopsworks supports Great Expectations to specify data validation rules that are executed in the client before features are written to the Feature Store.
 The validation results are collected and shown in Hopsworks.
 

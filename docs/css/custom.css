@@ -162,13 +162,6 @@
   padding: .4rem;
   border-radius: var(--border-radius-variable);
 }
-[data-md-color-scheme="slate"] .marctech_main > div {
-  display: none;
-}
-[data-md-color-scheme="slate"] .marctech_main::after {
-  content: "Switch to the light theme to view the diagram.";
-}
-
 /*******************************************************/
 /* Fix z-index. */
 .md-overlay {

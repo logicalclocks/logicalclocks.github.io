@@ -1,5 +1,8 @@
 A feature view is a logical view over (or interface to) a set of features that may come from different feature groups.
-You create a feature view by joining together features from existing feature groups.
+You create a feature view by selecting features, starting from a root feature group and following foreign keys to join in features from other feature groups.
+When the feature view has a label for supervised learning, the root feature group is the label feature group, the one feature group that holds the labels.
+Features are reachable by graph traversal: any feature group joined to the root can, in turn, have foreign keys to further feature groups whose features you can also select.
+A feature view does not have a primary key of its own; it has serving keys, the foreign keys of its label feature group, which you provide to retrieve feature vectors.
 In the illustration below, we can see that features are joined together from the two feature groups: seller_delivery_time_monthly and the seller_reviews_quarterly.
 You can also see that features in the feature view inherit not only the feature type from their feature groups, but also whether they are the primary key and/or the event_time.
 The image also includes transformation functions that are applied to individual features.

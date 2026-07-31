@@ -1,6 +1,7 @@
 The Feature View provides an Online API to return an individual feature vector, or a batch of feature vectors, containing the latest feature values.
-To retrieve a feature vector, a client needs to provide the primary key(s) for the feature groups backing the feature view.
-For example, if you have `customer_profile` and `customer_purchases` Feature Groups both with `customer_id` as a primary key, and a Feature View made up from features from both Feature Groups, then, you would use `customer_id` to retrieve a feature vector using the Feature View object.
+To retrieve a feature vector, a client provides the feature view's serving keys.
+The serving keys are the foreign keys of the feature view's label feature group; a feature view does not have a primary key of its own.
+For example, if a feature view is built from the `customer_profile` and `customer_purchases` feature groups joined on `customer_id`, then `customer_id` is the serving key you provide to retrieve a feature vector.
 
 ## Feature Vectors
 

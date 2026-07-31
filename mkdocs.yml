@@ -16,7 +16,9 @@ nav:
   - Tutorials:
       - tutorials/index.md
   - Concepts:
+      - concepts/index.md
       - Hopsworks Platform: concepts/hopsworks.md
+      - FTI Pipeline Architecture: concepts/fti.md
       - MLOps Dictionary ↗: https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs
       - Feature Store:
           - Architecture: concepts/fs/index.md #hsfs
@@ -357,7 +359,6 @@ extra:
 
 extra_css:
   - css/custom.css
-  - css/marctech.css
 
 extra_javascript:
   - js/quickstart-fullscreen.js

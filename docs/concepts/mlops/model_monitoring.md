@@ -21,7 +21,8 @@ Model monitoring builds on two existing Hopsworks capabilities:
 
 A model monitoring configuration is a feature monitoring configuration over the logging feature group, filtered to a single model and version.
 The detection window covers the recently served inference data, and the reference defaults to the training dataset version that was used to train that model.
-By comparing the two — on a scalar metric or on the whole feature distribution — Hopsworks detects training/serving skew and drift over time.
+By comparing the two, on a scalar metric or on the whole feature distribution, Hopsworks detects feature drift over time.
+This comparison detects drift, not skew: offline-online feature skew is a difference in the transformation code between the offline and inference pipelines, so it is invisible to a distribution comparison and is prevented, not monitored.
 
 ## Where to configure it
 
