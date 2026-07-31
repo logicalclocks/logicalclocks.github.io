@@ -7,4 +7,81 @@ The Feature Store can also be queried with SQL.
 There is REST API for Hopsworks that can be used with a valid API key, generated in Hopsworks.
 However, it is often easier to develop your programs against SDKs available in Python and Java/Scala for Hopsworks, in Python for HSML, and in Python for the Hopsworks API.
 
-<img src="../../../assets/images/concepts/dev/dev-outside.svg">
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 490" role="img" aria-label="External clients and tools reach the Hopsworks platform through language SDKs and a REST API that front the feature store, the model registry and serving, and internal services." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="dev-outside-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+
+  <rect class="d-box-ext" x="20" y="25" width="120" height="50" rx="8"/>
+  <text class="d-t" x="80" y="48" text-anchor="middle">SQL</text>
+  <text class="d-sub" x="80" y="63" text-anchor="middle" font-size="11">Clients</text>
+
+  <rect class="d-box-ext" x="160" y="25" width="120" height="50" rx="8"/>
+  <text class="d-t" x="220" y="56" text-anchor="middle">Spark</text>
+
+  <rect class="d-box-ext" x="300" y="25" width="120" height="50" rx="8"/>
+  <text class="d-t" x="360" y="56" text-anchor="middle">Python</text>
+
+  <rect class="d-box-ext" x="440" y="25" width="120" height="50" rx="8"/>
+  <text class="d-t" x="500" y="56" text-anchor="middle">Flink</text>
+
+  <rect class="d-box-ext" x="580" y="25" width="120" height="50" rx="8"/>
+  <text class="d-t" x="640" y="48" text-anchor="middle">CI/CD</text>
+  <text class="d-sub" x="640" y="63" text-anchor="middle" font-size="11">(Jenkins, etc)</text>
+
+  <rect class="d-box-ext" x="720" y="25" width="120" height="50" rx="8"/>
+  <text class="d-t" x="780" y="48" text-anchor="middle">Orchestration</text>
+  <text class="d-sub" x="780" y="63" text-anchor="middle" font-size="11">(Airflow, etc)</text>
+
+  <rect class="d-box-ext" x="860" y="25" width="120" height="50" rx="8"/>
+  <text class="d-t" x="920" y="48" text-anchor="middle">BI</text>
+  <text class="d-sub" x="920" y="63" text-anchor="middle" font-size="11">Reports</text>
+
+  <path class="d-flow" d="M80 75 V118" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M220 75 V118" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M360 75 V118" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M500 75 V118" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M640 75 V118" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M780 75 V118" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M920 75 V118" marker-end="url(#dev-outside-arrow)"/>
+
+  <rect class="d-panel-fs" x="20" y="120" width="960" height="355" rx="14"/>
+  <text class="d-cap d-cap-fs" x="40" y="146">HOPSWORKS PLATFORM</text>
+
+  <rect class="d-box-own" x="70" y="165" width="240" height="44" rx="8"/>
+  <text class="d-t" x="190" y="192" text-anchor="middle">Hopsworks API</text>
+  <rect class="d-box-own" x="380" y="165" width="240" height="44" rx="8"/>
+  <text class="d-t" x="500" y="192" text-anchor="middle">HSFS API</text>
+  <rect class="d-box-own" x="690" y="165" width="240" height="44" rx="8"/>
+  <text class="d-t" x="810" y="192" text-anchor="middle">HSML API</text>
+
+  <text class="d-sub" x="350" y="231" text-anchor="middle" font-size="11">SDKs (Python, Java, SQL)</text>
+
+  <path class="d-flow" d="M190 209 V246" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M500 209 V246" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M810 209 V246" marker-end="url(#dev-outside-arrow)"/>
+
+  <rect class="d-api" x="70" y="248" width="860" height="42" rx="8"/>
+  <text class="d-t" x="500" y="274" text-anchor="middle">Hopsworks REST API</text>
+
+  <path class="d-flow" d="M190 290 V308" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M500 290 V308" marker-end="url(#dev-outside-arrow)"/>
+  <path class="d-flow" d="M810 290 V308" marker-end="url(#dev-outside-arrow)"/>
+
+  <rect class="d-box-own" x="70" y="310" width="240" height="30" rx="6"/>
+  <text class="d-t" x="190" y="330" text-anchor="middle">Projects</text>
+  <rect class="d-box-own" x="70" y="348" width="240" height="30" rx="6"/>
+  <text class="d-t" x="190" y="368" text-anchor="middle">OpenSearch</text>
+  <rect class="d-box-own" x="70" y="386" width="240" height="30" rx="6"/>
+  <text class="d-t" x="190" y="406" text-anchor="middle">Kafka</text>
+  <rect class="d-box-own" x="70" y="424" width="240" height="30" rx="6"/>
+  <text class="d-t" x="190" y="444" text-anchor="middle">Git, Jobs</text>
+
+  <rect class="d-box-own" x="380" y="310" width="240" height="144" rx="8"/>
+  <text class="d-t" x="500" y="376" text-anchor="middle">Feature</text>
+  <text class="d-t" x="500" y="400" text-anchor="middle">Store</text>
+
+  <rect class="d-box-own" x="690" y="310" width="240" height="144" rx="8"/>
+  <text class="d-t" x="810" y="376" text-anchor="middle">Models:</text>
+  <text class="d-sub" x="810" y="398" text-anchor="middle" font-size="11">Registry, Serving</text>
+</svg>
+</figure>

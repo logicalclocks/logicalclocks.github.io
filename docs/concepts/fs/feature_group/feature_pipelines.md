@@ -4,7 +4,43 @@ A feature pipeline is a program that orchestrates the execution of a dataflow gr
 With Hopsworks, you can write feature pipelines in different languages as shown in the figure below.
 A feature pipeline can run on a schedule over a batch of data, or continuously over an event stream; see [Streaming Feature Pipelines](streaming_feature_pipelines.md).
 
-<img src="../../../../assets/images/concepts/fs/feature-pipelines.svg">
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 330" role="img" aria-label="Feature pipelines read from external data sources, run aggregation and validation steps in SQL, Python, or Spark and Flink, write to the feature store, and a later transform step produces features." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="fp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <rect class="d-box-ext" x="30" y="40" width="120" height="48" rx="8"/>
+  <text class="d-t" x="90" y="69" text-anchor="middle">DB</text>
+  <rect class="d-box-ext" x="30" y="108" width="120" height="48" rx="8"/>
+  <text class="d-t" x="90" y="137" text-anchor="middle">Msg Bus</text>
+  <rect class="d-box-ext" x="30" y="176" width="120" height="48" rx="8"/>
+  <text class="d-t" x="90" y="205" text-anchor="middle">DB</text>
+  <rect class="d-box-ext" x="30" y="244" width="120" height="48" rx="8"/>
+  <text class="d-t" x="90" y="273" text-anchor="middle">Files</text>
+  <path class="d-flow" d="M150 64 H320" marker-end="url(#fp-arrow)"/>
+  <text class="d-t" x="235" y="54" text-anchor="middle">SQL</text>
+  <path class="d-flow" d="M150 132 H200"/>
+  <path class="d-flow" d="M150 268 H200"/>
+  <path class="d-flow" d="M200 132 V268"/>
+  <path class="d-flow" d="M150 200 H320" marker-end="url(#fp-arrow)"/>
+  <text class="d-t" x="260" y="192" text-anchor="middle">Python</text>
+  <text class="d-t" x="260" y="216" text-anchor="middle">Spark/Flink</text>
+  <rect class="d-box" x="320" y="40" width="150" height="48" rx="8"/>
+  <text class="d-t" x="395" y="69" text-anchor="middle">Aggregate, Validate</text>
+  <rect class="d-box" x="320" y="168" width="150" height="64" rx="8"/>
+  <text class="d-t" x="395" y="195" text-anchor="middle">Reduce, Aggregate,</text>
+  <text class="d-t" x="395" y="215" text-anchor="middle">Validate</text>
+  <path class="d-flow" d="M470 64 H540" marker-end="url(#fp-arrow)"/>
+  <path class="d-flow" d="M470 200 H540" marker-end="url(#fp-arrow)"/>
+  <rect class="d-box-own" x="540" y="40" width="120" height="252" rx="8"/>
+  <text class="d-t" x="600" y="160" text-anchor="middle">Feature</text>
+  <text class="d-t" x="600" y="180" text-anchor="middle">Store</text>
+  <path class="d-flow" d="M660 166 H720" marker-end="url(#fp-arrow)"/>
+  <rect class="d-box" x="720" y="142" width="110" height="48" rx="8"/>
+  <text class="d-t" x="775" y="171" text-anchor="middle">Transform</text>
+  <path class="d-flow" d="M830 166 H890" marker-end="url(#fp-arrow)"/>
+  <rect class="d-box-own" x="890" y="142" width="100" height="48" rx="8"/>
+  <text class="d-t" x="940" y="171" text-anchor="middle">Features</text>
+</svg>
+</figure>
 
 ## Data Sources
 
@@ -41,7 +77,34 @@ It also makes it impossible for inference pipelines to log untransformed feature
 There is one use case for storing transformed features in feature groups - when you need to have ultra low latency when reading precomputed features (and online transformations when reading features add too much latency for your use case).
 The figure below shows to include transformations in your feature pipelines.
 
-<img src="../../../../assets/images/concepts/fs/feature-pipelines-with-transformations.svg">
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 290" role="img" aria-label="A feature pipeline reads from external sources, then reduces, aggregates, validates, and transforms the data in Python or Spark and Flink before writing features to the feature store." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="fpt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <rect class="d-box-ext" x="40" y="40" width="140" height="48" rx="8"/>
+  <text class="d-t" x="110" y="69" text-anchor="middle">Msg Bus</text>
+  <rect class="d-box-ext" x="40" y="120" width="140" height="48" rx="8"/>
+  <text class="d-t" x="110" y="149" text-anchor="middle">DB</text>
+  <rect class="d-box-ext" x="40" y="200" width="140" height="48" rx="8"/>
+  <text class="d-t" x="110" y="229" text-anchor="middle">Files</text>
+  <path class="d-flow" d="M180 64 H210"/>
+  <path class="d-flow" d="M180 224 H210"/>
+  <path class="d-flow" d="M210 64 V224"/>
+  <path class="d-flow" d="M180 144 H360" marker-end="url(#fpt-arrow)"/>
+  <text class="d-t" x="285" y="136" text-anchor="middle">Python</text>
+  <text class="d-t" x="285" y="160" text-anchor="middle">Spark/Flink</text>
+  <rect class="d-box" x="360" y="104" width="180" height="80" rx="8"/>
+  <text class="d-t" x="450" y="129" text-anchor="middle">Reduce, Aggregate,</text>
+  <text class="d-t" x="450" y="149" text-anchor="middle">Validate,</text>
+  <text class="d-t" x="450" y="169" text-anchor="middle">Transform</text>
+  <path class="d-flow" d="M540 144 H620" marker-end="url(#fpt-arrow)"/>
+  <rect class="d-box-own" x="620" y="40" width="140" height="208" rx="8"/>
+  <text class="d-t" x="690" y="138" text-anchor="middle">Feature</text>
+  <text class="d-t" x="690" y="158" text-anchor="middle">Store</text>
+  <path class="d-flow" d="M760 144 H830" marker-end="url(#fpt-arrow)"/>
+  <rect class="d-box-own" x="830" y="120" width="120" height="48" rx="8"/>
+  <text class="d-t" x="890" y="149" text-anchor="middle">Features</text>
+</svg>
+</figure>
 
 ## Feature Engineering in Python
 

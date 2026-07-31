@@ -4,7 +4,58 @@
 Hopsworks provides a complete self-service development environment for feature engineering and model training.
 You can develop programs as Jupyter notebooks or jobs, customize the bundled FTI (feature, training and inference pipeline) python environments, you can manage your source code with Git, and you can orchestrate jobs with Airflow.
 
-<img src="../../../assets/images/concepts/dev/dev-inside.svg" alt="Hopsworks Development Environment" />
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 600" role="img" aria-label="Developers reach Hopsworks from remote clients, local IDEs, and CI/CD, and use its built-in library management, source control, notebooks, jobs, workflows, and logging and monitoring." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="dev-inside-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+
+  <rect class="d-panel-fs" x="290" y="100" width="690" height="470" rx="16"/>
+  <text class="d-cap d-cap-fs" x="635" y="88" text-anchor="middle">Development and Jobs with Hopsworks</text>
+
+  <rect class="d-box-ext" x="20" y="135" width="165" height="90" rx="8"/>
+  <text class="d-t" x="102" y="185" text-anchor="middle">User</text>
+  <rect class="d-box-ext" x="20" y="280" width="165" height="90" rx="8"/>
+  <text class="d-t" x="102" y="330" text-anchor="middle">PyCharm / IntelliJ</text>
+  <rect class="d-box-ext" x="20" y="425" width="165" height="90" rx="8"/>
+  <text class="d-t" x="102" y="463" text-anchor="middle">CI/CD</text>
+  <text class="d-sub" x="102" y="485" text-anchor="middle">GitHub Actions, Jenkins</text>
+
+  <path class="d-flow" d="M185 180 H290" marker-end="url(#dev-inside-arrow)"/>
+  <text class="d-sub" x="237" y="171" text-anchor="middle">Develop Remote,</text>
+  <text class="d-sub" x="237" y="185" text-anchor="middle">Run Remote</text>
+  <path class="d-flow" d="M185 325 H290" marker-end="url(#dev-inside-arrow)"/>
+  <text class="d-sub" x="237" y="316" text-anchor="middle">Develop Local,</text>
+  <text class="d-sub" x="237" y="330" text-anchor="middle">Run Remote</text>
+  <path class="d-flow" d="M185 470 H290" marker-end="url(#dev-inside-arrow)"/>
+  <text class="d-sub" x="237" y="466" text-anchor="middle">CI/CD Pipelines</text>
+
+  <rect class="d-box-own" x="310" y="135" width="270" height="90" rx="8"/>
+  <text class="d-t" x="445" y="173" text-anchor="middle">Install Libraries</text>
+  <text class="d-sub" x="445" y="195" text-anchor="middle">Conda, PyPI, Docker</text>
+  <rect class="d-box-own" x="710" y="135" width="255" height="90" rx="8"/>
+  <text class="d-t" x="837" y="173" text-anchor="middle">Source Code Control</text>
+  <text class="d-sub" x="837" y="195" text-anchor="middle">GitHub, GitLab, Bitbucket</text>
+
+  <rect class="d-api" x="310" y="280" width="270" height="90" rx="8"/>
+  <text class="d-t" x="445" y="318" text-anchor="middle">Jobs</text>
+  <text class="d-sub" x="445" y="340" text-anchor="middle">Python, Spark, Flink</text>
+  <rect class="d-box-own" x="710" y="280" width="255" height="90" rx="8"/>
+  <text class="d-t" x="837" y="318" text-anchor="middle">Notebooks</text>
+  <text class="d-sub" x="837" y="340" text-anchor="middle">Jupyter</text>
+
+  <rect class="d-box-own" x="310" y="425" width="270" height="90" rx="8"/>
+  <text class="d-t" x="445" y="463" text-anchor="middle">Workflows</text>
+  <text class="d-sub" x="445" y="485" text-anchor="middle">Apache Airflow</text>
+  <rect class="d-box-own" x="710" y="425" width="255" height="90" rx="8"/>
+  <text class="d-t" x="837" y="463" text-anchor="middle">Logs &amp; Monitoring</text>
+  <text class="d-sub" x="837" y="485" text-anchor="middle">OpenSearch, Grafana, Prometheus</text>
+
+  <path class="d-flow" d="M710 325 H580" marker-end="url(#dev-inside-arrow)"/>
+  <text class="d-sub" x="645" y="318" text-anchor="middle">Notebook-as-Job</text>
+  <path class="d-flow" d="M445 425 V370" marker-end="url(#dev-inside-arrow)"/>
+  <text class="d-sub" x="518" y="402" text-anchor="middle">orchestrate</text>
+  <path class="d-flow" d="M500 370 L760 425" stroke-dasharray="5 4"/>
+</svg>
+</figure>
 
 ## Jupyter Notebooks
 

@@ -9,7 +9,33 @@ For example, if a feature view is built from the `customer_profile` and `custome
 
 A feature vector is a row of features (without the primary key(s) and event timestamp):
 
-<img src="../../../../assets/images/concepts/fs/feature-vector.svg">
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 340" role="img" aria-label="A feature vector is a single row whose cells (location_id, temperature, rainfall) each come from either the app session or the feature store." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="fv-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <text class="d-t" x="500" y="40" text-anchor="middle">feature vector</text>
+  <text class="d-t" x="233" y="76" text-anchor="middle">location_id</text>
+  <text class="d-t" x="500" y="76" text-anchor="middle">temperature</text>
+  <text class="d-t" x="767" y="76" text-anchor="middle">rainfall</text>
+  <rect class="d-box" x="100" y="90" width="800" height="64" rx="8"/>
+  <path class="d-flow" d="M367 90 V154"/>
+  <path class="d-flow" d="M633 90 V154"/>
+  <text class="d-t" x="233" y="128" text-anchor="middle">9844-3333</text>
+  <text class="d-t" x="500" y="128" text-anchor="middle">12.45</text>
+  <text class="d-t" x="767" y="128" text-anchor="middle">44</text>
+  <path class="d-flow" d="M233 154 V228" marker-end="url(#fv-arrow)"/>
+  <path class="d-flow" d="M500 154 V228" marker-end="url(#fv-arrow)"/>
+  <path class="d-flow" d="M767 154 V228" marker-end="url(#fv-arrow)"/>
+  <rect class="d-box-ext" x="123" y="230" width="220" height="80" rx="8"/>
+  <text class="d-t" x="233" y="266" text-anchor="middle">Primary Key from</text>
+  <text class="d-t" x="233" y="288" text-anchor="middle">app session</text>
+  <rect class="d-box-own" x="390" y="230" width="220" height="80" rx="8"/>
+  <text class="d-t" x="500" y="266" text-anchor="middle">From</text>
+  <text class="d-t" x="500" y="288" text-anchor="middle">feature store</text>
+  <rect class="d-box-own" x="657" y="230" width="220" height="80" rx="8"/>
+  <text class="d-t" x="767" y="266" text-anchor="middle">From</text>
+  <text class="d-t" x="767" y="288" text-anchor="middle">feature store</text>
+</svg>
+</figure>
 
 It may be the case that for any given feature vector, not all features will come pre-engineered from the feature store.
 Some features will be provided by the client (or at least the raw data to compute the feature will come from the client).

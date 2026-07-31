@@ -14,13 +14,78 @@ A breaking schema change is when you:
 - change how a feature is computed, such that, for training models, the data for the old feature is not compatible with the data for the new feature.
   For example, if you have an embedding as a feature and change the algorithm to compute that embedding, you probably should not mix feature values computed with the old embedding model with feature values computed with the new embedding model.
 
-<img src="../../../../assets/images/concepts/fs/schema-versioning.svg">
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 340" role="img" aria-label="A breaking schema change forces a new feature group version: order_prices v1 is incremented to v2 and the new version is backfilled with the changed data through insert." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="sv-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+
+  <rect class="d-box" x="40" y="95" width="430" height="160" rx="8"/>
+  <text class="d-t" x="255" y="128" text-anchor="middle">Breaking schema change</text>
+  <text class="d-t d-sub" x="255" y="152" text-anchor="middle">new_df has different columns than order_prices</text>
+  <text class="d-t d-sub" x="255" y="192" text-anchor="middle">create_feature_group(name=order_prices, version=2)</text>
+  <text class="d-t d-sub" x="255" y="216" text-anchor="middle">prices_fg.insert(new_df) backfills the new version</text>
+
+  <rect class="d-box-own" x="600" y="40" width="380" height="110" rx="10"/>
+  <text class="d-t" x="790" y="68" text-anchor="middle">order_prices (v1)</text>
+  <rect class="d-box" x="612" y="88" width="176" height="44" rx="6"/>
+  <text class="d-t" x="700" y="115" text-anchor="middle">Commitₙ</text>
+  <rect class="d-box" x="796" y="88" width="176" height="44" rx="6"/>
+  <text class="d-t" x="884" y="115" text-anchor="middle">Timestampₙ</text>
+
+  <path class="d-flow" d="M790 150 V200" marker-end="url(#sv-arrow)"/>
+  <text class="d-t d-sub" x="800" y="180">increment version</text>
+
+  <rect class="d-box-own" x="600" y="200" width="380" height="110" rx="10"/>
+  <text class="d-t" x="790" y="228" text-anchor="middle">order_prices (v2)</text>
+  <rect class="d-box" x="612" y="248" width="176" height="44" rx="6"/>
+  <text class="d-t" x="700" y="275" text-anchor="middle">Commit₁</text>
+  <rect class="d-box" x="796" y="248" width="176" height="44" rx="6"/>
+  <text class="d-t" x="884" y="275" text-anchor="middle">Timestampₓ</text>
+
+  <path class="d-flow" d="M470 240 H535 V270 H600" marker-end="url(#sv-arrow)"/>
+  <text class="d-t d-sub" x="525" y="232" text-anchor="middle">backfill</text>
+</svg>
+</figure>
 
 ## Feature group data versioning
 
 Data versioning of a feature group tracks updates to the feature group, so that you can recover the state of the feature group at a given point-in-time in the past.
 
-<img src="../../../../assets/images/concepts/fs/data-versioning.svg">
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 290" role="img" aria-label="Data versioning: each insert into feature group order_prices version 1 appends a new commit and timestamp row, building the history you can time travel through." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="dv-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+
+  <rect class="d-box" x="40" y="80" width="430" height="140" rx="8"/>
+  <text class="d-t" x="255" y="112" text-anchor="middle">Insert into the same version</text>
+  <text class="d-t d-sub" x="255" y="148" text-anchor="middle">fs.get_feature_group(order_prices, 1)</text>
+  <text class="d-t d-sub" x="255" y="176" text-anchor="middle">fg.insert(new_orders_df)</text>
+
+  <rect class="d-box-own" x="600" y="30" width="380" height="232" rx="10"/>
+  <text class="d-t" x="790" y="58" text-anchor="middle">order_prices (v1)</text>
+
+  <rect class="d-box" x="612" y="72" width="176" height="40" rx="6"/>
+  <text class="d-t" x="700" y="97" text-anchor="middle">Commit₁</text>
+  <rect class="d-box" x="796" y="72" width="176" height="40" rx="6"/>
+  <text class="d-t" x="884" y="97" text-anchor="middle">Timestamp₁</text>
+
+  <rect class="d-box" x="612" y="118" width="176" height="40" rx="6"/>
+  <text class="d-t" x="700" y="143" text-anchor="middle">Commit₂</text>
+  <rect class="d-box" x="796" y="118" width="176" height="40" rx="6"/>
+  <text class="d-t" x="884" y="143" text-anchor="middle">Timestamp₂</text>
+
+  <rect class="d-box" x="612" y="164" width="176" height="40" rx="6"/>
+  <text class="d-t" x="700" y="189" text-anchor="middle">…</text>
+  <rect class="d-box" x="796" y="164" width="176" height="40" rx="6"/>
+  <text class="d-t" x="884" y="189" text-anchor="middle">…</text>
+
+  <rect class="d-box" x="612" y="210" width="176" height="40" rx="6"/>
+  <text class="d-t" x="700" y="235" text-anchor="middle">Commitₙ</text>
+  <rect class="d-box" x="796" y="210" width="176" height="40" rx="6"/>
+  <text class="d-t" x="884" y="235" text-anchor="middle">Timestampₙ</text>
+
+  <path class="d-flow" d="M470 150 H600" marker-end="url(#dv-arrow)"/>
+  <text class="d-t d-sub" x="535" y="140" text-anchor="middle">each insert appends a commit</text>
+</svg>
+</figure>
 
 There are two points in time you can travel back to, and they answer different questions.
 As-of ingestion time reads the data as it had been written by a given moment, which gives reproducible training data.
