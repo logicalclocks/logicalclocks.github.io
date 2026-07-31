@@ -238,3 +238,24 @@ a.external::after,
 a.autorefs-external::after {
   content: "↗";
 }
+
+/* "Copy for LLM" action, injected by js/llm-copy.js next to the page title. */
+.md-llm-copy {
+  float: right;
+  margin: 0.2rem 0 0 0.6rem;
+  padding: 0.25em 0.7em;
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: var(--md-primary-fg-color);
+  background: transparent;
+  border: 1px solid var(--md-primary-fg-color);
+  border-radius: var(--border-radius-variable, 5px);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.md-llm-copy:hover {
+  color: var(--md-primary-bg-color, #fff);
+  background: var(--md-primary-fg-color);
+}

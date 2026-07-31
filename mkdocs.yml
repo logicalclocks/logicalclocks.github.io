@@ -361,6 +361,12 @@ extra_css:
 
 extra_javascript:
   - js/quickstart-fullscreen.js
+  - js/llm-copy.js
+
+# Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
+# Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.
+hooks:
+  - scripts/llms_hook.py
 
 plugins:
   - search
