@@ -11,7 +11,7 @@ You can log either transformed or/and untransformed features values.
 ### Enabling Feature Logging
 
 To enable logging, set `logging_enabled=True` when creating the feature view.
-Two feature groups will be created for storing transformed and untransformed features, but they are not visible in the UI.
+A single feature group storing both transformed and untransformed features will be created, but it is not visible in the UI.
 The logged features will be written to the offline feature store every hour by scheduled materialization jobs which are created automatically.
 
 ```python
@@ -229,6 +229,31 @@ feature_view.delete_log()
 
 # Delete only transformed log entries
 feature_view.delete_log(transformed=True)
+```
+
+## Upgrade Compatibility with Pre-4.6 Feature Logging
+
+Hopsworks 4.6 changed the feature logging layout: transformed and untransformed features are logged into one combined feature group instead of a separate pair, labels are logged as `predicted_<label>` columns, and the model identity is stored in `model_name` and `model_version` columns instead of a single `hsml_model` column.
+
+Feature views that enabled logging before the upgrade keep their original pair of logging feature groups unchanged.
+Model deployments and batch jobs that still run a pre-4.6 client keep logging to those feature views without any code change or downtime.
+Clients from 4.6 onwards also keep working against them: predictions and the model identity are written into the original columns, and `feature_view.read_log(model_name=..., model_version=...)` filters on the original `hsml_model` column.
+Calling `feature_view.delete_log()` on such a feature view deletes the original pair and recreates the logs in the combined layout, because the deleted logs are recreated with the current schema.
+
+Enabling logging on a feature view created after the upgrade requires a 4.6 or later client.
+A pre-4.6 client cannot produce the combined layout, so its `feature_view.log(...)` calls against such feature views fail instead of writing incomplete rows.
+
+The first positional parameter of `feature_view.log()` changed in 4.6 from `untransformed_features` to `logging_data`.
+On feature views with the pre-4.6 pair of logging feature groups, positional calls written for the old signature are detected and keep working.
+
+```python
+# Positional call style written for pre-4.6 clients, still working on
+# feature views that predate the upgrade:
+feature_view.log(features, predictions)
+
+# Equivalent call that works on every feature view; use this form when
+# migrating code to a 4.6 or later client:
+feature_view.log(features, predictions=predictions)
 ```
 
 ## Summary
