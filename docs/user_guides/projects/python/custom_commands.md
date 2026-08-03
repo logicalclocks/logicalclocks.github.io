@@ -68,3 +68,66 @@ There are few important things to be aware of when writing the bash script:
 - The conda environment is located in `/srv/hops/anaconda/envs/hopsworks_environment`.
   You can install or uninstall packages in the conda environment using pip like: `/srv/hops/anaconda/envs/hopsworks_environment/bin/pip install spotify==0.10.2`.
   If the command requires some input, write the command together with the expected input otherwise the build will fail.
+
+## Making custom-command builds faster
+
+A custom-command build repeats all of its work every time, including compilation and downloads that have not changed. Two things can be declared in the environment variables you supply alongside the script.
+
+Both are read as build directives and never become environment variables in the image.
+
+!!! note
+    Both need a cluster where an administrator has enabled the persistent BuildKit daemon. Without it there is nothing for a cache to survive in. See [Python Environment Build Performance](../../../setup_installation/admin/build_performance.md).
+
+### Caching a toolchain
+
+`HOPSWORKS_BUILD_CACHE` names the toolchain caches your script should get, comma separated:
+
+```
+HOPSWORKS_BUILD_CACHE=ccache,maven
+```
+
+| Name | Cached |
+| --- | --- |
+| `uv`, `pip` | Python package downloads |
+| `ccache`, `sccache` | C and C++ compiler output |
+| `maven`, `gradle` | Java and Scala dependencies |
+| `cargo` | Rust crates and build output |
+| `npm` | Node packages |
+| `go` | Go modules |
+
+Each one mounts a directory that survives between builds and points the tool at it. Your script does not need to configure anything; it just needs to use the tool normally.
+
+This speeds up the work inside the step even though the step itself still re-runs. That is the point: a script that compiles a native extension pays the download and compile cost once rather than on every build.
+
+Every cache is scoped to your project, and only one build in your project uses a given cache at a time, so two builds cannot corrupt a shared repository.
+
+An unrecognised name fails the build and tells you which names are accepted, rather than being ignored.
+
+### Reusing the whole layer
+
+By default a custom-command build never reuses its previous result, because a script can fetch anything and nothing declares what it fetched. An unchanged script that installs `curl | bash` from a URL, or `apt-get install` from a moving repository, does not produce the same thing a month later.
+
+If your script genuinely fetches nothing that can change, you can say so:
+
+```
+HOPSWORKS_BUILD_HERMETIC=true
+```
+
+An unchanged script then reuses its previous layer outright, which takes the step to near zero.
+
+Everything else about the step is already accounted for: the base image, your script, and your uploaded artifacts all change the result when they change. What you are asserting is the one thing the platform cannot check for you, which is that nothing your script reaches out to will change underneath it.
+
+!!! warning
+    This only takes effect if your administrator has allowed such assertions on the cluster. If it has not been enabled, the setting is ignored and the layer is rebuilt as usual.
+
+If you are not certain, leave it out and use `HOPSWORKS_BUILD_CACHE` instead. That speeds up the work without assuming anything about the outside world.
+
+### Referencing a secret
+
+A value in the environment variables file becomes an `ENV` instruction, which is image configuration: readable with `docker inspect` by anyone who can pull the image. To pass a credential to your script without it entering the image, reference one of your own Hopsworks secrets:
+
+```
+MY_TOKEN=secret:my_secret_name
+```
+
+The value is mounted only for the step that runs your script and is exported into its environment. It never becomes an `ENV`, and it is not recorded in the image history.

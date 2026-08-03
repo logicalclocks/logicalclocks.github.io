@@ -265,6 +265,7 @@ nav:
           - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
       - Administration:
           - Cluster Configuration: setup_installation/admin/variables.md
+          - Python Build Performance: setup_installation/admin/build_performance.md
           - Introduction: setup_installation/admin/index.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
