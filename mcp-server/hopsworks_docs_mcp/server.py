@@ -2,21 +2,32 @@
 
 The server indexes the local ``docs/`` Markdown tree (the same source that
 builds ``docs.hopsworks.ai``) and exposes retrieval tools only. It never
-mutates the docs, never reaches the network, and confines all reads to the
-docs directory. There is no write path.
+mutates the docs, never makes outbound network calls, and confines all reads
+to the docs directory. There is no write path.
 
-Run over stdio (the usual MCP transport):
+Two transports, chosen by the ``MCP_TRANSPORT`` env var:
+
+- ``stdio`` (default) — the usual local transport::
 
     HOPSWORKS_DOCS_DIR=/path/to/docs uv run --with mcp \\
         python -m hopsworks_docs_mcp
 
+- ``streamable-http`` — a long-running HTTP endpoint (used for the hosted
+  ``mcp.hopsworks.ai`` deployment). Served by uvicorn on ``MCP_HOST``/
+  ``MCP_PORT`` behind a per-IP rate limit.
+
 If ``HOPSWORKS_DOCS_DIR`` is unset the server walks up from this file to find a
-``docs/`` directory that sits next to ``mkdocs.yml``.
+``docs/`` directory that sits next to ``mkdocs.yml``. When the hosted deployment
+keeps that directory in sync with ``main`` (an external ``git pull`` loop), set
+``MCP_REINDEX_INTERVAL`` to have the server rebuild its index on change without
+a restart.
 """
 
 from __future__ import annotations
 
 import os
+import threading
+import time
 from pathlib import Path
 
 from mcp.server.mcpserver import MCPServer
@@ -50,7 +61,29 @@ def _find_docs_dir() -> Path:
     )
 
 
-_index = DocsIndex(_find_docs_dir())
+class _RefreshableIndex:
+    """Holds the current :class:`DocsIndex`, rebuildable in place.
+
+    Tool code reads ``_index.pages`` / ``_index.search`` unchanged: attribute
+    access falls through to the inner index. A background watcher can call
+    :meth:`refresh` to atomically swap in a freshly built index when the docs
+    on disk change, so the hosted endpoint follows ``main`` without a restart.
+    """
+
+    def __init__(self, docs_dir: Path) -> None:
+        self._dir = docs_dir
+        self._inner = DocsIndex(docs_dir)
+
+    def __getattr__(self, name: str):
+        # Only reached for names not set on the wrapper itself (_dir, _inner).
+        return getattr(self._inner, name)
+
+    def refresh(self) -> None:
+        self._inner = DocsIndex(self._dir)
+
+
+_docs_dir = _find_docs_dir()
+_index = _RefreshableIndex(_docs_dir)
 mcp = MCPServer(
     "hopsworks-docs",
     instructions=(
@@ -194,8 +227,145 @@ def list_pages(prefix: str = "") -> str:
     return _clip("\n".join(lines))
 
 
+class RateLimitMiddleware:
+    """Per-client-IP token-bucket rate limit for the hosted HTTP endpoint.
+
+    Pure ASGI (not Starlette's ``BaseHTTPMiddleware``) so it never buffers the
+    streaming MCP response: it either rejects with 429 before the app runs, or
+    passes the request straight through untouched. Behind a reverse proxy the
+    real client is the first hop of ``X-Forwarded-For``.
+    """
+
+    def __init__(
+        self, app, rps: float = 5.0, burst: int = 60, trust_forwarded: bool = True
+    ) -> None:
+        self.app = app
+        self.rps = rps
+        self.burst = burst
+        self.trust_forwarded = trust_forwarded
+        self._buckets: dict[str, tuple[float, float]] = {}
+        self._lock = threading.Lock()
+
+    def _client_ip(self, scope) -> str:
+        if self.trust_forwarded:
+            for name, value in scope.get("headers", []):
+                if name == b"x-forwarded-for":
+                    return value.decode("latin-1").split(",")[0].strip()
+        client = scope.get("client")
+        return client[0] if client else "unknown"
+
+    def _allow(self, ip: str) -> bool:
+        now = time.monotonic()
+        with self._lock:
+            tokens, last = self._buckets.get(ip, (float(self.burst), now))
+            tokens = min(self.burst, tokens + (now - last) * self.rps)
+            if tokens < 1.0:
+                self._buckets[ip] = (tokens, now)
+                return False
+            # Opportunistic prune so idle IPs don't accumulate forever.
+            if len(self._buckets) > 10_000:
+                cutoff = now - 3600
+                self._buckets = {
+                    k: v for k, v in self._buckets.items() if v[1] > cutoff
+                }
+            self._buckets[ip] = (tokens - 1.0, now)
+            return True
+
+    async def __call__(self, scope, receive, send) -> None:
+        if scope["type"] != "http" or self._allow(self._client_ip(scope)):
+            await self.app(scope, receive, send)
+            return
+        await send(
+            {
+                "type": "http.response.start",
+                "status": 429,
+                "headers": [
+                    (b"content-type", b"text/plain; charset=utf-8"),
+                    (b"retry-after", b"1"),
+                ],
+            }
+        )
+        await send({"type": "http.response.body", "body": b"Rate limit exceeded.\n"})
+
+
+def _start_reindex_watcher(index: _RefreshableIndex, docs_dir: Path, interval: int) -> None:
+    """Rebuild the index when the Markdown on disk changes.
+
+    Cheap, git-agnostic change signal: the file count and newest mtime across
+    ``*.md``. An external ``git pull`` that updates any page bumps the newest
+    mtime; a merge that adds or removes pages changes the count.
+    """
+
+    def signature() -> tuple[int, float]:
+        mtimes = [p.stat().st_mtime for p in docs_dir.rglob("*.md")]
+        return (len(mtimes), max(mtimes, default=0.0))
+
+    def loop(last: tuple[int, float]) -> None:
+        while True:
+            time.sleep(interval)
+            try:
+                current = signature()
+                if current != last:
+                    index.refresh()
+                    last = current
+            except Exception:  # noqa: BLE001 - a transient FS read must not kill the watcher
+                pass
+
+    threading.Thread(
+        target=loop, args=(signature(),), daemon=True, name="reindex"
+    ).start()
+
+
 def main() -> None:
-    mcp.run()
+    transport = os.environ.get("MCP_TRANSPORT", "stdio")
+
+    interval = int(os.environ.get("MCP_REINDEX_INTERVAL", "0"))
+    if interval > 0:
+        _start_reindex_watcher(_index, _docs_dir, interval)
+
+    if transport == "streamable-http":
+        import uvicorn
+
+        # DNS-rebinding protection validates the Host header against an allowlist.
+        # Behind a reverse proxy the Host is the public domain, so it must be
+        # listed (comma-separated ``MCP_ALLOWED_HOSTS``); localhost stays allowed
+        # for health checks and local runs. A missing Origin (non-browser MCP
+        # clients) is permitted by the SDK, so only hosts need configuring.
+        security = None
+        allowed = [
+            h.strip()
+            for h in os.environ.get("MCP_ALLOWED_HOSTS", "").split(",")
+            if h.strip()
+        ]
+        if allowed:
+            from mcp.server.transport_security import TransportSecuritySettings
+
+            security = TransportSecuritySettings(
+                enable_dns_rebinding_protection=True,
+                allowed_hosts=[
+                    *allowed,
+                    "localhost",
+                    "localhost:*",
+                    "127.0.0.1",
+                    "127.0.0.1:*",
+                ],
+                allowed_origins=[f"https://{h}" for h in allowed],
+            )
+
+        app = mcp.streamable_http_app(transport_security=security)
+        app.add_middleware(
+            RateLimitMiddleware,
+            rps=float(os.environ.get("MCP_RATE_RPS", "5")),
+            burst=int(os.environ.get("MCP_RATE_BURST", "60")),
+        )
+        uvicorn.run(
+            app,
+            host=os.environ.get("MCP_HOST", "0.0.0.0"),
+            port=int(os.environ.get("MCP_PORT", "8080")),
+            log_level=os.environ.get("MCP_LOG_LEVEL", "info"),
+        )
+    else:
+        mcp.run(transport)
 
 
 if __name__ == "__main__":

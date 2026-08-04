@@ -3,7 +3,7 @@ name = "hopsworks-docs-mcp"
 version = "0.1.0"
 description = "Read-only MCP server exposing the Hopsworks documentation to AI agents."
 requires-python = ">=3.11"
-dependencies = ["mcp>=1.2.0", "pyyaml>=6.0"]
+dependencies = ["mcp>=1.2.0", "pyyaml>=6.0", "uvicorn>=0.30"]
 
 [project.scripts]
 hopsworks-docs-mcp = "hopsworks_docs_mcp:main"
