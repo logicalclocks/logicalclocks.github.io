@@ -49,11 +49,6 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `audit_log_size_limit` | Integer | `256000000` | VariablesHelper.java |
 | `base_image_name` | String | `hopsworks-base` | Settings.java |
 | `base_image_version` | String | `4.3.0` | Settings.java |
-| `brewer_agent_name` | String | `talker` | Settings.java |
-| `brewer_agent_repo` | String | `https://REDACTED@github.com/logicalclocks/brewer.git` | Settings.java |
-| `brewer_enabled` | Boolean | `false` | Settings.java |
-| `brewer_selected_agent_name` | String | `hopsworks_default` | Settings.java |
-| `brewer_serving_name` | String | `brewer` | Settings.java |
 | `cert_mater_delay` | String | `1m` | Settings.java |
 | `certs_dir` | String | `/srv/hops/certs-dir` *(duplicate key, also declared in Settings.java; values match)* | CAConf.java |
 | `certs_dir` | String | `/srv/hops/certs-dir` *(duplicate key, also declared in CAConf.java; values match)* | Settings.java |
