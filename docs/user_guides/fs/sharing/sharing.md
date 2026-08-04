@@ -46,6 +46,26 @@ After clicking `Share`, the feature store appears under the `Shared with other p
   </figure>
 </p>
 
+### Using the API
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+fs = project.get_feature_store()
+
+# Share the whole feature store
+fs.share("target_project")
+
+# List projects it's shared with
+for share in fs.shared_with():
+    print(share["sharedWithProject"]["name"], share["sharedOn"])
+
+# Revoke a share
+fs.unshare("target_project")
+```
+
 ## Sharing a feature group with selected features
 
 For more granular control, you can share individual feature groups and select which features to expose. This allows you to share specific data without granting access to your entire feature store.
@@ -104,6 +124,49 @@ Click `Share` to open the sharing dialog. You can share with either a project or
         <figcaption>List of users the feature group is shared with</figcaption>
       </figure>
     </p>
+
+### Using the API
+
+=== "Share with a project"
+
+    ```python
+    fg = fs.get_feature_group("feature_group_name", version=1)
+
+    # Share the whole feature group
+    fg.share("target_project")
+
+    # Or share only selected columns (primary key + event time are always included)
+    fg.share("target_project", features=["amount", "country"])
+
+    # List projects it's shared with
+    for share in fg.shared_with():
+        print(share["sharedWithProject"]["name"], share["sharedEntirely"])
+
+    # Revoke a share
+    fg.unshare("target_project")
+    ```
+
+=== "Share with a user"
+
+    A [Feature store restricted](../../projects/project/manage_members.md) member has no feature store
+    access by default; access must be granted per feature group (or per feature), from within their own project.
+
+    ```python
+    fg = fs.get_feature_group("feature_group_name", version=1)
+
+    # Grant access to the whole feature group
+    fg.grant_restricted_access("restricted_user@example.com")
+
+    # Or grant access to only selected columns
+    fg.grant_restricted_access("restricted_user@example.com", features=["amount"])
+
+    # List who has been granted access
+    for grant in fg.get_restricted_access():
+        print(grant["grantedToUser"], grant["grantedEntirely"])
+
+    # Revoke access
+    fg.revoke_restricted_access("restricted_user@example.com")
+    ```
 
 ## Using shared features
 

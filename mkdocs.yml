@@ -196,6 +196,8 @@ nav:
               - Configure Git Provider: user_guides/projects/git/configure_git_provider.md
               - Clone Repository: user_guides/projects/git/clone_repo.md
               - Repository Actions: user_guides/projects/git/repository_actions.md
+          - Datasets:
+              - Sharing: user_guides/projects/datasets/sharing.md
           - Secrets:
               - Create Secret: user_guides/projects/secrets/create_secret.md
           - Environment variables:
