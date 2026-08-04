@@ -35,4 +35,5 @@ Do not write prose in API reference pages in this repo — edit the docstrings i
 ## More
 
 - @docs/content.md — writing conventions, Python code blocks, linking, assets
+- @docs/design-system.md — visual language: tokens, logo, nav, search, diagrams
 - @docs/caveats/README.md — known gotchas; add new ones as separate files

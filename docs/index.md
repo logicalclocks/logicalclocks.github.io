@@ -1,7 +1,6 @@
 ---
 description: "Hopsworks documentation: quickstart, architecture, guides by role and by task, deployment models, and API reference."
 hide:
-  - navigation
   - toc
 ---
 
@@ -23,13 +22,14 @@ You can run it as a standalone feature store, as an MLOps platform, or as both.
 
     [Open run.hopsworks.ai ↗](https://run.hopsworks.ai)
 
--   :material-package-variant: **Install the client**
+-   :material-language-python: **Use the Python client**
 
     ---
 
     `pip install hopsworks[python]`, then connect from any Python, Spark, Flink or Java environment.
 
-    [Client installation](user_guides/client_installation/index.md)
+    [Client installation](user_guides/client_installation/index.md) ·
+    <a href="python-api/">Python API reference</a>
 
 -   :material-sitemap-outline: **See the architecture**
 
@@ -236,9 +236,8 @@ Next: [create a feature group](user_guides/fs/feature_group/create.md),
 - Machine-readable index for agents and LLMs: <a href="llms.txt">llms.txt</a>, <a href="llms-full.txt">llms-full.txt</a>.
   Every page also has a raw Markdown sibling at `<page>.md`.
 
-## Community and source
+## Help and source
 
-- Questions and feedback: [Hopsworks Community ↗](https://community.hopsworks.ai/)
-- Chat: [public Slack ↗](https://bit.ly/publichopsworks)
+- Chat: [public Slack ↗](https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA)
 - Releases and issues: [hopsworks-api on GitHub ↗](https://github.com/logicalclocks/hopsworks-api)
 - The Hopsworks Python API is licensed under the [Apache License 2.0 ↗](https://www.apache.org/licenses/LICENSE-2.0.html).

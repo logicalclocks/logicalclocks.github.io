@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block extrahead %}
+  {{ super() }}
+  <!-- Umami analytics (self-hosted at analytics.hops.io). Privacy-friendly,
+       cookieless; defer so it never blocks rendering. -->
+  <script defer src="https://analytics.hops.io/script.js" data-website-id="a34a4b7f-24c2-4a15-8e72-20ef615181bb"></script>
+{% endblock %}
+
 {% block outdated %}
 You're not viewing the latest version of the documentation.
 <a href="{{ '../' ~ base_url }}">

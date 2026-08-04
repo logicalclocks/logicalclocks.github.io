@@ -48,19 +48,6 @@ pre {
 }
 /* end of no-icon style */
 
-.md-header__button.md-logo {
-  margin: 0.1rem;
-  padding: 0.1rem;
-}
-
-.md-header__button.md-logo img,
-.md-header__button.md-logo svg {
-  display: block;
-  width: 1.8rem;
-  height: 1.8rem;
-  fill: rgba(43, 155, 70, 0.1);
-}
-
 /* Jupyter Stuff */
 .jupyter-wrapper .jp-CodeCell .jp-Cell-inputWrapper .jp-InputPrompt {
   display: none !important;
@@ -235,206 +222,639 @@ a.autorefs-external::after {
 .hops-diagram a.d-link:hover > rect { fill-opacity: .24; stroke-opacity: .9; }
 
 /* =========================================================
-   SITE REFURBISH — visual calm pass
-   Single green band (clean tabs), roomier nav, firmer
-   headings, softer admonitions. Additive block: remove it
-   to revert. Overrides earlier rules by cascade order.
+   2026 REFRESH: chrome to the July-2026 dev-docs standard
+   (Stripe / Vercel / Linear / Supabase / Mintlify consensus).
+   Consolidated block: replaces the earlier refurbish + sidebar
+   layers. Kills the saturated green band, flattens the header,
+   re-spaces the nav, and confines brand green to logo + accents.
+   Remove this whole block to revert to the green-band chrome.
    ========================================================= */
 
-/* Left nav: de-boxed, more vertical rhythm, brand-green active. */
-.md-sidebar__scrollwrap {
-  background-color: transparent;
-  padding: 0.8rem 0.4rem;
-  border-radius: 0;
+/* ---- Design tokens: one palette, light + dark ---------------- */
+:root {
+  /* Aligned to the Quartz palette (tailwind-quartz / hopsworks-front). */
+  --hops-accent: #21b182;         /* quartz primary — non-text accents */
+  --hops-accent-text: #0e8a63;    /* AA on white, for links + active nav */
+  --hops-surface: #f5f5f5;        /* quartz gray-shade3 — raised fills */
+  --hops-border: #e2e2e2;         /* quartz gray-shade2 — 1px separator */
+  --hops-border-strong: #cbcbcb;  /* quartz gray-shade1 — card + hover borders */
+  --hops-tint: rgba(33, 177, 130, 0.08); /* active-nav wash */
+  --hops-nav-fg: #4b5563;         /* nav item at rest */
+  --hops-sidebar-bg: #f6f7f9;     /* the nav is its own panel */
 }
-.md-nav--primary .md-nav__link {
-  padding-top: 0.32rem;
-  padding-bottom: 0.32rem;
-  border-radius: 4px;
-  transition: color 0.12s ease, background-color 0.12s ease;
-}
-.md-nav__link--active,
-.md-nav__item--active > .md-nav__link {
-  color: var(--md-primary-fg-color);
-  font-weight: 600;
-}
-.md-nav--primary .md-nav__item--section > .md-nav__link.md-nav__link {
-  color: var(--md-default-fg-color--light);
-  font-weight: 700;
-  font-size: 0.66rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+[data-md-color-scheme="slate"] {
+  --hops-accent: #1eb182;
+  --hops-accent-text: #3ccd9f;    /* brand green reads fine on dark */
+  --hops-surface: hsla(160, 0%, 18%, 1);
+  --hops-border: hsla(160, 0%, 100%, 0.09);
+  --hops-border-strong: hsla(160, 0%, 100%, 0.18);
+  --hops-tint: rgba(30, 177, 130, 0.16);
+  --hops-nav-fg: var(--md-default-fg-color--light);
+  --hops-sidebar-bg: hsla(160, 0%, 11%, 1);
 }
 
-/* Headings: darker and firmer than the washed-out default. */
+/* ---- Header: flat, near-white, the border is the header ------- */
+.md-header {
+  background-color: #ffffff;
+  color: var(--md-default-fg-color);
+  border-bottom: 1px solid var(--hops-border);
+  box-shadow: none;
+}
+[data-md-color-scheme="slate"] .md-header {
+  background-color: var(--md-default-bg-color);
+}
+.md-header__title {
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+}
+/* Header icons + repo link ride currentColor, muted so the logo leads. */
+.md-header__button,
+.md-header__source,
+.md-header .md-source {
+  color: var(--md-default-fg-color--light);
+}
+.md-header__button:hover {
+  color: var(--md-default-fg-color);
+  opacity: 1;
+}
+
+/* Logo: the green hop mark, transparent, no tile. It carries the brand
+   green on its own; the wordmark lives in the header title text. */
+.md-header__button.md-logo {
+  margin: 0 0.5rem 0 0;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.5rem;
+  width: auto;
+}
+
+/* ---- Search: bordered pill with a subtle fill, dark text ------ */
+.md-search__form {
+  background-color: var(--hops-surface);
+  border: 1px solid var(--hops-border);
+  border-radius: 8px;
+  box-shadow: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.md-search__form:hover {
+  background-color: var(--hops-surface);
+  border-color: var(--hops-border-strong);
+}
+.md-search__input {
+  color: var(--md-default-fg-color);
+}
+.md-search__input::placeholder {
+  color: var(--md-default-fg-color--light);
+}
+/* The magnifier inherits the header's white (meant for a coloured header),
+   which vanishes on our light field. Force the muted foreground, high enough
+   specificity to beat Material's in-header rule; the svg rides currentColor. */
+.md-header .md-search__form .md-search__icon,
+.md-header .md-search__form .md-search__icon svg {
+  color: var(--md-default-fg-color--light);
+  fill: currentColor;
+  opacity: 0.7;
+}
+
+/* ---- Left sidebar: its own panel, collapsible, clear active ---- */
+.md-sidebar--primary {
+  background-color: var(--hops-sidebar-bg);
+}
+/* Paint the panel on the scrollwrap: the sidebar element itself is only
+   ~48px tall (sticky), the scrollwrap is the full-height nav column. */
+.md-sidebar--primary .md-sidebar__scrollwrap {
+  background-color: var(--hops-sidebar-bg);
+  padding: 0.6rem 0.55rem;
+  /* Hide the nav scrollbar: its thumb sat right on the divider and read as a
+     second, broken line. Content still scrolls; with drill-in the nav rarely
+     overflows anyway. */
+  scrollbar-width: none;
+}
+.md-sidebar--primary .md-sidebar__scrollwrap::-webkit-scrollbar {
+  display: none;
+}
+/* The sticky drawer title collides with the first item on desktop
+   (the overlap bug). It belongs to the mobile drawer only. */
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary .md-nav__title {
+    display: none;
+  }
+  /* Roomier nav so labels ("Setup and Administration") stop wrapping, and a
+     full-viewport-height grey panel so the fill spans top to bottom (the
+     scrollwrap alone only covers its sticky window, leaving white gaps). */
+  .md-sidebar--primary {
+    width: 15.5rem;
+    top: 0;
+    height: 100vh;
+    padding: 0;
+  }
+  /* Full-bleed grey panel: a pseudo behind the nav paints from the left
+     viewport edge across to the panel's right border, top (past the header
+     gap) to bottom. The layout grid is centered with a left margin, so
+     without this the grey would stop where the nav column starts. */
+  .md-sidebar--primary::before {
+    content: "";
+    position: absolute;
+    top: -2rem;
+    bottom: 0;
+    right: 0;
+    left: -100vw;
+    background-color: var(--hops-sidebar-bg);
+    /* Divider lives here, not on the sidebar box: the box starts 30px below the
+       header (the main__inner top gap), so its border left a notch. The pseudo
+       spans past the header, so its right edge is a divider flush to the header. */
+    border-right: 1px solid var(--hops-border);
+    z-index: -1;
+  }
+  .md-sidebar--primary .md-sidebar__scrollwrap {
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding-top: calc(2.4rem + 0.5rem);
+  }
+}
+.md-nav--primary {
+  font-size: 0.72rem;
+}
+.md-nav--primary .md-nav__link {
+  padding: 0.34rem 0.55rem;
+  border-radius: 6px;
+  color: var(--hops-nav-fg);
+  transition: color 0.1s ease, background-color 0.1s ease;
+}
+/* A nested section wraps its link + chevron in .md-nav__container. Make the
+   CONTAINER the one pill and flatten the two inner links, so a hovered or
+   active section is a single clean highlight, never two split boxes. */
+.md-nav--primary .md-nav__container {
+  border-radius: 6px;
+  transition: background-color 0.1s ease;
+}
+.md-nav--primary .md-nav__container > .md-nav__link {
+  border-radius: 0;
+  background: transparent !important;
+}
+/* Hover: a calm darkening of the panel, reads as hover not a floating card. */
+.md-nav--primary .md-nav__item > .md-nav__link:hover,
+.md-nav--primary .md-nav__container:hover {
+  background-color: rgba(0, 0, 0, 0.045);
+}
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__item > .md-nav__link:hover,
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__container:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.md-nav--primary .md-nav__item > .md-nav__link:hover,
+.md-nav--primary .md-nav__container:hover > .md-nav__link {
+  color: var(--md-default-fg-color);
+}
+/* Active: one tinted pill in brand green. No rail, no shadow, no split. */
+.md-nav--primary .md-nav__item > .md-nav__link--active,
+.md-nav--primary .md-nav__container:has(> .md-nav__link--active) {
+  background-color: var(--hops-tint);
+  font-weight: 600;
+}
+.md-nav--primary .md-nav__item > .md-nav__link--active,
+.md-nav--primary .md-nav__container:has(> .md-nav__link--active) > .md-nav__link {
+  color: var(--hops-accent-text);
+}
+/* Top-level entries read as section headers (navigation.sections is off). */
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav--primary
+  > .md-nav__list
+  > .md-nav__item
+  > .md-nav__container
+  > .md-nav__link:first-child {
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+}
+/* Collapse affordance: the chevron is a real toggle button. Pointer cursor
+   plus it rotates on click; it tints green when you hover the section. */
+.md-nav--primary .md-nav__container > .md-nav__link[for] {
+  cursor: pointer;
+}
+.md-nav--primary .md-nav__icon {
+  color: var(--md-default-fg-color--light);
+}
+.md-nav--primary .md-nav__container:hover .md-nav__icon {
+  color: var(--hops-accent-text);
+}
+/* Nesting: depth reads through indentation + a type-hierarchy fade, not a
+   ladder of stacked rails (Refactoring UI: don't separate with lines what
+   space and weight already separate). One faint rail at the first nested
+   level marks the branch; deeper levels indent only. */
+.md-nav--primary .md-nav__list .md-nav__list {
+  margin-left: 0.45rem;
+  padding-left: 0.45rem;
+  border-left: 1px solid var(--hops-border);
+}
+.md-nav--primary .md-nav__list .md-nav__list .md-nav__list {
+  border-left: none;
+  margin-left: 0.3rem;
+  padding-left: 0.35rem;
+}
+/* Deep leaves: a touch tighter link padding so labels stop wrapping. */
+.md-nav--primary .md-nav__list .md-nav__list .md-nav__link {
+  padding-left: 0.4rem;
+  padding-right: 0.35rem;
+}
+/* Fade deeper leaves so the eye follows the hierarchy top-down. */
+.md-nav--primary .md-nav__list .md-nav__list .md-nav__link {
+  color: var(--md-default-fg-color--light);
+}
+.md-nav--primary .md-nav__list .md-nav__list .md-nav__link--active {
+  color: var(--hops-accent-text);
+}
+
+/* ---- Headings: firm, tightened tracking --------------------- */
 .md-typeset h1 {
   color: var(--md-default-fg-color);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 .md-typeset h2 {
   font-weight: 600;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.015em;
 }
-
-/* Body: a touch more line height for calmer reading. */
+.md-typeset h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
 .md-typeset {
   line-height: 1.65;
 }
 
-/* Admonitions and collapsibles: calm cards, not saturated billboards. */
+/* ---- Content links: brand green at rest, AA in light --------- */
+[data-md-color-scheme="hopsworks"] {
+  --md-typeset-a-color: var(--hops-accent-text);
+}
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color: var(--hops-accent-text);
+}
+.md-typeset a {
+  text-underline-offset: 0.18em;
+  transition: color 0.15s ease;
+}
+.md-content a:hover {
+  color: var(--hops-accent-text);
+  text-decoration: underline;
+}
+
+/* ---- Right TOC: tight, accent on the active heading ---------- */
+.md-nav--secondary .md-nav__link {
+  padding-top: 0.12rem;
+  padding-bottom: 0.12rem;
+  transition: color 0.12s ease;
+}
+.md-nav--secondary .md-nav__link:hover,
+.md-nav--secondary .md-nav__link--active {
+  color: var(--hops-accent-text);
+}
+
+/* ---- Admonitions + collapsibles: calm cards, no billboards --- */
 .md-typeset :is(.admonition, details) {
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border: 1px solid var(--hops-border);
   border-radius: 8px;
   box-shadow: none;
+  overflow: hidden;
 }
 .md-typeset :is(.admonition, details) > :is(.admonition-title, summary) {
-  background-color: var(--md-default-fg-color--lightest);
+  background-color: var(--hops-surface);
   font-weight: 600;
 }
 .md-typeset :is(.admonition, details) > :is(.admonition-title, summary)::before {
   background-color: var(--md-default-fg-color--light);
 }
 
-/* Flat, per the design system: no drop shadows on the header. */
-.md-header {
-  box-shadow: none;
-}
-
-/* Search: translucent white on the green header, not a muddy green box.
-   Turns solid white with dark text once focused (Material's open state). */
-.md-search__form {
-  background-color: rgba(255, 255, 255, 0.16);
-  border-radius: 6px;
-  transition: background-color 0.15s ease;
-}
-.md-search__form:hover {
-  background-color: rgba(255, 255, 255, 0.26);
-}
-.md-search__input {
-  color: #fff;
-}
-.md-search__input::placeholder {
-  color: rgba(255, 255, 255, 0.72);
-}
-[data-md-toggle="search"]:checked ~ .md-header .md-search__form {
-  background-color: #fff;
-}
-[data-md-toggle="search"]:checked ~ .md-header .md-search__input {
-  color: var(--md-default-fg-color);
-}
-[data-md-toggle="search"]:checked ~ .md-header .md-search__input::placeholder {
-  color: var(--md-default-fg-color--light);
-}
-
-
-/* Slimmer header: lighter logo. */
-.md-header__button.md-logo img,
-.md-header__button.md-logo svg {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-/* ---- Platform-aligned interactions (links, nav, cards) ----
-   Mirrors the app: HoverableLink (colour -> primary + underline on hover),
-   sidebar hover (light-green tint), and hoverable cards (pointer + hover). */
-:root {
-  --hops-primary-tint: #e6f2ee;
-}
-[data-md-color-scheme="slate"] {
-  --hops-primary-tint: #1a3a2e;
-}
-
-/* Content links: underline with breathing room, colour to primary on hover. */
-.md-typeset a {
-  text-underline-offset: 0.18em;
-  transition: color 0.15s ease;
-}
-.md-content a:hover {
-  color: var(--md-primary-fg-color);
-  text-decoration: underline;
-}
-
-/* Sidebar nav hover: light-green tint + primary text, like the app sidebar. */
-.md-nav--primary .md-nav__link:hover {
-  color: var(--md-primary-fg-color);
-  background-color: var(--hops-primary-tint);
-}
-
-/* TOC stays tight (it is not the roomy sidebar) and hovers to primary. */
-.md-nav--secondary .md-nav__link {
-  padding-top: 0.12rem;
-  padding-bottom: 0.12rem;
-  transition: color 0.12s ease;
-}
-.md-nav--secondary .md-nav__link:hover {
-  color: var(--md-primary-fg-color);
-}
-
-/* Cards consistent with the platform Card, interactive on hover. */
+/* ---- Cards: bordered, hover darkens border, no shadow/lift --- */
 .md-typeset .grid.cards > :is(ul, ol) > li {
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border: 1px solid var(--hops-border-strong);
   border-radius: 0.625rem;
+  box-shadow: none;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 .md-typeset .grid.cards > :is(ul, ol) > li:hover {
-  border-color: var(--md-primary-fg-color);
+  border-color: var(--hops-accent);
+  box-shadow: none;
 }
 .md-typeset .grid.cards > :is(ul, ol) > li.card-clickable {
   cursor: pointer;
 }
 
-/* Anchor jumps stop below the sticky header (header 48 + tabs 37 = ~85px),
-   so clicking a TOC entry lands on and highlights the heading you clicked,
-   not the next one hidden under the sticky chrome. */
+/* ---- Code blocks: one dark, rounded surface in both themes -----
+   The sanctioned dark surface. Block code (.highlight) gets a GitHub-dark
+   token palette so it reads identically in light and dark mode; inline code
+   stays a light chip. Scoped to .highlight so inline `code` is untouched. */
+[data-md-color-scheme="hopsworks"] .md-typeset .highlight,
+[data-md-color-scheme="slate"] .md-typeset .highlight {
+  --md-code-bg-color: #0d1117;
+  --md-code-fg-color: #e6edf3;
+  --md-code-hl-color: rgba(56, 139, 253, 0.18);
+  --md-code-hl-comment-color: #8b949e;
+  --md-code-hl-keyword-color: #ff7b72;
+  --md-code-hl-string-color: #a5d6ff;
+  --md-code-hl-number-color: #79c0ff;
+  --md-code-hl-function-color: #d2a8ff;
+  --md-code-hl-name-color: #e6edf3;
+  --md-code-hl-constant-color: #79c0ff;
+  --md-code-hl-operator-color: #ff7b72;
+  --md-code-hl-punctuation-color: #c9d1d9;
+  --md-code-hl-variable-color: #ffa657;
+  --md-code-hl-special-color: #ff7b72;
+  --md-code-hl-generic-color: #e6edf3;
+}
+.md-typeset .highlight {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.md-typeset .highlight > pre,
+.md-typeset .highlight > pre > code {
+  margin: 0;
+  border-radius: 0;
+}
+.md-typeset .highlight > pre > code {
+  padding: 0.85rem 1rem;
+}
+/* Copy button (Material 9.7: .md-code__button in .md-code__nav): quiet at
+   rest, brighter on block hover, green when you hover the button itself. */
+.md-typeset .highlight .md-code__button {
+  color: rgba(230, 237, 243, 0.4);
+  transition: color 0.12s ease;
+}
+.md-typeset .highlight:hover .md-code__button {
+  color: rgba(230, 237, 243, 0.72);
+}
+.md-typeset .highlight .md-code__button:hover {
+  color: var(--hops-accent);
+}
+/* Language label (injected by js/code-lang.js) sits in the nav bar, left of
+   the copy button: a quiet uppercase tag on the dark surface. */
+.md-typeset .highlight .md-code__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+.md-typeset .highlight .md-code__lang {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(230, 237, 243, 0.4);
+}
+/* Inline code: a light chip, no border, subtle surface. */
+.md-typeset code:not(.highlight code) {
+  background-color: var(--hops-surface);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+/* Anchor jumps clear the sticky header so the clicked heading lands
+   in view rather than under the chrome. */
 html {
   scroll-padding-top: 3.4rem;
 }
 
-/* Content links use the brand green at rest, like the app. */
-[data-md-color-scheme="hopsworks"],
-[data-md-color-scheme="slate"] {
-  --md-typeset-a-color: var(--md-primary-fg-color);
+/* =========================================================
+   Collapsible left navigation (js/nav-collapse.js). A header
+   toggle hides the primary sidebar and lets the content reclaim
+   the width. Desktop only; on mobile the drawer owns the nav.
+   ========================================================= */
+/* Hidden by default and on mobile; the .md-header prefix beats Material's
+   own .md-header__button display rule. */
+.md-header .hops-nav-toggle {
+  display: none;
+  cursor: pointer;
 }
-
-/* ---- Left nav as a distinct panel, mimicking the app sidebar ----
-   Distinct background + right border, rounded items, green-tint hover and
-   active (sidebar-accent #e6f2ee / dark-green text), collapsible sections. */
-:root {
-  --hops-sidebar-bg: transparent;
-  --hops-tint-fg: #145c44;
+/* Material forces fill:currentColor on .md-icon svg, which floods the panel
+   glyph into a solid block. Keep it a clean line icon. */
+.hops-nav-toggle svg,
+.hops-nav-toggle svg :is(rect, path) {
+  fill: none;
+  stroke: currentColor;
 }
-[data-md-color-scheme="slate"] {
-  --hops-sidebar-bg: hsla(160, 0%, 17%, 1);
-  --hops-tint-fg: #65d3af;
+/* Kill the sticky green box after a mouse click; keep a ring for keyboard. */
+.hops-nav-toggle:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
 }
-
-.md-sidebar--primary {
-  background-color: var(--hops-sidebar-bg);
-  border-right: 1px solid var(--md-default-fg-color--lightest);
-}
-.md-sidebar--primary .md-sidebar__scrollwrap {
-  background-color: transparent;
-}
-.md-nav--primary .md-nav__link {
-  padding: 0.35rem 0.5rem;
+.hops-nav-toggle:focus-visible {
+  outline: 2px solid var(--hops-accent);
+  outline-offset: 2px;
   border-radius: 6px;
 }
-.md-nav--primary .md-nav__link:hover {
-  background-color: var(--hops-primary-tint);
-  color: var(--hops-tint-fg);
+/* Collapsed state reads on the button itself: the glyph tints green. */
+body.hops-nav-collapsed .hops-nav-toggle {
+  color: var(--hops-accent);
 }
-.md-nav--primary .md-nav__item .md-nav__link--active {
-  background-color: var(--hops-primary-tint);
-  color: var(--md-primary-fg-color);
-  font-weight: 600;
+@media screen and (min-width: 76.25em) {
+  .md-header .hops-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* The sidebar slides out; width collapses so the content reflows to fill. */
+  .md-sidebar--primary {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  body.hops-nav-collapsed .md-sidebar--primary {
+    transform: translateX(-100%);
+    opacity: 0;
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
 }
 
-/* The sticky nav title carries a white bg + white glow (Material's mask for
-   a white sidebar); blend it into the grey panel so it stops reading as a
-   floating box. */
-.md-sidebar--primary .md-nav__title {
-  background-color: var(--hops-sidebar-bg);
-  box-shadow: none;
+/* Column drill navigation (js/drill-nav.js): one level at a time, flat, with an
+   up-header and a left/right slide between levels. */
+.md-nav--primary .hops-drill-hidden {
+  display: none !important;
+}
+/* The integrated page TOC (Material nests it under the active leaf) is redundant
+   with the right-hand TOC, and drill must not mistake it for sub-pages. */
+.md-nav--primary .md-nav--secondary {
+  display: none;
+}
+/* One column, flat: the shown level is nested in the DOM, so strip the nesting
+   indent and the vertical guide rails when drill is on. */
+body.hops-drill-on .md-nav--primary .md-nav {
+  margin: 0;
+}
+body.hops-drill-on .md-nav--primary .md-nav__list .md-nav__list,
+body.hops-drill-on .md-nav--primary .md-nav__item .md-nav__item {
+  padding-left: 0;
+  border-left: none;
+  margin-left: 0;
+}
+/* Up-header: names the current level, walks up one level on click. */
+.hops-nav-up {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0 0 0.4rem;
+  padding: 0.34rem 0.5rem;
+  border-radius: 6px;
+  color: var(--md-default-fg-color);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+.hops-nav-up:hover {
+  background-color: var(--hops-tint);
+  color: var(--hops-accent-text);
+}
+.hops-nav-up svg {
+  flex: 0 0 auto;
+  opacity: 0.7;
+}
+/* Left/right slide when shifting a level. Transform + opacity only, so it never
+   reflows the content column. */
+@media (prefers-reduced-motion: no-preference) {
+  .md-sidebar__scrollwrap.hops-slide-in {
+    animation: hops-drill-in 0.18s ease;
+  }
+  .md-sidebar__scrollwrap.hops-slide-out {
+    animation: hops-drill-out 0.18s ease;
+  }
+}
+@keyframes hops-drill-in {
+  from {
+    transform: translateX(14px);
+    opacity: 0.35;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes hops-drill-out {
+  from {
+    transform: translateX(-14px);
+    opacity: 0.35;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   Diagram zoom (js/diagram-zoom.js): corner handle + overlay.
+   ========================================================= */
+.md-typeset .hops-diagram.hops-zoomable {
+  position: relative;
+}
+.hops-zoom-handle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  line-height: 1;
   color: var(--md-default-fg-color--light);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--hops-border);
+  border-radius: 6px;
+  cursor: zoom-in;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.hops-diagram:hover .hops-zoom-handle,
+.hops-zoom-handle:focus-visible {
+  opacity: 1;
+}
+.hops-zoom-handle:hover {
+  color: var(--hops-accent);
+  border-color: var(--hops-accent);
+}
+
+.hops-zoom-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(10, 12, 14, 0.86);
+  backdrop-filter: blur(2px);
+  cursor: zoom-out;
+}
+.hops-zoom-overlay.is-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.hops-zoom-lock {
+  overflow: hidden;
+}
+.hops-zoom-stage {
+  cursor: grab;
+  transform-origin: center center;
+  will-change: transform;
+  width: min(92vw, 1100px);
+  max-height: 88vh;
+  /* Diagram kit strokes/text ride currentColor; a light color + dark panel
+     keeps the inline SVG legible on the overlay regardless of page theme. */
+  color: #e6edf3;
+  background: #16181a;
+  border-radius: 10px;
+  padding: 1.6rem;
+}
+.hops-zoom-stage.is-grabbing {
+  cursor: grabbing;
+}
+.hops-zoom-stage .hops-diagram {
+  margin: 0;
+}
+.hops-zoom-stage svg,
+.hops-zoom-stage img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hops-zoom-stage img {
+  background: #fff;
+  border-radius: 6px;
+}
+.hops-zoom-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.1rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: rgba(230, 237, 243, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.hops-zoom-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+.hops-zoom-hint {
+  position: absolute;
+  bottom: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: rgba(230, 237, 243, 0.55);
+  pointer-events: none;
 }

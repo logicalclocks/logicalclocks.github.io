@@ -307,13 +307,13 @@ nav:
   - Python API: python-api
   - Java API: javadoc
   - REST API Status Codes: reference/rest_error_codes.md
-  - Community ↗: https://community.hopsworks.ai/
+  - Docs for AI agents: ai.md
 
 theme:
   name: material
   custom_dir: docs/overrides
   favicon: assets/images/favicon.ico
-  logo: assets/images/hops-logo.png
+  logo: assets/images/hops-mark-green.png
   icon:
     repo: fontawesome/brands/github
   font: false
@@ -332,9 +332,12 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    - navigation.sections
     - navigation.indexes
+    - navigation.prune
+    - navigation.path
+    - navigation.top
     - toc.follow
+    - content.code.copy
 
 extra:
   version:
@@ -346,12 +349,10 @@ extra:
       link: https://twitter.com/hopsworks
     - icon: fontawesome/brands/github
       link: https://github.com/logicalclocks/hopsworks-api
-    - icon: fontawesome/brands/discourse
-      link: https://community.hopsworks.ai/
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/hopsworks/
     - icon: fontawesome/brands/slack
-      link: https://bit.ly/publichopsworks
+      link: https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA
   analytics:
     provider: google
     property: G-64FEEXPSDN
@@ -363,6 +364,10 @@ extra_javascript:
   - js/quickstart-fullscreen.js
   - js/llm-copy.js
   - js/card-links.js
+  - js/code-lang.js
+  - js/nav-collapse.js
+  - js/drill-nav.js
+  - js/diagram-zoom.js
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
 # Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.
@@ -429,7 +434,11 @@ plugins:
 
 markdown_extensions:
   - admonition
-  - codehilite
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
   - footnotes
   - pymdownx.tabbed:
       alternate_style: true

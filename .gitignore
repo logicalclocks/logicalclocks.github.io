@@ -133,3 +133,6 @@ target/
 
 # Local agent settings, user-specific
 /.claude/settings.local.json
+
+# Local build stub for the CI-generated Java API dir
+docs/javadoc
