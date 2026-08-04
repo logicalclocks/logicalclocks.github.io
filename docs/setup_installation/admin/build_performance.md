@@ -145,12 +145,12 @@ hopsworks:
   dockerRegistry:
     buildkit:
       image: my-mirror.example.com/moby/buildkit
-      tag: v0.31.2
+      tag: v0.31.2   # keep in step with buildkitd.gc.keySyntax, below
 ```
 
 ### BuildKit version
 
-Pin BuildKit to **v0.31.2 or later**. Earlier releases carry published advisories, two of which matter more once the daemon is shared rather than started per build:
+The chart ships **v0.31.2**. Do not pin below it. Earlier releases carry published advisories, two of which matter more once the daemon is shared rather than started per build:
 
 - A path traversal in the Git URL subdirectory component. Reachable from an ordinary user action, because a library can be installed from a user-supplied Git URL.
 - A state-directory escape via a custom frontend. A shared daemon holds state for every project, so the blast radius is no longer one build.
@@ -158,6 +158,17 @@ Pin BuildKit to **v0.31.2 or later**. Earlier releases carry published advisorie
 Both are fixed in v0.28.1; v0.31.2 also covers a Seccomp/AppArmor bypass, an unbounded-parsing denial of service, and a command injection through Git bundle checkout.
 
 A per-build daemon is affected by the same advisories, so this is not a reason to leave `buildkitd.enabled` off. Upgrading the image is the fix in both modes.
+
+If you repin to a different version, set `buildkitd.gc.keySyntax` to match it:
+
+```yaml
+hopsworks:
+  buildkitd:
+    gc:
+      keySyntax: maxUsedSpace   # keepBytes for BuildKit up to ~v0.16
+```
+
+Getting this wrong is silent rather than loud. A modern daemon still accepts `keepBytes`, but treats it as `reservedSpace`: the same number stops meaning "never exceed" and starts meaning "always keep", so the cache budget becomes a floor and the state volume fills.
 
 ### Attestations and signing
 
