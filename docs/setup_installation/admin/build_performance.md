@@ -132,6 +132,39 @@ hopsworks:
       - my-registry.example.com:5000
 ```
 
+## Supply chain
+
+### What a build fetches
+
+The build path adds no new outbound network dependency. `uv` is copied into the base image at base-image build time from a digest-pinned source, so no build downloads a toolchain. Python packages come from the indexes configured in `dockerImage.pypi.global_parameters` and nothing else. The only image the cluster needs beyond the ones it already pulled is the BuildKit daemon.
+
+That matters for air-gapped installations: mirror the BuildKit image and point the chart at the mirror, and the rest of the build path needs no egress beyond your own package index.
+
+```yaml
+hopsworks:
+  dockerRegistry:
+    buildkit:
+      image: my-mirror.example.com/moby/buildkit
+      tag: v0.31.2
+```
+
+### BuildKit version
+
+Pin BuildKit to **v0.31.2 or later**. Earlier releases carry published advisories, two of which matter more once the daemon is shared rather than started per build:
+
+- A path traversal in the Git URL subdirectory component. Reachable from an ordinary user action, because a library can be installed from a user-supplied Git URL.
+- A state-directory escape via a custom frontend. A shared daemon holds state for every project, so the blast radius is no longer one build.
+
+Both are fixed in v0.28.1; v0.31.2 also covers a Seccomp/AppArmor bypass, an unbounded-parsing denial of service, and a command injection through Git bundle checkout.
+
+A per-build daemon is affected by the same advisories, so this is not a reason to leave `buildkitd.enabled` off. Upgrading the image is the fix in both modes.
+
+### Attestations and signing
+
+Builds do not produce SBOM or provenance attestations, and images are not signed. BuildKit can generate both (`attest:sbom`, `attest:provenance`), but the SBOM scanner is itself an image that would have to be mirrored, so neither is enabled by default.
+
+If you enforce image policy, do it on the registry side against the pushed image rather than in the build: environment images are built continuously and per project, and each is recorded in the environment history with its output digest, which is the identifier to sign or admit against.
+
 ## Measuring
 
 The backend logs where the time in a build actually goes:
