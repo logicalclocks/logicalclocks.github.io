@@ -60,10 +60,10 @@ The rail is the spine of the site. Rules, in order of importance:
 - It is a text rail, no per-section icons (see the lesson above).
 - The active item is a single green pill (`--hops-tint` wash, `--hops-accent-text` text), never two split boxes; the pill is on the `.md-nav__container`.
 - Deep trees (up to ~5 levels, e.g. `concepts/fs/feature_group/...`) are handled by showing one level at a time, not by exposing the whole tree:
-    - `navigation.indexes`: every section has an Overview/index page acting as a hub.
-    - `navigation.prune`: only the active branch is rendered.
-    - `navigation.path`: breadcrumbs above the H1 carry the hierarchy above the current level.
-    - `drill-nav.js`: the rail shows only the current level (active item plus siblings, or children on a section page); ancestors collapse into the breadcrumb, which is the way back up.
+  - `navigation.indexes`: every section has an Overview/index page acting as a hub.
+  - `navigation.prune`: only the active branch is rendered.
+  - `navigation.path`: breadcrumbs above the H1 carry the hierarchy above the current level.
+  - `drill-nav.js`: the rail shows only the current level (active item plus siblings, or children on a section page); ancestors collapse into the breadcrumb, which is the way back up.
 - Collapse toggle (`nav-collapse.js`): a header button hides the whole sidebar and lets the content reclaim the width. It is a plain show/hide, not an icon rail. Desktop only; mobile uses the drawer. State persists in localStorage.
 - The sidebar is its own panel (`--hops-sidebar-bg`). The panel fill and the right divider are painted by `.md-sidebar--primary::before` (full-bleed, spanning past the header) so the divider is flush with the header, not notched 30px below it. Do not put the divider border back on the `.md-sidebar--primary` box.
 
