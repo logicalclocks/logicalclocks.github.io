@@ -858,3 +858,159 @@ body.hops-zoom-lock {
   color: rgba(230, 237, 243, 0.55);
   pointer-events: none;
 }
+
+/* ---- Home page: hero, quick cards, first-feature-vector steps --
+   Used only by docs/index.md (plus js/home-steps.js for the stepper).
+   Without JS every step panel renders stacked, so the code is always
+   in the initial payload; hops-steps--js arms one-panel-at-a-time. */
+.md-typeset .hops-eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hops-accent-text);
+}
+.md-typeset .hops-eyebrow + h1 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 2.3rem;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  color: var(--md-default-fg-color);
+}
+.md-typeset .hops-lede {
+  margin: 0.2rem 0 1.6rem;
+  font-size: 0.9rem;
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset .grid.cards.hops-quickcards > ul > li:first-child {
+  border-color: var(--hops-accent);
+  background: var(--hops-tint);
+}
+.md-typeset .hops-steps {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 0.5rem 1.75rem;
+  align-items: start;
+  margin: 1.5em 0;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 0.625rem;
+}
+.hops-steps-rail {
+  display: flex;
+  flex-direction: column;
+  margin: 0.3rem 0;
+}
+.md-typeset .hops-step {
+  position: relative;
+  display: flex;
+  gap: 0.8rem;
+  padding: 0.8rem 0.6rem;
+  background: none;
+  border: none;
+  border-radius: 0.5rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: default;
+}
+.hops-steps--js .hops-step {
+  cursor: pointer;
+}
+.hops-steps--js .hops-step:hover {
+  background: var(--hops-surface);
+}
+.hops-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: calc(0.6rem + 0.8rem);
+  top: 2.5rem;
+  bottom: -0.65rem;
+  width: 1px;
+  background: var(--hops-border-strong);
+}
+.hops-step-num {
+  flex: none;
+  z-index: 1;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 50%;
+  background: var(--md-default-bg-color);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.hops-step.is-active .hops-step-num {
+  border-color: var(--hops-accent);
+  background: var(--hops-tint);
+  color: var(--hops-accent-text);
+}
+.hops-step-body {
+  min-width: 0;
+}
+.hops-step-body strong {
+  display: block;
+  font-weight: 600;
+  line-height: 1.6rem;
+}
+.hops-step-body small {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--md-default-fg-color--light);
+}
+.hops-steps--js .hops-step-panel:not(.is-active) {
+  display: none;
+}
+.md-typeset .hops-step-panel > .highlight:first-child {
+  margin-top: 0.3rem;
+}
+.md-typeset .hops-step-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0.3rem;
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+}
+.hops-step-status::before {
+  content: "\2713";
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--hops-tint);
+  color: var(--hops-accent-text);
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+@media screen and (max-width: 59.9844em) {
+  .md-typeset .hops-steps {
+    grid-template-columns: 1fr;
+    padding: 0.9rem 1rem;
+  }
+}
+/* The ul inside a card grid is display:contents; the div is the grid. */
+@media screen and (min-width: 60em) {
+  .md-typeset .grid.cards.hops-quickcards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.md-typeset .grid.cards.hops-quickcards .twemoji {
+  color: var(--hops-accent-text);
+}
+/* The home hero is navigation, not copyable content; the floating
+   Copy-for-LLM chip only breaks the hero rhythm there. */
+.md-content:has(.hops-eyebrow) .md-llm-copy {
+  display: none;
+}

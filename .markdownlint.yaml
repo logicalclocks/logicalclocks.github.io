@@ -1,4 +1,8 @@
 MD041: false
+# Don't count a front-matter `title:` as a second H1 (mkdocs uses it for the
+# <title> tag while the page body keeps its own H1, e.g. docs/index.md).
+MD025:
+  front_matter_title: ""
 MD013: false
 MD033: false
 MD045: false

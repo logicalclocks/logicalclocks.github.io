@@ -1,17 +1,18 @@
 ---
+title: Hopsworks Documentation
 description: "Hopsworks documentation: quickstart, architecture, guides by role and by task, deployment models, and API reference."
 hide:
   - toc
 ---
 
-# Hopsworks Documentation
+<p class="hops-eyebrow">Hopsworks Documentation</p>
 
-Hopsworks is a modular data platform for machine learning.
-It provides a Python-centric feature store, a model registry and model serving on KServe, a vector index, and project-based multi-tenancy for teams.
-You can run it as a standalone feature store, as an MLOps platform, or as both.
+# Build production AI systems from Python
+
+<p class="hops-lede">Features, training data, models and inference on one governed platform.</p>
 
 <!-- markdownlint-disable MD007 MD030 -->
-<div class="grid cards" markdown>
+<div class="grid cards hops-quickcards" markdown>
 
 -   :material-rocket-launch-outline: **Start in five minutes**
 
@@ -22,7 +23,7 @@ You can run it as a standalone feature store, as an MLOps platform, or as both.
 
     [Open run.hopsworks.ai ↗](https://run.hopsworks.ai)
 
--   :material-language-python: **Use the Python client**
+-   :material-language-python: **Install the Python client**
 
     ---
 
@@ -31,7 +32,7 @@ You can run it as a standalone feature store, as an MLOps platform, or as both.
     [Client installation](user_guides/client_installation/index.md) ·
     <a href="python-api/">Python API reference</a>
 
--   :material-sitemap-outline: **See the architecture**
+-   :material-sitemap-outline: **Explore the architecture**
 
     ---
 
@@ -43,17 +44,46 @@ You can run it as a standalone feature store, as an MLOps platform, or as both.
 </div>
 <!-- markdownlint-enable MD007 MD030 -->
 
-## Hello world
+## Your first feature vector
 
-Create an [API key](user_guides/projects/api_key/create_api_key.md) in your project, then write a feature group and read a feature vector back.
+Create an [API key](user_guides/projects/api_key/create_api_key.md) in your project, then connect, write a feature group and read a feature vector back.
+
+<div class="hops-steps">
+<div class="hops-steps-rail" role="tablist" aria-label="Your first feature vector, step by step">
+<button class="hops-step is-active" type="button" role="tab" aria-selected="true" data-step="connect">
+<span class="hops-step-num">1</span>
+<span class="hops-step-body"><strong>Connect</strong>
+<small>Sign in and get a feature store.</small></span>
+</button>
+<button class="hops-step" type="button" role="tab" aria-selected="false" data-step="write">
+<span class="hops-step-num">2</span>
+<span class="hops-step-body"><strong>Write features</strong>
+<small>Create a feature group and write data to the feature store.</small></span>
+</button>
+<button class="hops-step" type="button" role="tab" aria-selected="false" data-step="read">
+<span class="hops-step-num">3</span>
+<span class="hops-step-body"><strong>Read online</strong>
+<small>Read a feature vector back from the online store.</small></span>
+</button>
+</div>
+<div class="hops-steps-panels" markdown>
+<div class="hops-step-panel is-active" data-step="connect" markdown>
 
 ```python
+# pip install "hopsworks[python]"
 import hopsworks
-import pandas as pd
 
 
-project = hopsworks.login()  # prompts for host, project and API key
+project = hopsworks.login()  # prompts for host and API key
 fs = project.get_feature_store()
+```
+
+<p class="hops-step-status">Connected, feature store ready.</p>
+</div>
+<div class="hops-step-panel" data-step="write" markdown>
+
+```python
+import pandas as pd
 
 df = pd.DataFrame(
     {
@@ -71,7 +101,13 @@ fg = fs.get_or_create_feature_group(
     online_enabled=True,
 )
 fg.insert(df)
+```
 
+<p class="hops-step-status">Feature group `transactions` v1 written, offline and online.</p>
+</div>
+<div class="hops-step-panel" data-step="read" markdown>
+
+```python
 fv = fs.get_or_create_feature_view(
     name="transactions_view",
     version=1,
@@ -80,9 +116,70 @@ fv = fs.get_or_create_feature_view(
 fv.get_feature_vector(entry={"cc_num": 4467360740682089})
 ```
 
+<p class="hops-step-status">Feature vector served from the online store.</p>
+</div>
+</div>
+</div>
+
 Next: [create a feature group](user_guides/fs/feature_group/create.md),
 [create a feature view](user_guides/fs/feature_view/overview.md),
 [retrieve feature vectors](user_guides/fs/feature_view/feature-vectors.md).
+
+## One architecture, three pipelines
+
+Independent [feature, training and inference pipelines](concepts/fti.md), connected by a shared feature store and model registry.
+
+<figure class="hops-diagram">
+<svg viewBox="0 0 1120 190" role="img" aria-label="FTI pipeline flow. Data sources feed a feature pipeline that writes to the feature store. A training pipeline reads the feature store and produces a model in the model registry. An inference pipeline reads the feature store and the model to produce predictions and prediction logs." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="home-fti-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
+
+  <path class="d-flow" d="M150 54 H170" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M310 54 H330" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M470 54 H490" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M630 54 H650" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M790 54 H810" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M950 54 H970" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M400 78 C400 112, 820 112, 848 78" marker-end="url(#home-fti-arrow)" stroke-dasharray="4 3"/>
+  <path class="d-flow" d="M880 78 V120" marker-end="url(#home-fti-arrow)"/>
+
+  <a class="d-link" href="concepts/fs/feature_group/external_fg/">
+    <rect class="d-box" x="10" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="80" y="58" text-anchor="middle">Data sources</text>
+  </a>
+  <a class="d-link" href="concepts/fs/feature_group/feature_pipelines/">
+    <rect class="d-box" x="170" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="240" y="58" text-anchor="middle">Feature pipeline</text>
+  </a>
+  <a class="d-link" href="concepts/fs/feature_group/fg_overview/">
+    <rect class="d-box-own" x="330" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="400" y="58" text-anchor="middle">Feature store</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/training/">
+    <rect class="d-box" x="490" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="560" y="58" text-anchor="middle">Training pipeline</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/registry/">
+    <rect class="d-box-own" x="650" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="720" y="58" text-anchor="middle">Model registry</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/serving/">
+    <rect class="d-box" x="810" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="880" y="58" text-anchor="middle">Inference pipeline</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/prediction_services/">
+    <rect class="d-box" x="970" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="1040" y="58" text-anchor="middle">Predictions</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/model_monitoring/">
+    <rect class="d-box" x="810" y="120" width="140" height="48" rx="8"/>
+    <text class="d-t" x="880" y="148" text-anchor="middle">Prediction logs</text>
+  </a>
+</svg>
+</figure>
 
 ## Choose a deployment model
 

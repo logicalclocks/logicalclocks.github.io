@@ -365,6 +365,7 @@ extra_javascript:
   - js/llm-copy.js
   - js/card-links.js
   - js/code-lang.js
+  - js/home-steps.js
   - js/nav-collapse.js
   - js/drill-nav.js
   - js/diagram-zoom.js
