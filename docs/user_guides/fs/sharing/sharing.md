@@ -46,7 +46,7 @@ After clicking `Share`, the feature store appears under the `Shared with other p
   </figure>
 </p>
 
-### Using the API
+### Using the API to share the feature store
 
 ```python
 import hopsworks
@@ -125,7 +125,7 @@ Click `Share` to open the sharing dialog. You can share with either a project or
       </figure>
     </p>
 
-### Using the API
+### Using the API to share a feature group
 
 === "Share with a project"
 
