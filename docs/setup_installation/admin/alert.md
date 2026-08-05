@@ -100,7 +100,7 @@ A global receiver is created when a webhook is configured and can be used by any
 ### Step 6: Advanced configuration
 
 If you are familiar with Prometheus' [Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/)
-you can also configure alerts by editing the _yaml/json_ file directly by going to the advaced page and clicking the edit button.
+you can also configure alerts by editing the _yaml/json_ file directly by going to the advanced page and clicking the edit button.
 
 The advanced page shows the configuration currently loaded on the alert manager.
 After editing the configuration it takes some time to propagate changes to the alertmanager.
