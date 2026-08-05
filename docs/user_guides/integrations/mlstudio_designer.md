@@ -48,7 +48,7 @@ In the pipeline, add a new `Execute Python Script` step and replace the Python s
     <p align="center">
     <figure>
         <img src="../../../assets/images/hopsworks-version.png" alt="Hopsworks version needs to match the major version of Hopsworks">
-        <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
+        <figcaption>You find the Hopsworks version at the bottom of the help menu in the top navigation bar</figcaption>
     </figure>
     </p>
 
