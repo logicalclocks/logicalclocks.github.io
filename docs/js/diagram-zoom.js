@@ -1,8 +1,10 @@
 // Click-to-zoom for the inline-SVG diagram kit (.hops-diagram) and content
-// images. A small ⤢ handle in the top-right corner opens a full-screen
-// overlay with wheel-zoom + drag-pan, so the navigational diagrams keep their
-// clickable links (the handle is the only zoom trigger, no conflict).
-// Progressive enhancement: without JS the diagrams still render inline.
+// images (screenshots, GIFs). A small ⤢ handle in the top-right corner opens
+// a full-screen overlay with wheel-zoom + drag-pan, so the navigational
+// diagrams keep their clickable links (the handle is the only zoom trigger,
+// no conflict). Content images are wrapped in .hops-img-zoom at runtime;
+// images under 200px natural width are left alone (inline icons).
+// Progressive enhancement: without JS everything still renders inline.
 (function () {
   "use strict";
 
@@ -95,15 +97,12 @@
       if (e.key === "Escape") close();
     });
 
-    // Zoom the whole diagram wrapper (SVG kit or image inside it).
-    var wraps = document.querySelectorAll(".md-typeset .hops-diagram");
-    wraps.forEach(function (wrap) {
-      if (!wrap.querySelector("svg, img")) return;
+    function addHandle(wrap, label) {
       if (wrap.querySelector(".hops-zoom-handle")) return;
       wrap.classList.add("hops-zoomable");
       var btn = document.createElement("button");
       btn.className = "hops-zoom-handle";
-      btn.setAttribute("aria-label", "Zoom diagram");
+      btn.setAttribute("aria-label", label);
       btn.textContent = "⤢";
       btn.addEventListener("click", function (e) {
         e.preventDefault();
@@ -111,6 +110,36 @@
         open(wrap);
       });
       wrap.appendChild(btn);
+    }
+
+    // Zoom the whole diagram wrapper (SVG kit or image inside it).
+    var wraps = document.querySelectorAll(".md-typeset .hops-diagram");
+    wraps.forEach(function (wrap) {
+      if (!wrap.querySelector("svg, img")) return;
+      addHandle(wrap, "Zoom diagram");
+    });
+
+    // Content images (screenshots, GIFs): wrap each in a positioned span so
+    // the handle has an anchor. Skip diagram-kit figures and inline icons.
+    var imgs = document.querySelectorAll(
+      ".md-typeset figure img, .md-typeset p > img",
+    );
+    imgs.forEach(function (img) {
+      if (img.closest(".hops-diagram, .hops-img-zoom")) return;
+      function attach() {
+        if (img.naturalWidth < 200) return;
+        if (img.closest(".hops-img-zoom")) return;
+        var wrap = document.createElement("span");
+        wrap.className = "hops-img-zoom";
+        img.parentNode.insertBefore(wrap, img);
+        wrap.appendChild(img);
+        addHandle(wrap, "Zoom image");
+      }
+      if (img.complete) {
+        attach();
+      } else {
+        img.addEventListener("load", attach);
+      }
     });
   });
 })();

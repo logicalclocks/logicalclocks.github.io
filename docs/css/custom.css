@@ -1014,3 +1014,39 @@ body.hops-zoom-lock {
 .md-content:has(.hops-eyebrow) .md-llm-copy {
   display: none;
 }
+
+/* ---- Content images: bordered, zoomable like the diagrams ------
+   Every screenshot/GIF in prose gets a 1px border, and diagram-zoom.js
+   wraps it in .hops-img-zoom so the same corner handle + overlay apply.
+   The border lives on the img (CSS-only, works without JS). */
+.md-typeset figure img,
+.md-typeset p > img {
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 0.5rem;
+}
+.md-typeset .hops-diagram svg,
+.md-typeset .hops-diagram img {
+  border: none;
+  border-radius: 0;
+}
+.hops-img-zoom {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+.hops-img-zoom:hover .hops-zoom-handle {
+  opacity: 1;
+}
+.hops-zoom-stage img {
+  width: auto;
+  max-width: 100%;
+  max-height: 80vh;
+  margin: 0 auto;
+}
+.hops-zoom-stage .hops-img-zoom {
+  display: block;
+  text-align: center;
+}
+.hops-zoom-stage .hops-img-zoom img {
+  margin: 0 auto;
+}
