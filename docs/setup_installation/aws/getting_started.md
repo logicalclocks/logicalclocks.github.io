@@ -115,7 +115,7 @@ aws --profile PROFILE iam create-policy --policy-name POLICY_NAME --policy-docum
 
 This single policy grants both S3 (bucket) and ECR (repository) access.
 Because the Helm values do not store any S3 access keys, Hopsworks and HopsFS reach the bucket through the AWS default credential provider chain, which on EKS resolves to the worker node instance IAM role.
-Attaching this policy to the node group (Step 1.4) is therefore how Hopsworks is granted access to S3 and ECR — no access key or secret is stored in Kubernetes.
+Attaching this policy to the node group (Step 1.4) is therefore how Hopsworks is granted access to S3 and ECR: no access key or secret is stored in Kubernetes.
 
 ### Step 1.4: Create the EKS cluster using eksctl
 
@@ -394,7 +394,7 @@ helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values
 ```
 
 A first install pulls and syncs large base images and provisions stateful services, so allow up to an hour to complete; the chart's own deployment examples use `--timeout=3600s`.
-A Helm timeout does not roll back the release — the deployment keeps reconciling in the background — so if it times out, track progress with kubectl rather than reinstalling:
+A Helm timeout does not roll back the release, the deployment keeps reconciling in the background, so if it times out, track progress with kubectl rather than reinstalling:
 
 ```bash
 kubectl -n hopsworks get pods

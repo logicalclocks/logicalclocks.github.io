@@ -166,7 +166,7 @@ In the UI you can either select one or more tables or define a custom SQL query.
 ### Option A: Select tables
 
 The database navigation structure depends on your specific data source.
-You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
+You'll navigate through the appropriate hierarchy for your platform, such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
 
 Select one or more tables. For each selected table, you must designate one or more columns as primary keys before proceeding.
 You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), and edit names and data types of individual columns you want to include.

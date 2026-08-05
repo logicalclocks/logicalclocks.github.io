@@ -16,7 +16,7 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     | CPU (cores)        | 0.2             | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
     | Memory (MB)        | 32              | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
     | GPUs               | 0               | 0              | Request must equal limit                           |
-    | Shared Memory (MB) | 128             | —              | —                                                  |
+    | Shared Memory (MB) | 128             | n/a            | n/a                                                |
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component (predictor or transformer) enables **scale-to-zero**.

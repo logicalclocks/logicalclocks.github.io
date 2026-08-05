@@ -97,5 +97,5 @@ For example, you can require all pods to run on the same host to minimize networ
 
 For detailed documentation on scheduling abstractions and cluster-level configuration, see the following guides:
 
-- [Scheduler](../../projects/scheduling/kube_scheduler.md) — Affinity, anti-affinity, priority classes, and project-level defaults
-- [Kueue Details](../../projects/scheduling/kueue_details.md) — Queues, cohorts, topologies, and resource flavors
+- [Scheduler](../../projects/scheduling/kube_scheduler.md): Affinity, anti-affinity, priority classes, and project-level defaults
+- [Kueue Details](../../projects/scheduling/kueue_details.md): Queues, cohorts, topologies, and resource flavors

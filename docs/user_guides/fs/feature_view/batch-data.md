@@ -96,7 +96,7 @@ Bare names resolve against the left Feature Group when more than one side has th
 
 ```python
 df = feature_view.get_batch_data(
-    # `category` exists on both sides of the join — `sec_` selects the joined FG.
+    # `category` exists on both sides of the join, `sec_` selects the joined FG.
     extra_filter=(feature_view.get_feature("sec_category") == "A"),
 )
 ```
@@ -244,16 +244,16 @@ The `lookback` predicate combines with filters declared on the Query, but where 
 
 Filters attached to a sub-query (`fg.select(...).filter(...)`) always prune on that Feature Group regardless of which Feature Group they reference.
 Filters attached to the outer query (`query.filter(...)` after the join, or `extra_filter` on `get_batch_data`) prune the root only when every referenced feature belongs to the root Feature Group.
-A mixed-Feature-Group outer filter still produces correct results — the predicates apply at the outer level — but the root's partitions are no longer pruned at file-listing time.
+A mixed-Feature-Group outer filter still produces correct results, because the predicates apply at the outer level, but the root's partitions are no longer pruned at file-listing time.
 
 ```python
-# Root sub-query filter — lookback prunes both root and joined Feature Groups.
+# Root sub-query filter: lookback prunes both root and joined Feature Groups.
 query = root.select_all().filter(root.amount > 100).join(dim.select_all())
 
-# Joined sub-query filter — lookback still prunes both sides.
+# Joined sub-query filter: lookback still prunes both sides.
 query = root.select_all().join(dim.select_all().filter(dim.category == "X"))
 
-# Outer filter referencing a joined Feature Group — root pruning is lost;
+# Outer filter referencing a joined Feature Group: root pruning is lost;
 # joined Feature Groups still prune via their own predicates.
 query = root.select_all().join(dim.select_all()).filter(dim.category == "X")
 ```
@@ -279,7 +279,7 @@ It is important to note that in addition to the filters defined in Feature View,
 ## Retrieving untransformed batch data
 
 By default, the `get_batch_data` function returns batch data with model-dependent transformations applied.
-However, you can retrieve untransformed batch data—while still including on-demand features—by setting the `transform` parameter to `False`.
+However, you can retrieve untransformed batch data, while still including on-demand features, by setting the `transform` parameter to `False`.
 
 !!! example "Returning untransformed batch data"
     === "Python"

@@ -16,7 +16,7 @@ This is useful for custom inference pipelines, feature view deployments, or any 
 !!! info "gRPC protocol not supported"
 
 !!! tip "Use your favourite HTTP server"
-    There are no constraints on the framework or library used — you can use Flask, FastAPI, or any other HTTP server.
+    There are no constraints on the framework or library used: you can use Flask, FastAPI, or any other HTTP server.
 
 In each Python deployment, you can configure the following:
 
