@@ -16,7 +16,7 @@ It indexes the local `docs/` Markdown tree (the same source that builds
 ## Tools
 
 | Tool | Purpose |
-|------|---------|
+| ---- | ------- |
 | `search_docs(query, limit)` | BM25 search across all pages; returns page ids, URLs, snippets. |
 | `get_page(page_id)` | Full raw Markdown of a page by canonical id. |
 | `list_sections(page_id)` | Heading structure and anchors of a page. |
