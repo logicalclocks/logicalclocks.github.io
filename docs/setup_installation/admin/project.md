@@ -15,7 +15,7 @@ You need to be an administrator on a Hopsworks cluster.
 
 ## Changing project quotas
 
-You can find the Project management page by clicking on your name, in the top right corner of the navigation bar, and choosing _Cluster Settings_ from the dropdown menu and going to the _Project_ tab.
+You can find the Project management page by clicking on your name, in the top right corner of the navigation bar, choosing _Cluster Settings_ from the dropdown menu, then choosing _Projects_ under _Projects & Data_ in the left sidebar.
 
 <figure>
   <img src="../../../assets/images/admin/projects/project_list.png" alt="Project page" />

@@ -10,7 +10,7 @@ Superset enables users across all projects to create interactive dashboards, exp
 ## Accessing Superset Admin
 
 The Superset admin interface is accessible from the Hopsworks cluster settings.
-Navigate to **Cluster Settings** → **Superset** to access administrative controls for the Superset deployment.
+In **Cluster Settings**, choose **Superset** under _External_ in the left sidebar to access administrative controls for the Superset deployment.
 
 <figure>
   <img src="../../../assets/images/admin/superset/admin-superset.png" alt="Superset admin tab" />
@@ -144,7 +144,7 @@ Manual connection management is typically not required, but administrators can:
 ## Configuration
 
 Superset behavior can be customized through Hopsworks cluster configuration variables.
-Navigate to **Cluster Settings** → **Configuration** and search for `superset` to view all Superset-related variables.
+In **Cluster Settings**, choose **Configuration** under _Infrastructure_ in the left sidebar and search for `superset` to view all Superset-related variables.
 
 <figure>
   <img src="../../../assets/images/admin/superset/superset-configuration.png" alt="Superset configuration variables" />
@@ -167,10 +167,35 @@ Navigate to **Cluster Settings** → **Configuration** and search for `superset`
 - **Values**: `true` or `false`
 - When set to `false`, Superset becomes unavailable for all projects across the cluster.
 
+#### superset_proxy_connect_timeout_ms
+
+- **Description**: Time the Hopsworks proxy waits to establish a connection to Superset, in milliseconds.
+- **Default**: `10000`
+- **Format**: Integer
+
+#### superset_proxy_connection_request_timeout_ms
+
+- **Description**: Time the Hopsworks proxy waits for a connection from its pool, in milliseconds.
+- **Default**: `10000`
+- **Format**: Integer
+
+#### superset_proxy_max_connections
+
+- **Description**: Maximum number of connections the Hopsworks proxy keeps open to Superset.
+- **Default**: `50`
+- **Format**: Integer
+
+#### superset_proxy_read_timeout_ms
+
+- **Description**: Time the Hopsworks proxy waits for a response from Superset, in milliseconds.
+- **Default**: `180000`
+- **Format**: Integer
+- Raise this if long running SQL Lab queries are cut off by the proxy.
+
 #### superset_user_roles
 
 - **Description**: Default roles automatically assigned to new Superset users
-- **Default**: `Gamma,sql_lab`
+- **Default**: `Gamma,sql_lab,Dataset`
 - **Format**: Comma-separated list of role names
 - These roles determine the initial permissions granted to users when they first access Superset from a project.
 

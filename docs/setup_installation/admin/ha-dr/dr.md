@@ -72,7 +72,7 @@ global:
       schedule: "@weekly"
 ```
 
-After configuring backups, go to the cluster settings and open the Backup tab. You should see `enabled` at the top level and for all services if everything is configured correctly.
+After configuring backups, go to the cluster settings and choose Backup under Infrastructure in the left sidebar. You should see `enabled` at the top level and for all services if everything is configured correctly.
 
 <figure>
   <img width="800px" src="../../../../assets/images/admin/ha_dr/backup.png" alt="Backup overview page"/>
@@ -367,7 +367,7 @@ olk:
 !!! Note
     In-place restore is available from Hopsworks version 4.8.0.
 
-In-place restore allows you to restore data onto an existing running cluster using `helm upgrade`. Unlike a new cluster restore, this does not require provisioning a fresh cluster — the existing stateful services are shut down, wiped if necessary, and restored from backup.
+In-place restore allows you to restore data onto an existing running cluster using `helm upgrade`. Unlike a new cluster restore, this does not require provisioning a fresh cluster: the existing stateful services are shut down, wiped if necessary, and restored from backup.
 
 !!! Warning
     In-place restore **replaces all existing data** in the cluster with the backup data. Any data written after the backup was taken will be lost.
@@ -384,7 +384,7 @@ In-place restore allows you to restore data onto an existing running cluster usi
 
 #### Identify the backup ID
 
-Get the backup ID from the **Cluster Settings > Backup** tab or by using the following commands.
+Get the backup ID from the **Cluster Settings > Backup** page or by using the following commands.
 
 ```bash
 # RonDB backup IDs (newest first)
