@@ -21,7 +21,7 @@ Two hard lessons already learned, do not repeat them:
 | Tokens + all component styling | `docs/css/custom.css` | Single stylesheet. Tokens at the top, components below. |
 | Nav collapse toggle | `docs/js/nav-collapse.js` | Header button, hides the sidebar, widens content. |
 | Drill-in navigation | `docs/js/drill-nav.js` | Shows only the current level; ancestors live in the breadcrumb. |
-| Diagram zoom | `docs/js/diagram-zoom.js` | Corner handle + full-screen overlay for `.hops-diagram`. |
+| Diagram zoom | `docs/js/diagram-zoom.js` | Corner handle + full-screen overlay for `.hops-diagram` and all content images (wrapped in `.hops-img-zoom` at runtime; inline images under 200px are left alone). Content images also carry a 1px `--hops-border-strong` border via CSS. |
 | Code language labels | `docs/js/code-lang.js` | Language tag on code blocks. |
 | Theme features + assets wiring | `mkdocs.yml` | `theme.features`, `extra_javascript`, `extra_css`. |
 
