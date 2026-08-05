@@ -44,12 +44,12 @@ hide:
 </div>
 <!-- markdownlint-enable MD007 MD030 -->
 
-## Your first feature vector
+## Write features, read them in real time
 
 Create an [API key](user_guides/projects/api_key/create_api_key.md) in your project, then connect, write a feature group and read a feature vector back.
 
 <div class="hops-steps">
-<div class="hops-steps-rail" role="tablist" aria-label="Your first feature vector, step by step">
+<div class="hops-steps-rail" role="tablist" aria-label="Write features and read them in real time, step by step">
 <button class="hops-step is-active" type="button" role="tab" aria-selected="true" data-step="connect">
 <span class="hops-step-num">1</span>
 <span class="hops-step-body"><strong>Connect</strong>
