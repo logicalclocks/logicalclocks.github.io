@@ -107,7 +107,7 @@ Click `Share` to open the sharing dialog. You can share with either a project or
 
 === "Share with a user"
 
-    Select `Share with User`, choose a user with the [Feature store restricted](../../projects/project/manage_members.md) role, and select which features to share.
+    Select `Share with User`, choose a user with the [Feature store restricted][feature-store-restricted] role, and select which features to share.
 
     <p align="center">
       <figure>
@@ -148,8 +148,7 @@ Click `Share` to open the sharing dialog. You can share with either a project or
 
 === "Share with a user"
 
-    A [Feature store restricted](../../projects/project/manage_members.md) member has no feature store
-    access by default; access must be granted per feature group (or per feature), from within their own project.
+    A [Feature store restricted][feature-store-restricted] member has no feature store access by default; access must be granted per feature group (or per feature), from within their own project.
 
     ```python
     fg = fs.get_feature_group("feature_group_name", version=1)
