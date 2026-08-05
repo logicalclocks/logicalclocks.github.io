@@ -99,7 +99,7 @@ version, job = feature_view.create_training_data(
 )
 ```
 
-For different lookbacks per joined Feature Group, pass a `Lookback` — see the [per-feature-group lookback section][batch-data-lookback] of the batch-data guide for the full shape.
+For different lookbacks per joined Feature Group, pass a `Lookback`. See the [per-feature-group lookback section][batch-data-lookback] of the batch-data guide for the full shape.
 
 The resolved window is persisted with the training dataset, so re-reading the same training dataset version reconstructs the same per-join predicate.
 The same parameter is accepted by `create_train_test_split` and `create_train_validation_test_split`.

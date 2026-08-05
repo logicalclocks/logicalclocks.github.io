@@ -49,6 +49,6 @@ Moreover, feature monitoring integrates with the Hopsworks built-in system for [
 You can setup alerts for feature monitoring at a Feature Group, Feature View, and project level.
 
 !!! tip "Select the correct trigger"
-    When configuring alerts for feature monitoring, make sure you select the `feature monitoring-shift detected` or `feature monitoring-shift undetected` trigger.
+    When configuring alerts for feature monitoring, make sure you select the `data shift detected` or `data shift undetected` trigger.
 
 ![Feature monitoring alerts](../../../assets/images/guides/fs/feature_monitoring/fm-alerts.png)

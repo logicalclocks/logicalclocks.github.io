@@ -1,319 +1,340 @@
 ---
+title: Hopsworks Documentation
+description: "Hopsworks documentation: quickstart, architecture, guides by role and by task, deployment models, and API reference."
 hide:
-- navigation
-- toc
-- title
+  - toc
 ---
 
-<style>
-  .md-typeset h1 {
-      font-size: 0em;
-  }
-</style>
+<p class="hops-eyebrow">Hopsworks Documentation</p>
 
-<div class="marctech_main">
-    <div class="collumns w-row">
-      <div class="column_sides w-col w-col-2">
-        <div class="enterprise_data">
-          <div class="col_heading"><img src="images/icons8-organization.svg" loading="lazy" alt="">
-            <div class="head_col">
-              <h2 class="heading_MT">Enterprise Data</h2>
-              <h3 class="MT_heading3 green">Feature Engineering</h3>
-            </div>
-          </div>
-          <div class="side-holder">
-            <div class="side-content">
-              <div class="name_item ingrey">Frameworks</div>
-              <div class="w-layout-grid">
-                <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/fs/feature_group/feature_pipelines#feature-engineering-in-pandas">Pandas</a></div>
-                </div>
-                <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/fs/feature_group/feature_pipelines#feature-engineering-in-flink">Flink</a></div>
-                </div>
-                <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/fs/feature_group/feature_pipelines#feature-engineering-in-spark">Spark</a></div>
-                </div>
-                <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/fs/feature_group/feature_pipelines#feature-engineering-in-sql">SQL</a></div>
-                </div>
-              </div>
-            </div>
-            <div class="side-content">
-              <div class="name_item ingrey">Data Sources</div>
-              <div class="w-layout-grid">
-                <div class="db_frame">
-                  <div class="icondb">
-                    <div class="db_frame-top"></div>
-                    <div class="db_frame-mid"></div>
-                  </div>
-                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/jdbc/">JDBC</a></div>
-                </div>
-                <div class="db_frame">
-                  <div class="icondb">
-                    <div class="db_frame-top"></div>
-                    <div class="db_frame-mid"></div>
-                  </div>
-                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/bigquery/">BigQuery</a></div>
-                </div>
-                <div class="db_frame">
-                  <div class="icondb">
-                    <div class="db_frame-top"></div>
-                    <div class="db_frame-mid"></div>
-                  </div>
-                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/s3/">Object Store</a></div>
-                </div>
-                <div class="db_frame">
-                  <div class="icondb">
-                    <div class="db_frame-top"></div>
-                    <div class="db_frame-mid"></div>
-                  </div>
-                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/snowflake/">Snowflake</a></div>
-                </div>
-                <div class="db_frame">
-                  <div class="icondb">
-                    <div class="db_frame-top"></div>
-                    <div class="db_frame-mid"></div>
-                  </div>
-                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/redshift/">RedShift</a></div>
-                </div>
-                <div class="db_frame">
-                  <div class="icondb">
-                    <div class="db_frame-top"></div>
-                    <div class="db_frame-mid"></div>
-                  </div>
-                  <div class="name_item db"><a href="./user_guides/fs/data_source/creation/sql/">SQL</a></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column_center w-col w-col-8">
-        <div class="enterprisefs">
-          <div class="enterprise_data">
-            <div class="col_heading">
-              <div class="head_col">
-                <h2 class="heading_MT">Enterprise Feature Store</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="center-content">
-          <div class="layer_02">
-            <div class="round-frame bottom-right">
-              <div class="name_item">Govern &amp; Monitor</div>
-            </div>
-            <div class="round-frame top-right">
-              <div class="name_item">Serve</div>
-            </div>
-            <div class="round-frame bottom-left">
-              <div class="name_item">Share </br>&amp; Re-use</div>
-            </div>
-            <div class="round-frame top-left">
-              <div class="name_item">Create</div>
-            </div>
-            <div class="w-embed">
-              <style>
-.layer_02{pointer-events: none;
-}
-.round-frame{
-pointer-events: initial;
-}
-</style>
-            </div>
-          </div>
-          <div class="layer_01">
-            <div class="logo-holder"><img src="images/hopsworks-logo-2022.svg" loading="lazy" alt="logo" class="image_logo"></div>
-            <div class="rec_frame">
-              <a href="./concepts/projects/governance/">
-                <div class="name_center">Project Based Collaboration</div>
-              </a>
-            </div>
-            <div class="columns_center w-row">
-              <div class="column w-col w-col-6">
-                <div class="div-block">
-                  <div class="rec_frame_main no_content">
-                  <span class="cellname">Write API</span>
-                    <div class="rec_frame_main-white">
-                      <div class="name_item_02"> <a href="./concepts/fs/feature_group/fg_overview/">Feature Groups</a></div>
-                    </div>
-                    <div class="rec_frame_main-white">
-                      <div class="name_item_02"><a href="./concepts/fs/feature_group/external_fg/">External <span class="non-bold"></br>Feature Groups</span></a></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="column w-col w-col-6">
-                <div class="rec_frame_main no_content">
-                <span class="cellname2">Read API</span>
-                  <div class="rec_frame_main-white">
-                    <div class="name_item_02"><a href="./concepts/fs/feature_view/fv_overview/">Feature Views</a></div>
-                    <div class="rec_frame_main-white dotted">
-                      <div class="name_item_02 non-bold"><a href="./concepts/fs/feature_view/offline_api/">Training Data</a></div>
-                    </div>
-                    <div class="rec_frame_main-white dotted">
-                      <div class="name_item_02 non-bold"><a href="./concepts/fs/feature_view/online_api/">Feature Vectors</a></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="rec_frame_main">
-              <div class="text_and_icon">
-                <div class="svg_icon w-embed"><img alt="svgImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iNjQiIGhlaWdodD0iNjQiCnZpZXdCb3g9IjAgMCA1MTIgNTEyIgpzdHlsZT0iIGZpbGw6I3VuZGVmaW5lZDsiPjxwYXRoIGQ9Ik01MyA0MTUuNjQ1YTMwLjAzNCAzMC4wMzQgMCAwMDMwIDMwSDQyOWEzMC4wMzQgMzAuMDM0IDAgMDAzMC0zMFYxNjcuNTEzSDUzek0zMDIuNjY3IDI2My41MzdhMTAgMTAgMCAxMTE0LjAwOC0xNC4yNzZsNDQuMTM3IDQzLjMxYTEwIDEwIDAgMDEwIDE0LjI3NmwtNDQuMTM3IDQzLjMwOWExMCAxMCAwIDExLTE0LjAwOC0xNC4yNzZsMzYuODYyLTM2LjE3MXptLTgwLjkgMTA5LjVsMzguMjU3LTE1MC41YTEwIDEwIDAgMTExOS4zODMgNC45MjdsLTM4LjI1NyAxNTAuNWExMCAxMCAwIDAxLTE5LjM4My00LjkyN3ptLTc3LjA3NC04MC40NjVsNDQuMTM3LTQzLjMxYTEwIDEwIDAgMTExNC4wMDggMTQuMjc2bC0zNi44NjIgMzYuMTcyIDM2Ljg2MiAzNi4xNzFhMTAgMTAgMCAwMS0xNC4wMDggMTQuMjc2bC00NC4xMzctNDMuMzA5YTEwIDEwIDAgMDEwLTE0LjI3NnpNNDI5IDY2LjM1NUg4M2EzMC4wMzQgMzAuMDM0IDAgMDAtMzAgMzB2NTEuMTU3SDQ1OVY5Ni4zNTVBMzAuMDM0IDMwLjAzNCAwIDAwNDI5IDY2LjM1NXoiPjwvcGF0aD48L3N2Zz4="></div>
-                <div class="name_item_02"><a href="./concepts/projects/search/">Search</a>, <a href="./concepts/fs/feature_group/versioning/">Versioning</a>, <a href="./concepts/fs/feature_group/fg_statistics/">Statistics</a>, <a href="./concepts/fs/feature_group/feature_monitoring/">Monitoring</a></div>
-              </div>
-            </div>
-            <div class="rec_frame_main">
-              <div class="text_and_icon">
-                <div class="svg_icon w-embed"><img alt="svgImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iNDgiIGhlaWdodD0iNDgiCnZpZXdCb3g9IjAgMCA0OCA0OCIKc3R5bGU9IiBmaWxsOiN1bmRlZmluZWQ7Ij48cGF0aCBkPSJNIDI0IDYgQyAxOC40ODYgNiAxNCAxMC40MzI5MDYgMTQgMTUuODc4OTA2IEMgMTQgMTguMjI3OTA2IDE0Ljg1NDg3NSAyMC41MDY0NTMgMTYuNDIxODc1IDIyLjMxNDQ1MyBDIDE2LjU4Nzg3NSAyMi41MDE0NTMgMjAuNTE0ODQ0IDI2Ljg5NzU3OCAyMS44Mzk4NDQgMjguMTQyNTc4IEMgMjIuNDQ0ODQ0IDI4LjcxMzU3OCAyMy4yMjQ5NTMgMjguOTk4MDQ3IDI0LjAwMTk1MyAyOC45OTgwNDcgQyAyNC43Nzg5NTMgMjguOTk4MDQ3IDI1LjU1NTE1NiAyOC43MTQ1MzEgMjYuMTYwMTU2IDI4LjE0NDUzMSBDIDI3LjcwMDE1NiAyNi42OTc1MzEgMzEuNDI3NzAzIDIyLjQ4ODg3NSAzMS41OTU3MDMgMjIuMjk2ODc1IEMgMzMuMTQ2NzAzIDIwLjUwNTg3NSAzNCAxOC4yMjY5MDYgMzQgMTUuODc4OTA2IEMgMzQgMTAuNDMyOTA2IDI5LjUxNCA2IDI0IDYgeiBNIDI0IDEzIEMgMjUuNjU3IDEzIDI3IDE0LjM0MyAyNyAxNiBDIDI3IDE3LjY1NyAyNS42NTcgMTkgMjQgMTkgQyAyMi4zNDMgMTkgMjEgMTcuNjU3IDIxIDE2IEMgMjEgMTQuMzQzIDIyLjM0MyAxMyAyNCAxMyB6IE0gOSAyNCBDIDcuNDU4MzMzNyAyNCA2LjExMjE0ODQgMjQuNjMyMTMzIDUuMjUzOTA2MiAyNS41OTc2NTYgQyA0LjM5NTY2NDEgMjYuNTYzMTc5IDQgMjcuNzkxNjY3IDQgMjkgQyA0IDMwLjIwODMzMyA0LjM5NTY2NDEgMzEuNDM2ODIxIDUuMjUzOTA2MiAzMi40MDIzNDQgQyA2LjExMjE0ODQgMzMuMzY3ODY3IDcuNDU4MzMzNyAzNCA5IDM0IEMgMTAuMzI2NDkgMzQgMTEuNDQ0MTY5IDMzLjQ3MjE0OCAxMi4yOTQ5MjIgMzIuNzI2NTYyIEwgMTkuMTUwMzkxIDM2LjgzOTg0NCBDIDE5LjA2MDY2NCAzNy4yMTQwNiAxOSAzNy41OTg2NjYgMTkgMzggQyAxOSA0MC43NTcgMjEuMjQzIDQzIDI0IDQzIEMgMjYuNzU3IDQzIDI5IDQwLjc1NyAyOSAzOCBDIDI5IDM3LjU5ODY2NiAyOC45MzkzMzYgMzcuMjE0MDYgMjguODQ5NjA5IDM2LjgzOTg0NCBMIDM1LjcwNTA3OCAzMi43MjY1NjIgQyAzNi41NTU4MzEgMzMuNDcyMTQ4IDM3LjY3MzUxIDM0IDM5IDM0IEMgNDAuNTQxNjY2IDM0IDQxLjg4Nzg1MiAzMy4zNjc4NjcgNDIuNzQ2MDk0IDMyLjQwMjM0NCBDIDQzLjYwNDMzNiAzMS40MzY4MjEgNDQgMzAuMjA4MzMzIDQ0IDI5IEMgNDQgMjcuNzkxNjY3IDQzLjYwNDMzNiAyNi41NjMxNzkgNDIuNzQ2MDk0IDI1LjU5NzY1NiBDIDQxLjg4Nzg1MiAyNC42MzIxMzMgNDAuNTQxNjY2IDI0IDM5IDI0IEMgMzcuNDU4MzM0IDI0IDM2LjExMjE0OCAyNC42MzIxMzMgMzUuMjUzOTA2IDI1LjU5NzY1NiBDIDM0LjM5NTY2NCAyNi41NjMxNzkgMzQgMjcuNzkxNjY3IDM0IDI5IEMgMzQgMjkuMzgyNDA1IDM0LjExMTk4NiAyOS43NTcyMzYgMzQuMTkzMzU5IDMwLjEzNDc2NiBMIDI3LjI5Njg3NSAzNC4yNzE0ODQgQyAyNi40MTQ0MTYgMzMuNDkwMjk2IDI1LjI2ODQ0MyAzMyAyNCAzMyBDIDIyLjczMTU1NyAzMyAyMS41ODU1ODQgMzMuNDkwMjk2IDIwLjcwMzEyNSAzNC4yNzE0ODQgTCAxMy44MDY2NDEgMzAuMTM0NzY2IEMgMTMuODg4MDE0IDI5Ljc1NzIzNiAxNCAyOS4zODI0MDUgMTQgMjkgQyAxNCAyNy43OTE2NjcgMTMuNjA0MzM2IDI2LjU2MzE3OSAxMi43NDYwOTQgMjUuNTk3NjU2IEMgMTEuODg3ODUyIDI0LjYzMjEzMyAxMC41NDE2NjYgMjQgOSAyNCB6IE0gOSAyNyBDIDkuNzkxNjY2IDI3IDEwLjE5NTQ4MiAyNy4yNDI4NjcgMTAuNTAzOTA2IDI3LjU4OTg0NCBDIDEwLjgxMjMzIDI3LjkzNjgyMSAxMSAyOC40NTgzMzMgMTEgMjkgQyAxMSAyOS41NDE2NjcgMTAuODEyMzMgMzAuMDYzMTc5IDEwLjUwMzkwNiAzMC40MTAxNTYgQyAxMC4xOTU0ODIgMzAuNzU3MTMzIDkuNzkxNjY2IDMxIDkgMzEgQyA4LjIwODMzNCAzMSA3LjgwNDUxNzcgMzAuNzU3MTMzIDcuNDk2MDkzOCAzMC40MTAxNTYgQyA3LjE4NzY2OTggMzAuMDYzMTc5IDcgMjkuNTQxNjY3IDcgMjkgQyA3IDI4LjQ1ODMzMyA3LjE4NzY2OTggMjcuOTM2ODIxIDcuNDk2MDkzOCAyNy41ODk4NDQgQyA3LjgwNDUxNzcgMjcuMjQyODY3IDguMjA4MzM0IDI3IDkgMjcgeiBNIDM5IDI3IEMgMzkuNzkxNjY2IDI3IDQwLjE5NTQ4MiAyNy4yNDI4NjcgNDAuNTAzOTA2IDI3LjU4OTg0NCBDIDQwLjgxMjMzIDI3LjkzNjgyMSA0MSAyOC40NTgzMzMgNDEgMjkgQyA0MSAyOS41NDE2NjcgNDAuODEyMzMgMzAuMDYzMTc5IDQwLjUwMzkwNiAzMC40MTAxNTYgQyA0MC4xOTU0ODIgMzAuNzU3MTMzIDM5Ljc5MTY2NiAzMSAzOSAzMSBDIDM4LjIwODMzNCAzMSAzNy44MDQ1MTggMzAuNzU3MTMzIDM3LjQ5NjA5NCAzMC40MTAxNTYgQyAzNy4xODc2NyAzMC4wNjMxNzkgMzcgMjkuNTQxNjY3IDM3IDI5IEMgMzcgMjguNDU4MzMzIDM3LjE4NzY3IDI3LjkzNjgyMSAzNy40OTYwOTQgMjcuNTg5ODQ0IEMgMzcuODA0NTE4IDI3LjI0Mjg2NyAzOC4yMDgzMzQgMjcgMzkgMjcgeiI+PC9wYXRoPjwvc3ZnPg=="></div>
-                <div class="name_item_02"><strong><a href="./concepts/projects/search#lineage">Provenance &amp; Lineage</a></strong></div>
-              </div>
-            </div>
-          </div>
-          <div class="w-layout-grid grid-infra">
-            <div id="w-node-a2a9b648-f5dd-74e5-e1c2-f7aaf4fa1fcd-46672785" class="infra">
-              <a href="./setup_installation/azure/getting_started/">
-                <img src="images/icons8-azure.svg" loading="lazy" alt="" class="infra-icon">
-                <div class="name_item small">Azure</div>
-              </a>
-            </div>
-            <div id="w-node-_466aa2bf-88bf-5a65-eab4-fc1eb95e7384-46672785" class="infra">
-              <a href="./setup_installation/aws/getting_started/">
-                <img src="images/icons8-amazon-web-services.svg" loading="lazy" alt="" class="infra-icon">
-                <div class="name_item small">AWS</div>
-              </a>
-            </div>
-            <div id="w-node-_87009ba3-d9a6-e0b7-4cce-581190a19cf3-46672785" class="infra">
-              <a href="./setup_installation/gcp/getting_started/">
-                <img src="images/icons8-google-cloud.svg" loading="lazy" alt="" class="infra-icon">
-                <div class="name_item small">Google Cloud</div>
-              </a>
-            </div>
-            <div id="w-node-_4a479fbb-90c7-9f47-d439-20aa6a224339-46672785" class="infra">
-              <a href="./setup_installation/on_prem/contact_hopsworks/">
-                <img src="images/icons8-database.svg" loading="lazy" alt="" class="infra-icon">
-                <div class="name_item small">On-premise</div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column_sides w-col w-col-2">
-        <div class="enterprise_ai">
-          <div class="col_heading">
-            <div class="col_heading"><img src="images/icons8-artificial-intelligence.svg" loading="lazy" alt="">
-              <div class="head_col">
-                <h2 class="heading_MT">Enterprise AI</h2>
-                <h3 class="MT_heading3 green">MLOps</h3>
-              </div>
-            </div>
-          </div>
-          <div class="side-holder">
-            <div class="side-content">
-              <div class="frame_with_arrow">
-                <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/mlops/training/">Experiments <br>&amp; Model Training</a></div>
-                </div>
-                <div class="arrowdown"><img src="images/icons8-thick-arrow-pointing-down.svg" loading="lazy" alt=""></div>
-              </div>
-              <div class="frame_with_arrow">
-                <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/mlops/registry/">Model Registry</a></div>
-                </div>
-                <div class="arrowdown"><img src="images/icons8-thick-arrow-pointing-down.svg" loading="lazy" alt=""></div>
-              </div>
-              <div class="frame_with_arrow">
-                <div class="rec_frame">
-                  <div class="name_item"><a href="./concepts/mlops/serving/">Model Serving</a></div>
-                </div>
-              </div>
-            </div>
-            <div class="side-content">
-              <div class="rec_frame">
-                <div class="name_item"><a href="./concepts/mlops/prediction_services/#operational-ml/">Operational ML</a></div>
-              </div>
-               <div class="rec_frame">
-                <div class="name_item"><a href="./concepts/mlops/prediction_services/#analytical-ml/">Analytical ML</a></div>
-              </div>
-            </div>
-            <div class="side-content">
-              <div class="rec_frame">
-                <div class="name_item"><a href="./concepts/mlops/bi_tools/">BI Tools</a></div>
-              </div>
-              <div class="rec_frame">
-                <div class="name_item"><a href="./concepts/mlops/opensearch/">Vector DB<br>OpenSearch</a></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+# Build production AI systems from Python
 
-<img src="images/hopsworks-logo-2022.svg" loading="lazy" alt="" class="image_logo_02">
+<p class="hops-lede">Features, training data, models and inference on one governed platform.</p>
 
-Hopsworks is a data platform for ML with a Python-centric Feature Store and MLOps capabilities.
-Hopsworks is a modular platform.
-You can use it as a standalone Feature Store, you can use it to manage, govern, and serve your models, and you can even use it to develop and operate feature, training and inference pipelines.
-Hopsworks brings collaboration for ML teams, providing a secure, governed platform for developing, managing, and sharing ML assets - features, models, training data, batch scoring data, logs, and more.
+<!-- markdownlint-disable MD007 MD030 -->
+<div class="grid cards hops-quickcards" markdown>
 
-## Python-Centric Feature Store
+-   :material-rocket-launch-outline: **Start in five minutes**
 
-Hopsworks is widely used as a standalone Feature Store.
-Hopsworks breaks the monolithic model development pipeline into separate feature and training pipelines, enabling both feature reuse and better tested ML assets.
-You can develop features by building feature pipelines in any Python (or Spark or Flink) environment, either inside or outside Hopsworks.
-You can use the Python frameworks you are familiar with to build production feature pipelines.
-You can compute aggregations in Pandas, validate feature data with Great Expectations, reduce your data dimensionality with embeddings and PCA, test your feature logic and features end-to-end with PyTest, and transform your categorical and numerical features with Scikit-Learn, TensorFlow, and PyTorch.
-You can orchestrate your feature pipelines with your Python framework of choice, including Hopsworks' own Airflow support.
+    ---
 
-## The Widest Feature Store Capabilities
+    Sign in to the Hopsworks SaaS and create a project.
+    Nothing to install.
 
-Hopsworks Feature Store also supports feature pipelines in PySpark, Spark, Flink, and SQL.
-Offline features can either be stored in Hopsworks, as Hudi tables on object storage, or in external data lakehouses (Snowflake, Databricks, Redshift, BigQuery, any JDBC-enabled platform) via External Feature Groups.
-Online features are served by [RonDB](https://www.rondb.com), developed by Hopsworks as the lowest latency, highest throughput, highest availability data store for your features.
+    [Open run.hopsworks.ai ↗](https://run.hopsworks.ai)
 
-## MLOps on Hopsworks
+-   :material-language-python: **Install the Python client**
 
-Hopsworks provides model serving capabilities through KServe, with additional support for feature/prediction logging to Kafka (also part of Hopsworks), and secure, low-latency model deployments via Istio.
-Hopsworks also has a Model Registry for KServe, with support for versioning both models and model assets (such as KServe transformers).
-Hopsworks also includes a vector database to provide similarity search capabilities for embeddings, based on [OpenSearch](./concepts/mlops/opensearch.md).
+    ---
 
-## Project-based Multi-Tenancy and Team Collaboration
+    `pip install hopsworks[python]`, then connect from any Python, Spark, Flink or Java environment.
 
-Hopsworks provides projects as a secure sandbox in which teams can collaborate and share ML assets.
-Hopsworks' unique multi-tenant project model even enables sensitive data to be stored in a shared cluster, while still providing fine-grained sharing capabilities for ML assets across project boundaries.  Projects can be used to structure teams so that they have end-to-end responsibility from raw data to managed features and models.
-Projects can also be used to create development, staging, and production environments for data teams.
-All ML assets support versioning, lineage, and provenance provide all Hopsworks users with a complete view of the MLOps life cycle, from feature engineering through model serving.
+    [Client installation](user_guides/client_installation/index.md) ·
+    <a href="python-api/">Python API reference</a>
 
-## Development and Operations
+-   :material-sitemap-outline: **Explore the architecture**
 
-Hopsworks provides a FTI (feature/training/inference) pipeline architecture for ML systems.
-Each part of the pipeline is defined in a Hopsworks job which corresponds to a Jupyter notebook, a python script or a jar.
-The production pipelines are then orchestrated with Airflow which is bundled in Hopsworks.
-Hopsworks provides several python environments that can be used and customized for each part of the FTI pipeline, for example switching between using PyTorch or TensorFlow in the training pipeline.
-You can train models on as many GPUs as are installed in a Hopsworks cluster and easily share them among users.
-You can also run Spark, Spark Streaming, or Flink programs on Hopsworks.
-JupyterLab is also bundled which can be used to run Python and Spark interactively.
+    ---
 
-## Available on any Platform
+    How the feature store, MLOps and governance layers fit together.
 
-Hopsworks is available to be installed on a kubernetes cluster in the cloud on AWS, Azure, and GCP, and On-Prem (Ubuntu/Redhat compatible), even in air-gapped data centers.
-Hopsworks is also available as a serverless platform that manages and serves both your features and models.
+    [Platform architecture](concepts/hopsworks.md) ·
+    [Feature store architecture](concepts/fs/index.md)
 
-## Join the community
+</div>
+<!-- markdownlint-enable MD007 MD030 -->
 
-- Ask questions and give us feedback in the [Hopsworks Community](https://community.hopsworks.ai/)
-- Follow us on [Twitter](https://twitter.com/hopsworks)
-- Check out all our latest [product releases](https://github.com/logicalclocks/hopsworks-api/releases)
-- Join our public [slack-channel](https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA )
+## Write features, read them in real time
 
-## Contribute
+Create an [API key](user_guides/projects/api_key/create_api_key.md) in your project, then connect, write a feature group and read a feature vector back.
 
-We are building the most complete and modular ML platform available in the market, and we count on your support to continuously improve Hopsworks.
-Feel free to [add features to our library](https://github.com/logicalclocks/hopsworks-api) and [report bugs](https://github.com/logicalclocks/hopsworks-api/issues) anytime.
+<div class="hops-steps">
+<div class="hops-steps-rail" role="tablist" aria-label="Write features and read them in real time, step by step">
+<button class="hops-step is-active" type="button" role="tab" aria-selected="true" data-step="connect">
+<span class="hops-step-num">1</span>
+<span class="hops-step-body"><strong>Connect</strong>
+<small>Sign in and get a feature store.</small></span>
+</button>
+<button class="hops-step" type="button" role="tab" aria-selected="false" data-step="write">
+<span class="hops-step-num">2</span>
+<span class="hops-step-body"><strong>Write features</strong>
+<small>Create a feature group and write data to the feature store.</small></span>
+</button>
+<button class="hops-step" type="button" role="tab" aria-selected="false" data-step="read">
+<span class="hops-step-num">3</span>
+<span class="hops-step-body"><strong>Read online</strong>
+<small>Read a feature vector back from the online store.</small></span>
+</button>
+</div>
+<div class="hops-steps-panels" markdown>
+<div class="hops-step-panel is-active" data-step="connect" markdown>
 
-## Open-Source
+```python
+# pip install "hopsworks[python]"
+import hopsworks
 
-Hopsworks Python API is available under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
+
+project = hopsworks.login()  # prompts for host and API key
+fs = project.get_feature_store()
+```
+
+<p class="hops-step-status">Connected, feature store ready.</p>
+</div>
+<div class="hops-step-panel" data-step="write" markdown>
+
+```python
+import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "cc_num": [4467360740682089],
+        "amount": [12.5],
+        "event_time": pd.to_datetime(["2026-01-01T00:00:00Z"]),
+    }
+)
+
+fg = fs.get_or_create_feature_group(
+    name="transactions",
+    version=1,
+    primary_key=["cc_num"],
+    event_time="event_time",
+    online_enabled=True,
+)
+fg.insert(df)
+```
+
+<p class="hops-step-status">Feature group `transactions` v1 written, offline and online.</p>
+</div>
+<div class="hops-step-panel" data-step="read" markdown>
+
+```python
+fv = fs.get_or_create_feature_view(
+    name="transactions_view",
+    version=1,
+    query=fg.select_all(),
+)
+fv.get_feature_vector(entry={"cc_num": 4467360740682089})
+```
+
+<p class="hops-step-status">Feature vector served from the online store.</p>
+</div>
+</div>
+</div>
+
+Next: [create a feature group](user_guides/fs/feature_group/create.md),
+[create a feature view](user_guides/fs/feature_view/overview.md),
+[retrieve feature vectors](user_guides/fs/feature_view/feature-vectors.md).
+
+## One architecture, three pipelines
+
+Independent [feature, training and inference pipelines](concepts/fti.md), connected by a shared feature store and model registry.
+
+<figure class="hops-diagram">
+<svg viewBox="0 0 1120 190" role="img" aria-label="FTI pipeline flow. Data sources feed a feature pipeline that writes to the feature store. A training pipeline reads the feature store and produces a model in the model registry. An inference pipeline reads the feature store and the model to produce predictions and prediction logs." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="home-fti-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
+
+  <path class="d-flow" d="M150 54 H170" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M310 54 H330" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M470 54 H490" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M630 54 H650" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M790 54 H810" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M950 54 H970" marker-end="url(#home-fti-arrow)"/>
+  <path class="d-flow" d="M400 78 C400 112, 820 112, 848 78" marker-end="url(#home-fti-arrow)" stroke-dasharray="4 3"/>
+  <path class="d-flow" d="M880 78 V120" marker-end="url(#home-fti-arrow)"/>
+
+  <a class="d-link" href="concepts/fs/feature_group/external_fg/">
+    <rect class="d-box" x="10" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="80" y="58" text-anchor="middle">Data sources</text>
+  </a>
+  <a class="d-link" href="concepts/fs/feature_group/feature_pipelines/">
+    <rect class="d-box" x="170" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="240" y="58" text-anchor="middle">Feature pipeline</text>
+  </a>
+  <a class="d-link" href="concepts/fs/feature_group/fg_overview/">
+    <rect class="d-box-own" x="330" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="400" y="58" text-anchor="middle">Feature store</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/training/">
+    <rect class="d-box" x="490" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="560" y="58" text-anchor="middle">Training pipeline</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/registry/">
+    <rect class="d-box-own" x="650" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="720" y="58" text-anchor="middle">Model registry</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/serving/">
+    <rect class="d-box" x="810" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="880" y="58" text-anchor="middle">Inference pipeline</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/prediction_services/">
+    <rect class="d-box" x="970" y="30" width="140" height="48" rx="8"/>
+    <text class="d-t" x="1040" y="58" text-anchor="middle">Predictions</text>
+  </a>
+  <a class="d-link" href="concepts/mlops/model_monitoring/">
+    <rect class="d-box" x="810" y="120" width="140" height="48" rx="8"/>
+    <text class="d-t" x="880" y="148" text-anchor="middle">Prediction logs</text>
+  </a>
+</svg>
+</figure>
+
+## Choose a deployment model
+
+<!-- markdownlint-disable MD007 MD030 -->
+<div class="grid cards" markdown>
+
+-   :material-cloud-outline: **SaaS**
+
+    ---
+
+    Managed by Hopsworks, free tier available.
+    Nothing to install or operate.
+
+    [run.hopsworks.ai ↗](https://run.hopsworks.ai) ·
+    [Tutorials](tutorials/index.md)
+
+-   :material-kubernetes: **Managed Kubernetes**
+
+    ---
+
+    Install on your own EKS, AKS or GKE cluster.
+
+    [AWS](setup_installation/aws/getting_started.md) ·
+    [Azure](setup_installation/azure/getting_started.md) ·
+    [GCP](setup_installation/gcp/getting_started.md)
+
+-   :material-server: **On-premises**
+
+    ---
+
+    Any Kubernetes cluster, including air-gapped data centres.
+
+    [On-prem background](setup_installation/on_prem/contact_hopsworks.md) ·
+    [External Kafka cluster](setup_installation/on_prem/external_kafka_cluster.md)
+
+-   :material-tune: **Configure the install**
+
+    ---
+
+    Every Helm value, and the cluster variables you set after install.
+
+    [Helm chart values](setup_installation/common/helm_chart_values.md) ·
+    [Cluster configuration](setup_installation/admin/variables.md)
+
+</div>
+<!-- markdownlint-enable MD007 MD030 -->
+
+## By role
+
+<!-- markdownlint-disable MD007 MD030 -->
+<div class="grid cards" markdown>
+
+-   **Developer**
+
+    ---
+
+    Connect from your own environment and build feature pipelines.
+
+    - [Client installation](user_guides/client_installation/index.md)
+    - [Python, SageMaker, Kubeflow](user_guides/integrations/python.md)
+    - [Create a feature group](user_guides/fs/feature_group/create.md)
+    - [Compute engines](user_guides/fs/compute_engines.md)
+    - <a href="python-api/">Python API reference</a>
+
+-   **Data scientist**
+
+    ---
+
+    Turn features into training data, models and deployments.
+
+    - [Tutorials](tutorials/index.md)
+    - [Feature views](concepts/fs/feature_view/fv_overview.md)
+    - [Training data](user_guides/fs/feature_view/training-data.md)
+    - [Model registry](user_guides/mlops/registry/index.md)
+    - [Model serving](user_guides/mlops/serving/index.md)
+
+-   **Platform engineer**
+
+    ---
+
+    Run pipelines, environments and orchestration in production.
+
+    - [Jobs](user_guides/projects/jobs/python_job.md)
+    - [Airflow](user_guides/projects/airflow/airflow.md)
+    - [Python environments](user_guides/projects/python/python_env_overview.md)
+    - [Kubernetes scheduling](user_guides/projects/scheduling/kube_scheduler.md)
+    - [ArrowFlight with DuckDB](setup_installation/common/arrow_flight_duckdb.md)
+
+-   **Security engineer**
+
+    ---
+
+    Authentication, secrets, isolation and audit.
+
+    - [Configure authentication](setup_installation/admin/auth.md)
+    - [OAuth2](setup_installation/admin/oauth2/create-client.md) ·
+      [LDAP](setup_installation/admin/ldap/configure-ldap.md) ·
+      [Kerberos](setup_installation/admin/ldap/configure-krb.md)
+    - [API keys](user_guides/projects/api_key/create_api_key.md) ·
+      [Secrets](user_guides/projects/secrets/create_secret.md)
+    - [IAM role chaining](setup_installation/admin/roleChaining.md)
+    - [Audit logs](setup_installation/admin/audit/audit-logs.md)
+    - [Project-based multi-tenancy](concepts/projects/governance.md)
+
+-   **Administrator**
+
+    ---
+
+    Operate the cluster, its users and its data.
+
+    - [Administration overview](setup_installation/admin/index.md)
+    - [User management](setup_installation/admin/user.md) ·
+      [Project management](setup_installation/admin/project.md)
+    - [Alerts](setup_installation/admin/alert.md)
+    - [Grafana dashboards](setup_installation/admin/monitoring/grafana.md) ·
+      [Service logs](setup_installation/admin/monitoring/services-logs.md)
+    - [High availability and disaster recovery](setup_installation/admin/ha-dr/intro.md)
+
+-   **Evaluator**
+
+    ---
+
+    Understand what Hopsworks is before installing anything.
+
+    - [What Hopsworks is](concepts/hopsworks.md)
+    - [Feature store architecture](concepts/fs/index.md)
+    - [Analytical and operational ML](concepts/mlops/prediction_services.md)
+    - [Tags, search and lineage](concepts/projects/search.md)
+    - [Deployment options](setup_installation/index.md)
+
+</div>
+<!-- markdownlint-enable MD007 MD030 -->
+
+## By task
+
+| Task | Start here |
+| --- | --- |
+| Evaluate | [Platform overview](concepts/hopsworks.md), [feature store architecture](concepts/fs/index.md), [deployment options](setup_installation/index.md) |
+| Learn | [Concepts](concepts/hopsworks.md), [tutorials](tutorials/index.md), [MLOps dictionary ↗](https://www.hopsworks.ai/mlops-dictionary) |
+| Build | [How-to guides](user_guides/index.md), [feature store guides](user_guides/fs/index.md), [MLOps guides](user_guides/mlops/index.md), [agents](user_guides/agents/index.md) |
+| Deploy | [AWS](setup_installation/aws/getting_started.md), [Azure](setup_installation/azure/getting_started.md), [GCP](setup_installation/gcp/getting_started.md), [on-prem](setup_installation/on_prem/contact_hopsworks.md), [Helm values](setup_installation/common/helm_chart_values.md) |
+| Operate | [Administration](setup_installation/admin/index.md), [monitoring](setup_installation/admin/monitoring/grafana.md), [alerts](setup_installation/admin/alert.md), [HA and DR](setup_installation/admin/ha-dr/intro.md), [service operations](setup_installation/admin/operationLogs.md) |
+| Troubleshoot | [Model serving](user_guides/mlops/serving/troubleshooting.md), [Python deployments](user_guides/projects/python-deployment/troubleshooting.md), [online ingestion](user_guides/fs/feature_group/online_ingestion_observability.md), [Jupyter session capacity](user_guides/projects/jupyter/session_capacity_warnings.md) |
+| Upgrade | [3.x to 4.0 migration](user_guides/migration/40_migration.md), [Airflow 3 upgrade](user_guides/projects/airflow/airflow3_upgrade.md), [Airflow 3 operator notes](setup_installation/admin/airflow3.md) |
+
+## Reference
+
+- <a href="python-api/">Python API</a> and <a href="javadoc/">Java API</a>
+- [Helm chart values](setup_installation/common/helm_chart_values.md) and [cluster configuration](setup_installation/admin/variables.md)
+- [Query engine (Trino)](user_guides/projects/trino/query_engine.md) and [vector similarity search](user_guides/fs/vector_similarity_search.md)
+- Machine-readable index for agents and LLMs: <a href="llms.txt">llms.txt</a>, <a href="llms-full.txt">llms-full.txt</a>.
+  Every page also has a raw Markdown sibling at `<page>.md`.
+
+## Help and source
+
+- Chat: [public Slack ↗](https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA)
+- Releases and issues: [hopsworks-api on GitHub ↗](https://github.com/logicalclocks/hopsworks-api)
+- The Hopsworks Python API is licensed under the [Apache License 2.0 ↗](https://www.apache.org/licenses/LICENSE-2.0.html).

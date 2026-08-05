@@ -23,7 +23,9 @@ checkout [our Scheduling guide](schedule_job.md).
 
 !!!warning "Enable Ray"
 
-    Support for Ray needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
+    Ray is gated behind the `ray_enabled` [configuration variable](../../../setup_installation/admin/variables.md), which an administrator has to turn on.
+    Until it is enabled, `RAY` is not offered as a job type.
+    Support for Ray also needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
 
     ```yaml
     global:
@@ -57,8 +59,9 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job.
-Make sure `RAY` is chosen.
+The `Type` radio offers `PYTHON` and `SPARK`, and `PYTHON` is selected by default.
+On clusters where Ray is enabled, `RAY` is offered as well.
+Select `RAY` to configure a Ray job.
 
 ### Step 4: Set the script
 
@@ -124,7 +127,7 @@ environment and additional files">
 ### Step 6: (Kueue enabled) Select a Queue
 
 If the cluster is installed with Kueue enabled, you will need to select a queue in which the job should run.
-This can be done from `Advance configuration -> Scheduler section`.
+This can be done from `Advanced options`, in the `Scheduler` section of the full configuration page.
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 

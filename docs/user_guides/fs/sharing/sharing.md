@@ -76,7 +76,7 @@ Click `Share` to open the sharing dialog. You can share with either a project or
       </figure>
     </p>
 
-    After clicking `Share`, the project appears under the `This feature group is shared with X projects` section.
+    After clicking `Share`, the project appears under the `Shared with projects` section.
 
     <p align="center">
       <figure>
@@ -96,7 +96,7 @@ Click `Share` to open the sharing dialog. You can share with either a project or
       </figure>
     </p>
 
-    After clicking `Share`, the user appears under the `This feature group is shared with X users` section.
+    After clicking `Share`, the user appears under the `Users with restricted access` section.
 
     <p align="center">
       <figure>

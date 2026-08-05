@@ -11,7 +11,7 @@ In addition to offering different types of use cases and common subjects in the 
 ## How to run the tutorials
 
 In order to run the tutorials, you will need a Hopsworks account.
-To do so, go to [app.hopsworks.ai](https://app.hopsworks.ai) and create one.
+To do so, go to [run.hopsworks.ai](https://run.hopsworks.ai) and create one.
 With a managed account, just run the Jupyter notebook from within Hopsworks.
 Generally the notebooks contain the information you will need on how to interact with the Hopsworks Platform.
 

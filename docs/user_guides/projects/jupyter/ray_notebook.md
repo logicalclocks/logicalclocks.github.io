@@ -12,7 +12,9 @@ Jupyter is provided as a service in Hopsworks, providing the same user experienc
 
 !!!warning "Enable Ray"
 
-    Support for Ray needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
+    Ray is gated behind the `ray_enabled` [configuration variable](../../../setup_installation/admin/variables.md), which an administrator has to turn on.
+    Until it is enabled, the Ray kernel and the Ray configuration are not offered in Jupyter.
+    Support for Ray also needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
 
     ```yaml
     global:
@@ -120,7 +122,7 @@ Environment with Ray kernel have a `Ray Enabled` label next to them.
 ## Step 5: (Kueue enabled) Select a Queue
 
 If the cluster is installed with Kueue enabled, you will need to select a queue in which the notebook should run.
-This can be done from `Advance configuration -> Scheduler section`.
+This can be done from `Advanced options`, in the `Scheduler` section of the full configuration page.
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 

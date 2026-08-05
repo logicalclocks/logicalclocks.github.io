@@ -16,7 +16,7 @@ To change the session cap or the proxy buffers, you need to be able to edit the 
 
 ## How the cap relates to concurrent users
 
-Each open browser WebSocket the proxy is bridging counts as one in-flight session, and all three WebSocket-backed components — Jupyter kernels, terminals, and Streamlit apps — draw from the same per-pod budget.
+Each open browser WebSocket the proxy is bridging counts as one in-flight session, and all three WebSocket-backed components (Jupyter kernels, terminals, and Streamlit apps) draw from the same per-pod budget.
 The pod saturates at `maxSessionsPerApp` concurrent connections, which defaults to `500`.
 Unlike the previous proxy, there is no two-threads-per-connection accounting: the cap is a direct count of open sessions, not a derived thread number.
 
@@ -89,7 +89,8 @@ hopsworks:
 ```
 
 Raise `maxSessionsPerApp` to serve more concurrent notebook, terminal, and Streamlit users per pod.
-The cap is a direct connection count, so the value is the number of concurrent connections you want each pod to serve — there is no longer a factor-of-two thread conversion.
+The cap is a direct connection count, so the value is the number of concurrent connections you want each pod to serve.
+There is no longer a factor-of-two thread conversion.
 
 The dominant resource cost of raising the cap is the memory held by the in-flight connections and the CPU spent forwarding their traffic, not thread overhead.
 `grizzlyWorkerPoolMaxSize` bounds the shared client transport worker pool that carries the upstream-to-browser leg; leave it at the default unless the CPU panel shows the transport starved.

@@ -146,8 +146,8 @@ See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), 
 
 | Parameter                     | Default | Range  | Description                                 |
 | ----------------------------- | ------- | ------ | ------------------------------------------- |
-| `minInstances`                | —       | ≥ 0    | Minimum replicas (0 enables scale-to-zero)  |
-| `maxInstances`                | —       | ≥ 1    | Maximum replicas (cannot be less than min)  |
+| `minInstances`                | n/a     | ≥ 0    | Minimum replicas (0 enables scale-to-zero)  |
+| `maxInstances`                | n/a     | ≥ 1    | Maximum replicas (cannot be less than min)  |
 | `panicWindowPercentage`       | 10.0    | 1–100  | Panic window as percentage of stable window |
 | `stableWindowSeconds`         | 60      | 6–3600 | Stable window duration in seconds           |
 | `panicThresholdPercentage`    | 200.0   | > 0    | Traffic threshold to trigger panic mode     |

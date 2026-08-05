@@ -100,8 +100,8 @@ Third and final step shows how to attach your Expectation Suite to the Feature G
 In order to define and validate an expectation when writing to a Feature Group, you will need:
 
 - A Hopsworks project.
-  If you don't have a project yet you can go to [app.hopsworks.ai](https://app.hopsworks.ai), signup with your email and create your first project.
-- An API key, you can get one by going to "Account Settings" on [app.hopsworks.ai](https://app.hopsworks.ai).
+  If you don't have a project yet you can go to [run.hopsworks.ai](https://run.hopsworks.ai), signup with your email and create your first project.
+- An API key, you can get one by going to "Account Settings" on [run.hopsworks.ai](https://run.hopsworks.ai).
 - The [Hopsworks Python library](https://pypi.org/project/hopsworks) installed in your client.
   See the [installation guide](../../client_installation/index.md).
 

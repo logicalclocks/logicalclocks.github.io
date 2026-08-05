@@ -23,9 +23,9 @@ In the `Account Settings` page you can find the `Secrets` section showing a list
 Click `New Secret` to bring up the dialog for secret creation.
 Enter a name for the secret to be used for lookup, then provide the secret value in one of two ways:
 
-- `Text` — paste or type the value directly.
+- `Text`: paste or type the value directly.
   This is the default mode for short tokens, passwords, and API keys.
-- `File` — upload a file from your machine.
+- `File`: upload a file from your machine.
   The contents are base64-encoded in the browser and stored as the secret value.
   Useful for small key files such as SSH keys, service account JSON, or short PEM-encoded certificates.
   A secret value cannot exceed 9000 characters (about 6.6 KB of raw file content).

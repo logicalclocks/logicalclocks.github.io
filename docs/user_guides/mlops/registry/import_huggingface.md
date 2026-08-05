@@ -27,14 +27,14 @@ Click the **Import from HuggingFace** button in the toolbar at the top of the mo
 - **Access token** (optional). Only needed for gated or private repositories. See HuggingFace's [access token docs](https://huggingface.co/settings/tokens) for how to create one.
 
 !!! tip "Gated models"
-    If the model requires an access token and you don't supply one, the import fails fast and the modal prompts you to paste a token and retry — no download time is wasted.
+    If the model requires an access token and you don't supply one, the import fails fast and the modal prompts you to paste a token and retry, so no download time is wasted.
 
 Click **Next** to inspect the repo on HuggingFace.
 
 ### Step 4: Choose which weight formats to import
 
 Many HuggingFace repos ship the same weights in several interchangeable formats (Safetensors, PyTorch, TensorFlow, Flax, GGUF, ONNX, OpenVINO, Core ML, TensorFlow Lite).
-Downloading all of them wastes HopsFS storage and bandwidth — typically you only need one.
+Downloading all of them wastes HopsFS storage and bandwidth, and typically you only need one.
 
 The modal shows a checkbox for each weight format detected in the repo, with the following default precedence pre-selected:
 
@@ -49,11 +49,11 @@ Config, tokenizer, README and other small auxiliary files are always imported re
 
 #### Quantization variants
 
-Some repos — most commonly GGUF builds from `unsloth` — ship the same weights in several quantizations.
+Some repos, most commonly GGUF builds from `unsloth`, ship the same weights in several quantizations.
 The variants can be packaged either as files (`Qwen-Q4_K_M.gguf`, `Kimi.IQ4_XS.gguf`) or as subdirectories named after the quant (`UD-Q2_K_XL/`, `UD-Q4_K_XL/`).
 
 When variants are detected the modal adds a second checkbox group ("Quantization variant").
-Tick the variants you want — files belonging to unticked variants are skipped.
+Tick the variants you want: files belonging to unticked variants are skipped.
 Files that don't carry a variant tag (e.g., the root README or a base GGUF in the repo root) are not affected by the variant filter.
 
 The recogniser knows the common llama.cpp / unsloth tags: `BF16`, `F16`, `F32`, `FP16`, `FP32`, `Q2_K*`, `Q3_K*`, `Q4_0`, `Q4_K*`, `Q5_K*`, `Q6_K*`, `Q8_0`, `Q8_K*`, `IQ1_S`, `IQ1_M`, `IQ2_*`, `IQ3_*`, `IQ4_*`, `IQ5_K*`, `IQ6_K`, the `Q4_0_*_*` packed variants, and the `UD-Q*` unsloth dynamic series.
@@ -77,7 +77,7 @@ Click **Cancel** while the download is in progress. You'll be asked whether to *
 - Leave the box **unchecked** to keep the files that have already been written to HopsFS (useful if you want to inspect what was downloaded so far).
 - Tick the box to have the server remove the partial `Models/{name}/{version}/` directory.
 
-If you close the modal (X or click outside) while the download is in progress, Hopsworks prompts you to either **Continue in background** — the modal closes and the download keeps running server-side — or **Cancel download**.
+If you close the modal (X or click outside) while the download is in progress, Hopsworks prompts you to either **Continue in background**, which closes the modal and keeps the download running server-side, or **Cancel download**.
 
 ### Step 7: Success
 
@@ -96,7 +96,7 @@ Hopsworks picks the framework in this order:
     - `pytorch_model.bin`, `.safetensors`, `.pt`, `.pth` → `TORCH`
 5. **Fallback** → `PYTHON`.
 
-If the detected framework isn't right, you can change it later from the model's detail page — see [Editing the framework][editing-the-framework] below.
+If the detected framework isn't right, you can change it later from the model's detail page. See [Editing the framework][editing-the-framework] below.
 
 !!! info "vLLM config for LLMs"
     When the framework is detected as `LLM`, Hopsworks writes a default `vllmconfig.yaml` alongside the model files (`dtype: "half"`, `gpu_memory_utilization: 0.96`). `max_model_len` is intentionally left out so vLLM uses the context window declared in the model's own `config.json`. Edit this file if you need a smaller context to fit your GPU.
@@ -107,7 +107,7 @@ The framework is shown as a dropdown on the **Summary** panel of the model versi
 Select a different value (`TENSORFLOW`, `TORCH`, `SKLEARN`, `LLM`, `PYTHON`, or *No framework*) and the change is persisted immediately.
 The dropdown is read-only for users with the `Observer` role.
 
-The framework is more than a label — the **Deploy this version** button on the same page uses it to pre-fill the deployment form:
+The framework is more than a label: the **Deploy this version** button on the same page uses it to pre-fill the deployment form:
 
 | Framework    | Model server        | Config file      | Environment match |
 | ------------ | ------------------- | ---------------- | ----------------- |
@@ -120,7 +120,7 @@ If the corresponding config file (`vllmconfig.yaml` or `predictor.py`) already e
 
 ## Managing vLLM configs
 
-For models with the `LLM` framework, the model version page shows a **VLLM Configs** button that opens a dialog listing every `*-vllmconfig.yaml` file under the model's `Files/` directory — one per GPU type.
+For models with the `LLM` framework, the model version page shows a **VLLM Configs** button that opens a dialog listing every `*-vllmconfig.yaml` file under the model's `Files/` directory, one per GPU type.
 A file named plain `vllmconfig.yaml` (no prefix) is labelled *Default*; others are keyed by the GPU they target, for example `NVIDIA-RTX-6000-vllmconfig.yaml`.
 
 Each entry can be inspected in-place and switched to edit mode.
@@ -129,7 +129,7 @@ Saving an edit replaces the file in HopsFS and invalidates the cached content.
 ### Generate a vLLM config with Platform Intelligence
 
 If the Platform Intelligence feature is enabled on the cluster, the model version page also shows a **Generate VLLM Config** button.
-Pick a GPU type from the dropdown (populated from the cluster's available GPUs) and Platform Intelligence returns a minimal YAML — `dtype`, `max_model_len`, `gpu_memory_utilization` — tuned for that GPU.
+Pick a GPU type from the dropdown (populated from the cluster's available GPUs) and Platform Intelligence returns a minimal YAML (`dtype`, `max_model_len`, `gpu_memory_utilization`) tuned for that GPU.
 The result is saved as `<gpu-type>-vllmconfig.yaml` next to the model files, and any legacy variants of the same name (with spaces or underscores) are cleaned up.
 
 The generator chat session is deleted as soon as the YAML has been uploaded, even if the generation fails.
@@ -154,7 +154,7 @@ If the import fails, the modal shows one of these reasons:
 | ---------------------------- | ----------------------------------------------------------------------------------------------- |
 | `auth_required`              | A token was supplied but rejected by HuggingFace (invalid, expired, or no grant for this repo). |
 | `not_found_or_auth_required` | No token supplied and HuggingFace returned 401 (ID is wrong, or the repo is gated/private).     |
-| `model_not_found`            | HuggingFace returned 404 — the repo does not exist.                                             |
+| `model_not_found`            | HuggingFace returned 404: the repo does not exist.                                              |
 | `no_disk_space`              | The project ran out of HopsFS storage quota while downloading.                                  |
 | `download_failed: <file>`    | A specific file failed to download (e.g. transient network issue).                              |
 | `invalid_filename: <name>`   | The repo contained a filename with disallowed characters (e.g. `..`).                           |
@@ -165,4 +165,4 @@ For all terminal failures Hopsworks removes the partial model directory from Hop
 ## Going Further
 
 - Attach an [Input Example][how-to-attach-an-input-example] and [Model Schema][how-to-attach-a-model-schema] to your imported model.
-- Serve the imported model with [Model Serving][model-serving-guide] — LLMs auto-pick up the generated `vllmconfig.yaml`.
+- Serve the imported model with [Model Serving][model-serving-guide]: LLMs auto-pick up the generated `vllmconfig.yaml`.

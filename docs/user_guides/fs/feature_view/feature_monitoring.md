@@ -16,8 +16,8 @@ Alternatively, you can get started quickly by running our [tutorial for feature 
 
 !!! info "Prerequisites"
     - A Hopsworks project.
-      If you don't have one yet, go to [app.hopsworks.ai](https://app.hopsworks.ai), sign up with your email and create your first project.
-    - An API key, which you can get from "Account Settings" on [app.hopsworks.ai](https://app.hopsworks.ai).
+      If you don't have one yet, go to [run.hopsworks.ai](https://run.hopsworks.ai), sign up with your email and create your first project.
+    - An API key, which you can get from "Account Settings" on [run.hopsworks.ai](https://run.hopsworks.ai).
     - The [Hopsworks Python library](https://pypi.org/project/hopsworks) installed in your client.
       See the [installation guide](../../client_installation/index.md).
     - A Feature View and a Training Dataset.

@@ -24,4 +24,5 @@ uv tool install md-snakeoil && snakeoil --line-length 88 --rules "E,F,B,C4,ISC,P
 
 - @docs/README.md — full command reference, content structure, and links to detail docs
 - @docs/content.md — writing conventions, code blocks, linking, and assets
+- @docs/design-system.md — visual language: tokens, logo, nav, search, diagrams; read before any CSS/nav/visual change
 - @docs/caveats/README.md — known gotchas; add new ones as separate files in this folder

@@ -47,8 +47,8 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job.
-To instead configure a Python job, select `PYTHON`.
+The `Type` radio offers `PYTHON` and `SPARK`, and `PYTHON` is selected by default.
+Leave it on `PYTHON` to configure a Python job.
 
 <p align="center">
   <figure>
@@ -84,7 +84,8 @@ Remember to handle the arguments inside your Python script.
 
 ### Step 6 (optional): Additional configuration
 
-It is possible to also set following configuration settings for a `PYTHON` job.
+Click `Advanced options` in the dialog to open the full job configuration page.
+There you can also set the following configuration settings for a `PYTHON` job.
 
 - `Environment`: The python environment to use
 - `Container memory`: The amount of memory in MB to be allocated to the Python script
@@ -106,14 +107,14 @@ It is possible to also set following configuration settings for a `PYTHON` job.
 ### Step 7: (Kueue enabled) Select a Queue
 
 If the cluster is installed with Kueue enabled, you will need to select a queue in which the job should run.
-This can be done from `Advance configuration -> Scheduler section`.
+This can be done from `Advanced options`, in the `Scheduler` section.
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 
 ### Step 8: Execute the job
 
 Now click the `Run` button to start the execution of the job.
-You will be redirected to the `Executions` page where you can see the list of all executions.
+Then open the `Executions` tab to see the list of all executions.
 
 Once the execution is finished, click on `Logs` to see the logs for the execution.
 
@@ -217,9 +218,8 @@ Also, if you write a local file, for example `output.txt`, it will be saved in t
 
 ## Environment variables
 
-User-defined environment variables can be attached to a Python job under the
-*Environment variables* panel of the advanced configuration. Each entry is a
-`KEY=VALUE` pair that is set on the container for every execution of the job.
+User-defined environment variables can be attached to a Python job under the *Environment variables* panel of the advanced options page.
+Each entry is a `KEY=VALUE` pair that is set on the container for every execution of the job.
 
 !!! info "Account-level variables also apply"
     Variables defined under [Account settings → Environment variables][account-level-environment-variables] are also injected into this job.
@@ -235,15 +235,13 @@ region = os.environ.get("AWS_REGION", "us-east-1")
 print(f"Using {api_key[:4]}*** in {region}")
 ```
 
-Scheduled and backfill runs also receive `HOPS_LOGICAL_DATE`, `HOPS_START_TIME`
-and `HOPS_END_TIME` describing the data interval they should process — see
-[Scheduling][logical-time-and-data-intervals] and
-[Batch feature pipelines][batch-feature-pipelines].
+Scheduled and backfill runs also receive `HOPS_LOGICAL_DATE`, `HOPS_START_TIME` and `HOPS_END_TIME` describing the data interval they should process.
+See [Scheduling][logical-time-and-data-intervals] and [Batch feature pipelines][batch-feature-pipelines].
 
 !!! warning "Reserved names"
-    Names starting with `HOPS_` are reserved by the scheduler. Setting them in
-    the *Environment variables* panel overrides the scheduler value for every
-    execution — the UI shows a warning callout when you do this.
+    Names starting with `HOPS_` are reserved by the scheduler.
+    Setting them in the *Environment variables* panel overrides the scheduler value for every execution.
+    The UI shows a warning callout when you do this.
 
 ## API Reference
 

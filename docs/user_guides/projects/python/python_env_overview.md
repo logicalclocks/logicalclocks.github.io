@@ -18,7 +18,8 @@ Under the `Project settings` section you can find the `Python environment` setti
 
 ### Step 2: List available environments
 
-Environments listed under `FEATURE ENGINEERING` corresponds to environments you would use in a feature pipeline, `MODEL TRAINING` maps to environments used in a training pipeline and `MODEL INFERENCE` are what you would use in inference pipelines.
+The page is titled `Prebuilt and Custom Container Images` and lists the environments in three columns.
+Environments listed under `FEATURE ENGINEERING` correspond to environments you would use in a feature pipeline, `MODEL TRAINING` maps to environments used in a training pipeline, and `INFERENCE / AGENTS / APPS` are what you would use in inference pipelines, agents and applications.
 
 <p align="center">
   <figure>
@@ -34,29 +35,28 @@ Environments listed under `FEATURE ENGINEERING` corresponds to environments you 
 
 The `FEATURE ENGINEERING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md), a [Python job](../jobs/python_job.md) or a [PySpark job](../jobs/pyspark_job.md).
 
+- `agent-job` an AI agent runtime bundling Claude Code and OpenAI Codex, meant to be cloned and extended with your own libraries
+- `dlthub-ingestion-pipeline` for ingesting data from data sources into feature groups
 - `python-feature-pipeline` for writing feature pipelines using Python
 - `spark-feature-pipeline` for writing feature pipelines using PySpark
 
 ### Model training
 
-The `MODEL TRAINING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md) or a [Python job](../jobs/python_job.md) or in a [Ray job](../jobs/ray_job.md).
+The `MODEL TRAINING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md) or a [Python job](../jobs/python_job.md).
 
 - `tensorflow-training-pipeline` to train TensorFlow models
-- `torch-training-pipeline` to train PyTorch models
+- `torch-training-pipeline` to train and fine-tune PyTorch models and LLMs
 - `pandas-training-pipeline` to train XGBoost, Catboost and Sklearn models
-- `ray_training_pipeline` a general purpose environment for distributed training using Ray framework to train XGBoost and Sklearn models.
-  Should be used in [Ray job](../jobs/ray_job.md).
-  It can be customized to install additional dependencies of your choice.
-- `ray_torch_training_pipeline` for distributed training of PyTorch models using Ray framework in a [Ray job](../jobs/ray_job.md)
-- `ray_tensorflow_training_pipeline` for distributed training of TensorFlow models using Ray framework in a [Ray job](../jobs/ray_job.md)
 
-### Model inference
+### Inference, agents and apps
 
-The `MODEL INFERENCE` environments can be used in a deployment using a custom predictor script.
+The `INFERENCE / AGENTS / APPS` environments can be used in a deployment using a custom predictor script, and for agents and applications.
 
 - `tensorflow-inference-pipeline` to load and serve TensorFlow models
 - `torch-inference-pipeline` to load and serve PyTorch models
 - `pandas-inference-pipeline` to load and serve XGBoost, Catboost and Sklearn models
+- `python-agent-pipeline` to build Python agents, bundling FastAPI, LlamaIndex and OpenTelemetry
+- `python-app-pipeline` to build interactive applications with Streamlit
 - `vllm-inference-pipeline` to load and serve LLMs with vLLM inference engine
 - `minimal-inference-pipeline` to install your own custom framework, contains a minimal set of dependencies
 

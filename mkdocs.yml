@@ -12,49 +12,51 @@ strict: false
 
 nav:
   - Home: index.md
-  - Getting Started ↗: https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb
+  - Getting Started ↗: https://run.hopsworks.ai
   - Tutorials:
       - tutorials/index.md
   - Concepts:
-      - Hopsworks Platform: concepts/hopsworks.md
+      - concepts/index.md
+      - Platform:
+          - Hopsworks Platform: concepts/hopsworks.md
+          - Projects and Governance: concepts/projects/governance.md
+          - Data Storage and Sharing: concepts/projects/storage.md
+          - FTI Pipeline Architecture: concepts/fti.md
       - MLOps Dictionary ↗: https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs
       - Feature Store:
           - Architecture: concepts/fs/index.md #hsfs
-          - Feature Groups:
-              - Overview: concepts/fs/feature_group/fg_overview.md
-              - Write APIs: concepts/fs/feature_group/write_apis.md
-              - Feature Pipelines: concepts/fs/feature_group/feature_pipelines.md
-              - External Feature Groups: concepts/fs/feature_group/external_fg.md
-              - Spine Group: concepts/fs/feature_group/spine_group.md
-              - Data Validation/Stats/Alerts: concepts/fs/feature_group/fg_statistics.md
-              - Feature Monitoring: concepts/fs/feature_group/feature_monitoring.md
-              - Versioning: concepts/fs/feature_group/versioning.md
-              - On-Demand Feature: concepts/fs/feature_group/on_demand_feature.md
-          - Feature Views:
-              - Overview: concepts/fs/feature_view/fv_overview.md
-              - Offline API: concepts/fs/feature_view/offline_api.md
-              - Online API: concepts/fs/feature_view/online_api.md
-              - Consistent Transformations: concepts/fs/feature_view/training_inference_pipelines.md
-              - Statistics: concepts/fs/feature_view/statistics.md
-              - Feature Monitoring: concepts/fs/feature_view/feature_monitoring.md
-              - Versioning: concepts/fs/feature_view/versioning.md
-      - Projects:
-          - Governance: concepts/projects/governance.md
-          - Data Storage/Sharing: concepts/projects/storage.md
-          - Tags/Search/Lineage: concepts/projects/search.md
+          - Features and Feature Groups: concepts/fs/feature_group/fg_overview.md
+          - Write APIs: concepts/fs/feature_group/write_apis.md
+          - External Feature Groups: concepts/fs/feature_group/external_fg.md
+          - Feature Pipelines: concepts/fs/feature_group/feature_pipelines.md
+          - Streaming Feature Pipelines: concepts/fs/feature_group/streaming_feature_pipelines.md
+          - Data Transformations: concepts/mlops/data_transformations.md
+      - Feature Views:
+          - Overview: concepts/fs/feature_view/fv_overview.md
+          - Offline API: concepts/fs/feature_view/offline_api.md
+          - Spine Group: concepts/fs/feature_group/spine_group.md
+          - Online API: concepts/fs/feature_view/online_api.md
+          - Consistent Transformations: concepts/fs/feature_view/training_inference_pipelines.md
+          - On-Demand Features: concepts/fs/feature_group/on_demand_feature.md
+      - Data Quality:
+          - Data Validation, Statistics, Alerts: concepts/fs/feature_group/fg_statistics.md
+          - Feature Monitoring: concepts/fs/feature_group/feature_monitoring.md
+      - Versioning and Lifecycle:
+          - Versioning: concepts/fs/feature_group/versioning.md
+          - Tags, Search, Lineage: concepts/projects/search.md
           - CI/CD: concepts/projects/cicd.md
-      - MLOps:
-          - Prediction Services: concepts/mlops/prediction_services.md
+      - Models and Serving:
           - Model Training: concepts/mlops/training.md
           - Model Registry: concepts/mlops/registry.md
           - Model Serving: concepts/mlops/serving.md
           - Model Monitoring: concepts/mlops/model_monitoring.md
-          - Vector Database: concepts/mlops/opensearch.md
+          - AI Systems: concepts/mlops/prediction_services.md
+          - Agents and LLM Systems: concepts/mlops/agents.md
+      - More:
+          - Vector Index: concepts/mlops/opensearch.md
+          - Development Inside Hopsworks: concepts/dev/inside.md
+          - Development Outside Hopsworks: concepts/dev/outside.md
           - BI Tools: concepts/mlops/bi_tools.md
-          - Data Transformations: concepts/mlops/data_transformations.md
-      - Development:
-          - Outside Hopsworks: concepts/dev/outside.md # api-keys
-          - Inside Hopsworks: concepts/dev/inside.md
   - Guides:
       - user_guides/index.md
       - Feature Store:
@@ -167,6 +169,7 @@ nav:
               - Run Ray Notebook: user_guides/projects/jupyter/ray_notebook.md
               - Remote Filesystem Driver: user_guides/projects/jupyter/remote_filesystem_driver.md
               - Session Capacity Warnings: user_guides/projects/jupyter/session_capacity_warnings.md
+          - Terminal: user_guides/projects/terminal.md
           - Apps: user_guides/projects/apps/index.md
           - Jobs:
               - Run Python Job: user_guides/projects/jobs/python_job.md
@@ -265,6 +268,7 @@ nav:
           - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
       - Administration:
           - Cluster Configuration: setup_installation/admin/variables.md
+          - Cluster Configuration Variables Reference: setup_installation/admin/configuration_reference.md
           - Introduction: setup_installation/admin/index.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
@@ -303,18 +307,17 @@ nav:
       - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
   - Python API: python-api
   - Java API: javadoc
-  - Community ↗: https://community.hopsworks.ai/
+  - REST API Status Codes: reference/rest_error_codes.md
+  - Docs for AI agents: ai.md
 
 theme:
   name: material
   custom_dir: docs/overrides
   favicon: assets/images/favicon.ico
-  logo: assets/images/hops-logo.png
+  logo: assets/images/hops-mark-green.png
   icon:
     repo: fontawesome/brands/github
-  font:
-    text: "Roboto"
-    code: "IBM Plex Mono"
+  font: false
   palette:
     - scheme: hopsworks
       media: "(prefers-color-scheme: light)"
@@ -330,10 +333,12 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    - navigation.tabs
-    - navigation.tabs.sticky
-    - navigation.sections
     - navigation.indexes
+    - navigation.prune
+    - navigation.path
+    - navigation.top
+    - toc.follow
+    - content.code.copy
 
 extra:
   version:
@@ -345,22 +350,31 @@ extra:
       link: https://twitter.com/hopsworks
     - icon: fontawesome/brands/github
       link: https://github.com/logicalclocks/hopsworks-api
-    - icon: fontawesome/brands/discourse
-      link: https://community.hopsworks.ai/
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/hopsworks/
     - icon: fontawesome/brands/slack
-      link: https://bit.ly/publichopsworks
+      link: https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA
   analytics:
     provider: google
     property: G-64FEEXPSDN
 
 extra_css:
   - css/custom.css
-  - css/marctech.css
 
 extra_javascript:
   - js/quickstart-fullscreen.js
+  - js/llm-copy.js
+  - js/card-links.js
+  - js/code-lang.js
+  - js/home-steps.js
+  - js/nav-collapse.js
+  - js/drill-nav.js
+  - js/diagram-zoom.js
+
+# Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
+# Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.
+hooks:
+  - scripts/llms_hook.py
 
 plugins:
   - search
@@ -422,12 +436,20 @@ plugins:
 
 markdown_extensions:
   - admonition
-  - codehilite
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
   - footnotes
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.arithmatex
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.details
   - pymdownx.caret
   - pymdownx.mark

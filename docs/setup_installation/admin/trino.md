@@ -86,7 +86,7 @@ Trino behavior can be customized through cluster configuration variables. To mod
 
 **Available Variables:**
 
-- **trino_enabled**: Enable or disable Trino cluster-wide (default: `true`)
+- **trino_enabled**: Enable or disable Trino cluster-wide (default: `false`)
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.

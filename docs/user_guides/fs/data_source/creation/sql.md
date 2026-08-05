@@ -34,7 +34,7 @@ Before you begin, ensure you have the following information from your database i
 
 ### Optional: Oracle Wallet for mTLS Authentication
 
-If your Oracle database requires mutual TLS (mTLS) authentication — common with Oracle Autonomous Database and Oracle Cloud — you will also need:
+If your Oracle database requires mutual TLS (mTLS) authentication, which is common with Oracle Autonomous Database and Oracle Cloud, you will also need:
 
 - **Wallet file:** A `.zip` file containing the wallet credentials (e.g. `cwallet.sso`, `tnsnames.ora`, `sqlnet.ora`).
 - **Wallet password:** The password for the wallet, if using a PKCS12 wallet (`ewallet.p12`).
@@ -48,7 +48,9 @@ If your Oracle database requires mutual TLS (mTLS) authentication — common wit
 
 ### Step 1: Set up a new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `SQL` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -60,7 +62,8 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 Enter the details for your database.
 Start by giving the connector a **name** and an optional **description**.
 
-1. Select "SQL" as the storage.
+1. The form opens with `Source` set to `SQL`.
+   Click `Change source` to pick a different one.
 2. Select the database type (MySQL, PostgreSQL, or Oracle).
 3. Enter the host endpoint.
 4. Enter the database name (service name for Oracle).

@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "hopsworks-docs": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "mcp",
+        "--directory",
+        "/absolute/path/to/logicalclocks.github.io/mcp-server",
+        "python",
+        "-m",
+        "hopsworks_docs_mcp"
+      ],
+      "env": {
+        "HOPSWORKS_DOCS_DIR": "/absolute/path/to/logicalclocks.github.io/docs"
+      }
+    }
+  }
+}

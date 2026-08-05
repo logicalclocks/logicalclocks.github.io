@@ -34,7 +34,9 @@ The `Git providers` section displays which providers have been already configure
 
 Click on `Edit Configuration` to change a provider username or token, or to configure a new provider.
 
-Tick the checkbox next to the provider you want to configure and insert the username and the token to use for that provider.
+Tick the checkbox next to the provider you want to configure, then click `Add host`.
+Each host is a row of three fields: the host itself (for example `github.com`), the username, and the token to use for that host.
+A provider can carry several hosts, so add one row per host you need to authenticate against.
 
 <p align="center">
   <figure>
@@ -43,7 +45,7 @@ Tick the checkbox next to the provider you want to configure and insert the user
   </figure>
 </p>
 
-Click `Create Configuration` to save the configuration.
+Click `Save Configuration` to save the configuration.
 
 ### Step 3: Provider is configured
 
