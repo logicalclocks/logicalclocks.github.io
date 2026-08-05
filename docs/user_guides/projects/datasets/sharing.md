@@ -23,7 +23,9 @@ dataset_api = project.get_dataset_api()
 dataset_api.share("Resources/my_dir", target_project="other_project")
 
 # Or grant write access
-dataset_api.share("Resources/my_dir", target_project="other_project", permission="EDITABLE")
+dataset_api.share(
+    "Resources/my_dir", target_project="other_project", permission="EDITABLE"
+)
 
 # Revoke a share
 dataset_api.unshare("Resources/my_dir", target_project="other_project")
