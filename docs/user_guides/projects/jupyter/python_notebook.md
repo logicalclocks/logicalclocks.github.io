@@ -86,8 +86,8 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/python_jupyter_starting.gif" alt="Starting Jupyter and running a Python notebook">
-    <figcaption>Starting Jupyter and running a Python notebook</figcaption>
+    <img src="../../../../assets/images/guides/jupyter/python_jupyter_starting.gif" alt="Starting the Jupyter server for a Python notebook">
+    <figcaption>Starting the Jupyter server for a Python notebook</figcaption>
   </figure>
 </p>
 
