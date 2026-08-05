@@ -35,7 +35,7 @@ In each predictor, you can decide the following configuration:
 
 ### Step 1: Create new deployment
 
-If you have at least one model already trained and saved in the Model Registry, navigate to the deployments page by clicking on the `Deployments` tab on the navigation menu on the left.
+If you have at least one model already trained and saved in the Model Registry, navigate to the model deployments page by clicking on `Model Deployments` in the navigation menu on the left.
 
 <p align="center">
   <figure>
@@ -44,25 +44,24 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
-Both options will open the deployment creation form.
+Once in the model deployments page, click on `New model deployment` at the top of the page to open the deployment creation form.
 
-### Step 2: Choose a backend
+### Step 2: Choose a model server
 
 A simplified creation form will appear, including the most common deployment fields from all available configurations.
-The first step is to choose a ==backend== for your model deployment.
-The backend will filter the models shown below according to the framework that the model was registered with in the model registry.
+The first step is to choose a ==model server== for your model deployment.
+The model server will filter the models shown below according to the framework that the model was registered with in the model registry.
 
-For example if you registered the model as a TensorFlow model using `ModelRegistry.tensorflow.create_model(...)` you select `TensorFlow Serving` in the dropdown.
+For example if you registered the model as a TensorFlow model using `ModelRegistry.tensorflow.create_model(...)` you select `Tensorflow Serving` in the dropdown.
 
 <p align="center">
   <figure>
     <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_1.png" alt="Select the model server">
-    <figcaption>Select the backend</figcaption>
+    <figcaption>Select the model server</figcaption>
   </figure>
 </p>
 
-All models compatible with the selected backend will be listed in the model dropdown.
+All models compatible with the selected model server will be listed in the model dropdown.
 
 <p align="center">
   <figure>
@@ -73,11 +72,11 @@ All models compatible with the selected backend will be listed in the model drop
 
 After selecting a model from the dropdown, you can optionally choose a predictor script, modify the predictor environment, add a configuration file, or adjust other advanced settings as described in the optional steps below.
 
-Otherwise, click on `Create new deployment` to create the deployment for your model with default values.
+Otherwise, click on `Create` to create the deployment for your model with default values.
 
 ### Step 3 (Optional): Select a predictor script
 
-For python models, to select a [predictor script](#predictor-script) click on `From project` and navigate through the file system to find it, or click on `Upload new file` to upload a predictor script now.
+For python models, to select a [predictor script](#predictor-script) click on `From project` and navigate through the file system to find it, click on `Upload new file` to upload a predictor script now, or click on `Create new file` to write one in place.
 
 <p align="center">
   <figure>
@@ -120,7 +119,7 @@ You can find all configuration parameters supported by the vLLM server in the [v
 
 ### Step 6 (Optional): Other advanced options
 
-To access the advanced deployment configuration, click on `Advanced options`.
+To access the advanced deployment configuration, click on `advanced options`.
 
 <p align="center">
   <figure>
@@ -141,7 +140,7 @@ Here, you can further change the default values of the predictor:
     7. [Scheduling](#scheduling)
     8. [API protocol](#api-protocol)
 
-Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
+Once you are done with the changes, click on `Create new model deployment` at the bottom of the page to create the deployment for your model.
 
 ## Code
 
@@ -314,7 +313,7 @@ Hopsworks Model Serving supports deploying models with a Python model server for
     | vLLM                 | vLLM openai-compatible server                 | vLLM-supported models (see [list](https://docs.vllm.ai/en/v0.10.2/models/supported_models.html)) |
 
 !!! note "vLLM variants"
-    The vLLM model server is available in two variants — standard **vLLM** and **vLLM-Omni** — and the image version can be pinned per deployment.
+    The vLLM model server is available in two variants, standard **vLLM** and **vLLM-Omni**, and the image version can be pinned per deployment.
     See [vLLM variant and image version](#vllm-variant-and-image-version).
 
 Each model server has specific requirements and supports different types of model artifacts, file formats, and configuration options. When deploying a model, ensure that your model files and configuration align with the expectations of the selected server.
@@ -332,7 +331,7 @@ All deployments use [KServe](https://kserve.github.io/website/latest/) as the se
 
 ## Predictor script
 
-For **Python model deployments** ==only==, you can provide a custom Python script—called a predictor script—to load your model and serve predictions. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must follow a specific template, as shown in [Step 2](#step-21-optional-implement-a-predictor-script).
+For **Python model deployments** ==only==, you can provide a custom Python script, called a predictor script, to load your model and serve predictions. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must follow a specific template, as shown in [Step 2](#step-21-optional-implement-a-predictor-script).
 
 ## Server configuration file
 
@@ -347,7 +346,8 @@ For **vLLM deployments**, the server configuration file is ==required== and is u
 ## vLLM variant and image version
 
 For **vLLM deployments**, you can choose which **variant** of vLLM to run and, optionally, which **image version** to use.
-Both settings are stored on the deployment and can be edited later — they are first-class fields on the predictor configuration.
+Both settings are stored on the deployment and can be edited later.
+They are first-class fields on the predictor configuration.
 
 ### Variant
 
@@ -366,7 +366,7 @@ Both the `VLLM` and `VLLM_OMNI` variants run the official upstream vLLM images p
 
 The image version is the runtime image tag (for example `v0.14.0`) used for the vLLM container.
 If not set, Hopsworks picks the **highest** image version advertised for the chosen variant at creation time.
-Set it explicitly to pin a deployment to a specific image — useful when you need a stable, reproducible runtime.
+Set it explicitly to pin a deployment to a specific image, which is useful when you need a stable, reproducible runtime.
 
 The list of available versions per variant is advertised by the cluster administrator through the
 `kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions` Hopsworks variables.
@@ -377,10 +377,10 @@ If a version you need is not listed, contact your administrator.
 
 !!! warning "Cluster registry access"
     For any additional image version advertised in the **Version** dropdown to actually start, the official `docker.io` registry and the `vllm/vllm-openai` / `vllm/vllm-omni` repositories must be pullable from inside the cluster.
-    If the cluster has no egress to Docker Hub, ask your administrator to either grant access or mirror the upstream tags into the cluster's internal registry under the same repository path — otherwise the deployment will fail to pull the image.
+    If the cluster has no egress to Docker Hub, ask your administrator to either grant access or mirror the upstream tags into the cluster's internal registry under the same repository path, otherwise the deployment will fail to pull the image.
 
 !!! note "Upstream tags"
-    Hopsworks does not repackage these images — the tag you select in the **Version** dropdown is the upstream ==Docker Hub tag==.
+    Hopsworks does not repackage these images: the tag you select in the **Version** dropdown is the upstream ==Docker Hub tag==.
 
 !!! tip "Python SDK"
     From the Python SDK, the image version is selected with the `vllm_image_tag`

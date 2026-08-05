@@ -26,7 +26,7 @@ For each model deployment, there are four concepts to understand:
 
 ### Step 1: Create a deployment
 
-If you have at least one model already trained and saved in the Model Registry, navigate to the deployments page by clicking on the `Deployments` tab on the navigation menu on the left.
+If you have at least one model already trained and saved in the Model Registry, navigate to the model deployments page by clicking on `Model Deployments` in the navigation menu on the left.
 
 <p align="center">
   <figure>
@@ -35,8 +35,7 @@ If you have at least one model already trained and saved in the Model Registry, 
   </figure>
 </p>
 
-Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
-Both options will open the deployment creation form.
+Once in the model deployments page, click on `New model deployment` at the top of the page to open the deployment creation form.
 
 ### Step 2: Basic deployment configuration
 
@@ -67,17 +66,17 @@ After selecting the model, select a model version and give your model deployment
     A valid deployment name can only contain characters a-z, A-Z and 0-9.
 
 !!! info "Predictor script for Python models"
-    For Python models, you must select a custom [predictor script](#predictor) that loads and runs the trained model by clicking on `From project` or `Upload new file`, to choose an existing script in the project file system or upload a new script, respectively.
+    For Python models, you must select a custom [predictor script](#predictor) that loads and runs the trained model by clicking on `From project`, `Upload new file` or `Create new file`, to choose an existing script in the project file system, upload a new script, or write one in place, respectively.
 
 !!! info "Server configuration file for vLLM"
     For vLLM deployments, a server configuration file is required.
     See the [Predictor Guide](predictor.md#server-configuration-file) for more details.
 
-Lastly, click on `Create new deployment` to create the deployment for your model.
+Lastly, click on `Create` to create the deployment for your model.
 
 ### Step 3 (Optional): Advanced configuration
 
-Optionally, you can access and adjust other parameters of the deployment configuration by clicking on `Advanced options`.
+Optionally, you can access and adjust other parameters of the deployment configuration by clicking on `advanced options`.
 
 <p align="center">
   <figure>
@@ -88,7 +87,7 @@ Optionally, you can access and adjust other parameters of the deployment configu
 You will be redirected to a full-page deployment creation form, where you can review all default configuration values and customize them to fit your requirements.
 In addition to the basic settings, this form allows you to further configure the [Predictor](#predictor) and [Transformer](#transformer) KServe components of your model deployment.
 
-Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
+Once you are done with the changes, click on `Create new model deployment` at the bottom of the page to create the deployment for your model.
 
 ### Step 4: Deployment creation
 
@@ -192,7 +191,7 @@ Predictor and transformer scripts run on separate components and, therefore, sca
 Additionally, artifact files can also contain a **server configuration file** that helps detach configuration used within the model deployment from the model server or the implementation of the predictor and transformer scripts.
 Inside a model deployment, the local path to the configuration file is stored in the `CONFIG_FILE_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)).
 
-Each deployment tracks its artifact files through a ==deployment version== — an integer (1, 2, 3...) that is incremented whenever the artifact content changes (e.g., updating a predictor script or configuration file).
+Each deployment tracks its artifact files through a ==deployment version==, an integer (1, 2, 3...) that is incremented whenever the artifact content changes (e.g., updating a predictor script or configuration file).
 
 Inside a model deployment, the local path to the artifact files is stored in the `ARTIFACT_FILES_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)).
 
@@ -203,12 +202,12 @@ Inside a model deployment, the local path to the artifact files is stored in the
 ## Predictor
 
 Predictors are responsible for running the model server that loads the trained model, handles inference requests and returns prediction results.
-To learn more about predictors and how to configure them — including [environment variables](predictor.md#environment-variables), [resources](predictor.md#resources), and [autoscaling](predictor.md#autoscaling) — see the [Predictor (KServe) Guide](predictor.md).
+To learn more about predictors and how to configure them, including [environment variables](predictor.md#environment-variables), [resources](predictor.md#resources), and [autoscaling](predictor.md#autoscaling), see the [Predictor (KServe) Guide](predictor.md).
 
 ## Transformer
 
 Transformers are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
-To learn more about transformers and how to configure them — including [environment variables](transformer.md#environment-variables), [resources](transformer.md#resources), and [autoscaling](transformer.md#autoscaling) — see the [Transformer (KServe) Guide](transformer.md).
+To learn more about transformers and how to configure them, including [environment variables](transformer.md#environment-variables), [resources](transformer.md#resources), and [autoscaling](transformer.md#autoscaling), see the [Transformer (KServe) Guide](transformer.md).
 
 !!! warning
     Transformers are not available for vLLM deployments.
