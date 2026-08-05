@@ -47,8 +47,8 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job.
-To instead configure a Jupyter Notebook job, select `PYTHON`.
+The `Type` radio offers `PYTHON` and `SPARK`, and `PYTHON` is selected by default.
+Leave it on `PYTHON` to configure a Jupyter Notebook job.
 
 <p align="center">
   <figure>
@@ -88,7 +88,8 @@ The next step is to read the arguments in the notebook which is explained in thi
 
 ### Step 6 (optional): Additional configuration
 
-It is possible to also set following configuration settings for a `PYTHON` job.
+Click `Advanced options` in the dialog to open the full job configuration page.
+There you can also set the following configuration settings for a `PYTHON` job.
 
 - `Environment`: The python environment to use
 - `Container memory`: The amount of memory in MB to be allocated to the Jupyter Notebook script
@@ -107,14 +108,14 @@ You can always modify the arguments in the job settings.
 ### Step 7: (Kueue enabled) Select a Queue
 
 If the cluster is installed with Kueue enabled, you will need to select a queue in which the job should run.
-This can be done from `Advance configuration -> Scheduler section`.
+This can be done from `Advanced options`, in the `Scheduler` section.
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 
 ### Step 8: Execute the job
 
 Now click the `Run` button to start the execution of the job.
-You will be redirected to the `Executions` page where you can see the list of all executions.
+Then open the `Executions` tab to see the list of all executions.
 
 <p align="center">
   <figure>

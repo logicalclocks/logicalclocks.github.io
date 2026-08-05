@@ -55,8 +55,8 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job.
-Make sure `SPARK` is chosen.
+The `Type` radio offers `PYTHON` and `SPARK`, and `PYTHON` is selected by default.
+Select `SPARK` to configure a PySpark job.
 
 ### Step 4: Set the script
 
@@ -143,7 +143,7 @@ You do not need to select a queue to run the job in.
 ### Step 8: Execute the job
 
 Now click the `Run` button to start the execution of the job.
-You will be redirected to the `Executions` page where you can see the list of all executions.
+Then open the `Executions` tab to see the list of all executions.
 
 <p align="center">
   <figure>
@@ -154,7 +154,8 @@ You will be redirected to the `Executions` page where you can see the list of al
 
 ### Step 9: Application logs
 
-To monitor logs while the execution is running, click `Spark UI` to open the Spark UI in a separate tab.
+Each execution row of a Spark job carries `Spark UI`, `Metrics`, `Monitor`, `Logs` and `Live Logs`.
+While the execution is running, click `Spark UI` to open the Spark UI in a separate tab, or `Live Logs` to follow the logs as they are produced.
 
 Once the execution is finished, you can click on `Logs` to see the full logs for execution.
 

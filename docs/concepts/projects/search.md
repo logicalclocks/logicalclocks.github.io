@@ -29,7 +29,8 @@ Keywords can be used to help it make it easier to find ML assets or understand t
 However, it may be preferable to have a stronger governance framework for ML assets than keywords alone.
 For this, you can define a *schematized tag*, defining a list of key/value tags along with a type for a value.
 In the figure below, you can see an example of a schematized tag with two key/value pairs: *pii* of type boolean (indicating if this feature group contains PII data), and *owner* of type string (indicating who the owner of the data in this feature group is).
-Note there is also a keyword defined for this feature group called *eu_region*, indicating the data has its origins in the EU.
+Keywords are not part of a schematized tag and are not shown in this panel.
+They are attached in the feature group header instead, for example a *eu_region* keyword indicating the data has its origins in the EU.
 
 Schematized tags can also enforce policy, not just aid discovery.
 You could, for example, require that a model cannot be created in the production model registry unless its EU AI Act tag is filled in correctly.
