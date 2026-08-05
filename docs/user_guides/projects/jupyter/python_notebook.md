@@ -76,7 +76,7 @@ By default it starts by setting the `/Jupyter` folder as the root.
 ## Step 4: (Kueue enabled) Select a Queue
 
 If the cluster is installed with Kueue enabled, you will need to select a queue in which the notebook should run.
-This can be done from `Advance configuration -> Scheduler section`.
+This can be done from `Advanced options`, in the `Scheduler` section of the full configuration page.
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 
