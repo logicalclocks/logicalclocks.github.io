@@ -74,11 +74,26 @@ A catalog you create is named `<project>__<name>` and is only queryable within y
 Click "Create catalog", then provide the catalog details:
 
 1. Enter a name. The `<project>__` prefix is added automatically, so you type only the short name.
-2. Choose the connector type, for example `postgresql`, `mysql`, `bigquery`, or `mongodb`.
+2. Choose the connector type from the list.
 3. Enter the connector properties, one `key=value` per line.
+
+The picker offers every connector installed in the Query Engine, so a connector it does not list cannot be used:
+
+`bigquery`, `cassandra`, `clickhouse`, `delta_lake`, `druid`, `duckdb`, `elasticsearch`, `exasol`, `faker`, `gsheets`, `hive`, `hudi`, `iceberg`, `ignite`, `kafka`, `lakehouse`, `loki`, `mariadb`, `mongodb`, `mysql`, `opensearch`, `oracle`, `pinot`, `postgresql`, `prometheus`, `redis`, `redshift`, `singlestore`, `snowflake`, `sqlserver`, `trino_thrift`.
+
+Connectors that expose no external data source are rejected, because a catalog on one would either read the Query Engine's own internals or hold nothing: `system`, `jmx`, `memory`, `blackhole`, `datasketches`, `ai`, and the `tpch` and `tpcds` sample generators.
+The last two are already available to every project as shared catalogs, so there is no reason to create your own.
 
 Reference a Hopsworks secret with `${HOPSWORKS_SECRET:<name>}` instead of typing the value inline to keep the secret out of the stored catalog definition.
 Type `${HOPSWORKS_SECRET:` in the properties editor to pick from your own secrets.
+
+A reference resolves against the secrets of the person who created the catalog, so you can only reference your own: naming a colleague's secret does not work, even if you can both see the catalog.
+Two consequences follow. A referenced secret cannot be deleted while a catalog still uses it, and the catalog keeps working after you leave the project only if the secret still exists.
+If a catalog needs to outlive your account, have someone recreate it under theirs, or use a literal value instead of a reference.
+
+Properties must address the data source over the network, for example `jdbc:`, `thrift:`, `https:` or `s3:`.
+A property that points at a file path on the query engine's own machines is rejected, because you cannot place files there and the only files such a path could reach belong to the cluster itself.
+If a connector you need requires a local file, ask an administrator to provide it.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/create-catalog.png" alt="Create catalog" />
@@ -110,15 +125,32 @@ A newly created catalog has the status Pending sync, meaning it is saved but not
 It becomes queryable only after an administrator syncs it and restarts Trino, because Trino reads catalogs only at startup.
 Until then the catalog is listed with its pending status and does not appear as a target in the SQL runner.
 
+Administrators are not notified when you create a catalog, and you are not notified when they apply it.
+There is no service level on this step, so contact your administrator if a catalog has been pending longer than you expect, and watch the status on this page to see when it becomes Synced.
+
 <figure>
   <img src="../../../../assets/images/guides/trino/catalog-pending-sync.png" alt="Catalog pending sync" />
   <figcaption>A created catalog waits in Pending sync until an administrator applies it</figcaption>
 </figure>
 
+### When a Catalog Fails to Load
+
+A catalog can be valid to save and still be rejected by the Query Engine, for example when a connector requires a property the definition does not set.
+Trino reads catalogs only at startup and refuses to start if it cannot load one, so such a catalog is removed from the engine automatically and marked Failed to keep the Query Engine available for everyone.
+
+The status shows the error the Query Engine reported, which says what to correct.
+Edit the catalog to fix the definition: it returns to Pending sync and follows the normal flow again.
+Use "Test connection" before saving to catch most of these earlier.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/catalog-failed.png" alt="Failed catalog" />
+  <figcaption>A catalog the Query Engine could not load, with the reason it reported</figcaption>
+</figure>
+
 ### Access to Catalog Tables
 
 Access to a user-created catalog is granted at the catalog level per project: a project's Data Owners can read and write, and Data Scientists can read.
-Trino's file-based access control provides no per-schema or per-table restriction for these catalogs, so access is all-or-nothing within the catalog.
+The project's roles are granted the whole catalog; there is no per-schema or per-table configuration for these catalogs.
 To limit what a catalog exposes, scope the database user in the connection credentials at the source database, since Trino reads the external system as that user and can only ever see what those credentials allow.
 
 ## Queries
