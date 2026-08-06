@@ -141,9 +141,9 @@ Until then the catalog is listed with its pending status and does not appear as 
 Administrators are not notified when you create a catalog, and you are not notified when they apply it.
 There is no service level on this step, so contact your administrator if a catalog has been pending longer than you expect, and watch the status on this page to see when it becomes Synced.
 
-Deleting a catalog follows the same path in reverse, which matters if you are deleting it because its credentials are compromised.
-The catalog is marked for removal immediately, its file leaves the Query Engine's configuration at the next sync, and the Query Engine keeps serving it until the next restart, because a running Trino holds the catalog in memory.
-Deleting the catalog is therefore not a way to revoke a credential: rotate or revoke it at the source database, which takes effect for every consumer at once.
+Deleting a catalog follows the same path in reverse.
+The catalog is marked for removal immediately and disappears from your Catalogs tab, an administrator's next sync removes it from the Query Engine's configuration, and it stops being queryable at the next restart, because a running Trino keeps the catalogs it started with.
+A catalog you have deleted can therefore still answer queries for a while.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/catalog-pending-sync.png" alt="Catalog pending sync" />
