@@ -91,6 +91,14 @@ A reference resolves against the secrets of the person who created the catalog, 
 Two consequences follow. A referenced secret cannot be deleted while a catalog still uses it, and the catalog keeps working after you leave the project only if the secret still exists.
 If a catalog needs to outlive your account, have someone recreate it under theirs, or use a literal value instead of a reference.
 
+!!! warning "Only secrets created from typed text can be referenced"
+    A secret created by uploading a file holds the base64 encoding of that file's contents, not the contents themselves.
+    A reference to such a secret puts that base64 text into the catalog, and the connector then fails, because it receives an encoded string where it expects a password, a key, or a JSON document.
+    Nothing records how a secret was created, so Hopsworks cannot detect the case and decode it for you, and the resulting error comes from the connector rather than from Hopsworks: an authentication failure, or a complaint that a value is malformed.
+
+    Create the secret by typing or pasting the value as text when you intend to reference it from a catalog.
+    For a credential that is naturally a file, such as a service account JSON, paste the file's contents rather than uploading the file.
+
 Properties must address the data source over the network, for example `jdbc:`, `thrift:`, `https:` or `s3:`.
 A property that points at a file path on the query engine's own machines is rejected, because you cannot place files there and the only files such a path could reach belong to the cluster itself.
 If a connector you need requires a local file, ask an administrator to provide it.
