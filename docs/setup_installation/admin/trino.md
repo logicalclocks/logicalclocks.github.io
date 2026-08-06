@@ -163,6 +163,31 @@ Editing the definition returns it to Pending sync and it re-enters the normal fl
 Failed catalogs are not listed under pending, because they no longer block anything and no administrator action can fix them.
 If Hopsworks cannot attribute the failure to a user catalog, it reports the connection error instead of removing anything, and the coordinator log is the place to look.
 
+### Recovering catalog files lost from the mount
+
+The catalog definitions are stored in the Hopsworks database, and the Kubernetes Secrets mounted at `/etc/trino/catalog` are derived from it.
+A restore that brings back the database alone, a GitOps sync that prunes resources it does not manage, or a Secret deleted by hand therefore leaves catalogs that exist in Hopsworks with no file for Trino to read.
+
+`POST /hopsworks-api/api/admin/trino/catalogs/reconcile` repairs it.
+It writes the missing files back from the database, removes files that no catalog belongs to, which is also how a credential stops being mounted once its catalog is gone from the database, and reports what it changed.
+It is always available, since an administrator calling it has already established that the repair is needed.
+It also compares file contents, so it corrects a file whose name is right but whose content no longer matches the database.
+
+Set **trino_catalog_reconcile_enabled** to `true` to have the same repair run on a schedule instead, shortly after startup and on the reconcile interval thereafter.
+It is off by default because losing a shard Secret takes one of the events above rather than anything routine, so the repair belongs on a cluster that needs it rather than on every cluster.
+Each scheduled pass compares which catalog files the Secrets hold against which ones the database expects, and repairs only when they disagree.
+Comparing names rather than contents is what keeps a pass cheap enough for an interval, since rebuilding a file means decrypting every secret it references.
+The consequence is that the scheduled pass does not notice a file whose name is right and content is wrong; use the endpoint for that.
+
+Two things neither form does.
+Neither restarts Trino, so a restored catalog is in the mount but not loaded until the next restart, like any other catalog change.
+Neither touches a catalog that is pending sync, because that catalog's stored definition is the change an administrator has not applied yet, and applying it here would bypass that decision.
+Those catalogs are reported as still needing a sync.
+
+A catalog whose `${HOPSWORKS_SECRET:<name>}` reference no longer resolves cannot be rebuilt, since the file Trino reads has to hold the resolved value.
+The repair reports it, leaves any file it already has in place, because that copy resolved when it was synced and still works, and carries on with every other catalog.
+Its owner has to repoint the reference at an existing secret.
+
 ## Configuration
 
 Trino behavior can be customized through cluster configuration variables. To modify these settings, navigate to **Cluster Settings** → **Configuration** and search for the variable name.
@@ -172,6 +197,7 @@ Trino behavior can be customized through cluster configuration variables. To mod
 - **trino_enabled**: Enable or disable Trino cluster-wide (default: `true`)
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
+- **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount](#recovering-catalog-files-lost-from-the-mount))
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.
 
