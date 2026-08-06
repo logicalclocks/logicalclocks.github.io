@@ -137,7 +137,8 @@ A user catalog with an invalid definition therefore stops the whole query engine
 Kubernetes keeps the previous pods serving while the new ones fail, so queries may keep working for a while and the rollout never completes.
 
 Click "Restart Trino" to recover.
-The button stays available when nothing is pending, labelled "Restart Trino (recover)", because this situation leaves no pending catalog to act on.
+The button stays available when nothing is waiting for a restart, labelled "Restart Trino (recover)", because this situation leaves no synced catalog to load.
+That label therefore also appears when catalogs are pending sync but none has been applied yet, since restarting would load nothing.
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-recover.png" alt="Recover restart" />
