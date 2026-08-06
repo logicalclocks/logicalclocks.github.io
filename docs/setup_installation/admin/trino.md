@@ -199,6 +199,8 @@ Trino behavior can be customized through cluster configuration variables. To mod
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
 - **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount](#recovering-catalog-files-lost-from-the-mount))
+- **trino_catalog_max_per_project**: Catalogs one project may create (default: `5`)
+- **trino_catalog_max_bytes**: Largest a single catalog definition may be once its secret references are resolved, in bytes (default: `16384`)
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.
 
@@ -228,6 +230,14 @@ When they are full, a sync fails with an error naming the limit.
 
 Raise the value in your Helm values to add capacity.
 The chart mounts one source per shard and refuses to render if the two disagree, so a mismatch fails the upgrade rather than silently dropping catalogs.
+
+Two per-catalog limits keep one project from consuming that shared budget.
+`trino_catalog_max_per_project` caps how many catalogs a project may create, and `trino_catalog_max_bytes` caps how large a single definition may be.
+The size is measured after `${HOPSWORKS_SECRET:}` references are resolved, because the resolved form is what occupies a Secret: a stored definition is bounded by its database column, but a reference costs a couple of dozen characters and expands to a secret of up to about 10 KiB, and the same secret may be referenced repeatedly, so a row that fits its column can resolve to megabytes.
+The check therefore runs both when a catalog is created, so its owner hears about it, and again at sync, because a secret can be rotated to a larger value in between.
+
+Both defaults are generous against real catalogs, which are a few hundred bytes; the largest legitimate ones inline a service account JSON or a certificate pair and stay a few KiB.
+Raise them for a project with an unusual number of external sources, and remember that the product of the two bounds a single project's share of the shard budget.
 
 ## Best Practices for Trino Management
 

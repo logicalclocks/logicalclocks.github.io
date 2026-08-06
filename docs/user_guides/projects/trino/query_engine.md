@@ -103,6 +103,11 @@ Properties must address the data source over the network, for example `jdbc:`, `
 A property that points at a file path on the query engine's own machines is rejected, because you cannot place files there and the only files such a path could reach belong to the cluster itself.
 If a connector you need requires a local file, ask an administrator to provide it.
 
+Two limits apply, because every project's catalogs share a fixed amount of storage in the cluster.
+A project may create a set number of catalogs, five by default, and a single definition may not exceed a set size, 16 KiB by default, measured after any secret references are resolved.
+Both are cluster settings an administrator can raise, and neither is close to what an ordinary catalog needs: a few hundred bytes is typical, and even one carrying a service account JSON stays a few KiB.
+Property values must also be latin1 text, which is what the definition is stored as, so a credential containing characters outside it has to come from a Hopsworks secret rather than being typed into a property.
+
 <figure>
   <img src="../../../../assets/images/guides/trino/create-catalog.png" alt="Create catalog" />
   <figcaption>Creating a catalog with the auto-prefixed name and connector properties</figcaption>
