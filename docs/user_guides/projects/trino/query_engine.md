@@ -73,7 +73,8 @@ A catalog you create is named `<project>__<name>` and is only queryable within y
 
 Click "Create catalog", then provide the catalog details:
 
-1. Enter a name. The `<project>__` prefix is added automatically, so you type only the short name.
+1. Enter a name.
+   The `<project>__` prefix is added automatically, so you type only the short name.
 2. Choose the connector type from the list.
 3. Enter the connector properties, one `key=value` per line.
 
@@ -88,7 +89,8 @@ Reference a Hopsworks secret with `${HOPSWORKS_SECRET:<name>}` instead of typing
 Type `${HOPSWORKS_SECRET:` in the properties editor to pick from your own secrets.
 
 A reference resolves against the secrets of the person who created the catalog, so you can only reference your own: naming a colleague's secret does not work, even if you can both see the catalog.
-Two consequences follow. A referenced secret cannot be deleted while a catalog still uses it, and the catalog keeps working after you leave the project only if the secret still exists.
+Two consequences follow.
+A referenced secret cannot be deleted while a catalog still uses it, and the catalog keeps working after you leave the project only if the secret still exists.
 If a catalog needs to outlive your account, have someone recreate it under theirs, or use a literal value instead of a reference.
 
 !!! warning "Only secrets created from typed text can be referenced"

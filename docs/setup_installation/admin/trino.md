@@ -107,7 +107,8 @@ A connector's credentials end up in the places below. Anyone who can read those 
 
 - A `${HOPSWORKS_SECRET:<name>}` reference is stored verbatim in the `trino_catalog` database row and is resolved to its value only at sync time. The database row never holds the value.
 - A literal value typed straight into the properties editor is stored as-is in the `trino_catalog` database row, in cleartext, and is captured by database backups. Use a secret reference for any credential you do not want in the database.
-- Either way, the synced file holds the resolved plaintext, because Trino reads the credential from the catalog file itself. That file lives in a Kubernetes Secret rather than a ConfigMap, so it is covered by the RBAC that applies to Secrets in the Hopsworks namespace and by etcd encryption-at-rest on clusters that enable it.
+- Either way, the synced file holds the resolved plaintext, because Trino reads the credential from the catalog file itself.
+  That file lives in a Kubernetes Secret rather than a ConfigMap, so it is covered by the RBAC that applies to Secrets in the Hopsworks namespace and by etcd encryption-at-rest on clusters that enable it.
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-pending-restart.png" alt="Catalogs pending restart" />
@@ -156,11 +157,6 @@ A default catalog that fails to load is left in place, because that is a cluster
 A removed catalog keeps its row, so its owner can see what happened on the project's Catalogs page along with the error Trino reported.
 Editing the definition returns it to Pending sync and it re-enters the normal flow.
 
-<figure>
-  <img src="../../../assets/images/guides/trino/catalog-failed.png" alt="Failed catalog" />
-  <figcaption>The owner sees the failure and the reason Trino gave</figcaption>
-</figure>
-
 Failed catalogs are not listed under pending, because they no longer block anything and no administrator action can fix them.
 If Hopsworks cannot attribute the failure to a user catalog, it reports the connection error instead of removing anything, and the coordinator log is the place to look.
 
@@ -198,7 +194,7 @@ Trino behavior can be customized through cluster configuration variables. To mod
 - **trino_enabled**: Enable or disable Trino cluster-wide (default: `true`)
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
-- **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount](#recovering-catalog-files-lost-from-the-mount))
+- **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount][recovering-catalog-files-lost-from-the-mount])
 - **trino_catalog_max_per_project**: Catalogs one project may create (default: `5`)
 - **trino_catalog_max_bytes**: Largest a single catalog definition may be once its secret references are resolved, in bytes (default: `16384`)
 
