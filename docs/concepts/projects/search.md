@@ -24,6 +24,9 @@ This allows for easier discoverability and reusability of assets within an organ
 To avoid users gaining unauthorized access to data, if a search result is in a project you are **not** a member of, the information displayed is limited to: names, descriptions, tags, asset creator and create date.
 If the search result is within a project you are a member of, you are also able to inspect recent activities on the asset as well as statistics.
 
+Searching across projects you are not a member of is on by default.
+An administrator running a multi-tenant deployment can turn it off by setting the `cross_project_global_search_enabled` cluster variable to `false` in the [Configuration](../../setup_installation/admin/variables.md) UI, which restricts a cluster-wide search to the projects you can already access.
+
 ## Tags
 
 A keyword is a single user-defined word attached to an ML asset.
