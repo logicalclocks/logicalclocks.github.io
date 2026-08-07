@@ -134,6 +134,8 @@ nav:
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
           - Mandatory Tags: user_guides/fs/tags/mandatory_tags.md
+          - Tag Schema Lifecycle: user_guides/fs/tags/tag_schema_lifecycle.md
+          - Keywords: user_guides/fs/tags/keywords.md
           - Provenance: user_guides/fs/provenance/provenance.md
           - Feature Monitoring:
               - user_guides/fs/feature_monitoring/index.md
@@ -272,6 +274,7 @@ nav:
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
+          - Dataset Tag Storage: setup_installation/admin/dataset_tag_storage.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md

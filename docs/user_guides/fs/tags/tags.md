@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Hopsworks feature store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, models or deployments.
+Hopsworks enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, models, deployments, jobs or datasets.
 
 A tag is a `{key: value}` pair which provides additional information about the data managed by Hopsworks.
 Tags allow you to design custom metadata for your artifacts.
@@ -18,9 +18,10 @@ Schemas are defined globally across all projects.
 When users attach tags to an artifact, the tag will be validated against a specific schema.
 This allows tags to be consistent no matter the project or the team generating them.
 
-!!! warning "Immutable"
-    Tag schemas are immutable.
-    Once defined, a tag schema cannot be edited nor deleted.
+!!! warning "Schema definitions cannot be edited"
+    The JSON schema of a tag schema cannot be changed after it is created, because the values already attached were validated against the original definition.
+    A schema can be deprecated so that it accepts no new attachments, and it can be deleted once nothing references it.
+    Both are administrator actions and are described in the [Tag schema lifecycle](tag_schema_lifecycle.md) guide.
 
 ## Step 1: Define a tag schema
 
@@ -73,7 +74,7 @@ Where the type is a valid primitive type: `string`, `boolean`, `integer`, `numbe
 
 ## Step 2: Attach a tag to an artifact
 
-Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, model or deployment either using the APIs, or by using the UI.
+Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, model, deployment, job or dataset, either using the APIs or the UI.
 
 ### Using the API
 
@@ -122,6 +123,62 @@ Finally you can remove a tag from a given artifact by calling the `delete_tag()`
 
 The same APIs work for feature views, training datasets, models and deployments alike.
 
+#### Jobs
+
+Jobs carry tags through the same three methods, on the `Job` object returned by the job API.
+
+=== "Python"
+
+    ```python
+    job_api = project.get_job_api()
+    job = job_api.get_job("transactions_ingestion")
+
+    job.add_tag("data_privacy", {"business_unit": "Fraud", "pii": True})
+    job.get_tags()
+    job.delete_tag("data_privacy")
+    ```
+
+A job also has a free-text description, which is indexed for search alongside its tags.
+
+=== "Python"
+
+    ```python
+    job.description = "Hourly ingestion of card transactions"
+    job.save()
+    ```
+
+#### Datasets
+
+Tags are attached to a dataset, which is a top-level directory in the project's file system.
+They are reached through the dataset API by path.
+
+=== "Python"
+
+    ```python
+    dataset_api = project.get_dataset_api()
+
+    dataset_api.add("Resources", "data_privacy", {"business_unit": "Fraud", "pii": True})
+    dataset_api.get_tags("Resources")
+    dataset_api.delete("Resources", "data_privacy")
+    ```
+
+Tags can also be attached when the dataset is created.
+
+=== "Python"
+
+    ```python
+    dataset_api.mkdir(
+        "transactions_raw",
+        tags=[{"name": "data_privacy", "value": {"business_unit": "Fraud", "pii": True}}],
+    )
+    ```
+
+!!! warning "Tags on files inside a dataset are frozen"
+    Tags could previously be attached to any file or directory inside a dataset.
+    Attaching a new tag to a path inside a dataset is now rejected with HTTP 400, because per-file tags were stored outside the database and could not be searched, counted, or governed.
+    Tags that were already attached to such paths remain readable and deletable, and the file browser keeps showing them.
+    Attach the tag to the dataset instead.
+
 ### Using the UI
 
 You can attach tags to feature groups and feature views directly from the UI.
@@ -135,11 +192,33 @@ From there you can select the tag schema of the tag you want to attach and popul
   </figure>
 </p>
 
+## When a tag was attached
+
+Every tag attached after the upgrade that introduced this feature records the time it was attached.
+`get_tags` returns values only, so the attachment time is exposed through a second pair of methods that keep the tag objects.
+
+=== "Python"
+
+    ```python
+    fg = fs.get_feature_group("transactions_4h_aggs_fraud_batch_fg", version=1)
+
+    tags = fg.get_tags_metadata()  # dict[str, Tag]
+    for name, t in tags.items():
+        print(name, t.value, t.created_on)
+
+    one = fg.get_tag_metadata("data_privacy")
+    ```
+
+`get_tag_metadata` and `get_tags_metadata` are available on feature groups, feature views, training datasets, models, deployments and jobs, and on the dataset API as `get_tag_metadata(path, name)` and `get_tags_metadata(path)`.
+`created_on` is `None` for tags that were attached before the upgrade, because the attachment time was not recorded then.
+The UI shows the same value under the tag name on the artifact page.
+
 ## Step 3: Search
 
-Hopsworks indexes the tags attached to feature groups, feature views and training datasets.
+Hopsworks indexes the tags attached to feature groups, feature views, training datasets, models, deployments, jobs and datasets.
 The tags will then be searchable using the free text search box located at the top of the UI.
-Tags attached to models and deployments are stored and retrievable through the APIs and the UI, but they are not indexed for free text search.
+For jobs the search also covers the job name and description, and for datasets the dataset name and description.
+Model and deployment documents are written by Hopsworks itself, so a tag change on a model or a deployment is reflected in search rather than leaving a stale answer behind.
 
 <p align="center">
   <figure>
@@ -147,3 +226,21 @@ Tags attached to models and deployments are stored and retrievable through the A
     <figcaption>Search for tags in the feature store</figcaption>
   </figure>
 </p>
+
+Jobs and datasets can also be searched from the Python client.
+
+=== "Python"
+
+    ```python
+    search_api = project.get_search_api()
+
+    for job_meta in search_api.jobs("ingestion"):
+        print(job_meta.name, job_meta.job_type)
+        job = job_meta.get()  # the Job object, resolved in the hit's own project
+
+    for ds_meta in search_api.datasets("transactions"):
+        print(ds_meta.name, ds_meta.path)
+    ```
+
+Both accept a `tag_filter` and a `global_search` flag, like the feature group search.
+Jobs and datasets carry no keywords, so a `keyword_filter` never matches them.

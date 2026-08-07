@@ -10,9 +10,14 @@ Hopsworks supports free-text search to discover machine-learning assets:
 - feature groups
 - feature views
 - training data
+- models
+- deployments
+- jobs
+- datasets
 
 You can use the search bar at the top of your project to free-text search for the names or descriptions of any ML asset.
 You can also search using keywords or tags that are attached to an ML asset.
+Keywords apply to feature groups, feature views and training data only, so a keyword filter never matches a job or a dataset.
 
 You can search for assets within a specific project or across all projects in a Hopsworks deployment, including those you are not a member of.
 This allows for easier discoverability and reusability of assets within an organization.
