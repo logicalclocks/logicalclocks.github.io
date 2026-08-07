@@ -63,7 +63,7 @@ Rolling back is therefore not made safe; it is refused.
 It is **off by default**, because turning it on means an emergency downgrade requires restoring the pre-cut-over database and deleting the policy, in that order.
 A cluster that never cuts over never needs it.
 
-The cut-over refuses to run while the policy is absent, and the operator who accepts the risk says so explicitly with `--accept-unfenced-rollback`, which is logged with the decision.
+The cut-over refuses to run while the policy is absent, and the operator who accepts the risk says so explicitly with `tagLifecycle.cutover.acceptUnfencedRollback=true`, which is rendered into the Job and logged with the decision.
 
 ## The cut-over
 
@@ -76,21 +76,29 @@ The verification over several hundred datasets takes seconds.
 
 Run it by setting `tagLifecycle.cutover.run=true` on a `helm upgrade`.
 The value is off by default and the Job runs once per upgrade that sets it.
+
+!!! note "Helm 4 needs `--force-conflicts`"
+    Under Helm 4, pass `--force-conflicts` to the upgrade.
+    Server-side apply refuses fields owned by other field managers, which a running cluster always has, and without the flag the upgrade fails before any hook runs.
+    This is a pre-existing Helm 4 behaviour, not specific to the cut-over.
+
 The Job:
 
-1. Reads the admission policy and its binding from the Kubernetes API and checks the whole contract: that it denies rather than warns, that it fails closed, that it selects this namespace and both API deployments, and that it names the current epoch.
+1. Reads the cut-over status while the cluster is up.
+   A database that is already canonical exits immediately, so the Job is safe to leave enabled across upgrades, and a window an earlier attempt left open is resumed at the final sweep rather than opened twice.
+2. Reads the admission policy and its binding from the Kubernetes API and checks the whole contract: that it denies rather than warns, that it fails closed, that it selects this namespace and both API deployments, and that it names the current epoch.
    A policy with the right name but any of those wrong is not a fence.
-2. Refuses to start unless the rolling upgrade has been activated, the background migration of existing tags reports done, and no tag was quarantined for failing validation.
-3. Records the current replica count, scales the API deployment to zero, and waits until its pods are gone.
+3. Refuses to start unless the rolling upgrade has been activated, the background migration of existing tags reports done, and no tag was quarantined for failing validation.
+4. Records the current replica counts, scales both API deployments to zero, and waits until their pods are gone.
    At that instant every write that was in flight has either reached the file system or never will, so nothing is left to drain.
-4. Sets the state to `cutting_over` while nothing is running, then restores the replica count.
+5. Sets the state to `cutting_over` while nothing is running, then restores the replica counts.
    The API comes back refusing dataset tag writes with `CUTOVER_IN_PROGRESS`.
-5. Runs a final migration pass and then a verification, and stops if the verification reports any difference between the two stores.
-6. Commits.
+6. Runs a final migration pass and then a verification, and stops if the verification reports any difference between the two stores.
+7. Commits.
    Every precondition is checked again inside the transaction that publishes the new state.
 
-If the Job stops at step 5, the cluster stays in `cutting_over` with reads unaffected.
-Investigate the reported differences, then either fix them and re-run, or abort:
+If the Job stops at step 6, the cluster stays in `cutting_over` with reads unaffected.
+Investigate the reported differences, then either fix them and re-run the Job (it resumes the open window), or abort:
 
 ```bash
 curl -s -X POST -H "Authorization: ApiKey $API_KEY" \
