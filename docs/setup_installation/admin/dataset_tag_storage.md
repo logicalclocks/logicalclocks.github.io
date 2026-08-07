@@ -24,7 +24,7 @@ Two failure paths are deliberately different.
 A refusal by the pre-migration audit happens before any schema change, so the original replica counts are restored and the upgrade aborts with the cluster running as it was.
 A failure after the schema change has begun leaves the cluster scaled to zero, because starting the old nodes over a half-applied schema is worse than an outage.
 
-Set `tagLifecycle.writeWindow.enabled=false` to skip it, only if you are taking the write window yourself.
+Set `hopsworks.tagLifecycle.writeWindow.enabled=false` to skip it, only if you are taking the write window yourself.
 
 After the upgrade the cluster keeps reading dataset tags from the extended attributes and writes them to both stores.
 Nothing is lost while you stay in that state, and you can stay in it indefinitely.
@@ -59,11 +59,11 @@ curl -s -H "Authorization: ApiKey $API_KEY" \
 Once the database is the canonical store for dataset tags, a node running the previous release writes extended attributes that nothing reads any more, and those writes are lost silently.
 Rolling back is therefore not made safe; it is refused.
 
-`tagLifecycle.admissionPolicy.enabled=true` installs a `ValidatingAdmissionPolicy` that refuses to admit an API pod below the current capability epoch.
+`hopsworks.tagLifecycle.admissionPolicy.enabled=true` installs a `ValidatingAdmissionPolicy` that refuses to admit an API pod below the current capability epoch.
 It is **off by default**, because turning it on means an emergency downgrade requires restoring the pre-cut-over database and deleting the policy, in that order.
 A cluster that never cuts over never needs it.
 
-The cut-over refuses to run while the policy is absent, and the operator who accepts the risk says so explicitly with `tagLifecycle.cutover.acceptUnfencedRollback=true`, which is rendered into the Job and logged with the decision.
+The cut-over refuses to run while the policy is absent, and the operator who accepts the risk says so explicitly with `hopsworks.tagLifecycle.cutover.acceptUnfencedRollback=true`, which is rendered into the Job and logged with the decision.
 
 ## The cut-over
 
@@ -74,8 +74,9 @@ Dataset tag **reads** are never interrupted, and nothing else on the cluster is 
 The window is about five minutes on a three-node cluster, dominated by the API restart.
 The verification over several hundred datasets takes seconds.
 
-Run it by setting `tagLifecycle.cutover.run=true` on a `helm upgrade`.
+Run it by setting `hopsworks.tagLifecycle.cutover.run=true` on a `helm upgrade`.
 The value is off by default and the Job runs once per upgrade that sets it.
+These settings belong to the `hopsworks` subchart, so the `hopsworks.` prefix is part of the key: the umbrella chart's schema rejects a bare `tagLifecycle` with `additional properties 'tagLifecycle' not allowed`.
 
 !!! note "Helm 4 needs `--force-conflicts`"
     Under Helm 4, pass `--force-conflicts` to the upgrade.
