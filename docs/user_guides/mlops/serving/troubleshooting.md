@@ -99,6 +99,7 @@ Browse them under the `Logs` section of the deployment overview page, or in the 
 
 Historical logs are only written for components that have disk logging enabled.
 See [configuring disk logging](#configuring-disk-logging) below, and note that Python predictors have it on by default while every other model server has it off.
+Every instance of the component writes its own archive, distinguished by pod name.
 
 !!! warning
     The number of archives kept per deployment is capped by the `log_history_limit` cluster variable, which defaults to 30.
@@ -108,21 +109,21 @@ To retrieve archives with the Python library, use [`download_logs`][hsml.deploym
 
 ### Configuring disk logging
 
-Disk logging controls whether a component archives its output to HopsFS, and how many of its instances do so.
-It is configured per component, under `Disk logging` in the advanced options of the deployment form.
+Disk logging controls whether a component archives its output to HopsFS.
+It is a per-component checkbox under `Disk logging` in the advanced options of the deployment form.
 
-| Setting | Behaviour |
-| ------- | --------- |
-| Disabled | No archives are written and no HopsFS sidecar is attached to the component. |
-| One replica | A single elected instance archives its output. Chosen when one representative log per deployment is enough. |
-| All replicas | Every instance archives its own output to a separate file, distinguished by pod name. |
+When it is off, no archives are written and no HopsFS sidecar is attached to the component.
+When it is on, a HopsFS sidecar is attached and every instance archives its own output to a separate file, distinguished by pod name.
 
-Python and scikit-learn predictors, including agent deployments, have disk logging set to one replica by default.
-TensorFlow Serving, vLLM and transformers have it disabled by default, because attaching the HopsFS sidecar to them is only worth its cost when you actually want the archives.
+Python predictors, including agent deployments, have disk logging on by default.
+TensorFlow Serving, vLLM and transformers have it off by default, because attaching the HopsFS sidecar to them is only worth its cost when you actually want the archives.
 
 !!! note
-    Enabling disk logging attaches a HopsFS sidecar to the component and starts a new deployment revision.
-    Kubernetes gives every instance of a revision the same pod template, so the sidecar is attached to all of them even in one-replica mode, where only the elected instance writes archives.
+    There is no single-instance mode.
+    All instances of a deployment share one pod template, so the sidecar cannot be attached to a subset of them: electing one writer would leave every other instance paying for a sidecar it never used.
+
+!!! note
+    Changing disk logging starts a new deployment revision, because it changes the pod template.
 
 ## Code
 
