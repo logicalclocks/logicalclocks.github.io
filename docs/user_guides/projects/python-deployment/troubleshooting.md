@@ -66,55 +66,63 @@ In those cases, you can explore the deployments logs in search of the cause of t
 ### Step 3: Explore transient logs
 
 Each deployment is composed of several components depending on its configuration.
-Transient logs refer to component-specific logs that are directly retrieved from the component itself.
-Therefore, these logs can only be retrieved as long as the deployment components are reachable.
+Transient logs refer to component-specific logs that are read directly from the running component.
+Therefore, these logs can only be retrieved as long as the deployment components are running.
 
 !!! info ""
     Transient logs are informative and fast to retrieve, facilitating the troubleshooting of deployment components at a glance
 
 Transient logs are convenient when access to the most recent logs of a deployment is needed.
 
+To follow them in the UI, click the `Logs` button at the top of the deployment overview page.
+The pane tails the selected component every two seconds and lets you search, copy and download what it has buffered.
+You can also read them with the Hopsworks Machine Learning Python library, as shown in [Step 4](#step-4-explore-transient-logs) of the code section.
+
 !!! info
     When a deployment is in idle state, there are no components running (i.e., scaled to zero) and, thus, no transient logs are available.
+    Use historical logs to inspect an instance that is already gone.
 
 !!! note
-    In the current version of Hopsworks, transient logs can only be accessed using the Hopsworks Machine Learning Python library.
-    See [an example](#step-4-explore-transient-logs).
+    Standard output and standard error arrive as a single interleaved stream.
+    Kubernetes merges them at the container runtime, so the two cannot be separated after the fact.
 
 ### Step 4: Explore historical logs
 
-Transient logs are continuously collected and stored in OpenSearch, where they become historical logs accessible using the integrated OpenSearch Dashboards.
-Therefore, historical logs contain the same information than transient logs.
-However, there might be cases where transient logs could not be collected in time for a specific component and, thus, not included in the historical logs.
+Historical logs are archives that each instance writes to the project's `Logs` dataset from inside its own container.
+An instance archives its output when it exits, is restarted, or is stopped, which means an instance removed by scale-to-zero or replaced by a new deployment revision still leaves its logs behind.
 
 !!! info ""
-    Historical logs are persisted transient logs that can be queried, filtered and sorted using OpenSearch Dashboards, facilitating a more sophisticated exploration of past records.
+    Historical logs are convenient when a deployment fails occasionally, or when the instance you need to inspect is no longer running
 
-Historical logs are convenient when a deployment fails occasionally, either at runtime or without a clear reason.
-In this case, narrowing the inspection of component-specific logs at a concrete point in time and searching for keywords can be helpful.
+Archives are written to `Logs/Serving/<deployment_name>/` and named `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.log`, one file per instance run.
+Browse them under the `Logs` section of the deployment overview page, or in the `Logs` dataset, and open one to read it.
 
-To access the OpenSearch Dashboards, click on the `See logs` button at the top of the deployment overview page.
+Historical logs are only written for components that have disk logging enabled.
+See [configuring disk logging](#configuring-disk-logging) below, and note that Python predictors have it on by default while every other model server has it off.
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_condition_see_logs.svg" alt="See logs button">
-    <figcaption>Access to historical logs of a deployment</figcaption>
-  </figure>
-</p>
+!!! warning
+    The number of archives kept per deployment is capped by the `log_history_limit` cluster variable, which defaults to 30.
+    Once the cap is reached, the oldest archive is deleted each time a new one is written, so long-lived deployments do not fill the project with logs.
+
+To retrieve archives with the Python library, use [`download_logs`][hsml.deployment.Deployment.download_logs].
+
+### Configuring disk logging
+
+Disk logging controls whether a component archives its output to HopsFS, and how many of its instances do so.
+It is configured per component, under `Disk logging` in the advanced options of the deployment form.
+
+| Setting | Behaviour |
+| ------- | --------- |
+| Disabled | No archives are written and no HopsFS sidecar is attached to the component. |
+| One replica | A single elected instance archives its output. Chosen when one representative log per deployment is enough. |
+| All replicas | Every instance archives its own output to a separate file, distinguished by pod name. |
+
+Python and scikit-learn predictors, including agent deployments, have disk logging set to one replica by default.
+TensorFlow Serving, vLLM and transformers have it disabled by default, because attaching the HopsFS sidecar to them is only worth its cost when you actually want the archives.
 
 !!! note
-    In case you are not familiar with the interface, you may find the [official documentation](https://opensearch.org/docs/latest/dashboards/index/) useful.
-
-Once in the OpenSearch Dashboards, you can search for keywords, apply multiple filters and sort the records by timestamp.
-
-??? info "Available filters"
-
-    | Filter         | Description                              |
-    | -------------- | ---------------------------------------- |
-    | component      | Name of the deployment component         |
-    | container_name | Name of the container within a component |
-    | serving_name   | Name of the deployment                   |
-    | timestamp      | Timestamp when the record was reported   |
+    Enabling disk logging attaches a HopsFS sidecar to the component and starts a new deployment revision.
+    Kubernetes gives every instance of a revision the same pod template, so the sidecar is attached to all of them even in one-replica mode, where only the elected instance writes archives.
 
 ## Code
 
@@ -155,8 +163,30 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 === "Python"
 
   ```python
-  deployment.get_logs(tail=10)
+  deployment.get_logs(component="predictor|transformer", tail=10)
   ```
+
+To follow a running deployment instead of taking a single snapshot, use `tail_logs`.
+It blocks and prints new lines as they arrive, skipping what it has already shown.
+
+=== "Python"
+
+  ```python
+  deployment.tail_logs(component="predictor")
+  ```
+
+### Step 5: Download historical logs
+
+=== "Python"
+
+  ```python
+  local_paths = deployment.download_logs(latest=True)
+  for local_path in local_paths:
+      with open(local_path) as archive:
+          print(archive.read())
+  ```
+
+Omit `latest` to download every archive the deployment has kept.
 
 ### API Reference
 
