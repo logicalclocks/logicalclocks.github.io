@@ -65,14 +65,22 @@ A cluster that never cuts over never needs it.
 
 The cut-over refuses to run while the policy is absent, and the operator who accepts the risk says so explicitly with `hopsworks.tagLifecycle.cutover.acceptUnfencedRollback=true`, which is rendered into the Job and logged with the decision.
 
+A fresh installation is database-canonical from the start, so it sits past the same boundary without ever running a cut-over.
+Downgrading a fresh installation below this release without restoring its database has the same consequence a post-cut-over rollback has: dataset tags written to the database become invisible to the old code, and tags written to extended attributes during the downgrade are silently ignored when you upgrade again.
+Enable the admission policy on a fresh installation if pods from an older release must be refused; the installation records `rollbackFenced=false` in its activation audit when you do not.
+
 ## The cut-over
 
 The cut-over moves the canonical store from the extended attributes to the database.
 It is a scheduled maintenance action, not an administrative call to make at an arbitrary moment: dataset tag **writes** are refused with a retryable HTTP 503 from the start of the window until it commits.
-Dataset tag **reads** are never interrupted, and nothing else on the cluster is affected.
+The quiesce itself is a short full outage: both API deployments are scaled to zero for the restart, and nothing answers while they are down.
+Once the pods are back, reads of dataset tags and everything else serve normally for the rest of the window, and no stored data is touched at any point.
 
 The window is about five minutes on a three-node cluster, dominated by the API restart.
 The verification over several hundred datasets takes seconds.
+
+If a HorizontalPodAutoscaler targets either API deployment, the Job refuses to start: an autoscaler scales the deployment back up while the cut-over needs it at zero, and a pod it starts can write extended attributes after the flip.
+Delete or suspend it for the window, and pause any GitOps reconciliation that owns the replica counts, for the same reason.
 
 Run it by setting `hopsworks.tagLifecycle.cutover.run=true` on a `helm upgrade`.
 The value is off by default and the Job runs once per upgrade that sets it.
@@ -85,18 +93,20 @@ These settings belong to the `hopsworks` subchart, so the `hopsworks.` prefix is
 
 The Job:
 
-1. Reads the cut-over status while the cluster is up.
+1. Recovers first: if a previous attempt was killed after scaling the deployments down, the replica counts it recorded in a ConfigMap are restored before anything waits on the API.
+   Both deployments at zero with no record is a zero somebody else owns, and the Job refuses with the manual commands printed.
+2. Reads the cut-over status while the cluster is up.
    A database that is already canonical exits immediately, so the Job is safe to leave enabled across upgrades, and a window an earlier attempt left open is resumed at the final sweep rather than opened twice.
-2. Reads the admission policy and its binding from the Kubernetes API and checks the whole contract: that it denies rather than warns, that it fails closed, that it selects this namespace and both API deployments, and that it names the current epoch.
+3. Reads the admission policy and its binding from the Kubernetes API and checks the whole contract: that it denies rather than warns, that it fails closed, that it matches pod creation in this namespace for both API deployments, and that its expression is exactly the one this chart installs for the current epoch.
    A policy with the right name but any of those wrong is not a fence.
-3. Refuses to start unless the rolling upgrade has been activated, the background migration of existing tags reports done, and no tag was quarantined for failing validation.
-4. Records the current replica counts, scales both API deployments to zero, and waits until their pods are gone.
+4. Refuses to start unless the rolling upgrade has been activated, the background migration of existing tags reports done, no tag was quarantined for failing validation, and no HorizontalPodAutoscaler targets the API deployments.
+5. Records the current replica counts in a ConfigMap, scales both API deployments to zero, and waits until their pods are gone.
    At that instant every write that was in flight has either reached the file system or never will, so nothing is left to drain.
-5. Sets the state to `cutting_over` while nothing is running, then restores the replica counts.
+6. Sets the state to `cutting_over` in a single transaction while nothing is running, then restores the replica counts.
    The API comes back refusing dataset tag writes with `CUTOVER_IN_PROGRESS`.
-6. Runs a final migration pass and then a verification, and stops if the verification reports any difference between the two stores.
-7. Commits.
-   Every precondition is checked again inside the transaction that publishes the new state.
+7. Runs a final migration pass and then a verification, and stops if the verification reports any difference between the two stores.
+8. Checks the fence again and commits.
+   Every precondition is checked once more inside the transaction that publishes the new state, including that no migration pass finished after the verification started.
 
 If the Job stops at step 6, the cluster stays in `cutting_over` with reads unaffected.
 Investigate the reported differences, then either fix them and re-run the Job (it resumes the open window), or abort:
