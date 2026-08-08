@@ -24,7 +24,8 @@ Two failure paths are deliberately different.
 A refusal by the pre-migration audit happens before any schema change, so the original replica counts are restored and the upgrade aborts with the cluster running as it was.
 A failure after the schema change has begun leaves the cluster scaled to zero, because starting the old nodes over a half-applied schema is worse than an outage.
 
-Set `hopsworks.tagLifecycle.writeWindow.enabled=false` to skip it, only if you are taking the write window yourself.
+Set `hopsworks.tagLifecycle.writeWindow.enabled=false` only if you are taking the write window yourself, and take it for real: routing traffic away at a load balancer is not enough, because internal clients still reach the API pods directly.
+The chart holds you to it: with the write window disabled, a pre-upgrade check refuses the one upgrade that applies the migration while any API pod is running or a HorizontalPodAutoscaler targets the API deployments.
 
 After the upgrade the cluster keeps reading dataset tags from the extended attributes and writes them to both stores.
 Nothing is lost while you stay in that state, and you can stay in it indefinitely.
@@ -66,8 +67,9 @@ A cluster that never cuts over never needs it.
 The cut-over refuses to run while the policy is absent, and the operator who accepts the risk says so explicitly with `hopsworks.tagLifecycle.cutover.acceptUnfencedRollback=true`, which is rendered into the Job and logged with the decision.
 
 A fresh installation is database-canonical from the start, so it sits past the same boundary without ever running a cut-over.
-Downgrading a fresh installation below this release without restoring its database has the same consequence a post-cut-over rollback has: dataset tags written to the database become invisible to the old code, and tags written to extended attributes during the downgrade are silently ignored when you upgrade again.
-Enable the admission policy on a fresh installation if pods from an older release must be refused; the installation records `rollbackFenced=false` in its activation audit when you do not.
+**Downgrading any database-canonical cluster below this release without restoring (or reinstalling) its database is unsupported**, and a fresh installation is such a cluster from day one.
+Doing it anyway has the same consequence a post-cut-over rollback has: dataset tags written to the database become invisible to the old code, and tags written to extended attributes during the downgrade are silently ignored when you upgrade again.
+Enable the admission policy on a fresh installation if pods from an older release must be refused rather than merely unsupported; the installation records `rollbackFenced=false` in its activation audit when you do not.
 
 ## The cut-over
 
@@ -108,7 +110,7 @@ The Job:
 8. Checks the fence again and commits.
    Every precondition is checked once more inside the transaction that publishes the new state, including that no migration pass finished after the verification started.
 
-If the Job stops at step 6, the cluster stays in `cutting_over` with reads unaffected.
+If the Job stops at step 7 or 8, the cluster stays in `cutting_over` with reads unaffected.
 Investigate the reported differences, then either fix them and re-run the Job (it resumes the open window), or abort:
 
 ```bash
