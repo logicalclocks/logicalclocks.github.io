@@ -98,7 +98,7 @@ Archives are written to `Logs/Serving/<deployment_name>/` and named `<UTC yyyyMM
 Browse them under the `Logs` section of the deployment overview page, or in the `Logs` dataset, and open one to read it.
 
 Historical logs are only written for components that have disk logging enabled.
-See [configuring disk logging](#configuring-disk-logging) below, and note that Python predictors have it on by default while every other model server has it off.
+See [configuring disk logging](#configuring-disk-logging) below, and note that only Python deployments support it: Python predictors have it on by default.
 Every instance of the component writes its own archive, distinguished by pod name.
 
 !!! warning
@@ -115,8 +115,8 @@ It is a per-component checkbox under `Disk logging` in the advanced options of t
 When it is off, no archives are written and no HopsFS sidecar is attached to the component.
 When it is on, a HopsFS sidecar is attached and every instance archives its own output to a separate file, distinguished by pod name.
 
-Python predictors, including agent deployments, have disk logging on by default.
-TensorFlow Serving, vLLM and transformers have it off by default, because attaching the HopsFS sidecar to them is only worth its cost when you actually want the archives.
+Disk logging is only available for Python deployments, agent deployments included, and their transformers; Python predictors have it on by default.
+TensorFlow Serving and vLLM do not support it: the HopsFS sidecar it attaches runs privileged, and on clusters enforcing the restricted pod security policies only Python serving pods carry the policy exception that admits it. The API rejects the setting for those runtimes rather than deploying something a hardened cluster would refuse.
 
 !!! note
     There is no single-instance mode.
