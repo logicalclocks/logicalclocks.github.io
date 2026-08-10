@@ -117,6 +117,9 @@ A user with a temporary password will see a warning message when going to _Accou
 
 ## Python SDK
 
+!!! warning "Admin-only capability"
+    The calling account must hold the `HOPS_ADMIN` platform role, since these calls manage users across the entire cluster.
+
 Admin accounts can also manage platform users programmatically:
 
 ```python
@@ -152,5 +155,3 @@ users_api.update_user(new_user.id, max_num_projects=10)
 # Delete a user (fails if they still own any projects)
 users_api.delete_user(new_user.id)
 ```
-
-This is an admin-only capability; the calling account must hold the `HOPS_ADMIN` platform role.

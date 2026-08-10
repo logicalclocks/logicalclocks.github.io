@@ -5,6 +5,13 @@
 Besides [sharing feature groups and feature views][sharing], you can share any dataset in your project's file browser (`Resources`, `Models`, `Jupyter`, etc.) with another project.
 This grants the target project's members read (or write) access to that directory, without exposing the rest of your project.
 
+!!! warning "Requires the Data owner role"
+    Only a [Data owner][data-owner] in the project the dataset lives in can share or unshare a dataset, because sharing exposes project data to members outside the project.
+
+!!! note "Feature store datasets are always read-only"
+    Feature store datasets can only be shared as `READ_ONLY`.
+    To grant richer access to feature store data, use [feature store / feature group sharing][sharing] instead.
+
 ## UI
 
 In the `Files` view, select the dataset (top-level folder) you want to share and choose `Share` from its context menu.
@@ -32,6 +39,3 @@ dataset_api.share(
 # Revoke a share
 dataset_api.unshare("Resources/my_dir", target_project="other_project")
 ```
-
-Requires the **Data Owner** role in the project the dataset lives in.
-Feature store datasets can only be shared as `READ_ONLY` — to grant richer access to feature store data, use [feature store / feature group sharing][sharing] instead.
