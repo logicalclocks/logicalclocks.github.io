@@ -102,6 +102,21 @@ The Job:
 3. Reads the admission policy and its binding from the Kubernetes API and checks the whole contract: that it denies rather than warns, that it fails closed, that it matches pod creation in this namespace for both API deployments, and that its expression is exactly the one this chart installs for the current epoch.
    A policy with the right name but any of those wrong is not a fence.
 4. Refuses to start unless the rolling upgrade has been activated, the background migration of existing tags reports done, no tag was quarantined for failing validation, and no HorizontalPodAutoscaler targets the API deployments.
+
+    A quarantined tag is one whose value could not be migrated: its schema is gone, it no longer
+    validates, or it is longer than the store accepts. The value is left where it is and recorded with
+    a digest, a length and a reason, so nothing is destroyed by a failed migration. Resolve each one by
+    correcting the value or the schema, or waive it to accept losing that value:
+
+    ```bash
+    curl -X PUT "https://<cluster>/hopsworks-api/api/admin/dataset-tags/quarantine/<id>/waive?expectedDigest=<digest>" \
+      -H "Authorization: ApiKey <key>"
+    ```
+
+    The digest is required and comes from reading the record first. A waiver applies to the value that
+    was inspected and to no other: if the value changes before the waiver is granted the request is
+    refused with `409`, and if it changes afterwards the waiver is dropped and the record comes back for
+    review. That is deliberate, because a waiver authorises destroying one specific value.
 5. Records the current replica counts in a ConfigMap, scales both API deployments to zero, and waits until their pods are gone.
    At that instant every write that was in flight has either reached the file system or never will, so nothing is left to drain.
 6. Sets the state to `cutting_over` in a single transaction while nothing is running, then restores the replica counts.
