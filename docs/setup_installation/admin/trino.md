@@ -80,6 +80,111 @@ Use this detailed view to diagnose worker-specific issues and optimize resource 
   <figcaption>Trino worker status</figcaption>
 </figure>
 
+## Managing Catalogs
+
+Catalogs created by project Data Owners are saved to the database but are not loaded by the running cluster until an administrator applies them.
+Applying a catalog is a two-step, admin-gated workflow on the Catalogs tab under Cluster Settings, Query Engine: sync the pending changes, then restart Trino.
+
+The tab lists every catalog waiting to be applied, along with its status and the operation to apply (create, update, or remove).
+
+Nothing notifies you when a Data Owner creates a catalog, and nothing notifies them when you apply it.
+A catalog waits in Pending sync until an administrator acts, with no service level attached, so check this tab periodically or agree a cadence with your projects.
+
+<figure>
+  <img src="../../../assets/images/admin/trino/catalogs-pending.png" alt="Pending catalogs" />
+  <figcaption>Catalogs awaiting sync and restart</figcaption>
+</figure>
+
+### Syncing
+
+Select the catalogs to apply and click "Sync selected".
+This writes the catalog definitions into the backend-owned Kubernetes Secrets that the cluster mounts at `/etc/trino/catalog`.
+After syncing, a catalog moves to Pending restart, meaning it is present in the mount but not yet loaded by the running cluster.
+
+#### Where catalog credentials are stored
+
+A connector's credentials end up in the places below. Anyone who can read those places can read the credentials, so plan access to them accordingly.
+
+- A `${HOPSWORKS_SECRET:<name>}` reference is stored verbatim in the `trino_catalog` database row and is resolved to its value only at sync time. The database row never holds the value.
+- A literal value typed straight into the properties editor is stored as-is in the `trino_catalog` database row, in cleartext, and is captured by database backups. Use a secret reference for any credential you do not want in the database.
+- Either way, the synced file holds the resolved plaintext, because Trino reads the credential from the catalog file itself.
+  That file lives in a Kubernetes Secret rather than a ConfigMap, so it is covered by the RBAC that applies to Secrets in the Hopsworks namespace and by etcd encryption-at-rest on clusters that enable it.
+
+<figure>
+  <img src="../../../assets/images/admin/trino/catalogs-pending-restart.png" alt="Catalogs pending restart" />
+  <figcaption>Synced catalogs wait in Pending restart until the next restart</figcaption>
+</figure>
+
+### Restarting
+
+Trino reads catalogs only at startup, so synced changes take effect on the next restart.
+Click "Restart Trino" to roll out the coordinator and workers.
+The confirmation dialog reports how many queries are currently running or queued, so you can choose a low-traffic window before confirming.
+The restart cancels those queries for **every project on the cluster**, not only the project whose catalog is being applied, and in-flight results are lost.
+Trino keeps recent query detail in the coordinator's memory, so after a restart the live query views show only what the new coordinator has seen; older queries remain in the query history, which is stored separately.
+
+<figure>
+  <img src="../../../assets/images/admin/trino/restart-confirm.png" alt="Restart confirmation" />
+  <figcaption>The restart confirmation reports the running queries the restart will interrupt</figcaption>
+</figure>
+
+A restart is refused while another sync or restart is already running, so concurrent actions by different administrators cannot collide or trigger redundant restarts.
+If nothing is waiting to load or unload, the restart is skipped and reported as such rather than interrupting queries for no reason.
+
+### Recovering a catalog Trino cannot load
+
+Trino reads its catalogs at startup and refuses to start if it cannot load one of them.
+A user catalog with an invalid definition therefore stops the whole query engine, coordinator and workers alike, and the pods stay in `CrashLoopBackOff`.
+Kubernetes keeps the previous pods serving while the new ones fail, so queries may keep working for a while and the rollout never completes.
+
+Click "Restart Trino" to recover.
+The button stays available when nothing is waiting for a restart, labelled "Restart Trino (recover)", because this situation leaves no synced catalog to load.
+That label therefore also appears when catalogs are pending sync but none has been applied yet, since restarting would load nothing.
+
+<figure>
+  <img src="../../../assets/images/admin/trino/catalogs-recover.png" alt="Recover restart" />
+  <figcaption>With no pending catalogs, the restart action is still available to recover a failed rollout</figcaption>
+</figure>
+
+Hopsworks reads the coordinator log, identifies the catalog Trino rejected, removes it from the mount, marks it **Failed**, and restarts so the cluster comes back without it.
+The result names the catalogs that were removed:
+
+> Removed 1 catalog Trino could not load. `project1__orders_pg`. Trino is restarting without them; the owners must fix the definitions.
+
+Only user-created catalogs are removed this way.
+A default catalog that fails to load is left in place, because that is a cluster configuration problem rather than something an administrator should resolve by deleting data.
+
+A removed catalog keeps its row, so its owner can see what happened on the project's Catalogs page along with the error Trino reported.
+Editing the definition returns it to Pending sync and it re-enters the normal flow.
+
+Failed catalogs are not listed under pending, because they no longer block anything and no administrator action can fix them.
+If Hopsworks cannot attribute the failure to a user catalog, it reports the connection error instead of removing anything, and the coordinator log is the place to look.
+
+### Recovering catalog files lost from the mount
+
+The catalog definitions are stored in the Hopsworks database, and the Kubernetes Secrets mounted at `/etc/trino/catalog` are derived from it.
+A restore that brings back the database alone, a GitOps sync that prunes resources it does not manage, or a Secret deleted by hand therefore leaves catalogs that exist in Hopsworks with no file for Trino to read.
+
+`POST /hopsworks-api/api/admin/trino/catalogs/reconcile` repairs it.
+It writes the missing files back from the database, removes files that no catalog belongs to, which is also how a credential stops being mounted once its catalog is gone from the database, and reports what it changed.
+It is always available, since an administrator calling it has already established that the repair is needed.
+It also compares file contents, so it corrects a file whose name is right but whose content no longer matches the database.
+
+Set **trino_catalog_reconcile_enabled** to `true` to have the same repair run on a schedule instead, shortly after startup and on the reconcile interval thereafter.
+It is off by default because losing a shard Secret takes one of the events above rather than anything routine, so the repair belongs on a cluster that needs it rather than on every cluster.
+Each scheduled pass compares which catalog files the Secrets hold against which ones the database expects, and repairs only when they disagree.
+Comparing names rather than contents is what keeps a pass cheap enough for an interval, since rebuilding a file means decrypting every secret it references.
+The consequence is that the scheduled pass does not notice a file whose name is right and content is wrong; use the endpoint for that.
+
+Two things neither form does.
+Neither restarts Trino, so a restored catalog is in the mount but not loaded until the next restart, like any other catalog change.
+Neither touches a catalog that is pending sync, because that catalog's stored definition is the change an administrator has not applied yet, and applying it here would bypass that decision.
+Those catalogs are reported as still needing a sync.
+
+A catalog whose `${HOPSWORKS_SECRET:<name>}` reference no longer resolves cannot be rebuilt, since the file Trino reads has to hold the resolved value.
+The repair reports it, leaves any file it already has in place, because that copy resolved when it was synced and still works, and carries on with every other catalog.
+Its owner has to repoint the reference at an existing secret.
+
 ## Configuration
 
 Trino behavior can be customized through cluster configuration variables. To modify these settings, navigate to **Cluster Settings** → **Configuration** and search for the variable name.
@@ -88,8 +193,47 @@ Trino behavior can be customized through cluster configuration variables. To mod
 
 - **trino_enabled**: Enable or disable Trino cluster-wide (default: `true`)
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
+- **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
+- **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount][recovering-catalog-files-lost-from-the-mount])
+- **trino_catalog_max_per_project**: Catalogs one project may create (default: `5`)
+- **trino_catalog_max_bytes**: Largest a single catalog definition may be once its secret references are resolved, in bytes (default: `16384`)
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.
+
+### Test coordinator resource cost
+
+`trino_test_coordinator_enabled` is on by default, and enabling it runs **an additional single-node Trino coordinator pod** for the lifetime of the cluster.
+It exists only to connection-test user catalogs before they are synced, so on a small or cost-sensitive cluster it is reasonable to turn it off.
+When it is off, "Test connection" reports that testing is unavailable and every other part of the catalog workflow is unaffected.
+
+### Supported connectors
+
+A project can create a catalog on any connector installed in the Trino image.
+Connectors that expose no external data source are rejected: `system` and `jmx` (which would expose the query engine's own internals, including other projects' query text), `memory` and `blackhole` (which hold no data), `datasketches` and `ai` (function plugins), and `tpch` and `tpcds`, which already ship as shared read-only catalogs.
+
+The installed set is the cluster variable `trino_connectors`, whose default matches the Trino image the chart pins.
+The backend refuses a catalog on anything outside it, so a connector name that is not installed is rejected when the catalog is created rather than stopping the coordinator at the next restart.
+The connector picker in the project UI is served from the same list, so it offers exactly what the backend accepts.
+
+Change `trino_connectors` only when running an image with a different plugin set.
+Removing a connector from the list does not affect catalogs already created on it.
+
+### Catalog storage capacity
+
+User-created catalogs are stored across a fixed number of Kubernetes Secrets, set by the Helm value `global._hopsworks.trino.userCatalogShards` (default: `2`).
+Each Secret holds up to roughly 800 KiB of catalog definitions, so the default gives about 1.6 MiB in total, which is a large number of catalogs.
+When they are full, a sync fails with an error naming the limit.
+
+Raise the value in your Helm values to add capacity.
+The chart mounts one source per shard and refuses to render if the two disagree, so a mismatch fails the upgrade rather than silently dropping catalogs.
+
+Two per-catalog limits keep one project from consuming that shared budget.
+`trino_catalog_max_per_project` caps how many catalogs a project may create, and `trino_catalog_max_bytes` caps how large a single definition may be.
+The size is measured after `${HOPSWORKS_SECRET:}` references are resolved, because the resolved form is what occupies a Secret: a stored definition is bounded by its database column, but a reference costs a couple of dozen characters and expands to a secret of up to about 10 KiB, and the same secret may be referenced repeatedly, so a row that fits its column can resolve to megabytes.
+The check therefore runs both when a catalog is created, so its owner hears about it, and again at sync, because a secret can be rotated to a larger value in between.
+
+Both defaults are generous against real catalogs, which are a few hundred bytes; the largest legitimate ones inline a service account JSON or a certificate pair and stay a few KiB.
+Raise them for a project with an unusual number of external sources, and remember that the product of the two bounds a single project's share of the shard budget.
 
 ## Best Practices for Trino Management
 
