@@ -24,6 +24,31 @@ hopsworks:
 
 Enabling it deploys a StatefulSet with its own state volume. Once it is running, the chart also points the backend at it: `docker_operations_buildkit_addr` and the client TLS settings are filled in from `buildkitd.name`, `buildkitd.port`, `buildkitd.replicas` and `buildkitd.tls`. You do not set those variables yourself unless you are pointing builds at a daemon the chart does not manage.
 
+The daemon runs as root in a privileged container with `hostPID`. It is a shared service holding
+every project's build state and cache, so give it a dedicated node and taint that node so nothing
+else schedules there.
+
+A rootless mode exists (`buildkitd.rootless.enabled`) for installs that cannot grant a privileged
+container. It costs the process sandbox for `RUN` steps, so it is for a single trust zone only:
+do not use it where concurrent projects are mutually untrusted. It also needs a kernel that
+supports its snapshotter unprivileged. Rootless overlayfs needs **5.11 or later**; on older kernels
+such as RHEL 8's 4.18, set the snapshotter to `native` and expect slower builds and a larger state
+volume:
+
+```yaml
+hopsworks:
+  variables:
+    docker_operations_oci_worker_snapshotter: "native"
+```
+
+fuse-overlayfs would be the faster fallback on those kernels, but the chart cannot arrange it.
+The daemon needs to hold `/dev/fuse`, and making the device node visible is not enough: access is
+governed by the container's device cgroup, so an unprivileged container still gets
+`Operation not permitted`. Granting it is specific to your runtime, through a device plugin or CDI
+on upstream Kubernetes or the `io.kubernetes.cri-o.Devices` annotation on CRI-O, and needs an SCC
+or SELinux policy to match where those are enforced. On RHEL 8, the rootful daemon above is the
+supported configuration and the faster one.
+
 ### Sizing the state volume
 
 ```yaml

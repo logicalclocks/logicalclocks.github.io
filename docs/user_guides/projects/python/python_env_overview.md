@@ -34,8 +34,10 @@ Environments listed under `FEATURE ENGINEERING` corresponds to environments you 
 
 The `FEATURE ENGINEERING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md), a [Python job](../jobs/python_job.md) or a [PySpark job](../jobs/pyspark_job.md).
 
-- `python-feature-pipeline` for writing feature pipelines using Python
+- `python-feature-pipeline` for writing feature pipelines using Python, with Pandas and Polars
 - `spark-feature-pipeline` for writing feature pipelines using PySpark
+- `dbt-pipeline` extends `python-feature-pipeline` with dbt and the Trino and DuckDB adapters, for
+  transformations written as dbt models
 
 ### Model training
 

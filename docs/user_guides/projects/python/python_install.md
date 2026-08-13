@@ -12,6 +12,8 @@ In this guide, you will learn how to install Python packages using these differe
 - Packages contained in .whl format
 - A public or private git repository
 - A requirements.txt file to install multiple libraries at the same time using pip
+- npm packages, installed globally in the environment image and on `PATH` for jobs, Jupyter and
+  the terminal
 
 !!! notice "Notice"
     If your libraries require installing some extra OS-Level packages, refer to the guide custom commands guide on how to install OS-Level packages.
@@ -85,6 +87,38 @@ In the case of a private git repository, also select whether it is a GitHub or G
     <figcaption>Installing library from git repo</figcaption>
   </figure>
 </p>
+
+#### npm packages
+
+Environments also carry npm packages, installed globally in the image so they are on `PATH` for
+jobs, Jupyter and the terminal. This is how you get a CLI tool or a JavaScript dependency into an
+environment.
+
+Open the **Installed npm Libraries** tab beside the Python one and use **Install npm package**.
+Installed npm packages are listed there and can be uninstalled the same way, so an environment
+records what it carries rather than accumulating changes nobody can see.
+
+What the platform accepts:
+
+| | |
+| --- | --- |
+| Versions | An exact version such as `1.3.0`, or a dist-tag such as `latest`. Ranges like `^1.0.0` are refused, because they are not reproducible. |
+| Scoped names | Supported, for example `@tsconfig/node20`. |
+| Flags | A fixed set: `--ignore-scripts`, `--legacy-peer-deps`, `--no-audit`, `--no-fund`, `--no-optional`, `--strict-peer-deps`. Anything else is refused and the message lists what is allowed. |
+
+Installing by dist-tag records the version the tag resolved to once the build finishes, so `latest`
+becomes the concrete version in the listing rather than staying as `latest`.
+
+A package the base image already ships cannot be installed over, and cannot be uninstalled. Clone
+an environment and install your own version there instead.
+
+Packages come from the registry the cluster is configured to use. Ask your administrator if you
+need an internal registry; it is a cluster-wide setting rather than a per-environment one.
+
+!!! note "Same name in both ecosystems"
+    A name can exist on both PyPI and npm. The two are tracked separately, so installing `requests`
+    from npm does not touch the Python package of the same name, and each is listed under its own
+    tab.
 
 ## Going Further
 
