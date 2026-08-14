@@ -60,15 +60,34 @@ hopsworks:
     docker_operations_oci_worker_snapshotter: "fuse-overlayfs"
 ```
 
+CRI-O ignores the device annotation unless the node allows it. Every node that can run the daemon
+needs a drop-in such as `/etc/crio/crio.conf.d/99-buildkitd-fuse.conf`, followed by
+`systemctl restart crio`:
+
+```toml
+[crio.runtime]
+allowed_devices = ["/dev/fuse"]
+
+[crio.runtime.runtimes.runc]
+allowed_annotations = ["io.kubernetes.cri-o.Devices"]
+```
+
+To allow the annotation only for this daemon rather than for every pod on the node, use a CRI-O
+workload with an `activation_annotation` and set the matching annotation through
+`buildkitd.podAnnotations`; `values.rhel8.yaml` in the chart shows the pairing.
+
 Name the snapshotter explicitly rather than leaving it on `auto`. If FUSE turns out to be
 unavailable the daemon then fails where you can see it, instead of quietly selecting `native` and
 making every build slower and larger with no signal. Asking for `fuse-overlayfs` with
-`deviceInjection: none` is refused when the chart renders.
+`deviceInjection: none` is refused when the chart renders, as is `devicePlugin` with an empty
+`devicePluginResource`.
 
 A preflight init container (`buildkitd.rootless.preflight`, on by default) checks the node before
-the daemon starts: `fuse` in `/proc/filesystems`, unprivileged user namespaces enabled, and that
-`/dev/fuse` is a character device the container can open. It runs as the daemon's own user,
-because root could open a device the daemon cannot.
+the daemon starts: unprivileged user namespaces always, and `fuse` in `/proc/filesystems` when the
+configuration uses FUSE. The check that matters most, actually opening `/dev/fuse`, runs in the
+daemon container itself just before the daemon starts, because a device plugin assigns the device
+to the one container that requested it and an init container would never receive it. A daemon that
+cannot open the device exits immediately with the reason.
 
 Before trusting it, confirm on the node that `buildctl debug workers -v` reports `fuse-overlayfs`
 rather than `native`, that a second identical build reuses layers from the first, and that the
