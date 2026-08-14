@@ -220,6 +220,12 @@ Now, you have the benefit that in online inference you only need to pass two ser
         })
     ```
 
+The Python SQL client executes each nested subtree as one SQL statement.
+The Python REST client pushes supported nested subtrees to RonDB through RonSQL, so callers provide the same root serving keys for either client.
+REST serving requires every nested join to cover the child feature group's complete primary key and all feature groups in the subtree to belong to the same feature store.
+Inner and left joins are supported, and all nested joins in a subtree must use the same join type, because a subtree mixing them cannot be split into independent REST queries without changing which rows an inner-join miss removes.
+Right joins, full joins, subtrees mixing inner and left joins, partial-primary-key hops, and cross-feature-store nested joins require the SQL client.
+
 #### Filter
 
 In the same way as joins, applying filters to feature groups creates a query with the applied filter.
@@ -301,6 +307,88 @@ The filters can be applied at any point of the query:
         .join(merchantDetailsFg.selectAll(), Seq("merchant_id"), Seq("id"), "left")
         .filter(creditCardTransactionsFg.getFeature("category").eq("Grocery")))
     ```
+
+#### Collect recent rows
+
+Use `collect` to include the most recent matching rows for each entity in a feature view.
+The operation produces one array-of-struct feature whose elements contain the selected value features and the ordering feature.
+This preserves the relationship between values in the same source row, including null values.
+
+`collect` is a non-terminal query operation, so you can filter the source rows before collecting them and join other feature groups afterward.
+Filters are applied before the row limit, which means the result contains the most recent N rows that match the filter.
+For online serving, filters on a collected or aggregated feature group must be AND-combined comparisons of a feature against a value, because OR conditions and feature-to-feature comparisons cannot be applied to the online statement without breaking the match with offline training data.
+
+```python
+transactions_fg = fs.get_feature_group(name="transactions", version=1)
+customers_fg = fs.get_feature_group(name="customers", version=1)
+
+query = (
+    transactions_fg.select(["user_id", "event_time", "amount", "category"])
+    .filter(transactions_fg.amount > 0)
+    .collect(100, order_by="event_time")
+    .join(customers_fg.select(["country", "tier"]), on=["user_id"])
+)
+```
+
+The `order_by` argument defaults to the feature group's event-time feature.
+The default output order is newest first.
+Set `ascending=True` to return the same most recent N rows from oldest to newest.
+
+For online feature groups, the primary key must contain the entity key followed by the ordering feature.
+For example, a per-user transaction history ordered by event time uses the primary key `(user_id, event_time)`.
+The ordering feature is not supplied as a serving key because the lookup identifies an entity rather than one event.
+
+Labels cannot be collected because a collected output is an input feature containing several historical rows.
+Complex-typed value features (arrays, maps, structs, and binary) cannot be collected on an online-enabled feature group, because the online clients cannot yet decode them inside the collected rows.
+The value of `n` must be a positive integer and cannot exceed the maximum configured by the Hopsworks administrator.
+The product of `n` and the number of selected features is also capped, because point-in-time training data materializes that many values for every source event.
+
+When time-to-live is enabled on the source feature group, offline training data uses the same lookback horizon as online serving.
+An explicit lookback can narrow that horizon but cannot make it wider than the feature group's time-to-live.
+
+#### Aggregate rows by entity
+
+Use `aggregate` to define scalar features computed from all matching rows for each entity.
+The operation supports `count`, `sum`, `min`, `max`, and `avg`.
+Use the special `"*"` key with `count` to count rows.
+Use a comma-separated feature key with `greatest` or `least` to aggregate the row-wise greatest or least value.
+
+```python
+from datetime import timedelta
+
+transactions_fg = fs.get_feature_group(name="transactions", version=1)
+
+query = (
+    transactions_fg.select(["user_id", "event_time", "amount", "fee"])
+    .filter(transactions_fg.category == "grocery")
+    .aggregate(
+        {
+            "amount": ["count", "sum", "avg"],
+            "*": ["count"],
+            "amount,fee": ["greatest"],
+        },
+        window=timedelta(days=30),
+    )
+)
+```
+
+Each feature and function pair creates one scalar output feature.
+For example, the query above creates `amount_count`, `amount_sum`, `amount_avg`, `count`, and `amount_fee_greatest`.
+The functions are type-checked when the feature view is created: `sum` and `avg` require numeric features, `min` and `max` accept any non-complex feature, and `greatest` and `least` require integer features.
+The output types are the same on every engine and path: `count` outputs are `bigint`; `sum` widens integer sources to `bigint`, float sources to `double`, and `decimal(p,s)` sources to `decimal(p+10,s)`; `avg` returns `double`, or `decimal(p+4,s+4)` for decimal sources; `min`, `max`, `greatest`, and `least` keep the source feature type.
+
+The optional `window` is a trailing event-time interval, given as a whole number of seconds or a timedelta.
+A windowed aggregation requires the feature group to declare a TIMESTAMP event-time feature.
+Online serving anchors the window at the read time, while point-in-time training data anchors it at each training row's own event time, so a training row never includes source events that had already expired at that row's time.
+If the source feature group has time-to-live enabled, the aggregation window cannot exceed the time-to-live period because older rows are unavailable during online serving.
+
+For online feature groups, the primary key must contain the entity key followed by the event-time feature, exactly like `collect`, so the online store keeps per-entity history.
+In a feature view with point-in-time joins, a windowed aggregation must be joined directly to the root feature group with an inner or left join.
+Query shapes that cannot be computed point-in-time correct are rejected with an error when the feature view is created, instead of silently producing training data with future leakage.
+
+`aggregate` and `collect` are mutually exclusive on the same query node.
+Sub-entity grouping through `group_by` is not supported.
+You can apply either operation independently to different feature groups in the same feature-view query.
 
 #### Joins and/or Filters on feature view query
 
