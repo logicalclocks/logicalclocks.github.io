@@ -75,7 +75,10 @@ Start by giving it a **name** and an optional **description**.
 01. Select "Snowflake" as storage.
 02. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com` or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 03. Login name for the Snowflake user.
-04. **Authentication** Choose between user account Password, Token or Private Key options.
+04. **Authentication** Choose between Password / Programmatic Access Token (PAT), Token or Private Key options.
+    Snowflake is removing single-factor password sign-ins, so supply a programmatic access token (PAT) in the
+    Password / PAT field rather than an account password. The Token option accepts OAuth access tokens only and
+    rejects a PAT with `390303 Invalid OAuth access token`.
     In case of private key, upload your snowflake user Private Key file and set Passphrase if applicable.
 05. The warehouse to connect to.
 06. The database to use for the connection.
