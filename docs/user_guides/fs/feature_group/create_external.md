@@ -63,17 +63,62 @@ Once you have defined the metadata, you can
 
 #### Data Lake based external feature group
 
+External Feature Groups backed by an S3 data source can point at either a single parquet file or a directory of parquet files.
+The directory form globs `**/*.parquet` and unions schemas across files (`union_by_name`), so adding columns to newer files in the prefix does not require recreating the Feature Group; Hive-style partition segments (`year=2024/month=03/...`) are exposed as columns and pushed down at filter time.
+
 === "Python"
 
     ```python
+    # Single parquet file on S3
     fg = feature_store.create_external_feature_group(
         name="sales",
         version=1,
         description="Physical shop sales features",
         data_format="parquet",
+        path="sales/2024.parquet",
         data_source=ds,
         primary_key=["ss_store_sk"],
         event_time="sale_date",
+    )
+
+    fg.save()
+    ```
+
+=== "Python"
+
+    ```python
+    # Directory of parquet files on S3 — schema evolution + partition pushdown
+    fg = feature_store.create_external_feature_group(
+        name="sales",
+        version=1,
+        description="Physical shop sales features",
+        data_format="parquet",
+        path="sales/",
+        data_source=ds,
+        primary_key=["ss_store_sk"],
+        event_time="sale_date",
+    )
+
+    fg.save()
+    ```
+
+#### MongoDB external feature group
+
+External Feature Groups backed by a [MongoDB data source][data-source-mongodb] read documents from a chosen collection.
+Provide the database and collection on the data source — the per-Feature-Group selection overrides the connector's default database and default collection.
+
+=== "Python"
+
+    ```python
+    ds.database = "sample_mflix"
+    ds.collection = "comments"
+
+    fg = feature_store.create_external_feature_group(
+        name="comments",
+        version=1,
+        description="Movie comments",
+        data_source=ds,
+        primary_key=["id"],
     )
 
     fg.save()
@@ -135,7 +180,7 @@ Users can select which subset of the feature group data they want to make availa
 
 Hopsworks Feature Store does not support time-travel queries on external feature groups.
 
-Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
+Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery, Snowflake, Redshift, SQL (MySQL / PostgreSQL / Oracle), SAP HANA, Unity Catalog, MongoDB, and S3 parquet (single file or directory) — and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
 Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [`FeatureView.create_training_data`][hsfs.feature_view.FeatureView.create_training_data], [`FeatureView.create_train_test_split`][hsfs.feature_view.FeatureView.create_train_test_split] or [`FeatureView.create_train_validation_test_split`][hsfs.feature_view.FeatureView.create_train_validation_test_split].
 
 ### API Reference
