@@ -41,13 +41,41 @@ hopsworks:
     docker_operations_oci_worker_snapshotter: "native"
 ```
 
-fuse-overlayfs would be the faster fallback on those kernels, but the chart cannot arrange it.
-The daemon needs to hold `/dev/fuse`, and making the device node visible is not enough: access is
-governed by the container's device cgroup, so an unprivileged container still gets
-`Operation not permitted`. Granting it is specific to your runtime, through a device plugin or CDI
-on upstream Kubernetes or the `io.kubernetes.cri-o.Devices` annotation on CRI-O, and needs an SCC
-or SELinux policy to match where those are enforced. On RHEL 8, the rootful daemon above is the
-supported configuration and the faster one.
+fuse-overlayfs is the faster fallback on those kernels, and the daemon has to actually hold
+`/dev/fuse` to use it. Making the device node visible is not enough: access is governed by the
+container's device cgroup, so an unprivileged container with a `hostPath` still gets
+`Operation not permitted`. Kubernetes has no portable equivalent of `docker --device`, so name the
+mechanism your runtime provides:
+
+```yaml
+hopsworks:
+  buildkitd:
+    rootless:
+      enabled: true
+      # crio          emits the io.kubernetes.cri-o.Devices annotation CRI-O honours
+      # devicePlugin  requests devicePluginResource, for a device plugin or CDI provider
+      # none          no device; the snapshotter must then be native
+      deviceInjection: "crio"
+  variables:
+    docker_operations_oci_worker_snapshotter: "fuse-overlayfs"
+```
+
+Name the snapshotter explicitly rather than leaving it on `auto`. If FUSE turns out to be
+unavailable the daemon then fails where you can see it, instead of quietly selecting `native` and
+making every build slower and larger with no signal. Asking for `fuse-overlayfs` with
+`deviceInjection: none` is refused when the chart renders.
+
+A preflight init container (`buildkitd.rootless.preflight`, on by default) checks the node before
+the daemon starts: `fuse` in `/proc/filesystems`, unprivileged user namespaces enabled, and that
+`/dev/fuse` is a character device the container can open. It runs as the daemon's own user,
+because root could open a device the daemon cannot.
+
+Before trusting it, confirm on the node that `buildctl debug workers -v` reports `fuse-overlayfs`
+rather than `native`, that a second identical build reuses layers from the first, and that the
+cache survives a restart of the StatefulSet. Under enforcing SELinux the device may additionally
+need a matching SCC or targeted policy; do not disable SELinux labelling wholesale to get past it.
+
+On RHEL 8 the rootful daemon above remains the recommended configuration.
 
 ### Sizing the state volume
 
