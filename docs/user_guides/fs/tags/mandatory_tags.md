@@ -3,15 +3,15 @@
 ## Introduction
 
 Mandatory tags let a Hopsworks administrator require that specific tag schemas are populated on artifacts.
-They build on top of [tags](tags.md) and are used to enforce governance rules, such as requiring every model to declare a data owner.
+They build on top of [tags][tags-guide] and are used to enforce governance rules, such as requiring every model to declare a data owner.
 
 A mandatory tag is a tag schema that has been marked as required for one or more artifact types.
-The supported artifact types are feature groups, feature views, training datasets, models and deployments.
+The supported artifact types are feature groups, feature views, training datasets, models, deployments and datasets.
 
 ## Prerequisites
 
 A mandatory tag references an existing tag schema.
-Define the tag schema first, as described in the [Tags](tags.md) guide, before marking it mandatory.
+Define the tag schema first, as described in the [Tags][tags-guide] guide, before marking it mandatory.
 
 Only administrators can configure mandatory tags.
 Attaching the tag values afterwards is done by any project member with write access to the artifact.
@@ -31,12 +31,15 @@ Mandatory tags are configured in two scopes.
     <img src="../../../../assets/images/guides/tags/project_mandatory_tags.png" alt="Configure project-specific mandatory tags under Cluster settings, Projects, by editing a project">
 
 For each mandatory tag you select the artifact types it applies to.
-A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, models and deployments.
-For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving feature groups, feature views and training datasets unaffected.
+A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, models, deployments and datasets.
+For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving the others unaffected.
+
+A [deprecated][tag-schema-lifecycle] schema cannot be registered as mandatory, because nobody is allowed to attach it.
+Conversely, a schema that is registered as mandatory cannot be deprecated until the registrations are removed.
 
 ## Enforcement per artifact type
 
-All five artifact types, feature groups, feature views, training datasets, models and deployments, enforce mandatory tags the same way.
+All six artifact types, feature groups, feature views, training datasets, models, deployments and datasets, enforce mandatory tags the same way.
 
 The create request is validated against the configured mandatory tags.
 If any mandatory tag is missing from the tags provided at creation, the artifact is not created and the request is rejected with an HTTP 400 error that lists the missing tag names.
@@ -129,7 +132,44 @@ The `tags` argument takes the same shape as feature group tags: a `{"name": ...,
     deployment.save()
     ```
 
+=== "Dataset (Python)"
+
+    ```python
+    dataset_api = project.get_dataset_api()
+
+    # data_owner is mandatory for datasets; pass it when creating the dataset
+    dataset_api.mkdir(
+        "transactions_raw",
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
+    )
+    ```
+
 Omitting a mandatory tag from the `tags` argument rejects the create request with an HTTP 400 error that lists the missing tag names.
+
+### Datasets
+
+Mandatory tags on datasets apply to the dataset itself, which is a top-level directory in the project's file system.
+They are not applied per file: a policy that had to be satisfied by every uploaded file would make every upload a violation.
+
+The policy applies to datasets a user creates.
+The datasets Hopsworks creates when it provisions a project, such as `Resources`, `Logs` and the training dataset and deployment directories, are exempt, because a cluster-wide policy would otherwise make project creation fail.
+
+A Hopsworks client older than the release that introduced this feature cannot send tags on the create call, so it receives the HTTP 400 listing the missing tags once a dataset policy is enabled.
+This is the same contract feature groups have, and it is why enabling a dataset policy is an explicit administrator action.
+
+A dataset that predates the policy stays valid.
+Its missing tags are reported on read through the `missingMandatoryTags` field, and shown on the dataset page in the UI.
+
+=== "Python"
+
+    ```python
+    dataset_api = project.get_dataset_api()
+
+    dataset = dataset_api.get("transactions_raw")
+    print(dataset.get("missingMandatoryTags", []))
+
+    dataset_api.add("transactions_raw", "data_owner", "email@hopsworks.ai")
+    ```
 
 ## Missing mandatory tags on pre-existing artifacts
 

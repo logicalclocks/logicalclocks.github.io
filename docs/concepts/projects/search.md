@@ -10,14 +10,22 @@ Hopsworks supports free-text search to discover machine-learning assets:
 - feature groups
 - feature views
 - training data
+- models
+- deployments
+- jobs
+- datasets
 
 You can use the search bar at the top of your project to free-text search for the names or descriptions of any ML asset.
 You can also search using keywords or tags that are attached to an ML asset.
+Keywords apply to feature groups, feature views and training data only, so a keyword filter never matches a job or a dataset.
 
 You can search for assets within a specific project or across all projects in a Hopsworks deployment, including those you are not a member of.
 This allows for easier discoverability and reusability of assets within an organization.
 To avoid users gaining unauthorized access to data, if a search result is in a project you are **not** a member of, the information displayed is limited to: names, descriptions, tags, asset creator and create date.
 If the search result is within a project you are a member of, you are also able to inspect recent activities on the asset as well as statistics.
+
+Searching across projects you are not a member of is on by default.
+An administrator running a multi-tenant deployment can turn it off by setting the `cross_project_global_search_enabled` cluster variable to `false` in the [Configuration][cluster-configuration] UI, which restricts a cluster-wide search to the projects you can already access.
 
 ## Tags
 
