@@ -1,7 +1,7 @@
 # Environment History
 
 Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases.
-Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
+Hopsworks also offers the ability to install additional packages from various sources, such as using the pip package manager and public or private git repository.
 
 The Python virtual environment is shared by different members of the project.
 When a member of the project introduces a change to the environment i.e., installs/uninstalls a library, a new environment is created and it becomes a defacto environment for everyone in the project.

@@ -142,7 +142,7 @@ Each replica gets its own state volume, and a project is pinned to one of them b
 
 ## Package cache
 
-```
+```text
 docker_operations_buildkit_cache_scope
 ```
 
@@ -164,7 +164,7 @@ Two separate things decide whether a build step's *result* can be reused, as opp
 
 ### Dependency locking
 
-```
+```text
 docker_operations_lock_dependencies
 ```
 
@@ -179,7 +179,7 @@ A pinned version alone is not enough for a step's result to be reusable: `pandas
 
 A custom-command layer is never reused by default, because the script can fetch anything and nothing declares what. See [Custom Commands](../../user_guides/projects/python/custom_commands.md) for the two directives a build can use, and:
 
-```
+```text
 docker_operations_allow_hermetic_custom_commands
 ```
 
@@ -252,7 +252,7 @@ If you enforce image policy, do it on the registry side against the pushed image
 
 The backend logs where the time in a build actually goes:
 
-```
+```text
 Build docker-build-xxxxxx: context packaged in N ms, uploaded in N ms
 Built <image> in N ms (1 region job(s))
 Registered <image>: metadata read N ms, database registration N ms (metadata read from the image)

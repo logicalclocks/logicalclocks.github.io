@@ -3,17 +3,23 @@
 ## Introduction
 
 Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases.
-Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
+Hopsworks also offers the ability to install additional packages from various sources, such as using the pip package manager and public or private git repository.
 
 In this guide, you will learn how to install Python packages using these different options.
 
 - PyPi, using pip package manager
-- A conda channel, using conda package manager
 - Packages contained in .whl format
 - A public or private git repository
 - A requirements.txt file to install multiple libraries at the same time using pip
 - npm packages, installed globally in the environment image and on `PATH` for jobs, Jupyter and
   the terminal
+
+!!! warning "Conda, .egg and environment.yml installs have been removed"
+    Installing from a conda channel, from an `.egg` distribution, or by importing an `environment.yml` file is no longer supported and is refused with an error naming the sources you can use instead.
+    The base environments are built on a virtualenv that does not carry conda, so there is nothing for such an install to run.
+
+    Removing a package is not affected.
+    An environment created before this change can still carry conda-sourced packages, and uninstalling those keeps working, so an upgraded environment does not strand packages you can no longer remove.
 
 !!! notice "Notice"
     If your libraries require installing some extra OS-Level packages, refer to the guide custom commands guide on how to install OS-Level packages.
@@ -54,7 +60,7 @@ Enter the search term and select a library and version to install.
   </figure>
 </p>
 
-#### Distribution (.whl, .egg..)
+#### Distribution (.whl)
 
 Install a python package by uploading the corresponding package file and selecting it in the file browser.
 

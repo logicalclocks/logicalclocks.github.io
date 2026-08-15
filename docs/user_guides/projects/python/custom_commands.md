@@ -3,7 +3,7 @@
 ## Introduction
 
 Hopsworks comes with several prepackaged Python environments that contain libraries for data engineering, machine learning, and more general data science use-cases.
-Hopsworks also offers the ability to install additional packages from various sources, such as using the pip or conda package managers and public or private git repository.
+Hopsworks also offers the ability to install additional packages from various sources, such as using the pip package manager and public or private git repository.
 
 Some Python libraries require the installation of some OS-Level libraries.
 In some cases, you may need to add more complex configuration to your environment.
@@ -65,8 +65,9 @@ There are few important things to be aware of when writing the bash script:
   This path is also available via the environmental variable `BUILD_PATH`.
   If you want to use many artifacts it is advisable to create a zip file and upload it to HopsFS in one of your project datasets.
   You can then include the zip file as one of the artifacts.
-- The conda environment is located in `/srv/hops/anaconda/envs/hopsworks_environment`.
-  You can install or uninstall packages in the conda environment using pip like: `/srv/hops/anaconda/envs/hopsworks_environment/bin/pip install spotify==0.10.2`.
+- The Python environment is located in `/srv/hops/anaconda/envs/hopsworks_environment`.
+  It is a virtualenv rather than a conda environment, and the path is unchanged so existing scripts keep working.
+  You can install or uninstall packages in it using pip like: `/srv/hops/anaconda/envs/hopsworks_environment/bin/pip install spotify==0.10.2`.
   If the command requires some input, write the command together with the expected input otherwise the build will fail.
 
 ## Making custom-command builds faster
@@ -82,7 +83,7 @@ Both are read as build directives and never become environment variables in the 
 
 `HOPSWORKS_BUILD_CACHE` names the toolchain caches your script should get, comma separated:
 
-```
+```text
 HOPSWORKS_BUILD_CACHE=ccache,maven
 ```
 
@@ -109,7 +110,7 @@ By default a custom-command build never reuses its previous result, because a sc
 
 If your script genuinely fetches nothing that can change, you can say so:
 
-```
+```text
 HOPSWORKS_BUILD_HERMETIC=true
 ```
 
@@ -126,7 +127,7 @@ If you are not certain, leave it out and use `HOPSWORKS_BUILD_CACHE` instead. Th
 
 A value in the environment variables file becomes an `ENV` instruction, which is image configuration: readable with `docker inspect` by anyone who can pull the image. To pass a credential to your script without it entering the image, reference one of your own Hopsworks secrets:
 
-```
+```text
 MY_TOKEN=secret:my_secret_name
 ```
 
