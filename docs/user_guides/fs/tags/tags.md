@@ -175,7 +175,7 @@ Tags can also be attached when the dataset is created.
 
 !!! warning "Tags on files inside a dataset are frozen"
     Tags could previously be attached to any file or directory inside a dataset.
-    Attaching a new tag to a path inside a dataset is now rejected with HTTP 400, because per-file tags were stored outside the database and could not be searched, counted, or governed.
+    Attaching a new tag to a path inside a dataset is now rejected with HTTP 400 and error code 370013, because per-file tags were stored outside the database and could not be searched, counted, or governed.
     Tags that were already attached to such paths remain readable and deletable, and the file browser keeps showing them.
     Attach the tag to the dataset instead.
 

@@ -24,7 +24,7 @@ Two failure paths are deliberately different.
 A refusal by the pre-migration audit happens before any schema change, so the original replica counts are restored and the upgrade aborts with the cluster running as it was.
 A failure after the schema change has begun leaves the cluster scaled to zero, because starting the old nodes over a half-applied schema is worse than an outage.
 
-Set `hopsworks.tagLifecycle.writeWindow.enabled=false` only if you are taking the write window yourself, and take it for real: routing traffic away at a load balancer is not enough, because internal clients still reach the API pods directly.
+Set `hopsworks.tagLifecycle.writeWindow.enabled=false` only if you are taking the write window yourself. Routing traffic away at a load balancer is not enough, because internal clients still reach the API pods directly.
 The chart holds you to it: with the write window disabled, a pre-upgrade check refuses the one upgrade that applies the migration while any API pod is running or a HorizontalPodAutoscaler targets the API deployments.
 
 After the upgrade the cluster keeps reading dataset tags from the extended attributes and writes them to both stores.
@@ -33,7 +33,7 @@ Nothing is lost while you stay in that state, and you can stay in it indefinitel
 ## Per-file tags are frozen
 
 Tags could previously be attached to any file or directory inside a dataset.
-Attaching a new tag to a path inside a dataset is now rejected with HTTP 400.
+Attaching a new tag to a path inside a dataset is now rejected with HTTP 400 and error code 370013.
 Per-file tags were stored outside the database, could not be searched or counted, and would have made the cut-over unbounded.
 
 Tags that were already attached to such paths remain readable and deletable, and the file browser keeps showing them.
@@ -58,7 +58,7 @@ curl -s -H "Authorization: ApiKey $API_KEY" \
 ## Fencing a rollback
 
 Once the database is the canonical store for dataset tags, a node running the previous release writes extended attributes that nothing reads any more, and those writes are lost silently.
-Rolling back is therefore not made safe; it is refused.
+Rolling back is therefore refused rather than made safe.
 
 `hopsworks.tagLifecycle.admissionPolicy.enabled=true` installs a `ValidatingAdmissionPolicy` that refuses to admit an API pod below the current capability epoch.
 It is **off by default**, because turning it on means an emergency downgrade requires restoring the pre-cut-over database and deleting the policy, in that order.
@@ -74,7 +74,7 @@ Enable the admission policy on a fresh installation if pods from an older releas
 ## The cut-over
 
 The cut-over moves the canonical store from the extended attributes to the database.
-It is a scheduled maintenance action, not an administrative call to make at an arbitrary moment: dataset tag **writes** are refused with a retryable HTTP 503 from the start of the window until it commits.
+Schedule it as a maintenance action: dataset tag **writes** are refused with a retryable HTTP 503 from the start of the window until it commits.
 The quiesce itself is a short full outage: both API deployments are scaled to zero for the restart, and nothing answers while they are down.
 Once the pods are back, reads of dataset tags and everything else serve normally for the rest of the window, and no stored data is touched at any point.
 
@@ -152,6 +152,68 @@ The response reports the current state, when the window opened, and what would b
 ## After the cut-over
 
 The extended attributes are left in place after the cut-over.
-Readers holding a cached copy of the cluster state for up to one cache interval would otherwise read a store that had already been emptied, so the extended attributes are removed no earlier than one full cache interval afterwards, and only after the verification has passed.
+Readers holding a cached copy of the cluster state would otherwise read a store that had already been emptied, so the extended attributes are removed no earlier than one full settings-cache interval afterwards, which is ten minutes, and only after the verification has passed.
 
 Removing them is the point of no return for a downgrade, so keep them until the release is known good.
+
+### Removing the extended attributes
+
+When you are ready, start a cleanup pass:
+
+```bash
+curl -X POST -u <admin> \
+  https://<cluster>/hopsworks-api/api/admin/dataset-tags/clean
+```
+
+It answers with a run id. Poll it:
+
+```bash
+curl -u <admin> \
+  https://<cluster>/hopsworks-api/api/admin/dataset-tags/clean/<runId>
+```
+
+A dataset is cleaned only when all four of these hold, and the run reports which one refused for each dataset it skips:
+
+| Gate | Meaning |
+| --- | --- |
+| No unwaived quarantine record | Nothing in the attribute failed to migrate. Waive a record only after reading it (see below) |
+| The snapshot is from the accepted verification | This dataset was covered by the verification the commit accepted |
+| The attribute still matches that snapshot | Nothing has written the attribute since it was verified |
+| The index has caught up | The search document reflects the projection, so nothing is lost by deleting the attribute |
+
+A skipped dataset is not a failure, and the pass is safe to re-run: gates two and four clear on their own once a queued search-index rewrite drains, and quarantine records are cleared by waiving them.
+
+### Recovering a cleanup run whose pod is gone
+
+A cleanup pass deletes from HopsFS, which no database transaction can fence, so a run whose worker stopped responding is never taken over automatically.
+Its claim is held until you confirm that worker is gone, and the run reports which pod holds it.
+
+Read the run, take the `worker` field, confirm that pod no longer exists, then hand the run to a new worker by echoing that name back:
+
+```bash
+curl -X POST -u <admin> \
+  "https://<cluster>/hopsworks-api/api/admin/dataset-tags/clean/<runId>/resume?holderFenced=true&expectedWorker=<pod>"
+```
+
+The echo is checked against the recorded name in the same statement that transfers ownership, so a wrong name moves nothing and a second operator repeating a name that has already been used is refused.
+The run keeps its cursor, so it continues rather than starting over.
+A run recorded before this release has no worker name; omit `expectedWorker` for it, and confirm it is safe by scaling the API to zero first.
+
+### Reviewing a quarantined value
+
+A tag that could not be migrated is quarantined rather than dropped, recorded by name, reason, byte length and digest, never by value.
+
+```bash
+curl -u <admin> \
+  "https://<cluster>/hopsworks-api/api/admin/dataset-tags/quarantine?limit=100"
+```
+
+Waiving one authorises deleting that value, so it is granted against the digest you read:
+
+```bash
+curl -X PUT -u <admin> \
+  "https://<cluster>/hopsworks-api/api/admin/dataset-tags/quarantine/<id>/waive?waived=true&expectedDigest=<digest>"
+```
+
+If a later pass replaced the payload, the digest no longer matches and the request is refused with HTTP 409 so you can read the new value before deciding.
+Pass `waived=false` to clear a waiver, which needs no digest.

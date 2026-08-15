@@ -20,7 +20,7 @@ Use it when a schema is being replaced and you want existing owners to migrate o
 | Operation on a deprecated schema | Allowed |
 | --- | --- |
 | Read the schema, list schemas, read attached values | Yes |
-| Attach it to an artifact that does not have it | No, rejected with HTTP 400 and error code 370011 |
+| Attach it to an artifact that does not have it | No, rejected with HTTP 409 and error code 370011 |
 | Update the value already attached to an artifact | Yes, so a team can correct data while migrating off |
 | Detach it from an artifact | Yes |
 | Register it as a mandatory tag | No, because a mandatory tag that nobody may attach cannot be satisfied |
