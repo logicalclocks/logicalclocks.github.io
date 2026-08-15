@@ -3,7 +3,7 @@
 ## Introduction
 
 A keyword is a single user-defined word attached to a feature group, feature view or training dataset.
-Keywords are free text with no schema behind them, which makes them the lighter alternative to [tags](tags.md): use a keyword to make an artifact easier to find, and a tag when the metadata has to be structured and validated.
+Keywords are free text with no schema behind them, which makes them the lighter alternative to [tags][tags-guide]: use a keyword to make an artifact easier to find, and a tag when the metadata has to be structured and validated.
 
 Keywords are indexed for free-text search alongside names, descriptions and tags.
 They can also be used as a filter in the search API.
@@ -91,4 +91,4 @@ The same three commands exist for feature views (`hops fv`) and training dataset
 !!! warning "`--value` on the keyword commands is being removed"
     `--value` used to make `hops fg add-keyword` write a tag rather than a keyword.
     It is now rejected with a message naming `hops fg add-tag` as the replacement, and it is removed in the following release.
-    Attach a tag with the tag commands, described in the [Tags](tags.md) guide.
+    Attach a tag with the tag commands, described in the [Tags][tags-guide] guide.

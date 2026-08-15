@@ -1,4 +1,4 @@
-# Tags
+# Tags { #tags-guide }
 
 ## Introduction
 
@@ -21,7 +21,7 @@ This allows tags to be consistent no matter the project or the team generating t
 !!! warning "Schema definitions cannot be edited"
     The JSON schema of a tag schema cannot be changed after it is created, because the values already attached were validated against the original definition.
     A schema can be deprecated so that it accepts no new attachments, and it can be deleted once nothing references it.
-    Both are administrator actions and are described in the [Tag schema lifecycle](tag_schema_lifecycle.md) guide.
+    Both are administrator actions and are described in the [Tag schema lifecycle][tag-schema-lifecycle] guide.
 
 ## Step 1: Define a tag schema
 

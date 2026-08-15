@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A tag schema is defined once and then attached to artifacts across every project on the cluster, as described in the [Tags](tags.md) guide.
+A tag schema is defined once and then attached to artifacts across every project on the cluster, as described in the [Tags][tags-guide] guide.
 This guide covers what an administrator can do with a schema afterwards: retire it so that nothing new uses it, and remove it once nothing does.
 
 The JSON definition of a schema cannot be changed after it is created.
@@ -27,7 +27,7 @@ Use it when a schema is being replaced and you want existing owners to migrate o
 | Delete the schema | Yes, under the rules below |
 | Restore it | Yes |
 
-A schema that is currently registered as a [mandatory tag](mandatory_tags.md) cannot be deprecated.
+A schema that is currently registered as a [mandatory tag][mandatory-tags] cannot be deprecated.
 The request is rejected with HTTP 409 and error code 370012.
 Remove the mandatory registrations first, then deprecate.
 

@@ -3,7 +3,7 @@
 ## Introduction
 
 Mandatory tags let a Hopsworks administrator require that specific tag schemas are populated on artifacts.
-They build on top of [tags](tags.md) and are used to enforce governance rules, such as requiring every model to declare a data owner.
+They build on top of [tags][tags-guide] and are used to enforce governance rules, such as requiring every model to declare a data owner.
 
 A mandatory tag is a tag schema that has been marked as required for one or more artifact types.
 The supported artifact types are feature groups, feature views, training datasets, models, deployments and datasets.
@@ -11,7 +11,7 @@ The supported artifact types are feature groups, feature views, training dataset
 ## Prerequisites
 
 A mandatory tag references an existing tag schema.
-Define the tag schema first, as described in the [Tags](tags.md) guide, before marking it mandatory.
+Define the tag schema first, as described in the [Tags][tags-guide] guide, before marking it mandatory.
 
 Only administrators can configure mandatory tags.
 Attaching the tag values afterwards is done by any project member with write access to the artifact.
@@ -34,7 +34,7 @@ For each mandatory tag you select the artifact types it applies to.
 A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, models, deployments and datasets.
 For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving the others unaffected.
 
-A [deprecated](tag_schema_lifecycle.md) schema cannot be registered as mandatory, because nobody is allowed to attach it.
+A [deprecated][tag-schema-lifecycle] schema cannot be registered as mandatory, because nobody is allowed to attach it.
 Conversely, a schema that is registered as mandatory cannot be deprecated until the registrations are removed.
 
 ## Enforcement per artifact type
