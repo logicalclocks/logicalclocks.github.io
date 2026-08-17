@@ -136,20 +136,20 @@ When the configuration is correct, the test confirms that the catalog connects.
 
 ### Availability After Creation
 
-A newly created catalog has the status Pending sync, meaning it is saved but not yet loaded by the running Query Engine.
-It becomes queryable only after an administrator syncs it and restarts Trino, because Trino reads catalogs only at startup.
+A newly created catalog has the status Pending approval, meaning it is saved but not yet loaded by the running Query Engine.
+It becomes queryable only after an administrator approves it and restarts Trino, because Trino reads catalogs only at startup.
 Until then the catalog is listed with its pending status and does not appear as a target in the SQL runner.
 
 Administrators are not notified when you create a catalog, and you are not notified when they apply it.
-There is no service level on this step, so contact your administrator if a catalog has been pending longer than you expect, and watch the status on this page to see when it becomes Synced.
+There is no service level on this step, so contact your administrator if a catalog has been pending longer than you expect, and watch the status on this page to see when it becomes Approved.
 
 Deleting a catalog follows the same path in reverse.
-The catalog is marked for removal immediately and disappears from your Catalogs tab, an administrator's next sync removes it from the Query Engine's configuration, and it stops being queryable at the next restart, because a running Trino keeps the catalogs it started with.
+The catalog is marked for removal immediately and disappears from your Catalogs tab, an administrator's next approval removes it from the Query Engine's configuration, and it stops being queryable at the next restart, because a running Trino keeps the catalogs it started with.
 A catalog you have deleted can therefore still answer queries for a while.
 
 <figure>
-  <img src="../../../../assets/images/guides/trino/catalog-pending-sync.png" alt="Catalog pending sync" />
-  <figcaption>A created catalog waits in Pending sync until an administrator applies it</figcaption>
+  <img src="../../../../assets/images/guides/trino/catalog-pending-approval.png" alt="Catalog pending approval" />
+  <figcaption>A created catalog waits in Pending approval until an administrator approves it</figcaption>
 </figure>
 
 ### When a Catalog Fails to Load
@@ -158,7 +158,7 @@ A catalog can be valid to save and still be rejected by the Query Engine, for ex
 Trino reads catalogs only at startup and refuses to start if it cannot load one, so such a catalog is removed from the engine automatically and marked Failed to keep the Query Engine available for everyone.
 
 The status shows the error the Query Engine reported, which says what to correct.
-Edit the catalog to fix the definition: it returns to Pending sync and follows the normal flow again.
+Edit the catalog to fix the definition: it returns to Pending approval and follows the normal flow again.
 Use "Test connection" before saving to catch most of these earlier.
 
 <figure>

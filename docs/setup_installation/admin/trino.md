@@ -109,9 +109,9 @@ The restart interrupts queries running anywhere on the cluster, so check the rep
 
 A connector's credentials end up in the places below. Anyone who can read those places can read the credentials, so plan access to them accordingly.
 
-- A `${HOPSWORKS_SECRET:<name>}` reference is stored verbatim in the `trino_catalog` database row and is resolved to its value only at sync time. The database row never holds the value.
+- A `${HOPSWORKS_SECRET:<name>}` reference is stored verbatim in the `trino_catalog` database row and is resolved to its value only at approval time. The database row never holds the value.
 - A literal value typed straight into the properties editor is stored as-is in the `trino_catalog` database row, in cleartext, and is captured by database backups. Use a secret reference for any credential you do not want in the database.
-- Either way, the synced file holds the resolved plaintext, because Trino reads the credential from the catalog file itself.
+- Either way, the written file holds the resolved plaintext, because Trino reads the credential from the catalog file itself.
   That file lives in a Kubernetes Secret rather than a ConfigMap, so it is covered by the RBAC that applies to Secrets in the Hopsworks namespace and by etcd encryption-at-rest on clusters that enable it.
 
 <figure>
@@ -166,7 +166,7 @@ Trino keeps recent query detail in the coordinator's memory, so after a restart 
   <figcaption>The restart confirmation reports the running queries the restart will interrupt</figcaption>
 </figure>
 
-A restart is refused while another sync or restart is already running, so concurrent actions by different administrators cannot collide or trigger redundant restarts.
+A restart is refused while another approval or restart is already running, so concurrent actions by different administrators cannot collide or trigger redundant restarts.
 If nothing is waiting to load or unload, the restart is skipped and reported as such rather than interrupting queries for no reason.
 
 ### Recovering a catalog Trino cannot load
@@ -192,7 +192,7 @@ Only user-created catalogs are removed this way.
 A default catalog that fails to load is left in place, because that is a cluster configuration problem rather than something an administrator should resolve by deleting data.
 
 A removed catalog keeps its row, so its owner can see what happened on the project's Catalogs page along with the error Trino reported.
-Editing the definition returns it to Pending sync and it re-enters the normal flow.
+Editing the definition returns it to Pending approval and it re-enters the normal flow.
 
 Failed catalogs are not listed under pending, because they no longer block anything and no administrator action can fix them.
 If Hopsworks cannot attribute the failure to a user catalog, it reports the connection error instead of removing anything, and the coordinator log is the place to look.
@@ -215,11 +215,11 @@ The consequence is that the scheduled pass does not notice a file whose name is 
 
 Two things neither form does.
 Neither restarts Trino, so a restored catalog is in the mount but not loaded until the next restart, like any other catalog change.
-Neither touches a catalog that is pending sync, because that catalog's stored definition is the change an administrator has not applied yet, and applying it here would bypass that decision.
-Those catalogs are reported as still needing a sync.
+Neither touches a catalog that is pending approval, because that catalog's stored definition is the change an administrator has not approved yet, and applying it here would bypass that decision.
+Those catalogs are reported as still needing approval.
 
 A catalog whose `${HOPSWORKS_SECRET:<name>}` reference no longer resolves cannot be rebuilt, since the file Trino reads has to hold the resolved value.
-The repair reports it, leaves any file it already has in place, because that copy resolved when it was synced and still works, and carries on with every other catalog.
+The repair reports it, leaves any file it already has in place, because that copy resolved when it was approved and still works, and carries on with every other catalog.
 Its owner has to repoint the reference at an existing secret.
 
 ## Configuration
@@ -256,7 +256,7 @@ These settings control the availability and default behavior of the Trino query 
 ### Test coordinator resource cost
 
 `trino_test_coordinator_enabled` is on by default, and enabling it runs **an additional single-node Trino coordinator pod** for the lifetime of the cluster.
-It exists only to connection-test user catalogs before they are synced, so on a small or cost-sensitive cluster it is reasonable to turn it off.
+It exists only to connection-test user catalogs before they are approved, so on a small or cost-sensitive cluster it is reasonable to turn it off.
 When it is off, "Test connection" reports that testing is unavailable and every other part of the catalog workflow is unaffected.
 
 ### Supported connectors
@@ -275,7 +275,7 @@ Removing a connector from the list does not affect catalogs already created on i
 
 User-created catalogs are stored across a fixed number of Kubernetes Secrets, set by the Helm value `global._hopsworks.trino.userCatalogShards` (default: `2`).
 Each Secret holds up to roughly 800 KiB of catalog definitions, so the default gives about 1.6 MiB in total, which is a large number of catalogs.
-When they are full, a sync fails with an error naming the limit.
+When they are full, an approval fails with an error naming the limit.
 
 Raise the value in your Helm values to add capacity.
 The chart mounts one source per shard and refuses to render if the two disagree, so a mismatch fails the upgrade rather than silently dropping catalogs.
@@ -283,7 +283,7 @@ The chart mounts one source per shard and refuses to render if the two disagree,
 Two per-catalog limits keep one project from consuming that shared budget.
 `trino_catalog_max_per_project` caps how many catalogs a project may create, and `trino_catalog_max_bytes` caps how large a single definition may be.
 The size is measured after `${HOPSWORKS_SECRET:}` references are resolved, because the resolved form is what occupies a Secret: a stored definition is bounded by its database column, but a reference costs a couple of dozen characters and expands to a secret of up to about 10 KiB, and the same secret may be referenced repeatedly, so a row that fits its column can resolve to megabytes.
-The check therefore runs both when a catalog is created, so its owner hears about it, and again at sync, because a secret can be rotated to a larger value in between.
+The check therefore runs both when a catalog is created, so its owner hears about it, and again at approval, because a secret can be rotated to a larger value in between.
 
 Both defaults are generous against real catalogs, which are a few hundred bytes; the largest legitimate ones inline a service account JSON or a certificate pair and stay a few KiB.
 Raise them for a project with an unusual number of external sources, and remember that the product of the two bounds a single project's share of the shard budget.
