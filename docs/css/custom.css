@@ -247,10 +247,10 @@ a.autorefs-external::after {
   --viz-edge-stroke: color-mix(in srgb, var(--viz-ink) 34%, transparent);
   --viz-font: var(--hops-font-mono);
   --viz-tracking: 0.03em;
-  --viz-type-title: 12px;
-  --viz-type-header: 10px;
-  --viz-type-label: 9px;
-  --viz-type-meta: 8px;
+  --viz-type-title: 13px;
+  --viz-type-header: 11px;
+  --viz-type-label: 10px;
+  --viz-type-meta: 9px;
   --viz-tone-accent: var(--hops-accent);
   --viz-tone-write: var(--hops-accent);
   --viz-tone-read: #2268ff;
@@ -282,6 +282,16 @@ a.autorefs-external::after {
 .hops-viz svg {
   pointer-events: none;
   user-select: none;
+}
+/* Readability floor: below ~40rem rendered width the viz type becomes
+   illegible, so the figure stops shrinking and pans horizontally instead.
+   A diagram is for reading, not a token visual. */
+.md-typeset .hops-viz {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.md-typeset .hops-viz svg {
+  min-width: 40rem;
 }
 .hops-viz text {
   font-family: var(--viz-font);

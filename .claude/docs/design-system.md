@@ -101,6 +101,27 @@ Authoring rules:
 - Ids inside a scene are page-global: prefix them if a page ever hosts two animated figures.
 - Animated figures are not navigational: no `<a>` links inside (the stage is `pointer-events: none`).
 
+### Where diagrams live
+
+Diagram figures are files, not inline blobs, so they can be edited, moved, and reused independently of prose:
+
+- One figure per file under `diagrams/` at the repo root, mirroring the page path: `diagrams/<page-path-without-.md>/<name>.html` (e.g. `diagrams/concepts/fs/feature_group/streaming_feature_pipelines/freshness.html`).
+- The file holds the complete fragment: `<figure class="hops-diagram [hops-viz]">`, the SVG, and the scene `<script>` if animated.
+- Pages pull it in with a snippet include on its own line: `--8<-- "concepts/.../name.html"` (pymdownx.snippets, `base_path: [diagrams]`, `check_paths: true` so a broken include fails the build; `watch: [diagrams]` keeps live reload working).
+- Keep viewBoxes around 1000 wide; readability is enforced globally, do not fight it per diagram.
+
+### Readability floor (mobile and narrow layouts)
+
+A diagram is for reading, not a token visual.
+The kit enforces a floor globally: `.hops-viz` figures scroll horizontally instead of shrinking below 40rem rendered width, so labels never fall under legibility.
+Do not shrink type below the `--viz-type-*` scale to make something fit; restructure the diagram (stack panels vertically, split the scene) instead.
+
+### The refresh worklist
+
+`diagram-inventory.md` in this folder tracks every visual in the docs (148 pages, ~494 visuals at generation time).
+Work page by page; per visual decide: animated scene (mechanism), static kit SVG (structure), or `screenshot, keep`.
+Tick the inventory as you go; it is the single source of progress.
+
 ## Theme features
 
 Set in `mkdocs.yml` under `theme.features`. Current set and why:

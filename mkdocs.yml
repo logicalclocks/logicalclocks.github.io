@@ -10,6 +10,10 @@ repo_name: logicalclocks/hopsworks-api
 
 strict: false
 
+# Diagram fragments live outside docs/ (snippet includes); rebuild on edit.
+watch:
+  - diagrams
+
 nav:
   - Home: index.md
   - Getting Started ↗: https://run.hopsworks.ai
@@ -442,6 +446,9 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: [diagrams]
+      check_paths: true
   - footnotes
   - pymdownx.tabbed:
       alternate_style: true
