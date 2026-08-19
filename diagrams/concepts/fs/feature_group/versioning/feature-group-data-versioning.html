@@ -1,36 +1,80 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 290" role="img" aria-label="Data versioning: each insert into feature group order_prices version 1 appends a new commit and timestamp row, building the history you can time travel through." xmlns="http://www.w3.org/2000/svg">
-  <defs><marker id="dv-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 780 290" role="img" aria-label="Animated diagram of feature group data versioning. Each insert into order_prices version 1 travels from the client and appends a new commit row with its timestamp and row count. After two inserts land, an as_of query stamps a cutoff under an earlier commit: later commits dim out as the future, and the table reads back as it was at that commit, which is time travel." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="dv-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
 
-  <rect class="d-box" x="40" y="80" width="430" height="140" rx="8"/>
-  <text class="d-t" x="255" y="112" text-anchor="middle">Insert into the same version</text>
-  <text class="d-t d-sub" x="255" y="148" text-anchor="middle">fs.get_feature_group(order_prices, 1)</text>
-  <text class="d-t d-sub" x="255" y="176" text-anchor="middle">fg.insert(new_orders_df)</text>
+  <path class="viz-edge" d="M194 150 H412" marker-end="url(#dv-arrow)"/>
 
-  <rect class="d-box-own" x="600" y="30" width="380" height="232" rx="10"/>
-  <text class="d-t" x="790" y="58" text-anchor="middle">order_prices (v1)</text>
+  <g class="viz-node-group">
+    <rect class="viz-node" x="24" y="118" width="170" height="64" rx="8"/>
+    <text class="viz-node-title" x="109" y="144" text-anchor="middle">CLIENT</text>
+    <text class="viz-node-subtitle" x="109" y="164" text-anchor="middle">fg.insert(df)</text>
+  </g>
 
-  <rect class="d-box" x="612" y="72" width="176" height="40" rx="6"/>
-  <text class="d-t" x="700" y="97" text-anchor="middle">Commit₁</text>
-  <rect class="d-box" x="796" y="72" width="176" height="40" rx="6"/>
-  <text class="d-t" x="884" y="97" text-anchor="middle">Timestamp₁</text>
+  <g id="dv-asof" class="viz-badge viz-fade" data-tone="read" style="opacity:0">
+    <rect x="560" y="6" width="196" height="24" rx="6"/>
+    <text x="658" y="18" text-anchor="middle">as_of Mar 11 12:00</text>
+  </g>
 
-  <rect class="d-box" x="612" y="118" width="176" height="40" rx="6"/>
-  <text class="d-t" x="700" y="143" text-anchor="middle">Commit₂</text>
-  <rect class="d-box" x="796" y="118" width="176" height="40" rx="6"/>
-  <text class="d-t" x="884" y="143" text-anchor="middle">Timestamp₂</text>
+  <rect class="viz-kv-frame" x="420" y="36" width="336" height="216" rx="6"/>
+  <rect class="viz-kv-header" x="420" y="36" width="336" height="26"/>
+  <text class="viz-kv-title" x="432" y="49">order_prices · v1</text>
+  <text class="viz-meta" x="744" y="49" text-anchor="end">commit log</text>
 
-  <rect class="d-box" x="612" y="164" width="176" height="40" rx="6"/>
-  <text class="d-t" x="700" y="189" text-anchor="middle">…</text>
-  <rect class="d-box" x="796" y="164" width="176" height="40" rx="6"/>
-  <text class="d-t" x="884" y="189" text-anchor="middle">…</text>
+  <g id="dv-c1" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="428" y="70" width="320" height="26" rx="3"/>
+    <text class="viz-kv-key" x="436" y="87">commit 01 · Mar 10 08:00</text>
+    <text class="viz-kv-val" x="740" y="87" text-anchor="end">+980 rows</text>
+  </g>
+  <g id="dv-c2" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="428" y="100" width="320" height="26" rx="3"/>
+    <text class="viz-kv-key" x="436" y="117">commit 02 · Mar 11 08:00</text>
+    <text class="viz-kv-val" x="740" y="117" text-anchor="end">+1 204 rows</text>
+  </g>
+  <path id="dv-cut" class="viz-edge viz-fade" data-variant="lane" data-tone="read" d="M428 130 H748" style="opacity:0"/>
+  <g id="dv-c3" class="viz-kv-entry viz-fade" data-tone="write" style="opacity:0">
+    <rect class="viz-kv-cell" x="428" y="136" width="320" height="26" rx="3"/>
+    <text class="viz-kv-key" x="436" y="153">commit 03 · Mar 12 08:00</text>
+    <text class="viz-kv-val" x="740" y="153" text-anchor="end">+1 118 rows</text>
+  </g>
+  <g id="dv-c4" class="viz-kv-entry viz-fade" data-tone="write" style="opacity:0">
+    <rect class="viz-kv-cell" x="428" y="166" width="320" height="26" rx="3"/>
+    <text class="viz-kv-key" x="436" y="183">commit 04 · Mar 13 08:00</text>
+    <text class="viz-kv-val" x="740" y="183" text-anchor="end">+1 371 rows</text>
+  </g>
+  <text class="viz-meta" x="432" y="216">each insert appends a commit</text>
+  <text id="dv-m2" class="viz-meta viz-fade" data-tone="read" x="432" y="238" style="opacity:0">as-of reads the table as it was at that commit</text>
 
-  <rect class="d-box" x="612" y="210" width="176" height="40" rx="6"/>
-  <text class="d-t" x="700" y="235" text-anchor="middle">Commitₙ</text>
-  <rect class="d-box" x="796" y="210" width="176" height="40" rx="6"/>
-  <text class="d-t" x="884" y="235" text-anchor="middle">Timestampₙ</text>
-
-  <path class="d-flow" d="M470 150 H600" marker-end="url(#dv-arrow)"/>
-  <text class="d-t d-sub" x="535" y="140" text-anchor="middle">each insert appends a commit</text>
+  <g transform="translate(210 141)">
+    <g id="dv-p1" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="76" height="18" rx="3"/>
+      <text x="38" y="9" text-anchor="middle">insert df</text>
+    </g>
+  </g>
+  <g transform="translate(210 167)">
+    <g id="dv-p2" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="76" height="18" rx="3"/>
+      <text x="38" y="9" text-anchor="middle">insert df</text>
+    </g>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 800,
+  "loopDelay": 2600,
+  "steps": [
+    { "#dv-p1": {"opacity": 1} },
+    { "#dv-p1": {"x": 175, "y": -7}, "$ms": 700 },
+    { "#dv-p1": {"opacity": 0}, "#dv-c3": {"opacity": 1, "state": "active"}, "$ms": 800 },
+    { "#dv-c3": {"state": "visited"}, "#dv-p2": {"opacity": 1}, "$ms": 600 },
+    { "#dv-p2": {"x": 175, "y": -3}, "$ms": 700 },
+    { "#dv-p2": {"opacity": 0}, "#dv-c4": {"opacity": 1, "state": "active"}, "$ms": 800 },
+    { "#dv-c4": {"state": "visited"}, "$ms": 500 },
+    { "#dv-asof": {"opacity": 1}, "#dv-cut": {"opacity": 1}, "#dv-c3": {"opacity": 0.3}, "#dv-c4": {"opacity": 0.3}, "#dv-c2": {"tone": "read", "state": "active"}, "#dv-c1": {"tone": "read", "state": "visited"}, "#dv-m2": {"opacity": 1}, "$ms": 2600 }
+  ]
+}
+</script>
 </figure>
