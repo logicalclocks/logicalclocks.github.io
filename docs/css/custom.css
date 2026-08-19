@@ -297,6 +297,10 @@ a.autorefs-external::after {
 }
 .md-typeset .hops-viz svg {
   min-width: 40rem;
+  /* And a ceiling: a compact figure is not stretched to fill the column,
+     wide must be earned by the content, not granted by the layout. */
+  max-width: 52rem;
+  margin-inline: auto;
 }
 .hops-viz text {
   font-family: var(--viz-font);

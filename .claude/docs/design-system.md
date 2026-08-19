@@ -108,7 +108,7 @@ Diagram figures are files, not inline blobs, so they can be edited, moved, and r
 - One figure per file under `diagrams/` at the repo root, mirroring the page path: `diagrams/<page-path-without-.md>/<name>.html` (e.g. `diagrams/concepts/fs/feature_group/streaming_feature_pipelines/freshness.html`).
 - The file holds the complete fragment: `<figure class="hops-diagram [hops-viz]">`, the SVG, and the scene `<script>` if animated.
 - Pages pull it in with a snippet include on its own line: `--8<-- "concepts/.../name.html"` (pymdownx.snippets, `base_path: [diagrams]`, `check_paths: true` so a broken include fails the build; `watch: [diagrams]` keeps live reload working).
-- Keep viewBoxes around 1000 wide; readability is enforced globally, do not fight it per diagram.
+- Width is earned, not default: draw the viewBox as narrow as the content needs (720 to 800 for most scenes) and go to 1000+ only when the mechanism genuinely needs the width. The kit renders figures between 40rem and 52rem, centered; do not fight either bound per diagram.
 
 ### Readability floor (mobile and narrow layouts)
 
