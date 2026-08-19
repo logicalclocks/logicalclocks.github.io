@@ -1,58 +1,109 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 630" role="img" aria-label="The same on-demand Python function computes the zipcode feature from longitude and latitude in both the feature pipeline and the online inference pipeline, where it is merged with precomputed features from the feature store." xmlns="http://www.w3.org/2000/svg">
-  <defs><marker id="odf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 800 400" role="img" aria-label="Animated diagram of an on-demand feature. One Python UDF, zipcode of longitude and latitude, sits between two pipelines. In the feature pipeline, historical rows pass through the UDF and the computed zipcode lands in the feature store. At request time, the online inference pipeline sends the request longitude and latitude through the same UDF, and the fresh zipcode is merged into the feature vector together with precomputed features read from the store. Same function in both places, so there is no skew." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="od-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
 
-  <text class="d-t" x="20" y="34">On-demand feature function</text>
-  <rect class="d-box" x="20" y="42" width="960" height="92" rx="8"/>
-  <text class="d-sub" x="36" y="68" font-size="11">def coord2zipcode(x):</text>
-  <text class="d-sub" x="36" y="92" font-size="11">    geolocator = geopy.Nominatim(user_agent="house_profile_1")</text>
-  <text class="d-sub" x="36" y="116" font-size="11">    return geolocator.reverse("{}, {}".format(x['latitude'], x['longitude']))</text>
+  <text class="viz-label" x="24" y="30">Feature pipeline · backfill</text>
+  <text class="viz-label" x="24" y="288">Online inference · request time</text>
 
-  <path class="d-flow" d="M90 440 V136" marker-end="url(#odf-arrow)"/>
-  <path class="d-flow" d="M205 136 V440" marker-end="url(#odf-arrow)"/>
-  <path class="d-flow" d="M745 440 V136" marker-end="url(#odf-arrow)"/>
-  <path class="d-flow" d="M835 136 V440" marker-end="url(#odf-arrow)"/>
+  <path class="viz-edge" d="M184 76 C 260 76 300 120 342 166" marker-end="url(#od-arrow)"/>
+  <path class="viz-edge" d="M500 176 C 540 150 560 110 592 86" marker-end="url(#od-arrow)"/>
+  <path class="viz-edge" d="M184 328 C 260 328 300 260 342 226" marker-end="url(#od-arrow)"/>
+  <path class="viz-edge" d="M500 220 C 540 246 560 280 592 306" marker-end="url(#od-arrow)"/>
+  <path class="viz-edge" d="M688 140 V272" marker-end="url(#od-arrow)"/>
 
-  <rect class="d-box" x="15" y="300" width="150" height="30" rx="15"/>
-  <text class="d-sub" x="90" y="320" text-anchor="middle" font-size="11">X['longitude', 'latitude']</text>
-  <rect class="d-box" x="175" y="300" width="60" height="30" rx="15"/>
-  <text class="d-sub" x="205" y="320" text-anchor="middle" font-size="11">zipcode</text>
-  <rect class="d-box" x="670" y="300" width="150" height="30" rx="15"/>
-  <text class="d-sub" x="745" y="320" text-anchor="middle" font-size="11">X['longitude', 'latitude']</text>
-  <rect class="d-box" x="800" y="300" width="70" height="30" rx="15"/>
-  <text class="d-sub" x="835" y="320" text-anchor="middle" font-size="11">zipcode</text>
+  <g class="viz-node-group">
+    <rect class="viz-node" x="24" y="48" width="160" height="56" rx="8"/>
+    <text class="viz-node-title" x="104" y="70" text-anchor="middle">HISTORICAL DATA</text>
+    <text class="viz-node-subtitle" x="104" y="90" text-anchor="middle">lon · lat per row</text>
+  </g>
+  <g class="viz-node-group">
+    <rect class="viz-node" x="24" y="300" width="160" height="56" rx="8"/>
+    <text class="viz-node-title" x="104" y="322" text-anchor="middle">REQUEST</text>
+    <text class="viz-node-subtitle" x="104" y="342" text-anchor="middle">lon 59.33 · lat 18.06</text>
+  </g>
 
-  <rect class="d-box" x="20" y="440" width="200" height="64" rx="8"/>
-  <text class="d-t" x="120" y="477" text-anchor="middle">feature_pipeline.py</text>
-  <rect class="d-box-ext" x="60" y="560" width="110" height="44" rx="8"/>
-  <text class="d-sub" x="115" y="587" text-anchor="middle" font-size="11">housing.csv</text>
-  <path class="d-flow" d="M115 560 V508" marker-end="url(#odf-arrow)"/>
+  <g id="od-udf" class="viz-node-group" data-tone="accent">
+    <rect class="viz-node" x="330" y="166" width="170" height="64" rx="8"/>
+    <text class="viz-node-title" x="415" y="192" text-anchor="middle">zipcode()</text>
+    <text class="viz-node-subtitle" x="415" y="212" text-anchor="middle">python udf · v1</text>
+  </g>
+  <text id="od-ok" class="viz-meta viz-fade" data-tone="accent" x="415" y="258" text-anchor="middle" style="opacity:0">same function at backfill and at request time</text>
 
-  <rect class="d-panel-fs" x="250" y="400" width="250" height="200" rx="12"/>
-  <text class="d-cap d-cap-fs" x="320" y="434" text-anchor="middle">Feature Group</text>
-  <text class="d-cap d-cap-fs" x="442" y="434" text-anchor="middle">Feature View</text>
-  <rect class="d-box-own" x="270" y="450" width="100" height="44" rx="8"/>
-  <text class="d-t" x="320" y="477" text-anchor="middle">house_arch</text>
-  <rect class="d-box-own" x="270" y="510" width="100" height="44" rx="8"/>
-  <text class="d-t" x="320" y="537" text-anchor="middle">zipcodes</text>
-  <rect class="d-box-own" x="400" y="470" width="85" height="74" rx="8"/>
-  <text class="d-t" x="442" y="511" text-anchor="middle">house_profile</text>
+  <rect class="viz-kv-frame" x="600" y="36" width="176" height="104" rx="6"/>
+  <rect class="viz-kv-header" x="600" y="36" width="176" height="26"/>
+  <text class="viz-kv-title" x="608" y="49">Feature store</text>
+  <g id="od-srow" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="606" y="70" width="164" height="26" rx="3"/>
+    <text class="viz-kv-key" x="612" y="87">zipcode</text>
+    <text id="od-sv" class="viz-kv-val" x="762" y="87" text-anchor="end">–</text>
+  </g>
+  <text class="viz-meta" x="608" y="124">precomputed features</text>
 
-  <path class="d-flow" d="M220 472 H266" marker-end="url(#odf-arrow)"/>
-  <path class="d-flow" d="M220 496 H243 V532 H266" marker-end="url(#odf-arrow)"/>
-  <path class="d-flow" d="M370 472 H385 V495 H396" marker-end="url(#odf-arrow)"/>
-  <path class="d-flow" d="M370 532 H385 V520 H396" marker-end="url(#odf-arrow)"/>
+  <rect class="viz-kv-frame" x="600" y="280" width="176" height="106" rx="6"/>
+  <rect class="viz-kv-header" x="600" y="280" width="176" height="26"/>
+  <text class="viz-kv-title" x="608" y="293">Feature vector</text>
+  <g id="od-vrow1" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="606" y="314" width="164" height="26" rx="3"/>
+    <text class="viz-kv-key" x="612" y="331">zipcode</text>
+    <text id="od-vv1" class="viz-kv-val" x="762" y="331" text-anchor="end">–</text>
+  </g>
+  <g id="od-vrow2" class="viz-kv-entry" data-tone="read">
+    <rect class="viz-kv-cell" x="606" y="344" width="164" height="26" rx="3"/>
+    <text class="viz-kv-key" x="612" y="361">avg_price_zip</text>
+    <text id="od-vv2" class="viz-kv-val" x="762" y="361" text-anchor="end">–</text>
+  </g>
 
-  <rect class="d-box" x="720" y="440" width="130" height="64" rx="8"/>
-  <text class="d-t" x="785" y="477" text-anchor="middle">predictor.py</text>
-  <rect class="d-box-ext" x="870" y="440" width="120" height="64" rx="8"/>
-  <text class="d-t" x="930" y="468" text-anchor="middle">Online</text>
-  <text class="d-t" x="930" y="490" text-anchor="middle">Application</text>
-  <path class="d-flow" d="M870 472 H853" marker-end="url(#odf-arrow)"/>
-
-  <path class="d-flow" d="M720 485 H489" marker-end="url(#odf-arrow)"/>
-  <text class="d-sub" x="595" y="470" text-anchor="middle" font-size="11">get_feature_vector(.., passed_features={"zipcode": zipcode})</text>
-  <text class="d-sub" x="595" y="502" text-anchor="middle" font-size="11">merge on-demand 'zipcode' feature with</text>
-  <text class="d-sub" x="595" y="518" text-anchor="middle" font-size="11">precomputed features from feature store</text>
+  <g transform="translate(190 67)">
+    <g id="od-p1" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="58" height="18" rx="3"/>
+      <text x="29" y="9" text-anchor="middle">lon·lat</text>
+    </g>
+  </g>
+  <g transform="translate(495 181)">
+    <g id="od-z1" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="58" height="18" rx="3"/>
+      <text x="29" y="9" text-anchor="middle">11 428</text>
+    </g>
+  </g>
+  <g transform="translate(190 319)">
+    <g id="od-p2" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="58" height="18" rx="3"/>
+      <text x="29" y="9" text-anchor="middle">lon·lat</text>
+    </g>
+  </g>
+  <g transform="translate(495 205)">
+    <g id="od-z2" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="58" height="18" rx="3"/>
+      <text x="29" y="9" text-anchor="middle">11 428</text>
+    </g>
+  </g>
+  <g transform="translate(634 150)">
+    <g id="od-pre" class="viz-packet" data-tone="read" style="opacity:0">
+      <rect width="108" height="18" rx="3"/>
+      <text x="54" y="9" text-anchor="middle">precomputed</text>
+    </g>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 750,
+  "loopDelay": 2400,
+  "steps": [
+    { "#od-p1": {"opacity": 1} },
+    { "#od-p1": {"x": 198, "y": 122}, "$ms": 650 },
+    { "#od-p1": {"opacity": 0}, "#od-udf": {"state": "active"}, "#od-z1": {"opacity": 1}, "$ms": 500 },
+    { "#od-z1": {"x": 115, "y": -107}, "$ms": 650 },
+    { "#od-z1": {"opacity": 0}, "#od-srow": {"state": "active"}, "#od-sv": {"text": "11 428"}, "#od-udf": {"state": null}, "$ms": 900 },
+    { "#od-srow": {"state": "visited"}, "#od-p2": {"opacity": 1}, "$ms": 500 },
+    { "#od-p2": {"x": 198, "y": -121}, "$ms": 650 },
+    { "#od-p2": {"opacity": 0}, "#od-udf": {"state": "active"}, "#od-z2": {"opacity": 1}, "#od-pre": {"opacity": 1}, "$ms": 500 },
+    { "#od-z2": {"x": 115, "y": 113}, "#od-pre": {"y": 198}, "$ms": 700 },
+    { "#od-z2": {"opacity": 0}, "#od-pre": {"opacity": 0}, "#od-vrow1": {"state": "active"}, "#od-vv1": {"text": "11 428"}, "#od-vrow2": {"state": "active"}, "#od-vv2": {"text": "4.2M"}, "#od-udf": {"state": null}, "#od-ok": {"opacity": 1}, "$ms": 2200 }
+  ]
+}
+</script>
 </figure>
