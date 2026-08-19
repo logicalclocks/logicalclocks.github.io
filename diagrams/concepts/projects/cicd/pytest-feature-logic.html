@@ -1,0 +1,35 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 300" role="img" aria-label="A pull request triggers Jenkins PyTest on the main branch to run unit and end-to-end tests, compute features from subsampled data, validate them, and write to the Hopsworks staging feature store." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="fpt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <rect class="d-panel-ext" x="250" y="40" width="530" height="230" rx="12"/>
+  <text class="d-cap d-cap-ext" x="515" y="32" text-anchor="middle">Main Branch</text>
+  <rect class="d-panel-fs" x="810" y="40" width="170" height="230" rx="12"/>
+  <text class="d-cap d-cap-fs" x="895" y="32" text-anchor="middle">Hopsworks</text>
+  <text class="d-sub" x="105" y="72" text-anchor="middle">Pull Request Trigger</text>
+  <rect class="d-box-ext" x="30" y="90" width="150" height="90" rx="8"/>
+  <text class="d-t" x="105" y="130" text-anchor="middle">Jenkins</text>
+  <text class="d-sub" x="105" y="150" text-anchor="middle">PyTest</text>
+  <rect class="d-box" x="300" y="95" width="130" height="42" rx="6"/>
+  <text class="d-t" x="365" y="121" text-anchor="middle">A.unit-test</text>
+  <rect class="d-box" x="300" y="153" width="130" height="42" rx="6"/>
+  <text class="d-t" x="365" y="179" text-anchor="middle">B.e2e-test</text>
+  <rect class="d-box" x="480" y="110" width="120" height="52" rx="6"/>
+  <text class="d-t" x="540" y="132" text-anchor="middle">Feature</text>
+  <text class="d-t" x="540" y="150" text-anchor="middle">engineering</text>
+  <rect class="d-box" x="630" y="110" width="120" height="52" rx="6"/>
+  <text class="d-t" x="690" y="132" text-anchor="middle">Data Validation</text>
+  <text class="d-t" x="690" y="150" text-anchor="middle">test</text>
+  <rect class="d-box" x="480" y="200" width="120" height="46" rx="6"/>
+  <text class="d-t" x="540" y="219" text-anchor="middle">Subsampled</text>
+  <text class="d-t" x="540" y="237" text-anchor="middle">Data</text>
+  <rect class="d-box-own" x="830" y="105" width="130" height="64" rx="8"/>
+  <text class="d-t" x="895" y="133" text-anchor="middle">Staging</text>
+  <text class="d-t" x="895" y="153" text-anchor="middle">Feature Store</text>
+  <path class="d-flow" d="M180 135 H250" marker-end="url(#fpt-arrow)"/>
+  <path class="d-flow" d="M430 116 C455 116 455 136 480 136" marker-end="url(#fpt-arrow)"/>
+  <path class="d-flow" d="M430 174 C455 174 455 136 480 136" marker-end="url(#fpt-arrow)"/>
+  <path class="d-flow" d="M540 162 V200"/>
+  <path class="d-flow" d="M600 136 H630" marker-end="url(#fpt-arrow)"/>
+  <path class="d-flow" d="M750 136 H830" marker-end="url(#fpt-arrow)"/>
+</svg>
+</figure>

@@ -1,0 +1,70 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 380" role="img" aria-label="Two feature groups, seller_delivery_time_monthly and seller_reviews_quarterly, join into a feature view whose columns inherit their feature types and transformation functions." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="fv-simple-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+
+  <text class="d-t" x="249" y="24" text-anchor="middle">seller_delivery_time_monthly_feature_group</text>
+  <rect class="d-box" x="40" y="38" width="418" height="120" rx="8"/>
+  <rect class="d-box-own" x="40" y="38" width="418" height="30" rx="8"/>
+  <path class="d-flow" d="M141 38 V158"/>
+  <path class="d-flow" d="M253 38 V158"/>
+  <path class="d-flow" d="M40 98 H458"/>
+  <path class="d-flow" d="M40 128 H458"/>
+  <text class="d-t" x="90" y="58" text-anchor="middle">seller_id</text>
+  <text class="d-t" x="197" y="58" text-anchor="middle">event_time</text>
+  <text class="d-t" x="356" y="58" text-anchor="middle">avg_deliver_time_hrs</text>
+  <text class="d-sub" x="90" y="87" text-anchor="middle" font-size="11">1112</text>
+  <text class="d-sub" x="197" y="87" text-anchor="middle" font-size="11">oct-22</text>
+  <text class="d-sub" x="356" y="87" text-anchor="middle" font-size="11">72</text>
+  <text class="d-sub" x="90" y="117" text-anchor="middle" font-size="11">1112</text>
+  <text class="d-sub" x="197" y="117" text-anchor="middle" font-size="11">nov-22</text>
+  <text class="d-sub" x="356" y="117" text-anchor="middle" font-size="11">104</text>
+  <text class="d-sub" x="90" y="147" text-anchor="middle" font-size="11">1112</text>
+  <text class="d-sub" x="197" y="147" text-anchor="middle" font-size="11">dec-22</text>
+  <text class="d-sub" x="356" y="147" text-anchor="middle" font-size="11">88</text>
+
+  <text class="d-t" x="749" y="24" text-anchor="middle">seller_reviews_quarterly_feature_group</text>
+  <rect class="d-box" x="540" y="38" width="418" height="90" rx="8"/>
+  <rect class="d-box-own" x="540" y="38" width="418" height="30" rx="8"/>
+  <path class="d-flow" d="M637 38 V128"/>
+  <path class="d-flow" d="M745 38 V128"/>
+  <path class="d-flow" d="M913 38 V128"/>
+  <path class="d-flow" d="M540 98 H958"/>
+  <text class="d-t" x="588" y="58" text-anchor="middle">seller_id</text>
+  <text class="d-t" x="691" y="58" text-anchor="middle">event_time</text>
+  <text class="d-t" x="829" y="58" text-anchor="middle">avg_review_score</text>
+  <text class="d-t" x="936" y="58" text-anchor="middle">...</text>
+  <text class="d-sub" x="588" y="87" text-anchor="middle" font-size="11">1112</text>
+  <text class="d-sub" x="691" y="87" text-anchor="middle" font-size="11">oct-22</text>
+  <text class="d-sub" x="829" y="87" text-anchor="middle" font-size="11">3.4</text>
+  <text class="d-sub" x="936" y="87" text-anchor="middle" font-size="11">...</text>
+  <text class="d-sub" x="588" y="117" text-anchor="middle" font-size="11">1112</text>
+  <text class="d-sub" x="691" y="117" text-anchor="middle" font-size="11">dec-22</text>
+  <text class="d-sub" x="829" y="117" text-anchor="middle" font-size="11">2.8</text>
+  <text class="d-sub" x="936" y="117" text-anchor="middle" font-size="11">...</text>
+
+  <path class="d-flow" d="M40 150 C 12 210, 16 316, 138 322" marker-end="url(#fv-simple-arrow)"/>
+  <path class="d-flow" d="M958 120 C 992 200, 986 316, 830 322" marker-end="url(#fv-simple-arrow)"/>
+
+  <text class="d-t" x="484" y="248" text-anchor="middle">seller_delivery_time_monthly_feature_view</text>
+  <rect class="d-box" x="140" y="260" width="688" height="102" rx="8"/>
+  <rect class="d-box-own" x="140" y="260" width="688" height="34" rx="8"/>
+  <rect class="d-box-own" x="554" y="294" width="176" height="68"/>
+  <path class="d-flow" d="M259 260 V362"/>
+  <path class="d-flow" d="M361 260 V362"/>
+  <path class="d-flow" d="M553 260 V362"/>
+  <path class="d-flow" d="M731 260 V362"/>
+  <path class="d-flow" d="M140 294 H828"/>
+  <path class="d-flow" d="M140 328 H828"/>
+  <text class="d-t" x="199" y="282" text-anchor="middle">seller_id</text>
+  <text class="d-t" x="310" y="282" text-anchor="middle">event_time</text>
+  <text class="d-t" x="457" y="282" text-anchor="middle">avg_deliver_time_hrs</text>
+  <text class="d-t" x="642" y="282" text-anchor="middle">avg_review_score</text>
+  <text class="d-t" x="780" y="282" text-anchor="middle">...</text>
+  <text class="d-sub" x="199" y="315" text-anchor="middle" font-size="11">[PRIMARY_KEY]</text>
+  <text class="d-sub" x="310" y="315" text-anchor="middle" font-size="11">[EVT_TIME]</text>
+  <text class="d-sub" x="457" y="315" text-anchor="middle" font-size="11">[LABEL]</text>
+  <text class="d-sub" x="642" y="315" text-anchor="middle" font-size="11">[NUMERICAL]</text>
+  <text class="d-sub" x="457" y="349" text-anchor="middle" font-size="11">&lt;&lt;label_encoder&gt;&gt;</text>
+  <text class="d-sub" x="642" y="349" text-anchor="middle" font-size="11">&lt;&lt;standard_scalar&gt;&gt;</text>
+</svg>
+</figure>

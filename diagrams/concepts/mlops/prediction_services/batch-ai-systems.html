@@ -1,0 +1,35 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 520" role="img" aria-label="A batch AI system where feature and training pipelines populate the feature store and model registry, a scheduled batch prediction pipeline reads batch data and writes predictions to an inference store consumed by reports and operational services." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="aps-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <rect class="d-box-own" x="40" y="40" width="180" height="56" rx="8"/>
+  <text class="d-t" x="130" y="73" text-anchor="middle">Models</text>
+  <rect class="d-box-own" x="305" y="36" width="160" height="60" rx="8"/>
+  <text class="d-t" x="385" y="71" text-anchor="middle">Feature Store</text>
+  <rect class="d-box-ext" x="630" y="36" width="140" height="52" rx="8"/>
+  <text class="d-t" x="700" y="67" text-anchor="middle">Reports</text>
+  <rect class="d-box-ext" x="800" y="36" width="170" height="52" rx="8"/>
+  <text class="d-t" x="885" y="67" text-anchor="middle">Operational Services</text>
+  <rect class="d-box" x="40" y="410" width="180" height="56" rx="8"/>
+  <text class="d-t" x="130" y="443" text-anchor="middle">Training Pipeline</text>
+  <rect class="d-box" x="305" y="410" width="160" height="56" rx="8"/>
+  <text class="d-t" x="385" y="443" text-anchor="middle">Feature Pipeline</text>
+  <rect class="d-box" x="590" y="340" width="200" height="56" rx="8"/>
+  <text class="d-t" x="690" y="373" text-anchor="middle">Batch Prediction Pipeline</text>
+  <rect class="d-box" x="850" y="340" width="130" height="56" rx="8"/>
+  <text class="d-t" x="915" y="365" text-anchor="middle">Database</text>
+  <text class="d-sub" x="915" y="381" text-anchor="middle">(Sink)</text>
+  <path class="d-flow" d="M385 410 V100" marker-end="url(#aps-arrow)"/>
+  <text class="d-sub" x="399" y="250">Write</text>
+  <path class="d-flow" d="M110 410 V100" stroke-dasharray="4 3" marker-end="url(#aps-arrow)"/>
+  <text class="d-sub" x="124" y="250">Deploy</text>
+  <path class="d-flow" d="M330 96 V388 H175 V410" stroke-dasharray="4 3" marker-end="url(#aps-arrow)"/>
+  <text class="d-sub" x="344" y="250">Read</text>
+  <path class="d-flow" d="M465 70 C620 120 690 210 690 340" marker-end="url(#aps-arrow)"/>
+  <text class="d-sub" x="560" y="205">Batch Data</text>
+  <path class="d-flow" d="M790 368 H850" marker-end="url(#aps-arrow)"/>
+  <path class="d-flow" d="M915 340 V88" marker-end="url(#aps-arrow)"/>
+  <text class="d-sub" x="901" y="210" text-anchor="end">Consume predictions</text>
+  <path class="d-flow" d="M770 62 H800" marker-start="url(#aps-arrow)" marker-end="url(#aps-arrow)"/>
+  <path class="d-flow" d="M40 72 H20 V500 H690 V396" stroke-dasharray="4 3" marker-end="url(#aps-arrow)"/>
+</svg>
+</figure>

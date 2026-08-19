@@ -1,0 +1,28 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 500" role="img" aria-label="A real-time AI system where an operational service calls a model deployed on KServe, the model reads pre-engineered features from the feature store, returns a prediction, and logs features and predictions back to the feature store." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ops-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <rect class="d-box-own" x="340" y="40" width="180" height="60" rx="8"/>
+  <text class="d-t" x="430" y="76" text-anchor="middle">Models</text>
+  <rect class="d-box-own" x="760" y="40" width="180" height="60" rx="8"/>
+  <text class="d-t" x="850" y="76" text-anchor="middle">Feature Store</text>
+  <rect class="d-box-ext" x="40" y="416" width="190" height="68" rx="8"/>
+  <text class="d-t" x="135" y="446" text-anchor="middle">Operational Service</text>
+  <text class="d-sub" x="135" y="464" text-anchor="middle">(AI-Enabled Product)</text>
+  <rect class="d-box" x="340" y="420" width="180" height="56" rx="8"/>
+  <text class="d-t" x="430" y="453" text-anchor="middle">Training Pipeline</text>
+  <rect class="d-box" x="760" y="420" width="180" height="56" rx="8"/>
+  <text class="d-t" x="850" y="453" text-anchor="middle">Feature Pipeline</text>
+  <path class="d-flow" d="M430 40 V16 H850 V40" marker-end="url(#ops-arrow)"/>
+  <text class="d-sub" x="640" y="11" text-anchor="middle">Feature/Prediction Logging</text>
+  <path class="d-flow" d="M760 80 H524" marker-end="url(#ops-arrow)"/>
+  <text class="d-sub" x="642" y="66" text-anchor="middle">Pre-engineered Features</text>
+  <path class="d-flow" d="M850 420 V104" marker-end="url(#ops-arrow)"/>
+  <text class="d-sub" x="864" y="270">Write</text>
+  <path class="d-flow" d="M430 420 V104" stroke-dasharray="4 3" marker-end="url(#ops-arrow)"/>
+  <text class="d-sub" x="444" y="270">Deploy</text>
+  <path class="d-flow" d="M800 104 V384 H470 V420" stroke-dasharray="4 3" marker-end="url(#ops-arrow)"/>
+  <text class="d-sub" x="660" y="372" text-anchor="middle">Read</text>
+  <path class="d-flow" d="M135 416 V70 H336" marker-end="url(#ops-arrow)"/>
+  <text class="d-sub" x="149" y="250">Istio / KServe</text>
+</svg>
+</figure>

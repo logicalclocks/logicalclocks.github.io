@@ -1,0 +1,27 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 370" role="img" aria-label="Production, main, and development git branches each write to their own Hopsworks feature store, and features are promoted upward from dev to staging to production." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="dsp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <rect class="d-panel-fs" x="620" y="30" width="360" height="320" rx="12"/>
+  <text class="d-cap d-cap-fs" x="800" y="22" text-anchor="middle">Hopsworks</text>
+  <rect class="d-box" x="40" y="50" width="380" height="64" rx="8"/>
+  <text class="d-t" x="230" y="88" text-anchor="middle">Production Branch</text>
+  <rect class="d-box" x="40" y="160" width="380" height="64" rx="8"/>
+  <text class="d-t" x="230" y="198" text-anchor="middle">Main Branch</text>
+  <rect class="d-box" x="40" y="270" width="380" height="64" rx="8"/>
+  <text class="d-t" x="230" y="308" text-anchor="middle">Development Branch</text>
+  <rect class="d-box-own" x="650" y="50" width="290" height="64" rx="8"/>
+  <text class="d-t" x="795" y="78" text-anchor="middle">Production</text>
+  <text class="d-t" x="795" y="98" text-anchor="middle">Feature Store</text>
+  <rect class="d-box-own" x="650" y="160" width="290" height="64" rx="8"/>
+  <text class="d-t" x="795" y="188" text-anchor="middle">Staging</text>
+  <text class="d-t" x="795" y="208" text-anchor="middle">Feature Store</text>
+  <rect class="d-box-own" x="650" y="270" width="290" height="64" rx="8"/>
+  <text class="d-t" x="795" y="298" text-anchor="middle">Dev</text>
+  <text class="d-t" x="795" y="318" text-anchor="middle">Feature Store</text>
+  <path class="d-flow" d="M420 82 H650" marker-end="url(#dsp-arrow)"/>
+  <path class="d-flow" d="M420 192 H650" marker-end="url(#dsp-arrow)"/>
+  <path class="d-flow" d="M420 302 H650" marker-end="url(#dsp-arrow)"/>
+  <path class="d-flow" d="M795 270 V226" marker-end="url(#dsp-arrow)"/>
+  <path class="d-flow" d="M795 160 V116" marker-end="url(#dsp-arrow)"/>
+</svg>
+</figure>

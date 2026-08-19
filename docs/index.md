@@ -129,57 +129,7 @@ Next: [create a feature group](user_guides/fs/feature_group/create.md),
 
 Independent [feature, training and inference pipelines](concepts/fti.md), connected by a shared feature store and model registry.
 
-<figure class="hops-diagram">
-<svg viewBox="0 0 1120 190" role="img" aria-label="FTI pipeline flow. Data sources feed a feature pipeline that writes to the feature store. A training pipeline reads the feature store and produces a model in the model registry. An inference pipeline reads the feature store and the model to produce predictions and prediction logs." xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="home-fti-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
-    </marker>
-  </defs>
-
-  <path class="d-flow" d="M150 54 H170" marker-end="url(#home-fti-arrow)"/>
-  <path class="d-flow" d="M310 54 H330" marker-end="url(#home-fti-arrow)"/>
-  <path class="d-flow" d="M470 54 H490" marker-end="url(#home-fti-arrow)"/>
-  <path class="d-flow" d="M630 54 H650" marker-end="url(#home-fti-arrow)"/>
-  <path class="d-flow" d="M790 54 H810" marker-end="url(#home-fti-arrow)"/>
-  <path class="d-flow" d="M950 54 H970" marker-end="url(#home-fti-arrow)"/>
-  <path class="d-flow" d="M400 78 C400 112, 820 112, 848 78" marker-end="url(#home-fti-arrow)" stroke-dasharray="4 3"/>
-  <path class="d-flow" d="M880 78 V120" marker-end="url(#home-fti-arrow)"/>
-
-  <a class="d-link" href="concepts/fs/feature_group/external_fg/">
-    <rect class="d-box" x="10" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="80" y="58" text-anchor="middle">Data sources</text>
-  </a>
-  <a class="d-link" href="concepts/fs/feature_group/feature_pipelines/">
-    <rect class="d-box" x="170" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="240" y="58" text-anchor="middle">Feature pipeline</text>
-  </a>
-  <a class="d-link" href="concepts/fs/feature_group/fg_overview/">
-    <rect class="d-box-own" x="330" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="400" y="58" text-anchor="middle">Feature store</text>
-  </a>
-  <a class="d-link" href="concepts/mlops/training/">
-    <rect class="d-box" x="490" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="560" y="58" text-anchor="middle">Training pipeline</text>
-  </a>
-  <a class="d-link" href="concepts/mlops/registry/">
-    <rect class="d-box-own" x="650" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="720" y="58" text-anchor="middle">Model registry</text>
-  </a>
-  <a class="d-link" href="concepts/mlops/serving/">
-    <rect class="d-box" x="810" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="880" y="58" text-anchor="middle">Inference pipeline</text>
-  </a>
-  <a class="d-link" href="concepts/mlops/prediction_services/">
-    <rect class="d-box" x="970" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="1040" y="58" text-anchor="middle">Predictions</text>
-  </a>
-  <a class="d-link" href="concepts/mlops/model_monitoring/">
-    <rect class="d-box" x="810" y="120" width="140" height="48" rx="8"/>
-    <text class="d-t" x="880" y="148" text-anchor="middle">Prediction logs</text>
-  </a>
-</svg>
-</figure>
+--8<-- "index/one-architecture-three-pipelines.html"
 
 ## Choose a deployment model
 

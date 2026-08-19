@@ -1,0 +1,36 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 460" role="img" aria-label="A quadrant of feature-engineering tools supported by Hopsworks, placed by streaming versus batch and by smaller versus bigger data. Streaming and smaller data: Feldera, Pathway, Bytewax, Quix streams. Streaming and bigger data: Apache Flink, Apache Beam, Apache Spark Streaming. Batch and smaller data: Pandas, Polars, DuckDB, Data Fusion. Batch and bigger data: dbt over Snowflake, BigQuery and Redshift, Apache Spark, Dask." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="q-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
+
+  <rect class="d-box" x="150" y="46" width="700" height="368" rx="12"/>
+  <path class="d-flow" d="M500 46 V414"/>
+  <path class="d-flow" d="M150 230 H850"/>
+
+  <text class="d-t d-cap" x="500" y="30" text-anchor="middle">Streaming</text>
+  <text class="d-t d-cap" x="500" y="446" text-anchor="middle">Batch</text>
+  <text class="d-t d-cap" x="140" y="234" text-anchor="end">Smaller data</text>
+  <text class="d-t d-cap" x="860" y="234" text-anchor="start">Bigger data</text>
+
+  <text class="d-t" x="200" y="96">Feldera</text>
+  <text class="d-t" x="200" y="126">Pathway</text>
+  <text class="d-t" x="200" y="156">Bytewax</text>
+  <text class="d-t" x="200" y="186">Quix streams</text>
+
+  <text class="d-t" x="560" y="96">Apache Flink</text>
+  <text class="d-t" x="560" y="126">Apache Beam</text>
+  <text class="d-t" x="560" y="156">Apache Spark Streaming</text>
+
+  <text class="d-t" x="200" y="290">Pandas</text>
+  <text class="d-t" x="200" y="320">Polars</text>
+  <text class="d-t" x="200" y="350">DuckDB</text>
+  <text class="d-t" x="200" y="380">Data Fusion</text>
+
+  <text class="d-t" x="560" y="290">dbt: Snowflake, BigQuery, Redshift</text>
+  <text class="d-t" x="560" y="320">Apache Spark</text>
+  <text class="d-t" x="560" y="350">Dask</text>
+</svg>
+</figure>

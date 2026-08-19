@@ -1,0 +1,72 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 500" role="img" aria-label="Hopsworks decomposes an AI system into three AI pipelines over a feature store and storage. The feature pipeline runs model-independent and on-demand transformations and writes to feature groups. The training and inference pipelines run model-dependent transformations. On-demand UDFs are registered on feature groups, model-dependent UDFs on feature views. The feature store is backed by external tables, HopsFS-S3, RonDB and OpenSearch." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="dh-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
+
+  <!-- band captions -->
+  <text class="d-t d-cap" x="984" y="40" text-anchor="end">AI pipelines</text>
+  <text class="d-t d-cap d-cap-fs" x="984" y="238" text-anchor="end">Feature store</text>
+  <text class="d-t d-cap" x="984" y="404" text-anchor="end">Storage</text>
+
+  <!-- AI pipelines -->
+  <rect class="d-box" x="30" y="52" width="270" height="130" rx="10"/>
+  <text class="d-t" x="165" y="76" text-anchor="middle">Feature pipeline</text>
+  <rect class="d-box-own" x="54" y="90" width="222" height="28" rx="5"/>
+  <text class="d-t d-sub" x="165" y="109" text-anchor="middle">Model-independent (MIT)</text>
+  <rect class="d-box-ext" x="54" y="126" width="222" height="28" rx="5" stroke-dasharray="4 3"/>
+  <text class="d-t d-sub" x="165" y="145" text-anchor="middle">On-demand (ODT), backfill</text>
+
+  <rect class="d-box" x="365" y="52" width="250" height="130" rx="10"/>
+  <text class="d-t" x="490" y="76" text-anchor="middle">Training pipeline</text>
+  <text class="d-t d-sub" x="490" y="104" text-anchor="middle">model training</text>
+  <rect class="d-box" x="400" y="120" width="180" height="28" rx="5"/>
+  <text class="d-t d-sub" x="490" y="139" text-anchor="middle">Model-dependent (MDT)</text>
+
+  <rect class="d-box" x="680" y="52" width="290" height="130" rx="10"/>
+  <text class="d-t" x="825" y="76" text-anchor="middle">Online inference pipeline</text>
+  <rect class="d-box-ext" x="700" y="90" width="250" height="26" rx="5"/>
+  <text class="d-t d-sub" x="825" y="108" text-anchor="middle">On-demand (ODT)</text>
+  <rect class="d-box" x="700" y="146" width="250" height="26" rx="5"/>
+  <text class="d-t d-sub" x="825" y="164" text-anchor="middle">Model-dependent (MDT)</text>
+  <text class="d-t d-sub" x="825" y="135" text-anchor="middle">model inference</text>
+
+  <!-- feature store -->
+  <rect class="d-panel-fs" x="20" y="222" width="950" height="150" rx="12"/>
+  <rect class="d-box-own" x="50" y="248" width="270" height="98" rx="10"/>
+  <text class="d-t" x="185" y="274" text-anchor="middle">Feature group</text>
+  <rect class="d-box-ext" x="74" y="292" width="222" height="30" rx="5"/>
+  <text class="d-t d-sub" x="185" y="312" text-anchor="middle">On-demand UDFs</text>
+
+  <rect class="d-box-own" x="520" y="248" width="300" height="98" rx="10"/>
+  <text class="d-t" x="670" y="274" text-anchor="middle">Feature view</text>
+  <rect class="d-box" x="544" y="292" width="252" height="30" rx="5"/>
+  <text class="d-t d-sub" x="670" y="312" text-anchor="middle">Model-dependent UDFs</text>
+
+  <!-- storage -->
+  <rect class="d-box-ext" x="30" y="410" width="220" height="66" rx="8"/>
+  <text class="d-t" x="140" y="438" text-anchor="middle">External tables</text>
+  <text class="d-t d-sub" x="140" y="457" text-anchor="middle">offline: BigQuery, Snowflake</text>
+  <rect class="d-box" x="270" y="410" width="220" height="66" rx="8"/>
+  <text class="d-t" x="380" y="438" text-anchor="middle">HopsFS-S3</text>
+  <text class="d-t d-sub" x="380" y="457" text-anchor="middle">offline store</text>
+  <rect class="d-box" x="510" y="410" width="220" height="66" rx="8"/>
+  <text class="d-t" x="620" y="438" text-anchor="middle">RonDB</text>
+  <text class="d-t d-sub" x="620" y="457" text-anchor="middle">online store, metastore</text>
+  <rect class="d-box-ext" x="750" y="410" width="220" height="66" rx="8"/>
+  <text class="d-t" x="860" y="438" text-anchor="middle">OpenSearch</text>
+  <text class="d-t d-sub" x="860" y="457" text-anchor="middle">vector index, search</text>
+
+  <!-- flows -->
+  <path class="d-flow" d="M165 182 V248" marker-end="url(#dh-arrow)"/>
+  <path class="d-flow" d="M320 297 H400 V182" marker-end="url(#dh-arrow)"/>
+  <path class="d-flow" d="M820 297 H900 V182" marker-end="url(#dh-arrow)"/>
+  <path class="d-flow" d="M320 320 H520" marker-end="url(#dh-arrow)"/>
+  <text class="d-t d-sub" x="410" y="338" text-anchor="middle">reachable by graph traversal</text>
+  <path class="d-flow" d="M185 372 V410"/>
+  <path class="d-flow" d="M620 372 V410"/>
+  <path class="d-flow" d="M860 372 V410"/>
+</svg>
+</figure>

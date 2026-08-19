@@ -1,0 +1,37 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 330" role="img" aria-label="Feature pipelines read from external data sources, run aggregation and validation steps in SQL, Python, or Spark and Flink, write to the feature store, and a later transform step produces features." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="fp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <rect class="d-box-ext" x="30" y="40" width="120" height="48" rx="8"/>
+  <text class="d-t" x="90" y="69" text-anchor="middle">DB</text>
+  <rect class="d-box-ext" x="30" y="108" width="120" height="48" rx="8"/>
+  <text class="d-t" x="90" y="137" text-anchor="middle">Msg Bus</text>
+  <rect class="d-box-ext" x="30" y="176" width="120" height="48" rx="8"/>
+  <text class="d-t" x="90" y="205" text-anchor="middle">DB</text>
+  <rect class="d-box-ext" x="30" y="244" width="120" height="48" rx="8"/>
+  <text class="d-t" x="90" y="273" text-anchor="middle">Files</text>
+  <path class="d-flow" d="M150 64 H320" marker-end="url(#fp-arrow)"/>
+  <text class="d-t" x="235" y="54" text-anchor="middle">SQL</text>
+  <path class="d-flow" d="M150 132 H200"/>
+  <path class="d-flow" d="M150 268 H200"/>
+  <path class="d-flow" d="M200 132 V268"/>
+  <path class="d-flow" d="M150 200 H320" marker-end="url(#fp-arrow)"/>
+  <text class="d-t" x="260" y="192" text-anchor="middle">Python</text>
+  <text class="d-t" x="260" y="216" text-anchor="middle">Spark/Flink</text>
+  <rect class="d-box" x="320" y="40" width="150" height="48" rx="8"/>
+  <text class="d-t" x="395" y="69" text-anchor="middle">Aggregate, Validate</text>
+  <rect class="d-box" x="320" y="168" width="150" height="64" rx="8"/>
+  <text class="d-t" x="395" y="195" text-anchor="middle">Reduce, Aggregate,</text>
+  <text class="d-t" x="395" y="215" text-anchor="middle">Validate</text>
+  <path class="d-flow" d="M470 64 H540" marker-end="url(#fp-arrow)"/>
+  <path class="d-flow" d="M470 200 H540" marker-end="url(#fp-arrow)"/>
+  <rect class="d-box-own" x="540" y="40" width="120" height="252" rx="8"/>
+  <text class="d-t" x="600" y="160" text-anchor="middle">Feature</text>
+  <text class="d-t" x="600" y="180" text-anchor="middle">Store</text>
+  <path class="d-flow" d="M660 166 H720" marker-end="url(#fp-arrow)"/>
+  <rect class="d-box" x="720" y="142" width="110" height="48" rx="8"/>
+  <text class="d-t" x="775" y="171" text-anchor="middle">Transform</text>
+  <path class="d-flow" d="M830 166 H890" marker-end="url(#fp-arrow)"/>
+  <rect class="d-box-own" x="890" y="142" width="100" height="48" rx="8"/>
+  <text class="d-t" x="940" y="171" text-anchor="middle">Features</text>
+</svg>
+</figure>

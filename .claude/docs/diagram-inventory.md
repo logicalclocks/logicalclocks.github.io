@@ -8,6 +8,9 @@ UI screenshots and product GIFs are NOT diagrams: mark them `screenshot, keep` a
 
 Status: `[ ]` todo, `[x]` done, `[-]` triaged out (screenshot or removed).
 
+2026-08-19: all 43 inline kit figures were extracted to `diagrams/` in one mechanical sweep (main session).
+The `[x]` tick still requires the per-page design pass (animate mechanisms, rebuild images/mermaid, triage screenshots).
+
 
 ## concepts
 

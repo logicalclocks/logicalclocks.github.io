@@ -1,0 +1,44 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 440" role="img" aria-label="The Stream API sends fg.insert data through the HSFS clients into Kafka, which writes to the online feature store on RonDB via the Online FS path and to the offline feature store on Hudi via the Delta Streamer path under a common schema." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="stream-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+  <text class="d-sub" x="557" y="30" text-anchor="middle">Common Schema</text>
+  <path class="d-flow" d="M300 42 H815" stroke-dasharray="2 6"/>
+  <path class="d-flow" d="M300 42 V90" stroke-dasharray="2 6"/>
+  <path class="d-flow" d="M520 42 V222" stroke-dasharray="2 6"/>
+  <path class="d-flow" d="M815 42 V90" stroke-dasharray="2 6"/>
+  <path class="d-flow" d="M815 210 V270" stroke-dasharray="2 6"/>
+  <rect class="d-box-ext" x="20" y="222" width="110" height="56" rx="8"/>
+  <text class="d-t" x="75" y="248" text-anchor="middle">User /</text>
+  <text class="d-t" x="75" y="266" text-anchor="middle">Application</text>
+  <rect class="d-box" x="210" y="90" width="180" height="225" rx="10"/>
+  <text class="d-t" x="300" y="115" text-anchor="middle">HSFS</text>
+  <rect class="d-box" x="235" y="132" width="130" height="32" rx="6"/>
+  <text class="d-t" x="300" y="153" text-anchor="middle">pandas</text>
+  <rect class="d-box" x="235" y="176" width="130" height="32" rx="6"/>
+  <text class="d-t" x="300" y="197" text-anchor="middle">Spark</text>
+  <rect class="d-box" x="235" y="220" width="130" height="32" rx="6"/>
+  <text class="d-sub" x="300" y="240" text-anchor="middle">Spark Streaming</text>
+  <rect class="d-box" x="235" y="264" width="130" height="32" rx="6"/>
+  <text class="d-t" x="300" y="285" text-anchor="middle">Python</text>
+  <rect class="d-box" x="460" y="222" width="120" height="56" rx="8"/>
+  <text class="d-t" x="520" y="254" text-anchor="middle">Kafka</text>
+  <rect class="d-panel-fs" x="750" y="90" width="230" height="120" rx="12"/>
+  <text class="d-cap d-cap-fs" x="865" y="112" text-anchor="middle">ONLINE FEATURE STORE</text>
+  <rect class="d-box-own" x="800" y="130" width="130" height="54" rx="8"/>
+  <text class="d-t" x="865" y="161" text-anchor="middle">RonDB</text>
+  <rect class="d-panel-fs" x="750" y="270" width="230" height="140" rx="12"/>
+  <text class="d-cap d-cap-fs" x="865" y="292" text-anchor="middle">OFFLINE FEATURE STORE</text>
+  <rect class="d-box-own" x="790" y="312" width="150" height="64" rx="8"/>
+  <text class="d-t" x="865" y="342" text-anchor="middle">Hudi</text>
+  <text class="d-sub" x="865" y="362" text-anchor="middle">(S3, ADLS, GCS, HopsFS)</text>
+  <text class="d-sub" x="170" y="242" text-anchor="middle">fg.insert(df)</text>
+  <path class="d-flow" d="M130 250 H210" marker-end="url(#stream-arrow)"/>
+  <path class="d-flow" d="M390 250 H460" marker-end="url(#stream-arrow)"/>
+  <path class="d-flow" d="M580 250 C665 250 665 157 750 157" marker-end="url(#stream-arrow)"/>
+  <path class="d-flow" d="M580 250 C665 250 665 344 750 344" marker-end="url(#stream-arrow)"/>
+  <text class="d-sub" x="665" y="178" text-anchor="middle">Online FS</text>
+  <text class="d-sub" x="665" y="192" text-anchor="middle">&lt;at-most-once&gt;</text>
+  <text class="d-sub" x="665" y="318" text-anchor="middle">Delta Streamer</text>
+  <text class="d-sub" x="665" y="332" text-anchor="middle">&lt;at-most-once&gt;</text>
+</svg>
+</figure>

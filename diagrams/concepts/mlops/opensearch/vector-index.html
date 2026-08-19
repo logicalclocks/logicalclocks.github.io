@@ -1,0 +1,33 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 460" role="img" aria-label="Devices query the OpenSearch kNN ANN index for online similarity search, while an offline job encodes an item corpus with an embedding model and inserts ID-embedding pairs into the index." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="os-knn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+
+  <rect class="d-panel-fs" x="520" y="150" width="440" height="290" rx="14"/>
+  <text class="d-cap d-cap-fs" x="740" y="428" text-anchor="middle">Offline indexing</text>
+
+  <rect class="d-box-ext" x="40" y="40" width="210" height="60" rx="8"/>
+  <text class="d-t" x="145" y="75" text-anchor="middle">Devices</text>
+
+  <text class="d-sub" x="405" y="40" text-anchor="middle">Online Similarity Search:</text>
+  <text class="d-sub" x="405" y="56" text-anchor="middle">{ embedding: [....] }</text>
+  <path class="d-flow" d="M250 70 H560" marker-end="url(#os-knn-arrow)"/>
+
+  <rect class="d-box-own" x="560" y="42" width="380" height="64" rx="8"/>
+  <text class="d-t" x="750" y="68" text-anchor="middle">ANN Index</text>
+  <text class="d-sub" x="750" y="90" text-anchor="middle">(OpenSearch kNN)</text>
+
+  <rect class="d-box" x="590" y="228" width="300" height="72" rx="8"/>
+  <text class="d-t" x="740" y="262" text-anchor="middle">Python/Spark Job</text>
+  <text class="d-sub" x="740" y="284" text-anchor="middle">with Item Embedding Model</text>
+
+  <rect class="d-box" x="620" y="352" width="240" height="54" rx="8"/>
+  <text class="d-t" x="740" y="384" text-anchor="middle">Item Corpus</text>
+
+  <path class="d-flow" d="M740 352 V300" marker-end="url(#os-knn-arrow)"/>
+  <text class="d-sub" x="830" y="330" text-anchor="middle">Encode all items</text>
+
+  <path class="d-flow" d="M740 228 V106" marker-end="url(#os-knn-arrow)"/>
+  <text class="d-sub" x="858" y="160" text-anchor="middle">Insert all pairs</text>
+  <text class="d-sub" x="858" y="176" text-anchor="middle">(ID, embedding)</text>
+</svg>
+</figure>

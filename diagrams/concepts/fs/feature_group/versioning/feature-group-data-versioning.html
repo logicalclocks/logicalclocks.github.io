@@ -1,0 +1,36 @@
+<figure class="hops-diagram">
+<svg viewBox="0 0 1000 290" role="img" aria-label="Data versioning: each insert into feature group order_prices version 1 appends a new commit and timestamp row, building the history you can time travel through." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="dv-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+
+  <rect class="d-box" x="40" y="80" width="430" height="140" rx="8"/>
+  <text class="d-t" x="255" y="112" text-anchor="middle">Insert into the same version</text>
+  <text class="d-t d-sub" x="255" y="148" text-anchor="middle">fs.get_feature_group(order_prices, 1)</text>
+  <text class="d-t d-sub" x="255" y="176" text-anchor="middle">fg.insert(new_orders_df)</text>
+
+  <rect class="d-box-own" x="600" y="30" width="380" height="232" rx="10"/>
+  <text class="d-t" x="790" y="58" text-anchor="middle">order_prices (v1)</text>
+
+  <rect class="d-box" x="612" y="72" width="176" height="40" rx="6"/>
+  <text class="d-t" x="700" y="97" text-anchor="middle">Commit₁</text>
+  <rect class="d-box" x="796" y="72" width="176" height="40" rx="6"/>
+  <text class="d-t" x="884" y="97" text-anchor="middle">Timestamp₁</text>
+
+  <rect class="d-box" x="612" y="118" width="176" height="40" rx="6"/>
+  <text class="d-t" x="700" y="143" text-anchor="middle">Commit₂</text>
+  <rect class="d-box" x="796" y="118" width="176" height="40" rx="6"/>
+  <text class="d-t" x="884" y="143" text-anchor="middle">Timestamp₂</text>
+
+  <rect class="d-box" x="612" y="164" width="176" height="40" rx="6"/>
+  <text class="d-t" x="700" y="189" text-anchor="middle">…</text>
+  <rect class="d-box" x="796" y="164" width="176" height="40" rx="6"/>
+  <text class="d-t" x="884" y="189" text-anchor="middle">…</text>
+
+  <rect class="d-box" x="612" y="210" width="176" height="40" rx="6"/>
+  <text class="d-t" x="700" y="235" text-anchor="middle">Commitₙ</text>
+  <rect class="d-box" x="796" y="210" width="176" height="40" rx="6"/>
+  <text class="d-t" x="884" y="235" text-anchor="middle">Timestampₙ</text>
+
+  <path class="d-flow" d="M470 150 H600" marker-end="url(#dv-arrow)"/>
+  <text class="d-t d-sub" x="535" y="140" text-anchor="middle">each insert appends a commit</text>
+</svg>
+</figure>

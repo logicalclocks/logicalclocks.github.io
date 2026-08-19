@@ -15,66 +15,7 @@ Offline-online feature skew is a difference between the transformation code that
 It is a code difference, not a data difference, so it cannot be detected by comparing distributions; the only way to avoid it is to run the same code in both pipelines.
 In the image below, you can see that transformations happen after the Feature Store, but that the implementation of the transformation functions need to be consistent between the training and inference pipelines.
 
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 525" role="img" aria-label="Feature transformations run after the feature store, and the same transformation code and state must be applied in both the online serving pipeline and the offline training pipeline to avoid offline-online skew." xmlns="http://www.w3.org/2000/svg">
-  <defs><marker id="skew-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
-
-  <path class="d-flow" d="M70 135 H980" stroke-dasharray="2 7"/>
-  <text class="d-sub" x="25" y="118">Online</text>
-  <text class="d-sub" x="25" y="153">Offline</text>
-
-  <rect class="d-box-own" x="95" y="55" width="160" height="210" rx="8"/>
-  <text class="d-t" x="175" y="82" text-anchor="middle">Feature Groups</text>
-  <circle class="d-box-own" cx="215" cy="105" r="8"/>
-  <circle class="d-box-own" cx="215" cy="200" r="8"/>
-
-  <rect class="d-box" x="35" y="345" width="180" height="105" rx="8" stroke-dasharray="4 4"/>
-  <text class="d-t" x="125" y="376" text-anchor="middle">&lt;pre&gt;</text>
-  <text class="d-sub" x="125" y="398" text-anchor="middle">Aggregations,</text>
-  <text class="d-sub" x="125" y="416" text-anchor="middle">dim-reduction,</text>
-  <text class="d-sub" x="125" y="434" text-anchor="middle">validation</text>
-  <text class="d-t" x="125" y="476" text-anchor="middle">Feature Pipelines</text>
-
-  <rect class="d-alert-line" x="380" y="55" width="230" height="64" rx="8" fill="none"/>
-  <text class="d-t" x="495" y="82" text-anchor="middle">&lt;post&gt;</text>
-  <text class="d-t" x="495" y="103" text-anchor="middle">Feature Transformations</text>
-
-  <rect class="d-alert-line" x="380" y="330" width="230" height="64" rx="8" fill="none"/>
-  <text class="d-t" x="495" y="357" text-anchor="middle">&lt;post&gt;</text>
-  <text class="d-t" x="495" y="378" text-anchor="middle">Feature Transformations</text>
-
-  <text class="d-alert" x="495" y="188" text-anchor="middle">Same transformation code</text>
-  <text class="d-alert" x="495" y="208" text-anchor="middle">Same transformation state</text>
-  <path class="d-alert-line" d="M495 172 V121" marker-end="url(#skew-arrow)"/>
-  <path class="d-alert-line" d="M495 222 V328" marker-end="url(#skew-arrow)"/>
-
-  <rect class="d-box" x="790" y="55" width="170" height="60" rx="8"/>
-  <text class="d-t" x="875" y="90" text-anchor="middle">Model Serving</text>
-
-  <rect class="d-box-own" x="660" y="330" width="150" height="64" rx="8"/>
-  <text class="d-t" x="735" y="367" text-anchor="middle">Training Data</text>
-
-  <rect class="d-box" x="660" y="450" width="150" height="48" rx="8"/>
-  <text class="d-t" x="735" y="479" text-anchor="middle">Model Training</text>
-
-  <rect class="d-box-own" x="830" y="330" width="150" height="64" rx="8"/>
-  <text class="d-t" x="905" y="357" text-anchor="middle">Model</text>
-  <text class="d-t" x="905" y="378" text-anchor="middle">Registry</text>
-
-  <rect class="d-box" x="830" y="450" width="150" height="48" rx="8"/>
-  <text class="d-t" x="905" y="479" text-anchor="middle">Batch Predictions</text>
-
-  <path class="d-flow" d="M125 345 V265" marker-end="url(#skew-arrow)"/>
-  <path class="d-flow" d="M255 105 H340 V87 H380" marker-end="url(#skew-arrow)"/>
-  <path class="d-flow" d="M610 87 H790" marker-end="url(#skew-arrow)"/>
-  <path class="d-flow" d="M255 200 H320 V362 H380" marker-end="url(#skew-arrow)"/>
-  <path class="d-flow" d="M610 362 H660" marker-end="url(#skew-arrow)"/>
-  <path class="d-flow" d="M735 394 V450" marker-end="url(#skew-arrow)"/>
-  <path class="d-flow" d="M810 474 V362 H830" marker-end="url(#skew-arrow)"/>
-  <path class="d-flow" d="M905 330 V115" marker-end="url(#skew-arrow)"/>
-  <path class="d-flow" d="M905 394 V450" marker-end="url(#skew-arrow)"/>
-</svg>
-</figure>
+--8<-- "concepts/fs/feature_view/training_inference_pipelines/offline-online-feature-skew.html"
 
 There are 3 main approaches to prevent offline-online feature skew that we support in Hopsworks.
 These are (1) perform transformations in models, (2) perform transformations in pipelines (sklearn, TF, PyTorch) and use the model registry to save the transformation pipeline so that the same transformation is used in your inference pipeline, and (3) use Hopsworks transformations, defined as UDFs in Python.
