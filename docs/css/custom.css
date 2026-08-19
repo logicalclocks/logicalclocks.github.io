@@ -318,6 +318,8 @@ a.autorefs-external::after {
   font-size: var(--viz-type-meta);
   letter-spacing: 0.02em;
 }
+.hops-viz .viz-meta[data-tone] { fill: var(--viz-tone); }
+.hops-viz .viz-arrow-error { fill: var(--viz-tone-error); fill-opacity: 0.8; }
 .hops-viz .viz-fade { transition: opacity var(--viz-duration) ease; }
 
 /* Nodes: boxes with an optional header band, e.g. services and stores. */
