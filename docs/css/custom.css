@@ -410,6 +410,13 @@ a.autorefs-external::after {
     opacity var(--viz-duration) ease;
 }
 
+/* Ghost modifier: a not-yet-materialized object, dashed in its tone. */
+.hops-viz .viz-badge.viz-ghost rect {
+  fill: color-mix(in srgb, var(--viz-tone) 10%, var(--viz-paper));
+  stroke-dasharray: 4 3;
+}
+.hops-viz .viz-badge.viz-ghost text { fill: var(--viz-tone); }
+
 /* Status dot, progress bar. */
 .hops-viz .viz-status-dot {
   fill: var(--viz-tone);
