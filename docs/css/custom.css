@@ -336,6 +336,10 @@ a.autorefs-external::after {
   text-transform: uppercase;
   font-weight: 500;
 }
+.hops-viz [data-state="active"] .viz-node {
+  stroke: var(--viz-tone);
+  fill: color-mix(in srgb, var(--viz-tone) 8%, var(--viz-paper));
+}
 .hops-viz [data-state="offline"] .viz-node {
   fill: color-mix(in srgb, var(--viz-tone-error) 9%, var(--viz-paper));
   stroke: var(--viz-tone-error);
