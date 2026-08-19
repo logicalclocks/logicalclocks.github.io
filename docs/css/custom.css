@@ -232,7 +232,10 @@ a.autorefs-external::after {
    author the SVG with viz-* classes, and put the timeline in a
    sibling <script type="application/json" data-viz-scene>.
    ========================================================= */
-.md-typeset .hops-viz {
+/* Tokens scoped to .hops-viz alone (not .md-typeset): the zoom overlay
+   clones the figure into document.body, and the clone must still resolve
+   every --viz-* var or all fills collapse to black. */
+.hops-viz {
   --viz-duration: 0.45s;
   --viz-paper: var(--md-default-bg-color, #ffffff);
   --viz-paper-raised: var(--hops-surface);
@@ -276,7 +279,7 @@ a.autorefs-external::after {
   --viz-tone-fill-solid: color-mix(in srgb, var(--viz-tone) 12%, var(--viz-paper));
 }
 
-.md-typeset .hops-viz svg {
+.hops-viz svg {
   pointer-events: none;
   user-select: none;
 }
@@ -1056,6 +1059,21 @@ body.hops-zoom-lock {
 .hops-zoom-stage img {
   background: #fff;
   border-radius: 6px;
+}
+/* hops-viz tokens follow the page scheme, but the zoom stage is a fixed
+   dark panel: pin the clone to dark-panel values whatever the theme. */
+.hops-zoom-stage .hops-viz {
+  --viz-paper: #16181a;
+  --viz-paper-raised: rgba(255, 255, 255, 0.06);
+  --viz-ink: #e6edf3;
+  --viz-ink-soft: rgba(230, 237, 243, 0.6);
+  --viz-ink-faint: rgba(230, 237, 243, 0.25);
+  --viz-line: rgba(255, 255, 255, 0.09);
+  --viz-line-strong: rgba(255, 255, 255, 0.2);
+  --viz-tone-read: #6ba1ff;
+  --viz-tone-data: #6ba1ff;
+  --viz-tone-warn: #e3b341;
+  --viz-tone-error: #f07171;
 }
 .hops-zoom-close {
   position: absolute;

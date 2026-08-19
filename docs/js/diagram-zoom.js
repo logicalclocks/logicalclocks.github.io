@@ -79,6 +79,13 @@
       var h = clone.querySelector(".hops-zoom-handle");
       if (h) h.remove();
       stage.appendChild(clone);
+      // Animated hops-viz figures: let the driver restart the clone from
+      // its pristine state instead of showing a frozen mid-animation frame.
+      document.dispatchEvent(
+        new CustomEvent("hops-zoom-open", {
+          detail: { source: node, clone: clone },
+        }),
+      );
       scale = 1;
       tx = 0;
       ty = 0;

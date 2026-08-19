@@ -22,6 +22,10 @@
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Pristine SVG markup per figure, captured before the first step runs, so
+  // a zoomed clone can restart from the beginning instead of mid-animation.
+  var pristine = new WeakMap();
+
   function applyStep(svg, step) {
     Object.keys(step).forEach(function (sel) {
       if (sel.charAt(0) === "$") return;
@@ -62,6 +66,7 @@
     }
     var steps = scene.steps || [];
     if (!steps.length) return;
+    pristine.set(fig, svg.innerHTML);
 
     if (reduced) {
       steps.forEach(function (step) {
@@ -77,6 +82,7 @@
     var visible = false;
 
     function tick() {
+      if (!svg.isConnected) return;
       applyStep(svg, steps[i]);
       var wait = steps[i].$ms || interval;
       i += 1;
@@ -113,5 +119,18 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".md-typeset .hops-viz").forEach(play);
+  });
+
+  // Zoom overlay (diagram-zoom.js) clones a figure into document.body and
+  // announces it here. Reset the clone to the pristine SVG and give it its
+  // own player; the isConnected guard stops it once the overlay is reused.
+  document.addEventListener("hops-zoom-open", function (e) {
+    var clone = e.detail && e.detail.clone;
+    var source = e.detail && e.detail.source;
+    if (!clone || !clone.classList.contains("hops-viz")) return;
+    var svg = clone.querySelector("svg");
+    var initial = pristine.get(source);
+    if (svg && initial) svg.innerHTML = initial;
+    play(clone);
   });
 })();
