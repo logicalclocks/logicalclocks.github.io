@@ -27,9 +27,9 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [x] `docs/concepts/fs/feature_view/offline_api.md` — 1 animated (PIT join sweep), 2 static kept (column lineage, batch ranges)
 - [x] `docs/concepts/fs/feature_view/online_api.md` — 1 animated (get_feature_vector assembly, narrated steps)
 - [x] `docs/concepts/fs/feature_view/training_inference_pipelines.md` — 1 animated (skew two-act: same udf then drift, 800 viewBox)
-- [ ] `docs/concepts/fs/index.md` — 1 kit-static
-- [ ] `docs/concepts/fti.md` — 1 kit-static
-- [ ] `docs/concepts/hopsworks.md` — 1 kit-static
+- [x] `docs/concepts/fs/index.md` — navigational chart, static by charter
+- [x] `docs/concepts/fti.md` — navigational chart, static by charter
+- [x] `docs/concepts/hopsworks.md` — navigational chart, static by charter
 - [ ] `docs/concepts/mlops/agents.md` — 1 kit-static
 - [ ] `docs/concepts/mlops/data_transformations.md` — 5 kit-static
 - [ ] `docs/concepts/mlops/model_monitoring.md` — 1 kit-static
