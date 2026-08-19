@@ -194,6 +194,11 @@ a.autorefs-external::after {
   width: 100%;
   max-width: 100%;
   margin: 1.5em 0;
+  /* Same border language as content images: the figure reads as one
+     object against the prose instead of floating loose in it. */
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
 }
 .md-typeset .hops-diagram svg {
   display: block;
