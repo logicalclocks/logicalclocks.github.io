@@ -222,6 +222,236 @@ a.autorefs-external::after {
 .hops-diagram a.d-link:hover > rect { fill-opacity: .24; stroke-opacity: .9; }
 
 /* =========================================================
+   hops-viz: the animated diagram kit, layered on .hops-diagram.
+   Architecture adapted from Cursor's blog viz system: one token
+   sheet, semantic classes, state carried by data- attributes,
+   CSS transitions do the tweening, js/hops-viz.js steps the
+   timeline. Palette is ours: brand green for writes, blue for
+   data in motion, amber/red reserved for degraded states.
+   Add class "hops-viz" next to "hops-diagram" on the figure,
+   author the SVG with viz-* classes, and put the timeline in a
+   sibling <script type="application/json" data-viz-scene>.
+   ========================================================= */
+.md-typeset .hops-viz {
+  --viz-duration: 0.45s;
+  --viz-paper: var(--md-default-bg-color, #ffffff);
+  --viz-paper-raised: var(--hops-surface);
+  --viz-ink: var(--md-default-fg-color);
+  --viz-ink-soft: var(--md-default-fg-color--light);
+  --viz-ink-faint: var(--md-default-fg-color--lighter);
+  --viz-line: var(--hops-border);
+  --viz-line-strong: var(--hops-border-strong);
+  --viz-edge-stroke: color-mix(in srgb, var(--viz-ink) 34%, transparent);
+  --viz-font: var(--hops-font-mono);
+  --viz-tracking: 0.03em;
+  --viz-type-title: 12px;
+  --viz-type-header: 10px;
+  --viz-type-label: 9px;
+  --viz-type-meta: 8px;
+  --viz-tone-accent: var(--hops-accent);
+  --viz-tone-write: var(--hops-accent);
+  --viz-tone-read: #2268ff;
+  --viz-tone-data: #2268ff;
+  --viz-tone-warn: #d29a22;
+  --viz-tone-error: #eb5757;
+  --viz-tone-neutral: var(--viz-ink-soft);
+  --viz-tone: var(--viz-tone-accent);
+}
+[data-md-color-scheme="slate"] .hops-viz {
+  --viz-tone-read: #6ba1ff;
+  --viz-tone-data: #6ba1ff;
+  --viz-tone-warn: #e3b341;
+  --viz-tone-error: #f07171;
+}
+/* Tones: set data-tone on any group; descendants resolve --viz-tone. */
+.hops-viz [data-tone="accent"] { --viz-tone: var(--viz-tone-accent); }
+.hops-viz [data-tone="write"] { --viz-tone: var(--viz-tone-write); }
+.hops-viz [data-tone="read"] { --viz-tone: var(--viz-tone-read); }
+.hops-viz [data-tone="data"] { --viz-tone: var(--viz-tone-data); }
+.hops-viz [data-tone="warn"] { --viz-tone: var(--viz-tone-warn); }
+.hops-viz [data-tone="error"] { --viz-tone: var(--viz-tone-error); }
+.hops-viz [data-tone="neutral"] { --viz-tone: var(--viz-tone-neutral); }
+.hops-viz [data-tone] {
+  --viz-tone-fill: color-mix(in srgb, var(--viz-tone) 12%, transparent);
+  --viz-tone-fill-solid: color-mix(in srgb, var(--viz-tone) 12%, var(--viz-paper));
+}
+
+.md-typeset .hops-viz svg {
+  pointer-events: none;
+  user-select: none;
+}
+.hops-viz text {
+  font-family: var(--viz-font);
+  fill: var(--viz-ink);
+}
+.hops-viz .viz-label {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-header);
+  letter-spacing: var(--viz-tracking);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.hops-viz .viz-meta {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-meta);
+  letter-spacing: 0.02em;
+}
+.hops-viz .viz-fade { transition: opacity var(--viz-duration) ease; }
+
+/* Nodes: boxes with an optional header band, e.g. services and stores. */
+.hops-viz .viz-node {
+  fill: var(--viz-paper);
+  stroke: var(--viz-line-strong);
+  stroke-width: 1;
+  transition: fill var(--viz-duration), stroke var(--viz-duration);
+}
+.hops-viz .viz-node-header { fill: var(--viz-paper-raised); }
+.hops-viz .viz-node-title {
+  font-size: var(--viz-type-title);
+  letter-spacing: var(--viz-tracking);
+  font-weight: 700;
+}
+.hops-viz .viz-node-subtitle {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.hops-viz [data-state="offline"] .viz-node {
+  fill: color-mix(in srgb, var(--viz-tone-error) 9%, var(--viz-paper));
+  stroke: var(--viz-tone-error);
+  stroke-dasharray: 4 3;
+}
+.hops-viz [data-state="degraded"] .viz-node {
+  fill: color-mix(in srgb, var(--viz-tone-warn) 8%, var(--viz-paper));
+  stroke: var(--viz-tone-warn);
+}
+
+/* Edges and event ticks. */
+.hops-viz .viz-edge {
+  fill: none;
+  stroke: var(--viz-edge-stroke);
+  stroke-width: 1;
+}
+.hops-viz .viz-edge[data-variant="lane"] {
+  stroke-dasharray: 3 5;
+  stroke-width: 1.25;
+}
+.hops-viz .viz-edge[data-tone] { stroke: var(--viz-tone); }
+.hops-viz .viz-edge-arrow { fill: var(--viz-edge-stroke); }
+.hops-viz .viz-tick {
+  stroke: var(--viz-edge-stroke);
+  stroke-width: 1.5;
+}
+
+/* Windows: dashed frames that close (active) then settle (visited). */
+.hops-viz .viz-window {
+  fill: transparent;
+  stroke: var(--viz-line-strong);
+  stroke-dasharray: 4 3;
+  transition: fill var(--viz-duration), stroke var(--viz-duration);
+}
+.hops-viz .viz-window[data-state="active"] {
+  fill: var(--viz-tone-fill);
+  stroke: var(--viz-tone);
+  stroke-dasharray: none;
+}
+.hops-viz .viz-window[data-state="visited"] {
+  fill: color-mix(in srgb, var(--viz-tone) 5%, transparent);
+  stroke: color-mix(in srgb, var(--viz-tone) 45%, var(--viz-line-strong));
+  stroke-dasharray: none;
+}
+
+/* Badges and packets: small labelled chips; packets travel. */
+.hops-viz .viz-badge rect,
+.hops-viz .viz-packet rect {
+  fill: var(--viz-tone-fill);
+  stroke: var(--viz-tone);
+  stroke-width: 1;
+  transition: fill var(--viz-duration), stroke var(--viz-duration);
+}
+.hops-viz .viz-badge text,
+.hops-viz .viz-packet text {
+  font-size: var(--viz-type-label);
+  dominant-baseline: central;
+  font-weight: 700;
+}
+.hops-viz .viz-packet {
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity var(--viz-duration) ease;
+}
+
+/* Status dot, progress bar. */
+.hops-viz .viz-status-dot {
+  fill: var(--viz-tone);
+  stroke: var(--viz-paper);
+  stroke-width: 1;
+  transition: transform 0.9s ease, opacity var(--viz-duration) ease;
+}
+.hops-viz .viz-progress-track { fill: var(--viz-ink-faint); }
+.hops-viz .viz-progress-fill {
+  fill: var(--viz-tone);
+  transition: width 0.9s ease;
+}
+
+/* Key/value store: frame, header, entries that light up on writes. */
+.hops-viz .viz-kv-frame {
+  fill: var(--viz-paper);
+  stroke: var(--viz-line-strong);
+  stroke-width: 1;
+}
+.hops-viz .viz-kv-header {
+  fill: var(--viz-paper-raised);
+  stroke: var(--viz-line-strong);
+  stroke-width: 1;
+}
+.hops-viz .viz-kv-title {
+  font-size: var(--viz-type-label);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.hops-viz .viz-kv-cell {
+  fill: var(--viz-paper);
+  stroke: var(--viz-ink-faint);
+  stroke-width: 1;
+  transition: fill var(--viz-duration), stroke var(--viz-duration);
+}
+.hops-viz .viz-kv-key {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-meta);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: fill var(--viz-duration);
+}
+.hops-viz .viz-kv-val {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-label);
+  transition: fill var(--viz-duration);
+}
+.hops-viz .viz-kv-entry[data-state="visited"] .viz-kv-cell {
+  fill: color-mix(in srgb, var(--viz-tone) 9%, var(--viz-paper));
+  stroke: color-mix(in srgb, var(--viz-tone) 42%, var(--viz-ink-faint));
+}
+.hops-viz .viz-kv-entry[data-state="visited"] .viz-kv-key { fill: var(--viz-ink); }
+.hops-viz .viz-kv-entry[data-state="active"] .viz-kv-cell {
+  fill: color-mix(in srgb, var(--viz-tone) 26%, var(--viz-paper));
+  stroke: var(--viz-tone);
+  stroke-width: 1.4;
+}
+.hops-viz .viz-kv-entry[data-state="active"] .viz-kv-key { fill: var(--viz-ink); }
+.hops-viz .viz-kv-entry[data-state="active"] .viz-kv-val {
+  fill: var(--viz-tone);
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hops-viz * { transition: none !important; }
+}
+
+/* =========================================================
    2026 REFRESH: chrome to the July-2026 dev-docs standard
    (Stripe / Vercel / Linear / Supabase / Mintlify consensus).
    Consolidated block: replaces the earlier refurbish + sidebar

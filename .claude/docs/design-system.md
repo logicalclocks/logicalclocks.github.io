@@ -22,6 +22,7 @@ Two hard lessons already learned, do not repeat them:
 | Nav collapse toggle | `docs/js/nav-collapse.js` | Header button, hides the sidebar, widens content. |
 | Drill-in navigation | `docs/js/drill-nav.js` | Shows only the current level; ancestors live in the breadcrumb. |
 | Diagram zoom | `docs/js/diagram-zoom.js` | Corner handle + full-screen overlay for `.hops-diagram` and all content images (wrapped in `.hops-img-zoom` at runtime; inline images under 200px are left alone). Content images also carry a 1px `--hops-border-strong` border via CSS. |
+| Animated diagrams | `docs/js/hops-viz.js` | Timeline stepper for the hops-viz kit (see the Diagrams section). |
 | Code language labels | `docs/js/code-lang.js` | Language tag on code blocks. |
 | Theme features + assets wiring | `mkdocs.yml` | `theme.features`, `extra_javascript`, `extra_css`. |
 
@@ -74,12 +75,31 @@ The magnifier icon inherits the header's white by default and vanishes on the li
 
 ## Diagrams
 
-Two kinds, do not mix them up:
+Three kinds, do not mix them up:
 
 - Navigational / architecture charts: clickable inline SVG built on the shared `.hops-diagram` CSS kit. Use `currentColor` plus tinted brand fills so they adapt to light/dark, and version-safe relative `href`s for the clickable nodes.
 - Illustrations only: mermaid. Mermaid's `click` directives break rendering under Material's strict `securityLevel`, so mermaid is never used for clickable navigation.
 
 `diagram-zoom.js` adds a corner handle and full-screen overlay to any `.hops-diagram`.
+
+### Animated diagrams: the hops-viz kit
+
+A third kind, for process diagrams where the mechanism is the message (events flowing, windows closing, rows updating).
+The architecture is adapted from Cursor's blog viz system; the palette and semantics are ours.
+Reference example: the streaming pipeline diagram in `docs/concepts/fs/feature_group/streaming_feature_pipelines.md`.
+
+How it works, in three layers, all in `custom.css` + `docs/js/hops-viz.js`:
+
+- Tokens on `.hops-viz`: surfaces (`--viz-paper`, `--viz-line`), ink scale, mono type scale (`--viz-type-title/header/label/meta`), and a tone family. Tones are semantic actions, not decoration: `write`/`accent` (brand green), `read`/`data` (blue), `warn` (amber), `error` (red), `neutral`. Never hardcode a hex inside a diagram.
+- Semantic SVG classes: `viz-label`, `viz-meta`, `viz-node` (+ header/title/subtitle), `viz-edge` (+ `data-variant="lane"`), `viz-tick`, `viz-window`, `viz-badge`, `viz-packet`, `viz-status-dot`, `viz-progress-track/fill`, `viz-kv-*` (frame/header/entry/cell/key/val). State is carried by `data-state` (`active`, `visited`, `pending`, `offline`, `degraded`) and color by `data-tone` on any group; CSS renders both and transitions do the tweening.
+- The driver (`hops-viz.js`): a figure with class `hops-diagram hops-viz` plus a sibling `<script type="application/json" data-viz-scene>` gets a stepped timeline. Each step maps a selector to ops (`state`, `tone`, `text`, `x`/`y` translate, `w`, `opacity`). Plays only while on screen, loops by restoring the pristine SVG, and honors `prefers-reduced-motion` by rendering the final state statically.
+
+Authoring rules:
+
+- Moving elements need their own inner `<g>`; static placement stays on the outer group, because the driver's `x`/`y` write `style.transform`, which overrides a `transform` attribute.
+- All viz text is mono and uppercase-labelled, matching the code aesthetic; keep text at the token sizes.
+- Ids inside a scene are page-global: prefix them if a page ever hosts two animated figures.
+- Animated figures are not navigational: no `<a>` links inside (the stage is `pointer-events: none`).
 
 ## Theme features
 

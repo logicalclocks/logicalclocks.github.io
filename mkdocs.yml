@@ -370,6 +370,7 @@ extra_javascript:
   - js/nav-collapse.js
   - js/drill-nav.js
   - js/diagram-zoom.js
+  - js/hops-viz.js
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
 # Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.
