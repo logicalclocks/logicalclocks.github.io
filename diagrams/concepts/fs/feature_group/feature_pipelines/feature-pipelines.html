@@ -1,37 +1,79 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 330" role="img" aria-label="Feature pipelines read from external data sources, run aggregation and validation steps in SQL, Python, or Spark and Flink, write to the feature store, and a later transform step produces features." xmlns="http://www.w3.org/2000/svg">
-  <defs><marker id="fp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
-  <rect class="d-box-ext" x="30" y="40" width="120" height="48" rx="8"/>
-  <text class="d-t" x="90" y="69" text-anchor="middle">DB</text>
-  <rect class="d-box-ext" x="30" y="108" width="120" height="48" rx="8"/>
-  <text class="d-t" x="90" y="137" text-anchor="middle">Msg Bus</text>
-  <rect class="d-box-ext" x="30" y="176" width="120" height="48" rx="8"/>
-  <text class="d-t" x="90" y="205" text-anchor="middle">DB</text>
-  <rect class="d-box-ext" x="30" y="244" width="120" height="48" rx="8"/>
-  <text class="d-t" x="90" y="273" text-anchor="middle">Files</text>
-  <path class="d-flow" d="M150 64 H320" marker-end="url(#fp-arrow)"/>
-  <text class="d-t" x="235" y="54" text-anchor="middle">SQL</text>
-  <path class="d-flow" d="M150 132 H200"/>
-  <path class="d-flow" d="M150 268 H200"/>
-  <path class="d-flow" d="M200 132 V268"/>
-  <path class="d-flow" d="M150 200 H320" marker-end="url(#fp-arrow)"/>
-  <text class="d-t" x="260" y="192" text-anchor="middle">Python</text>
-  <text class="d-t" x="260" y="216" text-anchor="middle">Spark/Flink</text>
-  <rect class="d-box" x="320" y="40" width="150" height="48" rx="8"/>
-  <text class="d-t" x="395" y="69" text-anchor="middle">Aggregate, Validate</text>
-  <rect class="d-box" x="320" y="168" width="150" height="64" rx="8"/>
-  <text class="d-t" x="395" y="195" text-anchor="middle">Reduce, Aggregate,</text>
-  <text class="d-t" x="395" y="215" text-anchor="middle">Validate</text>
-  <path class="d-flow" d="M470 64 H540" marker-end="url(#fp-arrow)"/>
-  <path class="d-flow" d="M470 200 H540" marker-end="url(#fp-arrow)"/>
-  <rect class="d-box-own" x="540" y="40" width="120" height="252" rx="8"/>
-  <text class="d-t" x="600" y="160" text-anchor="middle">Feature</text>
-  <text class="d-t" x="600" y="180" text-anchor="middle">Store</text>
-  <path class="d-flow" d="M660 166 H720" marker-end="url(#fp-arrow)"/>
-  <rect class="d-box" x="720" y="142" width="110" height="48" rx="8"/>
-  <text class="d-t" x="775" y="171" text-anchor="middle">Transform</text>
-  <path class="d-flow" d="M830 166 H890" marker-end="url(#fp-arrow)"/>
-  <rect class="d-box-own" x="890" y="142" width="100" height="48" rx="8"/>
-  <text class="d-t" x="940" y="171" text-anchor="middle">Features</text>
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 800 300" role="img" aria-label="Animated diagram of a feature pipeline. A dataframe leaves the data sources and steps through the pipeline stages: validate, aggregate, transform, each lighting up as it passes, then lands in the feature store as appended rows. A second, bad dataframe then reaches the validate stage, which turns red and rejects it: under the STRICT ingestion policy a validation failure stops the write and nothing bad lands in the store." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="fp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
+
+  <path class="viz-edge" d="M184 142 H222" marker-end="url(#fp-arrow)"/>
+  <path class="viz-edge" d="M560 142 H612" marker-end="url(#fp-arrow)"/>
+
+  <g class="viz-node-group">
+    <rect class="viz-node" x="24" y="110" width="160" height="64" rx="8"/>
+    <text class="viz-node-title" x="104" y="136" text-anchor="middle">DATA SOURCES</text>
+    <text class="viz-node-subtitle" x="104" y="156" text-anchor="middle">kafka · s3 · snowflake</text>
+  </g>
+
+  <rect class="viz-kv-frame" x="230" y="88" width="330" height="110" rx="6"/>
+  <rect class="viz-kv-header" x="230" y="88" width="330" height="26"/>
+  <text class="viz-kv-title" x="242" y="101">Feature pipeline</text>
+  <text class="viz-meta" x="548" y="101" text-anchor="end">python · spark · flink</text>
+  <g id="fp-sv" class="viz-badge" data-tone="neutral">
+    <rect x="246" y="128" width="88" height="28" rx="6"/>
+    <text x="290" y="142" text-anchor="middle">validate</text>
+  </g>
+  <g id="fp-sa" class="viz-badge" data-tone="neutral">
+    <rect x="346" y="128" width="96" height="28" rx="6"/>
+    <text x="394" y="142" text-anchor="middle">aggregate</text>
+  </g>
+  <g id="fp-st" class="viz-badge" data-tone="neutral">
+    <rect x="454" y="128" width="92" height="28" rx="6"/>
+    <text x="500" y="142" text-anchor="middle">transform</text>
+  </g>
+
+  <rect class="viz-kv-frame" x="620" y="88" width="156" height="110" rx="6"/>
+  <rect class="viz-kv-header" x="620" y="88" width="156" height="26"/>
+  <text class="viz-kv-title" x="628" y="101">Feature store</text>
+  <g id="fp-row" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="626" y="122" width="144" height="26" rx="3"/>
+    <text class="viz-kv-key" x="632" y="139">order_fg</text>
+    <text id="fp-val" class="viz-kv-val" x="764" y="139" text-anchor="end">–</text>
+  </g>
+  <text class="viz-meta" x="628" y="180">validated features only</text>
+
+  <text id="fp-err" class="viz-meta viz-fade" data-tone="error" x="395" y="232" text-anchor="middle" style="opacity:0">STRICT policy: a validation failure stops the write</text>
+
+  <g transform="translate(176 166)">
+    <g id="fp-p1" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="44" height="18" rx="3"/>
+      <text x="22" y="9" text-anchor="middle">df</text>
+    </g>
+  </g>
+  <g transform="translate(176 166)">
+    <g id="fp-p2" class="viz-packet" data-tone="warn" style="opacity:0">
+      <rect width="44" height="18" rx="3"/>
+      <text x="22" y="9" text-anchor="middle">bad</text>
+    </g>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 750,
+  "loopDelay": 2400,
+  "steps": [
+    { "#fp-p1": {"opacity": 1} },
+    { "#fp-p1": {"x": 92}, "#fp-sv": {"tone": "write"}, "$ms": 600 },
+    { "#fp-p1": {"x": 196}, "#fp-sv": {"tone": "neutral"}, "#fp-sa": {"tone": "write"}, "$ms": 600 },
+    { "#fp-p1": {"x": 302}, "#fp-sa": {"tone": "neutral"}, "#fp-st": {"tone": "write"}, "$ms": 600 },
+    { "#fp-p1": {"x": 500, "y": -40}, "#fp-st": {"tone": "neutral"}, "$ms": 700 },
+    { "#fp-p1": {"opacity": 0}, "#fp-row": {"state": "active"}, "#fp-val": {"text": "+1 204 rows"}, "$ms": 900 },
+    { "#fp-row": {"state": "visited"}, "#fp-p2": {"opacity": 1}, "$ms": 600 },
+    { "#fp-p2": {"x": 92}, "$ms": 600 },
+    { "#fp-sv": {"tone": "error"}, "#fp-p2": {"tone": "error"}, "$ms": 700 },
+    { "#fp-p2": {"x": 92, "y": 78}, "$ms": 500 },
+    { "#fp-p2": {"opacity": 0}, "#fp-err": {"opacity": 1}, "#fp-sv": {"tone": "neutral"}, "$ms": 2200 }
+  ]
+}
+</script>
 </figure>
