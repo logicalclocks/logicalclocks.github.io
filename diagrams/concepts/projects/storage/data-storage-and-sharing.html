@@ -1,58 +1,101 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 560" role="img" aria-label="Two Hopsworks projects, Production and Development, each holding its own ML assets, where the Production feature store is shared read-only with Development and CI/CD writes to both." xmlns="http://www.w3.org/2000/svg">
-  <defs><marker id="share-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="6 8 548 448" role="img" aria-label="Two Hopsworks projects, Production and Development, each holding its own ML assets. The Production feature store is a shared asset: it stays in Production but reaches across to be read from Development, which keeps its own feature store too. A shared CI/CD layer links the two environments." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="st-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
+    </marker>
+  </defs>
 
-  <!-- Actors -->
-  <rect class="d-box-ext" x="100" y="20" width="200" height="50" rx="8"/>
-  <text class="d-t" x="200" y="49" text-anchor="middle">ML Engineers</text>
-  <rect class="d-box-ext" x="420" y="20" width="160" height="50" rx="8"/>
-  <text class="d-t" x="500" y="49" text-anchor="middle">CI/CD</text>
-  <rect class="d-box-ext" x="650" y="15" width="310" height="60" rx="8"/>
-  <text class="d-t" x="805" y="42" text-anchor="middle">Data Scientists, Data Engineers,</text>
-  <text class="d-t" x="805" y="60" text-anchor="middle">ML Engineers</text>
+  <!-- row 1: stakeholders -->
+  <g data-tone="data"><rect class="viz-node" x="40" y="16" width="200" height="44" rx="4"/>
+  <g class="viz-icon" transform="translate(54,29.6) scale(0.7)"><circle cx="12" cy="8.5" r="4"/><path d="M5 20 C5 15.5 8 13.5 12 13.5 C16 13.5 19 15.5 19 20"/></g>
+  <text class="viz-node-title" x="146" y="43" text-anchor="middle">ML Engineers</text></g>
+  <g data-tone="data"><rect class="viz-node" x="320" y="16" width="220" height="44" rx="4"/>
+  <g class="viz-icon" transform="translate(334,29.6) scale(0.7)"><circle cx="12" cy="8.5" r="4"/><path d="M5 20 C5 15.5 8 13.5 12 13.5 C16 13.5 19 15.5 19 20"/></g>
+  <text class="viz-meta" x="440" y="34" text-anchor="middle">Data Scientists,</text>
+  <text class="viz-meta" x="440" y="50" text-anchor="middle">Data Engineers, ML Engineers</text></g>
 
-  <!-- Actor connectors -->
-  <path class="d-flow" d="M200 70 V125" marker-end="url(#share-arrow)"/>
-  <path class="d-flow" d="M500 70 V98 H255 V125" marker-end="url(#share-arrow)"/>
-  <path class="d-flow" d="M500 70 V98 H745 V125" marker-end="url(#share-arrow)"/>
-  <path class="d-flow" d="M805 75 V125" marker-end="url(#share-arrow)"/>
+  <!-- row 2: CI/CD links the environments -->
+  <g><rect class="viz-node" x="228" y="78" width="104" height="36" rx="4"/>
+  <g class="viz-icon" transform="translate(240,87.6) scale(0.7)"><path d="M6 12 A6 6 0 0 1 17 9"/><path d="M17 4 V9 H12"/><path d="M18 12 A6 6 0 0 1 7 15"/><path d="M7 20 V15 H12"/></g>
+  <text class="viz-node-title" x="292" y="101" text-anchor="middle">CI/CD</text></g>
 
-  <!-- Project panels -->
-  <rect class="d-panel-fs" x="40" y="130" width="430" height="400" rx="14"/>
-  <rect class="d-panel-fs" x="530" y="130" width="430" height="400" rx="14"/>
-  <text class="d-cap d-cap-fs" x="255" y="118" text-anchor="middle">Production</text>
-  <text class="d-cap d-cap-fs" x="745" y="118" text-anchor="middle">Development</text>
-  <text class="d-sub" x="255" y="182" text-anchor="middle" font-size="11">ML ASSETS</text>
-  <text class="d-sub" x="745" y="182" text-anchor="middle" font-size="11">ML ASSETS</text>
+  <!-- flows -->
+  <path class="viz-edge" d="M140 60 C140 100 150 116 150 140" marker-end="url(#st-arrow)"/>
+  <path class="viz-edge" d="M440 60 C440 100 430 116 430 140" marker-end="url(#st-arrow)"/>
+  <path class="viz-edge" d="M228 96 C196 108 168 124 152 140" marker-end="url(#st-arrow)" style="stroke-dasharray:4 3"/>
+  <path class="viz-edge" d="M332 96 C364 108 392 124 428 140" marker-end="url(#st-arrow)" style="stroke-dasharray:4 3"/>
 
-  <!-- Production assets -->
-  <rect class="d-box-own" x="90" y="205" width="330" height="46" rx="8"/>
-  <text class="d-t" x="255" y="234" text-anchor="middle">Training Data</text>
-  <rect class="d-box-own" x="90" y="263" width="330" height="46" rx="8"/>
-  <text class="d-t" x="255" y="292" text-anchor="middle">Feature Store</text>
-  <rect class="d-box-own" x="90" y="321" width="330" height="46" rx="8"/>
-  <text class="d-t" x="255" y="350" text-anchor="middle">Model Registry</text>
-  <rect class="d-box-own" x="90" y="379" width="330" height="46" rx="8"/>
-  <text class="d-t" x="255" y="408" text-anchor="middle">Model Deployments</text>
-  <rect class="d-box-own" x="90" y="437" width="330" height="52" rx="8"/>
-  <text class="d-t" x="255" y="459" text-anchor="middle">Vector index</text>
-  <text class="d-sub" x="255" y="477" text-anchor="middle" font-size="11">(OpenSearch Index)</text>
+  <!-- projects -->
+  <rect class="viz-zone" x="20" y="140" width="260" height="308" rx="6"/>
+  <text class="viz-label" x="150" y="164" text-anchor="middle">Production</text>
+  <text class="viz-meta" x="150" y="182" text-anchor="middle">ML assets</text>
+  <rect class="viz-zone" x="300" y="140" width="260" height="308" rx="6"/>
+  <text class="viz-label" x="430" y="164" text-anchor="middle">Development</text>
+  <text class="viz-meta" x="430" y="182" text-anchor="middle">ML assets</text>
 
-  <!-- Development assets -->
-  <rect class="d-box-own" x="580" y="205" width="330" height="46" rx="8"/>
-  <text class="d-t" x="745" y="234" text-anchor="middle">Training Data</text>
-  <rect class="d-box-own" x="580" y="263" width="330" height="46" rx="8"/>
-  <text class="d-t" x="745" y="292" text-anchor="middle">Feature Store</text>
-  <rect class="d-box-own" x="580" y="321" width="330" height="46" rx="8"/>
-  <text class="d-t" x="745" y="350" text-anchor="middle">Model Registry</text>
-  <rect class="d-box-own" x="580" y="379" width="330" height="46" rx="8"/>
-  <text class="d-t" x="745" y="408" text-anchor="middle">Model Deployments</text>
-  <rect class="d-box-own" x="580" y="437" width="330" height="52" rx="8"/>
-  <text class="d-t" x="745" y="459" text-anchor="middle">Vector index</text>
-  <text class="d-sub" x="745" y="477" text-anchor="middle" font-size="11">(OpenSearch Index)</text>
+  <!-- Training Data -->
+  <a class="viz-link" href="../../fs/feature_view/offline_api/">
+    <g data-tone="accent"><rect class="viz-node" x="40" y="196" width="220" height="38" rx="4"/>
+    <g class="viz-icon" transform="translate(52,205.6) scale(0.7)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M12 9 V21"/></g>
+    <text class="viz-node-title" x="152" y="220" text-anchor="middle">Training Data</text></g>
+  </a>
+  <a class="viz-link" href="../../fs/feature_view/offline_api/">
+    <g data-tone="accent"><rect class="viz-node" x="320" y="196" width="220" height="38" rx="4"/>
+    <g class="viz-icon" transform="translate(332,205.6) scale(0.7)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M12 9 V21"/></g>
+    <text class="viz-node-title" x="432" y="220" text-anchor="middle">Training Data</text></g>
+  </a>
 
-  <!-- Shared read-only feature store -->
-  <text class="d-sub" x="500" y="279" text-anchor="middle" font-size="11">shared read-only</text>
-  <path class="d-flow" d="M420 291 H580" marker-end="url(#share-arrow)"/>
+  <!-- Feature Store: the Production one is a shared asset reaching into Development -->
+  <g data-tone="accent"><rect class="viz-node" x="36" y="238" width="292" height="46" rx="6" style="stroke-dasharray:5 4" opacity="0.85"/></g>
+  <text class="viz-label" x="290" y="265" text-anchor="middle" data-tone="accent">SHARED</text>
+  <a class="viz-link" href="../../fs/feature_group/fg_overview/">
+    <g data-tone="accent"><rect class="viz-node" x="40" y="242" width="220" height="38" rx="4"/>
+    <g class="viz-icon" transform="translate(52,251.6) scale(0.7)"><rect x="8" y="8" width="12.5" height="13" rx="2"/><path d="M4.5 17 V6 A2 2 0 0 1 6.5 4 H15.5"/></g>
+    <text class="viz-node-title" x="152" y="266" text-anchor="middle">Feature Store</text></g>
+  </a>
+  <a class="viz-link" href="../../fs/feature_group/fg_overview/">
+    <g data-tone="accent"><rect class="viz-node" x="320" y="242" width="220" height="38" rx="4"/>
+    <g class="viz-icon" transform="translate(332,251.6) scale(0.7)"><rect x="8" y="8" width="12.5" height="13" rx="2"/><path d="M4.5 17 V6 A2 2 0 0 1 6.5 4 H15.5"/></g>
+    <text class="viz-node-title" x="432" y="266" text-anchor="middle">Feature Store</text></g>
+  </a>
+
+  <!-- Model Registry -->
+  <a class="viz-link" href="../../mlops/registry/">
+    <g data-tone="accent"><rect class="viz-node" x="40" y="288" width="220" height="38" rx="4"/>
+    <g class="viz-icon" transform="translate(52,297.6) scale(0.7)"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path d="M3 7 L12 12 L21 7 M12 12 V22"/></g>
+    <text class="viz-node-title" x="152" y="312" text-anchor="middle">Model Registry</text></g>
+  </a>
+  <a class="viz-link" href="../../mlops/registry/">
+    <g data-tone="accent"><rect class="viz-node" x="320" y="288" width="220" height="38" rx="4"/>
+    <g class="viz-icon" transform="translate(332,297.6) scale(0.7)"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path d="M3 7 L12 12 L21 7 M12 12 V22"/></g>
+    <text class="viz-node-title" x="432" y="312" text-anchor="middle">Model Registry</text></g>
+  </a>
+
+  <!-- Model Deployments -->
+  <a class="viz-link" href="../../mlops/serving/">
+    <g data-tone="accent"><rect class="viz-node" x="40" y="334" width="220" height="38" rx="4"/>
+    <g class="viz-icon" transform="translate(52,343.6) scale(0.7)"><rect x="4" y="5" width="16" height="6" rx="1.5"/><rect x="4" y="13" width="16" height="6" rx="1.5"/><path d="M7.5 8 H7.51 M7.5 16 H7.51"/></g>
+    <text class="viz-node-title" x="152" y="358" text-anchor="middle">Model Deployments</text></g>
+  </a>
+  <a class="viz-link" href="../../mlops/serving/">
+    <g data-tone="accent"><rect class="viz-node" x="320" y="334" width="220" height="38" rx="4"/>
+    <g class="viz-icon" transform="translate(332,343.6) scale(0.7)"><rect x="4" y="5" width="16" height="6" rx="1.5"/><rect x="4" y="13" width="16" height="6" rx="1.5"/><path d="M7.5 8 H7.51 M7.5 16 H7.51"/></g>
+    <text class="viz-node-title" x="432" y="358" text-anchor="middle">Model Deployments</text></g>
+  </a>
+
+  <!-- Vector index -->
+  <a class="viz-link" href="../../mlops/opensearch/">
+    <g data-tone="accent"><rect class="viz-node" x="40" y="380" width="220" height="52" rx="4"/>
+    <g class="viz-icon" transform="translate(52,396.6) scale(0.7)"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15 L20 20"/></g>
+    <text class="viz-node-title" x="152" y="402" text-anchor="middle">Vector index</text>
+    <text class="viz-meta" x="152" y="420" text-anchor="middle">(OpenSearch Index)</text></g>
+  </a>
+  <a class="viz-link" href="../../mlops/opensearch/">
+    <g data-tone="accent"><rect class="viz-node" x="320" y="380" width="220" height="52" rx="4"/>
+    <g class="viz-icon" transform="translate(332,396.6) scale(0.7)"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15 L20 20"/></g>
+    <text class="viz-node-title" x="432" y="402" text-anchor="middle">Vector index</text>
+    <text class="viz-meta" x="432" y="420" text-anchor="middle">(OpenSearch Index)</text></g>
+  </a>
 </svg>
 </figure>
