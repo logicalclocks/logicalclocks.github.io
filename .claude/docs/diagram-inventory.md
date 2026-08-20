@@ -23,7 +23,7 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [x] `docs/concepts/fs/feature_group/on_demand_feature.md` — 1 animated (one UDF, two pipelines, vector merge)
 - [x] `docs/concepts/fs/feature_group/versioning.md` — 1 animated (inserts append commits, as_of cutoff), 2 static kept (schema v1→v2, fv/td grid)
 - [x] `docs/concepts/fs/feature_group/write_apis.md` — 2 animated (stream: at-least-once→exactly-once dup story; batch: dual path, HDFS direct)
-- [ ] `docs/concepts/fs/feature_view/fv_overview.md` — 2 kit-static
+- [x] `docs/concepts/fs/feature_view/fv_overview.md` — 2 static kept (schema inheritance, fv dual outputs); mechanisms animated on online/offline api pages
 - [x] `docs/concepts/fs/feature_view/offline_api.md` — 1 animated (PIT join sweep), 2 static kept (column lineage, batch ranges)
 - [x] `docs/concepts/fs/feature_view/online_api.md` — 1 animated (get_feature_vector assembly, narrated steps)
 - [x] `docs/concepts/fs/feature_view/training_inference_pipelines.md` — 1 animated (skew two-act: same udf then drift, 800 viewBox)
