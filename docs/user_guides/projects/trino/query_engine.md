@@ -146,7 +146,7 @@ Administrators are not notified when you create a catalog, and you are not notif
 There is no service level on this step, so contact your administrator if a catalog has been pending longer than you expect, and watch the status on this page to see when it becomes Approved.
 
 Deleting a catalog follows the same path in reverse.
-The catalog is marked for removal immediately and disappears from your Catalogs tab, an administrator's next approval removes it from the Query Engine's configuration, and it stops being queryable at the next restart, because a running Trino keeps the catalogs it started with.
+The catalog is marked for removal immediately and disappears from your Catalogs tab, an administrator then applies the removal rather than approving it, and it stops being queryable at the next restart, because a running Trino keeps the catalogs it started with.
 A catalog you have deleted can therefore still answer queries for a while.
 
 <figure>

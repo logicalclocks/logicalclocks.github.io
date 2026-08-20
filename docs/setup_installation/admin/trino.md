@@ -109,8 +109,10 @@ The restart interrupts queries running anywhere on the cluster, so check the rep
 
 A connector's credentials end up in the places below. Anyone who can read those places can read the credentials, so plan access to them accordingly.
 
-- A `${HOPSWORKS_SECRET:<name>}` reference is stored verbatim in the `trino_catalog` database row and is resolved to its value only at approval time. The database row never holds the value.
-- A literal value typed straight into the properties editor is stored as-is in the `trino_catalog` database row, in cleartext, and is captured by database backups. Use a secret reference for any credential you do not want in the database.
+- A `${HOPSWORKS_SECRET:<name>}` reference is stored verbatim in the `trino_catalog` database row and is resolved to its value only at approval time.
+  The database row never holds the value.
+- A literal value typed straight into the properties editor is stored as-is in the `trino_catalog` database row, in cleartext, and is captured by database backups.
+  Use a secret reference for any credential you do not want in the database.
 - Either way, the written file holds the resolved plaintext, because Trino reads the credential from the catalog file itself.
   That file lives in a Kubernetes Secret rather than a ConfigMap, so it is covered by the RBAC that applies to Secrets in the Hopsworks namespace and by etcd encryption-at-rest on clusters that enable it.
 
@@ -267,7 +269,7 @@ The chart fails the render when the flag and the mount disagree, so a half-done 
 An **already approved catalog keeps working only as far as its definition**.
 Its reference still resolves to a path, but nothing populates that path any more.
 For a connector that opens its files when a connection is made, such as Oracle, the coordinator starts cleanly and queries fail.
-Sync does not consult the flag, by design, so switching the store off does not quarantine catalogs that already use it.
+Approval does not consult the flag, by design, so switching the store off does not quarantine catalogs that already use it.
 
 ### Backup
 
