@@ -71,10 +71,13 @@ You can achieve this by defining a JSON schema like the following:
 
 Where the type is a valid primitive type: `string`, `boolean`, `integer`, `number`.
 
-### Archiving deleted attachments
+### Archiving a tag for analytics
 
-When you define a schema you can also tick `Archive deleted tags`, or pass `archive=True` through the API.
-The flag is a property of the schema rather than of any one attachment, which is why it is set where the schema is defined and applies to every tag attached with it afterwards.
+Most tags are only ever read as they are now: who owns this feature group, whether it holds PII.
+Some are interesting over time, and for those the current value is the least useful part.
+Marking a schema as archived says that attachments of this tag are worth keeping once they stop being current, so the tag's history can be analysed and not just its present state.
+
+Tick `Archive deleted tags` when defining the schema, or pass `archive=True` through the API:
 
 === "Python"
 
@@ -84,22 +87,41 @@ The flag is a property of the schema rather than of any one attachment, which is
 
     schema = {
         "type": "object",
-        "properties": {"owner": {"type": "string"}},
-        "required": ["owner"],
+        "properties": {"state": {"type": "string"}},
+        "required": ["state"],
         "additionalProperties": False,
     }
 
-    # keep attachments of this tag once they are deleted
-    TagSchemasApi().create("ownership", schema, archive=True)
+    TagSchemasApi().create("asset_lifecycle", schema, archive=True)
     ```
 
-The flag defaults to `False`, which discards an attachment when it is deleted.
+The flag is a property of the schema rather than of any one attachment, which is why it is set where the schema is defined and applies to every tag attached with it afterwards.
+It defaults to `False`, which discards an attachment once it stops being current.
 Registering a schema requires administrator privileges, as it does without the flag.
+
+#### What it is for
+
+Take an `asset_lifecycle` tag whose `state` is `dev`, `qa` or `prod`.
+Every artifact carries it, and the value moves forward as the artifact is promoted.
+
+Read as an ordinary tag it answers one question, which is where an artifact is now.
+The questions worth asking are about the pipeline rather than the artifact: how long does something sit in `qa` before it reaches `prod`, is that getting slower, whose artifacts stall.
+
+Those become answerable once the tag's history is kept as one record per value, each with the time that value became current.
+The analysis is then a group-by over the artifact: order its `dev`, `qa` and `prod` records by time, and the gaps between them are how long it spent in each stage.
+Aggregated across every artifact, that gives the promotion times for the deployment as a whole and how they are moving.
+
+Without archiving, promoting an artifact to `prod` discards the record that it was ever in `qa`, and the question stops being answerable at all.
+So the flag is worth setting on a tag whose values are states an artifact passes through, rather than facts about it.
+
+This history is not the same thing as the [attachment time][when-a-tag-was-attached] on the live tag.
+That timestamp deliberately stays at the first attachment when a value is corrected, so it records when an artifact was first classified and not when it entered its current state.
+The per-value history is what the archive is for.
 
 !!! note "Records intent, no behaviour yet"
     Setting `archive` today only records the decision on the schema.
-    Nothing reads it: copying deleted attachments into an offline feature group for analysis is a later change.
-    Set it now on schemas whose history you expect to want, because the flag cannot recover attachments that were already deleted while it was off.
+    Nothing reads it: copying the retained attachments into an offline feature group, where they can be queried as above, is a later change.
+    Set it now on the schemas whose history you expect to want, because the flag cannot recover attachments that were already discarded while it was off.
 
 ## Step 2: Attach a tag to an artifact
 
