@@ -134,7 +134,7 @@ The same tab carries the **Catalog lifecycle** card, where the whole schedule is
 - **Maximum catalogs**, across every project, at most 250.
   Each catalog is a file the query engine loads at startup, so the deployment is sized for a bounded number; the setting may lower the bound but never raise it past the ceiling.
 
-Saving reprograms the schedule immediately, without a redeploy.
+Saving needs no redeploy: every Hopsworks instance derives its schedule from these settings and picks a change up within a minute, whichever instance served the save.
 
 ### A single project's allowance
 
@@ -142,6 +142,7 @@ The cluster-wide maximum is a ceiling on the deployment; how many catalogs any o
 Open the project under Cluster Settings, Projects, and edit **Query Engine**, **Trino catalogs**, which shows the project's current count beside its limit.
 
 A new project starts on the cluster default (`trino_catalog_max_per_project`, 10), so raising one project here raises that project only.
+Checking **unlimited** removes the project's own bound, leaving only the cluster-wide ceiling; a limit of 0 blocks new catalogs in the project.
 Both bounds apply to a create: the project must be under its own allowance, and the cluster must be under the ceiling.
 
 ### The wait for a quiet moment
