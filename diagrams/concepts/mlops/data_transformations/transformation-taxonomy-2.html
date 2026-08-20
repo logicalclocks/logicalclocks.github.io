@@ -1,30 +1,37 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 260" role="img" aria-label="A transformation is model-independent (data-engineering transforms like aggregations and windowed counts, producing reusable features), model-dependent (encoding, scaling and imputation parameterized by the training data, producing model-specific features), or on-demand (needing request-time data, producing on-demand features)." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="6 8 548 178" role="img" aria-label="A transformation is model-independent (produces reusable features), model-dependent (produces model-specific features), or on-demand (needs request-time data, produces on-demand features)." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="tt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="tt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
     </marker>
   </defs>
-  <rect class="d-box" x="410" y="20" width="180" height="48" rx="8"/>
-  <text class="d-t" x="500" y="49" text-anchor="middle">Transformation</text>
 
-  <path class="d-flow" d="M500 68 V100 H175 V140" marker-end="url(#tt-arrow)"/>
-  <path class="d-flow" d="M500 68 V140" marker-end="url(#tt-arrow)"/>
-  <path class="d-flow" d="M500 68 V100 H825 V140" marker-end="url(#tt-arrow)"/>
+  <g><rect class="viz-node" x="215" y="16" width="130" height="44" rx="4"/>
+  <text class="viz-node-title" x="280" y="43" text-anchor="middle">Transformation</text></g>
 
-  <rect class="d-box-own" x="40" y="140" width="270" height="48" rx="8"/>
-  <text class="d-t" x="175" y="169" text-anchor="middle">Model-independent</text>
-  <text class="d-t d-sub" x="175" y="212" text-anchor="middle">aggregations, windowed count, RFM</text>
-  <text class="d-t d-sub" x="175" y="230" text-anchor="middle">produces reusable features</text>
+  <path class="viz-edge" d="M280 60 C280 82 102 82 102 100" marker-end="url(#tt-arrow)"/>
+  <path class="viz-edge" d="M280 60 V100" marker-end="url(#tt-arrow)"/>
+  <path class="viz-edge" d="M280 60 C280 82 458 82 458 100" marker-end="url(#tt-arrow)"/>
 
-  <rect class="d-box" x="365" y="140" width="270" height="48" rx="8"/>
-  <text class="d-t" x="500" y="169" text-anchor="middle">Model-dependent</text>
-  <text class="d-t d-sub" x="500" y="212" text-anchor="middle">encoding, scaling, imputation</text>
-  <text class="d-t d-sub" x="500" y="230" text-anchor="middle">produces model-specific features</text>
+  <g data-tone="accent">
+    <rect class="viz-node" x="16" y="100" width="172" height="74" rx="4"/>
+    <text class="viz-node-title" x="102" y="124" text-anchor="middle">Model-independent</text>
+    <text class="viz-meta" x="102" y="146" text-anchor="middle">windowed aggregations</text>
+    <text class="viz-meta" x="102" y="162" text-anchor="middle">reusable features</text>
+  </g>
 
-  <rect class="d-box-ext" x="690" y="140" width="270" height="48" rx="8"/>
-  <text class="d-t" x="825" y="169" text-anchor="middle">On-demand</text>
-  <text class="d-t d-sub" x="825" y="212" text-anchor="middle">needs request-time data, computed online</text>
-  <text class="d-t d-sub" x="825" y="230" text-anchor="middle">produces on-demand features</text>
+  <g>
+    <rect class="viz-node" x="194" y="100" width="172" height="74" rx="4"/>
+    <text class="viz-node-title" x="280" y="124" text-anchor="middle">Model-dependent</text>
+    <text class="viz-meta" x="280" y="146" text-anchor="middle">encoding, scaling</text>
+    <text class="viz-meta" x="280" y="162" text-anchor="middle">model-specific features</text>
+  </g>
+
+  <g data-tone="data">
+    <rect class="viz-node" x="372" y="100" width="172" height="74" rx="4"/>
+    <text class="viz-node-title" x="458" y="124" text-anchor="middle">On-demand</text>
+    <text class="viz-meta" x="458" y="146" text-anchor="middle">needs request-time data</text>
+    <text class="viz-meta" x="458" y="162" text-anchor="middle">on-demand features</text>
+  </g>
 </svg>
 </figure>

@@ -1,72 +1,75 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 500" role="img" aria-label="Hopsworks decomposes an AI system into three AI pipelines over a feature store and storage. The feature pipeline runs model-independent and on-demand transformations and writes to feature groups. The training and inference pipelines run model-dependent transformations. On-demand UDFs are registered on feature groups, model-dependent UDFs on feature views. The feature store is backed by external tables, HopsFS-S3, RonDB and OpenSearch." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="6 8 548 344" role="img" aria-label="Hopsworks decomposes an AI system into three AI pipelines over a feature store and storage. The feature pipeline runs model-independent and on-demand transformations. Training and inference pipelines run model-dependent transformations. On-demand UDFs are registered on feature groups, model-dependent UDFs on feature views. The feature store is backed by external tables, HopsFS-S3, RonDB and OpenSearch." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="dh-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="dh-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
     </marker>
   </defs>
 
-  <!-- band captions -->
-  <text class="d-t d-cap" x="984" y="40" text-anchor="end">AI pipelines</text>
-  <text class="d-t d-cap d-cap-fs" x="984" y="238" text-anchor="end">Feature store</text>
-  <text class="d-t d-cap" x="984" y="404" text-anchor="end">Storage</text>
+  <!-- flows -->
+  <path class="viz-edge" d="M102 138 V164" marker-end="url(#dh-arrow)"/>
+  <path class="viz-edge" d="M458 138 C458 152 420 152 420 164" marker-end="url(#dh-arrow)"/>
+  <path class="viz-edge" d="M280 204 H296" marker-end="url(#dh-arrow)"/>
+  <path class="viz-edge" d="M148 244 V268" marker-end="url(#dh-arrow)"/>
+  <path class="viz-edge" d="M400 244 V268" marker-end="url(#dh-arrow)"/>
+  <text class="viz-meta" x="288" y="198">graph traversal</text>
 
   <!-- AI pipelines -->
-  <rect class="d-box" x="30" y="52" width="270" height="130" rx="10"/>
-  <text class="d-t" x="165" y="76" text-anchor="middle">Feature pipeline</text>
-  <rect class="d-box-own" x="54" y="90" width="222" height="28" rx="5"/>
-  <text class="d-t d-sub" x="165" y="109" text-anchor="middle">Model-independent (MIT)</text>
-  <rect class="d-box-ext" x="54" y="126" width="222" height="28" rx="5" stroke-dasharray="4 3"/>
-  <text class="d-t d-sub" x="165" y="145" text-anchor="middle">On-demand (ODT), backfill</text>
+  <text class="viz-label" x="24" y="28">AI pipelines</text>
+  <a class="viz-link" href="../../fs/feature_group/feature_pipelines/">
+    <g><rect class="viz-node" x="16" y="34" width="172" height="104" rx="4"/>
+    <text class="viz-node-title" x="102" y="56" text-anchor="middle">Feature pipeline</text></g>
+  </a>
+  <g data-tone="accent"><rect class="viz-node" x="30" y="66" width="144" height="26" rx="4"/>
+  <text class="viz-meta" x="102" y="82" text-anchor="middle">Model-independent</text></g>
+  <g data-tone="data"><rect class="viz-node" x="30" y="98" width="144" height="26" rx="4" style="stroke-dasharray:4 3"/>
+  <text class="viz-meta" x="102" y="114" text-anchor="middle">On-demand backfill</text></g>
 
-  <rect class="d-box" x="365" y="52" width="250" height="130" rx="10"/>
-  <text class="d-t" x="490" y="76" text-anchor="middle">Training pipeline</text>
-  <text class="d-t d-sub" x="490" y="104" text-anchor="middle">model training</text>
-  <rect class="d-box" x="400" y="120" width="180" height="28" rx="5"/>
-  <text class="d-t d-sub" x="490" y="139" text-anchor="middle">Model-dependent (MDT)</text>
+  <a class="viz-link" href="../training/">
+    <g><rect class="viz-node" x="194" y="34" width="172" height="104" rx="4"/>
+    <text class="viz-node-title" x="280" y="56" text-anchor="middle">Training pipeline</text></g>
+  </a>
+  <g><rect class="viz-node" x="208" y="82" width="144" height="26" rx="4"/>
+  <text class="viz-meta" x="280" y="98" text-anchor="middle">Model-dependent</text></g>
 
-  <rect class="d-box" x="680" y="52" width="290" height="130" rx="10"/>
-  <text class="d-t" x="825" y="76" text-anchor="middle">Online inference pipeline</text>
-  <rect class="d-box-ext" x="700" y="90" width="250" height="26" rx="5"/>
-  <text class="d-t d-sub" x="825" y="108" text-anchor="middle">On-demand (ODT)</text>
-  <rect class="d-box" x="700" y="146" width="250" height="26" rx="5"/>
-  <text class="d-t d-sub" x="825" y="164" text-anchor="middle">Model-dependent (MDT)</text>
-  <text class="d-t d-sub" x="825" y="135" text-anchor="middle">model inference</text>
+  <a class="viz-link" href="../serving/">
+    <g><rect class="viz-node" x="372" y="34" width="172" height="104" rx="4"/>
+    <text class="viz-node-title" x="458" y="56" text-anchor="middle">Online inference</text></g>
+  </a>
+  <g data-tone="data"><rect class="viz-node" x="386" y="66" width="144" height="26" rx="4"/>
+  <text class="viz-meta" x="458" y="82" text-anchor="middle">On-demand</text></g>
+  <g><rect class="viz-node" x="386" y="98" width="144" height="26" rx="4"/>
+  <text class="viz-meta" x="458" y="114" text-anchor="middle">Model-dependent</text></g>
 
   <!-- feature store -->
-  <rect class="d-panel-fs" x="20" y="222" width="950" height="150" rx="12"/>
-  <rect class="d-box-own" x="50" y="248" width="270" height="98" rx="10"/>
-  <text class="d-t" x="185" y="274" text-anchor="middle">Feature group</text>
-  <rect class="d-box-ext" x="74" y="292" width="222" height="30" rx="5"/>
-  <text class="d-t d-sub" x="185" y="312" text-anchor="middle">On-demand UDFs</text>
+  <text class="viz-label" x="24" y="156">Feature store</text>
+  <a class="viz-link" href="../../fs/feature_group/fg_overview/">
+    <g data-tone="accent"><rect class="viz-node" x="16" y="164" width="264" height="80" rx="4"/>
+    <text class="viz-node-title" x="148" y="188" text-anchor="middle">Feature group</text></g>
+  </a>
+  <g data-tone="data"><rect class="viz-node" x="40" y="204" width="216" height="26" rx="4"/>
+  <text class="viz-meta" x="148" y="220" text-anchor="middle">On-demand UDFs</text></g>
 
-  <rect class="d-box-own" x="520" y="248" width="300" height="98" rx="10"/>
-  <text class="d-t" x="670" y="274" text-anchor="middle">Feature view</text>
-  <rect class="d-box" x="544" y="292" width="252" height="30" rx="5"/>
-  <text class="d-t d-sub" x="670" y="312" text-anchor="middle">Model-dependent UDFs</text>
+  <a class="viz-link" href="../../fs/feature_view/fv_overview/">
+    <g data-tone="accent"><rect class="viz-node" x="296" y="164" width="248" height="80" rx="4"/>
+    <text class="viz-node-title" x="420" y="188" text-anchor="middle">Feature view</text></g>
+  </a>
+  <g><rect class="viz-node" x="316" y="204" width="208" height="26" rx="4"/>
+  <text class="viz-meta" x="420" y="220" text-anchor="middle">Model-dependent UDFs</text></g>
 
   <!-- storage -->
-  <rect class="d-box-ext" x="30" y="410" width="220" height="66" rx="8"/>
-  <text class="d-t" x="140" y="438" text-anchor="middle">External tables</text>
-  <text class="d-t d-sub" x="140" y="457" text-anchor="middle">offline: BigQuery, Snowflake</text>
-  <rect class="d-box" x="270" y="410" width="220" height="66" rx="8"/>
-  <text class="d-t" x="380" y="438" text-anchor="middle">HopsFS-S3</text>
-  <text class="d-t d-sub" x="380" y="457" text-anchor="middle">offline store</text>
-  <rect class="d-box" x="510" y="410" width="220" height="66" rx="8"/>
-  <text class="d-t" x="620" y="438" text-anchor="middle">RonDB</text>
-  <text class="d-t d-sub" x="620" y="457" text-anchor="middle">online store, metastore</text>
-  <rect class="d-box-ext" x="750" y="410" width="220" height="66" rx="8"/>
-  <text class="d-t" x="860" y="438" text-anchor="middle">OpenSearch</text>
-  <text class="d-t d-sub" x="860" y="457" text-anchor="middle">vector index, search</text>
-
-  <!-- flows -->
-  <path class="d-flow" d="M165 182 V248" marker-end="url(#dh-arrow)"/>
-  <path class="d-flow" d="M320 297 H400 V182" marker-end="url(#dh-arrow)"/>
-  <path class="d-flow" d="M820 297 H900 V182" marker-end="url(#dh-arrow)"/>
-  <path class="d-flow" d="M320 320 H520" marker-end="url(#dh-arrow)"/>
-  <text class="d-t d-sub" x="410" y="338" text-anchor="middle">reachable by graph traversal</text>
-  <path class="d-flow" d="M185 372 V410"/>
-  <path class="d-flow" d="M620 372 V410"/>
-  <path class="d-flow" d="M860 372 V410"/>
+  <text class="viz-label" x="24" y="260">Storage</text>
+  <g data-tone="data"><rect class="viz-node" x="16" y="268" width="128" height="72" rx="4"/>
+  <text class="viz-node-title" x="80" y="294" text-anchor="middle">External tables</text>
+  <text class="viz-meta" x="80" y="312" text-anchor="middle">BigQuery, Snowflake</text></g>
+  <g><rect class="viz-node" x="152" y="268" width="128" height="72" rx="4"/>
+  <text class="viz-node-title" x="216" y="294" text-anchor="middle">HopsFS-S3</text>
+  <text class="viz-meta" x="216" y="312" text-anchor="middle">offline store</text></g>
+  <g><rect class="viz-node" x="288" y="268" width="128" height="72" rx="4"/>
+  <text class="viz-node-title" x="352" y="294" text-anchor="middle">RonDB</text>
+  <text class="viz-meta" x="352" y="312" text-anchor="middle">online store</text></g>
+  <g data-tone="data"><rect class="viz-node" x="424" y="268" width="128" height="72" rx="4"/>
+  <text class="viz-node-title" x="488" y="294" text-anchor="middle">OpenSearch</text>
+  <text class="viz-meta" x="488" y="312" text-anchor="middle">vector index</text></g>
 </svg>
 </figure>
