@@ -131,12 +131,13 @@ The driver accepts a connect descriptor in place of an alias, so paste the descr
 The wallet is still what authenticates, through `TNS_ADMIN`, and "Test connection" then reports the real error at once instead of a minute later.
 
 ```properties
-connection-url=jdbc:oracle:thin:@(description=(retry_count=0)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=<adb-host>))(connect_data=(service_name=<service-name>))(security=(ssl_server_dn_match=yes)))?TNS_ADMIN=${HOPSWORKS_MOUNT:oracle_wallet}
+connection-url=jdbc:oracle:thin:@(description=(retry_count=0)(address=(protocol=tcps)(port=1522)(host=<adb-host>))(connect_data=(service_name=<service-name>))(security=(ssl_server_dn_match=yes)))?TNS_ADMIN=${HOPSWORKS_MOUNT:oracle_wallet}
 connection-user=<user>
 connection-password=${HOPSWORKS_SECRET:oracle_password}
 ```
 
 Take the host, port and `service_name` from the alias's entry in the wallet's `tnsnames.ora`.
+Drop `retry_delay` when you copy it across: it only spaces out retries, so it means nothing once `retry_count` is zero.
 This form is not only a diagnostic: a catalog can keep it, and doing so records which consumer group it connects to instead of leaving it to an alias name.
 
 ## When the feature is unavailable
