@@ -16,9 +16,12 @@ Every screen that changes a catalog therefore tells you when that will happen: a
 The recommended way to create a catalog is from a data source, because the data source already holds everything the catalog needs: the host, the database, and the credential.
 Hopsworks derives the connector type and properties for you, so you do not need to know the property names of the underlying Trino connector.
 
-When you browse a data source's databases and tables to create an external feature group or ingest data, the review step offers an **Add Trino Catalog** checkbox.
-It is checked by default, and disabled with the reason when the data source cannot be mapped to a Trino connector.
-If the data source is already registered as a catalog, the checkbox shows an **Already added** badge instead.
+When you browse a data source's databases and tables to create an external feature group or ingest data, there are two ways in:
+
+- A standalone **Add Trino Catalog** button on the configuration screen, which creates the catalog on its own, without creating or ingesting any feature group.
+- An **Add Trino Catalog** checkbox on the review step, checked by default, which creates the catalog as the first step of setting up the feature groups.
+
+Both are disabled with the reason when the data source cannot be mapped to a Trino connector, and show an **Already added** state when a catalog for this source already exists.
 
 The catalog is created first, so you can review its properties before the feature groups and their ingestion are set up.
 The **Create Trino Catalog** dialog opens pre-filled with:
@@ -131,7 +134,8 @@ The restart interrupts queries running anywhere on the cluster, so prefer waitin
 
 ## When changes take effect
 
-A cluster administrator configures a daily scheduled restart that applies pending catalog changes on its own, so a catalog goes live without anyone holding cluster rights.
-The schedule does nothing at all unless a catalog change is actually pending, so a cluster with no changes is never interrupted.
-Administrators can additionally require the query engine to be idle before the scheduled restart runs.
+A cluster administrator configures a scheduled restart that applies pending catalog changes on its own, so a catalog goes live without anyone holding cluster rights.
+The schedule does nothing at all unless a catalog change is actually pending, so a cluster with no changes is never interrupted, and a due restart waits for a quiet moment (no query running, queued, or blocked) for up to an hour before going ahead.
+Administrators can also enable an eager restart, which applies pending changes the moment the query engine goes idle, so a catalog may go live earlier than the scheduled time; the dialogs tell you when the cluster does this.
+Administrators can instead require approval for all catalog changes, in which case nothing goes live until they apply the pending requests, and the dialogs say to ask an administrator.
 The schedule's configuration is described in the [administrator guide][catalogs-and-the-scheduled-restart].

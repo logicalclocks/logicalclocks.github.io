@@ -96,19 +96,33 @@ You can also **Delete** an individual pending request, which rejects that change
 
 The restart interrupts queries running anywhere on the cluster, so check the query history for activity first.
 
+### Lifecycle settings
+
+The same tab carries the **Catalog lifecycle** card, where the whole schedule is configured and saved as one group:
+
+- **Scheduled restart every N hours or days.**
+  The cadence is anchored at the configured time of day, so it keeps its phase across redeploys, and the next restart the schedule resolves to is shown next to the input.
+- **Require approval for all catalog changes.**
+  Turning this on cancels the scheduled restart entirely, because approval means nothing goes live unattended.
+  Pending requests then wait in the table until an administrator applies them with Restart Trino, or rejects them with Delete.
+- **Eager restart.**
+  The query engine is checked every few minutes, and pending changes are applied ahead of the schedule the moment no query is running, queued, or blocked, so the restart lands in a moment with nothing to cancel.
+  Users are told their catalog may go live earlier than the scheduled time.
+- **Maximum catalogs**, across every project, at most 250.
+  Each catalog is a file the query engine loads at startup, so the deployment is sized for a bounded number; the setting may lower the bound but never raise it past the ceiling.
+
+Saving reprograms the schedule immediately, without a redeploy.
+
+### The wait for a quiet moment
+
+A due scheduled restart does not fire into a busy cluster immediately.
+It waits for the cluster to have no query running, queued, or blocked, re-checking every few minutes for up to an hour, and then restarts anyway: the wait buys a quiet moment when one exists, and the bounded give-up keeps a permanently busy cluster from deferring catalog changes forever.
+
 ### Quarantine
 
 The query engine exits when it cannot load a catalog, so one bad catalog definition would otherwise stop the whole cluster from starting.
 A restart therefore quarantines any catalog the query engine cannot load and recovers without it.
 The restart result names the quarantined catalogs, and each carries its load error on its page in the owning project.
-
-### Scheduled restart
-
-A scheduled restart applies pending catalog changes daily, so a project's catalog goes live without an administrator.
-The tick does nothing at all unless a catalog change is actually pending, so a cluster whose catalogs are all loaded is never interrupted.
-
-For clusters where cancelling a query is worse than a catalog going live late, the restart can be gated on the query engine being idle.
-A busy cluster is then re-checked on an interval for a bounded time, and if it never goes idle the changes wait for the next day's tick rather than being applied over a running query.
 
 ## Configuration
 
@@ -118,15 +132,21 @@ Trino behavior can be customized through cluster configuration variables. To mod
 
 - **trino_enabled**: Enable or disable Trino cluster-wide (default: `true`)
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
-- **trino_scheduled_restart_enabled**: Apply pending catalog changes with a daily restart (default: `true`).
+- **trino_scheduled_restart_enabled**: Apply pending catalog changes with a scheduled restart (default: `true`).
   Safe to leave on, because the restart is skipped entirely when no catalog change is pending.
-- **trino_scheduled_restart_time**: Time of day for the scheduled restart, `HH:mm` in the server's timezone (default: `02:00`).
+- **trino_scheduled_restart_interval_hours**: How often the scheduled restart fires (default: `24`).
+  Edited from the Catalog lifecycle card as "every N hours/days".
+- **trino_scheduled_restart_time**: Anchor time of day for the cadence, `HH:mm` in the server's timezone (default: `02:00`).
   Off-peak by default because the restart cancels every running query.
-- **trino_scheduled_restart_only_when_idle**: Only restart when no query is running, queued, or blocked (default: `false`).
-  Turn it on when cancelling a query is worse than a catalog going live late; the cost is that a catalog can miss its window on a busy cluster.
-- **trino_scheduled_restart_idle_retry_minutes**: How long to wait between idle re-checks when the cluster is busy (default: `15`).
-- **trino_scheduled_restart_idle_max_wait_minutes**: How long to keep re-checking before giving up until the next day (default: `240`).
-  Expiry gives up rather than restarting anyway, because the idle gate was turned on to say exactly that.
+- **trino_catalog_approval_required**: Require an administrator to apply every catalog change (default: `false`).
+  Turning it on cancels the scheduled restart timers entirely, because approval means nothing goes live unattended.
+- **trino_eager_restart**: Restart ahead of the schedule the moment the query engine is idle while changes are pending (default: `false`).
+- **trino_eager_restart_poll_minutes**: How often the eager restart looks for that idle moment (default: `10`).
+- **trino_scheduled_restart_idle_wait_minutes**: How long a due scheduled restart waits for the cluster to go quiet before restarting anyway (default: `60`).
+  Bounded, because a permanently busy cluster must not defer catalog changes forever.
+- **trino_scheduled_restart_idle_retry_minutes**: How long to wait between those quiet-moment re-checks (default: `5`).
+- **trino_max_catalogs**: Catalogs the whole cluster may have, across every project (default: `250`, which is also the ceiling).
+  Each catalog is a file the query engine loads at startup, so the setting may lower the bound but never raise it.
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.
 
