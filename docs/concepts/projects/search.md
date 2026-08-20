@@ -45,4 +45,4 @@ This is what makes governance answerable: from a biased model you can trace back
 You can see what features are used in which feature view or training dataset, and what training dataset was used to train a given model.
 For assets that are managed outside of Hopsworks, there is support for the explicit definition of lineage dependencies.
 
-<img src="../../../assets/images/concepts/projects/provenance.png">
+--8<-- "concepts/projects/search/provenance-lineage.html"
