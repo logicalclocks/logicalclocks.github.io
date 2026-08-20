@@ -82,24 +82,28 @@ Use this detailed view to diagnose worker-specific issues and optimize resource 
 
 ## Managing Catalogs
 
-Catalogs created by project Data Owners are saved to the database but are not loaded by the running cluster until an administrator applies them.
-Applying a catalog is a two-step, admin-gated workflow on the Catalogs tab under Cluster Settings, Query Engine: sync the pending changes, then restart Trino.
+Catalogs created by project Data Owners are saved to the database but are not loaded by the running cluster until they are applied.
+Two things apply them: the scheduled restart, which needs no administrator, and the Catalogs tab under Cluster Settings, Query Engine, where an administrator can apply them immediately or gate them behind approval.
 
 The tab lists every catalog waiting to be applied, along with its status and the operation to apply (create, update, or remove).
 
-Nothing notifies you when a Data Owner creates a catalog, and nothing notifies them when you apply it.
-A catalog waits in Pending sync until an administrator acts, with no service level attached, so check this tab periodically or agree a cadence with your projects.
+Nothing notifies you when a Data Owner creates a catalog, and nothing notifies them when it is applied.
+With the schedule on, a pending catalog goes live at the next restart that finds it, so the tab is where you go to apply one sooner or to reject it; with approval required, nothing goes live until you act, so check the tab periodically or agree a cadence with your projects.
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-pending.png" alt="Pending catalogs" />
-  <figcaption>Catalogs awaiting sync and restart</figcaption>
+  <figcaption>Catalogs waiting to be applied</figcaption>
 </figure>
 
-### Syncing
+### Applying pending requests
 
-Select the catalogs to apply and click "Sync selected".
-This writes the catalog definitions into the backend-owned Kubernetes Secrets that the cluster mounts at `/etc/trino/catalog`.
-After syncing, a catalog moves to Pending restart, meaning it is present in the mount but not yet loaded by the running cluster.
+Every pending request is selected by default.
+Clicking **Restart Trino** applies the selected ones in a single action: their definitions are written into the backend-owned Kubernetes Secrets that the cluster mounts at `/etc/trino/catalog`, and the query engine is restarted afterwards to load them, behind a dialog that confirms what is about to be applied.
+Both halves are needed and in that order, which is why they are one button: a restart on its own would load nothing, because a catalog is only a database row until its definition is written out.
+
+You can also **Delete** an individual pending request, which rejects that change without applying it.
+
+The restart interrupts queries running anywhere on the cluster, so check the reported activity before confirming.
 
 #### Where catalog credentials are stored
 
@@ -112,13 +116,47 @@ A connector's credentials end up in the places below. Anyone who can read those 
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-pending-restart.png" alt="Catalogs pending restart" />
-  <figcaption>Synced catalogs wait in Pending restart until the next restart</figcaption>
+  <figcaption>An applied catalog waits in Pending restart until the query engine reloads</figcaption>
 </figure>
+
+### Lifecycle settings
+
+The same tab carries the **Catalog lifecycle** card, where the whole schedule is configured and saved as one group:
+
+- **Scheduled restart every N hours or days.**
+  The cadence is anchored at the configured time of day, so it keeps its phase across redeploys, and the next restart the schedule resolves to is shown next to the input.
+- **Require approval for all catalog changes.**
+  Turning this on cancels the scheduled restart entirely, because approval means nothing goes live unattended.
+  Pending requests then wait in the table until an administrator applies them with Restart Trino, or rejects them with Delete.
+- **Eager restart.**
+  The query engine is checked every few minutes, and pending changes are applied ahead of the schedule the moment no query is running, queued, or blocked, so the restart lands in a moment with nothing to cancel.
+  Users are told their catalog may go live earlier than the scheduled time.
+- **Maximum catalogs**, across every project, at most 250.
+  Each catalog is a file the query engine loads at startup, so the deployment is sized for a bounded number; the setting may lower the bound but never raise it past the ceiling.
+
+Saving needs no redeploy: every Hopsworks instance derives its schedule from these settings and picks a change up within a minute, whichever instance served the save.
+
+### A single project's allowance
+
+The cluster-wide maximum is a ceiling on the deployment; how many catalogs any one project may create is set per project.
+Open the project under Cluster Settings, Projects, and edit **Query Engine**, **Trino catalogs**, which shows the project's current count beside its limit.
+
+A new project starts on the cluster default (`trino_catalog_max_per_project`, 10), so raising one project here raises that project only.
+Checking **unlimited** removes the project's own bound, leaving only the cluster-wide ceiling; a limit of 0 blocks new catalogs in the project.
+Both bounds apply to a create: the project must be under its own allowance, and the cluster must be under the ceiling.
+
+### The wait for a quiet moment
+
+A due scheduled restart does not fire into a busy cluster immediately.
+It waits for the cluster to have no query running, queued, or blocked, re-checking every few minutes for up to an hour, and then restarts anyway: the wait buys a quiet moment when one exists, and the bounded give-up keeps a permanently busy cluster from deferring catalog changes forever.
+
+An activity count the query engine cannot report counts as busy rather than idle, so a failed reading never costs someone their query.
+The bounded wait is what makes that safe: a coordinator that is genuinely down never reports itself idle, and the restart that recovers it still happens when the window expires.
 
 ### Restarting
 
-Trino reads catalogs only at startup, so synced changes take effect on the next restart.
-Click "Restart Trino" to roll out the coordinator and workers.
+Trino reads catalogs only at startup, so a catalog change takes effect on the next restart, whether the schedule performs it or an administrator does.
+Clicking "Restart Trino" applies the selected pending requests and rolls out the coordinator and workers.
 The confirmation dialog reports how many queries are currently running or queued, so you can choose a low-traffic window before confirming.
 The restart cancels those queries for **every project on the cluster**, not only the project whose catalog is being applied, and in-flight results are lost.
 Trino keeps recent query detail in the coordinator's memory, so after a restart the live query views show only what the new coordinator has seen; older queries remain in the query history, which is stored separately.
@@ -138,12 +176,11 @@ A user catalog with an invalid definition therefore stops the whole query engine
 Kubernetes keeps the previous pods serving while the new ones fail, so queries may keep working for a while and the rollout never completes.
 
 Click "Restart Trino" to recover.
-The button stays available when nothing is waiting for a restart, labelled "Restart Trino (recover)", because this situation leaves no synced catalog to load.
-That label therefore also appears when catalogs are pending sync but none has been applied yet, since restarting would load nothing.
+The button stays available when nothing is waiting to be applied, because this situation leaves no pending catalog to load: the restart itself is the repair.
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-recover.png" alt="Recover restart" />
-  <figcaption>With no pending catalogs, the restart action is still available to recover a failed rollout</figcaption>
+  <figcaption>With nothing pending, the restart action is still available to recover a failed rollout</figcaption>
 </figure>
 
 Hopsworks reads the coordinator log, identifies the catalog Trino rejected, removes it from the mount, marks it **Failed**, and restarts so the cluster comes back without it.
@@ -195,8 +232,24 @@ Trino behavior can be customized through cluster configuration variables. To mod
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
 - **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount][recovering-catalog-files-lost-from-the-mount])
-- **trino_catalog_max_per_project**: Catalogs one project may create (default: `5`)
+- **trino_catalog_max_per_project**: Catalogs a *newly created* project may create (default: `10`).
+  It seeds each project's own allowance, which is then edited per project under Cluster Settings, Projects; changing it does not move the allowance of a project that already exists.
 - **trino_catalog_max_bytes**: Largest a single catalog definition may be once its secret references are resolved, in bytes (default: `16384`)
+- **trino_max_catalogs**: Catalogs the whole cluster may have, across every project (default: `250`, which is also the ceiling).
+  Each catalog is a file the query engine loads at startup, so the setting may lower the bound but never raise it.
+- **trino_scheduled_restart_enabled**: Apply pending catalog changes with a scheduled restart (default: `true`).
+  Safe to leave on, because the restart is skipped entirely when no catalog change is pending.
+- **trino_scheduled_restart_interval_hours**: How often the scheduled restart fires (default: `24`).
+  Edited from the Catalog lifecycle card as "every N hours/days".
+- **trino_scheduled_restart_time**: Anchor time of day for the cadence, `HH:mm` in the server's timezone (default: `02:00`).
+  Off-peak by default because the restart cancels every running query.
+- **trino_scheduled_restart_idle_wait_minutes**: How long a due scheduled restart waits for the cluster to go quiet before restarting anyway (default: `60`).
+  Bounded, because a permanently busy cluster must not defer catalog changes forever.
+- **trino_scheduled_restart_idle_retry_minutes**: How long to wait between those quiet-moment re-checks (default: `5`).
+- **trino_eager_restart**: Restart ahead of the schedule the moment the query engine is idle while changes are pending (default: `false`).
+- **trino_eager_restart_poll_minutes**: How often the eager restart looks for that idle moment (default: `10`).
+- **trino_catalog_approval_required**: Require an administrator to apply every catalog change (default: `false`).
+  Turning it on cancels the scheduled restart timers entirely, because approval means nothing goes live unattended.
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.
 

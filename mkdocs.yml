@@ -208,7 +208,9 @@ nav:
           - Api Keys:
               - Create API Key: user_guides/projects/api_key/create_api_key.md
           - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
-          - Query Engine (Trino): user_guides/projects/trino/query_engine.md
+          - Query Engine (Trino):
+              - Query Engine: user_guides/projects/trino/query_engine.md
+              - Trino Catalogs: user_guides/projects/trino/catalogs.md
           - Superset: user_guides/projects/superset/superset.md
           - Python Deployment:
               - Deployment Creation: user_guides/projects/python-deployment/python-deployment.md
