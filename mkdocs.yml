@@ -184,6 +184,7 @@ nav:
               - Overview: user_guides/projects/airflow/airflow.md
               - Airflow 3 upgrade: user_guides/projects/airflow/airflow3_upgrade.md
               - Security model: user_guides/projects/airflow/security_model.md
+          - Alerts: user_guides/projects/alerts/index.md
           - OpenSearch:
               - Connect: user_guides/projects/opensearch/connect.md
               - KNN: user_guides/projects/opensearch/knn.md
@@ -196,6 +197,8 @@ nav:
               - Configure Git Provider: user_guides/projects/git/configure_git_provider.md
               - Clone Repository: user_guides/projects/git/clone_repo.md
               - Repository Actions: user_guides/projects/git/repository_actions.md
+          - Datasets:
+              - Sharing: user_guides/projects/datasets/sharing.md
           - Secrets:
               - Create Secret: user_guides/projects/secrets/create_secret.md
           - Environment variables:
@@ -267,6 +270,7 @@ nav:
           - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
       - Administration:
           - Cluster Configuration: setup_installation/admin/variables.md
+          - Python Build Performance: setup_installation/admin/build_performance.md
           - Introduction: setup_installation/admin/index.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md

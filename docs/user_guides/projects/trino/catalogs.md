@@ -138,4 +138,4 @@ A cluster administrator configures a scheduled restart that applies pending cata
 The schedule does nothing at all unless a catalog change is actually pending, so a cluster with no changes is never interrupted, and a due restart waits for a quiet moment (no query running, queued, or blocked) for up to an hour before going ahead.
 Administrators can also enable an eager restart, which applies pending changes the moment the query engine goes idle, so a catalog may go live earlier than the scheduled time; the dialogs tell you when the cluster does this.
 Administrators can instead require approval for all catalog changes, in which case nothing goes live until they apply the pending requests, and the dialogs say to ask an administrator.
-The schedule's configuration is described in the [administrator guide][catalogs-and-the-scheduled-restart].
+The schedule's configuration is described in the [administrator guide][lifecycle-settings].
