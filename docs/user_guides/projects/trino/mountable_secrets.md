@@ -94,8 +94,12 @@ To change a wallet, delete the bundle and create it again under the same name.
 A deletion takes effect immediately and is never refused for being in use.
 The listing names the catalogs that reference a bundle, so check there before removing one.
 
-Deleting a bundle that a catalog still references leaves that catalog unable to authenticate the next time Trino loads it.
-Recreating the bundle under the same name with the same filenames restores it, and no catalog has to be edited, because a catalog refers to the bundle by name.
+Deleting a bundle a catalog still references does not wait for a restart to bite.
+The Query Engine sees the store through a live mount, and a connector that reads its files when it opens a connection, Oracle among them, will fail on its next connection or query.
+Recreating the bundle under the same name with the same filenames restores it, and no catalog has to be edited, because a catalog refers to the bundle by name, but queries can fail in the gap between the two.
+
+Where an interruption is unacceptable, do not replace a bundle in place.
+Create the new one under a new name, edit the catalog to reference it, have an administrator approve the edit, and delete the old bundle once the catalog is loaded and working.
 
 ## Worked example: an Oracle Autonomous Database
 
@@ -119,8 +123,9 @@ Add the outbound addresses of every Query Engine pod, coordinator and workers, s
 The Catalogs tab reports those addresses when an administrator has enabled the check.
 
 **A downloaded wallet retries by default.**
-`sqlnet.ora` usually carries `(retry_count=20)(retry_delay=3)`, which turns a refused connection into a wait of about a minute before any error appears, so a rejected address looks like a hang.
-While diagnosing, set `retry_count=0` in the wallet so the real error arrives at once.
+Each alias in `tnsnames.ora` carries `(retry_count=20)(retry_delay=3)` inside its connect descriptor, which turns a refused connection into a wait of about a minute before any error appears, so a rejected address looks like a hang.
+While diagnosing, set `retry_count=0` in the descriptor of the alias you are using, upload the edited wallet as a new bundle, and put the original back afterwards.
+The setting is not in `sqlnet.ora`, which holds only the wallet location and the server DN check.
 
 ## When the feature is unavailable
 

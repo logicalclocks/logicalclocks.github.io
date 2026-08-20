@@ -333,6 +333,36 @@ Trino behavior can be customized through cluster configuration variables. To mod
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.
 
+### Mountable secret settings
+
+These are not all editable the same way, so they are listed apart from the variables above.
+
+Three are seeded by the chart and belong to Helm, not to the variables table.
+
+| Setting | Helm value | Seeded default |
+| --- | --- | --- |
+| `mountable_secrets_enabled` | `global._hopsworks.trino.mountableSecrets.enabled` | `true` |
+| `mountable_secrets_path` | `global._hopsworks.trino.mountableSecrets.storeRoot` | `/apps/mountable-secrets` |
+| `trino_mountable_secrets_root` | `global._hopsworks.trino.mountableSecrets.mountPath` | `/opt/hopsworks/mounts` |
+
+Change these through your Helm values and an upgrade.
+Editing the row instead moves only one end of the arrangement: the store root also presets the HopsFS directory and is passed to the mount sidecar as its source, and the mount root is what the Trino containers actually mount, so a row edited on its own points the backend at a path nothing is mounted from.
+The chart keeps the two ends together, and refuses to render when the flag and the mount disagree.
+Note also that the code's own fallback for the flag is `false`, which is what a cluster whose chart predates the row gets; the chart seeds `true`.
+
+The five per-project limits have no seeded row at all.
+The code's defaults apply until an administrator creates one, so searching for them in Cluster Settings finds nothing on a fresh cluster, which is expected rather than a fault.
+
+| Setting | Default | What it caps |
+| --- | --- | --- |
+| `mountable_secret_max_per_project` | `10` | bundles one project may hold |
+| `mountable_secret_max_files` | `32` | files in one bundle |
+| `mountable_secret_max_file_bytes` | `1048576` | largest single file, in bytes |
+| `mountable_secret_max_project_bytes` | `16777216` | a project's total across all its bundles, in bytes |
+| `max_mountable_secret_upload_bytes` | `33554432` | largest upload request, refused before the body is read |
+
+Turning the store off is described in [Turning the store off][turning-the-store-off].
+
 ### Test coordinator resource cost
 
 `trino_test_coordinator_enabled` is on by default, and enabling it runs **an additional single-node Trino coordinator pod** for the lifetime of the cluster.
