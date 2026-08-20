@@ -14,8 +14,14 @@ Only administrators can reach any of this.
 
 ## Commands needing attention
 
-Go to `Cluster Settings` > `Search Index`.
-The page lists every command that has failed at least once, oldest first.
+Go to `Cluster Settings` > `Service Operations` and open the `OpenSearch Index Commands` tab.
+The page opens on the `Service Operations` tab, which carries the platform's operation logs; the index commands share the page because both answer whether the platform is digesting what it was asked to do.
+
+You do not need to check the tab on the off-chance.
+While any command needs attention, the `Service Operations` entry in the settings menu shows a pulsing orange dot and the `OpenSearch Index Commands` tab is outlined in orange.
+Both appear and clear on their own as the queue fails and drains, so no dot means there is nothing to look at.
+
+The tab lists every command that has failed at least once, oldest first.
 
 For each it shows the document, the artifact type, the operation, the number of attempts made, when the next attempt is due, the project, and the last error.
 When the list is empty, every queued update has been applied.
