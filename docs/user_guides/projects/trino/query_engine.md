@@ -103,7 +103,9 @@ If a catalog needs to outlive your account, have someone recreate it under their
 
 Properties must address the data source over the network, for example `jdbc:`, `thrift:`, `https:` or `s3:`.
 A property that points at a file path on the query engine's own machines is rejected, because you cannot place files there and the only files such a path could reach belong to the cluster itself.
-If a connector you need requires a local file, ask an administrator to provide it.
+
+A connector that authenticates with a file, such as an Oracle wallet or a Java keystore, is served instead by a [mountable secret][mountable-secrets]: you upload the files to your project, then reference the bundle from a property with `${HOPSWORKS_MOUNT:<bundle>}`.
+Type `${` in the properties editor to pick from your project's bundles.
 
 Two limits apply, because every project's catalogs share a fixed amount of storage in the cluster.
 A project may create a set number of catalogs, five by default, and a single definition may not exceed a set size, 16 KiB by default, measured after any secret references are resolved.

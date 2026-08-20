@@ -222,6 +222,86 @@ A catalog whose `${HOPSWORKS_SECRET:<name>}` reference no longer resolves cannot
 The repair reports it, leaves any file it already has in place, because that copy resolved when it was approved and still works, and carries on with every other catalog.
 Its owner has to repoint the reference at an existing secret.
 
+## Credential files a project supplies
+
+A connector that authenticates with a file, such as an Oracle wallet or a Java keystore, cannot be served by a catalog property alone.
+Projects supply those files as [mountable secrets][mountable-secrets], and this section covers what that adds to a cluster.
+
+A bundle is a directory of files in HopsFS under `mountable_secrets_path`, which defaults to `/apps/mountable-secrets`.
+It is keyed by **project id** rather than by project name, so a deleted project and a later project of the same name can never share a directory.
+The `charts/hopsfs` preset Job creates the root as `payara:hdfs` with mode `0750`.
+The backend asks the filesystem for that owner and mode before it writes a bundle or deletes a project's tree, and refuses if either differs, so a root created by hand with the wrong mode fails every upload rather than quietly widening access.
+
+Project members never reach those files directly.
+The path is outside any project's dataset, and a catalog can only ever name a bundle in its own project.
+A reference resolves to a path built from the project id, and a property that tries to extend a reference with a path, or to walk out of it with `..`, is refused when the catalog is created and again when it is resolved.
+
+### How the files reach the query engine
+
+Each Trino pod, the coordinator, every worker and the test coordinator, runs a sidecar container named `mountable-secrets` from the `hopsfs-mount` image.
+It mounts the whole store read-only at `trino_mountable_secrets_root`, which defaults to `/opt/hopsworks/mounts`, with `ro`, `nosuid` and `nodev`.
+Entries appear as uid 0 with modes that let any user read them, which is what lets the unprivileged Trino process open a wallet.
+
+Two consequences of that sidecar are worth knowing before an upgrade.
+
+It is **privileged**, because FUSE requires it.
+On a cluster running the Kyverno restricted policies the chart ships a `PolicyException` for these pods, gated on Kyverno being enabled.
+The same privileged FUSE sidecar already runs on the three Airflow deployments in the release namespace, so this is not a new class of workload for the cluster.
+
+The Trino pods have their **own ServiceAccounts**, `hopsworks-trino` and `hopsworks-trino-test`, rather than the namespace default.
+An SCC or a cloud identity can therefore be granted to Trino narrowly.
+An upgrade from a release before this feature moves those pods off the `default` ServiceAccount, so any binding that named `default` to reach Trino has to be repointed.
+
+!!! warning "OpenShift is not supported"
+    The sidecar has to run privileged and as root, so the default restricted SCC rejects it.
+    `values.openshift.yaml` therefore turns the store off, and a project on such a cluster cannot supply credential files.
+    Note that Trino was already rejected by the restricted SCC before this feature, because the subchart pins `runAsUser: 1000` regardless of `securityContextEnabled`, so the sidecar adds a second reason rather than a new break.
+
+### Turning the store off
+
+Set `global._hopsworks.trino.mountableSecrets.enabled` to `false`, which seeds the `mountable_secrets_enabled` variable and stops the store being offered.
+Turning it off is not a single value.
+The sidecar entries live in untemplated subchart values, so the `initContainers` lists have to be restated without them, which is what `values.openshift.yaml` does and is the worked example to copy.
+The chart fails the render when the flag and the mount disagree, so a half-done change stops the upgrade instead of producing pods that mount nothing.
+
+An **already approved catalog keeps working only as far as its definition**.
+Its reference still resolves to a path, but nothing populates that path any more.
+For a connector that opens its files when a connection is made, such as Oracle, the coordinator starts cleanly and queries fail.
+Sync does not consult the flag, by design, so switching the store off does not quarantine catalogs that already use it.
+
+### Backup
+
+Bundles are HopsFS files.
+They are covered by the HopsFS backup, and **not** by the Kubernetes object backup that captures the catalog Secrets and the database.
+A restore that brings back the database and the Secrets without the HopsFS path leaves catalogs that reference bundles which no longer exist, and those catalogs fail to authenticate at the next restart.
+Recreating the bundle under the same name with the same filenames repairs it without editing any catalog.
+
+### Diagnosing a bundle
+
+There is no admin API for the store, so the checks are on the cluster.
+
+```bash
+# What the query engine can actually see for project <id>
+kubectl exec -n hopsworks <trino-pod> -c <trino-container> -- ls -l /opt/hopsworks/mounts/<id>/<bundle>
+
+# The mount itself, including its options
+kubectl exec -n hopsworks <trino-pod> -c <trino-container> -- grep /opt/hopsworks/mounts /proc/mounts
+
+# The source side
+kubectl exec -n hopsworks <namenode-pod> -- /srv/hops/hadoop/bin/hdfs dfs -ls /apps/mountable-secrets/<id>
+```
+
+Check the mount on a **worker** and not only on the coordinator, since a query reads the source from the workers.
+A missing mount is otherwise invisible: the sidecar mounts into its own filesystem, both containers report ready, and only a `${HOPSWORKS_MOUNT:...}` reference resolving to an empty directory gives it away.
+
+The outbound addresses a data source must admit are reported in the project's Catalogs tab only when `global._hopsworks.trino.mountableSecrets.egressProbe.echoUrl` is set.
+It is empty by default, because the probe otherwise calls a third-party service from every Trino pod on every start, and with it unset the UI reports that the addresses could not be determined.
+Without it:
+
+```bash
+kubectl exec -n hopsworks <trino-pod> -c <trino-container> -- curl -s https://ifconfig.me
+```
+
 ## Configuration
 
 Trino behavior can be customized through cluster configuration variables. To modify these settings, navigate to **Cluster Settings** → **Configuration** and search for the variable name.

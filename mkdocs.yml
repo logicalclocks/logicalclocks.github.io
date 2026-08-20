@@ -211,6 +211,7 @@ nav:
           - Query Engine (Trino):
               - Query Engine: user_guides/projects/trino/query_engine.md
               - Trino Catalogs: user_guides/projects/trino/catalogs.md
+          - Mountable Secrets: user_guides/projects/trino/mountable_secrets.md
           - Superset: user_guides/projects/superset/superset.md
           - Python Deployment:
               - Deployment Creation: user_guides/projects/python-deployment/python-deployment.md
