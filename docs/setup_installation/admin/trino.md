@@ -92,7 +92,7 @@ With the schedule on, a pending catalog goes live at the next restart that finds
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-pending.png" alt="Pending catalogs" />
-  <figcaption>Catalogs awaiting sync and restart</figcaption>
+  <figcaption>Catalogs waiting to be applied</figcaption>
 </figure>
 
 ### Applying pending requests
@@ -116,7 +116,7 @@ A connector's credentials end up in the places below. Anyone who can read those 
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-pending-restart.png" alt="Catalogs pending restart" />
-  <figcaption>Synced catalogs wait in Pending restart until the next restart</figcaption>
+  <figcaption>An applied catalog waits in Pending restart until the query engine reloads</figcaption>
 </figure>
 
 ### Lifecycle settings
@@ -135,6 +135,14 @@ The same tab carries the **Catalog lifecycle** card, where the whole schedule is
   Each catalog is a file the query engine loads at startup, so the deployment is sized for a bounded number; the setting may lower the bound but never raise it past the ceiling.
 
 Saving reprograms the schedule immediately, without a redeploy.
+
+### A single project's allowance
+
+The cluster-wide maximum is a ceiling on the deployment; how many catalogs any one project may create is set per project.
+Open the project under Cluster Settings, Projects, and edit **Query Engine**, **Trino catalogs**, which shows the project's current count beside its limit.
+
+A new project starts on the cluster default (`trino_catalog_max_per_project`, 10), so raising one project here raises that project only.
+Both bounds apply to a create: the project must be under its own allowance, and the cluster must be under the ceiling.
 
 ### The wait for a quiet moment
 
@@ -171,7 +179,7 @@ The button stays available when nothing is waiting to be applied, because this s
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-recover.png" alt="Recover restart" />
-  <figcaption>With no pending catalogs, the restart action is still available to recover a failed rollout</figcaption>
+  <figcaption>With nothing pending, the restart action is still available to recover a failed rollout</figcaption>
 </figure>
 
 Hopsworks reads the coordinator log, identifies the catalog Trino rejected, removes it from the mount, marks it **Failed**, and restarts so the cluster comes back without it.
@@ -223,7 +231,8 @@ Trino behavior can be customized through cluster configuration variables. To mod
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
 - **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount][recovering-catalog-files-lost-from-the-mount])
-- **trino_catalog_max_per_project**: Catalogs one project may create (default: `5`)
+- **trino_catalog_max_per_project**: Catalogs a *newly created* project may create (default: `10`).
+  It seeds each project's own allowance, which is then edited per project under Cluster Settings, Projects; changing it does not move the allowance of a project that already exists.
 - **trino_catalog_max_bytes**: Largest a single catalog definition may be once its secret references are resolved, in bytes (default: `16384`)
 - **trino_max_catalogs**: Catalogs the whole cluster may have, across every project (default: `250`, which is also the ceiling).
   Each catalog is a file the query engine loads at startup, so the setting may lower the bound but never raise it.
