@@ -19,7 +19,7 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [x] `docs/concepts/fs/feature_group/external_fg.md` — 1 animated (query pushdown at read time)
 - [x] `docs/concepts/fs/feature_group/feature_pipelines.md` — 1 animated (stage walk + STRICT reject), 1 static kept (transform taxonomy flow)
 - [x] `docs/concepts/fs/feature_group/fg_overview.md` — 1 animated (upsert vs append), 1 static kept (table anatomy)
-- [ ] `docs/concepts/fs/feature_group/fg_statistics.md` — 1 kit-static
+- [x] `docs/concepts/fs/feature_group/fg_statistics.md` — 1 animated (write → validation report + statistics)
 - [x] `docs/concepts/fs/feature_group/on_demand_feature.md` — 1 animated (one UDF, two pipelines, vector merge)
 - [x] `docs/concepts/fs/feature_group/versioning.md` — 1 animated (inserts append commits, as_of cutoff), 2 static kept (schema v1→v2, fv/td grid)
 - [x] `docs/concepts/fs/feature_group/write_apis.md` — 2 animated (stream: at-least-once→exactly-once dup story; batch: dual path, HDFS direct)
