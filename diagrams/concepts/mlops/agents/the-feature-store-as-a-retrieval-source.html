@@ -1,44 +1,97 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 300" role="img" aria-label="A user query carrying an entity ID reaches the deployment API, which retrieves precomputed features by key and similar embeddings from the vector index in the feature store. The assembled context is passed to an LLM, which returns a response." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 780 330" role="img" aria-label="Animated diagram of the feature store as a retrieval source for an agent. A user query carrying an entity id and a prompt reaches the deployment API. The API looks up the feature store twice: precomputed features by entity id and similar documents from the vector index. Both rows light up, the assembled context travels to the LLM, and the answer returns to the user." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="ag-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
     </marker>
   </defs>
 
-  <rect class="d-box-ext" x="16" y="60" width="152" height="64" rx="8"/>
-  <text class="d-t" x="92" y="88" text-anchor="middle">User query</text>
-  <text class="d-t d-sub" x="92" y="106" text-anchor="middle">entity ID + prompt</text>
+  <path class="viz-edge" d="M174 112 H212" marker-end="url(#ag-arrow)"/>
+  <path class="viz-edge" d="M380 112 H422" marker-end="url(#ag-arrow)"/>
+  <path class="viz-edge" d="M595 210 C 590 230 585 244 580 256" marker-end="url(#ag-arrow)"/>
+  <path class="viz-edge" d="M480 286 C 320 300 160 240 105 152" marker-end="url(#ag-arrow)"/>
 
-  <path class="d-flow" d="M168 92 H206" marker-end="url(#ag-arrow)"/>
+  <g class="viz-node-group">
+    <rect class="viz-node" x="24" y="80" width="150" height="64" rx="8"/>
+    <text class="viz-node-title" x="99" y="106" text-anchor="middle">USER QUERY</text>
+    <text class="viz-node-subtitle" x="99" y="126" text-anchor="middle">entity id + prompt</text>
+  </g>
+  <g id="ag-api" class="viz-node-group" data-tone="accent">
+    <rect class="viz-node" x="220" y="80" width="160" height="64" rx="8"/>
+    <text class="viz-node-title" x="300" y="106" text-anchor="middle">DEPLOYMENT API</text>
+    <text class="viz-node-subtitle" x="300" y="126" text-anchor="middle">versioned contract</text>
+  </g>
 
-  <rect class="d-api" x="206" y="60" width="152" height="64" rx="8"/>
-  <text class="d-t" x="282" y="88" text-anchor="middle">Deployment API</text>
-  <text class="d-t d-sub" x="282" y="106" text-anchor="middle">the versioned contract</text>
+  <rect class="viz-kv-frame" x="430" y="40" width="326" height="170" rx="6"/>
+  <rect class="viz-kv-header" x="430" y="40" width="326" height="26"/>
+  <text class="viz-kv-title" x="442" y="53">Feature store</text>
+  <text class="viz-meta" x="748" y="53" text-anchor="end">online + vector index</text>
+  <g id="ag-r1" class="viz-kv-entry" data-tone="read">
+    <rect class="viz-kv-cell" x="438" y="74" width="310" height="26" rx="3"/>
+    <text class="viz-kv-key" x="446" y="91">features · by entity id</text>
+    <text id="ag-v1" class="viz-kv-val" x="740" y="91" text-anchor="end">–</text>
+  </g>
+  <g id="ag-r2" class="viz-kv-entry" data-tone="read">
+    <rect class="viz-kv-cell" x="438" y="104" width="310" height="26" rx="3"/>
+    <text class="viz-kv-key" x="446" y="121">documents · by similarity</text>
+    <text id="ag-v2" class="viz-kv-val" x="740" y="121" text-anchor="end">–</text>
+  </g>
+  <text class="viz-meta" x="442" y="158">both lookups in one place,</text>
+  <text class="viz-meta" x="442" y="176">governed and versioned</text>
 
-  <path class="d-flow" d="M358 92 H396" marker-end="url(#ag-arrow)"/>
+  <g id="ag-llm" class="viz-node-group" data-tone="accent">
+    <rect class="viz-node" x="480" y="256" width="190" height="56" rx="8"/>
+    <text class="viz-node-title" x="575" y="278" text-anchor="middle">LLM</text>
+    <text class="viz-node-subtitle" x="575" y="298" text-anchor="middle">context + prompt</text>
+  </g>
 
-  <text class="d-t d-cap d-cap-fs" x="402" y="36">Feature store</text>
-  <rect class="d-panel-fs" x="396" y="44" width="300" height="152" rx="12"/>
-  <rect class="d-box-own" x="412" y="64" width="268" height="52" rx="6"/>
-  <text class="d-t" x="546" y="86" text-anchor="middle">Precomputed features</text>
-  <text class="d-t d-sub" x="546" y="104" text-anchor="middle">retrieved by entity ID</text>
-  <rect class="d-box-own" x="412" y="126" width="268" height="52" rx="6"/>
-  <text class="d-t" x="546" y="148" text-anchor="middle">Vector index</text>
-  <text class="d-t d-sub" x="546" y="166" text-anchor="middle">retrieved by similarity</text>
-
-  <path class="d-flow" d="M546 196 V226" marker-end="url(#ag-arrow)"/>
-  <text class="d-t d-sub" x="576" y="216" text-anchor="start">retrieve</text>
-
-  <rect class="d-box" x="452" y="226" width="188" height="52" rx="8"/>
-  <text class="d-t" x="546" y="256" text-anchor="middle">Assembled context</text>
-
-  <path class="d-flow" d="M640 252 H700" marker-end="url(#ag-arrow)"/>
-  <rect class="d-box" x="700" y="226" width="104" height="52" rx="8"/>
-  <text class="d-t" x="752" y="256" text-anchor="middle">LLM</text>
-
-  <path class="d-flow" d="M804 252 H844" marker-end="url(#ag-arrow)"/>
-  <rect class="d-box-ext" x="844" y="226" width="140" height="52" rx="8"/>
-  <text class="d-t" x="914" y="256" text-anchor="middle">Response</text>
+  <g transform="translate(180 103)">
+    <g id="ag-q" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="80" height="18" rx="3"/>
+      <text x="40" y="9" text-anchor="middle">id · prompt</text>
+    </g>
+  </g>
+  <g transform="translate(386 84)">
+    <g id="ag-k" class="viz-packet" data-tone="read" style="opacity:0">
+      <rect width="72" height="18" rx="3"/>
+      <text x="36" y="9" text-anchor="middle">key 4671</text>
+    </g>
+  </g>
+  <g transform="translate(386 122)">
+    <g id="ag-e" class="viz-packet" data-tone="read" style="opacity:0">
+      <rect width="72" height="18" rx="3"/>
+      <text x="36" y="9" text-anchor="middle">[0.41, …]</text>
+    </g>
+  </g>
+  <g transform="translate(560 200)">
+    <g id="ag-ctx" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="66" height="18" rx="3"/>
+      <text x="33" y="9" text-anchor="middle">context</text>
+    </g>
+  </g>
+  <g transform="translate(440 278)">
+    <g id="ag-a" class="viz-packet" data-tone="accent" style="opacity:0">
+      <rect width="62" height="18" rx="3"/>
+      <text x="31" y="9" text-anchor="middle">answer</text>
+    </g>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 750,
+  "loopDelay": 2400,
+  "steps": [
+    { "#ag-q": {"opacity": 1} },
+    { "#ag-q": {"x": 76}, "$ms": 550 },
+    { "#ag-q": {"opacity": 0}, "#ag-api": {"state": "active"}, "#ag-k": {"opacity": 1}, "#ag-e": {"opacity": 1}, "$ms": 500 },
+    { "#ag-k": {"x": 66, "y": -3}, "#ag-e": {"x": 66, "y": 3}, "$ms": 600 },
+    { "#ag-k": {"opacity": 0}, "#ag-e": {"opacity": 0}, "#ag-r1": {"state": "active"}, "#ag-v1": {"text": "spend_30d · 512"}, "#ag-r2": {"state": "active"}, "#ag-v2": {"text": "3 similar docs"}, "$ms": 900 },
+    { "#ag-r1": {"state": "visited"}, "#ag-r2": {"state": "visited"}, "#ag-api": {"state": null}, "#ag-ctx": {"opacity": 1}, "$ms": 500 },
+    { "#ag-ctx": {"y": 62}, "$ms": 600 },
+    { "#ag-ctx": {"opacity": 0}, "#ag-llm": {"state": "active"}, "#ag-a": {"opacity": 1}, "$ms": 600 },
+    { "#ag-a": {"x": -320, "y": -140}, "$ms": 750 },
+    { "#ag-a": {"opacity": 0}, "#ag-llm": {"state": null}, "$ms": 2000 }
+  ]
+}
+</script>
 </figure>
