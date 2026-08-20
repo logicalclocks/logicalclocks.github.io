@@ -1,8 +1,8 @@
-# Tags
+# Tags { #tags-guide }
 
 ## Introduction
 
-Hopsworks feature store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, models or deployments.
+Hopsworks feature store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, jobs, apps, models or deployments.
 
 A tag is a `{key: value}` pair which provides additional information about the data managed by Hopsworks.
 Tags allow you to design custom metadata for your artifacts.
@@ -71,9 +71,39 @@ You can achieve this by defining a JSON schema like the following:
 
 Where the type is a valid primitive type: `string`, `boolean`, `integer`, `number`.
 
+### Archiving deleted attachments
+
+When you define a schema you can also tick `Archive deleted tags`, or pass `archive=True` through the API.
+The flag is a property of the schema rather than of any one attachment, which is why it is set where the schema is defined and applies to every tag attached with it afterwards.
+
+=== "Python"
+
+    ```python
+    from hopsworks.core.tag_schemas_api import TagSchemasApi
+
+
+    schema = {
+        "type": "object",
+        "properties": {"owner": {"type": "string"}},
+        "required": ["owner"],
+        "additionalProperties": False,
+    }
+
+    # keep attachments of this tag once they are deleted
+    TagSchemasApi().create("ownership", schema, archive=True)
+    ```
+
+The flag defaults to `False`, which discards an attachment when it is deleted.
+Registering a schema requires administrator privileges, as it does without the flag.
+
+!!! note "Records intent, no behaviour yet"
+    Setting `archive` today only records the decision on the schema.
+    Nothing reads it: copying deleted attachments into an offline feature group for analysis is a later change.
+    Set it now on schemas whose history you expect to want, because the flag cannot recover attachments that were already deleted while it was off.
+
 ## Step 2: Attach a tag to an artifact
 
-Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, model or deployment either using the APIs, or by using the UI.
+Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, job, app, model or deployment either using the APIs, or by using the UI.
 
 ### Using the API
 
@@ -122,6 +152,39 @@ Finally you can remove a tag from a given artifact by calling the `delete_tag()`
 
 The same APIs work for feature views, training datasets, models and deployments alike.
 
+#### Jobs and apps
+
+Jobs and apps carry tags through the same three methods, reached from the job handle rather than the feature store:
+
+=== "Python"
+
+    ```python
+    jobs_api = project.get_jobs_api()
+    job = jobs_api.get_job("transactions_ingest")
+
+    job.add_tag("data_privacy", {"business_unit": "Fraud", "pii": True})
+    job.get_tags()
+    job.delete_tag("data_privacy")
+    ```
+
+An app is a job whose type is `PYTHON_APP`, so an app is tagged exactly the same way, through the handle its name resolves to.
+
+The CLI covers the same three operations:
+
+```bash
+hops job tags transactions_ingest
+hops job add-tag transactions_ingest data_privacy --value '{"business_unit": "Fraud", "pii": true}'
+hops job remove-tag transactions_ingest data_privacy
+```
+
+`--value` takes JSON for a schema with properties, or a plain string for a single-property schema.
+
+Tags on a job are also editable in the UI, on the job's `Tags` section, and when creating or editing the job.
+For an app, the equivalent section is on the app overview page.
+
+Deleting a job deletes its tags with it.
+They are not restored by creating a new job under the same name, because the tags belong to the job that was deleted and not to its name.
+
 ### Using the UI
 
 You can attach tags to feature groups and feature views directly from the UI.
@@ -135,11 +198,39 @@ From there you can select the tag schema of the tag you want to attach and popul
   </figure>
 </p>
 
+## When a tag was attached
+
+Hopsworks records the time each tag was attached and reports it alongside the value.
+`get_tags()` returns values only, so read the attachment time through the `_metadata` variants, which return `Tag` objects instead of bare values:
+
+=== "Python"
+
+    ```python
+    fg = fs.get_feature_group("transactions_4h_aggs_fraud_batch_fg", version=1)
+
+    tag = fg.get_tag_metadata("data_privacy")
+    print(tag.value, tag.created_on)
+
+    # every tag on the artifact, keyed by name
+    for name, attached in fg.get_tags_metadata().items():
+        print(name, attached.created_on)
+    ```
+
+`created_on` is an aware UTC `datetime`, and the same methods exist on feature views, training datasets and jobs.
+
+The timestamp records when the tag was **attached**, not when its value last changed.
+Re-attaching a tag to change its value keeps the original attachment time, so the value can be corrected without losing the record of when the artifact was first classified.
+
+`created_on` is `None` when the attachment time is unknown rather than recent.
+That happens for tags attached before the cluster recorded attachment times, and for legacy per-file dataset tags, which are stored as HopsFS extended attributes and carry no timestamp.
+
 ## Step 3: Search
 
-Hopsworks indexes the tags attached to feature groups, feature views and training datasets.
-The tags will then be searchable using the free text search box located at the top of the UI.
-Tags attached to models and deployments are stored and retrievable through the APIs and the UI, but they are not indexed for free text search.
+Hopsworks indexes the tags attached to feature groups, feature views, training datasets, jobs, models and deployments.
+The tags are then searchable using the free text search box located at the top of the UI, and can be filtered on directly.
+See the [tag and keyword search guide][search-with-tags-and-keywords] for filtering by a specific tag key and value rather than by free text.
+
+Tags on artifacts of every indexed class are searchable, so a governance question such as "which artifacts are missing a data owner" can be answered across feature groups, jobs and deployments in one query.
 
 <p align="center">
   <figure>
