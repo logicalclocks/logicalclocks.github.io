@@ -1,48 +1,39 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 490" role="img" aria-label="A feature view is created by selecting features and a label from two feature groups and adding transformations, then generates training_data_v1, while the same feature view serves feature vectors retrieved by primary key." xmlns="http://www.w3.org/2000/svg">
-  <defs><marker id="fv-flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="6 8 548 236" role="img" aria-label="A feature view selects features and a label from two feature groups and adds transformations, then produces training data offline and serves feature vectors online, retrieved by primary key." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="fv-flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
+    </marker>
+  </defs>
 
-  <rect class="d-box-own" x="60" y="26" width="210" height="44" rx="8"/>
-  <text class="d-t" x="165" y="53" text-anchor="middle">product_feature_group</text>
-  <rect class="d-box-own" x="330" y="26" width="230" height="44" rx="8"/>
-  <text class="d-t" x="445" y="53" text-anchor="middle">order_weekly_feature_group</text>
-  <path class="d-flow" d="M270 48 H330" stroke-dasharray="4 4"/>
+  <!-- source feature groups -->
+  <a class="viz-link" href="../../feature_group/fg_overview/">
+    <g data-tone="accent"><rect class="viz-node" x="30" y="16" width="224" height="40" rx="4"/>
+    <text class="viz-node-title" x="142" y="41" text-anchor="middle">product_feature_group</text></g>
+  </a>
+  <a class="viz-link" href="../../feature_group/fg_overview/">
+    <g data-tone="accent"><rect class="viz-node" x="276" y="16" width="254" height="40" rx="4"/>
+    <text class="viz-node-title" x="403" y="41" text-anchor="middle">order_weekly_feature_group</text></g>
+  </a>
+  <path class="viz-edge" d="M254 36 H276" style="stroke-dasharray:4 4"/>
 
-  <path class="d-flow" d="M300 70 V208" marker-end="url(#fv-flow-arrow)"/>
-  <text class="d-t" x="300" y="100" text-anchor="middle">select features</text>
-  <text class="d-sub" x="300" y="118" text-anchor="middle" font-size="11">(product_id, category, ..., sold_previous_week, sales)</text>
-  <text class="d-t" x="300" y="152" text-anchor="middle">select label = sales</text>
-  <text class="d-t" x="300" y="192" text-anchor="middle">add transformations = { (normalize(), sales), (normalize(), sold_previous_week) }</text>
+  <!-- selection into the feature view -->
+  <path class="viz-edge" d="M280 56 V92" marker-end="url(#fv-flow-arrow)"/>
+  <text class="viz-meta" x="280" y="78" text-anchor="middle">select features + label, add transformations</text>
 
-  <rect class="d-box-own" x="180" y="214" width="240" height="48" rx="8"/>
-  <text class="d-t" x="300" y="243" text-anchor="middle">product_sales_feature_view</text>
+  <g data-tone="accent"><rect class="viz-node" x="170" y="92" width="220" height="44" rx="4"/>
+  <text class="viz-node-title" x="280" y="119" text-anchor="middle">product_sales_feature_view</text></g>
 
-  <path class="d-flow" d="M300 262 V416" marker-end="url(#fv-flow-arrow)"/>
-  <text class="d-t" x="300" y="292" text-anchor="middle">Training data as DataFrames or Files?</text>
-  <text class="d-t" x="300" y="328" text-anchor="middle">(start_time, end_time)</text>
-  <text class="d-t" x="300" y="364" text-anchor="middle">filter (category_name == perfumaria)</text>
-  <text class="d-t" x="300" y="400" text-anchor="middle">splits = { ('train', 80%), ('validation', 10%), ('test', 10%) }</text>
+  <!-- offline / online outputs -->
+  <path class="viz-edge" d="M280 136 C280 156 150 156 150 176" marker-end="url(#fv-flow-arrow)"/>
+  <path class="viz-edge" d="M280 136 C280 156 410 156 410 176" marker-end="url(#fv-flow-arrow)"/>
 
-  <rect class="d-box-own" x="180" y="422" width="240" height="48" rx="8"/>
-  <text class="d-t" x="300" y="451" text-anchor="middle">product_sales_training_data_v1</text>
+  <g><rect class="viz-node" x="34" y="176" width="232" height="56" rx="4"/>
+  <text class="viz-node-title" x="150" y="200" text-anchor="middle">training_data_v1</text>
+  <text class="viz-meta" x="150" y="218" text-anchor="middle">offline · time range, filter, splits</text></g>
 
-  <path class="d-flow" d="M676 238 H424" marker-end="url(#fv-flow-arrow)"/>
-  <text class="d-t" x="550" y="214" text-anchor="middle">Retrieve with primary key</text>
-  <text class="d-sub" x="550" y="230" text-anchor="middle" font-size="11">(product_id=222)</text>
-
-  <rect class="d-box" x="680" y="196" width="280" height="56" rx="8"/>
-  <rect class="d-box-own" x="680" y="196" width="280" height="28" rx="8"/>
-  <path class="d-flow" d="M791 196 V252"/>
-  <path class="d-flow" d="M863 196 V252"/>
-  <path class="d-flow" d="M680 224 H960"/>
-  <text class="d-sub" x="735" y="215" text-anchor="middle" font-size="11">category</text>
-  <text class="d-sub" x="827" y="215" text-anchor="middle" font-size="11">name</text>
-  <text class="d-sub" x="911" y="215" text-anchor="middle" font-size="11">sold_prev_week</text>
-  <text class="d-sub" x="735" y="243" text-anchor="middle" font-size="11">perfumes</text>
-  <text class="d-sub" x="827" y="243" text-anchor="middle" font-size="11">d'odour</text>
-  <text class="d-sub" x="911" y="243" text-anchor="middle" font-size="11">44</text>
-
-  <rect class="d-box-own" x="700" y="270" width="240" height="40" rx="8"/>
-  <text class="d-t" x="820" y="295" text-anchor="middle">product_sales_feature_vector</text>
+  <g><rect class="viz-node" x="300" y="176" width="232" height="56" rx="4"/>
+  <text class="viz-node-title" x="416" y="200" text-anchor="middle">feature_vector</text>
+  <text class="viz-meta" x="416" y="218" text-anchor="middle">online · retrieve by primary key</text></g>
 </svg>
 </figure>
