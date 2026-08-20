@@ -36,7 +36,7 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [ ] `docs/concepts/mlops/opensearch.md` — 1 kit-static
 - [ ] `docs/concepts/mlops/prediction_services.md` — 3 kit-static
 - [ ] `docs/concepts/mlops/registry.md` — 1 kit-static
-- [ ] `docs/concepts/mlops/serving.md` — 1 kit-static
+- [x] `docs/concepts/mlops/serving.md` — 1 animated (KServe request path, lookup, predict, log)
 - [ ] `docs/concepts/mlops/training.md` — 1 kit-static
 - [ ] `docs/concepts/projects/cicd.md` — 2 kit-static
 - [ ] `docs/concepts/projects/governance.md` — 1 kit-static

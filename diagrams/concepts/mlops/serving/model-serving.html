@@ -1,79 +1,114 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 630" role="img" aria-label="A KServe deployment where a device prediction request passes through Istio to a transformer that builds a feature vector from client input and feature store lookups, then a predictor returns predictions, while inference is logged through Kafka to the feature store and metrics go to Prometheus." xmlns="http://www.w3.org/2000/svg">
-  <defs><marker id="kserve-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 800 400" role="img" aria-label="Animated diagram of a KServe deployment serving a prediction. A request from the device passes through Istio into the transformer, which looks up the feature store by key and gets the feature vector back, the vector goes down into the predictor, the model answers and the prediction travels back to the device, while the inference is logged to Kafka. The model is one part of the deployed pipeline." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ms-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
 
-  <!-- deployment panel -->
-  <rect class="d-panel-fs" x="280" y="60" width="680" height="350" rx="14"/>
-  <text class="d-cap d-cap-fs" x="296" y="52">KServe deployment</text>
+  <path class="viz-edge" d="M164 202 H192" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M290 202 C 312 202 318 156 336 136" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M470 156 V202 M470 202 V202" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M600 118 H652" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M660 142 H608" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M420 266 C 412 292 406 308 402 322" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M340 252 C 240 280 160 262 112 238" marker-end="url(#ms-arrow)"/>
 
-  <!-- client -->
-  <text class="d-sub" x="105" y="200" text-anchor="middle">1. Predict: {'id': 1234,</text>
-  <text class="d-sub" x="105" y="214" text-anchor="middle">'device': 'iphone'}</text>
-  <rect class="d-box-ext" x="40" y="228" width="130" height="60" rx="8"/>
-  <text class="d-t" x="105" y="263" text-anchor="middle">devices</text>
+  <g class="viz-node-group">
+    <rect class="viz-node" x="24" y="170" width="140" height="64" rx="8"/>
+    <text class="viz-node-title" x="94" y="196" text-anchor="middle">DEVICE</text>
+    <text class="viz-node-subtitle" x="94" y="216" text-anchor="middle">prediction request</text>
+  </g>
+  <g class="viz-node-group">
+    <rect class="viz-node" x="200" y="178" width="90" height="48" rx="8"/>
+    <text class="viz-node-title" x="245" y="198" text-anchor="middle">ISTIO</text>
+    <text class="viz-node-subtitle" x="245" y="215" text-anchor="middle">gateway</text>
+  </g>
 
-  <!-- istio gateway -->
-  <rect class="d-box" x="200" y="234" width="64" height="48" rx="8"/>
-  <text class="d-sub" x="232" y="255" text-anchor="middle">Istio</text>
-  <text class="d-sub" x="232" y="270" text-anchor="middle">https</text>
-  <path class="d-flow" d="M170 258 H200" marker-end="url(#kserve-arrow)"/>
-  <path class="d-flow" d="M264 258 H300" marker-end="url(#kserve-arrow)"/>
+  <rect class="viz-kv-frame" x="320" y="60" width="300" height="230" rx="6"/>
+  <rect class="viz-kv-header" x="320" y="60" width="300" height="26"/>
+  <text class="viz-kv-title" x="332" y="73">KServe deployment</text>
+  <text class="viz-meta" x="608" y="73" text-anchor="end">kubernetes</text>
+  <g id="ms-tf" class="viz-node-group" data-tone="data">
+    <rect class="viz-node" x="340" y="100" width="260" height="56" rx="8"/>
+    <text class="viz-node-title" x="470" y="122" text-anchor="middle">TRANSFORMER</text>
+    <text class="viz-node-subtitle" x="470" y="142" text-anchor="middle">build vector · pre/post-process</text>
+  </g>
+  <g id="ms-pr" class="viz-node-group" data-tone="accent">
+    <rect class="viz-node" x="340" y="210" width="260" height="56" rx="8"/>
+    <text class="viz-node-title" x="470" y="232" text-anchor="middle">PREDICTOR</text>
+    <text class="viz-node-subtitle" x="470" y="252" text-anchor="middle">model server</text>
+  </g>
 
-  <!-- transformer -->
-  <rect class="d-box" x="300" y="100" width="290" height="290" rx="10"/>
-  <text class="d-t" x="445" y="128" text-anchor="middle">Transformer</text>
-  <text class="d-sub" x="445" y="146" text-anchor="middle">build-feature-vector.py</text>
-  <text class="d-sub" x="320" y="176">feature_view</text>
-  <rect class="d-box-own" x="318" y="184" width="254" height="196" rx="8"/>
-  <text class="d-sub" x="330" y="208">Feature</text>
-  <text class="d-sub" x="462" y="208">Feature Origin</text>
-  <path class="d-flow" d="M452 190 V374"/>
-  <path class="d-flow" d="M324 220 H566"/>
-  <text class="d-sub" x="330" y="246">device: iphone</text>
-  <text class="d-sub" x="462" y="246">client</text>
-  <path class="d-flow" d="M324 264 H566"/>
-  <text class="d-sub" x="330" y="292">age: ?</text>
-  <text class="d-sub" x="462" y="292">feature-store</text>
-  <path class="d-flow" d="M324 314 H566"/>
-  <text class="d-sub" x="330" y="348">spend-7-days: ?</text>
-  <text class="d-sub" x="462" y="348">feature-store</text>
+  <g id="ms-fs" class="viz-node-group" data-tone="read">
+    <rect class="viz-node" x="660" y="100" width="116" height="56" rx="8"/>
+    <text class="viz-node-title" x="718" y="122" text-anchor="middle">FEATURE</text>
+    <text class="viz-node-subtitle" x="718" y="142" text-anchor="middle">store · online</text>
+  </g>
 
-  <!-- predictor -->
-  <rect class="d-box" x="690" y="100" width="250" height="290" rx="10"/>
-  <text class="d-t" x="815" y="128" text-anchor="middle">Predictor</text>
-  <text class="d-sub" x="815" y="146" text-anchor="middle">predictor.py</text>
-  <text class="d-sub" x="815" y="212" text-anchor="middle">PyTorch</text>
-  <text class="d-sub" x="815" y="242" text-anchor="middle">TensorFlow</text>
-  <text class="d-sub" x="815" y="272" text-anchor="middle">scikit-learn</text>
-  <text class="d-sub" x="815" y="302" text-anchor="middle">XGBoost</text>
+  <g id="ms-kafka" class="viz-node-group" data-tone="data">
+    <rect class="viz-node" x="340" y="330" width="130" height="56" rx="8"/>
+    <text class="viz-node-title" x="405" y="352" text-anchor="middle">KAFKA</text>
+    <text class="viz-node-subtitle" x="405" y="372" text-anchor="middle">inference logs</text>
+  </g>
+  <text id="ms-ok" class="viz-meta viz-fade" data-tone="accent" x="620" y="358" text-anchor="middle" style="opacity:0">the model is one part of the deployed pipeline</text>
 
-  <path class="d-flow" d="M590 252 H690" marker-end="url(#kserve-arrow)"/>
-  <text class="d-sub" x="640" y="242" text-anchor="middle">3. model.predict()</text>
-
-  <!-- inference logging: transformer -> logs -> kafka -> feature store -->
-  <path class="d-flow" d="M445 390 V440 H405 V470" marker-end="url(#kserve-arrow)"/>
-  <rect class="d-box" x="300" y="470" width="210" height="58" rx="8" stroke-dasharray="4 4"/>
-  <text class="d-sub" x="405" y="494" text-anchor="middle">Logs: Inputs, Transformed Inputs,</text>
-  <text class="d-sub" x="405" y="512" text-anchor="middle">Predictions</text>
-  <path class="d-flow" d="M405 528 V544 H385 V560" marker-end="url(#kserve-arrow)"/>
-  <rect class="d-box-ext" x="310" y="560" width="150" height="44" rx="8"/>
-  <text class="d-t" x="385" y="587" text-anchor="middle">Kafka</text>
-  <path class="d-flow" d="M460 582 H520 V536 H560" marker-end="url(#kserve-arrow)"/>
-
-  <!-- feature store -->
-  <rect class="d-box-own" x="560" y="500" width="210" height="72" rx="10"/>
-  <text class="d-t" x="665" y="542" text-anchor="middle">Feature Store</text>
-
-  <!-- feature retrieval -->
-  <path class="d-flow" d="M560 390 V470 H640 V500" stroke-dasharray="4 4" marker-end="url(#kserve-arrow)"/>
-  <text class="d-sub" x="690" y="460" text-anchor="middle">2. get_feature_vector({'id': 1234}, passed={'device': 'iphone'})</text>
-
-  <!-- metrics -->
-  <path class="d-flow" d="M815 390 V440 H875 V470" stroke-dasharray="4 4" marker-end="url(#kserve-arrow)"/>
-  <rect class="d-box" x="810" y="470" width="130" height="44" rx="8" stroke-dasharray="4 4"/>
-  <text class="d-t" x="875" y="497" text-anchor="middle">Metrics</text>
-  <path class="d-flow" d="M875 514 V555" stroke-dasharray="4 4" marker-end="url(#kserve-arrow)"/>
-  <rect class="d-box-ext" x="810" y="555" width="130" height="48" rx="8"/>
-  <text class="d-t" x="875" y="584" text-anchor="middle">Prometheus</text>
+  <g transform="translate(170 193)">
+    <g id="ms-req" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="44" height="18" rx="3"/>
+      <text x="22" y="9" text-anchor="middle">req</text>
+    </g>
+  </g>
+  <g transform="translate(552 109)">
+    <g id="ms-look" class="viz-packet" data-tone="read" style="opacity:0">
+      <rect width="44" height="18" rx="3"/>
+      <text x="22" y="9" text-anchor="middle">key</text>
+    </g>
+  </g>
+  <g transform="translate(650 133)">
+    <g id="ms-feat" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="58" height="18" rx="3"/>
+      <text x="29" y="9" text-anchor="middle">vector</text>
+    </g>
+  </g>
+  <g transform="translate(442 162)">
+    <g id="ms-vec" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="58" height="18" rx="3"/>
+      <text x="29" y="9" text-anchor="middle">vector</text>
+    </g>
+  </g>
+  <g transform="translate(400 272)">
+    <g id="ms-log" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="40" height="18" rx="3"/>
+      <text x="20" y="9" text-anchor="middle">log</text>
+    </g>
+  </g>
+  <g transform="translate(330 240)">
+    <g id="ms-resp" class="viz-packet" data-tone="accent" style="opacity:0">
+      <rect width="48" height="18" rx="3"/>
+      <text x="24" y="9" text-anchor="middle">0.92</text>
+    </g>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 750,
+  "loopDelay": 2400,
+  "steps": [
+    { "#ms-req": {"opacity": 1} },
+    { "#ms-req": {"x": 53}, "$ms": 500 },
+    { "#ms-req": {"x": 278, "y": -74}, "$ms": 650 },
+    { "#ms-req": {"opacity": 0}, "#ms-tf": {"state": "active"}, "#ms-look": {"opacity": 1}, "$ms": 450 },
+    { "#ms-look": {"x": 82}, "$ms": 550 },
+    { "#ms-look": {"opacity": 0}, "#ms-fs": {"state": "active"}, "#ms-feat": {"opacity": 1}, "$ms": 450 },
+    { "#ms-feat": {"x": -146}, "$ms": 550 },
+    { "#ms-feat": {"opacity": 0}, "#ms-fs": {"state": null}, "#ms-vec": {"opacity": 1}, "$ms": 400 },
+    { "#ms-vec": {"y": 62}, "#ms-tf": {"state": null}, "$ms": 500 },
+    { "#ms-vec": {"opacity": 0}, "#ms-pr": {"state": "active"}, "#ms-log": {"opacity": 1}, "#ms-resp": {"opacity": 1}, "$ms": 500 },
+    { "#ms-log": {"x": -18, "y": 52}, "#ms-resp": {"x": -238, "y": -28}, "$ms": 700 },
+    { "#ms-log": {"opacity": 0}, "#ms-resp": {"opacity": 0}, "#ms-kafka": {"state": "active"}, "#ms-pr": {"state": null}, "$ms": 500 },
+    { "#ms-kafka": {"state": null}, "#ms-ok": {"opacity": 1}, "$ms": 2200 }
+  ]
+}
+</script>
 </figure>
