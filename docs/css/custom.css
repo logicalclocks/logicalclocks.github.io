@@ -288,17 +288,19 @@ a.autorefs-external::after {
   pointer-events: none;
   user-select: none;
 }
-/* Readability floor: below ~40rem rendered width the viz type becomes
-   illegible, so the figure stops shrinking and pans horizontally instead.
-   A diagram is for reading, not a token visual. */
+/* Fit width, grow vertically: horizontal scroll is a failure mode, not a
+   feature. The canvas has infinite vertical and limited horizontal, so a
+   figure never pans sideways; it scales to the column and, when it needs
+   more room, is authored portrait (sections stacked, flow top to bottom).
+   overflow-x stays as a safety net only. */
 .md-typeset .hops-viz {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 .md-typeset .hops-viz svg {
-  min-width: 40rem;
-  /* And a ceiling: a compact figure is not stretched to fill the column,
-     wide must be earned by the content, not granted by the layout. */
+  width: 100%;
+  /* A ceiling so a compact figure is not stretched across a wide column;
+     width must be earned by the content, not granted by the layout. */
   max-width: 52rem;
   margin-inline: auto;
 }
@@ -538,6 +540,24 @@ a.autorefs-external::after {
   stroke: var(--viz-tone, var(--viz-line-strong));
 }
 
+/* API doc-type marker: the two top-level API entries carry a small code
+   glyph in the rail so the switch from prose docs to generated API
+   reference is legible. Scoped to those top-level links only (a deliberate
+   doc-type marker, not per-section decoration). */
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link[href*="python-api"]::before,
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link[href*="javadoc"]::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  vertical-align: -2px;
+  background-color: currentColor;
+  opacity: 0.55;
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7 L4 12 L9 17'/%3E%3Cpath d='M15 7 L20 12 L15 17'/%3E%3C/svg%3E");
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7 L4 12 L9 17'/%3E%3Cpath d='M15 7 L20 12 L15 17'/%3E%3C/svg%3E");
+}
+
 /* =========================================================
    2026 REFRESH: chrome to the July-2026 dev-docs standard
    (Stripe / Vercel / Linear / Supabase / Mintlify consensus).
@@ -692,6 +712,15 @@ a.autorefs-external::after {
     box-sizing: border-box;
     margin: 0;
     padding-top: calc(2.4rem + 0.5rem);
+  }
+  /* The full-bleed ::before is the only grey painter on desktop and it carries
+     the divider (its border-right). The box and scrollwrap must stay
+     transparent here: their own opaque grey fill would sit in front of the
+     ::before and cover the divider everywhere below the header gap, which is
+     exactly why the line looked like it stopped after the header. */
+  .md-sidebar--primary,
+  .md-sidebar--primary .md-sidebar__scrollwrap {
+    background-color: transparent;
   }
 }
 .md-nav--primary {

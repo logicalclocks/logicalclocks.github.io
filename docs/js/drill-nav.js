@@ -43,6 +43,14 @@
     return li || null;
   }
 
+  // Site root, used as the "up" target from a top-level section (whose own
+  // index page IS the current page, so it must never point at itself).
+  function homeHref() {
+    var logo = document.querySelector("a.md-logo, .md-header__button.md-logo");
+    var href = logo && logo.getAttribute("href");
+    return href || ".";
+  }
+
   function buildUpButton(label, href) {
     var btn = document.createElement(href ? "a" : "div");
     btn.className = "hops-nav-up";
@@ -117,7 +125,10 @@
     if (ownerLi) {
       label = textOf(ownerLi);
       var parentSection = sectionAncestor(ownerLi.parentElement);
-      upHref = hrefOf(parentSection) || hrefOf(ownerLi) || ".";
+      // Up goes to the parent section's page, or to the site root for a
+      // top-level section. Never hrefOf(ownerLi): that is the current page,
+      // which made the up button a no-op (the reported dead back button).
+      upHref = hrefOf(parentSection) || homeHref();
       depth = 1;
       var d = ownerLi;
       while ((d = sectionAncestor(d.parentElement))) depth++;

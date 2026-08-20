@@ -14,11 +14,14 @@ strict: false
 watch:
   - diagrams
 
+# Pages reachable by link but intentionally kept out of the sidebar menu.
+# Tutorials: dropped from the menu, to be reworked; index.md still links to it.
+not_in_nav: |
+  /tutorials/index.md
+
 nav:
   - Home: index.md
   - Getting Started ↗: https://run.hopsworks.ai
-  - Tutorials:
-      - tutorials/index.md
   - Concepts:
       - concepts/index.md
       - Platform:
@@ -259,7 +262,7 @@ nav:
               - user_guides/agents/deployments/index.md
       - Migration:
           - 3.X to 4.0: user_guides/migration/40_migration.md
-  - Setup and Administration:
+  - Administration:
       - setup_installation/index.md
       - Client Installation:
           - user_guides/client_installation/index.md
@@ -311,7 +314,8 @@ nav:
       - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
   - Python API: python-api
   - Java API: javadoc
-  - REST API Status Codes: reference/rest_error_codes.md
+  - Reference:
+      - REST API Status Codes: reference/rest_error_codes.md
   - Docs for AI agents: ai.md
 
 theme:

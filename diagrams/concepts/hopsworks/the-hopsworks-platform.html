@@ -1,109 +1,107 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 470" role="img" aria-label="Hopsworks platform architecture: feature engineering feeds the feature store and MLOps layer, model training reads from it, all on a shared multi-tenant platform." xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:Roboto,system-ui,sans-serif">
-
-  <!-- flow connectors behind panels -->
-  <path class="d-flow" d="M236 210 H262" marker-end="url(#d-arrow)"/>
-  <path class="d-flow" d="M736 210 H762" marker-end="url(#d-arrow)"/>
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="14 34 572 708" role="img" aria-label="Hopsworks platform architecture: feature engineering feeds the feature store and MLOps layer, model training reads from it, all on a shared multi-tenant platform." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="d-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="hop-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
     </marker>
   </defs>
 
-  <!-- Feature Engineering -->
-  <text class="d-t d-cap d-cap-ext" x="30" y="40">Feature Engineering</text>
-  <rect class="d-panel-ext" x="24" y="52" width="212" height="308" rx="12"/>
-  <a class="d-link" href="../fs/feature_group/feature_pipelines/">
-    <rect class="d-box" x="42" y="70" width="176" height="34" rx="6"/>
-    <text class="d-t" x="130" y="92" text-anchor="middle">Python, Pandas, Polars</text>
+  <!-- vertical flow between sections -->
+  <path class="viz-edge" d="M300 230 V254" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M300 510 V536" marker-end="url(#hop-arrow)"/>
+
+  <!-- Feature engineering -->
+  <text class="viz-label" x="24" y="42">Feature engineering</text>
+  <rect class="viz-zone" x="20" y="48" width="560" height="182" rx="6"/>
+  <a class="viz-link" href="../fs/feature_group/feature_pipelines/">
+    <g><rect class="viz-node" x="40" y="64" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="164" y="86" text-anchor="middle">Python, Pandas, Polars</text></g>
   </a>
-  <a class="d-link" href="../fs/feature_group/feature_pipelines/">
-    <rect class="d-box" x="42" y="112" width="176" height="34" rx="6"/>
-    <text class="d-t" x="130" y="134" text-anchor="middle">Spark, Spark Streaming</text>
+  <a class="viz-link" href="../fs/feature_group/feature_pipelines/">
+    <g><rect class="viz-node" x="312" y="64" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="436" y="86" text-anchor="middle">Spark, Spark Streaming</text></g>
   </a>
-  <a class="d-link" href="../fs/feature_group/feature_pipelines/">
-    <rect class="d-box" x="42" y="154" width="176" height="34" rx="6"/>
-    <text class="d-t" x="130" y="176" text-anchor="middle">Flink</text>
+  <a class="viz-link" href="../fs/feature_group/feature_pipelines/">
+    <g><rect class="viz-node" x="40" y="106" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="164" y="128" text-anchor="middle">Flink</text></g>
   </a>
-  <a class="d-link" href="../fs/feature_group/feature_pipelines/">
-    <rect class="d-box" x="42" y="196" width="176" height="34" rx="6"/>
-    <text class="d-t" x="130" y="218" text-anchor="middle">SQL</text>
+  <a class="viz-link" href="../fs/feature_group/feature_pipelines/">
+    <g><rect class="viz-node" x="312" y="106" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="436" y="128" text-anchor="middle">SQL</text></g>
   </a>
-  <a class="d-link" href="../fs/feature_group/external_fg/">
-    <rect class="d-box" x="42" y="250" width="176" height="90" rx="6"/>
-    <text class="d-t d-sub" x="130" y="272" text-anchor="middle">DATA SOURCES</text>
-    <text class="d-t" x="130" y="296" text-anchor="middle">S3 · Kafka · JDBC</text>
-    <text class="d-t" x="130" y="318" text-anchor="middle">Snowflake · BigQuery</text>
+  <a class="viz-link" href="../fs/feature_group/external_fg/">
+    <g><rect class="viz-node" x="40" y="150" width="520" height="64" rx="4"/>
+    <text class="viz-label" x="300" y="174" text-anchor="middle">Data sources</text>
+    <text class="viz-node-title" x="300" y="196" text-anchor="middle">S3 · Kafka · JDBC · Snowflake · BigQuery</text></g>
   </a>
 
-  <!-- Feature Store & MLOps -->
-  <text class="d-t d-cap d-cap-fs" x="268" y="40">Feature Store &amp; MLOps</text>
-  <rect class="d-panel-fs" x="262" y="52" width="476" height="308" rx="12"/>
-  <a class="d-link" href="../dev/outside/">
-    <rect class="d-api" x="280" y="68" width="440" height="30" rx="6"/>
-    <text class="d-t" x="500" y="88" text-anchor="middle">Hopsworks API · Python · Java · REST</text>
+  <!-- Feature store & MLOps -->
+  <text class="viz-label" x="24" y="248">Feature store &amp; MLOps</text>
+  <rect class="viz-zone" x="20" y="254" width="560" height="256" rx="6"/>
+  <a class="viz-link" href="../dev/outside/">
+    <g data-tone="accent"><rect class="viz-node" x="40" y="268" width="520" height="32" rx="4"/>
+    <text class="viz-node-title" x="300" y="289" text-anchor="middle">Hopsworks API · Python · Java · REST</text></g>
   </a>
 
-  <text class="d-t d-sub" x="292" y="122">FEATURE STORE</text>
-  <a class="d-link" href="../fs/feature_group/fg_overview/">
-    <rect class="d-box-own" x="280" y="132" width="210" height="34" rx="6"/>
-    <text class="d-t" x="385" y="154" text-anchor="middle">Feature Groups</text>
+  <text class="viz-label" x="52" y="326">Feature store</text>
+  <a class="viz-link" href="../fs/feature_group/fg_overview/">
+    <g data-tone="accent"><rect class="viz-node" x="40" y="336" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="164" y="358" text-anchor="middle">Feature Groups</text></g>
   </a>
-  <a class="d-link" href="../fs/feature_group/external_fg/">
-    <rect class="d-box" x="280" y="174" width="210" height="34" rx="6"/>
-    <text class="d-t" x="385" y="196" text-anchor="middle">External Feature Groups</text>
+  <a class="viz-link" href="../fs/feature_group/external_fg/">
+    <g><rect class="viz-node" x="40" y="378" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="164" y="400" text-anchor="middle">External Feature Groups</text></g>
   </a>
-  <a class="d-link" href="../fs/feature_view/fv_overview/">
-    <rect class="d-box" x="280" y="216" width="210" height="34" rx="6"/>
-    <text class="d-t" x="385" y="238" text-anchor="middle">Feature Views (online / offline)</text>
+  <a class="viz-link" href="../fs/feature_view/fv_overview/">
+    <g><rect class="viz-node" x="40" y="420" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="164" y="442" text-anchor="middle">Feature Views</text></g>
   </a>
-  <a class="d-link" href="../mlops/opensearch/">
-    <rect class="d-box" x="280" y="258" width="210" height="34" rx="6"/>
-    <text class="d-t" x="385" y="280" text-anchor="middle">Vector Index</text>
-  </a>
-
-  <text class="d-t d-sub" x="522" y="122">MLOPS</text>
-  <a class="d-link" href="../mlops/registry/">
-    <rect class="d-box-own" x="510" y="132" width="210" height="34" rx="6"/>
-    <text class="d-t" x="615" y="154" text-anchor="middle">Model Registry</text>
-  </a>
-  <a class="d-link" href="../mlops/serving/">
-    <rect class="d-box" x="510" y="174" width="210" height="34" rx="6"/>
-    <text class="d-t" x="615" y="196" text-anchor="middle">Model Serving on KServe</text>
-  </a>
-  <a class="d-link" href="../mlops/model_monitoring/">
-    <rect class="d-box" x="510" y="216" width="210" height="34" rx="6"/>
-    <text class="d-t" x="615" y="238" text-anchor="middle">Model Monitoring</text>
-  </a>
-  <a class="d-link" href="../mlops/model_monitoring/">
-    <rect class="d-box" x="510" y="258" width="210" height="34" rx="6"/>
-    <text class="d-t" x="615" y="280" text-anchor="middle">Prediction / feature logging</text>
+  <a class="viz-link" href="../mlops/opensearch/">
+    <g><rect class="viz-node" x="40" y="462" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="164" y="484" text-anchor="middle">Vector Index</text></g>
   </a>
 
-  <!-- Model Training -->
-  <text class="d-t d-cap d-cap-ext" x="768" y="40">Model Training</text>
-  <rect class="d-panel-ext" x="762" y="52" width="214" height="308" rx="12"/>
-  <a class="d-link" href="../mlops/training/">
-    <rect class="d-box" x="780" y="70" width="178" height="34" rx="6"/>
-    <text class="d-t" x="869" y="92" text-anchor="middle">Experiment Tracking</text>
+  <text class="viz-label" x="316" y="326">MLOps</text>
+  <a class="viz-link" href="../mlops/registry/">
+    <g data-tone="accent"><rect class="viz-node" x="312" y="336" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="436" y="358" text-anchor="middle">Model Registry</text></g>
   </a>
-  <a class="d-link" href="../mlops/training/">
-    <rect class="d-box" x="780" y="112" width="178" height="50" rx="6"/>
-    <text class="d-t" x="869" y="134" text-anchor="middle">Distributed Training</text>
-    <text class="d-t" x="869" y="152" text-anchor="middle">&amp; HPO</text>
+  <a class="viz-link" href="../mlops/serving/">
+    <g><rect class="viz-node" x="312" y="378" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="436" y="400" text-anchor="middle">Model Serving on KServe</text></g>
   </a>
-  <a class="d-link" href="../mlops/training/">
-    <rect class="d-box" x="780" y="196" width="178" height="90" rx="6"/>
-    <text class="d-t d-sub" x="869" y="218" text-anchor="middle">FRAMEWORKS</text>
-    <text class="d-t" x="869" y="242" text-anchor="middle">PyTorch · TensorFlow</text>
-    <text class="d-t" x="869" y="264" text-anchor="middle">Scikit-Learn · XGBoost</text>
+  <a class="viz-link" href="../mlops/model_monitoring/">
+    <g><rect class="viz-node" x="312" y="420" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="436" y="442" text-anchor="middle">Model Monitoring</text></g>
+  </a>
+  <a class="viz-link" href="../mlops/model_monitoring/">
+    <g><rect class="viz-node" x="312" y="462" width="248" height="34" rx="4"/>
+    <text class="viz-node-title" x="436" y="484" text-anchor="middle">Prediction logging</text></g>
   </a>
 
-  <!-- Platform band -->
-  <a class="d-link" href="../projects/governance/">
-    <rect class="d-band" x="24" y="386" width="952" height="60" rx="12"/>
-    <text class="d-t d-sub" x="40" y="410">MULTI-TENANT PLATFORM</text>
-    <text class="d-t" x="40" y="432">Projects &amp; multi-tenancy · Jobs (Python, Spark, Flink) · Jupyter · Airflow · Governance (search, tags, lineage) · Auth (SSO, RBAC)</text>
+  <!-- Model training -->
+  <text class="viz-label" x="24" y="530">Model training</text>
+  <rect class="viz-zone" x="20" y="536" width="560" height="130" rx="6"/>
+  <a class="viz-link" href="../mlops/training/">
+    <g><rect class="viz-node" x="40" y="552" width="256" height="34" rx="4"/>
+    <text class="viz-node-title" x="168" y="574" text-anchor="middle">Experiment Tracking</text></g>
+  </a>
+  <a class="viz-link" href="../mlops/training/">
+    <g><rect class="viz-node" x="304" y="552" width="256" height="34" rx="4"/>
+    <text class="viz-node-title" x="432" y="574" text-anchor="middle">Distributed Training &amp; HPO</text></g>
+  </a>
+  <a class="viz-link" href="../mlops/training/">
+    <g><rect class="viz-node" x="40" y="596" width="520" height="52" rx="4"/>
+    <text class="viz-label" x="300" y="616" text-anchor="middle">Frameworks</text>
+    <text class="viz-node-title" x="300" y="637" text-anchor="middle">PyTorch · TensorFlow · Scikit-Learn · XGBoost</text></g>
+  </a>
+
+  <!-- Multi-tenant platform base -->
+  <a class="viz-link" href="../projects/governance/">
+    <g><rect class="viz-zone" x="20" y="674" width="560" height="60" rx="6"/>
+    <text class="viz-label" x="40" y="698">Multi-tenant platform</text>
+    <text class="viz-meta" x="40" y="716">Projects &amp; multi-tenancy · Jobs (Python, Spark, Flink) · Jupyter · Airflow</text>
+    <text class="viz-meta" x="40" y="730">Governance (search, tags, lineage) · Auth (SSO, RBAC)</text></g>
   </a>
 </svg>
 </figure>
