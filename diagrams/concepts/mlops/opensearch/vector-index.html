@@ -1,33 +1,100 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 460" role="img" aria-label="Devices query the OpenSearch kNN ANN index for online similarity search, while an offline job encodes an item corpus with an embedding model and inserts ID-embedding pairs into the index." xmlns="http://www.w3.org/2000/svg">
-  <defs><marker id="os-knn-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/></marker></defs>
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 780 360" role="img" aria-label="Animated diagram of the vector index. Offline, an item from the corpus passes through the embedding job and its id-embedding pair is inserted as a new row in the OpenSearch ANN index. Online, a device sends a query embedding to the index, the index flashes and the top-k nearest item ids travel back to the device." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="os-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    </marker>
+  </defs>
 
-  <rect class="d-panel-fs" x="520" y="150" width="440" height="290" rx="14"/>
-  <text class="d-cap d-cap-fs" x="740" y="428" text-anchor="middle">Offline indexing</text>
+  <text class="viz-label" x="24" y="30">Online similarity search</text>
+  <text class="viz-label" x="200" y="262">Offline indexing</text>
 
-  <rect class="d-box-ext" x="40" y="40" width="210" height="60" rx="8"/>
-  <text class="d-t" x="145" y="75" text-anchor="middle">Devices</text>
+  <path class="viz-edge" d="M164 84 H512" marker-end="url(#os-arrow)"/>
+  <path class="viz-edge" d="M520 110 H172" marker-end="url(#os-arrow)"/>
+  <path class="viz-edge" d="M350 308 H412" marker-end="url(#os-arrow)"/>
+  <path class="viz-edge" d="M510 280 C 512 240 530 204 558 178" marker-end="url(#os-arrow)"/>
 
-  <text class="d-sub" x="405" y="40" text-anchor="middle">Online Similarity Search:</text>
-  <text class="d-sub" x="405" y="56" text-anchor="middle">{ embedding: [....] }</text>
-  <path class="d-flow" d="M250 70 H560" marker-end="url(#os-knn-arrow)"/>
+  <g class="viz-node-group">
+    <rect class="viz-node" x="24" y="52" width="140" height="64" rx="8"/>
+    <text class="viz-node-title" x="94" y="78" text-anchor="middle">DEVICE</text>
+    <text class="viz-node-subtitle" x="94" y="98" text-anchor="middle">query embedding</text>
+  </g>
 
-  <rect class="d-box-own" x="560" y="42" width="380" height="64" rx="8"/>
-  <text class="d-t" x="750" y="68" text-anchor="middle">ANN Index</text>
-  <text class="d-sub" x="750" y="90" text-anchor="middle">(OpenSearch kNN)</text>
+  <rect class="viz-kv-frame" x="520" y="40" width="236" height="164" rx="6"/>
+  <rect class="viz-kv-header" x="520" y="40" width="236" height="26"/>
+  <text class="viz-kv-title" x="528" y="53">ANN index</text>
+  <text class="viz-meta" x="748" y="53" text-anchor="end">opensearch knn</text>
+  <g class="viz-kv-entry" data-tone="data">
+    <rect class="viz-kv-cell" x="526" y="74" width="224" height="26" rx="3"/>
+    <text class="viz-kv-key" x="532" y="91">item 042</text>
+    <text class="viz-kv-val" x="742" y="91" text-anchor="end">[0.12, …]</text>
+  </g>
+  <g class="viz-kv-entry" data-tone="data">
+    <rect class="viz-kv-cell" x="526" y="104" width="224" height="26" rx="3"/>
+    <text class="viz-kv-key" x="532" y="121">item 743</text>
+    <text class="viz-kv-val" x="742" y="121" text-anchor="end">[0.98, …]</text>
+  </g>
+  <g id="os-newrow" class="viz-kv-entry viz-fade" data-tone="write" style="opacity:0">
+    <rect class="viz-kv-cell" x="526" y="134" width="224" height="26" rx="3"/>
+    <text class="viz-kv-key" x="532" y="151">item 918</text>
+    <text class="viz-kv-val" x="742" y="151" text-anchor="end">[0.44, …]</text>
+  </g>
+  <text class="viz-meta" x="528" y="188">faiss · nmslib</text>
 
-  <rect class="d-box" x="590" y="228" width="300" height="72" rx="8"/>
-  <text class="d-t" x="740" y="262" text-anchor="middle">Python/Spark Job</text>
-  <text class="d-sub" x="740" y="284" text-anchor="middle">with Item Embedding Model</text>
+  <g class="viz-node-group">
+    <rect class="viz-node" x="200" y="280" width="150" height="56" rx="8"/>
+    <text class="viz-node-title" x="275" y="302" text-anchor="middle">ITEM CORPUS</text>
+    <text class="viz-node-subtitle" x="275" y="322" text-anchor="middle">documents · items</text>
+  </g>
+  <g id="os-job" class="viz-node-group" data-tone="write">
+    <rect class="viz-node" x="420" y="280" width="180" height="56" rx="8"/>
+    <text class="viz-node-title" x="510" y="302" text-anchor="middle">EMBEDDING JOB</text>
+    <text class="viz-node-subtitle" x="510" y="322" text-anchor="middle">encode all items</text>
+  </g>
 
-  <rect class="d-box" x="620" y="352" width="240" height="54" rx="8"/>
-  <text class="d-t" x="740" y="384" text-anchor="middle">Item Corpus</text>
+  <text id="os-ok" class="viz-meta viz-fade" data-tone="accent" x="342" y="130" text-anchor="middle" style="opacity:0">top-k nearest neighbours in milliseconds</text>
 
-  <path class="d-flow" d="M740 352 V300" marker-end="url(#os-knn-arrow)"/>
-  <text class="d-sub" x="830" y="330" text-anchor="middle">Encode all items</text>
-
-  <path class="d-flow" d="M740 228 V106" marker-end="url(#os-knn-arrow)"/>
-  <text class="d-sub" x="858" y="160" text-anchor="middle">Insert all pairs</text>
-  <text class="d-sub" x="858" y="176" text-anchor="middle">(ID, embedding)</text>
+  <g transform="translate(356 299)">
+    <g id="os-pi" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="70" height="18" rx="3"/>
+      <text x="35" y="9" text-anchor="middle">item 918</text>
+    </g>
+  </g>
+  <g transform="translate(504 262)">
+    <g id="os-pv" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="66" height="18" rx="3"/>
+      <text x="33" y="9" text-anchor="middle">[0.44, …]</text>
+    </g>
+  </g>
+  <g transform="translate(172 75)">
+    <g id="os-pq" class="viz-packet" data-tone="read" style="opacity:0">
+      <rect width="66" height="18" rx="3"/>
+      <text x="33" y="9" text-anchor="middle">[0.41, …]</text>
+    </g>
+  </g>
+  <g transform="translate(512 101)">
+    <g id="os-pk" class="viz-packet" data-tone="accent" style="opacity:0">
+      <rect width="72" height="18" rx="3"/>
+      <text x="36" y="9" text-anchor="middle">top-k ids</text>
+    </g>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 750,
+  "loopDelay": 2400,
+  "steps": [
+    { "#os-pi": {"opacity": 1} },
+    { "#os-pi": {"x": 58}, "$ms": 550 },
+    { "#os-pi": {"opacity": 0}, "#os-job": {"state": "active"}, "#os-pv": {"opacity": 1}, "$ms": 500 },
+    { "#os-pv": {"x": 60, "y": -108}, "$ms": 650 },
+    { "#os-pv": {"opacity": 0}, "#os-newrow": {"opacity": 1, "state": "active"}, "#os-job": {"state": null}, "$ms": 800 },
+    { "#os-newrow": {"state": "visited"}, "#os-pq": {"opacity": 1}, "$ms": 600 },
+    { "#os-pq": {"x": 330}, "$ms": 700 },
+    { "#os-pq": {"opacity": 0}, "#os-newrow": {"state": "active"}, "#os-pk": {"opacity": 1}, "$ms": 500 },
+    { "#os-pk": {"x": -330}, "#os-newrow": {"state": "visited"}, "$ms": 700 },
+    { "#os-pk": {"opacity": 0}, "#os-ok": {"opacity": 1}, "$ms": 2200 }
+  ]
+}
+</script>
 </figure>

@@ -30,10 +30,10 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [x] `docs/concepts/fs/index.md` — navigational chart, static by charter
 - [x] `docs/concepts/fti.md` — navigational chart, static by charter
 - [x] `docs/concepts/hopsworks.md` — navigational chart, static by charter
-- [ ] `docs/concepts/mlops/agents.md` — 1 kit-static
+- [x] `docs/concepts/mlops/agents.md` — 1 animated (dual lookup, context to LLM, answer back)
 - [x] `docs/concepts/mlops/data_transformations.md` — 5 static kept (taxonomy and placement structures)
 - [x] `docs/concepts/mlops/model_monitoring.md` — 1 animated (sliding window, drift curve, threshold alert)
-- [ ] `docs/concepts/mlops/opensearch.md` — 1 kit-static
+- [x] `docs/concepts/mlops/opensearch.md` — 1 animated (offline encode+insert, online kNN round trip)
 - [x] `docs/concepts/mlops/prediction_services.md` — 1 animated (flywheel turns), 2 static kept (real-time and batch system architectures)
 - [x] `docs/concepts/mlops/registry.md` — static kept (hub structure)
 - [x] `docs/concepts/mlops/serving.md` — 1 animated (KServe request path, lookup, predict, log)
