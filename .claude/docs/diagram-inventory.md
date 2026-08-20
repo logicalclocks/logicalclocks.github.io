@@ -32,7 +32,7 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [x] `docs/concepts/hopsworks.md` — navigational chart, static by charter
 - [ ] `docs/concepts/mlops/agents.md` — 1 kit-static
 - [ ] `docs/concepts/mlops/data_transformations.md` — 5 kit-static
-- [ ] `docs/concepts/mlops/model_monitoring.md` — 1 kit-static
+- [x] `docs/concepts/mlops/model_monitoring.md` — 1 animated (sliding window, drift curve, threshold alert)
 - [ ] `docs/concepts/mlops/opensearch.md` — 1 kit-static
 - [ ] `docs/concepts/mlops/prediction_services.md` — 3 kit-static
 - [ ] `docs/concepts/mlops/registry.md` — 1 kit-static

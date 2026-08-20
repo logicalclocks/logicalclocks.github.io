@@ -1,58 +1,61 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 420" role="img" aria-label="Drift detection over time. The training dataset distribution is the reference on the left. A detection window slides forward over the logged inference data and its distribution is compared against the reference. The resulting distance is plotted over time and crosses the alert threshold when the served data drifts away from the training data." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 800 420" role="img" aria-label="Animated diagram of drift detection. The training dataset distribution sits on the left as the reference. A detection window slides forward over the logged inference data in steps, and after each step a new segment of the drift distance curve is plotted below. The distance stays flat at first, then rises as the served data drifts, and the final segment crosses the dashed alert threshold: the window turns red and a drift alert fires." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="mm-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
     </marker>
   </defs>
 
-  <!-- reference: training data distribution -->
-  <text class="d-t d-cap d-cap-fs" x="22" y="40">Reference</text>
-  <rect class="d-panel-fs" x="16" y="52" width="204" height="140" rx="12"/>
-  <rect class="d-box-own" x="36" y="152" width="17" height="16" rx="2"/>
-  <rect class="d-box-own" x="57" y="134" width="17" height="34" rx="2"/>
-  <rect class="d-box-own" x="78" y="110" width="17" height="58" rx="2"/>
-  <rect class="d-box-own" x="99" y="88" width="17" height="80" rx="2"/>
-  <rect class="d-box-own" x="120" y="88" width="17" height="80" rx="2"/>
-  <rect class="d-box-own" x="141" y="110" width="17" height="58" rx="2"/>
-  <rect class="d-box-own" x="162" y="134" width="17" height="34" rx="2"/>
-  <rect class="d-box-own" x="183" y="152" width="17" height="16" rx="2"/>
-  <text class="d-t d-sub" x="118" y="184" text-anchor="middle">training dataset v1</text>
+  <text class="viz-label" x="24" y="30">Logged inference data</text>
 
-  <!-- logged inference data over time -->
-  <text class="d-t d-cap d-cap-ext" x="278" y="40">Logged inference data</text>
-  <rect class="d-panel-ext" x="272" y="52" width="708" height="140" rx="12"/>
-  <path class="d-flow" d="M296 172 H964"/>
-  <path class="d-flow" d="M300 172 V148 M322 172 V142 M344 172 V152 M366 172 V144 M388 172 V150 M410 172 V140 M432 172 V154 M454 172 V146 M476 172 V142 M498 172 V150 M520 172 V144 M542 172 V152 M564 172 V146 M586 172 V140 M608 172 V148 M630 172 V152 M652 172 V142 M674 172 V146 M696 172 V150 M718 172 V144 M740 172 V148 M762 172 V138 M784 172 V142 M806 172 V134 M828 172 V136 M850 172 V128 M872 172 V130 M894 172 V122 M916 172 V126 M938 172 V118 M960 172 V122"/>
-  <rect class="d-box" x="470" y="66" width="150" height="114" rx="8" stroke-dasharray="4 3"/>
-  <text class="d-t d-sub" x="545" y="86" text-anchor="middle">earlier window</text>
-  <rect class="d-box-own" x="800" y="66" width="160" height="114" rx="8"/>
-  <text class="d-t d-sub" x="880" y="86" text-anchor="middle">detection window</text>
-  <path class="d-flow" d="M634 104 H792" stroke-dasharray="4 3" marker-end="url(#mm-arrow)"/>
-  <text class="d-t d-sub" x="713" y="98" text-anchor="middle">slides forward</text>
+  <rect class="viz-window" data-tone="accent" data-state="visited" x="24" y="44" width="120" height="70" rx="6"/>
+  <text class="viz-meta" x="84" y="130" text-anchor="middle">reference · training data v1</text>
 
-  <!-- comparison connector -->
-  <path class="d-flow" d="M118 194 V212 H840 V184" stroke-dasharray="4 3" marker-end="url(#mm-arrow)"/>
-  <text class="d-t d-sub" x="480" y="206" text-anchor="middle">compare the two distributions</text>
+  <path class="viz-tick" d="M180 114 V84 M208 114 V76 M236 114 V88 M264 114 V72 M292 114 V82 M320 114 V78 M348 114 V86 M376 114 V74 M404 114 V84 M432 114 V70 M460 114 V80 M488 114 V88 M516 114 V72 M544 114 V82 M572 114 V76 M600 114 V86 M628 114 V70 M656 114 V80 M684 114 V74 M712 114 V84 M740 114 V78"/>
+  <path class="viz-edge" d="M170 138 H760" marker-end="url(#mm-arrow)"/>
+  <text class="viz-meta" x="756" y="152" text-anchor="end">time</text>
 
-  <!-- drift metric over time -->
-  <text class="d-t d-cap" x="272" y="248">Drift metric, distance from the reference</text>
-  <path class="d-flow" d="M300 262 V376"/>
-  <path class="d-flow" d="M300 376 H962" marker-end="url(#mm-arrow)"/>
-  <path class="d-flow" d="M880 194 V270" stroke-dasharray="3 4"/>
-  <path class="d-alert-line" d="M300 296 H962" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity=".85"/>
-  <text class="d-alert" x="306" y="290" font-size="11">alert threshold</text>
-  <path class="d-flow" d="M320 358 L400 354 L480 348 L560 344 L640 336 L720 324 L800 308 L880 282 L940 264" stroke-width="2" stroke-opacity=".6"/>
-  <circle cx="320" cy="358" r="3" fill="currentColor" fill-opacity=".45"/>
-  <circle cx="400" cy="354" r="3" fill="currentColor" fill-opacity=".45"/>
-  <circle cx="480" cy="348" r="3" fill="currentColor" fill-opacity=".45"/>
-  <circle cx="560" cy="344" r="3" fill="currentColor" fill-opacity=".45"/>
-  <circle cx="640" cy="336" r="3" fill="currentColor" fill-opacity=".45"/>
-  <circle cx="720" cy="324" r="3" fill="currentColor" fill-opacity=".45"/>
-  <circle cx="800" cy="308" r="3" fill="currentColor" fill-opacity=".45"/>
-  <circle class="d-alert" cx="880" cy="282" r="4"/>
-  <circle class="d-alert" cx="940" cy="264" r="4"/>
-  <text class="d-alert" x="956" y="252" font-size="11" text-anchor="end">drift alert</text>
-  <text class="d-t d-sub" x="958" y="392" text-anchor="end">time</text>
+  <g transform="translate(170 44)">
+    <g id="mm-win">
+      <rect id="mm-winr" class="viz-window" data-tone="data" data-state="active" width="140" height="70" rx="6"/>
+      <text class="viz-meta" x="70" y="-8" text-anchor="middle">detection window</text>
+    </g>
+  </g>
+
+  <text class="viz-label" x="24" y="210">Drift distance</text>
+  <path class="viz-edge" d="M60 380 H760" marker-end="url(#mm-arrow)"/>
+  <path class="viz-edge" d="M60 380 V230" marker-end="url(#mm-arrow)"/>
+  <path class="viz-edge" data-variant="lane" data-tone="error" d="M60 270 H760"/>
+  <text class="viz-meta" data-tone="error" x="756" y="262" text-anchor="end">alert threshold</text>
+
+  <path id="mm-s1" class="viz-edge viz-fade" data-tone="data" d="M60 360 C 100 356 130 352 160 350" style="opacity:0" stroke-width="2"/>
+  <circle id="mm-d1" class="viz-status-dot viz-fade" data-tone="data" cx="160" cy="350" r="4" style="opacity:0"/>
+  <path id="mm-s2" class="viz-edge viz-fade" data-tone="data" d="M160 350 C 220 346 260 340 310 332" style="opacity:0" stroke-width="2"/>
+  <circle id="mm-d2" class="viz-status-dot viz-fade" data-tone="data" cx="310" cy="332" r="4" style="opacity:0"/>
+  <path id="mm-s3" class="viz-edge viz-fade" data-tone="data" d="M310 332 C 370 320 410 308 460 296" style="opacity:0" stroke-width="2"/>
+  <circle id="mm-d3" class="viz-status-dot viz-fade" data-tone="data" cx="460" cy="296" r="4" style="opacity:0"/>
+  <path id="mm-s4" class="viz-edge viz-fade" data-tone="error" d="M460 296 C 520 284 560 262 610 246" style="opacity:0" stroke-width="2"/>
+  <circle id="mm-d4" class="viz-status-dot viz-fade" data-tone="error" cx="610" cy="246" r="4" style="opacity:0"/>
+
+  <g id="mm-alert" class="viz-badge viz-fade" data-tone="error" style="opacity:0">
+    <rect x="630" y="222" width="112" height="26" rx="6"/>
+    <text x="686" y="235" text-anchor="middle">drift alert</text>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 900,
+  "loopDelay": 2400,
+  "steps": [
+    { "#mm-s1": {"opacity": 1}, "#mm-d1": {"opacity": 1}, "$ms": 800 },
+    { "#mm-win": {"x": 150}, "$ms": 750 },
+    { "#mm-s2": {"opacity": 1}, "#mm-d2": {"opacity": 1}, "$ms": 800 },
+    { "#mm-win": {"x": 300}, "$ms": 750 },
+    { "#mm-s3": {"opacity": 1}, "#mm-d3": {"opacity": 1}, "$ms": 800 },
+    { "#mm-win": {"x": 450}, "$ms": 750 },
+    { "#mm-s4": {"opacity": 1}, "#mm-d4": {"opacity": 1}, "#mm-winr": {"tone": "error"}, "$ms": 700 },
+    { "#mm-alert": {"opacity": 1}, "$ms": 2600 }
+  ]
+}
+</script>
 </figure>
