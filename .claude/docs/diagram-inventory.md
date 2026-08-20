@@ -172,4 +172,4 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 
 ## (root)
 
-- [ ] `docs/index.md` — 1 kit-static
+- [x] `docs/index.md` — navigational chart, static by charter; home page design itself belongs to the UI sweep slice
