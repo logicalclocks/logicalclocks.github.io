@@ -30,12 +30,20 @@ get re-flowed to portrait, they are not left to pan.
 
 ## Open
 
-- [ ] Codify the standard + orientation rule into `.claude/docs/design-system.md`
-      (charter), so they are opposable and do not drift.
-- [ ] Re-flow the remaining landscape diagrams to portrait as they are converted
-      (they now fit-and-shrink instead of panning, so legibility is the tell).
-- [ ] Nav: decide the Python/Java API `</>` marker indent (align icon in the
-      gutter so labels stay grid-aligned, vs leave the current small indent).
+- [ ] Convert the last 7 old-kit fragments: `concepts/dev/inside`,
+      `concepts/dev/outside`, `fs/feature_group/fg_overview/features-and-feature-groups`,
+      `fs/feature_view/offline_api/point-in-time-correct-training-data-2`,
+      `fs/index/what-is-hopsworks-feature-store`, `mlops/registry/model-registry`,
+      `mlops/training/training-pipelines-on-hopsworks`. (grep: `class="hops-diagram"`
+      without `hops-viz`.) The graph-heavy ones need the local screenshot tool to
+      verify edge routing — it was dead this session (eval works, capture never writes).
+- [ ] Icon retrofit pass on the dense diagrams converted WITHOUT icons before Lex
+      asked for iconography (the data_transformations page, feature-views x2,
+      real-time-ai, batch-ai, the versioning grids, taxonomies). governance +
+      data-storage already carry node icons (person, CI-loop, table, store, cube,
+      server, magnifier) at `scale(0.7)`, icon-left with centred text.
+- [ ] Codify the standard + orientation rule into `.claude/docs/design-system.md`.
+- [ ] Nav: decide the Python/Java API `</>` marker indent (gutter-align vs leave).
 
 ## Done
 
@@ -45,8 +53,14 @@ get re-flowed to portrait, they are not left to pan.
 - `concepts/hopsworks/the-hopsworks-platform`: rebuilt onto the viz kit and
   re-flowed **portrait** (sections stacked, vertical flow). Fits the column,
   no horizontal scroll. First application of the orientation rule.
-- Kit: dropped the min-width pan floor; diagrams now fit width and grow
-  vertical (`custom.css` readability-floor block). Uncommitted.
+- Kit: dropped the min-width pan floor; diagrams now fit width and grow vertical.
+- Kit: the zoom overlay now bounds the figure to the stage height, so tall
+  portrait diagrams fit in full view instead of overflowing / needing a pan.
+- 18 of 25 old-kit fragments converted (plus the provenance screenshot →
+  viz lineage diagram). Batches: 5 concepts, data_transformations page (4),
+  feature-view + pipeline (3), prediction services (2), projects/cicd (4).
+- Shared-asset pattern (data-storage): a dashed backing box reaches from the
+  owned node to the shared consumer, labelled SHARED in the gap.
 - Nav cleanup: Tutorials out of the menu (kept via `not_in_nav`), section
   renamed **Administration**, REST status codes moved under a **Reference**
   group, `</>` API marker on Python/Java API, drill-nav back buttons fixed
