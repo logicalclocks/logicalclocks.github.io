@@ -1168,6 +1168,10 @@ body.hops-zoom-lock {
   display: block;
   width: 100%;
   height: auto;
+  /* Fit the whole figure in the overlay: without a height bound a tall
+     portrait diagram overflows the stage and has to be panned. The bound
+     clamps the box and preserveAspectRatio letterboxes the drawing to fit. */
+  max-height: calc(88vh - 3.4rem);
 }
 .hops-zoom-stage img {
   background: #fff;
