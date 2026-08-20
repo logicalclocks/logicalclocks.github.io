@@ -40,7 +40,7 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [x] `docs/concepts/mlops/training.md` — static kept (CI/CD process chart)
 - [x] `docs/concepts/projects/cicd.md` — 2 static kept (git promotion flows)
 - [x] `docs/concepts/projects/governance.md` — static kept (project sandbox structure)
-- [ ] `docs/concepts/projects/search.md` — 2 image(s)
+- [-] `docs/concepts/projects/search.md` — 2 screenshots (provenance graph, tags panel), keep
 - [x] `docs/concepts/projects/storage.md` — static kept (sharing structure)
 
 ## user_guides
