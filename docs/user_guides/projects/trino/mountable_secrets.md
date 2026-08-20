@@ -123,9 +123,21 @@ Add the outbound addresses of every Query Engine pod, coordinator and workers, s
 The Catalogs tab reports those addresses when an administrator has enabled the check.
 
 **A downloaded wallet retries by default.**
-Each alias in `tnsnames.ora` carries `(retry_count=20)(retry_delay=3)` inside its connect descriptor, which turns a refused connection into a wait of about a minute before any error appears, so a rejected address looks like a hang.
-While diagnosing, set `retry_count=0` in the descriptor of the alias you are using, upload the edited wallet as a new bundle, and put the original back afterwards.
+Each alias in `tnsnames.ora` carries `(retry_count=20)(retry_delay=3)` inside its connect descriptor, so a refused connection waits about a minute before any error appears and a rejected address looks like a hang.
 The setting is not in `sqlnet.ora`, which holds only the wallet location and the server DN check.
+
+There is no need to edit the wallet and upload it again to get past this.
+The driver accepts a connect descriptor in place of an alias, so paste the descriptor from the alias you were using into `connection-url` and set `retry_count=0` there.
+The wallet is still what authenticates, through `TNS_ADMIN`, and "Test connection" then reports the real error at once instead of a minute later.
+
+```properties
+connection-url=jdbc:oracle:thin:@(description=(retry_count=0)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=<adb-host>))(connect_data=(service_name=<service-name>))(security=(ssl_server_dn_match=yes)))?TNS_ADMIN=${HOPSWORKS_MOUNT:oracle_wallet}
+connection-user=<user>
+connection-password=${HOPSWORKS_SECRET:oracle_password}
+```
+
+Take the host, port and `service_name` from the alias's entry in the wallet's `tnsnames.ora`.
+This form is not only a diagnostic: a catalog can keep it, and doing so records which consumer group it connects to instead of leaving it to an alias name.
 
 ## When the feature is unavailable
 
