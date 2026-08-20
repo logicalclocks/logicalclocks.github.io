@@ -28,6 +28,12 @@ Retries are automatic and unbounded, with the delay growing between attempts.
 Unbounded is deliberate: abandoning a command would not lose only its own update, it would strand every later update to that document.
 So a command in this list is usually a transient failure that will clear itself, and the list is worth acting on when an entry stops making progress.
 
+The page makes that call for you at 20 attempts.
+A command that has failed 20 times or more is marked `stuck`, with a red border and a callout explaining what to do.
+The threshold is where the retry delay has been at its cap for a while, so crossing it means roughly an hour of the same failure: whatever a retry could outwait has had its chance.
+Read the stuck command's error first, because a failure whose cause has since been fixed clears itself on the next retry and needs nothing from you.
+Otherwise cancel it, as described below.
+
 ### Cancelling a command
 
 Cancel a command only to let the ones behind it through.
