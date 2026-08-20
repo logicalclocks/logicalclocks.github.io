@@ -1,61 +1,72 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 400" role="img" aria-label="The three transformation types placed across the FTI pipeline. Model-independent transformations run in the feature pipeline and produce reusable features stored in the feature store. Model-dependent transformations run in the training pipeline and, again, in the online inference pipeline. On-demand transformations run in the online inference pipeline on request-time input, and can also run in the feature pipeline to backfill. Model-dependent and on-demand transformations therefore run in more than one pipeline, which is where online-offline skew can appear." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="14 10 544 512" role="img" aria-label="The three transformation types across the FTI pipeline. Model-independent transformations run in the feature pipeline and produce reusable features in the feature store. Model-dependent transformations run in the training pipeline and again in the online inference pipeline. On-demand transformations run in the online inference pipeline on request-time input, and can also backfill in the feature pipeline. Model-dependent and on-demand transformations run in more than one pipeline, which is where online-offline skew can appear." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="tx-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="tx-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
     </marker>
   </defs>
 
   <!-- legend -->
-  <rect class="d-box-own" x="20" y="20" width="16" height="16" rx="3"/>
-  <text class="d-t d-sub" x="44" y="33">MIT, model-independent, reusable</text>
-  <rect class="d-box" x="360" y="20" width="16" height="16" rx="3"/>
-  <text class="d-t d-sub" x="384" y="33">MDT, model-dependent, per model</text>
-  <rect class="d-box-ext" x="700" y="20" width="16" height="16" rx="3"/>
-  <text class="d-t d-sub" x="724" y="33">ODT, on-demand, request-time</text>
+  <g data-tone="accent"><rect class="viz-node" x="20" y="12" width="14" height="14" rx="3"/></g>
+  <text class="viz-meta" x="42" y="24">MIT · model-independent, reusable</text>
+  <g><rect class="viz-node" x="20" y="34" width="14" height="14" rx="3"/></g>
+  <text class="viz-meta" x="42" y="46">MDT · model-dependent, per model</text>
+  <g data-tone="data"><rect class="viz-node" x="20" y="56" width="14" height="14" rx="3"/></g>
+  <text class="viz-meta" x="42" y="68">ODT · on-demand, request-time</text>
+
+  <!-- flow -->
+  <path class="viz-edge" d="M286 158 V182" marker-end="url(#tx-arrow)"/>
+  <path class="viz-edge" d="M286 240 C286 262 148 262 148 282" marker-end="url(#tx-arrow)"/>
+  <path class="viz-edge" d="M286 240 C286 262 424 262 424 282" marker-end="url(#tx-arrow)"/>
+  <path class="viz-edge" d="M424 392 V368" marker-end="url(#tx-arrow)"/>
 
   <!-- feature pipeline -->
-  <rect class="d-box" x="20" y="104" width="230" height="116" rx="10"/>
-  <text class="d-t" x="135" y="128" text-anchor="middle">Feature pipeline</text>
-  <rect class="d-box-own" x="44" y="146" width="60" height="24" rx="5"/>
-  <text class="d-t d-sub" x="74" y="162" text-anchor="middle">MIT</text>
-  <rect class="d-box-ext" x="120" y="146" width="106" height="24" rx="5" stroke-dasharray="4 3"/>
-  <text class="d-t d-sub" x="173" y="162" text-anchor="middle">ODT (backfill)</text>
-  <text class="d-t d-sub" x="135" y="200" text-anchor="middle">new and historical data</text>
+  <a class="viz-link" href="../../fs/feature_group/feature_pipelines/">
+    <g><rect class="viz-node" x="20" y="84" width="532" height="74" rx="4"/>
+    <text class="viz-node-title" x="286" y="104" text-anchor="middle">Feature pipeline</text></g>
+  </a>
+  <g data-tone="accent"><rect class="viz-node" x="40" y="116" width="70" height="28" rx="4"/>
+  <text class="viz-label" x="75" y="134" text-anchor="middle">MIT</text></g>
+  <g data-tone="data"><rect class="viz-node" x="122" y="116" width="132" height="28" rx="4" style="stroke-dasharray:4 3"/>
+  <text class="viz-label" x="188" y="134" text-anchor="middle">ODT · backfill</text></g>
+  <text class="viz-meta" x="410" y="134" text-anchor="middle">new and historical data</text>
 
   <!-- feature store -->
-  <rect class="d-box-own" x="320" y="116" width="170" height="92" rx="10"/>
-  <text class="d-t" x="405" y="156" text-anchor="middle">Feature store</text>
-  <text class="d-t d-sub" x="405" y="176" text-anchor="middle">reusable features</text>
+  <a class="viz-link" href="../../fs/feature_group/fg_overview/">
+    <g data-tone="accent"><rect class="viz-node" x="146" y="184" width="280" height="56" rx="4"/>
+    <text class="viz-node-title" x="286" y="208" text-anchor="middle">Feature store</text>
+    <text class="viz-meta" x="286" y="226" text-anchor="middle">reusable features</text></g>
+  </a>
 
   <!-- training pipeline -->
-  <rect class="d-box" x="570" y="80" width="230" height="90" rx="10"/>
-  <text class="d-t" x="685" y="112" text-anchor="middle">Training pipeline</text>
-  <rect class="d-box" x="655" y="126" width="60" height="24" rx="5"/>
-  <text class="d-t d-sub" x="685" y="142" text-anchor="middle">MDT</text>
+  <a class="viz-link" href="../training/">
+    <g><rect class="viz-node" x="20" y="282" width="256" height="86" rx="4"/>
+    <text class="viz-node-title" x="148" y="306" text-anchor="middle">Training pipeline</text></g>
+  </a>
+  <g><rect class="viz-node" x="108" y="322" width="80" height="28" rx="4"/>
+  <text class="viz-label" x="148" y="340" text-anchor="middle">MDT</text></g>
 
-  <!-- inference pipeline -->
-  <rect class="d-box" x="570" y="220" width="230" height="96" rx="10"/>
-  <text class="d-t" x="685" y="250" text-anchor="middle">Online inference pipeline</text>
-  <rect class="d-box-ext" x="600" y="266" width="60" height="24" rx="5"/>
-  <text class="d-t d-sub" x="630" y="282" text-anchor="middle">ODT</text>
-  <text class="d-t d-sub" x="676" y="282" text-anchor="middle">then</text>
-  <rect class="d-box" x="710" y="266" width="60" height="24" rx="5"/>
-  <text class="d-t d-sub" x="740" y="282" text-anchor="middle">MDT</text>
+  <!-- online inference pipeline -->
+  <a class="viz-link" href="../serving/">
+    <g><rect class="viz-node" x="296" y="282" width="256" height="86" rx="4"/>
+    <text class="viz-node-title" x="424" y="306" text-anchor="middle">Online inference pipeline</text></g>
+  </a>
+  <g data-tone="data"><rect class="viz-node" x="322" y="322" width="70" height="28" rx="4"/>
+  <text class="viz-label" x="357" y="340" text-anchor="middle">ODT</text></g>
+  <text class="viz-meta" x="404" y="340" text-anchor="middle">then</text>
+  <g><rect class="viz-node" x="418" y="322" width="70" height="28" rx="4"/>
+  <text class="viz-label" x="453" y="340" text-anchor="middle">MDT</text></g>
 
   <!-- prediction request -->
-  <rect class="d-box-ext" x="320" y="238" width="170" height="60" rx="8"/>
-  <text class="d-t" x="405" y="264" text-anchor="middle">Prediction request</text>
-  <text class="d-t d-sub" x="405" y="282" text-anchor="middle">request-time input</text>
+  <a class="viz-link" href="../serving/">
+    <g data-tone="data"><rect class="viz-node" x="296" y="392" width="256" height="56" rx="4"/>
+    <text class="viz-node-title" x="424" y="416" text-anchor="middle">Prediction request</text>
+    <text class="viz-meta" x="424" y="434" text-anchor="middle">request-time input</text></g>
+  </a>
 
-  <!-- arrows -->
-  <path class="d-flow" d="M250 162 H320" marker-end="url(#tx-arrow)"/>
-  <path class="d-flow" d="M490 150 H530 V125 H570" marker-end="url(#tx-arrow)"/>
-  <path class="d-flow" d="M490 178 H530 V268 H570" marker-end="url(#tx-arrow)"/>
-  <path class="d-flow" d="M490 268 H570" marker-end="url(#tx-arrow)"/>
-
-  <!-- band -->
-  <rect class="d-band" x="20" y="348" width="780" height="40" rx="10"/>
-  <text class="d-t d-sub" x="40" y="373">MDTs and ODTs each run in more than one pipeline, which is where online-offline skew appears. Feature-view MDTs and feature-group ODTs remove it.</text>
+  <!-- note -->
+  <rect class="viz-zone" x="20" y="466" width="532" height="48" rx="6"/>
+  <text class="viz-meta" x="36" y="488">MDTs and ODTs each run in more than one pipeline, which is where online-offline skew appears.</text>
+  <text class="viz-meta" x="36" y="504">Feature-view MDTs and feature-group ODTs remove it.</text>
 </svg>
 </figure>

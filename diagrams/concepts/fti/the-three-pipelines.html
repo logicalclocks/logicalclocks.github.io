@@ -1,51 +1,124 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1120 190" role="img" aria-label="FTI pipeline flow. Data sources feed a feature pipeline that writes to the feature store. A training pipeline reads the feature store and produces a model in the model registry. An inference pipeline reads the feature store and the model to produce predictions and prediction logs." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="12 34 796 302" role="img" aria-label="The FTI architecture. Three independent pipelines sit above a shared state layer. The feature pipeline reads data sources and writes features to the feature store. The training pipeline reads features and writes a model to the model registry. The inference pipeline reads features and the model to produce predictions. Prediction logs feed back into the feature store." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fti-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="fti-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
     </marker>
   </defs>
 
-  <path class="d-flow" d="M150 54 H170" marker-end="url(#fti-arrow)"/>
-  <path class="d-flow" d="M310 54 H330" marker-end="url(#fti-arrow)"/>
-  <path class="d-flow" d="M470 54 H490" marker-end="url(#fti-arrow)"/>
-  <path class="d-flow" d="M630 54 H650" marker-end="url(#fti-arrow)"/>
-  <path class="d-flow" d="M790 54 H810" marker-end="url(#fti-arrow)"/>
-  <path class="d-flow" d="M950 54 H970" marker-end="url(#fti-arrow)"/>
-  <path class="d-flow" d="M400 78 C400 112, 820 112, 848 78" marker-end="url(#fti-arrow)" stroke-dasharray="4 3"/>
-  <path class="d-flow" d="M880 78 V120" marker-end="url(#fti-arrow)"/>
+  <!-- shared state layer -->
+  <rect class="viz-zone" x="150" y="214" width="508" height="104" rx="6"/>
+  <text class="viz-label" x="164" y="234">Shared state layer</text>
 
-  <a class="d-link" href="../fs/feature_group/external_fg/">
-    <rect class="d-box" x="10" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="80" y="58" text-anchor="middle">Data sources</text>
+  <!-- connectors (curved, docked on the node border) -->
+  <path class="viz-edge" d="M134 77 H166" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M646 77 H666" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M236 118 C236 178 280 178 280 244" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M336 244 C336 182 388 182 388 118" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M430 118 C430 178 500 178 500 244" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M566 244 C566 182 576 182 576 118" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M736 118 V244" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M736 318 C736 340 280 340 280 306" marker-end="url(#fti-arrow)" style="stroke-dasharray:5 4"/>
+
+  <!-- data sources -->
+  <a class="viz-link" href="../fs/feature_group/external_fg/">
+    <g data-tone="data">
+      <rect class="viz-node" x="14" y="36" width="120" height="82" rx="4"/>
+      <g class="viz-icon" transform="translate(63.8,48.8) scale(0.85)">
+        <ellipse cx="12" cy="5" rx="7.5" ry="3"/>
+        <path d="M4.5 5 V19 C4.5 20.7 7.8 22 12 22 C16.2 22 19.5 20.7 19.5 19 V5"/>
+        <path d="M4.5 12 C4.5 13.7 7.8 15 12 15 C16.2 15 19.5 13.7 19.5 12"/>
+      </g>
+      <text class="viz-node-title" x="74" y="87" text-anchor="middle">Data</text>
+      <text class="viz-node-title" x="74" y="102" text-anchor="middle">sources</text>
+    </g>
   </a>
-  <a class="d-link" href="../fs/feature_group/feature_pipelines/">
-    <rect class="d-box" x="170" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="240" y="58" text-anchor="middle">Feature pipeline</text>
+
+  <!-- feature pipeline -->
+  <a class="viz-link" href="../fs/feature_group/feature_pipelines/">
+    <g data-tone="accent">
+      <rect class="viz-node" x="166" y="36" width="140" height="82" rx="4"/>
+      <g class="viz-icon" transform="translate(225.8,48.8) scale(0.85)">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <path d="M3 9 H21 M12 9 V21"/>
+      </g>
+      <text class="viz-node-title" x="236" y="87" text-anchor="middle">Feature</text>
+      <text class="viz-node-title" x="236" y="102" text-anchor="middle">pipeline</text>
+    </g>
   </a>
-  <a class="d-link" href="../fs/feature_group/fg_overview/">
-    <rect class="d-box-own" x="330" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="400" y="58" text-anchor="middle">Feature store</text>
+
+  <!-- training pipeline -->
+  <a class="viz-link" href="../mlops/training/">
+    <g data-tone="accent">
+      <rect class="viz-node" x="336" y="36" width="140" height="82" rx="4"/>
+      <g class="viz-icon" transform="translate(395.8,48.8) scale(0.85)">
+        <path d="M4 3 V20 H21"/>
+        <path d="M6.5 16.5 C10.5 16.5 12 8 20 6.5"/>
+      </g>
+      <text class="viz-node-title" x="406" y="87" text-anchor="middle">Training</text>
+      <text class="viz-node-title" x="406" y="102" text-anchor="middle">pipeline</text>
+    </g>
   </a>
-  <a class="d-link" href="../mlops/training/">
-    <rect class="d-box" x="490" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="560" y="58" text-anchor="middle">Training pipeline</text>
+
+  <!-- inference pipeline -->
+  <a class="viz-link" href="../mlops/serving/">
+    <g data-tone="accent">
+      <rect class="viz-node" x="506" y="36" width="140" height="82" rx="4"/>
+      <g class="viz-icon" transform="translate(565.8,48.8) scale(0.85)">
+        <path d="M13 2 L5 13.5 H11 L10 22 L19 10 H12 Z"/>
+      </g>
+      <text class="viz-node-title" x="576" y="87" text-anchor="middle">Inference</text>
+      <text class="viz-node-title" x="576" y="102" text-anchor="middle">pipeline</text>
+    </g>
   </a>
-  <a class="d-link" href="../mlops/registry/">
-    <rect class="d-box-own" x="650" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="720" y="58" text-anchor="middle">Model registry</text>
+
+  <!-- predictions -->
+  <a class="viz-link" href="../mlops/prediction_services/">
+    <g>
+      <rect class="viz-node" x="666" y="36" width="140" height="82" rx="4"/>
+      <g class="viz-icon" transform="translate(725.8,48.8) scale(0.85)">
+        <circle cx="12" cy="12" r="9.5"/>
+        <circle cx="12" cy="12" r="3.8"/>
+      </g>
+      <text class="viz-node-title" x="736" y="94" text-anchor="middle">Predictions</text>
+    </g>
   </a>
-  <a class="d-link" href="../mlops/serving/">
-    <rect class="d-box" x="810" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="880" y="58" text-anchor="middle">Inference pipeline</text>
+
+  <!-- feature store -->
+  <a class="viz-link" href="../fs/feature_group/fg_overview/">
+    <g>
+      <rect class="viz-node" x="170" y="244" width="220" height="62" rx="4"/>
+      <g class="viz-icon" transform="translate(215.8,264.8) scale(0.85)">
+        <rect x="8" y="8" width="12.5" height="13" rx="2"/>
+        <path d="M4.5 17 V6 A2 2 0 0 1 6.5 4 H15.5"/>
+      </g>
+      <text class="viz-node-title" x="298" y="280" text-anchor="middle">Feature store</text>
+    </g>
   </a>
-  <a class="d-link" href="../mlops/prediction_services/">
-    <rect class="d-box" x="970" y="30" width="140" height="48" rx="8"/>
-    <text class="d-t" x="1040" y="58" text-anchor="middle">Predictions</text>
+
+  <!-- model registry -->
+  <a class="viz-link" href="../mlops/registry/">
+    <g>
+      <rect class="viz-node" x="420" y="244" width="226" height="62" rx="4"/>
+      <g class="viz-icon" transform="translate(461.8,264.8) scale(0.85)">
+        <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/>
+        <path d="M3 7 L12 12 L21 7 M12 12 V22"/>
+      </g>
+      <text class="viz-node-title" x="548" y="280" text-anchor="middle">Model registry</text>
+    </g>
   </a>
-  <a class="d-link" href="../mlops/model_monitoring/">
-    <rect class="d-box" x="810" y="120" width="140" height="48" rx="8"/>
-    <text class="d-t" x="880" y="148" text-anchor="middle">Prediction logs</text>
+
+  <!-- prediction logs -->
+  <a class="viz-link" href="../mlops/model_monitoring/">
+    <g>
+      <rect class="viz-node" x="666" y="244" width="140" height="74" rx="4"/>
+      <g class="viz-icon" transform="translate(725.8,252.8) scale(0.85)">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <path d="M6.5 8 H8 M11 8 H17.5 M6.5 12 H8 M11 12 H17.5 M6.5 16 H8 M11 16 H15"/>
+      </g>
+      <text class="viz-node-title" x="736" y="290" text-anchor="middle">Prediction</text>
+      <text class="viz-node-title" x="736" y="305" text-anchor="middle">logs</text>
+    </g>
   </a>
 </svg>
 </figure>
