@@ -31,17 +31,17 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [x] `docs/concepts/fti.md` — navigational chart, static by charter
 - [x] `docs/concepts/hopsworks.md` — navigational chart, static by charter
 - [ ] `docs/concepts/mlops/agents.md` — 1 kit-static
-- [ ] `docs/concepts/mlops/data_transformations.md` — 5 kit-static
+- [x] `docs/concepts/mlops/data_transformations.md` — 5 static kept (taxonomy and placement structures)
 - [x] `docs/concepts/mlops/model_monitoring.md` — 1 animated (sliding window, drift curve, threshold alert)
 - [ ] `docs/concepts/mlops/opensearch.md` — 1 kit-static
 - [ ] `docs/concepts/mlops/prediction_services.md` — 3 kit-static
-- [ ] `docs/concepts/mlops/registry.md` — 1 kit-static
+- [x] `docs/concepts/mlops/registry.md` — static kept (hub structure)
 - [x] `docs/concepts/mlops/serving.md` — 1 animated (KServe request path, lookup, predict, log)
-- [ ] `docs/concepts/mlops/training.md` — 1 kit-static
-- [ ] `docs/concepts/projects/cicd.md` — 2 kit-static
-- [ ] `docs/concepts/projects/governance.md` — 1 kit-static
+- [x] `docs/concepts/mlops/training.md` — static kept (CI/CD process chart)
+- [x] `docs/concepts/projects/cicd.md` — 2 static kept (git promotion flows)
+- [x] `docs/concepts/projects/governance.md` — static kept (project sandbox structure)
 - [ ] `docs/concepts/projects/search.md` — 2 image(s)
-- [ ] `docs/concepts/projects/storage.md` — 1 kit-static
+- [x] `docs/concepts/projects/storage.md` — static kept (sharing structure)
 
 ## user_guides
 
