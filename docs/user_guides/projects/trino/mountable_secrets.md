@@ -6,7 +6,7 @@ description: Supply the credential files a Trino connector needs, such as an Ora
 
 Some connectors authenticate with a file rather than with a password.
 An Oracle Autonomous Database over `tcps` needs a wallet directory, Elasticsearch, MongoDB and Cassandra can need a keystore, and BigQuery and GCS need a key file.
-A catalog property cannot name a path on the Query Engine's machines, so a project needs a way to put its own files where the connector will look for them.
+A catalog property cannot name a path on the query engine's machines, so a project needs a way to put its own files where the connector will look for them.
 
 A **mountable secret** is a named bundle of files that belongs to your project.
 You upload the files once, then refer to the bundle by name from a catalog property, and Hopsworks substitutes the real location when the catalog is written for Trino.
@@ -22,7 +22,7 @@ Give the bundle a name and add its files, either by selecting the files individu
 
 <figure>
   <img src="../../../../assets/images/guides/trino/mountable-secrets-list.png" alt="Mountable secrets" />
-  <figcaption>The project's bundles, what each one holds, and how much of the budget is used</figcaption>
+  <figcaption>The project's bundles, what each one holds, which catalogs use it, and how much of the budget is used</figcaption>
 </figure>
 
 <figure>
@@ -62,8 +62,8 @@ The hash is there so you can tell which file is present without reading it.
 
 !!! warning "Treat a bundle as readable by the cluster, not by your project alone"
     Names, sizes, hashes and timestamps are visible to every Data Owner in the project.
-    More importantly, where the cluster runs a Trino test coordinator, every mountable secret on it is readable from that coordinator, because the store is mounted whole and the test coordinator connection-tests catalogs before they are approved.
-    Upload credentials whose blast radius you are willing to give the cluster, and prefer a credential scoped to the data the project needs over an administrative one.
+    More importantly, where the cluster runs a Trino test coordinator, every mountable secret on it is readable from that coordinator, because the store is mounted whole and the test coordinator connection-tests catalogs before they go live.
+    Prefer a credential scoped to the data the project needs over an administrative one.
 
 ## Referencing a bundle from a catalog
 
@@ -91,44 +91,41 @@ A bundle or a file that does not exist is reported at that point rather than at 
 ## Changing or removing a bundle
 
 To change a wallet, delete the bundle and create it again under the same name.
-A deletion takes effect immediately and is never refused for being in use.
 The listing names the catalogs that reference a bundle, so check there before removing one.
 
-Deleting a bundle a catalog still references does not wait for a restart to bite.
-The Query Engine sees the store through a live mount, and a connector that reads its files when it opens a connection, Oracle among them, will fail on its next connection or query.
-Recreating the bundle under the same name with the same filenames restores it, and no catalog has to be edited, because a catalog refers to the bundle by name, but queries can fail in the gap between the two.
+A deletion takes effect immediately and is never refused for being in use, and it does not wait for a restart to bite.
+The query engine sees the store through a live mount, and a connector that reads its files when it opens a connection, Oracle among them, will fail on its next connection or query.
+Recreating the bundle under the same name with the same filenames restores it, and no catalog has to be edited, because a catalog refers to the bundle by name.
+Queries can fail in the gap between the two.
 
 Where an interruption is unacceptable, do not replace a bundle in place.
-Create the new one under a new name, edit the catalog to reference it, have an administrator approve the edit, and delete the old bundle once the catalog is loaded and working.
+Create the new one under a new name, edit the catalog to reference it, and delete the old bundle once the query engine has restarted and the catalog is working.
 
 ## Worked example: an Oracle Autonomous Database
 
 Download the wallet from the OCI console, upload the zip as a bundle called `oracle_wallet`, then create an `oracle` catalog whose connection URL points `TNS_ADMIN` at the bundle directory.
 
 ```properties
-connection-url=jdbc:oracle:thin:@dbname_high?TNS_ADMIN=${HOPSWORKS_MOUNT:oracle_wallet}
-connection-user=admin
-connection-password=${HOPSWORKS_SECRET:oracle_admin_password}
+connection-url=jdbc:oracle:thin:@dbname_low?TNS_ADMIN=${HOPSWORKS_MOUNT:oracle_wallet}
+connection-user=TRINO
+connection-password=${HOPSWORKS_SECRET:oracle_password}
 ```
 
 Three things about this URL cause most of the failures.
 
 **The name before `?` is a TNS alias, not a service name.**
-It has to be one of the aliases in the wallet's own `tnsnames.ora`, such as `dbname_high` or `dbname_low`, and not the service name shown in the OCI console.
+It has to be one of the aliases in the wallet's own `tnsnames.ora`, such as `dbname_low` or `dbname_high`, and not the service name shown in the OCI console.
 A name that is not in the file produces `Could not find alias <name> in tnsnames.ora`, which is a wallet-contents problem rather than a connectivity one.
 
 **The database's access control list has to admit the cluster.**
 `ORA-12506` has two causes that look identical from the outside: the connection came from an address the Autonomous Database does not accept, or the client never loaded the wallet at all.
-Add the outbound addresses of every Query Engine pod, coordinator and workers, since a query runs on the workers.
+Add the outbound addresses of every query engine pod, coordinator and workers, since a query runs on the workers.
 The Catalogs tab reports those addresses when an administrator has enabled the check.
 
 **A downloaded wallet retries by default.**
 Each alias in `tnsnames.ora` carries `(retry_count=20)(retry_delay=3)` inside its connect descriptor, so a refused connection waits about a minute before any error appears and a rejected address looks like a hang.
-The setting is not in `sqlnet.ora`, which holds only the wallet location and the server DN check.
-
-There is no need to edit the wallet and upload it again to get past this.
-The driver accepts a connect descriptor in place of an alias, so paste the descriptor from the alias you were using into `connection-url` and set `retry_count=0` there.
-The wallet is still what authenticates, through `TNS_ADMIN`, and "Test connection" then reports the real error at once instead of a minute later.
+The driver accepts a connect descriptor in place of an alias, so to get the real error at once, paste the descriptor from the alias you were using into `connection-url` and set `retry_count=0` there.
+The wallet still authenticates, through `TNS_ADMIN`.
 
 ```properties
 connection-url=jdbc:oracle:thin:@(description=(retry_count=0)(address=(protocol=tcps)(port=1522)(host=<adb-host>))(connect_data=(service_name=<service-name>))(security=(ssl_server_dn_match=yes)))?TNS_ADMIN=${HOPSWORKS_MOUNT:oracle_wallet}
@@ -136,14 +133,13 @@ connection-user=<user>
 connection-password=${HOPSWORKS_SECRET:oracle_password}
 ```
 
-Take the host, port and `service_name` from the alias's entry in the wallet's `tnsnames.ora`.
-Drop `retry_delay` when you copy it across: it only spaces out retries, so it means nothing once `retry_count` is zero.
-This form is not only a diagnostic: a catalog can keep it, and doing so records which consumer group it connects to instead of leaving it to an alias name.
+Take the host, port and `service_name` from the alias's entry in the wallet's `tnsnames.ora`, and drop `retry_delay`, which means nothing once `retry_count` is zero.
+A catalog can keep this form, and doing so records which consumer group it connects to instead of leaving it to an alias name.
 
 ## When the feature is unavailable
 
 An administrator can turn the store off for a whole cluster.
-While it is off, the Mountable secrets page reports that it is not available, and creating or editing a catalog that references a bundle is refused.
+While it is off, the Mountable Secrets page reports that it is not available, and creating or editing a catalog that references a bundle is refused.
 
-A catalog that was already approved keeps its stored definition, and its reference still resolves to a location, but nothing populates that location any more.
-For a connector that reads its files when a connection is opened, such as Oracle, the Query Engine starts normally and queries fail.
+A catalog that already went live keeps its stored definition, and its reference still resolves to a location, but nothing populates that location any more.
+For a connector that reads its files when a connection is opened, such as Oracle, the query engine starts normally and queries fail.

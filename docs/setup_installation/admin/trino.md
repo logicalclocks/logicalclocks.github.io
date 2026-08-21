@@ -92,7 +92,7 @@ With the schedule on, a pending catalog goes live at the next restart that finds
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-pending.png" alt="Pending catalogs" />
-  <figcaption>Catalogs waiting to be applied</figcaption>
+  <figcaption>The lifecycle settings, the catalogs waiting to be applied, and the one action that applies them</figcaption>
 </figure>
 
 ### Applying pending requests
@@ -116,11 +116,6 @@ A connector's credentials end up in the places below. Anyone who can read those 
 - Either way, the written file holds the resolved plaintext, because Trino reads the credential from the catalog file itself.
   That file lives in a Kubernetes Secret rather than a ConfigMap, so it is covered by the RBAC that applies to Secrets in the Hopsworks namespace and by etcd encryption-at-rest on clusters that enable it.
 
-<figure>
-  <img src="../../../assets/images/admin/trino/catalogs-pending-restart.png" alt="Catalogs pending restart" />
-  <figcaption>An applied catalog waits in Pending restart until the query engine reloads</figcaption>
-</figure>
-
 ### Lifecycle settings
 
 The same tab carries the **Catalog lifecycle** card, where the whole schedule is configured and saved as one group:
@@ -141,7 +136,12 @@ Saving needs no redeploy: every Hopsworks instance derives its schedule from the
 ### A single project's allowance
 
 The cluster-wide maximum is a ceiling on the deployment; how many catalogs any one project may create is set per project.
-Open the project under Cluster Settings, Projects, and edit **Query Engine**, **Trino catalogs**, which shows the project's current count beside its limit.
+Open **Cluster Settings** → **Projects**, click **Edit configuration** on the project's row, and scroll to **Query engine**, **Trino catalogs**, just after the Kafka topic quota.
+
+<figure>
+  <img src="../../../assets/images/admin/trino/project-catalog-limit.png" alt="A project's Trino catalog allowance" />
+  <figcaption>The project's catalog count, its own limit, and the unlimited checkbox</figcaption>
+</figure>
 
 A new project starts on the cluster default (`trino_catalog_max_per_project`, 10), so raising one project here raises that project only.
 Checking **unlimited** removes the project's own bound, leaving only the cluster-wide ceiling; a limit of 0 blocks new catalogs in the project.
@@ -159,16 +159,16 @@ The bounded wait is what makes that safe: a coordinator that is genuinely down n
 
 Trino reads catalogs only at startup, so a catalog change takes effect on the next restart, whether the schedule performs it or an administrator does.
 Clicking "Restart Trino" applies the selected pending requests and rolls out the coordinator and workers.
-The confirmation dialog reports how many queries are currently running or queued, so you can choose a low-traffic window before confirming.
+The confirmation dialog reports how many queries are currently running or queued, so you can choose a low-traffic window, and asks you to type `confirm` before it will proceed.
 The restart cancels those queries for **every project on the cluster**, not only the project whose catalog is being applied, and in-flight results are lost.
 Trino keeps recent query detail in the coordinator's memory, so after a restart the live query views show only what the new coordinator has seen; older queries remain in the query history, which is stored separately.
 
 <figure>
   <img src="../../../assets/images/admin/trino/restart-confirm.png" alt="Restart confirmation" />
-  <figcaption>The restart confirmation reports the running queries the restart will interrupt</figcaption>
+  <figcaption>The confirmation names what the restart applies and what it interrupts</figcaption>
 </figure>
 
-A restart is refused while another approval or restart is already running, so concurrent actions by different administrators cannot collide or trigger redundant restarts.
+A restart is refused while another one is already running, so concurrent actions by different administrators cannot collide or trigger redundant restarts.
 If nothing is waiting to load or unload, the restart is skipped and reported as such rather than interrupting queries for no reason.
 
 ### Recovering a catalog Trino cannot load
@@ -182,7 +182,7 @@ The button stays available when nothing is waiting to be applied, because this s
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-recover.png" alt="Recover restart" />
-  <figcaption>With nothing pending, the restart action is still available to recover a failed rollout</figcaption>
+  <figcaption>A query engine that will not start is reported on the tab, and the restart action recovers it</figcaption>
 </figure>
 
 Hopsworks reads the coordinator log, identifies the catalog Trino rejected, removes it from the mount, marks it **Failed**, and restarts so the cluster comes back without it.
@@ -232,7 +232,7 @@ Projects supply those files as [mountable secrets][mountable-secrets], and this 
 A bundle is a directory of files in HopsFS under `mountable_secrets_path`, which defaults to `/apps/mountable-secrets`.
 It is keyed by **project id** rather than by project name, so a deleted project and a later project of the same name can never share a directory.
 The `charts/hopsfs` preset Job creates the root as `payara:hdfs` with mode `0750`.
-The backend asks the filesystem for that owner and mode before it writes a bundle or deletes a project's tree, and refuses if either differs, so a root created by hand with the wrong mode fails every upload rather than quietly widening access.
+The backend checks that owner, group and mode against the filesystem on a project's first bundle, and again before it deletes a project's tree, and refuses if any of the three differs, so a root created by hand with the wrong mode is rejected rather than quietly widening access.
 
 Project members never reach those files directly.
 The path is outside any project's dataset, and a catalog can only ever name a bundle in its own project.
@@ -269,7 +269,7 @@ The chart fails the render when the flag and the mount disagree, so a half-done 
 An **already approved catalog keeps working only as far as its definition**.
 Its reference still resolves to a path, but nothing populates that path any more.
 For a connector that opens its files when a connection is made, such as Oracle, the coordinator starts cleanly and queries fail.
-Approval does not consult the flag, by design, so switching the store off does not quarantine catalogs that already use it.
+Writing a catalog out does not consult the flag, by design, so switching the store off does not quarantine catalogs that already use it.
 
 ### Backup
 
