@@ -21,12 +21,12 @@ Open **Project Settings**, then **Mountable Secrets**, and click **New**.
 Give the bundle a name and add its files, either by selecting the files individually or by uploading a single zip archive, which is the form a downloaded wallet usually arrives in.
 
 <figure>
-  <img src="../../../../assets/images/guides/trino/mountable-secrets-list.png" alt="Mountable secrets" />
+  <img src="../../../../assets/images/guides/mountable_secrets/mountable-secrets-list.png" alt="Mountable secrets" />
   <figcaption>The project's bundles, what each one holds, which catalogs use it, and how much of the budget is used</figcaption>
 </figure>
 
 <figure>
-  <img src="../../../../assets/images/guides/trino/mountable-secrets-new.png" alt="New mountable secret" />
+  <img src="../../../../assets/images/guides/mountable_secrets/mountable-secrets-new.png" alt="New mountable secret" />
   <figcaption>Creating a bundle from individual files or from a zip</figcaption>
 </figure>
 
@@ -56,7 +56,7 @@ File contents are never returned: once uploaded, a file can be referenced and de
 The hash is there so you can tell which file is present without reading it.
 
 <figure>
-  <img src="../../../../assets/images/guides/trino/mountable-secrets-files.png" alt="Files in a mountable secret" />
+  <img src="../../../../assets/images/guides/mountable_secrets/mountable-secrets-files.png" alt="Files in a mountable secret" />
   <figcaption>Names, sizes and hashes are visible; contents are not</figcaption>
 </figure>
 
@@ -77,7 +77,7 @@ ${HOPSWORKS_MOUNT:my_bundle/keystore.jks}   # one file inside it
 Type `${` in the catalog properties editor to pick a bundle, or a file inside one, from a list.
 
 <figure>
-  <img src="../../../../assets/images/guides/trino/mountable-secrets-reference.png" alt="Referencing a bundle from a catalog property" />
+  <img src="../../../../assets/images/guides/mountable_secrets/mountable-secrets-reference.png" alt="Referencing a bundle from a catalog property" />
   <figcaption>Typing <code>${HOPSWORKS_MOUNT:</code> offers the bundle directory and the files in it</figcaption>
 </figure>
 
