@@ -203,6 +203,7 @@ nav:
               - Sharing: user_guides/projects/datasets/sharing.md
           - Secrets:
               - Create Secret: user_guides/projects/secrets/create_secret.md
+          - Mountable Secrets: user_guides/projects/mountable_secrets/mountable_secrets.md
           - Environment variables:
               - Account-level Environment Variables: user_guides/projects/env_vars/create.md
           - Api Keys:
