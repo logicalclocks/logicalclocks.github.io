@@ -108,18 +108,21 @@ To retrieve archives with the Python library, use [`download_logs`][hsml.deploym
 
 ### Configuring disk logging
 
-Disk logging controls whether a component archives its output to HopsFS.
+Disk logging controls whether a component archives its output to the project's `Logs` dataset.
 It is a per-component checkbox under `Disk logging` in the advanced options of the deployment form.
 
-When it is off, no archives are written and no HopsFS sidecar is attached to the component.
-When it is on, a HopsFS sidecar is attached and every instance archives its own output to a separate file, distinguished by pod name.
+When it is on, each instance keeps its output on local disk while it runs and uploads it when it stops, to a separate file distinguished by pod name.
+This covers stops the platform initiates on its own, such as scale-to-zero and revision replacement, not only stops a user asks for.
+When it is off, nothing is written.
 
-Disk logging is only available for Python deployments, agent deployments included, and their transformers; Python predictors have it on by default.
-TensorFlow Serving and vLLM do not support it: the HopsFS sidecar it attaches runs privileged, and on clusters enforcing the restricted pod security policies only Python serving pods carry the policy exception that admits it. The API rejects the setting for those runtimes rather than deploying something a hardened cluster would refuse.
+Disk logging is only available for deployments whose serving container runs a Hopsworks inference pipeline image, because the upload runs the Hopsworks Python library from inside that container.
+That means Python deployments, agent deployments included, and their transformers; Python predictors have it on by default.
+TensorFlow Serving and vLLM do not support it, and neither does a KServe Python deployment with no predictor script, which runs the sklearnserver runtime image.
+The API rejects the setting for those rather than deploying something that cannot archive.
 
 !!! note
     There is no single-instance mode.
-    All instances of a deployment share one pod template, so the sidecar cannot be attached to a subset of them: electing one writer would leave every other instance paying for a sidecar it never used.
+    All instances of a deployment share one pod template, so they either all archive or none do.
 
 !!! note
     Changing disk logging starts a new deployment revision, because it changes the pod template.
