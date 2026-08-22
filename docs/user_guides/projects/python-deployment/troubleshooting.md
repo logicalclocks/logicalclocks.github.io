@@ -170,12 +170,13 @@ The API rejects the setting for those rather than deploying something that canno
   ```
 
 To follow a running deployment instead of taking a single snapshot, use `tail_logs`.
-It blocks and prints new lines as they arrive, skipping what it has already shown.
+It returns a generator that yields new lines as they arrive, skipping what it has already yielded.
 
 === "Python"
 
   ```python
-  deployment.tail_logs(component="predictor")
+  for chunk in deployment.tail_logs(component="predictor"):
+      print(chunk, end="")
   ```
 
 ### Step 5: Download historical logs
