@@ -180,6 +180,7 @@ One row follows per RDRS node, because each node runs its own worker over its ow
 | Partition | Where this node's cursor sits in the table's partition rotation |
 | Batch size | Rows attempted per partition visit, which the worker adapts on its own |
 | Last visited | When this node last visited the table |
+| Process started | When this node's RDRS process last started, so you can tell how much history its row count covers |
 
 A feature group created moments ago is not listed straight away.
 RDRS discovers TTL-enabled tables on a periodic schema scan, so for the first few seconds the card reports that no purge worker is tracking the feature group yet.
@@ -209,7 +210,8 @@ Each node reports a state:
 Only `error` indicates a fault.
 A cluster with no TTL-enabled feature groups sits in `paused`, which is the healthy idle state.
 
-Alongside the state, each node reports its counters (tables tracked, rows purged, rounds completed) and the configuration it is running with (batch size range, sleep interval).
+Alongside the state, each node reports its counters (tables tracked, rows purged, rounds completed), the configuration it is running with (batch size range, sleep interval), and when its process last started.
+A restart count sits next to that timestamp, counting restarts of the container within its current pod; replacing the pod, as a redeploy does, starts a fresh count, so the start time is the figure to trust.
 Both views poll every ten seconds, show when the next refresh is due, and offer a **Refresh** button for an immediate read.
 
 ### Reading the Numbers
@@ -222,6 +224,10 @@ Scaling RDRS changes how many rows the views list; adding datanodes does not, an
 Each node keeps its counters in memory and starts again from zero when its process restarts, and nothing is persisted.
 Because different nodes purge different partitions, their per-table numbers legitimately differ.
 The cumulative row count is the only figure that is summed across nodes.
+
+**A counter is only as old as the process reporting it.**
+Nothing is persisted, so every figure on these views runs from the moment that node's RDRS process last started, which both views report as **Process started**.
+Read a low row count against that time rather than on its own: a worker that has been up for a minute and one that has been quietly idle for a week look identical without it.
 
 **A round that deleted nothing still counts as activity.**
 The last round timestamp advances on every pass, including passes that found nothing to delete.
