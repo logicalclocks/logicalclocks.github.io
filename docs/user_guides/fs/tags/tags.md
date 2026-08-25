@@ -252,9 +252,16 @@ By default a tag records only its current value: reading it tells you where an a
 where it has been. Turning on **Archive tag history** for a schema makes Hopsworks additionally
 record every change to that tag's values, so you can ask how long an artifact spent in each state.
 
-The flag is set per schema, in `Cluster settings` > `Tag schemas`, either when the schema is created
-or afterwards. It applies to every artifact the tag is attached to: feature groups, feature views,
-training datasets, jobs, models and deployments.
+The flag is set per schema, in `Cluster settings` > `Tag schemas`, when the schema is created. To
+turn it on or off for a schema that already exists, a cluster administrator calls
+`PUT /hopsworks-api/api/tags/{name}/archive?value=true`. It applies to every artifact the tag is
+attached to: feature groups, feature views, training datasets, jobs, models and deployments.
+
+Turning it off ends every interval the tag still has open, at the moment you turn it off, and keeps
+everything already recorded. The recorded rows stay because they are still true; the open intervals
+have to be ended because nothing would ever end them once recording stops, and the last value of
+every artifact would otherwise read as current forever. Turning it back on starts a fresh interval
+at that moment rather than pretending the gap was observed.
 
 Two things are worth knowing before you turn it on:
 
