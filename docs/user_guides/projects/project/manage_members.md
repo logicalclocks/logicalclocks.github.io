@@ -90,3 +90,28 @@ To change a member's role or remove them from the project, click the `Manage mem
     <figcaption>Managing members of project</figcaption>
   </figure>
 </p>
+
+## Python SDK
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+
+# Add a member
+project.add_member("alice@example.com", "Data scientist")
+
+# List members
+for member in project.get_members():
+    print(member.email, member.role)
+
+# Change a member's role
+project.get_members_api().update_role("alice@example.com", "Observer")
+
+# Remove a member
+project.remove_member("alice@example.com")
+```
+
+Roles are the same as in the UI: `Data owner`, `Data scientist`, `Observer`, and `Feature store restricted`.
+A data scientist removing a member can only remove themselves; the project owner's role cannot be changed or removed.
