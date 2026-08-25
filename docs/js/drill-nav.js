@@ -72,6 +72,9 @@
     primary.querySelectorAll("." + HIDDEN).forEach(function (el) {
       el.classList.remove(HIDDEN);
     });
+    primary.querySelectorAll(".hops-drill-children").forEach(function (el) {
+      el.classList.remove("hops-drill-children");
+    });
     var oldUp = primary.querySelector(".hops-nav-up");
     if (oldUp) oldUp.remove();
     document.body.classList.remove(ON);
@@ -81,25 +84,29 @@
     var activeLi = active.closest(".md-nav__item");
     if (!activeLi) return;
 
-    // Which list is the current level? A section index page drills INTO its
-    // children; a leaf shows the level it lives on (its siblings). Never the
-    // page's own heading TOC (.md-nav--secondary).
+    // Two adjacent levels are shown: the level the active item lives on (its
+    // siblings) and, when the active item is a section, that section's children
+    // one step down. Hiding is about DEPTH, not siblings: everything shallower
+    // than the sibling level collapses into the up-header / breadcrumb, and
+    // everything deeper than the child level stays hidden. Never the page's own
+    // heading TOC (.md-nav--secondary).
+    var siblingList = activeLi.parentElement;
+    if (!siblingList) return;
+    var siblingItems = Array.prototype.slice.call(siblingList.children);
+
     var childNav = activeLi.querySelector(
       ":scope > nav.md-nav:not(.md-nav--secondary) > .md-nav__list",
     );
-    var currentList, ownerLi;
-    if (childNav) {
-      currentList = childNav;
-      ownerLi = activeLi; // we are inside the active section
-    } else {
-      currentList = activeLi.parentElement;
-      ownerLi = sectionAncestor(currentList); // the section holding this list
-    }
-    if (!currentList) return;
+    var childItems = childNav
+      ? Array.prototype.slice.call(childNav.children)
+      : [];
 
-    var currentItems = Array.prototype.slice.call(currentList.children);
-    var keep = new Set(currentItems);
-    var node = currentList.parentElement;
+    var keep = new Set(siblingItems);
+    childItems.forEach(function (li) {
+      keep.add(li);
+    });
+    // Keep ancestor wrappers for structure; their labels are hidden below.
+    var node = siblingList.parentElement;
     while (node && !node.classList.contains("md-nav--primary")) {
       if (node.tagName === "LI") keep.add(node);
       node = node.parentElement;
@@ -108,32 +115,34 @@
     primary.querySelectorAll(".md-nav__item").forEach(function (li) {
       if (!keep.has(li)) li.classList.add(HIDDEN);
     });
-    // Ancestor wrappers we kept for structure: hide their own label, they are
-    // above the current level and belong to the up-header / breadcrumb.
+    // Ancestor wrappers above the shown levels: hide their own label, they live
+    // in the up-header / breadcrumb. Sibling and child labels stay visible.
     keep.forEach(function (li) {
-      if (currentItems.indexOf(li) !== -1) return;
+      if (siblingItems.indexOf(li) !== -1) return;
+      if (childItems.indexOf(li) !== -1) return;
       var own = li.querySelector(
         ":scope > .md-nav__link, :scope > .md-nav__container",
       );
       if (own) own.classList.add(HIDDEN);
     });
+    // Mark the child list so CSS indents exactly that one step under its
+    // section (the sibling level stays flat at the left margin).
+    if (childNav) childNav.classList.add("hops-drill-children");
 
-    // Up-header: names the level you are in, walks up one level when clicked.
-    // Inside a section -> that section's name, up goes to its parent's page.
-    // On a leaf level -> the holding section's name, up goes to its parent.
+    // Up-header: names the level ABOVE the siblings (the parent section) and
+    // walks up to it. A top-level active item has no section above it, so no
+    // header: the whole top level already is the current level.
+    var parentSection = sectionAncestor(siblingList);
     var label, upHref, depth;
-    if (ownerLi) {
-      label = textOf(ownerLi);
-      var parentSection = sectionAncestor(ownerLi.parentElement);
-      // Up goes to the parent section's page, or to the site root for a
-      // top-level section. Never hrefOf(ownerLi): that is the current page,
-      // which made the up button a no-op (the reported dead back button).
+    if (parentSection) {
+      label = textOf(parentSection);
+      // Up goes to the parent section's own page, or the site root. This is a
+      // different page from the current one, so the button is never a no-op.
       upHref = hrefOf(parentSection) || homeHref();
       depth = 1;
-      var d = ownerLi;
+      var d = parentSection;
       while ((d = sectionAncestor(d.parentElement))) depth++;
     } else {
-      // Top-level list: no section above it.
       label = "";
       upHref = null;
       depth = 0;
