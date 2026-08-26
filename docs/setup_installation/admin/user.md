@@ -115,3 +115,44 @@ A user with a temporary password will see a warning message when going to _Accou
 !!! Note
 
     A temporary password should be changed as soon as possible.
+
+## Python SDK
+
+!!! warning "Admin-only capability"
+    The calling account must hold the `HOPS_ADMIN` platform role, since these calls manage users across the entire cluster.
+
+Admin accounts can also manage platform users programmatically:
+
+```python
+import hopsworks
+
+
+hopsworks.login()
+users_api = hopsworks.get_users_api()
+
+# Register a new user (a temporary password is generated if not provided)
+new_user = users_api.register_user(
+    email="alice@example.com",
+    first_name="Alice",
+    last_name="Smith",
+    role="HOPS_USER",
+)
+if new_user.password:
+    print("temporary password:", new_user.password)
+
+# List / get users
+for user in users_api.get_users():
+    print(user.email, user.roles)
+user = users_api.get_user(new_user.id)
+
+# Activate / reject a registration request
+users_api.activate_user(new_user.id)
+users_api.reject_user(new_user.id)
+
+# Change platform role or project quota
+users_api.set_role(new_user.id, "HOPS_ADMIN")
+users_api.update_user(new_user.id, max_num_projects=10)
+
+# Delete a user (fails if they still own any projects)
+users_api.delete_user(new_user.id)
+```

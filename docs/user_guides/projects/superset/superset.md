@@ -75,11 +75,21 @@ SQL Lab is an interactive SQL query interface for exploring your feature data.
 
 1. Click **SQL Lab** in the top navigation
 2. Select your database from the **Database** dropdown
-3. Select your project's Feature Store schema from the **Schema** dropdown
+3. For the Trino connection, select the catalog matching your table format (`hive`, `delta`, `iceberg`, or `hudi`) from the **Catalog** dropdown
+4. Select your project's Feature Store schema from the **Schema** dropdown
 
 <figure>
   <img src="../../../../assets/images/guides/superset/sql-lab.png" alt="SQL Lab interface" />
   <figcaption>SQL Lab for running queries</figcaption>
+</figure>
+
+For the Trino connection, SQL Lab shows a **Catalog** dropdown between **Database** and **Schema**.
+The dropdown appears because the connection has *Allow changing catalogs* enabled, and it lists every Trino catalog (`hive`, `delta`, `iceberg`, `hudi`).
+Selecting the catalog that matches your table format lets you query the table without prefixing the catalog in the SQL.
+
+<figure>
+  <img src="../../../../assets/images/guides/superset/sql-lab-catalog.png" alt="Trino catalog selector in SQL Lab" />
+  <figcaption>Selecting a Trino catalog from the Catalog dropdown in SQL Lab</figcaption>
 </figure>
 
 ### Running Queries
@@ -108,20 +118,23 @@ They typically map to Feature Groups in your Hopsworks project.
 1. Navigate to **Datasets**
 2. Click **+ Dataset** in the top right
 3. Select your database (e.g., `Trino__<project_name>__<username>_superset`)
-4. Select your schema (your project's Feature Store schema)
-5. Select the table (your Feature Group or Feature View)
-6. Click **Create Dataset and Create Chart**
+4. For the Trino connection, select the catalog matching your table format (`hive`, `delta`, `iceberg`, or `hudi`) from the **Catalog** dropdown
+5. Select your schema (your project's Feature Store schema)
+6. Select the table (your Feature Group or Feature View)
+7. Click **Create Dataset and Create Chart**
 
 !!! note "Using Different Table Formats"
-    If your Feature Store tables use a specific table format (Delta, Iceberg, or Hudi) and the Trino default catalog is not configured to match that format, you need to specify the catalog explicitly in your query.
+    The Trino connection has *Allow changing catalogs* enabled, so you switch table formats by picking the catalog from the **Catalog** dropdown rather than hardcoding it in the table name.
+    Each table format has its own catalog: `delta`, `iceberg`, `hudi`, and `hive`.
+    Select the catalog that matches your tables, then choose the schema and table as usual.
 
-    Click **Create dataset from SQL query** and specify the catalog name matching your table format:
+    If you prefer to define the dataset from SQL instead, click **Create dataset from SQL query** and prefix the table with the matching catalog:
 
     - For Delta format: `SELECT * FROM delta.<project_name>_featurestore.<table_name>`
     - For Iceberg format: `SELECT * FROM iceberg.<project_name>_featurestore.<table_name>`
     - For Hudi format: `SELECT * FROM hudi.<project_name>_featurestore.<table_name>`
-    
-    If you're unsure which format your tables use or what the default catalog is set to, contact your Hopsworks administrator.
+
+    If you're unsure which format your tables use, contact your Hopsworks administrator.
 
 ## Creating Charts
 
@@ -374,7 +387,7 @@ LIMIT 100
 - Verify filter types match the chart data types
 - Check for filter conflicts or invalid filter combinations
 
-**Trino table type error:**
+### Trino table type error
 
 ```text
 trino error: TrinoExternalError(type=EXTERNAL, name=UNSUPPORTED_TABLE_TYPE,
@@ -384,10 +397,11 @@ This may be triggered by:
 Issue 1002 - The database returned an unexpected error.
 ```
 
-- This error occurs when querying tables without specifying the catalog name
-- Your Feature Store tables use a specific format (Delta, Iceberg, or Hudi) that requires an explicit catalog prefix
-- Solution: Specify the catalog name in your query (e.g., `delta.<project_name>_featurestore.<table_name>`)
-- See [Using Different Table Formats][adding-a-dataset] for detailed instructions on creating datasets with the correct catalog prefix
+- This error occurs when the selected catalog does not match your table's format (Delta, Iceberg, or Hudi)
+- Solution: Select the catalog matching your table format (`hive`, `delta`, `iceberg`, or `hudi`) from the **Catalog** dropdown in SQL Lab or when adding a dataset.
+  The Trino connection has *Allow changing catalogs* enabled, so the dropdown lets you switch catalogs without editing the query
+- Alternatively, prefix the table with the matching catalog in your query (e.g., `delta.<project_name>_featurestore.<table_name>`)
+- See [Using Different Table Formats][adding-a-dataset] for detailed instructions on creating datasets with the correct catalog
 - If you're unsure which catalog to use, contact your Hopsworks administrator
 
 ## Best Practices

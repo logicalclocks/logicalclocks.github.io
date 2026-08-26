@@ -18,7 +18,12 @@ Only a `CUSTOM` environment can be exported.
 
 ## Step 3: Click Export env
 
-An existing Anaconda environment can be exported as a yml file, clicking the `Export env` will download the `environment.yml` file in your browser.
+Clicking `Export env` will download the `environment.yml` file in your browser.
+
+!!! notice "The export is a snapshot, not an import format"
+    Exporting keeps working and describes whatever the environment currently carries.
+    Importing an `environment.yml` to create or modify an environment is no longer supported, so use the exported file as a record of what was installed rather than as a way to rebuild the environment elsewhere.
+    To reproduce an environment, clone it or install the same packages from PyPI.
 
 <p align="center">
   <figure>

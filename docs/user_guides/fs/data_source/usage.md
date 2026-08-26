@@ -154,6 +154,8 @@ Example for any data warehouse/SQL based external sources, we set the desired SQ
 This enables users to create feature groups within Hopsworks without the hassle of data migration.
 For more information on `Connector API`, read detailed guide about [external feature groups](../feature_group/create_external.md).
 
+When creating an external feature group from the UI, the review step also offers an **Add Trino Catalog** checkbox, which makes the same data source queryable from the query engine; see [Trino catalogs][trino-catalogs].
+
 ## Ingesting Data into a Managed Feature Group
 
 Data Sources can also be used to create a managed feature group and ingest data from the source into Hopsworks.

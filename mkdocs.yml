@@ -142,6 +142,7 @@ nav:
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
           - Mandatory Tags: user_guides/fs/tags/mandatory_tags.md
+          - Keywords: user_guides/fs/tags/keywords.md
           - Provenance: user_guides/fs/provenance/provenance.md
           - Feature Monitoring:
               - user_guides/fs/feature_monitoring/index.md
@@ -162,6 +163,7 @@ nav:
           - Projects:
               - Create Project: user_guides/projects/project/create_project.md
               - Manage Members: user_guides/projects/project/manage_members.md
+          - Search: user_guides/projects/search.md
           - Python:
               - Environments Overview: user_guides/projects/python/python_env_overview.md
               - Clone Environment: user_guides/projects/python/python_env_clone.md
@@ -193,6 +195,7 @@ nav:
               - Overview: user_guides/projects/airflow/airflow.md
               - Airflow 3 upgrade: user_guides/projects/airflow/airflow3_upgrade.md
               - Security model: user_guides/projects/airflow/security_model.md
+          - Alerts: user_guides/projects/alerts/index.md
           - OpenSearch:
               - Connect: user_guides/projects/opensearch/connect.md
               - KNN: user_guides/projects/opensearch/knn.md
@@ -205,6 +208,8 @@ nav:
               - Configure Git Provider: user_guides/projects/git/configure_git_provider.md
               - Clone Repository: user_guides/projects/git/clone_repo.md
               - Repository Actions: user_guides/projects/git/repository_actions.md
+          - Datasets:
+              - Sharing: user_guides/projects/datasets/sharing.md
           - Secrets:
               - Create Secret: user_guides/projects/secrets/create_secret.md
           - Environment variables:
@@ -212,7 +217,9 @@ nav:
           - Api Keys:
               - Create API Key: user_guides/projects/api_key/create_api_key.md
           - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
-          - Query Engine (Trino): user_guides/projects/trino/query_engine.md
+          - Query Engine (Trino):
+              - Query Engine: user_guides/projects/trino/query_engine.md
+              - Trino Catalogs: user_guides/projects/trino/catalogs.md
           - Superset: user_guides/projects/superset/superset.md
           - Python Deployment:
               - Deployment Creation: user_guides/projects/python-deployment/python-deployment.md
@@ -275,6 +282,7 @@ nav:
       - Administration:
           - Cluster Configuration: setup_installation/admin/variables.md
           - Cluster Configuration Variables Reference: setup_installation/admin/configuration_reference.md
+          - Python Build Performance: setup_installation/admin/build_performance.md
           - Introduction: setup_installation/admin/index.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
@@ -282,6 +290,7 @@ nav:
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
+          - Search Index: setup_installation/admin/search_index.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md

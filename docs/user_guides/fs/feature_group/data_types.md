@@ -319,3 +319,21 @@ Adding additional features to an existing feature group is not considered a brea
 
 When adding additional features to a feature group, you can provide a default values for existing entries in the feature group.
 You can also backfill the new features for existing entries by running an `insert()` operation and update all existing combinations of *primary key* - *event time*.
+
+### Appending features to an external feature group
+
+For an [external feature group](create_external.md), appending a feature only updates the Hopsworks-side metadata; it does not add a column to the external table itself.
+Reading online (`read(online=True)`) is unaffected, since Hopsworks owns the online table schema and can add the column there directly.
+Reading offline (`read()`) queries the external source directly, so it fails with a column-not-found error until the external table itself gains a matching column.
+Until then, exclude the appended feature from the offline read with `select_except`:
+
+=== "Python"
+
+    ```python
+    fg = fs.get_feature_group(name="example", version=1)
+
+    # "name" was appended but is not yet a column in the external table
+    df = fg.select_except(["name"]).read()
+    ```
+
+Update the external table's schema, or keep excluding the appended feature, then read offline again once the column is present.

@@ -116,6 +116,17 @@ It will try to load the new configuration to the alertmanager and show any error
   <figcaption>Advanced configuration</figcaption>
 </figure>
 
+A status indicator next to the _Advanced configuration_ heading shows whether the configuration Hopsworks has saved matches what the alert manager currently has loaded.
+
+- _Synced_: the loaded configuration matches the saved configuration.
+- _Pending reload_: a change has been saved but the alert manager has not loaded it yet. This is expected right after an edit because changes take some time to propagate.
+- _Warning_: the change has stayed unloaded past the timeout, which usually means the alert manager rejected the configuration. The reason reported by the alert manager is shown so you can find and fix the offending section.
+
+<figure>
+  <img src="../../../assets/images/alerts/advanced-config-status.png" alt="Advanced configuration load status"/>
+  <figcaption>Configuration load status next to the Advanced configuration heading</figcaption>
+</figure>
+
 !!!warning
 
     If you make any changes to the configuration ensure that the changes are valid by reloading the configuration until the changes are loaded and visible in the advanced page.
@@ -133,7 +144,7 @@ global:
  ...
 ```
 
-To test the alerts by creating triggers from Jobs and Feature group validations see [Alerts](../../user_guides/fs/feature_group/data_validation_best_practices.md#setup-alerts).
+To manage a project's receivers and create alerts on Jobs and Feature group validations see [Alerts](../../user_guides/projects/alerts/index.md).
 
 The yaml syntax in the UI is slightly different in that it does not allow double quotes (it will ignore the values but give no error).
 Below is an example configuration, that can be used in the UI, with both email and slack receivers configured for system alerts.

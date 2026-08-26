@@ -44,6 +44,12 @@ If your Oracle database requires mutual TLS (mTLS) authentication, which is comm
     You can download the wallet zip from the Oracle Cloud Console under your Autonomous Database's **DB Connection** page.
     Upload the zip file to your Hopsworks project (e.g. to `Resources/`) before creating the data source.
 
+!!! warning "Leave the host empty when using a wallet"
+    A host and a wallet are alternatives, not a pair.
+    The wallet's `tnsnames.ora` supplies the host and port, and the database field is the alias to look up there.
+    Supplying a host as well makes the driver connect directly, past the wallet, which a wallet-protected database refuses with a connection error that names neither the cause nor the fix.
+    Hopsworks therefore refuses to save a data source with both a host and a wallet.
+
 ## Creation in the UI
 
 ### Step 1: Set up a new Data Source
@@ -66,6 +72,7 @@ Start by giving the connector a **name** and an optional **description**.
    Click `Change source` to pick a different one.
 2. Select the database type (MySQL, PostgreSQL, or Oracle).
 3. Enter the host endpoint.
+   Leave it empty when using an Oracle wallet: the wallet supplies the connection details, and the database field names the TNS alias to use.
 4. Enter the database name (service name for Oracle).
 5. Specify the port.
 6. Provide the username and password.
@@ -110,3 +117,4 @@ No JDBC driver or wallet files are needed on the client, and the Spark JDBC limi
 ## Next Steps
 
 Move on to the [usage guide for data sources][data-source-usage] to see how you can use your newly created SQL connector.
+You can also make the database queryable from the query engine by adding a [Trino catalog][trino-catalogs] derived from this data source.
