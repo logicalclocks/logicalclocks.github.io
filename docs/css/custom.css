@@ -164,7 +164,8 @@ a.autorefs-external::after {
   content: "↗";
 }
 
-/* "Copy for LLM" action, injected by js/llm-copy.js next to the page title. */
+/* "Copy for LLM" action, injected by js/llm-copy.js into the breadcrumb row
+   (or the title as a fallback on pages with no breadcrumb). */
 .md-llm-copy {
   float: right;
   margin: 0.2rem 0 0 0.6rem;
@@ -179,6 +180,16 @@ a.autorefs-external::after {
   border-radius: var(--border-radius-variable, 5px);
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
+}
+/* In the breadcrumb: lay the path as a flex row and push the button to the
+   right end, vertically centered with the breadcrumb text. */
+.md-path:has(.md-llm-copy) {
+  display: flex;
+  align-items: center;
+}
+.md-path .md-llm-copy {
+  float: none;
+  margin: 0 0 0 auto;
 }
 .md-llm-copy:hover {
   color: var(--md-primary-bg-color, #fff);
@@ -249,13 +260,14 @@ a.autorefs-external::after {
   --viz-ink-faint: var(--md-default-fg-color--lighter);
   --viz-line: var(--hops-border);
   --viz-line-strong: var(--hops-border-strong);
-  --viz-edge-stroke: color-mix(in srgb, var(--viz-ink) 34%, transparent);
+  --viz-edge-stroke: color-mix(in srgb, var(--viz-ink) 48%, transparent);
   --viz-font: var(--hops-font-mono);
   --viz-tracking: 0.03em;
   --viz-type-title: 13px;
-  --viz-type-header: 12px;
-  --viz-type-label: 11px;
-  --viz-type-meta: 10px;
+  --viz-type-header: 13px;
+  --viz-type-label: 12px;
+  --viz-type-meta: 11px;
+  --viz-type-eyebrow: 10px;
   --viz-tone-accent: var(--hops-accent);
   --viz-tone-write: var(--hops-accent);
   --viz-tone-read: #2268ff;
@@ -339,7 +351,7 @@ a.autorefs-external::after {
 }
 .hops-viz .viz-node-subtitle {
   fill: var(--viz-ink-soft);
-  font-size: var(--viz-type-label);
+  font-size: var(--viz-type-meta);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   font-weight: 500;
@@ -369,10 +381,37 @@ a.autorefs-external::after {
   stroke-width: 1.25;
 }
 .hops-viz .viz-edge[data-tone] { stroke: var(--viz-tone); }
-.hops-viz .viz-edge-arrow { fill: var(--viz-edge-stroke); }
+/* context-stroke makes the arrowhead take its edge's stroke colour directly.
+   A <marker> does not reliably resolve CSS custom properties (they can render
+   black even when getComputedStyle reports the token), so this both matches
+   the line and survives the zoom clone. */
+.hops-viz .viz-edge-arrow { fill: context-stroke; }
+/* Docking knob: a small filled disc where an edge meets a node border,
+   set as marker-start so the connection reads as anchored, not floating. */
+.hops-viz .viz-edge-knob {
+  fill: var(--viz-paper);
+  stroke: var(--viz-edge-stroke);
+  stroke-width: 1;
+}
 .hops-viz .viz-tick {
   stroke: var(--viz-edge-stroke);
   stroke-width: 1.5;
+}
+/* Kind pill: a small labelled tab straddling a node's top edge, carrying an
+   icon + the node kind. Colour lives here (tone-tinted), so the box stays
+   neutral and the accent is confined to the pill. Label stays ink for
+   legibility; the tint, border, and icon carry the tone. */
+.hops-viz .viz-pill {
+  fill: var(--viz-tone-fill-solid, var(--viz-paper-raised));
+  stroke: var(--viz-tone, var(--viz-line-strong));
+  stroke-width: 1;
+}
+.hops-viz .viz-pill-text {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-eyebrow);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
 /* Windows: dashed frames that close (active) then settle (visited). */
@@ -444,7 +483,7 @@ a.autorefs-external::after {
   stroke-width: 1;
 }
 .hops-viz .viz-kv-title {
-  font-size: var(--viz-type-label);
+  font-size: var(--viz-type-title);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-weight: 700;
@@ -457,7 +496,7 @@ a.autorefs-external::after {
 }
 .hops-viz .viz-kv-key {
   fill: var(--viz-ink-soft);
-  font-size: var(--viz-type-meta);
+  font-size: var(--viz-type-label);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   font-weight: 700;
@@ -497,14 +536,12 @@ a.autorefs-external::after {
    links live and paints toned nodes at rest.
    ========================================================= */
 
-/* Box-grid ground on every diagram, old kit or viz. Very light,
-   square cells, sits behind the transparent SVG. */
+/* Dot-grid ground on every diagram, old kit or viz. Very light,
+   square lattice of dots, sits behind the transparent SVG. */
 .md-typeset .hops-diagram {
-  --hops-grid: color-mix(in srgb, var(--md-default-fg-color) 3.5%, transparent);
-  --hops-grid-cell: 9px;
-  background-image:
-    linear-gradient(to right, var(--hops-grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--hops-grid) 1px, transparent 1px);
+  --hops-grid: color-mix(in srgb, var(--md-default-fg-color) 6%, transparent);
+  --hops-grid-cell: 12px;
+  background-image: radial-gradient(var(--hops-grid) 1px, transparent 1.4px);
   background-size: var(--hops-grid-cell) var(--hops-grid-cell);
   background-position: center;
 }
@@ -519,6 +556,95 @@ a.autorefs-external::after {
   stroke-linejoin: round;
 }
 .hops-viz [data-tone] .viz-icon { stroke: var(--viz-tone); }
+
+/* Brand marks: monochrome solid-fill logos (Simple Icons), ride the muted ink
+   so they sit quiet next to a label rather than reading as color decoration. */
+.hops-viz .viz-logo { fill: var(--viz-ink-soft); }
+
+/* Tool hover card: a compact social-card-style tooltip for diagram nodes,
+   driven by hops-viz-tooltip.js. Logo (reused symbol) + title + one-line
+   description + domain. Prose type, not the mono viz scale. */
+.hviz-tt {
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  max-width: 19rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--md-default-bg-color, #ffffff);
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+  pointer-events: none;
+}
+.hviz-tt[hidden] { display: none; }
+.hviz-tt-logo { flex: 0 0 auto; }
+.hviz-tt-logo[hidden] { display: none; }
+.hviz-tt-logo svg { width: 26px; height: 26px; fill: var(--md-default-fg-color); }
+.hviz-tt-body { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.hviz-tt-title { font-weight: 700; font-size: 0.82rem; color: var(--md-default-fg-color); line-height: 1.2; }
+.hviz-tt-desc { font-size: 0.76rem; color: var(--md-default-fg-color--light); line-height: 1.35; }
+.hviz-tt-domain { font-size: 0.7rem; color: var(--hops-accent-text); letter-spacing: 0.02em; }
+.hviz-tt-domain[hidden] { display: none; }
+
+/* Schema table: an ER-style relational table. A field name (kept in its real
+   case, not uppercased like a kv-key), a monospaced type, a role note, and a
+   faint separator between rows. Key icon marks identifier columns only. */
+.hops-viz .viz-field {
+  fill: var(--viz-ink);
+  font-size: var(--viz-type-label);
+}
+.hops-viz .viz-field-type {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-meta);
+}
+.hops-viz .viz-field-role {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-meta);
+  letter-spacing: 0.04em;
+}
+.hops-viz .viz-colhead {
+  fill: var(--viz-ink-soft);
+  font-size: var(--viz-type-eyebrow);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.hops-viz .viz-row-sep { stroke: var(--viz-line); stroke-width: 1; }
+
+/* Provenance hover: rows carrying the same data-prov key light up together, so
+   a derived column (e.g. a feature-view column) reveals the source rows it
+   comes from. prov-hover.js toggles .prov-active; without JS rows still render.
+   The prov-hit rect is a transparent full-row hover target behind the text. */
+.hops-viz .prov-hit { fill: transparent; }
+.hops-viz [data-prov] { cursor: pointer; }
+.hops-viz [data-prov] .prov-hit,
+.hops-viz [data-prov] .viz-field,
+.hops-viz [data-prov] .viz-icon { transition: fill var(--viz-duration), stroke var(--viz-duration); }
+.hops-viz [data-prov].prov-active .prov-hit {
+  fill: color-mix(in srgb, var(--viz-tone-accent) 14%, transparent);
+}
+.hops-viz [data-prov].prov-active .viz-field { fill: var(--hops-accent-text); }
+.hops-viz [data-prov].prov-active .viz-icon { stroke: var(--hops-accent-text); }
+
+/* Inline code inside a viz diagram: a monospace snippet with light syntax
+   tones. Lines are left-aligned <text class="viz-code"> revealed in sequence;
+   tokens are coloured with tspan classes. */
+.hops-viz .viz-code-box {
+  fill: color-mix(in srgb, var(--viz-ink) 7%, var(--viz-paper));
+  stroke: var(--viz-line-strong);
+  stroke-width: 1;
+}
+.hops-viz .viz-codeln {
+  font-family: var(--viz-font);
+  font-size: 11px;
+  fill: var(--viz-ink);
+  stroke: none;
+}
+.hops-viz .viz-codeln .tok-fn { fill: var(--viz-tone-data); }
+.hops-viz .viz-codeln .tok-str { fill: var(--hops-accent-text); }
+.hops-viz .viz-codeln .tok-kw { fill: var(--viz-ink); }
 
 /* Labelled zone: a container band grouping nodes (e.g. a state layer). */
 .hops-viz .viz-zone {
@@ -539,19 +665,36 @@ a.autorefs-external::after {
   fill: color-mix(in srgb, var(--viz-tone, var(--viz-ink)) 8%, var(--viz-paper));
   stroke: var(--viz-tone, var(--viz-line-strong));
 }
+/* Static header-tables carry real, readable values (no animated reveal),
+   so the value column reads at full ink instead of the resting faint. */
+.hops-viz-static .viz-kv-val { fill: var(--viz-ink); }
+.hops-viz-static a.viz-link:hover .viz-kv-frame,
+.hops-viz-static a.viz-link:hover .viz-kv-header {
+  stroke: var(--viz-tone, var(--viz-line-strong));
+}
+/* Row links (e.g. a connector list): the field name reads as clickable on
+   hover without an underline, matching the light diagram treatment. */
+.hops-viz-static a.viz-link .viz-field { transition: fill var(--viz-duration); }
+.hops-viz-static a.viz-link:hover .viz-field { fill: var(--viz-tone-accent); }
 
 /* API doc-type marker: the two top-level API entries carry a small code
    glyph in the rail so the switch from prose docs to generated API
    reference is legible. Scoped to those top-level links only (a deliberate
    doc-type marker, not per-section decoration). */
+/* The link is a flex row with its own 8px gap; center it so the glyph sits on
+   the text's optical middle (vertical-align is ignored on a flex item), and
+   let the flex gap alone space the icon (no extra margin, or it reads too far). */
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link[href*="python-api"],
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link[href*="javadoc"] {
+  align-items: center;
+}
 .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link[href*="python-api"]::before,
 .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link[href*="javadoc"]::before {
   content: "";
   display: inline-block;
+  flex: none;
   width: 14px;
   height: 14px;
-  margin-right: 5px;
-  vertical-align: -2px;
   background-color: currentColor;
   opacity: 0.55;
   -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7 L4 12 L9 17'/%3E%3Cpath d='M15 7 L20 12 L15 17'/%3E%3C/svg%3E");
@@ -627,6 +770,13 @@ a.autorefs-external::after {
 .md-header__button.md-logo svg {
   height: 1.5rem;
   width: auto;
+}
+/* Material sizes header glyphs (nav-collapse toggle, theme switch, repo link)
+   at 1.2rem, which reads oversized next to the 1.5rem logo mark. Bring the
+   glyphs down to 1rem; the logo is excluded (its own .md-logo rule wins). */
+.md-header__button.md-icon svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 /* ---- Search: bordered pill with a subtle fill, dark text ------ */
@@ -787,6 +937,15 @@ a.autorefs-external::after {
 .md-nav--primary .md-nav__container:hover .md-nav__icon {
   color: var(--hops-accent-text);
 }
+/* If a section title still wraps to two lines, keep the chevron on the first
+   line rather than floating to the vertical centre of the wrapped block.
+   No-op for single-line items (start == centre when there is one line). */
+.md-nav--primary .md-nav__container {
+  align-items: start;
+}
+.md-nav--primary .md-nav__container > .md-nav__link[for] {
+  align-self: start;
+}
 /* Nesting: depth reads through indentation + a type-hierarchy fade, not a
    ladder of stacked rails (Refactoring UI: don't separate with lines what
    space and weight already separate). One faint rail at the first nested
@@ -832,6 +991,20 @@ a.autorefs-external::after {
   line-height: 1.65;
 }
 
+/* ---- List rhythm: bind a list to the line that introduces it ---
+   Material gives every block, paragraph or list, the same 16px gap, so an
+   intro sentence sits as far from its own bullets as from an unrelated
+   paragraph and a "sentence: + short list" reads as two loose islands.
+   Pull the list up under its intro (both sides, since adjacent vertical
+   margins collapse to the larger of the two) so the unit reads as one
+   thought. The next paragraph after the list keeps the full gap. */
+.md-typeset p:has(+ :is(ul, ol)) {
+  margin-bottom: 0.4rem;
+}
+.md-typeset p + :is(ul, ol) {
+  margin-top: 0.4rem;
+}
+
 /* ---- Content links: brand green at rest, AA in light --------- */
 [data-md-color-scheme="hopsworks"] {
   --md-typeset-a-color: var(--hops-accent-text);
@@ -843,9 +1016,23 @@ a.autorefs-external::after {
   text-underline-offset: 0.18em;
   transition: color 0.15s ease;
 }
-.md-content a:hover {
-  color: var(--hops-accent-text);
+/* Clickable must look clickable: colour alone is not an affordance (and is
+   invisible to colour-blind readers). Content links carry a dotted underline
+   at rest, inheriting the link green at low opacity so it stays subtle, then
+   solidify on hover. Scoped to content; heading anchors and buttons opt out. */
+/* Diagram links (viz-link, d-link) are clickable via the node shape plus the
+   cursor, not a text underline, so they opt out of the content-link decoration
+   to keep figures light. */
+.md-content a:not(.headerlink):not(.md-button):not(.viz-link):not(.d-link) {
   text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-decoration-thickness: 1px;
+}
+.md-content a:not(.headerlink):not(.md-button):not(.viz-link):not(.d-link):hover {
+  color: var(--hops-accent-text);
+  text-decoration-style: solid;
+  text-decoration-color: currentColor;
 }
 
 /* ---- Right TOC: tight, accent on the active heading ---------- */
@@ -853,6 +1040,13 @@ a.autorefs-external::after {
   padding-top: 0.12rem;
   padding-bottom: 0.12rem;
   transition: color 0.12s ease;
+}
+/* Depth cue: Material indents sublevels by padding alone, so an H4 under an
+   H3 is only a few pixels of shift and the hierarchy is unreadable. Hang a
+   faint indent-guide on each nested level (the .6rem indent Material already
+   applies becomes the gap between rule and text), mirroring the left rail. */
+.md-nav--secondary .md-nav .md-nav__list {
+  border-left: 1px solid var(--hops-border);
 }
 .md-nav--secondary .md-nav__link:hover,
 .md-nav--secondary .md-nav__link--active {
@@ -889,6 +1083,111 @@ a.autorefs-external::after {
   cursor: pointer;
 }
 
+/* ---- Content tabs: drop the label on single-tab sets -----------
+   A one-tab set (a lone "Python" label over one code block) is noise:
+   the code block already carries its own language tag. Hide the label
+   strip when there is a single tab; real multi-tab sets (Python/Scala/
+   Java) have more than one label and keep theirs. */
+.md-typeset .tabbed-set:has(.tabbed-labels > label:only-child) > .tabbed-labels {
+  display: none;
+}
+
+/* Multi-tab sets (Python / Java / Scala) render as a Quartz segmented
+   control, matching the product app: a recessed grey track, the active
+   tab a raised pill, no green underline. The active pill background is a
+   token so it flips per theme (white over grey in light, a lifted grey
+   in dark). */
+/* Selectors carry `.tabbed-set >` so they reach the specificity of
+   Material's own `.js .md-typeset .tabbed-labels` rules and win on source
+   order; a bare `.md-typeset .tabbed-labels` loses to the theme. */
+.md-typeset .tabbed-set > .tabbed-labels {
+  --seg-active-bg: var(--md-default-bg-color);
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 2px;
+  margin-bottom: 0.7rem;
+  padding: 3px;
+  background: var(--hops-surface);
+  border: 1px solid var(--hops-border);
+  border-radius: 8px;
+  box-shadow: none;
+}
+[data-md-color-scheme="slate"] .md-typeset .tabbed-set > .tabbed-labels {
+  --seg-active-bg: color-mix(in srgb, var(--md-default-fg-color) 10%, var(--md-default-bg-color));
+}
+/* Kill Material's sliding underline indicator. */
+.md-typeset .tabbed-set > .tabbed-labels::before {
+  display: none;
+}
+.md-typeset .tabbed-set > .tabbed-labels > label {
+  margin: 0;
+  padding: 0.26rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--md-default-fg-color--light);
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+.md-typeset .tabbed-set > .tabbed-labels > label:hover {
+  color: var(--md-default-fg-color);
+}
+/* Active tab: Material marks it via the checked radio N matching label N.
+   Restyle it as the raised pill for the first six tabs (code tabs never
+   run deeper than Python/Scala/Java/SQL/CLI). */
+.md-typeset .tabbed-set:has(> input:nth-of-type(1):checked) > .tabbed-labels:not(.tabbed-labels--linked) > label:nth-of-type(1),
+.md-typeset .tabbed-set:has(> input:nth-of-type(2):checked) > .tabbed-labels:not(.tabbed-labels--linked) > label:nth-of-type(2),
+.md-typeset .tabbed-set:has(> input:nth-of-type(3):checked) > .tabbed-labels:not(.tabbed-labels--linked) > label:nth-of-type(3),
+.md-typeset .tabbed-set:has(> input:nth-of-type(4):checked) > .tabbed-labels:not(.tabbed-labels--linked) > label:nth-of-type(4),
+.md-typeset .tabbed-set:has(> input:nth-of-type(5):checked) > .tabbed-labels:not(.tabbed-labels--linked) > label:nth-of-type(5),
+.md-typeset .tabbed-set:has(> input:nth-of-type(6):checked) > .tabbed-labels:not(.tabbed-labels--linked) > label:nth-of-type(6) {
+  color: var(--md-default-fg-color);
+  background: var(--seg-active-bg);
+  border: 1px solid var(--hops-border-strong);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Linked tabs (content.tabs.link) wrap each label around an <a>; Material's
+   tall padding and the content-link colour/underline live on that <a>, which
+   renders as a huge green button. Flatten the label and move the chip styling
+   onto the inner <a> so linked sets match the segmented control. */
+.md-typeset .tabbed-set > .tabbed-labels--linked > label {
+  padding: 0;
+  border: 0;
+}
+.md-typeset .tabbed-set > .tabbed-labels--linked > label > a {
+  display: block;
+  margin: 0;
+  padding: 0.26rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--md-default-fg-color--light);
+  text-decoration: none;
+}
+.md-typeset .tabbed-set > .tabbed-labels--linked > label > a:hover {
+  color: var(--md-default-fg-color);
+}
+.md-typeset .tabbed-set:has(> input:nth-of-type(1):checked) > .tabbed-labels--linked > label:nth-of-type(1) > a,
+.md-typeset .tabbed-set:has(> input:nth-of-type(2):checked) > .tabbed-labels--linked > label:nth-of-type(2) > a,
+.md-typeset .tabbed-set:has(> input:nth-of-type(3):checked) > .tabbed-labels--linked > label:nth-of-type(3) > a,
+.md-typeset .tabbed-set:has(> input:nth-of-type(4):checked) > .tabbed-labels--linked > label:nth-of-type(4) > a,
+.md-typeset .tabbed-set:has(> input:nth-of-type(5):checked) > .tabbed-labels--linked > label:nth-of-type(5) > a,
+.md-typeset .tabbed-set:has(> input:nth-of-type(6):checked) > .tabbed-labels--linked > label:nth-of-type(6) > a {
+  color: var(--md-default-fg-color);
+  background: var(--seg-active-bg);
+  border: 1px solid var(--hops-border-strong);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+/* A linked tab's inner <a> is a content link, so the shared .md-content a
+   dotted-underline rule matches it and (with its :not() guards) outranks the
+   tab styling above. This override reaches past that specificity so tabs never
+   wear the content-link underline. */
+.md-content .md-typeset .tabbed-set .tabbed-labels--linked label a:not(.headerlink) {
+  text-decoration: none;
+}
+
 /* ---- Code blocks: one dark, rounded surface in both themes -----
    The sanctioned dark surface. Block code (.highlight) gets a GitHub-dark
    token palette so it reads identically in light and dark mode; inline code
@@ -922,7 +1221,9 @@ a.autorefs-external::after {
   border-radius: 0;
 }
 .md-typeset .highlight > pre > code {
-  padding: 0.85rem 1rem;
+  /* Extra top room so a long first line clears the top-right code nav (the
+     PYTHON label + copy button, ~28px tall) instead of running under it. */
+  padding: 1.7rem 1rem 0.85rem;
 }
 /* Copy button (Material 9.7: .md-code__button in .md-code__nav): quiet at
    rest, brighter on block hover, green when you hover the button itself. */
@@ -956,6 +1257,7 @@ a.autorefs-external::after {
 /* Inline code: a light chip, no border, subtle surface. */
 .md-typeset code:not(.highlight code) {
   background-color: var(--hops-surface);
+  border: 1px solid var(--hops-border);
   border-radius: 4px;
   padding: 0.1em 0.35em;
 }
@@ -1038,6 +1340,15 @@ body.hops-drill-on .md-nav--primary .md-nav__item .md-nav__item {
   padding-left: 0;
   border-left: none;
   margin-left: 0;
+}
+/* Two-level drill: the sibling level is flat at the left, the active section's
+   children are indented one step with a guide rail (drill-nav.js marks the
+   list). Specificity matches the flatten rule above and comes later, so it
+   wins for just this one list. */
+body.hops-drill-on .md-nav--primary .md-nav__list.hops-drill-children {
+  padding-left: 0.85rem;
+  margin-left: 0.4rem;
+  border-left: 1px solid var(--hops-border);
 }
 /* Up-header: names the current level, walks up one level on click. */
 .hops-nav-up {
@@ -1125,6 +1436,52 @@ body.hops-drill-on .md-nav--primary .md-nav__item .md-nav__item {
 .hops-zoom-handle:hover {
   color: var(--hops-accent);
   border-color: var(--hops-accent);
+}
+
+/* Play/pause control on animated (hops-viz) figures, added by hops-viz.js.
+   Sits top-left (the zoom handle owns top-right), faint at rest so it reads as
+   an available control without competing with the diagram. */
+.hops-viz-toggle {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  width: 1.55rem;
+  height: 1.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  color: var(--md-default-fg-color--light);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--hops-border);
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.hops-viz-toggle svg { fill: currentColor; }
+.hops-diagram:hover .hops-viz-toggle,
+.hops-viz-toggle:focus-visible { opacity: 1; }
+/* In the zoom overlay the ground is always a dark scrim, so the in-diagram
+   toggle is styled for dark and shown at rest. */
+.hops-zoom-stage .hops-viz-toggle {
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(20, 22, 26, 0.6);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+.hops-zoom-stage .hops-viz-toggle:hover {
+  color: var(--hops-accent);
+  border-color: var(--hops-accent);
+}
+.hops-viz-toggle:hover {
+  color: var(--hops-accent);
+  border-color: var(--hops-accent);
+}
+.hops-viz-toggle:focus { outline: none; }
+.hops-viz-toggle:focus-visible {
+  outline: 2px solid var(--hops-accent);
+  outline-offset: 1px;
 }
 
 .hops-zoom-overlay {
@@ -1331,6 +1688,13 @@ body.hops-zoom-lock {
   line-height: 1.45;
   color: var(--md-default-fg-color--light);
 }
+/* The panels are the second grid track. Without min-width:0 the track keeps
+   its default min-width:auto and a long code line's min-content width blows
+   the whole page wider than the viewport on mobile (readability-floor rule:
+   the block scrolls inside itself, the page never scrolls sideways). */
+.hops-steps-panels {
+  min-width: 0;
+}
 .hops-steps--js .hops-step-panel:not(.is-active) {
   display: none;
 }
@@ -1365,14 +1729,168 @@ body.hops-zoom-lock {
     padding: 0.9rem 1rem;
   }
 }
-/* The ul inside a card grid is display:contents; the div is the grid. */
+
+/* ---- Home: "Find your path" role index ---------------------------
+   Not cards. A borderless multi-column link directory, so the section
+   reads as an index and breaks the card rhythm the page repeats above
+   it. Caption is a small uppercase label, links are a tight plain list. */
+.md-typeset .hops-role-index {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem 2rem;
+  margin: 1.4em 0;
+}
+.md-typeset .hops-role-cap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color);
+}
+/* Icon anchor: a Material glyph in a small tinted square, the one spot of
+   green per role. drill-nav's flatten never reaches here (home only). */
+.md-typeset .hops-role-ico.twemoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 0.45rem;
+  background: var(--hops-tint);
+  color: var(--hops-accent-text);
+}
+.md-typeset .hops-role-ico.twemoji svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+.md-typeset .hops-role-index ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.md-typeset .hops-role-index li {
+  margin: 0.35rem 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+@media screen and (max-width: 59.9844em) {
+  .md-typeset .hops-role-index {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem 1.5rem;
+  }
+}
+@media screen and (max-width: 34.9844em) {
+  .md-typeset .hops-role-index {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Home: colophon (Reference + Help merged) --------------------
+   The page ends with a whisper: a muted 3-column band under a rule,
+   not two more full-weight H2 sections competing with the content. */
+.md-typeset .hops-colophon {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem 2rem;
+  margin: 3em 0 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--hops-border);
+  font-size: 0.75rem;
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset .hops-colophon-cap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Colophon is a whisper: the glyph is a plain muted mark, no tinted square. */
+.md-typeset .hops-colophon-ico.twemoji {
+  display: inline-flex;
+  flex: none;
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset .hops-colophon-ico.twemoji svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: currentColor;
+}
+.md-typeset .hops-colophon ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.md-typeset .hops-colophon li {
+  margin: 0.3rem 0;
+  line-height: 1.4;
+}
+@media screen and (max-width: 44.9844em) {
+  .md-typeset .hops-colophon {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}
+/* By-task table: a small accent glyph anchors each task in the first column.
+   Scoped to the home (the eyebrow marker) so other content tables are left
+   untouched. */
+.md-content:has(.hops-eyebrow) .md-typeset table td .twemoji {
+  color: var(--hops-accent-text);
+  margin-right: 0.35rem;
+  vertical-align: -0.18em;
+}
+.md-content:has(.hops-eyebrow) .md-typeset table td .twemoji svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+/* The ul inside a card grid is display:contents; the div is the grid.
+   Asymmetric funnel: the terminal path is the primary card (left, tall,
+   with the code block); SaaS and cloud/on-prem are two secondary cards
+   stacked on the right. The first card spans both rows, so its height
+   matches the two right cards combined. Below 60em everything stacks. */
 @media screen and (min-width: 60em) {
   .md-typeset .grid.cards.hops-quickcards {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1.15fr 1fr;
+    align-items: stretch;
+  }
+  .md-typeset .grid.cards.hops-quickcards > ul > li:first-child {
+    grid-column: 1;
+    grid-row: 1 / span 2;
   }
 }
 .md-typeset .grid.cards.hops-quickcards .twemoji {
   color: var(--hops-accent-text);
+}
+/* Breathing room: the quickcards are the front door of the docs, so give
+   them air. Material's default card padding is tight for a hero; widen it,
+   open the row gap, space the divider, and float the code block off the
+   copy so the terminal card stops feeling packed. */
+.md-typeset .grid.cards.hops-quickcards {
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.md-typeset .grid.cards.hops-quickcards > ul > li {
+  padding: 1.05rem 1.2rem;
+}
+.md-typeset .grid.cards.hops-quickcards > ul > li > hr {
+  margin: 0.75rem 0;
+}
+.md-typeset .grid.cards.hops-quickcards > ul > li > p {
+  line-height: 1.55;
+}
+.md-typeset .grid.cards.hops-quickcards .highlight {
+  margin: 0.85rem 0 0.5rem;
 }
 /* The home hero is navigation, not copyable content; the floating
    Copy-for-LLM chip only breaks the hero rhythm there. */
@@ -1414,4 +1932,65 @@ body.hops-zoom-lock {
 }
 .hops-zoom-stage .hops-img-zoom img {
   margin: 0 auto;
+}
+
+/* ---- Content tables: flat, gridded, zebra rows ----------------
+   Material ships a bare, content-width table. Give it the Quartz
+   treatment: full column width, a header fill, hairline separators,
+   and an alternating row wash. Green stays an accent (links), never
+   a header flood. Tokens flip for dark on their own, so no second
+   colour block. Selector matches Material's own `:not([class])` so
+   it never touches the viz SVG "tables" or card grids. */
+.md-typeset__table {
+  width: 100%;
+}
+.md-typeset table:not([class]) {
+  display: table;
+  width: 100%;
+  border: 1px solid var(--hops-border);
+  border-radius: 0.5rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+.md-typeset table:not([class]) :is(th, td) {
+  padding: 0.38rem 0.7rem;
+  border: none;
+  vertical-align: middle;
+}
+.md-typeset table:not([class]) thead th {
+  background: var(--hops-surface);
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+  /* Headers read left-anchored by default, even when the column body is
+     centered via markdown `:---:` (which sets an inline text-align the theme
+     honours). Overriding the inline style needs !important. Body cells keep
+     their own alignment, giving the clean "header left, data centered" look. */
+  text-align: left !important;
+  border-bottom: 1px solid var(--hops-border-strong);
+}
+.md-typeset table:not([class]) tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--hops-surface) 45%, transparent);
+}
+.md-typeset table:not([class]) tbody tr:hover {
+  background: var(--hops-tint);
+}
+/* Inline code in a table must not break mid-token: the theme sets
+   word-break: break-word on it, which splits an identifier like event_time
+   into "event_tim / e" in a narrow column. Keep the token whole and let the
+   column size to it (it still wraps at spaces/commas in a long array). */
+.md-typeset table:not([class]) code {
+  word-break: normal;
+  font-size: 0.9em;
+  padding: 0.05em 0.35em;
+}
+/* Header code chips share the header's own surface fill, so a same-colour chip
+   vanishes and only its padding shows (colour on colour). Give the header chip
+   a distinct fill (the page background) plus a hairline border so it reads as a
+   raised chip on the header band. Body chips sit on white/zebra rows already. */
+.md-typeset table:not([class]) thead th code {
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--hops-border);
 }

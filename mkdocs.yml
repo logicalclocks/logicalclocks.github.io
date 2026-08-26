@@ -48,7 +48,7 @@ nav:
       - Data Quality:
           - Data Validation, Statistics, Alerts: concepts/fs/feature_group/fg_statistics.md
           - Feature Monitoring: concepts/fs/feature_group/feature_monitoring.md
-      - Versioning and Lifecycle:
+      - Versioning & Lifecycle:
           - Versioning: concepts/fs/feature_group/versioning.md
           - Tags, Search, Lineage: concepts/projects/search.md
           - CI/CD: concepts/projects/cicd.md
@@ -70,7 +70,7 @@ nav:
           - user_guides/fs/index.md
           - Data Source:
               - user_guides/fs/data_source/index.md
-              - Configuration and Creation:
+              - Configuration:
                   - JDBC: user_guides/fs/data_source/creation/jdbc.md
                   - Snowflake: user_guides/fs/data_source/creation/snowflake.md
                   - Kafka: user_guides/fs/data_source/creation/kafka.md
@@ -121,18 +121,17 @@ nav:
           - Vector Similarity Search: user_guides/fs/vector_similarity_search.md
           - Transformation Functions: user_guides/fs/transformation_functions.md
           - Compute Engines: user_guides/fs/compute_engines.md
-          - Client Integrations:
+          - Integrations:
               - user_guides/integrations/index.md
               - Python / SageMaker / Kubeflow: user_guides/integrations/python.md
               - AWS EMR:
                   - Networking: user_guides/integrations/emr/networking.md
                   - Configure EMR for Hopsworks: user_guides/integrations/emr/emr_configuration.md
               - Azure HDInsight: user_guides/integrations/hdinsight.md
-              - Azure Machine Learning:
+              - Azure ML:
                   - Designer: user_guides/integrations/mlstudio_designer.md
                   - Notebooks: user_guides/integrations/mlstudio_notebooks.md
               - Apache Spark: user_guides/integrations/spark.md
-              - Apache Flink: user_guides/integrations/flink.md
               - Apache Beam: user_guides/integrations/beam.md
               - Java: user_guides/integrations/java.md
             # TODO: update the docs and uncomment:
@@ -186,7 +185,7 @@ nav:
               - Run Ray Job: user_guides/projects/jobs/ray_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
               - Batch Feature Pipelines: user_guides/projects/jobs/batch_feature_pipeline.md
-          - Kubernetes Scheduling:
+          - K8s Scheduling:
               - Base: user_guides/projects/scheduling/kube_scheduler.md
               - Kueue: user_guides/projects/scheduling/kueue_details.md
 
@@ -264,7 +263,7 @@ nav:
           - 3.X to 4.0: user_guides/migration/40_migration.md
   - Administration:
       - setup_installation/index.md
-      - Client Installation:
+      - Installation:
           - user_guides/client_installation/index.md
       - Cloud Installation:
           - AWS - Getting Started: setup_installation/aws/getting_started.md
@@ -295,12 +294,12 @@ nav:
                   - Create Okta Client: setup_installation/admin/oauth2/create-okta-client.md
                   - Create Azure Client: setup_installation/admin/oauth2/create-azure-client.md
                   - Configure Project Mapping: setup_installation/admin/oauth2/configure-project-mapping.md
-              - Configure LDAP/Kerberos:
+              - LDAP and Kerberos:
                   - Configure LDAP: setup_installation/admin/ldap/configure-ldap.md
                   - Configure Kerberos: setup_installation/admin/ldap/configure-krb.md
                   - Configure server for LDAP and Kerberos: setup_installation/admin/ldap/configure-server.md
                   - Configure Project Mapping: setup_installation/admin/ldap/configure-project-mapping.md
-          - High availability / Disaster Recovery:
+          - HA and DR:
               - Overview: setup_installation/admin/ha-dr/intro.md
               - High Availability: setup_installation/admin/ha-dr/ha.md
               - Disaster Recovery: setup_installation/admin/ha-dr/dr.md
@@ -378,7 +377,10 @@ extra_javascript:
   - js/nav-collapse.js
   - js/drill-nav.js
   - js/diagram-zoom.js
+  - js/diagram-edges.js
   - js/hops-viz.js
+  - js/hops-viz-tooltip.js
+  - js/prov-hover.js
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
 # Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.

@@ -11,6 +11,10 @@
   function buildOverlay() {
     var overlay = document.createElement("div");
     overlay.className = "hops-zoom-overlay";
+    // The overlay ground is a dark scrim in every theme, so render the zoomed
+    // diagram in the dark scheme: its tokens (edges, arrowheads, text) then
+    // resolve to light values that read on the scrim instead of black-on-black.
+    overlay.setAttribute("data-md-color-scheme", "slate");
     overlay.innerHTML =
       '<button class="hops-zoom-close" aria-label="Close">✕</button>' +
       '<div class="hops-zoom-hint">scroll to zoom · drag to pan · Esc to close</div>' +
