@@ -1,25 +1,26 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
 <svg viewBox="6 8 548 418" role="img" aria-label="A batch AI system: feature and training pipelines populate the feature store and model registry, a scheduled batch prediction pipeline reads batch data and the model, and writes predictions to a database consumed by reports and operational services." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="aps-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="aps-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="aps-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <!-- flows -->
-  <path class="viz-edge" d="M150 64 V96" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3"/>
+  <path class="viz-edge" d="M150 64 V96" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3" marker-start="url(#aps-knob)"/>
   <text class="viz-meta" x="158" y="84">deploy</text>
-  <path class="viz-edge" d="M410 64 V96" marker-end="url(#aps-arrow)"/>
+  <path class="viz-edge" d="M410 64 V96" marker-end="url(#aps-arrow)" marker-start="url(#aps-knob)"/>
   <text class="viz-meta" x="418" y="84">write</text>
-  <path class="viz-edge" d="M150 144 C150 180 280 180 280 200" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3"/>
-  <path class="viz-edge" d="M410 144 C410 180 280 180 280 200" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3"/>
+  <path class="viz-edge" d="M150 144 C150 180 280 180 280 200" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3" marker-start="url(#aps-knob)"/>
+  <path class="viz-edge" d="M410 144 C410 180 280 180 280 200" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3" marker-start="url(#aps-knob)"/>
   <text class="viz-meta" x="280" y="176" text-anchor="middle">read model + features</text>
   <path class="viz-edge" d="M64 226 H150" marker-end="url(#aps-arrow)"/>
   <text class="viz-meta" x="66" y="218">batch data</text>
-  <path class="viz-edge" d="M280 252 V284" marker-end="url(#aps-arrow)"/>
+  <path class="viz-edge" d="M280 252 V284" marker-end="url(#aps-arrow)" marker-start="url(#aps-knob)"/>
   <text class="viz-meta" x="290" y="272">predictions</text>
-  <path class="viz-edge" d="M240 332 C240 350 150 350 150 364" marker-end="url(#aps-arrow)"/>
-  <path class="viz-edge" d="M320 332 C320 350 400 350 400 364" marker-end="url(#aps-arrow)"/>
+  <path class="viz-edge" d="M240 332 C240 350 150 350 150 364" marker-end="url(#aps-arrow)" marker-start="url(#aps-knob)"/>
+  <path class="viz-edge" d="M320 332 C320 350 400 350 400 364" marker-end="url(#aps-arrow)" marker-start="url(#aps-knob)"/>
   <text class="viz-meta" x="280" y="352" text-anchor="middle">consume</text>
 
   <!-- producers -->

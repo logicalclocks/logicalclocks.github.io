@@ -1,38 +1,39 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="14 22 532 162" role="img" aria-label="The end-to-end lineage chain of ML assets: data source, feature group, feature view, training data, model, deployment. From a model you can trace back to the feature groups and data sources that fed it." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="14 22 550 162" role="img" aria-label="The end-to-end lineage chain of ML assets: data source, feature group, feature view, training data, model, deployment. From a model you can trace back to the feature groups and data sources that fed it." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="lin-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="lin-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="lin-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <!-- chain, top row left-to-right then down and back right-to-left -->
-  <path class="viz-edge" d="M188 52 H196" marker-end="url(#lin-arrow)"/>
-  <path class="viz-edge" d="M364 52 H372" marker-end="url(#lin-arrow)"/>
-  <path class="viz-edge" d="M456 74 V130" marker-end="url(#lin-arrow)"/>
-  <path class="viz-edge" d="M372 152 H364" marker-end="url(#lin-arrow)"/>
-  <path class="viz-edge" d="M196 152 H188" marker-end="url(#lin-arrow)"/>
+  <path class="viz-edge" d="M188 52 H204" marker-end="url(#lin-arrow)" marker-start="url(#lin-knob)"/>
+  <path class="viz-edge" d="M372 52 H388" marker-end="url(#lin-arrow)" marker-start="url(#lin-knob)"/>
+  <path class="viz-edge" d="M472 74 V130" marker-end="url(#lin-arrow)" marker-start="url(#lin-knob)"/>
+  <path class="viz-edge" d="M388 152 H372" marker-end="url(#lin-arrow)" marker-start="url(#lin-knob)"/>
+  <path class="viz-edge" d="M204 152 H188" marker-end="url(#lin-arrow)" marker-start="url(#lin-knob)"/>
 
   <a class="viz-link" href="../../fs/feature_group/external_fg/">
     <g data-tone="data"><rect class="viz-node" x="20" y="30" width="168" height="44" rx="4"/>
     <text class="viz-node-title" x="104" y="57" text-anchor="middle">Data source</text></g>
   </a>
   <a class="viz-link" href="../../fs/feature_group/fg_overview/">
-    <g data-tone="accent"><rect class="viz-node" x="196" y="30" width="168" height="44" rx="4"/>
-    <text class="viz-node-title" x="280" y="57" text-anchor="middle">Feature group</text></g>
+    <g data-tone="accent"><rect class="viz-node" x="204" y="30" width="168" height="44" rx="4"/>
+    <text class="viz-node-title" x="288" y="57" text-anchor="middle">Feature group</text></g>
   </a>
   <a class="viz-link" href="../../fs/feature_view/fv_overview/">
-    <g data-tone="accent"><rect class="viz-node" x="372" y="30" width="168" height="44" rx="4"/>
-    <text class="viz-node-title" x="456" y="57" text-anchor="middle">Feature view</text></g>
+    <g data-tone="accent"><rect class="viz-node" x="388" y="30" width="168" height="44" rx="4"/>
+    <text class="viz-node-title" x="472" y="57" text-anchor="middle">Feature view</text></g>
   </a>
 
   <a class="viz-link" href="../../fs/feature_view/offline_api/">
-    <g data-tone="accent"><rect class="viz-node" x="372" y="130" width="168" height="44" rx="4"/>
-    <text class="viz-node-title" x="456" y="157" text-anchor="middle">Training data</text></g>
+    <g data-tone="accent"><rect class="viz-node" x="388" y="130" width="168" height="44" rx="4"/>
+    <text class="viz-node-title" x="472" y="157" text-anchor="middle">Training data</text></g>
   </a>
   <a class="viz-link" href="../../mlops/registry/">
-    <g data-tone="accent"><rect class="viz-node" x="196" y="130" width="168" height="44" rx="4"/>
-    <text class="viz-node-title" x="280" y="157" text-anchor="middle">Model</text></g>
+    <g data-tone="accent"><rect class="viz-node" x="204" y="130" width="168" height="44" rx="4"/>
+    <text class="viz-node-title" x="288" y="157" text-anchor="middle">Model</text></g>
   </a>
   <a class="viz-link" href="../../mlops/serving/">
     <g data-tone="accent"><rect class="viz-node" x="20" y="130" width="168" height="44" rx="4"/>

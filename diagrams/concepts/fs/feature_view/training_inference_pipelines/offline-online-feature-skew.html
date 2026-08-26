@@ -1,18 +1,19 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 800 420" role="img" aria-label="Animated diagram of offline-online feature skew. The same raw feature value 12.45 leaves the feature store on two paths: through the transformation of the online inference pipeline and through the transformation of the offline training pipeline. While both run the same UDF with the same state, both produce 0.31 and the tie between them holds. Then the serving transformation drifts to a different version: the same input now produces 0.28 online against 0.31 offline, and the alert states that skew is a code difference, invisible in the data distributions." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="sk-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="sk-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="sk-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <text class="viz-label" x="230" y="52">Online · inference</text>
   <text class="viz-label" x="230" y="278">Offline · training</text>
 
-  <path class="viz-edge" d="M184 190 C 260 160 290 120 342 100" marker-end="url(#sk-arrow)"/>
-  <path class="viz-edge" d="M184 230 C 260 260 290 300 342 320" marker-end="url(#sk-arrow)"/>
-  <path class="viz-edge" d="M520 100 H548" marker-end="url(#sk-arrow)"/>
-  <path class="viz-edge" d="M520 320 H548" marker-end="url(#sk-arrow)"/>
+  <path class="viz-edge" d="M184 190 C 260 160 290 120 342 100" marker-end="url(#sk-arrow)" marker-start="url(#sk-knob)"/>
+  <path class="viz-edge" d="M184 230 C 260 260 290 300 342 320" marker-end="url(#sk-arrow)" marker-start="url(#sk-knob)"/>
+  <path class="viz-edge" d="M520 100 H548" marker-end="url(#sk-arrow)" marker-start="url(#sk-knob)"/>
+  <path class="viz-edge" d="M520 320 H548" marker-end="url(#sk-arrow)" marker-start="url(#sk-knob)"/>
   <path class="viz-edge" data-variant="lane" d="M435 134 V182"/>
   <path class="viz-edge" data-variant="lane" d="M435 218 V286"/>
 

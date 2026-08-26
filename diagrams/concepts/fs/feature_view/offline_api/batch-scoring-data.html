@@ -1,15 +1,16 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 820 210" role="img" aria-label="Animated diagram of batch scoring data. One feature view, product_sales_feature_view, spans a single timeline that runs left to right toward now. An early window is materialized once as TrainingData v1, shown in green. Then get_batch_data slices a daily window from the same feature view for scoring: a blue window at 2022-03-30 produces a batch DataFrame, then the window advances one day to 2022-03-31, leaving the previous day's window behind, and so on up to now, the default end_time. A caption states that get_batch_data with a start_time and end_time slices a time range from the feature view." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="bsd-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="bsd-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="bsd-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <!-- feature view: one timeline you slice from -->
   <rect class="viz-node" x="20" y="20" width="780" height="110" rx="6"/>
   <text class="viz-node-title" x="410" y="42" text-anchor="middle">product_sales_feature_view</text>
-  <path class="viz-edge" d="M44 86 H772" marker-end="url(#bsd-arrow)"/>
+  <path class="viz-edge" d="M44 86 H772" marker-end="url(#bsd-arrow)" marker-start="url(#bsd-knob)"/>
   <text class="viz-meta" x="762" y="78" text-anchor="end">time</text>
   <path class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M748 58 V114"/>
   <text class="viz-meta" data-tone="data" x="748" y="126" text-anchor="middle">now</text>

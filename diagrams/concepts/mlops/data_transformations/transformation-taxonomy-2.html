@@ -1,8 +1,8 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 820 352" role="img" aria-label="Transformation functions are classified by the features they produce. A transformation is model-independent (data-engineering transformations like aggregations, windowed count, RFM) which produces reusable features, or model-dependent (encoding, scaling, imputation, parameterized by the training data) which produces model-specific features. On-demand transformations need request-time data computed online and produce on-demand features; offline they are one of the other two types, shown by dashed links up into model-independent and model-dependent." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="tx2-arrow" viewBox="0 0 11 11" refX="9.5" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 L3 5.5 z"/>
+    <marker id="tx2-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="tx2-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
@@ -38,8 +38,8 @@
   <g id="tx2-pmd" style="opacity:0"><text class="viz-meta" x="645" y="206" text-anchor="middle" data-tone="neutral">&#8594; model-specific features</text></g>
 
   <!-- on-demand: online its own type, offline one of the two above -->
-  <path id="tx2-eod1" class="viz-edge" d="M340 250 C325 220 305 200 305 184" marker-end="url(#tx2-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
-  <path id="tx2-eod2" class="viz-edge" d="M480 250 C495 220 515 200 515 184" marker-end="url(#tx2-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
+  <path id="tx2-eod1" class="viz-edge" d="M340 250 C325 220 305 200 305 184" marker-end="url(#tx2-arrow)" style="opacity:0;stroke-dasharray:4 4" marker-start="url(#tx2-knob)"/>
+  <path id="tx2-eod2" class="viz-edge" d="M480 250 C495 220 515 200 515 184" marker-end="url(#tx2-arrow)" style="opacity:0;stroke-dasharray:4 4" marker-start="url(#tx2-knob)"/>
   <g id="tx2-od" data-tone="data" style="opacity:0">
     <rect class="viz-node" x="250" y="250" width="320" height="64" rx="4" style="stroke:var(--viz-tone)"/>
     <text class="viz-node-title" x="410" y="272" text-anchor="middle">On-demand</text>

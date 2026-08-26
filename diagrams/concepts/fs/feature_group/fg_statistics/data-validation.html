@@ -1,14 +1,15 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 760 280" role="img" aria-label="Animated diagram of validation and statistics on write. An fg.insert dataframe reaches the expectation suite, Great Expectations runs, the validation report rows turn to pass one by one, and the feature statistics are recomputed, both surfaced in the Hopsworks UI." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="st-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="st-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="st-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
-  <path class="viz-edge" d="M184 132 H242" marker-end="url(#st-arrow)"/>
-  <path class="viz-edge" d="M450 114 C 480 100 490 90 512 80" marker-end="url(#st-arrow)"/>
-  <path class="viz-edge" d="M450 150 C 480 164 490 174 512 184" marker-end="url(#st-arrow)"/>
+  <path class="viz-edge" d="M184 132 H242" marker-end="url(#st-arrow)" marker-start="url(#st-knob)"/>
+  <path class="viz-edge" d="M450 114 C 480 100 490 90 512 80" marker-end="url(#st-arrow)" marker-start="url(#st-knob)"/>
+  <path class="viz-edge" d="M450 150 C 480 164 490 174 512 184" marker-end="url(#st-arrow)" marker-start="url(#st-knob)"/>
 
   <g>
     <rect class="viz-node" x="24" y="100" width="160" height="64" rx="4"/>

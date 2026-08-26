@@ -1,7 +1,7 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 820 314" role="img" aria-label="Animated timeline of a point-in-time correct join, on the same data as the table above. Time runs left to right. The top lane is the feature group seller_reviews_quarterly with two reviews: oct-22 avg_review_score 3.4 and dec-22 2.8. The bottom lane is seller_delivery_time_monthly, the observations, with deliveries at oct-22, nov-22 and dec-22. For each observation an as-of window grows from the left up to that observation's event_time; the join takes the newest review inside the window. oct-22 takes the oct-22 review 3.4. nov-22 also takes the oct-22 review 3.4 because the dec-22 review sits outside the window, later in time, and is excluded. dec-22 takes the dec-22 review 2.8. A caption states that each observation joins the newest review at or before its event_time." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="tl-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="tl-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>

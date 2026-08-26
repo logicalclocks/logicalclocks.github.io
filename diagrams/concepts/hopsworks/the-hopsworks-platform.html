@@ -1,7 +1,7 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="8 24 936 468" role="img" aria-label="The Hopsworks platform. Three pipelines sit centered above a shared state layer of three governed stores. The feature pipeline reads data sources and writes to the feature store. The training pipeline reads features and writes to the model registry. The inference pipeline reads features, the vector index, and the model registry, and produces predictions to the right of the shared state. Prediction logs feed back into the feature store. Everything runs on a multi-tenant platform." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="8 24 960 468" role="img" aria-label="The Hopsworks platform. Three pipelines sit centered above a shared state layer of three governed stores. The feature pipeline reads data sources and writes to the feature store. The training pipeline reads features and writes to the model registry. The inference pipeline reads features, the vector index, and the model registry, and produces predictions to the right of the shared state. Prediction logs feed back into the feature store. Everything runs on a multi-tenant platform." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="hop-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="hop-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="hop-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -10,19 +10,19 @@
   </defs>
 
   <!-- shared state layer: a tinted container holding the three governed stores -->
-  <rect class="viz-zone" x="150" y="206" width="642" height="166" rx="6"/>
-  <path class="viz-kv-header" d="M150 212 a6 6 0 0 1 6 -6 h630 a6 6 0 0 1 6 6 v24 h-642 z"/>
-  <text class="viz-kv-title" x="166" y="225">Shared state layer</text>
+  <rect class="viz-zone" x="174" y="206" width="642" height="166" rx="6"/>
+  <path class="viz-kv-header" d="M174 212 a6 6 0 0 1 6 -6  h630  a6 6 0 0 1 6 6  v24  h-642  z"/>
+  <text class="viz-kv-title" x="190" y="225">Shared state layer</text>
 
   <!-- connectors: knob at the source, arrow at the target -->
-  <path class="viz-edge" d="M134 76 H191" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M261 112 V248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M300 248 C300 180 450 180 450 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M480 112 C480 190 660 190 660 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M330 248 C330 168 640 168 640 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M490 248 C490 185 681 185 681 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M700 248 C700 180 720 180 720 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M751 76 C824 76 870 130 870 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M148 76 H215" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M285 112 V248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M324 248 C324 180 474 180 474 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M504 112 C504 190 692 190 692 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M354 248 C354 168 664 168 664 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M518 248 C518 185 705 185 705 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M732 248 C732 180 744 180 744 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M775 76 C848 76 898 130 898 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
   <path class="viz-edge" d="M870 320 V386 Q870 392 862 392 H221 Q213 392 213 386 V358" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)" style="stroke-dasharray:5 4"/>
 
   <!-- data sources: a left column of connectors -->
@@ -50,52 +50,52 @@
   <!-- feature pipeline -->
   <a class="viz-link" href="../fs/feature_group/feature_pipelines/">
     <g data-tone="accent">
-      <rect class="viz-node" x="191" y="40" width="140" height="72" rx="4"/>
-      <rect class="viz-pill" x="231" y="32" width="60" height="16" rx="3"/>
-      <text class="viz-pill-text" x="261" y="43" text-anchor="middle">Pipeline</text>
-      <text class="viz-node-title" x="261" y="79" text-anchor="middle">FEATURE</text>
-      <text class="viz-node-subtitle" x="261" y="97" text-anchor="middle">spark · sql</text>
+      <rect class="viz-node" x="215" y="40" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="255" y="32" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="285" y="43" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="285" y="79" text-anchor="middle">FEATURE</text>
+      <text class="viz-node-subtitle" x="285" y="97" text-anchor="middle">spark · sql</text>
     </g>
   </a>
 
   <!-- training pipeline -->
   <a class="viz-link" href="../mlops/training/">
     <g data-tone="accent">
-      <rect class="viz-node" x="401" y="40" width="140" height="72" rx="4"/>
-      <rect class="viz-pill" x="441" y="32" width="60" height="16" rx="3"/>
-      <text class="viz-pill-text" x="471" y="43" text-anchor="middle">Pipeline</text>
-      <text class="viz-node-title" x="471" y="79" text-anchor="middle">TRAINING</text>
-      <text class="viz-node-subtitle" x="471" y="97" text-anchor="middle">python</text>
+      <rect class="viz-node" x="425" y="40" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="465" y="32" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="495" y="43" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="495" y="79" text-anchor="middle">TRAINING</text>
+      <text class="viz-node-subtitle" x="495" y="97" text-anchor="middle">python</text>
     </g>
   </a>
 
   <!-- inference pipeline -->
   <a class="viz-link" href="../mlops/serving/">
     <g data-tone="accent">
-      <rect class="viz-node" x="611" y="40" width="140" height="72" rx="4"/>
-      <rect class="viz-pill" x="651" y="32" width="60" height="16" rx="3"/>
-      <text class="viz-pill-text" x="681" y="43" text-anchor="middle">Pipeline</text>
-      <text class="viz-node-title" x="681" y="79" text-anchor="middle">INFERENCE</text>
-      <text class="viz-node-subtitle" x="681" y="97" text-anchor="middle">python · kserve</text>
+      <rect class="viz-node" x="635" y="40" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="675" y="32" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="705" y="43" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="705" y="79" text-anchor="middle">INFERENCE</text>
+      <text class="viz-node-subtitle" x="705" y="97" text-anchor="middle">python · kserve</text>
     </g>
   </a>
 
   <!-- feature store -->
   <a class="viz-link" href="../fs/feature_group/fg_overview/">
     <g>
-      <rect class="viz-kv-frame" x="166" y="248" width="190" height="110" rx="6"/>
-      <path class="viz-kv-header" d="M166 254 a6 6 0 0 1 6 -6 h178 a6 6 0 0 1 6 6 v20 h-190 z"/>
-      <text class="viz-kv-title" x="182" y="265">Feature store</text>
-      <text class="viz-meta" x="340" y="265" text-anchor="end">features</text>
+      <rect class="viz-kv-frame" x="190" y="248" width="190" height="110" rx="6"/>
+      <path class="viz-kv-header" d="M190 254 a6 6 0 0 1 6 -6  h178  a6 6 0 0 1 6 6  v20  h-190  z"/>
+      <text class="viz-kv-title" x="206" y="265">Feature store</text>
+      <text class="viz-meta" x="364" y="265" text-anchor="end">features</text>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="174" y="282" width="174" height="26" rx="3"/>
-        <text class="viz-kv-key" x="182" y="299">Online</text>
-        <text class="viz-kv-val" x="340" y="299" text-anchor="end">RonDB</text>
+        <rect class="viz-kv-cell" x="198" y="282" width="174" height="26" rx="3"/>
+        <text class="viz-kv-key" x="206" y="299">Online</text>
+        <text class="viz-kv-val" x="364" y="299" text-anchor="end">RonDB</text>
       </g>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="174" y="316" width="174" height="26" rx="3"/>
-        <text class="viz-kv-key" x="182" y="333">Offline</text>
-        <text class="viz-kv-val" x="340" y="333" text-anchor="end">Delta</text>
+        <rect class="viz-kv-cell" x="198" y="316" width="174" height="26" rx="3"/>
+        <text class="viz-kv-key" x="206" y="333">Offline</text>
+        <text class="viz-kv-val" x="364" y="333" text-anchor="end">Delta</text>
       </g>
     </g>
   </a>
@@ -103,19 +103,19 @@
   <!-- vector index -->
   <a class="viz-link" href="../mlops/opensearch/">
     <g>
-      <rect class="viz-kv-frame" x="376" y="248" width="190" height="110" rx="6"/>
-      <path class="viz-kv-header" d="M376 254 a6 6 0 0 1 6 -6 h178 a6 6 0 0 1 6 6 v20 h-190 z"/>
-      <text class="viz-kv-title" x="392" y="265">Vector index</text>
-      <text class="viz-meta" x="550" y="265" text-anchor="end">embeddings</text>
+      <rect class="viz-kv-frame" x="404" y="248" width="190" height="110" rx="6"/>
+      <path class="viz-kv-header" d="M404 254 a6 6 0 0 1 6 -6   h178   a6 6 0 0 1 6 6   v20   h-190   z"/>
+      <text class="viz-kv-title" x="420" y="265">Vector index</text>
+      <text class="viz-meta" x="578" y="265" text-anchor="end">embeddings</text>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="384" y="282" width="174" height="26" rx="3"/>
-        <text class="viz-kv-key" x="392" y="299">Engine</text>
-        <text class="viz-kv-val" x="550" y="299" text-anchor="end">OpenSearch</text>
+        <rect class="viz-kv-cell" x="412" y="282" width="174" height="26" rx="3"/>
+        <text class="viz-kv-key" x="420" y="299">Engine</text>
+        <text class="viz-kv-val" x="578" y="299" text-anchor="end">OpenSearch</text>
       </g>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="384" y="316" width="174" height="26" rx="3"/>
-        <text class="viz-kv-key" x="392" y="333">Search</text>
-        <text class="viz-kv-val" x="550" y="333" text-anchor="end">kNN</text>
+        <rect class="viz-kv-cell" x="412" y="316" width="174" height="26" rx="3"/>
+        <text class="viz-kv-key" x="420" y="333">Search</text>
+        <text class="viz-kv-val" x="578" y="333" text-anchor="end">kNN</text>
       </g>
     </g>
   </a>
@@ -123,19 +123,19 @@
   <!-- model registry -->
   <a class="viz-link" href="../mlops/registry/">
     <g>
-      <rect class="viz-kv-frame" x="586" y="248" width="190" height="110" rx="6"/>
-      <path class="viz-kv-header" d="M586 254 a6 6 0 0 1 6 -6 h178 a6 6 0 0 1 6 6 v20 h-190 z"/>
-      <text class="viz-kv-title" x="602" y="265">Model registry</text>
-      <text class="viz-meta" x="760" y="265" text-anchor="end">models</text>
+      <rect class="viz-kv-frame" x="618" y="248" width="190" height="110" rx="6"/>
+      <path class="viz-kv-header" d="M618 254 a6 6 0 0 1 6 -6   h178   a6 6 0 0 1 6 6   v20   h-190   z"/>
+      <text class="viz-kv-title" x="634" y="265">Model registry</text>
+      <text class="viz-meta" x="792" y="265" text-anchor="end">models</text>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="594" y="282" width="174" height="26" rx="3"/>
-        <text class="viz-kv-key" x="602" y="299">Model</text>
-        <text class="viz-kv-val" x="760" y="299" text-anchor="end">v1 · v2</text>
+        <rect class="viz-kv-cell" x="626" y="282" width="174" height="26" rx="3"/>
+        <text class="viz-kv-key" x="634" y="299">Model</text>
+        <text class="viz-kv-val" x="792" y="299" text-anchor="end">v1 · v2</text>
       </g>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="594" y="316" width="174" height="26" rx="3"/>
-        <text class="viz-kv-key" x="602" y="333">Metrics</text>
-        <text class="viz-kv-val" x="760" y="333" text-anchor="end">tracked</text>
+        <rect class="viz-kv-cell" x="626" y="316" width="174" height="26" rx="3"/>
+        <text class="viz-kv-key" x="634" y="333">Metrics</text>
+        <text class="viz-kv-val" x="792" y="333" text-anchor="end">tracked</text>
       </g>
     </g>
   </a>
@@ -143,17 +143,17 @@
   <!-- predictions (data endpoint, right of the shared state) -->
   <a class="viz-link" href="../mlops/prediction_services/">
     <g>
-      <rect class="viz-kv-frame" x="804" y="248" width="132" height="72" rx="6"/>
-      <path class="viz-kv-header" d="M804 254 a6 6 0 0 1 6 -6 h120 a6 6 0 0 1 6 6 v20 h-132 z"/>
-      <text class="viz-kv-title" x="820" y="265">Predictions</text>
-      <text class="viz-node-subtitle" x="870" y="300" text-anchor="middle">online · batch</text>
+      <rect class="viz-kv-frame" x="832" y="248" width="132" height="72" rx="6"/>
+      <path class="viz-kv-header" d="M832 254 a6 6 0 0 1 6 -6   h120   a6 6 0 0 1 6 6   v20   h-132   z"/>
+      <text class="viz-kv-title" x="848" y="265">Predictions</text>
+      <text class="viz-node-subtitle" x="898" y="300" text-anchor="middle">online · batch</text>
     </g>
   </a>
 
   <!-- multi-tenant platform base -->
   <a class="viz-link" href="../projects/governance/">
     <g>
-      <rect class="viz-zone" x="14" y="408" width="922" height="78" rx="6"/>
+      <rect class="viz-zone" x="14" y="408" width="954" height="78" rx="6"/>
       <text class="viz-label" x="32" y="434">Multi-tenant platform</text>
       <text class="viz-meta" x="32" y="456">Projects · Jobs (Python, Spark) · Jupyter · Airflow</text>
       <text class="viz-meta" x="32" y="472">Governance (search, tags, lineage) · Auth (SSO, RBAC)</text>

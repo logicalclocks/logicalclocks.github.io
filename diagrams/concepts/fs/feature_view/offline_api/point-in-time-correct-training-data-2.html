@@ -1,7 +1,7 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 820 520" role="img" aria-label="Animated point-in-time correct join. Two feature groups are updated at different cadences: seller_delivery_time_monthly, the label group, has monthly rows (oct-22 deliver_hrs 72, nov-22 104, dec-22 88); seller_reviews_quarterly has quarterly rows (oct-22 avg_review_score 3.4, dec-22 2.8). The join processes each delivery observation in turn and attaches the newest review at or before that observation's event_time, building the training data one row at a time. For oct-22 it uses the oct-22 review 3.4. For nov-22 the oct-22 review lights up as used while the dec-22 review flashes as excluded because it is later, so nov-22 also gets 3.4. For dec-22 it uses the dec-22 review 2.8. A caption states that each row takes the newest feature at or before its event_time so no future values leak in." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="pit-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="pit-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="pit-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -39,13 +39,13 @@
   <path id="je-a" class="viz-edge" d="M195 164 C195 194 320 190 360 213" marker-start="url(#pit-knob)" marker-end="url(#pit-arrow)" style="opacity:0"/>
   <path id="je-b" class="viz-edge" d="M625 134 C625 184 500 190 460 213" marker-start="url(#pit-knob)" marker-end="url(#pit-arrow)" style="opacity:0"/>
   <g id="jnode" data-tone="accent">
-    <rect class="viz-node" x="325" y="214" width="170" height="44" rx="4"/>
-    <rect class="viz-pill" x="370" y="206" width="80" height="16" rx="3"/>
-    <text class="viz-pill-text" x="410" y="217" text-anchor="middle">join</text>
-    <text class="viz-node-title" x="410" y="234" text-anchor="middle">point-in-time</text>
-    <text class="viz-node-subtitle" x="410" y="250" text-anchor="middle">as-of event_time</text>
+    <rect class="viz-node" x="325" y="212" width="170" height="44" rx="4"/>
+    <rect class="viz-pill" x="370" y="204" width="80" height="16" rx="3"/>
+    <text class="viz-pill-text" x="410" y="215" text-anchor="middle">join</text>
+    <text class="viz-node-title" x="410" y="232" text-anchor="middle">point-in-time</text>
+    <text class="viz-node-subtitle" x="410" y="248" text-anchor="middle">as-of event_time</text>
   </g>
-  <path id="je-out" class="viz-edge" d="M410 258 V278" marker-end="url(#pit-arrow)" style="opacity:0"/>
+  <path id="je-out" class="viz-edge" d="M410 258 V278" marker-end="url(#pit-arrow)" style="opacity:0" marker-start="url(#pit-knob)"/>
 
   <!-- ===== training data (built one observation at a time) ===== -->
   <rect class="viz-kv-frame" x="80" y="280" width="660" height="148" rx="6"/>

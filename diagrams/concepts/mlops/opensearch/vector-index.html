@@ -1,18 +1,19 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 780 360" role="img" aria-label="Animated diagram of the vector index. Offline, an item from the corpus passes through the embedding job and its id-embedding pair is inserted as a new row in the OpenSearch ANN index. Online, a device sends a query embedding to the index, the index flashes and the top-k nearest item ids travel back to the device." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="os-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="os-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="os-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <text class="viz-label" x="24" y="30">Online similarity search</text>
   <text class="viz-label" x="200" y="262">Offline indexing</text>
 
-  <path class="viz-edge" d="M164 84 H512" marker-end="url(#os-arrow)"/>
-  <path class="viz-edge" d="M520 110 H172" marker-end="url(#os-arrow)"/>
-  <path class="viz-edge" d="M350 308 H412" marker-end="url(#os-arrow)"/>
-  <path class="viz-edge" d="M510 280 C 512 240 530 204 558 178" marker-end="url(#os-arrow)"/>
+  <path class="viz-edge" d="M164 84 H512" marker-end="url(#os-arrow)" marker-start="url(#os-knob)"/>
+  <path class="viz-edge" d="M520 110 H172" marker-end="url(#os-arrow)" marker-start="url(#os-knob)"/>
+  <path class="viz-edge" d="M350 308 H412" marker-end="url(#os-arrow)" marker-start="url(#os-knob)"/>
+  <path class="viz-edge" d="M510 280 C 512 240 530 204 558 178" marker-end="url(#os-arrow)" marker-start="url(#os-knob)"/>
 
   <g>
     <rect class="viz-node" x="24" y="52" width="140" height="64" rx="4"/>

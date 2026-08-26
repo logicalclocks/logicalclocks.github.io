@@ -1,18 +1,19 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 806 460" role="img" aria-label="Animated diagram of the MLOps flywheel. Events from the operational services flow into the feature pipeline, features land in the feature store, training data leaves through the offline API into the training pipeline, the trained model ships to serving, predictions flow back into the operational services, and the services generate more data: the wheel keeps turning. A parallel online API path carries feature vectors from the store straight to the models." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fw-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="fw-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="fw-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <path class="viz-edge" d="M415 78 V142" marker-end="url(#fw-arrow)"/>
-  <path class="viz-edge" d="M220 182 H322" marker-end="url(#fw-arrow)"/>
-  <path class="viz-edge" d="M500 182 H612" marker-end="url(#fw-arrow)"/>
-  <path class="viz-edge" d="M705 214 V362" marker-end="url(#fw-arrow)"/>
-  <path class="viz-edge" d="M612 402 H228" marker-end="url(#fw-arrow)"/>
-  <path class="viz-edge" d="M130 370 V222" marker-end="url(#fw-arrow)"/>
-  <path class="viz-edge" d="M628 214 C 480 300 320 360 226 384" marker-end="url(#fw-arrow)"/>
+  <path class="viz-edge" d="M220 182 H322" marker-end="url(#fw-arrow)" marker-start="url(#fw-knob)"/>
+  <path class="viz-edge" d="M500 182 H612" marker-end="url(#fw-arrow)" marker-start="url(#fw-knob)"/>
+  <path class="viz-edge" d="M705 214 V362" marker-end="url(#fw-arrow)" marker-start="url(#fw-knob)"/>
+  <path class="viz-edge" d="M612 402 H228" marker-end="url(#fw-arrow)" marker-start="url(#fw-knob)"/>
+  <path class="viz-edge" d="M130 370 V222" marker-end="url(#fw-arrow)" marker-start="url(#fw-knob)"/>
+  <path class="viz-edge" d="M628 214 C 480 300 320 360 226 384" marker-end="url(#fw-arrow)" marker-start="url(#fw-knob)"/>
   <text class="viz-meta" x="714" y="292">offline api</text>
   <text class="viz-meta" x="430" y="322" text-anchor="middle">online api</text>
 

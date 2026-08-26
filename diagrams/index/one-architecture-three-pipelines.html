@@ -1,7 +1,7 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="8 24 820 360" role="img" aria-label="The FTI architecture. Three independent pipelines sit above a shared state layer. The feature pipeline reads data sources and writes to the feature store. The training pipeline reads features and writes to the model registry. The inference pipeline reads features and the model to produce predictions. Prediction logs feed back into the feature store." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 848 356" role="img" aria-label="The FTI architecture. Three independent pipelines sit above a shared state layer. The feature pipeline reads data sources and writes to the feature store. The training pipeline reads features and writes to the model registry. The inference pipeline reads features and the model to produce predictions. Prediction logs feed back into the feature store." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fti-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="fti-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="fti-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -11,102 +11,102 @@
 
   <!-- shared state layer: a tinted container with its own header band,
        holding the two governed stores (feature store + model registry) -->
-  <rect class="viz-zone" x="150" y="206" width="474" height="162" rx="6"/>
-  <path class="viz-kv-header" d="M150 212 a6 6 0 0 1 6 -6 h462 a6 6 0 0 1 6 6 v24 h-474 z"/>
-  <text class="viz-kv-title" x="166" y="225">Shared state layer</text>
+  <rect class="viz-zone" x="174" y="182" width="474" height="162" rx="6"/>
+  <path class="viz-kv-header" d="M174 188 a6 6 0 0 1 6 -6  h462  a6 6 0 0 1 6 6  v24  h-474  z"/>
+  <text class="viz-kv-title" x="190" y="201">Shared state layer</text>
 
   <!-- connectors: docked with a knob at the source, arrow at the target -->
-  <path class="viz-edge" d="M148 76 H166" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M646 76 H666" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M236 112 C236 180 250 180 250 248" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M300 248 C300 180 390 180 390 112" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M430 112 C430 186 470 186 470 248" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M340 248 C340 168 560 168 560 112" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M540 248 C540 186 600 186 600 112" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M736 112 C736 185 716 185 716 248" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M700 350 V356 Q700 362 694 362 H221 Q215 362 215 356 V351" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)" style="stroke-dasharray:5 4"/>
+  <path class="viz-edge" d="M148 52 H190" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M670 52 H690" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M260 88 C260 156 274 156 274 224" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M324 224 C324 156 414 156 414 88" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M454 88 C454 162 494 162 494 224" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M364 224 C364 144 584 144 584 88" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M564 224 C564 162 624 162 624 88" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M760 88 C760 161 740 161 740 224" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M724 326 V344 Q724 350 718 350 H245 Q239 350 239 344 V326" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)" style="stroke-dasharray:5 4"/>
 
   <!-- data sources: a left column of connectors, each linking to its own guide -->
   <g>
-    <rect class="viz-kv-frame" x="14" y="40" width="134" height="310" rx="6"/>
-    <path class="viz-kv-header" d="M14 46 a6 6 0 0 1 6 -6 h122 a6 6 0 0 1 6 6 v20 h-134 z"/>
-    <a class="viz-link" href="user_guides/fs/data_source/"><text class="viz-kv-title" x="26" y="59">Data sources</text></a>
-    <a class="viz-link" href="user_guides/fs/data_source/creation/snowflake/"><text class="viz-field" x="28" y="93">Snowflake</text><text class="viz-field-role" x="140" y="93" text-anchor="end">ext</text></a>
-    <line class="viz-row-sep" x1="14" y1="105" x2="148" y2="105"/>
-    <a class="viz-link" href="user_guides/fs/data_source/creation/bigquery/"><text class="viz-field" x="28" y="128">BigQuery</text><text class="viz-field-role" x="140" y="128" text-anchor="end">ext</text></a>
-    <line class="viz-row-sep" x1="14" y1="140" x2="148" y2="140"/>
-    <a class="viz-link" href="user_guides/fs/data_source/creation/redshift/"><text class="viz-field" x="28" y="163">Redshift</text><text class="viz-field-role" x="140" y="163" text-anchor="end">ext</text></a>
-    <line class="viz-row-sep" x1="14" y1="175" x2="148" y2="175"/>
-    <a class="viz-link" href="user_guides/fs/data_source/creation/s3/"><text class="viz-field" x="28" y="198">S3</text><text class="viz-field-role" x="140" y="198" text-anchor="end">ext</text></a>
-    <line class="viz-row-sep" x1="14" y1="210" x2="148" y2="210"/>
-    <a class="viz-link" href="user_guides/fs/data_source/creation/adls/"><text class="viz-field" x="28" y="233">ADLS</text><text class="viz-field-role" x="140" y="233" text-anchor="end">ext</text></a>
-    <line class="viz-row-sep" x1="14" y1="245" x2="148" y2="245"/>
-    <a class="viz-link" href="user_guides/fs/data_source/creation/gcs/"><text class="viz-field" x="28" y="268">GCS</text><text class="viz-field-role" x="140" y="268" text-anchor="end">ext</text></a>
-    <line class="viz-row-sep" x1="14" y1="280" x2="148" y2="280"/>
-    <a class="viz-link" href="user_guides/fs/data_source/creation/jdbc/"><text class="viz-field" x="28" y="303">JDBC</text><text class="viz-field-role" x="140" y="303" text-anchor="end">ext</text></a>
-    <line class="viz-row-sep" x1="14" y1="315" x2="148" y2="315"/>
-    <a class="viz-link" href="user_guides/fs/data_source/creation/kafka/"><text class="viz-field" x="28" y="338">Kafka</text></a>
+    <rect class="viz-kv-frame" x="14" y="16" width="134" height="310" rx="6"/>
+    <path class="viz-kv-header" d="M14 22 a6 6 0 0 1 6 -6  h122  a6 6 0 0 1 6 6  v20  h-134  z"/>
+    <a class="viz-link" href="user_guides/fs/data_source/"><text class="viz-kv-title" x="26" y="35">Data sources</text></a>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/snowflake/"><text class="viz-field" x="28" y="69">Snowflake</text><text class="viz-field-role" x="140" y="69" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="81" x2="148" y2="81"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/bigquery/"><text class="viz-field" x="28" y="104">BigQuery</text><text class="viz-field-role" x="140" y="104" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="116" x2="148" y2="116"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/redshift/"><text class="viz-field" x="28" y="139">Redshift</text><text class="viz-field-role" x="140" y="139" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="151" x2="148" y2="151"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/s3/"><text class="viz-field" x="28" y="174">S3</text><text class="viz-field-role" x="140" y="174" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="186" x2="148" y2="186"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/adls/"><text class="viz-field" x="28" y="209">ADLS</text><text class="viz-field-role" x="140" y="209" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="221" x2="148" y2="221"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/gcs/"><text class="viz-field" x="28" y="244">GCS</text><text class="viz-field-role" x="140" y="244" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="256" x2="148" y2="256"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/jdbc/"><text class="viz-field" x="28" y="279">JDBC</text><text class="viz-field-role" x="140" y="279" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="291" x2="148" y2="291"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/kafka/"><text class="viz-field" x="28" y="314">Kafka</text></a>
   </g>
 
   <!-- feature pipeline -->
   <a class="viz-link" href="concepts/fs/feature_group/feature_pipelines/">
     <g data-tone="accent">
-      <rect class="viz-node" x="166" y="40" width="140" height="72" rx="4"/>
-      <rect class="viz-pill" x="206" y="32" width="60" height="16" rx="3"/>
-      <text class="viz-pill-text" x="236" y="43" text-anchor="middle">Pipeline</text>
-      <text class="viz-node-title" x="236" y="79" text-anchor="middle">FEATURE</text>
-      <text class="viz-node-subtitle" x="236" y="97" text-anchor="middle">spark · sql</text>
+      <rect class="viz-node" x="190" y="16" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="230" y="8" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="260" y="19" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="260" y="55" text-anchor="middle">FEATURE</text>
+      <text class="viz-node-subtitle" x="260" y="73" text-anchor="middle">spark · sql</text>
     </g>
   </a>
 
   <!-- training pipeline -->
   <a class="viz-link" href="concepts/mlops/training/">
     <g data-tone="accent">
-      <rect class="viz-node" x="336" y="40" width="140" height="72" rx="4"/>
-      <rect class="viz-pill" x="376" y="32" width="60" height="16" rx="3"/>
-      <text class="viz-pill-text" x="406" y="43" text-anchor="middle">Pipeline</text>
-      <text class="viz-node-title" x="406" y="79" text-anchor="middle">TRAINING</text>
-      <text class="viz-node-subtitle" x="406" y="97" text-anchor="middle">python</text>
+      <rect class="viz-node" x="360" y="16" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="400" y="8" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="430" y="19" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="430" y="55" text-anchor="middle">TRAINING</text>
+      <text class="viz-node-subtitle" x="430" y="73" text-anchor="middle">python</text>
     </g>
   </a>
 
   <!-- inference pipeline -->
   <a class="viz-link" href="concepts/mlops/serving/">
     <g data-tone="accent">
-      <rect class="viz-node" x="506" y="40" width="140" height="72" rx="4"/>
-      <rect class="viz-pill" x="546" y="32" width="60" height="16" rx="3"/>
-      <text class="viz-pill-text" x="576" y="43" text-anchor="middle">Pipeline</text>
-      <text class="viz-node-title" x="576" y="79" text-anchor="middle">INFERENCE</text>
-      <text class="viz-node-subtitle" x="576" y="97" text-anchor="middle">python</text>
+      <rect class="viz-node" x="530" y="16" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="570" y="8" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="600" y="19" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="600" y="55" text-anchor="middle">INFERENCE</text>
+      <text class="viz-node-subtitle" x="600" y="73" text-anchor="middle">python</text>
     </g>
   </a>
 
   <!-- predictions (data endpoint: header-node like the shared-state boxes) -->
   <a class="viz-link" href="concepts/mlops/prediction_services/">
     <g>
-      <rect class="viz-kv-frame" x="666" y="40" width="140" height="72" rx="6"/>
-      <path class="viz-kv-header" d="M666 46 a6 6 0 0 1 6 -6 h128 a6 6 0 0 1 6 6 v20 h-140 z"/>
-      <text class="viz-kv-title" x="678" y="59">Predictions</text>
-      <text class="viz-node-subtitle" x="736" y="93" text-anchor="middle">online · batch</text>
+      <rect class="viz-kv-frame" x="690" y="16" width="140" height="72" rx="6"/>
+      <path class="viz-kv-header" d="M690 22 a6 6 0 0 1 6 -6  h128  a6 6 0 0 1 6 6  v20  h-140  z"/>
+      <text class="viz-kv-title" x="702" y="35">Predictions</text>
+      <text class="viz-node-subtitle" x="760" y="69" text-anchor="middle">online · batch</text>
     </g>
   </a>
 
   <!-- feature store (nested header table) -->
   <a class="viz-link" href="concepts/fs/feature_group/fg_overview/">
     <g>
-      <rect class="viz-kv-frame" x="168" y="248" width="210" height="102" rx="6"/>
-      <path class="viz-kv-header" d="M168 254 a6 6 0 0 1 6 -6 h198 a6 6 0 0 1 6 6 v20 h-210 z"/>
-      <text class="viz-kv-title" x="184" y="265">Feature store</text>
-      <text class="viz-meta" x="362" y="265" text-anchor="end">features</text>
+      <rect class="viz-kv-frame" x="192" y="224" width="210" height="102" rx="6"/>
+      <path class="viz-kv-header" d="M192 230 a6 6 0 0 1 6 -6  h198  a6 6 0 0 1 6 6  v20  h-210  z"/>
+      <text class="viz-kv-title" x="208" y="241">Feature store</text>
+      <text class="viz-meta" x="386" y="241" text-anchor="end">features</text>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="176" y="282" width="194" height="26" rx="3"/>
-        <text class="viz-kv-key" x="184" y="299">Online</text>
-        <text class="viz-kv-val" x="362" y="299" text-anchor="end">RonDB</text>
+        <rect class="viz-kv-cell" x="200" y="258" width="194" height="26" rx="3"/>
+        <text class="viz-kv-key" x="208" y="275">Online</text>
+        <text class="viz-kv-val" x="386" y="275" text-anchor="end">RonDB</text>
       </g>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="176" y="316" width="194" height="26" rx="3"/>
-        <text class="viz-kv-key" x="184" y="333">Offline</text>
-        <text class="viz-kv-val" x="362" y="333" text-anchor="end">Delta</text>
+        <rect class="viz-kv-cell" x="200" y="292" width="194" height="26" rx="3"/>
+        <text class="viz-kv-key" x="208" y="309">Offline</text>
+        <text class="viz-kv-val" x="386" y="309" text-anchor="end">Delta</text>
       </g>
     </g>
   </a>
@@ -114,19 +114,19 @@
   <!-- model registry (nested header table) -->
   <a class="viz-link" href="concepts/mlops/registry/">
     <g>
-      <rect class="viz-kv-frame" x="404" y="248" width="210" height="102" rx="6"/>
-      <path class="viz-kv-header" d="M404 254 a6 6 0 0 1 6 -6 h198 a6 6 0 0 1 6 6 v20 h-210 z"/>
-      <text class="viz-kv-title" x="420" y="265">Model registry</text>
-      <text class="viz-meta" x="598" y="265" text-anchor="end">models</text>
+      <rect class="viz-kv-frame" x="428" y="224" width="210" height="102" rx="6"/>
+      <path class="viz-kv-header" d="M428 230 a6 6 0 0 1 6 -6  h198  a6 6 0 0 1 6 6  v20  h-210  z"/>
+      <text class="viz-kv-title" x="444" y="241">Model registry</text>
+      <text class="viz-meta" x="622" y="241" text-anchor="end">models</text>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="412" y="282" width="194" height="26" rx="3"/>
-        <text class="viz-kv-key" x="420" y="299">Model</text>
-        <text class="viz-kv-val" x="598" y="299" text-anchor="end">v1 · v2</text>
+        <rect class="viz-kv-cell" x="436" y="258" width="194" height="26" rx="3"/>
+        <text class="viz-kv-key" x="444" y="275">Model</text>
+        <text class="viz-kv-val" x="622" y="275" text-anchor="end">v1 · v2</text>
       </g>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="412" y="316" width="194" height="26" rx="3"/>
-        <text class="viz-kv-key" x="420" y="333">Metrics</text>
-        <text class="viz-kv-val" x="598" y="333" text-anchor="end">tracked</text>
+        <rect class="viz-kv-cell" x="436" y="292" width="194" height="26" rx="3"/>
+        <text class="viz-kv-key" x="444" y="309">Metrics</text>
+        <text class="viz-kv-val" x="622" y="309" text-anchor="end">tracked</text>
       </g>
     </g>
   </a>
@@ -134,18 +134,18 @@
   <!-- prediction logs (standalone header table, outside the shared state) -->
   <a class="viz-link" href="concepts/mlops/model_monitoring/">
     <g>
-      <rect class="viz-kv-frame" x="648" y="248" width="168" height="102" rx="6"/>
-      <path class="viz-kv-header" d="M648 254 a6 6 0 0 1 6 -6 h156 a6 6 0 0 1 6 6 v20 h-168 z"/>
-      <text class="viz-kv-title" x="664" y="265">Prediction logs</text>
+      <rect class="viz-kv-frame" x="672" y="224" width="168" height="102" rx="6"/>
+      <path class="viz-kv-header" d="M672 230 a6 6 0 0 1 6 -6  h156  a6 6 0 0 1 6 6  v20  h-168  z"/>
+      <text class="viz-kv-title" x="688" y="241">Prediction logs</text>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="656" y="282" width="152" height="26" rx="3"/>
-        <text class="viz-kv-key" x="664" y="299">Logged</text>
-        <text class="viz-kv-val" x="800" y="299" text-anchor="end">vectors</text>
+        <rect class="viz-kv-cell" x="680" y="258" width="152" height="26" rx="3"/>
+        <text class="viz-kv-key" x="688" y="275">Logged</text>
+        <text class="viz-kv-val" x="824" y="275" text-anchor="end">vectors</text>
       </g>
       <g class="viz-kv-entry">
-        <rect class="viz-kv-cell" x="656" y="316" width="152" height="26" rx="3"/>
-        <text class="viz-kv-key" x="664" y="333">Monitor</text>
-        <text class="viz-kv-val" x="800" y="333" text-anchor="end">drift</text>
+        <rect class="viz-kv-cell" x="680" y="292" width="152" height="26" rx="3"/>
+        <text class="viz-kv-key" x="688" y="309">Monitor</text>
+        <text class="viz-kv-val" x="824" y="309" text-anchor="end">drift</text>
       </g>
     </g>
   </a>

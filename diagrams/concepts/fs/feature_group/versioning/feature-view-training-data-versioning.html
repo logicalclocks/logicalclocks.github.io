@@ -1,5 +1,5 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="6 8 548 324" role="img" aria-label="Grid of feature view versions as columns and training dataset versions as rows. Each cell holds the model trained on that combination. Feature view version 1 has training datasets 1 and 2, feature view version 2 restarts its training dataset numbering, and one cell has no training dataset yet." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="6 8 560 346" role="img" aria-label="Grid of feature view versions as columns and training dataset versions as rows. Each cell holds the model trained on that combination. Feature view version 1 has training datasets 1 and 2, feature view version 2 restarts its training dataset numbering, and one cell has no training dataset yet." xmlns="http://www.w3.org/2000/svg">
   <!-- column headers: feature view versions -->
   <g data-tone="accent">
     <rect class="viz-node" x="100" y="16" width="215" height="54" rx="4"/>
@@ -7,41 +7,41 @@
     <text class="viz-meta" x="207" y="58" text-anchor="middle">as first published</text>
   </g>
   <g data-tone="accent">
-    <rect class="viz-node" x="325" y="16" width="215" height="54" rx="4"/>
-    <text class="viz-node-title" x="432" y="40" text-anchor="middle">Feature view v2</text>
-    <text class="viz-meta" x="432" y="58" text-anchor="middle">breaking interface change</text>
+    <rect class="viz-node" x="339" y="16" width="215" height="54" rx="4"/>
+    <text class="viz-node-title" x="446" y="40" text-anchor="middle">Feature view v2</text>
+    <text class="viz-meta" x="446" y="58" text-anchor="middle">breaking interface change</text>
   </g>
 
   <!-- row labels: training dataset versions -->
-  <text class="viz-label" x="50" y="112" text-anchor="middle">Training</text>
-  <text class="viz-label" x="50" y="126" text-anchor="middle">dataset v1</text>
-  <text class="viz-label" x="50" y="200" text-anchor="middle">Training</text>
-  <text class="viz-label" x="50" y="214" text-anchor="middle">dataset v2</text>
+  <text class="viz-label" x="50" y="124" text-anchor="middle">Training</text>
+  <text class="viz-label" x="50" y="138" text-anchor="middle">dataset v1</text>
+  <text class="viz-label" x="50" y="220" text-anchor="middle">Training</text>
+  <text class="viz-label" x="50" y="234" text-anchor="middle">dataset v2</text>
 
   <!-- cells: models trained on each combination -->
   <g>
-    <rect class="viz-node" x="100" y="82" width="215" height="72" rx="4"/>
-    <text class="viz-node-title" x="207" y="114" text-anchor="middle">fraud_model v1</text>
-    <text class="viz-meta" x="207" y="132" text-anchor="middle">first in production</text>
+    <rect class="viz-node" x="100" y="94" width="215" height="72" rx="4"/>
+    <text class="viz-node-title" x="207" y="126" text-anchor="middle">fraud_model v1</text>
+    <text class="viz-meta" x="207" y="144" text-anchor="middle">first in production</text>
   </g>
   <g>
-    <rect class="viz-node" x="325" y="82" width="215" height="72" rx="4"/>
-    <text class="viz-node-title" x="432" y="114" text-anchor="middle">fraud_model v3</text>
-    <text class="viz-meta" x="432" y="132" text-anchor="middle">retrained after change</text>
+    <rect class="viz-node" x="339" y="94" width="215" height="72" rx="4"/>
+    <text class="viz-node-title" x="446" y="126" text-anchor="middle">fraud_model v3</text>
+    <text class="viz-meta" x="446" y="144" text-anchor="middle">retrained after change</text>
   </g>
   <g>
-    <rect class="viz-node" x="100" y="170" width="215" height="72" rx="4"/>
-    <text class="viz-node-title" x="207" y="202" text-anchor="middle">fraud_model v2</text>
-    <text class="viz-meta" x="207" y="220" text-anchor="middle">retrained, later range</text>
+    <rect class="viz-node" x="100" y="190" width="215" height="72" rx="4"/>
+    <text class="viz-node-title" x="207" y="222" text-anchor="middle">fraud_model v2</text>
+    <text class="viz-meta" x="207" y="240" text-anchor="middle">retrained, later range</text>
   </g>
   <g opacity="0.55">
-    <rect class="viz-node" x="325" y="170" width="215" height="72" rx="4" style="stroke-dasharray:5 4"/>
-    <text class="viz-meta" x="432" y="210" text-anchor="middle">no training dataset yet</text>
+    <rect class="viz-node" x="339" y="190" width="215" height="72" rx="4" style="stroke-dasharray:5 4"/>
+    <text class="viz-meta" x="446" y="230" text-anchor="middle">no training dataset yet</text>
   </g>
 
   <!-- note -->
-  <rect class="viz-zone" x="16" y="258" width="524" height="56" rx="6"/>
-  <text class="viz-meta" x="32" y="280">A model is pinned to one feature view version and one training</text>
-  <text class="viz-meta" x="32" y="296">dataset version, and reads its statistics when it serves.</text>
+  <rect class="viz-zone" x="16" y="286" width="538" height="56" rx="6"/>
+  <text class="viz-meta" x="32" y="308">A model is pinned to one feature view version and one training</text>
+  <text class="viz-meta" x="32" y="324">dataset version, and reads its statistics when it serves.</text>
 </svg>
 </figure>

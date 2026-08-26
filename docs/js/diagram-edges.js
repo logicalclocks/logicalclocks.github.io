@@ -87,30 +87,46 @@
     return dx >= 0 ? ["right", "left"] : ["left", "right"];
   }
 
-  // Perpendicular exit, bend, perpendicular entry. The control-handle length is
-  // the stub that reads as "straight into the box": long enough to look neat,
-  // capped by the perpendicular gap so the curve never bulges past either box.
+  // Minimum straight run-in into the head, in user units. The arrow marker needs
+  // a straight segment to align to; without it the head meets the curve on a
+  // tangent and reads as floating off the border (mechanic M1, "earned
+  // approach"). This is the min distance the line reserves so the head docks
+  // square. Kept in step with viz_overlap_check.py RUN_IN.
+  var RUN_IN = 16;
+
+  // Perpendicular exit, bend, then a STRAIGHT run-in into the head. The curve
+  // reaches an approach point set back RUN_IN from the target along its normal,
+  // then a straight line covers the last leg so the arrow aligns to the border.
+  // When the gap is tighter than RUN_IN the run-in shrinks to fit and the curve
+  // takes the extra distance; a straight-on edge collapses to a plain line.
   function buildPath(S, T, mode) {
     if (mode === "straight") {
       return "M" + round(S.x) + " " + round(S.y) + " L" + round(T.x) + " " + round(T.y);
     }
-    var dx = T.x - S.x;
-    var dy = T.y - S.y;
+    // how far the source sits out from the target's border, along that normal;
+    // the run-in can never exceed it or the approach point falls behind the source.
+    var perpGap = Math.abs((S.x - T.x) * T.nx + (S.y - T.y) * T.ny);
+    var runIn = Math.min(RUN_IN, perpGap * 0.6);
+    var Ax = T.x + T.nx * runIn;
+    var Ay = T.y + T.ny * runIn;
+    var dx = Ax - S.x;
+    var dy = Ay - S.y;
     var dist = Math.hypot(dx, dy);
     var projS = Math.abs(dx * S.nx + dy * S.ny);
-    var projT = Math.abs(-dx * T.nx - dy * T.ny);
-    var perp = Math.min(projS, projT);
+    var projA = Math.abs(-dx * T.nx - dy * T.ny);
+    var perp = Math.min(projS, projA);
     var k = Math.min(Math.max(12, 0.4 * dist), 0.45 * perp, 64);
     if (!(k > 0)) k = Math.max(2, 0.4 * dist);
     var p1x = S.x + S.nx * k;
     var p1y = S.y + S.ny * k;
-    var p2x = T.x + T.nx * k;
-    var p2y = T.y + T.ny * k;
+    var p2x = Ax + T.nx * k;
+    var p2y = Ay + T.ny * k;
     return (
       "M" + round(S.x) + " " + round(S.y) +
       " C" + round(p1x) + " " + round(p1y) +
       " " + round(p2x) + " " + round(p2y) +
-      " " + round(T.x) + " " + round(T.y)
+      " " + round(Ax) + " " + round(Ay) +
+      " L" + round(T.x) + " " + round(T.y)
     );
   }
 

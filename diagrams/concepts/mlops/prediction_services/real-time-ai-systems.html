@@ -1,23 +1,24 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
 <svg viewBox="6 8 548 452" role="img" aria-label="A real-time AI system: an operational service calls a model deployed on KServe, the model reads pre-engineered features from the feature store, returns a prediction, and logs features and predictions back to the feature store. A training pipeline deploys the model and a feature pipeline writes the features." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="ops-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="ops-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="ops-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <!-- flows -->
-  <path class="viz-edge" d="M140 84 C130 132 138 178 150 178" marker-end="url(#ops-arrow)"/>
+  <path class="viz-edge" d="M140 84 C130 132 138 178 150 178" marker-end="url(#ops-arrow)" marker-start="url(#ops-knob)"/>
   <text class="viz-meta" x="70" y="150">Istio / KServe</text>
-  <path class="viz-edge" d="M370 172 H302" marker-end="url(#ops-arrow)"/>
+  <path class="viz-edge" d="M370 172 H302" marker-end="url(#ops-arrow)" marker-start="url(#ops-knob)"/>
   <text class="viz-meta" x="336" y="162" text-anchor="middle">features</text>
-  <path class="viz-edge" d="M225 150 C225 118 455 118 455 150" marker-end="url(#ops-arrow)"/>
+  <path class="viz-edge" d="M225 150 C225 118 455 118 455 150" marker-end="url(#ops-arrow)" marker-start="url(#ops-knob)"/>
   <text class="viz-meta" x="340" y="112" text-anchor="middle">prediction logging</text>
-  <path class="viz-edge" d="M225 380 V206" marker-end="url(#ops-arrow)" style="stroke-dasharray:4 3"/>
+  <path class="viz-edge" d="M225 380 V206" marker-end="url(#ops-arrow)" style="stroke-dasharray:4 3" marker-start="url(#ops-knob)"/>
   <text class="viz-meta" x="233" y="300">deploy</text>
-  <path class="viz-edge" d="M455 380 V206" marker-end="url(#ops-arrow)"/>
+  <path class="viz-edge" d="M455 380 V206" marker-end="url(#ops-arrow)" marker-start="url(#ops-knob)"/>
   <text class="viz-meta" x="463" y="300">write</text>
-  <path class="viz-edge" d="M405 206 C405 312 322 322 300 380" marker-end="url(#ops-arrow)" style="stroke-dasharray:4 3"/>
+  <path class="viz-edge" d="M405 206 C405 312 322 322 300 380" marker-end="url(#ops-arrow)" style="stroke-dasharray:4 3" marker-start="url(#ops-knob)"/>
   <text class="viz-meta" x="356" y="300">read</text>
 
   <!-- operational service -->

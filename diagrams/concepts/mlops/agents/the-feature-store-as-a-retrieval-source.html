@@ -1,15 +1,16 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 780 330" role="img" aria-label="Animated diagram of the feature store as a retrieval source for an agent. A user query carrying an entity id and a prompt reaches the deployment API. The API looks up the feature store twice: precomputed features by entity id and similar documents from the vector index. Both rows light up, the assembled context travels to the LLM, and the answer returns to the user." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="ag-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="ag-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="ag-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
-  <path class="viz-edge" d="M179 112 H212" marker-end="url(#ag-arrow)"/>
-  <path class="viz-edge" d="M380 112 H422" marker-end="url(#ag-arrow)"/>
-  <path class="viz-edge" d="M595 210 C 590 230 585 244 580 256" marker-end="url(#ag-arrow)"/>
-  <path class="viz-edge" d="M480 286 C 320 300 160 240 105 152" marker-end="url(#ag-arrow)"/>
+  <path class="viz-edge" d="M179 112 H212" marker-end="url(#ag-arrow)" marker-start="url(#ag-knob)"/>
+  <path class="viz-edge" d="M380 112 H422" marker-end="url(#ag-arrow)" marker-start="url(#ag-knob)"/>
+  <path class="viz-edge" d="M595 210 C 590 230 585 244 580 256" marker-end="url(#ag-arrow)" marker-start="url(#ag-knob)"/>
+  <path class="viz-edge" d="M480 286 C 320 300 160 240 105 152" marker-end="url(#ag-arrow)" marker-start="url(#ag-knob)"/>
 
   <g>
     <rect class="viz-node" x="19" y="80" width="160" height="64" rx="4"/>

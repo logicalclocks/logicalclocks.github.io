@@ -1,14 +1,15 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 780 330" role="img" aria-label="Animated diagram of an external feature group. A training pipeline asks the external feature group for data. The feature group stores only metadata and a SQL string: the query travels down to the external Snowflake table, executes there, and the resulting rows travel back up through the feature group into the training data. Nothing is ingested into Hopsworks, the query runs at read time on the source." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="xf-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="xf-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="xf-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
-  <path class="viz-edge" d="M199 92 H252" marker-end="url(#xf-arrow)"/>
-  <path class="viz-edge" d="M385 170 V232" marker-end="url(#xf-arrow)"/>
-  <path class="viz-edge" d="M510 92 H572" marker-end="url(#xf-arrow)"/>
+  <path class="viz-edge" d="M199 92 H252" marker-end="url(#xf-arrow)" marker-start="url(#xf-knob)"/>
+  <path class="viz-edge" d="M385 170 V232" marker-end="url(#xf-arrow)" marker-start="url(#xf-knob)"/>
+  <path class="viz-edge" d="M510 92 H572" marker-end="url(#xf-arrow)" marker-start="url(#xf-knob)"/>
 
   <g>
     <rect class="viz-node" x="19" y="60" width="180" height="64" rx="4"/>

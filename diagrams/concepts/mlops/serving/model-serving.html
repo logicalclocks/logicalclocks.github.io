@@ -1,18 +1,19 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 808 400" role="img" aria-label="Animated diagram of a KServe deployment serving a prediction. A request from the device passes through Istio into the transformer, which looks up the feature store by key and gets the feature vector back, the vector goes down into the predictor, the model answers and the prediction travels back to the device, while the inference is logged to Kafka. The model is one part of the deployed pipeline." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="ms-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="ms-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="ms-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
-  <path class="viz-edge" d="M176 202 H192" marker-end="url(#ms-arrow)"/>
-  <path class="viz-edge" d="M290 202 C 312 202 318 156 336 136" marker-end="url(#ms-arrow)"/>
-  <path class="viz-edge" d="M470 156 V202 M470 202 V202" marker-end="url(#ms-arrow)"/>
-  <path class="viz-edge" d="M602 118 H652" marker-end="url(#ms-arrow)"/>
-  <path class="viz-edge" d="M652 142 H608" marker-end="url(#ms-arrow)"/>
-  <path class="viz-edge" d="M420 266 C 412 292 406 308 402 322" marker-end="url(#ms-arrow)"/>
-  <path class="viz-edge" d="M340 252 C 240 280 160 262 112 238" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M176 202 H192" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M290 202 C 312 202 318 156 336 136" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M470 156 V206" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M602 118 H652" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M652 142 H608" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M420 266 C 412 292 406 308 402 322" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M340 252 C 240 280 160 262 112 238" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
 
   <g>
     <rect class="viz-node" x="12" y="170" width="164" height="64" rx="4"/>

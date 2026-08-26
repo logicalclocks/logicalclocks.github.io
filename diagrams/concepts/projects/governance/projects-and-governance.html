@@ -1,7 +1,7 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
 <svg viewBox="0 0 560 424" role="img" aria-label="Two Hopsworks projects, a production project and a development project, each a governed sandbox holding the same ML assets: training data, feature store, model registry, model deployments and a vector index. ML Engineers own production; data scientists, data engineers and ML engineers own development. A shared CI/CD process links the two environments." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="gov-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="gov-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="gov-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -10,14 +10,14 @@
   </defs>
 
   <!-- stakeholders (actors) -->
-  <g><rect class="viz-node" x="40" y="20" width="200" height="56" rx="4"/>
-    <g class="viz-icon" transform="translate(80,39) scale(0.7)"><circle cx="12" cy="8.5" r="4"/><path d="M5 20 C5 15.5 8 13.5 12 13.5 C16 13.5 19 15.5 19 20"/></g>
-    <text class="viz-node-title" x="106" y="52">ML Engineers</text></g>
-  <g><rect class="viz-node" x="320" y="20" width="200" height="56" rx="4"/>
-    <g class="viz-icon" transform="translate(356,39) scale(0.7)"><circle cx="12" cy="8.5" r="4"/><path d="M5 20 C5 15.5 8 13.5 12 13.5 C16 13.5 19 15.5 19 20"/></g>
-    <text class="viz-field" x="382" y="36">Data Scientists</text>
-    <text class="viz-field" x="382" y="51">Data Engineers</text>
-    <text class="viz-field" x="382" y="66">ML Engineers</text></g>
+  <g><rect class="viz-node" x="40" y="8" width="200" height="56" rx="4"/>
+    <g class="viz-icon" transform="translate(80,27) scale(0.7)"><circle cx="12" cy="-3.5" r="4"/><path d="M5 8 C5 3.5 8 1.5 12 1.5 C16 1.5 19 3.5 19 8"/></g>
+    <text class="viz-node-title" x="106" y="40">ML Engineers</text></g>
+  <g><rect class="viz-node" x="320" y="8" width="200" height="56" rx="4"/>
+    <g class="viz-icon" transform="translate(356,27) scale(0.7)"><circle cx="12" cy="-3.5" r="4"/><path d="M5 8 C5 3.5 8 1.5 12 1.5 C16 1.5 19 3.5 19 8"/></g>
+    <text class="viz-field" x="382" y="24">Data Scientists</text>
+    <text class="viz-field" x="382" y="39">Data Engineers</text>
+    <text class="viz-field" x="382" y="54">ML Engineers</text></g>
 
   <!-- CI/CD process (COMPUTE family: box + pill) -->
   <g data-tone="accent">
@@ -29,8 +29,8 @@
   </g>
 
   <!-- ownership + CI/CD flows -->
-  <path class="viz-edge" d="M140 76 V150" marker-start="url(#gov-knob)" marker-end="url(#gov-arrow)"/>
-  <path class="viz-edge" d="M420 76 V150" marker-start="url(#gov-knob)" marker-end="url(#gov-arrow)"/>
+  <path class="viz-edge" d="M140 64 V150" marker-start="url(#gov-knob)" marker-end="url(#gov-arrow)"/>
+  <path class="viz-edge" d="M420 64 V150" marker-start="url(#gov-knob)" marker-end="url(#gov-arrow)"/>
   <path class="viz-edge" d="M226 108 C196 122 176 132 168 150" marker-start="url(#gov-knob)" marker-end="url(#gov-arrow)" style="stroke-dasharray:5 4"/>
   <path class="viz-edge" d="M334 108 C364 122 384 132 392 150" marker-start="url(#gov-knob)" marker-end="url(#gov-arrow)" style="stroke-dasharray:5 4"/>
 

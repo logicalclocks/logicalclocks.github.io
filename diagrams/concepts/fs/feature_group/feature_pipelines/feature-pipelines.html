@@ -1,13 +1,14 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 814 300" role="img" aria-label="Animated diagram of a feature pipeline. A dataframe leaves the data sources and steps through the pipeline stages: validate, aggregate, transform, each lighting up as it passes, then lands in the feature store as appended rows. A second, bad dataframe then reaches the validate stage, which turns red and rejects it: under the STRICT ingestion policy a validation failure stops the write and nothing bad lands in the store." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fp-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="fp-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="fp-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
-  <path class="viz-edge" d="M200 142 H222" marker-end="url(#fp-arrow)"/>
-  <path class="viz-edge" d="M560 142 H612" marker-end="url(#fp-arrow)"/>
+  <path class="viz-edge" d="M200 142 H222" marker-end="url(#fp-arrow)" marker-start="url(#fp-knob)"/>
+  <path class="viz-edge" d="M560 142 H612" marker-end="url(#fp-arrow)" marker-start="url(#fp-knob)"/>
 
   <g>
     <rect class="viz-node" x="8" y="110" width="192" height="64" rx="4"/>

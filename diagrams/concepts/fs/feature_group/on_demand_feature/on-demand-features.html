@@ -1,19 +1,20 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 800 400" role="img" aria-label="Animated diagram of an on-demand feature. One Python UDF, zipcode of longitude and latitude, sits between two pipelines. In the feature pipeline, historical rows pass through the UDF and the computed zipcode lands in the feature store. At request time, the online inference pipeline sends the request longitude and latitude through the same UDF, and the fresh zipcode is merged into the feature vector together with precomputed features read from the store. Same function in both places, so there is no skew." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="od-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="od-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="od-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <text class="viz-label" x="24" y="30">Feature pipeline · backfill</text>
   <text class="viz-label" x="24" y="288">Online inference · request time</text>
 
-  <path class="viz-edge" d="M196 76 C 260 76 300 120 342 166" marker-end="url(#od-arrow)"/>
-  <path class="viz-edge" d="M500 176 C 540 150 560 110 592 86" marker-end="url(#od-arrow)"/>
-  <path class="viz-edge" d="M196 328 C 260 328 300 260 342 226" marker-end="url(#od-arrow)"/>
-  <path class="viz-edge" d="M500 220 C 540 246 560 280 592 306" marker-end="url(#od-arrow)"/>
-  <path class="viz-edge" d="M688 140 V272" marker-end="url(#od-arrow)"/>
+  <path class="viz-edge" d="M196 76 C 260 76 300 120 342 166" marker-end="url(#od-arrow)" marker-start="url(#od-knob)"/>
+  <path class="viz-edge" d="M500 176 C 540 150 560 110 592 86" marker-end="url(#od-arrow)" marker-start="url(#od-knob)"/>
+  <path class="viz-edge" d="M196 328 C 260 328 300 260 342 226" marker-end="url(#od-arrow)" marker-start="url(#od-knob)"/>
+  <path class="viz-edge" d="M500 220 C 540 246 560 280 592 306" marker-end="url(#od-arrow)" marker-start="url(#od-knob)"/>
+  <path class="viz-edge" d="M688 140 V272" marker-end="url(#od-arrow)" marker-start="url(#od-knob)"/>
 
   <g>
     <rect class="viz-node" x="12" y="48" width="184" height="56" rx="4"/>

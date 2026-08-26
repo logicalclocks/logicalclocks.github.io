@@ -1,8 +1,8 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
 <svg viewBox="0 0 560 700" role="img" aria-label="The Hopsworks FTI flow, read top to bottom. New data and backfill enter the feature pipeline, which runs model-independent transformations and on-demand backfill, producing features and labels. These land in the feature store (feature groups and feature views). The training pipeline reads the feature store and runs model-dependent transformations, writing a model to the model registry. The online inference pipeline takes that model and a request, runs on-demand and model-dependent transformations, and produces predictions, which go to AI-enabled applications and are captured as prediction logs. Colours mark the transformation type: model-independent, model-dependent, on-demand." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="hw-arrow" viewBox="0 0 11 11" refX="9.5" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 L3 5.5 z"/>
+    <marker id="hw-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="hw-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
@@ -19,10 +19,10 @@
   <text class="viz-meta" x="151" y="42">ODT</text>
 
   <!-- inputs -->
-  <g><rect class="viz-node" x="16" y="80" width="104" height="28" rx="4"/><text class="viz-meta" x="68" y="98" text-anchor="middle">New data</text></g>
-  <g><rect class="viz-node" x="16" y="116" width="104" height="28" rx="4"/><text class="viz-meta" x="68" y="134" text-anchor="middle">Backfill</text></g>
-  <path class="viz-edge" d="M120 94 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
-  <path class="viz-edge" d="M120 130 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <g><rect class="viz-node" x="10" y="80" width="104" height="28" rx="4"/><text class="viz-meta" x="62" y="98" text-anchor="middle">New data</text></g>
+  <g><rect class="viz-node" x="10" y="132" width="104" height="28" rx="4"/><text class="viz-meta" x="62" y="150" text-anchor="middle">Backfill</text></g>
+  <path class="viz-edge" d="M114 94 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M114 146 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
 
   <!-- feature pipeline -->
   <a class="viz-link" href="../../fs/feature_group/feature_pipelines/">
@@ -33,8 +33,8 @@
       <text class="viz-node-title" x="280" y="92" text-anchor="middle">Feature</text>
     </g>
   </a>
-  <g data-tone="accent"><rect class="viz-node" x="146" y="104" width="156" height="28" rx="4"/><text class="viz-meta" x="224" y="122" text-anchor="middle">Model-independent</text></g>
-  <g data-tone="data"><rect class="viz-node" x="310" y="104" width="104" height="28" rx="4" style="stroke-dasharray:4 3"/><text class="viz-meta" x="362" y="122" text-anchor="middle">On-demand</text></g>
+  <g data-tone="accent"><rect class="viz-node" x="138" y="104" width="156" height="28" rx="4"/><text class="viz-meta" x="216" y="122" text-anchor="middle">Model-independent</text></g>
+  <g data-tone="data"><rect class="viz-node" x="318" y="104" width="104" height="28" rx="4" style="stroke-dasharray:4 3"/><text class="viz-meta" x="370" y="122" text-anchor="middle">On-demand</text></g>
 
   <!-- features & labels -->
   <path class="viz-edge" d="M280 158 V178" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
@@ -68,8 +68,8 @@
 
   <!-- online inference pipeline -->
   <path class="viz-edge" d="M280 448 V478" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
-  <g><rect class="viz-node" x="16" y="500" width="104" height="28" rx="4"/><text class="viz-meta" x="68" y="518" text-anchor="middle">Request</text></g>
-  <path class="viz-edge" d="M120 514 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <g><rect class="viz-node" x="10" y="500" width="104" height="28" rx="4"/><text class="viz-meta" x="62" y="518" text-anchor="middle">Request</text></g>
+  <path class="viz-edge" d="M114 514 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <a class="viz-link" href="../serving/">
     <g>
       <rect class="viz-node" x="130" y="478" width="300" height="72" rx="4"/>
@@ -78,8 +78,8 @@
       <text class="viz-node-title" x="280" y="502" text-anchor="middle">Online inference</text>
     </g>
   </a>
-  <g data-tone="data"><rect class="viz-node" x="146" y="514" width="120" height="28" rx="4"/><text class="viz-meta" x="206" y="532" text-anchor="middle">On-demand</text></g>
-  <g data-tone="neutral"><rect class="viz-node" x="274" y="514" width="140" height="28" rx="4"/><text class="viz-meta" x="344" y="532" text-anchor="middle">Model-dependent</text></g>
+  <g data-tone="data"><rect class="viz-node" x="138" y="514" width="120" height="28" rx="4"/><text class="viz-meta" x="198" y="532" text-anchor="middle">On-demand</text></g>
+  <g data-tone="neutral"><rect class="viz-node" x="282" y="514" width="140" height="28" rx="4"/><text class="viz-meta" x="352" y="532" text-anchor="middle">Model-dependent</text></g>
 
   <!-- predictions -> applications + logs -->
   <path class="viz-edge" d="M280 550 V570" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>

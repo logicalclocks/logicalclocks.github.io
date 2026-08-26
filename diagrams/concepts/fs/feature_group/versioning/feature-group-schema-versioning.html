@@ -1,15 +1,16 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
 <svg viewBox="6 8 548 344" role="img" aria-label="A breaking schema change forces a new feature group version: order_prices v1 is incremented to v2 and the new version is backfilled with the changed data through insert." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="sv-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="sv-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
+    <marker id="sv-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
   <!-- flow -->
-  <path class="viz-edge" d="M280 112 V136" marker-end="url(#sv-arrow)"/>
-  <path class="viz-edge" d="M280 222 V252" marker-end="url(#sv-arrow)"/>
-  <path class="viz-edge" d="M80 112 C40 200 40 296 108 296" marker-end="url(#sv-arrow)" style="stroke-dasharray:5 4"/>
+  <path class="viz-edge" d="M280 112 V136" marker-end="url(#sv-arrow)" marker-start="url(#sv-knob)"/>
+  <path class="viz-edge" d="M280 222 V252" marker-end="url(#sv-arrow)" marker-start="url(#sv-knob)"/>
+  <path class="viz-edge" d="M80 112 C40 200 40 296 108 296" marker-end="url(#sv-arrow)" style="stroke-dasharray:5 4" marker-start="url(#sv-knob)"/>
 
   <!-- breaking schema change -->
   <g>
@@ -27,10 +28,10 @@
       <text class="viz-node-title" x="280" y="162" text-anchor="middle">order_prices (v1)</text>
     </g>
   </a>
-  <g><rect class="viz-node" x="126" y="176" width="150" height="32" rx="4"/>
-  <text class="viz-node-title" x="201" y="197" text-anchor="middle">Commitₙ</text></g>
-  <g><rect class="viz-node" x="284" y="176" width="150" height="32" rx="4"/>
-  <text class="viz-node-title" x="359" y="197" text-anchor="middle">Timestampₙ</text></g>
+  <g><rect class="viz-node" x="118" y="176" width="150" height="32" rx="4"/>
+  <text class="viz-node-title" x="193" y="197" text-anchor="middle">Commitₙ</text></g>
+  <g><rect class="viz-node" x="292" y="176" width="150" height="32" rx="4"/>
+  <text class="viz-node-title" x="367" y="197" text-anchor="middle">Timestampₙ</text></g>
 
   <text class="viz-meta" x="298" y="242" text-anchor="middle">increment version</text>
   <text class="viz-meta" x="52" y="204" text-anchor="middle">backfill</text>
@@ -42,9 +43,9 @@
       <text class="viz-node-title" x="280" y="278" text-anchor="middle">order_prices (v2)</text>
     </g>
   </a>
-  <g><rect class="viz-node" x="126" y="292" width="150" height="32" rx="4"/>
-  <text class="viz-node-title" x="201" y="313" text-anchor="middle">Commit₁</text></g>
-  <g><rect class="viz-node" x="284" y="292" width="150" height="32" rx="4"/>
-  <text class="viz-node-title" x="359" y="313" text-anchor="middle">Timestampₓ</text></g>
+  <g><rect class="viz-node" x="118" y="292" width="150" height="32" rx="4"/>
+  <text class="viz-node-title" x="193" y="313" text-anchor="middle">Commit₁</text></g>
+  <g><rect class="viz-node" x="292" y="292" width="150" height="32" rx="4"/>
+  <text class="viz-node-title" x="367" y="313" text-anchor="middle">Timestampₓ</text></g>
 </svg>
 </figure>

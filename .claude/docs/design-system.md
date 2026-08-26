@@ -23,7 +23,7 @@ Two hard lessons already learned, do not repeat them:
 | Drill-in navigation | `docs/js/drill-nav.js` | Shows the level you are on plus the level directly above it ("yours and above"); shallower ancestors live in the breadcrumb. |
 | Diagram zoom | `docs/js/diagram-zoom.js` | Corner handle + full-screen overlay for `.hops-diagram` and all content images (wrapped in `.hops-img-zoom` at runtime; inline images under 200px are left alone). Content images also carry a 1px `--hops-border-strong` border via CSS. |
 | Animated diagrams | `docs/js/hops-viz.js` | Timeline stepper for the hops-viz kit (see the Diagrams section). |
-| Diagram edge paint order | `docs/js/diagram-edges.js` | Lifts every top-level `.viz-edge` to the end of its `<svg>` at load, so edges (arrow + knob) paint above the nodes, not behind. |
+| Diagram edge router + paint order | `docs/js/diagram-edges.js` | Routes declared edges (`data-from`/`data-to`) into a path, then lifts every top-level `.viz-edge` to the end of its `<svg>` so arrow + knob paint above the nodes. The router reserves a straight run-in (`RUN_IN`, in step with the checker) into the head so the arrow docks square (M1); tight gaps shrink it and the curve takes the detour. |
 | Code language labels | `docs/js/code-lang.js` | Language tag on code blocks. |
 | Theme features + assets wiring | `mkdocs.yml` | `theme.features`, `extra_javascript`, `extra_css`. |
 
@@ -131,6 +131,29 @@ Edges dock on the node border with a knob at the source (`marker-start`) and an 
 Author edges as top-level `<svg>` children: `diagram-edges.js` lifts every `.viz-edge` to the end of the `<svg>` at load, so the arrow and knob paint above the node border instead of behind it (SVG paint order is document order, and nodes are authored after edges).
 Node icons render at `scale(0.7)`, row icons at `scale(0.6)`; stroke inherits the node tone.
 Normalize every `viewBox` origin to `0 0`.
+
+### Edge and layout mechanics (enforced)
+
+Four mechanics make every diagram behave the same way, whether drawn now or later.
+They are geometric law, not taste, so they live in `viz_overlap_check.py` as hard fails, not in prose that drifts.
+SVG has no layout engine, so the checker is the enforcement library: there is no runtime force and no build-time relaxer, the rules are a gate the static SVG must pass.
+Distances follow an 8-unit spacing grid, not the arrowhead: the marker owns its pixels, the grid owns spacing, so resizing a marker never re-litigates layout.
+
+- M1, earned approach.
+  An arrow's straight run-in to its head must be at least 16u (2 grid units), enough for the head to breathe.
+  Where the direct gap is shorter, the edge curves out and back to earn the distance rather than stubbing straight across; a curved approach is earned by definition.
+- M2, force field.
+  No two separate block borders sit closer than 24u (3 grid units).
+  Nested and contained blocks are exempt (a node inside a zone, a code box inside a node), and so is any pair an edge deliberately connects, since that gap is the edge's run-in and M1 governs it.
+  32u (4 units) is the default gutter for a new diagram: 24 is the floor and law, 32 is taste.
+- M3, arrowhead at 75%.
+  Arrow markers are `markerWidth`/`markerHeight` 9 (down from 12), keeping `viewBox 0 0 11 11` and `refX 11` so the path just renders smaller; the source knob stays 6.
+- M4, anchored connectors.
+  Every connector that ends in an arrow (`marker-end`) also starts on a node with a `marker-start` knob.
+  A connector is an edge whose start docks a block; an arrow that starts in open space is an axis or a standalone direction arrow, a different species, and carries no knob.
+  No connector tail floats in mid-air.
+
+Run `python3 .claude/docs/viz_overlap_check.py [file ...]` before considering a diagram done; with no argument it checks every fragment.
 
 ### Animated diagrams: the hops-viz kit
 

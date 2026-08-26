@@ -260,7 +260,13 @@ a.autorefs-external::after {
   --viz-ink-faint: var(--md-default-fg-color--lighter);
   --viz-line: var(--hops-border);
   --viz-line-strong: var(--hops-border-strong);
-  --viz-edge-stroke: color-mix(in srgb, var(--viz-ink) 48%, transparent);
+  /* Opaque grey, set per scheme. A thin line hides its own alpha, but a filled
+     arrowhead (fill: context-stroke) shows the grid through a semi-transparent
+     fill and lets the line run visibly to the tip beneath it. Must be fully
+     opaque so the arrow reads solid and covers the line. Not a color-mix on
+     --viz-ink: that ink carries Material's 0.87 alpha, which color-mix cannot
+     strip, so the mix is never quite opaque. */
+  --viz-edge-stroke: #949494;
   --viz-font: var(--hops-font-mono);
   --viz-tracking: 0.03em;
   --viz-type-title: 13px;
@@ -282,6 +288,7 @@ a.autorefs-external::after {
   --viz-tone-data: #6ba1ff;
   --viz-tone-warn: #e3b341;
   --viz-tone-error: #f07171;
+  --viz-edge-stroke: #6f6f6f;
 }
 /* Tones: set data-tone on any group; descendants resolve --viz-tone. */
 .hops-viz [data-tone="accent"] { --viz-tone: var(--viz-tone-accent); }
@@ -1550,6 +1557,7 @@ body.hops-zoom-lock {
 .hops-zoom-stage .hops-viz {
   --viz-paper: #16181a;
   --viz-paper-raised: rgba(255, 255, 255, 0.06);
+  --viz-edge-stroke: #6f6f6f;
   --viz-ink: #e6edf3;
   --viz-ink-soft: rgba(230, 237, 243, 0.6);
   --viz-ink-faint: rgba(230, 237, 243, 0.25);

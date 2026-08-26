@@ -1,7 +1,7 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 780 474" role="img" aria-label="Animated diagram: two feature groups keyed on seller_id feed a feature view that is built one feature at a time. seller_id becomes the serving key and event_time the event time. deliver_hrs carries the value 88 through a min_max_scaler transformation, becoming 0.5, and lands as a numerical feature. review_score carries 3.4 through a standard_scaler, becoming 1.0, and lands as a numerical feature. Each feature-view row appears only when its feature merges in." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 788 474" role="img" aria-label="Animated diagram: two feature groups keyed on seller_id feed a feature view that is built one feature at a time. seller_id becomes the serving key and event_time the event time. deliver_hrs carries the value 88 through a min_max_scaler transformation, becoming 0.5, and lands as a numerical feature. review_score carries 3.4 through a standard_scaler, becoming 1.0, and lands as a numerical feature. Each feature-view row appears only when its feature merges in." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fv2-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="fv2-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="fv2-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -39,32 +39,32 @@
   </g>
 
   <!-- feature group B -->
-  <rect class="viz-kv-frame" x="400" y="20" width="360" height="144" rx="6"/>
-  <path class="viz-kv-header" d="M400 26 a6 6 0 0 1 6 -6 h348 a6 6 0 0 1 6 6 v24 h-360 z"/>
-  <g class="viz-icon" transform="translate(410,26) scale(0.62)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
-  <text class="viz-kv-title" x="432" y="39">seller_reviews_quarterly</text>
-  <text class="viz-meta" x="752" y="39" text-anchor="end">feature group</text>
-  <text class="viz-colhead" x="432" y="62">Name</text>
-  <text class="viz-colhead" x="610" y="62">Type</text>
-  <text class="viz-colhead" x="680" y="62">Role</text>
+  <rect class="viz-kv-frame" x="404" y="20" width="360" height="144" rx="6"/>
+  <path class="viz-kv-header" d="M404 26 a6 6 0 0 1 6 -6  h348  a6 6 0 0 1 6 6  v24  h-360  z"/>
+  <g class="viz-icon" transform="translate(414,26) scale(0.62)"><rect x="7" y="3" width="18" height="18" rx="2"/><path d="M7 9 H25 M13 9 V21"/></g>
+  <text class="viz-kv-title" x="436" y="39">seller_reviews_quarterly</text>
+  <text class="viz-meta" x="756" y="39" text-anchor="end">feature group</text>
+  <text class="viz-colhead" x="436" y="62">Name</text>
+  <text class="viz-colhead" x="614" y="62">Type</text>
+  <text class="viz-colhead" x="684" y="62">Role</text>
   <g id="fb-sid" class="viz-kv-entry" data-tone="data">
-    <rect class="viz-kv-cell" x="404" y="72" width="352" height="26" rx="3"/>
-    <g class="viz-icon" transform="translate(410,78) scale(0.55)"><circle cx="6" cy="6" r="3.5"/><path d="M9 9 L15 15 M13 13 L15.5 10.5 M15 15 L17 13"/></g>
-    <text class="viz-field" x="432" y="89">seller_id</text>
-    <text class="viz-field-type" x="610" y="89">bigint</text>
-    <text class="viz-field-role" x="680" y="89">primary key</text>
+    <rect class="viz-kv-cell" x="408" y="72" width="352" height="26" rx="3"/>
+    <g class="viz-icon" transform="translate(414,78) scale(0.55)"><circle cx="10" cy="6" r="3.5"/><path d="M13 9 L19 15 M17 13 L19.5 10.5 M19 15 L21 13"/></g>
+    <text class="viz-field" x="436" y="89">seller_id</text>
+    <text class="viz-field-type" x="614" y="89">bigint</text>
+    <text class="viz-field-role" x="684" y="89">primary key</text>
   </g>
   <g id="fb-evt" class="viz-kv-entry" data-tone="data">
-    <rect class="viz-kv-cell" x="404" y="102" width="352" height="26" rx="3"/>
-    <text class="viz-field" x="432" y="119">event_time</text>
-    <text class="viz-field-type" x="610" y="119">timestamp</text>
-    <text class="viz-field-role" x="680" y="119">event time</text>
+    <rect class="viz-kv-cell" x="408" y="102" width="352" height="26" rx="3"/>
+    <text class="viz-field" x="436" y="119">event_time</text>
+    <text class="viz-field-type" x="614" y="119">timestamp</text>
+    <text class="viz-field-role" x="684" y="119">event time</text>
   </g>
   <g id="fb-rev" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="404" y="132" width="352" height="26" rx="3"/>
-    <text class="viz-field" x="432" y="149">review_score</text>
-    <text class="viz-field-type" x="610" y="149">double</text>
-    <text class="viz-field-role" x="680" y="149">feature</text>
+    <rect class="viz-kv-cell" x="408" y="132" width="352" height="26" rx="3"/>
+    <text class="viz-field" x="436" y="149">review_score</text>
+    <text class="viz-field-type" x="614" y="149">double</text>
+    <text class="viz-field-role" x="684" y="149">feature</text>
   </g>
 
   <!-- transform steps on the feature paths -->
@@ -75,20 +75,20 @@
     <text class="viz-field-type" x="185" y="228" text-anchor="middle">min_max_scaler</text>
   </g>
   <g id="tf-rev" data-tone="write">
-    <rect class="viz-node" x="520" y="208" width="150" height="30" rx="4"/>
-    <rect class="viz-pill" x="555" y="200" width="80" height="16" rx="3"/>
-    <text class="viz-pill-text" x="595" y="211" text-anchor="middle">transform</text>
-    <text class="viz-field-type" x="595" y="228" text-anchor="middle">standard_scaler</text>
+    <rect class="viz-node" x="524" y="208" width="150" height="30" rx="4"/>
+    <rect class="viz-pill" x="559" y="200" width="80" height="16" rx="3"/>
+    <text class="viz-pill-text" x="599" y="211" text-anchor="middle">transform</text>
+    <text class="viz-field-type" x="599" y="228" text-anchor="middle">standard_scaler</text>
   </g>
 
   <!-- join edges into the feature view -->
   <path class="viz-edge" d="M200 164 C200 214 390 250 390 292" marker-start="url(#fv2-knob)" marker-end="url(#fv2-arrow)"/>
-  <path class="viz-edge" d="M580 164 C580 214 390 250 390 292" marker-start="url(#fv2-knob)" marker-end="url(#fv2-arrow)"/>
+  <path class="viz-edge" d="M584 164 C584 214 390 250 390 292" marker-start="url(#fv2-knob)" marker-end="url(#fv2-arrow)"/>
   <text class="viz-meta" x="390" y="192" text-anchor="middle">join on seller_id</text>
 
   <!-- feature view: an empty frame that fills as features merge in -->
-  <rect class="viz-kv-frame" x="20" y="292" width="740" height="176" rx="6"/>
-  <path class="viz-kv-header" d="M20 298 a6 6 0 0 1 6 -6 h728 a6 6 0 0 1 6 6 v24 h-740 z"/>
+  <rect class="viz-kv-frame" x="20" y="292" width="744" height="176" rx="6"/>
+  <path class="viz-kv-header" d="M20 298 a6 6 0 0 1 6 -6 h732 a6 6 0 0 1 6 6 v24 h-744 z"/>
   <g class="viz-icon" transform="translate(30,298) scale(0.62)"><path d="M2 12 C5 6 19 6 22 12 C19 18 5 18 2 12 Z"/><circle cx="12" cy="12" r="3"/></g>
   <text class="viz-kv-title" x="52" y="311">seller_delivery_time_monthly_feature_view</text>
   <text class="viz-meta" x="752" y="311" text-anchor="end">feature view</text>
@@ -97,27 +97,27 @@
   <text class="viz-colhead" x="470" y="340">Role</text>
   <text class="viz-colhead" x="590" y="340">Transformation</text>
   <g id="fv-sid" class="viz-kv-entry" data-tone="data" style="opacity:0">
-    <rect class="viz-kv-cell" x="24" y="346" width="732" height="26" rx="3"/>
+    <rect class="viz-kv-cell" x="24" y="346" width="736" height="26" rx="3"/>
     <g class="viz-icon" transform="translate(30,353) scale(0.55)"><circle cx="6" cy="6" r="3.5"/><path d="M9 9 L15 15 M13 13 L15.5 10.5 M15 15 L17 13"/></g>
     <text class="viz-field" x="52" y="363">seller_id</text>
     <text class="viz-field-type" x="300" y="363">bigint</text>
     <text class="viz-field-role" x="470" y="363">serving key</text>
   </g>
   <g id="fv-evt" class="viz-kv-entry" data-tone="data" style="opacity:0">
-    <rect class="viz-kv-cell" x="24" y="376" width="732" height="26" rx="3"/>
+    <rect class="viz-kv-cell" x="24" y="376" width="736" height="26" rx="3"/>
     <text class="viz-field" x="52" y="393">event_time</text>
     <text class="viz-field-type" x="300" y="393">timestamp</text>
     <text class="viz-field-role" x="470" y="393">event time</text>
   </g>
   <g id="fv-del" class="viz-kv-entry" data-tone="write" style="opacity:0">
-    <rect class="viz-kv-cell" x="24" y="406" width="732" height="26" rx="3"/>
+    <rect class="viz-kv-cell" x="24" y="406" width="736" height="26" rx="3"/>
     <text class="viz-field" x="52" y="423">avg_deliver_time_hrs</text>
     <text class="viz-field-type" x="300" y="423">double</text>
     <text class="viz-field-role" x="470" y="423">numerical</text>
     <text class="viz-field-type" x="590" y="423">min_max_scaler</text>
   </g>
   <g id="fv-rev" class="viz-kv-entry" data-tone="write" style="opacity:0">
-    <rect class="viz-kv-cell" x="24" y="436" width="732" height="26" rx="3"/>
+    <rect class="viz-kv-cell" x="24" y="436" width="736" height="26" rx="3"/>
     <text class="viz-field" x="52" y="453">avg_review_score</text>
     <text class="viz-field-type" x="300" y="453">double</text>
     <text class="viz-field-role" x="470" y="453">numerical</text>
@@ -128,7 +128,7 @@
   <g transform="translate(160 80)"><g id="fv2-p1" class="viz-packet" data-tone="data" style="opacity:0"><rect x="10" width="72" height="18" rx="3"/><text x="46" y="9" text-anchor="middle">seller_id</text></g></g>
   <g transform="translate(158 110)"><g id="fv2-p2" class="viz-packet" data-tone="data" style="opacity:0"><rect x="12" width="78" height="18" rx="3"/><text x="51" y="9" text-anchor="middle">event_time</text></g></g>
   <g transform="translate(185 140)"><g id="fv2-p3" class="viz-packet" data-tone="write" style="opacity:0"><rect width="40" height="18" rx="3"/><text id="fv2-p3t" x="20" y="9" text-anchor="middle">88</text></g></g>
-  <g transform="translate(575 140)"><g id="fv2-p4" class="viz-packet" data-tone="write" style="opacity:0"><rect width="40" height="18" rx="3"/><text id="fv2-p4t" x="20" y="9" text-anchor="middle">3.4</text></g></g>
+  <g transform="translate(579 140)"><g id="fv2-p4" class="viz-packet" data-tone="write" style="opacity:0"><rect width="40" height="18" rx="3"/><text id="fv2-p4t" x="24" y="9" text-anchor="middle">3.4</text></g></g>
 </svg>
 <script type="application/json" data-viz-scene>
 {

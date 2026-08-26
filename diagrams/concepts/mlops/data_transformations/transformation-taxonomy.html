@@ -1,8 +1,8 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 700 620" role="img" aria-label="Where each transformation runs, shown as feature data over time. A mutable feature store is filled by model-independent transformations (MIT) from production and backfill data streaming in. Snapshots are taken over time: an early snapshot builds Training Data v1 which trains Model v1 (later superseded), then a snapshot builds Training Data v2 which trains Model v2, and further snapshots feed batch and online inference. A single model-dependent transformation (MDT), drawn as one bar spanning training-data creation, batch inference, and online inference, is the same computation applied consistently across all of them, which is where online-offline skew would appear if it drifted. Batch inference and Model v2 produce predictions; online inference goes through a prediction service that also takes a prediction request via an on-demand transformation (ODT)." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="dot-arrow" viewBox="0 0 11 11" refX="9.5" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 L3 5.5 z"/>
+    <marker id="dot-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="dot-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
@@ -126,12 +126,12 @@
   </g>
 
   <!-- prediction request: on-demand, request-time input -->
-  <path id="dot-reqe" class="viz-edge" d="M618 505 V461" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
+  <path id="dot-reqe" class="viz-edge" d="M618 493 V461" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
   <g id="dot-odt" class="viz-badge" data-tone="data" style="opacity:0"><rect x="628" y="470" width="46" height="16" rx="3" style="fill:var(--viz-paper)"/><text x="651" y="478" text-anchor="middle">ODT</text></g>
   <g id="dot-req" data-tone="data" style="opacity:0">
-    <rect class="viz-node" x="556" y="505" width="124" height="44" rx="4" style="stroke:var(--viz-tone)"/>
-    <text class="viz-node-title" x="618" y="522" text-anchor="middle">Prediction</text>
-    <text class="viz-node-title" x="618" y="538" text-anchor="middle">request</text>
+    <rect class="viz-node" x="556" y="493" width="124" height="44" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="618" y="510" text-anchor="middle">Prediction</text>
+    <text class="viz-node-title" x="618" y="526" text-anchor="middle">request</text>
   </g>
 
   <!-- skew note -->

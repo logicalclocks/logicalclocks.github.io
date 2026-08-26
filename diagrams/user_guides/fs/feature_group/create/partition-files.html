@@ -1,7 +1,7 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
 <svg viewBox="0 0 896 540" role="img" aria-label="Mapping in-memory partitions to tasks and feature group partition files. A dataframe is split by Hudi shuffle parallelism into five in-memory partitions. Each partition is processed by a task running on a Spark worker, and each task writes one parquet file. With single-partition backfill every file belongs to feature group partition A. With multi-partition backfill the files belong to partitions A, B, C, D and E. Spare workers stay idle." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="pf-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="pf-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="pf-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">

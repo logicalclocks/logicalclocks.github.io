@@ -1,7 +1,7 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 868 336" role="img" aria-label="Animated diagram of the Stream API write path. A dataframe travels from the client into HSFS, is encoded as Avro and produced to a Kafka topic with at-least-once delivery. Kafka fans out to both stores: rows upsert into the online store on RonDB and commit into the offline store on Delta. A duplicate Kafka delivery then reaches the online store and resolves as an idempotent no-op, which is how at-least-once transport becomes exactly-once in both stores." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="ws-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+    <marker id="ws-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
     <marker id="ws-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
