@@ -14,7 +14,8 @@ In this guide, you will learn how you can track the changes of your Python envir
 The Python environment evolves over time as libraries are installed, uninstalled, upgraded, and downgraded.
 To assist in tracking the changes in the environment, you can see the environment history in the UI.
 You can view what changes were introduced at each point a new environment was created.
-Hopsworks will keep a version of a YAML file for each environment so that if you want to restore an older environment you can use it.
+Hopsworks keeps a YAML file for each version of the environment, as a record of what that version contained.
+Importing such a file back into an environment is no longer supported, so to return to an earlier version, clone an environment and install the same packages again.
 To see the differences between environments click on the button as shown in figure 1. You will then see the difference between the environment and the previous environment it was created from.
 <p align="center">
   <figure>

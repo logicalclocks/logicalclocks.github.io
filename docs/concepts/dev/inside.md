@@ -25,7 +25,7 @@ This architecture consists of three independently developed and operated ML pipe
 - Inference pipeline: takes new feature data and a trained model and makes predictions
 
 In order to facilitate the development of these pipelines Hopsworks bundles several python environments containing necessary dependencies.
-Each of these environments may then also be customized further by cloning it and installing additional dependencies from PyPi, Conda channels, Wheel files, GitHub repos or a custom Dockerfile.
+Each of these environments may then also be customized further by cloning it and installing additional dependencies from PyPi, Wheel files, GitHub repos or a custom Dockerfile.
 Internal compute such as Jobs and Jupyter is run in one of these environments and changes are applied transparently when you install new libraries using our APIs.
 That is, there is no need to write a Dockerfile, users install libraries directly in one or more of the environments.
 You can setup custom development and production environments by creating separate projects or creating multiple clones of an environment within the same project.
