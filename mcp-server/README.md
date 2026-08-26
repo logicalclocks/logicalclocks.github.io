@@ -36,6 +36,21 @@ HOPSWORKS_DOCS_DIR=/path/to/logicalclocks.github.io/docs \
 If `HOPSWORKS_DOCS_DIR` is unset, the server walks up from its own location to
 find a `docs/` directory next to `mkdocs.yml`.
 
+## Hosted deployment
+
+A hosted instance runs at `https://mcp.hopsworks.ai/mcp` over streamable-http.
+It is public, unauthenticated, and read-only, so any MCP client can connect without credentials.
+
+The hosted instance tracks the `main` branch of this repo.
+It does not serve the released, mike-versioned `docs.hopsworks.ai` site, and it does not see feature branches or local working trees.
+`docker-entrypoint.sh` keeps a shallow clone of `main` and pulls it every `SYNC_INTERVAL` (default 300s), and the server reindexes on change every `MCP_REINDEX_INTERVAL` (default 60s), so the endpoint follows `main` with no restart.
+
+A docs change is therefore visible to the MCP within a few minutes of landing on `main`.
+Work that lives only on a feature branch or an unpushed working tree is invisible until it merges to `main`.
+
+The image bakes in the server code only, never the docs.
+Rebuild and redeploy the image when the server code changes; a docs change never needs an image rebuild.
+
 ## Wire into a client
 
 See `examples/claude-code.mcp.json` (add it to your project `.mcp.json`) and

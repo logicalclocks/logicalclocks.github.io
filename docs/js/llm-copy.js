@@ -47,7 +47,11 @@
         });
     });
 
-    title.appendChild(btn);
+    // Prefer the breadcrumb row (top-right, aligned with the path) so the
+    // button never collides with a wrapping H1; fall back to the title on
+    // pages with no breadcrumb (top-level sections).
+    var path = document.querySelector(".md-content .md-path");
+    (path || title).appendChild(btn);
   }
 
   // Material for MkDocs swaps content via instant navigation; rebuild each time.
