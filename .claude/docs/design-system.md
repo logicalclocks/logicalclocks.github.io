@@ -20,7 +20,7 @@ Two hard lessons already learned, do not repeat them:
 | ------- | ---- | ----- |
 | Tokens + all component styling | `docs/css/custom.css` | Single stylesheet. Tokens at the top, components below. |
 | Nav collapse toggle | `docs/js/nav-collapse.js` | Header button, hides the sidebar, widens content. |
-| Drill-in navigation | `docs/js/drill-nav.js` | Shows the current level plus one level down; shallower ancestors live in the breadcrumb. |
+| Drill-in navigation | `docs/js/drill-nav.js` | Shows the level you are on plus the level directly above it ("yours and above"); shallower ancestors live in the breadcrumb. |
 | Diagram zoom | `docs/js/diagram-zoom.js` | Corner handle + full-screen overlay for `.hops-diagram` and all content images (wrapped in `.hops-img-zoom` at runtime; inline images under 200px are left alone). Content images also carry a 1px `--hops-border-strong` border via CSS. |
 | Animated diagrams | `docs/js/hops-viz.js` | Timeline stepper for the hops-viz kit (see the Diagrams section). |
 | Diagram edge paint order | `docs/js/diagram-edges.js` | Lifts every top-level `.viz-edge` to the end of its `<svg>` at load, so edges (arrow + knob) paint above the nodes, not behind. |
@@ -61,11 +61,11 @@ The rail is the spine of the site. Rules, in order of importance:
 
 - It is a text rail, no per-section icons (see the lesson above).
 - The active item is a single green pill (`--hops-tint` wash, `--hops-accent-text` text), never two split boxes; the pill is on the `.md-nav__container`.
-- Deep trees (up to ~5 levels, e.g. `concepts/fs/feature_group/...`) are handled by showing two adjacent levels at a time, not by exposing the whole tree. Collapsing is about depth, never about hiding siblings: items at the current level are always all shown.
+- Deep trees (up to ~5 levels, e.g. `concepts/fs/feature_group/...`) are handled by showing two adjacent levels at a time, not by exposing the whole tree. Collapsing is about depth, never about hiding siblings: items at the current level are always all shown, and so are its parent's siblings, so a page never looks like the only thing under its section.
   - `navigation.indexes`: every section has an Overview/index page acting as a hub.
   - `navigation.prune`: only the active branch is rendered.
   - `navigation.path`: breadcrumbs above the H1 carry the hierarchy above the current level.
-  - `drill-nav.js`: the rail shows the current node's siblings (the level it lives on) plus, on a section page, that section's children indented one step under it. Everything shallower than the sibling level collapses into the breadcrumb and the up-header; everything deeper than the child level stays hidden. The up-header names the parent section and walks up to it.
+  - `drill-nav.js`: the rail shows two adjacent levels anchored on the active page. The indented level (with a guide rail) is the level the page lives on: the page's own siblings for a leaf, or the section's children for a section index page. The flat level above it is that section's siblings, so you always see the page's neighbours and the section it hangs from. Everything shallower than the flat level collapses into the breadcrumb and the up-header; everything deeper than the indented level stays hidden. The up-header names the section above the flat level and walks up to it.
 - Collapse toggle (`nav-collapse.js`): a header button hides the whole sidebar and lets the content reclaim the width. It is a plain show/hide, not an icon rail. Desktop only; mobile uses the drawer. State persists in localStorage.
 - The sidebar is its own panel (`--hops-sidebar-bg`). The panel fill and the right divider are painted by `.md-sidebar--primary::before` (full-bleed, spanning past the header) so the divider is flush with the header, not notched 30px below it. Do not put the divider border back on the `.md-sidebar--primary` box.
 

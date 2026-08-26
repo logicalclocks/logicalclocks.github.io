@@ -1,12 +1,13 @@
-// Column drill navigation (Miller-column style). The rail shows exactly one
-// level at a time: the items that sit alongside the current page, as a flat
-// list with no indentation. A header row at the top names the level you are in
-// and, clicked, walks up one level. Going deeper or up slides the column left or
-// right. The breadcrumb (navigation.path) is the redundant, always-there path.
+// Column drill navigation. The rail shows exactly two adjacent levels: the level
+// the active page lives on (indented, with a guide rail) and the level directly
+// above it (its parent section's siblings, flat at the left margin). You always
+// see "yours and above": your own level plus the one it hangs from. Everything
+// shallower than the parent level collapses into the up-header and the breadcrumb
+// (navigation.path). Going deeper or up slides the column left or right.
 //
-// Levels come from Material's nested nav DOM; we only choose which list to show
-// and where "up" points, then hide everything else. Progressive enhancement:
-// without JS the full nested tree stays visible.
+// Levels come from Material's nested nav DOM; we only choose which two lists to
+// show and where "up" points, then hide everything else. Progressive
+// enhancement: without JS the full nested tree stays visible.
 (function () {
   "use strict";
 
@@ -38,13 +39,22 @@
     return href;
   }
 
+  // The <li>'s own child list (its sub-pages), excluding the page-heading TOC
+  // that Material nests under the active leaf. Null when the item is a leaf page.
+  function childListOf(li) {
+    if (!li) return null;
+    return li.querySelector(
+      ":scope > nav.md-nav:not(.md-nav--secondary) > .md-nav__list",
+    );
+  }
+
   function sectionAncestor(el) {
     var li = el.parentElement && el.parentElement.closest(".md-nav__item");
     return li || null;
   }
 
-  // Site root, used as the "up" target from a top-level section (whose own
-  // index page IS the current page, so it must never point at itself).
+  // Site root, used as the "up" target when the flat level already is the top of
+  // the tree (its parent section's index page IS the current context).
   function homeHref() {
     var logo = document.querySelector("a.md-logo, .md-header__button.md-logo");
     var href = logo && logo.getAttribute("href");
@@ -84,29 +94,34 @@
     var activeLi = active.closest(".md-nav__item");
     if (!activeLi) return;
 
-    // Two adjacent levels are shown: the level the active item lives on (its
-    // siblings) and, when the active item is a section, that section's children
-    // one step down. Hiding is about DEPTH, not siblings: everything shallower
-    // than the sibling level collapses into the up-header / breadcrumb, and
-    // everything deeper than the child level stays hidden. Never the page's own
-    // heading TOC (.md-nav--secondary).
-    var siblingList = activeLi.parentElement;
-    if (!siblingList) return;
-    var siblingItems = Array.prototype.slice.call(siblingList.children);
+    // The active SECTION is the section that holds the current page: the active
+    // item itself when it is a section (navigation.indexes gives every section an
+    // index page), otherwise the nearest ancestor section. Its own child list is
+    // the level you are in (indented); the list it sits in is the level above
+    // (flat). When the active page is at the top of the tree it has no section
+    // above, and only the one flat level shows.
+    var activeSection = childListOf(activeLi)
+      ? activeLi
+      : sectionAncestor(activeLi);
 
-    var childNav = activeLi.querySelector(
-      ":scope > nav.md-nav:not(.md-nav--secondary) > .md-nav__list",
-    );
-    var childItems = childNav
-      ? Array.prototype.slice.call(childNav.children)
+    var indentedList = activeSection ? childListOf(activeSection) : null;
+    var flatList = activeSection
+      ? activeSection.parentElement
+      : activeLi.parentElement;
+    if (!flatList) return;
+
+    var flatItems = Array.prototype.slice.call(flatList.children);
+    var indentedItems = indentedList
+      ? Array.prototype.slice.call(indentedList.children)
       : [];
 
-    var keep = new Set(siblingItems);
-    childItems.forEach(function (li) {
+    var keep = new Set(flatItems);
+    indentedItems.forEach(function (li) {
       keep.add(li);
     });
-    // Keep ancestor wrappers for structure; their labels are hidden below.
-    var node = siblingList.parentElement;
+    // Keep ancestor wrappers for DOM structure; their own labels are hidden below
+    // (they live in the up-header / breadcrumb).
+    var node = flatList.parentElement;
     while (node && !node.classList.contains("md-nav--primary")) {
       if (node.tagName === "LI") keep.add(node);
       node = node.parentElement;
@@ -115,29 +130,28 @@
     primary.querySelectorAll(".md-nav__item").forEach(function (li) {
       if (!keep.has(li)) li.classList.add(HIDDEN);
     });
-    // Ancestor wrappers above the shown levels: hide their own label, they live
-    // in the up-header / breadcrumb. Sibling and child labels stay visible.
+    // Kept items that are neither the flat level nor the indented level are
+    // structural wrappers above the shown levels: hide their own label row.
     keep.forEach(function (li) {
-      if (siblingItems.indexOf(li) !== -1) return;
-      if (childItems.indexOf(li) !== -1) return;
+      if (flatItems.indexOf(li) !== -1) return;
+      if (indentedItems.indexOf(li) !== -1) return;
       var own = li.querySelector(
         ":scope > .md-nav__link, :scope > .md-nav__container",
       );
       if (own) own.classList.add(HIDDEN);
     });
-    // Mark the child list so CSS indents exactly that one step under its
-    // section (the sibling level stays flat at the left margin).
-    if (childNav) childNav.classList.add("hops-drill-children");
+    // Mark the indented list so CSS indents exactly that one step under its
+    // section (the flat level stays at the left margin).
+    if (indentedList) indentedList.classList.add("hops-drill-children");
 
-    // Up-header: names the level ABOVE the siblings (the parent section) and
-    // walks up to it. A top-level active item has no section above it, so no
-    // header: the whole top level already is the current level.
-    var parentSection = sectionAncestor(siblingList);
+    // Up-header: names the section ABOVE the flat level and walks up to it. When
+    // the flat level is the top of the tree there is nothing above, so no header.
+    var parentSection = sectionAncestor(flatList);
     var label, upHref, depth;
     if (parentSection) {
       label = textOf(parentSection);
-      // Up goes to the parent section's own page, or the site root. This is a
-      // different page from the current one, so the button is never a no-op.
+      // Up goes to the parent section's own page, or the site root. A different
+      // page from the current one, so the button is never a no-op.
       upHref = hrefOf(parentSection) || homeHref();
       depth = 1;
       var d = parentSection;
