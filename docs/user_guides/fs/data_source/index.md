@@ -32,41 +32,161 @@ By default, each project is created with three default Data Sources: A JDBC conn
 
 Cloud agnostic storage systems:
 
-1. [JDBC](creation/jdbc.md): Connect to JDBC compatible databases and query them using SQL.
-2. [Snowflake](creation/snowflake.md): Query Snowflake databases and tables using SQL.
-3. [Kafka](creation/kafka.md): Read data from a Kafka cluster into a Spark Structured Streaming Dataframe.
-4. [HopsFS](creation/hopsfs.md): Easily connect and read from directories of Hopsworks' internal File System.
-5. [CRM, Sales & Analytics](creation/crm_sales_analytics.md): Connect to supported CRM, sales, and analytics platforms.
-6. [REST API](creation/rest_api.md): Connect to external HTTP APIs with configurable headers and authentication.
-7. [SAP HANA][data-source-sap-hana]: Query SAP HANA tenant databases using SQL.
+<div class="grid cards" markdown>
+
+-   :simple-snowflake:{ .lg .middle style="color:#29B5E8" } **Snowflake**
+
+    ---
+
+    Query Snowflake databases and tables using SQL.
+
+    [:octicons-arrow-right-24: Configure](creation/snowflake.md)
+
+-   :simple-apachekafka:{ .lg .middle } **Kafka**
+
+    ---
+
+    Read from a Kafka cluster into a Spark Structured Streaming Dataframe.
+
+    [:octicons-arrow-right-24: Configure](creation/kafka.md)
+
+-   :simple-sap:{ .lg .middle style="color:#0FAAFF" } **SAP HANA**
+
+    ---
+
+    Query SAP HANA tenant databases using SQL.
+
+    [:octicons-arrow-right-24: Configure][data-source-sap-hana]
+
+-   :material-database:{ .lg .middle style="color:var(--hops-accent-text)" } **JDBC**
+
+    ---
+
+    Connect to any JDBC compatible database and query it using SQL.
+
+    [:octicons-arrow-right-24: Configure](creation/jdbc.md)
+
+-   :material-api:{ .lg .middle style="color:var(--hops-accent-text)" } **REST API**
+
+    ---
+
+    Connect to external HTTP APIs with configurable headers and authentication.
+
+    [:octicons-arrow-right-24: Configure](creation/rest_api.md)
+
+-   :material-chart-box-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **CRM, Sales & Analytics**
+
+    ---
+
+    Connect to supported CRM, sales, and analytics platforms.
+
+    [:octicons-arrow-right-24: Configure](creation/crm_sales_analytics.md)
+
+-   :material-folder-network-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **HopsFS**
+
+    ---
+
+    Connect and read from directories of Hopsworks' internal file system.
+
+    [:octicons-arrow-right-24: Configure](creation/hopsfs.md)
+
+</div>
 
 ## AWS
 
 For AWS the following storage systems are supported:
 
-1. [S3](creation/s3.md): Read data from a variety of file based storage in S3 such as parquet or CSV.
-2. [AWS Glue](creation/glue.md): Integrate with the AWS Glue Data Catalog over S3, for Iceberg, Delta, Hudi and plain file formats.
-3. [Redshift](creation/redshift.md): Query Redshift databases and tables using SQL.
-4. [SQL](creation/sql.md): Query Amazon SQL (Relational Database Service) using SQL.
+<div class="grid cards" markdown>
+
+-   :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **S3**
+
+    ---
+
+    Read file-based storage in S3 such as parquet or CSV.
+
+    [:octicons-arrow-right-24: Configure](creation/s3.md)
+
+-   :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **AWS Glue**
+
+    ---
+
+    Integrate with the Glue Data Catalog over S3, for Iceberg, Delta, Hudi and plain files.
+
+    [:octicons-arrow-right-24: Configure](creation/glue.md)
+
+-   :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **Redshift**
+
+    ---
+
+    Query Redshift databases and tables using SQL.
+
+    [:octicons-arrow-right-24: Configure](creation/redshift.md)
+
+-   :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **RDS (SQL)**
+
+    ---
+
+    Query the Amazon Relational Database Service using SQL.
+
+    [:octicons-arrow-right-24: Configure](creation/sql.md)
+
+</div>
 
 ## Azure
 
-For AWS the following storage systems are supported:
+For Azure the following storage systems are supported:
 
-1. [ADLS](creation/adls.md): Read data from a variety of file based storage in ADLS such as parquet or CSV.
+<div class="grid cards" markdown>
+
+-   :material-microsoft-azure:{ .lg .middle style="color:#0078D4" } **ADLS**
+
+    ---
+
+    Read file-based storage in ADLS such as parquet or CSV.
+
+    [:octicons-arrow-right-24: Configure](creation/adls.md)
+
+</div>
 
 ## GCP
 
 For GCP the following storage systems are supported:
 
-1. [BigQuery](creation/bigquery.md): Query BigQuery databases and tables using SQL.
-2. [GCS](creation/gcs.md): Read data from a variety of file based storage in Google Cloud Storage such as parquet or CSV.
+<div class="grid cards" markdown>
+
+-   :simple-googlebigquery:{ .lg .middle style="color:#4285F4" } **BigQuery**
+
+    ---
+
+    Query BigQuery databases and tables using SQL.
+
+    [:octicons-arrow-right-24: Configure](creation/bigquery.md)
+
+-   :simple-googlecloudstorage:{ .lg .middle style="color:#4285F4" } **GCS**
+
+    ---
+
+    Read file-based storage in Google Cloud Storage such as parquet or CSV.
+
+    [:octicons-arrow-right-24: Configure](creation/gcs.md)
+
+</div>
 
 ## Databricks (AWS only)
 
 For Databricks **on AWS** the following storage systems are supported:
 
-1. [Unity Catalog](creation/unity_catalog.md): Browse Unity Catalog catalogs, schemas, and Delta tables, and mount them as external Feature Groups.
+<div class="grid cards" markdown>
+
+-   :simple-databricks:{ .lg .middle style="color:#FF3621" } **Unity Catalog**
+
+    ---
+
+    Browse catalogs, schemas, and Delta tables, and mount them as external feature groups.
+
+    [:octicons-arrow-right-24: Configure](creation/unity_catalog.md)
+
+</div>
 
 Databricks on Azure and Databricks on GCP are not supported yet. See the [Unity Catalog guide](creation/unity_catalog.md) for the specific reasons and the status of follow-up work.
 

@@ -9,15 +9,49 @@ This section provides guides for creating models and publish them to the Model R
 
 Follow these framework-specific guides to export a Model to the Model Registry.
 
-- [TensorFlow](frameworks/tf.md)
+<div class="grid cards" markdown>
 
-- [Torch](frameworks/tch.md)
+-   :simple-tensorflow:{ .lg .middle style="color:#FF6F00" } **TensorFlow**
 
-- [Scikit-learn](frameworks/skl.md)
+    ---
 
-- [LLM](frameworks/llm.md)
+    Export a TensorFlow or Keras model.
 
-- [Other Python frameworks](frameworks/python.md)
+    [:octicons-arrow-right-24: Export guide](frameworks/tf.md)
+
+-   :simple-pytorch:{ .lg .middle style="color:#EE4C2C" } **Torch**
+
+    ---
+
+    Export a PyTorch model.
+
+    [:octicons-arrow-right-24: Export guide](frameworks/tch.md)
+
+-   :simple-scikitlearn:{ .lg .middle style="color:#F7931E" } **Scikit-learn**
+
+    ---
+
+    Export a scikit-learn model.
+
+    [:octicons-arrow-right-24: Export guide](frameworks/skl.md)
+
+-   :material-robot-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **LLM**
+
+    ---
+
+    Export a large language model.
+
+    [:octicons-arrow-right-24: Export guide](frameworks/llm.md)
+
+-   :simple-python:{ .lg .middle style="color:#3776AB" } **Other Python frameworks**
+
+    ---
+
+    Export any other Python model, such as XGBoost or LightGBM.
+
+    [:octicons-arrow-right-24: Export guide](frameworks/python.md)
+
+</div>
 
 ## Importing a model from HuggingFace
 

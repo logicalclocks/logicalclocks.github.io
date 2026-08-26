@@ -177,66 +177,57 @@ The validation is enabled by default and can be disabled by setting below key wo
 
 The most important validation checks or error messages are mentioned below along with possible corrective actions.
 
-01. Primary key contains null values
+1. Primary key contains null values
 
     - **Rule** Primary key column should not contain any null values.
     - **Example correction** Drop the rows containing null primary keys.
       Alternatively, find the null values and assign them an unique value as per preferred strategy for data imputation.
 
-      === "Pandas"
+    ```python
+    # Drop rows: assuming 'id' is the primary key column
+    df = df.dropna(subset=["id"])
+    # For composite keys
+    df = df.dropna(subset=["id1", "id2"])
 
-          ```python
-          # Drop rows: assuming 'id' is the primary key column
-          df = df.dropna(subset=["id"])
-          # For composite keys
-          df = df.dropna(subset=["id1", "id2"])
+    # Data imputation: replace null values with incrementing last integer id
+    # existing max id
+    max_id = df["id"].max()
+    # counter to generate new id
+    next_id = max_id + 1
+    # for each null id, assign the next id incrementally
+    for idx in df[df["id"].isna()].index:
+        df.loc[idx, "id"] = next_id
+        next_id += 1
+    ```
 
-          # Data imputation: replace null values with incrementing last integer id
-          # existing max id
-          max_id = df["id"].max()
-          # counter to generate new id
-          next_id = max_id + 1
-          # for each null id, assign the next id incrementally
-          for idx in df[df["id"].isna()].index:
-              df.loc[idx, "id"] = next_id
-              next_id += 1
-          ```
-
-02. Primary key column missing
+2. Primary key column missing
 
     - **Rule** The dataframe to be inserted must contain all the columns defined as primary key(s) in the feature group.
     - **Example correction** Add all the primary key columns in the dataframe.
 
-      === "Pandas"
+    ```python
+    # incrementing primary key upto the length of dataframe
+    df["id"] = range(1, len(df) + 1)
+    ```
 
-          ```python
-          # incrementing primary key upto the length of dataframe
-          df["id"] = range(1, len(df) + 1)
-          ```
-
-03. String length exceeded
+3. String length exceeded
 
     - **Rule** The character length of a string should be within the maximum length capacity in the online schema type of a feature.
       If the feature group is not created and explicit feature schema was not provided, the limit will be auto-increased to the maximum length found in a string column in the dataframe.
     - **Example correction**
-
-      - Trim the string values to fit within maximum limit set during feature group creation.
-
-      === "Pandas"
+        - Trim the string values to fit within maximum limit set during feature group creation.
 
           ```python
           max_length = 100
           df["text_column"] = df["text_column"].str.slice(0, max_length)
           ```
 
-      - Another option is to simply [create new version of the feature group][hsfs.feature_store.FeatureStore.get_or_create_feature_group] and insert the dataframe.
+        - Another option is to simply [create new version of the feature group][hsfs.feature_store.FeatureStore.get_or_create_feature_group] and insert the dataframe.
 
-      !!! note
-          The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size).
-          In such cases it is possible to define the feature as **TEXT** or **BLOB**.
-          Below is an example of explicitly defining the string column as TEXT as online type.
-
-      === "Pandas"
+          !!! note
+              The total row size limit should be less than 30kb as per [row size restrictions](#online-restrictions-for-row-size).
+              In such cases it is possible to define the feature as **TEXT** or **BLOB**.
+              Below is an example of explicitly defining the string column as TEXT as online type.
 
           ```python
           import pandas as pd

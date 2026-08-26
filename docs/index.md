@@ -7,44 +7,52 @@ hide:
 
 <p class="hops-eyebrow">Hopsworks Documentation</p>
 
-# Build production AI systems from Python
+# Build, deploy & maintain AI systems
 
 <p class="hops-lede">Features, training data, models and inference on one governed platform.</p>
 
 <!-- markdownlint-disable MD007 MD030 -->
 <div class="grid cards hops-quickcards" markdown>
 
--   :material-rocket-launch-outline: **Start in five minutes**
+-   :material-console: **Start from your terminal**
 
     ---
 
-    Sign in to the Hopsworks SaaS and create a project.
-    Nothing to install.
+    Install the client and authenticate.
+    `hops setup` opens a browser, caches an API key and connects you to a feature store.
 
-    [Open run.hopsworks.ai ↗](https://run.hopsworks.ai)
-
--   :material-language-python: **Install the Python client**
-
-    ---
-
-    `pip install hopsworks[python]`, then connect from any Python, Spark, Flink or Java environment.
+    ```bash
+    pip install "hopsworks[python]"
+    hops setup
+    ```
 
     [Client installation](user_guides/client_installation/index.md) ·
-    <a href="python-api/">Python API reference</a>
+    <a href="python-api/">Python API</a>
 
--   :material-sitemap-outline: **Explore the architecture**
+-   :material-cloud-outline: **Use the managed SaaS**
 
     ---
 
-    How the feature store, MLOps and governance layers fit together.
+    Sign in to the Hopsworks serverless app and create a project.
+    Nothing to install, free tier available.
 
-    [Platform architecture](concepts/hopsworks.md) ·
-    [Feature store architecture](concepts/fs/index.md)
+    [Open run.hopsworks.ai ↗](https://run.hopsworks.ai) ·
+    [Tutorials](tutorials/index.md)
+
+-   :material-server: **Deploy on your cloud or on-prem**
+
+    ---
+
+    Managed Kubernetes on AWS, Azure or GCP, or an air-gapped data centre.
+    Talk to us to size and install it.
+
+    [Contact Hopsworks ↗](https://www.hopsworks.ai/contact) ·
+    [Deployment options](setup_installation/index.md)
 
 </div>
 <!-- markdownlint-enable MD007 MD030 -->
 
-## Write features, read them in real time
+## Your first feature vector, in three steps
 
 Create an [API key](user_guides/projects/api_key/create_api_key.md) in your project, then connect, write a feature group and read a feature vector back.
 
@@ -131,160 +139,109 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 
 --8<-- "index/one-architecture-three-pipelines.html"
 
-## Choose a deployment model
+## Find your path
 
-<!-- markdownlint-disable MD007 MD030 -->
-<div class="grid cards" markdown>
+<div class="hops-role-index" markdown>
 
--   :material-cloud-outline: **SaaS**
+<div class="hops-role" markdown>
+:material-code-tags:{ .hops-role-ico } Developer
+{ .hops-role-cap }
 
-    ---
+- [Client installation](user_guides/client_installation/index.md)
+- [Python, SageMaker, Kubeflow](user_guides/integrations/python.md)
+- [Create a feature group](user_guides/fs/feature_group/create.md)
+- <a href="python-api/">Python API reference</a>
+</div>
 
-    Managed by Hopsworks, free tier available.
-    Nothing to install or operate.
+<div class="hops-role" markdown>
+:material-chart-scatter-plot:{ .hops-role-ico } Data scientist
+{ .hops-role-cap }
 
-    [run.hopsworks.ai ↗](https://run.hopsworks.ai) ·
-    [Tutorials](tutorials/index.md)
+- [Tutorials](tutorials/index.md)
+- [Feature views](concepts/fs/feature_view/fv_overview.md)
+- [Training data](user_guides/fs/feature_view/training-data.md)
+- [Model serving](user_guides/mlops/serving/index.md)
+</div>
 
--   :material-kubernetes: **Managed Kubernetes**
+<div class="hops-role" markdown>
+:material-server:{ .hops-role-ico } Platform engineer
+{ .hops-role-cap }
 
-    ---
+- [Jobs](user_guides/projects/jobs/python_job.md)
+- [Airflow](user_guides/projects/airflow/airflow.md)
+- [Python environments](user_guides/projects/python/python_env_overview.md)
+- [Kubernetes scheduling](user_guides/projects/scheduling/kube_scheduler.md)
+</div>
 
-    Install on your own EKS, AKS or GKE cluster.
+<div class="hops-role" markdown>
+:material-shield-lock-outline:{ .hops-role-ico } Security engineer
+{ .hops-role-cap }
 
-    [AWS](setup_installation/aws/getting_started.md) ·
-    [Azure](setup_installation/azure/getting_started.md) ·
-    [GCP](setup_installation/gcp/getting_started.md)
+- [Configure authentication](setup_installation/admin/auth.md)
+- [API keys](user_guides/projects/api_key/create_api_key.md)
+- [IAM role chaining](setup_installation/admin/roleChaining.md)
+- [Audit logs](setup_installation/admin/audit/audit-logs.md)
+</div>
 
--   :material-server: **On-premises**
+<div class="hops-role" markdown>
+:material-cog-outline:{ .hops-role-ico } Administrator
+{ .hops-role-cap }
 
-    ---
+- [Administration overview](setup_installation/admin/index.md)
+- [User management](setup_installation/admin/user.md)
+- [Alerts](setup_installation/admin/alert.md)
+- [HA and DR](setup_installation/admin/ha-dr/intro.md)
+</div>
 
-    Any Kubernetes cluster, including air-gapped data centres.
+<div class="hops-role" markdown>
+:material-compass-outline:{ .hops-role-ico } Evaluator
+{ .hops-role-cap }
 
-    [On-prem background](setup_installation/on_prem/contact_hopsworks.md) ·
-    [External Kafka cluster](setup_installation/on_prem/external_kafka_cluster.md)
-
--   :material-tune: **Configure the install**
-
-    ---
-
-    Every Helm value, and the cluster variables you set after install.
-
-    [Helm chart values](setup_installation/common/helm_chart_values.md) ·
-    [Cluster configuration](setup_installation/admin/variables.md)
+- [What Hopsworks is](concepts/hopsworks.md)
+- [Feature store architecture](concepts/fs/index.md)
+- [Analytical and operational ML](concepts/mlops/prediction_services.md)
+- [Deployment options](setup_installation/index.md)
+</div>
 
 </div>
-<!-- markdownlint-enable MD007 MD030 -->
-
-## By role
-
-<!-- markdownlint-disable MD007 MD030 -->
-<div class="grid cards" markdown>
-
--   **Developer**
-
-    ---
-
-    Connect from your own environment and build feature pipelines.
-
-    - [Client installation](user_guides/client_installation/index.md)
-    - [Python, SageMaker, Kubeflow](user_guides/integrations/python.md)
-    - [Create a feature group](user_guides/fs/feature_group/create.md)
-    - [Compute engines](user_guides/fs/compute_engines.md)
-    - <a href="python-api/">Python API reference</a>
-
--   **Data scientist**
-
-    ---
-
-    Turn features into training data, models and deployments.
-
-    - [Tutorials](tutorials/index.md)
-    - [Feature views](concepts/fs/feature_view/fv_overview.md)
-    - [Training data](user_guides/fs/feature_view/training-data.md)
-    - [Model registry](user_guides/mlops/registry/index.md)
-    - [Model serving](user_guides/mlops/serving/index.md)
-
--   **Platform engineer**
-
-    ---
-
-    Run pipelines, environments and orchestration in production.
-
-    - [Jobs](user_guides/projects/jobs/python_job.md)
-    - [Airflow](user_guides/projects/airflow/airflow.md)
-    - [Python environments](user_guides/projects/python/python_env_overview.md)
-    - [Kubernetes scheduling](user_guides/projects/scheduling/kube_scheduler.md)
-    - [ArrowFlight with DuckDB](setup_installation/common/arrow_flight_duckdb.md)
-
--   **Security engineer**
-
-    ---
-
-    Authentication, secrets, isolation and audit.
-
-    - [Configure authentication](setup_installation/admin/auth.md)
-    - [OAuth2](setup_installation/admin/oauth2/create-client.md) ·
-      [LDAP](setup_installation/admin/ldap/configure-ldap.md) ·
-      [Kerberos](setup_installation/admin/ldap/configure-krb.md)
-    - [API keys](user_guides/projects/api_key/create_api_key.md) ·
-      [Secrets](user_guides/projects/secrets/create_secret.md)
-    - [IAM role chaining](setup_installation/admin/roleChaining.md)
-    - [Audit logs](setup_installation/admin/audit/audit-logs.md)
-    - [Project-based multi-tenancy](concepts/projects/governance.md)
-
--   **Administrator**
-
-    ---
-
-    Operate the cluster, its users and its data.
-
-    - [Administration overview](setup_installation/admin/index.md)
-    - [User management](setup_installation/admin/user.md) ·
-      [Project management](setup_installation/admin/project.md)
-    - [Alerts](setup_installation/admin/alert.md)
-    - [Grafana dashboards](setup_installation/admin/monitoring/grafana.md) ·
-      [Service logs](setup_installation/admin/monitoring/services-logs.md)
-    - [High availability and disaster recovery](setup_installation/admin/ha-dr/intro.md)
-
--   **Evaluator**
-
-    ---
-
-    Understand what Hopsworks is before installing anything.
-
-    - [What Hopsworks is](concepts/hopsworks.md)
-    - [Feature store architecture](concepts/fs/index.md)
-    - [Analytical and operational ML](concepts/mlops/prediction_services.md)
-    - [Tags, search and lineage](concepts/projects/search.md)
-    - [Deployment options](setup_installation/index.md)
-
-</div>
-<!-- markdownlint-enable MD007 MD030 -->
 
 ## By task
 
 | Task | Start here |
 | --- | --- |
-| Evaluate | [Platform overview](concepts/hopsworks.md), [feature store architecture](concepts/fs/index.md), [deployment options](setup_installation/index.md) |
-| Learn | [Concepts](concepts/hopsworks.md), [tutorials](tutorials/index.md), [MLOps dictionary ↗](https://www.hopsworks.ai/mlops-dictionary) |
-| Build | [How-to guides](user_guides/index.md), [feature store guides](user_guides/fs/index.md), [MLOps guides](user_guides/mlops/index.md), [agents](user_guides/agents/index.md) |
-| Deploy | [AWS](setup_installation/aws/getting_started.md), [Azure](setup_installation/azure/getting_started.md), [GCP](setup_installation/gcp/getting_started.md), [on-prem](setup_installation/on_prem/contact_hopsworks.md), [Helm values](setup_installation/common/helm_chart_values.md) |
-| Operate | [Administration](setup_installation/admin/index.md), [monitoring](setup_installation/admin/monitoring/grafana.md), [alerts](setup_installation/admin/alert.md), [HA and DR](setup_installation/admin/ha-dr/intro.md), [service operations](setup_installation/admin/operationLogs.md) |
-| Troubleshoot | [Model serving](user_guides/mlops/serving/troubleshooting.md), [Python deployments](user_guides/projects/python-deployment/troubleshooting.md), [online ingestion](user_guides/fs/feature_group/online_ingestion_observability.md), [Jupyter session capacity](user_guides/projects/jupyter/session_capacity_warnings.md) |
-| Upgrade | [3.x to 4.0 migration](user_guides/migration/40_migration.md), [Airflow 3 upgrade](user_guides/projects/airflow/airflow3_upgrade.md), [Airflow 3 operator notes](setup_installation/admin/airflow3.md) |
+| :material-rocket-launch-outline: Deploy | [AWS](setup_installation/aws/getting_started.md), [Azure](setup_installation/azure/getting_started.md), [GCP](setup_installation/gcp/getting_started.md), [on-prem](setup_installation/on_prem/contact_hopsworks.md), [Helm values](setup_installation/common/helm_chart_values.md) |
+| :material-monitor-dashboard: Operate | [Administration](setup_installation/admin/index.md), [monitoring](setup_installation/admin/monitoring/grafana.md), [alerts](setup_installation/admin/alert.md), [HA and DR](setup_installation/admin/ha-dr/intro.md), [service operations](setup_installation/admin/operationLogs.md) |
+| :material-wrench-outline: Troubleshoot | [Model serving](user_guides/mlops/serving/troubleshooting.md), [Python deployments](user_guides/projects/python-deployment/troubleshooting.md), [online ingestion](user_guides/fs/feature_group/online_ingestion_observability.md), [Jupyter session capacity](user_guides/projects/jupyter/session_capacity_warnings.md) |
+| :material-arrow-up-circle-outline: Upgrade | [3.x to 4.0 migration](user_guides/migration/40_migration.md), [Airflow 3 upgrade](user_guides/projects/airflow/airflow3_upgrade.md), [Airflow 3 operator notes](setup_installation/admin/airflow3.md) |
 
-## Reference
+<div class="hops-colophon" markdown>
 
-- <a href="python-api/">Python API</a> and <a href="javadoc/">Java API</a>
-- [Helm chart values](setup_installation/common/helm_chart_values.md) and [cluster configuration](setup_installation/admin/variables.md)
-- [Query engine (Trino)](user_guides/projects/trino/query_engine.md) and [vector similarity search](user_guides/fs/vector_similarity_search.md)
-- Machine-readable index for agents and LLMs: <a href="llms.txt">llms.txt</a>, <a href="llms-full.txt">llms-full.txt</a>.
-  Every page also has a raw Markdown sibling at `<page>.md`.
+<div markdown>
+:material-api:{ .hops-colophon-ico } APIs
+{ .hops-colophon-cap }
 
-## Help and source
+- <a href="python-api/">Python API</a>
+- <a href="javadoc/">Java API</a>
+- Machine-readable: <a href="llms.txt">llms.txt</a>, <a href="llms-full.txt">llms-full.txt</a>, or `<page>.md`
+</div>
 
-- Chat: [public Slack ↗](https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA)
-- Releases and issues: [hopsworks-api on GitHub ↗](https://github.com/logicalclocks/hopsworks-api)
-- The Hopsworks Python API is licensed under the [Apache License 2.0 ↗](https://www.apache.org/licenses/LICENSE-2.0.html).
+<div markdown>
+:material-tune:{ .hops-colophon-ico } Configure and query
+{ .hops-colophon-cap }
+
+- [Helm chart values](setup_installation/common/helm_chart_values.md)
+- [Cluster configuration](setup_installation/admin/variables.md)
+- [Query engine (Trino)](user_guides/projects/trino/query_engine.md)
+- [Vector similarity search](user_guides/fs/vector_similarity_search.md)
+</div>
+
+<div markdown>
+:material-forum-outline:{ .hops-colophon-ico } Community and source
+{ .hops-colophon-cap }
+
+- [Public Slack ↗](https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA)
+- [hopsworks-api on GitHub ↗](https://github.com/logicalclocks/hopsworks-api)
+- [Apache License 2.0 ↗](https://www.apache.org/licenses/LICENSE-2.0.html)
+</div>
+
+</div>

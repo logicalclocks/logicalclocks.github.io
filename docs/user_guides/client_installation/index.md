@@ -46,7 +46,7 @@ pip install hopsworks[python,great-expectations,polars]
 
 ## Hopsworks Java Library
 
-If you want to interact with the Hopsworks Feature Store from environments such as Spark, Flink or Beam, you can use the Hopsworks Feature Store (Hopsworks) Java library.
+If you want to interact with the Hopsworks Feature Store from environments such as Spark or Beam, you can use the Hopsworks Feature Store (Hopsworks) Java library.
 
 !!! note "Feature Store Only"
 
@@ -100,18 +100,6 @@ The `artifactId` for the Spark build is `hsfs-spark-spark{spark.version}`, if yo
 ```
 
 Hopsworks provides builds for Spark 3.1, 3.3 and 3.5. The builds are also provided as JAR files which can be downloaded from [Hopsworks repository](https://repo.hops.works/master/hsfs)
-
-### Flink
-
-The `artifactId` for the Flink build is `hsfs-flink`, if you are using Maven as build tool, you can add the following dependency:
-
-```xml
-<dependency>
-    <groupId>com.logicalclocks</groupId>
-    <artifactId>hsfs-flink</artifactId>
-    <version>${hsfs.version}</version>
-</dependency>
-```
 
 ### Beam
 

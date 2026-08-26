@@ -165,15 +165,12 @@ recent = fg.read(start_time="2026-06-01", end_time="2026-06-11")
 The grain columns are real partition columns, so a filter on a grain column (for example `fg.filter(fg.year == 2026)`) prunes partitions natively.
 A filter on an `event_time` range is rewritten into equivalent grain-column predicates by the query layer, so `fg.read(start_time=..., end_time=...)` prunes too on hierarchical specs (and tightens to the finest grain the range allows, so a within-one-month window also bounds `day`):
 
-| `partitioned_by` | Prunes on `event_time` range? | Prunes on `year` / `month` / `day` filter? |
-| --- | --- | --- |
-| `["year"]` | ✅ | ✅ |
-| `["year", "month"]` | ✅ | ✅ |
-| `["year", "month", "day"]` | ✅ | ✅ |
-| `["year", "month", "day", "hour"]` | ✅ | ✅ |
-| `["month"]` (no year) | ⚠️ no, month alone is ambiguous across years | ✅ filter on month works |
-| `["year", "week"]` | ⚠️ year only, week is not directly derivable from a date range | ✅ both columns prune |
-| `["day"]` (no year/month) | ⚠️ no, day-of-month is ambiguous | ✅ filter on day works |
+| `partitioned_by` | `event_time` range | Grain-column filter | Notes |
+| --- | :---: | :---: | --- |
+| `["year"]` … `["year", "month", "day", "hour"]` | ✅ | ✅ | Recommended hierarchical prefixes. A range tightens to the finest grain it allows. |
+| `["month"]` | ⚠️ | ✅ | Month alone is ambiguous across years, so a range does not prune. |
+| `["year", "week"]` | ⚠️ | ✅ | Prunes on year only; week is not derivable from a date range. |
+| `["day"]` | ⚠️ | ✅ | Day-of-month is ambiguous, so a range does not prune. |
 
 Prefer hierarchical specs: `["year"]`, `["year", "month"]`, `["year", "month", "day"]`, `["year", "month", "day", "hour"]`.
 They line up with the typical batch-pipeline access pattern and prune naturally on both grain-column and `event_time`-range filters.
@@ -414,10 +411,7 @@ That means, using Spark, Hudi shuffles the data into five in-memory partitions, 
 If the inserted Dataframe contains only a single feature group partition, this feature group partition will be written with five parquet files.
 If the inserted Dataframe contains multiple feature group partitions, the parquet files will be split among those partition, potentially more parquet files will be added.
 
-<figure markdown>
-  ![feature group partitioning](../../../assets/images/guides/feature_group/fg-partition-files.png)
-  <figcaption>Mapping in-memory partitions to tasks, workers, executors and feature group partition files for a feature group insert</figcaption>
-</figure>
+--8<-- "user_guides/fs/feature_group/create/partition-files.html"
 
 !!! tip "Setting shuffle parallelism"
     In practice that means the shuffle parallelism should be set equal to the number of feature group partitions in the inserted dataframe.

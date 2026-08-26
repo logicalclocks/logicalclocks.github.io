@@ -56,7 +56,7 @@ The values specified will be set during project creation and administrators will
 
 ### Compute
 
-Compute quotas represents the amount of compute a project can use to run Spark and Flink applications as well as Tez queries.
+Compute quotas represents the amount of compute a project can use to run Spark applications as well as Tez queries.
 Quota is expressed as number of seconds a container of size 1 CPU and 1GB of RAM can run for.
 
 If the Hopsworks cluster is connected to a Kubernetes cluster, Python jobs, Jupyter notebooks and KServe models are not subject to the compute quota.

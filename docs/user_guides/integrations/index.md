@@ -10,5 +10,4 @@ Learn in this section how to connect to Hopsworks from
 - [Azure HDInsight](./hdinsight.md)
 - [Azure Machine Learning](./mlstudio_designer.md)
 - [Apache Spark](./spark.md)
-- [Apache Flink](./flink.md)
 - [Apache Beam](./beam.md)
