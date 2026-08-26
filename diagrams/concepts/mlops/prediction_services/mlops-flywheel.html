@@ -1,8 +1,8 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 800 460" role="img" aria-label="Animated diagram of the MLOps flywheel. Events from the operational services flow into the feature pipeline, features land in the feature store, training data leaves through the offline API into the training pipeline, the trained model ships to serving, predictions flow back into the operational services, and the services generate more data: the wheel keeps turning. A parallel online API path carries feature vectors from the store straight to the models." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 806 460" role="img" aria-label="Animated diagram of the MLOps flywheel. Events from the operational services flow into the feature pipeline, features land in the feature store, training data leaves through the offline API into the training pipeline, the trained model ships to serving, predictions flow back into the operational services, and the services generate more data: the wheel keeps turning. A parallel online API path carries feature vectors from the store straight to the models." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fw-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="fw-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>
 
@@ -21,28 +21,28 @@
   </g>
   <text class="viz-meta" x="415" y="58" text-anchor="middle">enterprise data</text>
 
-  <g id="fw-svc" class="viz-node-group" data-tone="data">
-    <rect class="viz-node" x="40" y="150" width="180" height="64" rx="8"/>
+  <g id="fw-svc" data-tone="data">
+    <rect class="viz-node" x="26" y="150" width="208" height="64" rx="4"/>
     <text class="viz-node-title" x="130" y="176" text-anchor="middle">OPERATIONAL SERVICES</text>
     <text class="viz-node-subtitle" x="130" y="196" text-anchor="middle">batch · real-time</text>
   </g>
-  <g id="fw-fp" class="viz-node-group" data-tone="write">
-    <rect class="viz-node" x="330" y="150" width="170" height="64" rx="8"/>
+  <g id="fw-fp" data-tone="write">
+    <rect class="viz-node" x="325" y="150" width="180" height="64" rx="4"/>
     <text class="viz-node-title" x="415" y="176" text-anchor="middle">FEATURE PIPELINE</text>
     <text class="viz-node-subtitle" x="415" y="196" text-anchor="middle">validate · aggregate</text>
   </g>
-  <g id="fw-fs" class="viz-node-group" data-tone="write">
-    <rect class="viz-node" x="620" y="150" width="170" height="64" rx="8"/>
+  <g id="fw-fs" data-tone="write">
+    <rect class="viz-node" x="620" y="150" width="170" height="64" rx="4"/>
     <text class="viz-node-title" x="705" y="176" text-anchor="middle">FEATURE STORE</text>
     <text class="viz-node-subtitle" x="705" y="196" text-anchor="middle">online + offline</text>
   </g>
-  <g id="fw-tp" class="viz-node-group" data-tone="read">
-    <rect class="viz-node" x="620" y="370" width="170" height="64" rx="8"/>
+  <g id="fw-tp" data-tone="read">
+    <rect class="viz-node" x="616" y="370" width="178" height="64" rx="4"/>
     <text class="viz-node-title" x="705" y="396" text-anchor="middle">TRAINING PIPELINE</text>
     <text class="viz-node-subtitle" x="705" y="416" text-anchor="middle">train · validate</text>
   </g>
-  <g id="fw-mdl" class="viz-node-group" data-tone="accent">
-    <rect class="viz-node" x="40" y="370" width="180" height="64" rx="8"/>
+  <g id="fw-mdl" data-tone="accent">
+    <rect class="viz-node" x="40" y="370" width="180" height="64" rx="4"/>
     <text class="viz-node-title" x="130" y="396" text-anchor="middle">MODELS</text>
     <text class="viz-node-subtitle" x="130" y="416" text-anchor="middle">kserve deployments</text>
   </g>
@@ -51,26 +51,26 @@
 
   <g transform="translate(226 173)">
     <g id="fw-p1" class="viz-packet" data-tone="data" style="opacity:0">
-      <rect width="58" height="18" rx="3"/>
-      <text x="29" y="9" text-anchor="middle">events</text>
+      <rect width="64" height="18" rx="3"/>
+      <text x="32" y="9" text-anchor="middle">events</text>
     </g>
   </g>
   <g transform="translate(506 173)">
     <g id="fw-p2" class="viz-packet" data-tone="write" style="opacity:0">
-      <rect width="66" height="18" rx="3"/>
-      <text x="33" y="9" text-anchor="middle">features</text>
+      <rect width="80" height="18" rx="3"/>
+      <text x="40" y="9" text-anchor="middle">features</text>
     </g>
   </g>
   <g transform="translate(672 225)">
     <g id="fw-p3" class="viz-packet" data-tone="read" style="opacity:0">
-      <rect width="66" height="18" rx="3"/>
-      <text x="33" y="9" text-anchor="middle">train df</text>
+      <rect width="80" height="18" rx="3"/>
+      <text x="40" y="9" text-anchor="middle">train df</text>
     </g>
   </g>
   <g transform="translate(610 222)">
     <g id="fw-p6" class="viz-packet" data-tone="read" style="opacity:0">
-      <rect width="58" height="18" rx="3"/>
-      <text x="29" y="9" text-anchor="middle">vector</text>
+      <rect width="64" height="18" rx="3"/>
+      <text x="32" y="9" text-anchor="middle">vector</text>
     </g>
   </g>
   <g transform="translate(600 393)">

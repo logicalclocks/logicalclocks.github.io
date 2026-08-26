@@ -1,0 +1,180 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 896 540" role="img" aria-label="Mapping in-memory partitions to tasks and feature group partition files. A dataframe is split by Hudi shuffle parallelism into five in-memory partitions. Each partition is processed by a task running on a Spark worker, and each task writes one parquet file. With single-partition backfill every file belongs to feature group partition A. With multi-partition backfill the files belong to partitions A, B, C, D and E. Spare workers stay idle." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="pf-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="pf-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
+    </marker>
+  </defs>
+
+  <!-- column captions -->
+  <text class="viz-meta" x="210" y="58" text-anchor="middle">Hudi shuffle · parallelism 5</text>
+  <text class="viz-meta" x="385" y="58" text-anchor="middle">Spark workers</text>
+  <text class="viz-meta" x="570" y="58" text-anchor="middle">Parquet files</text>
+
+  <!-- fan: dataframe splits into five in-mem partitions -->
+  <path class="viz-edge" d="M131 258C138 258 138 118 150 118" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M131 258C138 258 138 188 150 188" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M131 258H150" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M131 258C138 258 138 328 150 328" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M131 258C138 258 138 398 150 398" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+
+  <!-- partition -> worker -->
+  <path class="viz-edge" d="M270 118 H308" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M270 188 H308" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M270 258 H308" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M270 328 H308" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M270 398 H308" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+
+  <!-- worker -> file -->
+  <path class="viz-edge" d="M462 118 H520" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M462 188 H520" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M462 258 H520" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M462 328 H520" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M462 398 H520" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+
+  <!-- file -> feature group partition -->
+  <path class="viz-edge" d="M620 118 H636" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M620 188 H636" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M620 258 H636" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M620 328 H636" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+  <path class="viz-edge" d="M620 398 H636" marker-start="url(#pf-knob)" marker-end="url(#pf-arrow)"/>
+
+  <!-- dataframe (data source) -->
+  <g>
+    <rect class="viz-kv-frame" x="9" y="229" width="122" height="58" rx="6"/>
+    <path class="viz-kv-header" d="M9 235 a6 6 0 0 1 6 -6 h110 a6 6 0 0 1 6 6 v20 h-122 z"/>
+    <text class="viz-kv-title" x="26" y="248">Dataframe</text>
+    <text class="viz-node-subtitle" x="70" y="276" text-anchor="middle">backfill data</text>
+  </g>
+  <text class="viz-meta" x="14" y="306">Either multiple</text>
+  <text class="viz-meta" x="14" y="319">partitions, or one</text>
+  <text class="viz-meta" x="14" y="332">daily backfill.</text>
+
+  <!-- in-mem partitions -->
+  <g>
+    <rect class="viz-node" x="150" y="96" width="120" height="44" rx="4"/>
+    <text class="viz-node-title" x="210" y="114" text-anchor="middle">In-mem</text>
+    <text class="viz-node-title" x="210" y="128" text-anchor="middle">partition</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="150" y="166" width="120" height="44" rx="4"/>
+    <text class="viz-node-title" x="210" y="184" text-anchor="middle">In-mem</text>
+    <text class="viz-node-title" x="210" y="198" text-anchor="middle">partition</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="150" y="236" width="120" height="44" rx="4"/>
+    <text class="viz-node-title" x="210" y="254" text-anchor="middle">In-mem</text>
+    <text class="viz-node-title" x="210" y="268" text-anchor="middle">partition</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="150" y="306" width="120" height="44" rx="4"/>
+    <text class="viz-node-title" x="210" y="324" text-anchor="middle">In-mem</text>
+    <text class="viz-node-title" x="210" y="338" text-anchor="middle">partition</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="150" y="376" width="120" height="44" rx="4"/>
+    <text class="viz-node-title" x="210" y="394" text-anchor="middle">In-mem</text>
+    <text class="viz-node-title" x="210" y="408" text-anchor="middle">partition</text>
+  </g>
+
+  <!-- tasks on workers (compute) -->
+  <g data-tone="accent">
+    <rect class="viz-node" x="308" y="96" width="154" height="44" rx="4"/>
+    <rect class="viz-pill" x="345" y="88" width="80" height="16" rx="3"/>
+    <text class="viz-pill-text" x="385" y="99" text-anchor="middle">Task</text>
+    <text class="viz-node-subtitle" x="385" y="124" text-anchor="middle">worker · executor</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="308" y="166" width="154" height="44" rx="4"/>
+    <rect class="viz-pill" x="345" y="158" width="80" height="16" rx="3"/>
+    <text class="viz-pill-text" x="385" y="169" text-anchor="middle">Task</text>
+    <text class="viz-node-subtitle" x="385" y="194" text-anchor="middle">worker · executor</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="308" y="236" width="154" height="44" rx="4"/>
+    <rect class="viz-pill" x="345" y="228" width="80" height="16" rx="3"/>
+    <text class="viz-pill-text" x="385" y="239" text-anchor="middle">Task</text>
+    <text class="viz-node-subtitle" x="385" y="264" text-anchor="middle">worker · executor</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="308" y="306" width="154" height="44" rx="4"/>
+    <rect class="viz-pill" x="345" y="298" width="80" height="16" rx="3"/>
+    <text class="viz-pill-text" x="385" y="309" text-anchor="middle">Task</text>
+    <text class="viz-node-subtitle" x="385" y="334" text-anchor="middle">worker · executor</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="308" y="376" width="154" height="44" rx="4"/>
+    <rect class="viz-pill" x="345" y="368" width="80" height="16" rx="3"/>
+    <text class="viz-pill-text" x="385" y="379" text-anchor="middle">Task</text>
+    <text class="viz-node-subtitle" x="385" y="404" text-anchor="middle">worker · executor</text>
+  </g>
+
+  <!-- parquet files -->
+  <g>
+    <rect class="viz-node" x="520" y="96" width="100" height="44" rx="4"/>
+    <text class="viz-node-title" x="570" y="114" text-anchor="middle">File</text>
+    <text class="viz-node-subtitle" x="570" y="129" text-anchor="middle">parquet</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="520" y="166" width="100" height="44" rx="4"/>
+    <text class="viz-node-title" x="570" y="184" text-anchor="middle">File</text>
+    <text class="viz-node-subtitle" x="570" y="199" text-anchor="middle">parquet</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="520" y="236" width="100" height="44" rx="4"/>
+    <text class="viz-node-title" x="570" y="254" text-anchor="middle">File</text>
+    <text class="viz-node-subtitle" x="570" y="269" text-anchor="middle">parquet</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="520" y="306" width="100" height="44" rx="4"/>
+    <text class="viz-node-title" x="570" y="324" text-anchor="middle">File</text>
+    <text class="viz-node-subtitle" x="570" y="339" text-anchor="middle">parquet</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="520" y="376" width="100" height="44" rx="4"/>
+    <text class="viz-node-title" x="570" y="394" text-anchor="middle">File</text>
+    <text class="viz-node-subtitle" x="570" y="409" text-anchor="middle">parquet</text>
+  </g>
+
+  <!-- feature group partition lookup -->
+  <g>
+    <rect class="viz-kv-frame" x="636" y="40" width="240" height="380" rx="6"/>
+    <path class="viz-kv-header" d="M636 46 a6 6 0 0 1 6 -6 h228 a6 6 0 0 1 6 6 v20 h-240 z"/>
+    <text class="viz-kv-title" x="648" y="59">Feature Group partition</text>
+    <text class="viz-meta" x="706" y="84" text-anchor="middle">single</text>
+    <text class="viz-meta" x="706" y="95" text-anchor="middle">backfill</text>
+    <text class="viz-meta" x="800" y="84" text-anchor="middle">multi</text>
+    <text class="viz-meta" x="800" y="95" text-anchor="middle">backfill</text>
+    <line class="viz-row-sep" x1="636" y1="153" x2="876" y2="153"/>
+    <line class="viz-row-sep" x1="636" y1="223" x2="876" y2="223"/>
+    <line class="viz-row-sep" x1="636" y1="293" x2="876" y2="293"/>
+    <line class="viz-row-sep" x1="636" y1="363" x2="876" y2="363"/>
+    <text class="viz-kv-val" x="706" y="123" text-anchor="middle">A</text>
+    <text class="viz-kv-val" x="706" y="193" text-anchor="middle">A</text>
+    <text class="viz-kv-val" x="706" y="263" text-anchor="middle">A</text>
+    <text class="viz-kv-val" x="706" y="333" text-anchor="middle">A</text>
+    <text class="viz-kv-val" x="706" y="403" text-anchor="middle">A</text>
+    <text class="viz-kv-val" x="800" y="123" text-anchor="middle">A</text>
+    <text class="viz-kv-val" x="800" y="193" text-anchor="middle">B</text>
+    <text class="viz-kv-val" x="800" y="263" text-anchor="middle">C</text>
+    <text class="viz-kv-val" x="800" y="333" text-anchor="middle">D</text>
+    <text class="viz-kv-val" x="800" y="403" text-anchor="middle">E</text>
+  </g>
+
+  <!-- idle worker pool -->
+  <text class="viz-meta" x="385" y="440" text-anchor="middle">Spare workers</text>
+  <g data-state="offline">
+    <rect class="viz-zone" x="310" y="446" width="150" height="74" rx="6"/>
+    <line class="viz-row-sep" x1="385" y1="446" x2="385" y2="520"/>
+    <line class="viz-row-sep" x1="310" y1="483" x2="460" y2="483"/>
+    <text class="viz-meta" x="347" y="470" text-anchor="middle">Worker</text>
+    <text class="viz-meta" x="423" y="470" text-anchor="middle">Worker</text>
+    <text class="viz-meta" x="347" y="507" text-anchor="middle">Worker</text>
+    <text class="viz-meta" x="423" y="507" text-anchor="middle">Worker</text>
+    <text class="viz-label" x="385" y="488" text-anchor="middle">IDLE</text>
+  </g>
+</svg>
+</figure>

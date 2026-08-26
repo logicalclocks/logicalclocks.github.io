@@ -1,72 +1,164 @@
-<figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="14 10 544 512" role="img" aria-label="The three transformation types across the FTI pipeline. Model-independent transformations run in the feature pipeline and produce reusable features in the feature store. Model-dependent transformations run in the training pipeline and again in the online inference pipeline. On-demand transformations run in the online inference pipeline on request-time input, and can also backfill in the feature pipeline. Model-dependent and on-demand transformations run in more than one pipeline, which is where online-offline skew can appear." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 700 620" role="img" aria-label="Where each transformation runs, shown as feature data over time. A mutable feature store is filled by model-independent transformations (MIT) from production and backfill data streaming in. Snapshots are taken over time: an early snapshot builds Training Data v1 which trains Model v1 (later superseded), then a snapshot builds Training Data v2 which trains Model v2, and further snapshots feed batch and online inference. A single model-dependent transformation (MDT), drawn as one bar spanning training-data creation, batch inference, and online inference, is the same computation applied consistently across all of them, which is where online-offline skew would appear if it drifted. Batch inference and Model v2 produce predictions; online inference goes through a prediction service that also takes a prediction request via an on-demand transformation (ODT)." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="tx-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
+    <marker id="dot-arrow" viewBox="0 0 11 11" refX="9.5" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 L3 5.5 z"/>
+    </marker>
+    <marker id="dot-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <!-- legend -->
-  <g data-tone="accent"><rect class="viz-node" x="20" y="12" width="14" height="14" rx="3"/></g>
-  <text class="viz-meta" x="42" y="24">MIT · model-independent, reusable</text>
-  <g><rect class="viz-node" x="20" y="34" width="14" height="14" rx="3"/></g>
-  <text class="viz-meta" x="42" y="46">MDT · model-dependent, per model</text>
-  <g data-tone="data"><rect class="viz-node" x="20" y="56" width="14" height="14" rx="3"/></g>
-  <text class="viz-meta" x="42" y="68">ODT · on-demand, request-time</text>
+  <!-- legend (solid swatches) -->
+  <g class="viz-badge" data-tone="accent"><rect x="470" y="12" width="12" height="12" rx="2" style="fill:var(--viz-tone)"/></g>
+  <text class="viz-meta" x="488" y="22">MIT &#183; model-independent</text>
+  <g class="viz-badge" data-tone="neutral"><rect x="470" y="32" width="12" height="12" rx="2" style="fill:var(--viz-tone)"/></g>
+  <text class="viz-meta" x="488" y="42">MDT &#183; model-dependent</text>
+  <g class="viz-badge" data-tone="data"><rect x="470" y="52" width="12" height="12" rx="2" style="fill:var(--viz-tone)"/></g>
+  <text class="viz-meta" x="488" y="62">ODT &#183; on-demand</text>
 
-  <!-- flow -->
-  <path class="viz-edge" d="M286 158 V182" marker-end="url(#tx-arrow)"/>
-  <path class="viz-edge" d="M286 240 C286 262 148 262 148 282" marker-end="url(#tx-arrow)"/>
-  <path class="viz-edge" d="M286 240 C286 262 424 262 424 282" marker-end="url(#tx-arrow)"/>
-  <path class="viz-edge" d="M424 392 V368" marker-end="url(#tx-arrow)"/>
+  <!-- time axis -->
+  <g id="dot-axis" style="opacity:0">
+    <path class="viz-edge" d="M28 96 V478" marker-end="url(#dot-arrow)" style="stroke-dasharray:3 5"/>
+    <text class="viz-label" transform="rotate(-90 16 288)" x="16" y="288" text-anchor="middle">data over time</text>
+  </g>
 
-  <!-- feature pipeline -->
-  <a class="viz-link" href="../../fs/feature_group/feature_pipelines/">
-    <g><rect class="viz-node" x="20" y="84" width="532" height="74" rx="4"/>
-    <text class="viz-node-title" x="286" y="104" text-anchor="middle">Feature pipeline</text></g>
-  </a>
-  <g data-tone="accent"><rect class="viz-node" x="40" y="116" width="70" height="28" rx="4"/>
-  <text class="viz-label" x="75" y="134" text-anchor="middle">MIT</text></g>
-  <g data-tone="data"><rect class="viz-node" x="122" y="116" width="132" height="28" rx="4" style="stroke-dasharray:4 3"/>
-  <text class="viz-label" x="188" y="134" text-anchor="middle">ODT · backfill</text></g>
-  <text class="viz-meta" x="410" y="134" text-anchor="middle">new and historical data</text>
+  <!-- inputs: production + backfill stream into the MIT bar (+ backfill segment) on top of the store -->
+  <g id="dot-in" style="opacity:0">
+    <text class="viz-meta" x="100" y="40" text-anchor="middle">production</text>
+    <text class="viz-meta" x="193" y="40" text-anchor="middle">backfill</text>
+    <path class="viz-edge" d="M84 48 V66" marker-end="url(#dot-arrow)"/>
+    <path class="viz-edge" d="M124 48 V66" marker-end="url(#dot-arrow)"/>
+    <path class="viz-edge" d="M190 48 V66" marker-end="url(#dot-arrow)"/>
+    <rect x="48" y="68" width="124" height="9" rx="2" data-tone="accent" style="fill:var(--viz-tone-accent)"/>
+    <rect x="172" y="68" width="42" height="9" rx="2" data-tone="data" style="fill:var(--viz-tone-data)"/>
+  </g>
 
-  <!-- feature store -->
-  <a class="viz-link" href="../../fs/feature_group/fg_overview/">
-    <g data-tone="accent"><rect class="viz-node" x="146" y="184" width="280" height="56" rx="4"/>
-    <text class="viz-node-title" x="286" y="208" text-anchor="middle">Feature store</text>
-    <text class="viz-meta" x="286" y="226" text-anchor="middle">reusable features</text></g>
-  </a>
+  <!-- mutable feature store, filled by MIT (dual-tone header) -->
+  <g id="dot-store" data-tone="accent" style="opacity:0">
+    <rect class="viz-kv-frame" x="42" y="80" width="176" height="398" rx="6" style="stroke:var(--viz-tone)"/>
+    <path class="viz-kv-header" d="M42 86 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v22 h-176 z" style="stroke:var(--viz-tone);fill:var(--viz-tone-fill-solid)"/>
+    <text class="viz-kv-title" x="54" y="101">Mutable features</text>
+    <text class="viz-meta" x="130" y="128" text-anchor="middle">filled by MIT</text>
+  </g>
 
-  <!-- training pipeline -->
-  <a class="viz-link" href="../training/">
-    <g><rect class="viz-node" x="20" y="282" width="256" height="86" rx="4"/>
-    <text class="viz-node-title" x="148" y="306" text-anchor="middle">Training pipeline</text></g>
-  </a>
-  <g><rect class="viz-node" x="108" y="322" width="80" height="28" rx="4"/>
-  <text class="viz-label" x="148" y="340" text-anchor="middle">MDT</text></g>
+  <!-- data streaming in from the top, a new row landing at each snapshot tier -->
+  <g id="dot-d1" data-tone="accent" style="opacity:0;transform:translateY(-30px);transition:transform 0.6s ease,opacity 0.45s ease">
+    <rect x="56" y="150" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="80" y="150" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="104" y="150" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="128" y="150" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/>
+  </g>
+  <g id="dot-d2" data-tone="accent" style="opacity:0;transform:translateY(-30px);transition:transform 0.6s ease,opacity 0.45s ease">
+    <rect x="56" y="240" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="80" y="240" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="104" y="240" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="128" y="240" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/>
+  </g>
+  <g id="dot-d3" data-tone="accent" style="opacity:0;transform:translateY(-30px);transition:transform 0.6s ease,opacity 0.45s ease">
+    <rect x="56" y="330" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="80" y="330" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="104" y="330" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="128" y="330" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/>
+  </g>
+  <g id="dot-d4" data-tone="accent" style="opacity:0;transform:translateY(-30px);transition:transform 0.6s ease,opacity 0.45s ease">
+    <rect x="56" y="420" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="80" y="420" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="104" y="420" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/><rect x="128" y="420" width="20" height="7" rx="2" style="fill:var(--viz-tone)"/>
+  </g>
+  <g id="dot-s1l" style="opacity:0"><text class="viz-meta" x="250" y="136" text-anchor="middle">snapshots</text></g>
 
-  <!-- online inference pipeline -->
-  <a class="viz-link" href="../serving/">
-    <g><rect class="viz-node" x="296" y="282" width="256" height="86" rx="4"/>
-    <text class="viz-node-title" x="424" y="306" text-anchor="middle">Online inference pipeline</text></g>
-  </a>
-  <g data-tone="data"><rect class="viz-node" x="322" y="322" width="70" height="28" rx="4"/>
-  <text class="viz-label" x="357" y="340" text-anchor="middle">ODT</text></g>
-  <text class="viz-meta" x="404" y="340" text-anchor="middle">then</text>
-  <g><rect class="viz-node" x="418" y="322" width="70" height="28" rx="4"/>
-  <text class="viz-label" x="453" y="340" text-anchor="middle">MDT</text></g>
+  <!-- snapshots over time -->
+  <path id="dot-s1" class="viz-edge" d="M218 165 H256" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-s2" class="viz-edge" d="M218 255 H256" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-s3" class="viz-edge" d="M218 345 H256" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-s4" class="viz-edge" d="M218 435 H256" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
 
-  <!-- prediction request -->
-  <a class="viz-link" href="../serving/">
-    <g data-tone="data"><rect class="viz-node" x="296" y="392" width="256" height="56" rx="4"/>
-    <text class="viz-node-title" x="424" y="416" text-anchor="middle">Prediction request</text>
-    <text class="viz-meta" x="424" y="434" text-anchor="middle">request-time input</text></g>
-  </a>
+  <!-- MDT: one transform applied consistently across training data + both inference paths -->
+  <g id="dot-mdtbar" style="opacity:0">
+    <rect x="230" y="238" width="14" height="220" rx="3" data-tone="neutral" style="fill:var(--viz-tone-neutral)"/>
+    <g class="viz-badge" data-tone="neutral"><rect x="218" y="226" width="38" height="16" rx="3" style="fill:var(--viz-paper)"/><text x="237" y="234" text-anchor="middle">MDT</text></g>
+  </g>
 
-  <!-- note -->
-  <rect class="viz-zone" x="20" y="466" width="532" height="48" rx="6"/>
-  <text class="viz-meta" x="36" y="488">MDTs and ODTs each run in more than one pipeline, which is where online-offline skew appears.</text>
-  <text class="viz-meta" x="36" y="504">Feature-view MDTs and feature-group ODTs remove it.</text>
+  <!-- row 1: training data v1 -> model v1 (older, dims) -->
+  <g id="dot-tv1" style="opacity:0">
+    <rect class="viz-node" x="256" y="143" width="144" height="44" rx="4"/>
+    <text class="viz-node-title" x="328" y="160" text-anchor="middle">Training data</text>
+    <text class="viz-node-title" x="328" y="176" text-anchor="middle">v1</text>
+  </g>
+  <path id="dot-e1" class="viz-edge" d="M400 165 H426" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <g id="dot-mv1" style="opacity:0">
+    <rect class="viz-node" x="426" y="147" width="110" height="36" rx="4"/>
+    <text class="viz-node-title" x="481" y="169" text-anchor="middle">Model v1</text>
+  </g>
+
+  <!-- row 2: training data v2 -> model v2 -->
+  <g id="dot-tv2" style="opacity:0">
+    <rect class="viz-node" x="256" y="233" width="144" height="44" rx="4"/>
+    <text class="viz-node-title" x="328" y="250" text-anchor="middle">Training data</text>
+    <text class="viz-node-title" x="328" y="266" text-anchor="middle">v2</text>
+  </g>
+  <path id="dot-e2" class="viz-edge" d="M400 255 H426" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <g id="dot-mv2" style="opacity:0">
+    <rect class="viz-node" x="426" y="237" width="110" height="36" rx="4"/>
+    <text class="viz-node-title" x="481" y="259" text-anchor="middle">Model v2</text>
+  </g>
+
+  <!-- row 3: batch inference -> predictions -->
+  <g id="dot-batch" style="opacity:0">
+    <rect class="viz-node" x="256" y="323" width="144" height="44" rx="4"/>
+    <text class="viz-node-title" x="328" y="340" text-anchor="middle">Batch</text>
+    <text class="viz-node-title" x="328" y="356" text-anchor="middle">inference</text>
+  </g>
+
+  <!-- row 4: online inference -> prediction service -->
+  <g id="dot-oi" style="opacity:0">
+    <rect class="viz-node" x="256" y="413" width="144" height="44" rx="4"/>
+    <text class="viz-node-title" x="328" y="430" text-anchor="middle">Online</text>
+    <text class="viz-node-title" x="328" y="446" text-anchor="middle">inference</text>
+  </g>
+
+  <!-- predictions, from model v2 (batch path) -->
+  <path id="dot-emp" class="viz-edge" d="M536 255 H566" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-ebp" class="viz-edge" d="M400 345 C500 345 566 300 566 273" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <g id="dot-pred" data-tone="data" style="opacity:0">
+    <rect class="viz-node" x="566" y="237" width="124" height="36" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="628" y="259" text-anchor="middle">Predictions</text>
+  </g>
+
+  <!-- prediction service, from online inference + model v2 -->
+  <path id="dot-eos" class="viz-edge" d="M400 435 H556" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-ems" class="viz-edge" d="M488 273 C540 350 600 366 600 413" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <g id="dot-emsl" style="opacity:0"><text class="viz-meta" x="512" y="356" text-anchor="middle">deployed</text></g>
+  <g id="dot-ps" style="opacity:0">
+    <rect class="viz-node" x="556" y="413" width="124" height="44" rx="4"/>
+    <text class="viz-node-title" x="618" y="430" text-anchor="middle">Prediction</text>
+    <text class="viz-node-title" x="618" y="446" text-anchor="middle">service</text>
+  </g>
+
+  <!-- prediction request: on-demand, request-time input -->
+  <path id="dot-reqe" class="viz-edge" d="M618 505 V461" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
+  <g id="dot-odt" class="viz-badge" data-tone="data" style="opacity:0"><rect x="628" y="470" width="46" height="16" rx="3" style="fill:var(--viz-paper)"/><text x="651" y="478" text-anchor="middle">ODT</text></g>
+  <g id="dot-req" data-tone="data" style="opacity:0">
+    <rect class="viz-node" x="556" y="505" width="124" height="44" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="618" y="522" text-anchor="middle">Prediction</text>
+    <text class="viz-node-title" x="618" y="538" text-anchor="middle">request</text>
+  </g>
+
+  <!-- skew note -->
+  <g id="dot-note" style="opacity:0">
+    <rect class="viz-zone" x="42" y="561" width="610" height="50" rx="6"/>
+    <text class="viz-meta" x="58" y="579">MDT is applied at training-data creation and again at inference: the same</text>
+    <text class="viz-meta" x="58" y="597">computation each time. Consistency removes online-offline skew.</text>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 800,
+  "loopDelay": 2600,
+  "steps": [
+    { "#dot-axis": {"opacity": 1}, "#dot-store": {"opacity": 1, "state": "active"} },
+    { "#dot-in": {"opacity": 1}, "#dot-store": {"state": "visited"}, "#dot-d1": {"opacity": 1, "y": 0}, "$ms": 700 },
+    { "#dot-s1": {"opacity": 1}, "#dot-s1l": {"opacity": 1}, "#dot-tv1": {"opacity": 1, "state": "active"}, "$ms": 500 },
+    { "#dot-e1": {"opacity": 1}, "#dot-mv1": {"opacity": 1, "state": "active"}, "#dot-tv1": {"state": "visited"}, "#dot-d2": {"opacity": 1, "y": 0}, "$ms": 650 },
+    { "#dot-tv1": {"opacity": 0.4}, "#dot-mv1": {"opacity": 0.4}, "#dot-e1": {"opacity": 0.4}, "#dot-mdtbar": {"opacity": 1}, "#dot-s2": {"opacity": 1}, "#dot-tv2": {"opacity": 1, "state": "active"}, "$ms": 600 },
+    { "#dot-e2": {"opacity": 1}, "#dot-mv2": {"opacity": 1, "state": "active"}, "#dot-tv2": {"state": "visited"}, "#dot-d3": {"opacity": 1, "y": 0}, "$ms": 650 },
+    { "#dot-s3": {"opacity": 1}, "#dot-batch": {"opacity": 1, "state": "active"}, "$ms": 550 },
+    { "#dot-emp": {"opacity": 1}, "#dot-ebp": {"opacity": 1}, "#dot-pred": {"opacity": 1, "state": "active"}, "#dot-batch": {"state": "visited"}, "#dot-d4": {"opacity": 1, "y": 0}, "$ms": 700 },
+    { "#dot-s4": {"opacity": 1}, "#dot-oi": {"opacity": 1, "state": "active"}, "$ms": 550 },
+    { "#dot-eos": {"opacity": 1}, "#dot-ems": {"opacity": 1}, "#dot-emsl": {"opacity": 1}, "#dot-ps": {"opacity": 1, "state": "active"}, "#dot-oi": {"state": "visited"}, "$ms": 700 },
+    { "#dot-req": {"opacity": 1, "state": "active"}, "#dot-odt": {"opacity": 1}, "#dot-reqe": {"opacity": 1}, "$ms": 700 },
+    { "#dot-note": {"opacity": 1}, "$ms": 1800 }
+  ]
+}
+</script>
 </figure>

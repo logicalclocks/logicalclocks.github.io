@@ -1,37 +1,64 @@
-<figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="6 8 548 178" role="img" aria-label="A transformation is model-independent (produces reusable features), model-dependent (produces model-specific features), or on-demand (needs request-time data, produces on-demand features)." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 820 352" role="img" aria-label="Transformation functions are classified by the features they produce. A transformation is model-independent (data-engineering transformations like aggregations, windowed count, RFM) which produces reusable features, or model-dependent (encoding, scaling, imputation, parameterized by the training data) which produces model-specific features. On-demand transformations need request-time data computed online and produce on-demand features; offline they are one of the other two types, shown by dashed links up into model-independent and model-dependent." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="tt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
+    <marker id="tx2-arrow" viewBox="0 0 11 11" refX="9.5" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 L3 5.5 z"/>
+    </marker>
+    <marker id="tx2-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <g><rect class="viz-node" x="215" y="16" width="130" height="44" rx="4"/>
-  <text class="viz-node-title" x="280" y="43" text-anchor="middle">Transformation</text></g>
-
-  <path class="viz-edge" d="M280 60 C280 82 102 82 102 100" marker-end="url(#tt-arrow)"/>
-  <path class="viz-edge" d="M280 60 V100" marker-end="url(#tt-arrow)"/>
-  <path class="viz-edge" d="M280 60 C280 82 458 82 458 100" marker-end="url(#tt-arrow)"/>
-
-  <g data-tone="accent">
-    <rect class="viz-node" x="16" y="100" width="172" height="74" rx="4"/>
-    <text class="viz-node-title" x="102" y="124" text-anchor="middle">Model-independent</text>
-    <text class="viz-meta" x="102" y="146" text-anchor="middle">windowed aggregations</text>
-    <text class="viz-meta" x="102" y="162" text-anchor="middle">reusable features</text>
+  <!-- root: the transformation, classified by what it produces -->
+  <g id="tx2-root">
+    <rect class="viz-node" x="326" y="16" width="168" height="46" rx="4"/>
+    <text class="viz-node-title" x="410" y="37" text-anchor="middle">Transformation</text>
+    <text class="viz-node-subtitle" x="410" y="53" text-anchor="middle">by what it produces</text>
   </g>
 
-  <g>
-    <rect class="viz-node" x="194" y="100" width="172" height="74" rx="4"/>
-    <text class="viz-node-title" x="280" y="124" text-anchor="middle">Model-dependent</text>
-    <text class="viz-meta" x="280" y="146" text-anchor="middle">encoding, scaling</text>
-    <text class="viz-meta" x="280" y="162" text-anchor="middle">model-specific features</text>
-  </g>
+  <!-- split into the two offline types -->
+  <path id="tx2-emi" class="viz-edge" d="M410 62 C410 96 175 88 175 120" marker-start="url(#tx2-knob)" marker-end="url(#tx2-arrow)" style="opacity:0"/>
+  <path id="tx2-emd" class="viz-edge" d="M410 62 C410 96 645 88 645 120" marker-start="url(#tx2-knob)" marker-end="url(#tx2-arrow)" style="opacity:0"/>
 
-  <g data-tone="data">
-    <rect class="viz-node" x="372" y="100" width="172" height="74" rx="4"/>
-    <text class="viz-node-title" x="458" y="124" text-anchor="middle">On-demand</text>
-    <text class="viz-meta" x="458" y="146" text-anchor="middle">needs request-time data</text>
-    <text class="viz-meta" x="458" y="162" text-anchor="middle">on-demand features</text>
+  <!-- model-independent -->
+  <g id="tx2-mi" data-tone="accent" style="opacity:0">
+    <rect class="viz-node" x="25" y="120" width="300" height="64" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="175" y="144" text-anchor="middle">Model-independent</text>
+    <text class="viz-meta" x="175" y="164" text-anchor="middle">aggregations &#183; windowed count &#183; RFM</text>
   </g>
+  <g id="tx2-pmi" style="opacity:0"><text class="viz-meta" x="175" y="206" text-anchor="middle" data-tone="accent">&#8594; reusable features</text></g>
+
+  <!-- model-dependent -->
+  <g id="tx2-md" data-tone="neutral" style="opacity:0">
+    <rect class="viz-node" x="500" y="120" width="290" height="64" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="645" y="142" text-anchor="middle">Model-dependent</text>
+    <text class="viz-meta" x="645" y="160" text-anchor="middle">encoding &#183; scaling &#183; imputation</text>
+    <text class="viz-meta" x="645" y="176" text-anchor="middle">parameterized by the training data</text>
+  </g>
+  <g id="tx2-pmd" style="opacity:0"><text class="viz-meta" x="645" y="206" text-anchor="middle" data-tone="neutral">&#8594; model-specific features</text></g>
+
+  <!-- on-demand: online its own type, offline one of the two above -->
+  <path id="tx2-eod1" class="viz-edge" d="M340 250 C325 220 305 200 305 184" marker-end="url(#tx2-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
+  <path id="tx2-eod2" class="viz-edge" d="M480 250 C495 220 515 200 515 184" marker-end="url(#tx2-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
+  <g id="tx2-od" data-tone="data" style="opacity:0">
+    <rect class="viz-node" x="250" y="250" width="320" height="64" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="410" y="272" text-anchor="middle">On-demand</text>
+    <text class="viz-meta" x="410" y="290" text-anchor="middle">needs request-time data (online)</text>
+    <text class="viz-meta" x="410" y="306" text-anchor="middle">offline: it is one of the two above</text>
+  </g>
+  <g id="tx2-pod" style="opacity:0"><text class="viz-meta" x="410" y="336" text-anchor="middle" data-tone="data">&#8594; on-demand features</text></g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 800,
+  "loopDelay": 2600,
+  "steps": [
+    { "#tx2-root": {"state": "active"} },
+    { "#tx2-root": {"state": "visited"}, "#tx2-emi": {"opacity": 1}, "#tx2-emd": {"opacity": 1}, "#tx2-mi": {"opacity": 1, "state": "active"}, "#tx2-md": {"opacity": 1, "state": "active"}, "$ms": 750 },
+    { "#tx2-mi": {"state": "visited"}, "#tx2-md": {"state": "visited"}, "#tx2-pmi": {"opacity": 1}, "#tx2-pmd": {"opacity": 1}, "$ms": 750 },
+    { "#tx2-od": {"opacity": 1, "state": "active"}, "$ms": 700 },
+    { "#tx2-od": {"state": "visited"}, "#tx2-pod": {"opacity": 1}, "#tx2-eod1": {"opacity": 1}, "#tx2-eod2": {"opacity": 1}, "$ms": 1700 }
+  ]
+}
+</script>
 </figure>

@@ -1,62 +1,96 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1080 210" role="img" aria-label="Feature store architecture. A feature pipeline writes to feature groups, held in an online store and an offline store. Feature views read from the feature groups and serve features through an online API for operational models and an offline API for training data and batch scoring." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 992 280" role="img" aria-label="Feature store architecture. The Hopsworks API sits on top. On the write side a feature pipeline writes to feature groups, held in an online store and an offline store. On the read side feature views read from the feature groups and serve features through an online API for operational models and an offline API for training data and batch scoring." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fs-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="fs-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="fs-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <a class="d-link" href="../dev/outside/">
-    <rect class="d-api" x="20" y="14" width="1040" height="28" rx="6"/>
-    <text class="d-t" x="540" y="33" text-anchor="middle">Hopsworks API · Python · Java · REST</text>
+  <!-- hopsworks api surface -->
+  <a class="viz-link" href="../dev/outside/">
+    <g data-tone="accent">
+      <rect class="viz-node" x="16" y="18" width="960" height="32" rx="4"/>
+      <text class="viz-node-title" x="496" y="39" text-anchor="middle">Hopsworks API · Python · Java · REST</text>
+    </g>
   </a>
 
-  <path class="d-flow" d="M200 100 H256" marker-end="url(#fs-arrow)"/>
-  <path class="d-flow" d="M616 100 H656" marker-end="url(#fs-arrow)"/>
-  <path class="d-flow" d="M347 120 V150" marker-end="url(#fs-arrow)"/>
-  <path class="d-flow" d="M515 120 V150" marker-end="url(#fs-arrow)"/>
-  <path class="d-flow" d="M760 120 V150" marker-end="url(#fs-arrow)"/>
-  <path class="d-flow" d="M956 120 V150" marker-end="url(#fs-arrow)"/>
-  <text class="d-t d-sub" x="212" y="94">write</text>
-  <text class="d-t d-sub" x="622" y="94">read</text>
+  <!-- zone eyebrows -->
+  <text class="viz-label" x="16" y="78">Write</text>
+  <text class="viz-label" x="222" y="78">Feature store</text>
+  <text class="viz-label" x="596" y="78">Read</text>
 
-  <text class="d-t d-cap d-cap-ext" x="20" y="66">Write</text>
-  <a class="d-link" href="feature_group/feature_pipelines/">
-    <rect class="d-box" x="20" y="76" width="180" height="48" rx="8"/>
-    <text class="d-t" x="110" y="97" text-anchor="middle">Feature pipeline</text>
-    <text class="d-t d-sub" x="110" y="114" text-anchor="middle">Python · Spark · Flink · SQL</text>
-  </a>
+  <!-- connectors -->
+  <text class="viz-meta" x="209" y="130" text-anchor="middle">write</text>
+  <text class="viz-meta" x="585" y="130" text-anchor="middle">read</text>
+  <path class="viz-edge" d="M196 138 H222" marker-start="url(#fs-knob)" marker-end="url(#fs-arrow)"/>
+  <path class="viz-edge" d="M574 138 H596" marker-start="url(#fs-knob)" marker-end="url(#fs-arrow)"/>
+  <path class="viz-edge" d="M314 152 V186" marker-start="url(#fs-knob)" marker-end="url(#fs-arrow)"/>
+  <path class="viz-edge" d="M482 152 V186" marker-start="url(#fs-knob)" marker-end="url(#fs-arrow)"/>
+  <path class="viz-edge" d="M692 152 V186" marker-start="url(#fs-knob)" marker-end="url(#fs-arrow)"/>
+  <path class="viz-edge" d="M872 152 V186" marker-start="url(#fs-knob)" marker-end="url(#fs-arrow)"/>
 
-  <text class="d-t d-cap d-cap-fs" x="262" y="66">Feature Store</text>
-  <rect class="d-panel-fs" x="256" y="72" width="360" height="126" rx="12"/>
-  <a class="d-link" href="feature_group/fg_overview/">
-    <rect class="d-box-own" x="272" y="80" width="328" height="40" rx="6"/>
-    <text class="d-t" x="436" y="105" text-anchor="middle">Feature Groups</text>
-  </a>
-  <a class="d-link" href="feature_group/fg_overview/">
-    <rect class="d-box" x="272" y="150" width="150" height="40" rx="6"/>
-    <text class="d-t" x="347" y="175" text-anchor="middle">Online store</text>
-  </a>
-  <a class="d-link" href="feature_group/fg_overview/">
-    <rect class="d-box" x="440" y="150" width="160" height="40" rx="6"/>
-    <text class="d-t" x="520" y="175" text-anchor="middle">Offline store</text>
+  <!-- feature pipeline (compute) -->
+  <a class="viz-link" href="feature_group/feature_pipelines/">
+    <g data-tone="accent">
+      <rect class="viz-node" x="16" y="100" width="180" height="76" rx="4"/>
+      <rect class="viz-pill" x="68" y="92" width="76" height="16" rx="3"/>
+      <text class="viz-pill-text" x="106" y="103" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="106" y="138" text-anchor="middle">FEATURE</text>
+      <text class="viz-node-subtitle" x="106" y="158" text-anchor="middle">python · spark · sql</text>
+    </g>
   </a>
 
-  <text class="d-t d-cap d-cap-fs" x="662" y="66">Read</text>
-  <rect class="d-panel-fs" x="656" y="72" width="404" height="126" rx="12"/>
-  <a class="d-link" href="feature_view/fv_overview/">
-    <rect class="d-box-own" x="672" y="80" width="372" height="40" rx="6"/>
-    <text class="d-t" x="858" y="105" text-anchor="middle">Feature Views</text>
+  <!-- feature store zone -->
+  <rect class="viz-zone" x="222" y="88" width="352" height="180" rx="6"/>
+  <a class="viz-link" href="feature_group/fg_overview/">
+    <g>
+      <rect class="viz-kv-frame" x="238" y="104" width="320" height="48" rx="6"/>
+      <path class="viz-kv-header" d="M238 110 a6 6 0 0 1 6 -6 h308 a6 6 0 0 1 6 6 v20 h-320 z"/>
+      <text class="viz-kv-title" x="250" y="123">Feature Groups</text>
+      <text class="viz-node-subtitle" x="398" y="145" text-anchor="middle">versioned feature tables</text>
+    </g>
   </a>
-  <a class="d-link" href="feature_view/online_api/">
-    <rect class="d-box" x="672" y="150" width="176" height="40" rx="6"/>
-    <text class="d-t" x="760" y="168" text-anchor="middle">Online API</text>
-    <text class="d-t d-sub" x="760" y="183" text-anchor="middle">operational models</text>
+  <a class="viz-link" href="feature_group/fg_overview/">
+    <g>
+      <rect class="viz-node" x="238" y="186" width="152" height="58" rx="4"/>
+      <text class="viz-node-title" x="314" y="210" text-anchor="middle">Online store</text>
+      <text class="viz-node-subtitle" x="314" y="228" text-anchor="middle">low latency</text>
+    </g>
   </a>
-  <a class="d-link" href="feature_view/offline_api/">
-    <rect class="d-box" x="868" y="150" width="176" height="40" rx="6"/>
-    <text class="d-t" x="956" y="168" text-anchor="middle">Offline API</text>
-    <text class="d-t d-sub" x="956" y="183" text-anchor="middle">training data · batch</text>
+  <a class="viz-link" href="feature_group/fg_overview/">
+    <g>
+      <rect class="viz-node" x="406" y="186" width="152" height="58" rx="4"/>
+      <text class="viz-node-title" x="482" y="210" text-anchor="middle">Offline store</text>
+      <text class="viz-node-subtitle" x="482" y="228" text-anchor="middle">columnar</text>
+    </g>
+  </a>
+
+  <!-- read zone -->
+  <rect class="viz-zone" x="596" y="88" width="380" height="180" rx="6"/>
+  <a class="viz-link" href="feature_view/fv_overview/">
+    <g>
+      <rect class="viz-kv-frame" x="612" y="104" width="352" height="48" rx="6"/>
+      <path class="viz-kv-header" d="M612 110 a6 6 0 0 1 6 -6 h340 a6 6 0 0 1 6 6 v20 h-352 z"/>
+      <text class="viz-kv-title" x="624" y="123">Feature Views</text>
+      <text class="viz-node-subtitle" x="788" y="145" text-anchor="middle">training and serving reads</text>
+    </g>
+  </a>
+  <a class="viz-link" href="feature_view/online_api/">
+    <g>
+      <rect class="viz-node" x="612" y="186" width="160" height="58" rx="4"/>
+      <text class="viz-node-title" x="692" y="210" text-anchor="middle">Online API</text>
+      <text class="viz-node-subtitle" x="692" y="228" text-anchor="middle">operational models</text>
+    </g>
+  </a>
+  <a class="viz-link" href="feature_view/offline_api/">
+    <g>
+      <rect class="viz-node" x="780" y="186" width="184" height="58" rx="4"/>
+      <text class="viz-node-title" x="872" y="210" text-anchor="middle">Offline API</text>
+      <text class="viz-node-subtitle" x="872" y="228" text-anchor="middle">training data · batch</text>
+    </g>
   </a>
 </svg>
 </figure>

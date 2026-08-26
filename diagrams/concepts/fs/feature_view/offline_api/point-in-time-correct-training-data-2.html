@@ -1,95 +1,91 @@
-<figure class="hops-diagram">
-<svg viewBox="0 0 1000 560" role="img" aria-label="A point-in-time correct join builds training data by combining two feature groups through a feature view, with green tracing the columns that originate from the reviews feature group into the resulting training dataset." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 820 520" role="img" aria-label="Animated point-in-time correct join. Two feature groups are updated at different cadences: seller_delivery_time_monthly, the label group, has monthly rows (oct-22 deliver_hrs 72, nov-22 104, dec-22 88); seller_reviews_quarterly has quarterly rows (oct-22 avg_review_score 3.4, dec-22 2.8). The join processes each delivery observation in turn and attaches the newest review at or before that observation's event_time, building the training data one row at a time. For oct-22 it uses the oct-22 review 3.4. For nov-22 the oct-22 review lights up as used while the dec-22 review flashes as excluded because it is later, so nov-22 also gets 3.4. For dec-22 it uses the dec-22 review 2.8. A caption states that each row takes the newest feature at or before its event_time so no future values leak in." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fvt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="pit-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="pit-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <!-- feature group A: delivery time (neutral) -->
-  <text class="d-t d-sub" x="40" y="46">seller_delivery_time_monthly_feature_group</text>
-  <rect class="d-box" x="40" y="54" width="340" height="120" rx="8"/>
-  <rect class="d-band" x="40" y="54" width="340" height="30" rx="8"/>
-  <path class="d-flow" d="M130 54 V174 M230 54 V174" opacity=".4"/>
-  <path class="d-flow" d="M40 84 H380 M40 114 H380 M40 144 H380" opacity=".4"/>
-  <text class="d-t d-sub" x="85" y="73" text-anchor="middle">seller_id</text>
-  <text class="d-t d-sub" x="180" y="73" text-anchor="middle">event_time</text>
-  <text class="d-t d-sub" x="305" y="73" text-anchor="middle">deliver_time_hrs</text>
-  <text class="d-t" x="85" y="104" text-anchor="middle">1112</text>
-  <text class="d-t" x="180" y="104" text-anchor="middle">oct-22</text>
-  <text class="d-t" x="305" y="104" text-anchor="middle">72</text>
-  <text class="d-t" x="85" y="134" text-anchor="middle">1112</text>
-  <text class="d-t" x="180" y="134" text-anchor="middle">nov-22</text>
-  <text class="d-t" x="305" y="134" text-anchor="middle">104</text>
-  <text class="d-t" x="85" y="164" text-anchor="middle">1112</text>
-  <text class="d-t" x="180" y="164" text-anchor="middle">dec-22</text>
-  <text class="d-t" x="305" y="164" text-anchor="middle">88</text>
+  <!-- ===== label feature group (the observations) ===== -->
+  <rect class="viz-kv-frame" x="20" y="20" width="350" height="144" rx="6"/>
+  <path class="viz-kv-header" d="M20 26 a6 6 0 0 1 6 -6 h338 a6 6 0 0 1 6 6 v24 h-350 z"/>
+  <g class="viz-icon" transform="translate(30,26) scale(0.62)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
+  <text class="viz-kv-title" x="52" y="39">seller_delivery_time_monthly</text>
+  <text class="viz-colhead" x="52" y="62">seller_id</text>
+  <text class="viz-colhead" x="152" y="62">event_time</text>
+  <text class="viz-colhead" x="264" y="62">deliver_hrs</text>
+  <g id="la-oct" class="viz-kv-entry"><rect class="viz-kv-cell" x="24" y="72" width="342" height="26" rx="3"/><text class="viz-field" x="52" y="89">1112</text><text class="viz-field" x="152" y="89">oct-22</text><text class="viz-field" x="264" y="89">72</text></g>
+  <g id="la-nov" class="viz-kv-entry"><rect class="viz-kv-cell" x="24" y="102" width="342" height="26" rx="3"/><text class="viz-field" x="52" y="119">1112</text><text class="viz-field" x="152" y="119">nov-22</text><text class="viz-field" x="264" y="119">104</text></g>
+  <g id="la-dec" class="viz-kv-entry"><rect class="viz-kv-cell" x="24" y="132" width="342" height="26" rx="3"/><text class="viz-field" x="52" y="149">1112</text><text class="viz-field" x="152" y="149">dec-22</text><text class="viz-field" x="264" y="149">88</text></g>
+  <text class="viz-meta" x="24" y="180">event_time = observation time</text>
+  <text class="viz-meta" x="24" y="195">label group &#183; updated monthly</text>
 
-  <!-- feature group B: reviews (owned, green) -->
-  <text class="d-t d-sub" x="580" y="46">seller_reviews_quarterly_feature_group</text>
-  <rect class="d-box-own" x="580" y="54" width="380" height="90" rx="8"/>
-  <rect class="d-band" x="580" y="54" width="380" height="30" rx="8"/>
-  <path class="d-flow" d="M670 54 V144 M770 54 V144 M920 54 V144" opacity=".4"/>
-  <path class="d-flow" d="M580 84 H960 M580 114 H960" opacity=".4"/>
-  <text class="d-t d-sub" x="625" y="73" text-anchor="middle">seller_id</text>
-  <text class="d-t d-sub" x="720" y="73" text-anchor="middle">event_time</text>
-  <text class="d-t d-sub" x="845" y="73" text-anchor="middle">avg_review_score</text>
-  <text class="d-t d-sub" x="940" y="73" text-anchor="middle">...</text>
-  <text class="d-t" x="625" y="104" text-anchor="middle">1112</text>
-  <text class="d-t" x="720" y="104" text-anchor="middle">oct-22</text>
-  <text class="d-t" x="845" y="104" text-anchor="middle">3.4</text>
-  <text class="d-t" x="940" y="104" text-anchor="middle">...</text>
-  <text class="d-t" x="625" y="134" text-anchor="middle">1112</text>
-  <text class="d-t" x="720" y="134" text-anchor="middle">dec-22</text>
-  <text class="d-t" x="845" y="134" text-anchor="middle">2.8</text>
-  <text class="d-t" x="940" y="134" text-anchor="middle">...</text>
+  <!-- ===== feature feature group (quarterly cadence) ===== -->
+  <rect class="viz-kv-frame" x="450" y="20" width="350" height="114" rx="6"/>
+  <path class="viz-kv-header" d="M450 26 a6 6 0 0 1 6 -6 h338 a6 6 0 0 1 6 6 v24 h-350 z"/>
+  <g class="viz-icon" transform="translate(460,26) scale(0.62)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
+  <text class="viz-kv-title" x="482" y="39">seller_reviews_quarterly</text>
+  <text class="viz-colhead" x="478" y="62">seller_id</text>
+  <text class="viz-colhead" x="566" y="62">event_time</text>
+  <text class="viz-colhead" x="654" y="62">avg_review_score</text>
+  <g id="rv-oct" class="viz-kv-entry"><rect class="viz-kv-cell" x="454" y="72" width="342" height="26" rx="3"/><text class="viz-field" x="478" y="89">1112</text><text class="viz-field" x="566" y="89">oct-22</text><text class="viz-field" x="654" y="89">3.4</text></g>
+  <g id="rv-dec" class="viz-kv-entry"><rect class="viz-kv-cell" x="454" y="102" width="342" height="26" rx="3"/><text class="viz-field" x="478" y="119">1112</text><text class="viz-field" x="566" y="119">dec-22</text><text class="viz-field" x="654" y="119">2.8</text></g>
+  <text class="viz-meta" x="454" y="150">feature group &#183; updated quarterly</text>
 
-  <!-- joins into the feature view -->
-  <path class="d-flow" d="M85 174 C 60 224, 150 280, 233 280" marker-end="url(#fvt-arrow)"/>
-  <path class="d-flow" d="M940 144 C 992 214, 850 280, 767 280" marker-end="url(#fvt-arrow)"/>
+  <!-- ===== point-in-time join operator ===== -->
+  <path id="je-a" class="viz-edge" d="M195 164 C195 194 320 190 360 213" marker-start="url(#pit-knob)" marker-end="url(#pit-arrow)" style="opacity:0"/>
+  <path id="je-b" class="viz-edge" d="M625 134 C625 184 500 190 460 213" marker-start="url(#pit-knob)" marker-end="url(#pit-arrow)" style="opacity:0"/>
+  <g id="jnode" data-tone="accent">
+    <rect class="viz-node" x="325" y="214" width="170" height="44" rx="4"/>
+    <rect class="viz-pill" x="370" y="206" width="80" height="16" rx="3"/>
+    <text class="viz-pill-text" x="410" y="217" text-anchor="middle">join</text>
+    <text class="viz-node-title" x="410" y="234" text-anchor="middle">point-in-time</text>
+    <text class="viz-node-subtitle" x="410" y="250" text-anchor="middle">as-of event_time</text>
+  </g>
+  <path id="je-out" class="viz-edge" d="M410 258 V278" marker-end="url(#pit-arrow)" style="opacity:0"/>
 
-  <!-- feature view (schema; avg_review_score column traced green) -->
-  <text class="d-t d-sub" x="235" y="252">seller_delivery_time_monthly_feature_view</text>
-  <rect class="d-box" x="235" y="260" width="530" height="40" rx="8"/>
-  <rect class="d-box-own" x="575" y="260" width="190" height="40" rx="8"/>
-  <path class="d-flow" d="M325 260 V300 M425 260 V300 M575 260 V300 M725 260 V300" opacity=".4"/>
-  <text class="d-t d-sub" x="280" y="284" text-anchor="middle">seller_id</text>
-  <text class="d-t d-sub" x="375" y="284" text-anchor="middle">event_time</text>
-  <text class="d-t d-sub" x="500" y="284" text-anchor="middle">avg_deliver_time</text>
-  <text class="d-t d-sub" x="650" y="284" text-anchor="middle">avg_review_score</text>
-  <text class="d-t d-sub" x="745" y="284" text-anchor="middle">...</text>
+  <!-- ===== training data (built one observation at a time) ===== -->
+  <rect class="viz-kv-frame" x="80" y="280" width="660" height="148" rx="6"/>
+  <path class="viz-kv-header" d="M80 286 a6 6 0 0 1 6 -6 h648 a6 6 0 0 1 6 6 v24 h-660 z"/>
+  <g class="viz-icon" transform="translate(90,286) scale(0.62)"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9 H21 M3 14 H21"/></g>
+  <text class="viz-kv-title" x="112" y="299">seller_delivery_time_monthly_training_data</text>
+  <text class="viz-colhead" x="112" y="322">seller_id</text>
+  <text class="viz-colhead" x="250" y="322">event_time</text>
+  <text class="viz-colhead" x="400" y="322">deliver_hrs &#183; label</text>
+  <text class="viz-colhead" x="580" y="322">avg_review_score</text>
+  <g id="tr-oct" class="viz-kv-entry" style="opacity:0"><rect class="viz-kv-cell" x="84" y="332" width="652" height="26" rx="3"/><text class="viz-field" x="112" y="349">1112</text><text class="viz-field" x="250" y="349">oct-22</text><text class="viz-field" x="400" y="349">72</text><text class="viz-field" x="580" y="349">3.4</text></g>
+  <g id="tr-nov" class="viz-kv-entry" style="opacity:0"><rect class="viz-kv-cell" x="84" y="362" width="652" height="26" rx="3"/><text class="viz-field" x="112" y="379">1112</text><text class="viz-field" x="250" y="379">nov-22</text><text class="viz-field" x="400" y="379">104</text><text class="viz-field" x="580" y="379" style="fill:var(--hops-accent-text);font-weight:700">3.4</text></g>
+  <g id="tr-dec" class="viz-kv-entry" style="opacity:0"><rect class="viz-kv-cell" x="84" y="392" width="652" height="26" rx="3"/><text class="viz-field" x="112" y="409">1112</text><text class="viz-field" x="250" y="409">dec-22</text><text class="viz-field" x="400" y="409">88</text><text class="viz-field" x="580" y="409">2.8</text></g>
 
-  <!-- feature view produces training data -->
-  <path class="d-flow" d="M500 300 V404" marker-end="url(#fvt-arrow)"/>
-
-  <!-- training data (avg_review_score column traced green) -->
-  <text class="d-t d-sub" x="250" y="402">seller_delivery_time_monthly_training_data.csv</text>
-  <rect class="d-box" x="250" y="410" width="570" height="120" rx="8"/>
-  <rect class="d-box-own" x="630" y="410" width="190" height="120" rx="8"/>
-  <rect class="d-band" x="250" y="410" width="570" height="30" rx="8"/>
-  <path class="d-flow" d="M340 410 V530 M440 410 V530 M630 410 V530 M780 410 V530" opacity=".4"/>
-  <path class="d-flow" d="M250 440 H820 M250 470 H820 M250 500 H820" opacity=".4"/>
-  <text class="d-t d-sub" x="295" y="429" text-anchor="middle">seller_id</text>
-  <text class="d-t d-sub" x="390" y="429" text-anchor="middle">event_time</text>
-  <text class="d-t d-sub" x="535" y="429" text-anchor="middle">deliver_time_hrs [LABEL]</text>
-  <text class="d-t d-sub" x="705" y="429" text-anchor="middle">avg_review_score</text>
-  <text class="d-t d-sub" x="800" y="429" text-anchor="middle">...</text>
-  <text class="d-t" x="295" y="460" text-anchor="middle">1112</text>
-  <text class="d-t" x="390" y="460" text-anchor="middle">oct-22</text>
-  <text class="d-t" x="535" y="460" text-anchor="middle">72</text>
-  <text class="d-t" x="705" y="460" text-anchor="middle">3.4</text>
-  <text class="d-t" x="295" y="490" text-anchor="middle">1112</text>
-  <text class="d-t" x="390" y="490" text-anchor="middle">nov-22</text>
-  <text class="d-t" x="535" y="490" text-anchor="middle">104</text>
-  <text class="d-t" x="705" y="490" text-anchor="middle">3.4</text>
-  <text class="d-t" x="295" y="520" text-anchor="middle">1112</text>
-  <text class="d-t" x="390" y="520" text-anchor="middle">nov-22</text>
-  <text class="d-t" x="535" y="520" text-anchor="middle">88</text>
-  <text class="d-t" x="705" y="520" text-anchor="middle">2.8</text>
-
-  <!-- point-in-time correct join marker over the data rows -->
-  <path class="d-flow" d="M244 440 H236 V530 H244"/>
-  <text class="d-t d-sub" x="40" y="481">Point-in-Time</text>
-  <text class="d-t d-sub" x="40" y="497">Correct JOIN</text>
+  <!-- ===== callout ===== -->
+  <path class="viz-edge" data-tone="accent" d="M410 428 V444" style="stroke-dasharray:4 4"/>
+  <g id="banner" data-tone="accent" style="opacity:0">
+    <rect class="viz-node" x="130" y="444" width="560" height="64" rx="6" style="fill:var(--viz-tone-fill-solid);stroke:var(--viz-tone)"/>
+    <text class="viz-label" x="410" y="466" text-anchor="middle">POINT-IN-TIME CORRECT</text>
+    <text class="viz-meta" x="410" y="484" text-anchor="middle">each row takes the newest feature at or before its event_time</text>
+    <text class="viz-meta" x="410" y="500" text-anchor="middle">nov-22 joins the oct-22 review (3.4); dec-22 is later, so excluded</text>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 800,
+  "loopDelay": 2800,
+  "steps": [
+    { "#je-a": {"opacity": 1}, "#je-b": {"opacity": 1}, "#jnode": {"state": "active"}, "$ms": 700 },
+    { "#la-oct": {"tone": "accent", "state": "active"}, "#rv-oct": {"tone": "accent", "state": "active"}, "$ms": 800 },
+    { "#je-out": {"opacity": 1}, "#tr-oct": {"opacity": 1, "tone": "accent", "state": "active"}, "$ms": 900 },
+    { "#la-oct": {"state": null, "tone": null}, "#rv-oct": {"state": null, "tone": null}, "#tr-oct": {"state": "visited"}, "$ms": 700 },
+    { "#la-nov": {"tone": "accent", "state": "active"}, "#rv-oct": {"tone": "accent", "state": "active"}, "#rv-dec": {"tone": "error", "state": "active"}, "$ms": 1300 },
+    { "#tr-nov": {"opacity": 1, "tone": "accent", "state": "active"}, "$ms": 900 },
+    { "#la-nov": {"state": null, "tone": null}, "#rv-oct": {"state": null, "tone": null}, "#rv-dec": {"state": null, "tone": null}, "#tr-nov": {"state": "visited"}, "$ms": 700 },
+    { "#la-dec": {"tone": "accent", "state": "active"}, "#rv-dec": {"tone": "accent", "state": "active"}, "$ms": 800 },
+    { "#tr-dec": {"opacity": 1, "tone": "accent", "state": "active"}, "$ms": 900 },
+    { "#la-dec": {"state": null, "tone": null}, "#rv-dec": {"state": null, "tone": null}, "#tr-dec": {"state": "visited"}, "$ms": 700 },
+    { "#banner": {"opacity": 1}, "$ms": 2600 }
+  ]
+}
+</script>
 </figure>

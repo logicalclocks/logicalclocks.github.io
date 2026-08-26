@@ -1,40 +1,58 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="6 8 548 322" role="img" aria-label="A feature pipeline reads from external sources (message bus, database, files), then reduces, aggregates, validates and transforms the data in Python or Spark and Flink, before writing features to the feature store." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 560 284" role="img" aria-label="A feature pipeline reads from external sources (a message bus, a database, files), then reduces, aggregates, validates and transforms the data in Python or Spark, before writing features to the feature store." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fpt-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
+    <marker id="fpt-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="fpt-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <!-- sources -->
-  <g data-tone="data"><rect class="viz-node" x="40" y="16" width="150" height="44" rx="4"/>
-  <text class="viz-node-title" x="115" y="43" text-anchor="middle">Msg Bus</text></g>
-  <g data-tone="data"><rect class="viz-node" x="205" y="16" width="150" height="44" rx="4"/>
-  <text class="viz-node-title" x="280" y="43" text-anchor="middle">DB</text></g>
-  <g data-tone="data"><rect class="viz-node" x="370" y="16" width="150" height="44" rx="4"/>
-  <text class="viz-node-title" x="445" y="43" text-anchor="middle">Files</text></g>
+  <!-- external data sources -->
+  <g>
+    <rect class="viz-kv-frame" x="24" y="16" width="152" height="44" rx="6"/>
+    <path class="viz-kv-header" d="M24 22 a6 6 0 0 1 6 -6 h140 a6 6 0 0 1 6 6 v20 h-152 z"/>
+    <text class="viz-kv-title" x="36" y="35">Msg Bus</text>
+    <text class="viz-node-subtitle" x="100" y="52" text-anchor="middle">streaming</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="204" y="16" width="152" height="44" rx="6"/>
+    <path class="viz-kv-header" d="M204 22 a6 6 0 0 1 6 -6 h140 a6 6 0 0 1 6 6 v20 h-152 z"/>
+    <text class="viz-kv-title" x="216" y="35">Database</text>
+    <text class="viz-node-subtitle" x="280" y="52" text-anchor="middle">batch</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="384" y="16" width="152" height="44" rx="6"/>
+    <path class="viz-kv-header" d="M384 22 a6 6 0 0 1 6 -6 h140 a6 6 0 0 1 6 6 v20 h-152 z"/>
+    <text class="viz-kv-title" x="396" y="35">Files</text>
+    <text class="viz-node-subtitle" x="460" y="52" text-anchor="middle">object store</text>
+  </g>
 
-  <path class="viz-edge" d="M115 60 C115 82 280 82 280 100" marker-end="url(#fpt-arrow)"/>
-  <path class="viz-edge" d="M280 60 V100" marker-end="url(#fpt-arrow)"/>
-  <path class="viz-edge" d="M445 60 C445 82 280 82 280 100" marker-end="url(#fpt-arrow)"/>
+  <path class="viz-edge" d="M100 60 C100 88 210 88 210 112" marker-start="url(#fpt-knob)" marker-end="url(#fpt-arrow)"/>
+  <path class="viz-edge" d="M280 60 V112" marker-start="url(#fpt-knob)" marker-end="url(#fpt-arrow)"/>
+  <path class="viz-edge" d="M460 60 C460 88 350 88 350 112" marker-start="url(#fpt-knob)" marker-end="url(#fpt-arrow)"/>
 
-  <!-- processing -->
-  <g><rect class="viz-node" x="150" y="100" width="260" height="72" rx="4"/>
-  <text class="viz-node-title" x="280" y="124" text-anchor="middle">Reduce · Aggregate</text>
-  <text class="viz-node-title" x="280" y="142" text-anchor="middle">Validate · Transform</text>
-  <text class="viz-meta" x="280" y="162" text-anchor="middle">Python · Spark/Flink</text></g>
+  <!-- feature pipeline (compute) -->
+  <g data-tone="accent">
+    <rect class="viz-node" x="150" y="112" width="260" height="80" rx="4"/>
+    <rect class="viz-pill" x="245" y="104" width="70" height="16" rx="3"/>
+    <text class="viz-pill-text" x="280" y="115" text-anchor="middle">Pipeline</text>
+    <text class="viz-node-title" x="280" y="140" text-anchor="middle">TRANSFORM</text>
+    <text class="viz-node-subtitle" x="280" y="160" text-anchor="middle">reduce · aggregate · validate</text>
+    <text class="viz-meta" x="280" y="180" text-anchor="middle">python · spark</text>
+  </g>
 
-  <path class="viz-edge" d="M280 172 V200" marker-end="url(#fpt-arrow)"/>
+  <path class="viz-edge" d="M280 192 V220" marker-start="url(#fpt-knob)" marker-end="url(#fpt-arrow)"/>
 
-  <!-- feature store -->
+  <!-- feature store (data) -->
   <a class="viz-link" href="../fg_overview/">
-    <g data-tone="accent"><rect class="viz-node" x="200" y="200" width="160" height="48" rx="4"/>
-    <text class="viz-node-title" x="280" y="228" text-anchor="middle">Feature Store</text></g>
+    <g>
+      <rect class="viz-kv-frame" x="180" y="220" width="200" height="48" rx="6"/>
+      <path class="viz-kv-header" d="M180 226 a6 6 0 0 1 6 -6 h188 a6 6 0 0 1 6 6 v20 h-200 z"/>
+      <text class="viz-kv-title" x="192" y="239">Feature store</text>
+      <text class="viz-node-subtitle" x="280" y="261" text-anchor="middle">features</text>
+    </g>
   </a>
-
-  <path class="viz-edge" d="M280 248 V276" marker-end="url(#fpt-arrow)"/>
-
-  <g data-tone="accent"><rect class="viz-node" x="220" y="276" width="120" height="44" rx="4"/>
-  <text class="viz-node-title" x="280" y="303" text-anchor="middle">Features</text></g>
 </svg>
 </figure>

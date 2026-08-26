@@ -1,82 +1,85 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 1000 400" role="img" aria-label="Animated diagram of the Stream API write path. A dataframe travels from the client into HSFS, is encoded as Avro and produced to a Kafka topic with at-least-once delivery. Kafka fans out to both stores: rows upsert into the online store on RonDB and commit into the offline store on Hudi. A duplicate Kafka delivery then reaches the online store and resolves as an idempotent no-op, which is how at-least-once transport becomes exactly-once in both stores." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 868 336" role="img" aria-label="Animated diagram of the Stream API write path. A dataframe travels from the client into HSFS, is encoded as Avro and produced to a Kafka topic with at-least-once delivery. Kafka fans out to both stores: rows upsert into the online store on RonDB and commit into the offline store on Delta. A duplicate Kafka delivery then reaches the online store and resolves as an idempotent no-op, which is how at-least-once transport becomes exactly-once in both stores." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="ws-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="ws-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="ws-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <text class="viz-meta" x="500" y="26" text-anchor="middle">one avro schema, both stores</text>
+  <text class="viz-meta" x="442" y="24" text-anchor="middle">one avro schema, both stores</text>
 
-  <path class="viz-edge" d="M174 202 H222" marker-end="url(#ws-arrow)"/>
-  <path class="viz-edge" d="M380 202 H442" marker-end="url(#ws-arrow)"/>
-  <path class="viz-edge" d="M590 202 C650 202 650 100 692 100" marker-end="url(#ws-arrow)"/>
-  <path class="viz-edge" d="M590 202 C650 202 650 300 692 300" marker-end="url(#ws-arrow)"/>
+  <path class="viz-edge" d="M146 180 H182" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
+  <path class="viz-edge" d="M312 180 H348" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
+  <path class="viz-edge" d="M468 180 C512 180 556 91 600 91" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
+  <path class="viz-edge" d="M468 180 C512 180 556 243 600 243" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="170" width="150" height="64" rx="8"/>
-    <text class="viz-node-title" x="99" y="196" text-anchor="middle">CLIENT</text>
-    <text class="viz-node-subtitle" x="99" y="216" text-anchor="middle">python · spark · flink</text>
+  <g>
+    <rect class="viz-node" x="16" y="150" width="130" height="60" rx="4"/>
+    <text class="viz-node-title" x="81" y="176" text-anchor="middle">CLIENT</text>
+    <text class="viz-node-subtitle" x="81" y="195" text-anchor="middle">python · spark</text>
   </g>
-  <g class="viz-node-group">
-    <rect class="viz-node" x="230" y="170" width="150" height="64" rx="8"/>
-    <text class="viz-node-title" x="305" y="196" text-anchor="middle">HSFS</text>
-    <text class="viz-node-subtitle" x="305" y="216" text-anchor="middle">avro encode</text>
+  <g>
+    <rect class="viz-node" x="182" y="150" width="130" height="60" rx="4"/>
+    <text class="viz-node-title" x="247" y="176" text-anchor="middle">HSFS</text>
+    <text class="viz-node-subtitle" x="247" y="195" text-anchor="middle">avro encode</text>
   </g>
-  <g id="ws-kafka" class="viz-node-group" data-tone="data">
-    <rect class="viz-node" x="450" y="170" width="140" height="64" rx="8"/>
-    <text class="viz-node-title" x="520" y="196" text-anchor="middle">KAFKA</text>
-    <text class="viz-node-subtitle" x="520" y="216" text-anchor="middle">at-least-once</text>
+  <g id="ws-kafka" data-tone="data">
+    <rect class="viz-node" x="348" y="150" width="120" height="60" rx="4"/>
+    <text class="viz-node-title" x="408" y="176" text-anchor="middle">KAFKA</text>
+    <text class="viz-node-subtitle" x="408" y="195" text-anchor="middle">at-least-once</text>
   </g>
 
-  <rect class="viz-kv-frame" x="700" y="40" width="276" height="120" rx="6"/>
-  <rect class="viz-kv-header" x="700" y="40" width="276" height="26"/>
-  <text class="viz-kv-title" x="712" y="57">Online store</text>
-  <text class="viz-meta" x="964" y="57" text-anchor="end">RonDB</text>
+  <rect class="viz-kv-frame" x="600" y="44" width="252" height="120" rx="6"/>
+  <path class="viz-kv-header" d="M600 50 a6 6 0 0 1 6 -6 h240 a6 6 0 0 1 6 6 v20 h-252 z"/>
+  <text class="viz-kv-title" x="612" y="61">Online store</text>
+  <text class="viz-meta" x="840" y="61" text-anchor="end">RonDB</text>
   <g id="ws-row-on" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="708" y="74" width="260" height="26" rx="3"/>
-    <text class="viz-kv-key" x="716" y="91">amount_sum</text>
-    <text id="ws-von" class="viz-kv-val" x="960" y="91" text-anchor="end">–</text>
+    <rect class="viz-kv-cell" x="608" y="78" width="236" height="26" rx="3"/>
+    <text class="viz-kv-key" x="616" y="95">amount_sum</text>
+    <text id="ws-von" class="viz-kv-val" x="836" y="95" text-anchor="end">–</text>
   </g>
-  <text class="viz-meta" x="712" y="120">idempotent upsert → exactly-once</text>
-  <text id="ws-noop" class="viz-meta viz-fade" x="712" y="140" style="opacity:0">duplicate delivery → no-op</text>
+  <text class="viz-meta" x="612" y="126">idempotent upsert → exactly-once</text>
+  <text id="ws-noop" class="viz-meta viz-fade" x="612" y="146" style="opacity:0">duplicate delivery → no-op</text>
 
-  <rect class="viz-kv-frame" x="700" y="240" width="276" height="120" rx="6"/>
-  <rect class="viz-kv-header" x="700" y="240" width="276" height="26"/>
-  <text class="viz-kv-title" x="712" y="257">Offline store</text>
-  <text class="viz-meta" x="964" y="257" text-anchor="end">Hudi · S3/ADLS/GCS/HopsFS</text>
+  <rect class="viz-kv-frame" x="600" y="196" width="252" height="120" rx="6"/>
+  <path class="viz-kv-header" d="M600 202 a6 6 0 0 1 6 -6 h240 a6 6 0 0 1 6 6 v20 h-252 z"/>
+  <text class="viz-kv-title" x="612" y="213">Offline store</text>
+  <text class="viz-meta" x="840" y="213" text-anchor="end">Delta</text>
   <g id="ws-row-off" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="708" y="274" width="260" height="26" rx="3"/>
-    <text class="viz-kv-key" x="716" y="291">hudi commit</text>
-    <text id="ws-voff" class="viz-kv-val" x="960" y="291" text-anchor="end">–</text>
+    <rect class="viz-kv-cell" x="608" y="230" width="236" height="26" rx="3"/>
+    <text class="viz-kv-key" x="616" y="247">delta commit</text>
+    <text id="ws-voff" class="viz-kv-val" x="836" y="247" text-anchor="end">–</text>
   </g>
-  <text class="viz-meta" x="712" y="320">dedup on commit → exactly-once</text>
+  <text class="viz-meta" x="612" y="278">dedup on commit → exactly-once</text>
 
-  <g transform="translate(156 193)">
+  <g transform="translate(116 171)">
     <g id="ws-p1" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="40" height="18" rx="3"/>
       <text x="20" y="9" text-anchor="middle">df</text>
     </g>
   </g>
-  <g transform="translate(362 193)">
+  <g transform="translate(300 171)">
     <g id="ws-p2" class="viz-packet" data-tone="data" style="opacity:0">
       <rect width="54" height="18" rx="3"/>
       <text x="27" y="9" text-anchor="middle">avro</text>
     </g>
   </g>
-  <g transform="translate(575 193)">
+  <g transform="translate(472 171)">
     <g id="ws-p3" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="48" height="18" rx="3"/>
       <text x="24" y="9" text-anchor="middle">rows</text>
     </g>
   </g>
-  <g transform="translate(575 193)">
+  <g transform="translate(472 171)">
     <g id="ws-p4" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="48" height="18" rx="3"/>
       <text x="24" y="9" text-anchor="middle">rows</text>
     </g>
   </g>
-  <g transform="translate(575 193)">
+  <g transform="translate(472 171)">
     <g id="ws-p5" class="viz-packet" data-tone="warn" style="opacity:0">
       <rect width="44" height="18" rx="3"/>
       <text x="22" y="9" text-anchor="middle">dup</text>
@@ -89,14 +92,14 @@
   "loopDelay": 2400,
   "steps": [
     { "#ws-p1": {"opacity": 1} },
-    { "#ws-p1": {"x": 95}, "$ms": 650 },
+    { "#ws-p1": {"x": 60}, "$ms": 650 },
     { "#ws-p1": {"opacity": 0}, "#ws-p2": {"opacity": 1}, "$ms": 450 },
-    { "#ws-p2": {"x": 100}, "$ms": 650 },
+    { "#ws-p2": {"x": 60}, "$ms": 650 },
     { "#ws-p2": {"opacity": 0}, "#ws-kafka": {"state": "active"}, "#ws-p3": {"opacity": 1}, "#ws-p4": {"opacity": 1}, "$ms": 500 },
-    { "#ws-p3": {"x": 145, "y": -105}, "#ws-p4": {"x": 145, "y": 95}, "$ms": 750 },
+    { "#ws-p3": {"x": 128, "y": -89}, "#ws-p4": {"x": 128, "y": 63}, "$ms": 750 },
     { "#ws-p3": {"opacity": 0}, "#ws-p4": {"opacity": 0}, "#ws-row-on": {"state": "active"}, "#ws-von": {"text": "312.40"}, "#ws-row-off": {"state": "active"}, "#ws-voff": {"text": "c-0231"}, "$ms": 950 },
     { "#ws-row-on": {"state": "visited"}, "#ws-row-off": {"state": "visited"}, "#ws-p5": {"opacity": 1}, "$ms": 600 },
-    { "#ws-p5": {"x": 145, "y": -105}, "$ms": 750 },
+    { "#ws-p5": {"x": 128, "y": -89}, "$ms": 750 },
     { "#ws-p5": {"opacity": 0}, "#ws-noop": {"opacity": 1}, "#ws-row-on": {"state": "active"}, "$ms": 500 },
     { "#ws-row-on": {"state": "visited"}, "#ws-kafka": {"state": null}, "$ms": 1400 }
   ]

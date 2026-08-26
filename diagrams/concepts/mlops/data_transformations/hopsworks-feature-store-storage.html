@@ -1,0 +1,79 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 620 300" role="img" aria-label="The Hopsworks feature store up close, and where its data is stored. A feature group holds reusable features and is where on-demand UDFs are registered; an external feature group keeps its data in external tables. A feature view selects features from feature groups and holds the model-dependent UDFs, describing a model's input and output schema. Feature group data is stored across four backends: external tables (BigQuery, Snowflake), HopsFS-S3 (offline store), RonDB (online store), and OpenSearch (vector index)." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="fss-arrow" viewBox="0 0 11 11" refX="9.5" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 L3 5.5 z"/>
+    </marker>
+    <marker id="fss-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
+    </marker>
+  </defs>
+
+  <text class="viz-label" x="16" y="24">Feature store</text>
+
+  <!-- feature group (data tone, dual-tone header) -->
+  <a class="viz-link" href="../../fs/feature_group/fg_overview/">
+    <g data-tone="data">
+      <rect class="viz-kv-frame" x="16" y="36" width="280" height="60" rx="6" style="stroke:var(--viz-tone)"/>
+      <path class="viz-kv-header" d="M16 42 a6 6 0 0 1 6 -6 h268 a6 6 0 0 1 6 6 v20 h-280 z" style="stroke:var(--viz-tone);fill:var(--viz-tone-fill-solid)"/>
+      <text class="viz-kv-title" x="28" y="55">Feature group</text>
+      <text class="viz-meta" x="284" y="55" text-anchor="end" data-tone="data">On-demand UDFs</text>
+      <text class="viz-node-subtitle" x="156" y="83" text-anchor="middle">reusable features</text>
+    </g>
+  </a>
+
+  <!-- external feature group -->
+  <g>
+    <rect class="viz-kv-frame" x="16" y="106" width="280" height="56" rx="6" style="stroke-dasharray:4 3"/>
+    <path class="viz-kv-header" d="M16 112 a6 6 0 0 1 6 -6 h268 a6 6 0 0 1 6 6 v20 h-280 z"/>
+    <text class="viz-kv-title" x="28" y="125">External feature group</text>
+    <text class="viz-node-subtitle" x="156" y="151" text-anchor="middle">data stays in external tables</text>
+  </g>
+
+  <!-- feature view (neutral tone, dual-tone header) -->
+  <a class="viz-link" href="../../fs/feature_view/fv_overview/">
+    <g data-tone="neutral">
+      <rect class="viz-kv-frame" x="316" y="36" width="288" height="126" rx="6" style="stroke:var(--viz-tone)"/>
+      <path class="viz-kv-header" d="M316 42 a6 6 0 0 1 6 -6 h276 a6 6 0 0 1 6 6 v20 h-288 z" style="stroke:var(--viz-tone);fill:var(--viz-tone-fill-solid)"/>
+      <text class="viz-kv-title" x="328" y="55">Feature view</text>
+      <text class="viz-meta" x="592" y="55" text-anchor="end" data-tone="neutral">Model-dependent UDFs</text>
+      <text class="viz-node-subtitle" x="460" y="100" text-anchor="middle">selects from feature groups</text>
+      <text class="viz-node-subtitle" x="460" y="122" text-anchor="middle">a model's input and output schema</text>
+    </g>
+  </a>
+
+  <!-- feature group selected by feature view -->
+  <path class="viz-edge" d="M296 66 H316" marker-start="url(#fss-knob)" marker-end="url(#fss-arrow)"/>
+
+  <!-- stored in -->
+  <path class="viz-edge" d="M156 162 V206" marker-start="url(#fss-knob)" marker-end="url(#fss-arrow)"/>
+  <text class="viz-meta" x="174" y="188">stored in</text>
+
+  <!-- storage backends -->
+  <text class="viz-label" x="16" y="204">Storage</text>
+  <g>
+    <rect class="viz-kv-frame" x="16" y="210" width="168" height="66" rx="6"/>
+    <path class="viz-kv-header" d="M16 216 a6 6 0 0 1 6 -6 h156 a6 6 0 0 1 6 6 v20 h-168 z"/>
+    <text class="viz-kv-title" x="28" y="229">External tables</text>
+    <text class="viz-node-subtitle" x="100" y="260" text-anchor="middle">BigQuery, Snowflake</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="190" y="210" width="124" height="66" rx="6"/>
+    <path class="viz-kv-header" d="M190 216 a6 6 0 0 1 6 -6 h112 a6 6 0 0 1 6 6 v20 h-124 z"/>
+    <text class="viz-kv-title" x="202" y="229">HopsFS-S3</text>
+    <text class="viz-node-subtitle" x="252" y="260" text-anchor="middle">offline store</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="318" y="210" width="150" height="66" rx="6"/>
+    <path class="viz-kv-header" d="M318 216 a6 6 0 0 1 6 -6 h138 a6 6 0 0 1 6 6 v20 h-150 z"/>
+    <text class="viz-kv-title" x="330" y="229">RonDB</text>
+    <text class="viz-node-subtitle" x="393" y="260" text-anchor="middle">online store</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="476" y="210" width="128" height="66" rx="6"/>
+    <path class="viz-kv-header" d="M476 216 a6 6 0 0 1 6 -6 h116 a6 6 0 0 1 6 6 v20 h-128 z"/>
+    <text class="viz-kv-title" x="488" y="229">OpenSearch</text>
+    <text class="viz-node-subtitle" x="540" y="260" text-anchor="middle">vector index</text>
+  </g>
+</svg>
+</figure>

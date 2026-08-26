@@ -1,77 +1,80 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 1000 400" role="img" aria-label="Animated diagram of the Batch API write path for Spark clients. A dataframe enters HSFS and splits: online rows go through Kafka into the online store on RonDB, while the large backfill writes directly to the Hudi tables of the offline store over the HDFS API, skipping Kafka to avoid write amplification." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 850 380" role="img" aria-label="Animated diagram of the Batch API write path for Spark clients. A dataframe enters HSFS and splits: online rows go through Kafka into the online store on RonDB, while the large backfill writes directly to the Delta tables of the offline store over the HDFS API, skipping Kafka to avoid write amplification." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="wb-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="wb-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="wb-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <path class="viz-edge" d="M174 202 H222" marker-end="url(#wb-arrow)"/>
-  <path class="viz-edge" d="M380 190 C412 190 418 124 442 124" marker-end="url(#wb-arrow)"/>
-  <path class="viz-edge" d="M590 124 C645 124 650 95 692 95" marker-end="url(#wb-arrow)"/>
-  <path class="viz-edge" d="M380 214 C540 214 560 305 692 305" marker-end="url(#wb-arrow)"/>
-  <text class="viz-meta" x="540" y="248" text-anchor="middle">HDFS API · direct write</text>
+  <path class="viz-edge" d="M152 198 H186" marker-start="url(#wb-knob)" marker-end="url(#wb-arrow)"/>
+  <path class="viz-edge" d="M334 186 C352 186 356 120 372 120" marker-start="url(#wb-knob)" marker-end="url(#wb-arrow)"/>
+  <path class="viz-edge" d="M496 120 C525 120 530 91 556 91" marker-start="url(#wb-knob)" marker-end="url(#wb-arrow)"/>
+  <path class="viz-edge" d="M334 210 C450 210 470 301 556 301" marker-start="url(#wb-knob)" marker-end="url(#wb-arrow)"/>
+  <text class="viz-meta" x="445" y="248" text-anchor="middle">HDFS API · direct write</text>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="170" width="150" height="64" rx="8"/>
-    <text class="viz-node-title" x="99" y="196" text-anchor="middle">SPARK CLIENT</text>
-    <text class="viz-node-subtitle" x="99" y="216" text-anchor="middle">large backfills</text>
+  <g>
+    <rect class="viz-node" x="16" y="166" width="136" height="64" rx="4"/>
+    <text class="viz-node-title" x="84" y="192" text-anchor="middle">SPARK CLIENT</text>
+    <text class="viz-node-subtitle" x="84" y="212" text-anchor="middle">large backfills</text>
   </g>
-  <g class="viz-node-group">
-    <rect class="viz-node" x="230" y="170" width="150" height="64" rx="8"/>
-    <text class="viz-node-title" x="305" y="196" text-anchor="middle">HSFS</text>
-    <text class="viz-node-subtitle" x="305" y="216" text-anchor="middle">splits the write</text>
+  <g>
+    <rect class="viz-node" x="186" y="166" width="148" height="64" rx="4"/>
+    <text class="viz-node-title" x="260" y="192" text-anchor="middle">HSFS</text>
+    <text class="viz-node-subtitle" x="260" y="212" text-anchor="middle">splits the write</text>
   </g>
-  <g id="wb-kafka" class="viz-node-group" data-tone="data">
-    <rect class="viz-node" x="450" y="96" width="140" height="56" rx="8"/>
-    <text class="viz-node-title" x="520" y="118" text-anchor="middle">KAFKA</text>
-    <text class="viz-node-subtitle" x="520" y="136" text-anchor="middle">online path</text>
+  <g id="wb-kafka" data-tone="data">
+    <rect class="viz-node" x="372" y="92" width="124" height="56" rx="4"/>
+    <text class="viz-node-title" x="434" y="114" text-anchor="middle">KAFKA</text>
+    <text class="viz-node-subtitle" x="434" y="132" text-anchor="middle">online path</text>
   </g>
 
-  <rect class="viz-kv-frame" x="700" y="40" width="276" height="110" rx="6"/>
-  <rect class="viz-kv-header" x="700" y="40" width="276" height="26"/>
-  <text class="viz-kv-title" x="712" y="57">Online store</text>
-  <text class="viz-meta" x="964" y="57" text-anchor="end">RonDB</text>
+  <rect class="viz-kv-frame" x="556" y="36" width="252" height="110" rx="6"/>
+  <path class="viz-kv-header" d="M556 42 a6 6 0 0 1 6 -6 h240 a6 6 0 0 1 6 6 v20 h-252 z"/>
+  <text class="viz-kv-title" x="568" y="53">Online store</text>
+  <text class="viz-meta" x="796" y="53" text-anchor="end">RonDB</text>
   <g id="wb-row-on" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="708" y="74" width="260" height="26" rx="3"/>
-    <text class="viz-kv-key" x="716" y="91">amount_sum</text>
-    <text id="wb-von" class="viz-kv-val" x="960" y="91" text-anchor="end">–</text>
+    <rect class="viz-kv-cell" x="564" y="70" width="236" height="26" rx="3"/>
+    <text class="viz-kv-key" x="572" y="87">amount_sum</text>
+    <text id="wb-von" class="viz-kv-val" x="792" y="87" text-anchor="end">–</text>
   </g>
-  <text class="viz-meta" x="712" y="120">latest values only</text>
+  <text class="viz-meta" x="568" y="116">latest values only</text>
 
-  <rect class="viz-kv-frame" x="700" y="250" width="276" height="120" rx="6"/>
-  <rect class="viz-kv-header" x="700" y="250" width="276" height="26"/>
-  <text class="viz-kv-title" x="712" y="267">Offline store</text>
-  <text class="viz-meta" x="964" y="267" text-anchor="end">Hudi · S3/ADLS/GCS/HopsFS</text>
+  <rect class="viz-kv-frame" x="556" y="240" width="252" height="120" rx="6"/>
+  <path class="viz-kv-header" d="M556 246 a6 6 0 0 1 6 -6 h240 a6 6 0 0 1 6 6 v20 h-252 z"/>
+  <text class="viz-kv-title" x="568" y="257">Offline store</text>
+  <text class="viz-meta" x="796" y="257" text-anchor="end">Delta</text>
   <g id="wb-row-off" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="708" y="284" width="260" height="26" rx="3"/>
-    <text class="viz-kv-key" x="716" y="301">hudi commit</text>
-    <text id="wb-voff" class="viz-kv-val" x="960" y="301" text-anchor="end">–</text>
+    <rect class="viz-kv-cell" x="564" y="274" width="236" height="26" rx="3"/>
+    <text class="viz-kv-key" x="572" y="291">delta commit</text>
+    <text id="wb-voff" class="viz-kv-val" x="792" y="291" text-anchor="end">–</text>
   </g>
-  <text id="wb-note" class="viz-meta viz-fade" x="712" y="330" style="opacity:0">backfill skips Kafka → no write amplification</text>
+  <text id="wb-note" class="viz-meta viz-fade" x="568" y="320" style="opacity:0">skips Kafka, no write amplification</text>
 
-  <g transform="translate(156 193)">
+  <g transform="translate(134 189)">
     <g id="wb-p1" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="40" height="18" rx="3"/>
       <text x="20" y="9" text-anchor="middle">df</text>
     </g>
   </g>
-  <g transform="translate(362 106)">
+  <g transform="translate(330 111)">
     <g id="wb-p2" class="viz-packet" data-tone="data" style="opacity:0">
       <rect width="48" height="18" rx="3"/>
       <text x="24" y="9" text-anchor="middle">rows</text>
     </g>
   </g>
-  <g transform="translate(575 115)">
+  <g transform="translate(500 111)">
     <g id="wb-p3" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="48" height="18" rx="3"/>
       <text x="24" y="9" text-anchor="middle">rows</text>
     </g>
   </g>
-  <g transform="translate(362 205)">
+  <g transform="translate(322 201)">
     <g id="wb-p4" class="viz-packet" data-tone="write" style="opacity:0">
-      <rect width="70" height="18" rx="3"/>
-      <text x="35" y="9" text-anchor="middle">backfill</text>
+      <rect x="8" width="70" height="18" rx="3"/>
+      <text x="43" y="9" text-anchor="middle">backfill</text>
     </g>
   </g>
 </svg>
@@ -81,11 +84,11 @@
   "loopDelay": 2400,
   "steps": [
     { "#wb-p1": {"opacity": 1} },
-    { "#wb-p1": {"x": 95}, "$ms": 650 },
+    { "#wb-p1": {"x": 70}, "$ms": 650 },
     { "#wb-p1": {"opacity": 0}, "#wb-p2": {"opacity": 1}, "#wb-p4": {"opacity": 1}, "$ms": 500 },
-    { "#wb-p2": {"x": 95}, "#wb-kafka": {"state": "active"}, "#wb-p4": {"x": 335, "y": 91}, "$ms": 850 },
+    { "#wb-p2": {"x": 80}, "#wb-kafka": {"state": "active"}, "#wb-p4": {"x": 230, "y": 96}, "$ms": 850 },
     { "#wb-p2": {"opacity": 0}, "#wb-p3": {"opacity": 1}, "#wb-p4": {"opacity": 0}, "#wb-row-off": {"state": "active"}, "#wb-voff": {"text": "c-0231"}, "$ms": 600 },
-    { "#wb-p3": {"x": 145, "y": -20}, "$ms": 650 },
+    { "#wb-p3": {"x": 70, "y": -20}, "$ms": 650 },
     { "#wb-p3": {"opacity": 0}, "#wb-row-on": {"state": "active"}, "#wb-von": {"text": "312.40"}, "$ms": 900 },
     { "#wb-row-on": {"state": "visited"}, "#wb-row-off": {"state": "visited"}, "#wb-note": {"opacity": 1}, "#wb-kafka": {"state": null}, "$ms": 1600 }
   ]

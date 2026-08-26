@@ -1,108 +1,78 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 1000 430" role="img" aria-label="Animated diagram of a point-in-time correct join. Two label rows define observation times on a shared timeline between two feature groups. For the first observation time a dashed guide drops through all lanes: the join picks the most recent row in each feature group at or before that time, shown in green, while rows with a later event_time dim out in red as excluded, so no future information leaks into the training data. The second observation time then repeats the same selection further along the timeline." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 820 314" role="img" aria-label="Animated timeline of a point-in-time correct join, on the same data as the table above. Time runs left to right. The top lane is the feature group seller_reviews_quarterly with two reviews: oct-22 avg_review_score 3.4 and dec-22 2.8. The bottom lane is seller_delivery_time_monthly, the observations, with deliveries at oct-22, nov-22 and dec-22. For each observation an as-of window grows from the left up to that observation's event_time; the join takes the newest review inside the window. oct-22 takes the oct-22 review 3.4. nov-22 also takes the oct-22 review 3.4 because the dec-22 review sits outside the window, later in time, and is excluded. dec-22 takes the dec-22 review 2.8. A caption states that each observation joins the newest review at or before its event_time." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="pit2-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
-    </marker>
-    <marker id="pit2-arrow-err" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path class="viz-arrow-error" d="M0 0 L10 5 L0 10 z"/>
+    <marker id="tl-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>
 
-  <path id="pit-ol1" class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M440 46 V386" style="opacity:0"/>
-  <path id="pit-ol2" class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M800 46 V386" style="opacity:0"/>
-  <text id="pit-om1" class="viz-meta viz-fade" data-tone="data" x="446" y="42" style="opacity:0">observation time</text>
+  <!-- ===== as-of window (grows left to right with time) ===== -->
+  <rect id="win" class="viz-window" data-tone="data" x="40" y="42" width="0" height="62" rx="6" style="transition:width .7s cubic-bezier(.4,0,.2,1)"/>
 
-  <text class="viz-label" x="20" y="40">Feature group · credit_score</text>
-  <g class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="140" y="52" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="192" y="70" text-anchor="middle">712</text>
-    <text class="viz-meta" x="192" y="88" text-anchor="middle">Mar 10 06:00</text>
+  <!-- ===== feature lane: reviews ===== -->
+  <text class="viz-label" x="40" y="30">seller_reviews_quarterly</text>
+  <text class="viz-meta" x="256" y="30">feature group</text>
+  <g id="rev-oct" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="46" y="48" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="110" y="70" text-anchor="middle">3.4</text>
+    <text class="viz-meta" x="110" y="86" text-anchor="middle">oct-22</text>
   </g>
-  <g id="pit-a2" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="300" y="52" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="352" y="70" text-anchor="middle">715</text>
-    <text class="viz-meta" x="352" y="88" text-anchor="middle">Mar 11 06:00</text>
+  <g id="rev-dec" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="646" y="48" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="710" y="70" text-anchor="middle">2.8</text>
+    <text class="viz-meta" x="710" y="86" text-anchor="middle">dec-22</text>
   </g>
-  <g id="pit-a3" class="viz-kv-entry viz-fade" data-tone="error">
-    <rect class="viz-kv-cell" x="460" y="52" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="512" y="70" text-anchor="middle">730</text>
-    <text class="viz-meta" x="512" y="88" text-anchor="middle">Mar 13 06:00</text>
-  </g>
-  <g id="pit-a4" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="640" y="52" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="692" y="70" text-anchor="middle">731</text>
-    <text class="viz-meta" x="692" y="88" text-anchor="middle">Mar 14 06:00</text>
-  </g>
-  <g class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="840" y="52" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="892" y="70" text-anchor="middle">740</text>
-    <text class="viz-meta" x="892" y="88" text-anchor="middle">Mar 16 06:00</text>
-  </g>
-  <text id="pit-n1" class="viz-meta viz-fade" data-tone="error" x="536" y="130" style="opacity:0">excluded, newer than the label</text>
+  <text id="excl" class="viz-meta viz-fade" data-tone="error" x="700" y="110" text-anchor="middle" style="opacity:0">outside the window, excluded</text>
 
-  <text class="viz-label" x="20" y="170">Labels · spine of the join</text>
-  <g id="pit-l1" class="viz-kv-entry" data-tone="data">
-    <rect class="viz-kv-cell" x="384" y="182" width="112" height="44" rx="6"/>
-    <text class="viz-node-title" x="440" y="200" text-anchor="middle">fraud = 1</text>
-    <text class="viz-meta" x="440" y="218" text-anchor="middle">Mar 12 10:00</text>
+  <!-- ===== observation guides (the as-of cutoff) ===== -->
+  <path id="g-oct" class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M110 42 V216" style="opacity:0"/>
+  <path id="g-nov" class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M410 42 V216" style="opacity:0"/>
+  <path id="g-dec" class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M710 42 V216" style="opacity:0"/>
+
+  <!-- ===== observation lane: deliveries (the label group) ===== -->
+  <text class="viz-label" x="40" y="150">seller_delivery_time_monthly</text>
+  <text class="viz-meta" x="290" y="150">observations &#183; label group</text>
+  <g id="del-oct" class="viz-kv-entry" data-tone="data">
+    <rect class="viz-kv-cell" x="46" y="164" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="110" y="186" text-anchor="middle">72</text>
+    <text class="viz-meta" x="110" y="202" text-anchor="middle">oct-22</text>
   </g>
-  <g id="pit-l2" class="viz-kv-entry" data-tone="data">
-    <rect class="viz-kv-cell" x="744" y="182" width="112" height="44" rx="6"/>
-    <text class="viz-node-title" x="800" y="200" text-anchor="middle">fraud = 0</text>
-    <text class="viz-meta" x="800" y="218" text-anchor="middle">Mar 15 09:00</text>
+  <g id="del-nov" class="viz-kv-entry" data-tone="data">
+    <rect class="viz-kv-cell" x="346" y="164" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="410" y="186" text-anchor="middle">104</text>
+    <text class="viz-meta" x="410" y="202" text-anchor="middle">nov-22</text>
+  </g>
+  <g id="del-dec" class="viz-kv-entry" data-tone="data">
+    <rect class="viz-kv-cell" x="646" y="164" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="710" y="186" text-anchor="middle">88</text>
+    <text class="viz-meta" x="710" y="202" text-anchor="middle">dec-22</text>
   </g>
 
-  <text class="viz-label" x="20" y="300">Feature group · amount_sum_7d</text>
-  <g class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="180" y="312" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="232" y="330" text-anchor="middle">1 204</text>
-    <text class="viz-meta" x="232" y="348" text-anchor="middle">Mar 10 12:00</text>
-  </g>
-  <g id="pit-c2" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="310" y="312" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="362" y="330" text-anchor="middle">1 318</text>
-    <text class="viz-meta" x="362" y="348" text-anchor="middle">Mar 11 12:00</text>
-  </g>
-  <g id="pit-c3" class="viz-kv-entry viz-fade" data-tone="error">
-    <rect class="viz-kv-cell" x="500" y="312" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="552" y="330" text-anchor="middle">2 090</text>
-    <text class="viz-meta" x="552" y="348" text-anchor="middle">Mar 13 12:00</text>
-  </g>
-  <g id="pit-c4" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="630" y="312" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="682" y="330" text-anchor="middle">1 877</text>
-    <text class="viz-meta" x="682" y="348" text-anchor="middle">Mar 14 00:00</text>
-  </g>
-  <g class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="830" y="312" width="104" height="44" rx="6"/>
-    <text class="viz-node-title" x="882" y="330" text-anchor="middle">2 431</text>
-    <text class="viz-meta" x="882" y="348" text-anchor="middle">Mar 16 00:00</text>
-  </g>
-  <text id="pit-n2" class="viz-meta viz-fade" data-tone="error" x="536" y="288" style="opacity:0">excluded, newer than the label</text>
+  <!-- ===== joined review value at each observation ===== -->
+  <text id="b-oct" class="viz-meta viz-fade" data-tone="accent" x="110" y="228" text-anchor="middle" style="opacity:0">review 3.4</text>
+  <text id="b-nov" class="viz-meta viz-fade" data-tone="accent" x="410" y="228" text-anchor="middle" style="opacity:0">review 3.4</text>
+  <text id="b-dec" class="viz-meta viz-fade" data-tone="accent" x="710" y="228" text-anchor="middle" style="opacity:0">review 2.8</text>
 
-  <path id="pit-e1" class="viz-edge viz-fade" data-tone="write" d="M414 182 C 400 158 380 134 364 100" style="opacity:0" marker-end="url(#pit2-arrow)"/>
-  <path id="pit-e2" class="viz-edge viz-fade" data-tone="write" d="M414 226 C 398 254 380 288 368 310" style="opacity:0" marker-end="url(#pit2-arrow)"/>
-  <path id="pit-x1" class="viz-edge viz-fade" data-tone="error" d="M466 182 C 482 160 498 134 508 100" stroke-dasharray="4 3" style="opacity:0" marker-end="url(#pit2-arrow-err)"/>
-  <path id="pit-x2" class="viz-edge viz-fade" data-tone="error" d="M466 226 C 486 254 528 288 544 310" stroke-dasharray="4 3" style="opacity:0" marker-end="url(#pit2-arrow-err)"/>
-  <path id="pit-e3" class="viz-edge viz-fade" data-tone="write" d="M774 182 C 758 158 730 134 716 100" style="opacity:0" marker-end="url(#pit2-arrow)"/>
-  <path id="pit-e4" class="viz-edge viz-fade" data-tone="write" d="M774 226 C 756 254 722 288 708 310" style="opacity:0" marker-end="url(#pit2-arrow)"/>
-
-  <path class="viz-edge" d="M120 400 H966" marker-end="url(#pit2-arrow)"/>
-  <text class="viz-meta" x="960" y="392" text-anchor="end">time</text>
+  <!-- ===== time axis ===== -->
+  <path class="viz-edge" d="M40 258 H790" marker-end="url(#tl-arrow)"/>
+  <text class="viz-meta" x="44" y="274">earlier</text>
+  <text class="viz-meta" x="786" y="274" text-anchor="end">later &#183; time</text>
+  <text id="cap" class="viz-meta viz-fade" x="415" y="298" text-anchor="middle" style="opacity:0">each observation joins the newest review at or before its event_time</text>
 </svg>
 <script type="application/json" data-viz-scene>
 {
   "interval": 800,
-  "loopDelay": 2600,
+  "loopDelay": 2800,
   "steps": [
-    { "#pit-l1": {"state": "active"}, "#pit-ol1": {"opacity": 1}, "#pit-om1": {"opacity": 1}, "$ms": 700 },
-    { "#pit-e1": {"opacity": 1}, "#pit-e2": {"opacity": 1}, "#pit-a2": {"state": "active"}, "#pit-c2": {"state": "active"}, "$ms": 900 },
-    { "#pit-x1": {"opacity": 1}, "#pit-x2": {"opacity": 1}, "#pit-a3": {"opacity": 0.35}, "#pit-c3": {"opacity": 0.35}, "#pit-n1": {"opacity": 1}, "#pit-n2": {"opacity": 1}, "$ms": 1300 },
-    { "#pit-a2": {"state": "visited"}, "#pit-c2": {"state": "visited"}, "#pit-l1": {"state": "visited"}, "$ms": 600 },
-    { "#pit-l2": {"state": "active"}, "#pit-ol2": {"opacity": 1}, "$ms": 700 },
-    { "#pit-e3": {"opacity": 1}, "#pit-e4": {"opacity": 1}, "#pit-a4": {"state": "active"}, "#pit-c4": {"state": "active"}, "$ms": 900 },
-    { "#pit-a4": {"state": "visited"}, "#pit-c4": {"state": "visited"}, "#pit-l2": {"state": "visited"}, "$ms": 1900 }
+    { "#win": {"w": 138, "state": "active"}, "#g-oct": {"opacity": 1}, "#del-oct": {"state": "active"}, "$ms": 800 },
+    { "#rev-oct": {"state": "active", "tone": "accent"}, "#b-oct": {"opacity": 1}, "$ms": 900 },
+    { "#g-oct": {"opacity": 0}, "#del-oct": {"state": "visited"}, "#rev-oct": {"state": null, "tone": null}, "$ms": 700 },
+    { "#win": {"w": 438}, "#g-nov": {"opacity": 1}, "#del-nov": {"state": "active"}, "$ms": 800 },
+    { "#rev-oct": {"state": "active", "tone": "accent"}, "#rev-dec": {"state": "active", "tone": "error"}, "#excl": {"opacity": 1}, "#b-nov": {"opacity": 1}, "$ms": 1300 },
+    { "#g-nov": {"opacity": 0}, "#del-nov": {"state": "visited"}, "#rev-oct": {"state": null, "tone": null}, "#rev-dec": {"state": null, "tone": null}, "#excl": {"opacity": 0}, "$ms": 700 },
+    { "#win": {"w": 738}, "#g-dec": {"opacity": 1}, "#del-dec": {"state": "active"}, "$ms": 800 },
+    { "#rev-dec": {"state": "active", "tone": "accent"}, "#b-dec": {"opacity": 1}, "$ms": 900 },
+    { "#g-dec": {"opacity": 0}, "#del-dec": {"state": "visited"}, "#rev-dec": {"state": null, "tone": null}, "#win": {"state": "visited"}, "#cap": {"opacity": 1}, "$ms": 2600 }
   ]
 }
 </script>

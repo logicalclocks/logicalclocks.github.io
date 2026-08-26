@@ -1,74 +1,77 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 1000 400" role="img" aria-label="Animated diagram of one feature group served from two stores. A write leaves feature_group_v1 and lands in both: in the online store it upserts the existing row for its key, replacing temperature and rainfall with the latest values; in the offline store it appends a new dated row while the full history for the same key stays in place for time travel." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 820 400" role="img" aria-label="Animated diagram of one feature group served from two stores. A write leaves feature_group_v1 and lands in both: in the online store it upserts the existing row for its key, replacing temperature and rainfall with the latest values; in the offline store it appends a new dated row while the full history for the same key stays in place for time travel." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fo-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="fo-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="fo-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <path class="viz-edge" d="M194 186 C280 160 300 100 372 92" marker-end="url(#fo-arrow)"/>
-  <path class="viz-edge" d="M194 214 C280 240 300 310 372 318" marker-end="url(#fo-arrow)"/>
+  <path class="viz-edge" d="M194 186 C280 160 300 100 372 92" marker-start="url(#fo-knob)" marker-end="url(#fo-arrow)"/>
+  <path class="viz-edge" d="M194 214 C280 240 300 310 372 318" marker-start="url(#fo-knob)" marker-end="url(#fo-arrow)"/>
   <text class="viz-meta" x="286" y="118" text-anchor="middle">upsert</text>
   <text class="viz-meta" x="286" y="292" text-anchor="middle">append</text>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="168" width="170" height="64" rx="8"/>
+  <g>
+    <rect class="viz-node" x="24" y="168" width="170" height="64" rx="4"/>
     <text class="viz-node-title" x="109" y="194" text-anchor="middle">feature_group_v1</text>
     <text class="viz-node-subtitle" x="109" y="214" text-anchor="middle">one schema</text>
   </g>
 
-  <rect class="viz-kv-frame" x="380" y="40" width="596" height="120" rx="6"/>
-  <rect class="viz-kv-header" x="380" y="40" width="596" height="26"/>
+  <rect class="viz-kv-frame" x="380" y="40" width="420" height="120" rx="6"/>
+  <path class="viz-kv-header" d="M380 46 a6 6 0 0 1 6 -6 h408 a6 6 0 0 1 6 6 v20 h-420 z"/>
   <text class="viz-kv-title" x="392" y="57">Online store</text>
-  <text class="viz-meta" x="964" y="57" text-anchor="end">latest values only · RonDB</text>
+  <text class="viz-meta" x="788" y="57" text-anchor="end">latest values only · RonDB</text>
   <g id="fo-ron" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="388" y="74" width="580" height="24" rx="3"/>
+    <rect class="viz-kv-cell" x="388" y="74" width="404" height="24" rx="3"/>
     <text class="viz-kv-key" x="396" y="90">9844-3333</text>
-    <text id="fo-von" class="viz-kv-val" x="960" y="90" text-anchor="end">temp 12.45 · rain 44</text>
+    <text id="fo-von" class="viz-kv-val" x="784" y="90" text-anchor="end">temp 12.45 · rain 44</text>
   </g>
   <g class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="388" y="104" width="580" height="24" rx="3"/>
+    <rect class="viz-kv-cell" x="388" y="104" width="404" height="24" rx="3"/>
     <text class="viz-kv-key" x="396" y="120">6783-9832</text>
-    <text class="viz-kv-val" x="960" y="120" text-anchor="end">temp 22.84 · rain 5</text>
+    <text class="viz-kv-val" x="784" y="120" text-anchor="end">temp 22.84 · rain 5</text>
   </g>
   <text id="fo-mon" class="viz-meta viz-fade" x="392" y="148" style="opacity:0">the upsert replaces the row for its key</text>
 
-  <rect class="viz-kv-frame" x="380" y="210" width="596" height="160" rx="6"/>
-  <rect class="viz-kv-header" x="380" y="210" width="596" height="26"/>
+  <rect class="viz-kv-frame" x="380" y="210" width="420" height="160" rx="6"/>
+  <path class="viz-kv-header" d="M380 216 a6 6 0 0 1 6 -6 h408 a6 6 0 0 1 6 6 v20 h-420 z"/>
   <text class="viz-kv-title" x="392" y="227">Offline store</text>
-  <text class="viz-meta" x="964" y="227" text-anchor="end">full history · Hudi</text>
+  <text class="viz-meta" x="788" y="227" text-anchor="end">full history · Delta</text>
   <g class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="388" y="244" width="580" height="22" rx="3"/>
+    <rect class="viz-kv-cell" x="388" y="244" width="404" height="22" rx="3"/>
     <text class="viz-kv-key" x="396" y="259">9844-3333 · 2020-01-01</text>
-    <text class="viz-kv-val" x="960" y="259" text-anchor="end">13.12 · 55</text>
+    <text class="viz-kv-val" x="784" y="259" text-anchor="end">13.12 · 55</text>
   </g>
   <g class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="388" y="272" width="580" height="22" rx="3"/>
+    <rect class="viz-kv-cell" x="388" y="272" width="404" height="22" rx="3"/>
     <text class="viz-kv-key" x="396" y="287">9844-3333 · 2021-01-01</text>
-    <text class="viz-kv-val" x="960" y="287" text-anchor="end">14.45 · 34</text>
+    <text class="viz-kv-val" x="784" y="287" text-anchor="end">14.45 · 34</text>
   </g>
   <g class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="388" y="300" width="580" height="22" rx="3"/>
+    <rect class="viz-kv-cell" x="388" y="300" width="404" height="22" rx="3"/>
     <text class="viz-kv-key" x="396" y="315">9844-3333 · 2022-01-01</text>
-    <text class="viz-kv-val" x="960" y="315" text-anchor="end">12.45 · 44</text>
+    <text class="viz-kv-val" x="784" y="315" text-anchor="end">12.45 · 44</text>
   </g>
   <g id="fo-newrow" class="viz-kv-entry viz-fade" data-tone="write" style="opacity:0">
-    <rect class="viz-kv-cell" x="388" y="328" width="580" height="22" rx="3"/>
+    <rect class="viz-kv-cell" x="388" y="328" width="404" height="22" rx="3"/>
     <text class="viz-kv-key" x="396" y="343">9844-3333 · 2023-01-01</text>
-    <text class="viz-kv-val" x="960" y="343" text-anchor="end">13.02 · 41</text>
+    <text class="viz-kv-val" x="784" y="343" text-anchor="end">13.02 · 41</text>
   </g>
   <text id="fo-moff" class="viz-meta viz-fade" x="392" y="364" style="opacity:0">the append preserves history for time travel</text>
 
   <g transform="translate(206 178)">
     <g id="fo-p1" class="viz-packet" data-tone="write" style="opacity:0">
-      <rect width="96" height="18" rx="3"/>
-      <text x="48" y="9" text-anchor="middle">write 13.02</text>
+      <rect width="108" height="18" rx="3"/>
+      <text x="54" y="9" text-anchor="middle">write 13.02</text>
     </g>
   </g>
   <g transform="translate(206 204)">
     <g id="fo-p2" class="viz-packet" data-tone="write" style="opacity:0">
-      <rect width="96" height="18" rx="3"/>
-      <text x="48" y="9" text-anchor="middle">write 13.02</text>
+      <rect width="108" height="18" rx="3"/>
+      <text x="54" y="9" text-anchor="middle">write 13.02</text>
     </g>
   </g>
 </svg>

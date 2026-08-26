@@ -1,39 +1,141 @@
-<figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="6 8 548 236" role="img" aria-label="A feature view selects features and a label from two feature groups and adds transformations, then produces training data offline and serves feature vectors online, retrieved by primary key." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 820 742" role="img" aria-label="Animated pipeline in Python: one feature-view definition carries its transformation into two lanes. Two feature groups are joined by a foreign key; product_feature_group is the label feature group (root), holding the label sales and the primary key product_id. create_feature_view names the view product_sales, sets labels to sales, and attaches a normalize transformation. The resulting feature view forks into an OFFLINE lane and an ONLINE lane. Offline, create_train_validation_test_split applies an extra_filter category == perfumes and 80/10/10 splits, then normalize(44) computes 0.78, producing product_sales_training_data_v1. Online, get_feature_vector retrieves by the serving key product_id=222 with no filter applied, then the same normalize with the same statistics computes 0.78, returning the product_sales_feature_vector: category perfumes, name d'odour, sold_prev_week 0.78. Both lanes end on the identical transformed value, showing consistent transformations and no train/serve skew." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fv-flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
+    <marker id="fvf-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>
 
-  <!-- source feature groups -->
-  <a class="viz-link" href="../../feature_group/fg_overview/">
-    <g data-tone="accent"><rect class="viz-node" x="30" y="16" width="224" height="40" rx="4"/>
-    <text class="viz-node-title" x="142" y="41" text-anchor="middle">product_feature_group</text></g>
-  </a>
-  <a class="viz-link" href="../../feature_group/fg_overview/">
-    <g data-tone="accent"><rect class="viz-node" x="276" y="16" width="254" height="40" rx="4"/>
-    <text class="viz-node-title" x="403" y="41" text-anchor="middle">order_weekly_feature_group</text></g>
-  </a>
-  <path class="viz-edge" d="M254 36 H276" style="stroke-dasharray:4 4"/>
+  <!-- ============ DEFINITION ============ -->
+  <!-- source feature groups; product_feature_group is the label (root) FG -->
+  <g id="fg-a" data-tone="data">
+    <rect class="viz-node" x="124" y="8" width="226" height="54" rx="4"/>
+    <text class="viz-node-title" x="237" y="30" text-anchor="middle">product_feature_group</text>
+    <text class="viz-node-subtitle" x="237" y="48" text-anchor="middle">label feature group &#183; root</text>
+  </g>
+  <g id="fg-b" data-tone="data">
+    <rect class="viz-node" x="436" y="8" width="264" height="54" rx="4"/>
+    <text class="viz-node-title" x="568" y="39" text-anchor="middle">order_weekly_feature_group</text>
+  </g>
+  <path id="join-dash" class="viz-edge" data-from="fg-a" data-from-side="right" data-to="fg-b" data-to-side="left" data-route="straight" style="stroke-dasharray:4 4;opacity:0"/>
+  <text id="join-lbl" class="viz-meta" x="392" y="31" text-anchor="middle" style="opacity:0">join</text>
+  <path id="e-a" class="viz-edge" data-from="fg-a" data-from-side="bottom" data-to="def-box" data-to-side="top" data-to-x="380" marker-end="url(#fvf-arrow)" style="opacity:0"/>
+  <path id="e-b" class="viz-edge" data-from="fg-b" data-from-side="bottom" data-to="def-box" data-to-side="top" data-to-x="440" marker-end="url(#fvf-arrow)" style="opacity:0"/>
 
-  <!-- selection into the feature view -->
-  <path class="viz-edge" d="M280 56 V92" marker-end="url(#fv-flow-arrow)"/>
-  <text class="viz-meta" x="280" y="78" text-anchor="middle">select features + label, add transformations</text>
+  <!-- create_feature_view -->
+  <rect id="def-box" class="viz-code-box" x="222" y="94" width="378" height="124" rx="6" style="opacity:0"/>
+  <text id="dl1" class="viz-codeln" x="240" y="116" style="opacity:0">fv = fs.<tspan class="tok-fn">create_feature_view</tspan>(</text>
+  <text id="dl2" class="viz-codeln" x="240" y="134" style="opacity:0"><tspan> </tspan>   name=<tspan class="tok-str">"product_sales"</tspan>,</text>
+  <text id="dl3" class="viz-codeln" x="240" y="152" style="opacity:0"><tspan> </tspan>   query=query,</text>
+  <text id="dl4" class="viz-codeln" x="240" y="170" style="opacity:0"><tspan> </tspan>   labels=[<tspan class="tok-str">"sales"</tspan>],</text>
+  <text id="dl5" class="viz-codeln" x="240" y="188" style="opacity:0"><tspan> </tspan>   transformation_functions=[normalize],</text>
+  <text id="dl6" class="viz-codeln" x="240" y="206" style="opacity:0">)</text>
 
-  <g data-tone="accent"><rect class="viz-node" x="170" y="92" width="220" height="44" rx="4"/>
-  <text class="viz-node-title" x="280" y="119" text-anchor="middle">product_sales_feature_view</text></g>
+  <path id="e-fv" class="viz-edge" data-from="def-box" data-from-side="bottom" data-to="fview" data-to-side="top" marker-end="url(#fvf-arrow)" style="opacity:0"/>
+  <g id="fview" data-tone="accent" style="opacity:0">
+    <rect class="viz-node" x="278" y="252" width="264" height="56" rx="4"/>
+    <text class="viz-node-title" x="410" y="276" text-anchor="middle">product_sales_feature_view</text>
+    <text class="viz-node-subtitle" x="410" y="294" text-anchor="middle">one definition &#183; two uses</text>
+  </g>
 
-  <!-- offline / online outputs -->
-  <path class="viz-edge" d="M280 136 C280 156 150 156 150 176" marker-end="url(#fv-flow-arrow)"/>
-  <path class="viz-edge" d="M280 136 C280 156 410 156 410 176" marker-end="url(#fv-flow-arrow)"/>
+  <!-- fork into the two lanes -->
+  <path id="e-off" class="viz-edge" data-from="fview" data-from-side="bottom" data-to="off-box" data-to-side="top" data-to-x="212" marker-end="url(#fvf-arrow)" style="opacity:0"/>
+  <path id="e-on" class="viz-edge" data-from="fview" data-from-side="bottom" data-to="on-box" data-to-side="top" data-to-x="608" marker-end="url(#fvf-arrow)" style="opacity:0"/>
 
-  <g><rect class="viz-node" x="34" y="176" width="232" height="56" rx="4"/>
-  <text class="viz-node-title" x="150" y="200" text-anchor="middle">training_data_v1</text>
-  <text class="viz-meta" x="150" y="218" text-anchor="middle">offline · time range, filter, splits</text></g>
+  <!-- ============ OFFLINE lane ============ -->
+  <g id="z-off" style="opacity:0">
+    <rect class="viz-zone" x="20" y="342" width="384" height="316" rx="6"/>
+    <text class="viz-label" x="36" y="366">OFFLINE</text>
+    <text class="viz-meta" x="36" y="382">batch &#183; training data</text>
+  </g>
+  <rect id="off-box" class="viz-code-box" x="36" y="398" width="352" height="82" rx="6" style="opacity:0"/>
+  <text id="ol1" class="viz-codeln" x="50" y="420" style="opacity:0">fv.<tspan class="tok-fn">create_train_validation_test_split</tspan>(</text>
+  <text id="ol2" class="viz-codeln" x="50" y="438" style="opacity:0"><tspan> </tspan>   validation_size=0.1, test_size=0.1,</text>
+  <text id="ol3" class="viz-codeln" x="50" y="456" style="opacity:0"><tspan> </tspan>   extra_filter=category == <tspan class="tok-str">"perfumes"</tspan>,</text>
+  <text id="ol4" class="viz-codeln" x="50" y="474" style="opacity:0">)</text>
 
-  <g><rect class="viz-node" x="300" y="176" width="232" height="56" rx="4"/>
-  <text class="viz-node-title" x="416" y="200" text-anchor="middle">feature_vector</text>
-  <text class="viz-meta" x="416" y="218" text-anchor="middle">online · retrieve by primary key</text></g>
+  <path id="e-off1" class="viz-edge" data-from="off-box" data-from-side="bottom" data-to="off-tbox" data-to-side="top" marker-end="url(#fvf-arrow)" style="opacity:0"/>
+  <g id="off-tbox" style="opacity:0">
+    <rect class="viz-code-box" x="88" y="492" width="248" height="44" rx="6"/>
+    <text class="viz-codeln" x="132" y="510"><tspan class="tok-fn">normalize</tspan>(44) &#8594; </text>
+    <text id="off-val" class="viz-codeln" x="259" y="510" style="fill:var(--hops-accent-text);font-weight:700;opacity:0">0.78</text>
+    <text class="viz-meta" x="212" y="528" text-anchor="middle">fit on training-set stats</text>
+  </g>
+  <path id="e-off2" class="viz-edge" data-from="off-tbox" data-from-side="bottom" data-to="off-out" data-to-side="top" marker-end="url(#fvf-arrow)" style="opacity:0"/>
+  <g id="off-out" data-tone="write" style="opacity:0">
+    <rect class="viz-node" x="36" y="556" width="352" height="60" rx="4"/>
+    <g class="viz-icon" transform="translate(52,570) scale(0.58)"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9 H21 M3 14 H21"/></g>
+    <text class="viz-node-title" x="216" y="580" text-anchor="middle">product_sales_training_data_v1</text>
+    <text class="viz-meta" x="216" y="600" text-anchor="middle">sold_prev_week = <tspan style="fill:var(--hops-accent-text);font-weight:700">0.78</tspan> (normalized)</text>
+  </g>
+
+  <!-- ============ ONLINE lane ============ -->
+  <g id="z-on" style="opacity:0">
+    <rect class="viz-zone" x="416" y="342" width="384" height="316" rx="6"/>
+    <text class="viz-label" x="432" y="366">ONLINE</text>
+    <text class="viz-meta" x="432" y="382">real-time &#183; serving</text>
+  </g>
+  <rect id="on-box" class="viz-code-box" x="432" y="398" width="352" height="82" rx="6" style="opacity:0"/>
+  <text id="nl1" class="viz-codeln" x="446" y="420" style="opacity:0">vec = fv.<tspan class="tok-fn">get_feature_vector</tspan>(</text>
+  <text id="nl2" class="viz-codeln" x="446" y="438" style="opacity:0"><tspan> </tspan>   entry={<tspan class="tok-str">"product_id"</tspan>: 222},</text>
+  <text id="nl3" class="viz-codeln" x="446" y="456" style="opacity:0">)</text>
+  <text id="nl4" class="viz-codeln" x="446" y="474" style="opacity:0;fill:var(--viz-ink-soft)"># serving key &#183; filter not applied</text>
+
+  <path id="e-on1" class="viz-edge" data-from="on-box" data-from-side="bottom" data-to="on-tbox" data-to-side="top" marker-end="url(#fvf-arrow)" style="opacity:0"/>
+  <g id="on-tbox" style="opacity:0">
+    <rect class="viz-code-box" x="484" y="492" width="248" height="44" rx="6"/>
+    <text class="viz-codeln" x="528" y="510"><tspan class="tok-fn">normalize</tspan>(44) &#8594; </text>
+    <text id="on-val" class="viz-codeln" x="655" y="510" style="fill:var(--hops-accent-text);font-weight:700;opacity:0">0.78</text>
+    <text class="viz-meta" x="608" y="528" text-anchor="middle">same stats &#183; init_serving(v1)</text>
+  </g>
+  <path id="e-on2" class="viz-edge" data-from="on-tbox" data-from-side="bottom" data-to="on-out" data-to-side="top" marker-end="url(#fvf-arrow)" style="opacity:0"/>
+  <g id="on-out" data-tone="data" style="opacity:0">
+    <rect class="viz-node" x="428" y="556" width="360" height="76" rx="4"/>
+    <text class="viz-node-title" x="608" y="576" text-anchor="middle">product_sales_feature_vector</text>
+    <g><rect class="viz-kv-cell" x="440" y="586" width="104" height="34" rx="3"/><text class="viz-colhead" x="492" y="600" text-anchor="middle">category</text><text class="viz-field-type" x="492" y="614" text-anchor="middle">perfumes</text></g>
+    <g><rect class="viz-kv-cell" x="552" y="586" width="86" height="34" rx="3"/><text class="viz-colhead" x="595" y="600" text-anchor="middle">name</text><text class="viz-field-type" x="595" y="614" text-anchor="middle">d&#8217;odour</text></g>
+    <g><rect class="viz-kv-cell" x="646" y="586" width="130" height="34" rx="3"/><text class="viz-colhead" x="711" y="600" text-anchor="middle">sold_prev_week</text><text class="viz-field-type" x="711" y="614" text-anchor="middle" style="fill:var(--hops-accent-text);font-weight:700">0.78</text></g>
+  </g>
+
+  <!-- ============ consistency callout ============ -->
+  <path id="e-b1" class="viz-edge" data-tone="accent" data-from="off-out" data-from-side="bottom" data-from-x="212" data-to="banner" data-to-side="top" data-to-x="300" style="stroke-dasharray:4 4;opacity:0"/>
+  <path id="e-b2" class="viz-edge" data-tone="accent" data-from="on-out" data-from-side="bottom" data-from-x="608" data-to="banner" data-to-side="top" data-to-x="520" style="stroke-dasharray:4 4;opacity:0"/>
+  <g id="banner" data-tone="accent" style="opacity:0">
+    <rect class="viz-node" x="134" y="674" width="552" height="48" rx="6" style="fill:var(--viz-tone-fill-solid);stroke:var(--viz-tone)"/>
+    <text class="viz-label" x="410" y="696" text-anchor="middle">CONSISTENT TRANSFORMATIONS</text>
+    <text class="viz-meta" x="410" y="713" text-anchor="middle">same normalize &#183; same training-set statistics &#183; no train/serve skew</text>
+  </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 700,
+  "loopDelay": 3200,
+  "steps": [
+    { "#fg-a": {"state": "active"}, "#fg-b": {"state": "active"} },
+    { "#join-dash": {"opacity": 1}, "#join-lbl": {"opacity": 1}, "#e-a": {"opacity": 1}, "#e-b": {"opacity": 1}, "#def-box": {"opacity": 1}, "#dl1": {"opacity": 1}, "#fg-a": {"state": "visited"}, "#fg-b": {"state": "visited"}, "$ms": 600 },
+    { "#dl2": {"opacity": 1}, "$ms": 380 },
+    { "#dl3": {"opacity": 1}, "$ms": 380 },
+    { "#dl4": {"opacity": 1}, "$ms": 380 },
+    { "#dl5": {"opacity": 1}, "$ms": 380 },
+    { "#dl6": {"opacity": 1}, "$ms": 550 },
+    { "#e-fv": {"opacity": 1}, "#fview": {"opacity": 1, "state": "active"}, "$ms": 750 },
+    { "#fview": {"state": "visited"}, "#e-off": {"opacity": 1}, "#e-on": {"opacity": 1}, "#z-off": {"opacity": 1}, "#z-on": {"opacity": 1}, "$ms": 650 },
+    { "#off-box": {"opacity": 1}, "#ol1": {"opacity": 1}, "$ms": 450 },
+    { "#ol2": {"opacity": 1}, "$ms": 380 },
+    { "#ol3": {"opacity": 1}, "$ms": 380 },
+    { "#ol4": {"opacity": 1}, "$ms": 500 },
+    { "#e-off1": {"opacity": 1}, "#off-tbox": {"opacity": 1}, "$ms": 450 },
+    { "#off-val": {"opacity": 1, "type": "0.78"}, "$ms": 700 },
+    { "#e-off2": {"opacity": 1}, "#off-out": {"opacity": 1, "state": "active"}, "$ms": 800 },
+    { "#off-out": {"state": "visited"}, "#on-box": {"opacity": 1}, "#nl1": {"opacity": 1}, "$ms": 450 },
+    { "#nl2": {"opacity": 1}, "$ms": 380 },
+    { "#nl3": {"opacity": 1}, "$ms": 300 },
+    { "#nl4": {"opacity": 1}, "$ms": 500 },
+    { "#e-on1": {"opacity": 1}, "#on-tbox": {"opacity": 1}, "$ms": 450 },
+    { "#on-val": {"opacity": 1, "type": "0.78"}, "$ms": 700 },
+    { "#e-on2": {"opacity": 1}, "#on-out": {"opacity": 1, "state": "active"}, "$ms": 800 },
+    { "#on-out": {"state": "visited"}, "#e-b1": {"opacity": 1}, "#e-b2": {"opacity": 1}, "#banner": {"opacity": 1}, "$ms": 2600 }
+  ]
+}
+</script>
 </figure>

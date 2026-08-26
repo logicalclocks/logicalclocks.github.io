@@ -1,37 +1,91 @@
-<figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="6 8 548 178" role="img" aria-label="A feature falls into three categories: reusable features from model-independent transformations, model-specific features from model-dependent transformations, and on-demand features that need request-time parameters to compute." xmlns="http://www.w3.org/2000/svg">
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 820 282" role="img" aria-label="A feature falls into three kinds, each made by a different transformation shown as a function call on a code surface. Model-independent transformations aggregate, bin, or window: sum([3, 1, 4]) returns 8, a reusable value computed in the feature pipeline and stored for reuse. Model-dependent transformations encode, scale, or tokenize: min_max_scaler(88) returns 0.5, a model-specific value fit on the training data and run identically in training and inference, not stored. On-demand transformations derive from the request: zip_code(lat, lon) returns 02139, computed live in online inference and optionally backfilled. Note: a transformation here is the data-engineering sense of the word, producing a feature, not the machine-learning sense." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="tf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
+    <marker id="dtx-arrow" viewBox="0 0 11 11" refX="9.5" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 L3 5.5 z"/>
+    </marker>
+    <marker id="dtx-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <g><rect class="viz-node" x="230" y="16" width="100" height="44" rx="4"/>
-  <text class="viz-node-title" x="280" y="43" text-anchor="middle">Feature</text></g>
-
-  <path class="viz-edge" d="M280 60 C280 82 102 82 102 100" marker-end="url(#tf-arrow)"/>
-  <path class="viz-edge" d="M280 60 V100" marker-end="url(#tf-arrow)"/>
-  <path class="viz-edge" d="M280 60 C280 82 458 82 458 100" marker-end="url(#tf-arrow)"/>
-
-  <g data-tone="accent">
-    <rect class="viz-node" x="16" y="100" width="172" height="74" rx="4"/>
-    <text class="viz-node-title" x="102" y="124" text-anchor="middle">Reusable features</text>
-    <text class="viz-meta" x="102" y="146" text-anchor="middle">aggregations, binning,</text>
-    <text class="viz-meta" x="102" y="162" text-anchor="middle">chunking for RAG</text>
+  <!-- insight note: transformation is the data-engineering sense, not the ML one -->
+  <g id="dtx-note" style="opacity:0">
+    <rect class="viz-node" x="8" y="12" width="402" height="44" rx="6"/>
+    <circle class="viz-edge-knob" cx="30" cy="34" r="8"/>
+    <text class="viz-meta" x="30" y="38" text-anchor="middle" style="font-weight:700">i</text>
+    <text class="viz-meta" x="52" y="30">A transformation produces a feature.</text>
+    <text class="viz-meta" x="52" y="45">The data-engineering sense, not the ML one.</text>
   </g>
 
-  <g>
-    <rect class="viz-node" x="194" y="100" width="172" height="74" rx="4"/>
-    <text class="viz-node-title" x="280" y="124" text-anchor="middle">Model-specific</text>
-    <text class="viz-meta" x="280" y="146" text-anchor="middle">encoding, scaling,</text>
-    <text class="viz-meta" x="280" y="162" text-anchor="middle">imputation, tokenization</text>
+  <!-- subject: a feature -->
+  <g id="dtx-hero">
+    <rect class="viz-node" x="470" y="12" width="160" height="48" rx="4"/>
+    <text class="viz-node-title" x="550" y="35" text-anchor="middle">Feature</text>
+    <text class="viz-node-subtitle" x="550" y="51" text-anchor="middle">one of three kinds</text>
   </g>
 
-  <g data-tone="data">
-    <rect class="viz-node" x="372" y="100" width="172" height="74" rx="4"/>
-    <text class="viz-node-title" x="458" y="124" text-anchor="middle">On-demand features</text>
-    <text class="viz-meta" x="458" y="146" text-anchor="middle">need request-time</text>
-    <text class="viz-meta" x="458" y="162" text-anchor="middle">parameters to compute</text>
+  <!-- fork into the three kinds: each edge reveals with its own block -->
+  <path id="dtx-eA" class="viz-edge" d="M550 60 C550 104 137 100 137 138" marker-start="url(#dtx-knob)" marker-end="url(#dtx-arrow)" style="opacity:0"/>
+  <path id="dtx-eB" class="viz-edge" d="M550 60 C550 104 410 100 410 138" marker-start="url(#dtx-knob)" marker-end="url(#dtx-arrow)" style="opacity:0"/>
+  <path id="dtx-eC" class="viz-edge" d="M550 60 C550 104 683 100 683 138" marker-start="url(#dtx-knob)" marker-end="url(#dtx-arrow)" style="opacity:0"/>
+
+  <!-- A: reusable / model-independent (tone pinned so it survives at rest) -->
+  <g id="dtx-featA" data-tone="accent" style="opacity:0">
+    <rect class="viz-node" x="8" y="138" width="258" height="78" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="137" y="160" text-anchor="middle">Reusable features</text>
+    <text class="viz-meta" x="137" y="180" text-anchor="middle">aggregate &#183; bin &#183; window</text>
+    <rect class="viz-code-box" x="58" y="190" width="160" height="18" rx="3"/>
+    <text class="viz-code" x="66" y="203"><tspan class="tok-fn">sum</tspan>([3, 1, 4]) &#8594; <tspan class="tok-str" id="dtx-outA-v" style="opacity:0">8</tspan></text>
+  </g>
+  <g id="dtx-annoA" style="opacity:0">
+    <text class="viz-label" x="137" y="240" text-anchor="middle">model-independent</text>
+    <text class="viz-meta" x="137" y="259" text-anchor="middle">feature pipeline &#183; stored</text>
+  </g>
+
+  <!-- B: model-specific / model-dependent -->
+  <g id="dtx-featB" data-tone="neutral" style="opacity:0">
+    <rect class="viz-node" x="281" y="138" width="258" height="78" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="410" y="160" text-anchor="middle">Model-specific features</text>
+    <text class="viz-meta" x="410" y="180" text-anchor="middle">encode &#183; scale &#183; tokenize</text>
+    <rect class="viz-code-box" x="307" y="190" width="208" height="18" rx="3"/>
+    <text class="viz-code" x="315" y="203"><tspan class="tok-fn">min_max_scaler</tspan>(88) &#8594; <tspan class="tok-str" id="dtx-outB-v" style="opacity:0">0.5</tspan></text>
+  </g>
+  <g id="dtx-annoB" style="opacity:0">
+    <text class="viz-label" x="410" y="240" text-anchor="middle">model-dependent</text>
+    <text class="viz-meta" x="410" y="259" text-anchor="middle">training + inference &#183; not stored</text>
+  </g>
+
+  <!-- C: on-demand -->
+  <g id="dtx-featC" data-tone="data" style="opacity:0">
+    <rect class="viz-node" x="554" y="138" width="258" height="78" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="683" y="160" text-anchor="middle">On-demand features</text>
+    <text class="viz-meta" x="683" y="180" text-anchor="middle">derive from the request</text>
+    <rect class="viz-code-box" x="572" y="190" width="224" height="18" rx="3"/>
+    <text class="viz-code" x="580" y="203"><tspan class="tok-fn">zip_code</tspan>(lat, lon) &#8594; <tspan class="tok-str" id="dtx-outC-v" style="opacity:0">02139</tspan></text>
+  </g>
+  <g id="dtx-annoC" style="opacity:0">
+    <text class="viz-label" x="683" y="240" text-anchor="middle">on-demand</text>
+    <text class="viz-meta" x="683" y="259" text-anchor="middle">online inference &#183; backfilled</text>
   </g>
 </svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 800,
+  "loopDelay": 2600,
+  "steps": [
+    { "#dtx-hero": {"state": "active"} },
+    { "#dtx-hero": {"state": "visited"}, "#dtx-note": {"opacity": 1}, "$ms": 650 },
+    { "#dtx-eA": {"opacity": 1}, "#dtx-featA": {"opacity": 1, "state": "active"}, "$ms": 600 },
+    { "#dtx-outA-v": {"opacity": 1, "type": "8"}, "$ms": 550 },
+    { "#dtx-featA": {"state": "visited"}, "#dtx-annoA": {"opacity": 1}, "$ms": 650 },
+    { "#dtx-eB": {"opacity": 1}, "#dtx-featB": {"opacity": 1, "state": "active"}, "$ms": 600 },
+    { "#dtx-outB-v": {"opacity": 1, "type": "0.5"}, "$ms": 550 },
+    { "#dtx-featB": {"state": "visited"}, "#dtx-annoB": {"opacity": 1}, "$ms": 650 },
+    { "#dtx-eC": {"opacity": 1}, "#dtx-featC": {"opacity": 1, "state": "active"}, "$ms": 600 },
+    { "#dtx-outC-v": {"opacity": 1, "type": "02139"}, "$ms": 550 },
+    { "#dtx-featC": {"state": "visited"}, "#dtx-annoC": {"opacity": 1}, "$ms": 1700 }
+  ]
+}
+</script>
 </figure>

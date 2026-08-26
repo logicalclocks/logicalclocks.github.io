@@ -1,24 +1,24 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 800 300" role="img" aria-label="Animated diagram of a feature pipeline. A dataframe leaves the data sources and steps through the pipeline stages: validate, aggregate, transform, each lighting up as it passes, then lands in the feature store as appended rows. A second, bad dataframe then reaches the validate stage, which turns red and rejects it: under the STRICT ingestion policy a validation failure stops the write and nothing bad lands in the store." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 814 300" role="img" aria-label="Animated diagram of a feature pipeline. A dataframe leaves the data sources and steps through the pipeline stages: validate, aggregate, transform, each lighting up as it passes, then lands in the feature store as appended rows. A second, bad dataframe then reaches the validate stage, which turns red and rejects it: under the STRICT ingestion policy a validation failure stops the write and nothing bad lands in the store." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="fp-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>
 
-  <path class="viz-edge" d="M184 142 H222" marker-end="url(#fp-arrow)"/>
+  <path class="viz-edge" d="M200 142 H222" marker-end="url(#fp-arrow)"/>
   <path class="viz-edge" d="M560 142 H612" marker-end="url(#fp-arrow)"/>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="110" width="160" height="64" rx="8"/>
+  <g>
+    <rect class="viz-node" x="8" y="110" width="192" height="64" rx="4"/>
     <text class="viz-node-title" x="104" y="136" text-anchor="middle">DATA SOURCES</text>
     <text class="viz-node-subtitle" x="104" y="156" text-anchor="middle">kafka · s3 · snowflake</text>
   </g>
 
   <rect class="viz-kv-frame" x="230" y="88" width="330" height="110" rx="6"/>
-  <rect class="viz-kv-header" x="230" y="88" width="330" height="26"/>
+  <path class="viz-kv-header" d="M230 94 a6 6 0 0 1 6 -6 h318 a6 6 0 0 1 6 6 v20 h-330 z"/>
   <text class="viz-kv-title" x="242" y="101">Feature pipeline</text>
-  <text class="viz-meta" x="548" y="101" text-anchor="end">python · spark · flink</text>
+  <text class="viz-meta" x="548" y="101" text-anchor="end">python · spark</text>
   <g id="fp-sv" class="viz-badge" data-tone="neutral">
     <rect x="246" y="128" width="88" height="28" rx="6"/>
     <text x="290" y="142" text-anchor="middle">validate</text>
@@ -33,7 +33,7 @@
   </g>
 
   <rect class="viz-kv-frame" x="620" y="88" width="156" height="110" rx="6"/>
-  <rect class="viz-kv-header" x="620" y="88" width="156" height="26"/>
+  <path class="viz-kv-header" d="M620 94 a6 6 0 0 1 6 -6 h144 a6 6 0 0 1 6 6 v20 h-156 z"/>
   <text class="viz-kv-title" x="628" y="101">Feature store</text>
   <g id="fp-row" class="viz-kv-entry" data-tone="write">
     <rect class="viz-kv-cell" x="626" y="122" width="144" height="26" rx="3"/>

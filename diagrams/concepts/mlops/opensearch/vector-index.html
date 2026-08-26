@@ -1,8 +1,8 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 780 360" role="img" aria-label="Animated diagram of the vector index. Offline, an item from the corpus passes through the embedding job and its id-embedding pair is inserted as a new row in the OpenSearch ANN index. Online, a device sends a query embedding to the index, the index flashes and the top-k nearest item ids travel back to the device." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="os-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="os-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>
 
@@ -14,14 +14,14 @@
   <path class="viz-edge" d="M350 308 H412" marker-end="url(#os-arrow)"/>
   <path class="viz-edge" d="M510 280 C 512 240 530 204 558 178" marker-end="url(#os-arrow)"/>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="52" width="140" height="64" rx="8"/>
+  <g>
+    <rect class="viz-node" x="24" y="52" width="140" height="64" rx="4"/>
     <text class="viz-node-title" x="94" y="78" text-anchor="middle">DEVICE</text>
     <text class="viz-node-subtitle" x="94" y="98" text-anchor="middle">query embedding</text>
   </g>
 
   <rect class="viz-kv-frame" x="520" y="40" width="236" height="164" rx="6"/>
-  <rect class="viz-kv-header" x="520" y="40" width="236" height="26"/>
+  <path class="viz-kv-header" d="M520 46 a6 6 0 0 1 6 -6 h224 a6 6 0 0 1 6 6 v20 h-236 z"/>
   <text class="viz-kv-title" x="528" y="53">ANN index</text>
   <text class="viz-meta" x="748" y="53" text-anchor="end">opensearch knn</text>
   <g class="viz-kv-entry" data-tone="data">
@@ -41,13 +41,13 @@
   </g>
   <text class="viz-meta" x="528" y="188">faiss · nmslib</text>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="200" y="280" width="150" height="56" rx="8"/>
+  <g>
+    <rect class="viz-node" x="196" y="280" width="158" height="56" rx="4"/>
     <text class="viz-node-title" x="275" y="302" text-anchor="middle">ITEM CORPUS</text>
     <text class="viz-node-subtitle" x="275" y="322" text-anchor="middle">documents · items</text>
   </g>
-  <g id="os-job" class="viz-node-group" data-tone="write">
-    <rect class="viz-node" x="420" y="280" width="180" height="56" rx="8"/>
+  <g id="os-job" data-tone="write">
+    <rect class="viz-node" x="420" y="280" width="180" height="56" rx="4"/>
     <text class="viz-node-title" x="510" y="302" text-anchor="middle">EMBEDDING JOB</text>
     <text class="viz-node-subtitle" x="510" y="322" text-anchor="middle">encode all items</text>
   </g>
@@ -56,26 +56,26 @@
 
   <g transform="translate(356 299)">
     <g id="os-pi" class="viz-packet" data-tone="data" style="opacity:0">
-      <rect width="70" height="18" rx="3"/>
-      <text x="35" y="9" text-anchor="middle">item 918</text>
+      <rect width="80" height="18" rx="3"/>
+      <text x="40" y="9" text-anchor="middle">item 918</text>
     </g>
   </g>
   <g transform="translate(504 262)">
     <g id="os-pv" class="viz-packet" data-tone="write" style="opacity:0">
-      <rect width="66" height="18" rx="3"/>
-      <text x="33" y="9" text-anchor="middle">[0.44, …]</text>
+      <rect width="90" height="18" rx="3"/>
+      <text x="45" y="9" text-anchor="middle">[0.44, …]</text>
     </g>
   </g>
   <g transform="translate(172 75)">
     <g id="os-pq" class="viz-packet" data-tone="read" style="opacity:0">
-      <rect width="66" height="18" rx="3"/>
-      <text x="33" y="9" text-anchor="middle">[0.41, …]</text>
+      <rect width="90" height="18" rx="3"/>
+      <text x="45" y="9" text-anchor="middle">[0.41, …]</text>
     </g>
   </g>
   <g transform="translate(512 101)">
     <g id="os-pk" class="viz-packet" data-tone="accent" style="opacity:0">
-      <rect width="72" height="18" rx="3"/>
-      <text x="36" y="9" text-anchor="middle">top-k ids</text>
+      <rect width="90" height="18" rx="3"/>
+      <text x="45" y="9" text-anchor="middle">top-k ids</text>
     </g>
   </g>
 </svg>

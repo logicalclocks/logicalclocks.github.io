@@ -1,40 +1,40 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 800 400" role="img" aria-label="Animated diagram of an on-demand feature. One Python UDF, zipcode of longitude and latitude, sits between two pipelines. In the feature pipeline, historical rows pass through the UDF and the computed zipcode lands in the feature store. At request time, the online inference pipeline sends the request longitude and latitude through the same UDF, and the fresh zipcode is merged into the feature vector together with precomputed features read from the store. Same function in both places, so there is no skew." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="od-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="od-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>
 
   <text class="viz-label" x="24" y="30">Feature pipeline · backfill</text>
   <text class="viz-label" x="24" y="288">Online inference · request time</text>
 
-  <path class="viz-edge" d="M184 76 C 260 76 300 120 342 166" marker-end="url(#od-arrow)"/>
+  <path class="viz-edge" d="M196 76 C 260 76 300 120 342 166" marker-end="url(#od-arrow)"/>
   <path class="viz-edge" d="M500 176 C 540 150 560 110 592 86" marker-end="url(#od-arrow)"/>
-  <path class="viz-edge" d="M184 328 C 260 328 300 260 342 226" marker-end="url(#od-arrow)"/>
+  <path class="viz-edge" d="M196 328 C 260 328 300 260 342 226" marker-end="url(#od-arrow)"/>
   <path class="viz-edge" d="M500 220 C 540 246 560 280 592 306" marker-end="url(#od-arrow)"/>
   <path class="viz-edge" d="M688 140 V272" marker-end="url(#od-arrow)"/>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="48" width="160" height="56" rx="8"/>
+  <g>
+    <rect class="viz-node" x="12" y="48" width="184" height="56" rx="4"/>
     <text class="viz-node-title" x="104" y="70" text-anchor="middle">HISTORICAL DATA</text>
     <text class="viz-node-subtitle" x="104" y="90" text-anchor="middle">lon · lat per row</text>
   </g>
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="300" width="160" height="56" rx="8"/>
+  <g>
+    <rect class="viz-node" x="12" y="300" width="184" height="56" rx="4"/>
     <text class="viz-node-title" x="104" y="322" text-anchor="middle">REQUEST</text>
     <text class="viz-node-subtitle" x="104" y="342" text-anchor="middle">lon 59.33 · lat 18.06</text>
   </g>
 
-  <g id="od-udf" class="viz-node-group" data-tone="accent">
-    <rect class="viz-node" x="330" y="166" width="170" height="64" rx="8"/>
+  <g id="od-udf" data-tone="accent">
+    <rect class="viz-node" x="330" y="166" width="170" height="64" rx="4"/>
     <text class="viz-node-title" x="415" y="192" text-anchor="middle">zipcode()</text>
     <text class="viz-node-subtitle" x="415" y="212" text-anchor="middle">python udf · v1</text>
   </g>
   <text id="od-ok" class="viz-meta viz-fade" data-tone="accent" x="415" y="258" text-anchor="middle" style="opacity:0">same function at backfill and at request time</text>
 
   <rect class="viz-kv-frame" x="600" y="36" width="176" height="104" rx="6"/>
-  <rect class="viz-kv-header" x="600" y="36" width="176" height="26"/>
+  <path class="viz-kv-header" d="M600 42 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
   <text class="viz-kv-title" x="608" y="49">Feature store</text>
   <g id="od-srow" class="viz-kv-entry" data-tone="write">
     <rect class="viz-kv-cell" x="606" y="70" width="164" height="26" rx="3"/>
@@ -44,7 +44,7 @@
   <text class="viz-meta" x="608" y="124">precomputed features</text>
 
   <rect class="viz-kv-frame" x="600" y="280" width="176" height="106" rx="6"/>
-  <rect class="viz-kv-header" x="600" y="280" width="176" height="26"/>
+  <path class="viz-kv-header" d="M600 286 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
   <text class="viz-kv-title" x="608" y="293">Feature vector</text>
   <g id="od-vrow1" class="viz-kv-entry" data-tone="write">
     <rect class="viz-kv-cell" x="606" y="314" width="164" height="26" rx="3"/>
@@ -59,26 +59,26 @@
 
   <g transform="translate(190 67)">
     <g id="od-p1" class="viz-packet" data-tone="data" style="opacity:0">
-      <rect width="58" height="18" rx="3"/>
-      <text x="29" y="9" text-anchor="middle">lon·lat</text>
+      <rect width="70" height="18" rx="3"/>
+      <text x="35" y="9" text-anchor="middle">lon·lat</text>
     </g>
   </g>
   <g transform="translate(495 181)">
     <g id="od-z1" class="viz-packet" data-tone="write" style="opacity:0">
-      <rect width="58" height="18" rx="3"/>
-      <text x="29" y="9" text-anchor="middle">11 428</text>
+      <rect width="70" height="18" rx="3"/>
+      <text x="35" y="9" text-anchor="middle">11 428</text>
     </g>
   </g>
   <g transform="translate(190 319)">
     <g id="od-p2" class="viz-packet" data-tone="data" style="opacity:0">
-      <rect width="58" height="18" rx="3"/>
-      <text x="29" y="9" text-anchor="middle">lon·lat</text>
+      <rect width="70" height="18" rx="3"/>
+      <text x="35" y="9" text-anchor="middle">lon·lat</text>
     </g>
   </g>
   <g transform="translate(495 205)">
     <g id="od-z2" class="viz-packet" data-tone="write" style="opacity:0">
-      <rect width="58" height="18" rx="3"/>
-      <text x="29" y="9" text-anchor="middle">11 428</text>
+      <rect width="70" height="18" rx="3"/>
+      <text x="35" y="9" text-anchor="middle">11 428</text>
     </g>
   </g>
   <g transform="translate(634 150)">

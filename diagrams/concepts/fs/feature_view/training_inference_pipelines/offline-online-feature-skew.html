@@ -1,8 +1,8 @@
 <figure class="hops-diagram hops-viz">
 <svg viewBox="0 0 800 420" role="img" aria-label="Animated diagram of offline-online feature skew. The same raw feature value 12.45 leaves the feature store on two paths: through the transformation of the online inference pipeline and through the transformation of the offline training pipeline. While both run the same UDF with the same state, both produce 0.31 and the tie between them holds. Then the serving transformation drifts to a different version: the same input now produces 0.28 online against 0.31 offline, and the alert states that skew is a code difference, invisible in the data distributions." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="sk-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="sk-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>
 
@@ -16,19 +16,19 @@
   <path class="viz-edge" data-variant="lane" d="M435 134 V182"/>
   <path class="viz-edge" data-variant="lane" d="M435 218 V286"/>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="170" width="160" height="80" rx="8"/>
+  <g>
+    <rect class="viz-node" x="24" y="170" width="160" height="80" rx="4"/>
     <text class="viz-node-title" x="104" y="202" text-anchor="middle">FEATURE STORE</text>
     <text class="viz-node-subtitle" x="104" y="224" text-anchor="middle">raw value 12.45</text>
   </g>
 
-  <g id="sk-ton" class="viz-node-group" data-tone="write">
-    <rect class="viz-node" x="350" y="70" width="170" height="64" rx="8"/>
+  <g id="sk-ton" data-tone="write">
+    <rect class="viz-node" x="350" y="70" width="170" height="64" rx="4"/>
     <text class="viz-node-title" x="435" y="96" text-anchor="middle">TRANSFORM</text>
     <text id="sk-tvon" class="viz-node-subtitle" x="435" y="118" text-anchor="middle">udf v1 · mean 10.2</text>
   </g>
-  <g id="sk-toff" class="viz-node-group" data-tone="write">
-    <rect class="viz-node" x="350" y="290" width="170" height="64" rx="8"/>
+  <g id="sk-toff" data-tone="write">
+    <rect class="viz-node" x="350" y="290" width="170" height="64" rx="4"/>
     <text class="viz-node-title" x="435" y="316" text-anchor="middle">TRANSFORM</text>
     <text class="viz-node-subtitle" x="435" y="338" text-anchor="middle">udf v1 · mean 10.2</text>
   </g>

@@ -1,123 +1,152 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="12 34 796 302" role="img" aria-label="The FTI architecture. Three independent pipelines sit above a shared state layer. The feature pipeline reads data sources and writes features to the feature store. The training pipeline reads features and writes a model to the model registry. The inference pipeline reads features and the model to produce predictions. Prediction logs feed back into the feature store." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="8 24 820 360" role="img" aria-label="The FTI architecture. Three independent pipelines sit above a shared state layer. The feature pipeline reads data sources and writes to the feature store. The training pipeline reads features and writes to the model registry. The inference pipeline reads features and the model to produce predictions. Prediction logs feed back into the feature store." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="fti-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-      <path class="viz-edge-arrow" d="M0 0 L10 5 L0 10 z"/>
+    <marker id="fti-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="fti-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
   </defs>
 
-  <!-- shared state layer -->
-  <rect class="viz-zone" x="150" y="214" width="508" height="104" rx="6"/>
-  <text class="viz-label" x="164" y="234">Shared state layer</text>
+  <!-- shared state layer: a tinted container with its own header band,
+       holding the two governed stores (feature store + model registry) -->
+  <rect class="viz-zone" x="150" y="206" width="474" height="162" rx="6"/>
+  <path class="viz-kv-header" d="M150 212 a6 6 0 0 1 6 -6 h462 a6 6 0 0 1 6 6 v24 h-474 z"/>
+  <text class="viz-kv-title" x="166" y="225">Shared state layer</text>
 
-  <!-- connectors (curved, docked on the node border) -->
-  <path class="viz-edge" d="M134 77 H166" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M646 77 H666" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M236 118 C236 178 280 178 280 244" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M336 244 C336 182 388 182 388 118" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M430 118 C430 178 500 178 500 244" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M566 244 C566 182 576 182 576 118" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M736 118 V244" marker-end="url(#fti-arrow)"/>
-  <path class="viz-edge" d="M736 318 C736 340 280 340 280 306" marker-end="url(#fti-arrow)" style="stroke-dasharray:5 4"/>
+  <!-- connectors: docked with a knob at the source, arrow at the target -->
+  <path class="viz-edge" d="M148 76 H166" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M646 76 H666" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M236 112 C236 180 250 180 250 248" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M300 248 C300 180 390 180 390 112" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M430 112 C430 186 470 186 470 248" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M340 248 C340 168 560 168 560 112" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M540 248 C540 186 600 186 600 112" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M736 112 C736 185 716 185 716 248" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)"/>
+  <path class="viz-edge" d="M700 350 V356 Q700 362 694 362 H221 Q215 362 215 356 V351" marker-start="url(#fti-knob)" marker-end="url(#fti-arrow)" style="stroke-dasharray:5 4"/>
 
-  <!-- data sources -->
-  <a class="viz-link" href="concepts/fs/feature_group/external_fg/">
-    <g data-tone="data">
-      <rect class="viz-node" x="14" y="36" width="120" height="82" rx="4"/>
-      <g class="viz-icon" transform="translate(63.8,48.8) scale(0.85)">
-        <ellipse cx="12" cy="5" rx="7.5" ry="3"/>
-        <path d="M4.5 5 V19 C4.5 20.7 7.8 22 12 22 C16.2 22 19.5 20.7 19.5 19 V5"/>
-        <path d="M4.5 12 C4.5 13.7 7.8 15 12 15 C16.2 15 19.5 13.7 19.5 12"/>
-      </g>
-      <text class="viz-node-title" x="74" y="87" text-anchor="middle">Data</text>
-      <text class="viz-node-title" x="74" y="102" text-anchor="middle">sources</text>
-    </g>
-  </a>
+  <!-- data sources: a left column of connectors, each linking to its own guide -->
+  <g>
+    <rect class="viz-kv-frame" x="14" y="40" width="134" height="310" rx="6"/>
+    <path class="viz-kv-header" d="M14 46 a6 6 0 0 1 6 -6 h122 a6 6 0 0 1 6 6 v20 h-134 z"/>
+    <a class="viz-link" href="user_guides/fs/data_source/"><text class="viz-kv-title" x="26" y="59">Data sources</text></a>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/snowflake/"><text class="viz-field" x="28" y="93">Snowflake</text><text class="viz-field-role" x="140" y="93" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="105" x2="148" y2="105"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/bigquery/"><text class="viz-field" x="28" y="128">BigQuery</text><text class="viz-field-role" x="140" y="128" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="140" x2="148" y2="140"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/redshift/"><text class="viz-field" x="28" y="163">Redshift</text><text class="viz-field-role" x="140" y="163" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="175" x2="148" y2="175"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/s3/"><text class="viz-field" x="28" y="198">S3</text><text class="viz-field-role" x="140" y="198" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="210" x2="148" y2="210"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/adls/"><text class="viz-field" x="28" y="233">ADLS</text><text class="viz-field-role" x="140" y="233" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="245" x2="148" y2="245"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/gcs/"><text class="viz-field" x="28" y="268">GCS</text><text class="viz-field-role" x="140" y="268" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="280" x2="148" y2="280"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/jdbc/"><text class="viz-field" x="28" y="303">JDBC</text><text class="viz-field-role" x="140" y="303" text-anchor="end">ext</text></a>
+    <line class="viz-row-sep" x1="14" y1="315" x2="148" y2="315"/>
+    <a class="viz-link" href="user_guides/fs/data_source/creation/kafka/"><text class="viz-field" x="28" y="338">Kafka</text></a>
+  </g>
 
   <!-- feature pipeline -->
   <a class="viz-link" href="concepts/fs/feature_group/feature_pipelines/">
     <g data-tone="accent">
-      <rect class="viz-node" x="166" y="36" width="140" height="82" rx="4"/>
-      <g class="viz-icon" transform="translate(225.8,48.8) scale(0.85)">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <path d="M3 9 H21 M12 9 V21"/>
-      </g>
-      <text class="viz-node-title" x="236" y="87" text-anchor="middle">Feature</text>
-      <text class="viz-node-title" x="236" y="102" text-anchor="middle">pipeline</text>
+      <rect class="viz-node" x="166" y="40" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="206" y="32" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="236" y="43" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="236" y="79" text-anchor="middle">FEATURE</text>
+      <text class="viz-node-subtitle" x="236" y="97" text-anchor="middle">spark · sql</text>
     </g>
   </a>
 
   <!-- training pipeline -->
   <a class="viz-link" href="concepts/mlops/training/">
     <g data-tone="accent">
-      <rect class="viz-node" x="336" y="36" width="140" height="82" rx="4"/>
-      <g class="viz-icon" transform="translate(395.8,48.8) scale(0.85)">
-        <path d="M4 3 V20 H21"/>
-        <path d="M6.5 16.5 C10.5 16.5 12 8 20 6.5"/>
-      </g>
-      <text class="viz-node-title" x="406" y="87" text-anchor="middle">Training</text>
-      <text class="viz-node-title" x="406" y="102" text-anchor="middle">pipeline</text>
+      <rect class="viz-node" x="336" y="40" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="376" y="32" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="406" y="43" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="406" y="79" text-anchor="middle">TRAINING</text>
+      <text class="viz-node-subtitle" x="406" y="97" text-anchor="middle">python</text>
     </g>
   </a>
 
   <!-- inference pipeline -->
   <a class="viz-link" href="concepts/mlops/serving/">
     <g data-tone="accent">
-      <rect class="viz-node" x="506" y="36" width="140" height="82" rx="4"/>
-      <g class="viz-icon" transform="translate(565.8,48.8) scale(0.85)">
-        <path d="M13 2 L5 13.5 H11 L10 22 L19 10 H12 Z"/>
-      </g>
-      <text class="viz-node-title" x="576" y="87" text-anchor="middle">Inference</text>
-      <text class="viz-node-title" x="576" y="102" text-anchor="middle">pipeline</text>
+      <rect class="viz-node" x="506" y="40" width="140" height="72" rx="4"/>
+      <rect class="viz-pill" x="546" y="32" width="60" height="16" rx="3"/>
+      <text class="viz-pill-text" x="576" y="43" text-anchor="middle">Pipeline</text>
+      <text class="viz-node-title" x="576" y="79" text-anchor="middle">INFERENCE</text>
+      <text class="viz-node-subtitle" x="576" y="97" text-anchor="middle">python</text>
     </g>
   </a>
 
-  <!-- predictions -->
+  <!-- predictions (data endpoint: header-node like the shared-state boxes) -->
   <a class="viz-link" href="concepts/mlops/prediction_services/">
     <g>
-      <rect class="viz-node" x="666" y="36" width="140" height="82" rx="4"/>
-      <g class="viz-icon" transform="translate(725.8,48.8) scale(0.85)">
-        <circle cx="12" cy="12" r="9.5"/>
-        <circle cx="12" cy="12" r="3.8"/>
-      </g>
-      <text class="viz-node-title" x="736" y="94" text-anchor="middle">Predictions</text>
+      <rect class="viz-kv-frame" x="666" y="40" width="140" height="72" rx="6"/>
+      <path class="viz-kv-header" d="M666 46 a6 6 0 0 1 6 -6 h128 a6 6 0 0 1 6 6 v20 h-140 z"/>
+      <text class="viz-kv-title" x="678" y="59">Predictions</text>
+      <text class="viz-node-subtitle" x="736" y="93" text-anchor="middle">online · batch</text>
     </g>
   </a>
 
-  <!-- feature store -->
+  <!-- feature store (nested header table) -->
   <a class="viz-link" href="concepts/fs/feature_group/fg_overview/">
     <g>
-      <rect class="viz-node" x="170" y="244" width="220" height="62" rx="4"/>
-      <g class="viz-icon" transform="translate(215.8,264.8) scale(0.85)">
-        <rect x="8" y="8" width="12.5" height="13" rx="2"/>
-        <path d="M4.5 17 V6 A2 2 0 0 1 6.5 4 H15.5"/>
+      <rect class="viz-kv-frame" x="168" y="248" width="210" height="102" rx="6"/>
+      <path class="viz-kv-header" d="M168 254 a6 6 0 0 1 6 -6 h198 a6 6 0 0 1 6 6 v20 h-210 z"/>
+      <text class="viz-kv-title" x="184" y="265">Feature store</text>
+      <text class="viz-meta" x="362" y="265" text-anchor="end">features</text>
+      <g class="viz-kv-entry">
+        <rect class="viz-kv-cell" x="176" y="282" width="194" height="26" rx="3"/>
+        <text class="viz-kv-key" x="184" y="299">Online</text>
+        <text class="viz-kv-val" x="362" y="299" text-anchor="end">RonDB</text>
       </g>
-      <text class="viz-node-title" x="298" y="280" text-anchor="middle">Feature store</text>
+      <g class="viz-kv-entry">
+        <rect class="viz-kv-cell" x="176" y="316" width="194" height="26" rx="3"/>
+        <text class="viz-kv-key" x="184" y="333">Offline</text>
+        <text class="viz-kv-val" x="362" y="333" text-anchor="end">Delta</text>
+      </g>
     </g>
   </a>
 
-  <!-- model registry -->
+  <!-- model registry (nested header table) -->
   <a class="viz-link" href="concepts/mlops/registry/">
     <g>
-      <rect class="viz-node" x="420" y="244" width="226" height="62" rx="4"/>
-      <g class="viz-icon" transform="translate(461.8,264.8) scale(0.85)">
-        <path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/>
-        <path d="M3 7 L12 12 L21 7 M12 12 V22"/>
+      <rect class="viz-kv-frame" x="404" y="248" width="210" height="102" rx="6"/>
+      <path class="viz-kv-header" d="M404 254 a6 6 0 0 1 6 -6 h198 a6 6 0 0 1 6 6 v20 h-210 z"/>
+      <text class="viz-kv-title" x="420" y="265">Model registry</text>
+      <text class="viz-meta" x="598" y="265" text-anchor="end">models</text>
+      <g class="viz-kv-entry">
+        <rect class="viz-kv-cell" x="412" y="282" width="194" height="26" rx="3"/>
+        <text class="viz-kv-key" x="420" y="299">Model</text>
+        <text class="viz-kv-val" x="598" y="299" text-anchor="end">v1 · v2</text>
       </g>
-      <text class="viz-node-title" x="548" y="280" text-anchor="middle">Model registry</text>
+      <g class="viz-kv-entry">
+        <rect class="viz-kv-cell" x="412" y="316" width="194" height="26" rx="3"/>
+        <text class="viz-kv-key" x="420" y="333">Metrics</text>
+        <text class="viz-kv-val" x="598" y="333" text-anchor="end">tracked</text>
+      </g>
     </g>
   </a>
 
-  <!-- prediction logs -->
+  <!-- prediction logs (standalone header table, outside the shared state) -->
   <a class="viz-link" href="concepts/mlops/model_monitoring/">
     <g>
-      <rect class="viz-node" x="666" y="244" width="140" height="74" rx="4"/>
-      <g class="viz-icon" transform="translate(725.8,252.8) scale(0.85)">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <path d="M6.5 8 H8 M11 8 H17.5 M6.5 12 H8 M11 12 H17.5 M6.5 16 H8 M11 16 H15"/>
+      <rect class="viz-kv-frame" x="648" y="248" width="168" height="102" rx="6"/>
+      <path class="viz-kv-header" d="M648 254 a6 6 0 0 1 6 -6 h156 a6 6 0 0 1 6 6 v20 h-168 z"/>
+      <text class="viz-kv-title" x="664" y="265">Prediction logs</text>
+      <g class="viz-kv-entry">
+        <rect class="viz-kv-cell" x="656" y="282" width="152" height="26" rx="3"/>
+        <text class="viz-kv-key" x="664" y="299">Logged</text>
+        <text class="viz-kv-val" x="800" y="299" text-anchor="end">vectors</text>
       </g>
-      <text class="viz-node-title" x="736" y="290" text-anchor="middle">Prediction</text>
-      <text class="viz-node-title" x="736" y="305" text-anchor="middle">logs</text>
+      <g class="viz-kv-entry">
+        <rect class="viz-kv-cell" x="656" y="316" width="152" height="26" rx="3"/>
+        <text class="viz-kv-key" x="664" y="333">Monitor</text>
+        <text class="viz-kv-val" x="800" y="333" text-anchor="end">drift</text>
+      </g>
     </g>
   </a>
 </svg>

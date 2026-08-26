@@ -1,53 +1,53 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 800 400" role="img" aria-label="Animated diagram of a KServe deployment serving a prediction. A request from the device passes through Istio into the transformer, which looks up the feature store by key and gets the feature vector back, the vector goes down into the predictor, the model answers and the prediction travels back to the device, while the inference is logged to Kafka. The model is one part of the deployed pipeline." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 808 400" role="img" aria-label="Animated diagram of a KServe deployment serving a prediction. A request from the device passes through Istio into the transformer, which looks up the feature store by key and gets the feature vector back, the vector goes down into the predictor, the model answers and the prediction travels back to the device, while the inference is logged to Kafka. The model is one part of the deployed pipeline." xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="ms-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="currentColor" fill-opacity=".4"/>
+    <marker id="ms-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
     </marker>
   </defs>
 
-  <path class="viz-edge" d="M164 202 H192" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M176 202 H192" marker-end="url(#ms-arrow)"/>
   <path class="viz-edge" d="M290 202 C 312 202 318 156 336 136" marker-end="url(#ms-arrow)"/>
   <path class="viz-edge" d="M470 156 V202 M470 202 V202" marker-end="url(#ms-arrow)"/>
-  <path class="viz-edge" d="M600 118 H652" marker-end="url(#ms-arrow)"/>
-  <path class="viz-edge" d="M660 142 H608" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M602 118 H652" marker-end="url(#ms-arrow)"/>
+  <path class="viz-edge" d="M652 142 H608" marker-end="url(#ms-arrow)"/>
   <path class="viz-edge" d="M420 266 C 412 292 406 308 402 322" marker-end="url(#ms-arrow)"/>
   <path class="viz-edge" d="M340 252 C 240 280 160 262 112 238" marker-end="url(#ms-arrow)"/>
 
-  <g class="viz-node-group">
-    <rect class="viz-node" x="24" y="170" width="140" height="64" rx="8"/>
+  <g>
+    <rect class="viz-node" x="12" y="170" width="164" height="64" rx="4"/>
     <text class="viz-node-title" x="94" y="196" text-anchor="middle">DEVICE</text>
     <text class="viz-node-subtitle" x="94" y="216" text-anchor="middle">prediction request</text>
   </g>
-  <g class="viz-node-group">
-    <rect class="viz-node" x="200" y="178" width="90" height="48" rx="8"/>
+  <g>
+    <rect class="viz-node" x="200" y="178" width="90" height="48" rx="4"/>
     <text class="viz-node-title" x="245" y="198" text-anchor="middle">ISTIO</text>
     <text class="viz-node-subtitle" x="245" y="215" text-anchor="middle">gateway</text>
   </g>
 
   <rect class="viz-kv-frame" x="320" y="60" width="300" height="230" rx="6"/>
-  <rect class="viz-kv-header" x="320" y="60" width="300" height="26"/>
+  <path class="viz-kv-header" d="M320 66 a6 6 0 0 1 6 -6 h288 a6 6 0 0 1 6 6 v20 h-300 z"/>
   <text class="viz-kv-title" x="332" y="73">KServe deployment</text>
   <text class="viz-meta" x="608" y="73" text-anchor="end">kubernetes</text>
-  <g id="ms-tf" class="viz-node-group" data-tone="data">
-    <rect class="viz-node" x="340" y="100" width="260" height="56" rx="8"/>
+  <g id="ms-tf" data-tone="data">
+    <rect class="viz-node" x="338" y="100" width="264" height="56" rx="4"/>
     <text class="viz-node-title" x="470" y="122" text-anchor="middle">TRANSFORMER</text>
     <text class="viz-node-subtitle" x="470" y="142" text-anchor="middle">build vector · pre/post-process</text>
   </g>
-  <g id="ms-pr" class="viz-node-group" data-tone="accent">
-    <rect class="viz-node" x="340" y="210" width="260" height="56" rx="8"/>
+  <g id="ms-pr" data-tone="accent">
+    <rect class="viz-node" x="340" y="210" width="260" height="56" rx="4"/>
     <text class="viz-node-title" x="470" y="232" text-anchor="middle">PREDICTOR</text>
     <text class="viz-node-subtitle" x="470" y="252" text-anchor="middle">model server</text>
   </g>
 
-  <g id="ms-fs" class="viz-node-group" data-tone="read">
-    <rect class="viz-node" x="660" y="100" width="116" height="56" rx="8"/>
+  <g id="ms-fs" data-tone="read">
+    <rect class="viz-node" x="652" y="100" width="132" height="56" rx="4"/>
     <text class="viz-node-title" x="718" y="122" text-anchor="middle">FEATURE</text>
     <text class="viz-node-subtitle" x="718" y="142" text-anchor="middle">store · online</text>
   </g>
 
-  <g id="ms-kafka" class="viz-node-group" data-tone="data">
-    <rect class="viz-node" x="340" y="330" width="130" height="56" rx="8"/>
+  <g id="ms-kafka" data-tone="data">
+    <rect class="viz-node" x="340" y="330" width="130" height="56" rx="4"/>
     <text class="viz-node-title" x="405" y="352" text-anchor="middle">KAFKA</text>
     <text class="viz-node-subtitle" x="405" y="372" text-anchor="middle">inference logs</text>
   </g>
@@ -68,13 +68,13 @@
   <g transform="translate(650 133)">
     <g id="ms-feat" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="58" height="18" rx="3"/>
-      <text x="29" y="9" text-anchor="middle">vector</text>
+      <text x="29" y="9" text-anchor="middle" transform="translate(0 0)">vector</text>
     </g>
   </g>
   <g transform="translate(442 162)">
     <g id="ms-vec" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="58" height="18" rx="3"/>
-      <text x="29" y="9" text-anchor="middle">vector</text>
+      <text x="29" y="9" text-anchor="middle" transform="translate(0 0)">vector</text>
     </g>
   </g>
   <g transform="translate(400 272)">
