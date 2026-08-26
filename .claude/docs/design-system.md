@@ -20,9 +20,10 @@ Two hard lessons already learned, do not repeat them:
 | ------- | ---- | ----- |
 | Tokens + all component styling | `docs/css/custom.css` | Single stylesheet. Tokens at the top, components below. |
 | Nav collapse toggle | `docs/js/nav-collapse.js` | Header button, hides the sidebar, widens content. |
-| Drill-in navigation | `docs/js/drill-nav.js` | Shows only the current level; ancestors live in the breadcrumb. |
+| Drill-in navigation | `docs/js/drill-nav.js` | Shows the current level plus one level down; shallower ancestors live in the breadcrumb. |
 | Diagram zoom | `docs/js/diagram-zoom.js` | Corner handle + full-screen overlay for `.hops-diagram` and all content images (wrapped in `.hops-img-zoom` at runtime; inline images under 200px are left alone). Content images also carry a 1px `--hops-border-strong` border via CSS. |
 | Animated diagrams | `docs/js/hops-viz.js` | Timeline stepper for the hops-viz kit (see the Diagrams section). |
+| Diagram edge paint order | `docs/js/diagram-edges.js` | Lifts every top-level `.viz-edge` to the end of its `<svg>` at load, so edges (arrow + knob) paint above the nodes, not behind. |
 | Code language labels | `docs/js/code-lang.js` | Language tag on code blocks. |
 | Theme features + assets wiring | `mkdocs.yml` | `theme.features`, `extra_javascript`, `extra_css`. |
 
@@ -60,11 +61,11 @@ The rail is the spine of the site. Rules, in order of importance:
 
 - It is a text rail, no per-section icons (see the lesson above).
 - The active item is a single green pill (`--hops-tint` wash, `--hops-accent-text` text), never two split boxes; the pill is on the `.md-nav__container`.
-- Deep trees (up to ~5 levels, e.g. `concepts/fs/feature_group/...`) are handled by showing one level at a time, not by exposing the whole tree:
+- Deep trees (up to ~5 levels, e.g. `concepts/fs/feature_group/...`) are handled by showing two adjacent levels at a time, not by exposing the whole tree. Collapsing is about depth, never about hiding siblings: items at the current level are always all shown.
   - `navigation.indexes`: every section has an Overview/index page acting as a hub.
   - `navigation.prune`: only the active branch is rendered.
   - `navigation.path`: breadcrumbs above the H1 carry the hierarchy above the current level.
-  - `drill-nav.js`: the rail shows only the current level (active item plus siblings, or children on a section page); ancestors collapse into the breadcrumb, which is the way back up.
+  - `drill-nav.js`: the rail shows the current node's siblings (the level it lives on) plus, on a section page, that section's children indented one step under it. Everything shallower than the sibling level collapses into the breadcrumb and the up-header; everything deeper than the child level stays hidden. The up-header names the parent section and walks up to it.
 - Collapse toggle (`nav-collapse.js`): a header button hides the whole sidebar and lets the content reclaim the width. It is a plain show/hide, not an icon rail. Desktop only; mobile uses the drawer. State persists in localStorage.
 - The sidebar is its own panel (`--hops-sidebar-bg`). The panel fill and the right divider are painted by `.md-sidebar--primary::before` (full-bleed, spanning past the header) so the divider is flush with the header, not notched 30px below it. Do not put the divider border back on the `.md-sidebar--primary` box.
 
@@ -72,6 +73,34 @@ The rail is the spine of the site. Rules, in order of importance:
 
 Header search (not sidebar). Bordered pill on `--hops-surface`.
 The magnifier icon inherits the header's white by default and vanishes on the light field; it is forced to the muted foreground in `.md-header .md-search__form .md-search__icon`. Keep that override.
+
+## Home and landing UX
+
+Applies to the home (`docs/index.md`) and to section landing pages (the `index.md` a section drills into).
+Not to the body of a doc page, which is prose and follows `content.md`.
+Five rules, in order:
+
+- Never overwhelm.
+  One primary action per section, the rest visually in retreat.
+  At most about three choices of equal weight side by side; past that, rank them or fold them away.
+  Density decreases down the page: the top breathes, the tail may be a dense index.
+- Two clicks, max, to what matters.
+  The important destinations are named and fixed: start or install, tutorials, concepts, deployment options, API reference.
+  Each stays reachable in two clicks or fewer from the home.
+  Audit this list on every home or nav change; pruning links elsewhere is fine as long as none of these five moves past two clicks.
+- Drive to usage, not reading.
+  The dominant action of the home is to start building: real, copyable code that runs.
+  Every major section ends on a concrete next step, never a dead end.
+- Clear visual hierarchy.
+  Rhythm carries meaning: alternate the formats down the page (hero band, primary block, cards, compact link index, muted colophon).
+  Never stack more than one grid of same-weight cards in a row; that is the flatness that reads as stale.
+  One level of green accent per view; green pulls the eye to the action, not to decoration.
+- Clean, SOTA.
+  Stay in Quartz: flat, no shadow, grid-aligned, near-white. No gadgetry.
+  Server-rendered or static; content never depends on JS to exist.
+
+The home is the worked example: hero plus quickcards, then the three-step runnable stepper, the FTI diagram, a borderless role index (`hops-role-index`), the ops task table, and a muted `hops-colophon` footer.
+Six sections, six different shapes; that is the anti-stale pattern, keep it.
 
 ## Diagrams
 
@@ -82,6 +111,27 @@ Three kinds, do not mix them up:
 
 `diagram-zoom.js` adds a corner handle and full-screen overlay to any `.hops-diagram`.
 
+### Node families and icon+label placement (locked)
+
+The reference is the home FTI diagram (`diagrams/index/one-architecture-three-pipelines.html`) and `concepts/projects/governance`.
+Two node families, do not blur them:
+
+- DATA (stores, endpoints, tables): `viz-kv-frame` + a rounded-top `viz-kv-header` band, title left, meta right, then `viz-kv-entry` rows or a subtitle.
+  A table of linked items (a project, a data-source column) uses `viz-field` rows with `viz-row-sep` separators, each row a `viz-link`.
+- COMPUTE (pipelines, processes): a neutral `viz-node` box with a `viz-pill` tab straddling the top edge, `data-tone="accent"`, title + subtitle.
+
+An icon and its label are a nested unit with two levels of rule:
+
+- Inside the unit: single-line label, the icon is vertically centered on the line.
+  Multi-line label, the text is left-anchored so it sits cleanly against the icon, and the icon is vertically centered on the middle of the block.
+- The unit as a whole: centered in its component, horizontally and vertically.
+  Table rows are the exception, they stay left-anchored to the frame like a list, not centered.
+
+Edges dock on the node border with a knob at the source (`marker-start`) and an arrow at the target (`marker-end`); a feedback or automation link is dashed.
+Author edges as top-level `<svg>` children: `diagram-edges.js` lifts every `.viz-edge` to the end of the `<svg>` at load, so the arrow and knob paint above the node border instead of behind it (SVG paint order is document order, and nodes are authored after edges).
+Node icons render at `scale(0.7)`, row icons at `scale(0.6)`; stroke inherits the node tone.
+Normalize every `viewBox` origin to `0 0`.
+
 ### Animated diagrams: the hops-viz kit
 
 A third kind, for process diagrams where the mechanism is the message (events flowing, windows closing, rows updating).
@@ -91,8 +141,10 @@ Reference example: the streaming pipeline diagram in `docs/concepts/fs/feature_g
 How it works, in three layers, all in `custom.css` + `docs/js/hops-viz.js`:
 
 - Tokens on `.hops-viz`: surfaces (`--viz-paper`, `--viz-line`), ink scale, mono type scale (`--viz-type-title/header/label/meta`), and a tone family. Tones are semantic actions, not decoration: `write`/`accent` (brand green), `read`/`data` (blue), `warn` (amber), `error` (red), `neutral`. Never hardcode a hex inside a diagram.
-- Semantic SVG classes: `viz-label`, `viz-meta`, `viz-node` (+ header/title/subtitle), `viz-edge` (+ `data-variant="lane"`), `viz-tick`, `viz-window`, `viz-badge`, `viz-packet`, `viz-status-dot`, `viz-progress-track/fill`, `viz-kv-*` (frame/header/entry/cell/key/val). State is carried by `data-state` (`active`, `visited`, `pending`, `offline`, `degraded`) and color by `data-tone` on any group; CSS renders both and transitions do the tweening.
-- The driver (`hops-viz.js`): a figure with class `hops-diagram hops-viz` plus a sibling `<script type="application/json" data-viz-scene>` gets a stepped timeline. Each step maps a selector to ops (`state`, `tone`, `text`, `x`/`y` translate, `w`, `opacity`). Plays only while on screen, loops by restoring the pristine SVG, and honors `prefers-reduced-motion` by rendering the final state statically.
+- Semantic SVG classes: `viz-label`, `viz-meta`, `viz-node` (+ header/title/subtitle), `viz-edge` (+ `data-variant="lane"`), `viz-tick`, `viz-window`, `viz-badge`, `viz-packet`, `viz-status-dot`, `viz-progress-track/fill`, `viz-kv-*` (frame/header/entry/cell/key/val), `viz-code-box` (raised code surface) + `viz-code` (monospace code text). State is carried by `data-state` (`active`, `visited`, `pending`, `offline`, `degraded`) and color by `data-tone` on any group; CSS renders both and transitions do the tweening.
+- Showing a transformation, call, or computed value: render it as code, a `viz-code-box` rect (raised `--viz-code-bg` fill, hairline border) with `viz-code` text on top, in the form `func(arg) -> result`. Colour tokens with tspans: `tok-fn` (blue) for the function, `tok-str` (green) for the produced value, `tok-kw` (ink). This is the standard, do not leave code as floating text on the paper. The result reveals with the `type` op so the value is watched being computed; keep the function vocabulary consistent with the API pages (`min_max_scaler`, `standard_scaler`).
+- Tone must survive the animation. An animated `viz-node[data-tone]` only carries its colour while `active`; at rest it falls back to grey. If a node's tone is meaningful at rest (a colour-coded category), pin it with an inline `style="stroke:var(--viz-tone)"` on the rect so the border keeps the tone after the scene settles.
+- The driver (`hops-viz.js`): a figure with class `hops-diagram hops-viz` plus a sibling `<script type="application/json" data-viz-scene>` gets a stepped timeline. Each step maps a selector to ops (`state`, `tone`, `text`, `x`/`y` translate, `w`, `opacity`). Plays once when scrolled into view, then holds the final frame; the play/pause button becomes a replay control that restarts from the pristine SVG. Set `"loop": true` in the scene to loop continuously instead. Honors `prefers-reduced-motion` by rendering the final state statically.
 
 Authoring rules:
 
@@ -100,6 +152,7 @@ Authoring rules:
 - All viz text is mono and uppercase-labelled, matching the code aesthetic; keep text at the token sizes.
 - Ids inside a scene are page-global: prefix them if a page ever hosts two animated figures.
 - Animated figures are not navigational: no `<a>` links inside (the stage is `pointer-events: none`).
+- Text must never overflow its box or the viewBox. The kit is monospace, so this is computable, not a matter of eyeballing: measured glyph advance is about `0.72 * font-size` per character (verify with `getBBox().width / textContent.length` in the browser if unsure), so size every container to `chars * advance + padding` (about 8px each side) and give the viewBox a margin. `viz_overlap_check.py` (in `.claude/docs/`) measures every `<text>` against its box and the viewBox and fails on any overflow; run it on a diagram before considering it done.
 
 ### Where diagrams live
 

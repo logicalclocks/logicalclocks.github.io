@@ -63,7 +63,7 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [-] `docs/user_guides/fs/data_source/creation/sql.md` — 2 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/fs/data_source/creation/unity_catalog.md` — 1 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/fs/data_source/index.md` — 1 image(s): UI screenshots/GIFs, keep
-- [-] `docs/user_guides/fs/feature_group/create.md` — 1 image(s): UI screenshots/GIFs, keep
+- [ ] `docs/user_guides/fs/feature_group/create.md` — 1 image: conceptual mapping (Dataframe -> Hudi in-mem partitions -> tasks -> parquet files -> FG partitions), CONVERT to kit SVG (mis-tagged as screenshot)
 - [-] `docs/user_guides/fs/feature_group/create_external.md` — 5 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/fs/feature_group/data_validation.md` — 1 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/fs/feature_group/deprecation.md` — 3 image(s): UI screenshots/GIFs, keep
