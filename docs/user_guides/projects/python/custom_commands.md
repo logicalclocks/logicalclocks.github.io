@@ -62,13 +62,45 @@ There are few important things to be aware of when writing the bash script:
   We have already configured `apt-get` to be non-interactive
 - The build artifacts will be copied to `srv/hops/build`.
   You can use them in your script via this path.
-  This path is also available via the environmental variable `BUILD_PATH`.
+  This path is also available via the environment variable `BUILD_DIR`.
   If you want to use many artifacts it is advisable to create a zip file and upload it to HopsFS in one of your project datasets.
   You can then include the zip file as one of the artifacts.
 - The Python environment is located in `/srv/hops/anaconda/envs/hopsworks_environment`.
   It is a virtualenv rather than a conda environment, and the path is unchanged so existing scripts keep working.
   You can install or uninstall packages in it using pip like: `/srv/hops/anaconda/envs/hopsworks_environment/bin/pip install spotify==0.10.2`.
   If the command requires some input, write the command together with the expected input otherwise the build will fail.
+
+## Installing a compiler
+
+The PyTorch and Ray environments contain a C and C++ compiler, since they compile code at runtime for `torch.compile` and for CUDA extensions.
+The other environments do not, because `build-essential`, and every Ubuntu `-dev` package, depends on the Linux kernel headers, which account for most of the vulnerabilities reported against the images and are never patched within an Ubuntu release.
+
+In an environment without a compiler, a library that is published only as a source distribution fails to install:
+
+```text
+× Failed to build `thriftpy2==0.5.2`
+╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+    error: [Errno 2] No such file or directory: 'cc'
+```
+
+Install the compiler, build the library and remove the compiler again in the same script.
+The library keeps working, since what it needs at runtime are the shared libraries it links against, and the environment does not end up carrying the kernel headers.
+
+```bash
+#!/bin/bash
+set -e
+
+sudo apt-get update
+sudo apt-get install -y build-essential
+
+uv pip install --no-cache --python /srv/hops/anaconda/envs/hopsworks_environment/bin/python thriftpy2==0.5.2
+
+sudo apt-get purge -y --auto-remove build-essential
+sudo apt-get clean
+```
+
+Leave the purge out if you want to install more such libraries from the UI afterwards, or if the library loads a shared library owned by a `-dev` package you installed, since `--auto-remove` takes that with it.
+Do not purge in the PyTorch and Ray environments, where it would remove the compiler they came with.
 
 ## Making custom-command builds faster
 
