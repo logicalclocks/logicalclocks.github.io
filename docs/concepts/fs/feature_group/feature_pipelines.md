@@ -9,7 +9,7 @@ A feature pipeline can run on a schedule over a batch of data, or continuously o
 ## Data Sources
 
 Your feature pipeline needs to connect to some (external) data source to read the data to be processed.
-Python, Spark, and Flink have connectors to a huge number of different data sources, while SQL feature pipelines are often restricted to a single data source (for example, your connector to SnowFlake only runs SQL on SnowFlake).
+Python and Spark have connectors to a huge number of different data sources, while SQL feature pipelines are often restricted to a single data source (for example, your connector to SnowFlake only runs SQL on SnowFlake).
 SparkSQL, in contrast, can be used over tables that originate in different  data sources.
 
 ## Data Validation
@@ -61,15 +61,6 @@ Data warehouses also support data validation, for example, through Great Expecta
 However, SQL is not mature as a platform for transformations and dimensionality reductions, where UDFs are applied row-wise.
 
 You can do aggregation in SQL for data in your data warehouse or database.
-
-## Feature Engineering in Flink
-
-Apache Flink is a powerful and flexible framework for stateful feature computation operations over unbounded and bounded data streams.
-It is used for feature engineering when you need very fresh features computed in real-time.
-Flink provides a rich set of operators and functions such as time windows and aggregation operations that can be applied to keyed and/or global window streams.
-Flink’s stateful operations allow users to maintain and update state across multiple data records or events, which is particularly useful for feature engineering tasks such as sessionization and/or maintaining rolling aggregates over a sliding window of data.
-
-Flink feature engineering pipelines are supported in Java/Scala only.
 
 ## Feature Engineering in Beam
 

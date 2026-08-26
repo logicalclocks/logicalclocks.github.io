@@ -25,7 +25,7 @@ The Hopsworks API helps simplify some of the problems that feature stores addres
 ## Write to feature groups, read from feature views
 
 You write to feature groups with a feature pipeline program.
-The program can be written in Python, Spark, Flink, or SQL.
+The program can be written in Python, Spark, or SQL.
 
 You read from views on top of the feature groups, called feature views.
 That is, a feature view does not store feature data, but is a logical grouping of features.

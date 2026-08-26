@@ -54,6 +54,8 @@ Hopsworks provides support for  model-dependent transformations and on-demand tr
 
 --8<-- "concepts/mlops/data_transformations/hopsworks-transformation-taxonomy-2.html"
 
+--8<-- "concepts/mlops/data_transformations/hopsworks-feature-store-storage.html"
+
 In Hopsworks, an AI system is typically decomposed into different [AI pipelines](https://www.hopsworks.ai/dictionary/ai-pipelines) and usually falls into either a [feature pipeline](https://www.hopsworks.ai/dictionary/feature-pipeline), a [training pipeline](https://www.hopsworks.ai/dictionary/training-pipeline), or an [inference pipeline](https://www.hopsworks.ai/dictionary/inference-pipeline).
 
 Hopsworks stores reusable feature data, created by model-independent transformations within the feature pipeline, into [feature groups](../fs/feature_group/fg_overview.md) (tables containing feature data in both offline and online stores).

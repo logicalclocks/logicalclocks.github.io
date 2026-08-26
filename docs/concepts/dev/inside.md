@@ -8,7 +8,7 @@ You can develop programs as Jupyter notebooks or jobs, customize the bundled FTI
 
 ## Jupyter Notebooks
 
-Hopsworks provides a Jupyter notebook development environment for programs written in Python, Spark, Flink, and SparkSQL.
+Hopsworks provides a Jupyter notebook development environment for programs written in Python, Spark, and SparkSQL.
 You can also develop in your IDE (PyCharm, IntelliJ, etc), test locally, and then run your programs as Jobs in Hopsworks.
 Jupyter notebooks can also be run as Jobs.
 

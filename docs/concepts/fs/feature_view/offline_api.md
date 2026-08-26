@@ -11,11 +11,11 @@ Training data is created using a feature view.
 You can create training data as either:
 
 - in-memory Pandas/Polars DataFrames, useful when you have a small amount of training data;
-- materialized training data in files, in a file format of your choice (such as .tfrecord, .csv, or .parquet).
+- materialized training data in files, in a file format of your choice (such as `.tfrecord`, `.csv`, or `.parquet`).
 
 You can apply filters when creating training data from a feature view:
 
-- start-time and end-time, for example, to create the train-set from an earlier time range, and the test-set from a later (unseen) time range;
+- `start_time` and `end_time`, for example, to create the train-set from an earlier time range, and the test-set from a later (unseen) time range;
 - feature value features, for example, only train a model on customers from a particular country.
 
 Note that filters are not applied when retrieving feature vectors using feature views, as we only look up features for a specific entity, like a customer.
@@ -68,7 +68,7 @@ Batch data for scoring models is created using a feature view.
 Similar to training data, you can create batch data as either:
 
 - in-memory Pandas/Polars DataFrames, useful when you have a small amount of data to score;
-- materialized data in files, in a file format of your choice (such as .tfrecord, .csv, or .parquet)
+- materialized data in files, in a file format of your choice (such as `.tfrecord`, `.csv`, or `.parquet`)
 
 Batch data requires specification of a `start_time` for the start of the batch scoring data.
 You can also specify the `end_time` (default is the current date).
