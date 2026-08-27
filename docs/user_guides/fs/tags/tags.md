@@ -292,15 +292,31 @@ The table stores events rather than intervals. To get `added_on` and `removed_at
 event's time for the same artifact, tag and key:
 
 ```sql
-SELECT artifact_type, artifact_id, tag_name, tag_key, tag_value,
-       event_time AS added_on,
-       LEAD(event_time) OVER (
-         PARTITION BY artifact_type, artifact_id, tag_name, tag_key
-         ORDER BY event_time, id
-       ) AS removed_at
-FROM   hopsworks.tag_history
-WHERE  event_type = 'OPENED'
+SELECT e.artifact_type, e.artifact_id, e.tag_name, e.tag_key, e.tag_value,
+       e.added_on, e.removed_at
+FROM (
+  SELECT artifact_type, artifact_id, tag_name, tag_key, tag_value, event_type,
+         event_time AS added_on,
+         LEAD(event_time) OVER (
+           PARTITION BY artifact_type, artifact_id, tag_name, tag_key
+           ORDER BY event_time,
+                    CASE WHEN event_type = 'CLOSED' THEN 0 ELSE 1 END,
+                    id
+         ) AS removed_at
+  FROM   hopsworks.tag_history
+) e
+WHERE e.event_type = 'OPENED'
 ```
+
+Two details in that query are easy to get wrong and produce numbers that look reasonable:
+
+- The `OPENED` filter has to be in the outer query. SQL applies `WHERE` before window functions, so
+  filtering inside would hide every `CLOSED` row from `LEAD`, and anything that ended without a
+  successor, a detached tag or a deleted artifact, would report as still current with its duration
+  growing forever.
+- The ordering has to put `CLOSED` before `OPENED` at the same timestamp. Both halves of a value
+  change share one `event_time` by design, so the ordering needs a tie-break, and `id` is not one:
+  rows are not written in the order the two halves were built.
 
 A `removed_at` of `NULL` means the artifact is still in that state. An `added_on` of `NULL` means the
 tag was attached before Hopsworks began recording attachment times, so the start is unknown; it is
