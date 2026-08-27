@@ -9,6 +9,7 @@ In Hopsworks, a consistent backup should back up the following services:
 - **RonDB**: cluster metadata and the online feature store data.
 - **HopsFS**: offline feature store data plus checkpoints and logs for feature engineering applications.
 - **Opensearch**: search metadata, logs, dashboards, and user embeddings.
+- **Superset**: dashboards, charts, saved queries, database connections, and users and roles, stored in the Superset metadata database, which is a separate MySQL from RonDB.
 - **Kubernetes objects**: cluster credentials, backup metadata, serving metadata, Trino authentication (password and group files plus the admin and monitoring credentials), and project namespaces with service accounts, roles, secrets, and configmaps.
 - **Python environments**: custom project environments are stored in your configured container registry. Back up the registry separately. If a project and its environment are deleted, you must recreate the environment after restore.
 
@@ -118,6 +119,37 @@ For S3 object storage, you can also configure a bucket lifecycle policy to expir
   ]
 }
 ```
+
+### Superset
+
+Superset stores its state in its own MySQL database, which is separate from RonDB and is therefore not part of the RonDB backup.
+When backups are enabled, a `create-superset-backup` cron job takes a logical dump of the Superset database and uploads it to the same object storage as the other backups, under the `superset_backup/<backup-id>/` prefix.
+The dump covers the whole `superset` schema, so it includes the database connections (connectors) along with dashboards, charts, saved queries, users and roles.
+That includes the connections Hopsworks creates itself, such as the per-project Trino connections, because they are rows in the same database.
+Connector credentials are stored encrypted with the Superset secret key, so they are only usable after a restore if that key is restored with the database, which is why the restore verifies it (see [Superset restore](#superset-restore)).
+Each backup writes two objects: `superset.sql.gz` (the gzipped dump) and `manifest.json` (the dump checksum, the Superset image and schema version, and a fingerprint of the Superset secret key).
+The backup is also indexed in the `superset-backups-metadata` ConfigMap, which the Velero backup captures so the index is restored with the cluster.
+
+Superset's Kubernetes Secrets are captured by the Velero backup through the `backup.hops.works/include` label:
+
+- `superset-secret-key`: the Superset secret key.
+It must be restored together with the database, because Superset uses it to encrypt the database-connection passwords stored in the metadata database, so restoring the database with a different secret key leaves those connections undecryptable.
+- `superset-mysql-users-secrets`: the Superset MySQL credentials.
+- `superset-admin-credentials`: the Superset admin account.
+
+If you provide these Secrets yourself by setting `superset.auth.createSecrets: false`, you must add the label `backup.hops.works/include: "true"` to each of them, because the chart only labels the Secrets it creates and Velero selects Secrets by that label.
+
+To list the Superset backups that were taken, read the metadata ConfigMap:
+
+```bash
+kubectl get configmap superset-backups-metadata -n hopsworks -o json \
+| jq -r '.data | to_entries[] | select(.value | fromjson | .state == "SUCCESS") | .key' \
+| sort -r
+```
+
+!!! Note
+    Backups taken before Superset backup was enabled do not contain Superset.
+    Restoring from such a backup recovers the rest of the cluster but not Superset dashboards, charts, or users.
 
 ### Trino authentication
 
@@ -493,3 +525,181 @@ kubectl delete restore.velero.io k8s-backups-users-resources -n velero --ignore-
 #### In-place restore customizations
 
 The same customization options for [RonDB and Opensearch](#customizations) backup IDs apply to in-place restore. You can override individual service backup IDs while keeping the global backup ID for HopsFS.
+
+### Superset restore
+
+Superset is restored by reloading its database from a backup (see [Superset backup](#superset)).
+Because reloading the database requires Superset to be stopped, the chart holds all Superset workloads at zero replicas while the restore flag is set, and a Job reloads and migrates the database.
+The restore is a two-step operation: set the flag and let the Job run to `phase=migrated`, then clear the flag so the workloads resume.
+
+Find the Superset backup id to restore:
+
+```bash
+kubectl get configmap superset-backups-metadata -n hopsworks -o json \
+| jq -r '.data | to_entries[] | select(.value | fromjson | .state == "SUCCESS") | .key' \
+| sort -r
+```
+
+Set the Superset restore trigger with the id and the name of the Velero Restore that repopulates the Superset Secrets, then run `helm upgrade`:
+
+```yaml
+global:
+  _hopsworks:
+    restoreFromBackup:
+      superset:
+        enabled: true
+        backupId: "20260722215632-2116913658"
+        # The Velero Restore (in the velero namespace) that must reach Completed before the
+        # database import; it is what puts superset-secret-key back.
+        veleroRestoreName: "restore-main-1737455940"
+        # Recorded in the audit trail. Set it to a trusted operator/ticket identity; when unset
+        # it defaults to helm/<release>@rev<revision>.
+        initiatedBy: "ops:HWORKS-2973 alice"
+```
+
+```bash
+helm upgrade hopsworks hopsworks/hopsworks --version <CHART_VERSION> \
+  --namespace hopsworks \
+  -f values.yaml \
+  --timeout 1200s
+```
+
+The `veleroRestoreName` is required.
+It names the Velero Restore that repopulates the Superset Secrets, including `superset-secret-key`, which Superset uses to encrypt the database-connection passwords stored in the metadata database.
+The restore Job waits for that Velero Restore to reach `Completed` before it imports the database, so the reloaded rows are always decrypted with the secret key they were encrypted with.
+For an in-place restore where the live `superset-secret-key` already matches the backup and no Velero Restore is involved, set `acknowledgeNoVeleroBarrier: true` instead of `veleroRestoreName`, and the import is gated on the secret-key fingerprint alone.
+
+While the Superset restore is enabled, the chart renders every Superset workload (node, worker, celerybeat, websocket, flower) at zero replicas and skips the Superset init Job, so nothing serves or writes the metadata database while it is being reloaded.
+This zero-replica barrier is declarative: it is the desired state for as long as the flag is set, which is what makes it safe under both Helm and ArgoCD.
+The restore Job runs as a single restartable state machine holding a mutual-exclusion Lease: it waits for the Velero Restore to complete, waits for the (barrier-driven) Superset pods to terminate and verifies none remain, flushes the Superset Redis cache, verifies the dump against the manifest (backup id, object path, size, and sha256) and the restored secret-key fingerprint, reloads the database, and migrates the schema forward.
+The Job does not scale Superset back up; its terminal state is `migrated`, and the workloads resume declaratively in the next step.
+Migration happens inside the restore Job, using the same `superset_bootstrap.sh` and `superset_init.sh` scripts as a normal install, so a backup taken by an older Superset version is upgraded to the running image's schema during the restore itself, not on a later upgrade.
+Every transition is recorded in the `superset-restore-state` ConfigMap, which is the durable audit trail: the initiating identity, the attempt count, and one append-only entry per transition (including a `failed` reason on abort) keyed by backup id.
+The recorded initiator is deployment metadata, not an authenticated identity.
+It defaults to `helm/<release>@rev<revision>`, and under ArgoCD the revision is always `1` because ArgoCD renders with `helm template`, so set `initiatedBy` explicitly and correlate it with the Kubernetes audit log entry for the Helm or ArgoCD change to identify the actor.
+
+The backup and the restore also exclude each other, and so does the normal Superset init Job: all three take the same `superset-backup-restore` Lease before touching the database.
+The init Job matters because it runs `superset db upgrade`, and a logical dump taken with `--single-transaction` is not safe against concurrent DDL.
+
+After the restore Job reaches `migrated`, clear the flag and upgrade again to lift the barrier and bring Superset back up:
+
+```yaml
+global:
+  _hopsworks:
+    restoreFromBackup:
+      superset:
+        enabled: false
+```
+
+This is a required step, not just cleanup: it is what restores the Superset workloads to their normal replica counts.
+The normal init Job then runs and no-ops against the already-migrated schema.
+Confirm the restore reached `migrated` before clearing the flag:
+
+```bash
+kubectl get configmap superset-restore-state -n hopsworks -o jsonpath='{.data.phase}'
+```
+
+The `superset-restore-state` ConfigMap is the durable record of how far a restore got, and each phase is idempotent, so a re-created Job continues from the recorded phase instead of repeating destructive work.
+A re-created Job is not free of side effects in every case: for an incomplete restore it re-runs the phases that had not finished, and for a completed restore it takes a no-op path through every container and exits.
+Phase progress only ever moves forward, which is what makes that true: a retry re-verifies that no Superset process is running, because that has to hold on every attempt, but it will not lower a recorded `imported` back to the start and reload the database a second time.
+Either way, deleting the Job alone does not re-run a completed restore.
+
+Two ConfigMaps are involved, and the split is deliberate.
+`superset-restore-state` holds the execution state, and its `phase` key is the maintenance fence: while it is anything other than `migrated`, scheduled backups refuse to run so they cannot capture a half-restored database.
+`superset-restore-audit` holds the append-only audit trail (one immutable `h-*` entry per transition), which is the durable who/when/which-backup record.
+Read the audit trail with:
+
+```bash
+kubectl get configmap superset-restore-audit -n hopsworks -o json \
+| jq -r '.data | to_entries | map(select(.key|startswith("h-"))) | sort_by(.key) | .[].value'
+```
+
+Only the audit ConfigMap carries the `backup.hops.works/include` label, so only the trail is captured by the Velero backup, and it survives loss of the namespace or the cluster.
+The execution state is deliberately left out of the backup.
+It describes an operation against one particular database, so restoring it onto another cluster would be wrong: a restored `phase=migrated` would claim that a restore had already finished against a database that had never received it, and the next restore of that same backup id would take its no-op path and leave the database untouched.
+Because the two are separate objects, clearing the state does not touch the trail.
+
+Nothing prunes the trail automatically: entries accumulate across restores, and a ConfigMap is limited to roughly 1 MiB in total, so on a cluster that is restored very frequently the trail should be exported and pruned as part of normal operations.
+Export it before pruning, and keep the export wherever your other operational audit records live:
+
+```bash
+kubectl get configmap superset-restore-audit -n hopsworks -o json \
+| jq '{exported: now|todate, entries: (.data | with_entries(select(.key|startswith("h-"))))}' \
+> superset-restore-audit-$(date -u +%Y%m%d).json
+```
+
+To re-run the same backup id, reset the restore state but keep the audit trail:
+
+```bash
+kubectl delete job superset-restore-<BACKUP_ID> -n hopsworks --ignore-not-found=true
+kubectl patch configmap superset-restore-state -n hopsworks --type merge \
+  -p '{"data":{"phase":"","restoreId":"","failed":"","attempts":"","initiator":""}}'
+```
+
+To restore a different backup, set its backup id and re-run: the state machine only starts a new restore once the previous one has fully completed (phase `migrated`), and it then resets the per-restore state for the new one by itself.
+
+Deleting the `superset-restore-state` ConfigMap outright also works and leaves the audit trail intact, but it lifts the maintenance fence at the same time, so scheduled backups resume immediately.
+Only do that after establishing that the database is in a known-good state.
+For a failed restore, verify or recover the database before clearing the fence: the fence exists precisely because a half-restored database must not be backed up over a good one.
+
+#### Fresh-cluster restore
+
+On a brand-new cluster the sequence is the same two steps, with `helm install` in place of the first `helm upgrade`:
+
+1. Restore the platform Velero backup so the Superset Secrets (including `superset-secret-key`) exist on the new cluster, and note the name of that Velero `Restore` object.
+2. Install (or sync) the chart with the Superset restore flag set and `veleroRestoreName` pointing at that Velero Restore. The barrier keeps Superset at zero replicas while the restore Job reloads and migrates the database into the freshly-created (empty) MySQL.
+3. Wait until `superset-restore-state` reaches `phase=migrated`.
+4. Clear the flag (`enabled: false`) and upgrade so the barrier lifts and Superset starts against the restored database.
+
+The `veleroRestoreName` requirement is what guarantees the secret-key is in place before the import, so the restored connection passwords decrypt correctly on the new cluster.
+
+#### Limitations
+
+- The Superset restore is a logical reload of the metadata database, not a point-in-time snapshot coordinated with the RonDB or HopsFS backups.
+  The Superset backup and the platform backup are taken independently, so a restore recovers each service to its own most recent backup, not to a single consistent instant across services.
+- The Superset MySQL credentials (`superset-mysql-users-secrets`) and the admin account (`superset-admin-credentials`) are fixed at install and are captured and restored as-is from the Velero backup.
+  Rotating them is not supported for the lifetime of any cluster you intend to restore in place: an in-place restore rolls the Secrets back to the backed-up values, which would then be out of sync with the live MySQL grants written after a rotation.
+  If a rotation is unavoidable, treat it as a re-baseline: rotate, then take a fresh backup, and discard backups taken before the rotation.
+- Enabling the Superset restore has no effect unless Superset itself is enabled (`global._hopsworks.superset.enabled=true`); the restore reloads the bundled MySQL and flushes Redis, so both must be enabled (the chart rejects the restore at render time if they are not).
+- Connectors are restored as rows with their credentials, and the restore verifies that the secret key matches the backup so those credentials remain decryptable.
+  What it cannot guarantee is that a credential is still the right one, for connectors whose password is owned by another service.
+  The per-project Trino connections are the case that matters: Hopsworks stores each user's Trino password in its own secret store in RonDB, rebuilds the Trino password file from RonDB, and copies that same password into the Superset connection.
+  So the Superset side holds a copy, and RonDB is the source of truth.
+  If Superset and RonDB are restored to the same point, the copy matches and the connection works.
+  If they are restored to different points, and that user's secret was recreated in between (which happens when a user is removed from a project and added again), the restored Superset connection carries a password Trino no longer accepts.
+  The certificate material Superset uses to reach Trino is a CA bundle for verifying Trino's server certificate, not a credential, so its reissue by the certs-operator is expected and harmless.
+- A stale connector password does not repair itself, because Hopsworks only creates a connection when one is absent and skips when it already exists.
+  After a fresh-cluster restore, confirm Trino access by opening a Trino-backed chart or running a query through a per-project Trino connection.
+  If a user's Trino connection fails to authenticate, delete that connection in Superset and let Hopsworks recreate it from the current RonDB secret.
+
+#### ArgoCD
+
+The Superset Secrets (`superset-secret-key`, `superset-mysql-users-secrets`, `superset-admin-credentials`) are generated once and preserved across upgrades using a `lookup` that returns nothing during an offline `helm template`.
+Under ArgoCD, which renders with `helm template`, a sync can regenerate these Secrets and overwrite the values a Velero restore put back, which would leave the restored database's encrypted connections undecryptable.
+Add an `ignoreDifferences` entry so ArgoCD ignores their data, and the `RespectIgnoreDifferences=true` sync option so it does not re-apply the rendered values during sync.
+By default `ignoreDifferences` only affects the diff ArgoCD shows; without `RespectIgnoreDifferences=true` a sync still applies the freshly-rendered Secret values and overwrites the restored ones:
+
+```yaml
+spec:
+  syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: superset-secret-key
+      jsonPointers: ["/data"]
+    - group: ""
+      kind: Secret
+      name: superset-mysql-users-secrets
+      jsonPointers: ["/data"]
+    - group: ""
+      kind: Secret
+      name: superset-admin-credentials
+      jsonPointers: ["/data"]
+```
+
+The zero-replica writer barrier is ArgoCD-safe by construction: while the restore flag is set, `helm template` renders every Superset workload at zero replicas, so that is the desired state and self-heal maintains it rather than fighting it.
+No auto-sync pause is needed during the reload.
+The two steps map directly to two syncs: set the flag and sync (the barrier holds Superset at zero while the restore Job reloads and migrates the database), then clear the flag and sync (the workloads return to their normal replica counts).
+Do not clear the flag until the restore has reached `phase=migrated`; while the flag remains set, ArgoCD's desired replica count is zero, so Superset cannot resume.
