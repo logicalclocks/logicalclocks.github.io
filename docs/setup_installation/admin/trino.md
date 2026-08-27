@@ -92,7 +92,7 @@ With the schedule on, a pending catalog goes live at the next restart that finds
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-pending.png" alt="Pending catalogs" />
-  <figcaption>Catalogs waiting to be applied</figcaption>
+  <figcaption>The lifecycle settings, the catalogs waiting to be applied, and the one action that applies them</figcaption>
 </figure>
 
 ### Applying pending requests
@@ -109,15 +109,12 @@ The restart interrupts queries running anywhere on the cluster, so check the rep
 
 A connector's credentials end up in the places below. Anyone who can read those places can read the credentials, so plan access to them accordingly.
 
-- A `${HOPSWORKS_SECRET:<name>}` reference is stored verbatim in the `trino_catalog` database row and is resolved to its value only at sync time. The database row never holds the value.
-- A literal value typed straight into the properties editor is stored as-is in the `trino_catalog` database row, in cleartext, and is captured by database backups. Use a secret reference for any credential you do not want in the database.
-- Either way, the synced file holds the resolved plaintext, because Trino reads the credential from the catalog file itself.
+- A `${HOPSWORKS_SECRET:<name>}` reference is stored verbatim in the `trino_catalog` database row and is resolved to its value only at approval time.
+  The database row never holds the value.
+- A literal value typed straight into the properties editor is stored as-is in the `trino_catalog` database row, in cleartext, and is captured by database backups.
+  Use a secret reference for any credential you do not want in the database.
+- Either way, the written file holds the resolved plaintext, because Trino reads the credential from the catalog file itself.
   That file lives in a Kubernetes Secret rather than a ConfigMap, so it is covered by the RBAC that applies to Secrets in the Hopsworks namespace and by etcd encryption-at-rest on clusters that enable it.
-
-<figure>
-  <img src="../../../assets/images/admin/trino/catalogs-pending-restart.png" alt="Catalogs pending restart" />
-  <figcaption>An applied catalog waits in Pending restart until the query engine reloads</figcaption>
-</figure>
 
 ### Lifecycle settings
 
@@ -139,7 +136,12 @@ Saving needs no redeploy: every Hopsworks instance derives its schedule from the
 ### A single project's allowance
 
 The cluster-wide maximum is a ceiling on the deployment; how many catalogs any one project may create is set per project.
-Open the project under Cluster Settings, Projects, and edit **Query Engine**, **Trino catalogs**, which shows the project's current count beside its limit.
+Open **Cluster Settings** → **Projects**, click **Edit configuration** on the project's row, and scroll to **Query engine**, **Trino catalogs**, just after the Kafka topic quota.
+
+<figure>
+  <img src="../../../assets/images/admin/trino/project-catalog-limit.png" alt="A project's Trino catalog allowance" />
+  <figcaption>The project's catalog count, its own limit, and the unlimited checkbox</figcaption>
+</figure>
 
 A new project starts on the cluster default (`trino_catalog_max_per_project`, 10), so raising one project here raises that project only.
 Checking **unlimited** removes the project's own bound, leaving only the cluster-wide ceiling; a limit of 0 blocks new catalogs in the project.
@@ -157,16 +159,16 @@ The bounded wait is what makes that safe: a coordinator that is genuinely down n
 
 Trino reads catalogs only at startup, so a catalog change takes effect on the next restart, whether the schedule performs it or an administrator does.
 Clicking "Restart Trino" applies the selected pending requests and rolls out the coordinator and workers.
-The confirmation dialog reports how many queries are currently running or queued, so you can choose a low-traffic window before confirming.
+The confirmation dialog reports how many queries are currently running or queued, so you can choose a low-traffic window, and asks you to type `confirm` before it will proceed.
 The restart cancels those queries for **every project on the cluster**, not only the project whose catalog is being applied, and in-flight results are lost.
 Trino keeps recent query detail in the coordinator's memory, so after a restart the live query views show only what the new coordinator has seen; older queries remain in the query history, which is stored separately.
 
 <figure>
   <img src="../../../assets/images/admin/trino/restart-confirm.png" alt="Restart confirmation" />
-  <figcaption>The restart confirmation reports the running queries the restart will interrupt</figcaption>
+  <figcaption>The confirmation names what the restart applies and what it interrupts</figcaption>
 </figure>
 
-A restart is refused while another sync or restart is already running, so concurrent actions by different administrators cannot collide or trigger redundant restarts.
+A restart is refused while another one is already running, so concurrent actions by different administrators cannot collide or trigger redundant restarts.
 If nothing is waiting to load or unload, the restart is skipped and reported as such rather than interrupting queries for no reason.
 
 ### Recovering a catalog Trino cannot load
@@ -180,7 +182,7 @@ The button stays available when nothing is waiting to be applied, because this s
 
 <figure>
   <img src="../../../assets/images/admin/trino/catalogs-recover.png" alt="Recover restart" />
-  <figcaption>With nothing pending, the restart action is still available to recover a failed rollout</figcaption>
+  <figcaption>A query engine that will not start is reported on the tab, and the restart action recovers it</figcaption>
 </figure>
 
 Hopsworks reads the coordinator log, identifies the catalog Trino rejected, removes it from the mount, marks it **Failed**, and restarts so the cluster comes back without it.
@@ -192,7 +194,7 @@ Only user-created catalogs are removed this way.
 A default catalog that fails to load is left in place, because that is a cluster configuration problem rather than something an administrator should resolve by deleting data.
 
 A removed catalog keeps its row, so its owner can see what happened on the project's Catalogs page along with the error Trino reported.
-Editing the definition returns it to Pending sync and it re-enters the normal flow.
+Editing the definition returns it to Pending approval and it re-enters the normal flow.
 
 Failed catalogs are not listed under pending, because they no longer block anything and no administrator action can fix them.
 If Hopsworks cannot attribute the failure to a user catalog, it reports the connection error instead of removing anything, and the coordinator log is the place to look.
@@ -215,12 +217,92 @@ The consequence is that the scheduled pass does not notice a file whose name is 
 
 Two things neither form does.
 Neither restarts Trino, so a restored catalog is in the mount but not loaded until the next restart, like any other catalog change.
-Neither touches a catalog that is pending sync, because that catalog's stored definition is the change an administrator has not applied yet, and applying it here would bypass that decision.
-Those catalogs are reported as still needing a sync.
+Neither touches a catalog that is pending approval, because that catalog's stored definition is the change an administrator has not approved yet, and applying it here would bypass that decision.
+Those catalogs are reported as still needing approval.
 
 A catalog whose `${HOPSWORKS_SECRET:<name>}` reference no longer resolves cannot be rebuilt, since the file Trino reads has to hold the resolved value.
-The repair reports it, leaves any file it already has in place, because that copy resolved when it was synced and still works, and carries on with every other catalog.
+The repair reports it, leaves any file it already has in place, because that copy resolved when it was approved and still works, and carries on with every other catalog.
 Its owner has to repoint the reference at an existing secret.
+
+## Credential files a project supplies
+
+A connector that authenticates with a file, such as an Oracle wallet or a Java keystore, cannot be served by a catalog property alone.
+Projects supply those files as [mountable secrets][mountable-secrets], and this section covers what that adds to a cluster.
+
+A bundle is a directory of files in HopsFS under `mountable_secrets_path`, which defaults to `/apps/mountable-secrets`.
+It is keyed by **project id** rather than by project name, so a deleted project and a later project of the same name can never share a directory.
+The `charts/hopsfs` preset Job creates the root as `payara:hdfs` with mode `0750`.
+The backend checks that owner, group and mode against the filesystem on a project's first bundle, and again before it deletes a project's tree, and refuses if any of the three differs, so a root created by hand with the wrong mode is rejected rather than quietly widening access.
+
+Project members never reach those files directly.
+The path is outside any project's dataset, and a catalog can only ever name a bundle in its own project.
+A reference resolves to a path built from the project id, and a property that tries to extend a reference with a path, or to walk out of it with `..`, is refused when the catalog is created and again when it is resolved.
+
+### How the files reach the query engine
+
+Each Trino pod, the coordinator, every worker and the test coordinator, runs a sidecar container named `mountable-secrets` from the `hopsfs-mount` image.
+It mounts the whole store read-only at `trino_mountable_secrets_root`, which defaults to `/opt/hopsworks/mounts`, with `ro`, `nosuid` and `nodev`.
+Entries appear as uid 0 with modes that let any user read them, which is what lets the unprivileged Trino process open a wallet.
+
+Two consequences of that sidecar are worth knowing before an upgrade.
+
+It is **privileged**, because FUSE requires it.
+On a cluster running the Kyverno restricted policies the chart ships a `PolicyException` for these pods, gated on Kyverno being enabled.
+The same privileged FUSE sidecar already runs on the three Airflow deployments in the release namespace, so this is not a new class of workload for the cluster.
+
+The Trino pods have their **own ServiceAccounts**, `hopsworks-trino` and `hopsworks-trino-test`, rather than the namespace default.
+An SCC or a cloud identity can therefore be granted to Trino narrowly.
+An upgrade from a release before this feature moves those pods off the `default` ServiceAccount, so any binding that named `default` to reach Trino has to be repointed.
+
+!!! warning "OpenShift is not supported"
+    The sidecar has to run privileged and as root, so the default restricted SCC rejects it.
+    `values.openshift.yaml` therefore turns the store off, and a project on such a cluster cannot supply credential files.
+    Note that Trino was already rejected by the restricted SCC before this feature, because the subchart pins `runAsUser: 1000` regardless of `securityContextEnabled`, so the sidecar adds a second reason rather than a new break.
+
+### Turning the store off
+
+Set `global._hopsworks.trino.mountableSecrets.enabled` to `false`, which seeds the `mountable_secrets_enabled` variable and stops the store being offered.
+Turning it off is not a single value.
+The sidecar entries live in untemplated subchart values, so the `initContainers` lists have to be restated without them, which is what `values.openshift.yaml` does and is the worked example to copy.
+The chart fails the render when the flag and the mount disagree, so a half-done change stops the upgrade instead of producing pods that mount nothing.
+
+An **already approved catalog keeps working only as far as its definition**.
+Its reference still resolves to a path, but nothing populates that path any more.
+For a connector that opens its files when a connection is made, such as Oracle, the coordinator starts cleanly and queries fail.
+Writing a catalog out does not consult the flag, by design, so switching the store off does not quarantine catalogs that already use it.
+
+### Backup
+
+Bundles are HopsFS files.
+They are covered by the HopsFS backup, and **not** by the Kubernetes object backup that captures the catalog Secrets and the database.
+A restore that brings back the database and the Secrets without the HopsFS path leaves catalogs that reference bundles which no longer exist, and those catalogs fail to authenticate at the next restart.
+Recreating the bundle under the same name with the same filenames repairs it without editing any catalog.
+
+### Diagnosing a bundle
+
+There is no admin API for the store, so the checks are on the cluster.
+
+```bash
+# What the query engine can actually see for project <id>
+kubectl exec -n hopsworks <trino-pod> -c <trino-container> -- ls -l /opt/hopsworks/mounts/<id>/<bundle>
+
+# The mount itself, including its options
+kubectl exec -n hopsworks <trino-pod> -c <trino-container> -- grep /opt/hopsworks/mounts /proc/mounts
+
+# The source side
+kubectl exec -n hopsworks <namenode-pod> -- /srv/hops/hadoop/bin/hdfs dfs -ls /apps/mountable-secrets/<id>
+```
+
+Check the mount on a **worker** and not only on the coordinator, since a query reads the source from the workers.
+A missing mount is otherwise invisible: the sidecar mounts into its own filesystem, both containers report ready, and only a `${HOPSWORKS_MOUNT:...}` reference resolving to an empty directory gives it away.
+
+The outbound addresses a data source must admit are reported in the project's Catalogs tab only when `global._hopsworks.trino.mountableSecrets.egressProbe.echoUrl` is set.
+It is empty by default, because the probe otherwise calls a third-party service from every Trino pod on every start, and with it unset the UI reports that the addresses could not be determined.
+Without it:
+
+```bash
+kubectl exec -n hopsworks <trino-pod> -c <trino-container> -- curl -s https://ifconfig.me
+```
 
 ## Configuration
 
@@ -253,10 +335,40 @@ Trino behavior can be customized through cluster configuration variables. To mod
 
 These settings control the availability and default behavior of the Trino query engine across your Hopsworks cluster.
 
+### Mountable secret settings
+
+These are not all editable the same way, so they are listed apart from the variables above.
+
+Three are seeded by the chart and belong to Helm, not to the variables table.
+
+| Setting | Helm value | Seeded default |
+| --- | --- | --- |
+| `mountable_secrets_enabled` | `global._hopsworks.trino.mountableSecrets.enabled` | `true` |
+| `mountable_secrets_path` | `global._hopsworks.trino.mountableSecrets.storeRoot` | `/apps/mountable-secrets` |
+| `trino_mountable_secrets_root` | `global._hopsworks.trino.mountableSecrets.mountPath` | `/opt/hopsworks/mounts` |
+
+Change these through your Helm values and an upgrade.
+Editing the row instead moves only one end of the arrangement: the store root also presets the HopsFS directory and is passed to the mount sidecar as its source, and the mount root is what the Trino containers actually mount, so a row edited on its own points the backend at a path nothing is mounted from.
+The chart keeps the two ends together, and refuses to render when the flag and the mount disagree.
+Note also that the code's own fallback for the flag is `false`, which is what a cluster whose chart predates the row gets; the chart seeds `true`.
+
+The five per-project limits have no seeded row at all.
+The code's defaults apply until an administrator creates one, so searching for them in Cluster Settings finds nothing on a fresh cluster, which is expected rather than a fault.
+
+| Setting | Default | What it caps |
+| --- | --- | --- |
+| `mountable_secret_max_per_project` | `10` | bundles one project may hold |
+| `mountable_secret_max_files` | `32` | files in one bundle |
+| `mountable_secret_max_file_bytes` | `1048576` | largest single file, in bytes |
+| `mountable_secret_max_project_bytes` | `16777216` | a project's total across all its bundles, in bytes |
+| `max_mountable_secret_upload_bytes` | `33554432` | largest upload request, refused before the body is read |
+
+Turning the store off is described in [Turning the store off][turning-the-store-off].
+
 ### Test coordinator resource cost
 
 `trino_test_coordinator_enabled` is on by default, and enabling it runs **an additional single-node Trino coordinator pod** for the lifetime of the cluster.
-It exists only to connection-test user catalogs before they are synced, so on a small or cost-sensitive cluster it is reasonable to turn it off.
+It exists only to connection-test user catalogs before they are approved, so on a small or cost-sensitive cluster it is reasonable to turn it off.
 When it is off, "Test connection" reports that testing is unavailable and every other part of the catalog workflow is unaffected.
 
 ### Supported connectors
@@ -275,7 +387,7 @@ Removing a connector from the list does not affect catalogs already created on i
 
 User-created catalogs are stored across a fixed number of Kubernetes Secrets, set by the Helm value `global._hopsworks.trino.userCatalogShards` (default: `2`).
 Each Secret holds up to roughly 800 KiB of catalog definitions, so the default gives about 1.6 MiB in total, which is a large number of catalogs.
-When they are full, a sync fails with an error naming the limit.
+When they are full, an approval fails with an error naming the limit.
 
 Raise the value in your Helm values to add capacity.
 The chart mounts one source per shard and refuses to render if the two disagree, so a mismatch fails the upgrade rather than silently dropping catalogs.
@@ -283,7 +395,7 @@ The chart mounts one source per shard and refuses to render if the two disagree,
 Two per-catalog limits keep one project from consuming that shared budget.
 `trino_catalog_max_per_project` caps how many catalogs a project may create, and `trino_catalog_max_bytes` caps how large a single definition may be.
 The size is measured after `${HOPSWORKS_SECRET:}` references are resolved, because the resolved form is what occupies a Secret: a stored definition is bounded by its database column, but a reference costs a couple of dozen characters and expands to a secret of up to about 10 KiB, and the same secret may be referenced repeatedly, so a row that fits its column can resolve to megabytes.
-The check therefore runs both when a catalog is created, so its owner hears about it, and again at sync, because a secret can be rotated to a larger value in between.
+The check therefore runs both when a catalog is created, so its owner hears about it, and again at approval, because a secret can be rotated to a larger value in between.
 
 Both defaults are generous against real catalogs, which are a few hundred bytes; the largest legitimate ones inline a service account JSON or a certificate pair and stay a few KiB.
 Raise them for a project with an unusual number of external sources, and remember that the product of the two bounds a single project's share of the shard budget.
