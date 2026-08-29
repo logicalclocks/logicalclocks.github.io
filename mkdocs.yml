@@ -278,6 +278,7 @@ nav:
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
           - Configure Alerts: setup_installation/admin/alert.md
+          - OnlineFS Service: setup_installation/admin/onlinefs.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
