@@ -120,20 +120,20 @@ For S3 object storage, you can also configure a bucket lifecycle policy to expir
 }
 ```
 
-### Superset
+### Superset { #superset-backup }
 
 Superset stores its state in its own MySQL database, which is separate from RonDB and is therefore not part of the RonDB backup.
 When backups are enabled, a `create-superset-backup` cron job takes a logical dump of the Superset database and uploads it to the same object storage as the other backups, under the `superset_backup/<backup-id>/` prefix.
 The dump covers the whole `superset` schema, so it includes the database connections (connectors) along with dashboards, charts, saved queries, users and roles.
 That includes the connections Hopsworks creates itself, such as the per-project Trino connections, because they are rows in the same database.
-Connector credentials are stored encrypted with the Superset secret key, so they are only usable after a restore if that key is restored with the database, which is why the restore verifies it (see [Superset restore](#superset-restore)).
+Connector credentials are stored encrypted with the Superset secret key, so they are only usable after a restore if that key is restored with the database, which is why the restore verifies it (see [Superset restore][superset-restore]).
 Each backup writes two objects: `superset.sql.gz` (the gzipped dump) and `manifest.json` (the dump checksum, the Superset image and schema version, and a fingerprint of the Superset secret key).
 The backup is also indexed in the `superset-backups-metadata` ConfigMap, which the Velero backup captures so the index is restored with the cluster.
 
 Superset's Kubernetes Secrets are captured by the Velero backup through the `backup.hops.works/include` label:
 
 - `superset-secret-key`: the Superset secret key.
-It must be restored together with the database, because Superset uses it to encrypt the database-connection passwords stored in the metadata database, so restoring the database with a different secret key leaves those connections undecryptable.
+  It must be restored together with the database, because Superset uses it to encrypt the database-connection passwords stored in the metadata database, so restoring the database with a different secret key leaves those connections undecryptable.
 - `superset-mysql-users-secrets`: the Superset MySQL credentials.
 - `superset-admin-credentials`: the Superset admin account.
 
@@ -147,7 +147,7 @@ kubectl get configmap superset-backups-metadata -n hopsworks -o json \
 | sort -r
 ```
 
-!!! Note
+!!! note
     Backups taken before Superset backup was enabled do not contain Superset.
     Restoring from such a backup recovers the rest of the cluster but not Superset dashboards, charts, or users.
 
@@ -528,7 +528,7 @@ The same customization options for [RonDB and Opensearch](#customizations) backu
 
 ### Superset restore
 
-Superset is restored by reloading its database from a backup (see [Superset backup](#superset)).
+Superset is restored by reloading its database from a backup (see [Superset backup][superset-backup]).
 Because reloading the database requires Superset to be stopped, the chart holds all Superset workloads at zero replicas while the restore flag is set, and a Job reloads and migrates the database.
 The restore is a two-step operation: set the flag and let the Job run to `phase=migrated`, then clear the flag so the workloads resume.
 
