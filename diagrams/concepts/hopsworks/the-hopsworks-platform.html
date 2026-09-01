@@ -15,14 +15,14 @@
   <text class="viz-kv-title" x="190" y="225">Shared state layer</text>
 
   <!-- connectors: knob at the source, arrow at the target -->
-  <path class="viz-edge" d="M148 76 H215" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M285 112 V248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M324 248 C324 180 474 180 474 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M504 112 C504 190 692 190 692 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M354 248 C354 168 664 168 664 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M518 248 C518 185 705 185 705 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M732 248 C732 180 744 180 744 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
-  <path class="viz-edge" d="M775 76 C848 76 898 130 898 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M148 76 L215 76" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M285 112 L285 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M324 248 C324 194 474 182 474 128 L474 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M504 112 C504 166 692 178 692 232 L692 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M354 248 C354 194 664 182 664 128 L664 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M518 248 C518 194 705 182 705 128 L705 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M732 248 C732 199.8 744 176.2 744 128 L744 112" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
+  <path class="viz-edge" d="M775 76 C830.4 76 898 176.6 898 232 L898 248" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)"/>
   <path class="viz-edge" d="M870 320 V386 Q870 392 862 392 H221 Q213 392 213 386 V358" marker-start="url(#hop-knob)" marker-end="url(#hop-arrow)" style="stroke-dasharray:5 4"/>
 
   <!-- data sources: a left column of connectors -->
@@ -86,7 +86,6 @@
       <rect class="viz-kv-frame" x="190" y="248" width="190" height="110" rx="6"/>
       <path class="viz-kv-header" d="M190 254 a6 6 0 0 1 6 -6  h178  a6 6 0 0 1 6 6  v20  h-190  z"/>
       <text class="viz-kv-title" x="206" y="265">Feature store</text>
-      <text class="viz-meta" x="364" y="265" text-anchor="end">features</text>
       <g class="viz-kv-entry">
         <rect class="viz-kv-cell" x="198" y="282" width="174" height="26" rx="3"/>
         <text class="viz-kv-key" x="206" y="299">Online</text>
@@ -106,7 +105,6 @@
       <rect class="viz-kv-frame" x="404" y="248" width="190" height="110" rx="6"/>
       <path class="viz-kv-header" d="M404 254 a6 6 0 0 1 6 -6   h178   a6 6 0 0 1 6 6   v20   h-190   z"/>
       <text class="viz-kv-title" x="420" y="265">Vector index</text>
-      <text class="viz-meta" x="578" y="265" text-anchor="end">embeddings</text>
       <g class="viz-kv-entry">
         <rect class="viz-kv-cell" x="412" y="282" width="174" height="26" rx="3"/>
         <text class="viz-kv-key" x="420" y="299">Engine</text>
@@ -126,7 +124,6 @@
       <rect class="viz-kv-frame" x="618" y="248" width="190" height="110" rx="6"/>
       <path class="viz-kv-header" d="M618 254 a6 6 0 0 1 6 -6   h178   a6 6 0 0 1 6 6   v20   h-190   z"/>
       <text class="viz-kv-title" x="634" y="265">Model registry</text>
-      <text class="viz-meta" x="792" y="265" text-anchor="end">models</text>
       <g class="viz-kv-entry">
         <rect class="viz-kv-cell" x="626" y="282" width="174" height="26" rx="3"/>
         <text class="viz-kv-key" x="634" y="299">Model</text>

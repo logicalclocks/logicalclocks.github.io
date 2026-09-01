@@ -58,10 +58,10 @@
   <g id="dot-s1l" style="opacity:0"><text class="viz-meta" x="250" y="136" text-anchor="middle">snapshots</text></g>
 
   <!-- snapshots over time -->
-  <path id="dot-s1" class="viz-edge" d="M218 165 H256" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
-  <path id="dot-s2" class="viz-edge" d="M218 255 H256" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
-  <path id="dot-s3" class="viz-edge" d="M218 345 H256" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
-  <path id="dot-s4" class="viz-edge" d="M218 435 H256" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-s1" class="viz-edge" d="M218 165 L256 165" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-s2" class="viz-edge" d="M218 255 L256 255" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-s3" class="viz-edge" d="M218 345 L256 345" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-s4" class="viz-edge" d="M218 435 L256 435" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
 
   <!-- MDT: one transform applied consistently across training data + both inference paths -->
   <g id="dot-mdtbar" style="opacity:0">
@@ -75,7 +75,7 @@
     <text class="viz-node-title" x="328" y="160" text-anchor="middle">Training data</text>
     <text class="viz-node-title" x="328" y="176" text-anchor="middle">v1</text>
   </g>
-  <path id="dot-e1" class="viz-edge" d="M400 165 H426" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-e1" class="viz-edge" d="M400 165 L426 165" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
   <g id="dot-mv1" style="opacity:0">
     <rect class="viz-node" x="426" y="147" width="110" height="36" rx="4"/>
     <text class="viz-node-title" x="481" y="169" text-anchor="middle">Model v1</text>
@@ -87,7 +87,7 @@
     <text class="viz-node-title" x="328" y="250" text-anchor="middle">Training data</text>
     <text class="viz-node-title" x="328" y="266" text-anchor="middle">v2</text>
   </g>
-  <path id="dot-e2" class="viz-edge" d="M400 255 H426" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-e2" class="viz-edge" d="M400 255 L426 255" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
   <g id="dot-mv2" style="opacity:0">
     <rect class="viz-node" x="426" y="237" width="110" height="36" rx="4"/>
     <text class="viz-node-title" x="481" y="259" text-anchor="middle">Model v2</text>
@@ -108,16 +108,16 @@
   </g>
 
   <!-- predictions, from model v2 (batch path) -->
-  <path id="dot-emp" class="viz-edge" d="M536 255 H566" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
-  <path id="dot-ebp" class="viz-edge" d="M400 345 C500 345 566 300 566 273" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-emp" class="viz-edge" d="M536 255 L566 255" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-ebp" class="viz-edge" d="M400 345 C425.2 345 566 314.2 566 289 L566 273" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
   <g id="dot-pred" data-tone="data" style="opacity:0">
     <rect class="viz-node" x="566" y="237" width="124" height="36" rx="4" style="stroke:var(--viz-tone)"/>
     <text class="viz-node-title" x="628" y="259" text-anchor="middle">Predictions</text>
   </g>
 
   <!-- prediction service, from online inference + model v2 -->
-  <path id="dot-eos" class="viz-edge" d="M400 435 H556" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
-  <path id="dot-ems" class="viz-edge" d="M488 273 C540 350 600 366 600 413" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-eos" class="viz-edge" d="M400 435 L556 435" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
+  <path id="dot-ems" class="viz-edge" d="M488 273 C488 328.8 600 341.2 600 397 L600 413" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0"/>
   <g id="dot-emsl" style="opacity:0"><text class="viz-meta" x="512" y="356" text-anchor="middle">deployed</text></g>
   <g id="dot-ps" style="opacity:0">
     <rect class="viz-node" x="556" y="413" width="124" height="44" rx="4"/>
@@ -126,7 +126,7 @@
   </g>
 
   <!-- prediction request: on-demand, request-time input -->
-  <path id="dot-reqe" class="viz-edge" d="M618 493 V461" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
+  <path id="dot-reqe" class="viz-edge" d="M618 493 L618 461" marker-start="url(#dot-knob)" marker-end="url(#dot-arrow)" style="opacity:0;stroke-dasharray:4 4"/>
   <g id="dot-odt" class="viz-badge" data-tone="data" style="opacity:0"><rect x="628" y="470" width="46" height="16" rx="3" style="fill:var(--viz-paper)"/><text x="651" y="478" text-anchor="middle">ODT</text></g>
   <g id="dot-req" data-tone="data" style="opacity:0">
     <rect class="viz-node" x="556" y="493" width="124" height="44" rx="4" style="stroke:var(--viz-tone)"/>

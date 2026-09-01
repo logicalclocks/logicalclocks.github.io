@@ -216,6 +216,44 @@ def check(path: str) -> list[str]:
                     if left < rx + PAD or right > rx + rw - PAD:
                         problems.append(f"  box overflow: '{content[:42]}' [{left:.0f}..{right:.0f}] vs box [{rx+PAD:.0f}..{rx+rw-PAD:.0f}]")
 
+    # pass 3: no two texts overlap each other. A title colliding with a
+    # right-aligned meta, or a subtitle riding into a header band, is a text-vs-
+    # text overlap the box passes never see. Each glyph box is [left,right] x
+    # [y-0.8fs, y+0.2fs]; two overlapping by more than OVL in both axes collide.
+    # Measured advance, not the overflow pass's safe over-estimate (0.72), so
+    # width here reflects real rendering. Per class: bold, uppercase, tracked
+    # titles run ~0.68/char; plain fields ~0.6. One ratio would either miss a
+    # title collision or false-flag two close fields.
+    TITLE_CLS = {"viz-node-title", "viz-kv-title", "viz-label", "viz-colhead", "viz-pill-text"}
+    OVL = 4.0
+    texts = []
+    for m in re.finditer(r"<text\b([^>]*)>(.*?)</text>", src, re.S):
+        if in_moved(m.start()):
+            continue
+        attrs, raw = m.group(1), m.group(2)
+        if "transform=" in attrs:
+            continue
+        if re.search(r"opacity:\s*0\b", attrs):
+            continue  # animation-hidden: a scene reveals it; swap pairs share a spot
+        content = html.unescape(re.sub(r"<[^>]+>", "", raw)).strip()
+        if not content:
+            continue
+        x = float(ATTR(attrs, "x") or 0)
+        y = float(ATTR(attrs, "y") or 0)
+        classes = cls(attrs)
+        fs = next((SIZE[c] for c in classes if c in SIZE), DEFAULT_SIZE)
+        adv = 0.68 if TITLE_CLS & set(classes) else 0.6
+        w = len(content) * fs * adv
+        anchor = ATTR(attrs, "text-anchor") or "start"
+        left = x - w / 2 if anchor == "middle" else (x - w if anchor == "end" else x)
+        texts.append((content, left, left + w, y - 0.8 * fs, y + 0.2 * fs))
+    for i in range(len(texts)):
+        ci, l1, r1, t1, b1 = texts[i]
+        for j in range(i + 1, len(texts)):
+            cj, l2, r2, t2, b2 = texts[j]
+            if min(r1, r2) - max(l1, l2) > OVL and min(b1, b2) - max(t1, t2) > OVL:
+                problems.append(f"  text collision: '{ci[:24]}' overlaps '{cj[:24]}'")
+
     # M3: arrowheads render at 75% of the old head. No arrow marker may exceed
     # ARROW_MAX on either side (knobs, id ~ '-knob', are exempt).
     for mk in re.finditer(r"<marker\b([^>]*)>", src):
@@ -286,6 +324,22 @@ def check(path: str) -> list[str]:
         if "marker-end=" in tag and "marker-start=" not in tag and docks(s):
             where = ATTR(tag, "d") or ATTR(tag, "x1") or "?"
             problems.append(f"  M4 arrow has no source node: edge '{where[:34]}' lacks marker-start knob")
+
+    # Arrow into a pill: a compute node wears a pill straddling its top edge, so
+    # an edge docking that top-centre lands the arrowhead on the pill. Dock the
+    # edge off to the side of the pill, or move the pill, so the head stays clear.
+    pills = []
+    for r in re.finditer(r"<rect\b([^>]*)>", src):
+        if "viz-pill" in cls(r.group(1)):
+            a = r.group(1)
+            x, y = float(ATTR(a, "x") or 0), float(ATTR(a, "y") or 0)
+            w, h = float(ATTR(a, "width") or 0), float(ATTR(a, "height") or 0)
+            pills.append((x, y, x + w, y + h))
+    for tag, _s, end, _r, _c in edges:
+        if "marker-end=" not in tag:
+            continue
+        if any(x0 <= end[0] <= x1 and y0 <= end[1] <= y1 for x0, y0, x1, y1 in pills):
+            problems.append(f"  arrow into pill: head at [{end[0]:.0f},{end[1]:.0f}] lands on a kind pill")
 
     # M2: force field. No two SEPARATE block borders sit closer than CLEAR.
     # Exempt: nested/contained blocks (a node in a zone, a code box in a node)

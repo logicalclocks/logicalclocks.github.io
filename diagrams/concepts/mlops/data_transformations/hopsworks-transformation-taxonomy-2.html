@@ -21,15 +21,15 @@
   <!-- inputs -->
   <g><rect class="viz-node" x="10" y="80" width="104" height="28" rx="4"/><text class="viz-meta" x="62" y="98" text-anchor="middle">New data</text></g>
   <g><rect class="viz-node" x="10" y="132" width="104" height="28" rx="4"/><text class="viz-meta" x="62" y="150" text-anchor="middle">Backfill</text></g>
-  <path class="viz-edge" d="M114 94 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
-  <path class="viz-edge" d="M114 146 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M114 94 L130 94" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M114 146 L130 146" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
 
   <!-- feature pipeline -->
   <a class="viz-link" href="../../fs/feature_group/feature_pipelines/">
     <g>
       <rect class="viz-node" x="130" y="66" width="300" height="92" rx="4"/>
-      <rect class="viz-pill" x="245" y="58" width="70" height="16" rx="3"/>
-      <text class="viz-pill-text" x="280" y="69" text-anchor="middle">pipeline</text>
+      <rect class="viz-pill" x="150" y="58" width="70" height="16" rx="3"/>
+      <text class="viz-pill-text" x="185" y="69" text-anchor="middle">pipeline</text>
       <text class="viz-node-title" x="280" y="92" text-anchor="middle">Feature</text>
     </g>
   </a>
@@ -37,11 +37,11 @@
   <g data-tone="data"><rect class="viz-node" x="318" y="104" width="104" height="28" rx="4" style="stroke-dasharray:4 3"/><text class="viz-meta" x="370" y="122" text-anchor="middle">On-demand</text></g>
 
   <!-- features & labels -->
-  <path class="viz-edge" d="M280 158 V178" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M280 158 L280 178" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <g><rect class="viz-node" x="200" y="178" width="160" height="30" rx="4"/><text class="viz-meta" x="280" y="197" text-anchor="middle">Features &amp; labels</text></g>
 
   <!-- feature store -->
-  <path class="viz-edge" d="M280 208 V238" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M280 208 L280 238" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <a class="viz-link" href="../../fs/feature_group/fg_overview/">
     <g><rect class="viz-node" x="152" y="238" width="256" height="48" rx="4"/>
     <text class="viz-node-title" x="280" y="260" text-anchor="middle">Feature store</text>
@@ -49,32 +49,32 @@
   </a>
 
   <!-- training pipeline -->
-  <path class="viz-edge" d="M280 286 V316" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M280 286 L280 316" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <a class="viz-link" href="../training/">
     <g>
       <rect class="viz-node" x="130" y="316" width="300" height="72" rx="4"/>
-      <rect class="viz-pill" x="245" y="308" width="70" height="16" rx="3"/>
-      <text class="viz-pill-text" x="280" y="319" text-anchor="middle">pipeline</text>
+      <rect class="viz-pill" x="150" y="308" width="70" height="16" rx="3"/>
+      <text class="viz-pill-text" x="185" y="319" text-anchor="middle">pipeline</text>
       <text class="viz-node-title" x="280" y="340" text-anchor="middle">Training</text>
     </g>
   </a>
   <g data-tone="neutral"><rect class="viz-node" x="210" y="352" width="140" height="28" rx="4"/><text class="viz-meta" x="280" y="370" text-anchor="middle">Model-dependent</text></g>
 
   <!-- model registry -->
-  <path class="viz-edge" d="M280 388 V418" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M280 388 L280 418" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <a class="viz-link" href="../registry/">
     <g><rect class="viz-node" x="205" y="418" width="150" height="30" rx="4"/><text class="viz-meta" x="280" y="437" text-anchor="middle">Model registry</text></g>
   </a>
 
   <!-- online inference pipeline -->
-  <path class="viz-edge" d="M280 448 V478" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M280 448 L280 478" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <g><rect class="viz-node" x="10" y="500" width="104" height="28" rx="4"/><text class="viz-meta" x="62" y="518" text-anchor="middle">Request</text></g>
-  <path class="viz-edge" d="M114 514 H130" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M114 514 L130 514" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <a class="viz-link" href="../serving/">
     <g>
       <rect class="viz-node" x="130" y="478" width="300" height="72" rx="4"/>
-      <rect class="viz-pill" x="245" y="470" width="70" height="16" rx="3"/>
-      <text class="viz-pill-text" x="280" y="481" text-anchor="middle">pipeline</text>
+      <rect class="viz-pill" x="150" y="470" width="70" height="16" rx="3"/>
+      <text class="viz-pill-text" x="185" y="481" text-anchor="middle">pipeline</text>
       <text class="viz-node-title" x="280" y="502" text-anchor="middle">Online inference</text>
     </g>
   </a>
@@ -82,11 +82,11 @@
   <g data-tone="neutral"><rect class="viz-node" x="282" y="514" width="140" height="28" rx="4"/><text class="viz-meta" x="352" y="532" text-anchor="middle">Model-dependent</text></g>
 
   <!-- predictions -> applications + logs -->
-  <path class="viz-edge" d="M280 550 V570" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M280 550 L280 570" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <g data-tone="data"><rect class="viz-node" x="200" y="570" width="160" height="30" rx="4" style="stroke:var(--viz-tone)"/><text class="viz-meta" x="280" y="589" text-anchor="middle">Predictions</text></g>
-  <path class="viz-edge" d="M280 600 C280 618 400 616 400 634" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
+  <path class="viz-edge" d="M280 600 C280 608.1 400 609.9 400 618 L400 634" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)"/>
   <g><rect class="viz-node" x="300" y="634" width="200" height="32" rx="4"/><text class="viz-meta" x="400" y="654" text-anchor="middle">AI-enabled applications</text></g>
-  <path class="viz-edge" d="M280 600 C280 618 130 616 130 634" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)" style="stroke-dasharray:4 4"/>
+  <path class="viz-edge" d="M280 600 C280 608.1 130 609.9 130 618 L130 634" marker-start="url(#hw-knob)" marker-end="url(#hw-arrow)" style="stroke-dasharray:4 4"/>
   <g><rect class="viz-node" x="40" y="634" width="180" height="32" rx="4"/><text class="viz-meta" x="130" y="654" text-anchor="middle">Prediction logs</text></g>
 </svg>
 </figure>

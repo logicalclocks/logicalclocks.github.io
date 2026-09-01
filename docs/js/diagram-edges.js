@@ -106,7 +106,7 @@
     // how far the source sits out from the target's border, along that normal;
     // the run-in can never exceed it or the approach point falls behind the source.
     var perpGap = Math.abs((S.x - T.x) * T.nx + (S.y - T.y) * T.ny);
-    var runIn = Math.min(RUN_IN, perpGap * 0.6);
+    var runIn = Math.min(RUN_IN, Math.max(0, perpGap - 2));
     var Ax = T.x + T.nx * runIn;
     var Ay = T.y + T.ny * runIn;
     var dx = Ax - S.x;
@@ -160,6 +160,11 @@
   function lift(svg) {
     svg.querySelectorAll(":scope > .viz-edge").forEach(function (edge) {
       svg.appendChild(edge);
+    });
+    // edge labels ride over the line, so they must paint AFTER the edges just
+    // lifted, else the line covers the label and its stabilo halo.
+    svg.querySelectorAll(":scope > .viz-edge-label").forEach(function (lbl) {
+      svg.appendChild(lbl);
     });
   }
 

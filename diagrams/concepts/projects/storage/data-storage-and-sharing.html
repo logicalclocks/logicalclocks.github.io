@@ -29,10 +29,10 @@
   </g>
 
   <!-- ownership + CI/CD flows -->
-  <path class="viz-edge" d="M140 64 V150" marker-start="url(#st-knob)" marker-end="url(#st-arrow)"/>
-  <path class="viz-edge" d="M420 64 V150" marker-start="url(#st-knob)" marker-end="url(#st-arrow)"/>
-  <path class="viz-edge" d="M226 108 C196 122 176 132 168 150" marker-start="url(#st-knob)" marker-end="url(#st-arrow)" style="stroke-dasharray:5 4"/>
-  <path class="viz-edge" d="M334 108 C364 122 384 132 392 150" marker-start="url(#st-knob)" marker-end="url(#st-arrow)" style="stroke-dasharray:5 4"/>
+  <path class="viz-edge" d="M140 64 L140 150" marker-start="url(#st-knob)" marker-end="url(#st-arrow)"/>
+  <path class="viz-edge" d="M420 64 L420 150" marker-start="url(#st-knob)" marker-end="url(#st-arrow)"/>
+  <path class="viz-edge" d="M226 108 C214.3 108 168 122.3 168 134 L168 150" marker-start="url(#st-knob)" marker-end="url(#st-arrow)" style="stroke-dasharray:5 4"/>
+  <path class="viz-edge" d="M334 108 C345.7 108 392 122.3 392 134 L392 150" marker-start="url(#st-knob)" marker-end="url(#st-arrow)" style="stroke-dasharray:5 4"/>
 
   <!-- production project (DATA family: table of linked ML assets) -->
   <g>
@@ -98,7 +98,7 @@
   </g>
 
   <!-- Production's feature store read into Development, read-only, aligned with Prod's FS row -->
-  <path class="viz-edge" d="M240 252 H326" marker-start="url(#st-knob)" marker-end="url(#st-arrow)" style="stroke-dasharray:5 4"/>
+  <path class="viz-edge" d="M240 252 L326 252" marker-start="url(#st-knob)" marker-end="url(#st-arrow)" style="stroke-dasharray:5 4"/>
   <text class="viz-meta" x="283" y="243" text-anchor="middle" data-tone="read">read-only</text>
 </svg>
 </figure>

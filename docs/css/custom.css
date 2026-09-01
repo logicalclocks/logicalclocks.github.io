@@ -339,6 +339,16 @@ a.autorefs-external::after {
   font-size: var(--viz-type-meta);
   letter-spacing: 0.02em;
 }
+/* Edge labels ride over a connector line. They carry .viz-edge-label so the
+   router lifts them above the lifted edges (else the line paints over them),
+   and a paper-coloured halo (stroke under the fill) breaks the line behind the
+   glyphs, "stabilo" style. Invisible over a box or paper. */
+.hops-viz .viz-edge-label {
+  paint-order: stroke;
+  stroke: var(--viz-paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
 .hops-viz .viz-meta[data-tone] { fill: var(--viz-tone); }
 .hops-viz .viz-arrow-error { fill: var(--viz-tone-error); fill-opacity: 0.8; }
 .hops-viz .viz-fade { transition: opacity var(--viz-duration) ease; }
