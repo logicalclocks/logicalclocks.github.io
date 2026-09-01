@@ -71,7 +71,7 @@ Filebeat collects logs from the release namespace, from namespaces carrying eith
 Dots in a label key are replaced by underscores.
 In OpenSearch Dashboards, search for `kubernetes.labels.app_kubernetes_io/name`, not `kubernetes.labels.app.kubernetes.io/name`.
 
-## Labels that cannot be removed
+## Labels the chart always keeps
 
 Four defaults are unioned into the effective set whatever the lists below say, because losing one breaks log collection rather than degrading a field:
 
@@ -82,8 +82,10 @@ Four defaults are unioned into the effective set whatever the lists below say, b
 | `hopsworks.ai/onlinefs-cluster` | namespace | Online feature store namespaces are no longer collected. |
 | `kubernetes.io/hostname` | node | The services, Spark, Python and serving pipelines lose the node field. |
 
-The first three are read by the chart's own Filebeat configuration rather than by a pipeline.
-They cost four fields of the 1000-field budget.
+`name` and `hopsworks.ai/onlinefs-cluster` are read by the chart's own Filebeat configuration rather than by a pipeline.
+`hopsworks.ai/project` is read by both: the Filebeat namespace gate and the `discriminator.conf` pipeline, which derives the project field from it.
+They cost eight fields of the 1000-field budget, not four: a dynamically mapped string label is indexed as `text` plus a `.keyword` sub-field, so every key counts twice.
+The same doubling applies to any label you append, which halves the effective budget.
 
 They are values, so the set is visible and auditable, and each sits next to the lists for its own dimension:
 
@@ -102,7 +104,7 @@ olk:
 
 The effective set for a dimension is `mandatory*` plus the base list plus `extra*`, de-duplicated.
 
-Emptying those lists is possible and is not recommended.
+Emptying those lists is possible, since Helm cannot make a value read-only, and is not recommended: nothing else guarantees these keys.
 A log location that genuinely needs different metadata should instead set `addKubernetesMetadata: false` and supply its own processors, as described below.
 
 ## Metadata collection per log location
@@ -193,16 +195,23 @@ olk:
 
 ## Deployment and cron job names
 
-Filebeat adds `kubernetes.deployment.name` and `kubernetes.cronjob.name` by default.
-Set either to `false` to drop it:
+Two toggles control whether `kubernetes.deployment.name` and `kubernetes.cronjob.name` are attached:
 
 ```yaml
 olk:
   filebeat:
     kubernetesMetadata:
-      deployment: false
-      cronjob: false
+      deployment: true
+      cronjob: true
 ```
+
+Set a toggle to `true` to add the field, `false` to drop it, or leave it unset to keep Filebeat's own default.
+
+!!! note
+
+    Set the toggle explicitly if you depend on the field.
+    Elastic documents the default inconsistently: the `add_kubernetes_metadata` processor reference says the name is added unless disabled, while the autodiscover provider reference says it is not added unless enabled.
+    To see what your cluster does, look for `kubernetes.deployment.name` on a service log document in Dashboards.
 
 ## Going Further
 
