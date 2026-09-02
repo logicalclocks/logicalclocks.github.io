@@ -71,7 +71,7 @@ Filebeat collects logs from the release namespace, from namespaces carrying eith
 Dots in a label key are replaced by underscores.
 In OpenSearch Dashboards, search for `kubernetes.labels.app_kubernetes_io/name`, not `kubernetes.labels.app.kubernetes.io/name`.
 
-## Labels the chart always keeps
+## Labels Hopsworks' log filtering reads
 
 Four defaults are unioned into the effective set whatever the lists below say, because losing one breaks log collection rather than degrading a field:
 
@@ -87,24 +87,25 @@ Four defaults are unioned into the effective set whatever the lists below say, b
 They cost eight fields of the 1000-field budget, not four: a dynamically mapped string label is indexed as `text` plus a `.keyword` sub-field, so every key counts twice.
 The same doubling applies to any label you append, which halves the effective budget.
 
-They are values, so the set is visible and auditable, and each sits next to the lists for its own dimension:
+Every default is in this category: the audit of the shipped set found no key that is collected without something reading it.
+They live in the `logFiltering*` values, so the set is visible and auditable:
 
 ```yaml
 olk:
   filebeat:
     kubernetesMetadata:
-      mandatoryPodLabels:
-        - "name"
-      mandatoryNamespaceLabels:
+      logFilteringPodLabels: [ ... ]
+      logFilteringNamespaceLabels:
         - "hopsworks.ai/project"
         - "hopsworks.ai/onlinefs-cluster"
-      mandatoryNodeLabels:
+      logFilteringNodeLabels:
         - "kubernetes.io/hostname"
 ```
 
-The effective set for a dimension is `mandatory*` plus the base list plus `extra*`, de-duplicated.
+The effective set for a dimension is `logFiltering*` plus `extra*`, de-duplicated.
+Removing a key from `logFiltering*` is possible, since Helm cannot make a value read-only, and breaks whatever reads it: the four above stop log collection, and the rest stop a Logstash routing or enrichment branch from matching.
+A location that genuinely needs different metadata should set `addKubernetesMetadata: false` and supply its own processors instead.
 
-Emptying those lists is possible, since Helm cannot make a value read-only, and is not recommended: nothing else guarantees these keys.
 A log location that genuinely needs different metadata should instead set `addKubernetesMetadata: false` and supply its own processors, as described below.
 
 ## Metadata collection per log location
@@ -157,21 +158,20 @@ Label keys named by `olk.logstash.extendServicesPipeline` are added automaticall
 An appended label is stored on the log document and is searchable and aggregatable in OpenSearch Dashboards.
 Routing and field extraction are done by the Logstash pipelines, which read a fixed set of keys, so an appended label does not change how a log line is parsed.
 
-## Replace the default set
+## Replace the filtering set
 
-Set the base list to replace the defaults instead of adding to them:
+Override `logFiltering*` to replace the set that Hopsworks' filtering reads. Only do this if you know what stops working:
 
 ```yaml
 olk:
   filebeat:
     kubernetesMetadata:
-      podLabels:
+      logFilteringPodLabels:
         - "app"
         - "my.corp/team"
 ```
 
-Replacing a base list does not remove the mandatory labels below; they are added back regardless.
-Everything else in the default set is dropped, and each of those keys drives a Logstash routing or enrichment branch, so a pipeline that reads a key you removed silently stops matching.
+The `logFiltering*` lists hold the keys Hopsworks' own log filtering reads, so removing one silently breaks whatever reads it.
 
 ## Collect annotations
 
