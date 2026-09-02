@@ -30,13 +30,11 @@ get re-flowed to portrait, they are not left to pan.
 
 ## Open
 
-- [ ] Convert the last 7 old-kit fragments: `concepts/dev/inside`,
-      `concepts/dev/outside`, `fs/feature_group/fg_overview/features-and-feature-groups`,
-      `fs/feature_view/offline_api/point-in-time-correct-training-data-2`,
-      `fs/index/what-is-hopsworks-feature-store`, `mlops/registry/model-registry`,
-      `mlops/training/training-pipelines-on-hopsworks`. (grep: `class="hops-diagram"`
-      without `hops-viz`.) The graph-heavy ones need the local screenshot tool to
-      verify edge routing — it was dead this session (eval works, capture never writes).
+- [ ] Convert the last 4 old-kit fragments: `concepts/dev/inside`,
+      `concepts/dev/outside`, `mlops/registry/model-registry`,
+      `mlops/training/training-pipelines-on-hopsworks`.
+      (grep: `grep -rL hops-viz diagrams --include='*.html'`.)
+      Verify edge routing with `agent-browser screenshot` (working again).
 - [ ] Icon retrofit pass on the dense diagrams converted WITHOUT icons before Lex
       asked for iconography (the data_transformations page, feature-views x2,
       real-time-ai, batch-ai, the versioning grids, taxonomies). governance +
