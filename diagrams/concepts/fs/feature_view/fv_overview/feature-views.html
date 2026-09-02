@@ -26,10 +26,10 @@
   <!-- create_feature_view -->
   <rect id="def-box" class="viz-code-box" x="222" y="94" width="378" height="124" rx="6" style="opacity:0"/>
   <text id="dl1" class="viz-codeln" x="240" y="116" style="opacity:0">fv = fs.<tspan class="tok-fn">create_feature_view</tspan>(</text>
-  <text id="dl2" class="viz-codeln" x="240" y="134" style="opacity:0"><tspan> </tspan>   name=<tspan class="tok-str">"product_sales"</tspan>,</text>
-  <text id="dl3" class="viz-codeln" x="240" y="152" style="opacity:0"><tspan> </tspan>   query=query,</text>
-  <text id="dl4" class="viz-codeln" x="240" y="170" style="opacity:0"><tspan> </tspan>   labels=[<tspan class="tok-str">"sales"</tspan>],</text>
-  <text id="dl5" class="viz-codeln" x="240" y="188" style="opacity:0"><tspan> </tspan>   transformation_functions=[normalize],</text>
+  <text id="dl2" class="viz-codeln" x="268" y="134" style="opacity:0">name=<tspan class="tok-str">"product_sales"</tspan>,</text>
+  <text id="dl3" class="viz-codeln" x="268" y="152" style="opacity:0">query=query,</text>
+  <text id="dl4" class="viz-codeln" x="268" y="170" style="opacity:0">labels=[<tspan class="tok-str">"sales"</tspan>],</text>
+  <text id="dl5" class="viz-codeln" x="268" y="188" style="opacity:0">transformation_functions=[normalize],</text>
   <text id="dl6" class="viz-codeln" x="240" y="206" style="opacity:0">)</text>
 
   <path id="e-fv" class="viz-edge" data-from="def-box" data-from-side="bottom" data-to="fview" data-to-side="top" marker-start="url(#fvf-knob)" marker-end="url(#fvf-arrow)" style="opacity:0"/>
@@ -51,8 +51,8 @@
   </g>
   <rect id="off-box" class="viz-code-box" x="30" y="398" width="352" height="82" rx="6" style="opacity:0"/>
   <text id="ol1" class="viz-codeln" x="44" y="420" style="opacity:0">fv.<tspan class="tok-fn">create_train_validation_test_split</tspan>(</text>
-  <text id="ol2" class="viz-codeln" x="44" y="438" style="opacity:0"><tspan> </tspan>   validation_size=0.1, test_size=0.1,</text>
-  <text id="ol3" class="viz-codeln" x="44" y="456" style="opacity:0"><tspan> </tspan>   extra_filter=category == <tspan class="tok-str">"perfumes"</tspan>,</text>
+  <text id="ol2" class="viz-codeln" x="72" y="438" style="opacity:0">validation_size=0.1, test_size=0.1,</text>
+  <text id="ol3" class="viz-codeln" x="72" y="456" style="opacity:0">extra_filter=category == <tspan class="tok-str">"perfumes"</tspan>,</text>
   <text id="ol4" class="viz-codeln" x="44" y="474" style="opacity:0">)</text>
 
   <path id="e-off1" class="viz-edge" data-from="off-box" data-from-side="bottom" data-to="off-tbox" data-to-side="top" marker-start="url(#fvf-knob)" marker-end="url(#fvf-arrow)" style="opacity:0"/>
@@ -78,7 +78,7 @@
   </g>
   <rect id="on-box" class="viz-code-box" x="438" y="398" width="352" height="82" rx="6" style="opacity:0"/>
   <text id="nl1" class="viz-codeln" x="452" y="420" style="opacity:0">vec = fv.<tspan class="tok-fn">get_feature_vector</tspan>(</text>
-  <text id="nl2" class="viz-codeln" x="452" y="438" style="opacity:0"><tspan> </tspan>   entry={<tspan class="tok-str">"product_id"</tspan>: 222},</text>
+  <text id="nl2" class="viz-codeln" x="480" y="438" style="opacity:0">entry={<tspan class="tok-str">"product_id"</tspan>: 222},</text>
   <text id="nl3" class="viz-codeln" x="452" y="456" style="opacity:0">)</text>
   <text id="nl4" class="viz-codeln" x="452" y="474" style="opacity:0;fill:var(--viz-ink-soft)"># serving key &#183; filter not applied</text>
 

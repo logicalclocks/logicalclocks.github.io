@@ -1,5 +1,5 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 760 250" role="img" aria-label="Animated diagram of get_feature_vector as a request and response. The request passes the serving key location_id 9844-3333. The response is a feature vector rendered as an ordered list of values, temperature, rainfall, pressure, that builds through a pipeline: lookup from the online store fills 12.45 and 44, plus passed merges the client value 1013, ODT the on-demand transformation rewrites it to 0.50, MDT the model-dependent transformation scales the whole list to 0.31, 0.87, 0.42, and the list is returned without the serving key. A caption notes that ODT runs before MDT, MDT is always last, and the serving key stays in the request and out of the returned list." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 760 420" role="img" aria-label="Animated diagram of get_feature_vector as a notebook cell: In holds the call, a printed trace shows each stage, Out holds the returned list. In holds the call with the serving key location_id 9844-3333 and the passed feature pressure 1013. The response is a feature vector rendered as an ordered list of values, temperature, rainfall, pressure, that builds through a pipeline: lookup from the online store fills 12.45 and 44, plus passed merges the client value 1013, ODT the on-demand transformation rewrites it to 0.50, MDT the model-dependent transformation scales the whole list to 0.31, 0.87, 0.42, and the list is returned without the serving key. Under the stages a trace accumulates one code line per stage, the call it makes and its result: the online lookup, the passed feature, the on-demand function, the model-dependent scaler, and the return. A caption notes that ODT runs before MDT, MDT is always last, and the serving key stays in the request and out of the returned list." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="ov-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
@@ -7,57 +7,81 @@
     <marker id="ov-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
-  <!-- ===== request / response: the feature vector is a list ===== -->
-  <rect class="viz-code-box" x="40" y="24" width="680" height="70" rx="6"/>
-  <text class="viz-codeln" x="58" y="52">fv.<tspan class="tok-fn">get_feature_vector</tspan>({<tspan class="tok-str">"location_id"</tspan>: <tspan class="tok-str">"9844-3333"</tspan>})</text>
-  <text class="viz-codeln" x="58" y="78">&#8594; <tspan id="ov-arr" style="fill:var(--hops-accent-text);font-weight:700">[ null, null, null ]</tspan></text>
-  <text class="viz-meta" x="380" y="114" text-anchor="middle">positions in the list: temperature, rainfall, pressure</text>
+  <!-- ===== notebook: In cell (grey, like an input cell) ===== -->
+  <rect class="viz-code-box" x="40" y="24" width="680" height="90" rx="6"/>
+  <text class="viz-codeln" x="110" y="47" text-anchor="end" style="fill:var(--viz-ink-soft)">In [1]:</text>
+  <text class="viz-codeln" x="120" y="47">fv.<tspan class="tok-fn">get_feature_vector</tspan>(</text>
+  <text class="viz-codeln" x="148" y="65">entry={<tspan class="tok-str">"location_id"</tspan>: <tspan class="tok-str">"9844-3333"</tspan>},</text>
+  <text class="viz-codeln" x="148" y="83">passed_features={<tspan class="tok-str">"pressure"</tspan>: 1013},</text>
+  <text class="viz-codeln" x="120" y="101">)</text>
 
   <!-- ===== the fixed-order build pipeline (arrows = the order) ===== -->
-  <path class="viz-edge" d="M156 176 L172 176" marker-end="url(#ov-arrow)" marker-start="url(#ov-knob)"/>
-  <path class="viz-edge" d="M292 176 L308 176" marker-end="url(#ov-arrow)" marker-start="url(#ov-knob)"/>
-  <path class="viz-edge" d="M428 176 L444 176" marker-end="url(#ov-arrow)" marker-start="url(#ov-knob)"/>
-  <path class="viz-edge" d="M564 176 L580 176" marker-end="url(#ov-arrow)" marker-start="url(#ov-knob)"/>
+  <path class="viz-edge" d="M156 164 L172 164" marker-end="url(#ov-arrow)" marker-start="url(#ov-knob)"/>
+  <path class="viz-edge" d="M292 164 L308 164" marker-end="url(#ov-arrow)" marker-start="url(#ov-knob)"/>
+  <path class="viz-edge" d="M428 164 L444 164" marker-end="url(#ov-arrow)" marker-start="url(#ov-knob)"/>
+  <path class="viz-edge" d="M564 164 L580 164" marker-end="url(#ov-arrow)" marker-start="url(#ov-knob)"/>
 
   <g id="s1" data-tone="data">
-    <rect class="viz-node" x="36" y="150" width="120" height="52" rx="4"/>
-    <text class="viz-node-title" x="96" y="174" text-anchor="middle">lookup</text>
-    <text class="viz-node-subtitle" x="96" y="192" text-anchor="middle">online store</text>
+    <rect class="viz-node" x="36" y="138" width="120" height="52" rx="4"/>
+    <text class="viz-node-title" x="96" y="162" text-anchor="middle">lookup</text>
+    <text class="viz-node-subtitle" x="96" y="180" text-anchor="middle">online store</text>
   </g>
   <g id="s2" data-tone="data">
-    <rect class="viz-node" x="172" y="150" width="120" height="52" rx="4"/>
-    <text class="viz-node-title" x="232" y="174" text-anchor="middle">+ passed</text>
-    <text class="viz-node-subtitle" x="232" y="192" text-anchor="middle">from client</text>
+    <rect class="viz-node" x="172" y="138" width="120" height="52" rx="4"/>
+    <text class="viz-node-title" x="232" y="162" text-anchor="middle">+ passed</text>
+    <text class="viz-node-subtitle" x="232" y="180" text-anchor="middle">from client</text>
   </g>
   <g id="s3" data-tone="write">
-    <rect class="viz-node" x="308" y="150" width="120" height="52" rx="4"/>
-    <text class="viz-node-title" x="368" y="174" text-anchor="middle">ODT</text>
-    <text class="viz-node-subtitle" x="368" y="192" text-anchor="middle">on-demand</text>
+    <rect class="viz-node" x="308" y="138" width="120" height="52" rx="4"/>
+    <text class="viz-node-title" x="368" y="162" text-anchor="middle">ODT</text>
+    <text class="viz-node-subtitle" x="368" y="180" text-anchor="middle">on-demand</text>
   </g>
   <g id="s4" data-tone="write">
-    <rect class="viz-node" x="444" y="150" width="120" height="52" rx="4"/>
-    <text class="viz-node-title" x="504" y="174" text-anchor="middle">MDT</text>
-    <text class="viz-node-subtitle" x="504" y="192" text-anchor="middle">model-dep</text>
+    <rect class="viz-node" x="444" y="138" width="120" height="52" rx="4"/>
+    <text class="viz-node-title" x="504" y="162" text-anchor="middle">MDT</text>
+    <text class="viz-node-subtitle" x="504" y="180" text-anchor="middle">model-dep</text>
   </g>
   <g id="s5" data-tone="accent">
-    <rect class="viz-node" x="580" y="150" width="120" height="52" rx="4"/>
-    <text class="viz-node-title" x="640" y="174" text-anchor="middle">return</text>
-    <text class="viz-node-subtitle" x="640" y="192" text-anchor="middle">list &#183; no key</text>
+    <rect class="viz-node" x="580" y="138" width="120" height="52" rx="4"/>
+    <text class="viz-node-title" x="640" y="162" text-anchor="middle">return</text>
+    <text class="viz-node-subtitle" x="640" y="180" text-anchor="middle">list &#183; no key</text>
   </g>
 
+  <!-- ===== printed trace (paper, like cell output): one line per stage, tagged in the gutter, result typed in ===== -->
+  <rect class="viz-node" x="40" y="214" width="680" height="108" rx="6"/>
+  <text id="op1" class="viz-codeln" x="120" y="237" style="opacity:0"><tspan class="tok-fn">lookup</tspan>(entry) &#8594; <tspan id="op1-r" class="tok-str">temperature=12.45, rainfall=44</tspan></text>
+  <text id="op1-t" class="viz-codeln" x="110" y="237" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">lookup</text>
+  <text id="op2" class="viz-codeln" x="120" y="255" style="opacity:0"><tspan class="tok-fn">merge</tspan>(passed_features) &#8594; <tspan id="op2-r" class="tok-str">pressure=1013</tspan></text>
+  <text id="op2-t" class="viz-codeln" x="110" y="255" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">passed</text>
+  <text id="op3" class="viz-codeln" x="120" y="273" style="opacity:0">pressure = <tspan class="tok-fn">normalize_pressure</tspan>(pressure) &#8594; <tspan id="op3-r" class="tok-str">0.50</tspan></text>
+  <text id="op3-t" class="viz-codeln" x="110" y="273" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">odt</text>
+  <text id="op4" class="viz-codeln" x="120" y="291" style="opacity:0"><tspan class="tok-fn">min_max_scaler</tspan>([temperature, rainfall, pressure]) &#8594; <tspan id="op4-r" class="tok-str">[0.31, 0.87, 0.42]</tspan></text>
+  <text id="op4-t" class="viz-codeln" x="110" y="291" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">mdt</text>
+  <text id="op5" class="viz-codeln" x="120" y="309" style="opacity:0">[temperature, rainfall, pressure]  <tspan style="fill:var(--viz-ink-soft)"># location_id stays in the request</tspan></text>
+  <text id="op5-t" class="viz-codeln" x="110" y="309" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">return</text>
+
+  <!-- ===== notebook: Out cell, the returned feature vector ===== -->
+  <rect class="viz-node" x="40" y="346" width="680" height="36" rx="6"/>
+  <text class="viz-codeln" x="110" y="369" text-anchor="end" style="fill:var(--viz-ink-soft)">Out[1]:</text>
+  <text class="viz-codeln" x="120" y="369"><tspan id="ov-arr" style="fill:var(--hops-accent-text);font-weight:700">[ null, null, null ]</tspan></text>
+
   <!-- ===== constraint ===== -->
-  <text id="cap" class="viz-meta viz-fade" x="380" y="232" text-anchor="middle" style="opacity:0">ODT before MDT, MDT last; the serving key stays in the request, not the returned list</text>
+  <text id="cap" class="viz-meta viz-fade" x="380" y="406" text-anchor="middle" style="opacity:0">the order is fixed: ODT before MDT, MDT always last</text>
 </svg>
 <script type="application/json" data-viz-scene>
 {
   "interval": 850,
   "loopDelay": 2600,
   "steps": [
-    { "#s1": {"state": "active"}, "#ov-arr": {"text": "[ 12.45, 44, null ]"}, "$ms": 1000 },
-    { "#s1": {"state": "visited"}, "#s2": {"state": "active"}, "#ov-arr": {"text": "[ 12.45, 44, 1013 ]"}, "$ms": 1000 },
-    { "#s2": {"state": "visited"}, "#s3": {"state": "active"}, "#ov-arr": {"text": "[ 12.45, 44, 0.50 ]"}, "$ms": 1000 },
-    { "#s3": {"state": "visited"}, "#s4": {"state": "active"}, "#ov-arr": {"text": "[ 0.31, 0.87, 0.42 ]"}, "$ms": 1100 },
-    { "#s4": {"state": "visited"}, "#s5": {"state": "active"}, "#cap": {"opacity": 1}, "$ms": 2400 }
+    { "#s1": {"state": "active"}, "#op1": {"opacity": 1}, "#op1-t": {"opacity": 1}, "#op1-r": {"type": "temperature=12.45, rainfall=44"}, "$ms": 900 },
+    { "#ov-arr": {"text": "[ 12.45, 44, null ]"}, "$ms": 900 },
+    { "#s1": {"state": "visited"}, "#s2": {"state": "active"}, "#op2": {"opacity": 1}, "#op2-t": {"opacity": 1}, "#op2-r": {"type": "pressure=1013"}, "$ms": 900 },
+    { "#ov-arr": {"text": "[ 12.45, 44, 1013 ]"}, "$ms": 900 },
+    { "#s2": {"state": "visited"}, "#s3": {"state": "active"}, "#op3": {"opacity": 1}, "#op3-t": {"opacity": 1}, "#op3-r": {"type": "0.50"}, "$ms": 900 },
+    { "#ov-arr": {"text": "[ 12.45, 44, 0.50 ]"}, "$ms": 900 },
+    { "#s3": {"state": "visited"}, "#s4": {"state": "active"}, "#op4": {"opacity": 1}, "#op4-t": {"opacity": 1}, "#op4-r": {"type": "[0.31, 0.87, 0.42]"}, "$ms": 1000 },
+    { "#ov-arr": {"text": "[ 0.31, 0.87, 0.42 ]"}, "$ms": 900 },
+    { "#s4": {"state": "visited"}, "#s5": {"state": "active"}, "#op5": {"opacity": 1}, "#op5-t": {"opacity": 1}, "#cap": {"opacity": 1}, "$ms": 2600 }
   ]
 }
 </script>

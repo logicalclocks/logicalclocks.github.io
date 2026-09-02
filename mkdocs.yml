@@ -35,13 +35,13 @@ nav:
           - Features and Feature Groups: concepts/fs/feature_group/fg_overview.md
           - Write APIs: concepts/fs/feature_group/write_apis.md
           - External Feature Groups: concepts/fs/feature_group/external_fg.md
+          - Spine Group: concepts/fs/feature_group/spine_group.md
           - Feature Pipelines: concepts/fs/feature_group/feature_pipelines.md
           - Streaming Feature Pipelines: concepts/fs/feature_group/streaming_feature_pipelines.md
           - Data Transformations: concepts/mlops/data_transformations.md
       - Feature Views:
           - Overview: concepts/fs/feature_view/fv_overview.md
           - Offline API: concepts/fs/feature_view/offline_api.md
-          - Spine Group: concepts/fs/feature_group/spine_group.md
           - Online API: concepts/fs/feature_view/online_api.md
           - Consistent Transformations: concepts/fs/feature_view/training_inference_pipelines.md
           - On-Demand Features: concepts/fs/feature_group/on_demand_feature.md
@@ -405,6 +405,12 @@ plugins:
       minify_js: true
   - mike:
       canonical_version: latest
+  - redirects:
+      redirect_maps:
+        concepts/fs/feature_view/statistics.md: concepts/fs/feature_group/feature_monitoring.md#statistics-on-training-data
+        concepts/fs/feature_view/feature_monitoring.md: concepts/fs/feature_group/feature_monitoring.md#monitoring-a-feature-view
+        concepts/fs/feature_view/versioning.md: concepts/fs/feature_group/versioning.md#feature-view-and-training-data-versioning
+        user_guides/integrations/flink.md: user_guides/integrations/index.md
   - hopsworks-apigen:
       modules:
         - hopsworks_common

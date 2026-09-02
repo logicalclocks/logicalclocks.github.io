@@ -1,5 +1,5 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="6 8 548 344" role="img" aria-label="A breaking schema change forces a new feature group version: order_prices v1 is incremented to v2 and the new version is backfilled with the changed data through insert." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 776 256" role="img" aria-label="A breaking schema change forces a new feature group version. The code creates order_prices with version=2 and inserts new_df into it, which backfills the new version; order_prices v1 keeps its commits and timestamps, v2 starts its own." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="sv-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
@@ -7,45 +7,47 @@
     <marker id="sv-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
   </defs>
 
-  <!-- flow -->
-  <path class="viz-edge" d="M280 112 L280 136" marker-end="url(#sv-arrow)" marker-start="url(#sv-knob)"/>
-  <path class="viz-edge" d="M280 222 L280 252" marker-end="url(#sv-arrow)" marker-start="url(#sv-knob)"/>
-  <path class="viz-edge" d="M80 112 C80 117.4 86.6 296 92 296 L108 296" marker-end="url(#sv-arrow)" style="stroke-dasharray:5 4" marker-start="url(#sv-knob)"/>
+  <path class="viz-edge" d="M624 100 L624 156" marker-start="url(#sv-knob)" marker-end="url(#sv-arrow)"/>
+  <text class="viz-edge-label viz-meta" x="624" y="132" text-anchor="middle">increment version</text>
+  <path class="viz-edge" d="M424 214 L488 214" marker-start="url(#sv-knob)" marker-end="url(#sv-arrow)"/>
+  <text class="viz-edge-label viz-meta" x="456" y="206" text-anchor="middle">backfill</text>
 
-  <!-- breaking schema change -->
+  <!-- the change, as code -->
   <g>
-    <rect class="viz-node" x="20" y="16" width="520" height="96" rx="4"/>
-    <text class="viz-node-title" x="280" y="40" text-anchor="middle">Breaking schema change</text>
-    <text class="viz-meta" x="280" y="62" text-anchor="middle">new_df has different columns than order_prices</text>
-    <text class="viz-meta" x="280" y="82" text-anchor="middle">create_feature_group(order_prices, version=2)</text>
-    <text class="viz-meta" x="280" y="102" text-anchor="middle">prices_fg.insert(new_df) backfills the new version</text>
+    <rect class="viz-code-box" x="16" y="16" width="408" height="216" rx="6"/>
+    <text class="viz-codeln" x="30" y="38" style="fill:var(--viz-ink-soft)"># breaking schema change: new_df has new columns</text>
+    <text class="viz-codeln" x="30" y="56">new_df = pd.<tspan class="tok-fn">read_csv</tspan>(<tspan class="tok-str">"new_order_items.csv"</tspan>)</text>
+    <text class="viz-codeln" x="30" y="92">fg = fs.<tspan class="tok-fn">create_feature_group</tspan>(</text>
+    <text class="viz-codeln" x="58" y="110">name=<tspan class="tok-str">"order_prices"</tspan>,</text>
+    <text class="viz-codeln" x="58" y="128">version=2,</text>
+    <text class="viz-codeln" x="58" y="146">primary_key=[<tspan class="tok-str">"order_id"</tspan>, <tspan class="tok-str">"order_item_id"</tspan>],</text>
+    <text class="viz-codeln" x="30" y="164">)</text>
+    <text class="viz-codeln" x="30" y="200" style="fill:var(--viz-ink-soft)"># backfill the new version</text>
+    <text class="viz-codeln" x="30" y="218">fg.<tspan class="tok-fn">insert</tspan>(new_df)</text>
   </g>
 
   <!-- order_prices v1 -->
   <a class="viz-link" href="../../fg_overview/">
     <g data-tone="accent">
-      <rect class="viz-node" x="110" y="138" width="340" height="84" rx="4"/>
-      <text class="viz-node-title" x="280" y="162" text-anchor="middle">order_prices (v1)</text>
+      <rect class="viz-node" x="488" y="16" width="272" height="84" rx="4"/>
+      <text class="viz-node-title" x="624" y="40" text-anchor="middle">order_prices (v1)</text>
     </g>
   </a>
-  <g><rect class="viz-node" x="118" y="176" width="150" height="32" rx="4"/>
-  <text class="viz-node-title" x="193" y="197" text-anchor="middle">Commitₙ</text></g>
-  <g><rect class="viz-node" x="292" y="176" width="150" height="32" rx="4"/>
-  <text class="viz-node-title" x="367" y="197" text-anchor="middle">Timestampₙ</text></g>
-
-  <text class="viz-edge-label viz-meta" x="298" y="242" text-anchor="middle">increment version</text>
-  <text class="viz-meta" x="52" y="204" text-anchor="middle">backfill</text>
+  <g><rect class="viz-node" x="496" y="54" width="116" height="32" rx="4"/>
+  <text class="viz-node-title" x="554" y="75" text-anchor="middle">Commitₙ</text></g>
+  <g><rect class="viz-node" x="636" y="54" width="116" height="32" rx="4"/>
+  <text class="viz-node-title" x="694" y="75" text-anchor="middle">Timestampₙ</text></g>
 
   <!-- order_prices v2 -->
   <a class="viz-link" href="../../fg_overview/">
     <g data-tone="accent">
-      <rect class="viz-node" x="110" y="254" width="340" height="84" rx="4"/>
-      <text class="viz-node-title" x="280" y="278" text-anchor="middle">order_prices (v2)</text>
+      <rect class="viz-node" x="488" y="156" width="272" height="84" rx="4"/>
+      <text class="viz-node-title" x="624" y="180" text-anchor="middle">order_prices (v2)</text>
     </g>
   </a>
-  <g><rect class="viz-node" x="118" y="292" width="150" height="32" rx="4"/>
-  <text class="viz-node-title" x="193" y="313" text-anchor="middle">Commit₁</text></g>
-  <g><rect class="viz-node" x="292" y="292" width="150" height="32" rx="4"/>
-  <text class="viz-node-title" x="367" y="313" text-anchor="middle">Timestampₓ</text></g>
+  <g><rect class="viz-node" x="496" y="194" width="116" height="32" rx="4"/>
+  <text class="viz-node-title" x="554" y="215" text-anchor="middle">Commit₁</text></g>
+  <g><rect class="viz-node" x="636" y="194" width="116" height="32" rx="4"/>
+  <text class="viz-node-title" x="694" y="215" text-anchor="middle">Timestampₓ</text></g>
 </svg>
 </figure>

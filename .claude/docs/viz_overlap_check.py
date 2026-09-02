@@ -36,7 +36,7 @@ SIZE = {
     "viz-node-title": 13, "viz-kv-title": 13, "viz-label": 13, "viz-colhead": 12,
     "viz-node-subtitle": 11, "viz-meta": 11, "viz-kv-key": 12, "viz-kv-val": 12,
     "viz-field": 12, "viz-field-type": 12, "viz-field-role": 12, "viz-pill-text": 10,
-    "viz-code": 11,  # viz-code font-size is hardcoded 11px, not a --viz-type-* token
+    "viz-code": 11, "viz-codeln": 11,  # code font-size is hardcoded 11px, not a --viz-type-* token
 }
 DEFAULT_SIZE = 13
 ADVANCE = 0.72  # px per char per px of font-size (measured mono advance ~0.71); over-estimate to stay safe
@@ -178,7 +178,7 @@ def check(path: str) -> list[str]:
     scene = re.search(r'<script[^>]*data-viz-scene[^>]*>(.*?)</script>', src, re.S)
     if scene:
         longest: dict[str, str] = {}
-        for sid, val in re.findall(r'"#([\w-]+)":\s*\{[^{}]*?"text":\s*"((?:[^"\\]|\\.)*)"', scene.group(1)):
+        for sid, val in re.findall(r'"#([\w-]+)":\s*\{[^{}]*?"(?:text|type)":\s*"((?:[^"\\]|\\.)*)"', scene.group(1)):
             if len(val) > len(longest.get(sid, "")):
                 longest[sid] = val
         for sid, val in longest.items():

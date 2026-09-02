@@ -15,7 +15,9 @@ It may be the case that for any given feature vector, not all features will come
 Some features will be provided by the client (or at least the raw data to compute the feature will come from the client).
 We call these 'passed' features and, similar to precomputed features from the feature store, they can also be transformed by the Hopsworks client in the method:
 
-- feature_view.get_feature_vector(entry, passed_features={...})
+```python
+feature_view.get_feature_vector(entry, passed_features={"pressure": 1013})
+```
 
 When you call `get_feature_vector`, Hopsworks builds the vector in a fixed order:
 

@@ -27,7 +27,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `concepts/fs/feature_group/on_demand_feature.md` | modified | +11/-1 |
 | [ ] | `concepts/fs/feature_group/fg_statistics.md` | modified | +6/-4 |
 | [ ] | `concepts/fs/feature_group/feature_monitoring.md` | modified | +23/-11 |
-| [ ] | `concepts/fs/feature_group/versioning.md` | modified | +30/-6 |
+| [x] | `concepts/fs/feature_group/versioning.md` | modified | +30/-6 |
 | [ ] | `concepts/projects/search.md` | modified | +28/-5 |
 | [ ] | `concepts/projects/cicd.md` | modified | +7/-8 |
 | [ ] | `concepts/mlops/training.md` | modified | +14/-2 |
@@ -151,9 +151,9 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `setup_installation/admin/trino.md` | modified | +198/-1 |
 | [ ] | `setup_installation/admin/superset.md` | modified | +37/-6 |
 | [ ] | `reference/rest_error_codes.md` | added | +1225/-0 |
-| [ ] | `concepts/fs/feature_view/feature_monitoring.md` | deleted | +0/-26 |
-| [ ] | `concepts/fs/feature_view/statistics.md` | deleted | +0/-5 |
-| [ ] | `concepts/fs/feature_view/versioning.md` | deleted | +0/-6 |
+| [x] | `concepts/fs/feature_view/feature_monitoring.md` | deleted, merged into `concepts/fs/feature_group/feature_monitoring.md` (Monitoring a feature view) | +0/-26 |
+| [x] | `concepts/fs/feature_view/statistics.md` | deleted, merged into `concepts/fs/feature_group/feature_monitoring.md` (Statistics on training data) | +0/-5 |
+| [x] | `concepts/fs/feature_view/versioning.md` | deleted, merged into `concepts/fs/feature_group/versioning.md` | +0/-6 |
 | [ ] | `tutorials/index.md` | modified | +1/-1 |
 | [ ] | `user_guides/integrations/flink.md` | deleted | +0/-39 |
 
