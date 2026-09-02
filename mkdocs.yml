@@ -254,6 +254,7 @@ nav:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
               - Services Logs: setup_installation/admin/monitoring/services-logs.md
+              - Service Log Labels: setup_installation/admin/monitoring/services-logs-labels.md
           - Authentication:
               - Configure Authentication: setup_installation/admin/auth.md
               - Configure OAuth2:
