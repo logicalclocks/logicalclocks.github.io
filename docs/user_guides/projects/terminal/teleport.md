@@ -107,14 +107,36 @@ This stops the project's terminal pod and every tab in it, from your laptop, wit
 
 When you push a session, `hops session` can also reproduce your local Git checkout on the pod, so the landed session starts in the same repository, on the same branch, at the commit you pushed.
 
-This is opt-in and only supported for SSH-key Git remotes.
-The first time it applies, the CLI asks whether to sync (this time, always, or never) and which key to use, and remembers your answer.
-It uploads the key once into your private `Users/<username>/.ssh/` area and skips a key that has a passphrase.
-Commit and push your local work first, since the pod fetches from the remote, not from your laptop.
+This is opt-in.
+The first time it applies, the CLI asks whether to sync (this time, always, not now, or never) and remembers your answer.
+It then asks how the pod should authenticate to your Git host, and remembers that too:
 
-!!! note "SSH-key Git only"
-    Git sync needs a passphrase-free SSH key.
-    If your Git remote uses HTTPS, add a Git access token in your Hopsworks account settings and clone on the pod instead.
+| Choice | What happens |
+| --- | --- |
+| An existing SSH private key | You confirm the key path (the key `ssh` would use is suggested). The key is uploaded once into your private `Users/<username>/.ssh/` area and the pod clones over SSH. |
+| A new SSH key created for Hopsworks | The CLI runs `ssh-keygen` to create a passphrase-free `ed25519` key at `~/.ssh/hopsworks_teleport_ed25519`, adds its public key to your GitHub account with `gh ssh-key add` when the GitHub CLI is logged in (otherwise it prints the public key for you to add), and stages it like an existing key. Offered on Linux, macOS and WSL; on Windows without `ssh-keygen`, point to an existing key instead. |
+| A personal access token | The token is registered with Hopsworks (see below) and the pod clones over HTTPS with it, so no key leaves your machine. This is the only option when your remote already uses HTTPS; an SSH remote is rewritten to its HTTPS form for the pod. |
+
+Commit and push your local work first, since the pod fetches from the remote, not from your laptop.
+The CLI offers to stage tracked files and commit and push if the tree is dirty.
+
+!!! note "Passphrase-protected keys"
+    The pod runs no SSH agent, so a key that needs a passphrase is not supported.
+    Use a passphrase-free key or a personal access token.
+
+### Register a Git provider token
+
+Hopsworks keeps one personal access token per Git provider host in your account, used by jobs and the web terminal for HTTPS git operations.
+The teleport flow registers one for you when you choose the token option; you can also manage it directly:
+
+```bash
+hops git provider list
+hops git provider set --provider github --username <you>
+hops git provider delete --provider github
+```
+
+`set` prompts for the token without echoing it, defaults the host to the provider's public host (`github.com`, `gitlab.com`, `bitbucket.org`), and leaves an existing registration alone unless you pass `--force`.
+The same token can be registered in the UI under **Account settings > Git providers**.
 
 ## How teleport keeps a session private
 
