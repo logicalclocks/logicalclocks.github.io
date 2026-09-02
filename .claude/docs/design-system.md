@@ -117,6 +117,7 @@ The reference is the home FTI diagram (`diagrams/index/one-architecture-three-pi
 Two node families, do not blur them:
 
 - DATA (stores, endpoints, tables): `viz-kv-frame` + a rounded-top `viz-kv-header` band, title left, meta right, then `viz-kv-entry` rows or a subtitle.
+  The band path drops `v20` from the corner arc, so a band is 26 tall from the frame top; the title baseline (and the meta sharing it) sits at frame top + 19, the band's optical centre, never in its top half. The checker enforces this.
   A table of linked items (a project, a data-source column) uses `viz-field` rows with `viz-row-sep` separators, each row a `viz-link`.
 - COMPUTE (pipelines, processes): a neutral `viz-node` box with a `viz-pill` tab straddling the top edge, `data-tone="accent"`, title + subtitle.
 
@@ -176,6 +177,7 @@ Authoring rules:
 - Ids inside a scene are page-global: prefix them if a page ever hosts two animated figures.
 - Animated figures are not navigational: no `<a>` links inside (the stage is `pointer-events: none`).
 - Text must never overflow its box or the viewBox. The kit is monospace, so this is computable, not a matter of eyeballing: measured glyph advance is about `0.72 * font-size` per character (verify with `getBBox().width / textContent.length` in the browser if unsure), so size every container to `chars * advance + padding` (about 8px each side) and give the viewBox a margin. `viz_overlap_check.py` (in `.claude/docs/`) measures every `<text>` against its box and the viewBox and fails on any overflow; run it on a diagram before considering it done.
+  It measures the longest value a scene `text` op will ever write, not the static placeholder, and it also checks flat texts (titles, metas, footnotes authored next to a frame rather than inside its `<g>`) against the block their anchor sits in, so an animated row count or a footnote cannot outgrow its frame unnoticed.
 
 ### Where diagrams live
 

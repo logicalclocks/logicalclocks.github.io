@@ -1,5 +1,5 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 814 300" role="img" aria-label="Animated diagram of a feature pipeline. A dataframe leaves the data sources and steps through the pipeline stages: validate, aggregate, transform, each lighting up as it passes, then lands in the feature store as appended rows. A second, bad dataframe then reaches the validate stage, which turns red and rejects it: under the STRICT ingestion policy a validation failure stops the write and nothing bad lands in the store." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 856 300" role="img" aria-label="Animated diagram of a feature pipeline. A dataframe leaves the data sources and steps through the pipeline stages: validate, aggregate, transform, each lighting up as it passes, then lands in the feature store as appended rows. A second, bad dataframe then reaches the validate stage, which turns red and rejects it: under the STRICT ingestion policy a validation failure stops the write and nothing bad lands in the store." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="fp-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
@@ -16,42 +16,42 @@
     <text class="viz-node-subtitle" x="104" y="156" text-anchor="middle">kafka · s3 · snowflake</text>
   </g>
 
-  <rect class="viz-kv-frame" x="230" y="88" width="330" height="110" rx="6"/>
-  <path class="viz-kv-header" d="M230 94 a6 6 0 0 1 6 -6 h318 a6 6 0 0 1 6 6 v20 h-330 z"/>
-  <text class="viz-kv-title" x="242" y="101">Feature pipeline</text>
-  <text class="viz-meta" x="548" y="101" text-anchor="end">python · spark</text>
+  <rect class="viz-kv-frame" x="230" y="100" width="330" height="86" rx="6"/>
+  <path class="viz-kv-header" d="M230 106 a6 6 0 0 1 6 -6 h318 a6 6 0 0 1 6 6 v20 h-330 z"/>
+  <text class="viz-kv-title" x="242" y="119">Feature pipeline</text>
+  <text class="viz-meta" x="548" y="119" text-anchor="end">python · spark</text>
   <g id="fp-sv" class="viz-badge" data-tone="neutral">
-    <rect x="246" y="128" width="88" height="28" rx="6"/>
-    <text x="290" y="142" text-anchor="middle">validate</text>
+    <rect x="246" y="142" width="88" height="28" rx="6"/>
+    <text x="290" y="156" text-anchor="middle">validate</text>
   </g>
   <g id="fp-sa" class="viz-badge" data-tone="neutral">
-    <rect x="346" y="128" width="96" height="28" rx="6"/>
-    <text x="394" y="142" text-anchor="middle">aggregate</text>
+    <rect x="346" y="142" width="96" height="28" rx="6"/>
+    <text x="394" y="156" text-anchor="middle">aggregate</text>
   </g>
   <g id="fp-st" class="viz-badge" data-tone="neutral">
-    <rect x="454" y="128" width="92" height="28" rx="6"/>
-    <text x="500" y="142" text-anchor="middle">transform</text>
+    <rect x="454" y="142" width="92" height="28" rx="6"/>
+    <text x="500" y="156" text-anchor="middle">transform</text>
   </g>
 
-  <rect class="viz-kv-frame" x="620" y="88" width="156" height="110" rx="6"/>
-  <path class="viz-kv-header" d="M620 94 a6 6 0 0 1 6 -6 h144 a6 6 0 0 1 6 6 v20 h-156 z"/>
-  <text class="viz-kv-title" x="628" y="101">Feature store</text>
+  <rect class="viz-kv-frame" x="620" y="88" width="212" height="110" rx="6"/>
+  <path class="viz-kv-header" d="M620 94 a6 6 0 0 1 6 -6 h200 a6 6 0 0 1 6 6 v20 h-212 z"/>
+  <text class="viz-kv-title" x="628" y="107">Feature store</text>
   <g id="fp-row" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="626" y="122" width="144" height="26" rx="3"/>
-    <text class="viz-kv-key" x="632" y="139">order_fg</text>
-    <text id="fp-val" class="viz-kv-val" x="764" y="139" text-anchor="end">–</text>
+    <rect class="viz-kv-cell" x="628" y="122" width="196" height="26" rx="3"/>
+    <text class="viz-kv-key" x="636" y="139">order_fg</text>
+    <text id="fp-val" class="viz-kv-val" x="816" y="139" text-anchor="end">–</text>
   </g>
-  <text class="viz-meta" x="628" y="180">validated features only</text>
+  <text class="viz-meta" x="632" y="178">validated features only</text>
 
   <text id="fp-err" class="viz-meta viz-fade" data-tone="error" x="395" y="232" text-anchor="middle" style="opacity:0">STRICT policy: a validation failure stops the write</text>
 
-  <g transform="translate(176 166)">
+  <g transform="translate(176 147)">
     <g id="fp-p1" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="44" height="18" rx="3"/>
       <text x="22" y="9" text-anchor="middle">df</text>
     </g>
   </g>
-  <g transform="translate(176 166)">
+  <g transform="translate(176 147)">
     <g id="fp-p2" class="viz-packet" data-tone="warn" style="opacity:0">
       <rect width="44" height="18" rx="3"/>
       <text x="22" y="9" text-anchor="middle">bad</text>
@@ -67,12 +67,12 @@
     { "#fp-p1": {"x": 92}, "#fp-sv": {"tone": "write"}, "$ms": 600 },
     { "#fp-p1": {"x": 196}, "#fp-sv": {"tone": "neutral"}, "#fp-sa": {"tone": "write"}, "$ms": 600 },
     { "#fp-p1": {"x": 302}, "#fp-sa": {"tone": "neutral"}, "#fp-st": {"tone": "write"}, "$ms": 600 },
-    { "#fp-p1": {"x": 500, "y": -40}, "#fp-st": {"tone": "neutral"}, "$ms": 700 },
+    { "#fp-p1": {"x": 500, "y": -21}, "#fp-st": {"tone": "neutral"}, "$ms": 700 },
     { "#fp-p1": {"opacity": 0}, "#fp-row": {"state": "active"}, "#fp-val": {"text": "+1 204 rows"}, "$ms": 900 },
     { "#fp-row": {"state": "visited"}, "#fp-p2": {"opacity": 1}, "$ms": 600 },
     { "#fp-p2": {"x": 92}, "$ms": 600 },
     { "#fp-sv": {"tone": "error"}, "#fp-p2": {"tone": "error"}, "$ms": 700 },
-    { "#fp-p2": {"x": 92, "y": 78}, "$ms": 500 },
+    { "#fp-p2": {"x": 92, "y": 97}, "$ms": 500 },
     { "#fp-p2": {"opacity": 0}, "#fp-err": {"opacity": 1}, "#fp-sv": {"tone": "neutral"}, "$ms": 2200 }
   ]
 }

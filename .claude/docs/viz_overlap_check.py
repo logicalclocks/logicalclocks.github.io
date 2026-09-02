@@ -41,6 +41,7 @@ SIZE = {
 DEFAULT_SIZE = 13
 ADVANCE = 0.72  # px per char per px of font-size (measured mono advance ~0.71); over-estimate to stay safe
 PAD = 8         # min clearance text-to-box edge
+CELL_PAD = 4    # inside a kv row cell (hairline inset, authored at 6)
 MARGIN = 2      # min clearance text-to-viewBox edge
 
 # lookbehind so a short name can't match inside a longer one: `d` must not match
@@ -150,9 +151,17 @@ def cls(tag: str) -> list[str]:
     return c.split()
 
 
-def text_width(content: str, classes: list[str]) -> float:
+TITLE_CLS = {"viz-node-title", "viz-kv-title", "viz-label", "viz-colhead", "viz-pill-text"}
+
+
+def text_width(content: str, classes: list[str], safe: bool = True) -> float:
+    """Glyph run width. `safe` uses the 0.72 over-estimate (a title inside its
+    node must never be close); measured (0.68 bold tracked titles, 0.6 plain)
+    is for texts authored flat against a frame edge, where 0.72 only re-litigates
+    figures that render fine."""
     fs = next((SIZE[c] for c in classes if c in SIZE), DEFAULT_SIZE)
-    return len(content) * fs * ADVANCE
+    adv = ADVANCE if safe else (0.68 if TITLE_CLS & set(classes) else 0.6)
+    return len(content) * fs * adv
 
 
 def check(path: str) -> list[str]:
@@ -163,7 +172,19 @@ def check(path: str) -> list[str]:
     _, _, vw, vh = (float(x) for x in vb.split())
     problems: list[str] = []
 
-    def geom(attrs: str, raw: str):
+    # A scene's `text` op rewrites a <text> at play time ("–" becomes "+1 204
+    # rows"); the static content is the short placeholder, so measure the longest
+    # value the scene will ever write instead. Substitute before every pass.
+    scene = re.search(r'<script[^>]*data-viz-scene[^>]*>(.*?)</script>', src, re.S)
+    if scene:
+        longest: dict[str, str] = {}
+        for sid, val in re.findall(r'"#([\w-]+)":\s*\{[^{}]*?"text":\s*"((?:[^"\\]|\\.)*)"', scene.group(1)):
+            if len(val) > len(longest.get(sid, "")):
+                longest[sid] = val
+        for sid, val in longest.items():
+            src = re.sub(rf'(<text\b[^>]*\bid="{sid}"[^>]*>)(.*?)(</text>)', lambda m: m.group(1) + val + m.group(3), src, count=1, flags=re.S)
+
+    def geom(attrs: str, raw: str, safe: bool = True):
         content = html.unescape(re.sub(r"<[^>]+>", "", raw)).strip()
         if not content:
             return None
@@ -171,7 +192,7 @@ def check(path: str) -> list[str]:
             return None  # rotated/translated text: flat model can't reason, verify in browser
         x = float(ATTR(attrs, "x") or 0)
         y = float(ATTR(attrs, "y") or 0)
-        w = text_width(content, cls(attrs))
+        w = text_width(content, cls(attrs), safe)
         anchor = ATTR(attrs, "text-anchor") or "start"
         left = x - w / 2 if anchor == "middle" else (x - w if anchor == "end" else x)
         return content, y, left, left + w
@@ -200,21 +221,69 @@ def check(path: str) -> list[str]:
     for grp in re.findall(r"<g\b[^>]*>.*?</g>", src, re.S):
         rects = [
             (float(ATTR(r, "x") or 0), float(ATTR(r, "y") or 0),
-             float(ATTR(r, "width") or 0), float(ATTR(r, "height") or 0))
+             float(ATTR(r, "width") or 0), float(ATTR(r, "height") or 0),
+             "viz-kv-cell" in cls(r))  # a row cell: hairline inset, measured width
             for r in re.findall(r"<rect\b[^>]*/?>", grp)
-            if {"viz-node", "viz-kv-frame", "viz-code-box"} & set(cls(r))
+            if {"viz-node", "viz-kv-frame", "viz-code-box", "viz-kv-cell"} & set(cls(r))
         ]
         if not rects:
             continue
         for m in re.finditer(r"<text\b([^>]*)>(.*?)</text>", grp, re.S):
-            g = geom(m.group(1), m.group(2))
-            if not g:
-                continue
-            content, y, left, right = g
-            for rx, ry, rw, rh in rects:
+            for rx, ry, rw, rh, cell in rects:
+                g = geom(m.group(1), m.group(2), safe=not cell)
+                if not g:
+                    break
+                content, y, left, right = g
+                pad = CELL_PAD if cell else PAD
                 if ry <= y <= ry + rh + 4:  # text belongs to this box vertically
-                    if left < rx + PAD or right > rx + rw - PAD:
-                        problems.append(f"  box overflow: '{content[:42]}' [{left:.0f}..{right:.0f}] vs box [{rx+PAD:.0f}..{rx+rw-PAD:.0f}]")
+                    if left < rx + pad or right > rx + rw - pad:
+                        problems.append(f"  box overflow: '{content[:42]}' [{left:.0f}..{right:.0f}] vs box [{rx+pad:.0f}..{rx+rw-pad:.0f}]")
+
+    # pass 2b: a top-level text (not wrapped with its box) whose anchor point
+    # sits inside a block still has to fit that block. Header titles, metas and
+    # footnotes are usually authored flat next to the frame, not inside a <g>.
+    flat_rects = [
+        (float(ATTR(r, "x") or 0), float(ATTR(r, "y") or 0),
+         float(ATTR(r, "width") or 0), float(ATTR(r, "height") or 0))
+        for r in re.findall(r"<rect\b[^>]*/?>", src)
+        if {"viz-node", "viz-kv-frame", "viz-code-box"} & set(cls(r))
+    ]
+    grouped = [m.span() for m in re.finditer(r"<g\b[^>]*>.*?</g>", src, re.S)]
+    for m in re.finditer(r"<text\b([^>]*)>(.*?)</text>", src, re.S):
+        if in_moved(m.start()) or any(s0 <= m.start() < e0 for s0, e0 in grouped):
+            continue
+        g = geom(m.group(1), m.group(2), safe=False)
+        if not g:
+            continue
+        content, y, left, right = g
+        x = float(ATTR(m.group(1), "x") or 0)
+        for rx, ry, rw, rh in flat_rects:
+            if rx < x < rx + rw and ry < y <= ry + rh:
+                if left < rx + PAD or right > rx + rw - PAD:
+                    problems.append(f"  box overflow: '{content[:42]}' [{left:.0f}..{right:.0f}] vs box [{rx+PAD:.0f}..{rx+rw-PAD:.0f}]")
+                break
+
+    # pass 2c: a header-band title sits on the band's vertical centre. The band
+    # path is `M x y+6 a6.. h.. a6.. v(h)`, so the band is h+6 tall from y; the
+    # title baseline lands at y + band/2 + 6 (optical centre for a 13px cap),
+    # and a right-aligned meta in the same band shares that baseline.
+    for m in re.finditer(r'<path class="viz-kv-header" d="M[\d.]+ ([\d.]+)\s+a6 6 0 0 1 6 -6\s+h[\d.]+\s+a6 6 0 0 1 6 6\s+v(\d+)', src):
+        top = float(m.group(1)) - 6
+        band = float(m.group(2)) + 6
+        want = top + band / 2 + 6
+        nxt = src.find('<path class="viz-kv-header"', m.end())
+        blk = src[m.end(): nxt if nxt > 0 else len(src)]
+        t = re.search(r'<text class="viz-kv-title"[^>]*\by="([\d.]+)"[^>]*>(.*?)</text>', blk, re.S)
+        if t and abs(float(t.group(1)) - want) > 2:
+            problems.append(f"  band title off-centre: '{t.group(2)[:32]}' baseline {float(t.group(1)):.0f}, want {want:.0f} (band {band:.0f} from {top:.0f})")
+        # an icon in the band is centred on the title's cap centre (baseline - 4.7
+        # for a 13px cap); a 24-grid icon's centre is translate.y + 12 * scale.
+        if t:
+            cap = float(t.group(1)) - 4.7
+            for ic in re.finditer(r'<g class="viz-icon" transform="translate\(([\d.]+),\s*([\d.]+)\) scale\(([\d.]+)\)"', blk[:t.start()]):
+                cy = float(ic.group(2)) + 12 * float(ic.group(3))
+                if abs(cy - cap) > 2:
+                    problems.append(f"  band icon off-centre: centre {cy:.0f} vs title cap centre {cap:.0f} (translate y {float(ic.group(2)):g}, want {cap - 12 * float(ic.group(3)):.0f})")
 
     # pass 3: no two texts overlap each other. A title colliding with a
     # right-aligned meta, or a subtitle riding into a header band, is a text-vs-
@@ -224,7 +293,6 @@ def check(path: str) -> list[str]:
     # width here reflects real rendering. Per class: bold, uppercase, tracked
     # titles run ~0.68/char; plain fields ~0.6. One ratio would either miss a
     # title collision or false-flag two close fields.
-    TITLE_CLS = {"viz-node-title", "viz-kv-title", "viz-label", "viz-colhead", "viz-pill-text"}
     OVL = 4.0
     texts = []
     for m in re.finditer(r"<text\b([^>]*)>(.*?)</text>", src, re.S):

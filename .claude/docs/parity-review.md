@@ -16,7 +16,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [x] | `concepts/fs/feature_group/fg_overview.md` | modified | +19/-11 |
 | [!] | `concepts/fs/feature_group/write_apis.md` | modified | +8/-7 |
 | [ ] | `concepts/fs/feature_group/external_fg.md` | modified | +5/-3 |
-| [ ] | `concepts/fs/feature_group/feature_pipelines.md` | modified | +18/-22 |
+| [x] | `concepts/fs/feature_group/feature_pipelines.md` | modified | +18/-22 |
 | [ ] | `concepts/fs/feature_group/streaming_feature_pipelines.md` | added | +30/-0 |
 | [ ] | `concepts/mlops/data_transformations.md` | modified | +11/-5 |
 | [ ] | `concepts/fs/feature_view/fv_overview.md` | modified | +8/-3 |
