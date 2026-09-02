@@ -108,7 +108,8 @@ This stops the project's terminal pod and every tab in it, from your laptop, wit
 When you push a session, `hops session` can also reproduce your local Git checkout on the pod, so the landed session starts in the same repository, on the same branch, at the commit you pushed.
 
 This is opt-in.
-The first time it applies, the CLI asks whether to sync (this time, always, not now, or never) and remembers your answer.
+The first time it applies, the CLI asks whether to sync (always, this time, not now, or never) and remembers your answer.
+Pressing Enter picks always, so later pushes sync without asking.
 It then asks how the pod should authenticate to your Git host, and remembers that too:
 
 | Choice | What happens |
