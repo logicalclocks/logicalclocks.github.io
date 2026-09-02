@@ -13,8 +13,8 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `concepts/projects/storage.md` | modified | +5/-2 |
 | [ ] | `concepts/fti.md` | added | +66/-0 |
 | [ ] | `concepts/fs/index.md` | modified | +4/-2 |
-| [ ] | `concepts/fs/feature_group/fg_overview.md` | modified | +19/-11 |
-| [ ] | `concepts/fs/feature_group/write_apis.md` | modified | +8/-7 |
+| [x] | `concepts/fs/feature_group/fg_overview.md` | modified | +19/-11 |
+| [!] | `concepts/fs/feature_group/write_apis.md` | modified | +8/-7 |
 | [ ] | `concepts/fs/feature_group/external_fg.md` | modified | +5/-3 |
 | [ ] | `concepts/fs/feature_group/feature_pipelines.md` | modified | +18/-22 |
 | [ ] | `concepts/fs/feature_group/streaming_feature_pipelines.md` | added | +30/-0 |
@@ -159,3 +159,4 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 
 ## Follow-ups
 
+- `concepts/fs/feature_group/write_apis.md`: prose still says Hudi DeltaStreamer and Apache Hudi dedup for the offline path, while every diagram on the branch labels the offline store Delta. Decide the 5.x wording and align prose or figures.

@@ -1,5 +1,5 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 868 336" role="img" aria-label="Animated diagram of the Stream API write path. A dataframe travels from the client into HSFS, is encoded as Avro and produced to a Kafka topic with at-least-once delivery. Kafka fans out to both stores: rows upsert into the online store on RonDB and commit into the offline store on Delta. A duplicate Kafka delivery then reaches the online store and resolves as an idempotent no-op, which is how at-least-once transport becomes exactly-once in both stores." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 720 400" role="img" aria-label="Animated diagram of the Stream API write path. An application calls fg.insert(df); the Hopsworks client (pandas, Spark or Python) encodes the rows as Avro and produces them to a Kafka topic with at-least-once delivery. From Kafka the OnlineFS service upserts rows into the online store on RonDB, and the Delta Streamer job commits them into the offline store on Delta. A duplicate Kafka delivery then reaches the online store and resolves as an idempotent no-op, which is how at-least-once transport becomes exactly-once in both stores. A dashed rail marks the one Avro schema shared by the client, the topic and both stores." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="ws-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
@@ -7,79 +7,94 @@
     <marker id="ws-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
     </marker>
+    <symbol id="ws-lg-pandas" viewBox="0 0 24 24"><path d="M16.922 0h2.623v18.104h-2.623zm-4.126 12.94h2.623v2.57h-2.623zm0-7.037h2.623v5.446h-2.623zm0 11.197h2.623v5.446h-2.623zM4.456 5.896h2.622V24H4.455zm4.213 2.559h2.623v2.57H8.67zm0 4.151h2.623v5.447H8.67zm0-11.187h2.623v5.446H8.67Z"/></symbol>
+    <symbol id="ws-lg-spark" viewBox="0 0 24 24"><path d="M10.812 0c-.425.013-.845.215-1.196.605a3.593 3.593 0 00-.493.722c-.355.667-.425 1.415-.556 2.143a551.9 551.9 0 00-.726 4.087c-.027.16-.096.227-.244.273C5.83 8.386 4.06 8.94 2.3 9.514c-.387.125-.773.289-1.114.506-1.042.665-1.196 1.753-.415 2.71.346.422.79.715 1.284.936 1.1.49 2.202.976 3.3 1.47.019.01.036.013.053.019h-.004l1.306.535c0 .023.002.045 0 .073-.2 2.03-.39 4.063-.58 6.095-.04.419-.012.831.134 1.23.317.87 1.065 1.148 1.881.701.372-.204.666-.497.937-.818 1.372-1.623 2.746-3.244 4.113-4.872.111-.133.205-.15.363-.098.349.117.697.231 1.045.347h.001c.02.012.045.02.073.03l.142.042c1.248.416 2.68.775 3.929 1.19.4.132.622.164 1.045.098.311-.048.592-.062.828-.236.602-.33.995-.957.988-1.682-.005-.427-.154-.813-.35-1.186-.82-1.556-1.637-3.113-2.461-4.666-.078-.148-.076-.243.037-.375 1.381-1.615 2.756-3.236 4.133-4.855.272-.32.513-.658.653-1.058.308-.878-.09-1.57-1-1.741a2.783 2.783 0 00-1.235.069c-1.974.521-3.947 1.041-5.918 1.57-.175.047-.26.015-.355-.144a353.08 353.08 0 00-2.421-4.018 4.61 4.61 0 00-.652-.849c-.371-.37-.802-.549-1.227-.536zm.172 3.703a.592.592 0 01.189.211c.87 1.446 1.742 2.89 2.609 4.338.07.118.135.16.277.121 1.525-.41 3.052-.813 4.579-1.217.367-.098.735-.193 1.103-.289a.399.399 0 01-.1.2c-1.259 1.48-2.516 2.962-3.779 4.438-.11.13-.12.22-.04.37.937 1.803 1.768 3.309 2.498 4.76l-3.696-1.019c-.538-.18-1.077-.358-1.615-.539-.163-.055-.25-.03-.36.1-1.248 1.488-2.504 2.97-3.759 4.454a.398.398 0 01-.18.132c.035-.378.068-.757.104-1.136.149-1.572.297-3.144.451-4.716-.03-.318.117-.405-.322-.545-1.493-.593-3.346-1.321-4.816-1.905a.595.595 0 01.24-.134c1.797-.57 3.595-1.14 5.394-1.705.127-.04.199-.092.211-.233.013-.148.05-.294.076-.441.241-1.363.483-2.726.726-4.088.068-.386.14-.771.21-1.157z"/></symbol>
+    <symbol id="ws-lg-python" viewBox="0 0 24 24"><path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.09-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z"/></symbol>
+    <symbol id="ws-lg-kafka" viewBox="0 0 24 24"><path d="M9.71 2.136a1.43 1.43 0 0 0-2.047 0h-.007a1.48 1.48 0 0 0-.421 1.042c0 .41.161.777.422 1.039l.007.007c.257.264.616.426 1.019.426.404 0 .766-.162 1.027-.426l.003-.007c.261-.262.421-.629.421-1.039 0-.408-.159-.777-.421-1.042H9.71zM8.683 22.295c.404 0 .766-.167 1.027-.429l.003-.008c.261-.261.421-.631.421-1.036 0-.41-.159-.778-.421-1.044H9.71a1.42 1.42 0 0 0-1.027-.432 1.4 1.4 0 0 0-1.02.432h-.007c-.26.266-.422.634-.422 1.044 0 .406.161.775.422 1.036l.007.008c.258.262.617.429 1.02.429zm7.89-4.462c.359-.096.683-.33.882-.684l.027-.052a1.47 1.47 0 0 0 .114-1.067 1.454 1.454 0 0 0-.675-.896l-.021-.014a1.425 1.425 0 0 0-1.078-.132c-.36.091-.684.335-.881.686-.2.349-.241.75-.146 1.119.099.363.33.691.675.896h.002c.346.203.737.239 1.101.144zm-6.405-7.342a2.083 2.083 0 0 0-1.485-.627c-.58 0-1.103.242-1.482.627-.378.385-.612.916-.612 1.507s.233 1.124.612 1.514a2.08 2.08 0 0 0 2.967 0c.379-.39.612-.923.612-1.514s-.233-1.122-.612-1.507zm-.835-2.51c.843.141 1.6.552 2.178 1.144h.004c.092.093.182.196.265.299l1.446-.851a3.176 3.176 0 0 1-.047-1.808 3.149 3.149 0 0 1 1.456-1.926l.025-.016a3.062 3.062 0 0 1 2.345-.306c.77.21 1.465.721 1.898 1.482v.002c.431.757.518 1.626.313 2.408a3.145 3.145 0 0 1-1.456 1.928l-.198.118h-.02a3.095 3.095 0 0 1-2.154.201 3.127 3.127 0 0 1-1.514-.944l-1.444.848a4.162 4.162 0 0 1 0 2.879l1.444.846c.413-.47.939-.789 1.514-.944a3.041 3.041 0 0 1 2.371.319l.048.023v.002a3.17 3.17 0 0 1 1.408 1.906 3.215 3.215 0 0 1-.313 2.405l-.026.053-.003-.005a3.147 3.147 0 0 1-1.867 1.436 3.096 3.096 0 0 1-2.371-.318v-.006a3.156 3.156 0 0 1-1.456-1.927 3.175 3.175 0 0 1 .047-1.805l-1.446-.848a3.905 3.905 0 0 1-.265.294l-.004.005a3.938 3.938 0 0 1-2.178 1.138v1.699a3.09 3.09 0 0 1 1.56.862l.002.004c.565.572.914 1.368.914 2.243 0 .873-.35 1.664-.914 2.239l-.002.009a3.1 3.1 0 0 1-2.21.931 3.1 3.1 0 0 1-2.206-.93h-.002v-.009a3.186 3.186 0 0 1-.916-2.239c0-.875.35-1.672.916-2.243v-.004h.002a3.1 3.1 0 0 1 1.558-.862v-1.699a3.926 3.926 0 0 1-2.176-1.138l-.006-.005a4.098 4.098 0 0 1-1.173-2.874c0-1.122.452-2.136 1.173-2.872h.006a3.947 3.947 0 0 1 2.176-1.144V6.289a3.137 3.137 0 0 1-1.558-.864h-.002v-.004a3.192 3.192 0 0 1-.916-2.243c0-.871.35-1.669.916-2.243l.002-.002A3.084 3.084 0 0 1 8.683 0c.861 0 1.641.355 2.21.932v.002h.002c.565.574.914 1.372.914 2.243 0 .876-.35 1.667-.914 2.243l-.002.005a3.142 3.142 0 0 1-1.56.864v1.692zm8.121-1.129l-.012-.019a1.452 1.452 0 0 0-.87-.668 1.43 1.43 0 0 0-1.103.146h.002c-.347.2-.58.529-.677.896-.095.365-.054.768.146 1.119l.007.009c.2.347.519.579.874.673.357.103.755.059 1.098-.144l.019-.009a1.47 1.47 0 0 0 .657-.885 1.493 1.493 0 0 0-.141-1.118"/></symbol>
   </defs>
 
-  <text class="viz-meta" x="442" y="24" text-anchor="middle">one avro schema, both stores</text>
+  <!-- common schema rail: client, topic and both stores share one avro schema -->
+  <path class="viz-edge" data-variant="lane" d="M332 92 V36 H688 V260 M510 36 V104 M352 320 H384"/>
+  <text class="viz-edge-label viz-meta" x="604" y="40" text-anchor="middle">common schema</text>
 
-  <path class="viz-edge" d="M146 180 L182 180" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
-  <path class="viz-edge" d="M312 180 L348 180" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
-  <path class="viz-edge" d="M468 180 C520.2 180 531.8 91 584 91 L600 91" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
-  <path class="viz-edge" d="M468 180 C520.2 180 531.8 243 584 243 L600 243" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
+  <path class="viz-edge" d="M136 134 L252 134" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
+  <text class="viz-edge-label viz-meta" x="194" y="122" text-anchor="middle">fg.insert(df)</text>
+  <path class="viz-edge" d="M412 134 L448 134" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
+  <path class="viz-edge" d="M480 164 C480 226 184 178 184 236 L184 260" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
+  <path class="viz-edge" d="M540 164 C540 200 544 200 544 236 L544 260" marker-start="url(#ws-knob)" marker-end="url(#ws-arrow)"/>
+  <text class="viz-edge-label viz-meta" x="332" y="210" text-anchor="middle">onlinefs</text>
+  <text class="viz-edge-label viz-meta" x="544" y="210" text-anchor="middle">delta streamer</text>
 
   <g>
-    <rect class="viz-node" x="16" y="150" width="130" height="60" rx="4"/>
-    <text class="viz-node-title" x="81" y="176" text-anchor="middle">CLIENT</text>
-    <text class="viz-node-subtitle" x="81" y="195" text-anchor="middle">python · spark</text>
+    <rect class="viz-node" x="16" y="104" width="120" height="60" rx="4"/>
+    <text class="viz-node-title" x="76" y="130" text-anchor="middle">APPLICATION</text>
+    <text class="viz-node-subtitle" x="76" y="149" text-anchor="middle">your code</text>
   </g>
   <g>
-    <rect class="viz-node" x="182" y="150" width="130" height="60" rx="4"/>
-    <text class="viz-node-title" x="247" y="176" text-anchor="middle">HSFS</text>
-    <text class="viz-node-subtitle" x="247" y="195" text-anchor="middle">avro encode</text>
+    <rect class="viz-node" x="252" y="92" width="160" height="84" rx="4"/>
+    <text class="viz-node-title" x="332" y="116" text-anchor="middle">HOPSWORKS</text>
+    <use href="#ws-lg-pandas" class="viz-logo" x="276" y="126" width="15" height="15"/>
+    <use href="#ws-lg-spark" class="viz-logo" x="324" y="126" width="15" height="15"/>
+    <use href="#ws-lg-python" class="viz-logo" x="372" y="126" width="15" height="15"/>
+    <text class="viz-meta" x="284" y="162" text-anchor="middle">pandas</text>
+    <text class="viz-meta" x="332" y="162" text-anchor="middle">spark</text>
+    <text class="viz-meta" x="380" y="162" text-anchor="middle">python</text>
   </g>
   <g id="ws-kafka" data-tone="data">
-    <rect class="viz-node" x="348" y="150" width="120" height="60" rx="4"/>
-    <text class="viz-node-title" x="408" y="176" text-anchor="middle">KAFKA</text>
-    <text class="viz-node-subtitle" x="408" y="195" text-anchor="middle">at-least-once</text>
+    <rect class="viz-node" x="448" y="104" width="124" height="60" rx="4"/>
+    <use href="#ws-lg-kafka" class="viz-logo" x="468" y="115" width="15" height="15"/>
+    <text class="viz-node-title" x="490" y="128">KAFKA</text>
+    <text class="viz-node-subtitle" x="510" y="149" text-anchor="middle">at-least-once</text>
   </g>
 
-  <rect class="viz-kv-frame" x="600" y="44" width="252" height="120" rx="6"/>
-  <path class="viz-kv-header" d="M600 50 a6 6 0 0 1 6 -6 h240 a6 6 0 0 1 6 6 v20 h-252 z"/>
-  <text class="viz-kv-title" x="612" y="61">Online store</text>
-  <text class="viz-meta" x="840" y="61" text-anchor="end">RonDB</text>
+  <rect class="viz-kv-frame" x="16" y="260" width="336" height="120" rx="6"/>
+  <path class="viz-kv-header" d="M16 266 a6 6 0 0 1 6 -6 h324 a6 6 0 0 1 6 6 v20 h-336 z"/>
+  <text class="viz-kv-title" x="28" y="277">Online store</text>
+  <text class="viz-meta" x="340" y="277" text-anchor="end">RonDB</text>
   <g id="ws-row-on" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="608" y="78" width="236" height="26" rx="3"/>
-    <text class="viz-kv-key" x="616" y="95">amount_sum</text>
-    <text id="ws-von" class="viz-kv-val" x="836" y="95" text-anchor="end">–</text>
+    <rect class="viz-kv-cell" x="24" y="294" width="320" height="26" rx="3"/>
+    <text class="viz-kv-key" x="32" y="311">amount_sum</text>
+    <text id="ws-von" class="viz-kv-val" x="336" y="311" text-anchor="end">–</text>
   </g>
-  <text class="viz-meta" x="612" y="126">idempotent upsert → exactly-once</text>
-  <text id="ws-noop" class="viz-meta viz-fade" x="612" y="146" style="opacity:0">duplicate delivery → no-op</text>
+  <text class="viz-meta" x="28" y="342">idempotent upsert → exactly-once</text>
+  <text id="ws-noop" class="viz-meta viz-fade" x="28" y="362" style="opacity:0">duplicate delivery → no-op</text>
 
-  <rect class="viz-kv-frame" x="600" y="196" width="252" height="120" rx="6"/>
-  <path class="viz-kv-header" d="M600 202 a6 6 0 0 1 6 -6 h240 a6 6 0 0 1 6 6 v20 h-252 z"/>
-  <text class="viz-kv-title" x="612" y="213">Offline store</text>
-  <text class="viz-meta" x="840" y="213" text-anchor="end">Delta</text>
+  <rect class="viz-kv-frame" x="384" y="260" width="320" height="120" rx="6"/>
+  <path class="viz-kv-header" d="M384 266 a6 6 0 0 1 6 -6 h308 a6 6 0 0 1 6 6 v20 h-320 z"/>
+  <text class="viz-kv-title" x="396" y="277">Offline store</text>
+  <text class="viz-meta" x="692" y="277" text-anchor="end">Delta</text>
   <g id="ws-row-off" class="viz-kv-entry" data-tone="write">
-    <rect class="viz-kv-cell" x="608" y="230" width="236" height="26" rx="3"/>
-    <text class="viz-kv-key" x="616" y="247">delta commit</text>
-    <text id="ws-voff" class="viz-kv-val" x="836" y="247" text-anchor="end">–</text>
+    <rect class="viz-kv-cell" x="392" y="294" width="304" height="26" rx="3"/>
+    <text class="viz-kv-key" x="400" y="311">delta commit</text>
+    <text id="ws-voff" class="viz-kv-val" x="688" y="311" text-anchor="end">–</text>
   </g>
-  <text class="viz-meta" x="612" y="278">dedup on commit → exactly-once</text>
+  <text class="viz-meta" x="396" y="342">dedup on commit → exactly-once</text>
 
-  <g transform="translate(116 171)">
+  <g transform="translate(126 125)">
     <g id="ws-p1" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="40" height="18" rx="3"/>
       <text x="20" y="9" text-anchor="middle">df</text>
     </g>
   </g>
-  <g transform="translate(300 171)">
+  <g transform="translate(396 125)">
     <g id="ws-p2" class="viz-packet" data-tone="data" style="opacity:0">
       <rect width="54" height="18" rx="3"/>
       <text x="27" y="9" text-anchor="middle">avro</text>
     </g>
   </g>
-  <g transform="translate(472 171)">
+  <g transform="translate(456 156)">
     <g id="ws-p3" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="48" height="18" rx="3"/>
       <text x="24" y="9" text-anchor="middle">rows</text>
     </g>
   </g>
-  <g transform="translate(472 171)">
+  <g transform="translate(516 156)">
     <g id="ws-p4" class="viz-packet" data-tone="write" style="opacity:0">
       <rect width="48" height="18" rx="3"/>
       <text x="24" y="9" text-anchor="middle">rows</text>
     </g>
   </g>
-  <g transform="translate(472 171)">
+  <g transform="translate(458 156)">
     <g id="ws-p5" class="viz-packet" data-tone="warn" style="opacity:0">
       <rect width="44" height="18" rx="3"/>
       <text x="22" y="9" text-anchor="middle">dup</text>
@@ -92,14 +107,14 @@
   "loopDelay": 2400,
   "steps": [
     { "#ws-p1": {"opacity": 1} },
-    { "#ws-p1": {"x": 60}, "$ms": 650 },
+    { "#ws-p1": {"x": 116}, "$ms": 650 },
     { "#ws-p1": {"opacity": 0}, "#ws-p2": {"opacity": 1}, "$ms": 450 },
     { "#ws-p2": {"x": 60}, "$ms": 650 },
     { "#ws-p2": {"opacity": 0}, "#ws-kafka": {"state": "active"}, "#ws-p3": {"opacity": 1}, "#ws-p4": {"opacity": 1}, "$ms": 500 },
-    { "#ws-p3": {"x": 128, "y": -89}, "#ws-p4": {"x": 128, "y": 63}, "$ms": 750 },
+    { "#ws-p3": {"x": -296, "y": 86}, "#ws-p4": {"x": 4, "y": 86}, "$ms": 750 },
     { "#ws-p3": {"opacity": 0}, "#ws-p4": {"opacity": 0}, "#ws-row-on": {"state": "active"}, "#ws-von": {"text": "312.40"}, "#ws-row-off": {"state": "active"}, "#ws-voff": {"text": "c-0231"}, "$ms": 950 },
     { "#ws-row-on": {"state": "visited"}, "#ws-row-off": {"state": "visited"}, "#ws-p5": {"opacity": 1}, "$ms": 600 },
-    { "#ws-p5": {"x": 128, "y": -89}, "$ms": 750 },
+    { "#ws-p5": {"x": -296, "y": 86}, "$ms": 750 },
     { "#ws-p5": {"opacity": 0}, "#ws-noop": {"opacity": 1}, "#ws-row-on": {"state": "active"}, "$ms": 500 },
     { "#ws-row-on": {"state": "visited"}, "#ws-kafka": {"state": null}, "$ms": 1400 }
   ]

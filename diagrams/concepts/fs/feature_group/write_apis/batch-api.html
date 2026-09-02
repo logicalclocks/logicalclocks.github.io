@@ -1,5 +1,5 @@
 <figure class="hops-diagram hops-viz">
-<svg viewBox="0 0 850 380" role="img" aria-label="Animated diagram of the Batch API write path for Spark clients. A dataframe enters HSFS and splits: online rows go through Kafka into the online store on RonDB, while the large backfill writes directly to the Delta tables of the offline store over the HDFS API, skipping Kafka to avoid write amplification." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 850 380" role="img" aria-label="Animated diagram of the Batch API write path for Spark clients. A dataframe enters Hopsworks and splits: online rows go through Kafka into the online store on RonDB, while the large backfill writes directly to the Delta tables of the offline store over the HDFS API, skipping Kafka to avoid write amplification." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="wb-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
@@ -22,7 +22,7 @@
   </g>
   <g>
     <rect class="viz-node" x="186" y="166" width="148" height="64" rx="4"/>
-    <text class="viz-node-title" x="260" y="192" text-anchor="middle">HSFS</text>
+    <text class="viz-node-title" x="260" y="192" text-anchor="middle">HOPSWORKS</text>
     <text class="viz-node-subtitle" x="260" y="212" text-anchor="middle">splits the write</text>
   </g>
   <g id="wb-kafka" data-tone="data">
