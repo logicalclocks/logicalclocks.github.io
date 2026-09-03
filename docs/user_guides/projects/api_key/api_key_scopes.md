@@ -32,8 +32,6 @@ Endpoints still check the caller's role in the project, so a Data Scientist's ke
 | `ADMINISTER_USERS` | User administration in the admin API: list, accept, reject, block, modify and delete users, change roles, reset passwords and sync remote groups. Privileged. |
 | `ADMINISTER_USERS_REGISTER` | Only the user registration endpoint of the admin API. Privileged. |
 | `AUTH` | The JWT service: issue, renew and invalidate tokens and remove signing keys. Privileged, and also available to accounts in the `AGENT` group. |
-| `KUBE` | Reserved. No REST endpoint currently accepts it. |
-| `SINK` | Reserved for feature groups that ingest from a data source through a DLT sink. No REST endpoint currently accepts it. |
 
 ## Privileged scopes
 
@@ -49,7 +47,7 @@ The set of scopes offered when creating or editing a key depends on the account'
 | `HOPS_ADMIN` | All scopes. |
 | `HOPS_USER` | All unprivileged scopes. |
 | `AGENT` | All unprivileged scopes plus `AUTH`. |
-| `HOPS_SERVICE_USER` | All unprivileged scopes except `GIT` and `KUBE`. |
+| `HOPS_SERVICE_USER` | All unprivileged scopes except `GIT`. |
 
 The API key form preselects `FEATURESTORE`, `PROJECT`, `JOB`, `DATASET_VIEW`, `DATASET_CREATE`, `DATASET_DELETE`, `KAFKA`, `SERVING`, `MODELREGISTRY`, `USER` and `PYTHON_LIBRARIES`.
 Deselect what the key's consumer does not need.
