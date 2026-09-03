@@ -200,7 +200,8 @@ feature_view.resume_logging()
 
 Besides the scheduled materialization job, you can materialize logs from Kafka to the offline store on demand.
 This does not pause the scheduled job.
-By default, it materializes both transformed and untransformed logs, optionally specifying whether to materialize transformed (transformed=True) or untransformed (transformed=False) logs.
+Feature views that still have the pre-4.6 pair of logging feature groups (see the upgrade compatibility section below) materialize both logs by default, and `transformed=True` or `transformed=False` selects one of them.
+Feature views with the combined layout have a single log, so the `transformed` argument makes no difference there.
 
 ### Materialize Logs
 
@@ -209,26 +210,25 @@ Materialize logs and optionally wait for the process to complete.
 ```python
 # Materialize logs and wait for completion
 materialization_result = feature_view.materialize_log(wait=True)
-# Materialize only transformed log entries
+# Pre-4.6 pair of logging feature groups only: materialize the transformed log
 feature_view.materialize_log(wait=True, transformed=True)
 ```
 
 ## Deleting Logs
 
 When log data is no longer needed, you might want to delete it to free up space and maintain data hygiene.
-This operation deletes the feature groups and recreates new ones.
+This operation deletes the logging feature group and recreates a new one.
 Scheduled materialization job and log timeline are reset as well.
 
 ### Delete Logs
 
-Remove all log entries (both transformed and untransformed logs), optionally specifying whether to delete transformed (transformed=True) or untransformed (transformed=False) logs.
+Remove all log entries.
+On a feature view that still has the pre-4.6 pair of logging feature groups, `delete_log()` deletes both and recreates the log in the combined layout; passing `transformed=True` or `transformed=False` does the same, because the pair can only be replaced as a whole.
+On the combined layout, `delete_log(transformed=True)` has nothing to delete and does nothing.
 
 ```python
 # Delete all log entries
 feature_view.delete_log()
-
-# Delete only transformed log entries
-feature_view.delete_log(transformed=True)
 ```
 
 ## Upgrade Compatibility with Pre-4.6 Feature Logging
