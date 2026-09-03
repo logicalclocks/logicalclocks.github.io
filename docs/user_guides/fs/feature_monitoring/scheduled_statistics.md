@@ -47,6 +47,7 @@ Hopsworks supports two bases, chosen once per configuration and shared by the de
   A window such as "last week" contains the rows committed during that week.
   This is the default when no event-time feature is declared, and it requires a time-travel enabled Feature Group.
 
+An expanding window reads the latest snapshot on either basis, with no time filter.
 Statistics computed on an event-time window are stored with the event-time bounds of the window, and statistics computed on a commit-time window with its commit bounds.
 The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` selects the basis; see the guides linked below.
 
