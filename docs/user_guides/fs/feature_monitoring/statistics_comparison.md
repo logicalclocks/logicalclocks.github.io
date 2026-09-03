@@ -41,6 +41,9 @@ Taking a Feature View as an example, the figure above describes how these window
 - A _specific value_.
   It helps you target the analysis of feature data to a **specific feature and statistics metric**.
 
+Rolling and expanding reference windows use the same time basis as the detection window of the configuration, either the event-time feature or the commit time.
+See [Time basis](scheduled_statistics.md#time-basis) in the scheduled statistics guide.
+
 See more details on how to define a reference window for your Feature Groups and Training Datasets in the Feature Monitoring guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
 
 ## Comparison criteria
