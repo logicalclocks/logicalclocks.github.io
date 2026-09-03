@@ -283,14 +283,15 @@ Those logs are covered by the commit job's or the materialization job's own exec
 ## Deleting Logs
 
 When log data is no longer needed, you might want to delete it to free up space and maintain data hygiene.
-This operation deletes the feature groups and recreates new ones.
+This operation deletes the logging feature group and recreates a new one.
 Scheduled materialization job and log timeline are reset as well.
 Pass `transport="realtime"` or `transport="job"` to recreate the logging group for the other transport.
 
 ### Delete Logs
 
 Remove all log entries.
-The `transformed` selector applies only to older feature views with separate logging groups.
+On a feature view that still has the pre-4.6 pair of logging feature groups, `delete_log()` deletes both and recreates the log in the combined layout; passing `transformed=True` or `transformed=False` does the same, because the pair can only be replaced as a whole.
+On the combined layout, `delete_log(transformed=True)` has nothing to delete and does nothing.
 
 ```python
 # Delete all log entries
