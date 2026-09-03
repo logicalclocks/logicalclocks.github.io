@@ -35,6 +35,22 @@ Taking a Feature Group as an example, the figure above describes how these windo
 - A _rolling window_ covering a variable subset of feature data (e.g., feature data written last week).
   It helps you analyze the properties of **newly inserted feature data**.
 
+### Time basis
+
+A rolling window needs a notion of time to decide which rows fall inside it.
+Hopsworks supports two bases, chosen once per configuration and shared by the detection and reference windows:
+
+- _Event time_: rows are selected by the value of an event-time feature, so a window such as "last week" contains the rows whose event time falls in that week regardless of when they were written.
+  Backfills and late arrivals land in the window of their event time.
+  This is the default for Feature Groups and Feature Views that declare an `event_time`, and it also works on Feature Groups without time travel and on external Feature Groups.
+- _Commit time_: rows are selected by the time they were written to the Feature Group, using time travel.
+  A window such as "last week" contains the rows committed during that week.
+  This is the default when no event-time feature is declared, and it requires a time-travel enabled Feature Group.
+
+An expanding window reads the latest snapshot on either basis, with no time filter.
+Statistics computed on an event-time window are stored with the event-time bounds of the window, and statistics computed on a commit-time window with its commit bounds.
+The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` selects the basis; see the guides linked below.
+
 See more details on how to define a detection window for your Feature Groups and Feature Views in the Feature Monitoring Guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
 
 !!! info "Next steps"

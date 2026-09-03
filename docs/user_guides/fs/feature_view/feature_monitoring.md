@@ -133,6 +133,31 @@ Additionally, you can specify the percentage of feature data on which statistics
 
 See the API reference for [`FeatureMonitoringConfig.with_detection_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_detection_window].
 
+#### Time basis of the windows
+
+Rolling windows select rows by the event-time feature of the Feature View's left Feature Group when it declares one, and by commit time otherwise.
+The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` overrides that default for the whole configuration, detection and reference windows alike.
+Pass the name of a timestamp, date or epoch feature from any Feature Group in the query, or `False` to select rows by commit time.
+With event time the joined Feature Groups contribute their current rows, whereas with commit time the same commit interval is applied to every Feature Group in the query.
+
+=== "Python"
+
+    ```python
+    # windows over a time feature of a joined Feature Group
+    fm_monitoring_config = trans_fv.create_feature_monitoring(
+        name="trans_fv_amount_monitoring_by_event_time",
+        event_time="datetime",
+    )
+
+    # windows over the time the rows were written (commit time)
+    fm_monitoring_config = trans_fv.create_feature_monitoring(
+        name="trans_fv_amount_monitoring_by_commit",
+        event_time=False,
+    )
+    ```
+
+See [Time basis](../feature_monitoring/scheduled_statistics.md#time-basis) for how the two bases differ.
+
 ### Step 6: (Optional) Define a reference window
 
 When setting up feature monitoring for a Feature View, the reference can be either a reference window of feature data or a training dataset.
@@ -251,6 +276,7 @@ A Feature View can also monitor the inference data of a model served in producti
 This is the feature-view entry point to [Model Monitoring](../../mlops/model_monitoring/index.md).
 
 It targets the feature view's logging feature group, so feature logging must be enabled with `feature_view.enable_logging()`, and filters the detection window by the given model name and version.
+The windows select inference rows by their `log_time`, the time the prediction was logged.
 The reference defaults to the training dataset version used to train the model.
 
 === "Python"
