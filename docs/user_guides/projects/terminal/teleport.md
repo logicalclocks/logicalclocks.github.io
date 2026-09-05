@@ -47,6 +47,8 @@ hops session push
 The command uploads the transcript, starts the project's terminal pod if it is not already running, and opens the terminal in your browser.
 Once the Terminal tab is open, the session lands on the pod as its own tab and resumes there.
 Until a tab is open the push stays staged, and the command prints the terminal URL and the manual landing steps.
+Running `hops session push` again is safe: it re-stages the same session.
+It refuses only when the staged copy holds lines this machine does not have, until you `hops session pull` them back or pass `--force`.
 
 Useful options:
 
@@ -64,8 +66,10 @@ hops session pull
 Run from the same directory you pushed from to reclaim that directory's session.
 To reclaim a session staged from a different directory, pass its id: `hops session pull <session-id>`.
 
-`pull` refuses to take a session while the pod still holds a live terminal, so you do not accidentally split it in two.
+`pull` refuses to take a session that a live pod has landed, so you do not accidentally split it in two.
 Stop the pod first, or pass `--force` to take the baton anyway.
+A push the pod never landed, because no Terminal tab was opened, is reclaimed without either.
+Running `hops session pull` again is safe: it finds nothing new and leaves everything as it is.
 If both sides changed, `pull` stops and asks you to pick with `--ours` or `--theirs`; the copy you do not keep is parked to a sidecar file rather than lost.
 
 ### Start a fresh session on the cluster
