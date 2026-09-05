@@ -138,6 +138,36 @@ You can try again later if the system was under heavy load at the time.
 Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail.
 You can create a separate branch to remove the symlinks, and clone from this branch.
 
+### TLS certificate errors
+
+Cloning from a self-hosted GitLab, GitHub Enterprise or Bitbucket whose certificate is issued by a private certificate authority fails with `server certificate verification failed`.
+An administrator can configure the certificates to trust in [Cluster Configuration](../../../setup_installation/admin/variables.md):
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `git_custom_ca_configmap` | `""` | Name of a Kubernetes ConfigMap holding PEM-encoded CA certificates to trust. It must exist in every project namespace. |
+| `git_custom_ca_configmap_key` | `ca-bundle.crt` | The key within that ConfigMap. A single key may hold several concatenated certificates. |
+| `git_disable_tls_verification` | `false` | Skips certificate verification for every Git remote. |
+
+The configured certificates are trusted in addition to the public certificate authorities, so public providers keep working.
+These settings apply to HTTPS remotes only and have no effect on SSH.
+
+!!! warning
+    `git_disable_tls_verification` disables verification for all Git remotes, leaving those connections open to interception.
+    Prefer `git_custom_ca_configmap`.
+
+### Proxy errors
+
+If the cluster reaches your Git provider through an HTTP proxy, an administrator can configure one per provider in [Cluster Configuration](../../../setup_installation/admin/variables.md):
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `git_github_http_proxy`, `git_github_https_proxy` | `""` | Proxy for Git traffic to GitHub. |
+| `git_gitlab_http_proxy`, `git_gitlab_https_proxy` | `""` | Proxy for Git traffic to GitLab. |
+| `git_bitbucket_http_proxy`, `git_bitbucket_https_proxy` | `""` | Proxy for Git traffic to Bitbucket. |
+
+An empty value means a direct connection.
+
 ## Going Further
 
 You can now start [Jupyter](../jupyter/python_notebook.md) from the cloned git repository path to work with the files.

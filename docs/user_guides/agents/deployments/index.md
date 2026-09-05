@@ -68,6 +68,53 @@ print(deployment.predict(inputs={"prompt": "hello"}))
 After creation, the deployment appears in the Agent Deployments list where you
 can inspect its status, logs, endpoints, and configuration.
 
+### Deploy from a Git repository
+
+An agent can be served from a Git repository instead of a project file.
+The repository is cloned every time the deployment starts, so a restart picks up whatever the branch points at.
+
+Supported providers are GitHub, GitLab, and BitBucket.
+Configure the provider credentials once under project settings, see [Configure a Git Provider](../../projects/git/configure_git_provider.md).
+
+```python
+deployment = ms.deploy_agent(
+    entry="src/agent.py",  # path inside the repository
+    name="my_agent",
+    git_url="https://github.com/my-org/my-agent.git",
+    git_provider="GitHub",
+    git_branch="main",
+    environment="my_agent",
+)
+```
+
+`entry` is interpreted relative to the repository root rather than as a HopsFS path.
+If you leave `git_branch` unset, the clone follows the repository's default branch.
+
+### Auto-redeploy on new commits
+
+A Git-backed agent can roll itself onto the branch HEAD whenever a new commit is pushed:
+
+```python
+deployment = ms.deploy_agent(
+    entry="src/agent.py",
+    name="my_agent",
+    git_url="https://github.com/my-org/my-agent.git",
+    git_provider="GitHub",
+    git_branch="main",
+    git_auto_redeploy=True,
+    environment="my_agent",
+)
+```
+
+Hopsworks polls the remote branch and rolls the deployment when it moves.
+The running version keeps serving requests until the new one is ready.
+
+The flag only applies to Git-backed agents, and Hopsworks rejects it for an agent deployed from a project file.
+A stopped deployment is not rolled; it clones the branch HEAD on its next start.
+
+The deployment's **Artifact files** card shows the repository, the branch, the commit it is running, and whether auto-redeploy is enabled.
+The entrypoint links to the file in the repository at that commit.
+
 ## Small example
 
 The file below shows a simple agent program that uses LlamaIndex, FastAPI,
