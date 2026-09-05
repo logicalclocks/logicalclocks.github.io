@@ -34,6 +34,7 @@ A session transcript can contain code and file contents, so it is never exposed 
 | `hops session new` | Start a fresh session directly on a terminal pod. |
 | `hops session list` | Show your staged sessions and where each one currently lives. |
 | `hops session mirror` | Stream the live pod terminal on your laptop, read-only by default. |
+| `hops session reset` | Forget how git sync authenticates the pod and remove the staged SSH keys, so the next push asks again. |
 | `hops session stop` | Stop this project's terminal pod and every tab in it. |
 
 ### Push a session to the cluster
@@ -143,6 +144,17 @@ hops git provider delete --provider github
 
 `set` prompts for the token without echoing it, defaults the host to the provider's public host (`github.com`, `gitlab.com`, `bitbucket.org`), and leaves an existing registration alone unless you pass `--force`.
 The same token can be registered in the UI under **Account settings > Git providers**.
+
+### Start over with a different key or token
+
+```bash
+hops session reset
+```
+
+`reset` forgets the remembered consent, authentication method and key path, and removes the SSH keys staged in your private `Users/<username>/.ssh/` area.
+The next `hops session push` asks the questions again and uploads the key you pick afresh, which is how you replace a key that was staged under the same name.
+Staged sessions are untouched, and so is a registered provider token; remove that with `hops git provider delete`.
+A terminal pod that is already running keeps the copy of the key it made when it first landed a session, so run `hops session stop` before the next push if you want it to pick up the new key.
 
 ## How teleport keeps a session private
 
