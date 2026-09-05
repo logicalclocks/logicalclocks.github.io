@@ -47,6 +47,7 @@ hops session push
 
 The command uploads the transcript, starts the project's terminal pod if it is not already running, and opens the terminal in your browser.
 Once the Terminal tab is open, the session lands on the pod as its own tab and resumes there.
+Switch between tabs by clicking them, or from the keyboard with Alt+PgUp and Alt+PgDn; Ctrl+PgUp and Ctrl+PgDn do the same wherever the browser does not keep them for its own tabs, such as an installed app window or `hops session mirror`.
 Until a tab is open the push stays staged, and the command prints the terminal URL and the manual landing steps.
 Running `hops session push` again is safe: it re-stages the same session.
 It refuses only when the staged copy holds lines this machine does not have, until you `hops session pull` them back or pass `--force`.
