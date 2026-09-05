@@ -253,8 +253,6 @@ Layout is not fixed at creation; each format's native evolution is exposed, and 
 
     ```python
     fg.update_partition_spec(add=["hour(ts)"], remove=["day(ts)"])
-
-
     ```
 
 - [`FeatureGroup.update_clustering`][hsfs.feature_group.FeatureGroup.update_clustering] changes the Delta clustering columns.
@@ -263,8 +261,6 @@ Layout is not fixed at creation; each format's native evolution is exposed, and 
     ```python
     fg.update_clustering(["ts", "customer_id"])
     fg.optimize(full=True)
-
-
     ```
 
 - [`FeatureGroup.disable_clustering`][hsfs.feature_group.FeatureGroup.disable_clustering] turns Delta clustering off (`CLUSTER BY NONE`); existing data keeps its layout.
