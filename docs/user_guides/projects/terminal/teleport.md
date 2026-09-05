@@ -45,7 +45,8 @@ hops session push
 ```
 
 The command uploads the transcript, starts the project's terminal pod if it is not already running, and opens the terminal in your browser.
-The session lands on the pod as its own tab and resumes there.
+Once the Terminal tab is open, the session lands on the pod as its own tab and resumes there.
+Until a tab is open the push stays staged, and the command prints the terminal URL and the manual landing steps.
 
 Useful options:
 
