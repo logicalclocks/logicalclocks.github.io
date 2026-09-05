@@ -561,6 +561,7 @@ helm upgrade hopsworks hopsworks/hopsworks --version <CHART_VERSION> \
 ```
 
 The chart refuses to render the restore without the overlay: zero replicas has to be the desired state for the whole window, which is what keeps the barrier in place under both Helm and ArgoCD.
+It also refuses when Superset itself is not installed, rather than reporting success for a recovery that would restore nothing.
 The Superset init Job is skipped while the flag is set, so no schema work runs during the reload.
 
 The `superset-restore-<BACKUP_ID>` Job waits for the Superset pods to terminate, verifies the dump against its manifest (backup id, object path, size and sha256), waits until the live `superset-secret-key` matches the fingerprint recorded at backup time, and reloads the database.
@@ -656,6 +657,8 @@ If step 1 is skipped, the Job waits for the secret key and then fails with the m
 - A stale connector password does not repair itself, because Hopsworks only creates a connection when one is absent and skips when it already exists.
   After a fresh-cluster restore, confirm Trino access by opening a Trino-backed chart or running a query through a per-project Trino connection.
   If a user's Trino connection fails to authenticate, delete that connection in Superset and let Hopsworks recreate it from the current RonDB secret.
+  A restored connection that decrypts is not proof that it still authenticates: the decryption only shows the secret key came back, while the password inside is a copy of a secret owned by RonDB.
+  Run a query to confirm it.
 
 #### ArgoCD
 
