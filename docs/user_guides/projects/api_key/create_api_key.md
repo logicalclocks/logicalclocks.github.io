@@ -33,6 +33,7 @@ Keys with no expiration show _Never_ in the expiration column.
 ### Step 2: Create an API Key
 
 Click `New API key`, enter a name, optionally set an expiration, select the required scopes, and click `Create API key`.
+Each scope unlocks a group of REST endpoints; see [API Key Scopes][api-key-scopes] for what every scope grants.
 
 **Expiration options:**
 

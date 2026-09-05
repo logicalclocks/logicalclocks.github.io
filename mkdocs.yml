@@ -208,6 +208,7 @@ nav:
               - Account-level Environment Variables: user_guides/projects/env_vars/create.md
           - Api Keys:
               - Create API Key: user_guides/projects/api_key/create_api_key.md
+              - API Key Scopes: user_guides/projects/api_key/api_key_scopes.md
           - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
           - Query Engine (Trino):
               - Query Engine: user_guides/projects/trino/query_engine.md
