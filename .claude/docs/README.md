@@ -6,8 +6,8 @@ There is no application code — all work is writing Markdown under `docs/` and 
 ## Commands
 
 ```bash
-uv venv && uv pip install -r requirements-docs.txt # setup
-uv pip install "git+https://github.com/logicalclocks/hopsworks-api.git@main#subdirectory=python" # needed for Python API section
+uv sync # setup (dependencies live in pyproject.toml)
+uv pip install "hopsworks[python] @ git+https://github.com/logicalclocks/hopsworks-api.git@main#subdirectory=python" # needed for Python API section
 touch docs/javadoc; uv run mkdocs serve; rm docs/javadoc # preview with live reload
 touch docs/javadoc; uv run mkdocs build -s; rm docs/javadoc # build in strict mode
 npx markdownlint-cli2 "**/*.md" # lint Markdown (requires Node.js)

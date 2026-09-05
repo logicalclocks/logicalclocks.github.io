@@ -48,4 +48,6 @@ These are the core component of the platform, additional logs will be added in t
 
 ## Going Further
 
+See [Service Log Labels](services-logs-labels.md) for the Kubernetes labels attached to each log document, and how to append to or replace that set.
+
 You can read [OpenSearch Dashboards Documentation](https://opensearch.org/docs/latest/dashboards/) to learn how to use them advancedly.

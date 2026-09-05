@@ -31,6 +31,11 @@ version, job = feature_view.create_training_data(
 print(job.id)  # get the job's id and view the job status in the UI
 ```
 
+!!! note "Growing a training dataset over time"
+    A materialized training dataset version cannot be appended to or modified in place.
+    To retrain on new data, create a new training dataset version.
+    If you need training data to keep growing, for example with a daily batch for a time-series model, do that computation once in a [derived feature group][assign-parents-to-a-feature-group] that is kept up to date as new data arrives, then create a new training dataset version from it whenever you need updated data.
+
 ### Extra filters {#training-data-extra-filters}
 
 Sometimes data scientists need to train different models using subsets of a dataset.

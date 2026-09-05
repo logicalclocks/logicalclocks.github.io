@@ -19,6 +19,10 @@ You can apply filters when creating training data from a feature view:
 Note that filters are not applied when retrieving feature vectors using feature views, as we only look up features for a specific entity, like a customer.
 In this case, the application should know that predictions for this customer should be made on the model trained on customers in USA, for example.
 
+Materialized training data is immutable: once created, a training dataset version is not appended to or modified.
+To retrain on new data, create a new training dataset version.
+If the new data needs to be computed continuously, for example a daily batch for a time-series model, do that computation once in a [derived feature group][assign-parents-to-a-feature-group] that is kept up to date as new data arrives, and create a new training dataset version from it whenever you need updated data.
+
 ### Point-in-time Correct Training Data
 
 When you create training data from features in different feature groups, it is possible that the feature groups are updated at different cadences.

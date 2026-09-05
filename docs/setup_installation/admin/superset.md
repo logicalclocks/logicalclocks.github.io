@@ -121,6 +121,8 @@ Hopsworks projects can have up to two database connections, created based on Fea
 - **Purpose**: Access to the Offline Feature Store for analytical queries
 - **Use cases**: Historical analysis, training data exploration, complex aggregations
 - **Created when**: Trino is enabled for the project
+- **Multi-catalog**: Enabled.
+  The connection is created with Superset's **Allow changing catalogs** option turned on, so users can pick any Trino catalog (`hive`, `delta`, `iceberg`, `hudi`) from the **Catalog** selector in SQL Lab and when adding a dataset, rather than being limited to the one set in [`trino_default_catalog`][trino_default_catalog].
 
 ### Connection Properties
 
@@ -179,6 +181,10 @@ Navigate to **Cluster Settings** → **Configuration** and search for `superset`
 - **Description**: Default catalog to use for the Offline Feature Store Connection
 - **Default**: `hive`
 - **Values**: `hive`, `delta`, `iceberg`, and `hudi`.
+
+Trino connections are created with multi-catalog enabled (Superset's **Allow changing catalogs** option), so users are not limited to this default.
+They select the catalog matching their table format from the **Catalog** dropdown in SQL Lab or when adding a dataset.
+Querying a table whose format does not match the selected catalog raises a Trino `UNSUPPORTED_TABLE_TYPE` error; see the [Trino table type error][trino-table-type-error] troubleshooting in the Superset user guide.
 
 ### Applying Configuration Changes
 

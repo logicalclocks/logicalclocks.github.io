@@ -8,11 +8,12 @@ The Query Engine in Hopsworks is powered by Trino, a distributed SQL query engin
 
 ## Accessing the Query Engine
 
-Navigate to the Query Engine from your project's left sidebar. The Query Engine interface provides access to the SQL runner, cluster information, and query history.
+Open **Queries** under **Analytics** in your project's left sidebar.
+The page carries four tabs: **SQL Runner**, **Cluster Overview**, **Catalogs** and **Queries**.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/query-engine.png" alt="Query Engine" />
-  <figcaption>Query Engine</figcaption>
+  <figcaption>The Query Engine, open on the SQL Runner tab</figcaption>
 </figure>
 
 ## SQL Runner
@@ -21,12 +22,14 @@ The SQL runner is where you write and execute SQL queries against your data.
 
 **To run a query:**
 
-1. Write your SQL query in the editor
-2. Select the database/catalog you want to query
-3. Click "Run" to execute the query
-4. View results in the table below the editor
+1. Pick a **Catalog** and a **Schema**.
+   The tables in that schema are then listed below, and you can write the query against bare table names instead of qualifying every one.
+2. Write the query in the editor, or click a table to start from `SELECT * FROM <table>`.
+3. Choose a row limit, which is appended to the query as a `LIMIT`.
+4. Click **Run**.
 
-The SQL runner supports standard SQL syntax and provides auto-completion for databases, tables, and columns.
+Results appear below the editor on two tabs: **Results** holds the rows, and **Table** holds the column names and types.
+The editor auto-completes catalogs, schemas, tables and columns, and **Add query** opens a second tab so several queries can be kept side by side.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/sql-runner.png" alt="SQL runner" />
@@ -44,35 +47,36 @@ Need help with SQL syntax? Click the help icon in the SQL runner to access the c
 
 ## Cluster Overview
 
-The cluster overview shows the health and status of your Trino cluster. Here you can monitor:
+The cluster overview reports the query engine's version, environment and uptime, then a tile per metric, each with a sparkline of its recent history:
 
-- **Active workers**: Number of workers currently processing queries
-- **Running queries**: Queries currently being executed
-- **Resource utilization**: CPU and memory usage across the cluster
-- **Worker status**: Health status of individual worker nodes
+- **Running queries**, **Queued queries** and **Blocked Queries**
+- **Active workers** and **Worker Parallelism**
+- **Runnable drivers**, **Input Rows/s** and **Input Bytes/s**
+- **Reserved Memory**
 
-This information helps you understand cluster performance and capacity.
+Together they say whether the cluster is busy and whether a slow query is competing for capacity.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/cluster-overview.png" alt="cluster overview" />
   <figcaption>Query Engine cluster overview</figcaption>
 </figure>
 
+## Managing Catalogs
+
+The Catalogs tab is where a project makes an external data source queryable from the SQL runner.
+Creating a catalog from a data source or by hand, referencing credentials, testing the connection, and when a change reaches the query engine are all covered in [Trino Catalogs][trino-catalogs].
+
 ## Queries
 
-The Queries tab displays a history of all executed queries. For each query, you can see:
+The Queries tab lists the queries the project has run, filterable by state and sortable, with the query text alongside each entry.
+A card carries its id and state with a progress bar, the user and source that submitted it, the resource group, its split counts, wall, total and CPU time, and its reserved, peak and cumulative memory.
+A query that is still running is listed the same way and updates in place.
 
-- **Query ID**: Unique identifier for the query
-- **Status**: Completed, failed, or running
-- **Duration**: How long the query took to execute
-- **User**: Who submitted the query
-- **Timestamp**: When the query was run
-
-Click on any query to view detailed execution information.
+Click a query id to open its details.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/queries.png" alt="queries" />
-  <figcaption>Queries</figcaption>
+  <figcaption>The project’s query history</figcaption>
 </figure>
 
 ## Query Details
@@ -96,27 +100,22 @@ The overview tab shows query metadata, execution timeline, and performance metri
 
 ### Live Plan
 
-The live plan visualizes the query execution plan in real-time, showing how Trino processes your query across different stages and operators.
+The live plan draws the query's stages and the operators inside them, with each stage's state and its CPU time, memory, drivers and tasks, updating while the query runs.
+The graph is usually taller than the page, so it can be laid out **Vertical** or **Horizontal**, panned by dragging, and zoomed by scrolling.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/query-details-live-plan.png" alt="Query details live plan" />
   <figcaption>Query details: live plan</figcaption>
 </figure>
 
-### Stages
+### Stage performance
 
-The stages view breaks down query execution into individual stages, showing:
-
-- Stage dependencies
-- Data flow between stages
-- Resource usage per stage
-- Execution time for each stage
-
-This helps identify performance bottlenecks in complex queries.
+This view takes one stage at a time, chosen with the **Stage** selector, and draws its pipelines operator by operator.
+Each operator reports its throughput, output rows and bytes, driver count, and CPU, wall and blocked time, which is what locates a bottleneck inside a stage rather than merely between stages.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/query-details-stage.png" alt="Query details stages" />
-  <figcaption>Query details: stages</figcaption>
+  <figcaption>Query details: stage performance</figcaption>
 </figure>
 
 ### Splits
@@ -130,7 +129,7 @@ Splits show how Trino parallelizes query execution. Each split represents a port
 
 ### References
 
-The references tab lists all tables and data sources accessed by the query, helping you understand data dependencies.
+The references tab lists the tables the query read, each with the user it was authorized as and whether the query named it directly, and the routines it called.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/query-details-ref.png" alt="Query details references" />
