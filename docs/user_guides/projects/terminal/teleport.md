@@ -112,6 +112,8 @@ This stops the project's terminal pod and every tab in it, from your laptop, wit
 ## Optional: sync your Git checkout to the pod
 
 When you push a session, `hops session` can also reproduce your local Git checkout on the pod, so the landed session starts in the same repository, on the same branch, at the commit you pushed.
+This applies when you run `hops session push` from the root directory of the repository; from anywhere else the command prints `The current working dir is not a github repo, so no git sync performed` and pushes the session without a checkout.
+The pod clones the repository into your private HopsFS home, `/hopsfs/Users/<username>/<repository>`, the first time, then fetches from the branch's remote and checks out the branch you had locally; the session resumes inside that checkout.
 
 This is opt-in.
 The first time it applies, the CLI asks whether to sync (always, this time, not now, or never) and remembers your answer.
