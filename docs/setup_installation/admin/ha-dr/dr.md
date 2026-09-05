@@ -9,7 +9,7 @@ In Hopsworks, a consistent backup should back up the following services:
 - **RonDB**: cluster metadata and the online feature store data.
 - **HopsFS**: offline feature store data plus checkpoints and logs for feature engineering applications.
 - **Opensearch**: search metadata, logs, dashboards, and user embeddings.
-- **Kubernetes objects**: cluster credentials, backup metadata, serving metadata, and project namespaces with service accounts, roles, secrets, and configmaps.
+- **Kubernetes objects**: cluster credentials, backup metadata, serving metadata, Trino authentication (password and group files plus the admin and monitoring credentials), and project namespaces with service accounts, roles, secrets, and configmaps.
 - **Python environments**: custom project environments are stored in your configured container registry. Back up the registry separately. If a project and its environment are deleted, you must recreate the environment after restore.
 
 Besides the above services, Hopsworks uses also Apache Kafka which carries in-flight data heading to the online feature store. In the event of a total cluster loss, running jobs with in-flight data must be replayed.
@@ -118,6 +118,34 @@ For S3 object storage, you can also configure a bucket lifecycle policy to expir
   ]
 }
 ```
+
+### Trino authentication
+
+Trino authenticates users against a password file and authorizes them against a group file.
+Both files, together with the Trino admin and monitoring credentials, live in Kubernetes Secrets that are labelled so the `k8s-backups-main` Velero schedule captures them.
+They are therefore included in the Kubernetes-objects backup and no extra configuration is required.
+
+After a restore, Hopsworks rebuilds the Trino password and group files from the restored RonDB state.
+The rebuild runs on the primary backend instance shortly after startup and then periodically, so an existing project user can authenticate to Trino and holds exactly the access their restored project role grants.
+This means a restore recovers Trino authentication automatically, without an operator step.
+
+!!! note
+    This holds for backups taken after this feature was deployed.
+    A backup taken before it does not contain the Trino Secrets, because they were not yet labelled for the `k8s-backups-main` schedule, and an existing cluster first has such a backup only after its next backup cycle.
+    Restoring from an older backup still recovers all RonDB-derived authentication, because the reconciliation rebuilds the project users, their role groups, and the shared-dataset groups from the restored RonDB state.
+    It does not recover the admin and monitoring credential entries: those are re-rendered from the chart values on a fresh install, so any out-of-band rotation of them is lost and Prometheus may need its Trino monitoring credentials re-aligned.
+
+The Trino internal shared secret is deliberately not backed up.
+It has no coupling to user state and is regenerated on a fresh install, and restoring an old value onto a running cluster would break Trino internal communication until every Trino pod restarts.
+If you set `createSharedSecret: false` and manage this secret yourself, restore it from your own source and then restart all Trino pods together so the coordinator and workers share the same value.
+
+!!! warning
+    The backup contains the Trino admin credentials, which are only base64-encoded at the Kubernetes layer.
+    Restrict access to the backup object store and enable encryption at rest so the backup does not expose usable credentials.
+
+!!! note
+    On ArgoCD-managed clusters with automated self-healing, add `ignoreDifferences` on the `data` field of the four Trino auth Secrets (`trino-password-file`, `trino-groups-file`, `trino-admin-credentials`, `trino-monitoring-credentials`) and set `RespectIgnoreDifferences=true` in the Application sync options.
+    Hopsworks writes project users and groups into these Secrets at runtime, so without this ArgoCD reapplies the chart defaults on every sync and overwrites the restored authentication data.
 
 ## Restore
 

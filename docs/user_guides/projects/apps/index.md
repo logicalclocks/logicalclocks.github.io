@@ -67,6 +67,20 @@ For Streamlit apps, a project file must be a `.py` file.
 For Git-backed Streamlit apps, you also need to provide the entrypoint script relative to the repository root.
 For custom apps, the entrypoint command is required and the app file is optional.
 
+#### Auto-redeploy on new commits
+
+Git-backed apps can roll themselves to the branch HEAD whenever a new commit is pushed.
+Enable **Auto-redeploy on new commits** in the app settings, or pass `git_auto_redeploy=True` to the SDK.
+
+Hopsworks polls the remote branch and, when it moves, rolls the app onto the new commit.
+The running app keeps serving until the new version is ready, so there is no gap in availability.
+While the roll is in progress the app shows **Redeploying** in the apps list.
+
+The setting only applies to Git-backed apps.
+An app without a Git source has nothing to poll, and Hopsworks rejects the flag in that case.
+
+If you do not set a branch, the clone follows the repository's default branch, and the app details page shows the branch it resolved to once the app has run.
+
 ### Routing and readiness
 
 The browser URL for every app is the public mount point under `/hopsworks-api/pythonapp/<project>/<app>/`.
@@ -207,7 +221,7 @@ The details page includes:
 - App URL
 - App base path, proxy routing mode, and readiness probe path
 - Public access status for Streamlit apps
-- Git source details, if the app is Git-backed
+- Git source details, if the app is Git-backed, including the branch, the deployed commit, and whether auto-redeploy is enabled
 - Monitoring configuration
 - Resource requests
 - Runtime environment
@@ -262,6 +276,20 @@ app.run()
 print(app.app_url)
 ```
 
+A Git-backed app that redeploys itself on every push:
+
+```python
+app = apps.create_app(
+    "customer_dashboard",
+    app_kind="STREAMLIT",
+    git_url="https://github.com/my-org/my-app.git",
+    git_provider="GitHub",
+    git_branch="main",
+    git_auto_redeploy=True,
+    entrypoint_script="src/app.py",
+)
+```
+
 Common SDK methods:
 
 - `project.get_app_api()`
@@ -291,6 +319,7 @@ hops app delete <name> --yes
 
 Use `--git-url` and `--entrypoint-script` for Git-backed Streamlit apps.
 Use `--entrypoint-command` and `--app-port` for custom apps.
+Add `--git-auto-redeploy` to roll a Git-backed app onto every new commit.
 
 ## See also
 
