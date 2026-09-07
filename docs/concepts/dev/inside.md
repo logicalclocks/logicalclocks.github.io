@@ -3,6 +3,7 @@
 
 Hopsworks provides a complete self-service development environment for feature engineering and model training.
 You can develop programs as Jupyter notebooks or jobs, customize the bundled FTI (feature, training and inference pipeline) python environments, you can manage your source code with Git, and you can orchestrate jobs with Airflow.
+A browser terminal runs inside the project with the Hopsworks CLI and coding agents preinstalled, and the Wizard uses it to build a system end to end from a few choices.
 
 --8<-- "concepts/dev/inside/development-inside-hopsworks.html"
 
@@ -46,3 +47,14 @@ You can run a Job in Hopsworks:
 
 Airflow comes out-of-the box with Hopsworks, but you can also use an external Airflow cluster (with the Hopsworks Job operator) if you have one.
 Airflow can be used to schedule the execution of Jobs, individually or as part of Airflow DAGs.
+
+## Terminal { #inside-terminal }
+
+Every project has a browser terminal: a shell running in a pod under your project user, with your HopsFS home mounted, and `hops`, `git`, Claude Code and Codex preinstalled and already connected to the project.
+It is the fastest way to work with a project from inside Hopsworks, and the seat the Wizard drives.
+See the [Terminal guide][terminal] and the [Hopsworks CLI guide][hopsworks-cli].
+
+## Wizard { #inside-wizard }
+
+The Wizard asks what you want to build, where the data comes from and what to predict, then writes a kickoff prompt and hands it to Claude in the terminal, which builds the feature pipeline, the model and the dashboard with `hops`.
+See the [Wizard guide][wizard].

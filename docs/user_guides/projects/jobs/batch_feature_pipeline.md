@@ -13,6 +13,8 @@ Two operating modes cover the common cases:
 
 Both modes emit the same `HOPS_*` environment variables, so the same pipeline code handles both.
 
+--8<-- "user_guides/projects/jobs/batch_feature_pipeline/data-windows.html"
+
 ## Environment variables
 
 On every scheduled or backfill execution, Hopsworks injects:
@@ -79,6 +81,13 @@ Use backfill when you need to re-process historical data or seed a feature group
 
 On the job's **Run** dialog, tick **Run with time window (one-shot backfill)** and pick the `HOPS_START_TIME` / `HOPS_END_TIME` datetimes (UTC). The execution is submitted with those env vars set; any schedule-derived values are overridden for this run.
 
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jobs/run_with_time_window.png" alt="Run job dialog with a time window">
+    <figcaption>The Run dialog with a one-shot backfill window</figcaption>
+  </figure>
+</p>
+
 ### From the Python SDK
 
 ```python
@@ -130,6 +139,13 @@ while cursor < end:
 ### Batched backfill at job creation
 
 When creating a new job in the UI, the **Backfill** card lets you split one window into **N equal sub-windows** and fire one execution per sub-window. Tick *Run job on creation* to have the sub-windows fired as soon as the job is saved:
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jobs/backfill_card.png" alt="Backfill card on the New Job form">
+    <figcaption>The Backfill card on the New Job form, four batch jobs over one window</figcaption>
+  </figure>
+</p>
 
 - **Number of Batch Jobs**: how many sub-windows. `[start, end)` is tiled with no gaps or overlaps; the last sub-window absorbs any integer-division remainder so the union is exactly the original window. `1` means one execution covering the whole window (the default).
 - **Max parallel executions**: must be `≥ Number of Batch Jobs` today. Runtime concurrency enforcement (pause the next batch until a running one completes) is on the roadmap; until then the backend rejects smaller values with a `400` rather than silently over-firing. Setting it equal to the batch count fires everything in parallel.

@@ -14,11 +14,6 @@ strict: false
 watch:
   - diagrams
 
-# Pages reachable by link but intentionally kept out of the sidebar menu.
-# Tutorials: dropped from the menu, to be reworked; index.md still links to it.
-not_in_nav: |
-  /tutorials/index.md
-
 nav:
   - Home: index.md
   - Getting Started ↗: https://run.hopsworks.ai
@@ -26,9 +21,11 @@ nav:
       - concepts/index.md
       - Platform:
           - Hopsworks Platform: concepts/hopsworks.md
+          - FTI Pipeline Architecture: concepts/fti.md
+          - AI Systems: concepts/mlops/prediction_services.md
+          - Agents and LLM Systems: concepts/mlops/agents.md
           - Projects and Governance: concepts/projects/governance.md
           - Data Storage and Sharing: concepts/projects/storage.md
-          - FTI Pipeline Architecture: concepts/fti.md
       - MLOps Dictionary ↗: https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs
       - Feature Store:
           - Architecture: concepts/fs/index.md #hsfs
@@ -57,8 +54,6 @@ nav:
           - Model Registry: concepts/mlops/registry.md
           - Model Serving: concepts/mlops/serving.md
           - Model Monitoring: concepts/mlops/model_monitoring.md
-          - AI Systems: concepts/mlops/prediction_services.md
-          - Agents and LLM Systems: concepts/mlops/agents.md
       - More:
           - Vector Index: concepts/mlops/opensearch.md
           - Development Inside Hopsworks: concepts/dev/inside.md
@@ -66,6 +61,9 @@ nav:
           - BI Tools: concepts/mlops/bi_tools.md
   - Guides:
       - user_guides/index.md
+      - Clients:
+          - user_guides/client_installation/index.md
+          - Hopsworks CLI: user_guides/client_installation/cli.md
       - Feature Store:
           - user_guides/fs/index.md
           - Data Source:
@@ -139,6 +137,11 @@ nav:
             #       - Networking: user_guides/integrations/databricks/networking.md
             #       - Configure Databricks for Hopsworks: user_guides/integrations/databricks/configuration.md
             #       - API Key: user_guides/integrations/databricks/api_key.md
+          - Kafka:
+              - Create Schema: user_guides/projects/kafka/create_schema.md
+              - Create Topic: user_guides/projects/kafka/create_topic.md
+              - Produce messages: user_guides/projects/kafka/produce_messages.md
+              - Consume messages: user_guides/projects/kafka/consume_messages.md
           - Sharing: user_guides/fs/sharing/sharing.md
           - Tags: user_guides/fs/tags/tags.md
           - Mandatory Tags: user_guides/fs/tags/mandatory_tags.md
@@ -163,7 +166,20 @@ nav:
           - Projects:
               - Create Project: user_guides/projects/project/create_project.md
               - Manage Members: user_guides/projects/project/manage_members.md
+          - Wizard: user_guides/projects/wizard.md
           - Search: user_guides/projects/search.md
+          - Dataset Sharing: user_guides/projects/datasets/sharing.md
+          - Git:
+              - Configure Git Provider: user_guides/projects/git/configure_git_provider.md
+              - Clone Repository: user_guides/projects/git/clone_repo.md
+              - Repository Actions: user_guides/projects/git/repository_actions.md
+          - Secrets: user_guides/projects/secrets/create_secret.md
+          - Environment Variables: user_guides/projects/env_vars/create.md
+          - API Keys: user_guides/projects/api_key/create_api_key.md
+          - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
+          - Alerts: user_guides/projects/alerts/index.md
+      - Compute:
+          - user_guides/compute/index.md
           - Python:
               - Environments Overview: user_guides/projects/python/python_env_overview.md
               - Clone Environment: user_guides/projects/python/python_env_clone.md
@@ -177,8 +193,7 @@ nav:
               - Run Ray Notebook: user_guides/projects/jupyter/ray_notebook.md
               - Remote Filesystem Driver: user_guides/projects/jupyter/remote_filesystem_driver.md
               - Session Capacity Warnings: user_guides/projects/jupyter/session_capacity_warnings.md
-          - Terminal: user_guides/projects/terminal.md
-          - Apps: user_guides/projects/apps/index.md
+          - Terminal: user_guides/compute/terminal.md
           - Jobs:
               - Run Python Job: user_guides/projects/jobs/python_job.md
               - Run Jupyter Notebook Job: user_guides/projects/jobs/notebook_job.md
@@ -190,41 +205,21 @@ nav:
           - K8s Scheduling:
               - Base: user_guides/projects/scheduling/kube_scheduler.md
               - Kueue: user_guides/projects/scheduling/kueue_details.md
-
           - Airflow:
               - Overview: user_guides/projects/airflow/airflow.md
               - Airflow 3 upgrade: user_guides/projects/airflow/airflow3_upgrade.md
               - Security model: user_guides/projects/airflow/security_model.md
-          - Alerts: user_guides/projects/alerts/index.md
-          - OpenSearch:
-              - Connect: user_guides/projects/opensearch/connect.md
-              - KNN: user_guides/projects/opensearch/knn.md
-          - Kafka:
-              - Create Schema: user_guides/projects/kafka/create_schema.md
-              - Create Topic: user_guides/projects/kafka/create_topic.md
-              - Produce messages: user_guides/projects/kafka/produce_messages.md
-              - Consume messages: user_guides/projects/kafka/consume_messages.md
-          - Git:
-              - Configure Git Provider: user_guides/projects/git/configure_git_provider.md
-              - Clone Repository: user_guides/projects/git/clone_repo.md
-              - Repository Actions: user_guides/projects/git/repository_actions.md
-          - Datasets:
-              - Sharing: user_guides/projects/datasets/sharing.md
-          - Secrets:
-              - Create Secret: user_guides/projects/secrets/create_secret.md
-          - Environment variables:
-              - Account-level Environment Variables: user_guides/projects/env_vars/create.md
-          - Api Keys:
-              - Create API Key: user_guides/projects/api_key/create_api_key.md
-          - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
-          - Query Engine (Trino):
-              - Query Engine: user_guides/projects/trino/query_engine.md
-              - Trino Catalogs: user_guides/projects/trino/catalogs.md
-          - Superset: user_guides/projects/superset/superset.md
+          - Apps: user_guides/projects/apps/index.md
           - Python Deployment:
               - Deployment Creation: user_guides/projects/python-deployment/python-deployment.md
               - REST API: user_guides/projects/python-deployment/rest-api.md
               - Troubleshooting: user_guides/projects/python-deployment/troubleshooting.md
+      - Analytics:
+          - user_guides/analytics/index.md
+          - Query Engine (Trino):
+              - Query Engine: user_guides/projects/trino/query_engine.md
+              - Trino Catalogs: user_guides/projects/trino/catalogs.md
+          - Superset: user_guides/projects/superset/superset.md
       - MLOps:
           - user_guides/mlops/index.md
           - Model Registry:
@@ -259,19 +254,17 @@ nav:
               - user_guides/mlops/model_monitoring/index.md
               - Model Monitoring Creation: user_guides/mlops/model_monitoring/model_monitoring.md
           - Vector Database: user_guides/fs/vector_similarity_search.md
+          - OpenSearch:
+              - Connect: user_guides/projects/opensearch/connect.md
+              - KNN: user_guides/projects/opensearch/knn.md
           - Provenance: user_guides/mlops/provenance/provenance.md
       - Agents:
           - user_guides/agents/index.md
-          - Agent Tasks:
-              - user_guides/agents/tasks/index.md
-          - Agent Deployments:
-              - user_guides/agents/deployments/index.md
-      - Migration:
-          - 3.X to 4.0: user_guides/migration/40_migration.md
+          - Agent Tasks: user_guides/agents/tasks/index.md
+          - Agent Deployments: user_guides/agents/deployments/index.md
+      - Migration 3.X to 4.0: user_guides/migration/40_migration.md
   - Administration:
       - setup_installation/index.md
-      - Installation:
-          - user_guides/client_installation/index.md
       - Cloud Installation:
           - AWS - Getting Started: setup_installation/aws/getting_started.md
           - Azure - Getting Started: setup_installation/azure/getting_started.md
@@ -279,11 +272,11 @@ nav:
       - On-Prem:
           - Background: setup_installation/on_prem/contact_hopsworks.md
           - External Kafka cluster: setup_installation/on_prem/external_kafka_cluster.md
-      - Administration:
+      - Cluster Administration:
+          - setup_installation/admin/index.md
           - Cluster Configuration: setup_installation/admin/variables.md
           - Cluster Configuration Variables Reference: setup_installation/admin/configuration_reference.md
           - Python Build Performance: setup_installation/admin/build_performance.md
-          - Introduction: setup_installation/admin/index.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
           - Configure Alerts: setup_installation/admin/alert.md
@@ -355,6 +348,7 @@ theme:
     - navigation.top
     - toc.follow
     - content.code.copy
+    - content.tabs.link
 
 extra:
   version:
@@ -411,6 +405,7 @@ plugins:
         concepts/fs/feature_view/feature_monitoring.md: concepts/fs/feature_group/feature_monitoring.md#monitoring-a-feature-view
         concepts/fs/feature_view/versioning.md: concepts/fs/feature_group/versioning.md#feature-view-and-training-data-versioning
         user_guides/integrations/flink.md: user_guides/integrations/index.md
+        tutorials/index.md: index.md
   - hopsworks-apigen:
       modules:
         - hopsworks_common

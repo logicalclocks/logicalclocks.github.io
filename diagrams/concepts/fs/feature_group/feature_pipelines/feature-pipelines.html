@@ -63,15 +63,15 @@
   "interval": 750,
   "loopDelay": 2400,
   "steps": [
-    { "#fp-p1": {"opacity": 1} },
-    { "#fp-p1": {"x": 92}, "#fp-sv": {"tone": "write"}, "$ms": 600 },
-    { "#fp-p1": {"x": 196}, "#fp-sv": {"tone": "neutral"}, "#fp-sa": {"tone": "write"}, "$ms": 600 },
-    { "#fp-p1": {"x": 302}, "#fp-sa": {"tone": "neutral"}, "#fp-st": {"tone": "write"}, "$ms": 600 },
-    { "#fp-p1": {"x": 500, "y": -21}, "#fp-st": {"tone": "neutral"}, "$ms": 700 },
+    { "$label": "ingest", "#fp-p1": {"opacity": 1} },
+    { "$label": "validate", "#fp-p1": {"x": 92}, "#fp-sv": {"tone": "write"}, "$ms": 600 },
+    { "$label": "aggregate", "#fp-p1": {"x": 196}, "#fp-sv": {"tone": "neutral"}, "#fp-sa": {"tone": "write"}, "$ms": 600 },
+    { "$label": "transform", "#fp-p1": {"x": 302}, "#fp-sa": {"tone": "neutral"}, "#fp-st": {"tone": "write"}, "$ms": 600 },
+    { "$label": "write", "#fp-p1": {"x": 500, "y": -21}, "#fp-st": {"tone": "neutral"}, "$ms": 700 },
     { "#fp-p1": {"opacity": 0}, "#fp-row": {"state": "active"}, "#fp-val": {"text": "+1 204 rows"}, "$ms": 900 },
-    { "#fp-row": {"state": "visited"}, "#fp-p2": {"opacity": 1}, "$ms": 600 },
+    { "$label": "bad data", "#fp-row": {"state": "visited"}, "#fp-p2": {"opacity": 1}, "$ms": 600 },
     { "#fp-p2": {"x": 92}, "$ms": 600 },
-    { "#fp-sv": {"tone": "error"}, "#fp-p2": {"tone": "error"}, "$ms": 700 },
+    { "$label": "rejected", "#fp-sv": {"tone": "error"}, "#fp-p2": {"tone": "error"}, "$ms": 700 },
     { "#fp-p2": {"x": 92, "y": 97}, "$ms": 500 },
     { "#fp-p2": {"opacity": 0}, "#fp-err": {"opacity": 1}, "#fp-sv": {"tone": "neutral"}, "$ms": 2200 }
   ]

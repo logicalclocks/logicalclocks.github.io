@@ -46,4 +46,10 @@ This enables a ML flywheel where new training data and insights are generated fr
 More training data enables the training of better models, and with better models, you should hopefully improve your operational/batch services, so that you attract more clients, who in turn produce more data for training models.
 And, thus, the ML flywheel is bootstrapped and leads to a virtuous cycle of more data leading to better models and more models leading to more users, who produce more data, and so on.
 
---8<-- "concepts/mlops/prediction_services/mlops-flywheel.html"
+=== "Offline path: the training loop"
+
+    --8<-- "concepts/mlops/prediction_services/mlops-flywheel-offline.html"
+
+=== "Online path: the serving loop"
+
+    --8<-- "concepts/mlops/prediction_services/mlops-flywheel-online.html"

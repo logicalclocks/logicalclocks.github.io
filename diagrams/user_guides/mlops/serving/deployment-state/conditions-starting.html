@@ -1,0 +1,66 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 720 552" role="img" aria-label="Condition transitions while a deployment starts. From stopped, the conditions scheduled, initialized, started and ready resolve in order; each is unknown while in progress, true moves to the next, and false from any of them ends in failed. Ready true means the deployment is running." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="dc-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="dc-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <!-- the happy path, top to bottom -->
+  <path class="viz-edge" d="M136 76 L136 116" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <text class="viz-meta" x="148" y="100">start</text>
+  <path class="viz-edge" d="M136 168 L136 208" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <text class="viz-meta" data-tone="accent" x="148" y="192">true</text>
+  <path class="viz-edge" d="M136 260 L136 300" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <text class="viz-meta" data-tone="accent" x="148" y="284">true</text>
+  <path class="viz-edge" d="M136 352 L136 392" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <text class="viz-meta" data-tone="accent" x="148" y="376">true</text>
+  <path class="viz-edge" d="M136 444 L136 484" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <text class="viz-meta" data-tone="accent" x="148" y="468">true</text>
+
+  <!-- false from any condition joins one trunk into failed -->
+  <path class="viz-edge" d="M240 142 H354 Q360 142 360 148 V274 Q360 280 366 280 H480" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <path class="viz-edge" d="M240 234 H354 Q360 234 360 240 V274 Q360 280 366 280 H480" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <path class="viz-edge" d="M240 326 H354 Q360 326 360 320 V286 Q360 280 366 280 H480" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <path class="viz-edge" d="M240 418 H354 Q360 418 360 412 V286 Q360 280 366 280 H480" marker-start="url(#dc-knob)" marker-end="url(#dc-arrow)"/>
+  <text class="viz-meta" data-tone="error" x="252" y="136">false</text>
+  <text class="viz-meta" data-tone="error" x="252" y="228">false</text>
+  <text class="viz-meta" data-tone="error" x="252" y="320">false</text>
+  <text class="viz-meta" data-tone="error" x="252" y="412">false</text>
+
+  <g>
+    <rect class="viz-node" x="32" y="24" width="208" height="52" rx="4"/>
+    <text class="viz-node-title" x="136" y="47" text-anchor="middle">STOPPED</text>
+    <text class="viz-node-subtitle" x="136" y="64" text-anchor="middle">status true</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="32" y="116" width="208" height="52" rx="4"/>
+    <text class="viz-node-title" x="136" y="139" text-anchor="middle">SCHEDULED</text>
+    <text class="viz-node-subtitle" x="136" y="156" text-anchor="middle">unknown in progress</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="32" y="208" width="208" height="52" rx="4"/>
+    <text class="viz-node-title" x="136" y="231" text-anchor="middle">INITIALIZED</text>
+    <text class="viz-node-subtitle" x="136" y="248" text-anchor="middle">unknown in progress</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="32" y="300" width="208" height="52" rx="4"/>
+    <text class="viz-node-title" x="136" y="323" text-anchor="middle">STARTED</text>
+    <text class="viz-node-subtitle" x="136" y="340" text-anchor="middle">unknown in progress</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="32" y="392" width="208" height="52" rx="4"/>
+    <text class="viz-node-title" x="136" y="415" text-anchor="middle">READY</text>
+    <text class="viz-node-subtitle" x="136" y="432" text-anchor="middle">unknown in progress</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="32" y="484" width="208" height="52" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="136" y="507" text-anchor="middle">RUNNING</text>
+    <text class="viz-node-subtitle" x="136" y="524" text-anchor="middle">deployment ready</text>
+  </g>
+  <g data-tone="error">
+    <rect class="viz-node" x="480" y="254" width="208" height="52" rx="4" style="stroke:var(--viz-tone)"/>
+    <text class="viz-node-title" x="584" y="277" text-anchor="middle">FAILED</text>
+    <text class="viz-node-subtitle" x="584" y="294" text-anchor="middle">status false</text>
+  </g>
+</svg>
+</figure>

@@ -24,7 +24,8 @@
 //    before its destination node, so the node painted over the arrowhead/knob.
 //    We lift every top-level .viz-edge to the end of its <svg> so heads and knobs
 //    dock on top of the border. Only direct-child edges move; an edge nested in
-//    an animated transform group is left where it is.
+//    an animated transform group is left where it is. Edge labels, then packets
+//    and badges, are lifted after the edges so chips paint above the lines.
 //
 // Registered before hops-viz.js (mkdocs.yml order) so the driver captures the
 // routed, reordered SVG as its pristine snapshot and replay/loop stay consistent.
@@ -165,6 +166,12 @@
     // lifted, else the line covers the label and its stabilo halo.
     svg.querySelectorAll(":scope > .viz-edge-label").forEach(function (lbl) {
       svg.appendChild(lbl);
+    });
+    // Packets travel along edges and badges sit on them: both carry an opaque
+    // chip, so they paint last of all, above line and arrowhead. A packet is
+    // usually wrapped in a static translate group; lift the wrapper.
+    svg.querySelectorAll(":scope > .viz-packet, :scope > g:has(> .viz-packet), :scope > .viz-badge").forEach(function (chip) {
+      svg.appendChild(chip);
     });
   }
 

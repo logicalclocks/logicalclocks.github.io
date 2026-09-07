@@ -1,38 +1,36 @@
 Hopsworks provides an *interactive graph* to help you explore the statistics computed on your feature data more efficiently and help you identify anomalies faster.
+The graph lives on the ^^Feature Monitoring^^ tab of a Feature Group or Feature View, one page per feature monitoring configuration.
 
 ### Select a feature monitoring configuration
 
 First, you need to select a feature monitoring configuration to visualize.
-You can achieve that by clicking on the dropdown menu under ^^Feature Selection^^ on the controls menu.
+The dropdown in the page header lists every configuration defined on the Feature Group or Feature View.
 
-![Select feature monitoring config](../../../assets/images/guides/fs/feature_monitoring/fm-select-config-arrow.png)
+![Select feature monitoring config](../../../assets/images/guides/fs/feature_monitoring/fm-select-config.png)
 
 ### Select a statistics metric to visualize
 
-When you select a feature monitoring configuration, the mean values computed over time are visualized by default on the time series graph.
-You can choose a different statistics metric on the dropdown menu under ^^Statistics Selection^^ on the controls menu.
+Below the graph, the feature table has one checkbox per feature and statistics metric.
+Ticking a checkbox plots that metric over time.
 
-![Select statistics metric](../../../assets/images/guides/fs/feature_monitoring/fm-select-metric-arrow.png)
+![Select statistics metric](../../../assets/images/guides/fs/feature_monitoring/fm-select-metric.png)
 
-### Visualize multiple configurations simultaneously
+### Visualize multiple metrics simultaneously
 
-Multiple feature monitoring configurations can be visualized at the same time on the graph.
-You can add a feature monitoring configuration by clicking on the ==+== button on the controls menu.
+Several metrics can be visualized at the same time on the graph.
+Tick more than one checkbox in the feature table, and each metric gets its own colour and legend entry.
 
-!!! note
-    The same statistics metric will be visualized for every feature monitoring configuration selected.
-
-![Select multiple feature monitoring config](../../../assets/images/guides/fs/feature_monitoring/fm-multiple-configs-arrow.png)
+![Select multiple metrics](../../../assets/images/guides/fs/feature_monitoring/fm-multiple-metrics.png)
 
 ### Show reference statistics
 
-In feature monitoring configurations with reference windows, you can also visualize the reference values by enabling the ^^Reference values^^ checkbox on the controls menu.
-Reference values can be either statistics computed over time or a specific value shown as an horizontal line.
+In feature monitoring configurations with reference windows, you can also visualize the reference values by enabling ^^Reference^^ under ^^Show^^ above the graph.
+Reference values are drawn as a dashed line: statistics computed over time, or a horizontal line for a specific value.
 
 !!! note
-    The same statistics metric will be visualized for both detection and reference values.
+    The same statistics metric is visualized for both detection and reference values.
 
-![Show reference values](../../../assets/images/guides/fs/feature_monitoring/fm-show-reference-arrow.png)
+![Show reference values](../../../assets/images/guides/fs/feature_monitoring/fm-show-reference.png)
 
 !!! info
     More details about reference windows can be found in [Reference windows](statistics_comparison.md#reference-windows).
@@ -41,9 +39,9 @@ Reference values can be either statistics computed over time or a specific value
 
 In addition to reference windows, you can define thresholds to automate the identification of data points as anomalous values.
 A threshold can be absolute, or relative to the statistics values under comparison.
-You can visualize the threshold bounds by enabling the ^^Threshold bounds^^ checkbox on the controls menu.
+You can visualize the threshold bounds as a band around the reference line by enabling ^^Threshold^^ under ^^View^^.
 
-![Show threshold bounds](../../../assets/images/guides/fs/feature_monitoring/fm-show-threshold-arrow.png)
+![Show threshold bounds](../../../assets/images/guides/fs/feature_monitoring/fm-show-threshold.png)
 
 !!! info
     More details about statistics comparison options can be found in [Comparison criteria](statistics_comparison.md#comparison-criteria).
@@ -51,25 +49,31 @@ You can visualize the threshold bounds by enabling the ^^Threshold bounds^^ chec
 ### Highlight shifted data points
 
 If a reference window and threshold are provided, data points that fall out of the threshold bounds are considered anomalous values.
-You can highlight these data points by enabling the ^^Shift detected^^ checkbox on the controls menu.
+You can highlight these data points by enabling ^^Shift detected^^ under ^^Show^^.
+The feature table below the graph flags the same features in its ^^Shift^^ column.
 
-![Highlight shifted data points](../../../assets/images/guides/fs/feature_monitoring/fm-show-shifted-points-arrow.png)
+![Highlight shifted data points](../../../assets/images/guides/fs/feature_monitoring/fm-show-shifted-points.png)
 
 ### Visualize the computed differences between statistics
 
 Alternatively, you can change the time series to show the differences computed between detection and reference statistics rather than the statistics values themselves.
-You can achieve that by enabling the ^^Difference^^ checkbox on the controls menu.
+You can achieve that by enabling ^^Difference^^ under ^^View^^.
+The threshold then shows as a horizontal line.
 
-![Show difference between statistics](../../../assets/images/guides/fs/feature_monitoring/fm-show-diff-arrow.png)
+![Show difference between statistics](../../../assets/images/guides/fs/feature_monitoring/fm-show-diff.png)
 
-### List of configurations
+### Configuration summary and controls
 
-Following the time series graph, you can find an overview of all feature monitoring configurations defined for the corresponding Feature Group or Feature View.
-This overview includes a summary of the detection and reference windows, statistics comparison criteria and job schedule.
-
-In addition, you can trigger the statistics comparison manually, or disable the schedule of the feature monitoring job by clicking on ^^Run once^^ or ^^Disable^^ buttons, respectively.
+The card at the top of a configuration page summarizes the detection and reference windows, the statistics comparison criteria and the job schedule.
+From there you can trigger the statistics comparison manually with ^^Run once^^, or pause the schedule of the feature monitoring job with ^^Disable^^.
 
 !!! note
     Triggering the statistics comparison manually does not affect the schedule of the feature monitoring.
+
+![Feature monitoring configuration summary](../../../assets/images/guides/fs/feature_monitoring/fm-config-summary.png)
+
+### List of configurations
+
+The ^^Feature Monitoring^^ tab itself lists all feature monitoring configurations defined for the Feature Group or Feature View, with their status and next scheduled check.
 
 ![List of feature monitoring configs](../../../assets/images/guides/fs/feature_monitoring/fm-list-configs.png)

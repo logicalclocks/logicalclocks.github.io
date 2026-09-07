@@ -30,11 +30,7 @@ get re-flowed to portrait, they are not left to pan.
 
 ## Open
 
-- [ ] Convert the last 4 old-kit fragments: `concepts/dev/inside`,
-      `concepts/dev/outside`, `mlops/registry/model-registry`,
-      `mlops/training/training-pipelines-on-hopsworks`.
-      (grep: `grep -rL hops-viz diagrams --include='*.html'`.)
-      Verify edge routing with `agent-browser screenshot` (working again).
+- [x] All fragments are on the hops-viz kit (`grep -rL hops-viz diagrams --include='*.html'` is empty).
 - [ ] Icon retrofit pass on the dense diagrams converted WITHOUT icons before Lex
       asked for iconography (the data_transformations page, feature-views x2,
       real-time-ai, batch-ai, the versioning grids, taxonomies). governance +
@@ -59,7 +55,7 @@ get re-flowed to portrait, they are not left to pan.
   feature-view + pipeline (3), prediction services (2), projects/cicd (4).
 - Shared-asset pattern (data-storage): a dashed backing box reaches from the
   owned node to the shared consumer, labelled SHARED in the gap.
-- Nav cleanup: Tutorials out of the menu (kept via `not_in_nav`), section
+- Nav cleanup: Tutorials page removed (redirects home), section
   renamed **Administration**, REST status codes moved under a **Reference**
   group, `</>` API marker on Python/Java API, drill-nav back buttons fixed
   (up to parent or site root, never self), sidebar divider now full-height.

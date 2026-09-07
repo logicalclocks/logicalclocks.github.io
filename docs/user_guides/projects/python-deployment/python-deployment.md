@@ -28,51 +28,54 @@ In each Python deployment, you can configure the following:
 
 ## Web UI
 
-### Step 1: Create new deployment
+A Python deployment and an agent deployment are the same thing: a Python script served as a long-running service without a model artifact.
+Whether the script is a plain HTTP server or an autonomous agent, it is created and managed the same way.
+In the current UI both are listed under `Agent Deployments` and created from the same form.
 
-Navigate to the deployments page by clicking on the `Deployments` tab on the navigation menu on the left.
+### Step 1: Create a new deployment
+
+Navigate to `Agent Deployments` under the `Agents` section of the navigation menu on the left, then click on `New agent`.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar.png" alt="Deployments navigation tab">
-    <figcaption>Deployments navigation tab</figcaption>
+    <img src="../../../../assets/images/guides/mlops/serving/agent_deployment_tab_sidebar.png" alt="Agent Deployments navigation tab">
+    <figcaption>Agent Deployments navigation tab</figcaption>
   </figure>
 </p>
 
-Then, click on `New Python deployment`.
-
 ### Step 2: Configure the deployment
 
-Choose a name for your Python deployment.
-Then, provide the script for you Python program by clicking on `From project` or `Upload new file`.
+Choose a name for your deployment.
+Under `Source`, keep `Project file` to run a script already in the project, or select `Git repository` to clone the script on every start.
+Then provide the script under `Agent script file` by clicking on `From project`, `Upload new file` or `Create new file`.
 
 ### Step 3 (Optional): Change Python environment
 
-Python deployments run the scripts in one of the [Python Environments](../../projects/python/python_env_overview.md) available in your project.
+The script runs in one of the [Python Environments](../../projects/python/python_env_overview.md) available in your project.
 This environment must have all the necessary dependencies for your Python program.
 
-Hopsworks provide a collection of built-in environments like `minimal-inference-pipeline`, `pandas-inference-pipeline` or `torch-inference-pipeline` with different sets of libraries pre-installed.
-By default, the `pandas-inference-pipeline` Python environment is used in Python deployments.
+Select an environment from the `Python Environment` dropdown.
+Hopsworks provides built-in environments such as `python-agent-pipeline` and the `*-inference-pipeline` environments, each with a different set of libraries pre-installed.
 
 To create your own environment it is recommended to [clone](../../projects/python/python_env_clone.md) the `minimal-inference-pipeline` or `pandas-inference-pipeline` environment and install additional dependencies needed for your Python program.
 
 <p align="center">
   <figure>
-    <img style="max-width: 55%; margin: 0 auto" src="../../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_endp_env.png" alt="Python script in the simplified deployment form">
-    <figcaption>Select an environment for the Python program</figcaption>
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_endp_env.png" alt="Python environment in the deployment form">
+    <figcaption>Select a Python environment for the program</figcaption>
   </figure>
 </p>
 
 ### Step 4 (Optional): Advanced configuration
 
-Click on `Advanced options` to configure your Python deployment further, including:
+Click on `advanced options` to configure the deployment further, including:
 
 !!! info ""
     1. [Resources](#resources)
     2. [Autoscaling](#autoscaling)
     3. [Scheduling](#scheduling)
 
-Once you are done with the changes, click on `Create new Python deployment` at the bottom of the page to create the Python deployment.
+Once you are done with the changes, click on `Create` at the bottom of the form to create the deployment.
 
 ## Code
 

@@ -139,9 +139,14 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   my_deployment.save()
   ```
 
-### API Reference
+!!! api "API reference"
 
-[`Resources`][hsml.resources.Resources]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Resources`][hsml.resources.Resources]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_predictor`][hsml.model_serving.ModelServing.create_predictor]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_deployment`][hsml.model_serving.ModelServing.create_deployment]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Predictor.deploy`][hsml.predictor.Predictor.deploy]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Autoscaling
 

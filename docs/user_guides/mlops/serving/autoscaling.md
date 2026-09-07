@@ -123,11 +123,14 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
   )
   ```
 
-### API Reference
+!!! api "API reference"
 
-[`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig]
+    - <code class="doc-symbol doc-symbol-class"></code> [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig]
+    - <code class="doc-symbol doc-symbol-class"></code> [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_transformer`][hsml.model_serving.ModelServing.create_transformer]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
 
-[`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Scale metrics
 

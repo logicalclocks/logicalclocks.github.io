@@ -303,8 +303,16 @@ See [Scheduling][logical-time-and-data-intervals] and [Batch feature pipelines][
     Setting them in the *Environment variables* panel overrides the scheduler value for every execution.
     The UI shows a warning callout when you do this.
 
-## API Reference
+!!! api "API reference"
 
-[`Job`][hopsworks_common.job.Job]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_job_api`][hopsworks_common.project.Project.get_job_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`JobsApi`][hopsworks.core.job_api.JobsApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_configuration`][hopsworks.core.job_api.JobsApi.get_configuration]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_job`][hopsworks.core.job_api.JobsApi.create_job]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Job`][hopsworks_common.job.Job]
+        - <code class="doc-symbol doc-symbol-method"></code> [`run`][hopsworks_common.job.Job.run]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Execution`][hopsworks_common.execution.Execution]
+        - <code class="doc-symbol doc-symbol-method"></code> [`download_logs`][hopsworks_common.execution.Execution.download_logs]
+    - <code class="doc-symbol doc-symbol-method"></code> [`DatasetApi.upload`][hopsworks_common.core.dataset_api.DatasetApi.upload]
 
-[`Execution`][hopsworks_common.execution.Execution]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

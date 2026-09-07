@@ -67,7 +67,9 @@ The rail is the spine of the site. Rules, in order of importance:
   - `navigation.path`: breadcrumbs above the H1 carry the hierarchy above the current level.
   - `drill-nav.js`: the rail shows two adjacent levels anchored on the active page. The indented level (with a guide rail) is the level the page lives on: the page's own siblings for a leaf, or the section's children for a section index page. The flat level above it is that section's siblings, so you always see the page's neighbours and the section it hangs from. Everything shallower than the flat level collapses into the breadcrumb and the up-header; everything deeper than the indented level stays hidden. The up-header names the section above the flat level and walks up to it.
 - Collapse toggle (`nav-collapse.js`): a header button hides the whole sidebar and lets the content reclaim the width. It is a plain show/hide, not an icon rail. Desktop only; mobile uses the drawer. State persists in localStorage.
+- Mobile drawer (below 76.25em): Material slides one level at a time, so `drill-nav.js` steps aside there (it only runs on desktop and re-runs on breakpoint change). The drawer rides above the header (`z-index` 1050), its title band is a compact 2.8rem strip on `--hops-sidebar-bg` with the back arrow or the logo on the left and a hairline below, the repo band sits on `--hops-surface`, and rows use 0.75rem type. Never hide the logo or sink the sidebar under the header for small screens; that was the old sub-480px block and it broke the drawer.
 - The sidebar is its own panel (`--hops-sidebar-bg`). The panel fill and the right divider are painted by `.md-sidebar--primary::before` (full-bleed, spanning past the header) so the divider is flush with the header, not notched 30px below it. Do not put the divider border back on the `.md-sidebar--primary` box.
+  The box is `height: auto` so it wraps the scrollwrap, whose height Material's JS sets to the sticky window and shrinks above the footer; never force the box to `100vh`, that pushed the nav under the header at the page bottom and left a dead grey gap above the footer.
 
 ## Search
 
@@ -85,7 +87,7 @@ Five rules, in order:
   At most about three choices of equal weight side by side; past that, rank them or fold them away.
   Density decreases down the page: the top breathes, the tail may be a dense index.
 - Two clicks, max, to what matters.
-  The important destinations are named and fixed: start or install, tutorials, concepts, deployment options, API reference.
+  The important destinations are named and fixed: start or install, concepts, deployment options, API reference.
   Each stays reachable in two clicks or fewer from the home.
   Audit this list on every home or nav change; pruning links elsewhere is fine as long as none of these five moves past two clicks.
 - Drive to usage, not reading.
@@ -98,6 +100,12 @@ Five rules, in order:
 - Clean, SOTA.
   Stay in Quartz: flat, no shadow, grid-aligned, near-white. No gadgetry.
   Server-rendered or static; content never depends on JS to exist.
+
+Section landings (`user_guides/index.md`, `user_guides/projects/index.md`, `user_guides/compute/index.md`, `user_guides/analytics/index.md`, `user_guides/fs/index.md`, `user_guides/mlops/index.md`, the feature group and feature view indexes, `setup_installation/index.md`) all share one three-beat shape, in this order:
+
+- Two sentences of intro, what the section owns and in which order the guides go.
+- One `grid cards hops-start` card: the single most common first task, with a runnable snippet and two or three links. It is the only tinted surface on the page.
+- A `hops-task-index`: two columns of intent groups (`hops-task-group`, caption via `hops-role-cap` + `hops-role-ico`), three to five entries per group, one entry per topic with a one-line "what you do here". The deep pages stay in the rail; a landing that lists every page is a laundry list, not a landing.
 
 The home is the worked example: hero plus quickcards, then the three-step runnable stepper, the FTI diagram, a borderless role index (`hops-role-index`), the ops task table, and a muted `hops-colophon` footer.
 Six sections, six different shapes; that is the anti-stale pattern, keep it.
@@ -119,7 +127,10 @@ Two node families, do not blur them:
 - DATA (stores, endpoints, tables): `viz-kv-frame` + a rounded-top `viz-kv-header` band, title left, meta right, then `viz-kv-entry` rows or a subtitle.
   The band path drops `v20` from the corner arc, so a band is 26 tall from the frame top; the title baseline (and the meta sharing it) sits at frame top + 19, the band's optical centre, never in its top half. The checker enforces this.
   A table of linked items (a project, a data-source column) uses `viz-field` rows with `viz-row-sep` separators, each row a `viz-link`.
+  A key that links two tables (a foreign key row and the primary key row it joins) is tinted with `viz-key-row` in one tone per key, and the edge between them carries the same `data-tone`, so one key can be followed across tables (star and snowflake figures on the query guide).
 - COMPUTE (pipelines, processes): a neutral `viz-node` box with a `viz-pill` tab straddling the top edge, `data-tone="accent"`, title + subtitle.
+
+In a state figure the steady states are full boxes (a toned one carries `data-state="active"` so its fill tints) and a transient step the system only passes through (starting, stopping) is a `viz-ghost` node: dashed, 40 tall instead of 52, title only, so the boxes are not all the same weight (deployment status figure on the deployment state guide).
 
 An icon and its label are a nested unit with two levels of rule:
 
@@ -127,6 +138,8 @@ An icon and its label are a nested unit with two levels of rule:
   Multi-line label, the text is left-anchored so it sits cleanly against the icon, and the icon is vertically centered on the middle of the block.
 - The unit as a whole: centered in its component, horizontally and vertically.
   Table rows are the exception, they stay left-anchored to the frame like a list, not centered.
+
+A zone marking the Hopsworks boundary carries `data-tone="accent"` (faint green wash, green label); other zones stay neutral. One Hopsworks per figure: two projects or registries live inside one zone, never in two.
 
 Edges dock on the node border with a knob at the source (`marker-start`) and an arrow at the target (`marker-end`); a feedback or automation link is dashed.
 Author edges as top-level `<svg>` children: `diagram-edges.js` lifts every `.viz-edge` to the end of the `<svg>` at load, so the arrow and knob paint above the node border instead of behind it (SVG paint order is document order, and nodes are authored after edges).
@@ -153,6 +166,7 @@ Distances follow an 8-unit spacing grid, not the arrowhead: the marker owns its 
   Every connector that ends in an arrow (`marker-end`) also starts on a node with a `marker-start` knob.
   A connector is an edge whose start docks a block; an arrow that starts in open space is an axis or a standalone direction arrow, a different species, and carries no knob.
   No connector tail floats in mid-air.
+  A timeline axis is authored as `viz-axis` (same stroke as an edge, arrow head, no knob): the edge router does not lift it, so windows and nodes drawn on the axis stay above the line.
 
 Run `python3 .claude/docs/viz_overlap_check.py [file ...]` before considering a diagram done; with no argument it checks every fragment.
 
@@ -167,8 +181,9 @@ How it works, in three layers, all in `custom.css` + `docs/js/hops-viz.js`:
 - Tokens on `.hops-viz`: surfaces (`--viz-paper`, `--viz-line`), ink scale, mono type scale (`--viz-type-title/header/label/meta`), and a tone family. Tones are semantic actions, not decoration: `write`/`accent` (brand green), `read`/`data` (blue), `warn` (amber), `error` (red), `neutral`. Never hardcode a hex inside a diagram.
 - Semantic SVG classes: `viz-label`, `viz-meta`, `viz-node` (+ header/title/subtitle), `viz-edge` (+ `data-variant="lane"`), `viz-tick`, `viz-window`, `viz-badge`, `viz-packet`, `viz-status-dot`, `viz-progress-track/fill`, `viz-kv-*` (frame/header/entry/cell/key/val), `viz-code-box` (raised code surface) + `viz-code` (monospace code text). State is carried by `data-state` (`active`, `visited`, `pending`, `offline`, `degraded`) and color by `data-tone` on any group; CSS renders both and transitions do the tweening.
 - Showing a transformation, call, or computed value: render it as code, a `viz-code-box` rect (raised `--viz-code-bg` fill, hairline border) with `viz-code` text on top, in the form `func(arg) -> result`. Colour tokens with tspans: `tok-fn` (blue) for the function, `tok-str` (green) for the produced value, `tok-kw` (ink). This is the standard, do not leave code as floating text on the paper. The result reveals with the `type` op so the value is watched being computed; keep the function vocabulary consistent with the API pages (`min_max_scaler`, `standard_scaler`).
+- A `viz-window` laid over an axis line (timeline figures) carries `data-solid=""` so its tint is mixed into paper rather than transparent and the line does not run through the label.
 - Tone must survive the animation. An animated `viz-node[data-tone]` only carries its colour while `active`; at rest it falls back to grey. If a node's tone is meaningful at rest (a colour-coded category), pin it with an inline `style="stroke:var(--viz-tone)"` on the rect so the border keeps the tone after the scene settles.
-- The driver (`hops-viz.js`): a figure with class `hops-diagram hops-viz` plus a sibling `<script type="application/json" data-viz-scene>` gets a stepped timeline. Each step maps a selector to ops (`state`, `tone`, `text`, `x`/`y` translate, `w`, `opacity`). Plays once when scrolled into view, then holds the final frame; the play/pause button becomes a replay control that restarts from the pristine SVG. Set `"loop": true` in the scene to loop continuously instead. Honors `prefers-reduced-motion` by rendering the final state statically.
+- The driver (`hops-viz.js`): a figure with class `hops-diagram hops-viz` plus a sibling `<script type="application/json" data-viz-scene>` gets a stepped timeline. Each step maps a selector to ops (`state`, `tone`, `text`, `x`/`y` translate, `w`, `opacity`). Plays once when scrolled into view, then holds the final frame; the play/pause button becomes a replay control that restarts from the pristine SVG. Set `"loop": true` in the scene to loop continuously instead. Honors `prefers-reduced-motion` by rendering the final state statically. A step carrying `"$label": "..."` opens a named chapter; the driver renders one chip per chapter under the figure (`hops-viz-steps`), the active chip follows playback, and clicking a chip jumps to that chapter's first frame and pauses. Put the label on the step where the reader should land (the node that matters is lit, the value has arrived, the failure shows), four to seven chapters per scene; a scene without labels gets no scrubber.
 
 Authoring rules:
 
@@ -200,10 +215,19 @@ Do not shrink type below the `--viz-type-*` scale to make something fit; restruc
 Work page by page; per visual decide: animated scene (mechanism), static kit SVG (structure), or `screenshot, keep`.
 Tick the inventory as you go; it is the single source of progress.
 
+## Tables
+
+Prose tables (`table:not([class])`) are Quartz: hairline frame, surface header, zebra rows, 0.68rem type.
+Three rules keep them inside the column:
+
+- A code chip in a cell never wraps (`white-space: nowrap`): a wrapped chip renders as a stack of bordered fragments. If a table then overflows the column, that is a content problem: merge a column, shorten a placeholder, or move long notes into a list under the table. Never re-enable wrapping.
+- Material floors every header at 5rem; that floor is removed, so a narrow column (`#`, a flag) takes only what it needs.
+- Content tabs are linked (`content.tabs.link`): picking Java on one set switches every set on the page and the choice persists. Tab strips are compact segmented controls sitting 0.35rem above their block.
+
 ## Theme features
 
 Set in `mkdocs.yml` under `theme.features`. Current set and why:
-`navigation.indexes` (section hubs), `navigation.prune` (render active branch only), `navigation.path` (breadcrumbs), `navigation.top` (back to top), `toc.follow` (right TOC tracks scroll), `content.code.copy`.
+`navigation.indexes` (section hubs), `navigation.prune` (render active branch only), `navigation.path` (breadcrumbs), `navigation.top` (back to top), `toc.follow` (right TOC tracks scroll), `content.code.copy`, `content.tabs.link` (language tabs switch together and persist).
 Note the absence of `navigation.sections` (keeps sections collapsible) and `navigation.expand` (collapse by default). Keep both absent.
 
 ## Content tone

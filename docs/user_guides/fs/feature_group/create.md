@@ -167,7 +167,7 @@ A filter on an `event_time` range is rewritten into equivalent grain-column pred
 
 | `partitioned_by` | `event_time` range | Grain-column filter | Notes |
 | --- | :---: | :---: | --- |
-| `["year"]` … `["year", "month", "day", "hour"]` | ✅ | ✅ | Recommended hierarchical prefixes. A range tightens to the finest grain it allows. |
+| a prefix of `year, month, day, hour` | ✅ | ✅ | Recommended. A range tightens to the finest grain it allows. |
 | `["month"]` | ⚠️ | ✅ | Month alone is ambiguous across years, so a range does not prune. |
 | `["year", "week"]` | ⚠️ | ✅ | Prunes on year only; week is not derivable from a date range. |
 | `["day"]` | ⚠️ | ✅ | Day-of-month is ambiguous, so a range does not prune. |
@@ -470,11 +470,24 @@ The DataFrame *must* contain the columns specified as primary keys, partition ke
 
 If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.
 
-### API Reference
+!!! api "API reference"
 
-[`FeatureGroup`][hsfs.feature_group.FeatureGroup]
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_feature_group`][hsfs.feature_store.FeatureStore.create_feature_group]
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_or_create_feature_group`][hsfs.feature_store.FeatureStore.get_or_create_feature_group]
+    - <code class="doc-symbol doc-symbol-class"></code> [`FeatureGroup`][hsfs.feature_group.FeatureGroup]
+        - <code class="doc-symbol doc-symbol-method"></code> [`insert`][hsfs.feature_group.FeatureGroup.insert]
+        - <code class="doc-symbol doc-symbol-method"></code> [`read`][hsfs.feature_group.FeatureGroup.read]
+        - <code class="doc-symbol doc-symbol-method"></code> [`select_all`][hsfs.feature_group.FeatureGroupBase.select_all]
+        - <code class="doc-symbol doc-symbol-method"></code> [`filter`][hsfs.feature_group.FeatureGroupBase.filter]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Find your feature group in the UI
 
 Feature groups created through the APIs appear in the `Catalog` section of the project sidebar.
 From there you can inspect features and statistics, edit metadata, and manage sharing and tags.
+
+<figure>
+  <img src="../../../../assets/images/guides/feature_group/feature_group_list.png" alt="The Catalog listing the project's feature groups with their format, online and shared badges" />
+  <figcaption>The Catalog lists every feature group with its table format, online status and version.</figcaption>
+</figure>

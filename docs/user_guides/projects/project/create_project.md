@@ -73,9 +73,12 @@ hopsworks.login()
 project = hopsworks.create_project("my_project")
 ```
 
-### API Reference
+!!! api "API reference"
 
-[`Project`][hopsworks_common.project.Project]
+    - <code class="doc-symbol doc-symbol-function"></code> [`hopsworks.create_project`][hopsworks.create_project]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Project`][hopsworks_common.project.Project]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Reserved project names
 

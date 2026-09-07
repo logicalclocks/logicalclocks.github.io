@@ -90,9 +90,13 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver virtual cores`: Number of cores to allocate for the Driver
 
+- `Driver GPUs`: Number of GPUs to allocate for the Driver
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
-- `Worker cores`: Number of cores to allocate for each worker
+- `Worker virtual cores`: Number of cores to allocate for each worker
+
+- `Worker GPUs`: Number of GPUs to allocate for each worker
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -253,8 +257,16 @@ The following table describes the job configuration parameters for a RAY job.
 If HopsFS is mounted, project datasets are available under `/hopsfs`, so you can access `data.csv` from the `Resources` dataset using `/hopsfs/Resources/data.csv` in your script.
 Shared datasets are accessible at `/hopsfs/shared-datasets/<source-project>/<dataset-name>`. The shared datasets directory is also available through the `SHARED_DATASETS_DIR` environment variable.
 
-## API Reference
+!!! api "API reference"
 
-[`Job`][hopsworks_common.job.Job]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_job_api`][hopsworks_common.project.Project.get_job_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`JobsApi`][hopsworks.core.job_api.JobsApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_configuration`][hopsworks.core.job_api.JobsApi.get_configuration]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_job`][hopsworks.core.job_api.JobsApi.create_job]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Job`][hopsworks_common.job.Job]
+        - <code class="doc-symbol doc-symbol-method"></code> [`run`][hopsworks_common.job.Job.run]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Execution`][hopsworks_common.execution.Execution]
+        - <code class="doc-symbol doc-symbol-method"></code> [`download_logs`][hopsworks_common.execution.Execution.download_logs]
+    - <code class="doc-symbol doc-symbol-method"></code> [`DatasetApi.upload`][hopsworks_common.core.dataset_api.DatasetApi.upload]
 
-[`Execution`][hopsworks_common.execution.Execution]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

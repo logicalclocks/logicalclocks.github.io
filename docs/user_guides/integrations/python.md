@@ -9,16 +9,24 @@ This guide explains step by step how to connect to Hopsworks from any Python env
 ## Install Python Library
 
 To be able to interact with Hopsworks from a Python environment you need to install the `Hopsworks` Python library.
-The library is available on [PyPi](https://pypi.org/project/hopsworks/) and can be installed using `pip`:
+The library is available on [PyPi](https://pypi.org/project/hopsworks/) and is installed with the `python` profile:
 
-```sh
-pip install hopsworks[python]~=[HOPSWORKS_VERSION]
-```
+=== "uv"
+
+    ```bash
+    uv pip install "hopsworks[python]~=[HOPSWORKS_VERSION]"
+    ```
+
+=== "pip"
+
+    ```bash
+    pip install "hopsworks[python]~=[HOPSWORKS_VERSION]"
+    ```
 
 !!! attention "Python Profile"
 
-    By default, `pip install hopsworks`, does not install all the necessary dependencies required to use the Hopsworks library from a pure Python environment.
-    To ensure that all the dependencies are installed, you should install the library using with the Python profile `pip install hopsworks[python]`.
+    A bare `hopsworks` install does not bring the dependencies needed to use the library from a pure Python environment.
+    Always install with the `python` profile, `hopsworks[python]`.
 
 !!! attention "Matching Hopsworks version"
 

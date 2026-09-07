@@ -507,5 +507,4 @@ If you don't have permissions to provision cluster roles or cluster role binding
 Check out our other guides for how to get started with Hopsworks and the Feature Store:
 
 - Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
-- Follow one of our [tutorials](../../tutorials/index.md)
 - Follow one of our [guides](../../user_guides/index.md)

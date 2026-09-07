@@ -23,7 +23,7 @@ If you have at least one model deployment already created, navigate to the model
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar_with_list.svg" alt="Deployments navigation tab">
+    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar_with_list.png" alt="Deployments navigation tab">
     <figcaption>Deployments navigation tab</figcaption>
   </figure>
 </p>

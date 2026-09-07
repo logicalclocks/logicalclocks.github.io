@@ -85,6 +85,12 @@ raw_bytes = base64.b64decode(secrets_api.get("my_ssh_key"))
 
 Reads return the base64 string, so the caller is responsible for decoding it back to bytes.
 
-### API Reference
+!!! api "API reference"
 
-[`SecretsApi`][hopsworks_common.core.secret_api.SecretsApi]
+    - <code class="doc-symbol doc-symbol-function"></code> [`hopsworks.get_secrets_api`][hopsworks.get_secrets_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`SecretsApi`][hopsworks_common.core.secret_api.SecretsApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_secret`][hopsworks_common.core.secret_api.SecretsApi.create_secret]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_secret_from_file`][hopsworks_common.core.secret_api.SecretsApi.create_secret_from_file]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get`][hopsworks_common.core.secret_api.SecretsApi.get]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

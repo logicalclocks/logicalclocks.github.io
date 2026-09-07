@@ -73,15 +73,15 @@
   "interval": 850,
   "loopDelay": 2600,
   "steps": [
-    { "#s1": {"state": "active"}, "#op1": {"opacity": 1}, "#op1-t": {"opacity": 1}, "#op1-r": {"type": "temperature=12.45, rainfall=44"}, "$ms": 900 },
+    { "$label": "lookup", "#s1": {"state": "active"}, "#op1": {"opacity": 1}, "#op1-t": {"opacity": 1}, "#op1-r": {"type": "temperature=12.45, rainfall=44"}, "$ms": 900 },
     { "#ov-arr": {"text": "[ 12.45, 44, null ]"}, "$ms": 900 },
-    { "#s1": {"state": "visited"}, "#s2": {"state": "active"}, "#op2": {"opacity": 1}, "#op2-t": {"opacity": 1}, "#op2-r": {"type": "pressure=1013"}, "$ms": 900 },
+    { "$label": "passed", "#s1": {"state": "visited"}, "#s2": {"state": "active"}, "#op2": {"opacity": 1}, "#op2-t": {"opacity": 1}, "#op2-r": {"type": "pressure=1013"}, "$ms": 900 },
     { "#ov-arr": {"text": "[ 12.45, 44, 1013 ]"}, "$ms": 900 },
-    { "#s2": {"state": "visited"}, "#s3": {"state": "active"}, "#op3": {"opacity": 1}, "#op3-t": {"opacity": 1}, "#op3-r": {"type": "0.50"}, "$ms": 900 },
+    { "$label": "odt", "#s2": {"state": "visited"}, "#s3": {"state": "active"}, "#op3": {"opacity": 1}, "#op3-t": {"opacity": 1}, "#op3-r": {"type": "0.50"}, "$ms": 900 },
     { "#ov-arr": {"text": "[ 12.45, 44, 0.50 ]"}, "$ms": 900 },
-    { "#s3": {"state": "visited"}, "#s4": {"state": "active"}, "#op4": {"opacity": 1}, "#op4-t": {"opacity": 1}, "#op4-r": {"type": "[0.31, 0.87, 0.42]"}, "$ms": 1000 },
+    { "$label": "mdt", "#s3": {"state": "visited"}, "#s4": {"state": "active"}, "#op4": {"opacity": 1}, "#op4-t": {"opacity": 1}, "#op4-r": {"type": "[0.31, 0.87, 0.42]"}, "$ms": 1000 },
     { "#ov-arr": {"text": "[ 0.31, 0.87, 0.42 ]"}, "$ms": 900 },
-    { "#s4": {"state": "visited"}, "#s5": {"state": "active"}, "#op5": {"opacity": 1}, "#op5-t": {"opacity": 1}, "#cap": {"opacity": 1}, "$ms": 2600 }
+    { "$label": "return", "#s4": {"state": "visited"}, "#s5": {"state": "active"}, "#op5": {"opacity": 1}, "#op5-t": {"opacity": 1}, "#cap": {"opacity": 1}, "$ms": 2600 }
   ]
 }
 </script>

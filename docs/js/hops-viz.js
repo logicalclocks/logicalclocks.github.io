@@ -12,7 +12,11 @@
 //   x / y  -> style.transform translate in px, tweened by CSS transitions
 //   w      -> style.width in px (SVG geometry property, e.g. progress fills)
 //   opacity -> style.opacity
-// "$ms" on a step overrides the pause after it. The scene plays once while the
+// "$ms" on a step overrides the pause after it. "$label" on a step opens a
+// named chapter: the driver renders one chip per chapter under the figure, the
+// active chip follows playback, and clicking a chip jumps to that chapter's
+// first frame (steps applied instantly, no tween) and pauses there.
+// The scene plays once while the
 // figure is on screen, then holds the final frame; the button turns into a
 // replay control that restarts from the pristine SVG. Set "loop": true to loop
 // continuously instead (restarting from pristine after loopDelay). With
@@ -50,7 +54,7 @@
     svg._typers.add(id);
   }
 
-  function applyStep(svg, step) {
+  function applyStep(svg, step, instant) {
     Object.keys(step).forEach(function (sel) {
       if (sel.charAt(0) === "$") return;
       var ops = step[sel];
@@ -69,7 +73,7 @@
         }
         if ("text" in ops) el.textContent = ops.text;
         if ("type" in ops) {
-          if (reduced) el.textContent = ops.type;
+          if (reduced || instant) el.textContent = ops.type;
           else startType(svg, el, ops.type);
         }
         if ("x" in ops || "y" in ops) {
@@ -118,7 +122,48 @@
     fig.appendChild(btn);
   }
 
-  function play(fig, withControls) {
+  function addSteps(fig, ctrl) {
+    if (!ctrl.chapters.length) return;
+    var ol = document.createElement("ol");
+    ol.className = "hops-viz-steps";
+    ol.setAttribute("aria-label", "Animation steps");
+    var buttons = ctrl.chapters.map(function (ch, k) {
+      var li = document.createElement("li");
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "hops-viz-step";
+      var l = document.createElement("span");
+      l.className = "hops-viz-step-l";
+      var n = document.createElement("span");
+      n.className = "hops-viz-step-n";
+      n.textContent = String(k + 1);
+      l.appendChild(n);
+      l.appendChild(document.createTextNode(ch.label));
+      b.appendChild(l);
+      var bar = document.createElement("span");
+      bar.className = "hops-viz-step-bar";
+      b.appendChild(bar);
+      b.addEventListener("click", function () { ctrl.jumpTo(k); });
+      li.appendChild(b);
+      ol.appendChild(li);
+      return b;
+    });
+    function render() {
+      var cur = ctrl.current();
+      buttons.forEach(function (b, k) {
+        var state = k === cur ? "active" : k < cur ? "visited" : "pending";
+        b.setAttribute("data-state", state);
+        b.parentNode.setAttribute("data-state", state);
+        if (k === cur) b.setAttribute("aria-current", "step");
+        else b.removeAttribute("aria-current");
+      });
+    }
+    ctrl.onChange(render);
+    render();
+    fig.appendChild(ol);
+  }
+
+  function play(fig) {
     var script = fig.querySelector("script[data-viz-scene]");
     var svg = fig.querySelector("svg");
     if (!script || !svg) return;
@@ -139,6 +184,10 @@
 
     var interval = scene.interval || 1000;
     var initial = svg.innerHTML;
+    var chapters = [];
+    steps.forEach(function (step, k) {
+      if (step.$label) chapters.push({ label: String(step.$label), start: k });
+    });
     var i = 0;
     var timer = null;
     var visible = false;
@@ -159,6 +208,7 @@
       applyStep(svg, steps[i]);
       var wait = steps[i].$ms || interval;
       i += 1;
+      emit();
       if (i >= steps.length) {
         if (scene.loop === true) {
           i = 0;
@@ -178,7 +228,35 @@
       timer = setTimeout(tick, wait);
     }
 
+    // Jump to a chapter: rebuild from pristine, apply every step up to and
+    // including the chapter's first one with tweens suppressed, then hold.
+    function jumpTo(k) {
+      var ch = chapters[k];
+      if (!ch) return;
+      clearTimeout(timer);
+      resetPristine();
+      svg.classList.add("viz-jump");
+      for (var s = 0; s <= ch.start; s++) applyStep(svg, steps[s], true);
+      void svg.getBoundingClientRect(); // flush styles while transitions are off
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { svg.classList.remove("viz-jump"); });
+      });
+      i = ch.start + 1;
+      ended = false;
+      userPaused = true;
+      emit();
+    }
+
     var ctrl = {
+      chapters: chapters,
+      jumpTo: jumpTo,
+      // Index of the chapter the last applied step belongs to, -1 before play.
+      current: function () {
+        var last = i - 1;
+        var cur = -1;
+        chapters.forEach(function (ch, k) { if (ch.start <= last) cur = k; });
+        return cur;
+      },
       paused: function () { return userPaused; },
       ended: function () { return ended; },
       onChange: function (fn) { listeners.push(fn); },
@@ -230,7 +308,10 @@
   document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".md-typeset .hops-viz").forEach(function (fig) {
       var ctrl = play(fig);
-      if (ctrl) addToggle(fig, ctrl);
+      if (ctrl) {
+        addToggle(fig, ctrl);
+        addSteps(fig, ctrl);
+      }
     });
   });
 
@@ -243,11 +324,14 @@
     if (!clone || !clone.classList.contains("hops-viz")) return;
     // The clone copies the source figure's toggle button but not its listener,
     // so drop the dead button; the overlay has its own controls.
-    clone.querySelectorAll(".hops-viz-toggle").forEach(function (b) { b.remove(); });
+    clone.querySelectorAll(".hops-viz-toggle, .hops-viz-steps").forEach(function (b) { b.remove(); });
     var svg = clone.querySelector("svg");
     var initial = pristine.get(source);
     if (svg && initial) svg.innerHTML = initial;
     var ctrl = play(clone);
-    if (ctrl) addToggle(clone, ctrl);
+    if (ctrl) {
+      addToggle(clone, ctrl);
+      addSteps(clone, ctrl);
+    }
   });
 })();

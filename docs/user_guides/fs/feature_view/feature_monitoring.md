@@ -241,9 +241,19 @@ Once saved, you can retrieve your feature monitoring configurations and the resu
 
 See the API reference for [`FeatureView.get_feature_monitoring_configs`][hsfs.feature_view.FeatureView.get_feature_monitoring_configs] and [`FeatureView.get_feature_monitoring_history`][hsfs.feature_view.FeatureView.get_feature_monitoring_history].
 
-### API Reference
+!!! api "API reference"
 
-[`FeatureView`][hsfs.feature_view.FeatureView]
+    - <code class="doc-symbol doc-symbol-class"></code> [`FeatureView`][hsfs.feature_view.FeatureView]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_feature_monitoring`][hsfs.feature_view.FeatureView.create_feature_monitoring]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_scheduled_statistics`][hsfs.feature_view.FeatureView.create_scheduled_statistics]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_feature_monitoring_configs`][hsfs.feature_view.FeatureView.get_feature_monitoring_configs]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_feature_monitoring_history`][hsfs.feature_view.FeatureView.get_feature_monitoring_history]
+    - <code class="doc-symbol doc-symbol-class"></code> [`FeatureMonitoringConfig`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig]
+        - <code class="doc-symbol doc-symbol-method"></code> [`with_detection_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_detection_window]
+        - <code class="doc-symbol doc-symbol-method"></code> [`with_reference_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_reference_window]
+        - <code class="doc-symbol doc-symbol-method"></code> [`with_reference_training_dataset`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_reference_training_dataset]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Monitor a model in production
 

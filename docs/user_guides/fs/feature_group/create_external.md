@@ -138,9 +138,16 @@ Hopsworks Feature Store does not support time-travel queries on external feature
 Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
 Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [`FeatureView.create_training_data`][hsfs.feature_view.FeatureView.create_training_data], [`FeatureView.create_train_test_split`][hsfs.feature_view.FeatureView.create_train_test_split] or [`FeatureView.create_train_validation_test_split`][hsfs.feature_view.FeatureView.create_train_validation_test_split].
 
-### API Reference
+!!! api "API reference"
 
-[`ExternalFeatureGroup`][hsfs.feature_group.ExternalFeatureGroup].
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_data_source`][hsfs.feature_store.FeatureStore.get_data_source]
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_external_feature_group`][hsfs.feature_store.FeatureStore.create_external_feature_group]
+    - <code class="doc-symbol doc-symbol-class"></code> [`ExternalFeatureGroup`][hsfs.feature_group.ExternalFeatureGroup]
+        - <code class="doc-symbol doc-symbol-method"></code> [`save`][hsfs.feature_group.ExternalFeatureGroup.save]
+        - <code class="doc-symbol doc-symbol-method"></code> [`insert`][hsfs.feature_group.ExternalFeatureGroup.insert]
+        - <code class="doc-symbol doc-symbol-method"></code> [`read`][hsfs.feature_group.ExternalFeatureGroup.read]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Create using the UI
 

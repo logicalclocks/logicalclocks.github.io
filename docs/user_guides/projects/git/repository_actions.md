@@ -60,7 +60,11 @@ git_repo = git_api.get_repo(REPOSITORY_NAME)
 git_repo.commit("Test commit")
 ```
 
-### API Reference
+!!! api "API reference"
 
-Api reference for repository actions is available here:
-[`GitRepo`][hopsworks_common.git_repo.GitRepo]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitApi`][hopsworks_common.core.git_api.GitApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_repo`][hopsworks_common.core.git_api.GitApi.get_repo]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitRepo`][hopsworks_common.git_repo.GitRepo]
+        - <code class="doc-symbol doc-symbol-method"></code> [`commit`][hopsworks_common.git_repo.GitRepo.commit]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

@@ -42,6 +42,10 @@ SCHEMA_NAME = "schema_example"
 my_schema = kafka_api.create_schema(SCHEMA_NAME, schema)
 ```
 
-### API Reference
+!!! api "API reference"
 
-[`KafkaSchema`][hopsworks_common.kafka_schema.KafkaSchema]
+    - <code class="doc-symbol doc-symbol-class"></code> [`KafkaApi`][hopsworks_common.core.kafka_api.KafkaApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_schema`][hopsworks_common.core.kafka_api.KafkaApi.create_schema]
+    - <code class="doc-symbol doc-symbol-class"></code> [`KafkaSchema`][hopsworks_common.kafka_schema.KafkaSchema]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

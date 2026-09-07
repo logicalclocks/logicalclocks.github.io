@@ -83,9 +83,13 @@ API_TOKEN = "my_token"
 git_api.set_provider(PROVIDER, GITHUB_USER, API_TOKEN)
 ```
 
-### API Reference
+!!! api "API reference"
 
-[`GitProvider`][hopsworks_common.git_provider.GitProvider]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitApi`][hopsworks_common.core.git_api.GitApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_provider`][hopsworks_common.core.git_api.GitApi.set_provider]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitProvider`][hopsworks_common.git_provider.GitProvider]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Going Further
 

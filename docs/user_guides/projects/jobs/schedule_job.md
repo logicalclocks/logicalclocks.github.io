@@ -34,6 +34,8 @@ When the scheduler fires a job, it attaches a **data window** to the execution, 
 
 With the defaults on an hourly schedule firing at 10:00, the window is `[09:00, 10:00)`, the last hour of data. The same defaults on a daily schedule firing at 00:00 give `[yesterday 00:00, today 00:00)`, the last day. Change the modes (see below) to shape a different window.
 
+--8<-- "user_guides/projects/jobs/schedule_job/data-windows.html"
+
 These three values are injected into the job container as **environment variables** on every scheduled execution. In your program, read them like any other env var:
 
 === "Python"
@@ -108,6 +110,13 @@ All times are in UTC.
 ### Scheduling fields
 
 The Schedule form exposes these fields for controlling the data window, concurrency and catch-up behaviour:
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jobs/job_scheduling_catchup.png" alt="Schedule form with a start offset and catch-up enabled">
+    <figcaption>Start offset and catch-up options in the Schedule form</figcaption>
+  </figure>
+</p>
 
 | Field | Default | Description |
 | --- | --- | --- |

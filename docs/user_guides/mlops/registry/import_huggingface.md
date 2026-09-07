@@ -29,6 +29,13 @@ Click the **Import from HuggingFace** button in the toolbar at the top of the mo
 !!! tip "Gated models"
     If the model requires an access token and you don't supply one, the import fails fast and the modal prompts you to paste a token and retry, so no download time is wasted.
 
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/registry/huggingface_import_modal.png" alt="HuggingFace import modal with the model ID field">
+    <figcaption>Enter the HuggingFace model ID</figcaption>
+  </figure>
+</p>
+
 Click **Next** to inspect the repo on HuggingFace.
 
 ### Step 4: Choose which weight formats to import
@@ -46,6 +53,13 @@ The modal shows a checkbox for each weight format detected in the repo, with the
 
 You can tick additional formats if you need more than one.
 Config, tokenizer, README and other small auxiliary files are always imported regardless of your selection.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/registry/huggingface_import_formats.png" alt="Weight format selection with a checkbox per format">
+    <figcaption>Pick the weight formats to import; the total download size updates as you tick</figcaption>
+  </figure>
+</p>
 
 #### Quantization variants
 
@@ -82,6 +96,13 @@ If you close the modal (X or click outside) while the download is in progress, H
 ### Step 7: Success
 
 When all files have been downloaded, the model version is automatically registered in the Model Registry with an auto-detected framework. The modal shows a success screen and the new version appears in the Model Registry list.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/registry/huggingface_import_success.png" alt="Import success screen">
+    <figcaption>The model has been registered and appears in the Model Registry</figcaption>
+  </figure>
+</p>
 
 ## Framework auto-detection
 

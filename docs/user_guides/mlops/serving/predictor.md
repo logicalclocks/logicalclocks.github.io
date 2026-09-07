@@ -148,18 +148,18 @@ Once you are done with the changes, click on `Create new model deployment` at th
 
 === "Python"
 
-  ```python
-  import hopsworks
+    ```python
+    import hopsworks
 
 
-  project = hopsworks.login()
+    project = hopsworks.login()
 
-  # get Hopsworks Model Registry handle
-  mr = project.get_model_registry()
+    # get Hopsworks Model Registry handle
+    mr = project.get_model_registry()
 
-  # get Hopsworks Model Serving handle
-  ms = project.get_model_serving()
-  ```
+    # get Hopsworks Model Serving handle
+    ms = project.get_model_serving()
+    ```
 
 ### Step 2.1 (Optional): Implement a predictor script
 
@@ -270,14 +270,14 @@ For Python model deployments, you need implement a predictor script that loads a
 
 === "Python"
 
-  ```python
-  uploaded_file_path = dataset_api.upload(
+    ```python
+    uploaded_file_path = dataset_api.upload(
       "my_predictor.py", "Resources", overwrite=True
-  )
-  predictor_script_path = os.path.join(
+    )
+    predictor_script_path = os.path.join(
       "/Projects", project.name, uploaded_file_path
-  )
-  ```
+    )
+    ```
 
 ### Step 3: Pass predictor configuration to model deployment
 
@@ -285,19 +285,27 @@ You can customize the default predictor settings when creating a model deploymen
 
 === "Python"
 
-  ```python
-  my_model = mr.get_model("my_model", version=1)
+    ```python
+    my_model = mr.get_model("my_model", version=1)
 
-  my_deployment = my_model.deploy(
+    my_deployment = my_model.deploy(
       # predictor configuration
       model_server="PYTHON",
       script_file=predictor_script_path,
-  )
-  ```
+    )
+    ```
 
-### API Reference
+!!! api "API reference"
 
-[`Predictor`][hsml.predictor.Predictor]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Predictor`][hsml.predictor.Predictor]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.get_feature_view`][hsml.model.Model.get_feature_view]
+    - <code class="doc-symbol doc-symbol-class"></code> [`FeatureView`][hsfs.feature_view.FeatureView]
+        - <code class="doc-symbol doc-symbol-method"></code> [`init_feature_logger`][hsfs.feature_view.FeatureView.init_feature_logger]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_feature_vector`][hsfs.feature_view.FeatureView.get_feature_vector]
+        - <code class="doc-symbol doc-symbol-method"></code> [`log`][hsfs.feature_view.FeatureView.log]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Model Server
 

@@ -62,9 +62,9 @@ Jobs, notebooks and model deployments are submitted to these queues.
 Hopsworks administrator can define quotas on how many resources a queue can use.
 Queues can be grouped together in cohorts in order to add the ability to borrow resources from each other when the other queue does not use its resources.
 
-When creating a new job, the user can select a queue for the job from `Advanced options`, in the `Scheduler` section of the full configuration page.
+When creating a new job, the user can select a queue for the job in the `Kubernetes scheduling constraints` section of the job configuration page.
 
-![Default queue for user and system jobs](../../../assets/images/guides/project/scheduler/job_queue.png)
+![Queue selection for a job](../../../assets/images/guides/project/scheduler/job_queue.png)
 
 ### Topologies
 
@@ -72,9 +72,9 @@ The integration of Hopsworks with Kueue, also provides access to the topology ab
 Topologies can be defined, so that the user can decide for the pods of jobs or model deployments to run somehow grouped together.
 The user could decide for example, that all pods of a job should run on the same host, because the pods need to transfer a lot of data between each other, and we want to avoid network traffic to lower the latency.
 
-The user can select the topology unit for jobs, notebooks and model deployments from `Advanced options`, in the `Scheduler` section of the full configuration page.
+The user can select the topology unit for jobs, notebooks and model deployments in the `Kubernetes scheduling constraints` section of the configuration page.
 
-![Default queue for user and system jobs](../../../assets/images/guides/project/scheduler/job_topology_unit.png)
+![Topology unit selection for a job](../../../assets/images/guides/project/scheduler/job_topology_unit.png)
 
 ## Admin configuration
 

@@ -22,12 +22,12 @@ hide:
     `hops setup` opens a browser, caches an API key and connects you to a feature store.
 
     ```bash
-    pip install "hopsworks[python]"
+    uv pip install "hopsworks[python]"
     hops setup
     ```
 
     [Client installation](user_guides/client_installation/index.md) ·
-    <a href="python-api/">Python API</a>
+    <a href="python-api/hopsworks/">Python API</a>
 
 -   :material-cloud-outline: **Use the managed SaaS**
 
@@ -36,8 +36,7 @@ hide:
     Sign in to the Hopsworks serverless app and create a project.
     Nothing to install, free tier available.
 
-    [Open run.hopsworks.ai ↗](https://run.hopsworks.ai) ·
-    [Tutorials](tutorials/index.md)
+    [Open run.hopsworks.ai ↗](https://run.hopsworks.ai)
 
 -   :material-server: **Deploy on your cloud or on-prem**
 
@@ -78,7 +77,7 @@ Create an [API key](user_guides/projects/api_key/create_api_key.md) in your proj
 <div class="hops-step-panel is-active" data-step="connect" markdown>
 
 ```python
-# pip install "hopsworks[python]"
+# uv pip install "hopsworks[python]"
 import hopsworks
 
 
@@ -150,17 +149,18 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 - [Client installation](user_guides/client_installation/index.md)
 - [Python, SageMaker, Kubeflow](user_guides/integrations/python.md)
 - [Create a feature group](user_guides/fs/feature_group/create.md)
-- <a href="python-api/">Python API reference</a>
+- <a href="python-api/hopsworks/">Python API reference</a>
+
 </div>
 
 <div class="hops-role" markdown>
 :material-chart-scatter-plot:{ .hops-role-ico } Data scientist
 { .hops-role-cap }
 
-- [Tutorials](tutorials/index.md)
 - [Feature views](concepts/fs/feature_view/fv_overview.md)
 - [Training data](user_guides/fs/feature_view/training-data.md)
 - [Model serving](user_guides/mlops/serving/index.md)
+
 </div>
 
 <div class="hops-role" markdown>
@@ -171,6 +171,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 - [Airflow](user_guides/projects/airflow/airflow.md)
 - [Python environments](user_guides/projects/python/python_env_overview.md)
 - [Kubernetes scheduling](user_guides/projects/scheduling/kube_scheduler.md)
+
 </div>
 
 <div class="hops-role" markdown>
@@ -181,6 +182,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 - [API keys](user_guides/projects/api_key/create_api_key.md)
 - [IAM role chaining](setup_installation/admin/roleChaining.md)
 - [Audit logs](setup_installation/admin/audit/audit-logs.md)
+
 </div>
 
 <div class="hops-role" markdown>
@@ -191,6 +193,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 - [User management](setup_installation/admin/user.md)
 - [Alerts](setup_installation/admin/alert.md)
 - [HA and DR](setup_installation/admin/ha-dr/intro.md)
+
 </div>
 
 <div class="hops-role" markdown>
@@ -201,6 +204,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 - [Feature store architecture](concepts/fs/index.md)
 - [Analytical and operational ML](concepts/mlops/prediction_services.md)
 - [Deployment options](setup_installation/index.md)
+
 </div>
 
 </div>
@@ -220,9 +224,10 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 :material-api:{ .hops-colophon-ico } APIs
 { .hops-colophon-cap }
 
-- <a href="python-api/">Python API</a>
+- <a href="python-api/hopsworks/">Python API</a>
 - <a href="javadoc/">Java API</a>
 - Machine-readable: <a href="llms.txt">llms.txt</a>, <a href="llms-full.txt">llms-full.txt</a>, or `<page>.md`
+
 </div>
 
 <div markdown>
@@ -233,6 +238,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 - [Cluster configuration](setup_installation/admin/variables.md)
 - [Query engine (Trino)](user_guides/projects/trino/query_engine.md)
 - [Vector similarity search](user_guides/fs/vector_similarity_search.md)
+
 </div>
 
 <div markdown>
@@ -242,6 +248,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 - [Public Slack ↗](https://join.slack.com/t/public-hopsworks/shared_invite/zt-24fc3hhyq-VBEiN8UZlKsDrrLvtU4NaA)
 - [hopsworks-api on GitHub ↗](https://github.com/logicalclocks/hopsworks-api)
 - [Apache License 2.0 ↗](https://www.apache.org/licenses/LICENSE-2.0.html)
+
 </div>
 
 </div>

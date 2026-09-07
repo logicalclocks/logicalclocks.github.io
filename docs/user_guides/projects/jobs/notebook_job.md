@@ -219,8 +219,14 @@ The notebook's working directory is the folder it is located in.
 For example, if it is located in the `Resources` dataset, and you have a file named `data.csv` in that dataset, you simply access it using `data.csv`.
 Also, if you write a local file, for example `output.txt`, it will be saved in the `Resources` dataset.
 
-## API Reference
+!!! api "API reference"
 
-[`Job`][hopsworks_common.job.Job]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_job_api`][hopsworks_common.project.Project.get_job_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`JobsApi`][hopsworks.core.job_api.JobsApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_configuration`][hopsworks.core.job_api.JobsApi.get_configuration]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_job`][hopsworks.core.job_api.JobsApi.create_job]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Job`][hopsworks_common.job.Job]
+        - <code class="doc-symbol doc-symbol-method"></code> [`run`][hopsworks_common.job.Job.run]
+    - <code class="doc-symbol doc-symbol-method"></code> [`DatasetApi.upload`][hopsworks_common.core.dataset_api.DatasetApi.upload]
 
-[`Execution`][hopsworks_common.execution.Execution]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

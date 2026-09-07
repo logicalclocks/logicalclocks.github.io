@@ -1,9 +1,6 @@
 # Data Validation
 
-<figure markdown>
-  ![Validation on Insertion with Hopsworks and Great Expectations](../../../assets/images/guides/fs/great_expectations/great_exp_in_hopsworks.png)
-  <figcaption>Validation on Insertion with Hopsworks and Great Expectations.</figcaption>
-</figure>
+--8<-- "user_guides/fs/feature_group/data_validation/validation-on-insert.html"
 
 ## Introduction
 
@@ -60,6 +57,11 @@ Click the tick button to save the expectation configuration and append it to the
 You can use the button `Clear Expectation Suite` to clean up before saving changes if you changed your mind.
 If the Expectation Suite is already registered, it will instead show a button to delete the Expectation Suite.
 
+<figure>
+  <img src="../../../../assets/images/guides/fs/data_validation/expectation_suite_editor.png" alt="Expectation Suite section of the Edit Feature Group page with three expectations and the STRICT policy selected" />
+  <figcaption>The Expectation Suite editor: name, enabled flag, ingestion policy, and one row per expectation.</figcaption>
+</figure>
+
 ### Step 4: Save new data to a Feature Group
 
 Use the python client to write a DataFrame to the Feature Group.
@@ -82,6 +84,11 @@ Should you need more than the information displayed in the UI for e.g., debuggin
 The `Validation Reports` tab in the Expectations section displays a brief history of recent validations.
 Each row corresponds to a validation report, with some summary information about the success of the validation step.
 You can download the full report by clicking the download icon button that appears at the end of the row.
+
+<figure>
+  <img src="../../../../assets/images/guides/fs/data_validation/expectations_section.png" alt="Expectations section of a feature group showing the validation reports table" />
+  <figcaption>The Expectations section on the feature group page, with the validation reports history.</figcaption>
+</figure>
 
 ## Code
 

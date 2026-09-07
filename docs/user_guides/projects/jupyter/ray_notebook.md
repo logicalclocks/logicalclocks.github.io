@@ -52,9 +52,13 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver virtual cores`: Number of cores to allocate for the Driver
 
+- `Driver GPUs`: Number of GPUs to allocate for the Driver
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
-- `Worker cores`: Number of cores to allocate for each worker
+- `Worker virtual cores`: Number of cores to allocate for each worker
+
+- `Worker GPUs`: Number of GPUs to allocate for each worker
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -158,6 +162,13 @@ In the Ray Dashboard, you can monitor the resources used  by code you are runnin
   <figure>
     <img src="../../../../assets/images/guides/jupyter/ray_jupyter_notebook_session.png" alt="Access Ray Dashboard">
     <figcaption>Access Ray Dashboard for Jupyter Ray session</figcaption>
+  </figure>
+</p>
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jupyter/ray_dashboard.png" alt="Ray Dashboard cluster view">
+    <figcaption>The Ray Dashboard for the Jupyter Ray session, cluster view</figcaption>
   </figure>
 </p>
 

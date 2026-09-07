@@ -46,6 +46,10 @@ for i in range(0, 10):
     print(msg.value())
 ```
 
-### API Reference
+!!! api "API reference"
 
-[`KafkaTopic`][hopsworks_common.kafka_topic.KafkaTopic]
+    - <code class="doc-symbol doc-symbol-class"></code> [`KafkaApi`][hopsworks_common.core.kafka_api.KafkaApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_default_config`][hopsworks_common.core.kafka_api.KafkaApi.get_default_config]
+    - <code class="doc-symbol doc-symbol-class"></code> [`KafkaTopic`][hopsworks_common.kafka_topic.KafkaTopic]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

@@ -14,16 +14,24 @@ Execute the following command to install the Hopsworks client library in your Py
 !!! attention "Windows/Conda Installation"
 
     On Windows systems you might need to install twofish manually before installing hopsworks, if you don't have the Microsoft Visual C++ Build Tools installed.
-In that case, it is recommended to use a conda environment and run the following commands:
+    In that case, it is recommended to use a conda environment and run the following commands:
 
     ```bash
     conda install twofish
     pip install hopsworks[python]
     ```
 
-```bash
-pip install hopsworks[python]
-```
+=== "uv"
+
+    ```bash
+    uv pip install "hopsworks[python]"
+    ```
+
+=== "pip"
+
+    ```bash
+    pip install "hopsworks[python]"
+    ```
 
 Supported versions of Python: 3.10, 3.11, 3.12, 3.13 ([PyPI ↗](https://pypi.org/project/hopsworks/))
 
@@ -41,7 +49,7 @@ The Hopsworks library has several profiles that bring additional dependencies an
 You can install all the above profiles with the following command:
 
 ```bash
-pip install hopsworks[python,great-expectations,polars]
+uv pip install "hopsworks[python,great-expectations,polars]"
 ```
 
 ## Hopsworks Java Library

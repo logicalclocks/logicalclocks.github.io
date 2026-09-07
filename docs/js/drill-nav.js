@@ -14,6 +14,7 @@
   var HIDDEN = "hops-drill-hidden";
   var ON = "hops-drill-on";
   var DEPTH_KEY = "hops-drill-depth";
+  var DESKTOP = window.matchMedia("(min-width: 76.25em)");
 
   function textOf(li) {
     var link = li.querySelector(
@@ -88,6 +89,10 @@
     var oldUp = primary.querySelector(".hops-nav-up");
     if (oldUp) oldUp.remove();
     document.body.classList.remove(ON);
+
+    // Desktop rail only. Below Material's sidebar breakpoint the nav is a
+    // sliding drawer that already shows one level at a time.
+    if (!DESKTOP.matches) return;
 
     var active = primary.querySelector(".md-nav__link--active");
     if (!active) return;
@@ -185,4 +190,5 @@
   }
 
   document.addEventListener("DOMContentLoaded", drill);
+  DESKTOP.addEventListener("change", drill);
 })();

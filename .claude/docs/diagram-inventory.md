@@ -92,7 +92,7 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [-] `docs/user_guides/mlops/provenance/provenance.md` — 1 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/mlops/serving/api-protocol.md` — 3 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/mlops/serving/autoscaling.md` — 3 image(s): UI screenshots/GIFs, keep
-- [-] `docs/user_guides/mlops/serving/deployment-state.md` — 6 image(s): UI screenshots/GIFs, keep
+- [x] `docs/user_guides/mlops/serving/deployment-state.md` — 3 static kit figures (status transitions, condition chains starting and stopping), 3 UI captures kept
 - [-] `docs/user_guides/mlops/serving/deployment.md` — 7 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/mlops/serving/external-access.md` — 9 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/mlops/serving/inference-batcher.md` — 3 image(s): UI screenshots/GIFs, keep
@@ -139,7 +139,7 @@ The `[x]` tick still requires the per-page design pass (animate mechanisms, rebu
 - [-] `docs/user_guides/projects/scheduling/kueue_details.md` — 2 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/projects/secrets/create_secret.md` — 3 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/projects/superset/superset.md` — 5 image(s): UI screenshots/GIFs, keep
-- [-] `docs/user_guides/projects/terminal.md` — 2 image(s): UI screenshots/GIFs, keep
+- [-] `docs/user_guides/compute/terminal.md` — 2 image(s): UI screenshots/GIFs, keep
 - [-] `docs/user_guides/projects/trino/query_engine.md` — 11 image(s): UI screenshots/GIFs, keep
 
 ## setup_installation

@@ -62,3 +62,7 @@ You can see what features are used in which feature view or training dataset, an
 For assets that are managed outside of Hopsworks, there is support for the explicit definition of lineage dependencies.
 
 --8<-- "concepts/projects/search/provenance-lineage.html"
+
+The lineage of an asset is shown in the Hopsworks UI, here the feature groups behind a feature view and the training data and models derived from it.
+
+<img src="../../../assets/images/concepts/projects/provenance.png">

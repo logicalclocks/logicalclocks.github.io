@@ -164,9 +164,14 @@ This will create a deployment for your model with default values.
 !!! info "Predictor script and server configuration file"
     You can provide a predictor script and a server configuration file directly in the `.deploy()` method using the `script_file` and `config_file` parameters. See the [Predictor Guide](predictor.md) for more details.
 
-### API Reference
+!!! api "API reference"
 
-[`ModelServing`][hsml.model_serving.ModelServing]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelRegistry.get_model`][hsml.model_registry.ModelRegistry.get_model]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`start`][hsml.deployment.Deployment.start]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Model Files
 
