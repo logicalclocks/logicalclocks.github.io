@@ -174,6 +174,7 @@ nav:
               - Clone Repository: user_guides/projects/git/clone_repo.md
               - Repository Actions: user_guides/projects/git/repository_actions.md
           - Secrets: user_guides/projects/secrets/create_secret.md
+          - Mountable Secrets: user_guides/projects/mountable_secrets/mountable_secrets.md
           - Environment Variables: user_guides/projects/env_vars/create.md
           - API Keys: user_guides/projects/api_key/create_api_key.md
           - AWS IAM Roles: user_guides/projects/iam_role/iam_role_chaining.md
@@ -288,6 +289,7 @@ nav:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
               - Services Logs: setup_installation/admin/monitoring/services-logs.md
+              - Service Log Labels: setup_installation/admin/monitoring/services-logs-labels.md
               - WebSocket Proxy Pool: setup_installation/admin/monitoring/websocket-pool.md
           - Authentication:
               - Configure Authentication: setup_installation/admin/auth.md
