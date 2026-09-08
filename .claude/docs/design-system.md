@@ -76,6 +76,9 @@ The rail is the spine of the site. Rules, in order of importance:
 
 Header search (not sidebar). Bordered pill on `--hops-surface`.
 The magnifier icon inherits the header's white by default and vanishes on the light field; it is forced to the muted foreground in `.md-header .md-search__form .md-search__icon`. Keep that override.
+An "All | API" switch (`docs/js/search-scope.js`) sits above the result count.
+Material's own list renders page hits lazily on scroll and cannot be filtered without losing hits, so the API scope runs Material's search worker a second time, created on first use with the same index, and renders a flat list of symbols (title, dotted path) in Material's result markup while the prose list is hidden.
+The search separator in `mkdocs.yml` splits on dots, underscores and camel case, so "feature vector" reaches `get_feature_vector` and `FeatureView`.
 
 ## Home and landing UX
 

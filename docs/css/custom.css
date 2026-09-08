@@ -1378,6 +1378,46 @@ a.autorefs-external::after {
   padding: 0.1em 0.35em;
 }
 
+/* Search scope switch (js/search-scope.js): "All | API" above the result
+   count, same segmented look as the code tabs. With the API scope on, the
+   flat symbol list replaces Material's page list. */
+.md-search-result .hops-search-scope {
+  display: inline-flex;
+  gap: 2px;
+  margin: 0.55rem 0.8rem 0;
+  padding: 2px;
+  background: var(--hops-surface);
+  border: 1px solid var(--hops-border);
+  border-radius: 8px;
+}
+.md-search-result .hops-search-scope button {
+  padding: 0.1rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+}
+.md-search-result .hops-search-scope button[aria-selected="true"] {
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  border-color: var(--hops-border-strong);
+}
+/* One list at a time: Material's in the All scope, the symbol list in API. */
+.md-search-result[data-scope="api"] > .md-search-result__list:not(.hops-api-list),
+.md-search-result[data-scope="api"] > .md-search-result__meta:not(.hops-api-meta),
+.md-search-result:not([data-scope="api"]) > .hops-api-list,
+.md-search-result:not([data-scope="api"]) > .hops-api-meta {
+  display: none;
+}
+.md-search-result .hops-api-list .md-search-result__teaser {
+  font-family: var(--md-code-font-family);
+  font-size: 0.6rem;
+}
+
 /* =========================================================
    Collapsible left navigation (js/nav-collapse.js). A header
    toggle hides the primary sidebar and lets the content reclaim
@@ -1799,25 +1839,29 @@ body.hops-zoom-lock {
 }
 .md-typeset .hops-steps {
   margin: 1.5em 0;
-  padding: 1rem 1.4rem 1.1rem;
-  border: 1px solid var(--hops-border-strong);
-  border-radius: 0.625rem;
 }
-/* Steps run as a row above a full-width panel, so the code never has to
-   share the line with the rail and long lines stay readable. */
+/* The rail is the app's segmented control (Quartz TabsList, default
+   variant): a muted tray with a hairline border, the active step lifted as
+   a paper-coloured bordered segment, the others resting as muted text on the
+   tray. Clickable at rest, no shadow, no circle, one green accent (the
+   numeral of the active step). Steps run as a row above a full-width panel,
+   so the code never has to share the line with the rail. */
 .hops-steps-rail {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
-  margin: 0 0 0.6rem;
+  gap: 3px;
+  margin: 0 0 0.8rem;
+  padding: 3px;
+  border: 1px solid var(--hops-border);
+  border-radius: 10px;
+  background: var(--hops-surface);
 }
 .md-typeset .hops-step {
-  display: flex;
-  gap: 0.7rem;
-  padding: 0.6rem 0.7rem;
+  display: block;
+  padding: 0.55rem 0.8rem 0.65rem;
   background: none;
   border: 1px solid transparent;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   text-align: left;
   font: inherit;
   color: inherit;
@@ -1826,8 +1870,11 @@ body.hops-zoom-lock {
 .hops-steps--js .hops-step {
   cursor: pointer;
 }
-.hops-steps--js .hops-step:hover {
-  background: var(--hops-surface);
+.hops-steps--js .hops-step:not(.is-active) .hops-step-body strong {
+  color: var(--md-default-fg-color--light);
+}
+.hops-steps--js .hops-step:hover .hops-step-body strong {
+  color: var(--md-default-fg-color);
 }
 /* A clicked step keeps no focus ring; keyboard focus still shows one. */
 .hops-step:focus {
@@ -1838,38 +1885,33 @@ body.hops-zoom-lock {
   outline-offset: 2px;
 }
 .hops-steps--js .hops-step.is-active {
-  border-color: var(--hops-border);
-  background: var(--hops-surface);
-}
-.hops-step-num {
-  flex: none;
-  width: 1.6rem;
-  height: 1.6rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--hops-border-strong);
-  border-radius: 50%;
+  border-color: var(--hops-border-strong);
   background: var(--md-default-bg-color);
-  font-size: 0.68rem;
-  font-weight: 700;
 }
-.hops-step.is-active .hops-step-num {
-  border-color: var(--hops-accent);
-  background: var(--hops-tint);
+/* The step number is an eyebrow, the same voice as the label above the H1. */
+.hops-step-num {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--md-default-fg-color--light);
+}
+.hops-steps--js .hops-step.is-active .hops-step-num {
   color: var(--hops-accent-text);
 }
 .hops-step-body {
+  display: block;
   min-width: 0;
 }
 .hops-step-body strong {
   display: block;
   font-weight: 600;
-  line-height: 1.6rem;
+  line-height: 1.3;
 }
 .hops-step-body small {
   display: block;
-  margin-top: 0.1rem;
+  margin-top: 0.2rem;
   font-size: 0.72rem;
   line-height: 1.45;
   color: var(--md-default-fg-color--light);
@@ -1966,9 +2008,6 @@ body.hops-zoom-lock {
   display: none;
 }
 @media screen and (max-width: 59.9844em) {
-  .md-typeset .hops-steps {
-    padding: 0.9rem 1rem;
-  }
   .hops-steps-rail {
     grid-template-columns: 1fr;
   }

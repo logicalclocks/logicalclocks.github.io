@@ -378,6 +378,7 @@ extra_javascript:
   - js/llm-copy.js
   - js/card-links.js
   - js/code-lang.js
+  - js/search-scope.js
   - js/home-steps.js
   - js/nav-collapse.js
   - js/drill-nav.js
@@ -393,7 +394,11 @@ hooks:
   - scripts/llms_hook.py
 
 plugins:
-  - search
+  - search:
+      # Split on dots, underscores, brackets and camel case so "feature vector"
+      # also reaches get_feature_vector and FeatureView (Material's own
+      # recommendation for code documentation).
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - autorefs
   - minify:
       minify_html: true
