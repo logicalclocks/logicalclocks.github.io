@@ -218,6 +218,7 @@ Do not shrink type below the `--viz-type-*` scale to make something fit; restruc
 
 `diagram-inventory.md` in this folder tracks every visual in the docs (148 pages, ~494 visuals at generation time).
 Work page by page; per visual decide: animated scene (mechanism), static kit SVG (structure), or `screenshot, keep`.
+A screenshot that is kept still has to be on the current UI; `captures.md` in this folder is the capture workflow.
 Tick the inventory as you go; it is the single source of progress.
 
 ## Code blocks
