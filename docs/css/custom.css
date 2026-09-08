@@ -1389,7 +1389,7 @@ a.autorefs-external::after {
   top: 0;
   bottom: 0;
   left: 0;
-  z-index: 2;
+  z-index: 3; /* above the input, which Material positions at z-index 2 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
