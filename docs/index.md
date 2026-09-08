@@ -41,6 +41,7 @@ Install the client, connect to a project with an [API key](user_guides/projects/
     ```bash
     uv venv && source .venv/bin/activate
     uv pip install "hopsworks[python]"
+    hops setup  # opens a browser, picks a project, caches the key
     python  # opens the interpreter, the Python lines below go there or in a notebook
     ```
 
@@ -48,7 +49,7 @@ Install the client, connect to a project with an [API key](user_guides/projects/
     import hopsworks
 
 
-    project = hopsworks.login()  # prompts for host and API key
+    project = hopsworks.login()  # uses the key hops setup cached, else prompts
     fs = project.get_feature_store()
     ```
 
