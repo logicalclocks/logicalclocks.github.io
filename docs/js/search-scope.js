@@ -1,21 +1,47 @@
-// Section-scoped search: inside the Python API section the search box
-// searches the API only and returns symbols, everywhere else Material's full
-// search runs untouched. The scope follows the navigation, nothing to toggle.
+// Search scope: a "Docs | API" prefix attached to the header search field. API
+// scope searches the Python API only and lists symbols; Docs is Material's
+// full search untouched. The section you are in sets the initial scope, a
+// click overrides it and the choice persists in localStorage.
 // Material's own result list renders page hits lazily on scroll and cannot be
 // filtered without losing hits, so the API scope runs Material's search
-// worker a second time (same script, same index) and renders a flat list of
-// symbols in the same result markup while Material's list is hidden.
+// worker a second time (same script, same index, created on first use) and
+// renders a flat list of symbols in the same result markup while Material's
+// list is hidden.
 document.addEventListener("DOMContentLoaded", function () {
-  if (window.location.pathname.indexOf("/python-api/") === -1) return;
-  var result = document.querySelector(".md-search-result");
+  var form = document.querySelector(".md-search__form");
   var input = document.querySelector(".md-search__input");
+  var result = document.querySelector(".md-search-result");
   var configEl = document.getElementById("__config");
-  if (!result || !input || !configEl) return;
+  if (!form || !input || !result || !configEl) return;
   var config = JSON.parse(configEl.textContent);
-  var LIMIT = 60;
 
-  result.dataset.scope = "api";
-  input.placeholder = "Search the Python API";
+  var KEY = "hops-search-scope";
+  var LIMIT = 60;
+  var scope = window.location.pathname.indexOf("/python-api/") === -1 ? "docs" : "api";
+  try {
+    var stored = localStorage.getItem(KEY);
+    if (stored === "docs" || stored === "api") scope = stored;
+  } catch (e) { /* storage blocked */ }
+
+  // The control, inside the field so it is there before anything is typed.
+  var bar = document.createElement("div");
+  bar.className = "hops-search-scope";
+  bar.setAttribute("role", "tablist");
+  bar.setAttribute("aria-label", "Search scope");
+  var buttons = {};
+  [["docs", "Docs"], ["api", "API"]].forEach(function (pair) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.dataset.scope = pair[0];
+    b.textContent = pair[1];
+    // Keep the field focused so the results pane stays open.
+    b.addEventListener("mousedown", function (ev) { ev.preventDefault(); });
+    b.addEventListener("click", function () { setScope(pair[0]); input.focus(); });
+    bar.appendChild(b);
+    buttons[pair[0]] = b;
+  });
+  form.insertBefore(bar, form.firstChild);
 
   var apiMeta = document.createElement("div");
   apiMeta.className = "md-search-result__meta hops-api-meta";
@@ -28,6 +54,20 @@ document.addEventListener("DOMContentLoaded", function () {
   var ready = false;
   var queued = null;
   var timer = null;
+
+  function setScope(next) {
+    scope = next;
+    try { localStorage.setItem(KEY, scope); } catch (e) { /* storage blocked */ }
+    render();
+    if (scope === "api") query(input.value);
+  }
+
+  function render() {
+    result.dataset.scope = scope;
+    Object.keys(buttons).forEach(function (k) {
+      buttons[k].setAttribute("aria-selected", k === scope ? "true" : "false");
+    });
+  }
 
   function ensureWorker() {
     if (worker) return;
@@ -103,9 +143,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   input.addEventListener("input", function () {
+    if (scope !== "api") return;
     clearTimeout(timer);
     timer = setTimeout(function () { query(input.value); }, 120);
   });
 
-  query(input.value);
+  render();
+  if (scope === "api") query(input.value);
 });

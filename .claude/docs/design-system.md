@@ -76,7 +76,7 @@ The rail is the spine of the site. Rules, in order of importance:
 
 Header search (not sidebar). Bordered pill on `--hops-surface`.
 The magnifier icon inherits the header's white by default and vanishes on the light field; it is forced to the muted foreground in `.md-header .md-search__form .md-search__icon`. Keep that override.
-Search is section-scoped (`docs/js/search-scope.js`): inside the Python API section the box reads "Search the Python API" and returns symbols only; everywhere else Material's full search runs untouched. The scope follows the navigation, there is no toggle.
+A "Docs | API" prefix is attached to the left of the search field, sharing its border, with the magnifier and text shifted right (`docs/js/search-scope.js`), so the scope is there before anything is typed; below the sidebar breakpoint it moves to the right of the text because Material puts the back arrow on the left there. API scope searches the Python API only and lists symbols; Docs is Material's full search untouched. The section you are in sets the initial scope, a click overrides it and the choice persists.
 Material's own list renders page hits lazily on scroll and cannot be filtered without losing hits, so the API scope runs Material's search worker a second time, created on first use with the same index, and renders a flat list of symbols (title, dotted path) in Material's result markup while the prose list is hidden.
 The search separator in `mkdocs.yml` splits on dots, underscores and camel case, so "feature vector" reaches `get_feature_vector` and `FeatureView`.
 

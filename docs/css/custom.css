@@ -1378,11 +1378,82 @@ a.autorefs-external::after {
   padding: 0.1em 0.35em;
 }
 
-/* Section-scoped search (js/search-scope.js): in the Python API section the
-   flat symbol list replaces Material's page list; elsewhere nothing changes. */
+/* Search scope (js/search-scope.js): a "Docs | API" prefix attached to the
+   left of the header search field, sharing its border, magnifier and text
+   shifted right, so the scope is there before anything is typed. Below the
+   sidebar breakpoint Material turns the magnifier into a back arrow at the
+   left, so the prefix moves to the right of the text there. In API scope the
+   flat symbol list replaces Material's page list. */
+.md-header .md-search__form .hops-search-scope {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 5.2rem;
+  padding: 0 0.25rem;
+  background: var(--md-default-bg-color);
+  border-right: 1px solid var(--hops-border);
+  border-radius: 7px 0 0 7px;
+}
+.md-header .md-search__form .hops-search-scope button {
+  padding: 0 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+  font: inherit;
+  font-size: 0.55rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+}
+.md-header .md-search__form .hops-search-scope button[aria-selected="true"] {
+  color: var(--hops-accent-text);
+  background: var(--hops-tint);
+}
+.md-header .md-search__form .md-search__icon[for="__search"] {
+  left: 5.7rem;
+}
+.md-header .md-search__form .md-search__input {
+  padding-left: 7.5rem;
+}
+/* The prefix takes 5.2rem of the idle pill; widen the idle pill so the
+   placeholder still fits. Material's own focused width rule outranks this. */
+@media screen and (min-width: 60em) {
+  .md-search__inner {
+    width: 16.5rem;
+  }
+}
+@media screen and (max-width: 59.9844em) {
+  .md-header .md-search__form .hops-search-scope {
+    top: 50%;
+    bottom: auto;
+    left: auto;
+    right: 2.4rem;
+    width: auto;
+    padding: 2px;
+    transform: translateY(-50%);
+    border: 1px solid var(--hops-border);
+    border-radius: 6px;
+  }
+  .md-header .md-search__form .md-search__icon[for="__search"] {
+    left: 0.5rem;
+  }
+  .md-header .md-search__form .md-search__input {
+    padding-left: 2.2rem;
+    padding-right: 6.6rem;
+  }
+}
 /* One list at a time: Material's in the All scope, the symbol list in API. */
 .md-search-result[data-scope="api"] > .md-search-result__list:not(.hops-api-list),
-.md-search-result[data-scope="api"] > .md-search-result__meta:not(.hops-api-meta) {
+.md-search-result[data-scope="api"] > .md-search-result__meta:not(.hops-api-meta),
+.md-search-result:not([data-scope="api"]) > .hops-api-list,
+.md-search-result:not([data-scope="api"]) > .hops-api-meta {
   display: none;
 }
 .md-search-result .hops-api-list .md-search-result__teaser {
