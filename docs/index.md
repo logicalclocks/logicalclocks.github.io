@@ -41,6 +41,7 @@ Install the client, connect to a project with an [API key](user_guides/projects/
     ```bash
     uv venv && source .venv/bin/activate
     uv pip install "hopsworks[python]"
+    python  # opens the interpreter, the Python lines below go there or in a notebook
     ```
 
     ```python
