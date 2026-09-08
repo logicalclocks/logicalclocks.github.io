@@ -93,7 +93,7 @@ Install the client, connect to a project with an [API key](user_guides/projects/
     ```bash
     hops fg create transactions --version 1 --primary-key cc_num \
       --features "cc_num:bigint,amount:double" --online
-    echo '[{"cc_num": 4467360740682089, "amount": 12.5}]' | hops fg insert transactions
+    echo '[{"cc_num": 4467360740682089, "amount": 12.5}]' | hops fg insert transactions --version 1
     ```
 
 </div>
@@ -114,7 +114,7 @@ Install the client, connect to a project with an [API key](user_guides/projects/
 
     ```bash
     hops fv create transactions_view --version 1 --feature-group transactions
-    hops fv get transactions_view --entry "cc_num=4467360740682089"
+    hops fv get transactions_view --version 1 --entry "cc_num=4467360740682089"
     ```
 
 </div>
