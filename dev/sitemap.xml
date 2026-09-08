@@ -501,6 +501,10 @@
          <lastmod>2026-09-08</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/deployment/</loc>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature-server/</loc>
          <lastmod>2026-09-08</lastmod>
     </url>
@@ -686,6 +690,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/mlops/serving/autoscaling/</loc>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-schema/</loc>
          <lastmod>2026-09-08</lastmod>
     </url>
     <url>
