@@ -10,7 +10,7 @@ This architecture consists of three independently developed and operated ML pipe
 - Inference Pipeline: takes new feature data and a trained model and makes predictions.
 
 In order to facilitate the development of these pipelines Hopsworks bundles several python environments containing necessary dependencies.
-Each environment can also be customized further by installing additional dependencies from PyPi, Conda, Wheel files, GitHub repos or applying custom Dockerfiles on top.
+Each environment can also be customized further by installing additional dependencies from PyPi, Wheel files, GitHub repos or applying custom Dockerfiles on top.
 
 ### Step 1: Go to environments page
 
@@ -34,8 +34,10 @@ Environments listed under `FEATURE ENGINEERING` corresponds to environments you 
 
 The `FEATURE ENGINEERING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md), a [Python job](../jobs/python_job.md) or a [PySpark job](../jobs/pyspark_job.md).
 
-- `python-feature-pipeline` for writing feature pipelines using Python
+- `python-feature-pipeline` for writing feature pipelines using Python, with Pandas and Polars
 - `spark-feature-pipeline` for writing feature pipelines using PySpark
+- `dbt-pipeline` extends `python-feature-pipeline` with dbt and the Trino and DuckDB adapters, for
+  transformations written as dbt models
 
 ### Model training
 

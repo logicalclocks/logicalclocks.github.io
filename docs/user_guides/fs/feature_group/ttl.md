@@ -142,3 +142,123 @@ fg.enable_ttl(ttl=60)
 
 Once enabled, TTL will apply to all data in the feature group based on the `event_time` column.
 For detailed API reference on all possible types of TTL values and additional options, see the [FeatureGroup.enable_ttl API documentation][hsfs.feature_group.FeatureGroup.enable_ttl].
+
+---
+
+## Monitoring TTL Purging
+
+Expired rows stop appearing in query results as soon as their TTL passes.
+Deleting them from storage happens separately, in the background.
+A purge worker inside each RonDB REST Server (RDRS) process walks every TTL-enabled online table one partition at a time, deleting a batch of expired rows on each pass.
+Hopsworks reports what that worker is doing in two places.
+
+### On the Feature Group Page
+
+A **TTL purge** card appears on the feature group overview whenever the feature group is online enabled and has a TTL.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/feature_group/ttl_purge_feature_group.png" alt="TTL purge card on the feature group overview">
+  </figure>
+</p>
+
+The summary row describes the table as a whole:
+
+| Field | Meaning |
+| --- | --- |
+| Online table | The online table backing this feature group, as `database.table` |
+| TTL | The retention period the purge worker read from the table's schema |
+| Rows purged | Rows deleted from this table, summed over the nodes that answered |
+| RDRS nodes | How many RonDB REST Server processes reported on this table |
+
+One row follows per RDRS node, because each node runs its own worker over its own partitions:
+
+| Field | Meaning |
+| --- | --- |
+| RDRS node | The node these counters came from |
+| Rows purged | Rows this node deleted from the table |
+| Partition | Where this node's cursor sits in the table's partition rotation |
+| Batch size | Rows attempted per partition visit, which the worker adapts on its own |
+| Last visited | When this node last visited the table |
+| Process started | When this node's RDRS process last started, so you can tell how much history its row count covers |
+
+A feature group created moments ago is not listed straight away.
+RDRS discovers TTL-enabled tables on a periodic schema scan, so for the first few seconds the card reports that no purge worker is tracking the feature group yet.
+It starts reporting counters on the next scan.
+
+### Cluster-Wide
+
+Administrators can see every RDRS node's purge worker under **Settings → TTL Purge**.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/admin/ttl/ttl_purge_admin.png" alt="Cluster-wide TTL purge page in Hopsworks settings">
+  </figure>
+</p>
+
+Each node reports a state:
+
+| State | Meaning |
+| --- | --- |
+| `running` | Actively purging |
+| `paused` | Healthy, but no TTL-enabled tables exist to work on |
+| `disabled` | Purging is switched off by configuration |
+| `outside window` | Outside the configured daily purge window |
+| `stopped` | Not started yet |
+| `error` | The worker hit an error, and the RDRS log has the detail |
+
+Only `error` indicates a fault.
+A cluster with no TTL-enabled feature groups sits in `paused`, which is the healthy idle state.
+
+Alongside the state, each node reports its counters (tables tracked, rows purged, rounds completed), the configuration it is running with (batch size range, sleep interval), and when its process last started.
+A restart count sits next to that timestamp, counting restarts of the container within its current pod; replacing the pod, as a redeploy does, starts a fresh count, so the start time is the figure to trust.
+Both views poll every ten seconds, show when the next refresh is due, and offer a **Refresh** button for an immediate read.
+
+### Reading the Numbers
+
+A few properties of these counters are worth knowing before you draw conclusions from them.
+
+**The numbers are per RDRS node, and a node is not a datanode.**
+A node here is a RonDB REST Server process.
+Scaling RDRS changes how many rows the views list; adding datanodes does not, and shows up instead as a larger partition count.
+Each node keeps its counters in memory and starts again from zero when its process restarts, and nothing is persisted.
+Because different nodes purge different partitions, their per-table numbers legitimately differ.
+The cumulative row count is the only figure that is summed across nodes.
+
+**A counter is only as old as the process reporting it.**
+Nothing is persisted, so every figure on these views runs from the moment that node's RDRS process last started, which both views report as **Process started**.
+Read a low row count against that time rather than on its own: a worker that has been up for a minute and one that has been quietly idle for a week look identical without it.
+
+**A round that deleted nothing still counts as activity.**
+The last round timestamp advances on every pass, including passes that found nothing to delete.
+It tells you the worker is alive, not that rows were removed.
+
+**Rows that are already expired when you insert them never reach the online store.**
+Rows whose `event_time` is older than the TTL at insert time are filtered out before they are written, so they are never counted as purged.
+To watch the purge worker at work, insert rows that expire after they are written:
+
+```python
+from datetime import datetime, timedelta, timezone
+
+import pandas as pd
+
+# Assume you already have a feature group with a TTL
+# fg = ...
+
+size = 100
+now = datetime.now(timezone.utc)
+df = pd.DataFrame(
+    {
+        "id": range(size),
+        # One second apart, so the rows come up for purging at a steady rate
+        # instead of the whole batch expiring at once.
+        "timestamp": pd.date_range(now, periods=size, freq=timedelta(seconds=1)),
+        "feature1": range(size),
+    }
+)
+
+fg.insert(df)
+```
+
+**A batch size sitting at its configured maximum means the worker is behind.**
+The worker raises the batch size while there is a backlog and lowers it once it catches up, so a value pinned at the maximum shown on the cluster-wide page is the clearest sign that purging is not keeping up with expiry.
