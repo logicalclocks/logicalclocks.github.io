@@ -162,6 +162,35 @@ Additionally, you can specify the percentage of feature data on which statistics
 
 See the API reference for [`FeatureMonitoringConfig.with_detection_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_detection_window].
 
+#### Time basis of the windows
+
+Rolling windows select rows by an event-time feature when the Feature Group declares one, and by commit time otherwise.
+The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` overrides that default for the whole configuration, detection and reference windows alike.
+Pass a feature name to use another timestamp, date or epoch feature of the Feature Group, or `False` to select rows by commit time.
+
+=== "Python"
+
+    ```python
+    # windows over the transaction time, the Feature Group event_time (default)
+    fg_monitoring_config = trans_fg.create_feature_monitoring(
+        name="trans_fg_amount_monitoring",
+    )
+
+    # windows over another time feature of the Feature Group
+    fg_monitoring_config = trans_fg.create_feature_monitoring(
+        name="trans_fg_amount_monitoring_by_settlement",
+        event_time="settlement_date",
+    )
+
+    # windows over the time the rows were written (commit time)
+    fg_monitoring_config = trans_fg.create_feature_monitoring(
+        name="trans_fg_amount_monitoring_by_commit",
+        event_time=False,
+    )
+    ```
+
+See [Time basis](../feature_monitoring/scheduled_statistics.md#time-basis) for how the two bases differ.
+
 ### Step 4: (Optional) Define a reference window
 
 When setting up feature monitoring for a Feature Group, you can compare the detection statistics against a reference window of feature data.
