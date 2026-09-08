@@ -1,41 +1,22 @@
-// Search scope: an "All | API" switch above the search results, so a reader
-// after a function or class can drop the prose hits. Material's own result
-// list renders page hits lazily on scroll and cannot be filtered without
-// losing hits, so the API scope runs Material's search worker a second time
-// (same script, same index, created on first use) and renders a flat list of
-// symbols in the same result markup while Material's list is hidden. The
-// choice persists in localStorage.
+// Section-scoped search: inside the Python API section the search box
+// searches the API only and returns symbols, everywhere else Material's full
+// search runs untouched. The scope follows the navigation, nothing to toggle.
+// Material's own result list renders page hits lazily on scroll and cannot be
+// filtered without losing hits, so the API scope runs Material's search
+// worker a second time (same script, same index) and renders a flat list of
+// symbols in the same result markup while Material's list is hidden.
 document.addEventListener("DOMContentLoaded", function () {
+  if (window.location.pathname.indexOf("/python-api/") === -1) return;
   var result = document.querySelector(".md-search-result");
   var input = document.querySelector(".md-search__input");
-  var meta = result && result.querySelector(".md-search-result__meta");
   var configEl = document.getElementById("__config");
-  if (!result || !input || !meta || !configEl) return;
+  if (!result || !input || !configEl) return;
   var config = JSON.parse(configEl.textContent);
-
-  var KEY = "hops-search-scope";
   var LIMIT = 60;
-  var scope = "all";
-  try { scope = localStorage.getItem(KEY) === "api" ? "api" : "all"; } catch (e) { /* storage blocked */ }
 
-  // Switch, above Material's count line.
-  var bar = document.createElement("div");
-  bar.className = "hops-search-scope";
-  bar.setAttribute("role", "tablist");
-  var buttons = {};
-  [["all", "All"], ["api", "API"]].forEach(function (pair) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.setAttribute("role", "tab");
-    b.dataset.scope = pair[0];
-    b.textContent = pair[1];
-    b.addEventListener("click", function () { setScope(pair[0]); });
-    bar.appendChild(b);
-    buttons[pair[0]] = b;
-  });
-  result.insertBefore(bar, meta);
+  result.dataset.scope = "api";
+  input.placeholder = "Search the Python API";
 
-  // API list and its count line, siblings of Material's own.
   var apiMeta = document.createElement("div");
   apiMeta.className = "md-search-result__meta hops-api-meta";
   var apiList = document.createElement("ol");
@@ -47,20 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
   var ready = false;
   var queued = null;
   var timer = null;
-
-  function setScope(next) {
-    scope = next;
-    try { localStorage.setItem(KEY, scope); } catch (e) { /* storage blocked */ }
-    render();
-    if (scope === "api") query(input.value);
-  }
-
-  function render() {
-    result.dataset.scope = scope;
-    Object.keys(buttons).forEach(function (k) {
-      buttons[k].setAttribute("aria-selected", k === scope ? "true" : "false");
-    });
-  }
 
   function ensureWorker() {
     if (worker) return;
@@ -102,15 +69,13 @@ document.addEventListener("DOMContentLoaded", function () {
     var hits = [];
     groups.forEach(function (group) {
       group.forEach(function (item) {
-        var i = item.location.indexOf("#");
-        if (item.location.indexOf("python-api/") === 0 && i > 0) hits.push(item);
+        if (item.location.indexOf("python-api/") === 0 && item.location.indexOf("#") > 0) hits.push(item);
       });
     });
     hits.sort(function (a, b) { return b.score - a.score; });
     hits = hits.slice(0, LIMIT);
     apiList.textContent = "";
     hits.forEach(function (item) {
-      var path = item.location.slice(item.location.indexOf("#") + 1);
       var li = document.createElement("li");
       li.className = "md-search-result__item";
       var a = document.createElement("a");
@@ -125,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
       h1.innerHTML = item.title;
       var p = document.createElement("p");
       p.className = "md-search-result__teaser";
-      p.textContent = path;
+      p.textContent = item.location.slice(item.location.indexOf("#") + 1);
       article.appendChild(h1);
       article.appendChild(p);
       a.appendChild(article);
@@ -138,11 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   input.addEventListener("input", function () {
-    if (scope !== "api") return;
     clearTimeout(timer);
     timer = setTimeout(function () { query(input.value); }, 120);
   });
 
-  render();
-  if (scope === "api") query(input.value);
+  query(input.value);
 });

@@ -1378,39 +1378,11 @@ a.autorefs-external::after {
   padding: 0.1em 0.35em;
 }
 
-/* Search scope switch (js/search-scope.js): "All | API" above the result
-   count, same segmented look as the code tabs. With the API scope on, the
-   flat symbol list replaces Material's page list. */
-.md-search-result .hops-search-scope {
-  display: inline-flex;
-  gap: 2px;
-  margin: 0.55rem 0.8rem 0;
-  padding: 2px;
-  background: var(--hops-surface);
-  border: 1px solid var(--hops-border);
-  border-radius: 8px;
-}
-.md-search-result .hops-search-scope button {
-  padding: 0.1rem 0.6rem;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: none;
-  font: inherit;
-  font-size: 0.62rem;
-  font-weight: 600;
-  color: var(--md-default-fg-color--light);
-  cursor: pointer;
-}
-.md-search-result .hops-search-scope button[aria-selected="true"] {
-  color: var(--md-default-fg-color);
-  background: var(--md-default-bg-color);
-  border-color: var(--hops-border-strong);
-}
+/* Section-scoped search (js/search-scope.js): in the Python API section the
+   flat symbol list replaces Material's page list; elsewhere nothing changes. */
 /* One list at a time: Material's in the All scope, the symbol list in API. */
 .md-search-result[data-scope="api"] > .md-search-result__list:not(.hops-api-list),
-.md-search-result[data-scope="api"] > .md-search-result__meta:not(.hops-api-meta),
-.md-search-result:not([data-scope="api"]) > .hops-api-list,
-.md-search-result:not([data-scope="api"]) > .hops-api-meta {
+.md-search-result[data-scope="api"] > .md-search-result__meta:not(.hops-api-meta) {
   display: none;
 }
 .md-search-result .hops-api-list .md-search-result__teaser {
