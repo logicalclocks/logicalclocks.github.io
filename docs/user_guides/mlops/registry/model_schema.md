@@ -6,9 +6,20 @@ description: Documentation on how to attach a model schema to a model.
 
 ## Introduction
 
+!!! warning "Deprecated"
+    `ModelSchema` is deprecated and will be removed in a future release.
+    A model registered with `create_model(feature_view=...)` gets its input and output schema from the feature view's training dataset, and a deployment describes its requests with the [deployment schema][deployment-schema].
+    The default predictor still reads a legacy model schema to select the model's input columns; a `DefaultPredict` subclass that overrides `model_predict` replaces that.
+    For a model without a feature view, name its input columns with `passed_features=` on `deploy()`.
+
 In this guide you will learn how to attach a model schema to your model.
 A model schema, describes the type and shape of inputs and outputs (predictions) for your model.
 Attaching a model schema to your model will give other users a better understanding of what data it expects.
+
+!!! info "Model schema and deployment schema"
+    A model registered with `feature_view=` gets its model schema inferred from the feature view's training dataset schema when it is saved.
+    The default predictor checks at pod start that every model input column is served by the feature view, and the deployment schema describes what clients send.
+    See the [Deployment Schema Guide][deployment-schema].
 
 ## Code
 
