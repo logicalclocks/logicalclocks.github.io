@@ -1403,7 +1403,7 @@ a.autorefs-external::after {
 .md-header .md-search__form .hops-search-scope button {
   padding: 0 0.45rem;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 6px; /* same as the nav pill and the code tabs */
   background: none;
   font: inherit;
   font-size: 0.55rem;
