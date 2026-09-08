@@ -44,8 +44,8 @@ To retrieve the primary key(s) and/or event time when retrieving batch data for 
     If they have the same names across feature groups and the join prefix was not provided then reading operation will fail with ambiguous column exception.
     Make sure to define the join prefix if primary key and event time columns have the same names across feature groups.
 
-For Python-clients, handling small or moderately-sized data, we recommend enabling the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md), which will provide significant speedups over Spark/Hive for reading batch data.
-If the service is enabled, and you want to read this particular batch data with Hive instead, you can set the read_options to `{"use_hive": True}`.
+Python clients read batch data through the ArrowFlight Server with DuckDB, which Hopsworks enables by default and which is much faster than Spark for small and moderately sized data.
+To read this particular batch data with Spark instead, set the read options to `{"use_hive": True}`.
 
 ```python
 # get batch data with Hive

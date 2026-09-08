@@ -60,6 +60,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `user_guides/fs/feature_group/create.md` | modified | +12/-33 |
 | [x] | `user_guides/fs/feature_group/create_external.md` | modified | UI section captures redone on 5.0 (SQL data source, table and query options, review dialog) |
 | [x] | `user_guides/fs/feature_group/ingest_with_dlthub.md` | modified | UI captures redone on 5.0 (SQL source), loading strategies kit figure, CRM figure dropped |
+| [-] | `setup_installation/common/arrow_flight_duckdb.md` | removed | managed-Hopsworks era page; ArrowFlight is on by default, one-line mentions kept on training-data, batch-data and create_external; redirect to training-data |
 | [ ] | `user_guides/fs/feature_group/data_types.md` | modified | +47/-38 |
 | [ ] | `user_guides/fs/feature_group/data_validation.md` | modified | +2/-2 |
 | [ ] | `user_guides/fs/feature_group/data_validation_advanced.md` | modified | +1/-1 |

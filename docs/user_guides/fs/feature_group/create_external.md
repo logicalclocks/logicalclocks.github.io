@@ -135,7 +135,7 @@ Users can select which subset of the feature group data they want to make availa
 
 Hopsworks Feature Store does not support time-travel queries on external feature groups.
 
-Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
+Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only through the ArrowFlight Server with DuckDB, which Hopsworks enables by default.
 Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [`FeatureView.create_training_data`][hsfs.feature_view.FeatureView.create_training_data], [`FeatureView.create_train_test_split`][hsfs.feature_view.FeatureView.create_train_test_split] or [`FeatureView.create_train_validation_test_split`][hsfs.feature_view.FeatureView.create_train_validation_test_split].
 
 !!! api "API reference"

@@ -313,7 +313,6 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
-      - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
       - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
   - Python API: python-api
   - Java API: javadoc
@@ -414,6 +413,7 @@ plugins:
         concepts/fs/feature_view/versioning.md: concepts/fs/feature_group/versioning.md#feature-view-and-training-data-versioning
         user_guides/integrations/flink.md: user_guides/integrations/index.md
         tutorials/index.md: index.md
+        setup_installation/common/arrow_flight_duckdb.md: user_guides/fs/feature_view/training-data.md
   - hopsworks-apigen:
       modules:
         - hopsworks_common
