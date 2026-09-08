@@ -818,6 +818,29 @@ a.autorefs-external::after {
   background-color: var(--hops-surface);
   border-color: var(--hops-border-strong);
 }
+/* Active search stays in Quartz: Material squares the field and drops a
+   shadow; keep the pill, open its bottom into the results panel, which
+   closes the box with the same hairline and radius, no shadow. */
+[data-md-toggle="search"]:checked ~ .md-header .md-search__form {
+  background-color: var(--md-default-bg-color);
+  border-color: var(--hops-border-strong);
+  border-radius: 8px 8px 0 0;
+  box-shadow: none;
+}
+[data-md-toggle="search"]:checked ~ .md-header .md-search__form .hops-search-scope {
+  background: var(--hops-surface);
+  border-radius: 7px 0 0 0;
+}
+@media screen and (min-width: 60em) {
+  /* Same selector weight as Material's own open-state rule, so the radius
+     and the shadow reset actually apply. */
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__output {
+    border: 1px solid var(--hops-border-strong);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    box-shadow: none;
+  }
+}
 .md-search__input {
   color: var(--md-default-fg-color);
 }
