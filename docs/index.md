@@ -11,23 +11,123 @@ hide:
 
 <p class="hops-lede">Features, training data, models and inference on one governed platform.</p>
 
-<!-- markdownlint-disable MD007 MD030 -->
-<div class="grid cards hops-quickcards" markdown>
+## Your first feature vector, in three steps
 
--   :material-console: **Start from your terminal**
+Install the client, connect to a project with an [API key](user_guides/projects/api_key/create_api_key.md), write a feature group and read a feature vector back.
 
-    ---
+<div class="hops-steps" markdown>
+<div class="hops-steps-rail" role="tablist" aria-label="Write features and read them in real time, step by step">
+<button class="hops-step is-active" type="button" role="tab" aria-selected="true" data-step="connect">
+<span class="hops-step-num">1</span>
+<span class="hops-step-body"><strong>Install and connect</strong>
+<small>Install the client and sign in to a feature store.</small></span>
+</button>
+<button class="hops-step" type="button" role="tab" aria-selected="false" data-step="write">
+<span class="hops-step-num">2</span>
+<span class="hops-step-body"><strong>Write features</strong>
+<small>Create a feature group and write data to the feature store.</small></span>
+</button>
+<button class="hops-step" type="button" role="tab" aria-selected="false" data-step="read">
+<span class="hops-step-num">3</span>
+<span class="hops-step-body"><strong>Read online</strong>
+<small>Read a feature vector back from the online store.</small></span>
+</button>
+</div>
+<div class="hops-steps-panels" markdown>
+<div class="hops-step-panel is-active" data-step="connect" markdown>
 
-    Install the client and authenticate.
-    `hops setup` opens a browser, caches an API key and connects you to a feature store.
+=== "Python"
 
     ```bash
+    uv venv && source .venv/bin/activate
     uv pip install "hopsworks[python]"
-    hops setup
     ```
 
-    [Client installation](user_guides/client_installation/index.md) ·
-    <a href="python-api/hopsworks/">Python API</a>
+    ```python
+    import hopsworks
+
+
+    project = hopsworks.login()  # prompts for host and API key
+    fs = project.get_feature_store()
+    ```
+
+=== "CLI"
+
+    ```bash
+    uv venv && source .venv/bin/activate
+    uv pip install "hopsworks[python]"
+    hops setup  # opens a browser, picks a project, caches the key
+    hops fg list
+    ```
+
+</div>
+<div class="hops-step-panel" data-step="write" markdown>
+
+=== "Python"
+
+    ```python
+    import pandas as pd
+
+    df = pd.DataFrame(
+        {
+            "cc_num": [4467360740682089],
+            "amount": [12.5],
+            "event_time": pd.to_datetime(["2026-01-01T00:00:00Z"]),
+        }
+    )
+
+    fg = fs.get_or_create_feature_group(
+        name="transactions",
+        version=1,
+        primary_key=["cc_num"],
+        event_time="event_time",
+        online_enabled=True,
+    )
+    fg.insert(df)
+    ```
+
+=== "CLI"
+
+    ```bash
+    hops fg create transactions --version 1 --primary-key cc_num \
+      --features "cc_num:bigint,amount:double" --online
+    echo '[{"cc_num": 4467360740682089, "amount": 12.5}]' | hops fg insert transactions
+    ```
+
+</div>
+<div class="hops-step-panel" data-step="read" markdown>
+
+=== "Python"
+
+    ```python
+    fv = fs.get_or_create_feature_view(
+        name="transactions_view",
+        version=1,
+        query=fg.select_all(),
+    )
+    fv.get_feature_vector(entry={"cc_num": 4467360740682089})
+    ```
+
+=== "CLI"
+
+    ```bash
+    hops fv create transactions_view --version 1 --feature-group transactions
+    hops fv get transactions_view --entry "cc_num=4467360740682089"
+    ```
+
+</div>
+</div>
+</div>
+
+Next: [create a feature group](user_guides/fs/feature_group/create.md),
+[create a feature view](user_guides/fs/feature_view/overview.md),
+[retrieve feature vectors](user_guides/fs/feature_view/feature-vectors.md),
+or browse the <a href="python-api/hopsworks/">Python API</a>.
+
+## Where Hopsworks runs
+
+<!-- markdownlint-disable MD007 MD030 -->
+<div class="grid cards hops-quickcards" markdown>
 
 -   :material-cloud-outline: **Use the managed SaaS**
 
@@ -50,87 +150,6 @@ hide:
 
 </div>
 <!-- markdownlint-enable MD007 MD030 -->
-
-## Your first feature vector, in three steps
-
-Create an [API key](user_guides/projects/api_key/create_api_key.md) in your project, then connect, write a feature group and read a feature vector back.
-
-<div class="hops-steps">
-<div class="hops-steps-rail" role="tablist" aria-label="Write features and read them in real time, step by step">
-<button class="hops-step is-active" type="button" role="tab" aria-selected="true" data-step="connect">
-<span class="hops-step-num">1</span>
-<span class="hops-step-body"><strong>Connect</strong>
-<small>Sign in and get a feature store.</small></span>
-</button>
-<button class="hops-step" type="button" role="tab" aria-selected="false" data-step="write">
-<span class="hops-step-num">2</span>
-<span class="hops-step-body"><strong>Write features</strong>
-<small>Create a feature group and write data to the feature store.</small></span>
-</button>
-<button class="hops-step" type="button" role="tab" aria-selected="false" data-step="read">
-<span class="hops-step-num">3</span>
-<span class="hops-step-body"><strong>Read online</strong>
-<small>Read a feature vector back from the online store.</small></span>
-</button>
-</div>
-<div class="hops-steps-panels" markdown>
-<div class="hops-step-panel is-active" data-step="connect" markdown>
-
-```python
-# uv pip install "hopsworks[python]"
-import hopsworks
-
-
-project = hopsworks.login()  # prompts for host and API key
-fs = project.get_feature_store()
-```
-
-<p class="hops-step-status">Connected, feature store ready.</p>
-</div>
-<div class="hops-step-panel" data-step="write" markdown>
-
-```python
-import pandas as pd
-
-df = pd.DataFrame(
-    {
-        "cc_num": [4467360740682089],
-        "amount": [12.5],
-        "event_time": pd.to_datetime(["2026-01-01T00:00:00Z"]),
-    }
-)
-
-fg = fs.get_or_create_feature_group(
-    name="transactions",
-    version=1,
-    primary_key=["cc_num"],
-    event_time="event_time",
-    online_enabled=True,
-)
-fg.insert(df)
-```
-
-<p class="hops-step-status">Feature group `transactions` v1 written, offline and online.</p>
-</div>
-<div class="hops-step-panel" data-step="read" markdown>
-
-```python
-fv = fs.get_or_create_feature_view(
-    name="transactions_view",
-    version=1,
-    query=fg.select_all(),
-)
-fv.get_feature_vector(entry={"cc_num": 4467360740682089})
-```
-
-<p class="hops-step-status">Feature vector served from the online store.</p>
-</div>
-</div>
-</div>
-
-Next: [create a feature group](user_guides/fs/feature_group/create.md),
-[create a feature view](user_guides/fs/feature_view/overview.md),
-[retrieve feature vectors](user_guides/fs/feature_view/feature-vectors.md).
 
 ## One architecture, three pipelines
 

@@ -25,6 +25,7 @@ Two hard lessons already learned, do not repeat them:
 | Animated diagrams | `docs/js/hops-viz.js` | Timeline stepper for the hops-viz kit (see the Diagrams section). |
 | Diagram edge router + paint order | `docs/js/diagram-edges.js` | Routes declared edges (`data-from`/`data-to`) into a path, then lifts every top-level `.viz-edge` to the end of its `<svg>` so arrow + knob paint above the nodes. The router reserves a straight run-in (`RUN_IN`, in step with the checker) into the head so the arrow docks square (M1); tight gaps shrink it and the curve takes the detour. |
 | Code language labels | `docs/js/code-lang.js` | Language tag on code blocks. |
+| External links | `docs/js/external-links.js` | Off-site links (nav, header, content) get `target="_blank"` + `rel="noopener"`; same-host links stay in place. |
 | Theme features + assets wiring | `mkdocs.yml` | `theme.features`, `extra_javascript`, `extra_css`. |
 
 ## Color tokens
@@ -107,8 +108,9 @@ Section landings (`user_guides/index.md`, `user_guides/projects/index.md`, `user
 - One `grid cards hops-start` card: the single most common first task, with a runnable snippet and two or three links. It is the only tinted surface on the page.
 - A `hops-task-index`: two columns of intent groups (`hops-task-group`, caption via `hops-role-cap` + `hops-role-ico`), three to five entries per group, one entry per topic with a one-line "what you do here". The deep pages stay in the rail; a landing that lists every page is a laundry list, not a landing.
 
-The home is the worked example: hero plus quickcards, then the three-step runnable stepper, the FTI diagram, a borderless role index (`hops-role-index`), the ops task table, and a muted `hops-colophon` footer.
+The home is the worked example: hero, then the three-step runnable stepper (install and connect, write, read; linked Python and CLI tabs; the step rail runs horizontally above a full-width code panel so no line is cropped), a two-card row for where Hopsworks runs (SaaS, your cloud or on-prem), the FTI diagram, a borderless role index (`hops-role-index`), the ops task table, and a muted `hops-colophon` footer.
 Six sections, six different shapes; that is the anti-stale pattern, keep it.
+The install lines live inside step 1, not in a separate card: one hot path from empty shell to feature vector.
 
 ## Diagrams
 
@@ -214,6 +216,13 @@ Do not shrink type below the `--viz-type-*` scale to make something fit; restruc
 `diagram-inventory.md` in this folder tracks every visual in the docs (148 pages, ~494 visuals at generation time).
 Work page by page; per visual decide: animated scene (mechanism), static kit SVG (structure), or `screenshot, keep`.
 Tick the inventory as you go; it is the single source of progress.
+
+## Code blocks
+
+Every block is a small terminal window, in both themes: a header row on `--hops-code-bar-bg` holding the language tag and the copy button, a `--hops-code-line` hairline under it, then the code on `--hops-code-bg` (GitHub dark-dimmed canvas, chosen over near-black so the token colours keep their contrast).
+The row is the block's top padding with a `::before` drawing the tone and the hairline, and the nav lifts into it, so the row exists with no JS and no extra markup.
+Tabs on the home stepper replace that row with the tab strip: tabs on the left in the code font, the first block's language tag and copy button on the right, later blocks in the same tab joined under a hairline into one window.
+The whole tab set is one dark box with a single outer border; children draw hairlines only, because separately bordered dark boxes at fractional pixel offsets leak the page background through their seams.
 
 ## Tables
 

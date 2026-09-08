@@ -18,12 +18,14 @@ The profile brings the Arrow and Kafka dependencies the data commands (`fg previ
 === "uv"
 
     ```bash
+    uv venv && source .venv/bin/activate
     uv pip install "hopsworks[python]"
     ```
 
 === "pip"
 
     ```bash
+    python3 -m venv .venv && source .venv/bin/activate
     pip install "hopsworks[python]"
     ```
 

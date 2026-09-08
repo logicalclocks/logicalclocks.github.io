@@ -84,6 +84,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [x] | `user_guides/projects/jupyter/ray_notebook.md` | modified | Ray enabled on the cluster, all captures new, dashboard figure added |
 | [x] | `user_guides/projects/jobs/ray_job.md` | modified | all captures new on a real Ray job |
 | [x] | `user_guides/projects/jobs/schedule_job.md` | modified | data windows kit figure, catch-up form capture |
+| [x] | `index.md` | modified | quickstart: venv line, Python/CLI tabs in the stepper, CLI flow verified on the cluster |
 | [x] | `user_guides/index.md` | modified | landing: start card + task index |
 | [x] | `user_guides/projects/index.md` | modified | landing: start card + task index |
 | [x] | `user_guides/fs/index.md` | modified | landing: start card + task index |

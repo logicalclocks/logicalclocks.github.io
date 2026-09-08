@@ -14,6 +14,7 @@ For what things are and why, see the [Concepts](../concepts/index.md).
     Every guide in this section runs from the same session.
 
     ```bash
+    uv venv && source .venv/bin/activate
     uv pip install "hopsworks[python]"
     hops setup
     ```
