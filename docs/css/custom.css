@@ -2030,11 +2030,12 @@ body.hops-zoom-lock {
   padding: 0 0.8rem;
   border: 0;
   border-radius: 0;
+  /* No text-transform here: Material links tabs by comparing innerText, which
+     carries CSS transforms on rendered labels but not on hidden ones, so an
+     uppercased visible "PYTHON" never matches the hidden "Python" sets. */
   font-family: var(--md-code-font-family);
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
   color: var(--term-fg);
   background: none;
   box-shadow: none;
