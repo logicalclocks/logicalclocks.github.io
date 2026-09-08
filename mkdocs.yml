@@ -382,6 +382,7 @@ extra_javascript:
   - js/home-steps.js
   - js/nav-collapse.js
   - js/drill-nav.js
+  - js/external-links.js
   - js/diagram-zoom.js
   - js/diagram-edges.js
   - js/hops-viz.js

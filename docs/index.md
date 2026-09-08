@@ -18,17 +18,17 @@ Install the client, connect to a project with an [API key](user_guides/projects/
 <div class="hops-steps" markdown>
 <div class="hops-steps-rail" role="tablist" aria-label="Write features and read them in real time, step by step">
 <button class="hops-step is-active" type="button" role="tab" aria-selected="true" data-step="connect">
-<span class="hops-step-num">1</span>
+<span class="hops-step-num">01</span>
 <span class="hops-step-body"><strong>Install and connect</strong>
 <small>Install the client and sign in to a feature store.</small></span>
 </button>
 <button class="hops-step" type="button" role="tab" aria-selected="false" data-step="write">
-<span class="hops-step-num">2</span>
+<span class="hops-step-num">02</span>
 <span class="hops-step-body"><strong>Write features</strong>
 <small>Create a feature group and write data to the feature store.</small></span>
 </button>
 <button class="hops-step" type="button" role="tab" aria-selected="false" data-step="read">
-<span class="hops-step-num">3</span>
+<span class="hops-step-num">03</span>
 <span class="hops-step-body"><strong>Read online</strong>
 <small>Read a feature vector back from the online store.</small></span>
 </button>
