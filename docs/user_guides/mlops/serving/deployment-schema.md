@@ -266,6 +266,7 @@ Any other extra logging column becomes a request field that clients may send.
 Logging is asynchronous: the request is answered immediately, the logging frame is built on a background thread of the predictor, and the rows are handed to the pod's inference-logger sidecar from there.
 A logging failure never fails a request, and both buffers are bounded by `FEATURE_LOGGER_QUEUE_SIZE` rows (default 1000: rows waiting for the predictor's logging thread, and rows waiting in the sidecar logger); beyond it a request's rows are dropped and counted, so a slow logger cannot exhaust the pod's memory.
 Both buffers count rows rather than requests, because one request carries a whole batch.
+The predictor's own backlog admits one request whatever its size when it is empty, so a deployment whose batches are larger than the buffer logs instead of dropping every request; its peak is then that single batch, itself capped by the schema's batch limit.
 There is no synchronous mode: a prediction is never delayed by its log write.
 
 ## Custom predictor scripts
