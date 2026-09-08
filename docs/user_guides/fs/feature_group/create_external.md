@@ -152,19 +152,20 @@ Nevertheless, external feature groups defined top of any data source can be used
 ## Create using the UI
 
 You can also create a new feature group through the UI.
-For this, navigate to the `Data Source` section and make sure you have you have available Data Source for the desired platform or create [new](../data_source/index.md).
+For this, navigate to the `Data Sources` section and make sure you have a data source for the desired platform, or create a [new](../data_source/index.md) one.
+Table browsing is available for database and warehouse sources such as Snowflake, BigQuery, Redshift and SQL databases; the built-in HopsFS and JDBC sources of a project do not offer it.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/data_source.png" style="border: 10px solid #f5f5f5" alt="Data Source UI">
+    <img src="../../../../assets/images/guides/fs/data_source/data_source.png" alt="Data Sources list">
   </figure>
 </p>
 
-To create a feature group, proceed by clicking `Next: Select Tables` once all of the necessary details have been provided.
+Open the data source with the pencil at the end of its row and click `Next: Select Tables` at the bottom of the form.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/edit.png" alt="use Data Source">
+    <img src="../../../../assets/images/guides/fs/data_source/edit.png" alt="Edit data source form with the Next: Select Tables button">
   </figure>
 </p>
 
@@ -176,11 +177,12 @@ The database navigation structure depends on your specific data source.
 You'll navigate through the appropriate hierarchy for your platform, such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
 
 Select one or more tables. For each selected table, you must designate one or more columns as primary keys before proceeding.
-You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), and edit names and data types of individual columns you want to include.
+You can also optionally select a single column as the event time for the row (supported types are timestamp, date and bigint), and edit names and data types of the individual columns you want to include.
+`Preview Metadata` and `Preview Data` show the source schema and a sample of rows before you commit to anything.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_table.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources and specify features">
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_table.png" alt="Select a table in the data source and configure its columns">
   </figure>
 </p>
 
@@ -188,11 +190,11 @@ You can also optionally select a single column as a timestamp for the row (suppo
 
 Instead of selecting a table, you can write a custom SQL query to define the feature group.
 This is useful when you need to join multiple tables or apply transformations at read time.
-As with the table option, you must designate one or more columns as primary keys and optionally select a timestamp column.
+Click `Fetch Schema` to resolve the columns of the query, then, as with the table option, designate one or more columns as primary keys, optionally pick an event time column and give the feature group a name.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_query.png" style="border: 10px solid #f5f5f5" alt="Define a SQL query in Data Sources and specify features">
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_query.png" alt="Define a SQL query in the data source and configure its columns">
   </figure>
 </p>
 
