@@ -1341,11 +1341,19 @@
          <lastmod>2026-09-08</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/default_predictor/</loc>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/deployable_component/</loc>
          <lastmod>2026-09-08</lastmod>
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/deployment/</loc>
+         <lastmod>2026-09-08</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/deployment_schema/</loc>
          <lastmod>2026-09-08</lastmod>
     </url>
     <url>
