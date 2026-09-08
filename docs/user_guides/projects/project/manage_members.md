@@ -91,6 +91,21 @@ To change a member's role or remove them from the project, click the `Manage mem
   </figure>
 </p>
 
+### What happens to a removed member's files
+
+Each member has a private home directory in the project, `/Projects/<project>/Users/<username>`, holding their notebooks, their SSH key and their agent configuration.
+
+When a member is removed, that directory and everything under it is transferred to the data owner who has been a member of the project the longest. The files keep their contents and their paths; only the owner changes. The removed member loses access, as they do to the rest of the project.
+
+Two cases where nothing is transferred:
+
+| Case | Result |
+| --- | --- |
+| The removal asks for the home directory to be deleted | The directory is deleted, so there is nothing to transfer |
+| No data owner is left in the project | The directory keeps its current owner and is reported in the Hopsworks logs |
+
+Service accounts are never chosen as the new owner, however long they have been members.
+
 ## Python SDK
 
 ```python
