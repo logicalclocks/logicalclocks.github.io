@@ -59,6 +59,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `user_guides/fs/data_source/usage.md` | modified | +2/-0 |
 | [ ] | `user_guides/fs/feature_group/create.md` | modified | +12/-33 |
 | [x] | `user_guides/fs/feature_group/create_external.md` | modified | UI section captures redone on 5.0 (SQL data source, table and query options, review dialog) |
+| [x] | `user_guides/fs/feature_group/ingest_with_dlthub.md` | modified | UI captures redone on 5.0 (SQL source), loading strategies kit figure, CRM figure dropped |
 | [ ] | `user_guides/fs/feature_group/data_types.md` | modified | +47/-38 |
 | [ ] | `user_guides/fs/feature_group/data_validation.md` | modified | +2/-2 |
 | [ ] | `user_guides/fs/feature_group/data_validation_advanced.md` | modified | +1/-1 |
