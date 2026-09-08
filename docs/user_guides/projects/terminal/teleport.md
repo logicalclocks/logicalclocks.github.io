@@ -35,6 +35,7 @@ A session transcript can contain code and file contents, so it is never exposed 
 | `hops session list` | Show your staged sessions and where each one currently lives. |
 | `hops session mirror` | Stream the live pod terminal on your laptop, read-only by default. |
 | `hops session reset` | Forget how git sync authenticates the pod and remove the staged SSH keys, so the next push asks again. |
+| `hops session extend` | Give the terminal session more time before the cluster stops it. |
 | `hops session stop` | Stop this project's terminal pod and every tab in it. |
 
 ### Push a session to the cluster
@@ -49,6 +50,8 @@ The command uploads the transcript, starts the project's terminal pod if it is n
 Once the Terminal tab is open, the session lands on the pod as its own tab and resumes there.
 Switch between tabs by clicking them, or from the keyboard with Alt+PgUp and Alt+PgDn; Ctrl+PgUp and Ctrl+PgDn do the same wherever the browser does not keep them for its own tabs, such as an installed app window or `hops session mirror`.
 Until a tab is open the push stays staged, and the command prints the terminal URL and the manual landing steps.
+A terminal started by `hops session push` or `hops session new` lasts 12 hours, longer than the web terminal's default, since a session handed to the pod is often left to run.
+The command prints how long the terminal has left; `hops session extend` adds the cluster's default extension, and `hops session extend --hours N` adds N hours, within the per-request limit the cluster sets.
 Running `hops session push` again is safe: it re-stages the same session.
 It refuses only when the staged copy holds lines this machine does not have, until you `hops session pull` them back or pass `--force`.
 
