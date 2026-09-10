@@ -105,7 +105,7 @@ Every instance of the component writes its own archive, distinguished by pod nam
     The number of archives kept per deployment is capped by the `log_history_limit` cluster variable, which defaults to 30.
     Once the cap is reached, the oldest archive is deleted each time a new one is written, so long-lived deployments do not fill the project with logs.
 
-To retrieve archives with the Python library, use [`download_logs`][hsml.deployment.Deployment.download_logs].
+To retrieve archives with the Python library, use `deployment.download_logs()`, shown in [Step 5](#step-5-download-historical-logs) below.
 
 ### Configuring disk logging
 
