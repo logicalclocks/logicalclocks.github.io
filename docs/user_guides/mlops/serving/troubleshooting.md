@@ -70,7 +70,7 @@ Transient logs refer to component-specific logs that are read directly from the 
 Therefore, these logs can only be retrieved as long as the deployment components are running.
 
 !!! info ""
-    Transient logs are informative and fast to retrieve, facilitating the troubleshooting of deployment components at a glance
+    Transient logs are informative and fast to retrieve, facilitating the troubleshooting of deployment components at a glance.
 
 Transient logs are convenient when access to the most recent logs of a deployment is needed.
 
@@ -92,7 +92,7 @@ Historical logs are archives that each instance writes to the project's `Logs` d
 An instance archives its output when it exits, is restarted, or is stopped, which means an instance removed by scale-to-zero or replaced by a new deployment revision still leaves its logs behind.
 
 !!! info ""
-    Historical logs are convenient when a deployment fails occasionally, or when the instance you need to inspect is no longer running
+    Historical logs are convenient when a deployment fails occasionally, or when the instance you need to inspect is no longer running.
 
 Archives are written to `Logs/Serving/<deployment_name>/` and named `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.log`, one file per instance run.
 Browse them under the `Logs` section of the deployment overview page, or in the `Logs` dataset, and open one to read it.
