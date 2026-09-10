@@ -99,6 +99,10 @@ When a member is removed, that directory and everything under it is transferred 
 
 The directory keeps the name of the member who had it, since the paths do not change. The new owner finds it in the project's `Users` dataset under that name, next to their own home directory. Nobody else sees it: home directories stay private to whoever owns them.
 
+Adding that member back to the project gives them a new, empty home directory. The files they left keep the data owner who took them over, and move to `Users/<data owner>/former-members/<member>` to free the path.
+
+A hand-over runs in the background and is retried until it completes. If it is lost, which deleting the removed member's account before it runs does, the platform's periodic permissions check finds the directory and hands it to the longest-serving data owner instead of the one the removal chose.
+
 The remove dialog asks which data owner takes them, and starts on the data owner who has been in the project the longest. Only data owners are offered: a data scientist cannot manage members, so files handed to one would be out of reach of the people who can. Service accounts are never chosen.
 
 The transfer runs in the background. A member with a large home directory takes a moment to hand over, because every file and directory under it changes owner one at a time, and the removal does not wait for that to finish.
