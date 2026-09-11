@@ -161,9 +161,47 @@ Once you are done with the changes, click on `Create new model deployment` at th
     ms = project.get_model_serving()
     ```
 
+### Step 2: Choose the predictor
+
+A Python model registered with `feature_view=` needs no predictor script when it takes a feature vector of the feature view and is stored as a single pickle or joblib file.
+The library's default predictor validates the request against the deployment schema, looks up and transforms the features, runs the model, and logs the request when the feature view has logging enabled.
+
+=== "Python"
+
+    ```python
+    my_model = mr.get_model("my_model", version=1)
+
+    my_deployment = my_model.deploy(passed_features=["amount"])
+    my_deployment.schema.describe()
+    ```
+
+To customise it, subclass it in your own script and deploy with `default_predictor=True`, so the schema is still inferred:
+
+=== "Python"
+
+    ```python
+    from hsml.default_predictor import DefaultPredict
+
+
+    class Predict(DefaultPredict):
+        def load_model(self, model_files_path):
+            # anything the default loader does not handle
+            ...
+
+        def model_predict(self, feature_vectors):
+            return self.model.predict_proba(feature_vectors[self.model_input_columns])
+    ```
+
+The serving wrapper imports a model deployment's script itself, so the script needs no `__main__` block.
+Only a [feature view deployment][feature-view-deployment] script, which may be started as a plain script, hands over to the wrapper.
+See the [Deployment Schema Guide][deployment-schema] for the request contract, the error codes, and the feature logging guarantees.
+
+To serve the model with your own code instead, implement a predictor script (Steps 2.1 and 2.2).
+
 ### Step 2.1 (Optional): Implement a predictor script
 
-For Python model deployments, you need implement a predictor script that loads and serve your model.
+For Python model deployments that the default predictor does not cover, implement a predictor script that loads and serves your model.
+A script deployed with `schema=` or `passed_features=` still gets every request validated against the deployment schema by the serving wrapper before `predict()` is called.
 
 === "Predictor"
 

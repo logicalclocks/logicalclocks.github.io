@@ -9,6 +9,11 @@ Refer to the [Deployment Creation Guide](deployment.md) for step-by-step instruc
 !!! tip "Python deployments"
     If you want to deploy a Python script without a model artifact, see the [Python Deployments](../../projects/python-deployment/python-deployment.md) page.
 
+### Deployment Schema and default predictor
+
+Describe the prediction request a deployment accepts, validate requests against it, and serve a model without writing a predictor script, see the [Deployment Schema Guide][deployment-schema].
+A feature view can be deployed on its own with the same contract, see the [Feature View Deployment Guide][feature-view-deployment].
+
 ### Predictor (KServe component)
 
 Predictors are responsible for running a model server that loads a trained model, handles inference requests and returns predictions, see the [Predictor Guide](predictor.md).
