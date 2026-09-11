@@ -34,7 +34,7 @@ Cloud agnostic storage systems:
 
 <div class="grid cards" markdown>
 
--   :simple-snowflake:{ .lg .middle style="color:#29B5E8" } **Snowflake**
+- :simple-snowflake:{ .lg .middle style="color:#29B5E8" } **Snowflake**
 
     ---
 
@@ -42,7 +42,7 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure](creation/snowflake.md)
 
--   :simple-apachekafka:{ .lg .middle } **Kafka**
+- :simple-apachekafka:{ .lg .middle } **Kafka**
 
     ---
 
@@ -50,7 +50,7 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure](creation/kafka.md)
 
--   :simple-sap:{ .lg .middle style="color:#0FAAFF" } **SAP HANA**
+- :simple-sap:{ .lg .middle style="color:#0FAAFF" } **SAP HANA**
 
     ---
 
@@ -58,7 +58,7 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure][data-source-sap-hana]
 
--   :material-database:{ .lg .middle style="color:var(--hops-accent-text)" } **JDBC**
+- :material-database:{ .lg .middle style="color:var(--hops-accent-text)" } **JDBC**
 
     ---
 
@@ -66,7 +66,7 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure](creation/jdbc.md)
 
--   :material-api:{ .lg .middle style="color:var(--hops-accent-text)" } **REST API**
+- :material-api:{ .lg .middle style="color:var(--hops-accent-text)" } **REST API**
 
     ---
 
@@ -74,7 +74,7 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure](creation/rest_api.md)
 
--   :material-chart-box-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **CRM, Sales & Analytics**
+- :material-chart-box-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **CRM, Sales & Analytics**
 
     ---
 
@@ -82,7 +82,7 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure](creation/crm_sales_analytics.md)
 
--   :material-folder-network-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **HopsFS**
+- :material-folder-network-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **HopsFS**
 
     ---
 
@@ -98,7 +98,7 @@ For AWS the following storage systems are supported:
 
 <div class="grid cards" markdown>
 
--   :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **S3**
+- :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **S3**
 
     ---
 
@@ -106,7 +106,7 @@ For AWS the following storage systems are supported:
 
     [:octicons-arrow-right-24: Configure](creation/s3.md)
 
--   :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **AWS Glue**
+- :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **AWS Glue**
 
     ---
 
@@ -114,7 +114,7 @@ For AWS the following storage systems are supported:
 
     [:octicons-arrow-right-24: Configure](creation/glue.md)
 
--   :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **Redshift**
+- :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **Redshift**
 
     ---
 
@@ -122,7 +122,7 @@ For AWS the following storage systems are supported:
 
     [:octicons-arrow-right-24: Configure](creation/redshift.md)
 
--   :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **RDS (SQL)**
+- :fontawesome-brands-aws:{ .lg .middle style="color:#FF9900" } **RDS (SQL)**
 
     ---
 
@@ -138,7 +138,7 @@ For Azure the following storage systems are supported:
 
 <div class="grid cards" markdown>
 
--   :material-microsoft-azure:{ .lg .middle style="color:#0078D4" } **ADLS**
+- :material-microsoft-azure:{ .lg .middle style="color:#0078D4" } **ADLS**
 
     ---
 
@@ -154,7 +154,7 @@ For GCP the following storage systems are supported:
 
 <div class="grid cards" markdown>
 
--   :simple-googlebigquery:{ .lg .middle style="color:#4285F4" } **BigQuery**
+- :simple-googlebigquery:{ .lg .middle style="color:#4285F4" } **BigQuery**
 
     ---
 
@@ -162,7 +162,7 @@ For GCP the following storage systems are supported:
 
     [:octicons-arrow-right-24: Configure](creation/bigquery.md)
 
--   :simple-googlecloudstorage:{ .lg .middle style="color:#4285F4" } **GCS**
+- :simple-googlecloudstorage:{ .lg .middle style="color:#4285F4" } **GCS**
 
     ---
 
@@ -178,7 +178,7 @@ For Databricks **on AWS** the following storage systems are supported:
 
 <div class="grid cards" markdown>
 
--   :simple-databricks:{ .lg .middle style="color:#FF3621" } **Unity Catalog**
+- :simple-databricks:{ .lg .middle style="color:#FF3621" } **Unity Catalog**
 
     ---
 

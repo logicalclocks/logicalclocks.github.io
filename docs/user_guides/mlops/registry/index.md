@@ -11,7 +11,7 @@ Follow these framework-specific guides to export a Model to the Model Registry.
 
 <div class="grid cards" markdown>
 
--   :simple-tensorflow:{ .lg .middle style="color:#FF6F00" } **TensorFlow**
+- :simple-tensorflow:{ .lg .middle style="color:#FF6F00" } **TensorFlow**
 
     ---
 
@@ -19,7 +19,7 @@ Follow these framework-specific guides to export a Model to the Model Registry.
 
     [:octicons-arrow-right-24: Export guide](frameworks/tf.md)
 
--   :simple-pytorch:{ .lg .middle style="color:#EE4C2C" } **Torch**
+- :simple-pytorch:{ .lg .middle style="color:#EE4C2C" } **Torch**
 
     ---
 
@@ -27,7 +27,7 @@ Follow these framework-specific guides to export a Model to the Model Registry.
 
     [:octicons-arrow-right-24: Export guide](frameworks/tch.md)
 
--   :simple-scikitlearn:{ .lg .middle style="color:#F7931E" } **Scikit-learn**
+- :simple-scikitlearn:{ .lg .middle style="color:#F7931E" } **Scikit-learn**
 
     ---
 
@@ -35,7 +35,7 @@ Follow these framework-specific guides to export a Model to the Model Registry.
 
     [:octicons-arrow-right-24: Export guide](frameworks/skl.md)
 
--   :material-robot-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **LLM**
+- :material-robot-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **LLM**
 
     ---
 
@@ -43,7 +43,7 @@ Follow these framework-specific guides to export a Model to the Model Registry.
 
     [:octicons-arrow-right-24: Export guide](frameworks/llm.md)
 
--   :simple-python:{ .lg .middle style="color:#3776AB" } **Other Python frameworks**
+- :simple-python:{ .lg .middle style="color:#3776AB" } **Other Python frameworks**
 
     ---
 
