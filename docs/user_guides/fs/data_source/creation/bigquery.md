@@ -33,7 +33,9 @@ Before you begin this guide you'll need to retrieve the following information ab
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `Google BigQuery` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -50,7 +52,8 @@ Start by giving it a unique **name** and an optional **description**.
   <figcaption>BigQuery Creation Form</figcaption>
 </figure>
 
-1. Select "Google BigQuery" as the storage.
+1. The form opens with `Source` set to `Google BigQuery`.
+   Click `Change source` to pick a different one.
 2. Next, set the name of the parent BigQuery project.
    This is used for billing by GCP.
 3. Authentication: Here you should upload your `JSON keyfile for service account` used for authentication.

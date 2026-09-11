@@ -7,7 +7,8 @@ description: Documentation on how to create a Feature Group and the different AP
 ## Introduction
 
 In this guide you will learn how to create and register a feature group with Hopsworks.
-This guide covers creating a feature group using the Hopsworks APIs as well as the user interface.
+Feature groups are created from code with the Hopsworks APIs.
+The UI does not offer a creation flow; created feature groups appear in the project's `Catalog` section, where you can browse, edit and share them.
 
 ## Prerequisites
 
@@ -164,15 +165,12 @@ recent = fg.read(start_time="2026-06-01", end_time="2026-06-11")
 The grain columns are real partition columns, so a filter on a grain column (for example `fg.filter(fg.year == 2026)`) prunes partitions natively.
 A filter on an `event_time` range is rewritten into equivalent grain-column predicates by the query layer, so `fg.read(start_time=..., end_time=...)` prunes too on hierarchical specs (and tightens to the finest grain the range allows, so a within-one-month window also bounds `day`):
 
-| `partitioned_by` | Prunes on `event_time` range? | Prunes on `year` / `month` / `day` filter? |
-| --- | --- | --- |
-| `["year"]` | ✅ | ✅ |
-| `["year", "month"]` | ✅ | ✅ |
-| `["year", "month", "day"]` | ✅ | ✅ |
-| `["year", "month", "day", "hour"]` | ✅ | ✅ |
-| `["month"]` (no year) | ⚠️ no, month alone is ambiguous across years | ✅ filter on month works |
-| `["year", "week"]` | ⚠️ year only, week is not directly derivable from a date range | ✅ both columns prune |
-| `["day"]` (no year/month) | ⚠️ no, day-of-month is ambiguous | ✅ filter on day works |
+| `partitioned_by` | `event_time` range | Grain-column filter | Notes |
+| --- | :---: | :---: | --- |
+| a prefix of `year, month, day, hour` | ✅ | ✅ | Recommended. A range tightens to the finest grain it allows. |
+| `["month"]` | ⚠️ | ✅ | Month alone is ambiguous across years, so a range does not prune. |
+| `["year", "week"]` | ⚠️ | ✅ | Prunes on year only; week is not derivable from a date range. |
+| `["day"]` | ⚠️ | ✅ | Day-of-month is ambiguous, so a range does not prune. |
 
 Prefer hierarchical specs: `["year"]`, `["year", "month"]`, `["year", "month", "day"]`, `["year", "month", "day", "hour"]`.
 They line up with the typical batch-pipeline access pattern and prune naturally on both grain-column and `event_time`-range filters.
@@ -413,10 +411,7 @@ That means, using Spark, Hudi shuffles the data into five in-memory partitions, 
 If the inserted Dataframe contains only a single feature group partition, this feature group partition will be written with five parquet files.
 If the inserted Dataframe contains multiple feature group partitions, the parquet files will be split among those partition, potentially more parquet files will be added.
 
-<figure markdown>
-  ![feature group partitioning](../../../assets/images/guides/feature_group/fg-partition-files.png)
-  <figcaption>Mapping in-memory partitions to tasks, workers, executors and feature group partition files for a feature group insert</figcaption>
-</figure>
+--8<-- "user_guides/fs/feature_group/create/partition-files.html"
 
 !!! tip "Setting shuffle parallelism"
     In practice that means the shuffle parallelism should be set equal to the number of feature group partitions in the inserted dataframe.
@@ -475,27 +470,24 @@ The DataFrame *must* contain the columns specified as primary keys, partition ke
 
 If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.
 
-### API Reference
+!!! api "API reference"
 
-[`FeatureGroup`][hsfs.feature_group.FeatureGroup]
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_feature_group`][hsfs.feature_store.FeatureStore.create_feature_group]
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_or_create_feature_group`][hsfs.feature_store.FeatureStore.get_or_create_feature_group]
+    - <code class="doc-symbol doc-symbol-class"></code> [`FeatureGroup`][hsfs.feature_group.FeatureGroup]
+        - <code class="doc-symbol doc-symbol-method"></code> [`insert`][hsfs.feature_group.FeatureGroup.insert]
+        - <code class="doc-symbol doc-symbol-method"></code> [`read`][hsfs.feature_group.FeatureGroup.read]
+        - <code class="doc-symbol doc-symbol-method"></code> [`select_all`][hsfs.feature_group.FeatureGroupBase.select_all]
+        - <code class="doc-symbol doc-symbol-method"></code> [`filter`][hsfs.feature_group.FeatureGroupBase.filter]
 
-## Create using the UI
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
-You can also create a new feature group through the UI.
-For this, navigate to the `Feature Groups` section and press the `Create` button at the top-right corner.
+## Find your feature group in the UI
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/feature_group/no_feature_group_list.png" alt="List of Feature Groups">
-  </figure>
-</p>
+Feature groups created through the APIs appear in the `Catalog` section of the project sidebar.
+From there you can inspect features and statistics, edit metadata, and manage sharing and tags.
 
-Subsequently, you will be able to define its properties (such as name, mode, features, and more).
-Refer to the documentation above for an explanation of the parameters available, they are the same as when you create a feature group using the SDK.
-Finally, complete the creation by clicking `Create New Feature Group` at the bottom of the page.
-
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/feature_group/create_feature_group.png" alt="Create new Feature Group">
-  </figure>
-</p>
+<figure>
+  <img src="../../../../assets/images/guides/feature_group/feature_group_list.png" alt="The Catalog listing the project's feature groups with their format, online and shared badges" />
+  <figcaption>The Catalog lists every feature group with its table format, online status and version.</figcaption>
+</figure>

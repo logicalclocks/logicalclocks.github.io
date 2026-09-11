@@ -50,17 +50,6 @@ With the default configuration, it can take up to 30 minutes for these changes t
 
 ## Using UI
 
-### Create a Feature Group with Change Data Capture using UI
-
-During the creation of the feature group enable online feature serving.
-When enabled you will be able to set the `CDC topic name` property.
-
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/feature_group/create_online_enabled_feature_group.png" alt="Create online enabled feature group">
-  </figure>
-</p>
-
 ### Update Feature Group with Change Data Capture topic using UI
 
 The notification topic name can be changed after creation by editing the feature group.

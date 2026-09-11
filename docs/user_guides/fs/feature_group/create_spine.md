@@ -58,6 +58,9 @@ You just need to make sure it has the same schema.
     Currently the Hopsworks library does not support usage of Spine Groups for training data creation or batch data retrieval in the Python engine.
     However, it is supported to create Spine Groups from the Python engine.
 
-### API Reference
+!!! api "API reference"
 
-[`SpineGroup`][hsfs.feature_group.SpineGroup].
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_or_create_spine_group`][hsfs.feature_store.FeatureStore.get_or_create_spine_group]
+    - <code class="doc-symbol doc-symbol-class"></code> [`SpineGroup`][hsfs.feature_group.SpineGroup]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

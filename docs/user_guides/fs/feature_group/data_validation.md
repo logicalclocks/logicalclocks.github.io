@@ -1,9 +1,6 @@
 # Data Validation
 
-<figure markdown>
-  ![Validation on Insertion with Hopsworks and Great Expectations](../../../assets/images/guides/fs/great_expectations/great_exp_in_hopsworks.png)
-  <figcaption>Validation on Insertion with Hopsworks and Great Expectations.</figcaption>
-</figure>
+--8<-- "user_guides/fs/feature_group/data_validation/validation-on-insert.html"
 
 ## Introduction
 
@@ -60,6 +57,11 @@ Click the tick button to save the expectation configuration and append it to the
 You can use the button `Clear Expectation Suite` to clean up before saving changes if you changed your mind.
 If the Expectation Suite is already registered, it will instead show a button to delete the Expectation Suite.
 
+<figure>
+  <img src="../../../../assets/images/guides/fs/data_validation/expectation_suite_editor.png" alt="Expectation Suite section of the Edit Feature Group page with three expectations and the STRICT policy selected" />
+  <figcaption>The Expectation Suite editor: name, enabled flag, ingestion policy, and one row per expectation.</figcaption>
+</figure>
+
 ### Step 4: Save new data to a Feature Group
 
 Use the python client to write a DataFrame to the Feature Group.
@@ -83,6 +85,11 @@ The `Validation Reports` tab in the Expectations section displays a brief histor
 Each row corresponds to a validation report, with some summary information about the success of the validation step.
 You can download the full report by clicking the download icon button that appears at the end of the row.
 
+<figure>
+  <img src="../../../../assets/images/guides/fs/data_validation/expectations_section.png" alt="Expectations section of a feature group showing the validation reports table" />
+  <figcaption>The Expectations section on the feature group page, with the validation reports history.</figcaption>
+</figure>
+
 ## Code
 
 Hopsworks python client interfaces with the Great Expectations library to enable you to add data validation to your feature engineering pipeline.
@@ -100,8 +107,8 @@ Third and final step shows how to attach your Expectation Suite to the Feature G
 In order to define and validate an expectation when writing to a Feature Group, you will need:
 
 - A Hopsworks project.
-  If you don't have a project yet you can go to [app.hopsworks.ai](https://app.hopsworks.ai), signup with your email and create your first project.
-- An API key, you can get one by going to "Account Settings" on [app.hopsworks.ai](https://app.hopsworks.ai).
+  If you don't have a project yet you can go to [run.hopsworks.ai](https://run.hopsworks.ai), signup with your email and create your first project.
+- An API key, you can get one by going to "Account Settings" on [run.hopsworks.ai](https://run.hopsworks.ai).
 - The [Hopsworks Python library](https://pypi.org/project/hopsworks) installed in your client.
   See the [installation guide](../../client_installation/index.md).
 

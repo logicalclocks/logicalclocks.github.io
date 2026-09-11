@@ -6,7 +6,7 @@ A group-to-project mapping lets you automatically add all members of an LDAP gro
 To create a mapping, you simply select the LDAP group, choose the project it should be linked to, and assign the role that its members will have within that project.
 
 Once a mapping is created, project membership is controlled through LDAP group membership.
-Any updates made to the LDAP group—such as adding or removing users—will automatically be reflected in Hopsworks.
+Any updates made to the LDAP group, such as adding or removing users, will automatically be reflected in Hopsworks.
 For example, if a user is removed from the LDAP group, they will also be removed from the corresponding project.
 
 ## Prerequisites
@@ -34,7 +34,7 @@ If you can not find the variable ```ldap_group_mapping_sync_enabled``` create it
 ### Step 1: Create a mapping
 
 To create a mapping go to **Cluster Settings** by clicking on your name in the top right corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
-In the *Project mapping* tab, you can create a new mapping by clicking on *Create new mapping*.
+Choose *Project Mapping* under *Security & Access* in the left sidebar, then create a new mapping by clicking on *Create new mapping*.
 
 <figure>
  <a  href="../../../../assets/images/admin/project-mapping/project-mapping-empty.png">

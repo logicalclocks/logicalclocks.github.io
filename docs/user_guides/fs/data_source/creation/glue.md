@@ -5,7 +5,7 @@
 The Glue Data Source integrates with the AWS Glue Data Catalog.
 It points at a Glue database backed by Amazon S3, where the data always lives.
 For this reason the Glue Data Source provides the same S3 credentials (`access_key`, `secret_key`, `session_token`, `region`) as the [S3 Data Source](s3.md).
-This works for any data format — Apache Iceberg, Delta Lake and Apache Hudi, as well as plain file formats such as `csv` and `parquet`.
+This works for any data format: Apache Iceberg, Delta Lake and Apache Hudi, as well as plain file formats such as `csv` and `parquet`.
 
 How the Glue Data Catalog itself is used depends on the format:
 
@@ -36,7 +36,10 @@ Before you begin this guide you'll need to retrieve the following information fr
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog opens below.
+Pick the `AWS Glue` card to open the creation form.
+The card is only offered where the connector is supported, so it is absent or disabled on non-cloud clusters.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -47,7 +50,8 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 
 Enter the details for your Glue connector.
 
-01. Select "AWS Glue" as storage.
+01. The form opens with `Source` set to `AWS Glue`.
+    Click `Change source` to pick a different one.
 02. Give the data source a **name** and an optional **description**.
 03. Set the name of the Glue **database** you want to point the connector to.
 04. Optionally set the **Catalog ID**, the AWS account ID that owns the Glue Data Catalog.

@@ -55,8 +55,8 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job.
-Make sure `SPARK` is chosen.
+The `Type` radio offers `PYTHON` and `SPARK`, and `PYTHON` is selected by default.
+Select `SPARK` to configure a PySpark job.
 
 ### Step 4: Set the script
 
@@ -143,7 +143,7 @@ You do not need to select a queue to run the job in.
 ### Step 8: Execute the job
 
 Now click the `Run` button to start the execution of the job.
-You will be redirected to the `Executions` page where you can see the list of all executions.
+Then open the `Executions` tab to see the list of all executions.
 
 <p align="center">
   <figure>
@@ -154,7 +154,8 @@ You will be redirected to the `Executions` page where you can see the list of al
 
 ### Step 9: Application logs
 
-To monitor logs while the execution is running, click `Spark UI` to open the Spark UI in a separate tab.
+Each execution row of a Spark job carries `Spark UI`, `Metrics`, `Monitor`, `Logs` and `Live Logs`.
+While the execution is running, click `Spark UI` to open the Spark UI in a separate tab, or `Live Logs` to follow the logs as they are produced.
 
 Once the execution is finished, you can click on `Logs` to see the full logs for execution.
 
@@ -267,8 +268,16 @@ This configuration is mainly useful when you need to add additional setup, such 
 
 When reading data in your Spark job it is recommended to use the Spark read API as previously demonstrated, since this reads from the filesystem directly, whereas `Additional files` configuration options will download the files in its entirety and is not a scalable option.
 
-## API Reference
+!!! api "API reference"
 
-[`Job`][hopsworks_common.job.Job]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_job_api`][hopsworks_common.project.Project.get_job_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`JobsApi`][hopsworks.core.job_api.JobsApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_configuration`][hopsworks.core.job_api.JobsApi.get_configuration]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_job`][hopsworks.core.job_api.JobsApi.create_job]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Job`][hopsworks_common.job.Job]
+        - <code class="doc-symbol doc-symbol-method"></code> [`run`][hopsworks_common.job.Job.run]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Execution`][hopsworks_common.execution.Execution]
+        - <code class="doc-symbol doc-symbol-method"></code> [`download_logs`][hopsworks_common.execution.Execution.download_logs]
+    - <code class="doc-symbol doc-symbol-method"></code> [`DatasetApi.upload`][hopsworks_common.core.dataset_api.DatasetApi.upload]
 
-[`Execution`][hopsworks_common.execution.Execution]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

@@ -1,3 +1,5 @@
+# Model Monitoring
+
 Model monitoring lets you track how a deployed model behaves in production by comparing the data it serves against the data it was trained on.
 
 When a model runs in production, the statistical properties of its inputs and predictions can drift away from those of the training data.
@@ -10,8 +12,13 @@ Model monitoring builds on two existing Hopsworks capabilities:
 
 - **Feature logging**: a model deployment logs the features it serves and its predictions to the feature view's logging feature group through the Feature View logging APIs.
   See the [Feature Logging guide](../../user_guides/fs/feature_view/feature_logging.md).
-- **Feature monitoring**: Hopsworks computes statistics over windows of feature data and compares them against a reference, optionally raising alerts on significant shifts.
-  See the [Feature Monitoring concept](../fs/feature_view/feature_monitoring.md).
+- **Feature monitoring**: Hopsworks computes statistics over windows of feature data and compares them against a reference, optionally raising alerts on significant drift.
+  See the [Feature Monitoring concept](../fs/feature_group/feature_monitoring.md).
+
+??? note "Log untransformed and transformed features"
+    Log both the untransformed and the transformed feature values.
+    Untransformed features drive feature monitoring and debugging, since drift is easiest to read on the raw values.
+    Transformed features drive model monitoring and SHAP explainability, since those are the values the model actually sees.
 
 !!! info "Feature logging vs. the inference logger"
     Hopsworks provides two separate inference logging mechanisms.
@@ -21,7 +28,13 @@ Model monitoring builds on two existing Hopsworks capabilities:
 
 A model monitoring configuration is a feature monitoring configuration over the logging feature group, filtered to a single model and version.
 The detection window covers the recently served inference data, and the reference defaults to the training dataset version that was used to train that model.
-By comparing the two — on a scalar metric or on the whole feature distribution — Hopsworks detects training/serving skew and drift over time.
+By comparing the two, on a scalar metric or on the whole feature distribution, Hopsworks detects feature drift over time.
+This comparison detects drift, not skew: offline-online feature skew is a difference in the transformation code between the offline and inference pipelines, so it is invisible to a distribution comparison and is prevented, not monitored.
+
+Feature drift is one kind of drift among several.
+Concept drift, in particular, is not detected by comparing distributions: you detect it by comparing the actual outcomes against the model's past predictions, once those outcomes are known.
+
+--8<-- "concepts/mlops/model_monitoring/how-it-works.html"
 
 ## Where to configure it
 

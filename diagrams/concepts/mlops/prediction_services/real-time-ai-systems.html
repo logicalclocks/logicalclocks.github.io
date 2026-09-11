@@ -1,0 +1,75 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 656 332" role="img" aria-label="A real-time AI system. A training pipeline deploys a model to the model registry and reads training data from the feature store; a feature pipeline writes features to the feature store. An online inference deployment on KServe, behind Istio, loads the model and reads precomputed features; an operational service sends it prediction requests and receives predictions. The deployment logs features and predictions back to the feature store, where they become new training data." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ops-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="ops-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <!-- flows -->
+  <path class="viz-edge" d="M120 76 L120 124" marker-start="url(#ops-knob)" marker-end="url(#ops-arrow)" style="stroke-dasharray:4 3"/>
+  <text class="viz-meta" x="128" y="104">deploy</text>
+  <path class="viz-edge" d="M336 76 L336 124" marker-start="url(#ops-knob)" marker-end="url(#ops-arrow)"/>
+  <text class="viz-meta" x="344" y="104">write</text>
+  <path class="viz-edge" d="M248 150 H232 Q228 150 228 146 V54 Q228 50 224 50 H208" marker-start="url(#ops-knob)" marker-end="url(#ops-arrow)" style="stroke-dasharray:4 3"/>
+  <text class="viz-edge-label viz-meta" x="228" y="104" text-anchor="middle">read</text>
+  <path class="viz-edge" d="M208 160 H224 Q228 160 228 164 V250 Q228 254 232 254 H248" marker-start="url(#ops-knob)" marker-end="url(#ops-arrow)" style="stroke-dasharray:4 3"/>
+  <text class="viz-edge-label viz-meta" x="228" y="214" text-anchor="middle">model</text>
+  <path class="viz-edge" d="M286 176 L286 228" marker-start="url(#ops-knob)" marker-end="url(#ops-arrow)"/>
+  <text class="viz-meta" x="294" y="206">features</text>
+  <path class="viz-edge" d="M464 244 L424 244" marker-start="url(#ops-knob)" marker-end="url(#ops-arrow)"/>
+  <text class="viz-meta" x="444" y="222" text-anchor="middle">request</text>
+  <path class="viz-edge" d="M424 264 L464 264" marker-start="url(#ops-knob)" marker-end="url(#ops-arrow)"/>
+  <text class="viz-meta" x="444" y="292" text-anchor="middle">prediction</text>
+  <path class="viz-edge" d="M336 280 V304 Q336 308 332 308 H272 Q268 308 268 304 V176" marker-start="url(#ops-knob)" marker-end="url(#ops-arrow)" style="stroke-dasharray:4 3"/>
+  <text class="viz-meta" x="260" y="300" text-anchor="end">prediction logs</text>
+
+  <g data-tone="accent">
+    <rect class="viz-node" x="32" y="24" width="176" height="52" rx="4"/>
+    <rect class="viz-pill" x="90" y="16" width="60" height="16" rx="3"/>
+    <text class="viz-pill-text" x="120" y="27" text-anchor="middle">Pipeline</text>
+    <text class="viz-node-title" x="120" y="51" text-anchor="middle">TRAINING</text>
+    <text class="viz-node-subtitle" x="120" y="68" text-anchor="middle">trains · registers</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="248" y="24" width="176" height="52" rx="4"/>
+    <rect class="viz-pill" x="306" y="16" width="60" height="16" rx="3"/>
+    <text class="viz-pill-text" x="336" y="27" text-anchor="middle">Pipeline</text>
+    <text class="viz-node-title" x="336" y="51" text-anchor="middle">FEATURE</text>
+    <text class="viz-node-subtitle" x="336" y="68" text-anchor="middle">stream · scheduled</text>
+  </g>
+  <a class="viz-link" href="../registry/">
+  <g>
+    <rect class="viz-kv-frame" x="32" y="124" width="176" height="52" rx="6"/>
+    <path class="viz-kv-header" d="M32 130 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
+    <g class="viz-icon" transform="translate(40,131) scale(0.6)"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z M3 7 L12 12 L21 7 M12 12 V22"/></g>
+    <text class="viz-kv-title" x="62" y="143">Model registry</text>
+    <text class="viz-node-subtitle" x="44" y="165">models · versions</text>
+  </g>
+  </a>
+  <a class="viz-link" href="../../fs/">
+  <g>
+    <rect class="viz-kv-frame" x="248" y="124" width="176" height="52" rx="6"/>
+    <path class="viz-kv-header" d="M248 130 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
+    <g class="viz-icon" transform="translate(256,131) scale(0.6)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
+    <text class="viz-kv-title" x="278" y="143">Feature store</text>
+    <text class="viz-node-subtitle" x="260" y="165">online · offline</text>
+  </g>
+  </a>
+  <a class="viz-link" href="../serving/">
+  <g data-tone="accent">
+    <rect class="viz-node" x="248" y="228" width="176" height="52" rx="4"/>
+    <rect class="viz-pill" x="306" y="220" width="60" height="16" rx="3"/>
+    <text class="viz-pill-text" x="336" y="231" text-anchor="middle">Pipeline</text>
+    <text class="viz-node-title" x="336" y="255" text-anchor="middle">INFERENCE</text>
+    <text class="viz-node-subtitle" x="336" y="272" text-anchor="middle">kserve · istio</text>
+  </g>
+  </a>
+  <g data-tone="data">
+    <rect class="viz-kv-frame" x="464" y="228" width="176" height="52" rx="6"/>
+    <path class="viz-kv-header" d="M464 234 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
+    <g class="viz-icon" transform="translate(472,235) scale(0.6)"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9 H21 M7 6.5 H7.01 M10 6.5 H10.01"/></g>
+    <text class="viz-kv-title" x="494" y="247">Service</text>
+    <text class="viz-node-subtitle" x="476" y="269">operational app</text>
+  </g>
+</svg>
+</figure>

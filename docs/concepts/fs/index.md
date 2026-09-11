@@ -1,3 +1,5 @@
+# Feature Store Architecture
+
 
 <a name="what"></a>
 
@@ -6,7 +8,7 @@
 Hopsworks and its Feature Store are an open source data-intensive AI platform used for the development and operation of machine learning models at scale.
 The Hopsworks Feature Store provides the Hopsworks API to enable clients to write features to feature groups in the feature store, and to read features from feature views - either through a low latency Online API to retrieve pre-computed features for operational models or through a high throughput, latency insensitive Offline API, used to create training data and to retrieve batch data for scoring.
 
-<img src="../../assets/images/concepts/fs/architecture.svg">
+--8<-- "concepts/fs/index/what-is-hopsworks-feature-store.html"
 
 ## Hopsworks API
 
@@ -23,7 +25,7 @@ The Hopsworks API helps simplify some of the problems that feature stores addres
 ## Write to feature groups, read from feature views
 
 You write to feature groups with a feature pipeline program.
-The program can be written in Python, Spark, Flink, or SQL.
+The program can be written in Python, Spark, or SQL.
 
 You read from views on top of the feature groups, called feature views.
 That is, a feature view does not store feature data, but is a logical grouping of features.

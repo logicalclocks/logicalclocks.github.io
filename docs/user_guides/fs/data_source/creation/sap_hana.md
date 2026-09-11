@@ -48,7 +48,9 @@ These are a few additional **optional** arguments:
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks and start the creation flow for a new data source.
+Head to the `Data Sources` view on Hopsworks and click `New data source`.
+The `Add a data source` catalog opens below.
+Pick the `SAP HANA` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)

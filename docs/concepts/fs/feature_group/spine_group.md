@@ -4,10 +4,9 @@ description: Explanation of the Spine concept in feature pipelines and training 
 
 # Spine Group
 
-It is possible to maintain labels or prediction events among the regular features in a regular feature group
-with a feature pipeline updating the labels at a specific cadence.
+The default way to bring labels or prediction events is a label feature group: a regular feature group that holds the labels among its features, updated by a feature pipeline at a specific cadence.
 
-Often times, however, it is more convenient to provide the training events or entities in a Dataframe when reading
+Sometimes it is more convenient to provide the training events or entities in a Dataframe instead, when reading
 feature data from the feature store through a feature view.
 We call such a Dataframe a Spine as it is the structure around which
 the training data or batch data is built.
@@ -32,3 +31,7 @@ You can think of it as a place holder or a temporary feature group, to be replac
 When using the [online API](../feature_view/online_api.md), it is not necessary to provide the spine, since the online feature store contains only the latest feature values, and therefore
 no point in time join is required, the label is not required, as the inference pipeline is going to compute the prediction
 and the primary key values are specified when calling the online API.
+
+Prefer a label feature group where you can.
+A Spine Group adds complexity and pushes work onto the clients, which must supply the entities and their event times on every call, and it can only be the root or label feature group of a feature view.
+It is most appropriate for batch inference, where the set of entities to score is known only at request time.

@@ -13,9 +13,10 @@ Administrator account on a Hopsworks cluster.
 ### Step 1: Go to alerts configuration
 
 To configure the _Alert manager_ click on your name in the top right corner of the navigation bar and choose
-Cluster Settings from the dropdown menu.
-In the Cluster Settings' Alerts tab you can configure the alert
-manager to send alerts via email, slack or pagerduty.
+Cluster Settings from the dropdown menu, then choose **Alerts** under _Observability_ in the left sidebar
+(`/settings/alerts`).
+On the **Alert global channels** page you can configure the alert manager to send alerts via email, slack,
+pagerduty or webhook.
 
 <figure>
   <img src="../../../assets/images/alerts/configure-alerts.png" alt="Configure alerts"/>
@@ -26,7 +27,7 @@ manager to send alerts via email, slack or pagerduty.
 
 To send alerts via email you need to configure an SMTP server.
 Click on the _Configure_
-button on the left side of the **email** row and fill out the form that pops up.
+button on the right side of the **email** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
@@ -47,7 +48,7 @@ These receivers will be available to all users when they create event triggered 
 Alerts can also be sent via Slack messages.
 To be able to send Slack messages you first need to configure
 a Slack webhook.
-Click on the _Configure_ button on the left side of the **slack** row and past in your
+Click on the _Configure_ button on the right side of the **slack** row and past in your
 [Slack webhook](https://api.slack.com/messaging/webhooks) in _Webhook_.
 
 <figure>
@@ -61,8 +62,8 @@ These receivers will be available to all users when they create event triggered 
 ### Step 4: Configure Pagerduty Alerts
 
 Pagerduty is another way you can send alerts from Hopsworks.
-Click on the _Configure_ button on the left side of
-the **pagerduty** row and fill out the form that pops up.
+Click on the _Configure_ button on the right side of
+the **pager duty** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
@@ -86,7 +87,7 @@ Prometheus' Alert manager.
 
 You can also use webhooks to send alerts.
 A Webhook Alert is sent as an HTTP POST command with a JSON-encoded parameter payload.
-Click on the _Configure_ button on the left side of the **webhook** row and fill out the form that pops up.
+Click on the _Configure_ button on the right side of the **webhook** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/webhook-config.png" alt="Configure Webhook Alerts"/>
@@ -100,12 +101,14 @@ A global receiver is created when a webhook is configured and can be used by any
 ### Step 6: Advanced configuration
 
 If you are familiar with Prometheus' [Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/)
-you can also configure alerts by editing the _yaml/json_ file directly by going to the advanced page and clicking the edit button.
+you can also configure alerts by editing the _yaml/json_ file directly.
+Click on _Advanced configuration_ at the top right of the Alerts page, then on the _Edit_ button.
 
 The advanced page shows the configuration currently loaded on the alert manager.
 After editing the configuration it takes some time to propagate changes to the alertmanager.
+To get back to the channel list, choose **Alerts** again in the left sidebar.
 
-The reload button can be used to validate the changes made to the configuration.
+The _Reload_ button at the bottom of the page can be used to validate the changes made to the configuration.
 It will try to load the new configuration to the alertmanager and show any errors that might prevent the configuration from being loaded.
 
 <figure>

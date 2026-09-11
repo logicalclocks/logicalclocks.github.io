@@ -13,9 +13,8 @@ In this guide, you will learn how to create a new project.
 ### Step 1: Create a project
 
 If you log in to the platform and do not have any projects, you are presented with the following view.
-To run the Feature Store tour click `Run a demo project`, to create a new project click `Create new project`.
 
-For this guide click `Create new project` to continue.
+Click `Create a project to get started` to continue.
 
 <p align="center">
   <figure>
@@ -74,9 +73,12 @@ hopsworks.login()
 project = hopsworks.create_project("my_project")
 ```
 
-### API Reference
+!!! api "API reference"
 
-[`Project`][hopsworks_common.project.Project]
+    - <code class="doc-symbol doc-symbol-function"></code> [`hopsworks.create_project`][hopsworks.create_project]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Project`][hopsworks_common.project.Project]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Reserved project names
 

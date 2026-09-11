@@ -1,0 +1,104 @@
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 800 400" role="img" aria-label="Animated diagram of drift detection. Left: the reference distribution of a feature, a histogram of the training data v1. Right: the logged inference data, one tick per logged prediction over time, with a detection window over the most recent rows. Below the reference, the detection window's histogram of the same feature. As the window slides forward the window histogram drifts away from the reference, and each step plots a new point of the drift distance curve. The last window crosses the dashed alert threshold: the window turns red and a drift alert fires." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="mm-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+  </defs>
+
+  <!-- reference: the training data distribution -->
+  <g id="mm-ref" data-tone="accent">
+    <rect class="viz-kv-frame" x="24" y="24" width="180" height="150" rx="6"/>
+    <path class="viz-kv-header" d="M24 30 a6 6 0 0 1 6 -6 h168 a6 6 0 0 1 6 6 v20 h-180 z"/>
+    <text class="viz-kv-title" x="36" y="43">Reference</text>
+    <text class="viz-meta" x="196" y="43" text-anchor="end">train v1</text>
+    <text class="viz-meta" x="36" y="68">< 50</text>
+    <rect class="viz-progress-track" x="100" y="58" width="90" height="12" rx="2"/>
+    <rect class="viz-progress-fill" data-tone="accent" x="100" y="58" width="30" height="12" rx="2"/>
+    <text class="viz-meta" x="36" y="90">50-100</text>
+    <rect class="viz-progress-track" x="100" y="80" width="90" height="12" rx="2"/>
+    <rect class="viz-progress-fill" data-tone="accent" x="100" y="80" width="70" height="12" rx="2"/>
+    <text class="viz-meta" x="36" y="112">100-200</text>
+    <rect class="viz-progress-track" x="100" y="102" width="90" height="12" rx="2"/>
+    <rect class="viz-progress-fill" data-tone="accent" x="100" y="102" width="90" height="12" rx="2"/>
+    <text class="viz-meta" x="36" y="134">200-500</text>
+    <rect class="viz-progress-track" x="100" y="124" width="90" height="12" rx="2"/>
+    <rect class="viz-progress-fill" data-tone="accent" x="100" y="124" width="50" height="12" rx="2"/>
+    <text class="viz-meta" x="36" y="156">> 500</text>
+    <rect class="viz-progress-track" x="100" y="146" width="90" height="12" rx="2"/>
+    <rect class="viz-progress-fill" data-tone="accent" x="100" y="146" width="20" height="12" rx="2"/>
+  </g>
+
+  <!-- logged inference data: one tick per logged prediction, the window slides over the newest rows -->
+  <g>
+    <rect class="viz-kv-frame" x="228" y="24" width="548" height="150" rx="6"/>
+    <path class="viz-kv-header" d="M228 30 a6 6 0 0 1 6 -6 h536 a6 6 0 0 1 6 6 v20 h-548 z"/>
+    <text class="viz-kv-title" x="240" y="43">Logged inference data</text>
+    <text class="viz-meta" x="768" y="43" text-anchor="end">fraud_detector v1</text>
+    <path class="viz-tick" d="M250 146 V118 M270 146 V110 M290 146 V122 M310 146 V106 M330 146 V116 M350 146 V112 M370 146 V120 M390 146 V104 M410 146 V114 M430 146 V108 M450 146 V122 M470 146 V110 M490 146 V102 M510 146 V116 M530 146 V106 M550 146 V112 M570 146 V100 M590 146 V108 M610 146 V104 M630 146 V98 M650 146 V110 M670 146 V96 M690 146 V102 M710 146 V94 M730 146 V100 M750 146 V92"/>
+    <text class="viz-meta" x="240" y="166">one tick per logged prediction, feature value as height · time &#8594;</text>
+  </g>
+  <g transform="translate(244 60)">
+    <g id="mm-win" style="opacity:0">
+      <rect id="mm-winr" class="viz-window" data-tone="data" data-state="active" width="120" height="92" rx="6"/>
+    </g>
+  </g>
+
+  <!-- the detection window's own distribution -->
+  <g id="mm-wf" data-tone="data">
+    <rect class="viz-kv-frame" x="24" y="198" width="180" height="150" rx="6"/>
+    <path class="viz-kv-header" d="M24 204 a6 6 0 0 1 6 -6 h168 a6 6 0 0 1 6 6 v20 h-180 z"/>
+    <text class="viz-kv-title" x="36" y="217">Detection window</text>
+    <text class="viz-meta" x="36" y="242">< 50</text>
+    <rect class="viz-progress-track" x="100" y="232" width="90" height="12" rx="2"/>
+    <rect id="mm-b1" class="viz-progress-fill" x="100" y="232" width="30" height="12" rx="2"/>
+    <text class="viz-meta" x="36" y="264">50-100</text>
+    <rect class="viz-progress-track" x="100" y="254" width="90" height="12" rx="2"/>
+    <rect id="mm-b2" class="viz-progress-fill" x="100" y="254" width="70" height="12" rx="2"/>
+    <text class="viz-meta" x="36" y="286">100-200</text>
+    <rect class="viz-progress-track" x="100" y="276" width="90" height="12" rx="2"/>
+    <rect id="mm-b3" class="viz-progress-fill" x="100" y="276" width="90" height="12" rx="2"/>
+    <text class="viz-meta" x="36" y="308">200-500</text>
+    <rect class="viz-progress-track" x="100" y="298" width="90" height="12" rx="2"/>
+    <rect id="mm-b4" class="viz-progress-fill" x="100" y="298" width="50" height="12" rx="2"/>
+    <text class="viz-meta" x="36" y="330">> 500</text>
+    <rect class="viz-progress-track" x="100" y="320" width="90" height="12" rx="2"/>
+    <rect id="mm-b5" class="viz-progress-fill" x="100" y="320" width="20" height="12" rx="2"/>
+  </g>
+
+  <!-- drift distance: window vs reference, one point per window -->
+  <text class="viz-label" x="240" y="216">Drift distance</text>
+  <text class="viz-meta" x="240" y="232">window vs reference</text>
+  <path class="viz-edge" d="M260 348 H768" marker-end="url(#mm-arrow)"/>
+  <path class="viz-edge" d="M260 348 V240" marker-end="url(#mm-arrow)"/>
+  <path class="viz-edge" data-variant="lane" data-tone="error" d="M260 280 H768"/>
+  <text class="viz-meta" data-tone="error" x="268" y="274">alert threshold</text>
+
+  <path id="mm-s1" class="viz-edge viz-fade" data-tone="data" d="M260 336 C 290 335 310 334 330 333" style="opacity:0" stroke-width="2"/>
+  <circle id="mm-d1" class="viz-status-dot viz-fade" data-tone="data" cx="330" cy="333" r="4" style="opacity:0"/>
+  <path id="mm-s2" class="viz-edge viz-fade" data-tone="data" d="M330 333 C 380 331 420 328 460 324" style="opacity:0" stroke-width="2"/>
+  <circle id="mm-d2" class="viz-status-dot viz-fade" data-tone="data" cx="460" cy="324" r="4" style="opacity:0"/>
+  <path id="mm-s3" class="viz-edge viz-fade" data-tone="data" d="M460 324 C 510 318 550 312 590 302" style="opacity:0" stroke-width="2"/>
+  <circle id="mm-d3" class="viz-status-dot viz-fade" data-tone="data" cx="590" cy="302" r="4" style="opacity:0"/>
+  <path id="mm-s4" class="viz-edge viz-fade" data-tone="error" d="M590 302 C 640 290 680 270 720 258" style="opacity:0" stroke-width="2"/>
+  <circle id="mm-d4" class="viz-status-dot viz-fade" data-tone="error" cx="720" cy="258" r="4" style="opacity:0"/>
+  <g id="mm-alert" class="viz-badge viz-fade" data-tone="error" style="opacity:0">
+    <rect x="656" y="222" width="112" height="26" rx="6"/>
+    <text x="712" y="235" text-anchor="middle">drift alert</text>
+  </g>
+</svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 900,
+  "loopDelay": 2600,
+  "steps": [
+    { "$label": "reference", "#mm-ref": {"state": "active"}, "$ms": 900 },
+    { "$label": "window", "#mm-ref": {"state": null}, "#mm-win": {"opacity": 1}, "#mm-wf": {"state": "active"}, "#mm-s1": {"opacity": 1}, "#mm-d1": {"opacity": 1}, "$ms": 1000 },
+    { "$label": "slide", "#mm-win": {"x": 130}, "#mm-b1": {"w": 26}, "#mm-b2": {"w": 62}, "#mm-b3": {"w": 86}, "#mm-b4": {"w": 60}, "#mm-b5": {"w": 30}, "#mm-s2": {"opacity": 1}, "#mm-d2": {"opacity": 1}, "$ms": 1000 },
+    { "#mm-win": {"x": 260}, "#mm-b1": {"w": 22}, "#mm-b2": {"w": 50}, "#mm-b3": {"w": 80}, "#mm-b4": {"w": 74}, "#mm-b5": {"w": 44}, "#mm-s3": {"opacity": 1}, "#mm-d3": {"opacity": 1}, "$ms": 1000 },
+    { "$label": "drift alert", "#mm-win": {"x": 390}, "#mm-winr": {"tone": "error"}, "#mm-wf": {"tone": "error"}, "#mm-b1": {"w": 16}, "#mm-b2": {"w": 36}, "#mm-b3": {"w": 64}, "#mm-b4": {"w": 90}, "#mm-b5": {"w": 64}, "#mm-s4": {"opacity": 1}, "#mm-d4": {"opacity": 1}, "$ms": 800 },
+    { "#mm-alert": {"opacity": 1}, "$ms": 2600 }
+  ]
+}
+</script>
+</figure>

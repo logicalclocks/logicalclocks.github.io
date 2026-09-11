@@ -18,7 +18,7 @@ An administrator account on a Hopsworks cluster.
 You can find the configuration page by navigating in the UI:
 
 1. Click on your user name in the top right corner, then select *Cluster Settings*.
-2. Among the cluster settings, you will find a tab *Configuration*
+2. In the left sidebar of the cluster settings, under *Infrastructure*, select *Configuration*
 
 <figure>
   <img src="../../../assets/images/admin/variables/configuration.png" alt="Configuration Settings" />

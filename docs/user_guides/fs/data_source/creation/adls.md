@@ -30,7 +30,10 @@ Note that your storage account must belong to an Azure resource group.
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog opens below.
+Pick the `Azure Data Lake` card to open the creation form.
+The card is only offered where the connector is supported, so it is absent or disabled on non-cloud clusters.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -47,7 +50,8 @@ Start by giving it a **name** and an optional **description**.
   <figcaption>ADLS Connector Creation Form</figcaption>
 </figure>
 
-1. Select "Azure Data Lake" as the storage.
+1. The form opens with `Source` set to `Azure Data Lake`.
+   Click `Change source` to pick a different one.
 2. Set directory ID.
 3. Enter the Application ID.
 4. Paste the Service Credentials.

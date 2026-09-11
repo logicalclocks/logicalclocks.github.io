@@ -91,18 +91,18 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 === "Python"
 
-  ```python
-  import hopsworks
+    ```python
+    import hopsworks
 
 
-  project = hopsworks.login()
+    project = hopsworks.login()
 
-  # get Dataset API instance
-  dataset_api = project.get_dataset_api()
+    # get Dataset API instance
+    dataset_api = project.get_dataset_api()
 
-  # get Hopsworks Model Registry handle
-  mr = project.get_model_registry()
-  ```
+    # get Hopsworks Model Registry handle
+    mr = project.get_model_registry()
+    ```
 
 ### Step 2: Implement transformer script
 
@@ -153,28 +153,28 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 === "Python"
 
-  ```python
-  uploaded_file_path = dataset_api.upload(
+    ```python
+    uploaded_file_path = dataset_api.upload(
       "my_transformer.py", "Resources", overwrite=True
-  )
-  transformer_script_path = os.path.join(
+    )
+    transformer_script_path = os.path.join(
       "/Projects", project.name, uploaded_file_path
-  )
-  ```
+    )
+    ```
 
 ### Step 4: Define a transformer
 
 === "Python"
 
-  ```python
-  my_transformer = ms.create_transformer(script_file=uploaded_file_path)
+    ```python
+    my_transformer = ms.create_transformer(script_file=uploaded_file_path)
 
-  # or
+    # or
 
-  from hsml.transformer import Transformer
+    from hsml.transformer import Transformer
 
-  my_transformer = Transformer(script_file)
-  ```
+    my_transformer = Transformer(script_file)
+    ```
 
 ### Step 5: Create a deployment with the transformer
 
@@ -182,17 +182,22 @@ Use the `transformer` parameter to set the transformer configuration when creati
 
 === "Python"
 
-  ```python
-  my_model = mr.get_model("my_model", version=1)
+    ```python
+    my_model = mr.get_model("my_model", version=1)
 
-  my_deployment = my_model.deploy(
+    my_deployment = my_model.deploy(
       transformer=my_transformer
-  )
-  ```
+    )
+    ```
 
-### API Reference
+!!! api "API reference"
 
-[`Transformer`][hsml.transformer.Transformer]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Transformer`][hsml.transformer.Transformer]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_transformer`][hsml.model_serving.ModelServing.create_transformer]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+    - <code class="doc-symbol doc-symbol-method"></code> [`DatasetApi.upload`][hopsworks_common.core.dataset_api.DatasetApi.upload]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Transformer script
 

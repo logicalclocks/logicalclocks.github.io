@@ -15,7 +15,7 @@ See [Server Configuration for LDAP](./configure-server.md#step-1-server-configur
 ### Step 1: Enable LDAP
 
 After configuring the server you can configure Authentication methods by clicking on your name in the top right corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
-In the *Authentication* tab you can find in **Cluster Settings**, you can enable LDAP by clicking on the LDAP checkbox.
+On the *Authentication* page, found under *Security & Access* in the left sidebar of **Cluster Settings**, you can enable LDAP by clicking on the LDAP checkbox.
 
 If LDAP/Kerberos checkbox is not checked make sure that you configured your application server and enable it by clicking on the checkbox.
 

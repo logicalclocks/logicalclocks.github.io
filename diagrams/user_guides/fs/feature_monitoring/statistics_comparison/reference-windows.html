@@ -1,0 +1,30 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 760 292" role="img" aria-label="Reference windows. The detection window covers the last week of data. It is compared against a reference, chosen in one of four ways: a rolling reference window (the week before, with_reference_window with time_offset two weeks and window_length one week), an expanding window over all feature group data (with_reference_window without arguments), a training dataset (with_reference_training_dataset with a version), or a fixed value passed as specific_value to compare_on." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="rw-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+  </defs>
+  <path class="viz-axis" d="M40 80 H720" marker-end="url(#rw-arrow)"/>
+  <path class="viz-tick" d="M80 74 V86 M120 74 V86 M160 74 V86 M200 74 V86 M240 74 V86 M280 74 V86 M320 74 V86 M360 74 V86 M400 74 V86 M440 74 V86 M480 74 V86 M520 74 V86 M560 74 V86 M600 74 V86 M640 74 V86"/>
+  <circle class="viz-status-dot" data-tone="accent" cx="640" cy="80" r="5"/>
+  <text class="viz-meta" x="146" y="110" text-anchor="middle">training dataset created</text>
+  <text class="viz-meta" x="320" y="110" text-anchor="middle">2 weeks ago</text>
+  <text class="viz-meta" x="480" y="110" text-anchor="middle">1 week ago</text>
+  <text class="viz-meta" x="640" y="110" text-anchor="middle">now</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="480" y="66" width="160" height="28" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="560" y="84" text-anchor="middle">detection window</text>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="320" y="66" width="160" height="28" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="400" y="84" text-anchor="middle">reference window</text>
+  <rect class="viz-window" data-solid="" data-tone="data" data-state="visited" x="72" y="66" width="148" height="28" rx="4"/>
+  <text class="viz-meta" data-tone="data" x="146" y="84" text-anchor="middle">training dataset v1</text>
+  <rect class="viz-window" data-solid="" data-tone="neutral" data-state="visited" x="80" y="126" width="560" height="28" rx="4"/>
+  <text class="viz-meta" data-tone="neutral" x="360" y="144" text-anchor="middle">all feature group data</text>
+  <text class="viz-label" x="40" y="190">reference, one of:</text>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="40" y="201" width="10" height="10" rx="2"/>
+  <text class="viz-codeln" x="60" y="210"><tspan class="tok-fn">with_reference_window</tspan>(time_offset=<tspan class="tok-str">"2w"</tspan>, window_length=<tspan class="tok-str">"1w"</tspan>)</text>
+  <rect class="viz-window" data-solid="" data-tone="neutral" data-state="visited" x="40" y="223" width="10" height="10" rx="2"/>
+  <text class="viz-codeln" x="60" y="232"><tspan class="tok-fn">with_reference_window</tspan>()</text>
+  <rect class="viz-window" data-solid="" data-tone="data" data-state="visited" x="40" y="245" width="10" height="10" rx="2"/>
+  <text class="viz-codeln" x="60" y="254"><tspan class="tok-fn">with_reference_training_dataset</tspan>(training_dataset_version=1)</text>
+  <text class="viz-codeln" x="60" y="276"><tspan class="tok-fn">compare_on</tspan>(..., specific_value=123)</text>
+</svg>
+</figure>

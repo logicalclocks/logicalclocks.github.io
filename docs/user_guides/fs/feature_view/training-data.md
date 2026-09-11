@@ -5,8 +5,8 @@ Training data can be created from the feature view and used by different ML libr
 You can read [training data concepts](../../../concepts/fs/feature_view/offline_api.md) for more details.
 To see a full example of how to create training data, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/2_fraud_batch_training_pipeline.ipynb).
 
-For Python-clients, handling small or moderately-sized data, we recommend enabling the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md) service,
-which will provide significant speedups over Spark/Hive for reading and creating in-memory training datasets.
+Python clients read and create in-memory training data through the ArrowFlight Server with DuckDB, which Hopsworks enables by default.
+For small and moderately sized datasets (what fits in a pandas DataFrame) it avoids the start-up cost of a Spark job; larger datasets can still be created with Spark by setting `read_options={"use_hive": True}`.
 
 ## Creation
 
@@ -99,7 +99,7 @@ version, job = feature_view.create_training_data(
 )
 ```
 
-For different lookbacks per joined Feature Group, pass a `Lookback` — see the [per-feature-group lookback section][batch-data-lookback] of the batch-data guide for the full shape.
+For different lookbacks per joined Feature Group, pass a `Lookback`. See the [per-feature-group lookback section][batch-data-lookback] of the batch-data guide for the full shape.
 
 The resolved window is persisted with the training dataset, so re-reading the same training dataset version reconstructs the same per-join predicate.
 The same parameter is accepted by `create_train_test_split` and `create_train_validation_test_split`.
@@ -142,8 +142,7 @@ version, job = feature_view.create_train_validation_test_split(
 )
 ```
 
-If the [ArrowFlight Server with DuckDB](../../../setup_installation/common/arrow_flight_duckdb.md) service is enabled,
-and you want to create a particular in-memory training dataset with Hive instead, you can set `read_options={"use_hive": True}`.
+To create a particular in-memory training dataset with Spark instead of the ArrowFlight Server with DuckDB, set `read_options={"use_hive": True}`.
 
 ```python
 # create a training dataset as DataFrame with Hive

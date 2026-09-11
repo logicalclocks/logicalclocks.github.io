@@ -16,7 +16,7 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     | CPU (cores)        | 0.2             | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
     | Memory (MB)        | 32              | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
     | GPUs               | 0               | 0              | Request must equal limit                           |
-    | Shared Memory (MB) | 128             | —              | —                                                  |
+    | Shared Memory (MB) | 128             | n/a            | n/a                                                |
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component (predictor or transformer) enables **scale-to-zero**.
@@ -139,9 +139,14 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   my_deployment.save()
   ```
 
-### API Reference
+!!! api "API reference"
 
-[`Resources`][hsml.resources.Resources]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Resources`][hsml.resources.Resources]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_predictor`][hsml.model_serving.ModelServing.create_predictor]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_deployment`][hsml.model_serving.ModelServing.create_deployment]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Predictor.deploy`][hsml.predictor.Predictor.deploy]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Autoscaling
 

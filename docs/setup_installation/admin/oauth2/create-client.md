@@ -34,7 +34,7 @@ Additional configuration can be set here:
 ### Step 2: Add Group mappings
 
 Optionally you can add a group mapping from your identity provider to Hopsworks groups, by clicking on your name in the top right corner of the navigation bar and choosing _Cluster Settings_ from the dropdown menu.
-In the _Cluster Settings_ _Configuration_ tab search for _oauth\_group\_mapping_ and click on the edit button.
+On the _Configuration_ page, found under _Infrastructure_ in the left sidebar, search for _oauth\_group\_mapping_ and click on the edit button.
 
   <figure>
     <img src="../../../../assets/images/admin/oauth2/sso/oauth-group-mapping.png" alt="Set variables">

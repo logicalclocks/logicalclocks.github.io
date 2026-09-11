@@ -1,12 +1,17 @@
+# Feature Views
+
 A feature view is a logical view over (or interface to) a set of features that may come from different feature groups.
-You create a feature view by joining together features from existing feature groups.
+You create a feature view by selecting features, starting from a root feature group and following foreign keys to join in features from other feature groups.
+When the feature view has a label for supervised learning, the root feature group is the label feature group, the one feature group that holds the labels.
+Features are reachable by graph traversal: any feature group joined to the root can, in turn, have foreign keys to further feature groups whose features you can also select.
+A feature view does not have a primary key of its own; it has serving keys, the foreign keys of its label feature group, which you provide to retrieve feature vectors.
 In the illustration below, we can see that features are joined together from the two feature groups: seller_delivery_time_monthly and the seller_reviews_quarterly.
 You can also see that features in the feature view inherit not only the feature type from their feature groups, but also whether they are the primary key and/or the event_time.
 The image also includes transformation functions that are applied to individual features.
 Transformation functions are a part of the feature types included in the feature view.
 That is, a feature in a feature view is not only defined by its data type (int, string, etc) or its feature type (categorical, numerical, embedding), but also by its transformation.
 
-<img src="../../../../assets/images/concepts/fs/feature-view-simple.svg">
+--8<-- "concepts/fs/feature_view/fv_overview/feature-views-2.html"
 
 Feature views can also include:
 
@@ -17,7 +22,7 @@ Feature views can also include:
 
 In the flow chart below, we can see the decisions that can be taken when creating (1) a feature view, and (2) creating training data with the feature view.
 
-<img src="../../../../assets/images/concepts/fs/feature-view-flowchart.svg">
+--8<-- "concepts/fs/feature_view/fv_overview/feature-views.html"
 
 We can see here how the feature view is a representation for a model in the feature store - the same feature view is used to retrieve feature vectors for operational model that was created with training data from this feature view.
 As such, you can see that the most common use case for creating a feature view is to define the features that will be used in a model.

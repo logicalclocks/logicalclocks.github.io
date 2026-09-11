@@ -24,7 +24,7 @@ You can access it from the Hopsworks UI by clicking on the _Airflow_ button on t
 
 Authorization is per Hopsworks project:
 admins on Hopsworks (`HOPS_ADMIN`) have access to all DAGs;
-regular users see only DAGs of the projects they are a member of (DAGs, runs, logs, triggers, edits — all surfaces).
+regular users see only DAGs of the projects they are a member of (DAGs, runs, logs, triggers, edits: all surfaces).
 The Audit Log is row-filtered for non-admins to events for DAGs in their projects.
 See the [security model](security_model.md) for the full surface-by-surface contract.
 

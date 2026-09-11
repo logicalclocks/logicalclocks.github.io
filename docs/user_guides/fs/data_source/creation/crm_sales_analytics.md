@@ -33,17 +33,19 @@ Before you begin, make sure you have:
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `CRM, Sales & Analytics` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
   <figcaption>The Data Source View in the User Interface</figcaption>
 </figure>
 
-### Step 2: Select storage and source
+### Step 2: Name the data source and select the platform
 
-Choose `CRM, Sales & Analytics` as the storage type.
-Then enter a unique **Name**, an optional **Description**, and select the source you want to configure.
+The form opens with `Source` set to `CRM, Sales & Analytics`, and `Change source` takes you back to the catalog.
+Enter a unique **Name**, an optional **Description**, and pick the platform you want to configure in the **Source** radio group of the connection section.
 
 <figure markdown>
   ![CRM, Sales & Analytics - Facebook Ads](../../../../assets/images/guides/fs/data_source/crm_sales_analytics_facebook_ads.png)

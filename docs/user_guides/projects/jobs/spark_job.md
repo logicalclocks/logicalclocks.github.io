@@ -47,8 +47,8 @@ Click `New Job` and the following dialog will appear.
 
 ### Step 3: Set the job type
 
-By default, the dialog will create a Spark job.
-Make sure `SPARK` is chosen.
+The `Type` radio offers `PYTHON` and `SPARK`, and `PYTHON` is selected by default.
+Select `SPARK` to configure a Spark job.
 
 ### Step 4: Set the jar
 
@@ -158,7 +158,8 @@ Now click the `Run` button to start the execution of the job, and then click on 
 
 ### Step 10: Application logs
 
-To monitor logs while the execution is running, click `Spark UI` to open the Spark UI in a separate tab.
+Each execution row of a Spark job carries `Spark UI`, `Metrics`, `Monitor`, `Logs` and `Live Logs`.
+While the execution is running, click `Spark UI` to open the Spark UI in a separate tab, or `Live Logs` to follow the logs as they are produced.
 
 Once the execution is finished, you can click on `Logs` to see the full logs for execution.
 
@@ -294,18 +295,24 @@ df = spark.read.parquet(f"s3a://{bucket}/events/")
 df.printSchema()
 ```
 
-Scheduled and backfill runs also receive `HOPS_LOGICAL_DATE`, `HOPS_START_TIME`
-and `HOPS_END_TIME` describing the data interval the run should process — see
-[Scheduling][logical-time-and-data-intervals] and
-[Batch feature pipelines][batch-feature-pipelines].
+Scheduled and backfill runs also receive `HOPS_LOGICAL_DATE`, `HOPS_START_TIME` and `HOPS_END_TIME` describing the data interval the run should process.
+See [Scheduling][logical-time-and-data-intervals] and [Batch feature pipelines][batch-feature-pipelines].
 
 !!! warning "Reserved names"
-    Names starting with `HOPS_` are reserved by the scheduler. Setting them in
-    the *Environment variables* panel overrides the scheduler value for every
-    execution — the UI shows a warning callout when you do this.
+    Names starting with `HOPS_` are reserved by the scheduler.
+    Setting them in the *Environment variables* panel overrides the scheduler value for every execution.
+    The UI shows a warning callout when you do this.
 
-## API Reference
+!!! api "API reference"
 
-[`Job`][hopsworks_common.job.Job]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_job_api`][hopsworks_common.project.Project.get_job_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`JobsApi`][hopsworks.core.job_api.JobsApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_configuration`][hopsworks.core.job_api.JobsApi.get_configuration]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_job`][hopsworks.core.job_api.JobsApi.create_job]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Job`][hopsworks_common.job.Job]
+        - <code class="doc-symbol doc-symbol-method"></code> [`run`][hopsworks_common.job.Job.run]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Execution`][hopsworks_common.execution.Execution]
+        - <code class="doc-symbol doc-symbol-method"></code> [`download_logs`][hopsworks_common.execution.Execution.download_logs]
+    - <code class="doc-symbol doc-symbol-method"></code> [`DatasetApi.upload`][hopsworks_common.core.dataset_api.DatasetApi.upload]
 
-[`Execution`][hopsworks_common.execution.Execution]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

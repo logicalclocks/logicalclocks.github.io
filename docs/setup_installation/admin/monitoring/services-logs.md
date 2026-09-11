@@ -15,12 +15,12 @@ To access the services logs, you need to have an administrator account on the Ho
 
 You can access the admin page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing _Cluster Settings_ from the dropdown menu.
 
-You can then navigate to the _Monitoring_ tab.
-The _Monitoring_ tab gives you access to several of the observability tools that are already deployed to help you manage the health of the cluster.
+You can then choose _Monitoring_ under _Observability_ in the left sidebar.
+The _Monitoring_ page gives you access to several of the observability tools that are already deployed to help you manage the health of the cluster.
 
 <figure>
-  <img src="../../../../assets/images/admin/monitoring/monitoring_tab.png" alt="monitoring tab" />
-  <figcaption>Monitoring tab</figcaption>
+  <img src="../../../../assets/images/admin/monitoring/monitoring_tab.png" alt="monitoring page" />
+  <figcaption>Monitoring page</figcaption>
 </figure>
 
 Click on the _Service Logs_ link to open the OpenSearch Dashboards web application and navigate through the logs.

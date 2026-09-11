@@ -154,12 +154,7 @@ Since v4.0 Hopsworks Feature selection API supports both Star and Snowflake Sche
 When choosing Star Schema data model all tables are children of the parent (the left most) feature group, which has all
 foreign keys for its child feature groups.
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/fs/feature_view/star.png" alt="Star schema data model">
-    <figcaption>Star schema data model</figcaption>
-  </figure>
-</p>
+--8<-- "user_guides/fs/feature_view/query/star-schema.html"
 
 === "Python"
 
@@ -190,12 +185,7 @@ known as the serving_keys, from the parent feature group to retrieve your precom
 Hopsworks also provides the possibility to define a feature view that consists of a nested tree of children (to up to a depth of 20) from the root (left most) feature group.
 This is called  Snowflake Schema data model where you need to build nested tables (subtrees) using joins, and then join the subtrees to their parents iteratively until you reach the root node (the leftmost feature group in the feature selection):
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/fs/feature_view/snowflake.png" alt="Snowflake schema data model">
-    <figcaption>Snowflake schema data model</figcaption>
-  </figure>
-</p>
+--8<-- "user_guides/fs/feature_view/query/snowflake-schema.html"
 
 === "Python"
 

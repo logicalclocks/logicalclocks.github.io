@@ -35,7 +35,9 @@ Before you begin this guide you'll need to retrieve the following information fr
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `Redshift` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -47,7 +49,8 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 Enter the details for your Redshift connector.
 Start by giving it a **name** and an optional **description**.
 
-01. Select "Redshift" as the storage.
+01. The form opens with `Source` set to `Redshift`.
+    Click `Change source` to pick a different one.
 02. The name of the cluster.
 03. The database endpoint.
     Should be in the format `[UUID].eu-west-1.redshift.amazonaws.com`.

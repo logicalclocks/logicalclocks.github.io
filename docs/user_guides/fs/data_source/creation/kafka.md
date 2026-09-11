@@ -30,7 +30,9 @@ Before you begin this guide you'll need to retrieve the following information fr
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `Kafka` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -42,9 +44,11 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 Enter the details for your Kafka connector.
 Start by giving it a **name** and an optional **description**.
 
-01. Select "Kafka" as the storage.
+01. The form opens with `Source` set to `Kafka`.
+    Click `Change source` to pick a different one.
 02. Add all the bootstrap server addresses and ports that you want the consumers/producers to connect to.
-    The client will make use of all servers irrespective of which servers are specified here for bootstrapping—this list only impacts the initial hosts used to discover the full set of servers.
+    The client will make use of all servers irrespective of which servers are specified here for bootstrapping.
+    This list only impacts the initial hosts used to discover the full set of servers.
 03. Choose the Security protocol.
 
     !!! example "TSL/SSL"

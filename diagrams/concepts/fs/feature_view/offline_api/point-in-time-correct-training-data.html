@@ -1,0 +1,79 @@
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 820 314" role="img" aria-label="Animated timeline of a point-in-time correct join, on the same data as the table above. Time runs left to right. The top lane is the feature group seller_reviews_quarterly with two reviews: oct-22 avg_review_score 3.4 and dec-22 2.8. The bottom lane is seller_delivery_time_monthly, the observations, with deliveries at oct-22, nov-22 and dec-22. For each observation an as-of window grows from the left up to that observation's event_time; the join takes the newest review inside the window. oct-22 takes the oct-22 review 3.4. nov-22 also takes the oct-22 review 3.4 because the dec-22 review sits outside the window, later in time, and is excluded. dec-22 takes the dec-22 review 2.8. A caption states that each observation joins the newest review at or before its event_time." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="tl-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+  </defs>
+
+  <!-- ===== as-of window (grows left to right with time) ===== -->
+  <rect id="win" class="viz-window" data-tone="data" x="40" y="42" width="0" height="62" rx="6" style="transition:width .7s cubic-bezier(.4,0,.2,1)"/>
+
+  <!-- ===== feature lane: reviews ===== -->
+  <text class="viz-label" x="40" y="30">seller_reviews_quarterly</text>
+  <text class="viz-meta" x="256" y="30">feature group</text>
+  <g id="rev-oct" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="46" y="48" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="110" y="70" text-anchor="middle">3.4</text>
+    <text class="viz-edge-label viz-meta" x="110" y="86" text-anchor="middle">oct-22</text>
+  </g>
+  <g id="rev-dec" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="646" y="48" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="710" y="70" text-anchor="middle">2.8</text>
+    <text class="viz-edge-label viz-meta" x="710" y="86" text-anchor="middle">dec-22</text>
+  </g>
+  <text id="excl" class="viz-meta viz-fade" data-tone="error" x="700" y="110" text-anchor="middle" style="opacity:0">outside the window, excluded</text>
+
+  <!-- ===== observation guides (the as-of cutoff) ===== -->
+  <path id="g-oct" class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M110 42 V216" style="opacity:0"/>
+  <path id="g-nov" class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M410 42 V216" style="opacity:0"/>
+  <path id="g-dec" class="viz-edge viz-fade" data-variant="lane" data-tone="data" d="M710 42 V216" style="opacity:0"/>
+
+  <!-- ===== observation lane: deliveries (the label group) ===== -->
+  <text class="viz-edge-label viz-label" x="40" y="150">seller_delivery_time_monthly</text>
+  <text class="viz-edge-label viz-meta" x="290" y="150">observations &#183; label group</text>
+  <g id="del-oct" class="viz-kv-entry" data-tone="data">
+    <rect class="viz-kv-cell" x="46" y="164" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="110" y="186" text-anchor="middle">72</text>
+    <text class="viz-edge-label viz-meta" x="110" y="202" text-anchor="middle">oct-22</text>
+  </g>
+  <g id="del-nov" class="viz-kv-entry" data-tone="data">
+    <rect class="viz-kv-cell" x="346" y="164" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="410" y="186" text-anchor="middle">104</text>
+    <text class="viz-edge-label viz-meta" x="410" y="202" text-anchor="middle">nov-22</text>
+  </g>
+  <g id="del-dec" class="viz-kv-entry" data-tone="data">
+    <rect class="viz-kv-cell" x="646" y="164" width="128" height="46" rx="6"/>
+    <text class="viz-node-title" x="710" y="186" text-anchor="middle">88</text>
+    <text class="viz-edge-label viz-meta" x="710" y="202" text-anchor="middle">dec-22</text>
+  </g>
+
+  <!-- ===== joined review value at each observation ===== -->
+  <text id="b-oct" class="viz-meta viz-fade" data-tone="accent" x="110" y="228" text-anchor="middle" style="opacity:0">review 3.4</text>
+  <text id="b-nov" class="viz-meta viz-fade" data-tone="accent" x="410" y="228" text-anchor="middle" style="opacity:0">review 3.4</text>
+  <text id="b-dec" class="viz-meta viz-fade" data-tone="accent" x="710" y="228" text-anchor="middle" style="opacity:0">review 2.8</text>
+
+  <!-- ===== time axis ===== -->
+  <path class="viz-edge" d="M40 258 H790" marker-end="url(#tl-arrow)"/>
+  <text class="viz-meta" x="44" y="274">earlier</text>
+  <text class="viz-meta" x="786" y="274" text-anchor="end">later &#183; time</text>
+  <text id="cap" class="viz-meta viz-fade" x="415" y="298" text-anchor="middle" style="opacity:0">each observation joins the newest review at or before its event_time</text>
+</svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 800,
+  "loopDelay": 2800,
+  "steps": [
+    { "#win": {"w": 138, "state": "active"}, "#g-oct": {"opacity": 1}, "#del-oct": {"state": "active"}, "$ms": 800 },
+    { "#rev-oct": {"state": "active", "tone": "accent"}, "#b-oct": {"opacity": 1}, "$ms": 900 },
+    { "#g-oct": {"opacity": 0}, "#del-oct": {"state": "visited"}, "#rev-oct": {"state": null, "tone": null}, "$ms": 700 },
+    { "#win": {"w": 438}, "#g-nov": {"opacity": 1}, "#del-nov": {"state": "active"}, "$ms": 800 },
+    { "#rev-oct": {"state": "active", "tone": "accent"}, "#rev-dec": {"state": "active", "tone": "error"}, "#excl": {"opacity": 1}, "#b-nov": {"opacity": 1}, "$ms": 1300 },
+    { "#g-nov": {"opacity": 0}, "#del-nov": {"state": "visited"}, "#rev-oct": {"state": null, "tone": null}, "#rev-dec": {"state": null, "tone": null}, "#excl": {"opacity": 0}, "$ms": 700 },
+    { "#win": {"w": 738}, "#g-dec": {"opacity": 1}, "#del-dec": {"state": "active"}, "$ms": 800 },
+    { "#rev-dec": {"state": "active", "tone": "accent"}, "#b-dec": {"opacity": 1}, "$ms": 900 },
+    { "#g-dec": {"opacity": 0}, "#del-dec": {"state": "visited"}, "#rev-dec": {"state": null, "tone": null}, "#win": {"state": "visited"}, "#cap": {"opacity": 1}, "$ms": 2600 }
+  ]
+}
+</script>
+</figure>

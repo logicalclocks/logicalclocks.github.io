@@ -147,8 +147,12 @@ Score the vector `[2.5, 3]` and find the 3 most similar vectors.
  'took': 9}
 ```
 
-### API Reference
+!!! api "API reference"
 
-[k-NN plugin](https://opensearch.org/docs/1.3/search-plugins/knn/knn-index/)
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_opensearch_api`][hopsworks_common.project.Project.get_opensearch_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`OpenSearchApi`][hopsworks_common.core.opensearch_api.OpenSearchApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_default_py_config`][hopsworks_common.core.opensearch_api.OpenSearchApi.get_default_py_config]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_project_index`][hopsworks_common.core.opensearch_api.OpenSearchApi.get_project_index]
+    - <code class="doc-symbol doc-symbol-docs"></code> [k-NN plugin](https://opensearch.org/docs/1.3/search-plugins/knn/knn-index/)
 
-[`OpenSearchApi`][hopsworks_common.core.opensearch_api.OpenSearchApi]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

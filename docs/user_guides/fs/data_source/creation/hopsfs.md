@@ -24,7 +24,9 @@ Before you begin this guide you'll need to identify a **directory on the filesys
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog opens below.
+Pick the `HopsFS` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -36,7 +38,8 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 Enter the details for your HopsFS connector.
 Start by giving it a **name** and an optional **description**.
 
-1. Select "HopsFS" as the storage.
+1. The form opens with `Source` set to `HopsFS`.
+   Click `Change source` to pick a different one.
 2. Select the top-level dataset to point the connector to.
 3. Click on "Save Credentials".
 

@@ -24,6 +24,13 @@ Each app is backed by a Hopsworks job and a Kubernetes deployment, so it can be 
 
 The Apps page lists each app with its name, owner, state, UI link, uptime, and action buttons.
 
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/apps/apps_list.png" alt="Apps list">
+    <figcaption>The Apps page with one app serving</figcaption>
+  </figure>
+</p>
+
 !!! note "Shared WebSocket capacity"
     Apps share the same per-pod WebSocket session pool as Jupyter and terminals.
     If you see capacity warnings, close unused sessions or see [Session Capacity Warnings](../jupyter/session_capacity_warnings.md).
@@ -31,6 +38,13 @@ The Apps page lists each app with its name, owner, state, UI link, uptime, and a
 ## Creating an app
 
 The create dialog lets you choose the app type, source, runtime environment, app base path, readiness probe path, resources, monitoring, and per-app environment variables.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/apps/create_app.png" alt="New App form">
+    <figcaption>The New App form: type, source, app file and resources</figcaption>
+  </figure>
+</p>
 
 | Setting | Typical value |
 | --- | --- |
@@ -118,6 +132,13 @@ Most apps follow the same pattern:
 ## Writing app code
 
 ### Streamlit apps
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/apps/streamlit_app.png" alt="A Streamlit app served by Hopsworks">
+    <figcaption>A Streamlit dashboard reading a feature group, served through the Hopsworks proxy</figcaption>
+  </figure>
+</p>
 
 Streamlit apps are launched with `streamlit run` behind the Hopsworks proxy.
 Hopsworks manages the mount prefix for you, so Streamlit apps can stay root-based.
@@ -214,6 +235,13 @@ The app URL is only shown once the backend confirms that the app is actually ser
 That means `RUNNING` and `Serving` are not the same thing: `Serving` is the state where the Hopsworks proxy can reach the app end to end.
 
 ### What the app details page shows
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/apps/app_details.png" alt="App details page">
+    <figcaption>The app details page: lifecycle actions, source, URL and metrics</figcaption>
+  </figure>
+</p>
 
 The details page includes:
 

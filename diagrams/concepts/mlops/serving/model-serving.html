@@ -1,0 +1,147 @@
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 760 532" role="img" aria-label="Animated diagram of a KServe deployment on Hopsworks serving one prediction, in four numbered steps. 1: a device posts a prediction request with its id and device type through the Istio gateway to the transformer. 2: the transformer calls get_feature_vector with the id and the passed device feature; the online feature store returns the precomputed age and spend, and the transformer's feature table fills in, each feature marked as coming from the client or the store. 3: the assembled vector goes to the predictor, any Python framework, which returns 0.92 to the device. 4: inputs, transformed inputs and the prediction are logged to Kafka, while Prometheus scrapes metrics. A trace under the topology lists the four calls." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ms-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="ms-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+    <symbol id="ms-lg-kubernetes" viewBox="0 0 24 24"><path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.004.005a.44.44 0 0 1 .484.606zm-.833-2.129a.44.44 0 0 0 .173-.756l.002-.011L7.585 9.7a5.143 5.143 0 0 0-.73 3.255l2.514-.725.002-.009zm1.145-1.98a.44.44 0 0 0 .699-.337l.01-.005.15-2.62a5.144 5.144 0 0 0-3.01 1.442l2.147 1.523.004-.002zm.76 2.75l.723.349.722-.347.18-.78-.5-.623h-.804l-.5.623.179.779zm1.5-3.095a.44.44 0 0 0 .7.336l.008.003 2.134-1.513a5.188 5.188 0 0 0-2.992-1.442l.148 2.615.002.001zm10.876 5.97l-5.773 7.181a1.6 1.6 0 0 1-1.248.594l-9.261.003a1.6 1.6 0 0 1-1.247-.596l-5.776-7.18a1.583 1.583 0 0 1-.307-1.34L2.1 5.573c.108-.47.425-.864.863-1.073L11.305.513a1.606 1.606 0 0 1 1.385 0l8.345 3.985c.438.209.755.604.863 1.073l2.062 8.955c.108.47-.005.963-.308 1.34zm-3.289-2.057c-.042-.01-.103-.026-.145-.034-.174-.033-.315-.025-.479-.038-.35-.037-.638-.067-.895-.148-.105-.04-.18-.165-.216-.216l-.201-.059a6.45 6.45 0 0 0-.105-2.332 6.465 6.465 0 0 0-.936-2.163c.052-.047.15-.133.177-.159.008-.09.001-.183.094-.282.197-.185.444-.338.743-.522.142-.084.273-.137.415-.242.032-.024.076-.062.11-.089.24-.191.295-.52.123-.736-.172-.216-.506-.236-.745-.045-.034.027-.08.062-.111.088-.134.116-.217.23-.33.35-.246.25-.45.458-.673.609-.097.056-.239.037-.303.033l-.19.135a6.545 6.545 0 0 0-4.146-2.003l-.012-.223c-.065-.062-.143-.115-.163-.25-.022-.268.015-.557.057-.905.023-.163.061-.298.068-.475.001-.04-.001-.099-.001-.142 0-.306-.224-.555-.5-.555-.275 0-.499.249-.499.555l.001.014c0 .041-.002.092 0 .128.006.177.044.312.067.475.042.348.078.637.056.906a.545.545 0 0 1-.162.258l-.012.211a6.424 6.424 0 0 0-4.166 2.003 8.373 8.373 0 0 1-.18-.128c-.09.012-.18.04-.297-.029-.223-.15-.427-.358-.673-.608-.113-.12-.195-.234-.329-.349-.03-.026-.077-.062-.111-.088a.594.594 0 0 0-.348-.132.481.481 0 0 0-.398.176c-.172.216-.117.546.123.737l.007.005.104.083c.142.105.272.159.414.242.299.185.546.338.743.522.076.082.09.226.1.288l.16.143a6.462 6.462 0 0 0-1.02 4.506l-.208.06c-.055.072-.133.184-.215.217-.257.081-.546.11-.895.147-.164.014-.305.006-.48.039-.037.007-.09.02-.133.03l-.004.002-.007.002c-.295.071-.484.342-.423.608.061.267.349.429.645.365l.007-.001.01-.003.129-.029c.17-.046.294-.113.448-.172.33-.118.604-.217.87-.256.112-.009.23.069.288.101l.217-.037a6.5 6.5 0 0 0 2.88 3.596l-.09.218c.033.084.069.199.044.282-.097.252-.263.517-.452.813-.091.136-.185.242-.268.399-.02.037-.045.095-.064.134-.128.275-.034.591.213.71.248.12.556-.007.69-.282v-.002c.02-.039.046-.09.062-.127.07-.162.094-.301.144-.458.132-.332.205-.68.387-.897.05-.06.13-.082.215-.105l.113-.205a6.453 6.453 0 0 0 4.609.012l.106.192c.086.028.18.042.256.155.136.232.229.507.342.84.05.156.074.295.145.457.016.037.043.09.062.129.133.276.442.402.69.282.247-.118.341-.435.213-.71-.02-.039-.045-.096-.065-.134-.083-.156-.177-.261-.268-.398-.19-.296-.346-.541-.443-.793-.04-.13.007-.21.038-.294-.018-.022-.059-.144-.083-.202a6.499 6.499 0 0 0 2.88-3.622c.064.01.176.03.213.038.075-.05.144-.114.28-.104.266.039.54.138.87.256.154.06.277.128.448.173.036.01.088.019.13.028l.009.003.007.001c.297.064.584-.098.645-.365.06-.266-.128-.537-.423-.608zM16.4 9.701l-1.95 1.746v.005a.44.44 0 0 0 .173.757l.003.01 2.526.728a5.199 5.199 0 0 0-.108-1.674A5.208 5.208 0 0 0 16.4 9.7zm-4.013 5.325a.437.437 0 0 0-.404-.232.44.44 0 0 0-.372.233h-.002l-1.268 2.292a5.164 5.164 0 0 0 3.326.003l-1.27-2.296h-.01zm1.888-1.293a.44.44 0 0 0-.27.036.44.44 0 0 0-.214.572l-.003.004 1.01 2.438a5.15 5.15 0 0 0 2.081-2.615l-2.6-.44-.004.005z"/></symbol>
+    <symbol id="ms-lg-istio" viewBox="0 0 24 24"><path d="M4 21 20 21 10 24zM4 20 10 19 10 8zM11 19 20 20 11 0z"/></symbol>
+    <symbol id="ms-lg-pytorch" viewBox="0 0 24 24"><path d="M12.005 0L4.952 7.053a9.865 9.865 0 000 14.022 9.866 9.866 0 0014.022 0c3.984-3.9 3.986-10.205.085-14.023l-1.744 1.743c2.904 2.905 2.904 7.634 0 10.538s-7.634 2.904-10.538 0-2.904-7.634 0-10.538l4.647-4.646.582-.665zm3.568 3.899a1.327 1.327 0 00-1.327 1.327 1.327 1.327 0 001.327 1.328A1.327 1.327 0 0016.9 5.226 1.327 1.327 0 0015.573 3.9z"/></symbol>
+    <symbol id="ms-lg-tensorflow" viewBox="0 0 24 24"><path d="M1.292 5.856L11.54 0v24l-4.095-2.378V7.603l-6.168 3.564.015-5.31zm21.43 5.311l-.014-5.31L12.46 0v24l4.095-2.378V14.87l3.092 1.788-.018-4.618-3.074-1.756V7.603l6.168 3.564z"/></symbol>
+    <symbol id="ms-lg-scikitlearn" viewBox="0 0 24 24"><path d="M15.601 5.53c-1.91.035-3.981.91-5.63 2.56-2.93 2.93-2.083 8.53-1.088 9.525.805.804 6.595 1.843 9.526-1.088a9.74 9.74 0 0 0 .584-.643c.043-.292.205-.66.489-1.106a1.848 1.848 0 0 1-.537.176c-.144.265-.37.55-.676.855-.354.335-.607.554-.76.656a.795.795 0 0 1-.437.152c-.35 0-.514-.308-.494-.924-.22.316-.425.549-.612.7a.914.914 0 0 1-.578.224c-.194 0-.36-.09-.496-.273a1.03 1.03 0 0 1-.193-.507 4.016 4.016 0 0 1-.726.583c-.224.132-.47.197-.74.197-.3 0-.543-.096-.727-.288a.978.978 0 0 1-.257-.524v.004c-.3.276-.564.48-.79.611a1.295 1.295 0 0 1-.649.197.693.693 0 0 1-.571-.275c-.145-.183-.218-.43-.218-.739 0-.464.101-1.02.302-1.67.201-.65.445-1.25.733-1.797l.842-.312a.21.21 0 0 1 .06-.013c.063 0 .116.047.157.14.04.095.061.221.061.38 0 .451-.104.888-.312 1.31-.207.422-.532.873-.974 1.352-.018.23-.027.388-.027.474 0 .193.036.345.106.458.071.113.165.169.282.169a.71.71 0 0 0 .382-.13c.132-.084.333-.26.602-.523.028-.418.187-.798.482-1.142.324-.38.685-.569 1.08-.569.206 0 .37.054.494.16a.524.524 0 0 1 .186.417c0 .458-.486.829-1.459 1.114.088.43.32.646.693.646a.807.807 0 0 0 .417-.117c.129-.076.321-.243.575-.497.032-.252.118-.495.259-.728.182-.3.416-.544.701-.73.285-.185.537-.278.756-.278.276 0 .47.127.58.381l.677-.374h.186l-.292.971c-.15.488-.226.823-.226 1.004 0 .19.067.285.202.285.086 0 .181-.045.285-.137.104-.092.25-.232.437-.42v.001c.143-.155.274-.32.392-.494-.19-.084-.285-.21-.285-.375 0-.17.058-.352.174-.545.116-.194.275-.29.479-.29.172 0 .258.088.258.265 0 .139-.05.338-.149.596.367-.04.687-.32.961-.842l.228-.01c1.059-2.438.828-5.075-.83-6.732-1.019-1.02-2.408-1.5-3.895-1.471zm4.725 8.203a8.938 8.938 0 0 1-1.333 2.151 1.09 1.09 0 0 0-.012.147c0 .168.047.309.14.423.092.113.206.17.34.17.296 0 .714-.264 1.254-.787-.001.04-.003.08-.003.121 0 .146.012.368.036.666l.733-.172c0-.2.003-.357.01-.474.01-.157.033-.33.066-.517.02-.11.07-.216.152-.315l.186-.216a5.276 5.276 0 0 1 .378-.397c.062-.055.116-.099.162-.13a.26.26 0 0 1 .123-.046c.055 0 .083.035.083.106 0 .07-.052.236-.156.497-.194.486-.292.848-.292 1.084 0 .175.046.314.136.418a.45.45 0 0 0 .358.155c.365 0 .803-.269 1.313-.808v-.381c-.361.426-.623.64-.784.64-.109 0-.163-.067-.163-.2 0-.1.065-.316.195-.65.19-.486.285-.836.285-1.048a.464.464 0 0 0-.112-.319.36.36 0 0 0-.282-.127c-.165 0-.354.077-.567.233-.213.156-.5.436-.863.84.053-.262.165-.622.335-1.08l-.809.156a6.54 6.54 0 0 0-.399 1.074c-.04.156-.07.316-.092.48a7.447 7.447 0 0 1-.49.45.38.38 0 0 1-.229.08.208.208 0 0 1-.174-.082.352.352 0 0 1-.064-.222c0-.1.019-.214.056-.343.038-.13.12-.373.249-.731l.308-.849zm-17.21-2.927c-.863-.016-1.67.263-2.261.854-1.352 1.352-1.07 3.827.631 5.527 1.7 1.701 4.95 1.21 5.527.632.467-.466 1.07-3.827-.631-5.527-.957-.957-2.158-1.465-3.267-1.486zm12.285.358h.166v.21H15.4zm.427 0h.166v.865l.46-.455h.195l-.364.362.428.684h-.198l-.357-.575-.164.166v.41h-.166zm1.016 0h.166v.21h-.166zm.481.122h.166v.288h.172v.135h-.172v.717c0 .037.006.062.02.075.012.013.037.02.074.02a.23.23 0 0 0 .078-.01v.141a.802.802 0 0 1-.136.014.23.23 0 0 1-.15-.043.15.15 0 0 1-.052-.123v-.79h-.141v-.136h.141zm-3.562.258c.081 0 .15.012.207.038.057.024.1.061.13.11s.045.106.045.173h-.176c-.006-.111-.075-.167-.208-.167a.285.285 0 0 0-.164.041.134.134 0 0 0-.06.117c0 .035.015.065.045.088.03.024.08.044.15.06l.16.039a.47.47 0 0 1 .224.105c.047.046.07.108.07.186a.3.3 0 0 1-.052.175.327.327 0 0 1-.152.116.585.585 0 0 1-.226.041c-.136 0-.24-.03-.309-.088-.069-.059-.105-.149-.109-.269h.176c.004.037.01.065.017.084a.166.166 0 0 0 .034.054c.044.043.112.065.204.065a.31.31 0 0 0 .177-.045.139.139 0 0 0 .067-.119.116.116 0 0 0-.038-.09.287.287 0 0 0-.124-.055l-.156-.038a1.248 1.248 0 0 1-.159-.05.359.359 0 0 1-.098-.061.22.22 0 0 1-.058-.083.32.32 0 0 1-.016-.108c0-.096.036-.174.109-.232a.45.45 0 0 1 .29-.087zm1.035 0a.46.46 0 0 1 .202.043.351.351 0 0 1 .187.212.577.577 0 0 1 .023.126h-.168a.256.256 0 0 0-.078-.168.242.242 0 0 0-.17-.06.248.248 0 0 0-.155.05.306.306 0 0 0-.1.144.662.662 0 0 0-.034.224.58.58 0 0 0 .035.214.299.299 0 0 0 .101.135.261.261 0 0 0 .157.048c.142 0 .227-.084.256-.252h.167a.519.519 0 0 1-.065.22.35.35 0 0 1-.146.138.464.464 0 0 1-.216.048.448.448 0 0 1-.246-.066.441.441 0 0 1-.161-.192.703.703 0 0 1-.057-.293c0-.085.01-.163.032-.233a.522.522 0 0 1 .095-.182.403.403 0 0 1 .15-.117.453.453 0 0 1 .191-.04zm.603.03h.166v1.046H15.4zm1.443 0h.166v1.046h-.166zm-5.05.618c-.08 0-.2.204-.356.611-.155.407-.308.977-.459 1.71.281-.312.509-.662.683-1.05.175-.387.262-.72.262-.999a.455.455 0 0 0-.036-.197c-.025-.05-.056-.075-.093-.075zm4.662 1.797c-.221 0-.431.188-.629.563-.197.376-.296.722-.296 1.038 0 .12.029.216.088.29a.273.273 0 0 0 .223.111c.221 0 .43-.188.625-.565.196-.377.294-.725.294-1.043a.457.457 0 0 0-.083-.29.269.269 0 0 0-.222-.104zm-2.848.007c-.146 0-.285.11-.417.333-.133.222-.2.51-.2.866.566-.159.849-.452.849-.881 0-.212-.077-.318-.232-.318Z"/></symbol>
+    <symbol id="ms-lg-prometheus" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.372 0 12c0 6.627 5.373 12 12 12s12-5.373 12-12c0-6.628-5.373-12-12-12zm0 22.46c-1.885 0-3.414-1.26-3.414-2.814h6.828c0 1.553-1.528 2.813-3.414 2.813zm5.64-3.745H6.36v-2.046h11.28v2.046zm-.04-3.098H6.391c-.037-.043-.075-.086-.111-.13-1.155-1.401-1.427-2.133-1.69-2.879-.005-.025 1.4.287 2.395.511 0 0 .513.119 1.262.255-.72-.843-1.147-1.915-1.147-3.01 0-2.406 1.845-4.508 1.18-6.207.648.053 1.34 1.367 1.387 3.422.689-.951.977-2.69.977-3.755 0-1.103.727-2.385 1.454-2.429-.648 1.069.168 1.984.894 4.256.272.854.237 2.29.447 3.201.07-1.892.395-4.652 1.595-5.605-.529 1.2.079 2.702.494 3.424.671 1.164 1.078 2.047 1.078 3.716a4.642 4.642 0 01-1.11 2.996c.792-.149 1.34-.283 1.34-.283l2.573-.502s-.374 1.538-1.81 3.019z"/></symbol>
+    <symbol id="ms-lg-apachekafka" viewBox="0 0 24 24"><path d="M9.71 2.136a1.43 1.43 0 0 0-2.047 0h-.007a1.48 1.48 0 0 0-.421 1.042c0 .41.161.777.422 1.039l.007.007c.257.264.616.426 1.019.426.404 0 .766-.162 1.027-.426l.003-.007c.261-.262.421-.629.421-1.039 0-.408-.159-.777-.421-1.042H9.71zM8.683 22.295c.404 0 .766-.167 1.027-.429l.003-.008c.261-.261.421-.631.421-1.036 0-.41-.159-.778-.421-1.044H9.71a1.42 1.42 0 0 0-1.027-.432 1.4 1.4 0 0 0-1.02.432h-.007c-.26.266-.422.634-.422 1.044 0 .406.161.775.422 1.036l.007.008c.258.262.617.429 1.02.429zm7.89-4.462c.359-.096.683-.33.882-.684l.027-.052a1.47 1.47 0 0 0 .114-1.067 1.454 1.454 0 0 0-.675-.896l-.021-.014a1.425 1.425 0 0 0-1.078-.132c-.36.091-.684.335-.881.686-.2.349-.241.75-.146 1.119.099.363.33.691.675.896h.002c.346.203.737.239 1.101.144zm-6.405-7.342a2.083 2.083 0 0 0-1.485-.627c-.58 0-1.103.242-1.482.627-.378.385-.612.916-.612 1.507s.233 1.124.612 1.514a2.08 2.08 0 0 0 2.967 0c.379-.39.612-.923.612-1.514s-.233-1.122-.612-1.507zm-.835-2.51c.843.141 1.6.552 2.178 1.144h.004c.092.093.182.196.265.299l1.446-.851a3.176 3.176 0 0 1-.047-1.808 3.149 3.149 0 0 1 1.456-1.926l.025-.016a3.062 3.062 0 0 1 2.345-.306c.77.21 1.465.721 1.898 1.482v.002c.431.757.518 1.626.313 2.408a3.145 3.145 0 0 1-1.456 1.928l-.198.118h-.02a3.095 3.095 0 0 1-2.154.201 3.127 3.127 0 0 1-1.514-.944l-1.444.848a4.162 4.162 0 0 1 0 2.879l1.444.846c.413-.47.939-.789 1.514-.944a3.041 3.041 0 0 1 2.371.319l.048.023v.002a3.17 3.17 0 0 1 1.408 1.906 3.215 3.215 0 0 1-.313 2.405l-.026.053-.003-.005a3.147 3.147 0 0 1-1.867 1.436 3.096 3.096 0 0 1-2.371-.318v-.006a3.156 3.156 0 0 1-1.456-1.927 3.175 3.175 0 0 1 .047-1.805l-1.446-.848a3.905 3.905 0 0 1-.265.294l-.004.005a3.938 3.938 0 0 1-2.178 1.138v1.699a3.09 3.09 0 0 1 1.56.862l.002.004c.565.572.914 1.368.914 2.243 0 .873-.35 1.664-.914 2.239l-.002.009a3.1 3.1 0 0 1-2.21.931 3.1 3.1 0 0 1-2.206-.93h-.002v-.009a3.186 3.186 0 0 1-.916-2.239c0-.875.35-1.672.916-2.243v-.004h.002a3.1 3.1 0 0 1 1.558-.862v-1.699a3.926 3.926 0 0 1-2.176-1.138l-.006-.005a4.098 4.098 0 0 1-1.173-2.874c0-1.122.452-2.136 1.173-2.872h.006a3.947 3.947 0 0 1 2.176-1.144V6.289a3.137 3.137 0 0 1-1.558-.864h-.002v-.004a3.192 3.192 0 0 1-.916-2.243c0-.871.35-1.669.916-2.243l.002-.002A3.084 3.084 0 0 1 8.683 0c.861 0 1.641.355 2.21.932v.002h.002c.565.574.914 1.372.914 2.243 0 .876-.35 1.667-.914 2.243l-.002.005a3.142 3.142 0 0 1-1.56.864v1.692zm8.121-1.129l-.012-.019a1.452 1.452 0 0 0-.87-.668 1.43 1.43 0 0 0-1.103.146h.002c-.347.2-.58.529-.677.896-.095.365-.054.768.146 1.119l.007.009c.2.347.519.579.874.673.357.103.755.059 1.098-.144l.019-.009a1.47 1.47 0 0 0 .657-.885 1.493 1.493 0 0 0-.141-1.118"/></symbol>
+  </defs>
+
+  <!-- edges -->
+  <path class="viz-edge" d="M136 144 L168 144" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M256 144 L296 144" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M396 206 L396 340" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M416 340 L416 206" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M516 139 L540 139" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M634 206 L634 340" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)"/>
+  <path class="viz-edge" d="M212 168 L212 340" marker-end="url(#ms-arrow)" marker-start="url(#ms-knob)" style="stroke-dasharray:5 4"/>
+  <text class="viz-edge-label viz-meta" x="222" y="262">metrics</text>
+  <g class="viz-badge" data-tone="accent"><rect x="143" y="119" width="18" height="18" rx="9"/><text x="152" y="128" text-anchor="middle">1</text></g>
+  <g class="viz-badge" data-tone="accent"><rect x="371" y="313" width="18" height="18" rx="9"/><text x="380" y="322" text-anchor="middle">2</text></g>
+  <g class="viz-badge" data-tone="accent"><rect x="519" y="115" width="18" height="18" rx="9"/><text x="528" y="124" text-anchor="middle">3</text></g>
+  <g class="viz-badge" data-tone="accent"><rect x="641" y="313" width="18" height="18" rx="9"/><text x="650" y="322" text-anchor="middle">4</text></g>
+
+  <!-- device -->
+  <g id="ms-dev">
+    <rect class="viz-node" x="16" y="112" width="120" height="64" rx="4"/>
+    <g class="viz-icon" transform="translate(36,126) scale(0.6)"><rect x="2" y="4" width="14" height="10" rx="1.5"/><path d="M6 18 H12 M9 14 V18"/><rect x="17" y="9" width="5" height="9" rx="1"/></g>
+    <text class="viz-node-title" x="58" y="140">Device</text>
+    <text class="viz-node-subtitle" x="76" y="160" text-anchor="middle">phone · web</text>
+  </g>
+  <!-- istio -->
+  <g id="ms-istio" data-tone="data">
+    <rect class="viz-node" x="168" y="120" width="88" height="48" rx="4"/>
+    <use href="#ms-lg-istio" class="viz-logo" x="179" y="131" width="13" height="13"/>
+    <text class="viz-node-title" x="198" y="142">Istio</text>
+    <text class="viz-node-subtitle" x="212" y="160" text-anchor="middle">gateway</text>
+  </g>
+
+  <!-- kserve deployment -->
+  <g>
+    <rect class="viz-kv-frame" x="280" y="32" width="464" height="268" rx="6"/>
+    <path class="viz-kv-header" d="M280 38 a6 6 0 0 1 6 -6 h452 a6 6 0 0 1 6 6 v20 h-464 z"/>
+    <use href="#ms-lg-kubernetes" class="viz-logo" x="290" y="39" width="15" height="15"/>
+    <text class="viz-kv-title" x="312" y="51">KServe deployment</text>
+    <text class="viz-meta" x="736" y="51" text-anchor="end">kubernetes · one pod per component</text>
+  </g>
+  <!-- transformer: the feature table it assembles -->
+  <g id="ms-tf" data-tone="data">
+    <rect class="viz-kv-frame" x="296" y="72" width="220" height="134" rx="6"/>
+    <path class="viz-kv-header" d="M296 78 a6 6 0 0 1 6 -6 h208 a6 6 0 0 1 6 6 v20 h-220 z"/>
+    <text class="viz-kv-title" x="308" y="91">Transformer</text>
+    <text class="viz-meta" x="508" y="91" text-anchor="end">transformer.py</text>
+    <text class="viz-colhead" x="308" y="112">feature</text>
+    <text class="viz-colhead" x="392" y="112">value</text>
+    <text class="viz-colhead" x="448" y="112">origin</text>
+    <line class="viz-row-sep" x1="296" y1="120" x2="516" y2="120"/>
+    <text class="viz-field" x="308" y="139">device</text>
+    <text class="viz-kv-val" x="392" y="139">iphone</text>
+    <text class="viz-field-role" x="448" y="139">client</text>
+    <line class="viz-row-sep" x1="296" y1="146" x2="516" y2="146"/>
+    <text class="viz-field" x="308" y="165">age</text>
+    <text id="ms-v1" class="viz-kv-val" x="392" y="165">34</text>
+    <text class="viz-field-role" x="448" y="165">store</text>
+    <line class="viz-row-sep" x1="296" y1="172" x2="516" y2="172"/>
+    <text class="viz-field" x="308" y="191">spend_7d</text>
+    <text id="ms-v2" class="viz-kv-val" x="392" y="191">212.5</text>
+    <text class="viz-field-role" x="448" y="191">store</text>
+  </g>
+  <!-- predictor -->
+  <g id="ms-pr" data-tone="accent">
+    <rect class="viz-node" x="540" y="72" width="188" height="134" rx="4"/>
+    <text class="viz-node-title" x="634" y="100" text-anchor="middle">Predictor</text>
+    <text class="viz-node-subtitle" x="634" y="118" text-anchor="middle">predictor.py</text>
+    <use href="#ms-lg-pytorch" class="viz-logo" x="592" y="140" width="18" height="18"/><use href="#ms-lg-tensorflow" class="viz-logo" x="625" y="140" width="18" height="18"/><use href="#ms-lg-scikitlearn" class="viz-logo" x="658" y="140" width="18" height="18"/>
+    <text class="viz-meta" x="634" y="184" text-anchor="middle">torch · tf · sklearn</text>
+  </g>
+
+  <!-- around the deployment -->
+  <g id="ms-prom" data-tone="warn">
+    <rect class="viz-node" x="16" y="340" width="220" height="56" rx="4"/>
+    <use href="#ms-lg-prometheus" class="viz-logo" x="72" y="354" width="15" height="15"/>
+    <text class="viz-node-title" x="94" y="366">Prometheus</text>
+    <text class="viz-node-subtitle" x="126" y="384" text-anchor="middle">metrics</text>
+  </g>
+  <g id="ms-fs" data-tone="read">
+    <rect class="viz-node" x="296" y="340" width="220" height="56" rx="4"/>
+    <g class="viz-icon" transform="translate(344,354) scale(0.6)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
+    <text class="viz-node-title" x="366" y="366">Feature store</text>
+    <text class="viz-node-subtitle" x="406" y="384" text-anchor="middle">online · rondb</text>
+  </g>
+  <g id="ms-kafka" data-tone="data">
+    <rect class="viz-node" x="540" y="340" width="188" height="56" rx="4"/>
+    <use href="#ms-lg-apachekafka" class="viz-logo" x="596" y="354" width="15" height="15"/>
+    <text class="viz-node-title" x="618" y="366">Kafka</text>
+    <text class="viz-node-subtitle" x="634" y="384" text-anchor="middle">inference logs</text>
+  </g>
+
+  <!-- the four calls, in order -->
+  <g>
+    <rect class="viz-code-box" x="16" y="424" width="728" height="92" rx="6"/>
+    <text id="ms-l1" class="viz-codeln" x="46" y="447" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">1</text>
+    <text id="ms-c1" class="viz-codeln" x="58" y="447" style="opacity:0"><tspan class="tok-kw">POST</tspan> /predict {<tspan class="tok-str">"id"</tspan>: 1234, <tspan class="tok-str">"device"</tspan>: <tspan class="tok-str">"iphone"</tspan>}</text>
+    <text id="ms-l2" class="viz-codeln" x="46" y="465" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">2</text>
+    <text id="ms-c2" class="viz-codeln" x="58" y="465" style="opacity:0">fv.<tspan class="tok-fn">get_feature_vector</tspan>({<tspan class="tok-str">"id"</tspan>: 1234}, passed_features={<tspan class="tok-str">"device"</tspan>: <tspan class="tok-str">"iphone"</tspan>})</text>
+    <text id="ms-l3" class="viz-codeln" x="46" y="483" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">3</text>
+    <text id="ms-c3" class="viz-codeln" x="58" y="483" style="opacity:0">model.<tspan class="tok-fn">predict</tspan>([iphone, 34, 212.5]) &#8594; <tspan id="ms-c3r" class="tok-str">0.92</tspan></text>
+    <text id="ms-l4" class="viz-codeln" x="46" y="501" text-anchor="end" style="opacity:0;fill:var(--viz-ink-soft)">4</text>
+    <text id="ms-c4" class="viz-codeln" x="58" y="501" style="opacity:0"><tspan class="tok-fn">log</tspan>(inputs, transformed inputs, prediction) &#8594; kafka topic</text>
+  </g>
+
+  <!-- packets -->
+  <g transform="translate(120 135)"><g id="ms-req" class="viz-packet" data-tone="data" style="opacity:0"><rect width="44" height="18" rx="3"/><text x="22" y="9" text-anchor="middle">req</text></g></g>
+  <g transform="translate(374 214)"><g id="ms-key" class="viz-packet" data-tone="read" style="opacity:0"><rect width="44" height="18" rx="3"/><text x="22" y="9" text-anchor="middle">id</text></g></g>
+  <g transform="translate(394 318)"><g id="ms-feat" class="viz-packet" data-tone="write" style="opacity:0"><rect width="44" height="18" rx="3"/><text x="22" y="9" text-anchor="middle">feats</text></g></g>
+  <g transform="translate(500 130)"><g id="ms-vec" class="viz-packet" data-tone="write" style="opacity:0"><rect width="56" height="18" rx="3"/><text x="28" y="9" text-anchor="middle">vector</text></g></g>
+  <g transform="translate(612 214)"><g id="ms-log" class="viz-packet" data-tone="data" style="opacity:0"><rect width="44" height="18" rx="3"/><text x="22" y="9" text-anchor="middle">log</text></g></g>
+  <g transform="translate(228 135)"><g id="ms-resp" class="viz-packet" data-tone="accent" style="opacity:0"><rect width="48" height="18" rx="3"/><text x="24" y="9" text-anchor="middle">0.92</text></g></g>
+</svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 750,
+  "loopDelay": 2600,
+  "steps": [
+    { "$label": "request", "#ms-dev": {"state": "active"}, "#ms-l1": {"opacity": 1}, "#ms-c1": {"opacity": 1}, "#ms-req": {"opacity": 1}, "$ms": 600 },
+    { "#ms-req": {"x": 60}, "#ms-istio": {"state": "active"}, "$ms": 500 },
+    { "#ms-req": {"x": 190}, "$ms": 500 },
+    { "$label": "features", "#ms-req": {"opacity": 0}, "#ms-dev": {"state": null}, "#ms-istio": {"state": null}, "#ms-tf": {"state": "active"}, "#ms-l2": {"opacity": 1}, "#ms-c2": {"opacity": 1}, "#ms-v1": {"text": "?"}, "#ms-v2": {"text": "?"}, "#ms-key": {"opacity": 1}, "$ms": 600 },
+    { "#ms-key": {"y": 104}, "$ms": 550 },
+    { "#ms-key": {"opacity": 0}, "#ms-fs": {"state": "active"}, "#ms-feat": {"opacity": 1}, "$ms": 450 },
+    { "#ms-feat": {"y": -104}, "$ms": 550 },
+    { "#ms-feat": {"opacity": 0}, "#ms-fs": {"state": null}, "#ms-v1": {"type": "34"}, "#ms-v2": {"type": "212.5"}, "$ms": 800 },
+    { "#ms-vec": {"opacity": 1}, "#ms-l3": {"opacity": 1}, "#ms-c3": {"opacity": 1}, "#ms-c3r": {"text": ""}, "$ms": 400 },
+    { "$label": "predict", "#ms-vec": {"x": 36}, "#ms-tf": {"state": null}, "#ms-pr": {"state": "active"}, "$ms": 500 },
+    { "#ms-vec": {"opacity": 0}, "#ms-c3r": {"type": "0.92"}, "#ms-resp": {"opacity": 1}, "$ms": 600 },
+    { "#ms-resp": {"x": -190}, "#ms-log": {"opacity": 1}, "#ms-l4": {"opacity": 1}, "#ms-c4": {"opacity": 1}, "$ms": 600 },
+    { "#ms-resp": {"opacity": 0}, "#ms-dev": {"state": "visited"}, "#ms-log": {"y": 104}, "$ms": 550 },
+    { "$label": "log", "#ms-log": {"opacity": 0}, "#ms-pr": {"state": null}, "#ms-kafka": {"state": "active"}, "#ms-prom": {"state": "active"}, "$ms": 700 },
+    { "#ms-kafka": {"state": null}, "#ms-prom": {"state": null}, "$ms": 2000 }
+  ]
+}
+</script>
+</figure>

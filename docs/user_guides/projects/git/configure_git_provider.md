@@ -34,7 +34,9 @@ The `Git providers` section displays which providers have been already configure
 
 Click on `Edit Configuration` to change a provider username or token, or to configure a new provider.
 
-Tick the checkbox next to the provider you want to configure and insert the username and the token to use for that provider.
+Tick the checkbox next to the provider you want to configure, then click `Add host`.
+Each host is a row of three fields: the host itself (for example `github.com`), the username, and the token to use for that host.
+A provider can carry several hosts, so add one row per host you need to authenticate against.
 
 <p align="center">
   <figure>
@@ -43,7 +45,7 @@ Tick the checkbox next to the provider you want to configure and insert the user
   </figure>
 </p>
 
-Click `Create Configuration` to save the configuration.
+Click `Save Configuration` to save the configuration.
 
 ### Step 3: Provider is configured
 
@@ -81,9 +83,13 @@ API_TOKEN = "my_token"
 git_api.set_provider(PROVIDER, GITHUB_USER, API_TOKEN)
 ```
 
-### API Reference
+!!! api "API reference"
 
-[`GitProvider`][hopsworks_common.git_provider.GitProvider]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitApi`][hopsworks_common.core.git_api.GitApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_provider`][hopsworks_common.core.git_api.GitApi.set_provider]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitProvider`][hopsworks_common.git_provider.GitProvider]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Going Further
 

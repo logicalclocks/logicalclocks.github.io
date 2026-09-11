@@ -1,3 +1,5 @@
+# Offline API
+
 The feature view provides an *Offline API* for
 
 - creating training data
@@ -9,11 +11,11 @@ Training data is created using a feature view.
 You can create training data as either:
 
 - in-memory Pandas/Polars DataFrames, useful when you have a small amount of training data;
-- materialized training data in files, in a file format of your choice (such as .tfrecord, .csv, or .parquet).
+- materialized training data in files, in a file format of your choice (such as `.tfrecord`, `.csv`, or `.parquet`).
 
 You can apply filters when creating training data from a feature view:
 
-- start-time and end-time, for example, to create the train-set from an earlier time range, and the test-set from a later (unseen) time range;
+- `start_time` and `end_time`, for example, to create the train-set from an earlier time range, and the test-set from a later (unseen) time range;
 - feature value features, for example, only train a model on customers from a particular country.
 
 Note that filters are not applied when retrieving feature vectors using feature views, as we only look up features for a specific entity, like a customer.
@@ -30,10 +32,12 @@ For example, maybe one feature group is updated hourly, while another feature gr
 It is very complex to write code that joins features together from such feature groups and ensures there is no data leakage in the resultant training data.
 Hopsworks hides this complexity by performing the point-in-time JOIN transparently, similar to the illustration below:
 
-<img src="../../../../assets/images/concepts/fs/feature-view-training-data.svg">
+--8<-- "concepts/fs/feature_view/offline_api/point-in-time-correct-training-data-2.html"
 
 Hopsworks uses the event_time columns on both feature groups to determine the most recent (but not newer) feature values that are joined together with the feature values from the feature group containing the label.
 That is, the features in the feature group containing the label are the observation times for the features in the resulting training data, and we want feature values from the other feature groups that have the most recent timestamps, but not newer than the timestamp in the label-containing feature group.
+
+--8<-- "concepts/fs/feature_view/offline_api/point-in-time-correct-training-data.html"
 
 #### Spine Groups
 
@@ -64,12 +68,12 @@ Batch data for scoring models is created using a feature view.
 Similar to training data, you can create batch data as either:
 
 - in-memory Pandas/Polars DataFrames, useful when you have a small amount of data to score;
-- materialized data in files, in a file format of your choice (such as .tfrecord, .csv, or .parquet)
+- materialized data in files, in a file format of your choice (such as `.tfrecord`, `.csv`, or `.parquet`)
 
 Batch data requires specification of a `start_time` for the start of the batch scoring data.
 You can also specify the `end_time` (default is the current date).
 
-<img src="../../../../assets/images/concepts/fs/batch-scoring-data.svg">
+--8<-- "concepts/fs/feature_view/offline_api/batch-scoring-data.html"
 
 ### Spine Dataframes
 

@@ -126,9 +126,12 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   my_model.deploy(inference_logger=my_logger)
   ```
 
-### API Reference
+!!! api "API reference"
 
-[`InferenceLogger`][hsml.inference_logger.InferenceLogger]
+    - <code class="doc-symbol doc-symbol-class"></code> [`InferenceLogger`][hsml.inference_logger.InferenceLogger]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Topic schema
 
