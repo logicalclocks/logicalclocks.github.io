@@ -161,7 +161,7 @@ In the Ray Dashboard, you can monitor the resources used  by code you are runnin
 
 ## Step 8: Saved application logs
 
-While the Ray session runs, the `Live Logs` button on its row streams the output of the notebook kernel and of the Ray head and worker pods. When the session ends, the head node copies its session logs (the raylet, GCS server, dashboard and worker process files) to the `Logs/Jupyter/<username>/ray/<application id>` directory of the project, and the Jupyter page lists the application under `Spark and Ray applications` in the `Saved Logs` card. Click `View` to read the files or delete the directory when it is no longer needed.
+While the Ray session runs, the `Live Logs` button on its row streams the output of the notebook kernel and of the Ray head and worker pods. When the session ends, the driver and worker process logs of the Ray cluster are saved as `stdout.log` and `stderr.log` in the `Logs/Jupyter/<username>/ray/<application id>` directory of the project, the same two files a Ray job leaves in `Logs/Ray`. The Jupyter page lists the application under `Spark and Ray applications` in the `Saved Logs` card. Click `View` to read the files or delete the directory when it is no longer needed.
 
 The code you run in the notebook executes in the Jupyter server, so its output is part of the server log, which is saved to `Logs/Jupyter/<username>` when the server stops.
 
