@@ -14,7 +14,8 @@ If you need to get more familiar with the concept of feature vectors, you can re
 ## Retrieval
 
 You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view.
-Note that filters defined in feature view and training data will not be applied when feature vectors are returned.
+Filters on regular point-read features are not applied when feature vectors are returned.
+Filters attached to a collected or aggregated query node are applied before collecting or aggregating its rows.
 If you need to retrieve a complete value of feature vectors without missing values, the required `entry` are [FeatureView.primary_keys][hsfs.feature_view.FeatureView.primary_keys].
 Alternative, you can provide the primary key of the feature groups as the key of the entry.
 It is also possible to provide a subset of the entry, which will be discussed [below](#partial-feature-retrieval).
@@ -46,6 +47,61 @@ It is also possible to provide a subset of the entry, which will be discussed [b
     entry2.put("pk2", 4);
     featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2));
     ```
+
+### Retrieve collected rows
+
+A query that uses `collect` contributes one array-of-struct feature to the returned feature vector.
+The feature is named `<feature_group_name>_collect`, with any join prefix applied to avoid name collisions.
+Entity-key features remain scalar, and the collected ordering feature is included inside each struct.
+
+```python
+vector = feature_view.get_feature_vector(
+    entry={"user_id": 7},
+    return_type="pandas",
+)
+transactions = vector["transactions_collect"].iloc[0]
+
+most_recent_amount = transactions[0]["amount"]
+most_recent_event_time = transactions[0]["event_time"]
+```
+
+The array contains at most the N rows configured by the feature-view query.
+It is ordered newest first unless the query used `ascending=True`.
+An entity with no matching history returns an empty collected array.
+
+Use `scan_vectors` when you need the collected source rows as a table instead of one folded feature.
+
+```python
+recent_rows = feature_view.scan_vectors(
+    entry={"user_id": 7},
+    limit=10,
+    return_type="pandas",
+)
+```
+
+The optional `limit` must be a positive integer and can narrow, but cannot widen, the N configured by `collect`.
+Set `return_type` to `"list"`, `"pandas"`, or `"polars"`.
+
+### Retrieve aggregate features
+
+A query that uses `aggregate` returns one scalar feature for each configured feature and aggregation function.
+
+```python
+vector = feature_view.get_feature_vector(
+    entry={"user_id": 7},
+    return_type="pandas",
+)
+
+amount_sum = vector["amount_sum"].iloc[0]
+amount_average = vector["amount_avg"].iloc[0]
+transaction_count = vector["count"].iloc[0]
+```
+
+An entity with no rows in the aggregation window returns zero for count features and missing values for the other functions, in single and batch reads alike.
+
+The SQL and REST online clients compute the aggregation in the online store.
+With the REST client, batch retrieval groups entities into bounded requests when the serving key contains one feature.
+Composite serving keys use per-entry requests when the online query cannot safely group them.
 
 ### Required entry
 
@@ -280,6 +336,9 @@ It requires a direct SQL connection to your RonDB cluster and uses python asynci
 The REST client is an alternative implementation connecting to [RonDB Feature Vector Server](./feature-server.md).
 Perfect if you want to avoid exposing ports of your database cluster directly to clients.
 This implementation is available as of Hopsworks 3.7.
+Collected rows use an ordered RonDB index scan, while aggregate and supported nested-join queries are pushed down through RonSQL.
+Snowflake feature views can use the REST client when every nested hop joins the complete primary key, all nested joins use the same join type (all inner or all left), and the subtree stays within one feature store.
+Use the SQL client for right or full joins, subtrees mixing inner and left joins, partial-primary-key hops, cross-feature-store nested joins, or another query shape that cannot be served through REST.
 
 Initialise the client by calling the `init_serving` method on the Feature View object before starting to fetch feature vectors.
 This will initialise the chosen client, test the connection, and initialise the transformation functions registered with the Feature View.
