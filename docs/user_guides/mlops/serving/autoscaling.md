@@ -138,27 +138,46 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 
 ### Step 4: Create a deployment with the scaling configuration
 
-=== "Python"
+=== "Knative mode"
 
-  ```python
-  my_model = mr.get_model("my_model", version=1)
+    ```python
+    my_model = mr.get_model("my_model", version=1)
 
-  # optional
-  my_transformer = ms.create_transformer(
-      script_file="Resources/my_transformer.py",
-      scaling_configuration=transformer_scaling
-  )
+    # optional
+    my_transformer = ms.create_transformer(
+        script_file="Resources/my_transformer.py",
+        scaling_configuration=transformer_scaling,
+    )
 
-  my_deployment = my_model.deploy(
-    scaling_configuration=predictor_scaling,
-    # optional:
-    # knative_mode=False,  # Standard mode; defaults to Knative for non-LLM models
-    transformer=my_transformer
-  )
-  ```
+    my_deployment = my_model.deploy(
+        scaling_configuration=predictor_scaling,
+        # optional:
+        transformer=my_transformer,
+    )
+    ```
+
+=== "Standard mode"
+
+    ```python
+    my_model = mr.get_model("my_model", version=1)
+
+    # optional
+    my_transformer = ms.create_transformer(
+        script_file="Resources/my_transformer.py",
+        scaling_configuration=transformer_scaling,
+    )
+
+    my_deployment = my_model.deploy(
+        scaling_configuration=predictor_scaling,
+        knative_mode=False,
+        # optional:
+        transformer=my_transformer,
+    )
+    ```
 
 !!! note "Match the scaling configuration to the mode"
     The `knative_mode` argument selects the [deployment mode](#deployment-mode) of the deployment.
+    Leaving it unset deploys in Knative mode for every model server except vLLM, so a Standard scaling configuration needs `knative_mode=False` passed explicitly.
     A scaling configuration that uses fields the chosen mode does not support is rejected, so set both together.
 
 ### API Reference
@@ -232,4 +251,5 @@ The panic, stable window and scale-to-zero retention parameters are Knative Pod 
 A Standard deployment also requires at least one instance.
 
 !!! note "Cluster-level constraints"
-    ==Administrators== can set cluster-wide limits on the maximum and minimum number of instances. When the minimum is set to 0, scale-to-zero is enforced for all Knative deployments.
+    ==Administrators== can set cluster-wide limits on the maximum and minimum number of instances.
+    When the minimum is set to 0, scale-to-zero is enforced for all Knative deployments.

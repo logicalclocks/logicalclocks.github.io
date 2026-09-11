@@ -539,7 +539,8 @@ To learn about the different combinations available, see the [Resources Guide](r
 
 ## Autoscaling
 
-Deployments can automatically scale the number of replicas, and how they scale depends on the [deployment mode](autoscaling.md#deployment-mode). To learn about the deployment modes and the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).
+Deployments can automatically scale the number of replicas, and how they scale depends on the [deployment mode](autoscaling.md#deployment-mode).
+To learn about the deployment modes and the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).
 
 ## Scheduling
 
