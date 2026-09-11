@@ -14,7 +14,8 @@ These guides cover signing in, creating and running a project, and the settings 
 
     ```python
     import hopsworks
-    
+
+
     project = hopsworks.login()
     fs = project.get_feature_store()
     ```
