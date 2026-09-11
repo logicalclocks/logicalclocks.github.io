@@ -48,8 +48,15 @@ The checkbox is disabled while the deployment is running, because the mode of a 
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_scaling.png" alt="Autoscaling configuration for the predictor and transformer components">
-    <figcaption>Autoscaling configuration for the predictor and transformer</figcaption>
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_scaling_knative.png" alt="Autoscaling configuration for the predictor and transformer components in Knative mode">
+    <figcaption>Autoscaling configuration for the predictor and transformer in Knative mode</figcaption>
+  </figure>
+</p>
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_scaling_standard.png" alt="Autoscaling configuration for the predictor and transformer components in Standard mode">
+    <figcaption>Autoscaling configuration for the predictor and transformer in Standard mode</figcaption>
   </figure>
 </p>
 
