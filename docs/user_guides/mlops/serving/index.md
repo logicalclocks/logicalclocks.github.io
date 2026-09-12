@@ -9,6 +9,11 @@ Refer to the [Deployment Creation Guide](deployment.md) for step-by-step instruc
 !!! tip "Python deployments"
     If you want to deploy a Python script without a model artifact, see the [Python Deployments](../../projects/python-deployment/python-deployment.md) page.
 
+### Deployment Schema and default predictor
+
+Describe the prediction request a deployment accepts, validate requests against it, and serve a model without writing a predictor script, see the [Deployment Schema Guide][deployment-schema].
+A feature view can be deployed on its own with the same contract, see the [Feature View Deployment Guide][feature-view-deployment].
+
 ### Predictor (KServe component)
 
 Predictors are responsible for running a model server that loads a trained model, handles inference requests and returns predictions, see the [Predictor Guide](predictor.md).
@@ -31,7 +36,8 @@ Configure the resources to be allocated for predictor and transformer in a model
 
 ### Autoscaling
 
-Configure autoscaling for your model deployment, including scale-to-zero, scale metrics and scaling parameters, see the [Autoscaling Guide](autoscaling.md).
+Configure autoscaling for your model deployment, including scale metrics and scaling parameters, see the [Autoscaling Guide](autoscaling.md).
+How a deployment scales depends on whether it runs in KServe Knative or Standard mode, and scale-to-zero is available in Knative mode only, see [Deployment mode](autoscaling.md#deployment-mode).
 
 ### Scheduling
 
