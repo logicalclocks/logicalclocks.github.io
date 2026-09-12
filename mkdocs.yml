@@ -110,6 +110,7 @@ nav:
               - Spines: user_guides/fs/feature_view/spine-query.md
               - Feature Monitoring: user_guides/fs/feature_view/feature_monitoring.md
               - Feature Logging: user_guides/fs/feature_view/feature_logging.md
+              - Deployment: user_guides/fs/feature_view/deployment.md
           - Vector Similarity Search: user_guides/fs/vector_similarity_search.md
           - Transformation Functions: user_guides/fs/transformation_functions.md
           - Compute Engines: user_guides/fs/compute_engines.md
@@ -237,6 +238,7 @@ nav:
               - Model Deployment:
                   - Deployment Creation: user_guides/mlops/serving/deployment.md
                   - Deployment State: user_guides/mlops/serving/deployment-state.md
+                  - Deployment Schema: user_guides/mlops/serving/deployment-schema.md
                   - Predictor (KServe): user_guides/mlops/serving/predictor.md
                   - Transformer (KServe): user_guides/mlops/serving/transformer.md
                   - Inference Logger: user_guides/mlops/serving/inference-logger.md

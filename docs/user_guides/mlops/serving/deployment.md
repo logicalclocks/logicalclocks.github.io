@@ -165,6 +165,57 @@ This will create a deployment for your model with default values.
 !!! info "Predictor script and server configuration file"
     You can provide a predictor script and a server configuration file directly in the `.deploy()` method using the `script_file` and `config_file` parameters. See the [Predictor Guide](predictor.md) for more details.
 
+### Step 3b: Deploy a model with its feature view
+
+A Python model registered with `feature_view=` deploys without a predictor script.
+The default predictor looks up and transforms the features by serving key, runs the model, logs the request when the feature view has logging enabled, and validates every request against the deployment schema, which the client infers from the feature view.
+Clients send only the serving keys and the features named in `passed_features`.
+
+=== "Python"
+
+    ```python
+    fs = project.get_feature_store()
+    feature_view = fs.get_feature_view("transactions", version=1)
+
+    # register the trained model with the feature view it was trained on
+    fraud_model = mr.python.create_model(name="fraud", feature_view=feature_view)
+    fraud_model.save("model_dir")  # one .pkl or .joblib file inside
+
+    fraud_deployment = fraud_model.deploy(
+        name="fraud",
+        passed_features=["amount"],  # sent by the client, not read from the online store
+    )
+    fraud_deployment.start(await_running=600)
+
+    fraud_deployment.schema.describe()  # the request contract
+    fraud_deployment.predict(inputs=[{"cc_num": 4473593503484549, "amount": 12.5}])
+    ```
+
+See the [Deployment Schema Guide][deployment-schema] for the request contract, the error codes, feature logging, and custom predictor scripts that subclass the default predictor.
+
+### Step 3c: Deploy a feature view without a model
+
+A feature view deploys on its own and returns the transformed feature vectors, for callers that run the model elsewhere.
+The deployment pins the training dataset whose statistics the transformations use.
+
+=== "Python"
+
+    ```python
+    feature_view = fs.get_feature_view("transactions", version=1)
+    X_train, X_test, y_train, y_test = feature_view.train_test_split(test_size=0.2)
+
+    fv_deployment = feature_view.deploy(
+        name="transactionsfv",
+        passed_features=["amount"],
+    )
+    fv_deployment.start(await_running=600)
+
+    response = fv_deployment.predict(inputs=[{"cc_num": 4473593503484549, "amount": 12.5}])
+    print(response["columns"], response["predictions"])
+    ```
+
+See the [Feature View Deployment Guide][feature-view-deployment].
+
 ### API Reference
 
 [`ModelServing`][hsml.model_serving.ModelServing]
@@ -195,6 +246,9 @@ Inside a model deployment, the local path to the configuration file is stored in
 Each deployment tracks its artifact files through a ==deployment version== — an integer (1, 2, 3...) that is incremented whenever the artifact content changes (e.g., updating a predictor script or configuration file).
 
 Inside a model deployment, the local path to the artifact files is stored in the `ARTIFACT_FILES_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)).
+
+Deployments with a deployment schema also keep the schema documents under `/Deployments/<deployment-name>/resources/schema/`, one set of files per schema content id.
+These files are never modified, so a deployment revision always finds the schema it was created with; see [Revisions in the Deployment Schema Guide][deployment-schema-revisions].
 
 !!! warning
     All files under `/Models` and `/Deployments` are managed by Hopsworks.
