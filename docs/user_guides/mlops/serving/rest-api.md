@@ -81,6 +81,20 @@ For model deployments using Python, KServe sklearnserver, or TensorFlow Serving,
     inference_url = deployment.get_inference_url()
     ```
 
+### Deployment schema discovery
+
+Deployments that carry a deployment schema describe their request and response contract as JSON Schema and OpenAPI, and validate every request against it before any predictor code runs.
+The documents are served by the Hopsworks REST API (not the Istio ingress), with an API key that has the `SERVING` scope:
+
+!!! example ""
+    **`GET https://<HOPSWORKS_HOST>/hopsworks-api/api/project/<project_id>/serving/<serving_id>/schema?format=openapi`**
+
+`format` is `schema` (default), `jsonschema`, or `openapi`; `schemaId=<id>` returns the contract of an earlier revision.
+The serving id is the `id` field of `GET .../project/<project_id>/serving?name=<deployment_name>`.
+A deployment without a schema, or an unknown id, answers `404` with error code `240037`.
+Feature view deployments answer on the same `<base_url>/v1/models/<name>:predict` route as Python model deployments.
+See the [Deployment Schema Guide][deployment-schema].
+
 ### OpenAI-compatible
 
 ==vLLM deployments== provide an OpenAI API-compatible endpoint at `<base_url>/v1/`, allowing you to send any standard OpenAI API request to the vLLM server.
