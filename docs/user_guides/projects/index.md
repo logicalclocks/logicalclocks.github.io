@@ -5,6 +5,7 @@ This section serves to provide guides and examples for the common usage of servi
 - [Projects](project/create_project.md)
 - [Authentication](auth/login.md)
 - [API Keys](api_key/create_api_key.md)
+- [API Key Scopes](api_key/api_key_scopes.md)
 - [Jupyter](jupyter/python_notebook.md)
 - [Apps](apps/index.md)
 - [Jobs](jobs/pyspark_job.md)
