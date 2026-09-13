@@ -73,13 +73,13 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 2: Define the predictor scaling configuration
 
-You can use the [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig] class to configure the scaling options according to your preferences.
+You can use the [`PredictorScalingConfig`][hsml.deployment.scaling_config.PredictorScalingConfig] class to configure the scaling options according to your preferences.
 Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections above.
 
 === "Python"
 
   ```python
-  from hsml.scaling_config import PredictorScalingConfig
+  from hsml.deployment.scaling_config import PredictorScalingConfig
 
 
   predictor_scaling = PredictorScalingConfig(
@@ -89,13 +89,13 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 
 ### Step 3 (Optional): Define the transformer scaling configuration
 
-If a transformer script is also provided, you can use the [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig] class to configure the scaling options according to your preferences.
+If a transformer script is also provided, you can use the [`TransformerScalingConfig`][hsml.deployment.scaling_config.TransformerScalingConfig] class to configure the scaling options according to your preferences.
 Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections above.
 
 === "Python"
 
   ```python
-  from hsml.scaling_config import TransformerScalingConfig
+  from hsml.deployment.scaling_config import TransformerScalingConfig
 
 
   transformer_scaling = TransformerScalingConfig(
@@ -125,9 +125,9 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 
 ### API Reference
 
-[`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig]
+[`PredictorScalingConfig`][hsml.deployment.scaling_config.PredictorScalingConfig]
 
-[`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig]
+[`TransformerScalingConfig`][hsml.deployment.scaling_config.TransformerScalingConfig]
 
 ## Scale metrics
 

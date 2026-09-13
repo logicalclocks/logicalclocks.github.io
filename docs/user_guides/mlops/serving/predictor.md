@@ -181,7 +181,7 @@ To customise it, subclass it in your own script and deploy with `default_predict
 === "Python"
 
     ```python
-    from hsml.default_predictor import DefaultPredict
+    from hsml.deployment.default_predictor import DefaultPredict
 
 
     class Predict(DefaultPredict):
@@ -336,7 +336,7 @@ You can customize the default predictor settings when creating a model deploymen
 
 ### API Reference
 
-[`Predictor`][hsml.predictor.Predictor]
+[`Predictor`][hsml.deployment.predictor.Predictor]
 
 ## Model Server
 

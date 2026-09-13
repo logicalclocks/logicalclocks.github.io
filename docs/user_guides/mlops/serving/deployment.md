@@ -218,7 +218,7 @@ See the [Feature View Deployment Guide][feature-view-deployment].
 
 ### API Reference
 
-[`ModelServing`][hsml.model_serving.ModelServing]
+[`ModelServing`][hsml.deployment.model_serving.ModelServing]
 
 ## Model Files
 

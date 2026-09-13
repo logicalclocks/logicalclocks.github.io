@@ -47,7 +47,7 @@ Retrieve the model or the deployment whose inference data you want to monitor.
     my_model = mr.get_model("my_model", version=1)
     ```
 
-See the API reference for [`ModelServing.get_deployment`][hsml.model_serving.ModelServing.get_deployment] and [`ModelRegistry.get_model`][hsml.model_registry.ModelRegistry.get_model].
+See the API reference for [`ModelServing.get_deployment`][hsml.deployment.model_serving.ModelServing.get_deployment] and [`ModelRegistry.get_model`][hsml.model_registry.ModelRegistry.get_model].
 
 ### Step 3: Create a model monitoring configuration
 
@@ -70,7 +70,7 @@ Hopsworks resolves the model's parent feature view from its provenance and fills
     )
     ```
 
-See the API reference for [`Deployment.create_model_monitoring`][hsml.deployment.Deployment.create_model_monitoring] and [`Model.create_model_monitoring`][hsml.model.Model.create_model_monitoring].
+See the API reference for [`Deployment.create_model_monitoring`][hsml.deployment.deployment.Deployment.create_model_monitoring] and [`Model.create_model_monitoring`][hsml.model.Model.create_model_monitoring].
 
 !!! tip "Configuring from a feature view"
     You can also configure model monitoring directly from the feature view backing the model, using `feature_view.create_model_monitoring`.
@@ -186,7 +186,7 @@ You can list the monitoring configurations attached to a model or deployment.
     fm_configs = my_model.get_monitoring_configs()
     ```
 
-See the API reference for [`Deployment.get_monitoring_configs`][hsml.deployment.Deployment.get_monitoring_configs] and [`Model.get_monitoring_configs`][hsml.model.Model.get_monitoring_configs].
+See the API reference for [`Deployment.get_monitoring_configs`][hsml.deployment.deployment.Deployment.get_monitoring_configs] and [`Model.get_monitoring_configs`][hsml.model.Model.get_monitoring_configs].
 
 !!! info "Next steps"
     Model monitoring results integrate with the same [alerting](../../fs/feature_monitoring/index.md#alerting) and [interactive graph](../../fs/feature_monitoring/interactive_graph.md) tooling as feature monitoring.

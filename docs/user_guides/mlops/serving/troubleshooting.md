@@ -162,6 +162,6 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
 ### API Reference
 
-[`Deployment`][hsml.deployment.Deployment]
+[`Deployment`][hsml.deployment.deployment.Deployment]
 
-[`PredictorState`][hsml.predictor_state.PredictorState]
+[`PredictorState`][hsml.deployment.predictor_state.PredictorState]

@@ -12,7 +12,9 @@ A deployment schema lists the fields a client sends with each request, with thei
 It is inferred from the feature view the model was registered with: the serving keys, the features you pass with the request, the request parameters of on-demand transformations, and the extra columns of feature logging.
 It is published as a JSON Schema and an OpenAPI document, so clients in any language can validate requests before sending them.
 Every REST V1 request is validated in the pod before any predictor code runs, and rejected with a structured error when it does not match.
-Enforcement covers the KServe REST V1 protocol only: a gRPC deployment is served without it, and the pod logs a warning at startup.
+The wrapper that enforces it covers the KServe REST V1 protocol only.
+A gRPC deployment served by the default predictor is still validated, by the predictor itself on the rows it decodes from the request tensors.
+A gRPC deployment running your own script is not validated on either side, and the pod logs a warning at startup.
 
 The **default predictor** is the library class that serves such a deployment: it looks up and transforms the features by serving key, runs the model, and logs the request when the feature view has logging enabled.
 A [feature view can be deployed on its own][feature-view-deployment] with the same class and the same contract, returning the transformed feature vector instead of a prediction.
@@ -67,8 +69,12 @@ The default predictor loads a single `.pkl`, `.pickle`, or `.joblib` file from t
     deployment.start(await_running=600)
     ```
 
-The default predictor is used when the model is a Python model registered with a feature view, no `script_file` or transformer is given, and the deployment uses KServe over REST.
+The default predictor is used when the model is a Python model registered with a feature view, no `script_file` or transformer is given, and the deployment uses KServe.
 Pass `default_predictor=True` to force it, for instance for a scikit-learn model, or `default_predictor=False` to keep the plain model server.
+
+Such a deployment serves either [API protocol](api-protocol.md). It defaults to REST, which is what the `curl` example and the OpenAPI document below use.
+Pass `api_protocol="GRPC"` to serve gRPC instead, which costs less per request under concurrency: the library owns both ends of the encoding, so the rows travel as one KServe v2 tensor per schema field and `deployment.predict()` returns the same dictionary it returns over REST.
+A deployment serves one protocol, not both, so a gRPC deployment answers no HTTP and neither `curl` nor the OpenAPI document below reaches it.
 
 At pod start the predictor checks that every input column of the model schema is served by the feature view, with a compatible type.
 A mismatch fails the deployment with the offending columns in `deployment.get_logs()`, instead of serving wrong predictions.
@@ -137,7 +143,7 @@ A refinement keeps the inferred fields; adding or removing one is refused.
 === "Python"
 
     ```python
-    from hsml.deployment_schema import DeploymentSchema
+    from hsml.deployment.schema import DeploymentSchema
 
     deployment = model.deploy(name="fraud", passed_features=["amount"])
     inferred = deployment.schema
@@ -155,7 +161,7 @@ A refinement keeps the inferred fields; adding or removing one is refused.
     ```
 
 A custom predictor script deployed with `schema=` (or `passed_features=`) gets the same validation in the pod, before its `predict()` is called, for REST V1 requests.
-The client validates REST requests only, so a gRPC client is not checked on either side.
+A custom script asked to serve gRPC is checked on neither side, and has to read v2 tensors itself.
 
 ### Step 7: Republish after changing the feature view
 
@@ -263,35 +269,56 @@ Declare the reserved extra logging columns on the feature view and the predictor
 
 Any other extra logging column becomes a request field that clients may send.
 
-Logging is asynchronous: the request is answered immediately, the logging frame is built on a background thread of the predictor, and the rows are handed to the pod's inference-logger sidecar from there.
-A logging failure never fails a request, and both buffers are bounded by `FEATURE_LOGGER_QUEUE_SIZE` rows (default 1000: rows waiting for the predictor's logging thread, and rows waiting in the sidecar logger); beyond it a request's rows are dropped and counted, so a slow logger cannot exhaust the pod's memory.
-Both buffers count rows rather than requests, because one request carries a whole batch.
-The predictor's own backlog admits one request whatever its size when it is empty, so a deployment whose batches are larger than the buffer logs instead of dropping every request; its peak is then that single batch, itself capped by the schema's batch limit.
-There is no synchronous mode: a prediction is never delayed by its log write.
+### Configuring feature logging per deployment { #deployment-schema-feature-logging-config }
 
-## Custom predictor scripts
+The predictor coalesces log rows into Arrow batches and hands them to the transport the feature view logs through: on `realtime` it posts them to the deployment's inference logger, which produces them to Kafka, and they reach the online store within seconds and the offline store on the materialization schedule; on `job` it appends them to a file buffer on the pod, which is uploaded to HopsFS and committed to the offline store by the view's commit job.
+Both sides take their limits from platform variables that an administrator sets, and a deployment can override any of them with a `DeploymentLoggingConfig` (`hsml.deployment.logging_config`) passed to `deploy()`, `create_predictor()` or `feature_view.deploy()`, or set on the deployment before it starts.
 
-Subclass the default predictor when the model needs another loader or the predictions need post-processing, and deploy with `default_predictor=True` so the schema is still inferred:
+```python
+from hsml.deployment.logging_config import DeploymentLoggingConfig
 
-=== "Python"
+deployment = model.deploy(
+    feature_logging=DeploymentLoggingConfig(
+        batch_bytes=256 * 1024,  # post once a quarter megabyte is waiting
+        batch_seconds=2,  # or after two seconds under load
+    )
+)
+deployment.start()
+```
 
-    ```python
-    from hsml.default_predictor import DefaultPredict
+A dict with the same field names is accepted wherever the object is.
+Fields left unset keep the platform default.
+The values are read when the pods start: edit `deployment.feature_logging`, call `deployment.save()`, and `deployment.restart()` a running deployment to apply them.
 
+```python
+deployment.feature_logging.batch_seconds = 1
+deployment.save()
+deployment.restart()
+```
 
-    class Predict(DefaultPredict):
-        def load_model(self, model_files_path): ...
+| Field | Controls | Platform default | Variable |
+| --- | --- | --- | --- |
+| `transport` | The feature view's transport, `realtime` or `job`; a deployment cannot choose the other one, the field only documents or checks it | the view's | `serving_feature_logging_transport` (the default for new views) |
+| `batch_bytes` | Coalesced bytes that force a post while the predictor has a backlog; an idle predictor posts at once | 1 MiB | `serving_feature_logger_batch_bytes` |
+| `batch_seconds` | Longest time the predictor holds a partial batch before posting it | 5 | `serving_feature_logger_batch_seconds` |
+| `batch_rows` | Most rows one post carries; the platform default is the inference logger's own limit, so a lower value only makes posts smaller | 512 | `serving_feature_logger_max_event_rows` |
+| `queue_size` | Rows the predictor keeps queued for logging, including rows in flight; beyond it rows are dropped and counted. The queue holds the requests' rows as received, so wide rows hold more memory per row | 1000 | `serving_feature_logger_queue_size` |
+| `max_event_bytes` | Largest single post; a group of requests larger than this goes out as several posts | 8 MiB | `serving_feature_logger_max_event_bytes` |
+| `sidecar_cpu` | CPU request of the sidecar container, in cores | from the chart | inference logger values |
+| `sidecar_memory_mb` | Memory request of the sidecar container, in MiB | from the chart | inference logger values |
 
-        def model_predict(self, feature_vectors):
-            return self.model.predict_proba(feature_vectors[self.model_input_columns])
-    ```
+The `job` transport adds `flush_bytes` (1 MiB) and `flush_interval_seconds` (300), the size and age at which the pod's buffer segment is closed and uploaded, `max_buffer_bytes` (64 MiB), beyond which new rows are dropped while uploads fail, and `shutdown_seconds`, the budget a stopping pod has to upload its buffer and start the commit job; setting them on a `realtime` deployment is rejected.
+Their variables are `serving_feature_logger_flush_bytes`, `serving_feature_logger_flush_interval_seconds`, `serving_feature_logger_max_buffer_bytes` and `serving_feature_logger_shutdown_seconds`.
+A stopping pod is given a termination grace period of 30 seconds for the Knative drain plus `shutdown_seconds` plus 5, so a stop takes about that long to complete.
+A pod that has uploaded 32 MiB since the last run asks the commit job to run ahead of its schedule, at most once every five minutes.
+The object rejects non-positive values and inconsistent pairs: `batch_rows` cannot exceed `queue_size`, and `batch_bytes` cannot exceed `max_event_bytes`.
+A post is closed as soon as the next request would take it past `batch_rows` or `max_event_bytes`, so a backlog is posted in receiver-sized pieces.
 
-The serving wrapper imports a model deployment's script itself, so the script needs no `__main__` block.
-Only a [feature view deployment][feature-view-deployment] script, which may be started as a plain script, hands over to the wrapper.
-Any predictor script, subclass or not, is protected by the serving wrapper when the deployment carries a schema: invalid rows and oversize batches are refused before `predict()` runs.
-With a transformer, the transformer validates the request, whether or not it implements `preprocess()`, and the predictor trusts the transformer's output.
-Each pod reads that role from its own revision, so a predictor created before a transformer was added keeps validating until it is replaced.
-This needs an inference environment built from a Hopsworks 5.1 or later base image; an older image serves the deployment without checking.
+Under load a lower `batch_bytes` or `batch_seconds` shortens the time a row waits in the predictor at the cost of more posts; when the deployment is idle every row is posted as soon as it is built, whatever the values.
+Stopping a deployment posts whatever the predictor still holds before the pod exits; on the `job` transport it uploads the buffer and starts the commit job, and `deployment.commit_feature_logs()` runs that job on demand.
+
+Logging is asynchronous and a logging failure does not fail prediction.
+How often the rows reach the offline store is a property of the feature view, not the deployment; see [Choosing the Materialization Interval](../../fs/feature_view/feature_logging.md#choosing-the-materialization-interval).
 
 ## Deployments without lookups { #deployment-schema-no-lookup }
 
@@ -359,10 +386,10 @@ The `SERVING_*` names are reserved and refused in `env_vars=`, except `SERVING_M
 
 ## API Reference
 
-`hsml.deployment_schema.DeploymentSchema`
+`hsml.deployment.schema.DeploymentSchema`
 
-`hsml.default_predictor.DefaultPredict`
+`hsml.deployment.default_predictor.DefaultPredict`
 
 [`Model.deploy`][hsml.model.Model.deploy]
 
-[`Deployment`][hsml.deployment.Deployment]
+[`Deployment`][hsml.deployment.deployment.Deployment]

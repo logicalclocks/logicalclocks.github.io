@@ -95,7 +95,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-  from hsml.inference_logger import InferenceLogger
+  from hsml.deployment.inference_logger import InferenceLogger
   from hsml.kafka_topic import KafkaTopic
 
 
@@ -128,7 +128,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[`InferenceLogger`][hsml.inference_logger.InferenceLogger]
+[`InferenceLogger`][hsml.deployment.inference_logger.InferenceLogger]
 
 ## Topic schema
 

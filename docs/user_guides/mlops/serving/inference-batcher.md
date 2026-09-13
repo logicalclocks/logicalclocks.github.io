@@ -78,7 +78,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-  from hsml.inference_batcher import InferenceBatcher
+  from hsml.deployment.inference_batcher import InferenceBatcher
 
 
   my_batcher = InferenceBatcher(
@@ -102,4 +102,4 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[`InferenceBatcher`][hsml.inference_batcher.InferenceBatcher]
+[`InferenceBatcher`][hsml.deployment.inference_batcher.InferenceBatcher]

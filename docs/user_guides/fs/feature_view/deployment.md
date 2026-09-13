@@ -152,7 +152,7 @@ The script must end with the hand-over to the serving wrapper:
 === "Python"
 
     ```python
-    from hsml.default_predictor import DefaultPredict, run_kserve_wrapper
+    from hsml.deployment.default_predictor import DefaultPredict, run_kserve_wrapper
 
 
     class Predict(DefaultPredict):
@@ -187,4 +187,4 @@ hops deployment schema transactionsfv --openapi
 
 `hsfs.feature_view.FeatureView.deploy`
 
-[`Deployment`][hsml.deployment.Deployment]
+[`Deployment`][hsml.deployment.deployment.Deployment]

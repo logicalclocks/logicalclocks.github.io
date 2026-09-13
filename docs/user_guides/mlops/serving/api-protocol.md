@@ -5,6 +5,18 @@
 Hopsworks supports both REST and gRPC as API protocols for sending inference requests to model deployments.
 While REST API protocol is supported in all types of model deployments, gRPC is currently supported for **Python model deployments** only.
 
+The protocol is chosen per deployment with `api_protocol`, in the creation form or in the Python API, and defaults to REST.
+REST is what `curl`, the published OpenAPI document and any client that is not the Python library use.
+
+gRPC costs less per request under concurrency: on a four-client benchmark it served 20 to 30 percent more requests per second
+and cut p99 latency by around 3 ms, and the gain grows with the batch size. It is worth choosing when the Python library
+is the only client. A deployment served by the [default predictor](deployment-schema.md) supports both protocols,
+because the library encodes the request and decodes the response at both ends; on gRPC the rows travel as one
+KServe v2 tensor per schema field and `deployment.predict()` returns the same dictionary it returns over REST.
+
+A deployment that runs your own predictor script has to stay on REST unless the script is written for gRPC:
+under gRPC the model server hands `predict()` KServe v2 tensors rather than rows, which a script written for REST cannot read.
+
 ## Web UI
 
 ### Step 1: Create a new deployment
@@ -50,6 +62,9 @@ You can select the API protocol to be enabled in your model deployment in the ad
     Therefore, only one of REST or gRPC API protocols can be enabled at the same time on the same model deployment.
     You cannot change the API protocol of existing deployments.
 
+    A gRPC deployment answers no HTTP requests, so `curl` cannot test it and the deployment page shows no curl example
+    and no OpenAPI reference for it.
+
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
 ## Code
@@ -92,4 +107,4 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[API Protocol][hsml.deployment.Deployment.api_protocol]
+[API Protocol][hsml.deployment.deployment.Deployment.api_protocol]

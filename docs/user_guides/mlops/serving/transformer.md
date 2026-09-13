@@ -171,7 +171,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
   # or
 
-  from hsml.transformer import Transformer
+  from hsml.deployment.transformer import Transformer
 
   my_transformer = Transformer(script_file)
   ```
@@ -192,7 +192,7 @@ Use the `transformer` parameter to set the transformer configuration when creati
 
 ### API Reference
 
-[`Transformer`][hsml.transformer.Transformer]
+[`Transformer`][hsml.deployment.transformer.Transformer]
 
 ## Transformer script
 

@@ -160,4 +160,4 @@ Once in the OpenSearch Dashboards, you can search for keywords, apply multiple f
 
 ### API Reference
 
-[`Deployment`][hsml.deployment.Deployment]
+[`Deployment`][hsml.deployment.deployment.Deployment]
