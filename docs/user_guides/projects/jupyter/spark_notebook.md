@@ -139,6 +139,12 @@ Navigate back to Hopsworks and a Spark session will have appeared, click on the 
   </figure>
 </p>
 
+## Step 7: Saved application logs
+
+While the Spark session runs, the `Live Logs` button on its row streams the driver and executor output. When the session ends, each executor copies its logs to the `Logs/Jupyter/<username>/spark/<application id>` directory of the project, and the Jupyter page lists the application under `Spark and Ray applications` in the `Saved Logs` card. Click `View` to read the executor files, one per executor and stream, or delete the directory when it is no longer needed.
+
+The driver runs inside the Jupyter server, so its output is part of the server log, which is saved to `Logs/Jupyter/<username>` when the server stops.
+
 ## Accessing project data
 
 ### Read directly from the filesystem (recommended)

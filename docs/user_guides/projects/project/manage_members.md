@@ -91,6 +91,30 @@ To change a member's role or remove them from the project, click the `Manage mem
   </figure>
 </p>
 
+### What happens to a removed member's files
+
+Each member has a private home directory in the project, `/Projects/<project>/Users/<username>`, holding their notebooks, their SSH key and their agent configuration.
+
+When a member is removed, that directory and everything under it is transferred to another data owner. The files keep their contents and their paths; only the owner changes. The removed member loses access, as they do to the rest of the project.
+
+The directory keeps the name of the member who had it, since the paths do not change. The new owner finds it in the project's `Users` dataset under that name, next to their own home directory. Nobody else sees it: home directories stay private to whoever owns them.
+
+Adding that member back to the project gives them a new, empty home directory. The files they left keep the data owner who took them over, and move to `Users/<data owner>/former-members/<member>` to free the path.
+
+A hand-over runs in the background and is retried until it completes. If it is lost, which deleting the removed member's account before it runs does, the platform's periodic permissions check finds the directory and hands it to the longest-serving data owner instead of the one the removal chose.
+
+The remove dialog asks which data owner takes them, and starts on the data owner who has been in the project the longest. Only data owners are offered: a data scientist cannot manage members, so files handed to one would be out of reach of the people who can. Service accounts are never chosen.
+
+The transfer runs in the background. A member with a large home directory takes a moment to hand over, because every file and directory under it changes owner one at a time, and the removal does not wait for that to finish.
+
+Two cases where nothing is transferred, and one where the removal is refused:
+
+| Case | Result |
+| --- | --- |
+| The removal asks for the home directory to be deleted | The directory is deleted, so there is nothing to transfer |
+| The member being removed has no home directory | Nothing to transfer |
+| Removing the member would leave the project with no data owner | The removal is refused. Give another member the data owner role first |
+
 ## Python SDK
 
 ```python
@@ -109,8 +133,14 @@ for member in project.get_members():
 # Change a member's role
 project.get_members_api().update_role("alice@example.com", "Observer")
 
-# Remove a member
+# Remove a member. Their files go to the longest-serving data owner
 project.remove_member("alice@example.com")
+
+# Name the data owner that takes over their files
+project.remove_member("alice@example.com", new_file_owner="carol@example.com")
+
+# Delete their files instead of handing them over
+project.remove_member("alice@example.com", delete_home_dir=True)
 ```
 
 Roles are the same as in the UI: `Data owner`, `Data scientist`, `Observer`, and `Feature store restricted`.

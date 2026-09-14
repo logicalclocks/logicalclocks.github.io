@@ -21,6 +21,8 @@ For each component, you can set minimum (requests) and maximum (limits) resource
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component (predictor or transformer) enables **scale-to-zero**.
     This means that all instances of the component will automatically scale down to zero after a default period of inactivity of 30 seconds.
+    Scale-to-zero is available in ==Knative== mode only.
+    A deployment in ==Standard== mode always keeps at least one instance of each component running, see [Deployment mode](autoscaling.md#deployment-mode).
 
 ## Web UI
 
@@ -58,6 +60,7 @@ Moreover, you can choose the minimum number of replicas for each of these compon
 
 !!! note "Scale-to-zero capabilities"
     Set the number of instances to **0** to enable scale-to-zero on the component.
+    This requires the deployment to run in ==Knative== mode, see [Deployment mode](autoscaling.md#deployment-mode).
 
 <p align="center">
   <figure>
@@ -145,5 +148,5 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ## Autoscaling
 
-Deployments can be configured to automatically scale the number of replicas based on traffic.
+Deployments can be configured to automatically scale the number of replicas, on traffic in Knative mode and on CPU or memory utilization in Standard mode.
 To learn about the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).

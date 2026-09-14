@@ -366,7 +366,8 @@ Each model server has specific requirements and supports different types of mode
     | TensorFlow Serving   | Model artifact needs `variables/` and `.pb` file          |
     | vLLM                 | Model files supported by vLLM engine (e.g., .safetensors) |
 
-All deployments use [KServe](https://kserve.github.io/website/latest/) as the serving platform, providing autoscaling (including scale-to-zero), fine-grained resource allocation, inference logging, inference batching, and transformers.
+All deployments use [KServe](https://kserve.github.io/website/latest/) as the serving platform, providing autoscaling, fine-grained resource allocation, inference logging, inference batching, and transformers.
+KServe runs a deployment in either Knative or Standard mode, see [Deployment mode](autoscaling.md#deployment-mode).
 
 ## Predictor script
 
@@ -538,9 +539,8 @@ To learn about the different combinations available, see the [Resources Guide](r
 
 ## Autoscaling
 
-Deployments use Knative Pod Autoscaler (KPA) to automatically scale the number of replicas based on traffic, including scale-to-zero.
-
-To learn about the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).
+Deployments can automatically scale the number of replicas, and how they scale depends on the [deployment mode](autoscaling.md#deployment-mode).
+To learn about the deployment modes and the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).
 
 ## Scheduling
 
