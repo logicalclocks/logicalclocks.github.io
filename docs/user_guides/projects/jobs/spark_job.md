@@ -110,7 +110,7 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 - `Executor overhead factor`: Fraction of the executor memory that Spark adds to each executor pod as non-heap headroom.
   Prefilled with the same default, 0.10.
-  Raise it when executors are killed with "Memory Overhead Exceeded".
+  Raise it when executors are OOMKilled.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
 
