@@ -72,7 +72,8 @@ The default predictor loads a single `.pkl`, `.pickle`, or `.joblib` file from t
 The default predictor is used when the model is a Python model registered with a feature view, no `script_file` or transformer is given, and the deployment uses KServe.
 Pass `default_predictor=True` to force it, for instance for a scikit-learn model, or `default_predictor=False` to keep the plain model server.
 
-Such a deployment serves either [API protocol](api-protocol.md). It defaults to REST, which is what the `curl` example and the OpenAPI document below use.
+Such a deployment serves either [API protocol][api-protocol].
+It defaults to REST, which is what the `curl` example and the OpenAPI document below use.
 Pass `api_protocol="GRPC"` to serve gRPC instead, which costs less per request under concurrency: the library owns both ends of the encoding, so the rows travel as one KServe v2 tensor per schema field and `deployment.predict()` returns the same dictionary it returns over REST.
 A deployment serves one protocol, not both, so a gRPC deployment answers no HTTP and neither `curl` nor the OpenAPI document below reaches it.
 
@@ -302,7 +303,7 @@ deployment.restart()
 | `batch_bytes` | Coalesced bytes that force a post while the predictor has a backlog; an idle predictor posts at once | 1 MiB | `serving_feature_logger_batch_bytes` |
 | `batch_seconds` | Longest time the predictor holds a partial batch before posting it | 5 | `serving_feature_logger_batch_seconds` |
 | `batch_rows` | Most rows one post carries; the platform default is the inference logger's own limit, so a lower value only makes posts smaller | 512 | `serving_feature_logger_max_event_rows` |
-| `queue_size` | Rows the predictor keeps queued for logging, including rows in flight; beyond it rows are dropped and counted. The queue holds the requests' rows as received, so wide rows hold more memory per row | 1000 | `serving_feature_logger_queue_size` |
+| `queue_size` | Rows the predictor keeps queued for logging, including rows in flight, beyond which rows are dropped and counted; the queue holds the requests' rows as received, so wide rows hold more memory per row | 1000 | `serving_feature_logger_queue_size` |
 | `max_event_bytes` | Largest single post; a group of requests larger than this goes out as several posts | 8 MiB | `serving_feature_logger_max_event_bytes` |
 | `sidecar_cpu` | CPU request of the sidecar container, in cores | from the chart | inference logger values |
 | `sidecar_memory_mb` | Memory request of the sidecar container, in MiB | from the chart | inference logger values |
@@ -318,7 +319,7 @@ Under load a lower `batch_bytes` or `batch_seconds` shortens the time a row wait
 Stopping a deployment posts whatever the predictor still holds before the pod exits; on the `job` transport it uploads the buffer and starts the commit job, and `deployment.commit_feature_logs()` runs that job on demand.
 
 Logging is asynchronous and a logging failure does not fail prediction.
-How often the rows reach the offline store is a property of the feature view, not the deployment; see [Choosing the Materialization Interval](../../fs/feature_view/feature_logging.md#choosing-the-materialization-interval).
+How often the rows reach the offline store is a property of the feature view, not the deployment; see [Choosing the Materialization Interval][choosing-the-materialization-interval].
 
 ## Deployments without lookups { #deployment-schema-no-lookup }
 

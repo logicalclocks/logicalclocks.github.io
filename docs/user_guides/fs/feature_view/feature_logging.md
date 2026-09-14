@@ -53,7 +53,7 @@ Deployments take the transport from the view; a `DeploymentLoggingConfig` that n
 The `job` transport keeps no online copy, so `read_log(online=True)` is refused for such a view, and a deployment that stops uploads what its buffer holds and starts the commit job before the pod exits.
 Run `deployment.commit_feature_logs()` or `feature_view.materialize_log()` to commit the uploaded chunks on demand, for example after a replica was killed.
 
-### Choosing the Materialization Interval
+### Choosing the Materialization Interval { #choosing-the-materialization-interval }
 
 The materialization job runs every hour or once a day.
 The platform default applies unless you choose one, at creation or later.
@@ -249,7 +249,8 @@ feature_view.resume_logging()
 
 ## Materializing Logs
 
-Besides the scheduled materialization job, you can materialize logs from Kafka to the offline store on demand.
+Besides the scheduled materialization job, you can materialize logs to the offline store on demand.
+On the `realtime` transport this reads the rows from Kafka.
 On the `job` transport this runs the commit job over the chunks that deployments uploaded to HopsFS.
 This does not pause the scheduled job.
 Materialization writes all columns of the logging group.

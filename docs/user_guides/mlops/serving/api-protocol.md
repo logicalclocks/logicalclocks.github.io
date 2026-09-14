@@ -1,4 +1,4 @@
-# How to Select the API protocol for a Deployment
+# How to Select the API protocol for a Deployment { #api-protocol }
 
 ## Introduction
 
@@ -8,14 +8,14 @@ While REST API protocol is supported in all types of model deployments, gRPC is 
 The protocol is chosen per deployment with `api_protocol`, in the creation form or in the Python API, and defaults to REST.
 REST is what `curl`, the published OpenAPI document and any client that is not the Python library use.
 
-gRPC costs less per request under concurrency: on a four-client benchmark it served 20 to 30 percent more requests per second
-and cut p99 latency by around 3 ms, and the gain grows with the batch size. It is worth choosing when the Python library
-is the only client. A deployment served by the [default predictor](deployment-schema.md) supports both protocols,
-because the library encodes the request and decodes the response at both ends; on gRPC the rows travel as one
-KServe v2 tensor per schema field and `deployment.predict()` returns the same dictionary it returns over REST.
+gRPC costs less per request under concurrency.
+On a four-client benchmark it served 20 to 30 percent more requests per second and cut p99 latency by around 3 ms, and the gain grows with the batch size.
+It is worth choosing when the Python library is the only client.
+A deployment served by the [default predictor][deployment-schema] supports both protocols, because the library encodes the request and decodes the response at both ends.
+On gRPC the rows travel as one KServe v2 tensor per schema field, and `deployment.predict()` returns the same dictionary it returns over REST.
 
-A deployment that runs your own predictor script has to stay on REST unless the script is written for gRPC:
-under gRPC the model server hands `predict()` KServe v2 tensors rather than rows, which a script written for REST cannot read.
+A deployment that runs your own predictor script has to stay on REST unless the script is written for gRPC.
+Under gRPC the model server hands `predict()` KServe v2 tensors rather than rows, which a script written for REST cannot read.
 
 ## Web UI
 
