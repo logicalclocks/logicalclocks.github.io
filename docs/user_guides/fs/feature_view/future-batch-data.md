@@ -126,6 +126,33 @@ batch_data = feature_view.get_batch_data(
     When feature groups in the view share a column name, key columns come back fully qualified as `<project>_<feature_group>_<version>_<column>`.
     This is how `get_batch_data` has always named ambiguous key columns; it is not specific to this call.
 
+## Training data from the same rows
+
+The same mechanism builds training data. Pass `serving_keys` to `training_data`,
+`train_test_split`, `train_validation_test_split` or any of the `create_*` methods, and the
+query is anchored on your rows instead of on the root feature group.
+
+```python
+train_x, test_x, train_y, test_y = feature_view.train_test_split(
+    test_size=0.2,
+    serving_keys=labels,   # keys, an event time per row, and the label
+)
+```
+
+Two differences from a batch read. The frame supplies the times itself, one per row under the
+event time column, so there is no `prediction_times`: a training row is one entity at one
+moment, not an entity scored repeatedly. And columns the feature view does not define are
+carried through to the output untouched, which is how the label rides along. A batch read stays
+strict about unknown columns, because inference has no labels and a mistyped column there is
+worth catching.
+
+This is what a spine group does, without having had to create the feature view with one.
+`serving_keys` and `spine` both replace the left side of the query, so passing both is an error.
+
+!!! note "Materialized training datasets built this way are not reproducible"
+    A `create_*` call records the query, not your dataframe, so the dataset cannot be rebuilt
+    from its metadata alone. Keep the frame if you need to regenerate it.
+
 ## Limits and performance
 
 Offline feature groups only.
