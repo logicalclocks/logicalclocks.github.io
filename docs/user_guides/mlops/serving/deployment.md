@@ -13,11 +13,6 @@ In this guide, you will learn how to create a new deployment for a trained model
     To learn how to create a model in the Model Registry, see [Model Registry Guide](../registry/index.md#exporting-a-model).
     For Python deployments (running a Python script without a model artifact), see [Python Deployments](../../projects/python-deployment/python-deployment.md).
 
-!!! note "Import paths"
-    The serving classes live under `hsml.deployment`, which is what the samples on these pages use.
-    The flat paths they moved from, such as `hsml.predictor` and `hsml.resources`, still work as deprecated aliases and raise a `DeprecationWarning`; they will be removed in a later release.
-    A client older than the move has only the flat paths, so copy the samples with the import that matches the client you run.
-
 Model deployments are used to unify the different components involved in making one or more trained models online and accessible to compute predictions on demand.
 For each model deployment, there are four concepts to understand:
 
@@ -223,7 +218,7 @@ See the [Feature View Deployment Guide][feature-view-deployment].
 
 ### API Reference
 
-[`ModelServing`][hsml.deployment.model_serving.ModelServing]
+[`ModelServing`][hsml.model_serving.ModelServing]
 
 ## Model Files
 

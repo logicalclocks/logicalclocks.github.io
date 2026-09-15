@@ -95,7 +95,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-  from hsml.deployment.resources import PredictorResources, Resources
+  from hsml.resources import PredictorResources, Resources
 
 
   minimum_res = Resources(cores=1, memory=128, gpus=1)
@@ -111,7 +111,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 === "Python"
 
   ```python
-  from hsml.deployment.resources import TransformerResources
+  from hsml.resources import TransformerResources
 
   minimum_res = Resources(cores=1, memory=128, gpus=1)
   maximum_res = Resources(cores=2, memory=256, gpus=1)
@@ -144,7 +144,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### API Reference
 
-[`Resources`][hsml.deployment.resources.Resources]
+[`Resources`][hsml.resources.Resources]
 
 ## Autoscaling
 

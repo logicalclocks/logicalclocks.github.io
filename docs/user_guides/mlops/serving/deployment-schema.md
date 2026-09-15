@@ -144,7 +144,7 @@ A refinement keeps the inferred fields; adding or removing one is refused.
 === "Python"
 
     ```python
-    from hsml.deployment.schema import DeploymentSchema
+    from hsml.deployment_schema import DeploymentSchema
 
     deployment = model.deploy(name="fraud", passed_features=["amount"])
     inferred = deployment.schema
@@ -273,10 +273,10 @@ Any other extra logging column becomes a request field that clients may send.
 ### Configuring feature logging per deployment { #deployment-schema-feature-logging-config }
 
 The predictor coalesces log rows into Arrow batches and hands them to the transport the feature view logs through: on `realtime` it posts them to the deployment's inference logger, which produces them to Kafka, and they reach the online store within seconds and the offline store on the materialization schedule; on `job` it appends them to a file buffer on the pod, which is uploaded to HopsFS and committed to the offline store by the view's commit job.
-Both sides take their limits from platform variables that an administrator sets, and a deployment can override any of them with a `DeploymentLoggingConfig` (`hsml.deployment.logging_config`) passed to `deploy()`, `create_predictor()` or `feature_view.deploy()`, or set on the deployment before it starts.
+Both sides take their limits from platform variables that an administrator sets, and a deployment can override any of them with a `DeploymentLoggingConfig` (`hsml.deployment_logging_config`) passed to `deploy()`, `create_predictor()` or `feature_view.deploy()`, or set on the deployment before it starts.
 
 ```python
-from hsml.deployment.logging_config import DeploymentLoggingConfig
+from hsml.deployment_logging_config import DeploymentLoggingConfig
 
 deployment = model.deploy(
     feature_logging=DeploymentLoggingConfig(
@@ -387,10 +387,10 @@ The `SERVING_*` names are reserved and refused in `env_vars=`, except `SERVING_M
 
 ## API Reference
 
-`hsml.deployment.schema.DeploymentSchema`
+`hsml.deployment_schema.DeploymentSchema`
 
-`hsml.deployment.default_predictor.DefaultPredict`
+`hsml.default_predictor.DefaultPredict`
 
 [`Model.deploy`][hsml.model.Model.deploy]
 
-[`Deployment`][hsml.deployment.deployment.Deployment]
+[`Deployment`][hsml.deployment.Deployment]

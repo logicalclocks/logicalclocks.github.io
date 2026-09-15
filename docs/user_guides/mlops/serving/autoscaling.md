@@ -83,14 +83,14 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ### Step 2: Define the predictor scaling configuration
 
-You can use the [`PredictorScalingConfig`][hsml.deployment.scaling_config.PredictorScalingConfig] class to configure the scaling options according to your preferences.
+You can use the [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig] class to configure the scaling options according to your preferences.
 Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections above.
 Make sure the metric and parameters you set are valid for the [deployment mode](#deployment-mode) you deploy in.
 
 === "Knative mode"
 
     ```python
-    from hsml.deployment.scaling_config import PredictorScalingConfig
+    from hsml.scaling_config import PredictorScalingConfig
 
 
     predictor_scaling = PredictorScalingConfig(
@@ -101,7 +101,7 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
 === "Standard mode"
 
     ```python
-    from hsml.deployment.scaling_config import PredictorScalingConfig
+    from hsml.scaling_config import PredictorScalingConfig
 
 
     predictor_scaling = PredictorScalingConfig(
@@ -111,13 +111,13 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
 
 ### Step 3 (Optional): Define the transformer scaling configuration
 
-If a transformer script is also provided, you can use the [`TransformerScalingConfig`][hsml.deployment.scaling_config.TransformerScalingConfig] class to configure the scaling options according to your preferences.
+If a transformer script is also provided, you can use the [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig] class to configure the scaling options according to your preferences.
 Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections above.
 
 === "Knative mode"
 
     ```python
-    from hsml.deployment.scaling_config import TransformerScalingConfig
+    from hsml.scaling_config import TransformerScalingConfig
 
 
     transformer_scaling = TransformerScalingConfig(
@@ -128,7 +128,7 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 === "Standard mode"
 
     ```python
-    from hsml.deployment.scaling_config import TransformerScalingConfig
+    from hsml.scaling_config import TransformerScalingConfig
 
 
     transformer_scaling = TransformerScalingConfig(
@@ -182,9 +182,9 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 
 ### API Reference
 
-[`PredictorScalingConfig`][hsml.deployment.scaling_config.PredictorScalingConfig]
+[`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig]
 
-[`TransformerScalingConfig`][hsml.deployment.scaling_config.TransformerScalingConfig]
+[`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig]
 
 ## Deployment mode
 

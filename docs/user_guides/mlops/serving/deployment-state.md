@@ -113,9 +113,9 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 ### API Reference
 
-[`Deployment`][hsml.deployment.deployment.Deployment]
+[`Deployment`][hsml.deployment.Deployment]
 
-[`PredictorState`][hsml.deployment.predictor_state.PredictorState]
+[`PredictorState`][hsml.predictor_state.PredictorState]
 
 ## Deployment status
 

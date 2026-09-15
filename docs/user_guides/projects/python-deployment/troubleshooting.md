@@ -194,4 +194,4 @@ Omit `latest` to download every archive the deployment has kept.
 
 ### API Reference
 
-[`Deployment`][hsml.deployment.deployment.Deployment]
+[`Deployment`][hsml.deployment.Deployment]
