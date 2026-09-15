@@ -101,15 +101,16 @@ Resource allocation for the Spark driver and executors can be configured, also t
 - `Driver virtual cores`: Number of cores to allocate for the Spark driver
 
 - `Driver overhead factor`: Fraction of the driver memory that Spark adds to the driver pod as non-heap headroom.
-  Prefilled with Spark's own default for Spark (jar) jobs, 0.10.
-  Clear the field to let Spark decide.
+  Prefilled with 0.40.
+  Clear the field to let Spark decide, which for a jar job is 0.10.
 
 - `Executor memory`: Number of MBs to allocate for each Spark executor
 
 - `Executor virtual cores`: Number of cores to allocate for each Spark executor
 
 - `Executor overhead factor`: Fraction of the executor memory that Spark adds to each executor pod as non-heap headroom.
-  Prefilled with the same default, 0.10.
+  Prefilled with 0.40.
+  Clear the field to let Spark decide, which for a jar job is 0.10.
   Raise it when executors are OOMKilled.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
