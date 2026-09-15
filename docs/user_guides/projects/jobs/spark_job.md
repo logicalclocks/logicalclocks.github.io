@@ -96,13 +96,22 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 - `Environment`: The environment to use, must be based on `spark-feature-pipeline`
 
-- `Driver memory`: Number of cores to allocate for the Spark driver
+- `Driver memory`: Number of MBs to allocate for the Spark driver
 
-- `Driver virtual cores`: Number of MBs to allocate for the Spark driver
+- `Driver virtual cores`: Number of cores to allocate for the Spark driver
 
-- `Executor memory`: Number of cores to allocate for each Spark executor
+- `Driver overhead factor`: Fraction of the driver memory that Spark adds to the driver pod as non-heap headroom.
+  Prefilled with 0.40.
+  Clear the field to let Spark decide, which for a jar job is 0.10.
 
-- `Executor virtual cores`: Number of MBs to allocate for each Spark executor
+- `Executor memory`: Number of MBs to allocate for each Spark executor
+
+- `Executor virtual cores`: Number of cores to allocate for each Spark executor
+
+- `Executor overhead factor`: Fraction of the executor memory that Spark adds to each executor pod as non-heap headroom.
+  Prefilled with 0.40.
+  Clear the field to let Spark decide, which for a jar job is 0.10.
+  Raise it when executors are OOMKilled.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
 
@@ -237,6 +246,8 @@ The following table describes the job configuration parameters for a SPARK job.
 | <nobr>`conf['spark.executor.instances']`</nobr> | int | Number of executor instances | `1` |
 | <nobr>`conf['spark.executor.cores']`</nobr> | float | Number of CPU cores per executor | `1.0` |
 | <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
+| <nobr>`conf['spark.driver.memoryOverheadFactor']`</nobr> | float | Fraction of the driver memory added to the driver pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
+| <nobr>`conf['spark.executor.memoryOverheadFactor']`</nobr> | float | Fraction of the executor memory added to each executor pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
 | <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors | `true` |
 | <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr> | int | Minimum number of executors with dynamic allocation | `1` |
 | <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr> | int | Maximum number of executors with dynamic allocation | `2` |
