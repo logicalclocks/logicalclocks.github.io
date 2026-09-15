@@ -12,8 +12,8 @@ It joins `air_quality` observations to a `weather` feature group that holds both
 The usual workaround is to read the forecast feature group directly, which loses the feature view's joins, its feature selection and its transformations.
 
 Instead, tell the feature view which rows you want to predict for.
-`spine_df` is the set of entities and `prediction_times` is the set of timestamps.
-Their cross product replaces the root feature group as the anchor of the query, and every feature group is looked up as of each prediction time.
+`spine_df` is the set of rows to predict for: one row per entity and moment, carrying the serving keys and the prediction time.
+It replaces the root feature group as the anchor of the query, and every feature group is looked up as of each row's own time.
 
 ## Retrieving batch data for future timestamps
 
@@ -25,13 +25,13 @@ from hsfs.constructor.prediction_times import PredictionTimes
 
 tomorrow = datetime.date.today() + datetime.timedelta(days=1)
 
+entities = pd.DataFrame(
+    [{"country": "sweden", "city": "stockholm", "street": "sveavagen"}]
+)
+schedule = PredictionTimes.every("daily", offset="00:00", start=tomorrow, count=7)
+
 batch_data = feature_view.get_batch_data(
-    spine_df=pd.DataFrame(
-        [{"country": "sweden", "city": "stockholm", "street": "sveavagen"}]
-    ),
-    prediction_times=PredictionTimes.every(
-        "daily", offset="00:00", start=tomorrow, count=7
-    ),
+    spine_df=schedule.cross(entities, event_time="date"),
 )
 ```
 
@@ -59,6 +59,10 @@ A column that matches neither a serving key nor a root feature is an error namin
 
 ## Choosing the timestamps
 
+The frame carries one timestamp per row, under the root feature group's event time column.
+Build it yourself if you already have the rows, or let `PredictionTimes` build a schedule and cross it with your entities.
+`cross` is worth preferring over rolling your own: it fixes the row order, entities as given and ascending in time within each, which is the order the result comes back in.
+
 `PredictionTimes` builds the set of timestamps three ways.
 
 ```python
@@ -75,7 +79,6 @@ PredictionTimes.cron("0 8 * * 1-5", start=tomorrow, count=10)
 PredictionTimes.of([datetime.datetime(2026, 3, 1, 8, 0)])
 ```
 
-A plain list of timestamps is accepted wherever `PredictionTimes` is, so `prediction_times=[t1, t2]` is shorthand for `PredictionTimes.of([t1, t2])`.
 
 Times are local, and daylight saving is resolved the way a scheduler resolves it.
 A local time that does not exist on the day the clocks go forward is skipped.
@@ -94,29 +97,26 @@ If a forecast is missing for one day, that day silently inherits the previous da
 A row older than the bound is returned as `NULL`, so the gap is visible to you and to the model.
 
 ```python
-batch_data = feature_view.get_batch_data(
-    spine_df=spine_df,
-    prediction_times=PredictionTimes.every(
-        "daily", offset="00:00", start=tomorrow, count=7
-    ),
-    # Per feature group, by name.
-    max_feature_age={"weather": datetime.timedelta(days=1)},
-)
+# Per feature group, by name. Set on the view, so it applies to every read anchored on a
+# spine_df, batch inference and training data alike.
+feature_view.max_feature_age = {"weather": datetime.timedelta(days=1)}
+
+batch_data = feature_view.get_batch_data(spine_df=spine)
 ```
 
-A single `timedelta` bounds every feature group instead of one.
+A single `timedelta` bounds every feature group instead of one, and `"*"` is the catch-all key.
+It is set on the view object rather than persisted with it, so set it again after `get_feature_view`.
 A name that is not a feature group of the feature view is an error rather than a bound that applies to nothing.
 
 ## Keys and event time in the result
 
 For a normal `get_batch_data` call, `primary_key` and `event_time` default to `False`.
-For a call with `spine_df` and `prediction_times` they default to `True`, because without the keys and the prediction time the frame does not say which row belongs to which entity or day.
+For a call with `spine_df` they default to `True`, because without the keys and the prediction time the frame does not say which row belongs to which entity or day.
 Pass `False` explicitly to leave them out, which is what you want when the model consumes the frame directly.
 
 ```python
 batch_data = feature_view.get_batch_data(
-    spine_df=spine_df,
-    prediction_times=prediction_times,
+    spine_df=spine,
     primary_key=False,
     event_time=False,
 )
@@ -139,12 +139,25 @@ train_x, test_x, train_y, test_y = feature_view.train_test_split(
 )
 ```
 
-Two differences from a batch read. The frame supplies the times itself, one per row under the
-event time column, so there is no `prediction_times`: a training row is one entity at one
-moment, not an entity scored repeatedly. And columns the feature view does not define are
+One difference from a batch read: columns the feature view does not define are
 carried through to the output untouched, which is how the label rides along. A batch read stays
 strict about unknown columns, because inference has no labels and a mistyped column there is
 worth catching.
+
+`max_feature_age` applies here too, because it is set on the view rather than on the call.
+A training example built from a feature that stopped being produced is the same silent
+staleness as an inference row built from one, and it is worse: the model learns from it.
+
+```python
+feature_view.max_feature_age = {"weather": datetime.timedelta(days=1)}
+
+# a row whose weather is older than a day now carries NULL rather than a stale value
+train_x, test_x, train_y, test_y = feature_view.train_test_split(
+    test_size=0.2, spine_df=labels
+)
+```
+
+The label is the caller's own column and is never nulled by the bound.
 
 This is what a spine group does, without having had to create the feature view with one.
 `spine_df` and `spine` both replace the left side of the query, so passing both is an error.
@@ -162,7 +175,7 @@ Both engines are supported.
 The Hopsworks Query Service renders each lookup as a DuckDB `ASOF LEFT JOIN`, and Spark renders it as a ranked window over the same rows.
 Both return the same frame.
 
-The size of the cross product of `spine_df` and `prediction_times` is bounded by cluster limits, which an administrator sets:
+The size of `spine_df` is bounded by cluster limits, which an administrator sets:
 
 | Variable | Bounds |
 | --- | --- |
@@ -183,7 +196,7 @@ On a large feature group, `lookback` is what bounds the work, and `max_feature_a
   A `RIGHT` or `FULL` join keeps source rows that have no prediction time to align to.
 - Feature groups joined through another feature group are not supported.
 - Every feature group in the view needs an event time, because an as-of lookup has nothing to order on without one.
-- `spine_df` and `prediction_times` cannot be combined with `start_time` and `end_time`.
-  The prediction times define the time axis.
+- `spine_df` cannot be combined with `start_time` and `end_time`.
+  The frame's own timestamps define the time axis.
 - A feature view created with a spine group uses `spine=` instead; the two cannot be combined.
 - A filter on a column the entities supply is refused, because it would drop rows you asked to predict for.
