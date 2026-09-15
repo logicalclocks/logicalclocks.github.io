@@ -12,7 +12,7 @@ It joins `air_quality` observations to a `weather` feature group that holds both
 The usual workaround is to read the forecast feature group directly, which loses the feature view's joins, its feature selection and its transformations.
 
 Instead, tell the feature view which rows you want to predict for.
-`serving_keys` is the set of entities and `prediction_times` is the set of timestamps.
+`spine_df` is the set of entities and `prediction_times` is the set of timestamps.
 Their cross product replaces the root feature group as the anchor of the query, and every feature group is looked up as of each prediction time.
 
 ## Retrieving batch data for future timestamps
@@ -26,7 +26,7 @@ from hsfs.constructor.prediction_times import PredictionTimes
 tomorrow = datetime.date.today() + datetime.timedelta(days=1)
 
 batch_data = feature_view.get_batch_data(
-    serving_keys=pd.DataFrame(
+    spine_df=pd.DataFrame(
         [{"country": "sweden", "city": "stockholm", "street": "sveavagen"}]
     ),
     prediction_times=PredictionTimes.every(
@@ -36,7 +36,7 @@ batch_data = feature_view.get_batch_data(
 ```
 
 The result has one row per entity per prediction time, so the example returns seven rows.
-Rows come back in the order of `serving_keys`, and within an entity in prediction-time order, so the frame can be handed to a model and its predictions joined back positionally.
+Rows come back in the order of `spine_df`, and within an entity in prediction-time order, so the frame can be handed to a model and its predictions joined back positionally.
 
 Every feature is taken from the most recent row at or before its prediction time.
 For a forecast row dated in the future, that is the forecast for that day.
@@ -44,14 +44,14 @@ A feature group with no matching row contributes `NULL` rather than removing the
 
 ## Choosing the entities
 
-`serving_keys` accepts a pandas or polars DataFrame, or a list of dictionaries.
+`spine_df` accepts a pandas or polars DataFrame, or a list of dictionaries.
 Its columns may be:
 
 - the feature view's required serving keys, which identify the entity;
 - any column of the root feature group, which is then used as supplied instead of being looked up.
 
 The second kind is the same idea as a passed feature in an online deployment.
-If the root feature group holds a `pm25` column and `serving_keys` carries one, the value you passed is returned and no lookup is made for it.
+If the root feature group holds a `pm25` column and `spine_df` carries one, the value you passed is returned and no lookup is made for it.
 
 Omitting some serving keys is allowed and warns, because a model may be able to infer what is missing.
 Omitting all of them is an error: nothing in the feature view can then be looked up, which is a mistake rather than an empty result.
@@ -95,7 +95,7 @@ A row older than the bound is returned as `NULL`, so the gap is visible to you a
 
 ```python
 batch_data = feature_view.get_batch_data(
-    serving_keys=serving_keys,
+    spine_df=spine_df,
     prediction_times=PredictionTimes.every(
         "daily", offset="00:00", start=tomorrow, count=7
     ),
@@ -110,12 +110,12 @@ A name that is not a feature group of the feature view is an error rather than a
 ## Keys and event time in the result
 
 For a normal `get_batch_data` call, `primary_key` and `event_time` default to `False`.
-For a call with `serving_keys` and `prediction_times` they default to `True`, because without the keys and the prediction time the frame does not say which row belongs to which entity or day.
+For a call with `spine_df` and `prediction_times` they default to `True`, because without the keys and the prediction time the frame does not say which row belongs to which entity or day.
 Pass `False` explicitly to leave them out, which is what you want when the model consumes the frame directly.
 
 ```python
 batch_data = feature_view.get_batch_data(
-    serving_keys=serving_keys,
+    spine_df=spine_df,
     prediction_times=prediction_times,
     primary_key=False,
     event_time=False,
@@ -128,14 +128,14 @@ batch_data = feature_view.get_batch_data(
 
 ## Training data from the same rows
 
-The same mechanism builds training data. Pass `serving_keys` to `training_data`,
+The same mechanism builds training data. Pass `spine_df` to `training_data`,
 `train_test_split`, `train_validation_test_split` or any of the `create_*` methods, and the
 query is anchored on your rows instead of on the root feature group.
 
 ```python
 train_x, test_x, train_y, test_y = feature_view.train_test_split(
     test_size=0.2,
-    serving_keys=labels,   # keys, an event time per row, and the label
+    spine_df=labels,   # keys, an event time per row, and the label
 )
 ```
 
@@ -147,7 +147,7 @@ strict about unknown columns, because inference has no labels and a mistyped col
 worth catching.
 
 This is what a spine group does, without having had to create the feature view with one.
-`serving_keys` and `spine` both replace the left side of the query, so passing both is an error.
+`spine_df` and `spine` both replace the left side of the query, so passing both is an error.
 
 !!! note "Materialized training datasets built this way are not reproducible"
     A `create_*` call records the query, not your dataframe, so the dataset cannot be rebuilt
@@ -162,13 +162,13 @@ Both engines are supported.
 The Hopsworks Query Service renders each lookup as a DuckDB `ASOF LEFT JOIN`, and Spark renders it as a ranked window over the same rows.
 Both return the same frame.
 
-The size of the cross product of `serving_keys` and `prediction_times` is bounded by cluster limits, which an administrator sets:
+The size of the cross product of `spine_df` and `prediction_times` is bounded by cluster limits, which an administrator sets:
 
 | Variable | Bounds |
 | --- | --- |
 | `featurestore_asof_spine_max_rows` | Rows, meaning entities multiplied by prediction times |
 | `featurestore_asof_spine_max_bytes` | The serialized size of those rows |
-| `featurestore_asof_spine_max_columns` | Columns in `serving_keys` |
+| `featurestore_asof_spine_max_columns` | Columns in `spine_df` |
 | `featurestore_asof_spine_max_horizon_days` | How far ahead a schedule may expand |
 
 A request over any of them is refused before it runs, with the limit named.
@@ -183,7 +183,7 @@ On a large feature group, `lookback` is what bounds the work, and `max_feature_a
   A `RIGHT` or `FULL` join keeps source rows that have no prediction time to align to.
 - Feature groups joined through another feature group are not supported.
 - Every feature group in the view needs an event time, because an as-of lookup has nothing to order on without one.
-- `serving_keys` and `prediction_times` cannot be combined with `start_time` and `end_time`.
+- `spine_df` and `prediction_times` cannot be combined with `start_time` and `end_time`.
   The prediction times define the time axis.
 - A feature view created with a spine group uses `spine=` instead; the two cannot be combined.
 - A filter on a column the entities supply is refused, because it would drop rows you asked to predict for.
