@@ -44,7 +44,10 @@ A feature group with no matching row contributes `NULL` rather than removing the
 
 ## Choosing the entities
 
-`spine_df` accepts a pandas or polars DataFrame, or a list of dictionaries.
+`spine_df` accepts a pandas or polars DataFrame, a list of dictionaries, or, under the Spark engine, a Spark DataFrame.
+A Spark DataFrame is refused under the Python engine, which has no session to evaluate it.
+A Spark spine is collected to the driver to be registered as a session temporary view, which is what the Spark spine path has always done, so size the frame to the entities you are scoring.
+A Spark DataFrame also has no row order, so the positional zip-back below does not apply to one: join predictions back on the serving keys instead.
 Its columns may be:
 
 - the feature view's required serving keys, which identify the entity;
