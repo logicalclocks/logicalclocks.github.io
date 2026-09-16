@@ -153,6 +153,7 @@ batch_data = feature_view.get_batch_data(spine_df=spine)
 One bound covers the whole view: every feature group it reads is held to the same limit.
 It is read-only after creation and stored with the view.
 That is deliberate: if it could be changed per call, a training set and an inference read could be built with different bounds, which is the training/serving skew a feature view exists to prevent.
+The bound is applied from the stored value, not from anything the read sends, so a read cannot opt out of it.
 Read it back with `feature_view.max_feature_age`, which returns a `timedelta` or `None` when the view is unbounded.
 
 ## Keys and event time in the result
@@ -231,6 +232,12 @@ The size of `spine_df` is bounded by cluster limits, which an administrator sets
 | `featurestore_asof_spine_max_horizon_days` | How far ahead a schedule may expand |
 
 A request over any of them is refused before it runs, with the limit named.
+The client checks the row and column ceilings itself, so a frame that is too large is refused before it is written and uploaded rather than after the round trip.
+Those client-side ceilings are the shipped defaults; raising the cluster variables above them means raising the client's too.
+
+The limits are per request.
+There is no cap on how many spine reads a user or a project may have in flight at once, so on a shared cluster a single caller can occupy the query service with repeated large reads.
+Size the variables for the concurrency you expect, rather than for one request in isolation.
 
 Without a `lookback`, each feature group is scanned from its first row up to the last prediction time.
 The upper bound excludes forecast rows beyond your horizon, but it does not bound history.
