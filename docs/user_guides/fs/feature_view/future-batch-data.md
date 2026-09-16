@@ -122,16 +122,16 @@ A row older than the bound is returned as `NULL`, so the gap is visible to you a
 feature_view = fs.create_feature_view(
     name="air_quality_fv",
     query=query,
-    max_feature_age={"weather": datetime.timedelta(days=1)},
+    max_feature_age=datetime.timedelta(days=1),
 )
 
 batch_data = feature_view.get_batch_data(spine_df=spine)
 ```
 
-A single `timedelta` bounds every feature group instead of one, and `"*"` is the catch-all key.
+One bound covers the whole view: every feature group it reads is held to the same limit.
 It is read-only after creation and stored with the view.
 That is deliberate: if it could be changed per call, a training set and an inference read could be built with different bounds, which is the training/serving skew a feature view exists to prevent.
-A name that is not a feature group of the feature view is an error rather than a bound that applies to nothing.
+Read it back with `feature_view.max_feature_age`, which returns a `timedelta` or `None` when the view is unbounded.
 
 ## Keys and event time in the result
 
@@ -174,8 +174,8 @@ A training example built from a feature that stopped being produced is the same 
 staleness as an inference row built from one, and it is worse: the model learns from it.
 
 ```python
-# the view was created with max_feature_age={"weather": timedelta(days=1)}, so a row whose
-# weather is older than a day carries NULL rather than a stale value
+# the view was created with max_feature_age=timedelta(days=1), so any feature whose newest
+# row is older than a day carries NULL rather than a stale value
 train_x, test_x, train_y, test_y = feature_view.train_test_split(
     test_size=0.2, spine_df=labels
 )
