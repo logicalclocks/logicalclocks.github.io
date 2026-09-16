@@ -104,6 +104,25 @@ spine["event_time"] = now   # named after the root feature group's event time co
 latest = feature_view.get_batch_data(spine_df=spine)
 ```
 
+To cover every entity the feature store knows about rather than a list you maintain, read them
+off the feature view's root feature group.
+`get_root_fg()` returns the feature group the view is anchored on, and `read_primary_keys()` returns its distinct primary key values, one row per entity.
+
+```python
+import datetime
+from hsfs.constructor.prediction_times import PredictionTimes
+
+fg = feature_view.get_root_fg()
+now = datetime.datetime.now(datetime.timezone.utc)
+
+spine = PredictionTimes.of([now]).cross(fg.read_primary_keys(), event_time=fg.event_time)
+latest = feature_view.get_batch_data(spine_df=spine)
+```
+
+`read_primary_keys()` returns entities and no time, so it is not a `spine_df` on its own and passing it directly is refused.
+Crossing it with one instant is what makes it one.
+It reads the key columns of the whole feature group to take the distinct rows, so the cost scales with the feature group rather than with the number of entities, and it returns the root's keys only: a joined feature group keyed on something the root does not carry is not covered by it and comes back `NULL`.
+
 There is no implicit "as of now": the time is always in the frame.
 A wall-clock default would make the same call return different rows on a re-run, and a training dataset materialized that way could never be reproduced.
 Event times are kept to the millisecond, so sub-millisecond precision in the timestamp you pass is dropped rather than rejected.
