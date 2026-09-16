@@ -88,6 +88,26 @@ A local time that occurs twice on the day they go back is taken at its first occ
     The prediction time in the returned frame is the time you asked for, not the event time of the row that matched it.
     A prediction time of 08:00 matching a forecast row written at 00:00 comes back as 08:00.
 
+## Latest feature values for every entity
+
+One row per entity, all at the same instant, is the offline equivalent of `get_feature_vectors`.
+Capture the timestamp once so every entity is read at the same moment rather than each drifting.
+
+```python
+import datetime
+
+now = datetime.datetime.now(datetime.timezone.utc)
+
+spine = pd.DataFrame({"entity_id": [1, 2, 3]})
+spine["event_time"] = now   # named after the root feature group's event time column
+
+latest = feature_view.get_batch_data(spine_df=spine)
+```
+
+There is no implicit "as of now": the time is always in the frame.
+A wall-clock default would make the same call return different rows on a re-run, and a training dataset materialized that way could never be reproduced.
+Event times are kept to the millisecond, so sub-millisecond precision in the timestamp you pass is dropped rather than rejected.
+
 ## Bounding how stale a feature may be
 
 An as-of lookup carries the last value forward for ever.
@@ -97,15 +117,20 @@ If a forecast is missing for one day, that day silently inherits the previous da
 A row older than the bound is returned as `NULL`, so the gap is visible to you and to the model.
 
 ```python
-# Per feature group, by name. Set on the view, so it applies to every read anchored on a
-# spine_df, batch inference and training data alike.
-feature_view.max_feature_age = {"weather": datetime.timedelta(days=1)}
+# Set when the view is created, so it applies to every read anchored on a spine_df,
+# batch inference and training data alike.
+feature_view = fs.create_feature_view(
+    name="air_quality_fv",
+    query=query,
+    max_feature_age={"weather": datetime.timedelta(days=1)},
+)
 
 batch_data = feature_view.get_batch_data(spine_df=spine)
 ```
 
 A single `timedelta` bounds every feature group instead of one, and `"*"` is the catch-all key.
-It is set on the view object rather than persisted with it, so set it again after `get_feature_view`.
+It is read-only after creation and stored with the view.
+That is deliberate: if it could be changed per call, a training set and an inference read could be built with different bounds, which is the training/serving skew a feature view exists to prevent.
 A name that is not a feature group of the feature view is an error rather than a bound that applies to nothing.
 
 ## Keys and event time in the result
@@ -144,14 +169,13 @@ carried through to the output untouched, which is how the label rides along. A b
 strict about unknown columns, because inference has no labels and a mistyped column there is
 worth catching.
 
-`max_feature_age` applies here too, because it is set on the view rather than on the call.
+`max_feature_age` applies here too, because it belongs to the view rather than to the call.
 A training example built from a feature that stopped being produced is the same silent
 staleness as an inference row built from one, and it is worse: the model learns from it.
 
 ```python
-feature_view.max_feature_age = {"weather": datetime.timedelta(days=1)}
-
-# a row whose weather is older than a day now carries NULL rather than a stale value
+# the view was created with max_feature_age={"weather": timedelta(days=1)}, so a row whose
+# weather is older than a day carries NULL rather than a stale value
 train_x, test_x, train_y, test_y = feature_view.train_test_split(
     test_size=0.2, spine_df=labels
 )
