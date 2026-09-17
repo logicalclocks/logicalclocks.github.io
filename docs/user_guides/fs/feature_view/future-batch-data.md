@@ -192,7 +192,14 @@ carried through to the output untouched, which is how the label rides along. A b
 strict about unknown columns, because inference has no labels and a mistyped column there is
 worth catching.
 
+A column named like a feature the view looks up from a joined feature group is refused rather than
+carried through. The view reads that feature from the feature store, and carrying the frame's copy
+as well would put two columns of one name in the result. Features of the root feature group are
+different: a root feature in the frame is a passed feature and takes the place of the lookup.
+
 `max_feature_age` applies here too, because it belongs to the view rather than to the call.
+It applies to every read anchored on a `spine_df` and to nothing else: an ordinary `get_batch_data`
+window and online serving through `get_feature_vector` are unchanged by it.
 A training example built from a feature that stopped being produced is the same silent
 staleness as an inference row built from one, and it is worse: the model learns from it.
 
@@ -209,9 +216,19 @@ The label is the caller's own column and is never nulled by the bound.
 This is what a spine group does, without having had to create the feature view with one.
 `spine_df` and `spine` both replace the left side of the query, so passing both is an error.
 
-!!! note "Materialized training datasets built this way are not reproducible"
-    A `create_*` call records the query, not your dataframe, so the dataset cannot be rebuilt
-    from its metadata alone. Keep the frame if you need to regenerate it.
+!!! note "Materialized training datasets built this way need the frame again"
+    A `create_*` call records the query and the fact that a `spine_df` anchored it, not the
+    frame itself. `training_data(training_dataset_version=n)`, `recreate_training_dataset` and the
+    materialization job refuse to run for such a version without a `spine_df`, so the dataset is
+    never quietly rebuilt from the feature view's own rows under the same version number. Keep the
+    frame if you need to regenerate it, and pass it again. The reverse holds too: a version built
+    from the feature view's rows is not recreated on a frame.
+
+The prediction time column is written in the root feature group's own event time type. A
+`timestamp` root takes timestamps, a `date` root takes dates, and a `bigint` root takes epoch
+milliseconds, which is also how an integer column in `spine_df` is read whatever the root's type.
+Feature groups joined into the view may keep their event time in a different type from the root;
+the lookup converts theirs to the root's before comparing.
 
 ## Limits and performance
 
@@ -242,6 +259,11 @@ Size the variables for the concurrency you expect, rather than for one request i
 Without a `lookback`, each feature group is scanned from its first row up to the last prediction time.
 The upper bound excludes forecast rows beyond your horizon, but it does not bound history.
 On a large feature group, `lookback` is what bounds the work, and `max_feature_age` bounds how many candidate rows each lookup considers.
+A `lookback` passed together with `spine_df`, or recorded on the training dataset, restricts which rows of each feature group are candidates.
+It never removes a row of `spine_df`: a spine row whose lookup finds nothing inside the window comes back with `NULL` features.
+
+Spark ranks every candidate row per spine row before keeping the newest, so its intermediate size is the number of eligible history rows across the spine, not the number of spine rows.
+A hot key with deep history multiplied by many prediction times is where that grows; `lookback` and `max_feature_age` are the two bounds on it.
 
 ## Restrictions
 
@@ -253,3 +275,6 @@ On a large feature group, `lookback` is what bounds the work, and `max_feature_a
   The frame's own timestamps define the time axis.
 - A feature view created with a spine group uses `spine=` instead; the two cannot be combined.
 - A filter on a column the entities supply is refused, because it would drop rows you asked to predict for.
+  A filter on the root feature group's event time is the exception: it bounds candidate rows, the same way a `lookback` does.
+- A filter on a feature of a joined feature group restricts that feature group's candidate rows, wherever in the query it was added.
+  A single predicate that references two feature groups, such as an `OR` across them, is refused, because there is no one lookup it can restrict without changing its meaning.
