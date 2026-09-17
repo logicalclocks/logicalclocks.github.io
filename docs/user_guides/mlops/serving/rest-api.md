@@ -102,7 +102,7 @@ See the [Deployment Schema Guide][deployment-schema].
 !!! example "e.g., Chat Completions endpoint"
     **`<base_url>/v1/chat/completions`**
 
-Refer to the official [vLLM OpenAI-compatible server documentation](https://docs.vllm.ai/en/v0.10.2/serving/openai_compatible_server.html) for details about the available APIs.
+Refer to the official [vLLM OpenAI-compatible server documentation](https://docs.vllm.ai/en/v0.28.0/serving/openai_compatible_server.html) for details about the available APIs.
 
 !!! tip "Hopsworks Python API"
 
@@ -153,7 +153,7 @@ See [more information on the request format](https://kserve.github.io/website/do
               }'
         ```
 
-For generative inference (vLLM), the request follows the [OpenAI specification](https://docs.vllm.ai/en/v0.10.2/serving/openai_compatible_server.html) supported by the vLLM OpenAI-compatible server.
+For generative inference (vLLM), the request follows the [OpenAI specification](https://docs.vllm.ai/en/v0.28.0/serving/openai_compatible_server.html) supported by the vLLM OpenAI-compatible server.
 
 !!! example "vLLM chat completions"
     === "Python"
