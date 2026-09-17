@@ -321,6 +321,11 @@ Stopping a deployment posts whatever the predictor still holds before the pod ex
 Logging is asynchronous and a logging failure does not fail prediction.
 How often the rows reach the offline store is a property of the feature view, not the deployment; see [Choosing the Materialization Interval][choosing-the-materialization-interval].
 
+A deployment that logs features serves on one worker process by default, whatever its CPU limit.
+The rows are safe with several: each worker buffers separately and the buffer directory lock arbitrates who adopts a dead worker's segments.
+The metrics are not: they are this process's counters, read when Prometheus scrapes, so with several workers behind one port a scrape reaches one of them and the Feature logging card reports a fraction of the rows.
+Set `KSERVE_WORKERS` in `env_vars=` to serve on more than one anyway, and read the card as a sample rather than a total.
+
 ## Deployments without lookups { #deployment-schema-no-lookup }
 
 Nothing is looked up in the online store when every stored feature of the view arrives with the request, or when the model has no feature view.
@@ -381,9 +386,12 @@ Log rows contain feature values and are governed by the logging feature group's 
 | `SERVING_TRAINING_DATASET_VERSION` | the client, feature view deployments | the pinned training dataset |
 | `SERVING_SCHEMA_ENFORCER` | the client | `predictor` or `transformer`: the component of the revision that validates requests |
 | `SERVING_MAX_BATCH_ROWS` | you, through `env_vars=` | rows accepted per request, default 512; recorded in the schema at publication |
-| `FEATURE_LOGGER_QUEUE_SIZE` | you, through `env_vars=` | rows the predictor's logging thread and the async logger each buffer before dropping, default 1000; a value that is not a positive integer is ignored |
+| `SERVING_PREDICTOR_ASYNC_LOOKUP` | you, through `env_vars=` | `false` returns the default predictor to the blocking online store lookup |
+| `KSERVE_WORKERS` | you, through `env_vars=` | uvicorn worker processes; the default is one per whole core, capped at 4, and one on a deployment that logs features |
+| `HOPSWORKS_FEATURE_LOGGING_TRANSPORT` | the backend | the transport the view's logging group uses, set only on a deployment that logs |
 
-The `SERVING_*` names are reserved and refused in `env_vars=`, except `SERVING_MAX_BATCH_ROWS`.
+The `HOPSWORKS_*` names are reserved and refused in `env_vars=`, as are `SERVING_SCHEMA_ID`, `SERVING_FEATURE_VIEW_NAME`, `SERVING_FEATURE_VIEW_VERSION`, `SERVING_TRAINING_DATASET_VERSION` and `SERVING_SCHEMA_ENFORCER`.
+The logging limits are set through `DeploymentLoggingConfig` rather than through `env_vars=`: `FEATURE_LOGGER_QUEUE_SIZE`, `FEATURE_LOGGER_BATCH_BYTES` and `FEATURE_LOGGER_BATCH_SECONDS` are reserved, so a value set there is refused.
 
 ## API Reference
 
