@@ -296,28 +296,6 @@ A process that creates a loop per lookup, for example by calling `asyncio.run` i
 
 The default predictor a deployment gets from `model.deploy()` or `feature_view.deploy()` already awaits its lookup.
 
-## Releasing connections
-
-Initialising serving opens a pool of MySQL connections to the online store, one per feature group in the view, and they are opened when the pool is built rather than on first use.
-A feature view holds them until you close it.
-
-```python
-feature_view = fs.get_feature_view("transactions", version=1)
-feature_view.init_serving()
-try:
-    vector = feature_view.get_feature_vector(entry={"id": 1})
-finally:
-    feature_view.close()
-```
-
-Garbage collection does not reclaim them.
-The pool belongs to a client that its own running task thread keeps reachable, and an object that is reachable is never finalized, so dropping your last reference to the feature view frees nothing.
-
-This matters for a long-lived process that serves many feature views, a notebook kernel or a job that loops over views, which will otherwise exhaust the online store's `max_connections`.
-It does not matter for a serving deployment, which initialises one view and holds it for the life of the pod.
-
-`init_serving` can be called again after `close`, and builds a fresh pool.
-
 ## Choose the right Client
 
 The Online Store can be accessed via the **Python** or **Java** client allowing you to use your language of choice to connect to the Online Store.
