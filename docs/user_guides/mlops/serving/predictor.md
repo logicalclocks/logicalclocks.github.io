@@ -213,7 +213,7 @@ See the [Deployment Schema Guide][deployment-schema] for the request contract, t
     result = predictor.predict_blocking([{"cc_num": 1234}])
     ```
 
-    Set `HOPSWORKS_PREDICTOR_ASYNC_LOOKUP=false` on the deployment to go back to the blocking lookup.
+    Set `SERVING_PREDICTOR_ASYNC_LOOKUP=false` on the deployment to go back to the blocking lookup.
     That is worth doing only when the deployment reads the online store through the REST client, where there is nothing to overlap.
 
 To serve the model with your own code instead, implement a predictor script (Steps 2.1 and 2.2).
