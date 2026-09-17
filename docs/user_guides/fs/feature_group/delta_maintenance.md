@@ -16,12 +16,15 @@ They apply only to feature groups with `time_travel_format="DELTA"` and return `
 
 | Method | What it does |
 | --- | --- |
-| [`delta_optimize`][hsfs.feature_group.FeatureGroup.delta_optimize] | Rewrites many small files into fewer large ones. Also available as `delta_compact`. |
-| [`delta_checkpoint`][hsfs.feature_group.FeatureGroup.delta_checkpoint] | Writes a checkpoint, so readers stop replaying the log from commit zero. |
-| [`delta_cleanup_metadata`][hsfs.feature_group.FeatureGroup.delta_cleanup_metadata] | Expires the log entries a checkpoint already covers. |
+| `delta_optimize` | Rewrites many small files into fewer large ones. Also available as `delta_compact`. |
+| `delta_checkpoint` | Writes a checkpoint, so readers stop replaying the log from commit zero. |
+| `delta_cleanup_metadata` | Expires the log entries a checkpoint already covers. |
 | [`delta_vacuum`][hsfs.feature_group.FeatureGroup.delta_vacuum] | Deletes the data files no retained version references. |
 
-Each dispatches on the engine, so the same call works from a Python client with delta-rs and from a PySpark job with Delta Spark.
+Each dispatches on the engine, so the same call works from a Python client with
+delta-rs and from a PySpark job with Delta Spark. The first three are rendered as
+plain code rather than API links until the client release that ships them, because
+the docs build resolves cross-references against the released client.
 
 ## Prerequisites
 

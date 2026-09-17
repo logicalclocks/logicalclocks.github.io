@@ -1,4 +1,4 @@
-# How to Select the API protocol for a Deployment { #api-protocol }
+# How to Select the API protocol for a Deployment { #api-protocol-guide }
 
 ## Introduction
 

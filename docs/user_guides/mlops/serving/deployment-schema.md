@@ -72,7 +72,7 @@ The default predictor loads a single `.pkl`, `.pickle`, or `.joblib` file from t
 The default predictor is used when the model is a Python model registered with a feature view, no `script_file` or transformer is given, and the deployment uses KServe.
 Pass `default_predictor=True` to force it, for instance for a scikit-learn model, or `default_predictor=False` to keep the plain model server.
 
-Such a deployment serves either [API protocol][api-protocol].
+Such a deployment serves either [API protocol][api-protocol-guide].
 It defaults to REST, which is what the `curl` example and the OpenAPI document below use.
 Pass `api_protocol="GRPC"` to serve gRPC instead, which costs less per request under concurrency: the library owns both ends of the encoding, so the rows travel as one KServe v2 tensor per schema field and `deployment.predict()` returns the same dictionary it returns over REST.
 A deployment serves one protocol, not both, so a gRPC deployment answers no HTTP and neither `curl` nor the OpenAPI document below reaches it.
