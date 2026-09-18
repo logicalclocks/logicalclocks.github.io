@@ -146,7 +146,7 @@ Model-dependent transformation functions can also be manually applied to a featu
 
         # Get untransformed feature Vector
         feature_vector = fv.get_feature_vector(
-            entry={"index": 10}, transform=False, return_type="pandas"
+            serving_keys={"index": 10}, transform=False, return_type="pandas"
         )
 
         # Apply Model Dependent transformations
@@ -164,12 +164,12 @@ To achieve this, set the `transform` parameter to False.
         ```python
         # Fetching untransformed feature vector.
         untransformed_feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1}, transform=False
+            serving_keys={"id": 1}, transform=False
         )
 
         # Fetching untransformed feature vectors.
         untransformed_feature_vectors = feature_view.get_feature_vectors(
-            entry=[{"id": 1}, {"id": 2}], transform=False
+            serving_keys=[{"id": 1}, {"id": 2}], transform=False
         )
 
         # Fetching untransformed batch data.

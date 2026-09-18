@@ -128,7 +128,7 @@ The on-demand features in the feature vector can be computed using real-time dat
 
         ```python
         feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1},
+            serving_keys={"id": 1},
             request_parameter={
                 "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
                 "current_time": datetime.now(),
@@ -147,7 +147,7 @@ The `request_parameter` in this case, can be a list of dictionaries that specifi
         ```python
         # Specify unique request parameters for each serving key.
         feature_vector = feature_view.get_feature_vectors(
-            entry=[{"id": 1}, {"id": 2}],
+            serving_keys=[{"id": 1}, {"id": 2}],
             request_parameter=[
                 {
                     "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
@@ -162,7 +162,7 @@ The `request_parameter` in this case, can be a list of dictionaries that specifi
 
         # Specify common request parameters for all serving key.
         feature_vector = feature_view.get_feature_vectors(
-            entry=[{"id": 1}, {"id": 2}],
+            serving_keys=[{"id": 1}, {"id": 2}],
             request_parameter={
                 "transaction_time": datetime(2022, 12, 28, 23, 55, 59),
                 "current_time": datetime.now(),
@@ -180,10 +180,10 @@ To achieve this, set the  parameters `transform` and `on_demand_features` to `Fa
 
         ```python
         untransformed_feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1}, transform=False, on_demand_features=False
+            serving_keys={"id": 1}, transform=False, on_demand_features=False
         )
         untransformed_feature_vectors = feature_view.get_feature_vectors(
-            entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
+            serving_keys=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
         )
         ```
 
@@ -201,7 +201,7 @@ The `request_parameter` in this case, can be a list of dictionaries that specifi
         ```python
         # Specify request parameters for each serving key.
         untransformed_feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1}, transform=False, on_demand_features=False
+            serving_keys={"id": 1}, transform=False, on_demand_features=False
         )
 
         # re-compute and add on-demand features to the feature vector
@@ -218,7 +218,7 @@ The `request_parameter` in this case, can be a list of dictionaries that specifi
 
         # Specify request parameters for each serving key.
         untransformed_feature_vectors = feature_view.get_feature_vectors(
-            entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
+            serving_keys=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
         )
 
         # re-compute and add on-demand features to the feature vectors - Specify unique request parameter for each feature vector
@@ -259,7 +259,7 @@ On-demand transformation functions can also be accessed and executed as normal f
         ```python
         # Specify request parameters for each serving key.
         feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1},
+            serving_keys={"id": 1},
             transform=False,
             on_demand_features=False,
             return_type="pandas",
