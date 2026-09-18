@@ -107,8 +107,7 @@ spine["event_time"] = now   # named after the root feature group's event time co
 latest = feature_view.get_batch_data(spine_df=spine)
 ```
 
-To cover every entity the feature store knows about rather than a list you maintain, read them
-off the feature view's root feature group.
+To cover every entity the feature store knows about rather than a list you maintain, read them off the feature view's root feature group.
 `get_root_fg()` returns the feature group the view is anchored on, and `read_primary_keys()` returns its distinct primary key values, one row per entity.
 
 ```python
@@ -176,9 +175,8 @@ batch_data = feature_view.get_batch_data(
 
 ## Training data from the same rows
 
-The same mechanism builds training data. Pass `spine_df` to `training_data`,
-`train_test_split`, `train_validation_test_split` or any of the `create_*` methods, and the
-query is anchored on your rows instead of on the root feature group.
+The same mechanism builds training data.
+Pass `spine_df` to `training_data`, `train_test_split`, `train_validation_test_split` or any of the `create_*` methods, and the query is anchored on your rows instead of on the root feature group.
 
 ```python
 train_x, test_x, train_y, test_y = feature_view.train_test_split(
@@ -187,21 +185,17 @@ train_x, test_x, train_y, test_y = feature_view.train_test_split(
 )
 ```
 
-One difference from a batch read: columns the feature view does not define are
-carried through to the output untouched, which is how the label rides along. A batch read stays
-strict about unknown columns, because inference has no labels and a mistyped column there is
-worth catching.
+One difference from a batch read: columns the feature view does not define are carried through to the output untouched, which is how the label rides along.
+A batch read stays strict about unknown columns, because inference has no labels and a mistyped column there is worth catching.
 
-A column named like a feature the view looks up from a joined feature group is refused rather than
-carried through. The view reads that feature from the feature store, and carrying the frame's copy
-as well would put two columns of one name in the result. Features of the root feature group are
-different: a root feature in the frame is a passed feature and takes the place of the lookup.
+A column named like a feature the view looks up from a joined feature group is refused rather than carried through.
+The view reads that feature from the feature store, and carrying the frame's copy as well would put two columns of one name in the result.
+Features of the root feature group are different: a root feature in the frame is a passed feature and takes the place of the lookup.
+A root column the view does not select is refused as well, by the client rather than after the round trip, since the view neither looks it up nor returns it.
 
 `max_feature_age` applies here too, because it belongs to the view rather than to the call.
-It applies to every read anchored on a `spine_df` and to nothing else: an ordinary `get_batch_data`
-window and online serving through `get_feature_vector` are unchanged by it.
-A training example built from a feature that stopped being produced is the same silent
-staleness as an inference row built from one, and it is worse: the model learns from it.
+It applies to every read anchored on a `spine_df` and to nothing else: an ordinary `get_batch_data` window and online serving through `get_feature_vector` are unchanged by it.
+A training example built from a feature that stopped being produced is the same silent staleness as an inference row built from one, and it is worse: the model learns from it.
 
 ```python
 # the view was created with max_feature_age=timedelta(days=1), so any feature whose newest
@@ -217,18 +211,15 @@ This is what a spine group does, without having had to create the feature view w
 `spine_df` and `spine` both replace the left side of the query, so passing both is an error.
 
 !!! note "Materialized training datasets built this way need the frame again"
-    A `create_*` call records the query and the fact that a `spine_df` anchored it, not the
-    frame itself. `training_data(training_dataset_version=n)`, `recreate_training_dataset` and the
-    materialization job refuse to run for such a version without a `spine_df`, so the dataset is
-    never quietly rebuilt from the feature view's own rows under the same version number. Keep the
-    frame if you need to regenerate it, and pass it again. The reverse holds too: a version built
-    from the feature view's rows is not recreated on a frame.
+    A `create_*` call records the query and the fact that a `spine_df` anchored it, not the frame itself.
+    `get_training_data`, `get_train_test_split`, `get_train_validation_test_split`, `recreate_training_dataset` and the materialization job all refuse to run for such a version without a `spine_df`, so the dataset is never quietly rebuilt from the feature view's own rows under the same version number.
+    Keep the frame if you need to regenerate it, and pass it to those methods as well.
+    The reverse holds too: a version built from the feature view's rows is not recreated on a frame.
 
-The prediction time column is written in the root feature group's own event time type. A
-`timestamp` root takes timestamps, a `date` root takes dates, and a `bigint` root takes epoch
-milliseconds, which is also how an integer column in `spine_df` is read whatever the root's type.
-Feature groups joined into the view may keep their event time in a different type from the root;
-the lookup converts theirs to the root's before comparing.
+The prediction time column is written in the root feature group's own event time type.
+A `timestamp` root takes timestamps, a `date` root takes dates, and a `bigint` root takes epoch milliseconds, which is also how an integer column in `spine_df` is read whatever the root's type.
+`PredictionTimes` reads an integer the same way.
+Feature groups joined into the view may keep their event time in a different type from the root; the lookup converts theirs to the root's before comparing.
 
 ## Limits and performance
 
@@ -246,9 +237,11 @@ The size of `spine_df` is bounded by cluster limits, which an administrator sets
 | `featurestore_asof_spine_max_rows` | Rows, meaning entities multiplied by prediction times |
 | `featurestore_asof_spine_max_bytes` | The serialized size of those rows |
 | `featurestore_asof_spine_max_columns` | Columns in `spine_df` |
-| `featurestore_asof_spine_max_horizon_days` | How far ahead a schedule may expand |
+| `featurestore_asof_spine_max_file_age_ms` | How long a staged spine file survives before the backend reclaims it |
 
 A request over any of them is refused before it runs, with the limit named.
+The file age is not a limit on a request: it is how long the file a read stages stays readable, and it has to outlive the longest materialization job, which reads the file after the call that wrote it has returned.
+How far ahead a schedule may expand is not a cluster variable; it is the `max_horizon_days` argument of [`PredictionTimes`][hsfs.constructor.prediction_times.PredictionTimes], which defaults to ten years.
 The client checks the row and column ceilings itself, so a frame that is too large is refused before it is written and uploaded rather than after the round trip.
 Those client-side ceilings are the shipped defaults; raising the cluster variables above them means raising the client's too.
 
