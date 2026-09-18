@@ -271,9 +271,11 @@ Two things are worth knowing before you turn it on:
   live tag keeps only its current value. Attachments that already exist are backfilled with the
   state they are in, timed from when they were attached. That start is the attachment time and not
   the moment you turned archiving on, so the first interval of an attachment that already existed
-  covers time that was never observed. Read it as a lower bound on how long that state has held,
-  rather than as a measurement, and expect it to raise the average time-in-state of any report that
-  includes it.
+  covers time that was never observed, and it credits the current value with all of it. A tag
+  attached as `dev` in January, changed to `prod` in February with nothing recording, and archived in
+  March reports `prod` as current since January. The figure is therefore an upper bound on how long
+  that state has really held, never a lower one, and it raises the average time-in-state of any
+  report that includes it.
 - **Turning it off stops recording but keeps what was recorded.** The rows already written are still
   true, and the tag is still attached, so nothing is deleted.
 
@@ -294,9 +296,17 @@ with the same call used to turn it on for any existing schema,
 `PUT /hopsworks-api/api/tags/{name}/archive?value=true`. `GET /hopsworks-api/api/tags` lists the
 schemas with their `archive` flag, which is how to find the ones to repeat it for.
 
-Repeating the call costs nothing on a schema that is already recording. The backfill covers only
-attachments that have no history yet, so a schema part-way through is completed rather than
-duplicated, and one that is fully recorded gets no new rows.
+Repeating the call costs nothing on a schema that is already recording. The backfill works per key,
+not per attachment: it opens only the keys that do not already have an open interval, so a schema
+part-way through is completed rather than duplicated, and one that is fully recorded gets no new
+rows. A key whose last recorded event closed an interval is opened again at this point, since
+nothing is known about the stretch when recording was off.
+
+On a widely attached schema the call can be refused rather than run. It counts the events the
+backfill would write first, one per tag key of every attachment, and refuses above
+`tag_history_archive_max_events`, which defaults to 20000. The error names the count and the limit.
+Raising it is an administrator decision that belongs with NDB's `MaxNoOfConcurrentOperations`,
+because the backfill is one transaction and is bounded by both.
 
 ### Reading the history
 
