@@ -93,13 +93,23 @@ Users can schedule periodic statistics computation that take into consideration 
 By default, the `compute_statistics` method computes statistics on the most recent version of the data available in a feature group.
 Users can provide a specific time using the `wallclock_time` parameter, to compute the statistics for a previous version of the data.
 
-Hopsworks can compute statistics of external feature groups.
-As external feature groups are read only from an Hopsworks perspective, statistics computation can be triggered using the `compute_statistics` method.
-
 === "Python"
 
     ```python
     fg.compute_statistics(wallclock_time="20220611 20:00")
+    ```
+
+### External feature groups
+
+External feature groups own the same built-in `ingestion_stats` configuration as cached and stream feature groups, but no data is ingested into Hopsworks for them, so it never runs on its own.
+Calling `compute_statistics` on the external feature group, or clicking "Compute statistics" in the UI, runs it: the statistics job reads the external source and profiles it like an internal feature group.
+Saving an external feature group with statistics enabled runs it once as well.
+External feature groups have no commit history, so their statistics carry the computation time only and `compute_statistics` takes no time argument.
+
+=== "Python"
+
+    ```python
+    external_fg.compute_statistics()
     ```
 
 ## Inspect statistics
