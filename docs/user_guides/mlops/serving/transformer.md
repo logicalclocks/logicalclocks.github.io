@@ -74,7 +74,8 @@ Otherwise, click on `Create new deployment` to create the deployment for your mo
 
 ### Step 4 (Optional): Other advanced options
 
-In this page, you can also configure the [resources](resources.md) to be allocated for the transformer, as well as the [autoscaling](autoscaling.md) parameters to control how the transformer scales based on traffic.
+In this page, you can also configure the [Python environment](#python-environments) the transformer runs in, the [resources](resources.md) to be allocated for the transformer, as well as the [autoscaling](autoscaling.md) parameters to control how the transformer scales based on traffic.
+The transformer has its own environment field, separate from the predictor's.
 
 <p align="center">
   <figure>
@@ -286,10 +287,20 @@ A number of different environment variables are available in the transformer to 
 ## Python environments
 
 Transformer scripts always run on `*-inference-pipeline` Python environments.
+The transformer's environment is selected independently of the predictor's, so the two components can run different sets of dependencies.
+A transformer that does not name one runs the predictor's environment.
 To create a new Python environment see [Python Environments](../../projects/python/python_env_overview.md).
 
-!!! note
-    For **Python model deployments**, the same Python environment is used for both predictor and transformer.
+=== "Python"
+
+    ```python
+    ms = project.get_model_serving()
+
+    transformer = ms.create_transformer(
+        script_file="my_transformer.py",
+        environment="minimal-inference-pipeline",
+    )
+    ```
 
 !!! info "Supported Python environments"
 
