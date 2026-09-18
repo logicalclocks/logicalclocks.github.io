@@ -241,7 +241,7 @@ The size of `spine_df` is bounded by cluster limits, which an administrator sets
 
 A request over any of them is refused before it runs, with the limit named.
 The file age is not a limit on a request: it is how long the file a read stages stays readable, and it has to outlive the longest materialization job, which reads the file after the call that wrote it has returned.
-How far ahead a schedule may expand is not a cluster variable; it is the `max_horizon_days` argument of [`PredictionTimes`][hsfs.constructor.prediction_times.PredictionTimes], which defaults to ten years.
+How far ahead a schedule may expand is not a cluster variable; it is the `max_horizon_days` argument of `PredictionTimes`, which defaults to ten years.
 The client checks the row and column ceilings itself, so a frame that is too large is refused before it is written and uploaded rather than after the round trip.
 Those client-side ceilings are the shipped defaults; raising the cluster variables above them means raising the client's too.
 
