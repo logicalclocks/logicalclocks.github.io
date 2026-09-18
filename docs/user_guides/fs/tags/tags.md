@@ -77,7 +77,7 @@ Most tags are only ever read as they are now: who owns this feature group, wheth
 Some are interesting over time, and for those the current value is the least useful part.
 Marking a schema as archived says that attachments of this tag are worth keeping once they stop being current, so the tag's history can be analysed and not just its present state.
 
-Tick `Archive deleted tags` when defining the schema, or pass `archive=True` through the API:
+Tick `Archive tag history` when defining the schema, or pass `archive=True` through the API:
 
 === "Python"
 
@@ -118,10 +118,12 @@ This history is not the same thing as the [attachment time][when-a-tag-was-attac
 That timestamp deliberately stays at the first attachment when a value is corrected, so it records when an artifact was first classified and not when it entered its current state.
 The per-value history is what the archive is for.
 
-!!! note "Records intent, no behaviour yet"
-    Setting `archive` today only records the decision on the schema.
-    Nothing reads it: copying the retained attachments into an offline feature group, where they can be queried as above, is a later change.
-    Set it now on the schemas whose history you expect to want, because the flag cannot recover attachments that were already discarded while it was off.
+!!! note "Set it before you need it"
+    Setting `archive` makes Hopsworks record every change to the tag's values, which is what makes
+    the analysis above possible. See [Archive tag history][archive-tag-history] for what gets
+    recorded, how to read it, and how to turn it on for a schema that already exists.
+    Set it on the schemas whose history you expect to want. The flag cannot reconstruct changes that
+    happened while it was off, because the live tag keeps only its current value.
 
 ## Step 2: Attach a tag to an artifact
 
@@ -267,13 +269,34 @@ Two things are worth knowing before you turn it on:
 
 - **History starts when you turn it on.** Changes made before that are not recoverable, because the
   live tag keeps only its current value. Attachments that already exist are backfilled with the
-  state they are in, timed from when they were attached.
+  state they are in, timed from when they were attached. That start is the attachment time and not
+  the moment you turned archiving on, so the first interval of an attachment that already existed
+  covers time that was never observed. Read it as a lower bound on how long that state has held,
+  rather than as a measurement, and expect it to raise the average time-in-state of any report that
+  includes it.
 - **Turning it off stops recording but keeps what was recorded.** The rows already written are still
   true, and the tag is still attached, so nothing is deleted.
 
 History is recorded per key of the schema, not per tag. Changing one key of a multi-key tag records
 a change to that key alone and leaves the others untouched, so a correction to one field does not
 make every other field look like it changed at the same moment.
+
+### Turning it on for a schema archived before the history existed
+
+Releases before 5.2 accepted `archive` when a schema was created, and stored it, but recorded
+nothing: the flag had no reader. A schema created with it on before upgrading therefore has the flag
+set and no history, and the upgrade does not start one. The baseline is written when the flag is
+set, and an upgrade sets nothing, so such a schema stays silent until each artifact's tag next
+changes, and the state it held before that change is gone.
+
+After upgrading, a cluster administrator turns it on once more for each schema that already had it,
+with the same call used to turn it on for any existing schema,
+`PUT /hopsworks-api/api/tags/{name}/archive?value=true`. `GET /hopsworks-api/api/tags` lists the
+schemas with their `archive` flag, which is how to find the ones to repeat it for.
+
+Repeating the call costs nothing on a schema that is already recording. The backfill covers only
+attachments that have no history yet, so a schema part-way through is completed rather than
+duplicated, and one that is fully recorded gets no new rows.
 
 ### Reading the history
 
@@ -299,9 +322,7 @@ FROM (
          event_time AS added_on,
          LEAD(event_time) OVER (
            PARTITION BY artifact_type, artifact_id, tag_name, tag_key
-           ORDER BY event_time,
-                    CASE WHEN event_type = 'CLOSED' THEN 0 ELSE 1 END,
-                    id
+           ORDER BY event_time, id
          ) AS removed_at
   FROM   hopsworks.tag_history
 ) e
@@ -314,9 +335,16 @@ Two details in that query are easy to get wrong and produce numbers that look re
   filtering inside would hide every `CLOSED` row from `LEAD`, and anything that ended without a
   successor, a detached tag or a deleted artifact, would report as still current with its duration
   growing forever.
-- The ordering has to put `CLOSED` before `OPENED` at the same timestamp. Both halves of a value
-  change share one `event_time` by design, so the ordering needs a tie-break, and `id` is not one:
-  rows are not written in the order the two halves were built.
+- The tie-break has to be `id`, and not the event type. Both halves of a value change share one
+  `event_time` by design, so the ordering needs one. `id` is the insertion order and the writer emits
+  a change as `CLOSED` then `OPENED` inside one transaction, so `id` already puts the two halves in
+  the order they happened. Forcing `CLOSED` first instead breaks an attach and a detach that share a
+  millisecond: it orders that `CLOSED` ahead of the `OPENED` it followed, `LEAD` leaves the `OPENED`
+  with no `removed_at`, and a tag that was removed reads as current from then on.
+
+    One case is still open. RonDB allocates `id` per SQL node, so two events written a millisecond
+    apart through different nodes can order arbitrarily with respect to each other. Ordering those
+    exactly needs a per-key sequence rather than a tie-break.
 
 A `removed_at` of `NULL` means the artifact is still in that state. An `added_on` of `NULL` means the
 tag was attached before Hopsworks began recording attachment times, so the start is unknown; it is
