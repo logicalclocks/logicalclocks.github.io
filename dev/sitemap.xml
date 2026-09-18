@@ -441,6 +441,10 @@
          <lastmod>2026-09-18</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/delta_maintenance/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/deprecation/</loc>
          <lastmod>2026-09-18</lastmod>
     </url>
@@ -1362,6 +1366,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/deployment/</loc>
+         <lastmod>2026-09-18</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/deployment_logging_config/</loc>
          <lastmod>2026-09-18</lastmod>
     </url>
     <url>
