@@ -44,6 +44,65 @@ You can install all the above profiles with the following command:
 pip install hopsworks[python,great-expectations,polars]
 ```
 
+## Skills and instructions for coding agents
+
+The Hopsworks Python library ships a set of skills for coding agents: Claude Code, Codex, GitHub Copilot and OpenCode.
+Inside a Hopsworks terminal they are available to every agent automatically.
+On your own machine, two commands make them available in the repository you are working in.
+
+### Authenticate and write the agent instructions
+
+```bash
+uv pip install "hopsworks[python]"
+cd <your-repository>
+hops setup --host https://<your-cluster>
+```
+
+Without `--host`, `hops setup` asks for the host and proposes `https://eu-west.cloud.hopsworks.ai`, the Hopsworks serverless endpoint; press Enter to accept it or type the address of your cluster.
+`hops setup` opens a browser page where you choose a project, creates an API key for it, and stores the key in `~/.hops.toml`.
+It then writes the following files into the current directory:
+
+| Path | Purpose |
+| --- | --- |
+| `AGENTS.md` | Instructions for the agent: the project you are connected to, where the `hopsworks` library is installed on this machine, and how to use the `hops` CLI and the skills. |
+| `.claude/skills/hops/SKILL.md` | A reference for the `hops` CLI. |
+| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code. |
+| `.claude/agents/hops-fti.md` | A Claude Code sub-agent that reviews a project against the feature, training and inference pipeline pattern. |
+| `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
+
+`AGENTS.md` is read by Claude Code, Codex, GitHub Copilot and OpenCode.
+The files under `.claude/` are read by Claude Code only.
+Running `hops setup` again in a directory that already has these files updates the files you have not edited and leaves the ones you have edited unchanged.
+Pass `--no-scaffold` to authenticate without writing any files.
+
+### Add the Hopsworks skills
+
+```bash
+hops skills install
+```
+
+`hops skills install` copies the Hopsworks skills into `.claude/skills/`, one directory per skill, which is where Claude Code discovers them.
+For another agent, pass `--agent`, which can be repeated:
+
+```bash
+hops skills install --agent codex
+hops skills install --agent copilot
+hops skills install --agent opencode
+```
+
+The skills are written to `.codex/skills/`, `.agents/skills/` and `.opencode/skills/` respectively, and for OpenCode the path is also registered in `opencode.json`.
+An agent loads only the name and description of each skill when it starts and reads a skill in full when a task calls for it, so adding all of them costs a few kilobytes of context rather than the size of the skills themselves.
+
+Running `hops skills install` again after upgrading the `hopsworks` library updates the skills you have not edited, keeps the skills you have edited, and removes skills that the new version no longer ships.
+Pass `--force` to overwrite edited skills as well.
+
+To read the skills without adding them to a repository:
+
+```bash
+hops skills list
+hops skills show hops-fg
+```
+
 ## Hopsworks Java Library
 
 If you want to interact with the Hopsworks Feature Store from environments such as Spark, Flink or Beam, you can use the Hopsworks Feature Store (Hopsworks) Java library.
@@ -128,6 +187,7 @@ The `artifactId` for the Beam build is `hsfs-beam`, if you are using Maven as bu
 ## Next Steps
 
 If you are using a local python environment and want to connect to Hopsworks, you can follow the [Python Guide](../integrations/python.md#generate-an-api-key) section to create an API Key and to get started.
+If you use a coding agent, see [Skills and instructions for coding agents][skills-and-instructions-for-coding-agents] to give it the Hopsworks skills.
 
 ## Other environments
 
