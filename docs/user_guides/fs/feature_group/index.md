@@ -7,6 +7,7 @@ This section serves to provide guides and examples for the common usage of abstr
 - [Ingest Data with dltHub](ingest_with_dlthub.md)
 - [Deprecating Feature Group](deprecation.md)
 - [Data Types and Schema management](data_types.md)
+- [Ingestion topic](topic.md)
 - [Statistics](statistics.md)
 - [Data Validation](data_validation.md)
 - [Feature Monitoring](feature_monitoring.md)
