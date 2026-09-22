@@ -95,6 +95,7 @@ nav:
                   - Best practices: user_guides/fs/feature_group/data_validation_best_practices.md
               - Feature Monitoring: user_guides/fs/feature_group/feature_monitoring.md
               - Notification: user_guides/fs/feature_group/notification.md
+              - Ingestion Topic: user_guides/fs/feature_group/topic.md
               - On-Demand Transformations: user_guides/fs/feature_group/on_demand_transformations.md
               - Online Ingestion Observability: user_guides/fs/feature_group/online_ingestion_observability.md
               - Time-To-Live (TTL): user_guides/fs/feature_group/ttl.md
