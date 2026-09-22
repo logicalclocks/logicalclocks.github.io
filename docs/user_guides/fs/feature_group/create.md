@@ -210,6 +210,7 @@ job.run()
 
 It is also possible to define the topics used for data ingestion, this can be done by setting the `topic_name` parameter with your preferred value.
 By default, feature groups in Hopsworks will share a project-wide topic.
+The topic can also be changed after the feature group has been created, see the [ingestion topic][feature-group-ingestion-topic] guide.
 
 #### Best Practices for Writing
 
@@ -344,7 +345,10 @@ In that case you can increase the Hudi shuffle parallelism accordingly.
 When creating a feature group that uses streaming write APIs for data ingestion it is possible to define the Kafka topics that should be utilized.
 The default approach of using a project-wide topic functions great for use cases involving little to no overlap when producing data.
 However, concurrently inserting into multiple feature groups could cause read amplification for the offline materialization job (e.g., Hudi Delta Streamer).
+The job of a feature group consumes every record the shared topic received since its last run, and only then discards the records whose `featureGroupId` header belongs to another feature group.
+One large or frequently written feature group therefore slows down the materialization job of every other feature group on its topic, in proportion to how much it writes.
 Therefore, it is advised to utilize separate topics when ingestions overlap or there is a large frequently running insertion into a specific feature group.
+If you only notice the read amplification once the feature group is in use, the [ingestion topic][feature-group-ingestion-topic] guide explains how to move it to its own topic.
 
 ### Register the metadata and save the feature data
 
