@@ -242,7 +242,7 @@ The following table describes the job configuration parameters for a SPARK job.
 | <nobr>`conf['defaultArgs']`</nobr> | string | Arguments to pass to the program. Will be overridden if arguments are passed explicitly via `Job.run(args="...")` | `null` |
 | <nobr>`conf['environmentName']`</nobr> | string | Name of the project spark environment to use | `"spark-feature-pipeline"` |
 | <nobr>`conf['spark.driver.cores']`</nobr> | float | Number of CPU cores allocated for the driver | `1.0` |
-| <nobr>`conf['spark.driver.memory']`</nobr> | int | Memory allocated for the driver (in MB) | `2048` |
+| <nobr>`conf['spark.driver.memory']`</nobr> | int | Memory allocated for the driver (in MB) | `4096` |
 | <nobr>`conf['spark.executor.instances']`</nobr> | int | Number of executor instances | `1` |
 | <nobr>`conf['spark.executor.cores']`</nobr> | float | Number of CPU cores per executor | `1.0` |
 | <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
