@@ -516,6 +516,7 @@ A number of different environment variables are available in the predictor to ea
 ## Python environments
 
 Based on the model server used in the model deployment, you can select the Python environment where the predictor and transformer scripts will run.
+The predictor and the transformer each run their own environment, selected independently.
 To create a new Python environment see [Python Environments](../../projects/python/python_env_overview.md).
 
 !!! info "Supported Python environments"
@@ -527,8 +528,29 @@ To create a new Python environment see [Python Environments](../../projects/pyth
     | TensorFlow Serving   | `tensorflow/serving`             | any `*-inference-pipeline` image |
     | vLLM                 | `vllm-openai`                    | Not supported                    |
 
+A transformer that does not name an environment runs the predictor's.
+
+=== "Python"
+
+    ```python
+    ms = project.get_model_serving()
+
+    transformer = ms.create_transformer(
+        script_file="my_transformer.py",
+        environment="minimal-inference-pipeline",
+    )
+
+    deployment = my_model.deploy(
+        name="mydeployment",
+        script_file="my_predictor.py",
+        environment="pandas-inference-pipeline",
+        transformer=transformer,
+    )
+    ```
+
 !!! note
-    For **Python model deployments**, the same Python environment is used for both predictor and transformer.
+    Deployments created before Hopsworks 5.2 run both components on the environment they were configured with.
+    Change either one to move that component on its own.
 
 ## Transformer script
 
