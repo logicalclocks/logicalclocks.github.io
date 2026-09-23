@@ -15,19 +15,27 @@ If you need to get more familiar with the concept of feature vectors, you can re
 
 You can get back feature vectors from either python or java client by providing the primary key value(s) for the feature view.
 Note that filters defined in feature view and training data will not be applied when feature vectors are returned.
-If you need to retrieve a complete value of feature vectors without missing values, the required `entry` are [FeatureView.primary_keys][hsfs.feature_view.FeatureView.primary_keys].
-Alternative, you can provide the primary key of the feature groups as the key of the entry.
-It is also possible to provide a subset of the entry, which will be discussed [below](#partial-feature-retrieval).
+If you need to retrieve a complete value of feature vectors without missing values, the required `serving_keys` are [FeatureView.primary_keys][hsfs.feature_view.FeatureView.primary_keys].
+Alternative, you can provide the primary key of the feature groups as the key of the serving keys.
+It is also possible to provide a subset of the serving keys, which will be discussed [below](#partial-feature-retrieval).
+
+!!! note "`entry` was renamed to `serving_keys`"
+    The argument used to be called `entry`, on `get_feature_vector`, `get_feature_vectors`,
+    `get_inference_helper` and `get_inference_helpers`.
+    `entry` still works and takes the same value, but it emits a `DeprecationWarning` and will
+    be removed in a future release.
+    Passing both names in one call is an error.
+    Positional calls such as `get_feature_vector({"pk1": 1})` are unaffected.
 
 === "Python"
 
     ```python
     # get a single vector
-    feature_view.get_feature_vector(entry={"pk1": 1, "pk2": 2})
+    feature_view.get_feature_vector(serving_keys={"pk1": 1, "pk2": 2})
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}]
+        serving_keys=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}]
     )
     ```
 
@@ -47,7 +55,7 @@ It is also possible to provide a subset of the entry, which will be discussed [b
     featureView.getFeatureVectors(Lists.newArrayList(entry1, entry2));
     ```
 
-### Required entry
+### Required serving keys
 
 Starting from python client v3.4, you can specify different values for the primary key of the same name which exists in multiple feature groups but are not joint by the same name.
 The table below summarises the value of `primary_keys` in different settings.
@@ -89,7 +97,7 @@ Take the above example assuming the feature view consists of two joined feature 
 
     ```python
     # get a single vector
-    feature_view.get_feature_vector(entry={"pk1": 1, "pk2": 2})
+    feature_view.get_feature_vector(serving_keys={"pk1": 1, "pk2": 2})
     ```
 
 === "Java"
@@ -111,7 +119,7 @@ When retrieving a batch of vectors, the behaviour is slightly different.
     ```python
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}]
+        serving_keys=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}]
     )
     ```
 
@@ -137,18 +145,18 @@ If you are aware of missing features, you can use the [*passed features*](#passe
 ### Partial feature retrieval
 
 If your model can handle missing value or if you want to impute the missing value, you can get back feature vectors with partial values using python client starting from version 3.4 (Note that this does not apply to java client.).
-In the example below, let's say you join 2 feature groups by `fg1.join(fg2, left_on=["pk1"], right_on=["pk2"])`, required keys of the `entry` are `pk1` and `pk2`.
+In the example below, let's say you join 2 feature groups by `fg1.join(fg2, left_on=["pk1"], right_on=["pk2"])`, required keys of `serving_keys` are `pk1` and `pk2`.
 If `pk2` is not provided, this returns feature values from the first feature group and null values from the second feature group when using the option `allow_missing=True`, otherwise it raises exception.
 
 === "Python"
 
     ```python
     # get a single vector with
-    feature_view.get_feature_vector(entry={"pk1": 1}, allow_missing=True)
+    feature_view.get_feature_vector(serving_keys={"pk1": 1}, allow_missing=True)
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry=[
+        serving_keys=[
             {"pk1": 1},
             {"pk1": 3},
         ],
@@ -184,12 +192,12 @@ Please note that passed features is only available in the python client but not 
     ```python
     # get a single vector
     feature_view.get_feature_vector(
-        entry={"pk1": 1, "pk2": 2}, passed_features={"feature_a": "value_a"}
+        serving_keys={"pk1": 1, "pk2": 2}, passed_features={"feature_a": "value_a"}
     )
 
     # get multiple vectors
     feature_view.get_feature_vectors(
-        entry=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}],
+        serving_keys=[{"pk1": 1, "pk2": 2}, {"pk1": 3, "pk2": 4}, {"pk1": 5, "pk2": 6}],
         passed_features=[
             {"feature_a": "value_a1"},
             {"feature_a": "value_a2"},
@@ -210,7 +218,7 @@ In this second case, you do not have to provide the primary key value for that f
     # in this case feature_b and feature_c
 
     feature_view.get_feature_vector(
-        entry={"pk1": 1},
+        serving_keys={"pk1": 1},
         passed_features={
             "feature_a": "value_a",
             "feature_b": "value_b",
@@ -231,12 +239,12 @@ However, you can retrieve the untransformed feature vectors without applying mod
         ```python
         # Fetching untransformed feature vector.
         untransformed_feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1}, transform=False
+            serving_keys={"id": 1}, transform=False
         )
 
         # Fetching untransformed feature vectors.
         untransformed_feature_vectors = feature_view.get_feature_vectors(
-            entry=[{"id": 1}, {"id": 2}], transform=False
+            serving_keys=[{"id": 1}, {"id": 2}], transform=False
         )
         ```
 
@@ -250,10 +258,10 @@ To achieve this, set the  parameters `transform` and `on_demand_features` to `Fa
 
         ```python
         untransformed_feature_vector = feature_view.get_feature_vector(
-            entry={"id": 1}, transform=False, on_demand_features=False
+            serving_keys={"id": 1}, transform=False, on_demand_features=False
         )
         untransformed_feature_vectors = feature_view.get_feature_vectors(
-            entry=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
+            serving_keys=[{"id": 1}, {"id": 2}], transform=False, on_demand_features=False
         )
         ```
 
@@ -267,7 +275,7 @@ After [defining a transformation function using a context variable](../transform
         ```python
         # Passing context variable to IN-MEMORY Training Dataset.
         batch_data = feature_view.get_feature_vectors(
-            entry=[{"pk1": 1}], transformation_context={"context_parameter": 10}
+            serving_keys=[{"pk1": 1}], transformation_context={"context_parameter": 10}
         )
         ```
 
@@ -345,12 +353,12 @@ my_feature_view.init_serving(
 # this will fetch a feature vector via REST
 try:
     my_feature_view.get_feature_vector(
-        entry={"pk1": 1, "pk2": 2},
+        serving_keys={"pk1": 1, "pk2": 2},
     )
 except TimeoutException:
     # if the REST client times out, the SQL client will be used
     my_feature_view.get_feature_vector(
-        entry={"pk1": 1, "pk2": 2}, force_sql=True
+        serving_keys={"pk1": 1, "pk2": 2}, force_sql=True
     )
 ```
 
