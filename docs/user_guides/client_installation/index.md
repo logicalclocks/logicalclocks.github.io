@@ -66,13 +66,15 @@ It then writes the following files into the current directory:
 | --- | --- |
 | `AGENTS.md` | Instructions for the agent: the project you are connected to, where the `hopsworks` library is installed on this machine, and how to use the `hops` CLI and the skills. |
 | `.claude/skills/hops/SKILL.md` | A reference for the `hops` CLI. |
-| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code. |
-| `.claude/agents/hops-fti.md` | A Claude Code sub-agent that reviews a project against the feature, training and inference pipeline pattern. |
+| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code: `/hops ml` builds an ML system, `/hops dashboard` a Superset dashboard, `/hops app` a Python app. |
+| `.claude/agents/hops-train-agent.md` | The Claude Code sub-agent `/hops ml` runs to train a model until it meets its target. |
+| `.claude/agents/hops-infer-agent.md` | The Claude Code sub-agent `/hops ml` runs to build inference until it meets its SLA. |
 | `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
 
 `AGENTS.md` is read by Claude Code, Codex, GitHub Copilot and OpenCode.
 The files under `.claude/` are read by Claude Code only.
 Running `hops setup` again in a directory that already has these files updates the files you have not edited and leaves the ones you have edited unchanged.
+A file an earlier version wrote and this one no longer ships, such as `.claude/agents/hops-fti.md`, is removed when you have not edited it and reported otherwise.
 Pass `--no-scaffold` to authenticate without writing any files.
 
 ### Add the Hopsworks skills
