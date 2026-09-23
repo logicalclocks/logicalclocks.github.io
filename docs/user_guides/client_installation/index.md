@@ -66,9 +66,12 @@ It then writes the following files into the current directory:
 | --- | --- |
 | `AGENTS.md` | Instructions for the agent: the project you are connected to, where the `hopsworks` library is installed on this machine, and how to use the `hops` CLI and the skills. |
 | `.claude/skills/hops/SKILL.md` | A reference for the `hops` CLI. |
-| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code: `/hops ml` builds an ML system, `/hops dashboard` a Superset dashboard, `/hops app` a Python app. |
-| `.claude/agents/hops-train-agent.md` | The Claude Code sub-agent `/hops ml` runs to train a model until it meets its target. |
-| `.claude/agents/hops-infer-agent.md` | The Claude Code sub-agent `/hops ml` runs to build inference until it meets its SLA. |
+| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code: a fast menu to explore data, build or edit a Superset dashboard (`/hops dashboard`) or a Python app (`/hops app`), and show status. It runs on Haiku; the building is done by the agents below. |
+| `.claude/commands/hops-ml.md` | The `/hops-ml` slash command: builds an ML system from its requirements to a pull request, on your session's model. |
+| `.claude/agents/hops-dashboard-builder.md` | The Claude Code sub-agent `/hops` runs to build, edit or delete a dashboard. |
+| `.claude/agents/hops-app-builder.md` | The Claude Code sub-agent `/hops` runs to build, edit or delete an app and fix it until it serves. |
+| `.claude/agents/hops-train-agent.md` | The Claude Code sub-agent `/hops-ml` runs to train a model until it meets its target. |
+| `.claude/agents/hops-infer-agent.md` | The Claude Code sub-agent `/hops-ml` runs to build inference until it meets its SLA. |
 | `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
 
 `AGENTS.md` is read by Claude Code, Codex, GitHub Copilot and OpenCode.
