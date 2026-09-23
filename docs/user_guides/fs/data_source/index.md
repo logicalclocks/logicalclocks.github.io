@@ -47,7 +47,7 @@ For AWS the following storage systems are supported:
 1. [S3](creation/s3.md): Read data from a variety of file based storage in S3 such as parquet or CSV.
 2. [AWS Glue](creation/glue.md): Integrate with the AWS Glue Data Catalog over S3, for Iceberg, Delta, Hudi and plain file formats.
 3. [Redshift](creation/redshift.md): Query Redshift databases and tables using SQL.
-4. [SQL](creation/sql.md): Query Amazon SQL (Relational Database Service) using SQL.
+4. [SQL](creation/sql.md): Query MySQL, PostgreSQL, Oracle, ClickHouse and Teradata databases using SQL.
 
 ## Azure
 

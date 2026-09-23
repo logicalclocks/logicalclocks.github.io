@@ -3,7 +3,7 @@
 ## Introduction
 
 The SQL Data Source connects Hopsworks to a Relational Database Service.
-Supported database types are **MySQL**, **PostgreSQL**, and **Oracle**.
+Supported database types are **MySQL**, **PostgreSQL**, **Oracle**, **ClickHouse**, and **Teradata**.
 Using this connector, you can query and update data in your relational database from Hopsworks.
 
 In this guide, you will configure a Data Source in Hopsworks to securely store the authentication information needed to set up a connection to your database instance.
@@ -27,8 +27,9 @@ Before you begin, ensure you have the following information from your database i
 
 - **Database:** The name of the database to connect to.
   For Oracle, this is the **service name** (e.g. `ORCL` or a TNS alias).
+  For Teradata, this is the database that owns the tables, which Teradata also calls the user's default database; there is no separate schema level.
 
-- **Port:** The port to connect to (e.g. `3306` for MySQL, `5432` for PostgreSQL, `1521` for Oracle).
+- **Port:** The port to connect to (e.g. `3306` for MySQL, `5432` for PostgreSQL, `1521` for Oracle, `8123` for ClickHouse, `1025` for Teradata).
 
 - **Username and Password:** A username and password with the necessary permissions to access the required tables.
 
@@ -67,7 +68,7 @@ Enter the details for your database.
 Start by giving the connector a **name** and an optional **description**.
 
 1. Select "SQL" as the storage.
-2. Select the database type (MySQL, PostgreSQL, or Oracle).
+2. Select the database type (MySQL, PostgreSQL, Oracle, ClickHouse, or Teradata).
 3. Enter the host endpoint.
    Leave it empty when using an Oracle wallet: the wallet supplies the connection details, and the database field names the TNS alias to use.
 4. Enter the database name (service name for Oracle).
@@ -110,6 +111,42 @@ The MySQL and PostgreSQL drivers are included in Hopsworks by default.
 
 The Python engine reads Oracle via the Hopsworks Arrow Flight service, which handles the database connection server-side.
 No JDBC driver or wallet files are needed on the client, and the Spark JDBC limitations above do not apply.
+
+## Teradata-Specific Notes
+
+The following notes apply only to Teradata.
+
+### Connection URL
+
+Teradata does not use the `host:port/database` form the other database types share.
+Hopsworks builds the JDBC URL as `jdbc:teradata://<host>/DATABASE=<database>,DBS_PORT=<port>` from the fields you enter, so enter the host, database and port separately and do not put a port after the host.
+
+### Logon mechanism and TLS
+
+A Teradata system that authenticates through LDAP, Kerberos or another mechanism needs the `logmech` argument, and one that requires TLS needs `sslmode`.
+Add these as **arguments** on the data source, for example `logmech` = `LDAP` and `sslmode` = `REQUIRE`.
+Arguments reach every path that reads the data source: Spark JDBC, the Python engine, dlt ingestion and a derived Trino catalog.
+An argument that repeats a field the form already owns, such as `host`, `port`, `database`, `user` or `password`, is ignored, so an argument cannot redirect the connection or change the identity it uses.
+
+### Row limits and identifiers
+
+Teradata has no `LIMIT` or `FETCH FIRST` clause.
+Hopsworks generates `SELECT TOP n` for previews and row caps, so you do not need to rewrite queries; a query you write yourself must use `TOP` too.
+Teradata compares object names without regard to case, and Hopsworks quotes every identifier it generates, so a column named with a space or a reserved word is safe to use as a feature.
+
+### Time types
+
+Teradata `TIME` and `TIME WITH TIME ZONE` columns are read as strings by the Python engine and by a Trino catalog, because neither has a representation that keeps the value and its offset intact.
+`TIMESTAMP` columns are read as timestamps.
+
+### Spark JDBC driver for Teradata
+
+The Teradata JDBC driver is included in the Hopsworks Spark image, so no extra jar is needed.
+
+### Trino catalog
+
+A [Trino catalog][trino-catalogs] can be derived from a Teradata data source when the cluster's query engine runs the Teradata connector.
+The connector is not part of the stock Trino image, so this is an administrator step; until it is done, the catalog option is not offered for Teradata data sources and the rest of this guide works without it.
 
 ## Next Steps
 

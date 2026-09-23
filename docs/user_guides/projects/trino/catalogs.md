@@ -32,6 +32,9 @@ When you browse a data source's databases and tables to create an external featu
 
 Both are disabled with the reason when the data source cannot be mapped to a Trino connector, and show an **Already added** state when a catalog for this source already exists.
 
+A Teradata data source maps to a connector that is not part of the stock Trino image, so it is offered only when your administrator has installed the Teradata connector in the query engine and listed `teradata` among the installed connectors.
+Until then the button carries that reason, and the data source still works for external feature groups, Spark reads, the Python engine and dlt ingestion.
+
 The catalog is created first, so you can review its properties before the feature groups and their ingestion are set up.
 The **Create Trino Catalog** dialog opens pre-filled with a suggested name, the connector type derived from the data source, and the connector properties derived from its settings.
 You can edit them and add any property the connector supports that the data source does not carry.
