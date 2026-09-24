@@ -44,6 +44,52 @@ You can install all the above profiles with the following command:
 pip install hopsworks[python,great-expectations,polars]
 ```
 
+## Skills and instructions for coding agents
+
+The Hopsworks Python library ships the `hops` CLI and a set of skills for coding agents.
+Inside a Hopsworks terminal the skills are available to Claude Code, Codex, GitHub Copilot and OpenCode automatically.
+
+### Authenticate
+
+```bash
+uv pip install "hopsworks[python]"
+hops setup --host https://<your-cluster>
+```
+
+Without `--host`, `hops setup` asks for the host and proposes `https://c.app.hopsworks.ai`; press Enter to accept it or type the address of your cluster.
+`hops setup` opens a browser page where you choose a project, creates an API key for it, and stores the key in `~/.hops.toml`.
+Running it again checks that the stored key still works and exits; pass `--force` to create a new key.
+On a machine without a browser, pass `--no-browser` and open the printed URL yourself.
+
+### Add the Claude Code files to a repository
+
+```bash
+cd <your-repository>
+hops init
+```
+
+`hops init` writes the following files into the current directory:
+
+| Path | Purpose |
+| --- | --- |
+| `.claude/skills/hops/SKILL.md` | A reference for the `hops` CLI. |
+| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code. |
+| `.claude/agents/hops-fti.md` | A Claude Code sub-agent that reviews a project against the feature, training and inference pipeline pattern. |
+| `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
+
+These files are read by Claude Code only.
+Running `hops init` again leaves the files you have edited unchanged and lists them; pass `--force` to overwrite them.
+
+### Browse the Hopsworks skills
+
+```bash
+hops skills list
+hops skills show hops-fg
+```
+
+Inside a Hopsworks terminal these commands list the skills the agents there load.
+The `hopsworks` package does not include the skills themselves, so on your own machine point `HOPS_SKILLS_DIR` at the `skills` directory of a [hopsworks-api](https://github.com/logicalclocks/hopsworks-api/tree/branch-5.1/skills) checkout.
+
 ## Hopsworks Java Library
 
 If you want to interact with the Hopsworks Feature Store from environments such as Spark, Flink or Beam, you can use the Hopsworks Feature Store (Hopsworks) Java library.
@@ -128,6 +174,7 @@ The `artifactId` for the Beam build is `hsfs-beam`, if you are using Maven as bu
 ## Next Steps
 
 If you are using a local python environment and want to connect to Hopsworks, you can follow the [Python Guide](../integrations/python.md#generate-an-api-key) section to create an API Key and to get started.
+If you use a coding agent, see [Skills and instructions for coding agents][skills-and-instructions-for-coding-agents] to connect it to Hopsworks.
 
 ## Other environments
 

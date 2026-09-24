@@ -121,7 +121,8 @@ The per-value history is what the archive is for.
 !!! note "Records intent, no behaviour yet"
     Setting `archive` today only records the decision on the schema.
     Nothing reads it: copying the retained attachments into an offline feature group, where they can be queried as above, is a later change.
-    Set it now on the schemas whose history you expect to want, because the flag cannot recover attachments that were already discarded while it was off.
+    Setting it in this release keeps no history: attachments are discarded whether it is on or off.
+    A later release that records history starts only once the flag is turned on again there, so setting it now does not carry forward.
 
 ## Step 2: Attach a tag to an artifact
 

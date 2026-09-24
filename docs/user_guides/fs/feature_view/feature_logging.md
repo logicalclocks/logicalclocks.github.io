@@ -11,7 +11,8 @@ You can log either transformed or/and untransformed features values.
 ### Enabling Feature Logging
 
 To enable logging, set `logging_enabled=True` when creating the feature view.
-Two feature groups will be created for storing transformed and untransformed features, but they are not visible in the UI.
+One logging feature group stores transformed features, untransformed features, predictions, and logging metadata together; it is not visible in the UI.
+Older feature views can retain separate transformed and untransformed logging groups.
 The logged features will be written to the offline feature store every hour by scheduled materialization jobs which are created automatically.
 
 ```python
@@ -200,7 +201,7 @@ feature_view.resume_logging()
 
 Besides the scheduled materialization job, you can materialize logs from Kafka to the offline store on demand.
 This does not pause the scheduled job.
-By default, it materializes both transformed and untransformed logs, optionally specifying whether to materialize transformed (transformed=True) or untransformed (transformed=False) logs.
+The `transformed` selector applies only to older feature views with separate logging groups.
 
 ### Materialize Logs
 
@@ -209,8 +210,6 @@ Materialize logs and optionally wait for the process to complete.
 ```python
 # Materialize logs and wait for completion
 materialization_result = feature_view.materialize_log(wait=True)
-# Materialize only transformed log entries
-feature_view.materialize_log(wait=True, transformed=True)
 ```
 
 ## Deleting Logs
@@ -221,14 +220,12 @@ Scheduled materialization job and log timeline are reset as well.
 
 ### Delete Logs
 
-Remove all log entries (both transformed and untransformed logs), optionally specifying whether to delete transformed (transformed=True) or untransformed (transformed=False) logs.
+Remove all log entries.
+The `transformed` selector applies only to older feature views with separate logging groups.
 
 ```python
 # Delete all log entries
 feature_view.delete_log()
-
-# Delete only transformed log entries
-feature_view.delete_log(transformed=True)
 ```
 
 ## Summary
