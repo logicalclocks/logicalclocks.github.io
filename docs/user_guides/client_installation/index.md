@@ -115,7 +115,7 @@ hops skills show hops-fg
 hops build
 ```
 
-`hops build` asks what the ML system should predict, or offers an example system (Churn next month, Personalized recommendations, Customer Service Agent) that runs on synthetic data and includes an app.
+`hops build` first asks what you want to build: a new ML system, which it asks you to describe, or an example ML system (churn, batch; personalized recommendations, real-time; a help desk agent, agentic) that runs on synthetic data and includes an app.
 It then asks the questions that follow from the system type: how often predictions are made for a batch system, the latency and throughput for a real-time one, the LLM for an agentic one, the data to learn from, how the predictions are used, and where the code goes.
 One Claude Code call on Haiku reads your description and recommends the system type and a name; the other questions are plain prompts.
 Each answer is written to `<slug>/system.yaml` in the current directory as you give it.
