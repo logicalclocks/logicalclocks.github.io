@@ -66,13 +66,19 @@ It then writes the following files into the current directory:
 | --- | --- |
 | `AGENTS.md` | Instructions for the agent: the project you are connected to, where the `hopsworks` library is installed on this machine, and how to use the `hops` CLI and the skills. |
 | `.claude/skills/hops/SKILL.md` | A reference for the `hops` CLI. |
-| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code. |
-| `.claude/agents/hops-fti.md` | A Claude Code sub-agent that reviews a project against the feature, training and inference pipeline pattern. |
+| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code: a fast menu to explore data, build or edit a Superset dashboard (`/hops dashboard`) or a Python app (`/hops app`), and show status. It runs on Haiku; the building is done by the agents below. |
+| `.claude/commands/hops-ml.md` | The `/hops-ml` slash command: the `hops build` interview inside Claude Code, on Haiku, recorded in `system.yaml` as you answer. |
+| `.claude/commands/hops-build.md` | The `/hops-build` slash command: completes the specification the interview recorded and builds the ML system to a pull request, on your session's model. |
+| `.claude/agents/hops-dashboard-builder.md` | The Claude Code sub-agent `/hops` runs to build, edit or delete a dashboard. |
+| `.claude/agents/hops-app-builder.md` | The Claude Code sub-agent `/hops` runs to build, edit or delete an app and fix it until it serves. |
+| `.claude/agents/hops-train-agent.md` | The Claude Code sub-agent `/hops-build` runs to train a model until it meets its target. |
+| `.claude/agents/hops-infer-agent.md` | The Claude Code sub-agent `/hops-build` runs to build inference until it meets its SLA. |
 | `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
 
 `AGENTS.md` is read by Claude Code, Codex, GitHub Copilot and OpenCode.
 The files under `.claude/` are read by Claude Code only.
 Running `hops setup` again in a directory that already has these files updates the files you have not edited and leaves the ones you have edited unchanged.
+A file an earlier version wrote and this one no longer ships, such as `.claude/agents/hops-fti.md`, is removed when you have not edited it and reported otherwise.
 Pass `--no-scaffold` to authenticate without writing any files.
 
 ### Add the Hopsworks skills
@@ -102,6 +108,26 @@ To read the skills without adding them to a repository:
 hops skills list
 hops skills show hops-fg
 ```
+
+### Build an ML system
+
+```bash
+hops build
+```
+
+`hops build` first asks what you want to build: a new ML system, which it asks you to describe, or an example ML system (churn, batch; personalized recommendations, real-time; a help desk agent, agentic) that runs on synthetic data and includes an app.
+It then asks the questions that follow from the system type: how often predictions are made for a batch system, the latency and throughput for a real-time one, the LLM for an agentic one, the data to learn from, how the predictions are used, and where the code goes.
+One Claude Code call on Haiku reads your description and recommends the system type and a name; the other questions are plain prompts.
+Each answer is written to `<slug>/system.yaml` in the current directory as you give it.
+
+A new data source is created with `hops datasource create`, and its password or key is read without echo and passed to it in an environment variable, so it never appears on the command line or in `system.yaml`.
+
+When the interview is done, `hops build` starts Claude Code with `/hops-build <slug>`, which completes the specification and builds the feature, training and inference pipelines.
+Inside tmux, as in the Hopsworks terminal, it opens a new tmux window named after the system, so several systems can be built at once.
+Pass `--no-launch` to record the interview only, and `hops build <slug>` to resume a system.
+
+In the Hopsworks terminal, a system in your home directory is registered under `~/.hops/builds/`, and the Hopsworks UI shows an **ML systems** button beside **Terminal** while one is being built.
+It opens a panel with each system's phases, what is done and what is left, which you can minimize or close.
 
 ## Hopsworks Java Library
 
