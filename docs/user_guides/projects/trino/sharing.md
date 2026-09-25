@@ -1,5 +1,5 @@
 ---
-description: Give another project read access to a Trino catalog or a feature group through the query engine, at catalog, schema, table or column level, with masked columns.
+description: Give another project read access to a Trino catalog or a feature group through the query engine, the whole catalog or chosen schemas, tables and columns, with masked columns.
 ---
 
 # Sharing Catalogs and Feature Groups
@@ -7,7 +7,7 @@ description: Give another project read access to a Trino catalog or a feature gr
 The query engine enforces who can read what, so data one project owns is not visible to another project until it is shared.
 Two kinds of share reach the query engine:
 
-- A **catalog share** gives another project read access to one of your Trino catalogs: the whole catalog, one schema, one table, or some columns of a table, optionally with masked values.
+- A **catalog share** gives another project read access to one of your Trino catalogs: the whole catalog, or chosen schemas and tables, down to some columns of a table, optionally with masked values.
 - A **feature group share**, made from the feature store, also makes the shared feature group queryable through the query engine in the receiving project.
 
 A share always grants read access, and always to the receiving project's Data Owners and Data Scientists.
@@ -19,18 +19,29 @@ A project catalog is shared by a Data Owner of the project, and a private catalo
 A catalog can be shared once it is **Approved**, because a catalog the query engine has not loaded has nothing to share yet.
 
 Click the share icon on the catalog's row in **Query Engine** → **Catalogs** to open its sharing page.
-The page lists every share of the catalog, what each one covers, and whether it is live.
+The page lists every project the catalog is shared with, what it shares with each and leaves out, and whether each share is live.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/catalog-sharing-page.png" alt="Sharing page of a catalog" />
   <figcaption>A catalog shared whole with one project, and one table with two of its three columns, one of them masked, with another</figcaption>
 </figure>
 
-Click **Share**, choose the project, and choose what to share:
+Click **Share** and choose the project.
+A project holds one share of a catalog, which covers everything it receives from the catalog, so a project the catalog is shared with already is not offered: edit its share instead.
+Then choose what to share:
 
-- **The whole catalog**: every schema and table in it, including ones created later, optionally with some tables restricted or left out.
-- **One schema**: every table in that schema, including ones created later, optionally with some tables restricted or left out.
-- **One table**: that table only, optionally narrowed to some of its columns.
+- **The whole catalog**: every schema and table in it, including ones created later.
+  Under **Schemas left out**, add schemas the project must not read.
+- **Chosen schemas and tables**: under **Schemas shared**, add schemas to share whole, including tables created in them later, and under **Tables**, add tables to share on their own.
+
+Under **Tables**, each table added is either shared whole, shared with only some of its columns, or left out:
+
+- A table not covered by anything else can be shared whole or with some columns.
+- A table covered already, by the whole catalog or by a shared schema, can be narrowed to some columns or left out.
+
+The narrowest choice decides for a table: its own choice over its schema's, and a schema's over the whole catalog.
+For example, share the whole catalog, leave out the schema `hr`, narrow `sales.customers` to three columns with one of them masked, and leave out `sales.salaries`.
+A left-out table cannot be read by the receiving project, and it is not listed to them.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/share-dialog-table.png" alt="Sharing one table with some columns" />
@@ -41,9 +52,9 @@ The schemas, tables and columns offered are the ones you can see in the catalog 
 
 ### Sharing some columns of a table
 
-Check **Share only some columns, or mask them** to choose the columns of a table share.
+Choose **Share some columns** on a table to choose its columns.
 An unchecked column cannot be read by the receiving project, and a query that selects it, or selects `*`, is refused.
-The table's other ways of revealing a column are closed too: the connector's hidden columns, such as `$path` and `$partition`, and the table's metadata tables, such as `<table>$partitions`, are denied on a column-restricted share, because the path and partition values of a table partitioned on an unshared column carry that column's values.
+The table's other ways of revealing a column are closed too: the connector's hidden columns, such as `$path` and `$partition`, and the table's metadata tables, such as `<table>$partitions`, are denied on a narrowed table, because the path and partition values of a table partitioned on an unshared column carry that column's values.
 
 The query engine denies the columns that were unchecked when the share was saved.
 A column added to the table later is therefore readable until you save the share again.
@@ -51,7 +62,7 @@ The sharing page flags such a table with the new column names, and **Exclude the
 
 <figure>
   <img src="../../../../assets/images/guides/trino/share-edit-columns.png" alt="Editing the columns of a share" />
-  <figcaption>Editing a column share: two columns shared, one of them masked, and one left out</figcaption>
+  <figcaption>Editing a share: a table with two columns shared, one of them masked, and one left out</figcaption>
 </figure>
 
 ### Masking a column
@@ -71,24 +82,10 @@ The mask is checked against the table when the share is saved, so an expression 
 
 You always read your own catalog unmasked.
 
-### Restricting tables of a schema or catalog share
+### Editing a share
 
-A schema or catalog share can make exceptions for some of its tables.
-Check **Restrict or leave out some tables**, click **Add a table**, and choose the columns to share from it, with masks, the same way as for a table share.
-Every other table is shared whole.
-
-- A restricted table shares only its checked columns, and its hidden columns and metadata tables are denied, as on a column-restricted table share.
-- A table with no column checked is left out: the receiving project cannot read it, and it is not listed to them.
-
-As with a table share, a column added to a restricted table later is readable until you save the share again, and the sharing page flags it.
-Edit the share to add, change or remove its restrictions.
-
-### Shares that overlap
-
-A project holds at most one share of any object in a catalog.
-Sharing a table with a project that already has its schema or the whole catalog is refused, and so is sharing a schema or the catalog with a project that already has a share inside it.
-To give that project less of one table, restrict the table on the share it already has; to widen a table share into a schema share, revoke the table share first.
-Shares of objects that do not contain each other, such as two tables or two schemas, can be held side by side.
+Click the edit icon on a share to change what it covers: share more, narrow or leave out tables, or go from chosen schemas and tables to the whole catalog.
+Saving reads the narrowed tables' columns again, and the change is live within seconds.
 
 ### The status of a share
 
@@ -104,15 +101,15 @@ The sharing page shows where each share stands and refreshes itself while a chan
 
 ### Objects that no longer exist
 
-A share names a schema or a table, and the object it names may be dropped at the source later.
-The share stays, and the sharing page marks it **Not found**.
-If an object with the same name is created again, the share applies to it, so revoke a share whose object is gone for good.
+A share names schemas and tables, and an object it names may be dropped at the source later.
+The share keeps it, and the sharing page lists it as **Not found**.
+If an object with the same name is created again, the share applies to it, so edit the share to remove an object that is gone for good.
 
 ### Revoking a share
 
 Click the delete icon on a share to revoke it.
-The receiving project loses access as soon as the revoke is live, within seconds, and the share disappears from the page once it is.
-The same object cannot be shared with the same project again until the revoke has finished.
+The receiving project loses access to everything the share covered as soon as the revoke is live, within seconds, and the share disappears from the page once it is.
+The catalog cannot be shared with the same project again until the revoke has finished.
 
 Deleting a catalog revokes all of its shares at once, and so does deleting the receiving project.
 
