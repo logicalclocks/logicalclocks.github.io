@@ -224,6 +224,38 @@ A catalog whose `${HOPSWORKS_SECRET:<name>}` reference no longer resolves cannot
 The repair reports it, leaves any file it already has in place, because that copy resolved when it was approved and still works, and carries on with every other catalog.
 Its owner has to repoint the reference at an existing secret.
 
+## Access control and sharing
+
+The query engine decides who can read what with Trino's file-based access control, from a rules file published into the Trino files store as `access-control/rules.json`.
+Hopsworks owns that file and rebuilds it whenever a share changes, and on a schedule every five minutes by default.
+
+The file is composed from two parts:
+
+- The base policy, from the Helm value `trino.accessControl.rules`, which the chart renders into the ConfigMap `hopsworks-trino-access-control-base`.
+  It grants each project its own catalogs and feature store, each user their private catalogs, and administrators everything.
+- One set of rules per share, for [catalog shares and feature group shares][sharing-catalogs-and-feature-groups].
+  A share names the receiving project's existing `<project>__data_owner` and `<project>__data_scientist` groups, so sharing never changes the group file.
+
+Change the base policy through the Helm value and an upgrade.
+An edit to the published `rules.json` is overwritten by the next rebuild, within minutes.
+
+Every rebuilt file is validated before it is published, and a file that fails validation is not published: the shares that caused it are marked **Failed** with the reason, and the file in place stays as it was.
+After publishing, Hopsworks checks that the query engine still answers once it has re-read the file, and restores the last file that worked if it does not, because Trino refuses every query while its rules file is unreadable.
+
+### The shared feature store catalogs
+
+The chart ships two kinds of catalog over the feature store:
+
+- `delta`, `hudi`, `iceberg` and `hive` impersonate the querying user, so HopsFS permissions apply on top of the access-control rules.
+  They serve a project's own feature groups, and feature groups or feature stores shared whole, which HopsFS grants the receiving project.
+- `delta_shared`, `hudi_shared` and `iceberg_shared` do not impersonate.
+  They read HopsFS as the `trino` user, which is a HopsFS superuser, because a feature group shared with a subset of its features grants the receiving project no HopsFS access.
+
+For the second kind the access-control rules are the only gate.
+The base policy grants nobody access to them, and Hopsworks adds a rule per subset share that allows the receiving project the shared features of that one table and denies the rest.
+They are read-only at the connector as well, so no rule can let a query write through them.
+Do not add rules for these catalogs to the base policy: any rule that reaches one of them reads every project's feature store.
+
 ## Credential files a project supplies
 
 A connector that authenticates with a file, such as an Oracle wallet or a Java keystore, cannot be served by a catalog property alone.
@@ -311,7 +343,8 @@ Trino behavior can be customized through cluster configuration variables. To mod
 **Available Variables:**
 
 - **trino_enabled**: Enable or disable Trino cluster-wide (default: `true`)
-- **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
+- **trino_default_catalog**: Default catalog of the Superset database connections created for new project members (default: `delta`).
+  Connections created before a change keep the catalog they were created with.
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
 - **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount][recovering-catalog-files-lost-from-the-mount])
 - **trino_catalog_max_per_project**: Catalogs a *newly created* project may create (default: `10`).

@@ -179,8 +179,10 @@ Navigate to **Cluster Settings** → **Configuration** and search for `superset`
 #### trino_default_catalog
 
 - **Description**: Default catalog to use for the Offline Feature Store Connection
-- **Default**: `hive`
+- **Default**: `delta`
 - **Values**: `hive`, `delta`, `iceberg`, and `hudi`.
+
+The value is applied when a member's connection is created, so connections created before a change keep the catalog they were created with.
 
 Trino connections are created with multi-catalog enabled (Superset's **Allow changing catalogs** option), so users are not limited to this default.
 They select the catalog matching their table format from the **Catalog** dropdown in SQL Lab or when adding a dataset.
