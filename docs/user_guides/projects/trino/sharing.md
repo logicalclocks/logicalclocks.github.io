@@ -28,8 +28,8 @@ The page lists every share of the catalog, what each one covers, and whether it 
 
 Click **Share**, choose the project, and choose what to share:
 
-- **The whole catalog**: every schema and table in it, including ones created later.
-- **One schema**: every table in that schema, including ones created later.
+- **The whole catalog**: every schema and table in it, including ones created later, optionally with some tables restricted or left out.
+- **One schema**: every table in that schema, including ones created later, optionally with some tables restricted or left out.
 - **One table**: that table only, optionally narrowed to some of its columns.
 
 <figure>
@@ -71,11 +71,24 @@ The mask is checked against the table when the share is saved, so an expression 
 
 You always read your own catalog unmasked.
 
+### Restricting tables of a schema or catalog share
+
+A schema or catalog share can make exceptions for some of its tables.
+Check **Restrict or leave out some tables**, click **Add a table**, and choose the columns to share from it, with masks, the same way as for a table share.
+Every other table is shared whole.
+
+- A restricted table shares only its checked columns, and its hidden columns and metadata tables are denied, as on a column-restricted table share.
+- A table with no column checked is left out: the receiving project cannot read it, and it is not listed to them.
+
+As with a table share, a column added to a restricted table later is readable until you save the share again, and the sharing page flags it.
+Edit the share to add, change or remove its restrictions.
+
 ### Shares that overlap
 
-A project can receive several shares of one catalog, for example the whole schema and, separately, one of its tables with some columns left out.
-The narrowest share decides for the object it names: the table share above applies to that table whatever the schema share allows, so its column restrictions and masks hold.
-The sharing page notes which broader shares are overridden, and for which objects.
+A project holds at most one share of any object in a catalog.
+Sharing a table with a project that already has its schema or the whole catalog is refused, and so is sharing a schema or the catalog with a project that already has a share inside it.
+To give that project less of one table, restrict the table on the share it already has; to widen a table share into a schema share, revoke the table share first.
+Shares of objects that do not contain each other, such as two tables or two schemas, can be held side by side.
 
 ### The status of a share
 
