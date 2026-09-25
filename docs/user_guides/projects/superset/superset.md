@@ -84,7 +84,7 @@ SQL Lab is an interactive SQL query interface for exploring your feature data.
 </figure>
 
 For the Trino connection, SQL Lab shows a **Catalog** dropdown between **Database** and **Schema**.
-The dropdown appears because the connection has *Allow changing catalogs* enabled, and it lists every Trino catalog (`hive`, `delta`, `iceberg`, `hudi`).
+The dropdown appears because the connection has *Allow changing catalogs* enabled, and it lists every Trino catalog you can read (`hive`, `delta`, `iceberg`, `hudi`, your project's catalogs, and catalogs shared with your project).
 Selecting the catalog that matches your table format lets you query the table without prefixing the catalog in the SQL.
 
 <figure>
