@@ -41,7 +41,7 @@ To clone a new repository, click on the `Clone repository` button on the Git ove
 </p>
 
 You should first choose the git provider e.g., GitHub, GitLab or BitBucket.
-If you are cloning a private repository, remember to configure the username and token for the provider first in [Git Provider](configure_git_provider.md).
+If you are cloning a private repository, remember to configure the host, username and token for the provider first in [Git Provider](configure_git_provider.md).
 The clone dialog also asks you to specify the URL of the repository to clone.
 The supported protocol is HTTPS.
 As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
@@ -108,12 +108,15 @@ examples_repo = git_api.clone(
 )
 ```
 
-### API Reference
+!!! api "API reference"
 
-Api reference for git repositories is available here:
-[`GitRepo`][hopsworks_common.git_repo.GitRepo]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_git_api`][hopsworks_common.project.Project.get_git_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitApi`][hopsworks_common.core.git_api.GitApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`clone`][hopsworks_common.core.git_api.GitApi.clone]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitRepo`][hopsworks_common.git_repo.GitRepo]
+    - <code class="doc-symbol doc-symbol-docs"></code> [Git management notebook](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb)
 
-A notebook for managing git can be found in the [Git Management Tutorial](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb).
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Errors and Troubleshooting
 
@@ -123,7 +126,7 @@ This might happen when the credentials entered for the provider are incorrect.
 Try the following:
 
 - Confirm that the settings for the provider ( in Account Settings > Git providers) are correct.
-You must enter both your Git provider username and token.
+Each host row must carry the host, the username and the token.
 - Confirm that you have selected the correct Git provider when cloning the repository.
 - Ensure your personal access token has the correct repository access rights.
 - Ensure your personal access token has not expired.

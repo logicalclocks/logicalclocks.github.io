@@ -25,7 +25,7 @@ If you have at least one deployment already created, navigate to the deployments
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar_with_list.svg" alt="Deployments navigation tab">
+    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar_with_list.png" alt="Deployments navigation tab">
     <figcaption>Deployments navigation tab</figcaption>
   </figure>
 </p>
@@ -47,7 +47,7 @@ For instance, when the cluster lacks enough allocatable resources to meet the de
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_condition_fail_schedule.svg" alt="Deployment failed to schedule condition">
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_condition_fail_schedule.png" alt="Deployment failed to schedule condition">
     <figcaption>Condition of a deployment that cannot be scheduled</figcaption>
   </figure>
 </p>
@@ -58,7 +58,7 @@ In those cases, you can explore the deployments logs in search of the cause of t
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_condition_fail_predictor.svg" alt="Deployment failed to start condition">
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_condition_fail_predictor.png" alt="Deployment failed to start condition">
     <figcaption>Condition of a deployment that fails to start</figcaption>
   </figure>
 </p>
@@ -192,6 +192,15 @@ It returns a generator that yields new lines as they arrive, skipping what it ha
 
 Omit `latest` to download every archive the deployment has kept.
 
-### API Reference
+!!! api "API reference"
 
-[`Deployment`][hsml.deployment.Deployment]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.get_deployment`][hsml.model_serving.ModelServing.get_deployment]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_state`][hsml.deployment.Deployment.get_state]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_logs`][hsml.deployment.Deployment.get_logs]
+        - <code class="doc-symbol doc-symbol-method"></code> [`tail_logs`][hsml.deployment.Deployment.tail_logs]
+        - <code class="doc-symbol doc-symbol-method"></code> [`download_logs`][hsml.deployment.Deployment.download_logs]
+    - <code class="doc-symbol doc-symbol-class"></code> [`PredictorState`][hsml.predictor_state.PredictorState]
+        - <code class="doc-symbol doc-symbol-method"></code> [`describe`][hsml.predictor_state.PredictorState.describe]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

@@ -15,7 +15,7 @@ See [Server Configuration for Kerberos](./configure-server.md#step-2-server-conf
 ### Step 1: Enable Kerberos
 
 After configuring the server you can configure Authentication methods by clicking on your name in the top right corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
-In the *Authentication* tab you can find in **Cluster Settings**, you can enable Kerberos by clicking on the Kerberos checkbox.
+On the *Authentication* page, found under *Security & Access* in the left sidebar of **Cluster Settings**, you can enable Kerberos by clicking on the Kerberos checkbox.
 
 If LDAP/Kerberos checkbox is not checked, make sure that you configured your application server and enable it by
 clicking on the checkbox.

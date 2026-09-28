@@ -1,0 +1,21 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 760 196" role="img" aria-label="Detection windows over a feature group timeline from its creation to now. A rolling detection window covers one week of data ending one week ago: with_detection_window with time_offset one week and window_length one week. Without arguments, with_detection_window covers all feature group data from creation to now. Statistics are computed on the window at each scheduled run." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="dw-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+  </defs>
+  <path class="viz-axis" d="M40 80 H720" marker-end="url(#dw-arrow)"/>
+  <path class="viz-tick" d="M80 74 V86 M120 74 V86 M160 74 V86 M200 74 V86 M240 74 V86 M280 74 V86 M320 74 V86 M360 74 V86 M400 74 V86 M440 74 V86 M480 74 V86 M520 74 V86 M560 74 V86 M600 74 V86 M640 74 V86"/>
+  <rect class="viz-status-dot" x="76" y="76" width="8" height="8"/>
+  <circle class="viz-status-dot" data-tone="accent" cx="640" cy="80" r="5"/>
+  <text class="viz-meta" x="44" y="110">feature group created</text>
+  <text class="viz-meta" x="320" y="110" text-anchor="middle">2 weeks ago</text>
+  <text class="viz-meta" x="480" y="110" text-anchor="middle">1 week ago</text>
+  <text class="viz-meta" x="640" y="110" text-anchor="middle">now</text>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="320" y="66" width="160" height="28" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="400" y="84" text-anchor="middle">rolling · last week</text>
+  <text class="viz-codeln" x="400" y="44" text-anchor="middle"><tspan class="tok-fn">with_detection_window</tspan>(time_offset=<tspan class="tok-str">"1w"</tspan>, window_length=<tspan class="tok-str">"1w"</tspan>)</text>
+  <rect class="viz-window" data-solid="" data-tone="data" data-state="visited" x="80" y="132" width="560" height="28" rx="4"/>
+  <text class="viz-meta" data-tone="data" x="360" y="150" text-anchor="middle">all feature group data</text>
+  <text class="viz-codeln" x="360" y="182" text-anchor="middle"><tspan class="tok-fn">with_detection_window</tspan>()</text>
+</svg>
+</figure>

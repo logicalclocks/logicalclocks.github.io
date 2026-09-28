@@ -1,0 +1,66 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 640 476" role="img" aria-label="How a feature view's serving keys are derived. A left_fg primary key is always a serving key under its own name. For each right_fg primary key: if the join matches it to a left_fg primary key, it is covered by that key; otherwise, if its name is not yet taken, it becomes a serving key under its own name; if the name is taken and the join has a prefix, the serving key is the prefix plus the name; without a prefix it is fgId_<id>_<i>_ plus the name." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="sk-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="sk-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+  <path class="viz-edge" d="M476 76 L476 120" marker-start="url(#sk-knob)" marker-end="url(#sk-arrow)"/>
+  <path class="viz-edge" d="M344 146 L296 146" marker-start="url(#sk-knob)" marker-end="url(#sk-arrow)"/>
+  <text class="viz-meta" x="320" y="138" text-anchor="middle">yes</text>
+  <path class="viz-edge" d="M476 172 L476 216" marker-start="url(#sk-knob)" marker-end="url(#sk-arrow)"/>
+  <text class="viz-meta" x="484" y="198">no</text>
+  <path class="viz-edge" d="M344 242 L296 242" marker-start="url(#sk-knob)" marker-end="url(#sk-arrow)"/>
+  <text class="viz-meta" x="320" y="234" text-anchor="middle">no</text>
+  <path class="viz-edge" d="M476 268 L476 312" marker-start="url(#sk-knob)" marker-end="url(#sk-arrow)"/>
+  <text class="viz-meta" x="484" y="294">yes</text>
+  <path class="viz-edge" d="M344 338 L296 338" marker-start="url(#sk-knob)" marker-end="url(#sk-arrow)"/>
+  <text class="viz-meta" x="320" y="330" text-anchor="middle">yes</text>
+  <path class="viz-edge" d="M476 364 L476 408" marker-start="url(#sk-knob)" marker-end="url(#sk-arrow)"/>
+  <text class="viz-meta" x="484" y="390">no</text>
+  <g data-tone="accent">
+    <rect class="viz-node" x="32" y="24" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="164" y="46" text-anchor="middle">left_fg PRIMARY KEY</text>
+    <text class="viz-codeln" x="164" y="65" text-anchor="middle">serving key: <tspan class="tok-str">id</tspan></text>
+  </g>
+  <g>
+    <rect class="viz-node" x="344" y="24" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="476" y="46" text-anchor="middle">right_fg PRIMARY KEY</text>
+    <text class="viz-node-subtitle" x="476" y="64" text-anchor="middle">one key at a time</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="32" y="120" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="164" y="142" text-anchor="middle">COVERED</text>
+    <text class="viz-codeln" x="164" y="161" text-anchor="middle">by the matching <tspan class="tok-fn">left_fg</tspan> key</text>
+  </g>
+  <g data-tone="warn">
+    <rect class="viz-node" x="344" y="120" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="476" y="142" text-anchor="middle">MATCHED BY THE JOIN?</text>
+    <text class="viz-codeln" x="476" y="161" text-anchor="middle"><tspan class="tok-fn">right_on</tspan>=[<tspan class="tok-str">&quot;user_id&quot;</tspan>]</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="32" y="216" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="164" y="238" text-anchor="middle">SERVING KEY</text>
+    <text class="viz-codeln" x="164" y="257" text-anchor="middle">its own name: <tspan class="tok-str">id2</tspan></text>
+  </g>
+  <g data-tone="warn">
+    <rect class="viz-node" x="344" y="216" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="476" y="238" text-anchor="middle">NAME ALREADY TAKEN?</text>
+    <text class="viz-node-subtitle" x="476" y="256" text-anchor="middle">by another serving key</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="32" y="312" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="164" y="334" text-anchor="middle">SERVING KEY</text>
+    <text class="viz-codeln" x="164" y="353" text-anchor="middle">prefix + name: <tspan class="tok-str">right_id</tspan></text>
+  </g>
+  <g data-tone="warn">
+    <rect class="viz-node" x="344" y="312" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="476" y="334" text-anchor="middle">JOIN HAS A PREFIX?</text>
+    <text class="viz-codeln" x="476" y="353" text-anchor="middle"><tspan class="tok-fn">prefix</tspan>=<tspan class="tok-str">&quot;right_&quot;</tspan></text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="344" y="408" width="264" height="52" rx="4"/>
+    <text class="viz-node-title" x="476" y="430" text-anchor="middle">SERVING KEY</text>
+    <text class="viz-codeln" x="476" y="449" text-anchor="middle"><tspan class="tok-str">fgId_&lt;id&gt;_&lt;i&gt;_id</tspan></text>
+  </g>
+</svg>
+</figure>

@@ -73,7 +73,7 @@ To create a one-to-one transformation function, the Hopsworks `@udf` decorator m
 The transformation function should take one argument as input and return a Pandas Series.
 
 !!! example "Creation of a one-to-one transformation function in Hopsworks."
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -89,7 +89,7 @@ The transformation function should take one argument as input and return a Panda
 The creation of many-to-one transformation functions is similar to that of a one-to-one transformation function, the only difference being that the transformation function accepts multiple features as input.
 
 !!! example "Creation of a many-to-one transformation function in Hopsworks."
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -106,7 +106,7 @@ To create a one-to-many transformation function, the Hopsworks `@udf` decorato
 The return types provided to the decorator must match the types of each column in the returned Pandas DataFrame.
 
 !!! example "Creation of a one-to-many transformation function in Hopsworks."
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -122,7 +122,7 @@ The return types provided to the decorator must match the types of each column i
 The creation of a many-to-many transformation function is similar to that of a one-to-many transformation function, the only difference being that the transformation function accepts multiple features as input.
 
 !!! example "Creation of a many-to-many transformation function in Hopsworks."
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -145,7 +145,7 @@ It serves as the default mode used when the `mode` parameter is not specified.
 In this mode, the transformation function is executed as a Pandas UDF during training and in the batch inference pipeline, while it operates as a Python UDF during online inference.
 
 !!! example "Creating a many to many transformations function using the default execution mode"
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -167,7 +167,7 @@ In this mode, the transformation function is executed as a Pandas UDF during tra
 The transformation function can be configured to always execute as a Python UDF by setting the `mode` parameter of the `@udf` decorator to `python`.
 
 !!! example "Creating a many to many transformation function as a Python UDF"
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -183,7 +183,7 @@ The transformation function can be configured to always execute as a Python UDF 
 The transformation function can be configured to always execute as a Pandas UDF by setting the `mode` parameter of the `@udf` decorator to `pandas`.
 
 !!! example "Creating a many to many transformations function as a Pandas UDF"
-=== "Python"
+    === "Python"
 
         ```python
         import pandas as pd
@@ -214,7 +214,7 @@ The `drop` parameter of the `@udf` decorator is used to drop specific column
 In the example below, the columns mapped to the arguments `feature1` and `feature3` are dropped after the application of all transformation functions.
 
 !!! example "Specify arguments to drop after transformation"
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -232,7 +232,7 @@ Each name must be uniques and should be at-most 63 characters long.
 If no name is provided via the `alias` function, Hopsworks generates default output feature names when [on-demand](./feature_group/on_demand_transformations.md) or [model-dependent](./feature_view/model-dependent-transformations.md) transformation functions are created.
 
 !!! example "Specifying output column names for transformation functions."
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -265,7 +265,7 @@ These objects encapsulate statistics related to the argument as instances of the
 Upon instantiation, instances of `FeatureTransformationStatistics` contain `None` values and are updated with the required statistics after the creation of a training dataset.
 
 !!! example "Creation of a transformation function in Hopsworks that uses training dataset statistics"
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -294,7 +294,7 @@ These variables contain common data used across transformation functions.
 By including the context argument, you can pass the necessary data as a dictionary into the into the `context` argument of the transformation function during [training dataset creation](feature_view/training-data.md#passing-context-variables-to-transformation-functions) or [feature vector retrieval](feature_view/feature-vectors.md#passing-context-variables-to-transformation-functions) or [batch data retrieval](feature_view/batch-data.md#passing-context-variables-to-transformation-functions).
 
 !!! example "Creation of a transformation function in Hopsworks that accepts context variables"
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -311,7 +311,7 @@ To save a transformation function to the feature store, use the function `creat
 The save function will throw an error if another transformation function with the same name and version is already saved in the feature store.
 
 !!! example "Register transformation function `add_one` in the Hopsworks feature store"
-=== "Python"
+    === "Python"
 
         ```python
         plus_one_meta = fs.create_transformation_function(
@@ -328,7 +328,7 @@ A specific transformation function can be retrieved using its `name` and `versio
 If only the `name` is provided, then the version will default to 1.
 
 !!! example "Retrieving transformation functions from the feature store"
-=== "Python"
+    === "Python"
 
         ```python
         # get all transformation functions
@@ -352,7 +352,7 @@ Hopsworks resolves the execution order automatically using a topological sort of
 Chaining works for both on-demand transformations attached to a feature group and model-dependent transformations attached to a feature view.
 
 !!! example "Chained model-dependent transformations on a feature view"
-=== "Python"
+    === "Python"
 
         ```python
         from hopsworks import udf
@@ -394,7 +394,7 @@ The same graph can be rendered from the SDK with `visualize_transformations()`, 
 It renders as a Mermaid flowchart in Jupyter and as text elsewhere.
 
 !!! example "Visualizing transformation DAGs"
-=== "Python"
+    === "Python"
 
         ```python
         # Render both the model-dependent and on-demand DAGs.
@@ -418,7 +418,7 @@ With more than one worker process, independent transformation functions in the D
 For online serving, spawning the worker pool during the first request would add the pool startup cost to that request's latency. Passing `n_processes` to `init_serving` or `init_batch_scoring` pre-spawns the pool at initialization time and makes that value the default for subsequent retrieval calls; an explicit `n_processes` on an individual call still takes precedence.
 
 !!! example "Pre-spawning the worker pool for online serving"
-=== "Python"
+    === "Python"
 
         ```python
         fv.init_serving(training_dataset_version=1, n_processes=2)

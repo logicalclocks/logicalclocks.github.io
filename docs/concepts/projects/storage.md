@@ -1,3 +1,5 @@
+# Data Storage and Sharing
+
 Every project in Hopsworks has its own private assets:
 
 - a Feature Store (including both Online and Offline Stores)
@@ -5,7 +7,7 @@ Every project in Hopsworks has its own private assets:
 - a Model Registry
 - Model Deployments
 - Kafka topics
-- OpenSearch indexes (including KNN indexes - the vector DB)
+- OpenSearch indexes (including kNN indexes, the vector index)
 - a Hive Database
 
 Access control to these assets is controlled using project membership ACLs (access-control lists).
@@ -14,4 +16,5 @@ Users in a project who have a *Data Owner* role have read/write access to these 
 However, it is often desirable to share assets between projects, with read-only, read/write privileges, and to restrict the privileges to specific role (e.g., Data Owners) in the target project.
 In Hopsworks, you can explicitly share assets between projects without copying the assets.
 Sharing is managed by ACLs in Hopsworks, see example below:
-<img src="../../../assets/images/concepts/projects/projects-sharing.svg">
+--8<-- "concepts/projects/storage/data-storage-and-sharing.html"
+

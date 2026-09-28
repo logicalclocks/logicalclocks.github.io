@@ -26,7 +26,7 @@ There are different types of windows depending on how they evolve over time.
 A window can have either a _fixed_ length (e.g., static window) or _variable_ length (e.g., expanding window).
 Moreover, windows can stick to a _specific point in time_ (e.g., static window) or _move_ over time (e.g., sliding or rolling window).
 
-![Types of windows](../../../assets/images/guides/fs/feature_monitoring/fm-types-of-windows.png)
+--8<-- "user_guides/fs/feature_monitoring/index/types-of-windows.html"
 
 !!! info "Specific values"
     A specific value can be seen as a window of length 1 where the start and end of the window have the same value.
@@ -41,7 +41,7 @@ See more details about _detection_ and _reference_ windows in the [Detection win
 Hopsworks provides an interactive graph to make the exploration of statistics and metrics (e.g., distribution-based distances) more efficient and help you find unexpected trends or anomalous values faster.
 See the [Interactive graph guide](interactive_graph.md) for more information.
 
-![Feature monitoring graph](../../../assets/images/guides/fs/feature_monitoring/fm-show-shifted-points-arrow.png)
+![Feature monitoring graph](../../../assets/images/guides/fs/feature_monitoring/fm-show-shifted-points.png)
 
 ## Alerting
 
@@ -49,6 +49,6 @@ Moreover, feature monitoring integrates with the Hopsworks built-in system for [
 You can setup alerts for feature monitoring at a Feature Group, Feature View, and project level.
 
 !!! tip "Select the correct trigger"
-    When configuring alerts for feature monitoring, make sure you select the `feature monitoring-shift detected` or `feature monitoring-shift undetected` trigger.
+    When configuring alerts for feature monitoring, make sure you select the `data shift detected` or `data shift undetected` trigger.
 
 ![Feature monitoring alerts](../../../assets/images/guides/fs/feature_monitoring/fm-alerts.png)

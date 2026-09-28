@@ -40,19 +40,15 @@ This ingestion flow supports multiple data sources:
 
 Navigate to the data source you want to use and start the feature-group creation flow from the UI.
 
-For SQL-based sources, select a database object first and then choose `Ingest Data to New Feature Group`.
+For SQL-based sources, open the data source, click `Next: Select Tables`, select a database and a table, then choose `Ingest Data to New Feature Group`.
+Once the ingest option is selected, the column table gains a `Partition key` column and an `Add a feature` button for features that do not exist in the source; the transformation script computes their values.
 
 <figure markdown>
   ![dltHub SQL Feature Group Selection](../../../assets/images/guides/fs/feature_group/dlthub_select_sql_table.png)
-  <figcaption>Select a source table and choose Ingest Data to New Feature Group</figcaption>
+  <figcaption>Select a source table, set the keys and choose Ingest Data to New Feature Group</figcaption>
 </figure>
 
-For CRM sources, choose the source resource and then configure the feature schema for the new feature group.
-
-<figure markdown>
-  ![dltHub CRM Feature Group Selection](../../../assets/images/guides/fs/feature_group/dlthub_select_crm_resource.png)
-  <figcaption>Select a CRM resource and configure the feature group schema</figcaption>
-</figure>
+For CRM sources, choose the source resource, click `Fetch Schema` and then configure the feature schema for the new feature group the same way.
 
 For REST API sources, first configure the endpoint before fetching the schema.
 
@@ -126,7 +122,7 @@ The next page configures the ingestion job that will populate the feature group.
 
 <figure markdown>
   ![dltHub SQL Job Configuration](../../../assets/images/guides/fs/feature_group/dlthub_configure_job_sql.png)
-  <figcaption>Configure the dltHub ingestion job</figcaption>
+  <figcaption>Configure the dltHub ingestion job: job settings, transformation, resources and loading strategy</figcaption>
 </figure>
 
 ### Common job settings
@@ -139,9 +135,10 @@ The following fields are available in the job configuration:
 - **Destination Write Batch Size**: Number of records written to the feature group in each batch during ingestion.
 - **Max Write Batch Size (MB)**: Maximum file size, in megabytes, when writing data to the feature group.
 - **Write Mode**: Controls whether incoming data is appended as-is or merged with existing rows using the primary key.
+- **Environment**: Python environment the job runs in, `dlthub-ingestion-pipeline` by default.
 - **Start the job after creation**: Starts the ingestion job immediately after the resources are created.
-- **Memory (in MB)**: Memory allocated to the ingestion job.
-- **CPU Cores**: CPU cores allocated to the ingestion job.
+- **Data Transformation**: Optional Python script, picked from the project or uploaded, that transforms rows before they are written and computes any extra features added to the schema.
+- **Memory (in MB)** and **CPU Cores**: Resources allocated to the ingestion job; `Estimate resources` proposes values from the source size.
 - **Schedule**: Optional recurring schedule for future ingestion runs.
 - **Alerts**: Optional alerting configuration for the ingestion job.
 
@@ -171,6 +168,8 @@ The following strategies are available in the UI:
 - `INCREMENTAL_ID`
 - `INCREMENTAL_TIMESTAMP`
 - `INCREMENTAL_DATE`
+
+--8<-- "user_guides/fs/feature_group/ingest_with_dlthub/loading-strategies.html"
 
 ### Full load
 
@@ -244,8 +243,8 @@ Choose the incremental strategy that matches the source cursor type:
 - `INCREMENTAL_DATE` for sources that filter by date or datetime values.
 
 <figure markdown>
-  ![dltHub REST Incremental Job](../../../assets/images/guides/fs/feature_group/dlthub_configure_job_rest_incremental.png)
-  <figcaption>REST API ingestion job with incremental loading</figcaption>
+  ![dltHub incremental loading](../../../assets/images/guides/fs/feature_group/dlthub_configure_job_incremental.png)
+  <figcaption>Incremental loading by id, with tid as the source cursor field</figcaption>
 </figure>
 
 ## Step 5: Review and create

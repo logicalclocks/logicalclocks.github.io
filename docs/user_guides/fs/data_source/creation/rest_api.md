@@ -24,7 +24,9 @@ Before you begin, make sure you have:
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `REST API` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -33,8 +35,8 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 
 ### Step 2: Enter REST API settings
 
-Select `REST API` as the storage type.
-Then provide the common connection settings shown in the form:
+The form opens with `Source` set to `REST API`, and `Change source` takes you back to the catalog.
+Provide the common connection settings shown in the form:
 
 1. **Name:** A unique name for the data source.
 2. **Description:** Optional description.

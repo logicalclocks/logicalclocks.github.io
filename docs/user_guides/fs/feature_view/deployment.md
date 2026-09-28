@@ -183,8 +183,16 @@ hops fv deploy transactions --passed-feature amount
 hops deployment schema transactionsfv --openapi
 ```
 
-## API Reference
+!!! api "API reference"
 
-`hsfs.feature_view.FeatureView.deploy`
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureView.deploy`][hsfs.feature_view.FeatureView.deploy]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`start`][hsml.deployment.Deployment.start]
+        - <code class="doc-symbol doc-symbol-method"></code> [`predict`][hsml.deployment.Deployment.predict]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_feature_monitoring`][hsml.deployment.Deployment.create_feature_monitoring]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`schema`][hsml.deployment.Deployment.schema]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`training_dataset_version`][hsml.deployment.Deployment.training_dataset_version]
+    - <code class="doc-symbol doc-symbol-class"></code> [`DeploymentSchema`][hsml.deployment_schema.DeploymentSchema]
+        - <code class="doc-symbol doc-symbol-method"></code> [`describe`][hsml.deployment_schema.DeploymentSchema.describe]
 
-[`Deployment`][hsml.deployment.Deployment]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

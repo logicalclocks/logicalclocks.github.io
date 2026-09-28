@@ -1,0 +1,99 @@
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 792 310" role="img" aria-label="Animated diagram of a streaming feature pipeline. Events arrive on an unbounded stream and fall into tumbling windows. As each window closes, its aggregate is upserted into a feature group in the online store and the row lights up with a fresh value. A sweep along the freshness band below measures the total time from event read to feature available to inference." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="sf-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+  </defs>
+
+  <text class="viz-label" x="24" y="26">Event stream</text>
+  <text class="viz-meta" x="130" y="26">tumbling windows</text>
+
+  <rect id="w1" class="viz-window" data-tone="data" x="24" y="40" width="150" height="64" rx="6"/>
+  <rect id="w2" class="viz-window" data-tone="data" x="190" y="40" width="150" height="64" rx="6"/>
+  <rect id="w3" class="viz-window" data-tone="data" x="356" y="40" width="150" height="64" rx="6"/>
+
+  <path class="viz-edge" d="M24 120 H530" marker-end="url(#sf-arrow)"/>
+  <text class="viz-meta" x="526" y="134" text-anchor="end">time</text>
+  <g id="ev1" class="viz-fade" style="opacity:0">
+    <path class="viz-tick" d="M36 120 V96 M60 120 V90 M84 120 V100 M108 120 V86 M132 120 V94 M156 120 V92"/>
+  </g>
+  <g id="ev2" class="viz-fade" style="opacity:0">
+    <path class="viz-tick" d="M202 120 V92 M226 120 V98 M250 120 V88 M274 120 V96 M298 120 V92 M322 120 V94"/>
+  </g>
+  <g id="ev3" class="viz-fade" style="opacity:0">
+    <path class="viz-tick" d="M368 120 V90 M392 120 V98 M416 120 V86 M440 120 V94 M464 120 V92 M488 120 V98"/>
+  </g>
+
+  <g transform="translate(72 88)">
+    <g id="p1" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="62" height="18" rx="3"/>
+      <text x="31" y="9" text-anchor="middle">upsert</text>
+    </g>
+  </g>
+  <g transform="translate(238 88)">
+    <g id="p2" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="62" height="18" rx="3"/>
+      <text x="31" y="9" text-anchor="middle">upsert</text>
+    </g>
+  </g>
+  <g transform="translate(404 88)">
+    <g id="p3" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="62" height="18" rx="3"/>
+      <text x="31" y="9" text-anchor="middle">upsert</text>
+    </g>
+  </g>
+
+  <rect class="viz-kv-frame" x="548" y="40" width="188" height="152" rx="6"/>
+  <path class="viz-kv-header" d="M548 46 a6 6 0 0 1 6 -6 h176 a6 6 0 0 1 6 6 v18 h-188 z"/>
+  <text class="viz-kv-title" x="556" y="58">Online store</text>
+  <g id="row1" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="554" y="72" width="176" height="24" rx="3"/>
+    <text class="viz-kv-key" x="562" y="88">avg_amt_5m</text>
+    <text id="v1" class="viz-kv-val" x="724" y="88" text-anchor="end">–</text>
+  </g>
+  <g id="row2" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="554" y="102" width="176" height="24" rx="3"/>
+    <text class="viz-kv-key" x="562" y="118">txn_cnt_1h</text>
+    <text id="v2" class="viz-kv-val" x="724" y="118" text-anchor="end">–</text>
+  </g>
+  <g id="row3" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="554" y="132" width="176" height="24" rx="3"/>
+    <text class="viz-kv-key" x="562" y="148">last_country</text>
+    <text id="v3" class="viz-kv-val" x="724" y="148" text-anchor="end">–</text>
+  </g>
+  <text class="viz-meta" x="556" y="180">feature group v1</text>
+
+  <text class="viz-label" x="24" y="240">Feature freshness</text>
+  <text class="viz-meta" x="736" y="240" text-anchor="end">seconds, end to end</text>
+  <rect class="viz-progress-track" x="60" y="262" width="640" height="4" rx="2"/>
+  <rect id="ffill" class="viz-progress-fill" data-tone="accent" x="60" y="262" height="4" rx="2" style="width:0px"/>
+  <circle id="fdot" class="viz-status-dot" data-tone="accent" cx="60" cy="264" r="5" style="opacity:0"/>
+  <text class="viz-meta" x="60" y="288" text-anchor="middle">event read</text>
+  <text class="viz-meta" x="700" y="288" text-anchor="middle">available to inference</text>
+</svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 800,
+  "loopDelay": 2400,
+  "steps": [
+    { "#ev1": {"opacity": 1} },
+    { "#w1": {"state": "active"}, "$ms": 500 },
+    { "#p1": {"opacity": 1}, "#w1": {"state": "visited"}, "$ms": 500 },
+    { "#p1": {"x": 426, "y": -13}, "#fdot": {"opacity": 1}, "$ms": 900 },
+    { "#row1": {"state": "active"}, "#p1": {"opacity": 0}, "#v1": {"text": "17.3"}, "#ffill": {"w": 640}, "#fdot": {"x": 640}, "$ms": 1100 },
+    { "#row1": {"state": "visited"}, "#ev2": {"opacity": 1} },
+    { "#w2": {"state": "active"}, "$ms": 500 },
+    { "#p2": {"opacity": 1}, "#w2": {"state": "visited"}, "$ms": 500 },
+    { "#p2": {"x": 260, "y": 17}, "$ms": 900 },
+    { "#row2": {"state": "active"}, "#p2": {"opacity": 0}, "#v2": {"text": "42"} },
+    { "#row2": {"state": "visited"}, "#ev3": {"opacity": 1} },
+    { "#w3": {"state": "active"}, "$ms": 500 },
+    { "#p3": {"opacity": 1}, "#w3": {"state": "visited"}, "$ms": 500 },
+    { "#p3": {"x": 94, "y": 47}, "$ms": 900 },
+    { "#row3": {"state": "active"}, "#p3": {"opacity": 0}, "#v3": {"text": "SE"} },
+    { "#row3": {"state": "visited"} }
+  ]
+}
+</script>
+</figure>

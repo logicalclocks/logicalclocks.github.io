@@ -144,6 +144,6 @@ spec:
 The topology is defined in the Resource Flavor used by a Cluster Queue.
 
 When creating a new job, the user can select a topology unit for the job to run in and thus decide if all pods of a job should run on the same hostname, in the same zone or in the same region.
-The user can select the topology for jobs, notebooks and deployments in the `Advance configuration -> Scheduler section`.
+The user can select the topology for jobs, notebooks and deployments from `Advanced options`, in the `Scheduler` section of the full configuration page.
 
 ![Default queue for user and system jobs](../../../assets/images/guides/project/scheduler/job_topology_unit.png)

@@ -1,0 +1,47 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="6 8 548 306" role="img" aria-label="Production, main, and development git branches each write to their own Hopsworks feature store, and features are promoted upward from dev to staging to production." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="dsp-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="dsp-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <!-- git branches -->
+  <g><rect class="viz-node" x="20" y="40" width="230" height="56" rx="4"/>
+  <g class="viz-icon" transform="translate(44,61) scale(0.6)"><circle cx="6" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 9 V15 M18 9 a6 6 0 0 1 -6 6 H6"/></g>
+  <text class="viz-node-title" x="66" y="73">Production Branch</text></g>
+  <g><rect class="viz-node" x="20" y="140" width="230" height="56" rx="4"/>
+  <g class="viz-icon" transform="translate(72,161) scale(0.6)"><circle cx="6" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 9 V15 M18 9 a6 6 0 0 1 -6 6 H6"/></g>
+  <text class="viz-node-title" x="94" y="173">Main Branch</text></g>
+  <g><rect class="viz-node" x="20" y="240" width="230" height="56" rx="4"/>
+  <g class="viz-icon" transform="translate(40,261) scale(0.6)"><circle cx="6" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 9 V15 M18 9 a6 6 0 0 1 -6 6 H6"/></g>
+  <text class="viz-node-title" x="62" y="273">Development Branch</text></g>
+
+  <!-- Hopsworks feature stores -->
+  <rect class="viz-zone" data-tone="accent" x="300" y="28" width="248" height="280" rx="6"/>
+  <text class="viz-label" x="312" y="22" style="fill:var(--hops-accent-text)">Hopsworks</text>
+  <g data-tone="accent"><rect class="viz-node" x="320" y="40" width="208" height="56" rx="4"/>
+  <g class="viz-icon" transform="translate(352,61) scale(0.6)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
+  <text class="viz-node-title" x="374" y="63">Production</text>
+  <text class="viz-node-title" x="374" y="81">Feature Store</text></g>
+  <g data-tone="accent"><rect class="viz-node" x="320" y="140" width="208" height="56" rx="4"/>
+  <g class="viz-icon" transform="translate(352,161) scale(0.6)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
+  <text class="viz-node-title" x="374" y="163">Staging</text>
+  <text class="viz-node-title" x="374" y="181">Feature Store</text></g>
+  <g data-tone="accent"><rect class="viz-node" x="320" y="240" width="208" height="56" rx="4"/>
+  <g class="viz-icon" transform="translate(352,261) scale(0.6)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
+  <text class="viz-node-title" x="374" y="263">Dev</text>
+  <text class="viz-node-title" x="374" y="281">Feature Store</text></g>
+
+  <!-- branch writes -->
+  <path class="viz-edge" d="M250 68 L320 68" marker-end="url(#dsp-arrow)" marker-start="url(#dsp-knob)"/>
+  <path class="viz-edge" d="M250 168 L320 168" marker-end="url(#dsp-arrow)" marker-start="url(#dsp-knob)"/>
+  <path class="viz-edge" d="M250 268 L320 268" marker-end="url(#dsp-arrow)" marker-start="url(#dsp-knob)"/>
+
+  <!-- promotion up -->
+  <path class="viz-edge" d="M424 240 L424 196" marker-end="url(#dsp-arrow)" marker-start="url(#dsp-knob)"/>
+  <path class="viz-edge" d="M424 140 L424 96" marker-end="url(#dsp-arrow)" marker-start="url(#dsp-knob)"/>
+  <text class="viz-meta" x="434" y="122">promote</text>
+</svg>
+</figure>

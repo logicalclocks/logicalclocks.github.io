@@ -1,0 +1,67 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 688 232" role="img" aria-label="A feature group as a table of data. Five columns, each with a role: location_id is the primary key, event_time is the event time, day is the partition key, temperature and rainfall are features. Three rows of values; one row is outlined to show that a row is one entity at one point in time." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="fg-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+  </defs>
+
+  <!-- columns bracket -->
+  <text class="viz-colhead" x="312" y="22" text-anchor="middle">columns</text>
+  <path class="viz-row-sep" d="M24 40 V34 H600 V40 M312 34 V28" fill="none"/>
+
+  <!-- column roles, pointing at the header row -->
+  <text class="viz-colhead" x="80" y="64" text-anchor="middle">primary key</text>
+  <text class="viz-colhead" x="216" y="64" text-anchor="middle">event time</text>
+  <text class="viz-colhead" x="348" y="64" text-anchor="middle">partition key</text>
+  <text class="viz-colhead" x="456" y="64" text-anchor="middle">feature</text>
+  <text class="viz-colhead" x="556" y="64" text-anchor="middle">feature</text>
+  <path class="viz-edge" d="M80 72 L80 95" marker-end="url(#fg-arrow)"/>
+  <path class="viz-edge" d="M216 72 L216 95" marker-end="url(#fg-arrow)"/>
+  <path class="viz-edge" d="M348 72 L348 95" marker-end="url(#fg-arrow)"/>
+  <path class="viz-edge" d="M456 72 L456 95" marker-end="url(#fg-arrow)"/>
+  <path class="viz-edge" d="M556 72 L556 95" marker-end="url(#fg-arrow)"/>
+
+  <!-- the table -->
+  <g>
+    <rect class="viz-kv-frame" x="24" y="96" width="576" height="118" rx="6"/>
+    <path class="viz-kv-header" d="M24 102 a6 6 0 0 1 6 -6 h564 a6 6 0 0 1 6 6 v22 h-576 z"/>
+    <text class="viz-field" x="32" y="114">location_id</text>
+    <text class="viz-field" x="144" y="114">event_time</text>
+    <text class="viz-field" x="304" y="114">day</text>
+    <text class="viz-field" x="408" y="114">temperature</text>
+    <text class="viz-field" x="520" y="114">rainfall</text>
+
+    <line class="viz-row-sep" x1="136" y1="96" x2="136" y2="214"/>
+    <line class="viz-row-sep" x1="296" y1="96" x2="296" y2="214"/>
+    <line class="viz-row-sep" x1="400" y1="96" x2="400" y2="214"/>
+    <line class="viz-row-sep" x1="512" y1="96" x2="512" y2="214"/>
+
+    <text class="viz-kv-val" x="32" y="143">9844-3333</text>
+    <text class="viz-kv-val" x="144" y="143">2022-06-01 13:11</text>
+    <text class="viz-kv-val" x="304" y="143">2022-06-01</text>
+    <text class="viz-kv-val" x="408" y="143">12.45</text>
+    <text class="viz-kv-val" x="520" y="143">44</text>
+    <line class="viz-row-sep" x1="24" y1="154" x2="600" y2="154"/>
+
+    <text class="viz-kv-val" x="32" y="173">6783-9832</text>
+    <text class="viz-kv-val" x="144" y="173">2022-06-01 09:14</text>
+    <text class="viz-kv-val" x="304" y="173">2022-06-01</text>
+    <text class="viz-kv-val" x="408" y="173">22.84</text>
+    <text class="viz-kv-val" x="520" y="173">5</text>
+    <line class="viz-row-sep" x1="24" y1="184" x2="600" y2="184"/>
+
+    <text class="viz-kv-val" x="32" y="203">7538-1231</text>
+    <text class="viz-kv-val" x="144" y="203">2022-06-01 06:34</text>
+    <text class="viz-kv-val" x="304" y="203">2022-06-01</text>
+    <text class="viz-kv-val" x="408" y="203">31.04</text>
+    <text class="viz-kv-val" x="520" y="203">2</text>
+
+    <!-- one row, outlined -->
+    <rect x="26" y="186" width="572" height="26" rx="3" fill="none" style="stroke:var(--viz-tone-accent);stroke-width:1.5"/>
+  </g>
+
+  <path class="viz-edge" d="M638 199 L603 199" marker-end="url(#fg-arrow)"/>
+  <text class="viz-colhead" x="646" y="203" data-tone="accent" style="fill:var(--viz-tone-accent)">row</text>
+</svg>
+</figure>

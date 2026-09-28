@@ -108,12 +108,7 @@ Note that you can use similarity search from the feature view **only if** the fe
 In the example above, you are querying against the feature group `news_fg` which has the vector embedding features, and it has the feature "news_id" which is the primary key of the feature group `view_fg`.
 But if `page_fg` is used as illustrated below, `find_neighbors` will fail to return any features because primary key `page_id` does not exist in `news_fg`.
 
-<p align="center">
-  <figure>
-    <img src="../../../assets/images/guides/similarity_search/find_neighbors.png" alt="find neighbors">
-    <figcaption>Cases when find_neighbors not works</figcaption>
-  </figure>
-</p>
+--8<-- "user_guides/fs/vector_similarity_search/find-neighbors.html"
 
 It is also possible to get back feature vector by providing the primary keys, but it is not recommended as explained in the next section.
 The client fetches feature vector from the vector store and the online store for `news_fg` and `view_fg` respectively.

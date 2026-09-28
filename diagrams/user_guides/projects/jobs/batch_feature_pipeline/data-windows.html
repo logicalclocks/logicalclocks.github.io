@@ -1,0 +1,39 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 760 344" role="img" aria-label="Three ways a batch feature pipeline gets its data window. Incremental: the schedule fires every hour and each run processes the previous hour, the windows tile the timeline. One-shot backfill: a single run with an absolute window, here March, passed as start_time and end_time to job.run. Batched backfill at job creation: one window from January to May split into four equal sub-windows, one execution each, with the same HOPS_START_TIME and HOPS_END_TIME variables inside." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="bf-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+  </defs>
+  <text class="viz-label" x="24" y="30">incremental, hourly schedule</text>
+  <path class="viz-axis" d="M96 52 H700" marker-end="url(#bf-arrow)"/>
+  <path class="viz-tick" d="M140 46 V58 M260 46 V58 M380 46 V58 M500 46 V58 M620 46 V58"/>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="142" y="40" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="200" y="56" text-anchor="middle">08→09</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="262" y="40" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="320" y="56" text-anchor="middle">09→10</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="382" y="40" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="440" y="56" text-anchor="middle">10→11</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="502" y="40" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="560" y="56" text-anchor="middle">11→12</text>
+  <text class="viz-meta" x="700" y="80" text-anchor="end">each fire processes the previous interval</text>
+  <text class="viz-label" x="24" y="126">one-shot backfill, absolute window</text>
+  <path class="viz-axis" d="M96 148 H700" marker-end="url(#bf-arrow)"/>
+  <path class="viz-tick" d="M220 142 V154 M400 142 V154"/>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="222" y="136" width="176" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="310" y="152" text-anchor="middle">2026-03-01 → 2026-04-01</text>
+  <text class="viz-codeln" x="96" y="182"><tspan class="tok-fn">job.run</tspan>(start_time=<tspan class="tok-str">2026-03-01</tspan>, end_time=<tspan class="tok-str">2026-04-01</tspan>)</text>
+  <text class="viz-label" x="24" y="224">batched backfill at creation, 4 batch jobs</text>
+  <path class="viz-axis" d="M96 246 H700" marker-end="url(#bf-arrow)"/>
+  <path class="viz-tick" d="M140 240 V252 M280 240 V252 M420 240 V252 M560 240 V252 M700 240 V252"/>
+  <rect class="viz-window" data-solid="" data-tone="data" data-state="visited" x="142" y="234" width="136" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="data" x="210" y="250" text-anchor="middle">batch 1 · Jan</text>
+  <rect class="viz-window" data-solid="" data-tone="data" data-state="visited" x="282" y="234" width="136" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="data" x="350" y="250" text-anchor="middle">batch 2 · Feb</text>
+  <rect class="viz-window" data-solid="" data-tone="data" data-state="visited" x="422" y="234" width="136" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="data" x="490" y="250" text-anchor="middle">batch 3 · Mar</text>
+  <rect class="viz-window" data-solid="" data-tone="data" data-state="visited" x="562" y="234" width="136" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="data" x="630" y="250" text-anchor="middle">batch 4 · Apr</text>
+  <text class="viz-meta" x="140" y="274">2026-01-01</text>
+  <text class="viz-meta" x="700" y="274" text-anchor="end">2026-05-01</text>
+  <text class="viz-codeln" x="96" y="304">HOPS_START_TIME / HOPS_END_TIME set per execution, same pipeline code in all three</text>
+</svg>
+</figure>

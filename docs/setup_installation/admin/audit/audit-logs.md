@@ -14,8 +14,8 @@ In order to access the audit logs you need the following:
 
 ## Step 1: Configure Audit logs
 
-Audit logs can be configured from the _Cluster Settings_ Configuration tab.
-You can access the _Configuration_ page of your Hopsworks cluster by clicking on your name, in the top right corner, and choosing _Cluster Settings_ from the dropdown menu.
+Audit logs can be configured from the _Cluster Settings_ Configuration page.
+You can access it by clicking on your name, in the top right corner, choosing _Cluster Settings_ from the dropdown menu, then choosing _Configuration_ under _Infrastructure_ in the left sidebar.
 
 <figure>
  <img src="../../../../assets/images/admin/audit/audit-log-vars.png" alt="Audit log configuration" />
@@ -27,13 +27,13 @@ To edit a configuration variable, you can click on the edit button (:material-pe
 
 !!! info "Audit logs configuration variables"
 
-    | Name                  | Description                                                                                                                                                                                             |
-    | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | audit_log_count       | the number of files to keep when rotating logs (java.util.logging.FileHandler count)                                                                                                                    |                                                                                                                                                                  |
-    | audit_log_file_format | log file name pattern. (java.util.logging.FileHandler.pattern)                                                                                                                                          |
-    | audit_log_file_type   | the output format of the log file. Can be one of java.util.logging.SimpleFormatter (default), io.hops.hopsworks.audit.helper.JSONLogFormatter, or io.hops.hopsworks.audit.helper.HtmlLogFormatter.      |
-    | audit_log_size_limit  | the maximum number of bytes to write to any one file. (java.util.logging.FileHandler.limit)                                                                                                             |
-    | audit_log_date_format | if io.hops.hopsworks.audit.helper.JSONLogFormatter is used as audit log file type, this will set the date format of the output JSON. The format should be java.text.SimpleDateFormat compatible string. |
+    | Name                  | Description                                                                                                                                                                                        |
+    | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | audit_log_count       | the number of files to keep when rotating logs (java.util.logging.FileHandler count)                                                                                                               |
+    | audit_log_file_format | log file name pattern. (java.util.logging.FileHandler.pattern)                                                                                                                                     |
+    | audit_log_file_path   | the directory the audit log files are written to.                                                                                                                                                  |
+    | audit_log_file_type   | the output format of the log file. Can be one of java.util.logging.SimpleFormatter (default), io.hops.hopsworks.audit.helper.JSONLogFormatter, or io.hops.hopsworks.audit.helper.HtmlLogFormatter. |
+    | audit_log_size_limit  | the maximum number of bytes to write to any one file. (java.util.logging.FileHandler.limit)                                                                                                        |
 
 !!! warning
     Hopsworks application needs to be reloaded for any changes to be applied.

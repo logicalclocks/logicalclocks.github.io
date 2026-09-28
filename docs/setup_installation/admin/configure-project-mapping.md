@@ -4,7 +4,7 @@
 
 A group-to-project mapping lets you automatically add all members of a Hopsworks group to a project, eliminating the need to add each user individually. To create a mapping, you simply select a Hopsworks group, choose the project it should be linked to, and assign the role that its members will have within that project.
 
-Once a mapping is created, project membership is controlled through Hopsworks group membership. Any updates made to the Hopsworks group—such as adding or removing users—will automatically be reflected in the project membership. For example, if a user is removed from the Hopsworks group, they will also be removed from the corresponding project.
+Once a mapping is created, project membership is controlled through Hopsworks group membership. Any updates made to the Hopsworks group, such as adding or removing users, will automatically be reflected in the project membership. For example, if a user is removed from the Hopsworks group, they will also be removed from the corresponding project.
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ If you can not find the variable ```hw_group_mapping_sync_enabled``` create it b
 
 To create a mapping go to **Cluster Settings** by clicking on your name in the top right
 corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
-In the *Project mapping* tab, you can create a new mapping by clicking on *Create new mapping*.
+Choose *Project Mapping* under *Security & Access* in the left sidebar, then create a new mapping by clicking on *Create new mapping*.
 
 <figure>
  <a  href="../../../../assets/images/admin/project-mapping/project-mapping-empty.png">

@@ -1,0 +1,88 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 656 484" role="img" aria-label="A batch AI system. A training pipeline deploys a model to the model registry and reads its training data from the feature store; a scheduled feature pipeline writes features to the feature store. A scheduled batch inference pipeline reads the model and the batch features, and writes predictions to an inference store, from which reports and operational services consume them. Feature and prediction logs feed back into new training data, closing the loop." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="aps-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="aps-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <!-- flows -->
+  <path class="viz-edge" d="M120 76 L120 124" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3"/>
+  <text class="viz-meta" x="128" y="104">deploy</text>
+  <path class="viz-edge" d="M336 76 L336 124" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)"/>
+  <text class="viz-meta" x="344" y="104">write</text>
+  <path class="viz-edge" d="M248 150 H232 Q228 150 228 146 V54 Q228 50 224 50 H208" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3"/>
+  <text class="viz-edge-label viz-meta" x="228" y="104" text-anchor="middle">read</text>
+  <path class="viz-edge" d="M208 160 H224 Q228 160 228 164 V250 Q228 254 232 254 H248" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3"/>
+  <text class="viz-edge-label viz-meta" x="228" y="214" text-anchor="middle">model</text>
+  <path class="viz-edge" d="M286 176 L286 228" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)"/>
+  <text class="viz-meta" x="294" y="206">batch features</text>
+  <path class="viz-edge" d="M336 280 L336 328" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)"/>
+  <text class="viz-meta" x="344" y="308">predictions</text>
+  <path class="viz-edge" d="M424 340 H440 Q444 340 444 336 V326 Q444 322 448 322 H464" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)"/>
+  <path class="viz-edge" d="M424 364 H440 Q444 364 444 368 V394 Q444 398 448 398 H464" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)"/>
+  <text class="viz-edge-label viz-meta" x="444" y="366" text-anchor="middle">consume</text>
+  <path class="viz-edge" d="M336 380 V448 Q336 452 332 452 H16 Q12 452 12 448 V54 Q12 50 16 50 H32" marker-start="url(#aps-knob)" marker-end="url(#aps-arrow)" style="stroke-dasharray:4 3"/>
+  <text class="viz-meta" x="174" y="468" text-anchor="middle">logs become new training data</text>
+
+  <g data-tone="accent">
+    <rect class="viz-node" x="32" y="24" width="176" height="52" rx="4"/>
+    <rect class="viz-pill" x="90" y="16" width="60" height="16" rx="3"/>
+    <text class="viz-pill-text" x="120" y="27" text-anchor="middle">Pipeline</text>
+    <text class="viz-node-title" x="120" y="51" text-anchor="middle">TRAINING</text>
+    <text class="viz-node-subtitle" x="120" y="68" text-anchor="middle">trains · registers</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="248" y="24" width="176" height="52" rx="4"/>
+    <rect class="viz-pill" x="306" y="16" width="60" height="16" rx="3"/>
+    <text class="viz-pill-text" x="336" y="27" text-anchor="middle">Pipeline</text>
+    <text class="viz-node-title" x="336" y="51" text-anchor="middle">FEATURE</text>
+    <text class="viz-node-subtitle" x="336" y="68" text-anchor="middle">scheduled · hourly</text>
+  </g>
+  <a class="viz-link" href="../registry/">
+  <g>
+    <rect class="viz-kv-frame" x="32" y="124" width="176" height="52" rx="6"/>
+    <path class="viz-kv-header" d="M32 130 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
+    <g class="viz-icon" transform="translate(40,131) scale(0.6)"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z M3 7 L12 12 L21 7 M12 12 V22"/></g>
+    <text class="viz-kv-title" x="62" y="143">Model registry</text>
+    <text class="viz-node-subtitle" x="44" y="165">models · versions</text>
+  </g>
+  </a>
+  <a class="viz-link" href="../../fs/">
+  <g>
+    <rect class="viz-kv-frame" x="248" y="124" width="176" height="52" rx="6"/>
+    <path class="viz-kv-header" d="M248 130 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
+    <g class="viz-icon" transform="translate(256,131) scale(0.6)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9 H21 M9 9 V21"/></g>
+    <text class="viz-kv-title" x="278" y="143">Feature store</text>
+    <text class="viz-node-subtitle" x="260" y="165">feature groups</text>
+  </g>
+  </a>
+  <g data-tone="accent">
+    <rect class="viz-node" x="248" y="228" width="176" height="52" rx="4"/>
+    <rect class="viz-pill" x="306" y="220" width="60" height="16" rx="3"/>
+    <text class="viz-pill-text" x="336" y="231" text-anchor="middle">Pipeline</text>
+    <text class="viz-node-title" x="336" y="255" text-anchor="middle">INFERENCE</text>
+    <text class="viz-node-subtitle" x="336" y="272" text-anchor="middle">batch · scheduled</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="248" y="328" width="176" height="52" rx="6"/>
+    <path class="viz-kv-header" d="M248 334 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
+    <g class="viz-icon" transform="translate(256,335) scale(0.6)"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6 V18 C4 19.7 7.6 21 12 21 C16.4 21 20 19.7 20 18 V6 M4 12 C4 13.7 7.6 15 12 15 C16.4 15 20 13.7 20 12"/></g>
+    <text class="viz-kv-title" x="278" y="347">Predictions</text>
+    <text class="viz-node-subtitle" x="260" y="369">inference store</text>
+  </g>
+  <g data-tone="data">
+    <rect class="viz-kv-frame" x="464" y="296" width="176" height="52" rx="6"/>
+    <path class="viz-kv-header" d="M464 302 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
+    <g class="viz-icon" transform="translate(472,303) scale(0.6)"><path d="M4 20 V11 M10 20 V5 M16 20 V14 M22 20 H2"/></g>
+    <text class="viz-kv-title" x="494" y="315">Reports</text>
+    <text class="viz-node-subtitle" x="476" y="337">analytics · bi</text>
+  </g>
+  <g data-tone="data">
+    <rect class="viz-kv-frame" x="464" y="372" width="176" height="52" rx="6"/>
+    <path class="viz-kv-header" d="M464 378 a6 6 0 0 1 6 -6 h164 a6 6 0 0 1 6 6 v20 h-176 z"/>
+    <g class="viz-icon" transform="translate(472,379) scale(0.6)"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9 H21 M7 6.5 H7.01 M10 6.5 H10.01"/></g>
+    <text class="viz-kv-title" x="494" y="391">Services</text>
+    <text class="viz-node-subtitle" x="476" y="413">operational apps</text>
+  </g>
+</svg>
+</figure>

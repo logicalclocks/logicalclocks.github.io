@@ -180,11 +180,14 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
     Leaving it unset deploys in Knative mode for every model server except vLLM, so a Standard scaling configuration needs `knative_mode=False` passed explicitly.
     A scaling configuration that uses fields the chosen mode does not support is rejected, so set both together.
 
-### API Reference
+!!! api "API reference"
 
-[`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig]
+    - <code class="doc-symbol doc-symbol-class"></code> [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig]
+    - <code class="doc-symbol doc-symbol-class"></code> [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_transformer`][hsml.model_serving.ModelServing.create_transformer]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
 
-[`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Deployment mode
 
@@ -240,8 +243,8 @@ See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), 
 
 | Parameter                     | Mode    | Default | Range  | Description                                                   |
 | ----------------------------- | ------- | ------- | ------ | ------------------------------------------------------------- |
-| `minInstances`                | Both    | —       | ≥ 0    | Minimum replicas (0 enables scale-to-zero, Knative mode only) |
-| `maxInstances`                | Both    | —       | ≥ 1    | Maximum replicas (cannot be less than min)                    |
+| `minInstances`                | Both    | n/a     | ≥ 0    | Minimum replicas (0 enables scale-to-zero, Knative mode only) |
+| `maxInstances`                | Both    | n/a     | ≥ 1    | Maximum replicas (cannot be less than min)                    |
 | `panicWindowPercentage`       | Knative | 10.0    | 1–100  | Panic window as percentage of stable window                   |
 | `stableWindowSeconds`         | Knative | 60      | 6–3600 | Stable window duration in seconds                             |
 | `panicThresholdPercentage`    | Knative | 200.0   | > 0    | Traffic threshold to trigger panic mode                       |

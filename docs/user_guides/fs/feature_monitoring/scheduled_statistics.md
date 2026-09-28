@@ -4,7 +4,7 @@ Statistics can be computed on all or a subset of feature values, and on one or m
 
 Hopsworks stores the computed statistics and enable you to visualise the temporal evolution of statistical metrics on your data.
 
-![Detection statistics visualization](../../../assets/images/guides/fs/feature_monitoring/fm-detection-plot.png)
+![Detection statistics visualization](../../../assets/images/guides/fs/feature_monitoring/fm-multiple-metrics.png)
 
 !!! tip "Interactive graph"
     See the [Interactive graph guide](interactive_graph.md) to learn how to explore statistics more efficiently.
@@ -25,7 +25,7 @@ See the [Feature Monitoring for Feature Views](../feature_view/feature_monitorin
 Statistics are computed in a scheduled basis on a pre-defined detection window of feature data.
 Detection windows can be defined on the whole feature data or a subset of feature data depending on the `time_offset` and `window_length` parameters of the `with_detection_window` method.
 
-![Types of detection windows](../../../assets/images/guides/fs/feature_monitoring/fm-detection-windows.png)
+--8<-- "user_guides/fs/feature_monitoring/scheduled_statistics/detection-windows.html"
 
 In [a previous section](index.md#define-windows-over-feature-data) we described different types of windows available.
 Taking a Feature Group as an example, the figure above describes how these windows are applied to Feature Group data, resulting in three different applications:
