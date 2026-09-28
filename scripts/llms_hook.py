@@ -16,7 +16,7 @@ Wired via the ``hooks:`` key in ``mkdocs.yml``.
 from __future__ import annotations
 
 import os
-import posixpath
+
 
 # Raw Markdown of every page, keyed by source URI, collected during the run.
 _raw: dict[str, str] = {}

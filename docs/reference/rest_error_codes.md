@@ -107,6 +107,11 @@ Do not hand-edit the tables below; regenerate them instead.
 | 100072 | `INVALID_CUSTOM_COMMAND_ENV_VARIABLES` | 400 BAD_REQUEST | Invalid custom command environment variables |
 | 100073 | `TERMINAL_ERROR` | 500 INTERNAL_SERVER_ERROR | Terminal error |
 | 100074 | `WEBSOCKET_POOL_FULL` | 503 SERVICE_UNAVAILABLE | The cluster has reached the limit for active sessions across Jupyter notebooks, terminals, and apps. Starting a new session will fail until existing sessions are closed. If this happens often, contact your administrator to raise the limit. |
+| 100075 | `NPM_REGISTRY_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The npm registry could not be reached. |
+| 100076 | `NPM_PACKAGE_NOT_FOUND` | 404 NOT_FOUND | No such npm package. |
+| 100077 | `RDRS_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The RonDB REST Server could not be reached. |
+| 100078 | `TTL_PURGE_TABLE_NOT_FOUND` | 404 NOT_FOUND | The TTL purge worker is not tracking this table. |
+| 100079 | `TERMINAL_INVALID_HOURS` | 400 BAD_REQUEST | The requested terminal session length is out of range. |
 
 ## DatasetErrorCode
 
@@ -166,6 +171,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 110053 | `TARGET_PROJECT_NOT_FOUND` | 500 INTERNAL_SERVER_ERROR | Target project not found. |
 | 110054 | `DATASET_PERMISSION_IMMUTABLE` | 400 BAD_REQUEST | Internal datasets permission can not be changed. |
 | 110055 | `UPLOAD_DISK_SPACE_ERROR` | 500 INTERNAL_SERVER_ERROR | Upload failed: HopsFS storage is full. Please contact your administrator to free up disk space. |
+| 110056 | `UPLOAD_NOT_ALLOWED` | 403 FORBIDDEN | Uploading files is not allowed by the cluster upload policy. Please contact your administrator. |
 
 ## GenericErrorCode
 
@@ -184,6 +190,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 120010 | `ENTERPRISE_FEATURE` | 400 BAD_REQUEST | This feature is only available in the enterprise edition |
 | 120011 | `NOT_AUTHORIZED_TO_ACCESS` | 400 BAD_REQUEST | Project not accessible to user |
 | 120012 | `FEATURE_FLAG_NOT_ENABLED` | 400 BAD_REQUEST | Platform feature not enabled |
+| 120013 | `REQUEST_TOO_LARGE` | 413 REQUEST_ENTITY_TOO_LARGE | The request body is larger than this endpoint accepts |
+| 120014 | `LENGTH_REQUIRED` | 411 LENGTH_REQUIRED | This endpoint requires a Content-Length |
 
 ## JobErrorCode
 
@@ -256,6 +264,17 @@ Do not hand-edit the tables below; regenerate them instead.
 | 130065 | `MAX_QUEUED_EXECUTIONS_REACHED` | 429 TOO_MANY_REQUESTS | Max queued executions reached for this job. Wait for some to start before submitting more. |
 | 130066 | `PYTHON_APP_READINESS_PROBE_INVALID` | 400 BAD_REQUEST | Readiness probe path must be a safe absolute path. |
 | 130067 | `PYTHON_APP_BASE_PATH_INVALID` | 400 BAD_REQUEST | App base path must be a safe absolute path. |
+| 130068 | `DLT_JOB_MIXED_CONNECTORS` | 400 BAD_REQUEST | All tables in an ingestion job must use the same data source connector. |
+| 130069 | `DLT_JOB_DUPLICATE_FEATURE_GROUP` | 400 BAD_REQUEST | The same feature group cannot appear in multiple targets of an ingestion job. |
+| 130070 | `DLT_JOB_INVALID_TABLE_PARALLELISM` | 400 BAD_REQUEST | tableParallelism must be between 1 and the number of ingestion targets. |
+| 130071 | `DLT_JOB_NO_TARGETS` | 400 BAD_REQUEST | An ingestion job must have at least one table target. |
+| 130072 | `DLT_JOB_NO_ENABLED_TARGETS` | 400 BAD_REQUEST | At least one table must be enabled for ingestion. |
+| 130073 | `DLT_JOB_TABLE_NOT_RUNNING` | 400 BAD_REQUEST | No running table with the given index for this execution. |
+| 130074 | `GIT_COMMIT_NOT_VALID` | 400 BAD_REQUEST | Git commit hash is not valid |
+| 130075 | `GIT_SYNC_NOT_ENABLED` | 400 BAD_REQUEST | Git auto-redeploy is not enabled for this app |
+| 130076 | `GIT_AUTO_REDEPLOY_NOT_SUPPORTED` | 400 BAD_REQUEST | Git auto-redeploy is only supported for apps deployed from a git repository |
+| 130077 | `JOB_DESCRIPTION_TOO_LONG` | 400 BAD_REQUEST | Job description is too long. |
+| 130078 | `INVALID_MEMORY_OVERHEAD_FACTOR` | 400 BAD_REQUEST | Memory overhead factor must be greater than zero. |
 
 ## RequestErrorCode
 
@@ -356,7 +375,6 @@ Do not hand-edit the tables below; regenerate them instead.
 | 150086 | `PROJECT_TEAM_ROLE_HANDLER_REMOVE_MEMBER_ERROR` | 500 INTERNAL_SERVER_ERROR | Error occurred during project team role remove handler. |
 | 150087 | `PROJECT_TEAM_ROLE_NOT_SUPPORTED` | 400 BAD_REQUEST | Role not supported. |
 | 150088 | `PROJECT_NAMESPACE_ERROR` | 500 INTERNAL_SERVER_ERROR | Error occurred when using kubernetes namespace in project |
-| 150089 | `FAILED_TO_CREATE_WORKER_FOR_BREWER` | 500 INTERNAL_SERVER_ERROR | Failed to create worker for brewer. |
 | 150090 | `PROJECT_SERVICE_NOT_ALLOWED` | 400 BAD_REQUEST | Project service not allowed. |
 | 150091 | `PROJECT_MAPPING_ILLEGAL_ARGUMENT` | 400 BAD_REQUEST | Illegal argument. |
 | 150092 | `PROJECT_MAPPING_NOT_ALLOWED` | 400 BAD_REQUEST | Operation not allowed. |
@@ -365,6 +383,10 @@ Do not hand-edit the tables below; regenerate them instead.
 | 150095 | `MEMBER_MANAGEMENT_NOT_ALLOWED` | 400 BAD_REQUEST | Member management not allowed. |
 | 150096 | `MCP_SERVER_NOT_FOUND` | 404 NOT_FOUND | MCP server not found. |
 | 150097 | `MCP_SERVER_VALIDATION` | 400 BAD_REQUEST | MCP server validation error. |
+| 150098 | `TOO_MANY_MEMBERS_AT_ONCE` | 400 BAD_REQUEST | Too many members in one request. |
+| 150099 | `LAST_DATA_OWNER_NOT_ALLOWED` | 403 FORBIDDEN | Removing the last data owner of the project is not allowed. |
+| 150100 | `FILE_OWNER_NOT_DATA_OWNER` | 400 BAD_REQUEST | The member chosen to take over the removed member's files must be a data owner in this project. |
+| 150101 | `SYSTEM_PROJECT_REMOVAL_NOT_ALLOWED` | 400 BAD_REQUEST | This project is managed by Hopsworks and cannot be deleted. |
 
 ## UserErrorCode
 
@@ -439,6 +461,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 160071 | `ENV_VAR_ENCRYPTION_ERROR` | 500 INTERNAL_SERVER_ERROR | Error encrypting/decrypting environment variable. |
 | 160072 | `SECRET_VALUE_TOO_LARGE` | 400 BAD_REQUEST | Secret value is too large. |
 | 160073 | `ENV_VAR_INVALID_VALUE` | 400 BAD_REQUEST | Environment variable value is invalid. |
+| 160074 | `ACCOUNT_DELETION_PENDING_CLEANUP` | 409 CONFLICT | Account still has records awaiting background cleanup. Retry shortly. |
 
 ## MetadataErrorCode
 
@@ -578,6 +601,15 @@ Do not hand-edit the tables below; regenerate them instead.
 | 240030 | `UNSUPPORTED_MODELLESS_SERVING_TYPE` | 400 BAD_REQUEST | Modelless serving type not supported |
 | 240031 | `RESERVED_ENV_VAR_NAME` | 400 BAD_REQUEST | One or more environment variable names are reserved by the Hopsworks platform. |
 | 240032 | `VLLM_VERSION_NOT_AVAILABLE` | 400 BAD_REQUEST | vLLM version not available |
+| 240033 | `GIT_SYNC_NOT_ENABLED` | 400 BAD_REQUEST | Git auto-redeploy is not enabled for this deployment |
+| 240034 | `GIT_COMMIT_NOT_VALID` | 400 BAD_REQUEST | Git commit hash is not valid |
+| 240035 | `GIT_AUTO_REDEPLOY_NOT_SUPPORTED` | 400 BAD_REQUEST | Git auto-redeploy is only supported for Git-backed agent deployments |
+| 240036 | `BLOCKED_ENV_VAR_NAME` | 400 BAD_REQUEST | One or more environment variable names are not allowed on model deployments. Remove them from the deployment and retry. |
+| 240037 | `SCHEMA_NOT_FOUND` | 404 NOT_FOUND | Deployment schema not found |
+| 240038 | `SCHEMA_READ_ERROR` | 500 INTERNAL_SERVER_ERROR | Deployment schema could not be read |
+| 240039 | `UPDATE_DEPLOYMENT_MODE_ERROR` | 400 BAD_REQUEST | The deployment mode (Knative or Standard) cannot be changed while the deployment is running. Stop the deployment first. |
+| 240040 | `LOG_PERSISTENCE_NOT_SUPPORTED` | 400 BAD_REQUEST | Disk logging is only supported for Python model deployments. |
+| 240041 | `INVALID_FEATURE_LOGGING_CONFIG` | 400 BAD_REQUEST | Invalid feature logging configuration |
 
 ## InferenceErrorCode
 
@@ -887,16 +919,42 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270286 | `TRANSFORMATION_FUNCTION_INPUT_TYPE_UNRESOLVABLE` | 400 BAD_REQUEST | Transformation function input feature type could not be resolved. |
 | 270287 | `FEATURE_MONITORING_INPUT_VALIDATION` | 400 BAD_REQUEST | Invalid feature monitoring input. |
 | 270288 | `PARTITIONED_BY_EMPTY` | 400 BAD_REQUEST | partitioned_by must be a non-empty list when set. |
-| 270289 | `PARTITIONED_BY_INVALID_GRAIN` | 400 BAD_REQUEST | partitioned_by contains a grain that is not in the supported set. |
-| 270290 | `PARTITIONED_BY_DUPLICATE` | 400 BAD_REQUEST | partitioned_by contains duplicate grains. |
+| 270289 | `PARTITIONED_BY_INVALID_GRAIN` | 400 BAD_REQUEST | partitioned_by contains an invalid or unsupported transform expression. |
+| 270290 | `PARTITIONED_BY_DUPLICATE` | 400 BAD_REQUEST | partitioned_by contains duplicate or redundant transforms. |
 | 270291 | `PARTITIONED_BY_CONFLICTS_WITH_PARTITION_KEY` | 400 BAD_REQUEST | partitioned_by cannot be set together with partition_key. |
-| 270292 | `PARTITIONED_BY_REQUIRES_EVENT_TIME` | 400 BAD_REQUEST | partitioned_by requires event_time to be set on the feature group. |
+| 270292 | `PARTITIONED_BY_REQUIRES_EVENT_TIME` | 400 BAD_REQUEST | partitioned_by temporal transforms on HUDI must use the event_time column. |
 | 270293 | `PARTITIONED_BY_COLLIDES_WITH_EVENT_TIME` | 400 BAD_REQUEST | event_time column name collides with a partitioned_by grain. |
-| 270294 | `PARTITIONED_BY_COLLIDES_WITH_FEATURE` | 400 BAD_REQUEST | partitioned_by grain name collides with an existing feature name. |
-| 270295 | `PARTITIONED_BY_ONLINE_NOT_SUPPORTED` | 400 BAD_REQUEST | partitioned_by is not supported on online-enabled feature groups yet. |
-| 270296 | `PARTITIONED_BY_UNSUPPORTED_FORMAT` | 400 BAD_REQUEST | partitioned_by requires a time_travel_format that materializes partition columns (DELTA, ICEBERG, or HUDI). |
-| 270297 | `PARTITIONED_BY_HOUR_REQUIRES_TIMESTAMP` | 400 BAD_REQUEST | the 'hour' grain requires a timestamp event_time; a date event_time has no sub-day resolution. |
+| 270294 | `PARTITIONED_BY_COLLIDES_WITH_FEATURE` | 400 BAD_REQUEST | partitioned_by references a column that does not exist or collides with a feature name. |
+| 270295 | `PARTITIONED_BY_ONLINE_NOT_SUPPORTED` | 400 BAD_REQUEST | partitioned_by is not supported on online-enabled HUDI feature groups yet. |
+| 270296 | `PARTITIONED_BY_UNSUPPORTED_FORMAT` | 400 BAD_REQUEST | partitioned_by requires a time_travel_format that supports partition transforms (ICEBERG or HUDI); DELTA uses clustered_by. |
+| 270297 | `PARTITIONED_BY_HOUR_REQUIRES_TIMESTAMP` | 400 BAD_REQUEST | temporal partition transforms require a date or timestamp source column; 'hour' requires a timestamp (a date has no sub-day resolution). |
 | 270298 | `ONLINE_FEATUREGROUP_OFFLINE_ONLY_KEY_COLUMN` | 400 BAD_REQUEST | a primary key, event_time, or secondary-index column cannot be offline_only: the online table excludes offline_only columns, so it would reference a column that is absent from the online schema. |
+| 270300 | `ZORDER_BY_INVALID` | 400 BAD_REQUEST | zorder_by is empty, has duplicates, exceeds the column cap, or references a column that does not exist. |
+| 270301 | `ZORDER_BY_UNSUPPORTED_FORMAT` | 400 BAD_REQUEST | zorder_by requires time_travel_format ICEBERG or HUDI (DELTA uses clustered_by for liquid clustering). |
+| 270302 | `CLUSTERED_BY_INVALID` | 400 BAD_REQUEST | clustered_by is empty, has duplicates, exceeds the column cap, conflicts with partition_key, or references a column that does not exist. |
+| 270303 | `CLUSTERED_BY_UNSUPPORTED_FORMAT` | 400 BAD_REQUEST | clustered_by is Delta liquid clustering and requires time_travel_format DELTA. |
+| 270304 | `BUCKET_INDEX_INVALID` | 400 BAD_REQUEST | bucket_index requires a primary key field and a positive number of buckets. |
+| 270305 | `BUCKET_INDEX_UNSUPPORTED_FORMAT` | 400 BAD_REQUEST | bucket_index configures the Hudi bucket index and requires time_travel_format HUDI. |
+| 270306 | `SORT_ORDER_INVALID` | 400 BAD_REQUEST | sort_order is empty, malformed, repeats a column, or references a column that does not exist. |
+| 270307 | `SORT_ORDER_UNSUPPORTED_FORMAT` | 400 BAD_REQUEST | sort_order is a persistent Iceberg table sort order and requires time_travel_format ICEBERG. |
+| 270308 | `INVALID_STATISTICS` | 400 BAD_REQUEST | Statistics provided for registration are invalid. |
+| 270309 | `DATA_SOURCE_CONNECT_TIMEOUT` | 504 GATEWAY_TIMEOUT | Data source did not respond in time |
+| 270310 | `FEATURE_VIEW_LOGGING_INVALID_INTERVAL` | 400 BAD_REQUEST | Feature view logging materialization interval must be 'hour' or 'day' |
+| 270311 | `FEATURE_VIEW_LOGGING_INVALID_TRANSPORT` | 400 BAD_REQUEST | Feature view logging transport must be 'realtime' or 'job' |
+| 270312 | `FEATURE_VIEW_LOGGING_TRANSPORT_CONFLICT` | 400 BAD_REQUEST | Feature view already logs through the other transport; delete its log to switch |
+| 270313 | `FEATURE_VIEW_LOGGING_MATERIALIZATION_UNSUPPORTED` | 400 BAD_REQUEST | Feature view logging through this transport is not materialized by the platform |
+| 270322 | `ASOF_SPINE_EMPTY` | 400 BAD_REQUEST | The inference spine has no rows or no columns. |
+| 270323 | `ASOF_SPINE_NO_BINDABLE_COLUMN` | 400 BAD_REQUEST | No column of the inference spine matches a serving key, a root feature or the event time of the feature view. |
+| 270324 | `ASOF_SPINE_UNKNOWN_COLUMN` | 400 BAD_REQUEST | A column of the inference spine matches nothing in the feature view. |
+| 270325 | `ASOF_SPINE_TIME_SOURCE` | 400 BAD_REQUEST | The inference spine does not carry a usable prediction time. |
+| 270326 | `ASOF_SPINE_TOO_LARGE` | 400 BAD_REQUEST | The inference spine exceeds a configured limit. |
+| 270327 | `ASOF_SPINE_TYPE_MISMATCH` | 400 BAD_REQUEST | An inference spine column does not convert to the feature's type. |
+| 270328 | `ASOF_SPINE_NOT_SUPPORTED` | 400 BAD_REQUEST | The feature view cannot be read with an inference spine. |
+| 270329 | `ASOF_SPINE_BAD_NAME` | 400 BAD_REQUEST | The inference spine table or file name is not acceptable. |
+| 270330 | `ASOF_SPINE_FILE_UNREADABLE` | 400 BAD_REQUEST | The inference spine file does not exist or cannot be read. |
+| 270331 | `ASOF_SPINE_FILTER_ON_SPINE_COLUMN` | 400 BAD_REQUEST | A filter references a column the inference spine supplies. |
+| 270332 | `ASOF_SPINE_NO_FEATURE_VIEW` | 400 BAD_REQUEST | The inference spine does not name a feature view that can be read. |
+| 270333 | `ASOF_MAX_FEATURE_AGE_INVALID` | 400 BAD_REQUEST | The feature view's max feature age is not a positive duration. |
 
 ## AirflowErrorCode
 
@@ -921,7 +979,6 @@ Do not hand-edit the tables below; regenerate them instead.
 | 300003 | `PYTHON_LIBRARY_NOT_FOUND` | 404 NOT_FOUND | Library could not be found. |
 | 300004 | `YML_FILE_MISSING_PYTHON_VERSION` | 400 BAD_REQUEST | No python binary version was found in the environment yaml file. |
 | 300005 | `NOT_MATCHING_PYTHON_VERSIONS` | 400 BAD_REQUEST | The supplied yaml files have mismatching python versions. |
-| 300006 | `CONDA_INSTALL_REQUIRES_CHANNEL` | 400 BAD_REQUEST | Conda package manager requires that a conda channel is selected in which the library is located |
 | 300007 | `INSTALL_TYPE_NOT_SUPPORTED` | 400 BAD_REQUEST | The provided install type is not supported |
 | 300008 | `CONDA_COMMAND_NOT_FOUND` | 400 BAD_REQUEST | Command not found. |
 | 300009 | `MACHINE_TYPE_NOT_SPECIFIED` | 400 BAD_REQUEST | Machine type not specified. |
@@ -932,7 +989,6 @@ Do not hand-edit the tables below; regenerate them instead.
 | 300014 | `ANACONDA_ENVIRONMENT_FAILED_INITIALIZATION` | 500 INTERNAL_SERVER_ERROR | The project's Python environment failed to initialize, please recreate the environment. |
 | 300015 | `ANACONDA_ENVIRONMENT_REMOVAL_FAILED` | 500 INTERNAL_SERVER_ERROR | Deletion of the project's Python environment encountered an issue |
 | 300016 | `CONDA_COMMAND_DELETE_ERROR` | 400 BAD_REQUEST | Failed to delete a command |
-| 300017 | `CONDA_INSTALL_DISABLED` | 403 FORBIDDEN | Conda install option is disabled. Contact Admin user to enable it. |
 | 300018 | `INVALID_ENVIRONMENT_NAME` | 400 BAD_REQUEST | The name is not correct and does not match a valid environment |
 | 300019 | `PREINSTALLED_ENVIRONMENT_CAN_NOT_BE_DELETED` | 403 FORBIDDEN | It is not possible to delete a preinstalled environment |
 | 300020 | `CAN_NOT_MODIFY_BASE_ENVIRONMENT` | 403 FORBIDDEN | It is not possible to modify the base environment, create your own environment instead |
@@ -941,6 +997,9 @@ Do not hand-edit the tables below; regenerate them instead.
 | 300023 | `INVALID_ENVIRONMENT_NAME_INPUT` | 400 BAD_REQUEST | This environment is currently in use. |
 | 300024 | `ENVIRONMENT_NOT_FOUND` | 404 NOT_FOUND | The environment was not found. |
 | 300025 | `PROJECT_ENVIRONMENT_QUOTA_REACHED` | 403 FORBIDDEN | This project has reached the maximum number of environments that can be cloned |
+| 300026 | `INVALID_BUILD_CACHE` | 400 BAD_REQUEST | The custom commands declared a build cache that does not exist. |
+| 300027 | `NPM_INSTALL_INVALID` | 400 BAD_REQUEST | The npm install request is not valid. |
+| 300028 | `PYTHON_LIBRARY_AMBIGUOUS` | 400 BAD_REQUEST | The library name exists in more than one package ecosystem; pass packageSource to say which one is meant. |
 
 ## ResourceErrorCode
 
@@ -1026,6 +1085,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 370006 | `TAG_NOT_ALLOWED` | 400 BAD_REQUEST | The provided tag is not allowed |
 | 370007 | `INTERNAL_PROCESSING_ERROR` | 500 INTERNAL_SERVER_ERROR | Internal error while processing tag |
 | 370008 | `INVALID_MANDATORY_TAG` | 400 BAD_REQUEST | Invalid mandatory tag |
+| 370009 | `TAG_MIGRATION_ONGOING` | 503 SERVICE_UNAVAILABLE | Tag migration in progress, wait for it to finish before issuing tag operations. |
+| 370010 | `TAG_ARCHIVE_TOO_MANY_ATTACHMENTS` | 400 BAD_REQUEST | The schema is attached to more artifacts than one archive transaction can cover. |
 
 ## CloudErrorCode
 
@@ -1138,22 +1199,10 @@ Do not hand-edit the tables below; regenerate them instead.
 | 510003 | `LOCAL_QUEUE_CREATION_FAILED` | 500 INTERNAL_SERVER_ERROR | Local queue creation failed |
 | 510004 | `ERROR_FETCHING_QUEUE` | 500 INTERNAL_SERVER_ERROR | Error fetching configured queue |
 
-## BrewerErrorCode
+## PlatformIntelligenceErrorCode
 
 | Code | Name | HTTP status | Message |
 | --- | --- | --- | --- |
-| 520000 | `CHAT_NOT_FOUND` | 404 NOT_FOUND | Chat not found. |
-| 520001 | `WORKING_DIRECTORY_NOT_FOUND` | 400 BAD_REQUEST | Working directory not found. |
-| 520002 | `FAILED_TO_PROCESS_CHAT_MESSAGE` | 500 INTERNAL_SERVER_ERROR | Failed to process chat message. |
-| 520003 | `INVALID_CHAT_MESSAGE` | 400 BAD_REQUEST | Invalid chat message. |
-| 520004 | `BREWER_WORKER_NOT_FOUND` | 500 INTERNAL_SERVER_ERROR | Brewer worker not found. |
-| 520005 | `BREWER_NOT_ENABLED` | 400 BAD_REQUEST | Brewer is not enabled. |
-| 520006 | `SELECTED_AGENT_NOT_FOUND` | 404 NOT_FOUND | Selected agent wasn't found. |
-| 520007 | `INVALID_SELECTED_AGENT` | 400 BAD_REQUEST | Invalid selected agent. |
-| 520008 | `FAILED_TO_SAVE_SELECTED_AGENT` | 500 INTERNAL_SERVER_ERROR | Could not save the selected agent. |
-| 520009 | `AGENT_NOT_FOUND` | 404 NOT_FOUND | Agent not found. |
-| 520010 | `FAILED_TO_SAVE_AGENT` | 500 INTERNAL_SERVER_ERROR | Could not save the agent. |
-| 520011 | `INVALID_AGENT` | 400 BAD_REQUEST | Invalid agent. |
 | 520012 | `LLM_NOT_CONFIGURED` | 400 BAD_REQUEST | LLM is not configured. |
 | 520013 | `METADATA_INFERENCE_FAILED` | 500 INTERNAL_SERVER_ERROR | Metadata inference failed. |
 | 520014 | `VLLM_CONFIG_GENERATION_FAILED` | 500 INTERNAL_SERVER_ERROR | vLLM config generation failed. |
@@ -1176,6 +1225,21 @@ Do not hand-edit the tables below; regenerate them instead.
 | 540002 | `QUERY_EXECUTION_ERROR` | 400 BAD_REQUEST | Error executing Trino query |
 | 540003 | `TRINO_NOT_ENABLED` | 400 BAD_REQUEST | Trino is disabled |
 | 540004 | `ILLEGAL_ARGUMENT` | 400 BAD_REQUEST | Illegal argument provided |
+| 540005 | `CATALOG_INVALID_NAME` | 400 BAD_REQUEST | Invalid Trino catalog name |
+| 540006 | `CATALOG_ALREADY_EXISTS` | 409 CONFLICT | A Trino catalog with this name already exists |
+| 540007 | `CATALOG_NOT_FOUND` | 404 NOT_FOUND | Trino catalog not found |
+| 540008 | `CATALOG_INVALID_CONFIG` | 400 BAD_REQUEST | Invalid Trino catalog configuration |
+| 540009 | `CATALOG_VALIDATION_FAILED` | 400 BAD_REQUEST | Trino catalog connectivity validation failed |
+| 540010 | `CATALOG_STORAGE_ERROR` | 500 INTERNAL_SERVER_ERROR | Failed to read or write the Trino catalog storage |
+| 540011 | `CATALOG_RESTART_ERROR` | 500 INTERNAL_SERVER_ERROR | Failed to restart Trino |
+| 540012 | `CATALOG_SECRET_ERROR` | 400 BAD_REQUEST | Could not resolve a Hopsworks secret referenced by the Trino catalog |
+| 540013 | `CATALOG_TEST_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The Trino test coordinator is not deployed; connection testing is unavailable |
+| 540014 | `TRINO_RESTARTING` | 503 SERVICE_UNAVAILABLE | The Trino query engine is restarting; try again once it is back up |
+| 540015 | `CATALOG_OPERATION_IN_PROGRESS` | 503 SERVICE_UNAVAILABLE | Another Trino catalog operation is in progress; try again shortly |
+| 540016 | `CATALOG_LIMIT_EXCEEDED` | 400 BAD_REQUEST | The Trino catalog exceeds a configured limit |
+| 540017 | `CATALOG_MOUNT_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The Trino pods do not mount the credential-file store |
+| 540018 | `CATALOG_PROJECT_NOT_READY` | 503 SERVICE_UNAVAILABLE | A previous project of this name is still being deleted; catalogs cannot be created until that finishes |
+| 540019 | `DATASOURCE_NOT_MAPPABLE` | 400 BAD_REQUEST | This data source cannot be mapped to a Trino catalog |
 
 ## AiProviderErrorCode
 
@@ -1204,6 +1268,22 @@ Do not hand-edit the tables below; regenerate them instead.
 | 570001 | `PROXY_FORBIDDEN` | 403 FORBIDDEN | Not authorized to access this proxied resource |
 | 570002 | `PROXY_UPSTREAM_NOT_FOUND` | 404 NOT_FOUND | Upstream proxied service not found |
 | 570003 | `PROXY_UPSTREAM_ERROR` | 502 BAD_GATEWAY | Error forwarding request to upstream proxied service |
+
+## MountableSecretErrorCode
+
+| Code | Name | HTTP status | Message |
+| --- | --- | --- | --- |
+| 580000 | `MOUNTABLE_SECRETS_NOT_ENABLED` | 503 SERVICE_UNAVAILABLE | Mountable secrets are not available on this cluster |
+| 580001 | `MOUNTABLE_SECRET_NOT_FOUND` | 404 NOT_FOUND | Mountable secret not found |
+| 580002 | `MOUNTABLE_SECRET_FILE_NOT_FOUND` | 404 NOT_FOUND | File not found in the mountable secret |
+| 580003 | `MOUNTABLE_SECRET_ALREADY_EXISTS` | 409 CONFLICT | A mountable secret with this name already exists |
+| 580004 | `MOUNTABLE_SECRET_INVALID_NAME` | 400 BAD_REQUEST | Invalid mountable secret or file name |
+| 580005 | `MOUNTABLE_SECRET_LIMIT_EXCEEDED` | 400 BAD_REQUEST | The mountable secret exceeds a configured limit |
+| 580006 | `MOUNTABLE_SECRET_STORAGE_ERROR` | 500 INTERNAL_SERVER_ERROR | Failed to read or write the mountable secret store |
+| 580007 | `ILLEGAL_ARGUMENT` | 400 BAD_REQUEST | Illegal argument provided |
+| 580008 | `MOUNTABLE_SECRET_INVALID_ARCHIVE` | 400 BAD_REQUEST | The uploaded archive could not be expanded into a mountable secret |
+| 580009 | `MOUNTABLE_SECRETS_STORE_MISSING` | 503 SERVICE_UNAVAILABLE | The mountable secret store does not exist on this cluster |
+| 580010 | `MOUNTABLE_SECRET_PROJECT_DELETED` | 410 GONE | The project was deleted while the mountable secret was being uploaded |
 
 ## SchemaRegistryErrorCode
 

@@ -33,9 +33,11 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `airflow_enabled` | Boolean | `true` | Settings.java |
 | `airflow_user` | String | `airflow` | Settings.java |
 | `alert_manager_config_map` | String | `hopsworks-release-alertmanager` | KubeSettings.java |
+| `alert_receiver_load_timeout` | Integer | `300` | Settings.java |
 | `anaconda_enabled` | Boolean | `true` | Settings.java |
 | `app_kill_grace_period_seconds` | Long | `2` | Settings.java |
 | `application_certificate_validity_period` | String | `3d` | CAConf.java |
+| `arrow_flight_read_timeout_as_ms` | Long | `180000` | Settings.java |
 | `arrow_libhdfs_dir` | String | `/usr/local/bin/libhdfs-golang` | Settings.java |
 | `async_services_timer_batch_size` | Integer | `1000` | Settings.java |
 | `async_services_timer_delete_history_after_days` | Long | `7` | Settings.java |
@@ -57,15 +59,25 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `cloud_events_endpoint` | String | *(empty string)* *(duplicate key, also declared in Settings.java; values match)* | CAConf.java |
 | `cloud_events_endpoint` | String | *(empty string)* *(duplicate key, also declared in CAConf.java; values match)* | Settings.java |
 | `cloud_events_endpoint_api_key` | String | *(empty string)* | Settings.java |
+| `command_agent_home_batch` | Integer | `20` | Settings.java |
+| `command_agent_home_claim_lease_as_ms` | Long | `600000` | Settings.java |
+| `command_agent_home_migration_period_as_ms` | Long | `3600000` | Settings.java |
+| `command_agent_home_process_timer_period_as_ms` | Long | `5000` | Settings.java |
+| `command_agent_home_retry_backoff_base_as_ms` | Long | `10000` | Settings.java |
+| `command_agent_home_retry_backoff_max_as_ms` | Long | `600000` | Settings.java |
 | `command_search_fs_history_clean_period_as_ms` | Long | `60000` | Settings.java |
 | `command_search_fs_history_enable` | Boolean | `false` | Settings.java |
 | `command_search_fs_history_window_as_s` | Long | `3600` | Settings.java |
 | `command_search_fs_process_timer_period_as_ms` | Long | `1000` | Settings.java |
-| `command_search_fs_retry_per_clean_interval` | Integer | `5` | Settings.java |
+| `command_search_fs_retry_backoff_base_as_ms` | Long | `5000` | Settings.java |
+| `command_search_fs_retry_backoff_max_as_ms` | Long | `300000` | Settings.java |
 | `conda_default_repo` | String | `defaults` | Settings.java |
 | `conda_env_name` | String | `hopsworks_environment` | Settings.java |
 | `created_by_label_name` | String | `hw-created-by` | KubeSettings.java |
 | `created_by_label_value` | String | `hopsworks` | KubeSettings.java |
+| `cross_project_global_search_enabled` | Boolean | `true` | Settings.java |
+| `csi_driver_enabled` | Boolean | `false` | Settings.java |
+| `csi_sidecar_image` | String | `docker.hops.works/hopsworks/hopsfs-csi:0.1.0-SNAPSHOT` | Settings.java |
 | `databricks_account_host_allowlist` | String | `accounts.cloud.databricks.com,accounts.azuredatabricks.net,accounts.gcp.databricks.com` | Settings.java |
 | `databricks_oauth_allow_private_ranges` | Boolean | `false` | Settings.java |
 | `default_feature_store_project_id` | Integer | `-1` | Settings.java |
@@ -75,8 +87,10 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `disable_password_login` | Boolean | `false` | Settings.java |
 | `disable_registration` | Boolean | `false` | Settings.java |
 | `disable_registration_ui` | Boolean | `false` | Settings.java |
+| `dlt_schema_fetch_job_deadline_seconds` | Long | `1800` | Settings.java |
 | `dlthub-warehouse` | String | `dlthub-warehouse` | Settings.java |
 | `dlthub_image_name` | String | `docker.hops.works/hopsworks/dlt` | Settings.java |
+| `docker_base_image_dbt` | String | `dbt-pipeline` | Settings.java |
 | `docker_base_image_dlthub` | String | `dlthub-ingestion-pipeline` | Settings.java |
 | `docker_base_image_minimal_inference` | String | `minimal-inference-pipeline` | Settings.java |
 | `docker_base_image_pandas_inference` | String | `pandas-inference-pipeline` | Settings.java |
@@ -101,17 +115,28 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `docker_job_uid_strict` | Boolean | `true` | Settings.java |
 | `docker_mounts` | String | `/srv/hops/hadoop/etc/hadoop,/srv/hops/spark,/srv/hops/flink` | Settings.java |
 | `docker_namespace` | String | *(empty string)* | Settings.java |
+| `docker_operations_allow_hermetic_custom_commands` | Boolean | `false` | Settings.java |
 | `docker_operations_backoff_limit` | Integer | `0` | Settings.java |
+| `docker_operations_build_metadata` | Boolean | `true` | Settings.java |
+| `docker_operations_build_start_grace_minutes` | Integer | `2` | Settings.java |
+| `docker_operations_buildkit_addr` | String | *(empty string)* | Settings.java |
 | `docker_operations_buildkit_backoff_limit` | Integer | `0` | Settings.java |
+| `docker_operations_buildkit_cache_scope` | String | `shared` | Settings.java |
 | `docker_operations_buildkit_extra_args` | String | *(empty string)* | Settings.java |
-| `docker_operations_buildkit_image_root` | String | `docker.hops.works/hopsworks/moby/buildkit:v0.14.1` | Settings.java |
+| `docker_operations_buildkit_image_root` | String | `docker.hops.works/hopsworks/moby/buildkit:v0.31.2` | Settings.java |
 | `docker_operations_buildkit_limit_cpu` | Integer | `1` | Settings.java |
 | `docker_operations_buildkit_limit_memory` | String | `2Gi` | Settings.java |
-| `docker_operations_buildkit_priority_class` | String | `ndb-high-priority` | Settings.java |
+| `docker_operations_buildkit_priority_class` | String | `rondb-high-priority` | Settings.java |
+| `docker_operations_buildkit_replicas` | Integer | `1` | Settings.java |
 | `docker_operations_buildkit_request_cpu` | Integer | `1` | Settings.java |
 | `docker_operations_buildkit_request_memory` | String | `2Gi` | Settings.java |
 | `docker_operations_buildkit_storage` | String | `2Gi` | Settings.java |
+| `docker_operations_buildkit_tls_locality` | String | `buildkitd` | Settings.java |
+| `docker_operations_buildkit_tls_secret` | String | *(empty string)* | Settings.java |
 | `docker_operations_cert_name` | String | `kagent_certificate_bundle.pem` | Settings.java |
+| `docker_operations_context_orphan_minutes` | Integer | `120` | Settings.java |
+| `docker_operations_context_prefix` | String | *(empty string)* | Settings.java |
+| `docker_operations_context_url_ttl_minutes` | Integer | `10` | Settings.java |
 | `docker_operations_crane_extra_args` | String | *(empty string)* | Settings.java |
 | `docker_operations_crane_image` | String | `docker.hops.works/hopsworks/hwutils:0.3` | Settings.java |
 | `docker_operations_delete_jobs_add_description_if_fails` | Boolean | `false` | Settings.java |
@@ -120,11 +145,12 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `docker_operations_docker_context_builder_s3_bucket` | String | `hopsworks` | Settings.java |
 | `docker_operations_docker_context_builder_s3_endpoint` | String | `http://minio.hopsworks.svc.cluster.local:9000` | Settings.java |
 | `docker_operations_docker_context_builder_s3_region` | String | `eu-west-1` | Settings.java |
-| `docker_operations_docker_context_builder_s3_retention_minutes` | Integer | `-1` | Settings.java |
 | `docker_operations_hopsworks_ca_secret_name` | String | `docker-registry-crypto-material` | Settings.java |
-| `docker_operations_image_builder_image` | String | `docker.hops.works/hopsworks/image-builder:0.1` | Settings.java |
+| `docker_operations_image_builder_image` | String | `docker.hops.works/hopsworks/image-builder:0.2` | Settings.java |
 | `docker_operations_image_pull_secrets` | String | *(empty string)* | Settings.java |
+| `docker_operations_lock_dependencies` | Boolean | `false` | Settings.java |
 | `docker_operations_managed_docker_secrets` | String | *(empty string)* | Settings.java |
+| `docker_operations_multi_region_copy` | Boolean | `false` | Settings.java |
 | `docker_operations_oci_worker_snapshotter` | String | `auto` | Settings.java |
 | `docker_operations_push_insecure` | Boolean | `false` | Settings.java |
 | `docker_operations_registry_container` | String | `docker` | Settings.java |
@@ -153,12 +179,13 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `enable_adls_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_bigquery_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_bring_your_own_kafka` | Boolean | `false` | Settings.java |
-| `enable_conda_install` | Boolean | `true` | Settings.java |
 | `enable_crm_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_custom_branding` | Boolean | `false` | Settings.java |
 | `enable_data_science_profile` | Boolean | `false` | Settings.java |
 | `enable_feature_monitoring` | Boolean | `false` | Settings.java |
 | `enable_gcs_storage_connectors` | Boolean | `false` | Settings.java |
+| `enable_glue_storage_connectors` | Boolean | `true` | Settings.java |
+| `enable_google_sheets_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_hopsfsmount_page_cache_in_jobs` | Boolean | `true` | Settings.java |
 | `enable_hopsfsmount_page_cache_in_jupyter` | Boolean | `false` | Settings.java |
 | `enable_kafka_storage_connectors` | Boolean | `true` | Settings.java |
@@ -179,6 +206,10 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `executions_per_job_limit` | Integer | `10000` | Settings.java |
 | `executions_ttl_days` | Integer | `90` | Settings.java |
 | `feature_monitoring_max_num_features` | Integer | `15` | Settings.java |
+| `featurestore_asof_spine_max_bytes` | Long | `1073741824` | Settings.java |
+| `featurestore_asof_spine_max_columns` | Integer | `256` | Settings.java |
+| `featurestore_asof_spine_max_file_age_ms` | Long | `86400000` | Settings.java |
+| `featurestore_asof_spine_max_rows` | Long | `1000000` | Settings.java |
 | `featurestore_db_admin_pass` | String | *(empty string)* | Settings.java |
 | `featurestore_db_admin_user` | String | *(empty string)* | Settings.java |
 | `featurestore_default_quota` | Long | `String.valueOf(HdfsConstants.QUOTA_DONT_SET)` *(computed expression, not a literal)* | Settings.java |
@@ -189,6 +220,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `featurestore_metrics_online_ingestion_enabled` | Boolean | `false` | Settings.java |
 | `featurestore_online_enabled` | Boolean | `false` | Settings.java |
 | `featurestore_online_tablespace` | String | *(empty string)* | Settings.java |
+| `featurestore_schema_migration_timer_enabled` | Boolean | `true` | Settings.java |
 | `fg_preview_limit` | Integer | `100` | Settings.java |
 | `file_preview_image_size` | Integer | `10000000` | Settings.java |
 | `file_preview_txt_size` | Integer | `100` | Settings.java |
@@ -198,8 +230,20 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `fs_java_job_util` | String | `hdfs:///user/spark/hsfs-utils-2.1.0-SNAPSHOT.jar` | Settings.java |
 | `fs_py_job_util` | String | `hdfs:///user/spark/hsfs_util-2.1.0-SNAPSHOT.py` | Settings.java |
 | `fs_storage_connector_session_duration` | Integer | `3600` | Settings.java |
+| `git_bitbucket_http_proxy` | String | *(empty string)* | Settings.java |
+| `git_bitbucket_https_proxy` | String | *(empty string)* | Settings.java |
 | `git_command_timeout_minutes` | Integer | `60` | Settings.java |
+| `git_custom_ca_configmap` | String | *(empty string)* | Settings.java |
+| `git_custom_ca_configmap_key` | String | `ca-bundle.crt` | Settings.java |
+| `git_disable_tls_verification` | Boolean | `false` | Settings.java |
+| `git_github_http_proxy` | String | *(empty string)* | Settings.java |
+| `git_github_https_proxy` | String | *(empty string)* | Settings.java |
+| `git_gitlab_http_proxy` | String | *(empty string)* | Settings.java |
+| `git_gitlab_https_proxy` | String | *(empty string)* | Settings.java |
 | `git_image` | String | `docker.hops.works/hopsworks/git:0.7.0` | Settings.java |
+| `git_sync_poll_interval_seconds` | Integer | `60` | Settings.java |
+| `git_watcher_cpu` | Double | `0.2` | Settings.java |
+| `git_watcher_memory_mb` | Integer | `128` | Settings.java |
 | `grafana_version` | String | *(empty string)* | Settings.java |
 | `hadoop_configmap_name` | String | `hopsfs-config` | Settings.java |
 | `hadoop_dir` | String | `/srv/hops/hadoop` | Settings.java |
@@ -221,6 +265,12 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `hopsfsmount_log_level` | String | `warn` | Settings.java |
 | `hopsfsmount_nn_connections` | Integer | `4` | Settings.java |
 | `hopsfsmount_virtual_directories` | String | *(empty string)* | Settings.java |
+| `hopsworks_analytics` | Boolean | `false` | Settings.java |
+| `hopsworks_analytics_coding_agent` | String | `claude` | Settings.java |
+| `hopsworks_analytics_project_id` | String | *(empty string)* | Settings.java |
+| `hopsworks_analytics_ro_pass` | String | `${env:HOPSWORKS_ANALYTICS_RO_PASS}` | Settings.java |
+| `hopsworks_analytics_ro_user` | String | `hopsworks_ro` | Settings.java |
+| `hopsworks_analytics_setup_repo` | String | `https://github.com/logicalclocks/okr-dashboards` | Settings.java |
 | `hopsworks_dir` | String | `/srv/hops/domains` *(duplicate key, also declared in Settings.java; values diverge)* | CAConf.java |
 | `hopsworks_dir` | String | `/srv/hops/domains/domain1` *(duplicate key, also declared in CAConf.java; values diverge)* | Settings.java |
 | `hopsworks_engine` | String | `python` | Settings.java |
@@ -249,6 +299,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `jupyter_remote_fs_driver` | String | `hdfscontentsmanager` | Settings.java |
 | `jupyter_shell_command` | String | `/bin/bash` | Settings.java |
 | `jupyter_shutdown_timer_interval` | String | `30m` | Settings.java |
+| `jupyter_spark_notebook_server_memory_floor_mb` | Integer | `512` | Settings.java |
 | `jupyter_ws_ping_interval` | String | `10000` | Settings.java |
 | `jwt_exp_leeway_sec` | Long | `900` | Settings.java |
 | `jwt_issuer` | String | `hopsworks@logicalclocks.com` *(duplicate key, also declared in Settings.java; values match)* | CAConf.java |
@@ -292,6 +343,8 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `kube_scheduling_jobinit_cpu_requests` | Double | `0.5` | Settings.java |
 | `kube_scheduling_jobinit_memory_limits_mb` | Double | `512.0` | Settings.java |
 | `kube_scheduling_jobinit_memory_requests_mb` | Double | `256.0` | Settings.java |
+| `kube_serving_apikey_reaper_grace_minutes` | Integer | `10` | Settings.java |
+| `kube_serving_apikey_reaper_interval_minutes` | Integer | `15` | Settings.java |
 | `kube_serving_max_num_instances` | Integer | `-1` | Settings.java |
 | `kube_serving_min_num_instances` | Integer | `-1` | Settings.java |
 | `kube_serving_vllm_omni_versions` | String | *(empty string)* | Settings.java |
@@ -336,6 +389,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `lifecycle_webhook_secret` | String | *(empty string)* | Settings.java |
 | `lifecycle_webhook_url` | String | *(empty string)* | Settings.java |
 | `localhost` | Boolean | `false` | Settings.java |
+| `log_history_limit` | Integer | `30` | Settings.java |
 | `login_page_overwrite` | String | *(empty string)* | Settings.java |
 | `logstash_version` | String | *(empty string)* | Settings.java |
 | `managed_cloud_provider_name` | String | `hopsworks.ai` | Settings.java |
@@ -349,17 +403,26 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `max_env_var_value_length` | Integer | `8192` | Settings.java |
 | `max_env_vars_per_user` | Integer | `64` | Settings.java |
 | `max_env_yml_byte_size` | Integer | `20000` | Settings.java |
+| `max_mountable_secret_upload_bytes` | Long | `33554432` | Settings.java |
 | `max_num_proj_per_user` | Integer | `5` | Settings.java |
 | `max_ongoing_opensearch_doc_write` | Integer | `100` | Settings.java |
 | `max_project_cloned_environments` | Integer | `100` | Settings.java |
 | `max_status_poll_retry` | Integer | `5` | Settings.java |
+| `max_upload_request_bytes` | Long | `67108864` | Settings.java |
 | `mount_hopsfs_in_python_deployments` | Boolean | `true` | Settings.java |
 | `mount_hopsfs_in_python_job` | Boolean | `true` | Settings.java |
 | `mount_hopsfs_in_ray_job_container` | Boolean | `true` | Settings.java |
+| `mountable_secret_max_file_bytes` | Long | `1048576` | Settings.java |
+| `mountable_secret_max_files` | Integer | `32` | Settings.java |
+| `mountable_secret_max_per_project` | Integer | `10` | Settings.java |
+| `mountable_secret_max_project_bytes` | Long | `16777216` | Settings.java |
+| `mountable_secrets_enabled` | Boolean | `false` | Settings.java |
+| `mountable_secrets_path` | String | `/apps/mountable-secrets` | Settings.java |
 | `ndb_version` | String | *(empty string)* | Settings.java |
 | `news_webflow_api_key` | String | *(empty string)* | Settings.java |
 | `news_webflow_api_url` | String | *(empty string)* | Settings.java |
 | `notebook_converter_job_timeout_sec` | Long | `300` | Settings.java |
+| `npm_registry_url` | String | *(empty string)* | Settings.java |
 | `oauth_account_status` | Integer | `1` | Settings.java |
 | `oauth_enabled` | Boolean | `false` | Settings.java |
 | `oauth_group_mapping` | String | *(empty string)* | Settings.java |
@@ -368,6 +431,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `oauth_logout_redirect_uri` | String | `hopsworks/` | Settings.java |
 | `oauth_redirect_uri` | String | `hopsworks/callback` | Settings.java |
 | `ongoing_backup` | Boolean | `false` | Settings.java |
+| `online_ingestion_max_per_featuregroup` | Integer | `1000` | Settings.java |
 | `onlinefs_service_thread_number` | Integer | `10` | Settings.java |
 | `opensearch_default_embedding_index` | String | *(empty string)* | Settings.java |
 | `opensearch_index_mapping_limit` | Integer | `1000` | Settings.java |
@@ -379,10 +443,17 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `platform_intelligence_llm_api_key` | String | *(empty string)* | Settings.java |
 | `platform_intelligence_llm_base_url` | String | *(empty string)* | Settings.java |
 | `platform_intelligence_llm_model` | String | `gpt-5.4-mini` | Settings.java |
+| `preinstalled_npm_lib_names` | String | `corepack, npm` | Settings.java |
 | `preinstalled_python_lib_names` | String | `pydoop, pyspark, jupyterlab, hdfscontents, pyjks, hops-apache-beam, pyopenssl` | Settings.java |
 | `project_namespace_labels` | String | *(empty string)* | Settings.java |
+| `project_namespace_network_policy_allowed_namespaces` | String | *(empty string)* | Settings.java |
+| `project_namespace_network_policy_enabled` | Boolean | `true` | Settings.java |
+| `project_namespace_network_policy_reconcile_interval` | String | `1m` | Settings.java |
 | `provenance_graph_max_size` | Integer | `50` | Settings.java |
 | `public_projects` | String | *(empty string)* | Settings.java |
+| `pushgateway_cleaner_batch_size` | Integer | `100` | Settings.java |
+| `pushgateway_group_ttl_minutes` | Integer | `15` | Settings.java |
+| `pushgateway_monitor_interval_ms` | Integer | `300000` | Settings.java |
 | `pypi_indexer_timer_enabled` | Boolean | `true` | Settings.java |
 | `pypi_indexer_timer_interval` | String | `1d` | Settings.java |
 | `pypi_rest_endpoint` | String | `https://pypi.org/pypi/{package}/json` | Settings.java |
@@ -415,7 +486,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `ray_job_active_deadline_seconds` | Integer | `120` | Settings.java |
 | `ray_job_driver_cores` | Double | `1.0` | Settings.java |
 | `ray_job_driver_gpus` | Integer | `0` | Settings.java |
-| `ray_job_driver_memory` | Integer | `2048` | Settings.java |
+| `ray_job_driver_memory` | Integer | `4096` | Settings.java |
 | `ray_job_pod_kill_grace_period_seconds` | Integer | `300` | Settings.java |
 | `ray_job_worker_cores` | Double | `1.0` | Settings.java |
 | `ray_job_worker_gpus` | Integer | `0` | Settings.java |
@@ -445,8 +516,21 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `service_key_rotation_interval` | String | `3d` | CAConf.java |
 | `serving_allow_stop_after_seconds` | Integer | `0` | Settings.java |
 | `serving_connection_pool_size` | Integer | `40` | Settings.java |
+| `serving_feature_log_materialization_cron` | String | `0 0 0 * * ? *` | Settings.java |
+| `serving_feature_log_materialization_row_limit` | Integer | `50000000` | Settings.java |
+| `serving_feature_log_online_ttl_hours` | Integer | `30` | Settings.java |
+| `serving_feature_logger_batch_bytes` | Integer | `1048576` | Settings.java |
+| `serving_feature_logger_batch_seconds` | Integer | `5` | Settings.java |
 | `serving_feature_logger_client_pool_size` | String | `3` | Settings.java |
 | `serving_feature_logger_client_req_timeout_seconds` | Integer | `3` | Settings.java |
+| `serving_feature_logger_flush_bytes` | Integer | `1048576` | Settings.java |
+| `serving_feature_logger_flush_interval_seconds` | Integer | `300` | Settings.java |
+| `serving_feature_logger_max_buffer_bytes` | Integer | `67108864` | Settings.java |
+| `serving_feature_logger_max_event_bytes` | Integer | `8388608` | Settings.java |
+| `serving_feature_logger_max_event_rows` | Integer | `512` | Settings.java |
+| `serving_feature_logger_queue_size` | Integer | `1000` | Settings.java |
+| `serving_feature_logger_shutdown_seconds` | Integer | `20` | Settings.java |
+| `serving_feature_logging_transport` | String | `realtime` | Settings.java |
 | `serving_max_route_connections` | Integer | `10` | Settings.java |
 | `serving_monitor_int` | String | `30s` | Settings.java |
 | `serving_redeploy_not_found_after_seconds` | Integer | `120` | Settings.java |
@@ -485,25 +569,60 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `superset_proxy_read_timeout_ms` | Integer | `180000` | Settings.java |
 | `superset_secret` | String | `superset-admin-credentials` | KubeSettings.java |
 | `superset_user_roles` | String | `Gamma,sql_lab` | Settings.java |
+| `tag_history_archive_max_events` | Integer | `20000` | Settings.java |
+| `tag_history_cleaner_batch_size` | Integer | `1000` | Settings.java |
+| `tag_history_cleaner_interval_ms` | Integer | `86400000` | Settings.java |
+| `tag_history_retention_days` | Integer | `0` | Settings.java |
+| `teleport_cleaner_interval_ms` | Long | `86400000` | Settings.java |
+| `teleport_ttl_days` | Integer | `7` | Settings.java |
 | `tensorflow_version` | String | *(empty string)* | Settings.java |
 | `terminal_gpu_image` | String | `terminal-gpu` | Settings.java |
 | `terminal_image` | String | `terminal-server` | Settings.java |
+| `terminal_oom_guard_enabled` | Boolean | `true` | Settings.java |
+| `terminal_proxy_pod_app_labels` | String | `hopsworks-instance,hopsworks-admin` | Settings.java |
+| `terminal_proxy_token_ttl_ms` | Long | `60000` | Settings.java |
 | `terminal_session_hours` | Integer | `4` | Settings.java |
+| `terminal_session_max_hours` | Integer | `24` | Settings.java |
 | `terminal_shm_size` | String | `1Gi` | Settings.java |
 | `terminal_spark_image` | String | `terminal-spark` | Settings.java |
 | `testconnector_image` | String | `docker.hops.works/hopsworks/testconnector:0.2` | Settings.java |
 | `testconnector_launcher` | String | `testconnector-launch.sh` | Settings.java |
+| `trino_catalog_approval_required` | Boolean | `false` | Settings.java |
+| `trino_catalog_max_bytes` | Integer | `16384` | Settings.java |
+| `trino_catalog_max_per_project` | Integer | `10` | Settings.java |
+| `trino_catalog_reconcile_enabled` | Boolean | `false` | Settings.java |
+| `trino_catalogs_configmap` | String | `hopsworks-trino-catalogs` | KubeSettings.java |
+| `trino_connectors` | String | `ai,bigquery,blackhole,cassandra,clickhouse,datasketches,delta_lake,druid,duckdb,elasticsearch,exasol,faker,gsheets,hive,hudi,iceberg,ignite,jmx,kafka,lakehouse,loki,mariadb,memory,mongodb,mysql,opensearch,oracle,pinot,postgresql,prometheus,redis,redshift,singlestore,snowflake,sqlserver,tpcds,tpch,trino_thrift` | Settings.java |
+| `trino_coordinator_deployment` | String | `hopsworks-trino-coordinator` | KubeSettings.java |
 | `trino_credentials_secret` | String | `trino-admin-credentials` | KubeSettings.java |
 | `trino_default_catalog` | String | `hive` | Settings.java |
+| `trino_eager_restart` | Boolean | `false` | Settings.java |
+| `trino_eager_restart_poll_minutes` | Integer | `10` | Settings.java |
+| `trino_egress_probe_container` | String | `egress-probe` | KubeSettings.java |
 | `trino_enabled` | Boolean | `false` | Settings.java |
 | `trino_events_cleaner_batch_size` | Integer | `1000` | Settings.java |
 | `trino_events_delete_after_days` | Integer | `61` | Settings.java |
 | `trino_group_secret` | String | `trino-groups-file` | KubeSettings.java |
+| `trino_max_catalogs` | Integer | `250` | Settings.java |
+| `trino_mountable_secrets_root` | String | `/opt/hopsworks/mounts` | KubeSettings.java |
 | `trino_password_secret` | String | `trino-password-file` | KubeSettings.java |
+| `trino_reconcile_enabled` | Boolean | `true` | Settings.java |
+| `trino_reconcile_interval_ms` | Long | `300000` | Settings.java |
+| `trino_scheduled_restart_enabled` | Boolean | `true` | Settings.java |
+| `trino_scheduled_restart_idle_retry_minutes` | Integer | `5` | Settings.java |
+| `trino_scheduled_restart_idle_wait_minutes` | Integer | `60` | Settings.java |
+| `trino_scheduled_restart_interval_hours` | Integer | `24` | Settings.java |
+| `trino_scheduled_restart_time` | String | `02:00` | Settings.java |
+| `trino_test_coordinator_deployment` | String | `hopsworks-trino-test-coordinator` | KubeSettings.java |
+| `trino_test_coordinator_enabled` | Boolean | `false` | Settings.java |
+| `trino_user_catalogs_max_shards` | String | `2` | KubeSettings.java |
+| `trino_user_catalogs_secret_prefix` | String | `hopsworks-trino-catalogs-user-` | KubeSettings.java |
+| `trino_worker_deployment` | String | `hopsworks-trino-worker` | KubeSettings.java |
 | `twofactor-excluded-groups` | String | `AGENT;CLUSTER_AGENT` | Settings.java |
 | `twofactor_auth` | String | `false` | Settings.java |
 | `unity_catalog_oauth_m2m_enabled` | Boolean | `true` | Settings.java |
 | `upload_chunk_size` | Integer | `10485760` | Settings.java |
+| `upload_policy` | String | `enabled` | Settings.java |
 | `validate_remote_user_email_verified` | Boolean | `false` | Settings.java |
 | `velero_backup_main_schedule_name` | String | *(empty string)* | Settings.java |
 | `velero_backup_storage_location_name` | String | *(empty string)* | Settings.java |

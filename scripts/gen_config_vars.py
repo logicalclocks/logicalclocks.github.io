@@ -258,7 +258,8 @@ def _parse_settings(text: str, source: str) -> list[ConfigVar]:
         entry = " ".join(raw_entry.split())
         if not entry:
             continue
-        m = re.fullmatch(r"(\w+)\((.*)\)", entry)
+        # Leading annotations (`@Deprecated`) do not change the declaration.
+        m = re.fullmatch(r"(?:@\w+(?:\([^)]*\))?\s+)*(\w+)\((.*)\)", entry)
         if not m:
             msg = f"unrecognized Settings.java enum entry: {entry!r}"
             raise ValueError(msg)
@@ -303,7 +304,7 @@ def _parse_simple_key_default_enum(
         entry = " ".join(raw_entry.split())
         if not entry:
             continue
-        m = re.fullmatch(r"(\w+)\((.*)\)", entry)
+        m = re.fullmatch(r"(?:@\w+(?:\([^)]*\))?\s+)*(\w+)\((.*)\)", entry)
         if not m:
             msg = f"unrecognized {enum_name} enum entry: {entry!r}"
             raise ValueError(msg)
