@@ -8,7 +8,8 @@ A Trino catalog makes an external data source queryable from the query engine.
 Each catalog names a Trino connector and the properties that connector needs to reach the source, such as a connection URL and credentials.
 Once a catalog is live, its databases and tables can be queried from the SQL runner alongside your feature groups.
 
-Navigate to **Query Engine** → **Catalogs** in your project to see the project's catalogs, your own private catalogs, and the cluster's shared default catalogs.
+Navigate to **Query Engine** → **Catalogs** in your project to see the project's catalogs and your own private catalogs.
+The cluster's shared default catalogs are listed once you add **Default** to the **Type** filter.
 A catalog belongs either to the project or to you:
 
 - A **project catalog** is named `<project>__<name>` and is queryable inside the project.

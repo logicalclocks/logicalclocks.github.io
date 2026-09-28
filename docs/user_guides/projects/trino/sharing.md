@@ -19,7 +19,7 @@ A project catalog is shared by a Data Owner of the project, and a private catalo
 A catalog can be shared once it is **Approved**, because a catalog the query engine has not loaded has nothing to share yet.
 
 Click the share icon on the catalog's row in **Query Engine** → **Catalogs** to open its sharing page.
-The page lists every project the catalog is shared with, what it shares with each and leaves out, and whether each share is live.
+The page lists every project the catalog is shared with, what it shares with each, and whether each share is live.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/catalog-sharing-page.png" alt="Sharing page of a catalog" />
@@ -28,20 +28,19 @@ The page lists every project the catalog is shared with, what it shares with eac
 
 Click **Share** and choose the project.
 A project holds one share of a catalog, which covers everything it receives from the catalog, so a project the catalog is shared with already is not offered: edit its share instead.
-Then choose what to share:
+Then check what to share in the tree of the catalog:
 
-- **The whole catalog**: every schema and table in it, including ones created later.
-  Under **Schemas left out**, add schemas the project must not read.
-- **Chosen schemas and tables**: under **Schemas shared**, add schemas to share whole, including tables created in them later, and under **Tables**, add tables to share on their own.
+- Check the catalog to share every schema and table in it, including ones created later.
+- Check a schema to share every table in it, including tables created in it later.
+- Expand a schema and check some of its tables to share only those tables.
+- Expand a table and uncheck some of its columns to share only the checked columns. A checked column can carry a mask.
 
-Under **Tables**, each table added is either shared whole, shared with only some of its columns, or left out:
+Unchecking something inside a checked schema or catalog keeps the rest of it: uncheck `sales.salaries` in a checked schema `sales`, and every other table of `sales` stays shared.
+A partly checked box shares only what is checked under it, so a table created later in a partly checked schema is not shared.
 
-- A table not covered by anything else can be shared whole or with some columns.
-- A table covered already, by the whole catalog or by a shared schema, can be narrowed to some columns or left out.
-
-The narrowest choice decides for a table: its own choice over its schema's, and a schema's over the whole catalog.
-For example, share the whole catalog, leave out the schema `hr`, narrow `sales.customers` to three columns with one of them masked, and leave out `sales.salaries`.
-A left-out table cannot be read by the receiving project, and it is not listed to them.
+The panel beside the tree shows what the receiving project will see.
+Click a table name to see its first rows as they will read them, with unchecked columns left out and masks applied.
+The sample is read as you, before anything is saved.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/share-dialog-table.png" alt="Sharing one table with some columns" />
@@ -52,7 +51,7 @@ The schemas, tables and columns offered are the ones you can see in the catalog 
 
 ### Sharing some columns of a table
 
-Choose **Share some columns** on a table to choose its columns.
+Expand a table in the tree to choose its columns.
 An unchecked column cannot be read by the receiving project, and a query that selects it, or selects `*`, is refused.
 The table's other ways of revealing a column are closed too: the connector's hidden columns, such as `$path` and `$partition`, and the table's metadata tables, such as `<table>$partitions`, are denied on a narrowed table, because the path and partition values of a table partitioned on an unshared column carry that column's values.
 
@@ -84,7 +83,7 @@ You always read your own catalog unmasked.
 
 ### Editing a share
 
-Click the edit icon on a share to change what it covers: share more, narrow or leave out tables, or go from chosen schemas and tables to the whole catalog.
+Click the edit icon on a share to change what it covers: add or remove schemas and tables, narrow tables to some columns, or go from chosen schemas and tables to the whole catalog.
 Saving reads the narrowed tables' columns again, and the change is live within seconds.
 
 ### The status of a share
