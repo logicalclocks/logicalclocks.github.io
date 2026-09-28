@@ -322,6 +322,7 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
+      - Base Images in Mirror Registries: setup_installation/common/base_images_mirror.md
       - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
   - Python API: python-api
   - Java API: javadoc
