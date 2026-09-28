@@ -123,6 +123,7 @@ Each answer is written to `<slug>/system.yaml` in the current directory as you g
 A new data source is created with `hops datasource create`, and its password or key is read without echo and passed to it in an environment variable, so it never appears on the command line or in `system.yaml`.
 
 When the interview is done, `hops build` starts Claude Code with `/hops-build <slug>`, which completes the specification and builds the feature, training and inference pipelines.
+It also adds a section to the `AGENTS.md` at the root of the repository, saying the system is built from `system.yaml`: a coding agent there checks what a change to `system.yaml` means for the pipelines and the assets they create, and finds what a changed component affects downstream with `hops fg lineage`, `hops fv lineage`, `hops td lineage`, `hops model lineage` and `hops deployment lineage`.
 Inside tmux, as in the Hopsworks terminal, it opens a new tmux window named after the system, so several systems can be built at once.
 Pass `--no-launch` to record the interview only, and `hops build <slug>` to resume a system.
 `hops build --example <name>` (`churn-example`, `recs-example` or `helpdesk-example`) builds an example without the menu, and resumes it if it already exists.
