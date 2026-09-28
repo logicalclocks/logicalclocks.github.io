@@ -125,12 +125,14 @@ A new data source is created with `hops datasource create`, and its password or 
 When the interview is done, `hops build` starts Claude Code with `/hops-build <slug>`, which completes the specification and builds the feature, training and inference pipelines.
 Inside tmux, as in the Hopsworks terminal, it opens a new tmux window named after the system, so several systems can be built at once.
 Pass `--no-launch` to record the interview only, and `hops build <slug>` to resume a system.
+`hops build --example <name>` (`churn-example`, `recs-example` or `helpdesk-example`) builds an example without the menu, and resumes it if it already exists.
 
 `hops build` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
-While a project has registered systems, the Hopsworks UI shows an **ML systems** button beside **Terminal**, for every member of the project.
+The Hopsworks UI shows an **ML systems** button beside **Terminal**, for every member of the project, when the project has registered systems or the cluster has the terminal.
 It opens a panel you can minimize or close, with a list of the project's systems: an open folder marks the ones whose code you can open, a lock the ones you cannot, and a link the ones in a GitHub repository.
 Selecting a system opens its directory in the file browser and shows its phases, what is done and what is left.
 A system whose directory is deleted disappears from the list.
+**Create example ML system**, the last entry in the list, asks which example to build, starts the terminal and runs `hops build --example <name>` in it.
 
 ```bash
 hops mlsystem list                       # the project's systems and whether you can open their code
