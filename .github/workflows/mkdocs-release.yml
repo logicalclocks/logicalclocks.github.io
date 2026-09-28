@@ -37,11 +37,13 @@ jobs:
         if: ${{ env.BRANCH != 'main' }}
         with:
           script: |
-            const branches_url = context.payload.repository.branches_url
-            const branches_url_new = branches_url.replace("{/branch}", "")
-            const result = await github.request(branches_url_new)
-            const names = result.data.map(branch => branch.name)
-            const versions = names.filter(name => name.startsWith('branch-')).map(name => name.replace('branch-', ''))
+            const branches = await github.paginate(github.rest.repos.listBranches, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            })
+            const names = branches.map(branch => branch.name)
+            const versions = names.filter(name => /^branch-\d+\.\d+$/.test(name)).map(name => name.replace('branch-', ''))
             const minorLength = Math.max(...versions.map(v => v.split('.')[1].length))
             const convertVersionToNumber = (version) => {
               const parts = version.split('.').map(Number)

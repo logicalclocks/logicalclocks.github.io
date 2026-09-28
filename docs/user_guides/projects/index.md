@@ -34,7 +34,7 @@ These guides cover signing in, creating and running a project, and the settings 
 - [Sign in](auth/login.md)
   Register and log in, or use OAuth2, LDAP or Kerberos when your cluster is configured for it.
 - [API keys](api_key/create_api_key.md)
-  Authenticate from outside the cluster: laptops, CI, agents.
+  Authenticate from outside the cluster: laptops, CI, agents, each key limited to its [scopes](api_key/api_key_scopes.md).
 - [Manage a project](project/create_project.md)
   Create projects and add members with roles.
 - [Wizard](wizard.md)

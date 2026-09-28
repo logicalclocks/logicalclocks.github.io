@@ -87,7 +87,7 @@ Without any of them it is rejected with a `422`, because there is no "match ever
 
 The response carries one bucket per class, each with its own total, for example `featuregroups` with `featuregroupsTotal` and `apps` with `appsTotal`.
 
-### API key scopes
+### API key scopes { #search-api-key-scopes }
 
 Search results are filtered to the scopes of the API key you use, so a key cannot discover a class it was not minted for.
 A `FEATURESTORE` key sees feature groups, feature views, training datasets and features, `JOB` sees jobs and apps, `MODELREGISTRY` sees models, and `SERVING` sees deployments and agents.

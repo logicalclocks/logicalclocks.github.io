@@ -36,7 +36,8 @@ Configure the resources to be allocated for predictor and transformer in a model
 
 ### Autoscaling
 
-Configure autoscaling for your model deployment, including scale-to-zero, scale metrics and scaling parameters, see the [Autoscaling Guide](autoscaling.md).
+Configure autoscaling for your model deployment, including scale metrics and scaling parameters, see the [Autoscaling Guide](autoscaling.md).
+How a deployment scales depends on whether it runs in KServe Knative or Standard mode, and scale-to-zero is available in Knative mode only, see [Deployment mode](autoscaling.md#deployment-mode).
 
 ### Scheduling
 

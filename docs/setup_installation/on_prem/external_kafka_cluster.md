@@ -55,6 +55,7 @@ sasl.mechanism=PLAIN
 
 As mentioned above, when configuring Hopsworks to use an external Kafka cluster, Hopsworks will not provision the topics for the different projects.
 Instead, when creating a project, users will be asked to provide the topic name to use for the feature store operations.
+The topic can be changed later from `Project Settings` → `Kafka`, and individual feature groups can override it, as described in the [ingestion topic][feature-group-ingestion-topic] guide.
 
 <p align="center">
   <figure>

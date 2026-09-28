@@ -3,12 +3,13 @@
 ## Commands
 
 ```bash
-uv sync # setup (dependencies live in pyproject.toml)
-uv pip install "hopsworks[python] @ git+https://github.com/logicalclocks/hopsworks-api.git@main#subdirectory=python" # install Python API (needed for API docs section)
-touch docs/javadoc; uv run mkdocs build -s; rm docs/javadoc # build (strict)
-touch docs/javadoc; uv run mkdocs serve; rm docs/javadoc # preview with live reload
-npx markdownlint-cli2 "**/*.md" # lint Markdown (requires Node.js)
-uv tool install md-snakeoil && snakeoil --line-length 88 --rules "E,F,B,C4,ISC,PIE,PYI,Q,RSE,RET,SIM,TC,I,W,D2,D3,D4,INP,UP,FA" docs # lint Python code blocks
+uv sync --extra cli # setup: mkdocs plus the hopsworks-docs CLI in .venv
+uv pip install ../hopsworks-api/python # Python API for the API docs section; CI clones hopsworks-api next to this repo
+uv run hopsworks-docs check # build in strict mode (creates the docs/javadoc stub itself)
+uv run hopsworks-docs serve # preview with live reload
+uv run hopsworks-docs markdownlint # lint Markdown
+uv run hopsworks-docs snakeoil # lint Python code blocks (ruff at line length 88)
+uv run hopsworks-docs linkchecker # check for broken links
 ```
 
 ## Rules
