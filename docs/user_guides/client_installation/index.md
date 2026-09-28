@@ -128,9 +128,11 @@ Pass `--no-launch` to record the interview only, and `hops build <slug>` to resu
 `hops build --example <name>` (`churn-example`, `recs-example` or `helpdesk-example`) builds an example without the menu, and resumes it if it already exists.
 
 `hops build` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
-The Hopsworks UI shows an **ML systems** button beside **Terminal**, for every member of the project, when the project has registered systems or the cluster has the terminal.
+The Hopsworks UI shows a **Brewer** button (the software factory) beside **Terminal**, for every member of the project, when the project has registered systems or the cluster has the terminal.
 It opens a panel you can minimize or close, with a list of the project's systems: an open folder marks the ones whose code you can open, a lock the ones you cannot, and a link the ones in a GitHub repository.
 Selecting a system opens its directory in the file browser and shows its phases, what is done and what is left.
+**show architecture** opens the system's architecture in the main view: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
+A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
 A system whose directory is deleted disappears from the list.
 **Create example ML system**, the last entry in the list, asks which example to build, starts the terminal and runs `hops build --example <name>` in it.
 
