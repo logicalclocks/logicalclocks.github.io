@@ -1,0 +1,108 @@
+# How To Configure Inference Batcher
+
+## Introduction
+
+Inference batching can be enabled to increase inference request throughput at the cost of higher latencies.
+The configuration of the inference batcher depends on the model server used in the deployment.
+
+!!! warning "Inference batching is not supported for vLLM deployments."
+
+## Web UI
+
+### Step 1: Create new deployment
+
+If you have at least one model already trained and saved in the Model Registry, navigate to the deployments page by clicking on the `Deployments` tab on the navigation menu on the left.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar.png" alt="Deployments navigation tab">
+    <figcaption>Deployments navigation tab</figcaption>
+  </figure>
+</p>
+
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
+Both options will open the deployment creation form.
+
+### Step 2: Go to advanced options
+
+A simplified creation form will appear including the most common deployment fields from all available configurations.
+Inference batching is part of the advanced options of a deployment.
+To navigate to the advanced creation form, click on `Advanced options`.
+
+<p align="center">
+  <figure>
+    <img  style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
+  </figure>
+</p>
+
+### Step 3: Configure inference batching
+
+To enable inference batching, click on the `Request batching` checkbox.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_batcher.png" alt="Inference batcher in advanced deployment form">
+    <figcaption>Inference batching configuration (default values)</figcaption>
+  </figure>
+</p>
+
+If your deployment uses KServe, you can optionally set three additional parameters for the inference batcher: maximum batch size, maximum latency (ms) and timeout (s).
+
+!!! note "Timeout parameter"
+    The `timeout` parameter sets the request timeout in seconds for the inference batcher. If a batch is not filled within this time, the available requests are sent as a partial batch.
+
+Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
+
+## Code
+
+### Step 1: Connect to Hopsworks
+
+=== "Python"
+
+  ```python
+  import hopsworks
+
+
+  project = hopsworks.login()
+
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
+
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
+
+### Step 2: Define an inference logger
+
+=== "Python"
+
+  ```python
+  from hsml.inference_batcher import InferenceBatcher
+
+
+  my_batcher = InferenceBatcher(
+      enabled=True,
+      # optional
+      max_batch_size=32,
+      max_latency=5000,  # milliseconds
+      timeout=5,  # seconds
+  )
+  ```
+
+### Step 3: Create a deployment with the inference batcher
+
+=== "Python"
+
+  ```python
+  my_model = mr.get_model("my_model", version=1)
+
+  my_model.deploy(inference_batcher=my_batcher)
+  ```
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-class"></code> [`InferenceBatcher`][hsml.inference_batcher.InferenceBatcher]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

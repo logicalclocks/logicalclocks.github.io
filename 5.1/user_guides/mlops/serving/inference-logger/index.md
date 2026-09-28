@@ -1,0 +1,157 @@
+# How To Configure Inference Logging
+
+## Introduction
+
+Once a model is deployed and starts making predictions as inference requests arrive, logging model inputs and predictions becomes essential to monitor the health of the model and take action if the model's performance degrades over time.
+
+Hopsworks supports logging both inference requests and predictions as events to a Kafka topic for analysis.
+
+!!! warning "Inference logging is not supported for vLLM deployments."
+
+!!! info "Inference logger vs. feature logging"
+    The inference logger described here stores model inputs and predictions from inference requests and responses into a Kafka topic, for later consumption and analysis.
+    It is separate from [feature logging](../../fs/feature_view/feature_logging.md), which supports more fine-grained logging of inference logs and features and powers [feature monitoring](../../fs/feature_monitoring/index.md) and [model monitoring](../model_monitoring/index.md).
+
+!!! info "Logging modes"
+    Three logging modes are available:
+
+    | Mode         | Logger Mode | Description                 |
+    | ------------ | ----------- | --------------------------- |
+    | ALL          | `all`       | Log both inputs and outputs |
+    | PREDICTIONS  | `response`  | Log model outputs only      |
+    | MODEL_INPUTS | `request`   | Log model inputs only       |
+
+!!! note "Kafka topic requirements"
+    The Kafka topic must use the `inferenceschema` subject. Schema v4+ is required for KServe topics.
+
+## Web UI
+
+### Step 1: Create new deployment
+
+If you have at least one model already trained and saved in the Model Registry, navigate to the deployments page by clicking on the `Deployments` tab on the navigation menu on the left.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar.png" alt="Deployments navigation tab">
+    <figcaption>Deployments navigation tab</figcaption>
+  </figure>
+</p>
+
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
+Both options will open the deployment creation form.
+
+### Step 2: Go to advanced options
+
+A simplified creation form will appear including the most common deployment fields from all available configurations.
+Inference logging is part of the advanced options of a deployment.
+To navigate to the advanced creation form, click on `Advanced options`.
+
+<p align="center">
+  <figure>
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
+  </figure>
+</p>
+
+### Step 3: Configure inference logging
+
+To enable inference logging, choose `CREATE` as Kafka topic name to create a new topic, or select an existing topic.
+If you prefer, you can disable inference logging by selecting `NONE`.
+
+If you decide to create a new topic, select the number of partitions and number of replicas for your topic, or use the default values.
+
+<p align="center">
+  <figure>
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_logger.png" alt="Inference logger in advanced deployment form">
+    <figcaption>Inference logging configuration with a new kafka topic</figcaption>
+  </figure>
+</p>
+
+If the deployment is created with KServe enabled, you can specify which inference logs you want to send to the Kafka topic (i.e., `MODEL_INPUTS`, `PREDICTIONS` or both)
+
+Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
+
+## Code
+
+### Step 1: Connect to Hopsworks
+
+=== "Python"
+
+  ```python
+  import hopsworks
+
+
+  project = hopsworks.login()
+
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
+
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
+
+### Step 2: Define an inference logger
+
+=== "Python"
+
+  ```python
+  from hsml.inference_logger import InferenceLogger
+  from hsml.kafka_topic import KafkaTopic
+
+
+  new_topic = KafkaTopic(
+      name="CREATE",
+      # optional
+      num_partitions=1,
+      num_replicas=1,
+  )
+
+  my_logger = InferenceLogger(kafka_topic=new_topic, mode="ALL")
+  ```
+
+!!! notice "Use dict for simpler code"
+    Similarly, you can create the same logger with:
+
+    ```python
+    my_logger = InferenceLogger(kafka_topic={"name": "CREATE"}, mode="ALL")
+    ```
+
+### Step 3: Create a deployment with the inference logger
+
+=== "Python"
+
+  ```python
+  my_model = mr.get_model("my_model", version=1)
+
+  my_model.deploy(inference_logger=my_logger)
+  ```
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-class"></code> [`InferenceLogger`][hsml.inference_logger.InferenceLogger]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+## Topic schema
+
+Model inputs and predictions are logged in separate events, sharing the same `requestId` field.
+
+!!! example "Kafka topic schema"
+
+    ``` json
+    {
+        "fields": [
+            { "name": "servingId", "type": "int" },
+            { "name": "modelName", "type": "string" },
+            { "name": "modelVersion", "type": "int" },
+            { "name": "requestTimestamp", "type": "long" },
+            { "name": "responseHttpCode", "type": "int" },
+            { "name": "inferenceId", "type": "string" },
+            { "name": "messageType", "type": "string" },
+            { "name": "payload", "type": "string" }
+        ],
+        "name": "inferencelog",
+        "type": "record"
+    }
+    ```
