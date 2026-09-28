@@ -1,0 +1,37 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 640 412" role="img" aria-label="The Wizard flow. Choose what to build, bring data (public tables, the catalog, an upload or an external source), pick the features and the target, and the Wizard writes a kickoff prompt that it hands to Claude in the project terminal, which builds the system with the hops CLI." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="wz-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="wz-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+  <path class="viz-edge" d="M320 76 L320 104" marker-start="url(#wz-knob)" marker-end="url(#wz-arrow)"/>
+  <path class="viz-edge" d="M320 156 L320 184" marker-start="url(#wz-knob)" marker-end="url(#wz-arrow)"/>
+  <path class="viz-edge" d="M320 236 L320 264" marker-start="url(#wz-knob)" marker-end="url(#wz-arrow)"/>
+  <path class="viz-edge" d="M320 316 L320 344" marker-start="url(#wz-knob)" marker-end="url(#wz-arrow)"/>
+  <g data-tone="accent">
+    <rect class="viz-node" x="116" y="24" width="408" height="52" rx="4"/>
+    <text class="viz-node-title" x="320" y="46" text-anchor="middle">WIZARD</text>
+    <text class="viz-node-subtitle" x="320" y="64" text-anchor="middle">what do you want to build today?</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="116" y="104" width="408" height="52" rx="4"/>
+    <text class="viz-node-title" x="320" y="126" text-anchor="middle">BRING DATA</text>
+    <text class="viz-node-subtitle" x="320" y="144" text-anchor="middle">public · catalog · upload · external</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="116" y="184" width="408" height="52" rx="4"/>
+    <text class="viz-node-title" x="320" y="206" text-anchor="middle">PICK FEATURES</text>
+    <text class="viz-node-subtitle" x="320" y="224" text-anchor="middle">what are you trying to predict?</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="116" y="264" width="408" height="52" rx="4"/>
+    <text class="viz-node-title" x="320" y="286" text-anchor="middle">KICKOFF PROMPT</text>
+    <text class="viz-node-subtitle" x="320" y="304" text-anchor="middle">the plan, written for the agent</text>
+  </g>
+  <g data-tone="data">
+    <rect class="viz-node" x="116" y="344" width="408" height="52" rx="4"/>
+    <text class="viz-node-title" x="320" y="366" text-anchor="middle">TERMINAL</text>
+    <text class="viz-node-subtitle" x="320" y="384" text-anchor="middle">claude builds it, with hops</text>
+  </g>
+</svg>
+</figure>

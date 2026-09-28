@@ -27,8 +27,8 @@ Otherwise, the third and fourth steps are also optional and show you how to setu
 In order to setup feature monitoring for a Feature Group, you will need:
 
 - A Hopsworks project.
-  If you don't have a project yet you can go to [app.hopsworks.ai](https://app.hopsworks.ai), signup with your email and create your first project.
-- An API key, you can get one by going to "Account Settings" on [app.hopsworks.ai](https://app.hopsworks.ai).
+  If you don't have a project yet you can go to [run.hopsworks.ai](https://run.hopsworks.ai), signup with your email and create your first project.
+- An API key, you can get one by going to "Account Settings" on [run.hopsworks.ai](https://run.hopsworks.ai).
 - The Hopsworks Python library installed in your client.
   See the [installation guide](../../client_installation/index.md).
 - A Feature Group

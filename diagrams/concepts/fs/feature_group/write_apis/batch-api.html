@@ -1,0 +1,97 @@
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 850 380" role="img" aria-label="Animated diagram of the Batch API write path for Spark clients. A dataframe enters Hopsworks and splits: online rows go through Kafka into the online store on RonDB, while the large backfill writes directly to the Delta tables of the offline store over the HDFS API, skipping Kafka to avoid write amplification." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="wb-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="wb-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <circle class="viz-edge-knob" cx="5" cy="5" r="3"/>
+    </marker>
+  </defs>
+
+  <path class="viz-edge" d="M152 198 L186 198" marker-start="url(#wb-knob)" marker-end="url(#wb-arrow)"/>
+  <path class="viz-edge" d="M334 186 C343.9 186 346.1 120 356 120 L372 120" marker-start="url(#wb-knob)" marker-end="url(#wb-arrow)"/>
+  <path class="viz-edge" d="M496 120 C515.8 120 520.2 91 540 91 L556 91" marker-start="url(#wb-knob)" marker-end="url(#wb-arrow)"/>
+  <path class="viz-edge" d="M334 210 C398 210 476 301 540 301 L556 301" marker-start="url(#wb-knob)" marker-end="url(#wb-arrow)"/>
+  <text class="viz-edge-label viz-meta" x="445" y="248" text-anchor="middle">HDFS API · direct write</text>
+
+  <g>
+    <rect class="viz-node" x="16" y="166" width="136" height="64" rx="4"/>
+    <text class="viz-node-title" x="84" y="192" text-anchor="middle">SPARK CLIENT</text>
+    <text class="viz-node-subtitle" x="84" y="212" text-anchor="middle">large backfills</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="186" y="166" width="148" height="64" rx="4"/>
+    <text class="viz-node-title" x="260" y="192" text-anchor="middle">HOPSWORKS</text>
+    <text class="viz-node-subtitle" x="260" y="212" text-anchor="middle">splits the write</text>
+  </g>
+  <g id="wb-kafka" data-tone="data">
+    <rect class="viz-node" x="372" y="92" width="124" height="56" rx="4"/>
+    <text class="viz-node-title" x="434" y="114" text-anchor="middle">KAFKA</text>
+    <text class="viz-node-subtitle" x="434" y="132" text-anchor="middle">online path</text>
+  </g>
+
+  <rect class="viz-kv-frame" x="556" y="36" width="252" height="110" rx="6"/>
+  <path class="viz-kv-header" d="M556 42 a6 6 0 0 1 6 -6 h240 a6 6 0 0 1 6 6 v20 h-252 z"/>
+  <text class="viz-kv-title" x="568" y="53">Online store</text>
+  <text class="viz-meta" x="796" y="53" text-anchor="end">RonDB</text>
+  <g id="wb-row-on" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="564" y="70" width="236" height="26" rx="3"/>
+    <text class="viz-kv-key" x="572" y="87">amount_sum</text>
+    <text id="wb-von" class="viz-kv-val" x="792" y="87" text-anchor="end">–</text>
+  </g>
+  <text class="viz-meta" x="568" y="116">latest values only</text>
+
+  <rect class="viz-kv-frame" x="556" y="240" width="252" height="120" rx="6"/>
+  <path class="viz-kv-header" d="M556 246 a6 6 0 0 1 6 -6 h240 a6 6 0 0 1 6 6 v20 h-252 z"/>
+  <text class="viz-kv-title" x="568" y="257">Offline store</text>
+  <text class="viz-meta" x="796" y="257" text-anchor="end">Delta</text>
+  <g id="wb-row-off" class="viz-kv-entry" data-tone="write">
+    <rect class="viz-kv-cell" x="564" y="274" width="236" height="26" rx="3"/>
+    <text class="viz-kv-key" x="572" y="291">delta commit</text>
+    <text id="wb-voff" class="viz-kv-val" x="792" y="291" text-anchor="end">–</text>
+  </g>
+  <text id="wb-note" class="viz-meta viz-fade" x="568" y="320" style="opacity:0">skips Kafka, no write amplification</text>
+
+  <g transform="translate(134 189)">
+    <g id="wb-p1" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="40" height="18" rx="3"/>
+      <text x="20" y="9" text-anchor="middle">df</text>
+    </g>
+  </g>
+  <g transform="translate(330 111)">
+    <g id="wb-p2" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="48" height="18" rx="3"/>
+      <text x="24" y="9" text-anchor="middle">rows</text>
+    </g>
+  </g>
+  <g transform="translate(500 111)">
+    <g id="wb-p3" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect width="48" height="18" rx="3"/>
+      <text x="24" y="9" text-anchor="middle">rows</text>
+    </g>
+  </g>
+  <g transform="translate(322 201)">
+    <g id="wb-p4" class="viz-packet" data-tone="write" style="opacity:0">
+      <rect x="8" width="70" height="18" rx="3"/>
+      <text x="43" y="9" text-anchor="middle">backfill</text>
+    </g>
+  </g>
+</svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 750,
+  "loopDelay": 2400,
+  "steps": [
+    { "#wb-p1": {"opacity": 1} },
+    { "#wb-p1": {"x": 70}, "$ms": 650 },
+    { "#wb-p1": {"opacity": 0}, "#wb-p2": {"opacity": 1}, "#wb-p4": {"opacity": 1}, "$ms": 500 },
+    { "#wb-p2": {"x": 80}, "#wb-kafka": {"state": "active"}, "#wb-p4": {"x": 230, "y": 96}, "$ms": 850 },
+    { "#wb-p2": {"opacity": 0}, "#wb-p3": {"opacity": 1}, "#wb-p4": {"opacity": 0}, "#wb-row-off": {"state": "active"}, "#wb-voff": {"text": "c-0231"}, "$ms": 600 },
+    { "#wb-p3": {"x": 70, "y": -20}, "$ms": 650 },
+    { "#wb-p3": {"opacity": 0}, "#wb-row-on": {"state": "active"}, "#wb-von": {"text": "312.40"}, "$ms": 900 },
+    { "#wb-row-on": {"state": "visited"}, "#wb-row-off": {"state": "visited"}, "#wb-note": {"opacity": 1}, "#wb-kafka": {"state": null}, "$ms": 1600 }
+  ]
+}
+</script>
+</figure>

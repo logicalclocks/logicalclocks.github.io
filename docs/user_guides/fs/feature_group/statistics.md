@@ -65,8 +65,13 @@ By default the value is empty list `[]` and the statistics are computed for all 
 
 ## Enable statistics after creating a feature group
 
-It is possible users to change the statistics configuration after a feature group was created.
-Either to add or remove a class of statistics, or to change the set of features for which to compute statistics.
+You can change the statistics configuration after a feature group was created, to add or remove a class of statistics or to change the set of features for which to compute them.
+In the UI, open the feature group in the `Catalog` and click the edit icon; the statistics configuration sits at the top of the edit page.
+
+<figure>
+  <img src="../../../../assets/images/guides/feature_group/edit_statistics_config.png" alt="Edit Feature Group page with the statistics configuration checkboxes" />
+  <figcaption>Statistics configuration on the Edit Feature Group page.</figcaption>
+</figure>
 
 === "Python"
 
@@ -104,4 +109,11 @@ As external feature groups are read only from an Hopsworks perspective, statisti
 
 ## Inspect statistics
 
-You can also create a new feature group through the UI.
+Open the feature group in the `Catalog` and select `Feature Statistics` in its sidebar.
+The page lists every feature with its count, completeness, min, max, mean and standard deviation, plus a histogram per numerical feature, for the latest commit or any earlier one you pick.
+The same numbers are available from the API with `fg.get_statistics()`.
+
+<figure>
+  <img src="../../../../assets/images/guides/feature_group/feature_statistics.png" alt="Feature Statistics page listing every feature with its descriptive statistics" />
+  <figcaption>Feature Statistics for a feature group, one card per feature.</figcaption>
+</figure>

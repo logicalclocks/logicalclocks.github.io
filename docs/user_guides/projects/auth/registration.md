@@ -20,19 +20,7 @@ Click on the _Register_ button on the login page and register your email address
     <figcaption>Register new account</figcaption>
   </figure>
 
-### Step 2: Enable Two-Factor Authentication
-
-If two-factor authentication is required you will be presented with a page like in the figure below.
-Scan the QR
-code or type the code in bold to register your account in your authenticator app
-(example. [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en&gl=US)).
-
-  <figure>
-    <img width="400px" src="../../../../assets/images/auth/register-2fa.png" alt="two-factor" />
-    <figcaption>Add two-factor authentication</figcaption>
-  </figure>
-
-### Step 3: Validate your email address
+### Step 2: Validate your email address
 
 Validate your email address by clicking on the link in the validation email you received.
 After your account is created an administrator needs to validate your account before you can log in.
@@ -41,3 +29,8 @@ After your account is created an administrator needs to validate your account be
     <img width="400px" src="../../../../assets/images/auth/account-created.png" alt="Register" />
     <figcaption>Account created</figcaption>
   </figure>
+
+## Two-factor authentication
+
+Two-factor authentication is enabled from your account settings after you log in, not during registration.
+See [how to enable a second factor][step-3-enablereset-two-factor-authentication] in your profile settings.

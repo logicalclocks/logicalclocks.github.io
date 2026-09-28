@@ -7,16 +7,16 @@ Administrative reference for cluster operators upgrading or installing Hopsworks
 The Airflow subchart now creates four Kubernetes objects in addition to
 what the v1 chart deployed:
 
-1. `dag-processor` Deployment — runs `airflow dag-processor`, parses
+1. `dag-processor` Deployment: runs `airflow dag-processor`, parses
    DAGs listed in the manifest. Carries only validator keys (no private
    keys).
-2. `keys-bootstrap` pre-install Job — generates two RSA 4096 keypairs
+2. `keys-bootstrap` pre-install Job: generates two RSA 4096 keypairs
    (api-server + scheduler) and writes them to the
    `hopsworks-airflow-keys` Secret. Idempotent; re-runs are no-ops.
-3. `db-reset` pre-install Job — drops and recreates the Airflow metadata database before migration.
+3. `db-reset` pre-install Job: drops and recreates the Airflow metadata database before migration.
    Install-only: gated by `hopsworkslib.isInstall`, so it never re-fires on `helm upgrade` or ArgoCD resync.
    Set `global._hopsworks.mode=install` on the first install only.
-4. `hopsworks-airflow-keys` Secret — four PEM files (two private, two
+4. `hopsworks-airflow-keys` Secret: four PEM files (two private, two
    public). Pods project only the keys they need.
 
 The existing `webserver` (now Airflow `api-server`) and `scheduler`

@@ -60,7 +60,9 @@ These are a few additional **optional** arguments:
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `Snowflake` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -72,7 +74,8 @@ Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
 Enter the details for your Snowflake connector.
 Start by giving it a **name** and an optional **description**.
 
-01. Select "Snowflake" as storage.
+01. The form opens with `Source` set to `Snowflake`.
+    Click `Change source` to pick a different one.
 02. Specify the hostname for your account in the following format `<account_identifier>.snowflakecomputing.com` or `https://<orgname>-<account_name>.snowflakecomputing.com`.
 03. Login name for the Snowflake user.
 04. **Authentication** Choose between user account Password, Token or Private Key options.

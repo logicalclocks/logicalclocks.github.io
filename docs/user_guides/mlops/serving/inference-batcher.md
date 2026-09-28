@@ -100,6 +100,9 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   my_model.deploy(inference_batcher=my_batcher)
   ```
 
-### API Reference
+!!! api "API reference"
 
-[`InferenceBatcher`][hsml.inference_batcher.InferenceBatcher]
+    - <code class="doc-symbol doc-symbol-class"></code> [`InferenceBatcher`][hsml.inference_batcher.InferenceBatcher]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

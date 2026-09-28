@@ -30,9 +30,13 @@ from opensearchpy import OpenSearch
 client = OpenSearch(**opensearch_api.get_default_py_config())
 ```
 
-### API Reference
+!!! api "API reference"
 
-[`OpenSearchApi`][hopsworks_common.core.opensearch_api.OpenSearchApi]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_opensearch_api`][hopsworks_common.project.Project.get_opensearch_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`OpenSearchApi`][hopsworks_common.core.opensearch_api.OpenSearchApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_default_py_config`][hopsworks_common.core.opensearch_api.OpenSearchApi.get_default_py_config]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Going Further
 

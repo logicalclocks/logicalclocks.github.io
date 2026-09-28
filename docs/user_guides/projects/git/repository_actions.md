@@ -23,14 +23,9 @@ The operations to perform on the cloned repository can be found in the dropdown 
 Note that some repository actions will require the username and token to be configured first depending on the provider.
 For example to be able to perform a push action in any repository, you must configure the provider for the repository first.
 To be able to perform a pull action for the for a GitLab repository, you must configure the GitLab provider first.
-You will see the dialog below in the case you need to configure the provider first to perform the repository action.
-
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/git/provider_not_configured_for_repo_action.png" alt="Provider not configured">
-    <figcaption>Configure provider prompt</figcaption>
-  </figure>
-</p>
+When the provider is not configured, the actions that need it are greyed out in the actions menu, `Commit` and `Push` among them.
+The Git page also shows an info banner stating that public repositories can be cloned without authentication and pointing you to configure a GitHub, GitLab or BitBucket provider.
+Configure the provider as described in [Git Provider](configure_git_provider.md) to enable those actions.
 
 ## Read only repositories
 
@@ -65,7 +60,11 @@ git_repo = git_api.get_repo(REPOSITORY_NAME)
 git_repo.commit("Test commit")
 ```
 
-### API Reference
+!!! api "API reference"
 
-Api reference for repository actions is available here:
-[`GitRepo`][hopsworks_common.git_repo.GitRepo]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitApi`][hopsworks_common.core.git_api.GitApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_repo`][hopsworks_common.core.git_api.GitApi.get_repo]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitRepo`][hopsworks_common.git_repo.GitRepo]
+        - <code class="doc-symbol doc-symbol-method"></code> [`commit`][hopsworks_common.git_repo.GitRepo.commit]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

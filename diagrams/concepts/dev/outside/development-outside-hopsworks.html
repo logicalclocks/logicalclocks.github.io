@@ -1,0 +1,59 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 640 356" role="img" aria-label="Development outside Hopsworks. External clients, Python, Spark, SQL, CI/CD, orchestrators and BI tools, use the Hopsworks SDK in Python or Java, or the hops CLI (for people, CI and coding agents), both authenticated with an API key over the REST API. The REST API fronts the project services (Kafka, Git, jobs, OpenSearch), the feature store, and the models: registry and serving." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="do-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="do-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <path class="viz-edge" d="M170 76 L170 140" marker-start="url(#do-knob)" marker-end="url(#do-arrow)"/>
+  <path class="viz-edge" d="M470 76 L470 140" marker-start="url(#do-knob)" marker-end="url(#do-arrow)"/>
+  <text class="viz-edge-label viz-meta" x="320" y="108" text-anchor="middle">api key</text>
+  <path class="viz-edge" d="M170 192 L170 216" marker-start="url(#do-knob)" marker-end="url(#do-arrow)"/>
+  <path class="viz-edge" d="M470 192 L470 216" marker-start="url(#do-knob)" marker-end="url(#do-arrow)"/>
+  <path class="viz-edge" d="M120 248 L120 272" marker-start="url(#do-knob)" marker-end="url(#do-arrow)"/>
+  <path class="viz-edge" d="M320 248 L320 272" marker-start="url(#do-knob)" marker-end="url(#do-arrow)"/>
+  <path class="viz-edge" d="M520 248 L520 272" marker-start="url(#do-knob)" marker-end="url(#do-arrow)"/>
+
+  <g data-tone="data">
+    <rect class="viz-node" x="16" y="24" width="608" height="52" rx="4"/>
+    <text class="viz-node-title" x="320" y="46" text-anchor="middle">CLIENTS</text>
+    <text class="viz-node-subtitle" x="320" y="64" text-anchor="middle">python · spark · sql · ci/cd · airflow · agents</text>
+  </g>
+
+  <rect class="viz-zone" data-tone="accent" x="16" y="124" width="608" height="216" rx="6"/>
+  <text class="viz-label" x="28" y="118" style="fill:var(--hops-accent-text)">Hopsworks</text>
+  <g data-tone="accent">
+    <rect class="viz-node" x="32" y="140" width="276" height="52" rx="4"/>
+    <text class="viz-node-title" x="170" y="162" text-anchor="middle">HOPSWORKS SDK</text>
+    <text class="viz-node-subtitle" x="170" y="180" text-anchor="middle">python · java</text>
+  </g>
+  <g data-tone="accent">
+    <rect class="viz-node" x="332" y="140" width="276" height="52" rx="4"/>
+    <text class="viz-node-title" x="470" y="162" text-anchor="middle">HOPS CLI</text>
+    <text class="viz-node-subtitle" x="470" y="180" text-anchor="middle">humans · ci · agents</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="32" y="216" width="576" height="32" rx="4"/>
+    <text class="viz-node-title" x="320" y="237" text-anchor="middle">REST API</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="32" y="272" width="176" height="52" rx="4"/>
+    <text class="viz-node-title" x="120" y="294" text-anchor="middle">PROJECTS</text>
+    <text class="viz-node-subtitle" x="120" y="312" text-anchor="middle">kafka · git · jobs</text>
+  </g>
+  <a class="viz-link" href="../../fs/">
+  <g>
+    <rect class="viz-node" x="232" y="272" width="176" height="52" rx="4"/>
+    <text class="viz-node-title" x="320" y="294" text-anchor="middle">FEATURE STORE</text>
+    <text class="viz-node-subtitle" x="320" y="312" text-anchor="middle">groups · views</text>
+  </g>
+  </a>
+  <a class="viz-link" href="../../mlops/registry/">
+  <g>
+    <rect class="viz-node" x="432" y="272" width="176" height="52" rx="4"/>
+    <text class="viz-node-title" x="520" y="294" text-anchor="middle">MODELS</text>
+    <text class="viz-node-subtitle" x="520" y="312" text-anchor="middle">registry · serving</text>
+  </g>
+  </a>
+</svg>
+</figure>

@@ -58,26 +58,48 @@ For java client, and python client before v3.4, the `primary_keys` are the set o
 Python client is backward compatible.
 It means that the `primary_keys` used before v3.4 can be applied to python client of later versions as well.
 
-| Setting | primary key of `left_fg` | primary key of `right_fg` | join conditions | prefix | primary_keys | note |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | id | id | ```on=["id"]``` | | id | Same feature name is used in the join. |
-| 2 | id1 | id2 | `left_on=["id1"], right_on=["id2"]` | | id1 | Different feature names are used in the join. |
-| 3 | id1, id2 | id1 | `on=["id1"]` | | id1, id2 | `id2` is not part of the join conditions |
-| 4 | id, user_id | id | `left_on=["user_id"], right_on=["id"]` | | id, user_id | Value of `user_id` is used for retrieving features from `right_fg` |
-| 5 | id1 | id1, id2 | `on=["id1"]` | | id1, id2 | `id2` is not part of the join conditions |
-| 6 | id | id, user_id | `left_on=["id"], right_on=["user_id"]` | “right_“ | id, “right_id“ | Value of “right_id“ and "id" are used for retrieving features from `right_fg` |
-| 7 | id | id, user_id | `left_on=["id"], right_on=["user_id"]` | | id, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id“ and "id" are used for retrieving features from `right_fg`. See note below. |
-| 8 | id | id | `left_on=["id"], right_on=["feature_1"]` | “right_“ | id, “right_id“ | No primary key from `right_fg` is used in the join. Value of `right_id` is used for retrieving features from `right_fg` |
-| 9 | id | id | `left_on=["id"], right_on=["feature_1"]` | | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `right_fg` is used in the join. Value of "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id" is used for retrieving features from "right_fg`. See note below. |
-| 10 | id | id | `left_on=["feature_1"], right_on=["id"]` | “right_“ | id, “right_id“ | No primary key from `left_fg` is used in the join. Value of `right_id` is used for retrieving features from `right_fg` |
-| 11 | id | id | `left_on=["feature_1"], right_on=["id"]` | | id1, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” | No primary key from `left_fg` is used in the join. Value of “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_id” is used for retrieving features from `right_fg`. See note below. |
-| 12 | user, year | user, year | `left_on=["user"], right_on=["user"]` | “right_“ | user, year, “right_year“ | Value of "user" and "right_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`. |
-| 13 | user, year | user, year | `left_on=["user"], right_on=["user"]` | | user, year, “fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year” | Value of "user" and "fgId_&lt;rightFgId&gt;_&lt;joinIndex&gt;_year" are used for retrieving features from `right_fg`. `right_fg` can be the same as feature group as `left_fg`. See note below. |
+The serving keys follow four rules, one per branch of the flow below:
 
-Note:
+- A `left_fg` primary key is always a serving key, under its own name.
+- A `right_fg` primary key that the join matches to a `left_fg` primary key is covered by that key.
+- A `right_fg` primary key the join does not match becomes a serving key under its own name, if that name is still free.
+- If the name is already taken, the serving key is the join prefix plus the name, or `fgId_<id>_<i>_` plus the name when the join has no prefix.
 
-"&lt;rightFgId&gt;" can be found by `right_fg.id`. "&lt;joinIndex&gt;" is the order or the feature group in the join.
-In the example, it is 1 because `right_fg` is in the first join in the query `left_fg.join(right_fg, <join conditions>)`.
+`<id>` is `right_fg.id` and `<i>` is the position of the feature group in the join, 1 for the first join.
+
+=== "As a flow"
+
+    --8<-- "user_guides/fs/feature_view/feature-vectors/serving-keys.html"
+
+=== "As a table"
+
+    `id = user_id` stands for `left_on=["id"], right_on=["user_id"]`, and `id = id` for `on=["id"]`.
+
+    | `left_fg` keys | `right_fg` keys | join | prefix | serving keys |
+    | --- | --- | --- | --- | --- |
+    | id | id | `id = id` |  | id |
+    | id1 | id2 | `id1 = id2` |  | id1 |
+    | id1, id2 | id1 | `id1 = id1` |  | id1, id2 |
+    | id, user_id | id | `user_id = id` |  | id, user_id |
+    | id1 | id1, id2 | `id1 = id1` |  | id1, id2 |
+    | id | id, user_id | `id = user_id` | `right_` | id, `right_id` |
+    | id | id, user_id | `id = user_id` |  | id, `fgId_<id>_<i>_id` |
+    | id | id | `id = feature_1` | `right_` | id, `right_id` |
+    | id | id | `id = feature_1` |  | id, `fgId_<id>_<i>_id` |
+    | id | id | `feature_1 = id` | `right_` | id, `right_id` |
+    | id | id | `feature_1 = id` |  | id, `fgId_<id>_<i>_id` |
+    | user, year | user, year | `user = user` | `right_` | user, year, `right_year` |
+    | user, year | user, year | `user = user` |  | user, year, `fgId_<id>_<i>_year` |
+
+For example, joining two feature groups that both have `id` as primary key on `left_on=["id"], right_on=["user_id"]` with `prefix="right_"` gives the serving keys `id` and `right_id`:
+
+```python
+query = left_fg.select_all().join(
+    right_fg.select_all(), left_on=["id"], right_on=["user_id"], prefix="right_"
+)
+feature_view = fs.create_feature_view(name="fv", query=query)
+feature_view.get_feature_vector({"id": 42, "right_id": 7})
+```
 
 ### Missing Primary Key Entries
 

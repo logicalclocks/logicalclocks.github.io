@@ -32,7 +32,7 @@ Click on
 To be able to authenticate with Kerberos you need to configure your browser to use Kerberos.
 Note that without a properly configured browser, the Kerberos token is not sent to the server and so SSO will not work.
 
-If Kerberos is not configured properly you will see **Wrong credentials** message when trying to log in.
+If Kerberos is not configured properly you will see an error such as **User Principal Name not set** when trying to log in.
 <figure>
   <img width="400px" src="../../../../assets/images/admin/ldap/no-ticket.png" alt="Browser not configured" />
   <figcaption>Missing Kerberos ticket</figcaption>

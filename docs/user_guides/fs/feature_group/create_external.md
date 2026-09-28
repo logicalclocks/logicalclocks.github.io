@@ -135,29 +135,37 @@ Users can select which subset of the feature group data they want to make availa
 
 Hopsworks Feature Store does not support time-travel queries on external feature groups.
 
-Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only when using the [Feature Query Service](../../../setup_installation/common/arrow_flight_duckdb.md).
+Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only through the ArrowFlight Server with DuckDB, which Hopsworks enables by default.
 Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [`FeatureView.create_training_data`][hsfs.feature_view.FeatureView.create_training_data], [`FeatureView.create_train_test_split`][hsfs.feature_view.FeatureView.create_train_test_split] or [`FeatureView.create_train_validation_test_split`][hsfs.feature_view.FeatureView.create_train_validation_test_split].
 
-### API Reference
+!!! api "API reference"
 
-[`ExternalFeatureGroup`][hsfs.feature_group.ExternalFeatureGroup].
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_data_source`][hsfs.feature_store.FeatureStore.get_data_source]
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_external_feature_group`][hsfs.feature_store.FeatureStore.create_external_feature_group]
+    - <code class="doc-symbol doc-symbol-class"></code> [`ExternalFeatureGroup`][hsfs.feature_group.ExternalFeatureGroup]
+        - <code class="doc-symbol doc-symbol-method"></code> [`save`][hsfs.feature_group.ExternalFeatureGroup.save]
+        - <code class="doc-symbol doc-symbol-method"></code> [`insert`][hsfs.feature_group.ExternalFeatureGroup.insert]
+        - <code class="doc-symbol doc-symbol-method"></code> [`read`][hsfs.feature_group.ExternalFeatureGroup.read]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Create using the UI
 
 You can also create a new feature group through the UI.
-For this, navigate to the `Data Source` section and make sure you have you have available Data Source for the desired platform or create [new](../data_source/index.md).
+For this, navigate to the `Data Sources` section and make sure you have a data source for the desired platform, or create a [new](../data_source/index.md) one.
+Table browsing is available for database and warehouse sources such as Snowflake, BigQuery, Redshift and SQL databases; the built-in HopsFS and JDBC sources of a project do not offer it.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/data_source.png" style="border: 10px solid #f5f5f5" alt="Data Source UI">
+    <img src="../../../../assets/images/guides/fs/data_source/data_source.png" alt="Data Sources list">
   </figure>
 </p>
 
-To create a feature group, proceed by clicking `Next: Select Tables` once all of the necessary details have been provided.
+Open the data source with the pencil at the end of its row and click `Next: Select Tables` at the bottom of the form.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/edit.png" alt="use Data Source">
+    <img src="../../../../assets/images/guides/fs/data_source/edit.png" alt="Edit data source form with the Next: Select Tables button">
   </figure>
 </p>
 
@@ -166,14 +174,15 @@ In the UI you can either select one or more tables or define a custom SQL query.
 ### Option A: Select tables
 
 The database navigation structure depends on your specific data source.
-You'll navigate through the appropriate hierarchy for your platform—such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
+You'll navigate through the appropriate hierarchy for your platform, such as Database → Schema → Table for Snowflake, or Project → Dataset → Table for BigQuery.
 
 Select one or more tables. For each selected table, you must designate one or more columns as primary keys before proceeding.
-You can also optionally select a single column as a timestamp for the row (supported types are timestamp, date and bigint), and edit names and data types of individual columns you want to include.
+You can also optionally select a single column as the event time for the row (supported types are timestamp, date and bigint), and edit names and data types of the individual columns you want to include.
+`Preview Metadata` and `Preview Data` show the source schema and a sample of rows before you commit to anything.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_table.png" style="border: 10px solid #f5f5f5" alt="Select Table in Data Sources and specify features">
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_table.png" alt="Select a table in the data source and configure its columns">
   </figure>
 </p>
 
@@ -181,11 +190,11 @@ You can also optionally select a single column as a timestamp for the row (suppo
 
 Instead of selecting a table, you can write a custom SQL query to define the feature group.
 This is useful when you need to join multiple tables or apply transformations at read time.
-As with the table option, you must designate one or more columns as primary keys and optionally select a timestamp column.
+Click `Fetch Schema` to resolve the columns of the query, then, as with the table option, designate one or more columns as primary keys, optionally pick an event time column and give the feature group a name.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_query.png" style="border: 10px solid #f5f5f5" alt="Define a SQL query in Data Sources and specify features">
+    <img src="../../../../assets/images/guides/fs/data_source/configure_feature_group_query.png" alt="Define a SQL query in the data source and configure its columns">
   </figure>
 </p>
 

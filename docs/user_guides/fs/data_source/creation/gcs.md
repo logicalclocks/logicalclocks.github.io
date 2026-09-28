@@ -38,7 +38,9 @@ Before you begin this guide you'll need to retrieve the following information ab
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `Google Cloud Storage` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -55,7 +57,8 @@ Start by giving it a unique **name** and an optional **description**.
   <figcaption>GCS Connector Creation Form</figcaption>
 </figure>
 
-1. Select `Google Cloud Storage` as the storage.
+1. The form opens with `Source` set to `Google Cloud Storage`.
+   Click `Change source` to pick a different one.
 2. Next, set the name of the GCS Bucket you wish to connect with.
 3. Authentication: Here you should upload your `JSON keyfile for service account` used for authentication.
    You can choose to either upload from your local using `Upload new file` or choose an existing file within project using `From Project`.

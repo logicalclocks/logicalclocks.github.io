@@ -31,7 +31,9 @@ jdbc:mysql://10.0.2.15:3306/[databaseName]?useSSL=false&allowPublicKeyRetrieval=
 
 ### Step 1: Set up new Data Source
 
-Head to the Data Source View on Hopsworks (1) and set up a new data source (2).
+Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
+The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
+Pick the `JDBC` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -47,7 +49,8 @@ Enter the details for your JDBC enabled database.
   <figcaption>JDBC Connector Creation Form</figcaption>
 </figure>
 
-1. Select "JDBC" as the storage.
+1. The form opens with `Source` set to `JDBC`.
+   Click `Change source` to pick a different one.
 2. Enter the JDBC connection url.
    This can for example also contain the username and password.
 3. Add additional key/value arguments to be passed to the connection, such as username or password.

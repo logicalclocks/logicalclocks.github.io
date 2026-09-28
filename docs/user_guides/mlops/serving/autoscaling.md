@@ -123,11 +123,14 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
   )
   ```
 
-### API Reference
+!!! api "API reference"
 
-[`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig]
+    - <code class="doc-symbol doc-symbol-class"></code> [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig]
+    - <code class="doc-symbol doc-symbol-class"></code> [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_transformer`][hsml.model_serving.ModelServing.create_transformer]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
 
-[`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Scale metrics
 
@@ -146,8 +149,8 @@ See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), 
 
 | Parameter                     | Default | Range  | Description                                 |
 | ----------------------------- | ------- | ------ | ------------------------------------------- |
-| `minInstances`                | —       | ≥ 0    | Minimum replicas (0 enables scale-to-zero)  |
-| `maxInstances`                | —       | ≥ 1    | Maximum replicas (cannot be less than min)  |
+| `minInstances`                | n/a     | ≥ 0    | Minimum replicas (0 enables scale-to-zero)  |
+| `maxInstances`                | n/a     | ≥ 1    | Maximum replicas (cannot be less than min)  |
 | `panicWindowPercentage`       | 10.0    | 1–100  | Panic window as percentage of stable window |
 | `stableWindowSeconds`         | 60      | 6–3600 | Stable window duration in seconds           |
 | `panicThresholdPercentage`    | 200.0   | > 0    | Traffic threshold to trigger panic mode     |
