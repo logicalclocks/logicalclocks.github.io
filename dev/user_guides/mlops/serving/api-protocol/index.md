@@ -1,0 +1,115 @@
+# How to Select the API protocol for a Deployment { #api-protocol-guide }
+
+## Introduction
+
+Hopsworks supports both REST and gRPC as API protocols for sending inference requests to model deployments.
+While REST API protocol is supported in all types of model deployments, gRPC is currently supported for **Python model deployments** only.
+
+The protocol is chosen per deployment with `api_protocol`, in the creation form or in the Python API, and defaults to REST.
+REST is what `curl`, the published OpenAPI document and any client that is not the Python library use.
+
+gRPC costs less per request under concurrency.
+On a four-client benchmark it served 20 to 30 percent more requests per second and cut p99 latency by around 3 ms, and the gain grows with the batch size.
+It is worth choosing when the Python library is the only client.
+A deployment served by the [default predictor][deployment-schema] supports both protocols, because the library encodes the request and decodes the response at both ends.
+On gRPC the rows travel as one KServe v2 tensor per schema field, and `deployment.predict()` returns the same dictionary it returns over REST.
+
+A deployment that runs your own predictor script has to stay on REST unless the script is written for gRPC.
+Under gRPC the model server hands `predict()` KServe v2 tensors rather than rows, which a script written for REST cannot read.
+
+## Web UI
+
+### Step 1: Create a new deployment
+
+If you have at least one model already trained and saved in the Model Registry, navigate to the deployments page by clicking on the `Deployments` tab on the navigation menu on the left.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar.png" alt="Deployments navigation tab">
+    <figcaption>Deployments navigation tab</figcaption>
+  </figure>
+</p>
+
+Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` it the top-right corner.
+Both options will open the deployment creation form.
+
+### Step 2: Go to advanced options
+
+A simplified creation form will appear including the most common deployment fields from all available configurations.
+Resource allocation is part of the advanced options of a deployment.
+To navigate to the advanced creation form, click on `Advanced options`.
+
+<p align="center">
+  <figure>
+    <img  style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_adv_options.png" alt="Advance options">
+    <figcaption>Advanced options. Go to advanced deployment creation form</figcaption>
+  </figure>
+</p>
+
+### Step 3: Select the API protocol
+
+You can select the API protocol to be enabled in your model deployment in the advanced deployment form.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_grpc_select.png" alt="Select gRPC API protocol">
+    <figcaption>Select gRPC API protocol</figcaption>
+  </figure>
+</p>
+
+!!! info "Only one API protocol can be enabled in a model deployment (they cannot support both gRPC and REST)"
+    Currently, KServe model deployments are limited to one API protocol at a time.
+    Therefore, only one of REST or gRPC API protocols can be enabled at the same time on the same model deployment.
+    You cannot change the API protocol of existing deployments.
+
+    A gRPC deployment answers no HTTP requests, so `curl` cannot test it and the deployment page shows no curl example
+    and no OpenAPI reference for it.
+
+Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
+
+## Code
+
+### Step 1: Connect to Hopsworks
+
+=== "Python"
+
+  ```python
+  import hopsworks
+
+
+  project = hopsworks.login()
+
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
+
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
+
+### Step 2: Create a deployment with a specific API protocol
+
+=== "Python"
+
+  ```python
+  my_model = mr.get_model("my_model", version=1)
+
+  my_predictor = ms.create_predictor(
+      my_model,
+      api_protocol="GRPC",  # defaults to "REST"
+  )
+  my_predictor.deploy()
+
+  # or
+
+  my_deployment = ms.create_deployment(my_predictor)
+  my_deployment.save()
+  ```
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_predictor`][hsml.model_serving.ModelServing.create_predictor]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_deployment`][hsml.model_serving.ModelServing.create_deployment]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`api_protocol`][hsml.deployment.Deployment.api_protocol]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

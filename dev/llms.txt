@@ -1,0 +1,513 @@
+# Hopsworks Documentation
+
+> Official documentation for Hopsworks and its Feature Store - an open source data-intensive AI platform used for the development and operation of machine learning models at scale.
+- [Home](https://docs.hopsworks.ai/latest/) ([md](https://docs.hopsworks.ai/latest/index.md))
+- [Getting Started ↗](https://run.hopsworks.ai)
+
+## Concepts
+- [Concepts](https://docs.hopsworks.ai/latest/concepts/) ([md](https://docs.hopsworks.ai/latest/concepts/index.md))
+
+### Platform
+- [Hopsworks Platform](https://docs.hopsworks.ai/latest/concepts/hopsworks/) ([md](https://docs.hopsworks.ai/latest/concepts/hopsworks/index.md))
+- [FTI Pipeline Architecture](https://docs.hopsworks.ai/latest/concepts/fti/) ([md](https://docs.hopsworks.ai/latest/concepts/fti/index.md))
+- [AI Systems](https://docs.hopsworks.ai/latest/concepts/mlops/prediction_services/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/prediction_services/index.md))
+- [Agents and LLM Systems](https://docs.hopsworks.ai/latest/concepts/mlops/agents/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/agents/index.md))
+- [Projects and Governance](https://docs.hopsworks.ai/latest/concepts/projects/governance/) ([md](https://docs.hopsworks.ai/latest/concepts/projects/governance/index.md))
+- [Data Storage and Sharing](https://docs.hopsworks.ai/latest/concepts/projects/storage/) ([md](https://docs.hopsworks.ai/latest/concepts/projects/storage/index.md))
+- [MLOps Dictionary ↗](https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs)
+
+### Feature Store
+- [Architecture](https://docs.hopsworks.ai/latest/concepts/fs/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/index.md))
+- [Features and Feature Groups](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/fg_overview/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/fg_overview/index.md))
+- [Write APIs](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/write_apis/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/write_apis/index.md))
+- [External Feature Groups](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/external_fg/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/external_fg/index.md))
+- [Spine Group](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/spine_group/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/spine_group/index.md))
+- [Feature Pipelines](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/feature_pipelines/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/feature_pipelines/index.md))
+- [Streaming Feature Pipelines](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/streaming_feature_pipelines/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/streaming_feature_pipelines/index.md))
+- [Data Transformations](https://docs.hopsworks.ai/latest/concepts/mlops/data_transformations/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/data_transformations/index.md))
+
+### Feature Views
+- [Overview](https://docs.hopsworks.ai/latest/concepts/fs/feature_view/fv_overview/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_view/fv_overview/index.md))
+- [Offline API](https://docs.hopsworks.ai/latest/concepts/fs/feature_view/offline_api/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_view/offline_api/index.md))
+- [Online API](https://docs.hopsworks.ai/latest/concepts/fs/feature_view/online_api/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_view/online_api/index.md))
+- [Consistent Transformations](https://docs.hopsworks.ai/latest/concepts/fs/feature_view/training_inference_pipelines/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_view/training_inference_pipelines/index.md))
+- [On-Demand Features](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/on_demand_feature/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/on_demand_feature/index.md))
+
+### Data Quality
+- [Data Validation, Statistics, Alerts](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/fg_statistics/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/fg_statistics/index.md))
+- [Feature Monitoring](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/feature_monitoring/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/feature_monitoring/index.md))
+
+### Versioning & Lifecycle
+- [Versioning](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/versioning/) ([md](https://docs.hopsworks.ai/latest/concepts/fs/feature_group/versioning/index.md))
+- [Tags, Search, Lineage](https://docs.hopsworks.ai/latest/concepts/projects/search/) ([md](https://docs.hopsworks.ai/latest/concepts/projects/search/index.md))
+- [CI/CD](https://docs.hopsworks.ai/latest/concepts/projects/cicd/) ([md](https://docs.hopsworks.ai/latest/concepts/projects/cicd/index.md))
+
+### Models and Serving
+- [Model Training](https://docs.hopsworks.ai/latest/concepts/mlops/training/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/training/index.md))
+- [Model Registry](https://docs.hopsworks.ai/latest/concepts/mlops/registry/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/registry/index.md))
+- [Model Serving](https://docs.hopsworks.ai/latest/concepts/mlops/serving/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/serving/index.md))
+- [Model Monitoring](https://docs.hopsworks.ai/latest/concepts/mlops/model_monitoring/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/model_monitoring/index.md))
+
+### More
+- [Vector Index](https://docs.hopsworks.ai/latest/concepts/mlops/opensearch/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/opensearch/index.md))
+- [Development Inside Hopsworks](https://docs.hopsworks.ai/latest/concepts/dev/inside/) ([md](https://docs.hopsworks.ai/latest/concepts/dev/inside/index.md))
+- [Development Outside Hopsworks](https://docs.hopsworks.ai/latest/concepts/dev/outside/) ([md](https://docs.hopsworks.ai/latest/concepts/dev/outside/index.md))
+- [BI Tools](https://docs.hopsworks.ai/latest/concepts/mlops/bi_tools/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/bi_tools/index.md))
+
+## Guides
+- [How-To Guides](https://docs.hopsworks.ai/latest/user_guides/) ([md](https://docs.hopsworks.ai/latest/user_guides/index.md))
+
+### Clients
+- [Client Installation Guide](https://docs.hopsworks.ai/latest/user_guides/client_installation/) ([md](https://docs.hopsworks.ai/latest/user_guides/client_installation/index.md))
+- [Hopsworks CLI](https://docs.hopsworks.ai/latest/user_guides/client_installation/cli/) ([md](https://docs.hopsworks.ai/latest/user_guides/client_installation/cli/index.md))
+
+### Feature Store
+- [Feature Store Guides](https://docs.hopsworks.ai/latest/user_guides/fs/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/index.md))
+
+#### Data Source
+- [Data Source Guides](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/index.md))
+
+##### Configuration
+- [JDBC](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/jdbc/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/jdbc/index.md))
+- [Snowflake](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/snowflake/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/snowflake/index.md))
+- [Kafka](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/kafka/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/kafka/index.md))
+- [HopsFS](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/hopsfs/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/hopsfs/index.md))
+- [S3](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/s3/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/s3/index.md))
+- [AWS Glue](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/glue/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/glue/index.md))
+- [Redshift](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/redshift/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/redshift/index.md))
+- [ADLS](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/adls/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/adls/index.md))
+- [BigQuery](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/bigquery/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/bigquery/index.md))
+- [GCS](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/gcs/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/gcs/index.md))
+- [SQL](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sql/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sql/index.md))
+- [CRM, Sales & Analytics](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/crm_sales_analytics/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/crm_sales_analytics/index.md))
+- [REST API](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/rest_api/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/rest_api/index.md))
+- [Unity Catalog](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/unity_catalog/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/unity_catalog/index.md))
+- [SAP HANA](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sap_hana/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sap_hana/index.md))
+- [Usage](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/index.md))
+
+#### Feature Group
+- [Feature Group User Guides](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/index.md))
+- [Create](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/create/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/create/index.md))
+- [Partitioning and Clustering](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/partitioning/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/partitioning/index.md))
+- [Delta Maintenance](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/delta_maintenance/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/delta_maintenance/index.md))
+- [Create External](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/create_external/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/create_external/index.md))
+- [Ingest Data with dltHub](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/ingest_with_dlthub/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/ingest_with_dlthub/index.md))
+- [Create Spine](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/create_spine/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/create_spine/index.md))
+- [Deprecate](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/deprecation/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/deprecation/index.md))
+- [Data Types and Schema management](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/data_types/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/data_types/index.md))
+- [Statistics](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/statistics/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/statistics/index.md))
+
+##### Data Validation
+- [Getting started](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/data_validation/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/data_validation/index.md))
+- [Advanced guide](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/data_validation_advanced/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/data_validation_advanced/index.md))
+- [Best practices](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/data_validation_best_practices/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/data_validation_best_practices/index.md))
+- [Feature Monitoring](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/feature_monitoring/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/feature_monitoring/index.md))
+- [Notification](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/notification/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/notification/index.md))
+- [Ingestion Topic](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/topic/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/topic/index.md))
+- [On-Demand Transformations](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/on_demand_transformations/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/on_demand_transformations/index.md))
+- [Online Ingestion Observability](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/online_ingestion_observability/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/online_ingestion_observability/index.md))
+- [Time-To-Live (TTL)](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/ttl/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/ttl/index.md))
+
+#### Feature View
+- [Feature View User Guides](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/index.md))
+- [Overview](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/overview/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/overview/index.md))
+- [Training data](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/training-data/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/training-data/index.md))
+- [Batch data](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/batch-data/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/batch-data/index.md))
+- [Feature vectors](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature-vectors/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature-vectors/index.md))
+- [Feature server](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature-server/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature-server/index.md))
+- [Query](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/query/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/query/index.md))
+- [Helper Columns](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/helper-columns/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/helper-columns/index.md))
+- [Model-Dependent Transformation Functions](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/model-dependent-transformations/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/model-dependent-transformations/index.md))
+- [Spines](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/spine-query/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/spine-query/index.md))
+- [Feature Monitoring](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature_monitoring/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature_monitoring/index.md))
+- [Feature Logging](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature_logging/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/feature_logging/index.md))
+- [Deployment](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/deployment/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_view/deployment/index.md))
+- [Vector Similarity Search](https://docs.hopsworks.ai/latest/user_guides/fs/vector_similarity_search/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/vector_similarity_search/index.md))
+- [Transformation Functions](https://docs.hopsworks.ai/latest/user_guides/fs/transformation_functions/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/transformation_functions/index.md))
+- [Compute Engines](https://docs.hopsworks.ai/latest/user_guides/fs/compute_engines/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/compute_engines/index.md))
+
+#### Integrations
+- [Client Integrations](https://docs.hopsworks.ai/latest/user_guides/integrations/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/index.md))
+- [Python / SageMaker / Kubeflow](https://docs.hopsworks.ai/latest/user_guides/integrations/python/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/python/index.md))
+
+##### AWS EMR
+- [Networking](https://docs.hopsworks.ai/latest/user_guides/integrations/emr/networking/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/emr/networking/index.md))
+- [Configure EMR for Hopsworks](https://docs.hopsworks.ai/latest/user_guides/integrations/emr/emr_configuration/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/emr/emr_configuration/index.md))
+- [Azure HDInsight](https://docs.hopsworks.ai/latest/user_guides/integrations/hdinsight/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/hdinsight/index.md))
+
+##### Azure ML
+- [Designer](https://docs.hopsworks.ai/latest/user_guides/integrations/mlstudio_designer/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/mlstudio_designer/index.md))
+- [Notebooks](https://docs.hopsworks.ai/latest/user_guides/integrations/mlstudio_notebooks/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/mlstudio_notebooks/index.md))
+- [Apache Spark](https://docs.hopsworks.ai/latest/user_guides/integrations/spark/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/spark/index.md))
+- [Apache Beam](https://docs.hopsworks.ai/latest/user_guides/integrations/beam/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/beam/index.md))
+- [Java](https://docs.hopsworks.ai/latest/user_guides/integrations/java/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/java/index.md))
+
+#### Kafka
+- [Create Schema](https://docs.hopsworks.ai/latest/user_guides/projects/kafka/create_schema/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/kafka/create_schema/index.md))
+- [Create Topic](https://docs.hopsworks.ai/latest/user_guides/projects/kafka/create_topic/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/kafka/create_topic/index.md))
+- [Produce messages](https://docs.hopsworks.ai/latest/user_guides/projects/kafka/produce_messages/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/kafka/produce_messages/index.md))
+- [Consume messages](https://docs.hopsworks.ai/latest/user_guides/projects/kafka/consume_messages/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/kafka/consume_messages/index.md))
+- [Sharing](https://docs.hopsworks.ai/latest/user_guides/fs/sharing/sharing/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/sharing/sharing/index.md))
+- [Tags](https://docs.hopsworks.ai/latest/user_guides/fs/tags/tags/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/tags/tags/index.md))
+- [Mandatory Tags](https://docs.hopsworks.ai/latest/user_guides/fs/tags/mandatory_tags/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/tags/mandatory_tags/index.md))
+- [Keywords](https://docs.hopsworks.ai/latest/user_guides/fs/tags/keywords/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/tags/keywords/index.md))
+- [Provenance](https://docs.hopsworks.ai/latest/user_guides/fs/provenance/provenance/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/provenance/provenance/index.md))
+
+#### Feature Monitoring
+- [Feature Monitoring](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/index.md))
+- [Scheduled Statistics](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/scheduled_statistics/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/scheduled_statistics/index.md))
+- [Statistics Comparison](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/statistics_comparison/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/statistics_comparison/index.md))
+- [Distribution Comparison](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/distribution_comparison/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/distribution_comparison/index.md))
+- [Interactive Graph](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/interactive_graph/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_monitoring/interactive_graph/index.md))
+
+### Projects
+- [Projects Guides](https://docs.hopsworks.ai/latest/user_guides/projects/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/index.md))
+
+#### Authentication
+- [Registration](https://docs.hopsworks.ai/latest/user_guides/projects/auth/registration/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/auth/registration/index.md))
+- [Login](https://docs.hopsworks.ai/latest/user_guides/projects/auth/login/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/auth/login/index.md))
+- [Password Recovery](https://docs.hopsworks.ai/latest/user_guides/projects/auth/recovery/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/auth/recovery/index.md))
+- [OAuth2 Authentication](https://docs.hopsworks.ai/latest/user_guides/projects/auth/oauth/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/auth/oauth/index.md))
+- [LDAP Authentication](https://docs.hopsworks.ai/latest/user_guides/projects/auth/ldap/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/auth/ldap/index.md))
+- [Kerberos Authentication](https://docs.hopsworks.ai/latest/user_guides/projects/auth/krb/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/auth/krb/index.md))
+- [Update Profile](https://docs.hopsworks.ai/latest/user_guides/projects/auth/profile/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/auth/profile/index.md))
+
+#### Projects
+- [Create Project](https://docs.hopsworks.ai/latest/user_guides/projects/project/create_project/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/project/create_project/index.md))
+- [Manage Members](https://docs.hopsworks.ai/latest/user_guides/projects/project/manage_members/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/project/manage_members/index.md))
+- [Wizard](https://docs.hopsworks.ai/latest/user_guides/projects/wizard/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/wizard/index.md))
+- [Search](https://docs.hopsworks.ai/latest/user_guides/projects/search/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/search/index.md))
+- [Dataset Sharing](https://docs.hopsworks.ai/latest/user_guides/projects/datasets/sharing/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/datasets/sharing/index.md))
+
+#### Git
+- [Configure Git Provider](https://docs.hopsworks.ai/latest/user_guides/projects/git/configure_git_provider/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/git/configure_git_provider/index.md))
+- [Clone Repository](https://docs.hopsworks.ai/latest/user_guides/projects/git/clone_repo/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/git/clone_repo/index.md))
+- [Repository Actions](https://docs.hopsworks.ai/latest/user_guides/projects/git/repository_actions/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/git/repository_actions/index.md))
+- [Secrets](https://docs.hopsworks.ai/latest/user_guides/projects/secrets/create_secret/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/secrets/create_secret/index.md))
+- [Mountable Secrets](https://docs.hopsworks.ai/latest/user_guides/projects/mountable_secrets/mountable_secrets/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/mountable_secrets/mountable_secrets/index.md))
+- [Environment Variables](https://docs.hopsworks.ai/latest/user_guides/projects/env_vars/create/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/env_vars/create/index.md))
+
+#### API Keys
+- [Create API Key](https://docs.hopsworks.ai/latest/user_guides/projects/api_key/create_api_key/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/api_key/create_api_key/index.md))
+- [API Key Scopes](https://docs.hopsworks.ai/latest/user_guides/projects/api_key/api_key_scopes/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/api_key/api_key_scopes/index.md))
+- [AWS IAM Roles](https://docs.hopsworks.ai/latest/user_guides/projects/iam_role/iam_role_chaining/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/iam_role/iam_role_chaining/index.md))
+- [Alerts](https://docs.hopsworks.ai/latest/user_guides/projects/alerts/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/alerts/index.md))
+
+### Compute
+- [Compute Guides](https://docs.hopsworks.ai/latest/user_guides/compute/) ([md](https://docs.hopsworks.ai/latest/user_guides/compute/index.md))
+
+#### Python
+- [Environments Overview](https://docs.hopsworks.ai/latest/user_guides/projects/python/python_env_overview/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python/python_env_overview/index.md))
+- [Clone Environment](https://docs.hopsworks.ai/latest/user_guides/projects/python/python_env_clone/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python/python_env_clone/index.md))
+- [Install Library](https://docs.hopsworks.ai/latest/user_guides/projects/python/python_install/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python/python_install/index.md))
+- [Export Environment](https://docs.hopsworks.ai/latest/user_guides/projects/python/python_env_export/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python/python_env_export/index.md))
+- [Custom Commands](https://docs.hopsworks.ai/latest/user_guides/projects/python/custom_commands/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python/custom_commands/index.md))
+- [Environment History](https://docs.hopsworks.ai/latest/user_guides/projects/python/environment_history/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python/environment_history/index.md))
+
+#### Jupyter
+- [Run Python Notebook](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/python_notebook/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/python_notebook/index.md))
+- [Run PySpark Notebook](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/spark_notebook/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/spark_notebook/index.md))
+- [Run Ray Notebook](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/ray_notebook/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/ray_notebook/index.md))
+- [Remote Filesystem Driver](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/remote_filesystem_driver/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/remote_filesystem_driver/index.md))
+- [Session Capacity Warnings](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/session_capacity_warnings/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jupyter/session_capacity_warnings/index.md))
+
+#### Terminal
+- [Browser Terminal](https://docs.hopsworks.ai/latest/user_guides/compute/terminal/) ([md](https://docs.hopsworks.ai/latest/user_guides/compute/terminal/index.md))
+- [Teleport Sessions](https://docs.hopsworks.ai/latest/user_guides/projects/terminal/teleport/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/terminal/teleport/index.md))
+
+#### Jobs
+- [Run Python Job](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/python_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/python_job/index.md))
+- [Run Jupyter Notebook Job](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/notebook_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/notebook_job/index.md))
+- [Run PySpark Job](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/pyspark_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/pyspark_job/index.md))
+- [Run Spark Job](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/spark_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/spark_job/index.md))
+- [Run Ray Job](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/ray_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/ray_job/index.md))
+- [Scheduling](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/schedule_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/schedule_job/index.md))
+- [Batch Feature Pipelines](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/batch_feature_pipeline/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/batch_feature_pipeline/index.md))
+
+#### K8s Scheduling
+- [Base](https://docs.hopsworks.ai/latest/user_guides/projects/scheduling/kube_scheduler/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/scheduling/kube_scheduler/index.md))
+- [Kueue](https://docs.hopsworks.ai/latest/user_guides/projects/scheduling/kueue_details/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/scheduling/kueue_details/index.md))
+
+#### Airflow
+- [Overview](https://docs.hopsworks.ai/latest/user_guides/projects/airflow/airflow/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/airflow/airflow/index.md))
+- [Airflow 3 upgrade](https://docs.hopsworks.ai/latest/user_guides/projects/airflow/airflow3_upgrade/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/airflow/airflow3_upgrade/index.md))
+- [Security model](https://docs.hopsworks.ai/latest/user_guides/projects/airflow/security_model/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/airflow/security_model/index.md))
+- [Apps](https://docs.hopsworks.ai/latest/user_guides/projects/apps/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/apps/index.md))
+
+#### Python Deployment
+- [Deployment Creation](https://docs.hopsworks.ai/latest/user_guides/projects/python-deployment/python-deployment/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python-deployment/python-deployment/index.md))
+- [REST API](https://docs.hopsworks.ai/latest/user_guides/projects/python-deployment/rest-api/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python-deployment/rest-api/index.md))
+- [Troubleshooting](https://docs.hopsworks.ai/latest/user_guides/projects/python-deployment/troubleshooting/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/python-deployment/troubleshooting/index.md))
+
+### Analytics
+- [Analytics Guides](https://docs.hopsworks.ai/latest/user_guides/analytics/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/index.md))
+
+#### Query Engine (Trino)
+- [Query Engine](https://docs.hopsworks.ai/latest/user_guides/projects/trino/query_engine/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/trino/query_engine/index.md))
+- [Trino Catalogs](https://docs.hopsworks.ai/latest/user_guides/projects/trino/catalogs/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/trino/catalogs/index.md))
+- [Superset](https://docs.hopsworks.ai/latest/user_guides/projects/superset/superset/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/superset/superset/index.md))
+
+### MLOps
+- [Model Registry &amp; Serving Guides](https://docs.hopsworks.ai/latest/user_guides/mlops/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/index.md))
+
+#### Model Registry
+- [Model Registry Guides](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/index.md))
+
+##### Frameworks
+- [TensorFlow](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/tf/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/tf/index.md))
+- [Torch](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/tch/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/tch/index.md))
+- [Scikit-learn](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/skl/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/skl/index.md))
+- [LLM](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/llm/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/llm/index.md))
+- [Python](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/python/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/python/index.md))
+- [Import from HuggingFace](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/import_huggingface/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/import_huggingface/index.md))
+- [Model Schema](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/model_schema/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/model_schema/index.md))
+- [Input Example](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/input_example/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/input_example/index.md))
+- [Model Evaluation Images](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/model_evaluation_images/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/registry/model_evaluation_images/index.md))
+
+#### Model Serving
+- [Model Serving Guide](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/index.md))
+
+##### Model Deployment
+- [Deployment Creation](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment/index.md))
+- [Deployment State](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-state/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-state/index.md))
+- [Deployment Schema](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-schema/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-schema/index.md))
+- [Predictor (KServe)](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/index.md))
+- [Transformer (KServe)](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformer/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformer/index.md))
+- [Inference Logger](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-logger/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-logger/index.md))
+- [Inference Batcher](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-batcher/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-batcher/index.md))
+- [Resources](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/resources/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/resources/index.md))
+- [Autoscaling](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/autoscaling/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/autoscaling/index.md))
+- [Scheduling](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/scheduling/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/scheduling/index.md))
+- [API Protocol](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/api-protocol/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/api-protocol/index.md))
+- [REST API](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/rest-api/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/rest-api/index.md))
+- [Troubleshooting](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/troubleshooting/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/troubleshooting/index.md))
+- [External Access](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/external-access/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/external-access/index.md))
+
+#### Model Monitoring
+- [Model Monitoring](https://docs.hopsworks.ai/latest/user_guides/mlops/model_monitoring/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/model_monitoring/index.md))
+- [Model Monitoring Creation](https://docs.hopsworks.ai/latest/user_guides/mlops/model_monitoring/model_monitoring/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/model_monitoring/model_monitoring/index.md))
+- [Vector Similarity Search](https://docs.hopsworks.ai/latest/user_guides/fs/vector_similarity_search/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/vector_similarity_search/index.md))
+
+#### OpenSearch
+- [Connect](https://docs.hopsworks.ai/latest/user_guides/projects/opensearch/connect/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/opensearch/connect/index.md))
+- [KNN](https://docs.hopsworks.ai/latest/user_guides/projects/opensearch/knn/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/opensearch/knn/index.md))
+- [Provenance](https://docs.hopsworks.ai/latest/user_guides/mlops/provenance/provenance/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/provenance/provenance/index.md))
+
+### Agents
+- [Agents](https://docs.hopsworks.ai/latest/user_guides/agents/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/index.md))
+- [Agent Tasks](https://docs.hopsworks.ai/latest/user_guides/agents/tasks/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/tasks/index.md))
+- [Agent Deployments](https://docs.hopsworks.ai/latest/user_guides/agents/deployments/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/deployments/index.md))
+- [Migration 3.X to 4.0](https://docs.hopsworks.ai/latest/user_guides/migration/40_migration/) ([md](https://docs.hopsworks.ai/latest/user_guides/migration/40_migration/index.md))
+
+## Administration
+- [Setup and Administration](https://docs.hopsworks.ai/latest/setup_installation/) ([md](https://docs.hopsworks.ai/latest/setup_installation/index.md))
+
+### Cloud Installation
+- [AWS - Getting Started](https://docs.hopsworks.ai/latest/setup_installation/aws/getting_started/) ([md](https://docs.hopsworks.ai/latest/setup_installation/aws/getting_started/index.md))
+- [Azure - Getting Started](https://docs.hopsworks.ai/latest/setup_installation/azure/getting_started/) ([md](https://docs.hopsworks.ai/latest/setup_installation/azure/getting_started/index.md))
+- [GCP - Getting Started](https://docs.hopsworks.ai/latest/setup_installation/gcp/getting_started/) ([md](https://docs.hopsworks.ai/latest/setup_installation/gcp/getting_started/index.md))
+
+### On-Prem
+- [Background](https://docs.hopsworks.ai/latest/setup_installation/on_prem/contact_hopsworks/) ([md](https://docs.hopsworks.ai/latest/setup_installation/on_prem/contact_hopsworks/index.md))
+- [External Kafka cluster](https://docs.hopsworks.ai/latest/setup_installation/on_prem/external_kafka_cluster/) ([md](https://docs.hopsworks.ai/latest/setup_installation/on_prem/external_kafka_cluster/index.md))
+
+### Cluster Administration
+- [Cluster Administration](https://docs.hopsworks.ai/latest/setup_installation/admin/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/index.md))
+- [Cluster Configuration](https://docs.hopsworks.ai/latest/setup_installation/admin/variables/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/variables/index.md))
+- [Cluster Configuration Variables Reference](https://docs.hopsworks.ai/latest/setup_installation/admin/configuration_reference/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/configuration_reference/index.md))
+- [Python Build Performance](https://docs.hopsworks.ai/latest/setup_installation/admin/build_performance/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/build_performance/index.md))
+- [User Management](https://docs.hopsworks.ai/latest/setup_installation/admin/user/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/user/index.md))
+- [Project Management](https://docs.hopsworks.ai/latest/setup_installation/admin/project/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/project/index.md))
+- [Configure Alerts](https://docs.hopsworks.ai/latest/setup_installation/admin/alert/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/alert/index.md))
+- [IAM Role Chaining](https://docs.hopsworks.ai/latest/setup_installation/admin/roleChaining/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/roleChaining/index.md))
+- [Configure Project Mapping](https://docs.hopsworks.ai/latest/setup_installation/admin/configure-project-mapping/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/configure-project-mapping/index.md))
+- [Airflow 3 operator notes](https://docs.hopsworks.ai/latest/setup_installation/admin/airflow3/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/airflow3/index.md))
+- [Search Index](https://docs.hopsworks.ai/latest/setup_installation/admin/search_index/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/search_index/index.md))
+
+#### Monitoring
+- [Services Dashboards](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/grafana/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/grafana/index.md))
+- [Export metrics](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/export-metrics/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/export-metrics/index.md))
+- [Services Logs](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/services-logs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/services-logs/index.md))
+- [Service Log Labels](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/services-logs-labels/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/services-logs-labels/index.md))
+- [WebSocket Proxy Pool](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/websocket-pool/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/websocket-pool/index.md))
+
+#### Authentication
+- [Configure Authentication](https://docs.hopsworks.ai/latest/setup_installation/admin/auth/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/auth/index.md))
+
+##### Configure OAuth2
+- [Register an Identity Provider](https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/create-client/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/create-client/index.md))
+- [Create Okta Client](https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/create-okta-client/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/create-okta-client/index.md))
+- [Create Azure Client](https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/create-azure-client/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/create-azure-client/index.md))
+- [Configure Project Mapping](https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/configure-project-mapping/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/oauth2/configure-project-mapping/index.md))
+
+##### LDAP and Kerberos
+- [Configure LDAP](https://docs.hopsworks.ai/latest/setup_installation/admin/ldap/configure-ldap/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/ldap/configure-ldap/index.md))
+- [Configure Kerberos](https://docs.hopsworks.ai/latest/setup_installation/admin/ldap/configure-krb/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/ldap/configure-krb/index.md))
+- [Configure server for LDAP and Kerberos](https://docs.hopsworks.ai/latest/setup_installation/admin/ldap/configure-server/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/ldap/configure-server/index.md))
+- [Configure Project Mapping](https://docs.hopsworks.ai/latest/setup_installation/admin/ldap/configure-project-mapping/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/ldap/configure-project-mapping/index.md))
+
+#### HA and DR
+- [Overview](https://docs.hopsworks.ai/latest/setup_installation/admin/ha-dr/intro/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/ha-dr/intro/index.md))
+- [High Availability](https://docs.hopsworks.ai/latest/setup_installation/admin/ha-dr/ha/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/ha-dr/ha/index.md))
+- [Disaster Recovery](https://docs.hopsworks.ai/latest/setup_installation/admin/ha-dr/dr/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/ha-dr/dr/index.md))
+
+#### Audit
+- [Access Audit Logs](https://docs.hopsworks.ai/latest/setup_installation/admin/audit/audit-logs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/audit/audit-logs/index.md))
+- [Export Audit Logs](https://docs.hopsworks.ai/latest/setup_installation/admin/audit/export-audit-logs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/audit/export-audit-logs/index.md))
+- [Service Operations](https://docs.hopsworks.ai/latest/setup_installation/admin/operationLogs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/operationLogs/index.md))
+- [Query Engine (Trino)](https://docs.hopsworks.ai/latest/setup_installation/admin/trino/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/trino/index.md))
+- [Superset](https://docs.hopsworks.ai/latest/setup_installation/admin/superset/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/superset/index.md))
+- [Helm Chart Values Reference](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/index.md))
+
+## Python API
+
+### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> hopsworks
+- [hopsworks](https://docs.hopsworks.ai/latest/python-api/hopsworks/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> alert](https://docs.hopsworks.ai/latest/python-api/hopsworks/alert/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/alert/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> alert​_receiver](https://docs.hopsworks.ai/latest/python-api/hopsworks/alert_receiver/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/alert_receiver/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> app](https://docs.hopsworks.ai/latest/python-api/hopsworks/app/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/app/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> client
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> exceptions](https://docs.hopsworks.ai/latest/python-api/hopsworks/client/exceptions/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/client/exceptions/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> core
+- [hopsworks.core](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> alerts​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/alerts_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/alerts_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> app​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/app_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/app_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> dataset​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/dataset_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/dataset_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> env​_var​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/env_var_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/env_var_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> environment​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/environment_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/environment_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> git​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/git_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/git_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> job​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/job_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/job_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> job​_configuration](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/job_configuration/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/job_configuration/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> kafka​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/kafka_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/kafka_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> opensearch](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/opensearch/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/opensearch/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> opensearch​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/opensearch_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/opensearch_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> project​_members​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/project_members_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/project_members_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> rest​_endpoint](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/rest_endpoint/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/rest_endpoint/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> search​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/search_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/search_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> secret​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/secret_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/secret_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> superset​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/superset_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/superset_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> tag​_schemas​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/tag_schemas_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/tag_schemas_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> trino​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/trino_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/trino_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> trino​_catalog​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/trino_catalog_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/trino_catalog_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> users​_api](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/users_api/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/core/users_api/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> env​_var](https://docs.hopsworks.ai/latest/python-api/hopsworks/env_var/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/env_var/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> environment](https://docs.hopsworks.ai/latest/python-api/hopsworks/environment/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/environment/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> execution](https://docs.hopsworks.ai/latest/python-api/hopsworks/execution/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/execution/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> git​_commit](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_commit/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_commit/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> git​_file​_status](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_file_status/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_file_status/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> git​_provider](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_provider/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_provider/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> git​_remote](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_remote/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_remote/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> git​_repo](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_repo/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/git_repo/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> job](https://docs.hopsworks.ai/latest/python-api/hopsworks/job/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/job/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> job​_schedule](https://docs.hopsworks.ai/latest/python-api/hopsworks/job_schedule/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/job_schedule/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> kafka​_schema](https://docs.hopsworks.ai/latest/python-api/hopsworks/kafka_schema/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/kafka_schema/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> kafka​_topic](https://docs.hopsworks.ai/latest/python-api/hopsworks/kafka_topic/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/kafka_topic/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> project](https://docs.hopsworks.ai/latest/python-api/hopsworks/project/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/project/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> project​_member](https://docs.hopsworks.ai/latest/python-api/hopsworks/project_member/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/project_member/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> secret](https://docs.hopsworks.ai/latest/python-api/hopsworks/secret/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/secret/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> spark](https://docs.hopsworks.ai/latest/python-api/hopsworks/spark/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/spark/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> tag](https://docs.hopsworks.ai/latest/python-api/hopsworks/tag/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/tag/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> triggered​_alert](https://docs.hopsworks.ai/latest/python-api/hopsworks/triggered_alert/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/triggered_alert/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> user](https://docs.hopsworks.ai/latest/python-api/hopsworks/user/) ([md](https://docs.hopsworks.ai/latest/python-api/hopsworks/user/index.md))
+
+### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> hsfs
+- [hsfs](https://docs.hopsworks.ai/latest/python-api/hsfs/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> builtin​_transformations](https://docs.hopsworks.ai/latest/python-api/hsfs/builtin_transformations/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/builtin_transformations/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> constructor
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> filter](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/filter/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/filter/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> join](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/join/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/join/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> lookback](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/lookback/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/lookback/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> prediction​_times](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/prediction_times/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/prediction_times/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> query](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/query/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/constructor/query/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> core
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> chart](https://docs.hopsworks.ai/latest/python-api/hsfs/core/chart/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/chart/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> dashboard](https://docs.hopsworks.ai/latest/python-api/hsfs/core/dashboard/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/dashboard/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> data​_source](https://docs.hopsworks.ai/latest/python-api/hsfs/core/data_source/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/data_source/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> data​_source​_data](https://docs.hopsworks.ai/latest/python-api/hsfs/core/data_source_data/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/data_source_data/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> explicit​_provenance](https://docs.hopsworks.ai/latest/python-api/hsfs/core/explicit_provenance/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/explicit_provenance/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_descriptive​_statistics](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_descriptive_statistics/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_descriptive_statistics/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_logging](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_logging/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_logging/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_monitoring​_config](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_monitoring_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_monitoring_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_monitoring​_result](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_monitoring_result/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_monitoring_result/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_statistics​_config](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_statistics_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_statistics_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_statistics​_result](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_statistics_result/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/feature_statistics_result/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> inferred​_metadata](https://docs.hopsworks.ai/latest/python-api/hsfs/core/inferred_metadata/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/inferred_metadata/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> monitoring​_window​_config](https://docs.hopsworks.ai/latest/python-api/hsfs/core/monitoring_window_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/monitoring_window_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> online​_ingestion](https://docs.hopsworks.ai/latest/python-api/hsfs/core/online_ingestion/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/online_ingestion/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> online​_ingestion​_failure](https://docs.hopsworks.ai/latest/python-api/hsfs/core/online_ingestion_failure/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/online_ingestion_failure/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> online​_ingestion​_result](https://docs.hopsworks.ai/latest/python-api/hsfs/core/online_ingestion_result/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/online_ingestion_result/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> statistics​_comparison​_config](https://docs.hopsworks.ai/latest/python-api/hsfs/core/statistics_comparison_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/statistics_comparison_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> statistics​_comparison​_result](https://docs.hopsworks.ai/latest/python-api/hsfs/core/statistics_comparison_result/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/core/statistics_comparison_result/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> embedding](https://docs.hopsworks.ai/latest/python-api/hsfs/embedding/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/embedding/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> expectation​_suite](https://docs.hopsworks.ai/latest/python-api/hsfs/expectation_suite/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/expectation_suite/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature](https://docs.hopsworks.ai/latest/python-api/hsfs/feature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/feature/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_group](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_group/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_group/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_logger](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_logger/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_logger/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_logger​_async](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_logger_async/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_logger_async/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_store](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_store/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_store/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> feature​_view](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_view/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/feature_view/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> ge​_expectation](https://docs.hopsworks.ai/latest/python-api/hsfs/ge_expectation/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/ge_expectation/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> ge​_validation​_result](https://docs.hopsworks.ai/latest/python-api/hsfs/ge_validation_result/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/ge_validation_result/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> hopsworks​_udf](https://docs.hopsworks.ai/latest/python-api/hsfs/hopsworks_udf/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/hopsworks_udf/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> online​_config](https://docs.hopsworks.ai/latest/python-api/hsfs/online_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/online_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> serving​_key](https://docs.hopsworks.ai/latest/python-api/hsfs/serving_key/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/serving_key/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> split​_statistics](https://docs.hopsworks.ai/latest/python-api/hsfs/split_statistics/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/split_statistics/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> statistics](https://docs.hopsworks.ai/latest/python-api/hsfs/statistics/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/statistics/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> statistics​_config](https://docs.hopsworks.ai/latest/python-api/hsfs/statistics_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/statistics_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> storage​_connector](https://docs.hopsworks.ai/latest/python-api/hsfs/storage_connector/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/storage_connector/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> training​_dataset](https://docs.hopsworks.ai/latest/python-api/hsfs/training_dataset/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/training_dataset/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> training​_dataset​_feature](https://docs.hopsworks.ai/latest/python-api/hsfs/training_dataset_feature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/training_dataset_feature/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> transformation​_function](https://docs.hopsworks.ai/latest/python-api/hsfs/transformation_function/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/transformation_function/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> transformation​_statistics](https://docs.hopsworks.ai/latest/python-api/hsfs/transformation_statistics/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/transformation_statistics/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> validation​_report](https://docs.hopsworks.ai/latest/python-api/hsfs/validation_report/) ([md](https://docs.hopsworks.ai/latest/python-api/hsfs/validation_report/index.md))
+
+### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> hsml
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> client
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> exceptions](https://docs.hopsworks.ai/latest/python-api/hsml/client/exceptions/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/client/exceptions/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> core
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> explicit​_provenance](https://docs.hopsworks.ai/latest/python-api/hsml/core/explicit_provenance/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/core/explicit_provenance/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> default​_predictor](https://docs.hopsworks.ai/latest/python-api/hsml/default_predictor/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/default_predictor/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployable​_component](https://docs.hopsworks.ai/latest/python-api/hsml/deployable_component/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployable_component/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment](https://docs.hopsworks.ai/latest/python-api/hsml/deployment/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployment/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_logging​_config](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_logging_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_logging_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_schema](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_schema/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_schema/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_tracing​_config](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_tracing_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_tracing_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> inference​_batcher](https://docs.hopsworks.ai/latest/python-api/hsml/inference_batcher/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/inference_batcher/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> inference​_logger](https://docs.hopsworks.ai/latest/python-api/hsml/inference_logger/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/inference_logger/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> llm
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> signature](https://docs.hopsworks.ai/latest/python-api/hsml/llm/signature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/llm/signature/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> model](https://docs.hopsworks.ai/latest/python-api/hsml/model/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/model/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> model​_registry](https://docs.hopsworks.ai/latest/python-api/hsml/model_registry/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/model_registry/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> model​_schema](https://docs.hopsworks.ai/latest/python-api/hsml/model_schema/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/model_schema/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> model​_serving](https://docs.hopsworks.ai/latest/python-api/hsml/model_serving/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/model_serving/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> predictor](https://docs.hopsworks.ai/latest/python-api/hsml/predictor/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/predictor/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> predictor​_state](https://docs.hopsworks.ai/latest/python-api/hsml/predictor_state/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/predictor_state/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> predictor​_state​_condition](https://docs.hopsworks.ai/latest/python-api/hsml/predictor_state_condition/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/predictor_state_condition/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> python
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> signature](https://docs.hopsworks.ai/latest/python-api/hsml/python/signature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/python/signature/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> resources](https://docs.hopsworks.ai/latest/python-api/hsml/resources/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/resources/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> scaling​_config](https://docs.hopsworks.ai/latest/python-api/hsml/scaling_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/scaling_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> schema](https://docs.hopsworks.ai/latest/python-api/hsml/schema/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/schema/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> sklearn
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> signature](https://docs.hopsworks.ai/latest/python-api/hsml/sklearn/signature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/sklearn/signature/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> tensorflow
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> signature](https://docs.hopsworks.ai/latest/python-api/hsml/tensorflow/signature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/tensorflow/signature/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> torch
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> signature](https://docs.hopsworks.ai/latest/python-api/hsml/torch/signature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/torch/signature/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> transformer](https://docs.hopsworks.ai/latest/python-api/hsml/transformer/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/transformer/index.md))
+- [Java API](javadoc)
+
+## Reference
+- [REST API Status Codes](https://docs.hopsworks.ai/latest/reference/rest_error_codes/) ([md](https://docs.hopsworks.ai/latest/reference/rest_error_codes/index.md))
+- [Docs for AI agents](https://docs.hopsworks.ai/latest/ai/) ([md](https://docs.hopsworks.ai/latest/ai/index.md))
