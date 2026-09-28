@@ -123,7 +123,7 @@ Each answer is written to `<slug>/system.yaml` in the current directory as you g
 A new data source is created with `hops datasource create`, and its password or key is read without echo and passed to it in an environment variable, so it never appears on the command line or in `system.yaml`.
 
 When the interview is done, `hops build` starts Claude Code with `/hops-build <slug>`, which completes the specification and builds the feature, training and inference pipelines.
-It also adds a section to the `AGENTS.md` at the root of the repository, saying the system is built from `system.yaml`: a coding agent there checks what a change to `system.yaml` means for the pipelines and the assets they create, and finds what a changed component affects downstream with `hops fg lineage`, `hops fv lineage`, `hops td lineage`, `hops model lineage` and `hops deployment lineage`.
+Each system's directory holds an `AGENTS.md`, with a `CLAUDE.md` that imports it, saying the system is built from `system.yaml`; `hops build` and Brewer start Claude Code in that directory, so it reads them, checks what a change to `system.yaml` means for the pipelines and the assets they create, and finds what a changed component affects downstream with `hops fg lineage`, `hops fv lineage`, `hops td lineage`, `hops model lineage` and `hops deployment lineage`.
 Inside tmux, as in the Hopsworks terminal, it opens a new tmux window named after the system, so several systems can be built at once.
 Pass `--no-launch` to record the interview only, and `hops build <slug>` to resume a system.
 `hops build --example <name>` (`churn-example`, `recs-example` or `helpdesk-example`) builds an example without the menu, and resumes it if it already exists.
@@ -131,7 +131,7 @@ Pass `--no-launch` to record the interview only, and `hops build <slug>` to resu
 `hops build` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
 The Hopsworks UI shows a **Brewer** button (the software factory) beside **Terminal**, for every member of the project, when the project has registered systems or the cluster has the terminal.
 It opens a panel you can minimize or close, with a list of the project's systems: an open folder marks the ones whose code you can open, a lock the ones you cannot, and a link the ones in a GitHub repository.
-Selecting a system opens its directory in the file browser and shows its phases, what is done and what is left.
+Selecting a system opens its directory in the file browser and shows its phases, what is done and what is left, and brings its Terminal tab to the front, or opens one with Claude Code started in the system's directory when the Terminal is open.
 **show architecture** opens the system's architecture in the main view: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
 A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
 A system whose directory is deleted disappears from the list.
