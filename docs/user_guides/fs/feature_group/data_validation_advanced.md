@@ -214,6 +214,6 @@ batch = batch_definition.get_batch(batch_parameters={"dataframe": df})
 ge_report = batch.validate(fg.get_expectation_suite())
 ```
 
-For most pipelines you should prefer `fg.validate(df)` — Hopsworks runs the same chain internally and uploads the report to the backend in a single call.
+For most pipelines you should prefer `fg.validate(df)`: Hopsworks runs the same chain internally and uploads the report to the backend in a single call.
 
 Note that you should always use an expectation suite that has been saved to Hopsworks if you intend to upload the associated validation report.

@@ -310,7 +310,7 @@ Trino behavior can be customized through cluster configuration variables. To mod
 
 **Available Variables:**
 
-- **trino_enabled**: Enable or disable Trino cluster-wide (default: `true`)
+- **trino_enabled**: Enable or disable Trino cluster-wide (default: `false`)
 - **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
 - **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount][recovering-catalog-files-lost-from-the-mount])

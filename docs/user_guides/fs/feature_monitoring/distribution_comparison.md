@@ -31,13 +31,13 @@ See the [Feature Monitoring for Feature Views](../feature_view/feature_monitorin
 You select the distance metric with the `metric` parameter.
 The following metrics are available:
 
-- **PSI** (Population Stability Index) — the default metric, widely used to monitor drift in production.
+- **PSI** (Population Stability Index): the default metric, widely used to monitor drift in production.
   It is the only metric with a built-in default threshold of `0.2`.
-- **KL_DIVERGENCE** — Kullback–Leibler divergence; asymmetric, sensitive to regions where the reference has low probability.
-- **JS_DIVERGENCE** — Jensen–Shannon divergence; a symmetric, bounded smoothing of KL divergence.
-- **HELLINGER** — Hellinger distance; symmetric and bounded in `[0, 1]`.
-- **WASSERSTEIN** — Wasserstein (earth mover's) distance; numeric features only.
-- **KOLMOGOROV_SMIRNOV** — Kolmogorov–Smirnov statistic; numeric features only.
+- **KL_DIVERGENCE**: Kullback–Leibler divergence; asymmetric, sensitive to regions where the reference has low probability.
+- **JS_DIVERGENCE**: Jensen–Shannon divergence; a symmetric, bounded smoothing of KL divergence.
+- **HELLINGER**: Hellinger distance; symmetric and bounded in `[0, 1]`.
+- **WASSERSTEIN**: Wasserstein (earth mover's) distance; numeric features only.
+- **KOLMOGOROV_SMIRNOV**: Kolmogorov–Smirnov statistic; numeric features only.
 
 For every metric other than PSI, you must provide a `threshold` explicitly.
 
@@ -50,13 +50,13 @@ For every metric other than PSI, you must provide a `threshold` explicitly.
 To compute a distance, Hopsworks first discretizes the feature values into a probability distribution over bins.
 You control the binning with the following parameters:
 
-- `binning_strategy` — how to build the bins.
+- `binning_strategy`: how to build the bins.
   One of `EQUI_WIDTH` (equal-width bins), `EQUI_FREQUENCY` (equal-frequency / quantile bins), `CUSTOM_EDGES` (user-provided bin edges) or `CATEGORICAL` (one bin per category).
   Defaults to `EQUI_FREQUENCY` for numeric features and `CATEGORICAL` otherwise.
-- `bin_count` — the number of bins for numeric strategies.
+- `bin_count`: the number of bins for numeric strategies.
   Defaults to `10`.
-- `custom_bin_edges` — the list of bin edges, required when `binning_strategy` is `CUSTOM_EDGES`.
-- `smoothing_epsilon` — a small additive constant applied to bins to avoid `log(0)` in log-based metrics such as PSI and KL divergence.
+- `custom_bin_edges`: the list of bin edges, required when `binning_strategy` is `CUSTOM_EDGES`.
+- `smoothing_epsilon`: a small additive constant applied to bins to avoid `log(0)` in log-based metrics such as PSI and KL divergence.
   Defaults to `1e-6`.
 
 !!! info "Next steps"

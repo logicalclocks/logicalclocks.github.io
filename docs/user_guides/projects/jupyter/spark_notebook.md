@@ -123,8 +123,8 @@ Start the Jupyter instance by clicking the `Run Jupyter` button.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/jupyter/spark_jupyter_starting.gif" alt="Starting Jupyter and running a Spark notebook">
-    <figcaption>Starting Jupyter and running a Spark notebook</figcaption>
+    <img src="../../../../assets/images/guides/jupyter/spark_jupyter_starting.gif" alt="Starting the Jupyter server for a Spark notebook">
+    <figcaption>Starting the Jupyter server for a Spark notebook</figcaption>
   </figure>
 </p>
 

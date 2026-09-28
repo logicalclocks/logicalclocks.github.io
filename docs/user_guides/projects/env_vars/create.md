@@ -67,7 +67,7 @@ api = hopsworks.get_env_vars_api()
 # Add
 api.create_env_var("OPENAI_API_KEY", "sk-...")
 
-# Add or update (idempotent — safe in setup scripts)
+# Add or update (idempotent, safe in setup scripts)
 api.set_env_var("HF_TOKEN", "hf_...")
 
 # Read
@@ -94,7 +94,7 @@ api.delete_all()
 ## Notes
 
 - Account-level variables are **per-user**.
-  They are never shared with other users in your project — to share configuration with project members, use project-scoped [Secrets][how-to-create-a-secret] instead.
+  They are never shared with other users in your project. To share configuration with project members, use project-scoped [Secrets][how-to-create-a-secret] instead.
 - Removing yourself from a project does **not** remove these variables; they follow your account, not your project membership.
 - Values are encrypted at rest, mirroring Secrets.
   They are not exposed in audit logs or error messages.

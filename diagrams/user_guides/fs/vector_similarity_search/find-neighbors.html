@@ -1,0 +1,99 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 648 596" role="img" aria-label="When find_neighbors works on a feature view. Top: news_fg (news_id, heading, embedding_heading) joined with view_fg on news_id; the feature view takes heading and view_cnt and find_neighbors works, because news_fg has every primary key of view_fg. Bottom: the same join with page_fg, whose primary key includes page_id; page_id is not a feature of news_fg, so find_neighbors fails." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="fn-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="fn-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+  <g>
+    <rect class="viz-kv-frame" x="36" y="24" width="280" height="104" rx="6"/>
+    <path class="viz-kv-header" d="M36 30 a6 6 0 0 1 6 -6 h268 a6 6 0 0 1 6 6 v20 h-280 z"/>
+    <text class="viz-kv-title" x="48" y="43">news_fg</text>
+    <rect class="viz-key-row" data-tone="accent" x="37" y="51" width="278" height="24"/>
+    <g class="viz-icon" transform="translate(44,56) scale(0.6)"><circle cx="6" cy="6" r="3.5"/><path d="M9 9 L15 15 M13 13 L15.5 10.5 M15 15 L17 13"/></g>
+    <text class="viz-field" x="66" y="68">news_id</text>
+    <text class="viz-field-role" x="306" y="68" text-anchor="end">primary key</text>
+    <line class="viz-row-sep" x1="36" y1="76" x2="316" y2="76"/>
+    <text class="viz-field" x="66" y="94">heading</text>
+    <text class="viz-field-role" x="306" y="94" text-anchor="end">feature</text>
+    <line class="viz-row-sep" x1="36" y1="102" x2="316" y2="102"/>
+    <text class="viz-field" x="66" y="120">embedding_heading</text>
+    <text class="viz-field-role" x="306" y="120" text-anchor="end">embedding</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="36" y="160" width="280" height="78" rx="6"/>
+    <path class="viz-kv-header" d="M36 166 a6 6 0 0 1 6 -6 h268 a6 6 0 0 1 6 6 v20 h-280 z"/>
+    <text class="viz-kv-title" x="48" y="179">view_fg</text>
+    <rect class="viz-key-row" data-tone="accent" x="37" y="187" width="278" height="24"/>
+    <g class="viz-icon" transform="translate(44,192) scale(0.6)"><circle cx="6" cy="6" r="3.5"/><path d="M9 9 L15 15 M13 13 L15.5 10.5 M15 15 L17 13"/></g>
+    <text class="viz-field" x="66" y="204">news_id</text>
+    <text class="viz-field-role" x="306" y="204" text-anchor="end">primary key</text>
+    <line class="viz-row-sep" x1="36" y1="212" x2="316" y2="212"/>
+    <text class="viz-field" x="66" y="230">view_cnt</text>
+    <text class="viz-field-role" x="306" y="230" text-anchor="end">feature</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="352" y="80" width="280" height="78" rx="6"/>
+    <path class="viz-kv-header" d="M352 86 a6 6 0 0 1 6 -6 h268 a6 6 0 0 1 6 6 v20 h-280 z"/>
+    <text class="viz-kv-title" x="364" y="99">feature view</text>
+    <text class="viz-meta" x="624" y="99" text-anchor="end">find_neighbors</text>
+    <text class="viz-field" x="382" y="124">heading</text>
+    <text class="viz-field-role" x="622" y="124" text-anchor="end">from news_fg</text>
+    <line class="viz-row-sep" x1="352" y1="132" x2="632" y2="132"/>
+    <text class="viz-field" x="382" y="150">view_cnt</text>
+    <text class="viz-field-role" x="622" y="150" text-anchor="end">from view_fg</text>
+  </g>
+  <path class="viz-edge" data-tone="accent" d="M36 63 H20 Q16 63 16 67 V195 Q16 199 20 199 H36" marker-start="url(#fn-knob)" marker-end="url(#fn-arrow)"/>
+  <path class="viz-edge" d="M316 89 H328 Q332 89 332 93 V115 Q332 119 336 119 H352" marker-start="url(#fn-knob)" marker-end="url(#fn-arrow)"/>
+  <path class="viz-edge" d="M316 225 H328 Q332 225 332 221 V149 Q332 145 336 145 H352" marker-start="url(#fn-knob)" marker-end="url(#fn-arrow)"/>
+  <g class="viz-badge" data-tone="accent"><rect x="352" y="174" width="208" height="26" rx="6"/><text x="456" y="187" text-anchor="middle">find_neighbors() works</text></g>
+  <text class="viz-meta" x="352" y="220">has every primary key of view_fg</text>
+  <g>
+    <rect class="viz-kv-frame" x="36" y="310" width="280" height="104" rx="6"/>
+    <path class="viz-kv-header" d="M36 316 a6 6 0 0 1 6 -6 h268 a6 6 0 0 1 6 6 v20 h-280 z"/>
+    <text class="viz-kv-title" x="48" y="329">news_fg</text>
+    <rect class="viz-key-row" data-tone="accent" x="37" y="337" width="278" height="24"/>
+    <g class="viz-icon" transform="translate(44,342) scale(0.6)"><circle cx="6" cy="6" r="3.5"/><path d="M9 9 L15 15 M13 13 L15.5 10.5 M15 15 L17 13"/></g>
+    <text class="viz-field" x="66" y="354">news_id</text>
+    <text class="viz-field-role" x="306" y="354" text-anchor="end">primary key</text>
+    <line class="viz-row-sep" x1="36" y1="362" x2="316" y2="362"/>
+    <text class="viz-field" x="66" y="380">heading</text>
+    <text class="viz-field-role" x="306" y="380" text-anchor="end">feature</text>
+    <line class="viz-row-sep" x1="36" y1="388" x2="316" y2="388"/>
+    <text class="viz-field" x="66" y="406">embedding_heading</text>
+    <text class="viz-field-role" x="306" y="406" text-anchor="end">embedding</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="36" y="446" width="280" height="104" rx="6"/>
+    <path class="viz-kv-header" d="M36 452 a6 6 0 0 1 6 -6 h268 a6 6 0 0 1 6 6 v20 h-280 z"/>
+    <text class="viz-kv-title" x="48" y="465">page_fg</text>
+    <rect class="viz-key-row" data-tone="accent" x="37" y="473" width="278" height="24"/>
+    <g class="viz-icon" transform="translate(44,478) scale(0.6)"><circle cx="6" cy="6" r="3.5"/><path d="M9 9 L15 15 M13 13 L15.5 10.5 M15 15 L17 13"/></g>
+    <text class="viz-field" x="66" y="490">news_id</text>
+    <text class="viz-field-role" x="306" y="490" text-anchor="end">primary key</text>
+    <line class="viz-row-sep" x1="36" y1="498" x2="316" y2="498"/>
+    <rect class="viz-key-row" data-tone="error" x="37" y="499" width="278" height="24"/>
+    <g class="viz-icon" transform="translate(44,504) scale(0.6)"><circle cx="6" cy="6" r="3.5"/><path d="M9 9 L15 15 M13 13 L15.5 10.5 M15 15 L17 13"/></g>
+    <text class="viz-field" x="66" y="516">page_id</text>
+    <text class="viz-field-role" x="306" y="516" text-anchor="end">primary key</text>
+    <line class="viz-row-sep" x1="36" y1="524" x2="316" y2="524"/>
+    <text class="viz-field" x="66" y="542">view_cnt</text>
+    <text class="viz-field-role" x="306" y="542" text-anchor="end">feature</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="352" y="366" width="280" height="78" rx="6"/>
+    <path class="viz-kv-header" d="M352 372 a6 6 0 0 1 6 -6 h268 a6 6 0 0 1 6 6 v20 h-280 z"/>
+    <text class="viz-kv-title" x="364" y="385">feature view</text>
+    <text class="viz-meta" x="624" y="385" text-anchor="end">find_neighbors</text>
+    <text class="viz-field" x="382" y="410">heading</text>
+    <text class="viz-field-role" x="622" y="410" text-anchor="end">from news_fg</text>
+    <line class="viz-row-sep" x1="352" y1="418" x2="632" y2="418"/>
+    <text class="viz-field" x="382" y="436">view_cnt</text>
+    <text class="viz-field-role" x="622" y="436" text-anchor="end">from page_fg</text>
+  </g>
+  <path class="viz-edge" data-tone="accent" d="M36 349 H20 Q16 349 16 353 V481 Q16 485 20 485 H36" marker-start="url(#fn-knob)" marker-end="url(#fn-arrow)"/>
+  <path class="viz-edge" d="M316 375 H328 Q332 375 332 379 V401 Q332 405 336 405 H352" marker-start="url(#fn-knob)" marker-end="url(#fn-arrow)"/>
+  <path class="viz-edge" d="M316 537 H328 Q332 537 332 533 V435 Q332 431 336 431 H352" marker-start="url(#fn-knob)" marker-end="url(#fn-arrow)"/>
+  <g class="viz-badge" data-tone="error"><rect x="352" y="460" width="208" height="26" rx="6"/><text x="456" y="473" text-anchor="middle">find_neighbors() fails</text></g>
+  <text class="viz-meta" x="352" y="506">page_id is not a feature of news_fg</text>
+</svg>
+</figure>

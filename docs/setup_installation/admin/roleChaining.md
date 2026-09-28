@@ -115,7 +115,7 @@ This is done by adding the service account role to the role's [Trust relationshi
 Now that the service account IAM role can assume the roles we need to configure Hopsworks to delegate access to the roles on a project base.
 
 In Hopsworks, click on your name in the top right corner of the navigation bar and choose _Cluster Settings_ from the dropdown menu.
-In the Cluster Settings' _IAM Role Chaining_ tab you can configure the mappings between projects and IAM roles.
+In Cluster Settings, open _IAM Role Chaining_ under _Security & Access_ to configure the mappings between projects and IAM roles.
 
 <figure>
   <img src="../../../assets/images/admin/iam-role/cluster-settings.png" alt="Role Chaining"/>

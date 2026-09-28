@@ -1,0 +1,30 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 760 300" role="img" aria-label="Two loading strategies of a dltHub ingestion job, drawn on the rows of a source table ordered by its cursor column tid. Full load: every run reads the whole table again, run 1 and run 2 both span all rows. Incremental by id: run 1 reads everything up to tid 1005 and stores 1005 as the cursor, run 2 reads only the rows with tid above the cursor, run 3 only the rows above the new cursor. The job settings underneath: loading strategy INCREMENTAL_ID, source cursor field tid, initial value 0." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="dl-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+  </defs>
+  <text class="viz-label" x="24" y="30">full load, every run reads the whole table</text>
+  <path class="viz-axis" d="M96 52 H700" marker-end="url(#dl-arrow)"/>
+  <path class="viz-tick" d="M140 46 V58 M380 46 V58 M560 46 V58"/>
+  <text class="viz-meta" x="140" y="76">tid 1001</text>
+  <text class="viz-meta" x="380" y="76" text-anchor="middle">tid 1005</text>
+  <text class="viz-meta" x="560" y="76" text-anchor="middle">tid 1012</text>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="142" y="40" width="238" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="261" y="56" text-anchor="middle">run 1 · all rows</text>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="142" y="92" width="418" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="351" y="108" text-anchor="middle">run 2 · all rows again, old and new</text>
+  <text class="viz-label" x="24" y="158">incremental by id, each run reads past the cursor</text>
+  <path class="viz-axis" d="M96 180 H700" marker-end="url(#dl-arrow)"/>
+  <path class="viz-tick" d="M140 174 V186 M380 174 V186 M560 174 V186"/>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="142" y="168" width="238" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="261" y="184" text-anchor="middle">run 1 · tid ≤ 1005</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="382" y="168" width="178" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="471" y="184" text-anchor="middle">run 2 · tid &gt; 1005</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="562" y="168" width="118" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="621" y="184" text-anchor="middle">run 3 · &gt; 1012</text>
+  <text class="viz-meta" x="380" y="212" text-anchor="middle">cursor = 1005</text>
+  <text class="viz-meta" x="560" y="212" text-anchor="middle">cursor = 1012</text>
+  <text class="viz-codeln" x="96" y="250">loading strategy = <tspan class="tok-str">INCREMENTAL_ID</tspan>, source cursor field = <tspan class="tok-str">tid</tspan>, initial value = <tspan class="tok-str">0</tspan></text>
+  <text class="viz-codeln" x="96" y="276">the cursor is stored with the job and advances after every successful run</text>
+</svg>
+</figure>

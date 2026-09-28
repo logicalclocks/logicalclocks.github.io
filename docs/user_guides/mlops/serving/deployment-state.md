@@ -7,12 +7,7 @@ In this guide, you will learn how to inspect the state of a deployment.
 A state can be seen as a snapshot of the current inner workings of a deployment.
 The following is the state transition diagram for deployments.
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_statuses.png" alt="Deployments statuses">
-    <figcaption>State transitions of deployments</figcaption>
-  </figure>
-</p>
+--8<-- "user_guides/mlops/serving/deployment-state/status-transitions.html"
 
 States are composed of a [status](#deployment-status) and a [condition](#deployment-conditions).
 While a status represents a high-level view of the state, conditions contain more detailed information closely related to infrastructure terms.
@@ -25,7 +20,7 @@ If you have at least one deployment already created, navigate to the deployments
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar_with_list.svg" alt="Deployments navigation tab">
+    <img src="../../../../assets/images/guides/mlops/serving/deployments_tab_sidebar_with_list.png" alt="Deployments navigation tab">
     <figcaption>Deployments navigation tab</figcaption>
   </figure>
 </p>
@@ -44,18 +39,18 @@ This message is built using the current [condition](#deployment-conditions) of t
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_condition.svg" alt="Deployment status condition">
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_condition.png" alt="Deployment status condition">
     <figcaption>Deployments status condition</figcaption>
   </figure>
 </p>
 
 ### Step 3: Check nº of running instances
 
-Additionally, you can find the nº of instances currently running by scrolling down to the `resource allocation` section.
+Additionally, you can find the nº of instances currently running by scrolling down to the `Resources per Instance` section, or by picking it in the left navigation under the deployment.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_resource_allocation.svg" alt="Resource allocation for a deployment">
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_resource_allocation.png" alt="Resource allocation for a deployment">
     <figcaption>Resource allocation for a deployment</figcaption>
   </figure>
 </p>
@@ -110,11 +105,15 @@ Additionally, you can find the nº of instances currently running by scrolling d
   deployment.transformer.resources.describe()
   ```
 
-### API Reference
+!!! api "API reference"
 
-[`Deployment`][hsml.deployment.Deployment]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.get_deployment`][hsml.model_serving.ModelServing.get_deployment]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_state`][hsml.deployment.Deployment.get_state]
+    - <code class="doc-symbol doc-symbol-class"></code> [`PredictorState`][hsml.predictor_state.PredictorState]
+        - <code class="doc-symbol doc-symbol-method"></code> [`describe`][hsml.predictor_state.PredictorState.describe]
 
-[`PredictorState`][hsml.predictor_state.PredictorState]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Deployment status
 
@@ -168,18 +167,10 @@ Additionally, a reason field is provided with a more descriptive message of the 
     |             | `False`   | Connectivity failed to be set up, mainly due to networking issues.                                                                                         |
     |             | `True`    | Connectivity has been set up and the deployment is ready                                                                                                   |
 
-The following are two diagrams with the state transitions of conditions in starting and stopping deployments, respectively.
+Condition transitions while a deployment starts:
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_status_conditions_starting.png" alt="Conditions in starting deployments">
-    <figcaption>Condition transitions in starting deployments</figcaption>
-  </figure>
-</p>
+--8<-- "user_guides/mlops/serving/deployment-state/conditions-starting.html"
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_status_conditions_stopping.png" alt="Conditions in stopping deployments">
-    <figcaption>Condition transitions in stopping deployments</figcaption>
-  </figure>
-</p>
+Condition transitions while a deployment stops:
+
+--8<-- "user_guides/mlops/serving/deployment-state/conditions-stopping.html"

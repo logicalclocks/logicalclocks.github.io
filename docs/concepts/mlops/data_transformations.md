@@ -7,7 +7,7 @@ However, [not all transformations in an AI application are equivalent](https://w
 Transformations like binning and aggregations typically create reusable features, while transformations like one-hot encoding, scaling and normalization often produce model-specific features.
 Additionally, in real-time AI systems, some features can only be computed during inference when the request is received, as they need request-time parameters to be computed.
 
-![Types of features](../../assets/images/concepts/mlops/transformation-features.jpg)
+--8<-- "concepts/mlops/data_transformations/data-transformations.html"
 
 This classification of features can be used to create a taxonomy for data transformation that would apply to any scalable and modular AI system that aims to reuse features.
 The taxonomy helps identify which classes of data transformation can cause [online-offline](https://www.hopsworks.ai/dictionary/online-offline-feature-skew) skews in AI systems, allowing for their prevention.
@@ -17,7 +17,7 @@ Hopsworks provides support for a feature view abstraction as well as model-depen
 
 Transformation functions in an AI system can be classified into three types based on the nature of the input features they generate: [model-independent](https://www.hopsworks.ai/dictionary/model-independent-transformations), [model-dependent](https://www.hopsworks.ai/dictionary/model-dependent-transformations), and [on-demand](https://www.hopsworks.ai/dictionary/on-demand-transformation) transformations.
 
-![Types of transformations](../../assets/images/concepts/mlops/taxonomy-transformations.jpg)
+--8<-- "concepts/mlops/data_transformations/transformation-taxonomy-2.html"
 
 **Model-independent transformations** create reusable features that can be utilized across one or more machine-learning models.
 These transformations include techniques such as grouped aggregations (e.g., minimum, maximum, or average of a variable), windowed aggregations (e.g., the number of clicks per day), and binning to generate categorical variables.
@@ -40,7 +40,8 @@ Backfilling on-demand features into the feature store eliminates the need to rec
 On-demand transformations are typically also model-independent transformations (model-dependent transformations can be applied after the on-demand transformation).
 
 Each of these transformations is employed within specific areas in a modular AI system and can be illustrated using the figure below.
-![Types of transformations in modular AI Pipeline](../../assets/images/concepts/mlops/transformation-in-modular-AI-pipeline.jpg)
+
+--8<-- "concepts/mlops/data_transformations/transformation-taxonomy.html"
 
 Model-independent transformations are utilized exclusively in areas where new and historical data arrives, typically within feature pipelines.
 Model-dependent transformations are necessary during the creation of training data, in training programs and must also be consistently applied in inference programs prior to making predictions.
@@ -51,7 +52,9 @@ Hopsworks provides support for  model-dependent transformations and on-demand tr
 
 ## Hopsworks and the Data Transformation Taxonomy
 
-![Data transformations Hopsworks](../../assets/images/concepts/mlops/data-transformations-hopsworks.jpg)
+--8<-- "concepts/mlops/data_transformations/hopsworks-transformation-taxonomy-2.html"
+
+--8<-- "concepts/mlops/data_transformations/hopsworks-feature-store-storage.html"
 
 In Hopsworks, an AI system is typically decomposed into different [AI pipelines](https://www.hopsworks.ai/dictionary/ai-pipelines) and usually falls into either a [feature pipeline](https://www.hopsworks.ai/dictionary/feature-pipeline), a [training pipeline](https://www.hopsworks.ai/dictionary/training-pipeline), or an [inference pipeline](https://www.hopsworks.ai/dictionary/inference-pipeline).
 
@@ -59,7 +62,7 @@ Hopsworks stores reusable feature data, created by model-independent transformat
 Model-independent transformations in Hopsworks can be performed using a wide range of commonly used data engineering tools and the generated features can be seamlessly inserted into feature groups.
 The figure below illustrates the different software tools supported by Hopsworks for creating reusable features through model-independent transformations.
 
-![Supported feature engineering tools](../../assets/images/concepts/mlops/supported-feature-engineering-tools.jpg)
+--8<-- "concepts/mlops/data_transformations/hopsworks-transformation-taxonomy.html"
 
 Additionally, Hopsworks provides a simple Python API to [create custom transformation functions](../../user_guides/fs/transformation_functions.md) as either Python or Pandas User-Defined Functions (UDFs).
 Pandas UDFs enable the vectorized execution of transformation functions, offering significantly higher throughput compared to Python UDFs for large volumes of data.
@@ -80,4 +83,7 @@ Additionally feature views, also compute and save statistics for the training da
 Hopsworks supports attaching transformations functions to feature views to [create model-dependent transformations](../../user_guides/fs/feature_view/model-dependent-transformations.md) that have no online-offline skew.
 These transformations get access to the same training dataset statistics during both training and inference ensuring their consistency.
 Additionally, feature views through lineage get access to the on-demand transformation used to create on-demand features if any are selected during the creation of the feature view.
+
+The registration locus is the cleanest way to remember where each transformation lives: on-demand transformations are registered on feature groups, model-dependent transformations on feature views.
+A Hopsworks transformation function is also mixed-mode: the same decorated Python function runs as a Pandas UDF offline, to create training data, and as a Python UDF online, to build a single feature vector, so one definition serves both pipelines with no skew.
 This allows for the computation of on-demand features in real-time during online-inference.

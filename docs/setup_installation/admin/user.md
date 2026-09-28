@@ -11,7 +11,7 @@ Administrator account on a Hopsworks cluster.
 ### Step 1: Go to user management
 
 All the users of your Hopsworks instance have access to your cluster with different access rights.
-You can find them by clicking on your name in the top right corner of the navigation bar and choosing _Cluster Settings_ from the dropdown menu and going to the _Users_ tab (You need to have _Admin_ role to get access to the _Cluster Settings_ page).
+You can find them by clicking on your name in the top right corner of the navigation bar, choosing _Cluster Settings_ from the dropdown menu, then choosing _Users_ under _Security & Access_ in the left sidebar (You need to have _Admin_ role to get access to the _Cluster Settings_ page).
 
 <figure>
   <img src="../../../assets/images/admin/user-management/active-users.png" alt="active users" />
@@ -33,15 +33,15 @@ You can change the role of a user by clicking on the _select dropdown_ that show
 By default, a user who register on Hopsworks using their own credentials are not granted access to the cluster.
 First, a user with an admin role needs to validate their account.
 
-By clicking on the _Review Requests_ button you can open a _user request review_ popup as shown in the image below.
+Users waiting for validation are listed at the top of the _Users_ page, above the search box, as shown in the image below.
 
 <figure>
   <img src="../../../assets/images/admin/user-management/user-request-review.png" alt="request" />
-  <figcaption>Review user request</figcaption>
+  <figcaption>Pending user requests</figcaption>
 </figure>
 
-On the user request review popup you can activate or block users.
-Users with a validated email address will have a check mark on their email.
+Each pending row carries an _Activate_ and a _Block_ button.
+A marker next to the email address shows that the address has not been validated yet.
 
 Similarly, if a user is no longer allowed access to the cluster you can block them.
 To keep consistency with the history of your datasets, a user can not be deleted but only blocked.
@@ -54,7 +54,7 @@ You can block a user by clicking on the block icon on the right side of the user
 </figure>
 
 Blocked users will appear on the lower section of the page.
-Click on _display blocked users_ to show all the blocked users in your cluster.
+Click on _Show blocked users_ to show all the blocked users in your cluster.
 If a user is blocked by mistake you can reactivate it by clicking on the check mark icon that corresponds to that user in the blocked users list.
 
 If there are too many users in your cluster, use the search box (available for blocked users too) to filter users by name or email.
@@ -70,10 +70,11 @@ If you want to allow users to login without registering you can pre-create them 
   <figcaption>Create new user</figcaption>
 </figure>
 
-After setting the user's name and email chose the type of user you want to create (Hopsworks, Kerberos or LDAP).
+After setting the user's name and email chose the type of user you want to create (Hopsworks, Kerberos, LDAP or OAuth2).
 To create a Kerberos or LDAP user you need to get the users **UUID** from the Kerberos or LDAP server.
-Hopsworks user can also be assigned a _Role_.
-Kerberos and LDAP users on the other hand can only be assigned a role through group
+_Max number of projects_ sets how many projects that user is allowed to create.
+Hopsworks user can also be assigned a _Cluster role_.
+Kerberos, LDAP and OAuth2 users on the other hand can only be assigned a role through group
 mapping.
 
 A temporary password will be generated and displayed when you click on _Create new user_.
@@ -88,7 +89,7 @@ Copy the password and pass it securely to the user.
 
 In the case where a user loses her/his password and can not recover it with the [password recovery](../../user_guides/projects/auth/recovery.md), an administrator can reset it for them.
 
-On the bottom of the _Users_ page click on the _Reset a user password_ link.
+On the bottom of the _Users_ page, under _Advanced features_, click on _Reset a user password_.
 A popup window with a dropdown for searching users by name or email will open.
 Find the user and click on _Reset new password_.
 <figure>
