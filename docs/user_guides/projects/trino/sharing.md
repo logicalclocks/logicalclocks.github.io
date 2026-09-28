@@ -53,11 +53,17 @@ The schemas, tables and columns offered are the ones you can see in the catalog 
 
 Expand a table in the tree to choose its columns.
 An unchecked column cannot be read by the receiving project, and a query that selects it, or selects `*`, is refused.
-The table's other ways of revealing a column are closed too: the connector's hidden columns, such as `$path` and `$partition`, and the table's metadata tables, such as `<table>$partitions`, are denied on a narrowed table, because the path and partition values of a table partitioned on an unshared column carry that column's values.
+The table's other ways of revealing a column are closed too: the connector's hidden columns, such as `$path` and `$partition`, or Elasticsearch's `_source`, which holds the whole document, and the table's metadata tables, such as `<table>$partitions`, are denied on a narrowed table.
+
+Tables of a Kafka, Redis, MongoDB, Cassandra or Thrift catalog cannot be narrowed to some columns, because those connectors can hide columns that are defined outside the query engine and cannot all be denied.
+Share such a table whole, or leave it out.
 
 The query engine denies the columns that were unchecked when the share was saved.
-A column added to the table later is therefore readable until you save the share again.
-The sharing page flags such a table with the new column names, and **Exclude them** saves the share again with the new columns left unshared.
+A column added to the table later, or an unchecked column renamed at the source, is therefore readable, unmasked, until you save the share again.
+The sharing page marks such a share with the number of new columns and names them, and **Exclude them** saves the share again with the new columns left unshared.
+
+Iceberg and Delta Lake tables can also be read as of an earlier version, which has the columns the table had then.
+A column dropped or renamed before the table was shared is readable that way, under its old name, until those versions expire.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/share-edit-columns.png" alt="Editing the columns of a share" />
@@ -70,7 +76,8 @@ A shared column can carry a mask, which replaces the value the receiving project
 A mask is one SQL expression over the row, for example `'***'` or `regexp_replace(email, '.+@', '***@')`, and it must return the column's own type.
 
 A mask runs as the person querying, not as you, so it can use only what they can read: the checked columns of the same table.
-A mask that refers to an unchecked column, or to another table, is refused when you save the share.
+A mask that refers to an unchecked column is refused when you save the share.
+A mask that reads another table is accepted, because it is checked as you, but it fails at query time for anyone in the receiving project who cannot read that table.
 It cannot contain `;` or a comment, and it is limited to 2000 characters.
 The mask is checked against the table when the share is saved, so an expression the query engine cannot evaluate is reported then rather than when someone queries the table.
 
@@ -96,19 +103,26 @@ The sharing page shows where each share stands and refreshes itself while a chan
 | Applying | Saved, and being made live. |
 | Active | Live: the receiving project can read what it covers. |
 | Revoking | Being removed. The receiving project loses access when this finishes. |
-| Failed | Could not be made live. The status carries the reason; share it again to retry. |
+| Failed | Could not be made live. The status carries the reason; edit the share and save it to retry. |
 
 ### Objects that no longer exist
 
 A share names schemas and tables, and an object it names may be dropped at the source later.
 The share keeps it, and the sharing page lists it as **Not found**.
-If an object with the same name is created again, the share applies to it, so edit the share to remove an object that is gone for good.
+If an object with the same name is created again, the share applies to it.
+To remove an object that is gone for good, click **Remove them from the share**, or edit the share and uncheck the object, which the tree shows as not found at the source.
 
 ### Revoking a share
 
 Click the delete icon on a share to revoke it.
 The receiving project loses access to everything the share covered as soon as the revoke is live, within seconds, and the share disappears from the page once it is.
 The catalog cannot be shared with the same project again until the revoke has finished.
+
+### What a share does not restrict
+
+A share grants reading, but the query engine does not check table procedures against it.
+Anyone in the receiving project can run `ALTER TABLE ... EXECUTE` on a table of a shared Iceberg or Delta Lake catalog, for example `optimize`, `expire_snapshots` or `rollback_to_snapshot`, and change the table with the catalog's own credentials.
+Share such a catalog only with projects you trust with its tables, or set the connector's own `iceberg.security` or `delta.security` property to `read_only` on the catalog.
 
 Deleting a catalog revokes all of its shares at once, and so does deleting the receiving project.
 
