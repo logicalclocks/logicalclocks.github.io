@@ -5,6 +5,8 @@ Training data can be created from the feature view and used by different ML libr
 You can read [training data concepts](../../../concepts/fs/feature_view/offline_api.md) for more details.
 To see a full example of how to create training data, you can read [this notebook](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/batch-ai-systems/fraud_batch/2_fraud_batch_training_pipeline.ipynb).
 
+<!-- markdownlint-disable-next-line MD042 -->
+[](){ #arrowflight-server-with-duckdb }
 Python clients read and create in-memory training data through the ArrowFlight Server with DuckDB, which Hopsworks enables by default.
 For small and moderately sized datasets (what fits in a pandas DataFrame) it avoids the start-up cost of a Spark job; larger datasets can still be created with Spark by setting `read_options={"use_hive": True}`.
 
