@@ -259,6 +259,101 @@ They are read-only at the connector as well, so no rule can let a query write th
 Do not add rules for these catalogs to the base policy: any rule that reaches one of them reads every project's feature store.
 Administrators are denied them because Trino runs a view as the user recorded as its owner, so a view recorded as owned by an administrator would reach them too.
 
+### Reading the rules file
+
+The rules the query engine enforces can be read under **Cluster Settings** → **Query Engine** → **Files**, as `access-control/rules.json`.
+Beside it, `access-control/rules.json.last-good` is the last file the query engine loaded.
+They differ from a publish until Hopsworks confirms the query engine loaded the new file, a few seconds later.
+If they stay different, the new file is not confirmed yet, for example because the query engine was unreachable, and the next reconcile checks again.
+A file the query engine refused does not stay: the last good file goes back in its place, and the shares the refused file added are marked **Failed**.
+The groups the rules name are in `auth/group.db`.
+
+#### Who the rules match
+
+A query runs as a principal named `<project>__<username>`, for example `seeda__seed1000` for user `seed1000` in project `seeda`.
+Its groups are the member's role in that project, `<project>__data_owner` or `<project>__data_scientist`, and `<owner>__shared_featurestore` for each project `<owner>` whose feature store is shared with that project.
+Group `admin` has one member, the query engine administrator, which is the identity Hopsworks itself uses.
+Project names and usernames cannot contain `__`, so a pattern such as `.*__(.*)` splits a principal unambiguously, and `$1` in a later field stands for what the pattern captured.
+
+Each section of the file (`catalogs`, `schemas`, `tables`, `functions`, `queries`) is checked on its own.
+In a section, the first rule whose user, group and object all match decides, and a request no rule matches is denied.
+The order of the rules is therefore the policy: a broader rule placed first would answer before a narrower one.
+
+#### The order of the rules
+
+Every section keeps the same order, and the rules Hopsworks adds for shares go in one place in it:
+
+1. The administrator rules.
+2. A deny for each private catalog whose owner's account was deleted, until the catalog is removed.
+   It comes before the private-owner rules because a later account with the same username would match them.
+3. The private-owner rules.
+   They come before the shares so that sharing a private catalog with a project the owner belongs to never narrows the owner's own access.
+4. The share rules.
+5. The rest of the base policy: every project's own catalogs and feature store.
+
+#### The base policy
+
+The `catalogs` section of the base policy, in order:
+
+| Rule | Effect |
+| --- | --- |
+| `group: admin`, `allow: none` on `iceberg_shared`, `delta_shared` and `hudi_shared` | The administrator never sees the shared feature store catalogs. |
+| `group: admin`, `catalog: .*`, `allow: read-only` | The administrator sees every other catalog, without writing to any. |
+| `user: .*__(.*)`, `group: .*__data_owner`, `catalog: _$1__.*`, `allow: all` | The owner of a private catalog reads and writes it from a project where they are a Data Owner. |
+| `user: .*__(.*)`, `catalog: _$1__.*`, `allow: read-only` | The owner reads it from any other project. |
+| `catalog: tpch` and `tpcds`, `allow: read-only` | Everyone reads the sample catalogs. |
+| `catalog: iceberg`, `delta`, `hive`, `hudi`, `allow: all` | Everyone reaches the feature store catalogs; the table rules decide what they read. |
+| `group: (.*)__data_owner`, `catalog: $1__.*`, `allow: all` | A project's Data Owners read and write its catalogs. |
+| `group: (.*)__data_scientist`, `catalog: $1__.*`, `allow: read-only` | Its Data Scientists read them. |
+| `catalog: system`, `allow: read-only` | Everyone reads the `system` catalog. |
+
+The `tables` section follows the same pattern: the administrator reads only `system`, `tpch` and `tpcds`, the private-owner rules mirror the catalog ones, and each project reaches the schema `<project>_featurestore` in the feature store catalogs, all of it for its Data Owners, reading for its Data Scientists and for projects its feature store is shared with.
+The `schemas` section gives schema ownership, which is what creating and dropping schemas needs, to Data Owners only.
+The `functions` section lets everyone run builtin functions, and the members of a project run the `system` functions of their project's catalogs, such as `system.query` on a JDBC catalog.
+
+#### The rules a share adds
+
+Hopsworks writes the names in a share rule as literals between `\Q` and `\E`, so a name containing regular expression syntax matches only itself.
+A share names the receiving project's two role groups in one pattern, `\Q<project>\E__data_(?:owner|scientist)`, so searching the file for `\Qseedc\E__data_` finds every rule a share to `seedc` added.
+
+A share of catalog `seeda__postgresql` with `seedc`, covering table `public.customers` with column `created` unchecked and column `name` masked, adds these rules:
+
+```json
+{"catalogs": [
+  {"group": "\\Qseedc\\E__data_(?:owner|scientist)", "catalog": "\\Qseeda__postgresql\\E", "allow": "read-only"}
+],
+"tables": [
+  {"group": "\\Qseedc\\E__data_(?:owner|scientist)", "catalog": "\\Qseeda__postgresql\\E",
+   "schema": "\\Qpublic\\E", "table": "\\Qcustomers\\E", "privileges": ["SELECT"],
+   "columns": [{"name": "created", "allow": false}, {"name": "$path", "allow": false},
+               {"name": "name", "mask": "'***'"}]},
+  {"group": "\\Qseedc\\E__data_(?:owner|scientist)", "catalog": "\\Qseeda__postgresql\\E",
+   "schema": "\\Qpublic\\E", "table": "\\Qcustomers\\E\\$.*", "privileges": []}
+],
+"functions": [
+  {"group": "\\Qseedc\\E__data_(?:owner|scientist)", "catalog": "\\Qseeda__postgresql\\E", "privileges": []}
+]}
+```
+
+The list of denied columns in the rule is shortened here.
+
+- The catalog rule makes the catalog visible to the receiving project, read-only.
+- The table rule grants `SELECT` on the table and lists the columns it denies: the unchecked ones, and the connector's hidden columns, such as `$path`.
+  A table shared whole has a table rule without `columns`, a schema shared whole has `table: .*`, and a catalog shared whole has `schema: .*` too.
+- The rule after it, with no privileges, denies the table's metadata tables, such as `customers$partitions`, which Trino checks by their own name.
+- The function rule denies the receiving project the catalog's functions, which the base policy would otherwise give it.
+  A share of a private catalog also adds, before that deny, a rule letting the owner keep running the catalog's `system` functions.
+
+A feature group shared whole adds one table rule on `hive|iceberg|delta|hudi` for its table in the owner's feature store.
+A feature group shared with a subset of its features adds a catalog rule on the shared catalog of its format, such as `delta_shared`, and a table rule there that denies every unshared feature and hidden column, followed by the metadata table deny.
+
+#### Debugging a share
+
+- The share is **Active** but a query is refused: find the share's rules by the receiving project's group, then look for a rule above them that matches the same principal and object first.
+- The share's rules are not in the file: the share is still **Applying**, or it is **Failed** and its status says why.
+- A column that should be hidden is readable: it is missing from the rule's `columns`, typically a column added after the share was saved; saving the share again adds it as unshared.
+- `rules.json` and `rules.json.last-good` differ for minutes: the newest file is not confirmed, so check that the query engine is reachable; the reconcile verifies it again and restores the last good file if the query engine refuses it.
+
 ## Credential files a project supplies
 
 A connector that authenticates with a file, such as an Oracle wallet or a Java keystore, cannot be served by a catalog property alone.
