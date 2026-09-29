@@ -232,7 +232,7 @@ Hopsworks owns that file and rebuilds it whenever a share changes, and on a sche
 The file is composed from two parts:
 
 - The base policy, from the Helm value `trino.accessControl.rules`, which the chart renders into the ConfigMap `hopsworks-trino-access-control-base`.
-  It grants each project its own catalogs and feature store, each user their private catalogs, and administrators everything.
+  It grants each project its own catalogs and feature store, each user their private catalogs, and administrators everything except the shared feature store catalogs below.
 - One set of rules per share, for [catalog shares and feature group shares][sharing-catalogs-and-feature-groups].
   A share names the receiving project's existing `<project>__data_owner` and `<project>__data_scientist` groups, so sharing never changes the group file.
 
@@ -252,9 +252,10 @@ The chart ships two kinds of catalog over the feature store:
   They read HopsFS as the `trino` user, which is a HopsFS superuser, because a feature group shared with a subset of its features grants the receiving project no HopsFS access.
 
 For the second kind the access-control rules are the only gate.
-The base policy grants nobody access to them, and Hopsworks adds a rule per subset share that allows the receiving project the shared features of that one table and denies the rest.
+The base policy grants nobody access to them, not even administrators, and Hopsworks adds a rule per subset share that allows the receiving project the shared features of that one table and denies the rest.
 They are read-only at the connector as well, so no rule can let a query write through them.
 Do not add rules for these catalogs to the base policy: any rule that reaches one of them reads every project's feature store.
+Administrators are denied them because Trino runs a view as the user recorded as its owner, so a view recorded as owned by an administrator would reach them too.
 
 ## Credential files a project supplies
 

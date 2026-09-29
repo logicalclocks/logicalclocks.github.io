@@ -204,7 +204,7 @@ Testing the connection before saving catches most of these earlier.
 ## Who can query a catalog
 
 Inside the project that owns a project catalog, its Data Owners can read and write, and its Data Scientists can read.
-A private catalog can be read and written by you, from any of your projects.
+A private catalog can be read by you from any of your projects, and written only from a project where you are a Data Owner.
 
 Other projects can read a catalog only through a share, which grants read access to the whole catalog, one schema, one table, or some columns of a table, optionally with masked values.
 See [Sharing Catalogs and Feature Groups][sharing-catalogs-and-feature-groups].
