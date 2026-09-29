@@ -34219,7 +34219,7 @@ Only a small subset of these values is needed for a typical install; the table b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1790597813` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1790676119` (Hopsworks `5.2.0`)._
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -35016,6 +35016,9 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1790597813` (Hopsworks `5.
 | hopsfs.security.tls.enabled | bool | `true` |  |
 | hopsfs.serviceAccount.annotations | object | `{}` | service account annotations |
 | hopsfs.setupJob.timeoutMinutes | int | `25` |  |
+| hopsfs-csi.cleanupOnUninstall | object | `{"enabled":true,"ttlSecondsAfterFinished":null}` | post-delete cleanup of what `helm uninstall` does not own: the CSIDriver object (a pre-install hook, HWORKS-3285) and, on OpenShift, the node plugin's SCC. Best effort: a failed delete is logged, not a failed uninstall. The CSIDriver is cluster-scoped and shared by every release of this chart in the cluster, so it is deleted only when its Helm annotations name the uninstalled release and no other release's node plugin pods exist. The hw-kyverno PolicyException for the plugin, if enabled, is still left behind. A reinstall does not depend on this hook. |
+| hopsfs-csi.cleanupOnUninstall.enabled | bool | `true` | enable the post-delete cleanup hook |
+| hopsfs-csi.cleanupOnUninstall.ttlSecondsAfterFinished | int or null | `nil` | TTL of the finished hook Job; null falls through to the global default |
 | hopsfs-csi.csiDriverObjectName | string | `"hopsfs.csi.logicalclocks.com"` |  |
 | hopsfs-csi.driverName | string | `"hopsfs.csi.logicalclocks.com"` |  |
 | hopsfs-csi.fullnameOverride | string | `"hopsfs-csi"` | override the full chart name |
@@ -35453,6 +35456,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1790597813` (Hopsworks `5.
 | hopsworks.tests.loadtests.load_tests_image | string | `""` |  |
 | hopsworks.tests.loadtests.mongodb_pass | string | `""` |  |
 | hopsworks.tests.loadtests.mongodb_user | string | `""` |  |
+| hopsworks.tests.loadtests.namespaceProvisionerConfigMap | string | `""` | ConfigMap providing a `provision.sh` that creates the namespace backing a project, mounted at /opt/namespace-provisioner and run once per project. Needed where namespaces must exist before the project (`variables.kube_skip_namespace_creation`). |
 | hopsworks.tests.loadtests.oracle_pass | string | `""` |  |
 | hopsworks.tests.loadtests.oracle_user | string | `""` |  |
 | hopsworks.tests.loadtests.parallelism | int | `1` |  |
@@ -35465,6 +35469,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1790597813` (Hopsworks `5.
 | hopsworks.tests.loadtests.retries | int | `1` |  |
 | hopsworks.tests.loadtests.s3_access_key | string | `""` |  |
 | hopsworks.tests.loadtests.s3_secret_key | string | `""` |  |
+| hopsworks.tests.loadtests.serviceAccountName | string | `""` | Service account for the test pods. Empty uses the namespace default. |
 | hopsworks.tests.loadtests.snowflake_pass | string | `""` |  |
 | hopsworks.tests.loadtests.snowflake_url | string | `""` |  |
 | hopsworks.tests.loadtests.snowflake_user | string | `""` |  |
