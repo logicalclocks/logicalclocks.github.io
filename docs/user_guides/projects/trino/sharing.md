@@ -19,6 +19,8 @@ Changes take effect within seconds, without restarting the query engine.
 A project catalog is shared by a Data Owner of the project, and a private catalog by its owner, from any of their projects.
 A catalog can be shared once it is **Approved** and while it is not being deleted, because a catalog the query engine has not loaded has nothing to share yet.
 It cannot be shared with the project that owns it.
+While a catalog is shared, its connector cannot change, because a narrowed share denies the hidden columns of the connector the query engine runs, and the engine switches connector only at its next restart.
+Revoke its shares first; its other properties can be edited as usual.
 
 Click the share icon on the catalog's row in **Query Engine** → **Catalogs** to open its sharing page.
 The page lists every project the catalog is shared with, what it shares with each, and whether each share is live.
