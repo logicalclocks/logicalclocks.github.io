@@ -220,6 +220,11 @@ The query engine sends it as a subquery, so the database rejects a statement tha
 Give the database user only the privileges the catalog's readers should have.
 The receiving project of a share cannot run the catalog's functions at all.
 
+Read access to an Iceberg or Delta Lake table also allows its table procedures, `ALTER TABLE ... EXECUTE` with `optimize`, `expire_snapshots`, `remove_orphan_files` or `rollback_to_snapshot`, because the query engine does not check them against the access rules.
+A Data Scientist of the project can therefore rewrite, expire or roll back the tables of the project's Iceberg and Delta Lake catalogs, and so can you on your private catalog from a project where you are a Data Scientist, although neither can write rows.
+Set the connector's `iceberg.security` or `delta.security` property to `read_only` on a catalog that must not be changed this way; the query engine then refuses table procedures to everyone and reading is unchanged.
+`CALL` procedures, such as `system.unregister_table`, are refused to everyone.
+
 ## Creating a catalog from the Python client
 
 The same operations are available from the Python client, so making a data source queryable can be scripted from a job or a notebook.

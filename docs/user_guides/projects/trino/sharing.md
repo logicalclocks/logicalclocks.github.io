@@ -123,8 +123,10 @@ The catalog cannot be shared with the same project again until the revoke has fi
 ### What a share does not restrict
 
 A share grants reading, but the query engine does not check table procedures against it.
-Anyone in the receiving project can run `ALTER TABLE ... EXECUTE` on a table of a shared Iceberg or Delta Lake catalog, for example `optimize`, `expire_snapshots` or `rollback_to_snapshot`, and change the table with the catalog's own credentials.
-Share such a catalog only with projects you trust with its tables, or set the connector's own `iceberg.security` or `delta.security` property to `read_only` on the catalog.
+Anyone in the receiving project can run `ALTER TABLE ... EXECUTE` on a shared table of an Iceberg or Delta Lake catalog, for example `optimize`, `expire_snapshots` or `rollback_to_snapshot`, and change the table with the catalog's own credentials.
+`rollback_to_snapshot` returns the table to an earlier version and drops every write made since.
+A table with a masked column is the exception: the query engine refuses table procedures on it.
+Share such a catalog only with projects you trust with its tables, or set the connector's own `iceberg.security` or `delta.security` property to `read_only` on the catalog, which refuses table procedures to everyone, you included, and leaves reading unchanged.
 
 Deleting a catalog revokes all of its shares at once, and so does deleting the receiving project.
 
