@@ -132,15 +132,17 @@ Pass `--no-launch` to record the interview only, and `hops build <slug>` to resu
 The Hopsworks UI shows a **Brewer** button (the software factory) beside **Terminal**, for every member of the project, when the project has registered systems or the cluster has the terminal.
 It opens a panel you can minimize or close, with a list of the project's systems: an open folder marks the ones whose code you can open, a lock the ones you cannot, and a link the ones in a GitHub repository.
 Selecting a system opens its directory in the file browser and shows its phases, what is done and what is left, and brings its Terminal tab to the front, or opens one with Claude Code started in the system's directory when the Terminal is open.
-**show architecture** opens the system's architecture in the main view: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
+**architecture** opens the system's architecture in the main view: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
 A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
 A system whose directory is deleted disappears from the list.
+**Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. The code directory is kept.
 **Create example ML system**, the last entry in the list, asks which example to build, starts the terminal and runs `hops build --example <name>` in it.
 
 ```bash
 hops mlsystem list                       # the project's systems and whether you can open their code
 hops mlsystem register <dir> [--name N]  # register or refresh one by hand
 hops mlsystem remove <name-or-id>        # remove it from the list; its code is kept
+hops mlsystem delete <name-or-id> --assets [--repo]  # also delete what it created, and its repository
 ```
 
 ## Hopsworks Java Library
