@@ -232,7 +232,7 @@ Hopsworks owns that file and rebuilds it whenever a share changes, and on a sche
 The file is composed from two parts:
 
 - The base policy, from the Helm value `trino.accessControl.rules`, which the chart renders into the ConfigMap `hopsworks-trino-access-control-base`.
-  It grants each project its own catalogs and feature store, each user their private catalogs, and administrators everything except the shared feature store catalogs below.
+  It grants each project its own catalogs and feature store, each user their private catalogs, written only from projects where the user is a Data Owner, and administrators everything except the shared feature store catalogs below.
 - One set of rules per share, for [catalog shares and feature group shares][sharing-catalogs-and-feature-groups].
   A share names the receiving project's existing `<project>__data_owner` and `<project>__data_scientist` groups, so sharing never changes the group file.
 

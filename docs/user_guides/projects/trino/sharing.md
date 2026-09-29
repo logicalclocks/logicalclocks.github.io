@@ -11,12 +11,14 @@ Two kinds of share reach the query engine:
 - A **feature group share**, made from the feature store, also makes the shared feature group queryable through the query engine in the receiving project.
 
 A share always grants read access, and always to the receiving project's Data Owners and Data Scientists.
+It grants tables only: the receiving project cannot run the catalog's functions, such as `system.query` of a JDBC catalog, which would run any SQL on the source database as the catalog's database user.
 Changes take effect within seconds, without restarting the query engine.
 
 ## Sharing a catalog
 
 A project catalog is shared by a Data Owner of the project, and a private catalog by its owner, from any of their projects.
-A catalog can be shared once it is **Approved**, because a catalog the query engine has not loaded has nothing to share yet.
+A catalog can be shared once it is **Approved** and while it is not being deleted, because a catalog the query engine has not loaded has nothing to share yet.
+It cannot be shared with the project that owns it.
 
 Click the share icon on the catalog's row in **Query Engine** → **Catalogs** to open its sharing page.
 The page lists every project the catalog is shared with, what it shares with each, and whether each share is live.
@@ -86,7 +88,7 @@ The mask is checked against the table when the share is saved, so an expression 
   <figcaption>The receiving project reads the masked column as <code>***</code></figcaption>
 </figure>
 
-You always read your own catalog unmasked.
+You always read your own catalog unmasked, and a share never narrows your own access: in a project a private catalog is shared with, its owner keeps the access described in [Private catalogs][private-catalogs].
 
 ### Editing a share
 
@@ -129,6 +131,7 @@ Deleting a catalog revokes all of its shares at once, and so does deleting the r
 ### Shares your project received
 
 The **Catalogs** tab lists, under **Shared with this project**, every catalog share your project received, who it comes from, and what it covers.
+It shows how many columns of a table are masked, but not the mask expressions, which can hold values such as a salt.
 A shared catalog is queried by its own name, like any other catalog, with the SQL runner or any Trino client.
 
 <figure>

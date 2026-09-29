@@ -121,9 +121,12 @@ A private catalog differs from a project catalog in what it can reach and who co
   Enter the connection details yourself instead.
 - Only you can edit, delete or share it, from any of your projects and whatever your role there, so being made a Data Scientist in a project does not lock you out of your own catalogs.
   Other members of your projects cannot query it unless you share it with their project.
+- You write to it only from a project where you are a Data Owner, and read it from any other.
+  In a project where you are a Data Scientist you can only read that project's data, and a private catalog writable from there would let you copy the data into a catalog you then read from your other projects.
 - The number of private catalogs you can own has the same limit as a project's catalogs, ten by default.
 
 When your account is deleted, your private catalogs are marked for removal and stop being queryable at once, and their shares are removed with them.
+They stay denied to everyone, including a later account with the same username, until they are removed like any deleted catalog, as described in [When the catalog goes live][when-the-catalog-goes-live].
 
 ## Testing the connection
 
@@ -211,6 +214,11 @@ See [Sharing Catalogs and Feature Groups][sharing-catalogs-and-feature-groups].
 
 The query engine reads the external system as the database user in the connection credentials, so no share can expose more than those credentials allow.
 Scoping that database user at the source remains the strongest limit on what a catalog can reach.
+
+A reader of a JDBC catalog, such as a Data Scientist of the project, can also run the catalog's `system.query` table function, which passes a query to the source database as that database user.
+The query engine sends it as a subquery, so the database rejects a statement that changes data, but a database function that changes data as a side effect still runs.
+Give the database user only the privileges the catalog's readers should have.
+The receiving project of a share cannot run the catalog's functions at all.
 
 ## Creating a catalog from the Python client
 
