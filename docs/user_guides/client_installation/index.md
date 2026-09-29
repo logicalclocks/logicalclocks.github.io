@@ -116,6 +116,8 @@ hops build
 ```
 
 `hops build` first asks what you want to build: a new ML system, which it asks you to describe, or an example ML system (churn, batch; personalized recommendations, real-time; a help desk agent, agentic) that runs on synthetic data and includes an app.
+The help desk agent answers from documents you upload to `Resources/helpdesk-docs` (PDF, text, Markdown, Word or OpenDocument), which a job cuts into passages and embeds with a sentence-transformers model downloaded into the Model Registry, and from the customer's recent events; it is a LangGraph agent deployment with a JavaScript chat app.
+For it, `hops build` asks for an OpenAI-compatible LLM endpoint, model and API key (read without echo) and saves them as your account environment variables `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`, which the agent reads.
 It then asks the questions that follow from the system type: how often predictions are made for a batch system, the latency and throughput for a real-time one, the LLM for an agentic one, the data to learn from, how the predictions are used, and where the code goes.
 One Claude Code call on Haiku reads your description and recommends the system type and a name; the other questions are plain prompts.
 Each answer is written to `<slug>/system.yaml` in the current directory as you give it.
