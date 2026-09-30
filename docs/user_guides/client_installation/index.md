@@ -76,13 +76,19 @@ It then writes the following files into the current directory:
 | --- | --- |
 | `AGENTS.md` | Instructions for the agent: the project you are connected to, where the `hopsworks` library is installed on this machine, and how to use the `hops` CLI and the skills. |
 | `.claude/skills/hops/SKILL.md` | A reference for the `hops` CLI. |
-| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code. |
-| `.claude/agents/hops-fti.md` | A Claude Code sub-agent that reviews a project against the feature, training and inference pipeline pattern. |
+| `.claude/commands/hops.md` | The `/hops` slash command for Claude Code: a fast menu to explore data, build or edit a Superset dashboard (`/hops dashboard`) or a Python app (`/hops app`), and show status. It runs on Haiku; the building is done by the agents below. |
+| `.claude/commands/hops-ml.md` | The `/hops-ml` slash command: the `hops build` interview inside Claude Code, on Haiku, recorded in `system.yaml` as you answer. |
+| `.claude/commands/hops-build.md` | The `/hops-build` slash command: completes the specification the interview recorded and builds the ML system to a pull request, on your session's model. |
+| `.claude/agents/hops-dashboard-builder.md` | The Claude Code sub-agent `/hops` runs to build, edit or delete a dashboard. |
+| `.claude/agents/hops-app-builder.md` | The Claude Code sub-agent `/hops` runs to build, edit or delete an app and fix it until it serves. |
+| `.claude/agents/hops-train-agent.md` | The Claude Code sub-agent `/hops-build` runs to train a model until it meets its target. |
+| `.claude/agents/hops-infer-agent.md` | The Claude Code sub-agent `/hops-build` runs to build inference until it meets its SLA. |
 | `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
 
 `AGENTS.md` is read by Claude Code, Codex, GitHub Copilot and OpenCode.
 The files under `.claude/` are read by Claude Code only.
 Running `hops setup` again in a directory that already has these files updates the files you have not edited and leaves the ones you have edited unchanged.
+A file an earlier version wrote and this one no longer ships, such as `.claude/agents/hops-fti.md`, is removed when you have not edited it and reported otherwise.
 Pass `--no-scaffold` to authenticate without writing any files.
 
 ### Add the Hopsworks skills
@@ -111,6 +117,53 @@ To read the skills without adding them to a repository:
 ```bash
 hops skills list
 hops skills show hops-fg
+```
+
+### Build an ML system
+
+```bash
+hops build
+```
+
+`hops build` first asks what you want to build: a new ML system, which it asks you to describe, or an example ML system (churn, batch; personalized recommendations, real-time; a help desk agent, agentic) that runs on synthetic data and includes an app.
+The help desk agent answers from documents you upload to `Resources/helpdesk-docs` (PDF, text, Markdown, Word or OpenDocument), which a job cuts into passages and embeds with a sentence-transformers model downloaded into the Model Registry, and from the customer's recent events; it is a LangGraph agent deployment with a JavaScript chat app.
+For it, `hops build` asks for an OpenAI-compatible LLM endpoint, model and API key (read without echo) and saves them as your account environment variables `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`, which the agent reads.
+It then asks the questions that follow from the system type: how often predictions are made for a batch system, the latency and throughput for a real-time one, the LLM for an agentic one, the data to learn from, how the predictions are used, and where the code goes.
+One Claude Code call on Haiku reads your description and recommends the system type and a name; the other questions are plain prompts.
+Each answer is written to `<slug>/system.yaml` in the current directory as you give it.
+
+A new data source is created with `hops datasource create`, and its password or key is read without echo and passed to it in an environment variable, so it never appears on the command line or in `system.yaml`.
+
+When the interview is done, `hops build` starts Claude Code with `/hops-build <slug>`, which completes the specification and builds the feature, training and inference pipelines.
+Each system's directory holds an `AGENTS.md` saying the system is built from `system.yaml`; `hops build` and the **Factory** page start Claude Code in that directory, so it reads it, checks what a change to `system.yaml` means for the pipelines and the assets they create, and finds what a changed component affects downstream with `hops fg lineage`, `hops fv lineage`, `hops td lineage`, `hops model lineage` and `hops deployment lineage`.
+Inside tmux, as in the Hopsworks terminal, it opens a new tmux window named after the system, so several systems can be built at once.
+Pass `--no-launch` to record the interview only, and `hops build <slug>` to resume a system.
+`hops build --example <name>` (`churn-example`, `recs-example` or `helpdesk-example`) builds an example without the menu, and resumes it if it already exists.
+
+`hops build` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
+A GitHub repository the build creates, an example's included, is named `hops-<slug>`, or `hops-<slug>-<project>` when you already have one of that name.
+**Factory**, under AI/ML in the project menu, lists the project's systems for every member, when the project has registered systems or the cluster has the terminal: each with its type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a GitHub repository.
+**Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
+**New** opens the main requirements of a new system: its name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its type (batch, real-time or agentic) with the cadence or the latency and throughput, its data (feature groups in the project, or synthetic data described in a sentence), and how its predictions are used.
+For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
+**New**, then **Example**, opens one of the example systems with its requirements filled in.
+**Create** runs `hops build --answers` in a Terminal tab named after the system, which asks only what the page left out and starts Claude Code on `/hops-build <name>`; the page then locks the requirements and opens the system once it is registered.
+
+A system's page shows its phases, what is done and what is left, what it has made, and its requirements, locked.
+**Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
+**system.yaml** opens the specification to read or edit.
+**Architecture** opens the system's architecture: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
+A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
+**Status**, once every phase is done, checks the system's jobs over the last day and its deployments and app, and shows the report.
+**Back** on the architecture and status pages, like the browser's back button, returns to the system's page.
+A system whose directory is deleted disappears from the list.
+**Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
+
+```bash
+hops mlsystem list                       # the project's systems and whether you can open their code
+hops mlsystem register <dir> [--name N]  # register or refresh one by hand
+hops mlsystem remove <name-or-id>        # remove it from the list; its code is kept
+hops mlsystem delete <name-or-id> --assets [--repo]  # also delete what it created, and its repository
 ```
 
 ## Hopsworks Java Library

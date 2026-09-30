@@ -119,6 +119,7 @@ The entrypoint links to the file in the repository at that commit.
 
 The file below shows a simple agent program that uses LlamaIndex, FastAPI,
 and OpenTelemetry.
+The deployment runs the file with `python`, so the file is the server: it listens on port 8080, answers the readiness probe on `/`, and serves `/predict` and `/v1/models/<name>:predict`, the two paths a prediction request arrives on.
 
 Set `ANTHROPIC_API_KEY` in the deployment environment. Hopsworks injects the
 `OTEL_EXPORTER_OTLP_*` environment variables for the deployment, so the
@@ -216,6 +217,23 @@ FastAPIInstrumentor.instrument_app(
     agent_app,
     tracer_provider=predictor.tracer_provider,
 )
+
+
+@agent_app.get("/")
+def ready():
+    return {"status": "ok"}
+
+
+# Where the Hopsworks inference endpoint forwards a request.
+@agent_app.post("/predict")
+def predict(payload: dict):
+    return predictor.predict(payload.get("instances", [payload])[0])
+
+
+# KServe's path, which deployment.predict() uses inside the cluster.
+@agent_app.post("/v1/models/{target}")
+def kserve_predict(target: str, payload: dict):
+    return predictor.predict(payload.get("instances", [payload])[0])
 
 
 @agent_app.post("/query")
