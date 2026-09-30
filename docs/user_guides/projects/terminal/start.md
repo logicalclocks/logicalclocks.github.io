@@ -27,7 +27,8 @@ The key is saved as a private secret in your Hopsworks account, `llm_<provider>_
 When the terminal starts, the key is set as the provider's own variable (for example `KIMI_API_KEY`), and:
 
 - `codex` and `opencode` use the provider and model: every provider is written into `~/.codex/config.toml` as `model_providers.hops-<provider>`, so switching needs only that provider's key.
-- `claude` uses them for providers with an Anthropic-compatible API (Kimi, GLM and Anthropic), through `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN` and `ANTHROPIC_MODEL`; for the others it keeps its own login.
+- `claude` uses them for providers with an Anthropic-compatible API (Kimi, GLM and Anthropic), through `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL` and the model variables each provider's Claude Code guide sets (for Kimi, `kimi-k3[1m]` with its 1M-token context and `kimi-k2.7-code` for the background tier); for the others it keeps its own login.
+  An `env` block in `~/.claude/settings.json` overrides these, so the terminal warns at start when it sets any of them.
 - `copilot` keeps its GitHub login.
 
 A provider with no saved key disables **Start** until you save one or pick **Subscription**.
