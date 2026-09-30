@@ -20,7 +20,7 @@ A Spark terminal has no GPUs.
 ## LLM Provider
 
 **LLM Provider**, under **Start**, shows the provider the terminal's coding agents use; **Subscription**, the default, leaves `claude`, `codex`, `copilot` and `opencode` on their own logins.
-Clicking it shows the providers as cards, each saying whether its key is saved: Kimi, DeepMind, Berget, GLM, Anthropic, OpenAI, Meta, OpenRouter and Grok.
+Clicking it shows the providers as cards, each saying whether its key is saved: Kimi, DeepMind, Berget, GLM, Anthropic, OpenAI, Meta and OpenRouter.
 For a provider, pick a model or type a model id, enter its API key and press **Save key**, then **Test**, which checks the key against the provider's model list without spending tokens and says whether the model is listed.
 
 The key is saved as a private secret in your Hopsworks account, `llm_<provider>_api_key`, not in the browser; the provider and model are kept in the browser.
