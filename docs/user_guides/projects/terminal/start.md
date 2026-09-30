@@ -4,7 +4,7 @@ description: Start the Hopsworks terminal with its resources, an optional Spark 
 
 # Start the Terminal
 
-The terminal panel opens on a **Start** button, with keyboard focus on it, and a line under it saying what it starts, such as `Python, 1 CPU, 2048 MB`.
+The terminal panel opens on a **Start** button, with keyboard focus on it.
 Its settings are kept in your browser, so the next visit starts the same terminal without entering them again.
 
 ## Resources and Spark Cluster
