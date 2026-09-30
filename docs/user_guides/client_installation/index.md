@@ -125,21 +125,29 @@ Each answer is written to `<slug>/system.yaml` in the current directory as you g
 A new data source is created with `hops datasource create`, and its password or key is read without echo and passed to it in an environment variable, so it never appears on the command line or in `system.yaml`.
 
 When the interview is done, `hops build` starts Claude Code with `/hops-build <slug>`, which completes the specification and builds the feature, training and inference pipelines.
-Each system's directory holds an `AGENTS.md` saying the system is built from `system.yaml`; `hops build` and Brewer start Claude Code in that directory, so it reads it, checks what a change to `system.yaml` means for the pipelines and the assets they create, and finds what a changed component affects downstream with `hops fg lineage`, `hops fv lineage`, `hops td lineage`, `hops model lineage` and `hops deployment lineage`.
+Each system's directory holds an `AGENTS.md` saying the system is built from `system.yaml`; `hops build` and the **Factory** page start Claude Code in that directory, so it reads it, checks what a change to `system.yaml` means for the pipelines and the assets they create, and finds what a changed component affects downstream with `hops fg lineage`, `hops fv lineage`, `hops td lineage`, `hops model lineage` and `hops deployment lineage`.
 Inside tmux, as in the Hopsworks terminal, it opens a new tmux window named after the system, so several systems can be built at once.
 Pass `--no-launch` to record the interview only, and `hops build <slug>` to resume a system.
 `hops build --example <name>` (`churn-example`, `recs-example` or `helpdesk-example`) builds an example without the menu, and resumes it if it already exists.
 
 `hops build` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
 A GitHub repository the build creates, an example's included, is named `hops-<slug>`, or `hops-<slug>-<project>` when you already have one of that name.
-The Hopsworks UI shows a **Brewer** button (the software factory) beside **Terminal**, for every member of the project, when the project has registered systems or the cluster has the terminal.
-It opens a panel you can minimize or close, with a list of the project's systems: an open folder marks the ones whose code you can open, a lock the ones you cannot, and a link the ones in a GitHub repository.
-Selecting a system opens its directory in the file browser and shows its phases, what is done and what is left, and brings its Terminal tab to the front, or opens one with Claude Code started in the system's directory when the Terminal is open.
-**architecture** opens the system's architecture in the main view: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
+**Factory**, under AI/ML in the project menu, lists the project's systems for every member, when the project has registered systems or the cluster has the terminal: each with its type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a GitHub repository.
+**Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
+**New** opens the main requirements of a new system: its name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its type (batch, real-time or agentic) with the cadence or the latency and throughput, its data (feature groups in the project, or synthetic data described in a sentence), and how its predictions are used.
+For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
+**New**, then **Example**, opens one of the example systems with its requirements filled in.
+**Create** runs `hops build --answers` in a Terminal tab named after the system, which asks only what the page left out and starts Claude Code on `/hops-build <name>`; the page then locks the requirements and opens the system once it is registered.
+
+A system's page shows its phases, what is done and what is left, what it has made, and its requirements, locked.
+**Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
+**system.yaml** opens the specification to read or edit.
+**Architecture** opens the system's architecture: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
 A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
+**Status**, once every phase is done, checks the system's jobs over the last day and its deployments and app, and shows the report.
+**Back** on the architecture and status pages, like the browser's back button, returns to the system's page.
 A system whose directory is deleted disappears from the list.
 **Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
-**Create example ML system**, the last entry in the list, asks which example to build, starts the terminal and runs `hops build --example <name>` in it.
 
 ```bash
 hops mlsystem list                       # the project's systems and whether you can open their code
