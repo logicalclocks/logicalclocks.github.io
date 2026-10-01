@@ -192,6 +192,9 @@ The shared catalogs are visible only to projects that received a subset share, a
 A subset share is not readable through the catalog named after the format, and a whole share is not readable through the shared catalog.
 
 Adding features to a shared feature group does not widen the share: a new feature stays unreadable by the receiving project until you share it.
+The access rules are updated before the request that adds the features returns.
+A column that reaches the table some other way, such as a Delta write that merges a new column into the schema, is denied too, once Hopsworks next reads the table's columns: at least every five minutes by default, and on every share change.
+If the table's columns cannot be read, the share is left out of the rules until they can.
 Unsharing the feature group, or deleting it, removes access within seconds.
 
 ### Feature groups that are not queryable
