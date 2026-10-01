@@ -309,7 +309,7 @@ The `catalogs` section of the base policy, in order:
 
 The `tables` section follows the same pattern: the administrator reads only `system`, `tpch` and `tpcds`, the private-owner rules mirror the catalog ones, and each project reaches the schema `<project>_featurestore` in the feature store catalogs, all of it for its Data Owners, reading for its Data Scientists and for projects its feature store is shared with.
 The `schemas` section gives schema ownership, which is what creating and dropping schemas needs, to Data Owners only.
-The `functions` section lets everyone run builtin functions, and the members of a project run the `system` functions of their project's catalogs, such as `system.query` on a JDBC catalog.
+The `functions` section lets everyone run builtin functions, and the Data Owners of a project run the `system` functions of their project's catalogs, such as `system.query` on a JDBC catalog.
 
 #### The rules a share adds
 

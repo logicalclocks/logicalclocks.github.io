@@ -215,9 +215,9 @@ See [Sharing Catalogs and Feature Groups][sharing-catalogs-and-feature-groups].
 The query engine reads the external system as the database user in the connection credentials, so no share can expose more than those credentials allow.
 Scoping that database user at the source remains the strongest limit on what a catalog can reach.
 
-A reader of a JDBC catalog, such as a Data Scientist of the project, can also run the catalog's `system.query` table function, which passes a query to the source database as that database user.
+A Data Owner of the project can also run a JDBC catalog's `system.query` table function, which passes a query to the source database as that database user.
 The query engine sends it as a subquery, so the database rejects a statement that changes data, but a database function that changes data as a side effect still runs.
-Give the database user only the privileges the catalog's readers should have.
+Give the database user only the privileges the catalog's Data Owners should have.
 The receiving project of a share cannot run the catalog's functions at all.
 
 Read access to an Iceberg or Delta Lake table also allows its table procedures, `ALTER TABLE ... EXECUTE` with `optimize`, `expire_snapshots`, `remove_orphan_files` or `rollback_to_snapshot`, because the query engine does not check them against the access rules.
