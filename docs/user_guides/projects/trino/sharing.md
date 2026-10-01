@@ -62,9 +62,12 @@ The table's other ways of revealing a column are closed too: the connector's hid
 Tables of a Kafka, Redis, MongoDB, Cassandra or Thrift catalog cannot be narrowed to some columns, because those connectors can hide columns that are defined outside the query engine and cannot all be denied.
 Share such a table whole, or leave it out.
 
-The query engine denies the columns that were unchecked when the share was saved.
-A column added to the table later, or an unchecked column renamed at the source, is therefore readable, unmasked, until you save the share again.
-The sharing page marks such a share with the number of new columns and names them, and **Exclude them** saves the share again with the new columns left unshared.
+The receiving project reads only the columns you checked.
+Hopsworks reads the table's columns each time it updates the rules, and at least every five minutes by default, and denies every column you did not check, so a column added to the table later, or renamed at the source, is not shared.
+Between the change at the source and the next update, the new column is readable.
+A renamed column loses its mask with its old name and is denied under the new one.
+The sharing page marks such a share with the number of new columns and names them; edit the share and check them to share them.
+While the query engine is restarting, the rules keep the columns recorded when the share was saved until it is back, and a narrowed table whose columns cannot be read is left out of the share until they can.
 
 Iceberg and Delta Lake tables can also be read as of an earlier version, which has the columns the table had then.
 A column dropped or renamed before the table was shared is readable that way, under its old name, until those versions expire.
