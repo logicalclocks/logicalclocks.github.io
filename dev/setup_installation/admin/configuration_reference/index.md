@@ -97,7 +97,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `docker_base_image_pandas_training` | String | `pandas-training-pipeline` | Settings.java |
 | `docker_base_image_python` | String | `python-feature-pipeline` | Settings.java |
 | `docker_base_image_python_app` | String | `python-app-pipeline` | Settings.java |
-| `docker_base_image_python_version` | String | `3.12` | Settings.java |
+| `docker_base_image_python_version` | String | `3.13` | Settings.java |
 | `docker_base_image_ray_tensorflow_training` | String | `ray-tensorflow-training-pipeline` | Settings.java |
 | `docker_base_image_ray_torch_training` | String | `ray-torch-training-pipeline` | Settings.java |
 | `docker_base_image_ray_training` | String | `ray-training-pipeline` | Settings.java |
