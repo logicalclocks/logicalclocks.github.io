@@ -35,6 +35,31 @@ Taking a Feature Group as an example, the figure above describes how these windo
 - A _rolling window_ covering a variable subset of feature data (e.g., feature data written last week).
   It helps you analyze the properties of **newly inserted feature data**.
 
+### Time basis
+
+A rolling window needs a notion of time to decide which rows fall inside it.
+Hopsworks supports two bases, chosen once per configuration and shared by the detection and reference windows:
+
+- _Event time_: rows are selected by the value of an event-time feature, so a window such as "last week" contains the rows whose event time falls in that week regardless of when they were written.
+  This is the default for Feature Groups and Feature Views that declare an `event_time`.
+- _Commit time_: rows are selected by the time they were written to the Feature Group, using time travel.
+  A window such as "last week" contains the rows committed during that week.
+  This is the default when no event-time feature is declared, and it requires a time-travel enabled Feature Group.
+
+A rolling event-time window is evaluated when the schedule fires and contains the rows whose event time is inside the window at that moment.
+Rows that arrive later with an older event time are not counted retrospectively: the window that would have held them has already run and its statistics are stored, and every later window starts after them.
+This applies to backfills and to the materialization lag of streaming pipelines alike, because the window is anchored on the current time while the data lands some time later.
+To leave room for late rows, combine `time_offset` with `window_length` so the window ends before the current time, for example `time_offset="25h"` with `window_length="24h"` for a one hour allowance sized to the materialization interval of the pipeline.
+For backfill-heavy pipelines, use an expanding window, which has no lower bound and includes every row, or the commit-time basis, which selects rows by when they were written.
+
+A rolling event-time window reads the current snapshot of the data and filters it on the event-time feature, so it reflects the latest version of each row rather than the history of writes.
+A commit-time window reads the commits in its range, so each version of an updated row is seen in the window of its own commit.
+
+An expanding window reads the latest snapshot on either basis, with no time filter.
+Statistics computed on an event-time window are stored with the event-time bounds of the window, and statistics computed on a commit-time window with its commit bounds.
+The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` selects the basis; see the guides linked below.
+The built-in `ingestion_stats` configuration that computes statistics on ingestion always uses commit time.
+
 See more details on how to define a detection window for your Feature Groups and Feature Views in the Feature Monitoring Guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
 
 !!! info "Next steps"
