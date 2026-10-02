@@ -47,6 +47,19 @@ The release then replaces the operator with Strimzi 1.2 and rolls the brokers to
     argocd app sync hopsworks
     ```
 
+  The Application also needs an `ignoreDifferences` entry for the Kafka CRD, on a fresh install as much as on an upgrade.
+  Upstream's 1.2.0 Kafka CRD declares an empty `properties: {}` map under `status.clusterSecurity`, and the apiserver drops an empty map when it stores a CRD, so the live object never matches the render: without the entry the Application never reaches Synced and selfHeal re-applies that one CRD every five minutes.
+
+    ```yaml
+    spec:
+      ignoreDifferences:
+        - group: apiextensions.k8s.io
+          kind: CustomResourceDefinition
+          name: kafkas.kafka.strimzi.io
+          jqPathExpressions:
+            - .spec.versions[].schema.openAPIV3Schema.properties.status.properties.clusterSecurity.properties
+    ```
+
 ## Before you start
 
 - **Airgapped clusters** mirror three images with the rest: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`.
