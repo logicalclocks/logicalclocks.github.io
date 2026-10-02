@@ -137,7 +137,8 @@ See the API reference for [`FeatureMonitoringConfig.with_detection_window`][hsfs
 
 Rolling windows select rows by the event-time feature of the Feature View's left Feature Group when it declares one, and by commit time otherwise.
 The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` overrides that default for the whole configuration, detection and reference windows alike.
-Pass the name of a timestamp, date or epoch feature from any Feature Group in the query, or `False` to select rows by commit time.
+Pass the name, prefix included, of a timestamp, date or epoch feature that the Feature View selects, or `False` to select rows by commit time.
+The left Feature Group's event-time feature is also accepted when the Feature View does not select it.
 With event time the joined Feature Groups contribute their current rows, whereas with commit time the same commit interval is applied to every Feature Group in the query.
 
 === "Python"
