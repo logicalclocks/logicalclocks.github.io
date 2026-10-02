@@ -14,8 +14,8 @@ Each Hopsworks release ships a fixed OpenSearch version, and upgrading Hopsworks
 | 5.1.x | 2.19.x |
 | 5.2.x | 3.8.0 |
 
-This page covers what changes for you on the 5.1 to 5.2 upgrade, because that is the one that can interrupt service.
-The step-by-step commands are in `UPGRADE.md` in the [hopsworks-helm repository](https://github.com/logicalclocks/hopsworks-helm/blob/main/UPGRADE.md).
+This page covers what changes for you on the 5.1 to 5.2 upgrade, because that is the one that can interrupt service, and the steps to run it.
+The commands assume Hopsworks is installed in the `hopsworks` namespace.
 
 ## Upgrade one major at a time
 
@@ -83,8 +83,69 @@ Upgrade every satellite to 5.1.x before the central cluster moves to 5.2.x.
 A central cluster on 5.0.x creates nmslib indices, which 3.x refuses, and a satellite still on OpenSearch 1.3 would be two major versions behind a 5.2.x central cluster.
 A satellite on 5.2.x while the central cluster is still on 5.1.x should work, but it is untested and not the recommended order.
 
-## After the upgrade
+## Upgrade steps
 
-Check that OpenSearch reports version 3.8.0, that the cluster health is green, and that there is no `StartupException` in the OpenSearch log.
-Then run a search in the Hopsworks UI and a similarity search on a feature group with an embedding.
-Re-ingest the feature groups that OnlineFS marked failed during the outage.
+1. Take a snapshot and check that it completed, because the index pass rewrites indices in place.
+2. Upgrade to 5.1.x if you are not already on it, and confirm that OpenSearch 2.19 is live and green:
+
+    ```bash
+    kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c \
+      'curl -sk -u "admin:$ADMIN_PASSWORD" https://localhost:9200 | grep number'
+    kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c \
+      'curl -sk -u "admin:$ADMIN_PASSWORD" https://localhost:9200/_cluster/health?pretty | grep status'
+    ```
+
+    The indices are still the ones 1.x created at this point.
+    That is expected, since 2.19 does not rewrite them.
+3. Upgrade to 5.2.x with a `--timeout` at least as long as `olk.opensearch.indexUpgrade.activeDeadlineSeconds`, and watch the hook:
+
+    ```bash
+    kubectl logs -n hopsworks -l component=opensearch-index-upgrade -f
+    ```
+
+    It ends with `Every index is now on OpenSearch 2.0 or later. Safe to upgrade.`
+4. Verify the upgrade:
+
+    ```bash
+    kubectl get pods -n hopsworks -l app=opensearch
+    kubectl logs -n hopsworks opensearch-0 -c opensearch | grep -c StartupException
+    kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c \
+      'curl -sk -u "admin:$ADMIN_PASSWORD" https://localhost:9200 | grep -E "number|minimum_index"'
+    ```
+
+    The `StartupException` count must be 0.
+    Expect version `3.8.0`, `minimum_index_compatibility_version` `2.0.0` and green cluster health.
+    Then run a search in the Hopsworks UI and a similarity search on a feature group with an embedding.
+5. Re-ingest the feature groups that OnlineFS marked failed during the outage.
+
+## If the hook fails
+
+The upgrade stops before the OpenSearch StatefulSet is touched, so the cluster is still on 5.1.x, and the hook lets clients back in on its way out.
+The hook log names the index and the reason.
+
+- **Not enough disk:** free space on the smallest data node and retry.
+  The hook also stops when it cannot measure free disk or an index size, rather than skipping the check.
+- **A closed index:** open it, or reindex it by hand, and retry.
+  The hook refuses to copy a closed index because it can neither size nor read it, and nothing in Hopsworks leaves an index closed, so this usually means a snapshot restore that died.
+  Leaving it closed does not help, since a 3.x node still refuses to start.
+- **Timed out:** raise `activeDeadlineSeconds` and `--timeout` together and retry.
+  The retry resumes any index that was in the middle of a copy.
+- **No answer from the cluster:** the hook prints the address and the last HTTP code.
+  `000` is a DNS or connection failure, or a rejected admin certificate.
+  `401` or `403` means the certificate's distinguished name is not in `plugins.security.authcz.admin_dn`.
+
+To reindex by hand instead, set `olk.opensearch.indexUpgrade.enabled` to `false`.
+The hook then reports the offending indices and fails, and for each one you run:
+
+```text
+POST /_reindex {"source":{"index":"<name>"},"dest":{"index":"<name>-tmp"}}
+DELETE /<name>
+POST /_reindex {"source":{"index":"<name>-tmp"},"dest":{"index":"<name>"}}
+DELETE /<name>-tmp
+```
+
+Three things have to be right when you do it by hand:
+
+- Create the destination index first from the source's settings and mappings, because `_reindex` builds its destination from index templates and silently drops `index.knn` and `knn_vector` mappings.
+- Stop writers to the index while you copy it, because a write block cannot be used: it refuses `_reindex` as well.
+- Use the admin certificate for `.opendistro_security`, `.opendistro-ism-config` and `.plugins-ml-config`, because these protected system indices answer 403 to the `admin` user's password.
