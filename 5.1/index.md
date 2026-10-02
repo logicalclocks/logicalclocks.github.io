@@ -240,7 +240,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 
 - <a href="python-api/hopsworks/">Python API</a>
 - <a href="javadoc/">Java API</a>
-- Machine-readable: <a href="llms.txt">llms.txt</a>, <a href="llms-full.txt">llms-full.txt</a>, or `<page>.md`
+- Machine-readable: <a href="llms.txt">llms.txt</a>, <a href="llms-full.txt">llms-full.txt</a>, or `<page>/index.md`
 
 </div>
 
