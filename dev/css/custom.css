@@ -962,9 +962,16 @@ a.autorefs-external::after {
     border-right: 1px solid var(--hops-border);
     z-index: -1;
   }
+  /* First-paint height: until Material's JS sets the scrollwrap height inline
+     (the sticky window), the scrollwrap is only as tall as the nav items, so
+     the ::before panel stopped below them and the grey filled in late. Start
+     at the value the JS computes on load: the viewport minus the sidebar's top
+     (header 2.4rem + its 1px border + .md-main__inner margin 1.5rem). The
+     inline height overrides this as soon as the JS runs, footer shrink included. */
   .md-sidebar--primary .md-sidebar__scrollwrap {
     box-sizing: border-box;
     margin: 0;
+    height: calc(100vh - 3.9rem - 1px);
   }
   /* The full-bleed ::before is the only grey painter on desktop and it carries
      the divider (its border-right). The box and scrollwrap must stay
