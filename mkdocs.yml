@@ -248,6 +248,7 @@ nav:
               - Model Deployment:
                   - Deployment Creation: user_guides/mlops/serving/deployment.md
                   - Deployment State: user_guides/mlops/serving/deployment-state.md
+                  - Deployment Versions: user_guides/mlops/serving/deployment-versions.md
                   - Deployment Schema: user_guides/mlops/serving/deployment-schema.md
                   - Predictor (KServe): user_guides/mlops/serving/predictor.md
                   - Transformer (KServe): user_guides/mlops/serving/transformer.md

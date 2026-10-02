@@ -610,6 +610,10 @@ Do not hand-edit the tables below; regenerate them instead.
 | 240039 | `UPDATE_DEPLOYMENT_MODE_ERROR` | 400 BAD_REQUEST | The deployment mode (Knative or Standard) cannot be changed while the deployment is running. Stop the deployment first. |
 | 240040 | `LOG_PERSISTENCE_NOT_SUPPORTED` | 400 BAD_REQUEST | Disk logging is only supported for Python model deployments. |
 | 240041 | `INVALID_FEATURE_LOGGING_CONFIG` | 400 BAD_REQUEST | Invalid feature logging configuration |
+| 240052 | `DEPLOYMENT_VERSION_NOT_FOUND` | 404 NOT_FOUND | Deployment version not found |
+| 240053 | `DEPLOYMENT_VERSION_MISMATCH` | 409 CONFLICT | The deployment changed since it was read. Reload it and retry. |
+| 240054 | `DEPLOYMENT_VERSION_CONFLICT` | 409 CONFLICT | A deployment version with this number was created concurrently. Retry. |
+| 240055 | `DEPLOYMENT_FILE_NOT_FOUND` | 400 BAD_REQUEST | Deployment artifact file not found |
 
 ## InferenceErrorCode
 
