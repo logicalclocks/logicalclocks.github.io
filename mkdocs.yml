@@ -356,6 +356,11 @@ nav:
           - superset: setup_installation/common/helm_chart_values/superset.md
           - trino: setup_installation/common/helm_chart_values/trino.md
           - vpa: setup_installation/common/helm_chart_values/vpa.md
+  - Python API: python-api
+  - Java API: javadoc
+  - Reference:
+      - REST API Status Codes: reference/rest_error_codes.md
+  - Docs for AI agents: ai.md
   - Releases:
       - releases/index.md
       - 5.x:
@@ -363,11 +368,6 @@ nav:
           - 5.1.0: releases/5/5.1.0.md
           - 5.0.1: releases/5/5.0.1.md
           - 5.0.0: releases/5/5.0.0.md
-  - Python API: python-api
-  - Java API: javadoc
-  - Reference:
-      - REST API Status Codes: reference/rest_error_codes.md
-  - Docs for AI agents: ai.md
 
 theme:
   name: material
