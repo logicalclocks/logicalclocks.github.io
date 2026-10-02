@@ -294,6 +294,7 @@ nav:
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
           - Search Index: setup_installation/admin/search_index.md
+          - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
