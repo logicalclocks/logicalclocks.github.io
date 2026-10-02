@@ -17,7 +17,7 @@ Each Hopsworks release ships a fixed OpenSearch version, and upgrading Hopsworks
 This page covers what changes for you on the 5.1 to 5.2 upgrade, because that is the one that can interrupt service, and the steps to run it.
 The commands assume Hopsworks is installed in the `hopsworks` namespace.
 
-## Upgrade one major at a time
+## Upgrade one minor release at a time
 
 Upgrade 5.0.x to 5.1.x, let it come up, then upgrade to 5.2.x.
 Going from 5.0.x straight to 5.2.x is not supported.
@@ -70,7 +70,8 @@ The hook checks this on the smallest data node and stops if there is not enough.
 OpenSearch indexes embeddings with an engine, and Hopsworks 5.1 and later create embedding indices on faiss.
 Indices created by Hopsworks 5.0 and earlier use nmslib, which OpenSearch has deprecated and which does not accept the filter that the Hopsworks 5.1 and later clients send with every similarity search.
 
-The index pass therefore recreates each embedding index on faiss while it copies it, so similarity search with filters keeps working after the upgrade.
+The index pass therefore recreates each embedding index on faiss while it copies it, so similarity search with filters works once the upgrade to 5.2 is done.
+Until then, on 5.1, filtered search fails on feature groups whose embedding index was created on 5.0, as described in the upgrade steps below.
 Approximate nearest neighbor results can shift slightly, because the graph is rebuilt on a different engine.
 Indices that you created yourself, outside the Hopsworks embedding naming, keep their engine.
 
@@ -80,7 +81,7 @@ A satellite cluster runs its own OpenSearch and gets its own index pass when it 
 The outage is confined to that satellite's OpenSearch, and `activeDeadlineSeconds` is set per release, so a satellite holding large embedding indices sets its own value and its own `--timeout`.
 
 Upgrade every satellite to 5.1.x before the central cluster moves to 5.2.x.
-A central cluster on 5.0.x creates nmslib indices, which 3.x refuses, and a satellite still on OpenSearch 1.3 would be two major versions behind a 5.2.x central cluster.
+A satellite still on OpenSearch 1.3 would be two major versions behind a 5.2.x central cluster.
 A satellite on 5.2.x while the central cluster is still on 5.1.x should work, but it is untested and not the recommended order.
 
 ## Upgrade steps
@@ -97,6 +98,13 @@ A satellite on 5.2.x while the central cluster is still on 5.1.x should work, bu
 
     The indices are still the ones 1.x created at this point.
     That is expected, since 2.19 does not rewrite them.
+
+    Two known issues apply to this upgrade:
+
+    - On the first OpenSearch 2.19 start of each cluster, central or satellite, vector writes are rejected for about two minutes and the vectors that had not been flushed are lost.
+      The chart fixes this on the 5.1 line, and a values file that copied the old `knn.circuit_breaker` settings (`triggered: true` or `percent: 0.75`) keeps the problem.
+    - On 5.1, similarity search with a filter fails on feature groups whose embedding index was created on 5.0, because the 5.1 client sends the filter inside the nearest-neighbor query and the nmslib engine rejects it.
+      A client fix and the pass in step 3 both resolve it.
 3. Upgrade to 5.2.x with a `--timeout` at least as long as `olk.opensearch.indexUpgrade.activeDeadlineSeconds`, and watch the hook:
 
     ```bash
@@ -147,5 +155,9 @@ DELETE /<name>-tmp
 Three things have to be right when you do it by hand:
 
 - Create the destination index first from the source's settings and mappings, because `_reindex` builds its destination from index templates and silently drops `index.knn` and `knn_vector` mappings.
-- Stop writers to the index while you copy it, because a write block cannot be used: it refuses `_reindex` as well.
+- For an embedding index, set `method.engine` to `faiss` in the destination mapping, as the hook does, for `l2`, `cosinesimil` and `innerproduct` fields.
+  A destination that keeps nmslib is created on 2.x, so 3.8 opens it, but filtered similarity search on it still fails, and a 3.8 node on a CPU without AVX-512 crashes when it loads it.
+- Set `index.blocks.write` to `true` on the source before you copy it, so writes during the copy are refused instead of missed by it.
+  `_reindex` reads its source through a scroll, which the block does not cover, so the copy still runs, whereas a block on the destination refuses it.
+  Keep writers stopped from the `DELETE` until the recreated index is filled, because a write to the missing name creates it from the index templates.
 - Use the admin certificate for `.opendistro_security`, `.opendistro-ism-config` and `.plugins-ml-config`, because these protected system indices answer 403 to the `admin` user's password.
