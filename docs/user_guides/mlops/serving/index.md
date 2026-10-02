@@ -9,6 +9,11 @@ Refer to the [Deployment Creation Guide](deployment.md) for step-by-step instruc
 !!! tip "Python deployments"
     If you want to deploy a Python script without a model artifact, see the [Python Deployments](../../projects/python-deployment/python-deployment.md) page.
 
+### Versioning
+
+A deployment keeps a numbered history of its configuration.
+Save changes in place or as a new version, inspect earlier versions and roll back to one, for model deployments and Python deployments alike, see the [Deployment Versions Guide][deployment-versions].
+
 ### Deployment Schema and default predictor
 
 Describe the prediction request a deployment accepts, validate requests against it, and serve a model without writing a predictor script, see the [Deployment Schema Guide][deployment-schema].
