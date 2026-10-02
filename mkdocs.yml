@@ -323,6 +323,11 @@ nav:
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
       - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
+  - Python API: python-api
+  - Java API: javadoc
+  - Reference:
+      - REST API Status Codes: reference/rest_error_codes.md
+  - Docs for AI agents: ai.md
   - Releases:
       - releases/index.md
       - 5.x:
@@ -330,11 +335,6 @@ nav:
           - 5.1.0: releases/5/5.1.0.md
           - 5.0.1: releases/5/5.0.1.md
           - 5.0.0: releases/5/5.0.0.md
-  - Python API: python-api
-  - Java API: javadoc
-  - Reference:
-      - REST API Status Codes: reference/rest_error_codes.md
-  - Docs for AI agents: ai.md
 
 theme:
   name: material
