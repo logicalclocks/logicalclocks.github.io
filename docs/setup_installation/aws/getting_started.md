@@ -40,20 +40,61 @@ The RonDB and OpenSearch backups, and HopsFS, write to this bucket and rely on o
 aws s3api put-bucket-versioning --bucket BUCKET_NAME --versioning-configuration Status=Enabled --profile PROFILE
 ```
 
-### Step 1.2: Create an ECR repository
+### Step 1.2: Create the ECR repositories
 
 Hopsworks allows users to customize the images used by Python jobs, Jupyter notebooks and (Py)Spark applications running in their projects.
-These images are stored in ECR, so Hopsworks needs access to an ECR repository to push the project images.
+These images are stored in ECR, so Hopsworks needs access to ECR to push them.
 
-Create the repository to host the project images:
+Create the repository to host the project environment images, which Hopsworks stores as tags of this one repository:
 
 ```bash
 aws --profile PROFILE ecr create-repository --repository-name NAMESPACE/hopsworks-base --region REGION
 ```
 
+Hopsworks also copies each of its base images into ECR, one repository per base image type: `NAMESPACE/hopsworks-base/<type>`.
+ECR rejects a push to a repository that does not exist unless a repository creation template for create on push matches its name, so create one for the base images:
+
+```bash
+aws --profile PROFILE ecr create-repository-creation-template \
+  --prefix NAMESPACE/hopsworks-base \
+  --applied-for CREATE_ON_PUSH \
+  --image-tag-mutability MUTABLE \
+  --encryption-configuration encryptionType=AES256 \
+  --description "Hopsworks base images" \
+  --region REGION
+```
+
+ECR appends a `/` to the prefix, so the template applies to `NAMESPACE/hopsworks-base/<type>` and not to the environment repository created above.
+The tags must be mutable because every Helm upgrade pushes the base images again under the same version tag.
+The encryption matches the environment repository, which is what lets ECR share layers between the two (see blob mounting below).
+The first template in an account makes ECR create the `AWSServiceRoleForECRTemplate` service-linked role, so the principal running this command needs `iam:CreateServiceLinkedRole` once.
+
+If you cannot use a creation template, create one repository per base image type instead.
+Replace BASE_IMAGE_TYPES with the space-separated types listed on the [Base images in mirror registries][base-images-in-mirror-registries] page:
+
+```bash
+for type in BASE_IMAGE_TYPES; do
+  aws --profile PROFILE ecr create-repository --repository-name "NAMESPACE/hopsworks-base/${type}" --region REGION
+done
+```
+
+With pre-created repositories, a release that adds a base image type needs its repository before you upgrade, otherwise that type's push fails.
+On an existing cluster, create the template or the repositories before upgrading to a release with per-type base image repositories, as described in [Upgrading from the single-repository layout][upgrading-from-the-single-repository-layout].
+
+Turn on blob mounting for the registry:
+
+```bash
+aws --profile PROFILE ecr put-account-setting --name BLOB_MOUNTING --value ENABLED --region REGION
+```
+
+Creating a project environment copies its base image from `NAMESPACE/hopsworks-base/<type>` into `NAMESPACE/hopsworks-base`.
+With blob mounting, ECR reuses the layers already in the registry; without it, each environment creation uploads the whole base image again.
+The setting applies to every repository of the account in that region.
+ECR only mounts layers within one registry (the same account and region), between repositories with identical encryption, and not for images created through a pull through cache.
+
 ### Step 1.3: Create IAM policies
 
-Create a policy that grants access to the S3 bucket and the ECR repository.
+Create a policy that grants access to the S3 bucket and the ECR repositories.
 Save the following document as `policy.json`, replacing BUCKET_NAME, REGION, and ECR_AWS_ACCOUNT_ID with your values:
 
 ```json
@@ -100,12 +141,27 @@ Save the following document as `policy.json`, replacing BUCKET_NAME, REGION, and
         "ecr:TagResource"
       ],
       "Resource": [
-        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/hopsworks-base"
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/hopsworks-base",
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/hopsworks-base/*"
+      ]
+    },
+    {
+      "Sid": "AllowCreateOnPushOfBaseImageRepos",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:CreateRepository"
+      ],
+      "Resource": [
+        "arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/*/hopsworks-base/*"
       ]
     }
   ]
 }
 ```
+
+The ECR statement names the environment repository and the base image repositories below it separately, because the ARN `repository/*/hopsworks-base` does not match `NAMESPACE/hopsworks-base/<type>`.
+`ecr:CreateRepository` is limited to the base image repositories, which ECR creates from the template on the first push.
+AWS requires this permission from the caller in the comparable pull through cache case and does not state whether create on push needs it, so the policy grants it.
 
 Create the policy:
 
@@ -113,7 +169,7 @@ Create the policy:
 aws --profile PROFILE iam create-policy --policy-name POLICY_NAME --policy-document file://policy.json
 ```
 
-This single policy grants both S3 (bucket) and ECR (repository) access.
+This single policy grants both S3 (bucket) and ECR (repositories) access.
 Because the Helm values do not store any S3 access keys, Hopsworks and HopsFS reach the bucket through the AWS default credential provider chain, which on EKS resolves to the worker node instance IAM role.
 Attaching this policy to the node group (Step 1.4) is therefore how Hopsworks is granted access to S3 and ECR: no access key or secret is stored in Kubernetes.
 
