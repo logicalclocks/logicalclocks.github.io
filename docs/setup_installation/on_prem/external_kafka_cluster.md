@@ -10,11 +10,9 @@ By default, Hopsworks comes with an embedded Kafka cluster managed by Hopsworks 
 This guide will cover how to configure an Hopsworks cluster to leverage an external Kafka cluster.
 
 !!! warning "Broker version requirement"
-    Hopsworks 5.2 connects to Kafka with kafka-clients 4.3.1, which only speaks to brokers running
-    Kafka 2.1 or newer ([KIP-896](https://cwiki.apache.org/confluence/display/KAFKA/KIP-896%3A+Remove+old+client+protocol+API+versions+in+Kafka+4.0)).
-    An external cluster on an older broker version stops working after the upgrade to 5.2;
-    upgrade the brokers first. See the
-    [Kafka 4 and KRaft upgrade notes](../admin/kafka4.md#client-compatibility).
+    Hopsworks 5.2 connects to Kafka with kafka-clients 4.3.1, which only speaks to brokers running Kafka 2.1 or newer ([KIP-896](https://cwiki.apache.org/confluence/display/KAFKA/KIP-896%3A+Remove+old+client+protocol+API+versions+in+Kafka+4.0)).
+    An external cluster on an older broker version stops working after the upgrade to 5.2, so upgrade the brokers first.
+    See the [Kafka 4 and KRaft upgrade notes][kafka4-client-compatibility].
 
 ## Configure the external Kafka cluster integration
 
