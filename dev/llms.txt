@@ -322,6 +322,7 @@
 - [IAM Role Chaining](https://docs.hopsworks.ai/latest/setup_installation/admin/roleChaining/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/roleChaining/index.md))
 - [Configure Project Mapping](https://docs.hopsworks.ai/latest/setup_installation/admin/configure-project-mapping/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/configure-project-mapping/index.md))
 - [Airflow 3 operator notes](https://docs.hopsworks.ai/latest/setup_installation/admin/airflow3/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/airflow3/index.md))
+- [Kafka 4 and KRaft upgrade notes](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka4/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka4/index.md))
 - [Search Index](https://docs.hopsworks.ai/latest/setup_installation/admin/search_index/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/search_index/index.md))
 
 #### Monitoring
