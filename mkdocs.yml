@@ -293,6 +293,7 @@ nav:
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
+          - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
           - Search Index: setup_installation/admin/search_index.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
