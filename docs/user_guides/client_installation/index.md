@@ -176,13 +176,13 @@ Each scheduled run processes only the bronze rows that arrived in its window, `[
 `system.yaml` drives the layer's lifecycle, as an ML system's does: when it changes after the build (its bronze tables, tasks, engine, refresh or lifecycle), the layer's page says what changed and **Apply changes** runs `/hops-silver <name> apply`, which retags for a new lifecycle, reschedules for a new refresh, and for a changed task, engine or source writes a new version of each silver table whose content changes, backfilled from the whole bronze history, and switches the job to it; earlier versions are kept.
 Every silver table records its bronze tables as its parents, so the lineage shows them; its partitioning (none, or by hour, day or week) is decided from the volume and time span of the bronze table's files; and the job is scheduled with catch-up, so windows missed while the scheduler was down are replayed.
 **Status** on a built layer's page reports the job's runs and each table's rows, last write against the freshness target, rejected share against the limit, and file layout, and **Backfill** reprocesses every bronze row into the silver tables.
-A layer's page shows its phases, the silver tables and job it made, the bronze tables it reads, and its tasks; **Delete** removes it from the Factory, or also deletes its job, silver tables and directory, never the bronze tables.
+A layer's page shows its phases, the silver tables and job it made, the bronze tables it reads, and its tasks; **Delete** removes it from the Factory, or deletes its silver layer, its gold layer, or both, with their jobs and tables; bronze tables are the source of truth and are never deleted.
 
 ```bash
 hops medallion silver --answers answers.json   # record a silver layer and build it with Claude Code
 hops medallion status <name-or-id>            # write the layer's health report, status/report.html
 hops medallion backfill <name-or-id>          # reprocess every bronze row into the silver tables
-hops medallion delete <name-or-id> --assets    # also delete its job, silver tables and directory
+hops medallion delete <name-or-id> --assets [--layer silver|gold]  # delete the silver or gold layer, or both; never bronze
 ```
 
 ## Hopsworks Java Library
