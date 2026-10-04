@@ -178,13 +178,40 @@ Each scheduled run processes only the bronze rows that arrived in its window, `[
 Every silver table records its bronze tables as its parents, so the lineage shows them; its partitioning (none, or by hour, day or week) is decided from the volume and time span of the bronze table's files; and the job is scheduled with catch-up, so windows missed while the scheduler was down are replayed.
 A layer's page shows its requirements as they were filled in.
 **Status** on a built layer's page reports the job's runs and each table's rows, last write against the freshness target, rejected share against the limit, and file layout, with a box for asking Claude Code anything about the report, filled in with a request to fix the problems it found; **Backfill** reprocesses every bronze row into the silver tables, running each job.
-A layer's page shows its phases, the silver tables and job it made, the bronze tables it reads, and its tasks; **Delete** removes it from the Factory, or deletes its silver layer, its gold layer, or both, with their jobs and tables; bronze tables are the source of truth and are never deleted.
+A layer's page shows its phases, the silver tables and jobs it made, the bronze tables it reads, and its tasks, with links to the layer's GitHub repository (`hops-<name>`, which the build creates and pushes every commit to) and to its dbt code in the file browser.
+Every job has a delete icon that asks whether to also delete the feature groups only that job writes; **Add tables** adds bronze tables, each with its refresh, and describes the silver tables wanted from them, which Claude Code designs and builds with the rest.
+**Delete** removes the layer from the Factory, or deletes it with its jobs, tables and directory; the tables a layer reads are never deleted.
+
+### Build a gold medallion layer of data marts
+
+**New Medallion Layer** with **gold** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
+The page asks for those queries, the model, the silver tables to read, the standards every data mart follows (naming, modeling, documentation and quality, proposed and editable), and the first data mart.
+
+A gold layer is a set of data marts, each added, changed and deleted on its own, with its own fact and dimension tables and its own jobs, `<layer>-<mart>-<refresh>`, at its own refresh.
+A data mart's requirements are:
+
+- **Business purpose**: who the analysts are, the decisions and reports it supports, and who approves its business definitions.
+- **Existing tables**: the gold tables it can reuse, or new ones built from silver.
+- **Row grain**: what one row represents, what identifies it, and whether rows are individual events, periodic snapshots or aggregates.
+- **Metrics**: each metric's exact formula, exclusions, filters, currency and unit.
+- **Freshness and changes**: the refresh and freshness target, how late arrivals, updates and deletes are processed, and whether corrections restate published results.
+- **Verification**: example questions with the answers expected, in plain English; the totals that must reconcile, and with what; and how refreshes and reruns are proven correct. The build runs every check after the backfill and again after a refresh, records the results, and does not mark the mart built until each passes.
+- **Quality and access**: the invariants to test, what happens when a check fails (fail the run, quarantine the failing rows, or warn), who may read which rows and columns, and the projects it is shared with.
+
+**Create** runs `hops medallion gold --answers` and starts Claude Code on `/hops-gold <name>`, which builds each mart: its requirements, the design of its facts and dimensions (a dimension used by several marts is built once and shared), the dbt models with their tests, the backfill with the verification, the schedule and tags (`layer: gold`, the silver tables as parents), and a verified refresh.
+The layer's page shows each mart with its phases, tables, jobs and verification results: **Edit** changes its requirements and applies the change, **Add data mart** adds one, and deleting a mart deletes its jobs and, if asked, its tables that no other mart lists.
 
 ```bash
-hops medallion silver --answers answers.json   # record a silver layer and build it with Claude Code
-hops medallion status <name-or-id>            # write the layer's health report, status/report.html
-hops medallion backfill <name-or-id>          # reprocess every bronze row into the silver tables
-hops medallion delete <name-or-id> --assets [--layer silver|gold]  # delete the silver or gold layer, or both; never bronze
+hops medallion silver --answers answers.json      # record a silver layer and build it with Claude Code
+hops medallion gold --answers answers.json        # record a gold layer and its first data mart
+hops medallion mart-add <layer> --answers mart.json        # add a data mart to a gold layer
+hops medallion mart-update <layer> <mart> --answers mart.json  # change a data mart's requirements
+hops medallion mart-delete <layer> <mart> [--tables]       # delete a data mart's jobs, and its own tables
+hops medallion job-delete <layer> <job> [--tables]         # delete one job, and the tables only it writes
+hops medallion add-tables <silver layer> --answers new.json  # add bronze tables to a silver layer
+hops medallion status <name-or-id>                # write the layer's health report, status/report.html
+hops medallion backfill <name-or-id>              # recompute the layer's tables from the whole history
+hops medallion delete <name-or-id> --assets       # delete the layer, its jobs and tables; never what it reads
 ```
 
 ## Hopsworks Java Library
