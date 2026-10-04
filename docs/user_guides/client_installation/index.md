@@ -132,11 +132,12 @@ Pass `--no-launch` to record the interview only, and `hops build <slug>` to resu
 
 `hops build` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
 A GitHub repository the build creates, an example's included, is named `hops-<slug>`, or `hops-<slug>-<project>` when you already have one of that name.
-**Factory**, under AI/ML in the project menu, lists the project's systems for every member, when the project has registered systems or the cluster has the terminal: each with its type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a GitHub repository.
+**Factory**, in the project menu below Catalog, holds the ML system factory and the medallion layer factory.
+Its ML system factory lists the project's systems for every member, when the project has registered systems or the cluster has the terminal: each with its type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a GitHub repository.
 **Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
-**New** opens the main requirements of a new system: its name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its type (batch, real-time or agentic) with the cadence or the latency and throughput, its data (feature groups in the project, or synthetic data described in a sentence), and how its predictions are used.
+**New ML System** opens the main requirements of a new system: its name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its type (batch, real-time or agentic) with the cadence or the latency and throughput, its data (feature groups in the project, or synthetic data described in a sentence), and how its predictions are used.
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
-**New**, then **Example**, opens one of the example systems with its requirements filled in.
+The examples are listed under **New ML System**; each opens with its requirements filled in.
 **Create** runs `hops build --answers` in a Terminal tab named after the system, which asks only what the page left out and starts Claude Code on `/hops-build <name>`; the page then locks the requirements and opens the system once it is registered.
 
 A system's page shows its phases, what is done and what is left, what it has made, and its requirements, locked.
@@ -154,6 +155,28 @@ hops mlsystem list                       # the project's systems and whether you
 hops mlsystem register <dir> [--name N]  # register or refresh one by hand
 hops mlsystem remove <name-or-id>        # remove it from the list; its code is kept
 hops mlsystem delete <name-or-id> --assets [--repo]  # also delete what it created, and its repository
+```
+
+### Build a silver medallion layer
+
+A medallion layer organizes tables as bronze (raw data as it arrived), silver (cleansed and conformed) and gold (consumption-ready).
+Hopsworks installs an archived schematized tag, `medallion_table`, whose `layer` is `bronze`, `silver` or `gold` and whose `lifecycle` is `dev`, `staging` or `prod`; every change of a table's value is kept in the tag history.
+When you ingest data with a dltHub data source, **Tag as bronze tables** in the review, off by default, tags every feature group it creates as bronze.
+
+**New Medallion Layer**, in the Factory, builds a silver layer from the project's bronze feature groups.
+A project without feature groups has nothing to build from: ingest raw data as bronze tables first.
+The page asks for the bronze tables to build from (only those tagged bronze are shown while any are), the silver tasks (deduplicate, cast types, standardize values, handle nulls, validate with a rejects table, protect personal data, conform entities, surrogate keys, referential checks), additional tasks in your own words, the engine, the refresh cadence and the lifecycle.
+The engine is dbt on Trino unless an additional task needs code SQL does not express well, when PySpark is suggested.
+**Create** runs `hops medallion silver --answers` in a Terminal tab named after the layer, which records it in `<name>/layer.yaml` and starts Claude Code on `/hops-silver <name>`.
+
+The build profiles the bronze tables, designs the silver tables, writes and tests the code, backfills the whole bronze history once, schedules the job and tags the silver feature groups `layer: silver`, and verifies one window.
+Silver tables are feature groups, materialized, never views.
+Each scheduled run processes only the bronze rows that arrived in its window, `[HOPS_START_TIME, HOPS_END_TIME)`, which Hopsworks sets for every scheduled run, so the silver tables are refreshed incrementally; running a window again changes nothing.
+A layer's page shows its phases, the silver tables and job it made, the bronze tables it reads, and its tasks; **Delete** removes it from the Factory, or also deletes its job, silver tables and directory, never the bronze tables.
+
+```bash
+hops medallion silver --answers answers.json   # record a silver layer and build it with Claude Code
+hops medallion delete <name-or-id> --assets    # also delete its job, silver tables and directory
 ```
 
 ## Hopsworks Java Library
