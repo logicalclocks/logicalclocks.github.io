@@ -167,11 +167,12 @@ When you ingest data with a dltHub data source, **Tag as bronze tables** in the 
 A project without feature groups has nothing to build from: ingest raw data as bronze tables first.
 The page asks for the bronze tables to build from (only those tagged bronze are shown while any are), the silver tasks (deduplicate, cast types, standardize values, handle nulls, validate with a rejects table, protect personal data, conform entities, surrogate keys, referential checks), additional tasks in your own words, the engine, the refresh cadence and the lifecycle.
 The engine is dbt on Trino unless an additional task needs code SQL does not express well, when PySpark is suggested.
-**Create** runs `hops medallion silver --answers` in a Terminal tab named after the layer, which records it in `<name>/layer.yaml` and starts Claude Code on `/hops-silver <name>`.
+**Create** runs `hops medallion silver --answers` in a Terminal tab named after the layer, which records its specification in `<name>/system.yaml` and starts Claude Code on `/hops-silver <name>`.
 
 The build profiles the bronze tables, designs the silver tables, writes and tests the code, backfills the whole bronze history once, schedules the job and tags the silver feature groups `layer: silver`, and verifies one window.
-Silver tables are feature groups, materialized, never views.
+Silver tables are feature groups, materialized, never views, and in third normal form: one table per entity or event, every column depending on its table's key alone, lookups in tables of their own, and no aggregates, which belong in gold.
 Each scheduled run processes only the bronze rows that arrived in its window, `[HOPS_START_TIME, HOPS_END_TIME)`, which Hopsworks sets for every scheduled run, so the silver tables are refreshed incrementally; running a window again changes nothing.
+`system.yaml` drives the layer's lifecycle, as an ML system's does: when it changes after the build (its bronze tables, tasks, engine, refresh or lifecycle), the layer's page says what changed and **Apply changes** runs `/hops-silver <name> apply`, which retags for a new lifecycle, reschedules for a new refresh, and for a changed task, engine or source writes a new version of each silver table whose content changes, backfilled from the whole bronze history, and switches the job to it; earlier versions are kept.
 A layer's page shows its phases, the silver tables and job it made, the bronze tables it reads, and its tasks; **Delete** removes it from the Factory, or also deletes its job, silver tables and directory, never the bronze tables.
 
 ```bash
