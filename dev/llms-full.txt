@@ -6242,13 +6242,23 @@ Users can schedule periodic statistics computation that take into consideration 
 By default, the `compute_statistics` method computes statistics on the most recent version of the data available in a feature group.
 Users can provide a specific time using the `wallclock_time` parameter, to compute the statistics for a previous version of the data.
 
-Hopsworks can compute statistics of external feature groups.
-As external feature groups are read only from an Hopsworks perspective, statistics computation can be triggered using the `compute_statistics` method.
-
 === "Python"
 
     ```python
     fg.compute_statistics(wallclock_time="20220611 20:00")
+    ```
+
+### External feature groups
+
+External feature groups own the same built-in `ingestion_stats` configuration as cached and stream feature groups, but no data is ingested into Hopsworks for them, so it never runs on its own.
+Calling `compute_statistics` on the external feature group, or clicking "Compute statistics" in the UI, runs it: the statistics job reads the external source and profiles it like an internal feature group.
+Saving an external feature group with statistics enabled runs it once as well.
+External feature groups have no commit history, so their statistics carry the computation time only and `compute_statistics` takes no time argument.
+
+=== "Python"
+
+    ```python
+    external_fg.compute_statistics()
     ```
 
 ## Inspect statistics
@@ -7129,6 +7139,35 @@ Additionally, you can specify the percentage of feature data on which statistics
     ```
 
 See the API reference for [`FeatureMonitoringConfig.with_detection_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_detection_window].
+
+#### Time basis of the windows
+
+Rolling windows select rows by an event-time feature when the Feature Group declares one, and by commit time otherwise.
+The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` overrides that default for the whole configuration, detection and reference windows alike.
+Pass a feature name to use another timestamp, date or epoch feature of the Feature Group, or `False` to select rows by commit time.
+
+=== "Python"
+
+    ```python
+    # windows over the transaction time, the Feature Group event_time (default)
+    fg_monitoring_config = trans_fg.create_feature_monitoring(
+        name="trans_fg_amount_monitoring",
+    )
+
+    # windows over another time feature of the Feature Group
+    fg_monitoring_config = trans_fg.create_feature_monitoring(
+        name="trans_fg_amount_monitoring_by_settlement",
+        event_time="settlement_date",
+    )
+
+    # windows over the time the rows were written (commit time)
+    fg_monitoring_config = trans_fg.create_feature_monitoring(
+        name="trans_fg_amount_monitoring_by_commit",
+        event_time=False,
+    )
+    ```
+
+See [Time basis](../feature_monitoring/scheduled_statistics.md#time-basis) for how the two bases differ.
 
 ### Step 4: (Optional) Define a reference window
 
@@ -10797,6 +10836,32 @@ Additionally, you can specify the percentage of feature data on which statistics
 
 See the API reference for [`FeatureMonitoringConfig.with_detection_window`][hsfs.core.feature_monitoring_config.FeatureMonitoringConfig.with_detection_window].
 
+#### Time basis of the windows
+
+Rolling windows select rows by the event-time feature of the Feature View's left Feature Group when it declares one, and by commit time otherwise.
+The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` overrides that default for the whole configuration, detection and reference windows alike.
+Pass the name, prefix included, of a timestamp, date or epoch feature that the Feature View selects, or `False` to select rows by commit time.
+The left Feature Group's event-time feature is also accepted when the Feature View does not select it.
+With event time the joined Feature Groups contribute their current rows, whereas with commit time the same commit interval is applied to every Feature Group in the query.
+
+=== "Python"
+
+    ```python
+    # windows over a time feature of a joined Feature Group
+    fm_monitoring_config = trans_fv.create_feature_monitoring(
+        name="trans_fv_amount_monitoring_by_event_time",
+        event_time="datetime",
+    )
+
+    # windows over the time the rows were written (commit time)
+    fm_monitoring_config = trans_fv.create_feature_monitoring(
+        name="trans_fv_amount_monitoring_by_commit",
+        event_time=False,
+    )
+    ```
+
+See [Time basis](../feature_monitoring/scheduled_statistics.md#time-basis) for how the two bases differ.
+
 ### Step 6: (Optional) Define a reference window
 
 When setting up feature monitoring for a Feature View, the reference can be either a reference window of feature data or a training dataset.
@@ -10925,6 +10990,7 @@ A Feature View can also monitor the inference data of a model served in producti
 This is the feature-view entry point to [Model Monitoring](../../mlops/model_monitoring/index.md).
 
 It targets the feature view's logging feature group, so feature logging must be enabled with `feature_view.enable_logging()`, and filters the detection window by the given model name and version.
+The windows select inference rows by their `log_time`, the time the prediction was logged.
 The reference defaults to the training dataset version used to train the model.
 
 === "Python"
@@ -14764,6 +14830,32 @@ Taking a Feature Group as an example, the figure above describes how these windo
 - A _rolling window_ covering a variable subset of feature data (e.g., feature data written last week).
   It helps you analyze the properties of **newly inserted feature data**.
 
+### Time basis
+
+A rolling window needs a **notion of time** to decide which rows fall inside it.
+Hopsworks supports two bases, chosen once per configuration and **shared by the detection and reference windows**:
+
+- _Event time_: rows are selected by the value of an event-time feature, so a window such as "last week" contains the rows whose event time falls in that week regardless of when they were written.
+  This is the default for Feature Groups and Feature Views that declare an `event_time`.
+- _Commit time_: rows are selected by the time they were written to the Feature Group, using time travel.
+  A window such as "last week" contains the rows committed during that week.
+  This is the default when no event-time feature is declared, and it requires a time-travel enabled Feature Group.
+
+A rolling event-time window is anchored on the time the schedule fires.
+Each run selects the rows whose event time is inside the window at that moment and stores their statistics.
+
+A row that lands after the run covering its event time is not added to that run's statistics, and every later window starts after its event time, so no window counts it. This happens with backfills and with the materialization lag of streaming pipelines. For backfill-heavy pipelines, use an expanding window, which has no lower bound, or the commit-time basis, which selects rows by when they were written.
+
+!!! tip "Leave room for late rows"
+    `time_offset` sets where the window starts, counted back from the run, and `window_length` sets how long it lasts, so a `time_offset` longer than the `window_length` ends the window before the run.
+    For example, a daily schedule with `time_offset="25h"` and `window_length="24h"` that runs at 12:00 on Tuesday covers event times from 11:00 on Monday to 11:00 on Tuesday, and the next run covers 11:00 on Tuesday to 11:00 on Wednesday.
+    Consecutive windows meet, and each row has one hour to land before the window that covers it runs.
+    Size the gap to the longest delay with which rows land, such as the materialization interval of the pipeline.
+
+!!! note "Updated rows"
+    An event-time window reads the current snapshot of the data and filters it on the event-time feature, so it sees only the latest version of each row.
+    A commit-time window reads the commits in its range, so each version of an updated row is counted in the window of the commit that wrote it.
+
 See more details on how to define a detection window for your Feature Groups and Feature Views in the Feature Monitoring Guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
 
 !!! info "Next steps"
@@ -14816,6 +14908,9 @@ Taking a Feature View as an example, the figure above describes how these window
   It helps you compare **newly inserted feature data** into your Feature Groups **against a Training Dataset version**.
 - A _specific value_.
   It helps you target the analysis of feature data to a **specific feature and statistics metric**.
+
+Rolling and expanding reference windows use the same time basis as the detection window of the configuration, either the event-time feature or the commit time.
+See [Time basis](scheduled_statistics.md#time-basis) in the scheduled statistics guide.
 
 See more details on how to define a reference window for your Feature Groups and Training Datasets in the Feature Monitoring guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
 
