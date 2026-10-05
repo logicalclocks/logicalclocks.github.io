@@ -147,6 +147,8 @@ Its ML system factory lists the project's systems for every member, when the pro
 **Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
 **New ML System** opens the main requirements of a new system: its name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its type (batch, real-time or agentic) with the cadence or the latency and throughput, its data (feature groups in the project, or synthetic data described in a sentence), and how its predictions are used.
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
+For a batch or real-time system, **Monitoring** sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
+The build turns them into feature logging on the feature view, feature monitoring checks and alerts, and sends a failure alert for every job the system owns to the project's alert receiver.
 The examples are listed under **New ML System**; each opens with its requirements filled in.
 **Create** runs `hops build --answers` in a Terminal tab named after the system, which asks only what the page left out and starts Claude Code on `/hops-build <name>`; the page then locks the requirements and opens the system once it is registered.
 
