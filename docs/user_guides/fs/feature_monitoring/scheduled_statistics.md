@@ -37,8 +37,8 @@ Taking a Feature Group as an example, the figure above describes how these windo
 
 ### Time basis
 
-A rolling window needs a notion of time to decide which rows fall inside it.
-Hopsworks supports two bases, chosen once per configuration and shared by the detection and reference windows:
+A rolling window needs a **notion of time** to decide which rows fall inside it.
+Hopsworks supports two bases, chosen once per configuration and **shared by the detection and reference windows**:
 
 - _Event time_: rows are selected by the value of an event-time feature, so a window such as "last week" contains the rows whose event time falls in that week regardless of when they were written.
   This is the default for Feature Groups and Feature Views that declare an `event_time`.
@@ -46,19 +46,20 @@ Hopsworks supports two bases, chosen once per configuration and shared by the de
   A window such as "last week" contains the rows committed during that week.
   This is the default when no event-time feature is declared, and it requires a time-travel enabled Feature Group.
 
-A rolling event-time window is evaluated when the schedule fires and contains the rows whose event time is inside the window at that moment.
-Rows that arrive later with an older event time are not counted retrospectively: the window that would have held them has already run and its statistics are stored, and every later window starts after them.
-This applies to backfills and to the materialization lag of streaming pipelines alike, because the window is anchored on the current time while the data lands some time later.
-To leave room for late rows, combine `time_offset` with `window_length` so the window ends before the current time, for example `time_offset="25h"` with `window_length="24h"` for a one hour allowance sized to the materialization interval of the pipeline.
-For backfill-heavy pipelines, use an expanding window, which has no lower bound and includes every row, or the commit-time basis, which selects rows by when they were written.
+A rolling event-time window is anchored on the time the schedule fires.
+Each run selects the rows whose event time is inside the window at that moment and stores their statistics.
 
-A rolling event-time window reads the current snapshot of the data and filters it on the event-time feature, so it reflects the latest version of each row rather than the history of writes.
-A commit-time window reads the commits in its range, so each version of an updated row is seen in the window of its own commit.
+A row that lands after the run covering its event time is not added to that run's statistics, and every later window starts after its event time, so no window counts it. This happens with backfills and with the materialization lag of streaming pipelines. For backfill-heavy pipelines, use an expanding window, which has no lower bound, or the commit-time basis, which selects rows by when they were written.
 
-An expanding window reads the latest snapshot on either basis, with no time filter.
-Statistics computed on an event-time window are stored with the event-time bounds of the window, and statistics computed on a commit-time window with its commit bounds.
-The `event_time` parameter of `create_scheduled_statistics` and `create_feature_monitoring` selects the basis; see the guides linked below.
-The built-in `ingestion_stats` configuration that computes statistics on ingestion always uses commit time.
+!!! tip "Leave room for late rows"
+    `time_offset` sets where the window starts, counted back from the run, and `window_length` sets how long it lasts, so a `time_offset` longer than the `window_length` ends the window before the run.
+    For example, a daily schedule with `time_offset="25h"` and `window_length="24h"` that runs at 12:00 on Tuesday covers event times from 11:00 on Monday to 11:00 on Tuesday, and the next run covers 11:00 on Tuesday to 11:00 on Wednesday.
+    Consecutive windows meet, and each row has one hour to land before the window that covers it runs.
+    Size the gap to the longest delay with which rows land, such as the materialization interval of the pipeline.
+
+!!! note "Updated rows"
+    An event-time window reads the current snapshot of the data and filters it on the event-time feature, so it sees only the latest version of each row.
+    A commit-time window reads the commits in its range, so each version of an updated row is counted in the window of the commit that wrote it.
 
 See more details on how to define a detection window for your Feature Groups and Feature Views in the Feature Monitoring Guides for [Feature Groups](../feature_group/feature_monitoring.md) and [Feature Views](../feature_view/feature_monitoring.md).
 
