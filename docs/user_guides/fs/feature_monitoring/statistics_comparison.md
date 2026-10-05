@@ -5,7 +5,7 @@ Also, you can specify the criteria under which statistics will be compared and s
 
 Hopsworks stores both detection and reference statistics and enable you to visualise the temporal evolution of statistical metrics.
 
-![Reference statistics visualization](../../../assets/images/guides/fs/feature_monitoring/fm-reference-plot.png)
+![Reference statistics visualization](../../../assets/images/guides/fs/feature_monitoring/fm-show-reference.png)
 
 !!! tip "Interactive graph"
     See the [Interactive graph guide](interactive_graph.md) to learn how to explore statistics and comparison results more efficiently.
@@ -26,7 +26,7 @@ See the [Feature Monitoring for Feature Views](../feature_view/feature_monitorin
 To compare statistics computed on a _detection window_ against a baseline, you need to define a _reference window_ of feature data.
 Reference windows can be defined in different ways depending on whether you are configuring feature monitoring on a Feature Group or Feature View.
 
-![Types of reference windows](../../../assets/images/guides/fs/feature_monitoring/fm-reference-windows.png)
+--8<-- "user_guides/fs/feature_monitoring/statistics_comparison/reference-windows.html"
 
 In [a previous section](index.md#define-windows-over-feature-data) we described different types of windows available.
 Taking a Feature View as an example, the figure above describes how these windows are applied to Feature Group data read by a Feature View query and Training data, resulting in the following applications:
@@ -78,7 +78,7 @@ The criteria described below apply to the comparison of a single scalar metric u
 
 Hopsworks stores the results of each statistics comparison and enables you to visualise them together with the detection and reference values in a time series graph.
 
-![Threshold and shift visualization](../../../assets/images/guides/fs/feature_monitoring/fm-threshold-plot.png)
+![Threshold and shift visualization](../../../assets/images/guides/fs/feature_monitoring/fm-show-shifted-points.png)
 
 !!! info "Next steps"
     You can setup alerts that will notify you whenever anomalies are detected on your feature data.

@@ -3,7 +3,7 @@
 Model monitoring lets you detect drift between the data a model was trained on and the data it serves in production.
 It is built on top of [feature monitoring](../../fs/feature_monitoring/index.md): a model monitoring configuration computes statistics over the model's logged inference data (the _detection window_) and compares them against the training dataset the model was trained on (the _reference window_).
 
-You can configure model monitoring from a [model deployment](model_monitoring.md), a [model](model_monitoring.md), or a [feature view](model_monitoring.md) — all three resolve to the same underlying configuration on the feature view's logging feature group, filtered by the model name and version.
+You can configure model monitoring from a [model deployment](model_monitoring.md), a [model](model_monitoring.md), or a [feature view](model_monitoring.md). All three resolve to the same underlying configuration on the feature view's logging feature group, filtered by the model name and version.
 
 ## Prerequisites
 

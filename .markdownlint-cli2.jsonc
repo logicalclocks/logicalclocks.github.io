@@ -1,0 +1,4 @@
+{
+  // Lint the repo's own Markdown, not vendored envs or build output.
+  "ignores": ["**/node_modules/**", "**/.venv/**", "site/**", "docs/javadoc/**"]
+}

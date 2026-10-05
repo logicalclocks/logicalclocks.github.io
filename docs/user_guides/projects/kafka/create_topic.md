@@ -35,6 +35,10 @@ my_topic = kafka_api.create_topic(
 )
 ```
 
-### API Reference
+!!! api "API reference"
 
-[`KafkaTopic`][hopsworks_common.kafka_topic.KafkaTopic]
+    - <code class="doc-symbol doc-symbol-class"></code> [`KafkaApi`][hopsworks_common.core.kafka_api.KafkaApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`create_topic`][hopsworks_common.core.kafka_api.KafkaApi.create_topic]
+    - <code class="doc-symbol doc-symbol-class"></code> [`KafkaTopic`][hopsworks_common.kafka_topic.KafkaTopic]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

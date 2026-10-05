@@ -1,0 +1,70 @@
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 806 460" role="img" aria-label="Animated diagram of the MLOps flywheel through the offline path. Events from the operational services flow into the feature pipeline and land in the offline feature store; training data leaves through the offline API into the training pipeline, the trained model ships to the deployments, predictions flow back to the services, and the services generate more events: the wheel keeps turning." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="fwo-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="fwo-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+  <path class="viz-edge" d="M415 78 V142" marker-end="url(#fwo-arrow)"/>
+  <path class="viz-edge" d="M234 182 H325" marker-end="url(#fwo-arrow)" marker-start="url(#fwo-knob)"/>
+  <path class="viz-edge" d="M505 182 H620" marker-end="url(#fwo-arrow)" marker-start="url(#fwo-knob)"/>
+  <path class="viz-edge" d="M130 370 V214" marker-end="url(#fwo-arrow)" marker-start="url(#fwo-knob)"/>
+  <text class="viz-meta" x="138" y="296">predictions</text>
+  <path class="viz-edge" d="M705 214 V370" marker-end="url(#fwo-arrow)" marker-start="url(#fwo-knob)"/>
+  <text class="viz-meta" x="696" y="296" text-anchor="end">offline api · training data</text>
+  <path class="viz-edge" d="M616 402 H220" marker-end="url(#fwo-arrow)" marker-start="url(#fwo-knob)"/>
+  <text class="viz-meta" x="418" y="392" text-anchor="middle">deploy</text>
+  <g class="viz-window" data-tone="neutral"><rect class="viz-window" x="330" y="30" width="170" height="48" rx="6"/></g>
+  <text class="viz-meta" x="415" y="58" text-anchor="middle">enterprise data</text>
+  <g id="fwo-svc" data-tone="data">
+    <rect class="viz-node" x="26" y="150" width="208" height="64" rx="4"/>
+    <text class="viz-node-title" x="130" y="176" text-anchor="middle">OPERATIONAL SERVICES</text>
+    <text class="viz-node-subtitle" x="130" y="196" text-anchor="middle">batch · real-time</text>
+  </g>
+  <g id="fwo-fp" data-tone="write">
+    <rect class="viz-node" x="325" y="150" width="180" height="64" rx="4"/>
+    <text class="viz-node-title" x="415" y="176" text-anchor="middle">FEATURE PIPELINE</text>
+    <text class="viz-node-subtitle" x="415" y="196" text-anchor="middle">validate · aggregate</text>
+  </g>
+  <g id="fwo-fs" data-tone="write">
+    <rect class="viz-node" x="620" y="150" width="170" height="64" rx="4"/>
+    <text class="viz-node-title" x="705" y="176" text-anchor="middle">FEATURE STORE</text>
+    <text class="viz-node-subtitle" x="705" y="196" text-anchor="middle">offline store</text>
+  </g>
+  <g id="fwo-tp" data-tone="read">
+    <rect class="viz-node" x="616" y="370" width="178" height="64" rx="4"/>
+    <text class="viz-node-title" x="705" y="396" text-anchor="middle">TRAINING PIPELINE</text>
+    <text class="viz-node-subtitle" x="705" y="416" text-anchor="middle">train · validate</text>
+  </g>
+  <g id="fwo-mdl" data-tone="accent">
+    <rect class="viz-node" x="40" y="370" width="180" height="64" rx="4"/>
+    <text class="viz-node-title" x="130" y="396" text-anchor="middle">MODELS</text>
+    <text class="viz-node-subtitle" x="130" y="416" text-anchor="middle">kserve deployments</text>
+  </g>
+  <text id="fwo-ok" class="viz-meta viz-fade" data-tone="accent" x="415" y="250" text-anchor="middle" style="opacity:0">more predictions → more data → better features</text>
+  <g transform="translate(226 173)"><g id="fwo-p1" class="viz-packet" data-tone="data" style="opacity:0"><rect width="64" height="18" rx="3"/><text x="32" y="9" text-anchor="middle">events</text></g></g>
+  <g transform="translate(506 173)"><g id="fwo-p2" class="viz-packet" data-tone="write" style="opacity:0"><rect width="80" height="18" rx="3"/><text x="40" y="9" text-anchor="middle">features</text></g></g>
+  <g transform="translate(104 352)"><g id="fwo-p5" class="viz-packet" data-tone="accent" style="opacity:0"><rect width="52" height="18" rx="3"/><text x="26" y="9" text-anchor="middle">preds</text></g></g>
+  <g transform="translate(672 225)"><g id="fwo-p3" class="viz-packet" data-tone="read" style="opacity:0"><rect width="80" height="18" rx="3"/><text x="40" y="9" text-anchor="middle">train df</text></g></g>
+  <g transform="translate(600 393)"><g id="fwo-p4" class="viz-packet" data-tone="accent" style="opacity:0"><rect width="54" height="18" rx="3"/><text x="27" y="9" text-anchor="middle">model</text></g></g>
+</svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 700,
+  "loopDelay": 1600,
+  "steps": [
+    { "\u0024label": "events", "#fwo-svc": {"state": "active"}, "#fwo-p1": {"opacity": 1} },
+    { "#fwo-p1": {"x": 90}, "\u0024ms": 600 },
+    { "\u0024label": "features", "#fwo-p1": {"opacity": 0}, "#fwo-svc": {"state": null}, "#fwo-fp": {"state": "active"}, "#fwo-p2": {"opacity": 1}, "\u0024ms": 500 },
+    { "#fwo-p2": {"x": 100}, "\u0024ms": 600 },
+    { "\u0024label": "offline api", "#fwo-p2": {"opacity": 0}, "#fwo-fp": {"state": null}, "#fwo-fs": {"state": "active"}, "#fwo-p3": {"opacity": 1}, "\u0024ms": 500 },
+    { "#fwo-p3": {"y": 128}, "\u0024ms": 800 },
+    { "\u0024label": "train", "#fwo-p3": {"opacity": 0}, "#fwo-fs": {"state": null}, "#fwo-tp": {"state": "active"}, "#fwo-p4": {"opacity": 1}, "\u0024ms": 600 },
+    { "#fwo-p4": {"x": -360}, "\u0024ms": 700 },
+    { "\u0024label": "predictions", "#fwo-p4": {"opacity": 0}, "#fwo-tp": {"state": null}, "#fwo-mdl": {"state": "active"}, "#fwo-p5": {"opacity": 1}, "\u0024ms": 500 },
+    { "#fwo-p5": {"y": -140}, "\u0024ms": 600 },
+    { "#fwo-p5": {"opacity": 0}, "#fwo-mdl": {"state": null}, "#fwo-svc": {"state": "active"}, "#fwo-ok": {"opacity": 1}, "\u0024ms": 600 },
+    { "#fwo-svc": {"state": null}, "\u0024ms": 1600 }
+  ]
+}
+</script>
+</figure>

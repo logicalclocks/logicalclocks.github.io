@@ -393,12 +393,19 @@ Log rows contain feature values and are governed by the logging feature group's 
 The `HOPSWORKS_*` names are reserved and refused in `env_vars=`, as are `SERVING_SCHEMA_ID`, `SERVING_FEATURE_VIEW_NAME`, `SERVING_FEATURE_VIEW_VERSION`, `SERVING_TRAINING_DATASET_VERSION` and `SERVING_SCHEMA_ENFORCER`.
 The logging limits are set through `DeploymentLoggingConfig` rather than through `env_vars=`: `FEATURE_LOGGER_QUEUE_SIZE`, `FEATURE_LOGGER_BATCH_BYTES` and `FEATURE_LOGGER_BATCH_SECONDS` are reserved, so a value set there is refused.
 
-## API Reference
+!!! api "API reference"
 
-`hsml.deployment_schema.DeploymentSchema`
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureView.deploy`][hsfs.feature_view.FeatureView.deploy]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`predict`][hsml.deployment.Deployment.predict]
+        - <code class="doc-symbol doc-symbol-method"></code> [`reinfer_schema`][hsml.deployment.Deployment.reinfer_schema]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_logs`][hsml.deployment.Deployment.get_logs]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`schema`][hsml.deployment.Deployment.schema]
+    - <code class="doc-symbol doc-symbol-class"></code> [`DeploymentSchema`][hsml.deployment_schema.DeploymentSchema]
+        - <code class="doc-symbol doc-symbol-method"></code> [`describe`][hsml.deployment_schema.DeploymentSchema.describe]
+        - <code class="doc-symbol doc-symbol-method"></code> [`to_openapi`][hsml.deployment_schema.DeploymentSchema.to_openapi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`to_json_schema`][hsml.deployment_schema.DeploymentSchema.to_json_schema]
+    - <code class="doc-symbol doc-symbol-class"></code> [`DefaultPredict`][hsml.default_predictor.DefaultPredict]
 
-`hsml.default_predictor.DefaultPredict`
-
-[`Model.deploy`][hsml.model.Model.deploy]
-
-[`Deployment`][hsml.deployment.Deployment]
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

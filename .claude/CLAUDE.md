@@ -25,4 +25,6 @@ uv run hopsworks-docs linkchecker # check for broken links
 
 - @docs/README.md — full command reference, content structure, and links to detail docs
 - @docs/content.md — writing conventions, code blocks, linking, and assets
+- @docs/design-system.md — visual language: tokens, logo, nav, search, diagrams; read before any CSS/nav/visual change
+- @docs/captures.md — UI screenshots and GIFs: where the pixels come from, browser session, scoping rules, helpers
 - @docs/caveats/README.md — known gotchas; add new ones as separate files in this folder

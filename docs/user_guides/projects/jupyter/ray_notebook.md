@@ -12,7 +12,9 @@ Jupyter is provided as a service in Hopsworks, providing the same user experienc
 
 !!!warning "Enable Ray"
 
-    Support for Ray needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
+    Ray is gated behind the `ray_enabled` [configuration variable](../../../setup_installation/admin/variables.md), which an administrator has to turn on.
+    Until it is enabled, the Ray kernel and the Ray configuration are not offered in Jupyter.
+    Support for Ray also needs to be explicitly enabled by adding the following option in the `values.yaml` file for the deployment:
 
     ```yaml
     global:
@@ -50,9 +52,13 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver virtual cores`: Number of cores to allocate for the Driver
 
+- `Driver GPUs`: Number of GPUs to allocate for the Driver
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
-- `Worker cores`: Number of cores to allocate for each worker
+- `Worker virtual cores`: Number of cores to allocate for each worker
+
+- `Worker GPUs`: Number of GPUs to allocate for each worker
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -120,7 +126,7 @@ Environment with Ray kernel have a `Ray Enabled` label next to them.
 ## Step 5: (Kueue enabled) Select a Queue
 
 If the cluster is installed with Kueue enabled, you will need to select a queue in which the notebook should run.
-This can be done from `Advance configuration -> Scheduler section`.
+This can be done from `Advanced options`, in the `Scheduler` section of the full configuration page.
 
 ![Default queue for job](../../../assets/images/guides/project/scheduler/job_queue.png)
 
@@ -159,9 +165,19 @@ In the Ray Dashboard, you can monitor the resources used  by code you are runnin
   </figure>
 </p>
 
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/jupyter/ray_dashboard.png" alt="Ray Dashboard cluster view">
+    <figcaption>The Ray Dashboard for the Jupyter Ray session, cluster view</figcaption>
+  </figure>
+</p>
+
 ## Step 8: Saved application logs
 
-While the Ray session runs, the `Live Logs` button on its row streams the output of the notebook kernel and of the Ray head and worker pods. When the session ends, the driver and worker process logs of the Ray cluster are saved as `stdout.log` and `stderr.log` in the `Logs/Jupyter/<username>/ray/<application id>` directory of the project, the same two files a Ray job leaves in `Logs/Ray`. The Jupyter page lists the application under `Spark and Ray applications` in the `Saved Logs` card. Click `View` to read the files or delete the directory when it is no longer needed.
+While the Ray session runs, the `Live Logs` button on its row streams the output of the notebook kernel and of the Ray head and worker pods.
+When the session ends, the driver and worker process logs of the Ray cluster are saved as `stdout.log` and `stderr.log` in the `Logs/Jupyter/<username>/ray/<application id>` directory of the project, the same two files a Ray job leaves in `Logs/Ray`.
+The Jupyter page lists the application under `Spark and Ray applications` in the `Saved Logs` card.
+Click `View` to read the files or delete the directory when it is no longer needed.
 
 The code you run in the notebook executes in the Jupyter server, so its output is part of the server log, which is saved to `Logs/Jupyter/<username>` when the server stops.
 

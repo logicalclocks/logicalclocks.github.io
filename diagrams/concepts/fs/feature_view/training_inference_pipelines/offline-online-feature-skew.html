@@ -1,0 +1,85 @@
+<figure class="hops-diagram hops-viz">
+<svg viewBox="0 0 800 420" role="img" aria-label="Animated diagram of offline-online feature skew. The same raw feature value 12.45 leaves the feature store on two paths: through the transformation of the online inference pipeline and through the transformation of the offline training pipeline. While both run the same UDF with the same state, both produce 0.31 and the tie between them holds. Then the serving transformation drifts to a different version: the same input now produces 0.28 online against 0.31 offline, and the alert states that skew is a code difference, invisible in the data distributions." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="sk-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="sk-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <text class="viz-label" x="230" y="52">Online · inference</text>
+  <text class="viz-edge-label viz-label" x="230" y="278">Offline · training</text>
+
+  <path class="viz-edge" d="M184 190 C 260 160 290 120 342 100" marker-end="url(#sk-arrow)" marker-start="url(#sk-knob)"/>
+  <path class="viz-edge" d="M184 230 C 260 260 290 300 342 320" marker-end="url(#sk-arrow)" marker-start="url(#sk-knob)"/>
+  <path class="viz-edge" d="M520 100 H548" marker-end="url(#sk-arrow)" marker-start="url(#sk-knob)"/>
+  <path class="viz-edge" d="M520 320 H548" marker-end="url(#sk-arrow)" marker-start="url(#sk-knob)"/>
+  <path class="viz-edge" data-variant="lane" d="M435 134 V182"/>
+  <path class="viz-edge" data-variant="lane" d="M435 218 V286"/>
+
+  <g>
+    <rect class="viz-node" x="24" y="170" width="160" height="80" rx="4"/>
+    <text class="viz-node-title" x="104" y="202" text-anchor="middle">FEATURE STORE</text>
+    <text class="viz-node-subtitle" x="104" y="224" text-anchor="middle">raw value 12.45</text>
+  </g>
+
+  <g id="sk-ton" data-tone="write">
+    <rect class="viz-node" x="350" y="70" width="170" height="64" rx="4"/>
+    <text class="viz-node-title" x="435" y="96" text-anchor="middle">TRANSFORM</text>
+    <text id="sk-tvon" class="viz-node-subtitle" x="435" y="118" text-anchor="middle">udf v1 · mean 10.2</text>
+  </g>
+  <g id="sk-toff" data-tone="write">
+    <rect class="viz-node" x="350" y="290" width="170" height="64" rx="4"/>
+    <text class="viz-node-title" x="435" y="316" text-anchor="middle">TRANSFORM</text>
+    <text class="viz-node-subtitle" x="435" y="338" text-anchor="middle">udf v1 · mean 10.2</text>
+  </g>
+
+  <g id="sk-tie" class="viz-badge viz-fade" data-tone="accent">
+    <rect x="345" y="186" width="180" height="28" rx="6"/>
+    <text x="435" y="200" text-anchor="middle">same code · same state</text>
+  </g>
+  <text id="sk-ok" class="viz-meta viz-fade" data-tone="accent" x="435" y="240" text-anchor="middle" style="opacity:0">same input → same value, no skew</text>
+  <text id="sk-alert" class="viz-meta viz-fade" data-tone="error" x="435" y="240" text-anchor="middle" style="opacity:0">skew: outputs diverge, invisible in the data</text>
+
+  <g id="sk-bon" class="viz-badge viz-fade" data-tone="write" style="opacity:0">
+    <rect x="556" y="88" width="64" height="24" rx="6"/>
+    <text id="sk-von" x="588" y="100" text-anchor="middle">0.31</text>
+  </g>
+  <g id="sk-boff" class="viz-badge viz-fade" data-tone="write" style="opacity:0">
+    <rect x="556" y="308" width="64" height="24" rx="6"/>
+    <text x="588" y="320" text-anchor="middle">0.31</text>
+  </g>
+  <text class="viz-meta" x="632" y="101">→ model serving</text>
+  <text class="viz-meta" x="632" y="321">→ training data</text>
+
+  <g transform="translate(200 91)">
+    <g id="sk-p1" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="54" height="18" rx="3"/>
+      <text x="27" y="9" text-anchor="middle">12.45</text>
+    </g>
+  </g>
+  <g transform="translate(200 311)">
+    <g id="sk-p2" class="viz-packet" data-tone="data" style="opacity:0">
+      <rect width="54" height="18" rx="3"/>
+      <text x="27" y="9" text-anchor="middle">12.45</text>
+    </g>
+  </g>
+</svg>
+<script type="application/json" data-viz-scene>
+{
+  "interval": 800,
+  "loopDelay": 2600,
+  "steps": [
+    { "#sk-p1": {"opacity": 1}, "#sk-p2": {"opacity": 1} },
+    { "#sk-p1": {"x": 142}, "#sk-p2": {"x": 142}, "$ms": 700 },
+    { "#sk-p1": {"opacity": 0}, "#sk-p2": {"opacity": 0}, "#sk-ton": {"state": "active"}, "#sk-toff": {"state": "active"}, "$ms": 500 },
+    { "#sk-bon": {"opacity": 1}, "#sk-boff": {"opacity": 1}, "#sk-ton": {"state": null}, "#sk-toff": {"state": null}, "#sk-ok": {"opacity": 1}, "$ms": 1900 },
+    { "#sk-tvon": {"text": "udf v2 · mean 11.7"}, "#sk-ton": {"tone": "error"}, "#sk-ok": {"opacity": 0}, "#sk-tie": {"opacity": 0.35}, "#sk-bon": {"opacity": 0}, "#sk-boff": {"opacity": 0}, "$ms": 900 },
+    { "#sk-p1": {"x": 0, "y": 0}, "#sk-p2": {"x": 0, "y": 0}, "$ms": 150 },
+    { "#sk-p1": {"opacity": 1}, "#sk-p2": {"opacity": 1}, "$ms": 600 },
+    { "#sk-p1": {"x": 142}, "#sk-p2": {"x": 142}, "$ms": 700 },
+    { "#sk-p1": {"opacity": 0}, "#sk-p2": {"opacity": 0}, "#sk-von": {"text": "0.28"}, "#sk-bon": {"tone": "error", "opacity": 1}, "#sk-boff": {"opacity": 1}, "#sk-alert": {"opacity": 1}, "$ms": 2600 }
+  ]
+}
+</script>
+</figure>

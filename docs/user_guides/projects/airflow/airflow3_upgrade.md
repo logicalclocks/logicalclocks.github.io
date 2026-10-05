@@ -21,7 +21,7 @@ What this **does not** isolate in this release:
   Module-top-level code in a DAG file runs with the dag-processor's privileges; treat it as cluster-wide too.
 
 These are tracked for a future release that switches to KubernetesExecutor plus per-team dag-processors.
-Until then, do not put project-private secrets in Airflow Variables or Connections — the per-DAG Hopsworks API key written by Hopsworks (see [API key for operators](#api-key-for-operators-no-embed)) is the exception, written by the platform itself rather than by users.
+Until then, do not put project-private secrets in Airflow Variables or Connections. The per-DAG Hopsworks API key written by Hopsworks (see [API key for operators](#api-key-for-operators-no-embed)) is the exception, written by the platform itself rather than by users.
 
 ## What changed in the DAG API
 
@@ -59,14 +59,14 @@ It polls `/hopsworks-api/api/project/<id>/dataset/<path>?action=stat` and accept
 
 Hopsworks operators and sensors authenticate via the `HopsworksHook`, which resolves a credential in this order:
 
-1. **Task token exchange** — the scheduler signs a per-task RS256 token; the hook POSTs it to `/api/auth/airflow-task-exchange/exchange` on Hopsworks and gets a project-scoped JWT back.
-2. **Per-DAG Airflow Variable** — Hopsworks writes a per-DAG API key into an Airflow Variable named `hopsworks_api_key_<sha256(dag_id)[:16]>` (Fernet-encrypted at rest) on every DAG compose.
+1. **Task token exchange**: the scheduler signs a per-task RS256 token; the hook POSTs it to `/api/auth/airflow-task-exchange/exchange` on Hopsworks and gets a project-scoped JWT back.
+2. **Per-DAG Airflow Variable**: Hopsworks writes a per-DAG API key into an Airflow Variable named `hopsworks_api_key_<sha256(dag_id)[:16]>` (Fernet-encrypted at rest) on every DAG compose.
    The hook reads it at task runtime via `Variable.get(...)` and uses it as `Authorization: ApiKey <key>`.
-3. **Airflow Connection** `hopsworks_default` — `conn.password` is read as a literal API key.
+3. **Airflow Connection** `hopsworks_default`: `conn.password` is read as a literal API key.
    Useful for out-of-cluster operators.
-4. **`HOPSWORKS_API_KEY` env var** — manual override for power users.
+4. **`HOPSWORKS_API_KEY` env var**: manual override for power users.
 
-The generated DAG file **never carries the API key** — the secret lives only in the Airflow Variables table (admin-only via `HopsworksAuthManager`), so the DAG `.py` is safe to inspect, version-control, or share.
+The generated DAG file **never carries the API key**. The secret lives only in the Airflow Variables table (admin-only via `HopsworksAuthManager`), so the DAG `.py` is safe to inspect, version-control, or share.
 Re-generate the DAG from the Hopsworks UI to rotate the key.
 
 DAG files composed before this change still embed `os.environ.setdefault("HOPSWORKS_API_KEY", "<key>")` near the top of the file.
@@ -134,5 +134,5 @@ Airflow 3 with the LocalExecutor writes task logs to the scheduler pod's local f
 The scheduler records the source endpoint (host + port) on the task instance row.
 Hopsworks configures the scheduler with `[core] hostname_callable = airflow.utils.net.get_host_ip_address` so that endpoint is the pod IP (routable across pods), not the pod's DNS hostname (not resolvable from sibling pods).
 
-Logs from runs that started before the scheduler pod was last restarted are unrecoverable — the pod's filesystem is ephemeral.
+Logs from runs that started before the scheduler pod was last restarted are unrecoverable: the pod's filesystem is ephemeral.
 Re-trigger the DAG to regenerate task logs if you need them.

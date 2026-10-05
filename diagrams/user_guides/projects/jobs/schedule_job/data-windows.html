@@ -1,0 +1,51 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 760 344" role="img" aria-label="Data windows on an hourly schedule. Row one, the default: each fire at 09:00, 10:00, 11:00 gets the window from the previous fire to this fire, so the windows tile the timeline. Row two, a start offset of 30 minutes: the window starts 30 minutes before the previous fire and keeps the same one hour length. Row three, the scheduler is down between 09:00 and 11:00: with catch-up on, the missed intervals 09 to 10 and 10 to 11 are replayed on recovery, then 11 to 12 runs; with catch-up off, only the most recent missed interval 10 to 11 runs." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="sw-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+  </defs>
+  <text class="viz-label" x="24" y="30">default</text>
+  <path class="viz-axis" d="M96 52 H700" marker-end="url(#sw-arrow)"/>
+  <path class="viz-tick" d="M140 46 V58 M260 46 V58 M380 46 V58 M500 46 V58 M620 46 V58"/>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="142" y="40" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="200" y="56" text-anchor="middle">08→09</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="262" y="40" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="320" y="56" text-anchor="middle">09→10</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="382" y="40" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="440" y="56" text-anchor="middle">10→11</text>
+  <circle class="viz-status-dot" data-tone="accent" cx="500" cy="52" r="5"/>
+  <text class="viz-meta" x="140" y="82" text-anchor="middle">08:00</text>
+  <text class="viz-meta" x="260" y="82" text-anchor="middle">09:00</text>
+  <text class="viz-meta" x="380" y="82" text-anchor="middle">10:00</text>
+  <text class="viz-meta" x="500" y="82" text-anchor="middle">11:00</text>
+  <text class="viz-meta" x="620" y="82" text-anchor="middle">12:00</text>
+  <text class="viz-codeln" x="96" y="104">HOPS_START_TIME = previous fire</text>
+  <text class="viz-codeln" x="380" y="104">HOPS_END_TIME = start + interval</text>
+  <text class="viz-label" x="24" y="130">start offset 30 min</text>
+  <path class="viz-axis" d="M96 152 H700" marker-end="url(#sw-arrow)"/>
+  <path class="viz-tick" d="M140 146 V158 M260 146 V158 M380 146 V158 M500 146 V158 M620 146 V158"/>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="322" y="140" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="380" y="156" text-anchor="middle">09:30→10:30</text>
+  <circle class="viz-status-dot" data-tone="accent" cx="500" cy="152" r="5"/>
+  <path class="viz-tick" d="M320 132 V172"/>
+  <text class="viz-meta" data-tone="warn" x="320" y="186" text-anchor="middle">previous fire − 30 min</text>
+  <text class="viz-meta" x="500" y="186" text-anchor="middle">fire at 11:00</text>
+  <text class="viz-label" x="24" y="226">scheduler down 09:00→11:00</text>
+  <rect class="viz-window" data-tone="neutral" x="260" y="230" width="240" height="94" rx="4"/>
+  <path class="viz-axis" d="M136 248 H700"/>
+  <path class="viz-tick" d="M140 242 V254 M260 242 V254 M380 242 V254 M500 242 V254 M620 242 V254"/>
+  <text class="viz-meta" x="24" y="252">catchup = true</text>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="262" y="236" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="320" y="252" text-anchor="middle">09→10 replayed</text>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="382" y="236" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="440" y="252" text-anchor="middle">10→11 replayed</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="502" y="236" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="560" y="252" text-anchor="middle">11→12</text>
+  <path class="viz-axis" d="M136 306 H700" marker-end="url(#sw-arrow)"/>
+  <path class="viz-tick" d="M140 300 V312 M260 300 V312 M380 300 V312 M500 300 V312 M620 300 V312"/>
+  <text class="viz-meta" x="24" y="310">catchup = false</text>
+  <rect class="viz-window" data-solid="" data-tone="warn" data-state="visited" x="382" y="294" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="warn" x="440" y="310" text-anchor="middle">10→11 only</text>
+  <rect class="viz-window" data-solid="" data-tone="accent" data-state="visited" x="502" y="294" width="116" height="24" rx="4"/>
+  <text class="viz-meta" data-tone="accent" x="560" y="310" text-anchor="middle">11→12</text>
+</svg>
+</figure>

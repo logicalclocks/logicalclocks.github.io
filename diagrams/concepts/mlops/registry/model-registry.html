@@ -1,0 +1,86 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 748 524" role="img" aria-label="The Hopsworks model registry as a capability map. Models trained anywhere (Hopsworks, Weights and Biases, SageMaker, Vertex, Azure ML, MLflow, a notebook) are registered through the model registry API into Hopsworks, where three capability groups sit on shared metadata and lineage: the model registry (versioning, comparison, metrics, artifact storage, sample data and schema), KServe serving (A/B tests, inference graphs, inference logs to Kafka, multi-model serving, Istio ingress) and projects (SSO, self-service teams, access control, search and tags, dev, stage and prod). Clients such as HTTP callers, online apps, batch scoring, reports and Streamlit or Gradio apps are served from KServe." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="mr-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="mr-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <!-- producers: models trained anywhere -->
+  <g data-tone="data">
+    <rect class="viz-node" x="16" y="16" width="716" height="52" rx="4"/>
+    <text class="viz-node-title" x="374" y="38" text-anchor="middle">Model training</text>
+    <text class="viz-node-subtitle" x="374" y="57" text-anchor="middle">hopsworks · weights &amp; biases · sagemaker · vertex · azure ml · mlflow · jupyter</text>
+  </g>
+  <path class="viz-edge" d="M374 68 L374 108" marker-end="url(#mr-arrow)" marker-start="url(#mr-knob)"/>
+  <text class="viz-edge-label viz-meta" x="384" y="92">register model</text>
+
+  <!-- the platform -->
+  <rect class="viz-zone" data-tone="accent" x="16" y="100" width="716" height="312" rx="6"/>
+  <text class="viz-label" x="28" y="94" style="fill:var(--hops-accent-text)">Hopsworks</text>
+  <g data-tone="accent">
+    <rect class="viz-node" x="32" y="108" width="684" height="32" rx="4"/>
+    <text class="viz-node-title" x="374" y="129" text-anchor="middle">Model registry API</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="32" y="164" width="684" height="32" rx="4"/>
+    <text class="viz-node-title" x="374" y="185" text-anchor="middle">Metadata &amp; lineage</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="32" y="220" width="212" height="176" rx="6"/>
+    <path class="viz-kv-header" d="M32 226 a6 6 0 0 1 6 -6 h200 a6 6 0 0 1 6 6 v20 h-212 z"/>
+    <g class="viz-icon" transform="translate(40,227) scale(0.6)"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z M3 7 L12 12 L21 7 M12 12 V22"/></g>
+    <text class="viz-kv-title" x="62" y="239">Model registry</text>
+    <text class="viz-meta" x="236" y="239" text-anchor="end">models</text>
+    <text class="viz-field" x="44" y="265">Versioning</text>
+    <line class="viz-row-sep" x1="32" y1="276" x2="244" y2="276"/>
+    <text class="viz-field" x="44" y="295">Comparison</text>
+    <line class="viz-row-sep" x1="32" y1="306" x2="244" y2="306"/>
+    <text class="viz-field" x="44" y="325">Model metrics</text>
+    <line class="viz-row-sep" x1="32" y1="336" x2="244" y2="336"/>
+    <text class="viz-field" x="44" y="355">Artifact storage</text>
+    <line class="viz-row-sep" x1="32" y1="366" x2="244" y2="366"/>
+    <text class="viz-field" x="44" y="385">Sample data &amp; schema</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="268" y="220" width="212" height="176" rx="6"/>
+    <path class="viz-kv-header" d="M268 226 a6 6 0 0 1 6 -6 h200 a6 6 0 0 1 6 6 v20 h-212 z"/>
+    <g class="viz-icon" transform="translate(276,227) scale(0.6)"><rect x="4" y="5" width="16" height="6" rx="1.5"/><rect x="4" y="13" width="16" height="6" rx="1.5"/><path d="M7.5 8 H7.51 M7.5 16 H7.51"/></g>
+    <text class="viz-kv-title" x="298" y="239">KServe</text>
+    <text class="viz-meta" x="472" y="239" text-anchor="end">serving</text>
+    <text class="viz-field" x="280" y="265">A/B tests</text>
+    <line class="viz-row-sep" x1="268" y1="276" x2="480" y2="276"/>
+    <text class="viz-field" x="280" y="295">Inference graphs</text>
+    <line class="viz-row-sep" x1="268" y1="306" x2="480" y2="306"/>
+    <text class="viz-field" x="280" y="325">Inference logs &#8594; Kafka</text>
+    <line class="viz-row-sep" x1="268" y1="336" x2="480" y2="336"/>
+    <text class="viz-field" x="280" y="355">Multi-model serving</text>
+    <line class="viz-row-sep" x1="268" y1="366" x2="480" y2="366"/>
+    <text class="viz-field" x="280" y="385">Istio ingress</text>
+  </g>
+  <g>
+    <rect class="viz-kv-frame" x="504" y="220" width="212" height="176" rx="6"/>
+    <path class="viz-kv-header" d="M504 226 a6 6 0 0 1 6 -6 h200 a6 6 0 0 1 6 6 v20 h-212 z"/>
+    <g class="viz-icon" transform="translate(512,227) scale(0.6)"><path d="M3 7 V19 H21 V9 H12 L10 7 Z"/></g>
+    <text class="viz-kv-title" x="534" y="239">Projects</text>
+    <text class="viz-meta" x="708" y="239" text-anchor="end">governance</text>
+    <text class="viz-field" x="516" y="265">SSO (AD, OAuth 2)</text>
+    <line class="viz-row-sep" x1="504" y1="276" x2="716" y2="276"/>
+    <text class="viz-field" x="516" y="295">Self-service teams</text>
+    <line class="viz-row-sep" x1="504" y1="306" x2="716" y2="306"/>
+    <text class="viz-field" x="516" y="325">Access control</text>
+    <line class="viz-row-sep" x1="504" y1="336" x2="716" y2="336"/>
+    <text class="viz-field" x="516" y="355">Search &amp; tags</text>
+    <line class="viz-row-sep" x1="504" y1="366" x2="716" y2="366"/>
+    <text class="viz-field" x="516" y="385">Dev / stage / prod</text>
+  </g>
+
+  <!-- consumers -->
+  <path class="viz-edge" d="M374 396 L374 444" marker-end="url(#mr-arrow)" marker-start="url(#mr-knob)"/>
+  <text class="viz-edge-label viz-meta" x="384" y="428">serve</text>
+  <g data-tone="data">
+    <rect class="viz-node" x="16" y="444" width="716" height="52" rx="4"/>
+    <text class="viz-node-title" x="374" y="466" text-anchor="middle">Clients</text>
+    <text class="viz-node-subtitle" x="374" y="485" text-anchor="middle">http · online apps (python, java) · batch scoring · reports · streamlit, gradio</text>
+  </g>
+</svg>
+</figure>
