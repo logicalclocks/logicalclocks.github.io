@@ -324,6 +324,7 @@
 - [Airflow 3 operator notes](https://docs.hopsworks.ai/latest/setup_installation/admin/airflow3/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/airflow3/index.md))
 - [Kafka 4 and KRaft upgrade notes](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka4/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka4/index.md))
 - [Search Index](https://docs.hopsworks.ai/latest/setup_installation/admin/search_index/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/search_index/index.md))
+- [Upgrading OpenSearch](https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade_opensearch/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade_opensearch/index.md))
 
 #### Monitoring
 - [Services Dashboards](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/grafana/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/grafana/index.md))

@@ -335,7 +335,7 @@ Hopsworks logs all inference requests to Kafka to enable easy monitoring of depl
 
 ## Vector Index
 
-A feature group with an embedding column can have a vector index, based on [OpenSearch kNN](https://opensearch.org/docs/latest/search-plugins/knn/index/) ([FAISS](https://ai.facebook.com/tools/faiss/) and [nmslib](https://github.com/nmslib/nmslib)).
+A feature group with an embedding column can have a vector index, based on [OpenSearch kNN](https://opensearch.org/docs/latest/search-plugins/knn/index/) (on the [FAISS](https://ai.facebook.com/tools/faiss/) engine, which has replaced the deprecated [nmslib](https://github.com/nmslib/nmslib) engine as the default).
 The vector index includes out-of-the-box support for authentication, access control, filtering, backup-and-restore, and horizontal scalability.
 The Feature Store and its vector index are often used together to build scalable recommender systems, such as ranking-and-retrieval for real-time recommendations.
 
@@ -1590,7 +1590,10 @@ A vector index stores embeddings so you can retrieve the items most similar to a
 In Hopsworks, a vector index is a property of an online-enabled feature group: a feature group with an embedding column can be indexed for similarity search, alongside its online and offline stores.
 
 The vector index is backed by OpenSearch, included as a multi-tenant service in projects.
-OpenSearch provides the index through its k-NN plugin, which supports the FAISS and nmslib embedding indexes.
+OpenSearch provides the index through its k-NN plugin, which supports several engines for embedding indexes.
+Hopsworks creates its indexes on the FAISS engine, which is the default from Hopsworks 5.1.
+Earlier releases used the nmslib engine, which OpenSearch has deprecated and which does not accept the filter that Hopsworks 5.1 and later send inside the nearest-neighbor query, so the upgrade to Hopsworks 5.2 recreates those indexes on FAISS.
+The [OpenSearch upgrade guide][upgrading-opensearch] describes what that upgrade involves.
 Through Hopsworks, OpenSearch also provides enterprise capabilities, including authentication and access control to indexes (an index can be private to a Hopsworks project), filtering, scalability, high availability, and disaster recovery support.
 To learn how OpenSearch powers vector similarity search in Hopsworks, you can see [this guide](../../user_guides/fs/vector_similarity_search.md).
 
@@ -31338,6 +31341,170 @@ Raising it does the opposite.
     It does not remove anything from the index, so switching it off restricts what users can find from that point on and is not a way to redact something already indexed.
 
 ================================================================================
+# Upgrading OpenSearch
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade_opensearch/
+
+# Upgrading OpenSearch { #upgrading-opensearch }
+
+## Introduction
+
+Each Hopsworks release ships a fixed OpenSearch version, and upgrading Hopsworks upgrades it.
+
+| Hopsworks | OpenSearch |
+| --------- | ---------- |
+| 4.8.x, 5.0.x | 1.3.x |
+| 5.1.x | 2.19.x |
+| 5.2.x | 3.8.0 |
+
+This page covers what changes for you on the 5.1 to 5.2 upgrade, because that is the one that can interrupt service, and the steps to run it.
+The commands assume Hopsworks is installed in the `hopsworks` namespace.
+
+## Upgrade one minor release at a time
+
+Upgrade 5.0.x to 5.1.x, let it come up, then upgrade to 5.2.x.
+Going from 5.0.x straight to 5.2.x is not supported.
+
+OpenSearch 3.x refuses to start if the cluster still holds an index that was created before OpenSearch 2.0.
+OpenSearch 2.19 keeps serving indices created by 1.x without rewriting them, so a cluster that has passed through 5.1.x can still hold such indices.
+When a 3.x node meets one it stops during startup, while its container keeps reporting `Running`, so the first pod of the rolling upgrade never becomes ready and nothing in `kubectl get pods` says why.
+
+## The index pass on 5.1.x to 5.2.x
+
+A `pre-upgrade` hook runs before the OpenSearch StatefulSet is touched, so the old cluster is still intact if it fails.
+It checks every index against the OpenSearch 2.0 floor.
+A cluster that has only ever held indices created by 2.x has nothing to fix, and the hook exits immediately.
+
+On a cluster installed before 5.1 the hook repairs what it finds:
+
+- It deletes only the indices the platform recreates or expires by itself: logs, audit logs, `pypi_libraries_*`, and plugin indices that the plugin repopulates.
+- It reindexes everything else with the name preserved, including `featurestore`, `projects`, the OpenSearch Dashboards saved objects, the index state management policies and the embedding indices behind similarity search.
+  Nothing else is deleted, because anything the hook does not recognise might hold data nothing can rebuild.
+
+### Plan for an outage
+
+While the hook copies indices, every client except the hook is refused, reads included.
+Hopsworks search, OpenSearch Dashboards, logstash and OnlineFS all receive HTTP 403 until the hook exits.
+The hook does this so that no write can land in an index while it is being copied and then be overwritten by the copy coming back.
+
+Rows written to feature groups with embeddings during the window are marked failed by OnlineFS rather than retried, because OnlineFS treats a rejected write as a permanent failure.
+Re-ingest those feature groups after the upgrade.
+Log lines shipped by logstash during the window may also be missing.
+
+The hook restores access when it exits, whether it succeeds or fails.
+If it is killed outright, for example by a node loss, clients stay refused until you run the upgrade again, because the next run picks up where it stopped and then lets clients back in.
+
+### Set the timeout
+
+The hook is bounded by `olk.opensearch.indexUpgrade.activeDeadlineSeconds`, which defaults to 3600 seconds.
+Pass `helm upgrade --timeout` at least that long, or Helm gives up on the hook before the hook finishes.
+
+A reindex copies each index twice to keep its name, so the time grows with the size of your old indices, `featurestore` and the embedding indices in particular.
+As a guide, a copy ran at roughly 15 MB per second on a 16-CPU node, and slower disks or fewer CPUs take longer.
+Before it starts, the hook prints the size of every index it will copy, an estimate, and the configured deadline, and warns when the estimate exceeds the deadline.
+To read that report without changing anything, set `olk.opensearch.indexUpgrade.enabled` to `false`.
+The hook then lists the indices and fails, and you can raise the deadline and the timeout before running the real upgrade.
+
+Free disk space matters as well, because a copy needs room for a second complete copy of the largest index.
+The hook checks this on the smallest data node and stops if there is not enough.
+
+## Embedding indices move to faiss
+
+OpenSearch indexes embeddings with an engine, and Hopsworks 5.1 and later create embedding indices on faiss.
+Indices created by Hopsworks 5.0 and earlier use nmslib, which OpenSearch has deprecated and which does not accept the filter that the Hopsworks 5.1 and later clients send with every similarity search.
+
+The index pass therefore recreates each embedding index on faiss while it copies it, so similarity search with filters works once the upgrade to 5.2 is done.
+Until then, on 5.1, filtered search fails on feature groups whose embedding index was created on 5.0, as described in the upgrade steps below.
+Approximate nearest neighbor results can shift slightly, because the graph is rebuilt on a different engine.
+Indices that you created yourself, outside the Hopsworks embedding naming, keep their engine.
+
+## Satellite clusters
+
+A satellite cluster runs its own OpenSearch and gets its own index pass when it upgrades to 5.2.
+The outage is confined to that satellite's OpenSearch, and `activeDeadlineSeconds` is set per release, so a satellite holding large embedding indices sets its own value and its own `--timeout`.
+
+Upgrade every satellite to 5.1.x before the central cluster moves to 5.2.x.
+A satellite still on OpenSearch 1.3 would be two major versions behind a 5.2.x central cluster.
+A satellite on 5.2.x while the central cluster is still on 5.1.x should work, but it is untested and not the recommended order.
+
+## Upgrade steps
+
+1. Take a snapshot and check that it completed, because the index pass rewrites indices in place.
+2. Upgrade to 5.1.x if you are not already on it, and confirm that OpenSearch 2.19 is live and green:
+
+    ```bash
+    kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c \
+      'curl -sk -u "admin:$ADMIN_PASSWORD" https://localhost:9200 | grep number'
+    kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c \
+      'curl -sk -u "admin:$ADMIN_PASSWORD" https://localhost:9200/_cluster/health?pretty | grep status'
+    ```
+
+    The indices are still the ones 1.x created at this point.
+    That is expected, since 2.19 does not rewrite them.
+
+    Two known issues apply to this upgrade:
+
+    - On the first OpenSearch 2.19 start of each cluster, central or satellite, vector writes are rejected for about two minutes and the vectors that had not been flushed are lost.
+      The chart fixes this on the 5.1 line, and a values file that copied the old `knn.circuit_breaker` settings (`triggered: true` or `percent: 0.75`) keeps the problem.
+    - On 5.1, similarity search with a filter fails on feature groups whose embedding index was created on 5.0, because the 5.1 client sends the filter inside the nearest-neighbor query and the nmslib engine rejects it.
+      A client fix and the pass in step 3 both resolve it.
+3. Upgrade to 5.2.x with a `--timeout` at least as long as `olk.opensearch.indexUpgrade.activeDeadlineSeconds`, and watch the hook:
+
+    ```bash
+    kubectl logs -n hopsworks -l component=opensearch-index-upgrade -f
+    ```
+
+    It ends with `Every index is now on OpenSearch 2.0 or later. Safe to upgrade.`
+4. Verify the upgrade:
+
+    ```bash
+    kubectl get pods -n hopsworks -l app=opensearch
+    kubectl logs -n hopsworks opensearch-0 -c opensearch | grep -c StartupException
+    kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c \
+      'curl -sk -u "admin:$ADMIN_PASSWORD" https://localhost:9200 | grep -E "number|minimum_index"'
+    ```
+
+    The `StartupException` count must be 0.
+    Expect version `3.8.0`, `minimum_index_compatibility_version` `2.0.0` and green cluster health.
+    Then run a search in the Hopsworks UI and a similarity search on a feature group with an embedding.
+5. Re-ingest the feature groups that OnlineFS marked failed during the outage.
+
+## If the hook fails
+
+The upgrade stops before the OpenSearch StatefulSet is touched, so the cluster is still on 5.1.x, and the hook lets clients back in on its way out.
+The hook log names the index and the reason.
+
+- **Not enough disk:** free space on the smallest data node and retry.
+  The hook also stops when it cannot measure free disk or an index size, rather than skipping the check.
+- **A closed index:** open it, or reindex it by hand, and retry.
+  The hook refuses to copy a closed index because it can neither size nor read it, and nothing in Hopsworks leaves an index closed, so this usually means a snapshot restore that died.
+  Leaving it closed does not help, since a 3.x node still refuses to start.
+- **Timed out:** raise `activeDeadlineSeconds` and `--timeout` together and retry.
+  The retry resumes any index that was in the middle of a copy.
+- **No answer from the cluster:** the hook prints the address and the last HTTP code.
+  `000` is a DNS or connection failure, or a rejected admin certificate.
+  `401` or `403` means the certificate's distinguished name is not in `plugins.security.authcz.admin_dn`.
+
+To reindex by hand instead, set `olk.opensearch.indexUpgrade.enabled` to `false`.
+The hook then reports the offending indices and fails, and for each one you run:
+
+```text
+POST /_reindex {"source":{"index":"<name>"},"dest":{"index":"<name>-tmp"}}
+DELETE /<name>
+POST /_reindex {"source":{"index":"<name>-tmp"},"dest":{"index":"<name>"}}
+DELETE /<name>-tmp
+```
+
+Three things have to be right when you do it by hand:
+
+- Create the destination index first from the source's settings and mappings, because `_reindex` builds its destination from index templates and silently drops `index.knn` and `knn_vector` mappings.
+- For an embedding index, set `method.engine` to `faiss` in the destination mapping, as the hook does, for `l2`, `cosinesimil` and `innerproduct` fields.
+  A destination that keeps nmslib is created on 2.x, so 3.8 opens it, but filtered similarity search on it still fails, and a 3.8 node on a CPU without AVX-512 crashes when it loads it.
+- Set `index.blocks.write` to `true` on the source before you copy it, so writes during the copy are refused instead of missed by it.
+  `_reindex` reads its source through a scroll, which the block does not cover, so the copy still runs, whereas a block on the destination refuses it.
+  Keep writers stopped from the `DELETE` until the recreated index is filled, because a write to the missing name creates it from the index templates.
+- Use the admin certificate for `.opendistro_security`, `.opendistro-ism-config` and `.plugins-ml-config`, because these protected system indices answer 403 to the `admin` user's password.
+
+================================================================================
 # Services Dashboards
 Source: https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/grafana/
 
@@ -34374,7 +34541,7 @@ Only a small subset of these values is needed for a typical install; the table b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1790971374` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.2.0`)._
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -35881,7 +36048,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1790971374` (Hopsworks `5.
 | hopsworks.variables.kafka_num_partitions | string | `"1"` |  |
 | hopsworks.variables.kafka_num_replicas | string | `"1"` |  |
 | hopsworks.variables.kafka_user | string | `"kafka"` |  |
-| hopsworks.variables.kafka_version | string | `"3.9.2"` |  |
+| hopsworks.variables.kafka_version | string | `"4.3.1"` |  |
 | hopsworks.variables.kibana_https_enabled | string | `"true"` |  |
 | hopsworks.variables.kibana_multi_tenancy_enabled | string | `"true"` |  |
 | hopsworks.variables.kibana_version | string | `"2.19.5"` |  |
@@ -36392,10 +36559,8 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1790971374` (Hopsworks `5.
 | kafka.cluster.kafka.externalLoadBalancer.managed | string | `nil` | Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead |
 | kafka.cluster.kafka.externalLoadBalancer.nodeSelector | object | `{}` | selector for nodes the load balancer can use to route traffic |
 | kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort | int | `9093` | In case of unmanaged Load Balancers this is the starting advertised port for the brokers   |
+| kafka.cluster.kafka.image | object | `{"name":"kafka","tag":"1.2.0-kafka-4.3.1-h1"}` | a tag docker.hops.works does not carry, because only the `-h<N>` builds are published there. So clearing it also means pointing `strimzi-kafka-operator.defaultImageRegistry` at `quay.io` (or mirroring the plain upstream tags), and the same applies to the operator's Kafka Exporter and Cruise Control defaults if those are ever turned on. |
 | kafka.cluster.kafka.jvmOptions | object | `{}` | jvm options |
-| kafka.cluster.kafka.kraft.autoMigrate | bool | `true` | Carry an existing ZooKeeper cluster to KRaft during an upgrade, with no phase to set and nothing to approve. Strimzi paces the migration itself, so no single apply can do it: the upgrade renders `migration` and creates the controller quorum, and `migrationJob` then waits the operator out and finalises. Expect the upgrade to take as long as the migration does. ArgoCD applies the same render and finalises in a PostSync hook; once the cluster reports KRaft, pin `phase: kraft` there (the migration guide in the README says why).  **Finalising KRaft cannot be undone**, and with this on nothing pauses to ask. Turn it off to keep the migration a deliberate act; `phase` set explicitly overrides it either way.  When the render can read the cluster (Helm, `mode: auto`) it declines on one kind of cluster: CRDs too old to report `.status.kafkaMetadataState`. `crdUpgradeJob` refreshes those, so the next upgrade proceeds normally. |
-| kafka.cluster.kafka.kraft.phase | string | `nil` | Metadata topology: `zookeeper`, `migration`, `rollback` or `kraft`. Leave null and it is inferred - `kraft` on a fresh install, and on an upgrade from the live cluster's `.status.kafkaMetadataState`, advanced by `autoMigrate`. Setting a value here pins it and takes `autoMigrate` out of play for this cluster, which is how you walk the migration yourself. `migration` adds the controller quorum and starts the metadata migration; watch `kubectl get kafka <name> -o jsonpath='{.status.kafkaMetadataState}'` move ZooKeeper -> KRaftMigration -> KRaftDualWriting -> KRaftPostMigration. `kraft` then finalises it (PreKRaft -> KRaft, ZooKeeper torn down, no way back). `rollback` abandons a migration that has reached KRaftPostMigration; before that point `zookeeper` rolls back directly.  The preflight Job (see `crdUpgradeJob`) refuses `kraft` unless the cluster has reached KRaftPostMigration, so the irreversible step cannot be taken early, and refuses `rollback` and `zookeeper` in the states where Strimzi would reject the result.  ArgoCD upgrades must set `global._hopsworks.mode: upgrade` (the Hopsworks ArgoCD installer does), because `helm template` reports `.Release.IsInstall` as true and this would resolve to `kraft` on a cluster still running ZooKeeper.  The operator-facing walkthrough is the migration guide in the README. |
-| kafka.cluster.kafka.legacyInterBrokerProtocolVersion | string | `"3.6"` | `inter.broker.protocol.version` rendered while the cluster is still on ZooKeeper (`kraft.phase: zookeeper`). This is deliberately stale (it predates the Kafka 3.9 bump) and is kept only so that upgrading the chart does not roll the brokers. Every other phase leaves the key out of the Kafka resource, and Strimzi then raises it to the deployed Kafka version itself, because it refuses to migrate unless the metadata version, inter.broker.protocol.version and log.message.format.version all match.  Kafka cannot lower an IBP that is already in use, so a cluster that has been to `migration` must not be sent back to `phase: zookeeper` with this still at the legacy value - raise it to the Kafka minor version first. The preflight Job refuses that combination rather than letting the brokers roll onto an unsupported downgrade. |
 | kafka.cluster.kafka.nodeSelector | object | `{}` | node selector configuration |
 | kafka.cluster.kafka.podAntiAffinity.required | bool | `false` |  |
 | kafka.cluster.kafka.podSecurityContext | object | `{"fsGroup":1001,"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001,"seccompProfile":{"type":"RuntimeDefault"}}` | Pod-level security context for Kafka pods |
@@ -36416,7 +36581,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1790971374` (Hopsworks `5.
 | kafka.cluster.kafka.quotas.window.num | int | `11` | Applies under both plugins. Number of samples retained for the quota rate calculation. |
 | kafka.cluster.kafka.quotas.window.sizeSeconds | int | `1` | Applies under both plugins. Duration of each quota sample window in seconds. |
 | kafka.cluster.kafka.replicas | int | `1` |  |
-| kafka.cluster.kafka.resources | object | `{}` | resources configuration |
+| kafka.cluster.kafka.resources | object | `{}` | Resources of the broker pods. Applied through the broker KafkaNodePool; the v1 Kafka API has no spec.kafka.resources. |
 | kafka.cluster.kafka.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container-level security context for Kafka containers |
 | kafka.cluster.kafka.services.brokers.annotations."consul.hashicorp.com/service-name" | string | `"kafka"` |  |
 | kafka.cluster.kafka.services.brokers.annotations."consul.hashicorp.com/service-port" | int | `9092` |  |
@@ -36429,34 +36594,30 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1790971374` (Hopsworks `5.
 | kafka.cluster.kafka.storageSize | string | `"30Gi"` |  |
 | kafka.cluster.kafka.tolerations | list | `[]` |  |
 | kafka.cluster.kafka.topologySpreadConstraint | object | `{}` | The default topology spread constraint. If not defined the global topology spread constraint would be used instead. |
-| kafka.cluster.kafka.version | string | `"3.9.2"` |  |
+| kafka.cluster.kafka.version | string | `"4.3.1"` |  |
 | kafka.cluster.name | string | `"kafka-cluster"` |  |
 | kafka.cluster.tlscerts.annotations."certs.hopsworks.ai/owned-by" | string | `"deployment-strimzi-cluster-operator"` |  |
+| kafka.cluster.zookeeper | object | `{"nodeSelector":{},"podAntiAffinity":{"required":false},"podSecurityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001,"seccompProfile":{"type":"RuntimeDefault"}},"replicas":1,"resources":{"limits":{"cpu":"2","memory":"3Gi"},"requests":{"cpu":"200m","memory":"1Gi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001,"seccompProfile":{"type":"RuntimeDefault"}},"services":{"client":{"annotations":{"consul.hashicorp.com/service-name":"zookeeper","consul.hashicorp.com/service-tags":"client"}}},"storageClassName":null,"storageSize":"5Gi","tolerations":[],"topologySpreadConstraint":{}}` | Sizing and scheduling for the KRaft **controller pool**, despite the name. No ZooKeeper ensemble is deployed any more - Strimzi 1.x has no `.spec.zookeeper` - but controllers replace that ensemble one-for-one, so `kafka.controllerConfig` keeps reading these values: a 3-node quorum stays a 3-node quorum with the same storage, resources, scheduling and security context, and no values change is needed. The key keeps its name because renaming it would break every existing values file. |
 | kafka.cluster.zookeeper.nodeSelector | object | `{}` | node selector configuration |
-| kafka.cluster.zookeeper.podAntiAffinity.required | bool | `false` |  |
 | kafka.cluster.zookeeper.podSecurityContext | object | `{"fsGroup":1001,"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001,"seccompProfile":{"type":"RuntimeDefault"}}` | Pod-level security context for Zookeeper pods |
-| kafka.cluster.zookeeper.replicas | int | `1` |  |
 | kafka.cluster.zookeeper.resources | object | `{"limits":{"cpu":"2","memory":"3Gi"},"requests":{"cpu":"200m","memory":"1Gi"}}` | resources configuration |
 | kafka.cluster.zookeeper.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container-level security context for Zookeeper containers |
-| kafka.cluster.zookeeper.services.client.annotations."consul.hashicorp.com/service-name" | string | `"zookeeper"` |  |
-| kafka.cluster.zookeeper.services.client.annotations."consul.hashicorp.com/service-tags" | string | `"client"` |  |
 | kafka.cluster.zookeeper.storageClassName | string | `nil` | storage class name |
-| kafka.cluster.zookeeper.storageSize | string | `"5Gi"` |  |
-| kafka.cluster.zookeeper.tolerations | list | `[]` |  |
 | kafka.cluster.zookeeper.topologySpreadConstraint | object | `{}` | The default topology spread constraint. If not defined the global topology spread constraint would be used instead. |
 | kafka.configmap.name | string | `"kafka-configmap"` |  |
-| kafka.crdUpgradeJob.enabled | bool | `true` | Run the pre-upgrade Job that refreshes the Strimzi CRDs and preflights a KRaft phase change. A failed *refresh* is not fatal by itself - it repairs rather than gates, so an unreachable URL warns and lets the upgrade continue - but the Job then refuses the upgrade when the live CRDs are too old for the Kafka resource this chart renders. The preflight checks are fatal: they only fire on states that would corrupt or roll back a cluster. |
+| kafka.crdUpgradeJob.enabled | bool | `true` | Run the Job that keeps the Strimzi CRDs in step with the operator this chart deploys, and preflights the KRaft migration. It runs pre-install and pre-upgrade: Helm applies the operator subchart's `crds/` on install only and skips any CRD that already exists, so every other path goes through here. A cluster whose objects are still stored as `v1beta2` is converted first (through the 0.51.0 bundle in `image`), which leaves both API versions served until the next upgrade renders `v1` and finishes the move to the 1.2.0 bundle. A failed *refresh* is not fatal by itself - it repairs rather than gates, so a failed apply warns and lets the upgrade continue - but the Job then refuses the upgrade when the live CRDs are too old for the Kafka resource this chart renders. The preflight checks are fatal: they only fire on states that would corrupt or roll back a cluster. |
+| kafka.crdUpgradeJob.image | object | `{"name":"crds","tag":"1.2.0-h1"}` | Image carrying the CRD bundles the Job applies: `strimzi-crds-<version>.yaml` for the Strimzi version this chart depends on, and the 0.51.0 bundle a cluster still storing `v1beta2` is converted through (Kubernetes refuses to drop a version still listed in a CRD's `status.storedVersions`, and 0.51.0 is the last Strimzi release to serve both). Built by `strimzi-crds` in the docker-images repo and pulled from the operator's `defaultImageRegistry`/`defaultImageRepository` like the broker image, so an airgapped install mirrors it with the rest (`vendor_images.sh` includes it). The tag's Strimzi part must match the dependency version: the Job refuses the upgrade when the bundle it needs is not in the image. |
 | kafka.crdUpgradeJob.name | string | `"strimzi-crd-upgrade"` |  |
 | kafka.crdUpgradeJob.nodeSelector | object | `{}` | node selector configuration |
 | kafka.crdUpgradeJob.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | resources configuration. Both halves are set deliberately: a namespace LimitRange defaults per resource, so a container that declares only requests still has limits injected - at whatever the operator's default is, which is high enough on some clusters to exhaust a ResourceQuota or stop the pod scheduling outright. The Job runs kubectl over about 1 MB of CRD YAML, so it is sized like the `tool` tier of hopsworkslib.initContainerResources. |
 | kafka.crdUpgradeJob.serviceAccount.annotations | object | `{}` | service account annotations |
 | kafka.crdUpgradeJob.tolerations | list | `[]` |  |
 | kafka.crdUpgradeJob.ttlSecondsAfterFinished | string | `nil` | ttlSecondsAfterFinished for the Job; null falls through to the global default |
-| kafka.crdUpgradeJob.url | string | `nil` | Where to fetch the CRDs. Null derives the upstream release URL for the Strimzi version this chart depends on, so it cannot drift from the operator being deployed. Point it at an internal mirror for airgapped installs, or set `enabled: false` and apply them out of band. |
 | kafka.hopsworkslib | object | `{}` | override hopsworkslib values |
 | kafka.metrics.configMapKey | string | `"kafka-metrics-config"` |  |
 | kafka.metrics.enabled | bool | `true` |  |
 | kafka.metrics.type | string | `"jmxPrometheusExporter"` |  |
+| kafka.migrationJob.enabled | bool | `true` | Run the pre-upgrade Job that carries a ZooKeeper-based cluster to KRaft before the rest of the upgrade is applied. It exits immediately on a cluster that is already on KRaft, so leaving it on costs one short Job per upgrade. Turning it off on a cluster that still needs migrating does not make the upgrade work - it makes it fail later, in the preflight, because the Strimzi this chart ships cannot serve a ZooKeeper cluster at all. |
 | kafka.migrationJob.name | string | `"kafka-kraft-migration"` |  |
 | kafka.migrationJob.nodeSelector | object | `{}` | node selector configuration |
 | kafka.migrationJob.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | resources configuration. Requests and limits both set, for the reason given on `crdUpgradeJob.resources`. This one only polls kubectl in a sleep loop. |
@@ -36464,7 +36625,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1790971374` (Hopsworks `5.
 | kafka.migrationJob.timeoutSeconds | int | `1800` | How long to wait, in seconds, for Strimzi to reach KRaftPostMigration and then KRaft. Each wait gets this budget separately. On timeout the Job fails and so does the upgrade, but the cluster is not stranded: the operator keeps migrating regardless of this Job, so the next upgrade picks up wherever it got to. |
 | kafka.migrationJob.tolerations | list | `[]` |  |
 | kafka.migrationJob.ttlSecondsAfterFinished | string | `nil` | ttlSecondsAfterFinished for the Job; null falls through to the global default |
-| kafka.strimzi-kafka-operator | object | `{"createGlobalResources":true,"defaultImageRegistry":"docker.hops.works","defaultImageRepository":"strimzi","defaultImageTag":"0.45.2-h1","enabled":true,"extraEnvs":[{"name":"HOPSWORKS_FIRST_STRIMZICA_CA_CERT","valueFrom":{"secretKeyRef":{"key":"ca.crt","name":"kafka-cluster-cluster-ca-cert"}}},{"name":"HOPSWORKS_FIRST_STRIMZICA_CLIENT_CERT","valueFrom":{"secretKeyRef":{"key":"ca.crt","name":"kafka-cluster-clients-ca-cert"}}},{"name":"HOPSWORKS_FIRST_STRIMZICA_CLIENT_CA","valueFrom":{"secretKeyRef":{"key":"ca.key","name":"kafka-cluster-clients-ca"}}},{"name":"HOPSWORKS_FIRST_STRIMZICA_CA","valueFrom":{"secretKeyRef":{"key":"ca.key","name":"kafka-cluster-cluster-ca"}}}],"nodeSelector":{},"podSecurityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"tolerations":[],"watchAnyNamespace":false}` | override values for strimzi operator |
+| kafka.strimzi-kafka-operator | object | `{"createGlobalResources":true,"defaultImageRegistry":"docker.hops.works","defaultImageRepository":"strimzi","defaultImageTag":"1.2.0","enabled":true,"extraEnvs":[{"name":"HOPSWORKS_FIRST_STRIMZICA_CA_CERT","valueFrom":{"secretKeyRef":{"key":"ca.crt","name":"kafka-cluster-cluster-ca-cert"}}},{"name":"HOPSWORKS_FIRST_STRIMZICA_CLIENT_CERT","valueFrom":{"secretKeyRef":{"key":"ca.crt","name":"kafka-cluster-clients-ca-cert"}}},{"name":"HOPSWORKS_FIRST_STRIMZICA_CLIENT_CA","valueFrom":{"secretKeyRef":{"key":"ca.key","name":"kafka-cluster-clients-ca"}}},{"name":"HOPSWORKS_FIRST_STRIMZICA_CA","valueFrom":{"secretKeyRef":{"key":"ca.key","name":"kafka-cluster-cluster-ca"}}}],"nodeSelector":{},"podSecurityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"tolerations":[],"watchAnyNamespace":false}` | override values for strimzi operator |
 | kafka.topics | list | `[]` | A list of topics to provision in the Kafka cluster. |
 | kafka.users | list | `[]` | A list of user to provision in the Kafka cluster. |
 | kserve.activator.minReplicas | int | `1` |  |
