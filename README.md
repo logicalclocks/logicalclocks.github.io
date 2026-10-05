@@ -92,18 +92,25 @@ After adding your new page in the docs folder, you also need to add it to this f
 
 ## Helm chart values reference
 
-The `setup_installation/common/helm_chart_values.md` page renders a placeholder locally; its `## Values` table is injected at build time by the `hopsworks-docs gen-helm-values` step and is **never committed**.
+The pages under `setup_installation/common/helm_chart_values/` render placeholders locally; their values tables are injected at build time by the `hopsworks-docs gen-helm-values` step and are **never committed**.
+The step reads the `## Values` table of the chart `README.md` plus that of every `charts/<name>/README.md`, with `<name>.` put before each subchart key; the first row of a key wins, so a chart whose root README embeds the subchart tables (`helm-docs -u`, every release up to 5.1) and one whose README does not give the same pages.
+It writes the rows of each top-level key into the stub page of that name (`kafka.md` gets the `kafka.*` rows), together with the subchart's deployment condition from the root `Chart.yaml` and links to the upstream charts it installs.
+`index.md` gets the common values (`_COMMON_VALUES` in `scripts/helm_values.py`), the overview table, plus the rows of any top-level key that has no stub page; to give a new subchart its own page, add a stub with the generation markers and a `nav:` entry.
+For RonDB the page also renders the `values.schema.json` of the pinned RonDB chart.
+A values row the generator cannot parse always fails the step.
+The PR check runs it with `--strict`, which also fails on a top-level key without a page, an upstream chart repository without a docs link in `_UPSTREAM_DOCS`, a common value the chart no longer has, or a missing RonDB schema; the deploy workflow only warns.
 CI fetches the chart from Nexus rather than the (private) `hopsworks-helm` git repo: release builds (`branch-x.y`) read the public `hopsworks-helm` repo anonymously and pick the latest patch of the chart version matching the docs version, while the development build (`main`) reads the private `hopsworks-helm-dev` repo and uses its newest published chart.
-The development path requires the read-only `NEXUS_USER` and `NEXUS_PASSWORD` repository secrets; without them the `main` build's generation step fails.
-Older chart versions that predate the chart's `## Values` section keep the page placeholder (the build warns rather than failing).
+The development path requires the read-only `NEXUS_USER` and `NEXUS_PASSWORD` repository secrets; without them the `main` build skips the generation step and keeps the placeholders.
+Older chart versions that predate the chart's `## Values` section keep the page placeholders (the build warns rather than failing).
 
-To preview the table locally against a chart checkout:
+To preview the pages locally against a chart checkout:
 
 ```bash
+helm dependency build <path-to-hopsworks-helm>/charts/rondb # only needed for the RonDB chart values
 uv run --extra cli hopsworks-docs gen-helm-values --chart <path-to-hopsworks-helm>
 ```
 
-This rewrites the page in place, so restore it (`git checkout docs/setup_installation/common/helm_chart_values.md`) before committing.
+This rewrites the pages in place, so restore them (`git checkout docs/setup_installation/common/helm_chart_values/`) before committing.
 
 ## Checking links
 

@@ -1,9 +1,13 @@
 import base64
 import io
+import json
 import re
 import tarfile
+import tempfile
+import textwrap
 import urllib.error
 import urllib.request
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated
 
@@ -13,12 +17,93 @@ from hopsworks_docs.scripts.shared.docs_root import _DOCS_ROOT
 from packaging.version import InvalidVersion, Version
 
 
-_DEFAULT_PAGE = (
-    _DOCS_ROOT / "docs" / "setup_installation" / "common" / "helm_chart_values.md"
+_DEFAULT_PAGES_DIR = (
+    _DOCS_ROOT / "docs" / "setup_installation" / "common" / "helm_chart_values"
 )
+_INDEX = "index.md"
+_GLOBAL = "global"
 _VALUES_HEADING = "\n## Values\n"
 _BEGIN = "<!-- BEGIN GENERATED VALUES -->"
 _END = "<!-- END GENERATED VALUES -->"
+
+# Test-harness settings (loadtest credentials and the like), not deployment
+# configuration.
+_EXCLUDED_PREFIXES = ("hopsworks.tests.",)
+# Longer defaults (whole subchart overrides as one-line JSON) are shown as a
+# collapsed YAML block instead.
+_MAX_INLINE_DEFAULT = 80
+# Smaller groups of keys are merged into the page's "General" section, so the
+# table of contents is not a list of one-row sections.
+_MIN_SECTION_ROWS = 5
+
+# Docs of the upstream charts the subcharts install, keyed by Helm repository
+# URL without its trailing slash. Artifact Hub where the chart is listed,
+# otherwise the chart README at its release tag.
+_UPSTREAM_DOCS = {
+    "https://helm.releases.hashicorp.com": "https://artifacthub.io/packages/helm/hashicorp/{name}/{version}",
+    "https://grafana.github.io/helm-charts": "https://artifacthub.io/packages/helm/grafana/{name}/{version}",
+    "https://prometheus-community.github.io/helm-charts": "https://artifacthub.io/packages/helm/prometheus-community/{name}/{version}",
+    "https://strimzi.io/charts": "https://artifacthub.io/packages/helm/strimzi/{name}/{version}",
+    "https://ray-project.github.io/kuberay-helm": "https://artifacthub.io/packages/helm/kuberay-operator/{name}/{version}",
+    "https://trinodb.github.io/charts": "https://artifacthub.io/packages/helm/trino/{name}/{version}",
+    "https://apache.github.io/superset": "https://artifacthub.io/packages/helm/superset/{name}/{version}",
+    "oci://registry-1.docker.io/bitnamicharts": "https://artifacthub.io/packages/helm/bitnami/{name}/{version}",
+    "https://kubeflow.github.io/spark-operator": "https://github.com/kubeflow/spark-operator/blob/v{version}/charts/spark-operator-chart/README.md",
+    "https://repo.hops.works/master/kueue": "https://github.com/kubernetes-sigs/kueue/blob/v{version}/charts/kueue/README.md",
+    "https://logicalclocks.github.io/rondb-helm": "https://github.com/logicalclocks/rondb-helm/blob/v{version}/values.schema.json",
+}
+# Upstream charts whose values.schema.json is rendered on the subchart page,
+# keyed by subchart. docs.hopsworks.ai/rondb-helm/ shows whichever version was
+# published last, not the one this chart pins.
+_RENDERED_SCHEMAS = {"rondb": "rondb"}
+# Top-level keys listed under "Other values" on the index by design: the
+# library chart has a single override knob.
+_NO_PAGE = {"hopsworkslib"}
+# Values a typical install sets, taken from the example values files of the
+# AWS, Azure and GCP setup guides, with what each one decides.
+_COMMON_VALUES = (
+    (
+        "global._hopsworks.cloudProvider",
+        "The cloud the cluster runs on; HopsFS, Consul and Hopsworks configure themselves from it.",
+    ),
+    (
+        "global._hopsworks.storageClassName",
+        "The storage class of every persistent volume.",
+    ),
+    (
+        "global._hopsworks.imageRegistry",
+        "The registry the Hopsworks images are pulled from.",
+    ),
+    ("global._hopsworks.imagePullSecrets", "The pull secrets for that registry."),
+    (
+        "global._hopsworks.managedDockerRegistery",
+        "Use the cloud provider's container registry for the images Hopsworks builds for users.",
+    ),
+    (
+        "global._hopsworks.managedObjectStorage",
+        "Use a cloud bucket for HopsFS data and for the RonDB and OpenSearch backups.",
+    ),
+    (
+        "global._hopsworks.minio.enabled",
+        "Deploy MinIO in the cluster; turn it off when a cloud bucket is used.",
+    ),
+    (
+        "global._hopsworks.externalLoadBalancers.enabled",
+        "Expose services through LoadBalancer Services.",
+    ),
+    ("hopsworks.ingress.host", "The host name of the Hopsworks UI and API."),
+    ("hopsworks.ingress.ingressClassName", "The ingress controller that serves it."),
+    (
+        "hopsworks.velero.backup.enabled",
+        "Back up Kubernetes resources with Velero, which needs its own install.",
+    ),
+    (
+        "rondb.rondb.clusterSize",
+        "The size of the RonDB cluster: data replicas, node groups, MySQL and REST API servers.",
+    ),
+)
+# Marks a default that is prose rather than a value (see _default_value).
+_PROSE = object()
 
 # Inline code spans and genuine external links are kept verbatim; everything
 # else has its square brackets escaped (see _neutralize_markdown_refs). The link
@@ -31,6 +116,27 @@ _EXTERNAL_LINK = re.compile(r"\[[^\]\n]+\]\(https?://[^)\s]+\)")
 _HOLD_OPEN = chr(0xE000)
 _HOLD_CLOSE = chr(0xE001)
 _HOLD_RE = re.compile(re.escape(_HOLD_OPEN) + r"(\d+)" + re.escape(_HOLD_CLOSE))
+
+# A helm-docs values row: | key | type | default | description |. The default
+# is matched first as a whole code span because it can contain " | " itself
+# (a shell command, a JSON object).
+_ROW = re.compile(
+    r"\| (?P<key>\S+) \| (?P<type>.*?) \| (?P<default>`.*?`|.*?) \| (?P<description>.*?) ?\|"
+)
+_TABLE_RULE = re.compile(r"\|[-:| ]+\|")
+# Keys quote segments that contain dots: annotations."prometheus.io/path".
+_KEY_SEGMENT = re.compile(r'"[^"]*"|[^.]+')
+_LIST_INDEX = re.compile(r"\[\d+\]$")
+# Any list index in a key: [3] in a README key, [] in a schema array-item key.
+_LIST_INDEX_ANY = re.compile(r"\[(\d*)\]")
+
+
+@dataclass(frozen=True)
+class _Row:
+    key: str
+    type_: str
+    default: str
+    description: str
 
 
 def _neutralize_markdown_refs(text: str) -> str:
@@ -53,6 +159,7 @@ def _neutralize_markdown_refs(text: str) -> str:
     text = _CODE_SPAN.sub(_hold, text)
     text = _EXTERNAL_LINK.sub(_hold, text)
     text = text.replace("[", "\\[").replace("]", "\\]")
+
     # Un-stash iteratively: a stashed span can itself contain sentinels for
     # other stashed spans, which a single pass would leave unresolved and leak
     # the literal private-use characters into the page. An index that was never
@@ -68,40 +175,6 @@ def _neutralize_markdown_refs(text: str) -> str:
             break
         text = new
     return text
-
-
-def _subchart_rows(readme: str, name: str) -> list[str]:
-    """Return a subchart README's values rows, keys prefixed with ``name.``.
-
-    The prefix makes each key the path a user sets from the parent chart.
-    Only table rows are kept, since a README rendered from helm-docs' default
-    template carries a footer after the table.
-    """
-    if _VALUES_HEADING not in readme:
-        return []
-    section = readme.split(_VALUES_HEADING, 1)[1]
-    return [
-        f"| {name}.{line[2:]}"
-        for line in section.splitlines()
-        if line.startswith("| ") and not line.startswith("| Key ")
-    ]
-
-
-def _with_subchart_rows(table: str, subcharts: dict[str, str]) -> str:
-    """Append each subchart's values rows to the parent chart's values table.
-
-    Charts generated with ``helm-docs -u`` already embed every subchart row in
-    the parent table, so a row already present verbatim is skipped and those
-    charts render as before.
-    """
-    present = set(table.splitlines())
-    extra = [
-        row
-        for name in sorted(subcharts)
-        for row in _subchart_rows(subcharts[name], name)
-        if row not in present
-    ]
-    return "\n".join([table, *extra]) if extra else table
 
 
 def _http_get(url: str, username: str, password: str) -> bytes:
@@ -128,7 +201,9 @@ def _select_chart(entries: list[dict], chart_version: str | None) -> dict | None
     newest-published is the latest dev build.
     """
     if not chart_version:
-        return max(entries, key=lambda e: str(e.get("created", ""))) if entries else None
+        return (
+            max(entries, key=lambda e: str(e.get("created", ""))) if entries else None
+        )
 
     candidates = [
         e
@@ -152,15 +227,13 @@ def _select_chart(entries: list[dict], chart_version: str | None) -> dict | None
     return max(candidates, key=lambda e: str(e.get("created", "")))
 
 
-def _readme_from_registry(
+def _archive_from_registry(
     repo_url: str, chart_version: str | None, username: str, password: str
-) -> tuple[str, dict[str, str], str, str] | None:
-    """Resolve a chart in a Helm (Nexus) repo.
-
-    Returns (readme, subchart readmes by name, version, appVersion).
+) -> bytes | None:
+    """Resolve a chart in a Helm (Nexus) repo and return its package archive.
 
     Returns None (and warns) if nothing suitable is found, so the build keeps
-    the page placeholder instead of failing.
+    the page placeholders instead of failing.
     """
     base = repo_url.rstrip("/")
     # `or {}` guards an empty/invalid index.yaml (safe_load returns None) so a
@@ -172,7 +245,7 @@ def _readme_from_registry(
     if chosen is None:
         typer.echo(
             f"WARNING: no chart in {base} matches version "
-            f"'{chart_version or 'any'}'; leaving the page placeholder.",
+            f"'{chart_version or 'any'}'; leaving the page placeholders.",
             err=True,
         )
         return None
@@ -181,7 +254,7 @@ def _readme_from_registry(
     if not urls:
         typer.echo(
             f"WARNING: chart {chosen.get('version')} has no download URL; "
-            "leaving the page placeholder.",
+            "leaving the page placeholders.",
             err=True,
         )
         return None
@@ -189,44 +262,515 @@ def _readme_from_registry(
     url = urls[0]
     if not url.startswith(("http://", "https://")):
         url = f"{base}/{url.lstrip('/')}"
-    version = str(chosen.get("version", ""))
-    app_version = str(chosen.get("appVersion", ""))
-    typer.echo(f"Using chart {version} (appVersion {app_version}) from {base}")
+    typer.echo(
+        f"Using chart {chosen.get('version')} "
+        f"(appVersion {chosen.get('appVersion')}) from {base}"
+    )
+    return _http_get(url, username, password)
 
-    archive = _http_get(url, username, password)
-    with tarfile.open(fileobj=io.BytesIO(archive), mode="r:gz") as tar:
-        # The chart README is the top-level "<chart>/README.md" (one slash);
-        # deeper matches are subchart READMEs. Require a regular file so a
-        # directory/symlink/special member never reaches extractfile() (which
-        # would return None) and crash instead of skipping gracefully.
-        member = next(
-            (
-                m
-                for m in tar.getmembers()
-                if m.isfile()
-                and m.name.count("/") == 1
-                and m.name.endswith("/README.md")
-            ),
-            None,
+
+def _load_yaml(path: Path) -> dict:
+    if not path.is_file():
+        return {}
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+
+def _segments(key: str) -> list[str]:
+    return _KEY_SEGMENT.findall(key)
+
+
+def _parse_rows(values_section: str, prefix: str = "") -> list[_Row]:
+    """Parse a helm-docs values table, with ``prefix`` put before every key.
+
+    Only table lines are read: a README rendered from helm-docs' default
+    template carries a footer after the table. Exits with an error if a table
+    line does not parse: a page silently missing values is worse than a build
+    failure that names the row.
+    """
+    rows = []
+    unparsed = []
+    for line in values_section.splitlines():
+        line = line.strip()
+        is_header = line.startswith("| Key |") or _TABLE_RULE.fullmatch(line)
+        if not line.startswith("|") or is_header:
+            continue
+        match = _ROW.fullmatch(line)
+        if match is None:
+            unparsed.append(line)
+            continue
+        key, type_, default, description = match.groups()
+        rows.append(_Row(prefix + key, type_, default, description))
+    if unparsed:
+        for line in unparsed:
+            typer.echo(f"ERROR: unparseable values row: {line}", err=True)
+        typer.echo(
+            "ERROR: the chart README values table no longer matches the "
+            "helm-docs layout this generator reads (| key | type | default | "
+            "description |).",
+            err=True,
         )
-        if member is None:
-            typer.echo(
-                "WARNING: README.md not found in the chart package; "
-                "leaving the page placeholder.",
-                err=True,
+        raise typer.Exit(1)
+    return rows
+
+
+def _resolve_ref(node: dict, defs: dict) -> dict:
+    ref = node.get("$ref", "")
+    if not ref.startswith("#/$defs/"):
+        return node
+    siblings = {k: v for k, v in node.items() if k != "$ref"}
+    return {**defs[ref.removeprefix("#/$defs/")], **siblings}
+
+
+def _schema_rows(schema: dict, prefix: str) -> list[_Row]:
+    """Flatten a values.schema.json into rows keyed under ``prefix``.
+
+    Array item properties are listed as ``key[].field``. Only local
+    ``#/$defs/`` references are resolved.
+    """
+    defs = schema.get("$defs") or {}
+    rows: list[_Row] = []
+
+    def _walk(node: dict, path: str) -> None:
+        for name, child in (node.get("properties") or {}).items():
+            child = _resolve_ref(child, defs)
+            key = f"{path}.{name}"
+            type_ = child.get("type", "")
+            description = " ".join(str(child.get("description", "")).split())
+            if "enum" in child:
+                type_ = "enum"
+                allowed = ", ".join(f"`{json.dumps(v)}`" for v in child["enum"])
+                description = f"{description} One of: {allowed}.".strip()
+            if isinstance(type_, list):
+                type_ = "|".join(type_)
+            default = ""
+            if "default" in child:
+                default = f"`{json.dumps(child['default'], separators=(',', ':'))}`"
+            rows.append(_Row(key, type_, default, description))
+            _walk(child, key)
+            if isinstance(child.get("items"), dict):
+                _walk(_resolve_ref(child["items"], defs), f"{key}[]")
+
+    _walk(schema, prefix)
+    return rows
+
+
+def _dependency_schema(subchart: Path, name: str) -> dict | None:
+    """Return the values.schema.json of a subchart's vendored dependency.
+
+    A packaged chart has the dependency unpacked under ``charts/<name>/``; a
+    local checkout has the archive ``helm dependency build`` downloads. None
+    when neither is present.
+    """
+    unpacked = subchart / "charts" / name / "values.schema.json"
+    if unpacked.is_file():
+        return json.loads(unpacked.read_text(encoding="utf-8"))
+    for archive in sorted((subchart / "charts").glob(f"{name}-*.tgz")):
+        with tarfile.open(archive, mode="r:gz") as tar:
+            try:
+                member = tar.extractfile(f"{name}/values.schema.json")
+            except KeyError:
+                continue
+            if member is not None:
+                return json.load(member)
+    return None
+
+
+class _BlockDumper(yaml.SafeDumper):
+    """Dump multi-line strings (embedded config files) as ``|`` blocks."""
+
+
+def _represent_str(dumper: yaml.SafeDumper, value: str) -> yaml.ScalarNode:
+    style = "|" if "\n" in value else None
+    return dumper.represent_scalar("tag:yaml.org,2002:str", value, style=style)
+
+
+_BlockDumper.add_representer(str, _represent_str)
+
+
+def _dump_yaml(value: object) -> str:
+    return yaml.dump(
+        value, Dumper=_BlockDumper, sort_keys=False, allow_unicode=True, width=1000
+    ).rstrip()
+
+
+def _default_value(default: str) -> object:
+    """Parse a rendered default back into its value.
+
+    Returns ``_PROSE`` for a default that is not JSON, such as a helm-docs
+    ``@default`` text ("check values.yaml").
+    """
+    raw = (
+        default[1:-1] if default.startswith("`") and default.endswith("`") else default
+    )
+    if raw == "nil":
+        return None
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        return _PROSE
+
+
+def _default_block(row: _Row) -> str:
+    value = _default_value(row.default)
+    if isinstance(value, dict | list):
+        lang, body = "yaml", _dump_yaml(value)
+    else:
+        lang, body = "text", row.default.strip("`") if value is _PROSE else str(value)
+    fence = textwrap.indent(f"```{lang}\n{body}\n```", "    ")
+    return f'??? note "Default"\n\n{fence}'
+
+
+def _anchor(key: str) -> str:
+    """Return the HTML id of a key's entry: ``helm.`` plus the key, URL-safe."""
+    path = _LIST_INDEX_ANY.sub(lambda m: f".{m.group(1)}" if m.group(1) else "", key)
+    return "helm." + re.sub(r"[^A-Za-z0-9._-]+", "-", path.replace('"', ""))
+
+
+def _is_deprecated(row: _Row) -> bool:
+    return re.match(r"\s*deprecated\b", row.description, re.IGNORECASE) is not None
+
+
+def _render_entries(rows: list[_Row]) -> str:
+    # A definition list, not a table: a code chip in a table cell never wraps
+    # (design-system.md, "Tables"), and keys alone run to 90 characters.
+    # .hops-values in docs/css/custom.css gives it the table's density.
+    entries = []
+    for row in sorted(rows, key=lambda r: (_is_deprecated(r), r.key)):
+        anchor = _anchor(row.key)
+        term = f"`{row.key}`"
+        if _is_deprecated(row):
+            term += ' <span class="hops-values-deprecated">Deprecated</span>'
+        term += (
+            f' <a class="headerlink" href="#{anchor}" title="Permanent link">#</a>'
+            f" {{ #{anchor} }}"
+        )
+        long_default = len(row.default) > _MAX_INLINE_DEFAULT
+        facts = [f"Type `{row.type_}`"] if row.type_ else []
+        if row.default and not long_default:
+            facts.append(f"default {_neutralize_markdown_refs(row.default)}")
+        lines = [term, f":   {', '.join(facts) or 'Value'}."]
+        if row.description:
+            lines.append(f"    {_neutralize_markdown_refs(row.description)}")
+        if long_default:
+            lines += ["", textwrap.indent(_default_block(row), "    ")]
+        entries.append("\n".join(lines))
+    body = "\n\n".join(entries)
+    return f'<div class="hops-values" markdown>\n\n{body}\n\n</div>'
+
+
+def _key_path(key: str) -> list[str | int]:
+    path: list[str | int] = []
+    for segment in _segments(key):
+        path.append(_LIST_INDEX_ANY.sub("", segment).strip('"'))
+        path += [int(i) for i in _LIST_INDEX_ANY.findall(segment) if i]
+    return path
+
+
+def _set_path(tree: dict, path: list[str | int], value: object) -> None:
+    node: object = tree
+    for step, next_step in zip(path, path[1:]):
+        child: dict | list = {} if isinstance(next_step, str) else []
+        if isinstance(node, list) and isinstance(step, int):
+            node.extend([None] * (step + 1 - len(node)))
+            if node[step] is None:
+                node[step] = child
+            node = node[step]
+        elif isinstance(node, dict):
+            node = node.setdefault(step, child)
+        else:
+            return
+    last = path[-1]
+    if isinstance(node, list) and isinstance(last, int):
+        node.extend([None] * (last + 1 - len(node)))
+        node[last] = value
+    elif isinstance(node, dict):
+        node[last] = value
+
+
+def _values_file_block(rows: list[_Row]) -> str | None:
+    """Return the rows' defaults nested as in a values file, as a collapsed block.
+
+    Only keys without listed children are set, so an object default never
+    shadows the entries under it. Array item fields (``key[].field``) and
+    prose defaults are left out. None when nothing is left.
+    """
+    keys = sorted(row.key for row in rows)
+    tree: dict = {}
+    for row in sorted(rows, key=lambda r: r.key):
+        if "[]" in row.key:
+            continue
+        if any(k.startswith((f"{row.key}.", f"{row.key}[")) for k in keys):
+            continue
+        value = _default_value(row.default)
+        if value is not _PROSE:
+            _set_path(tree, _key_path(row.key), value)
+    if not tree:
+        return None
+    fence = textwrap.indent(f"```yaml\n{_dump_yaml(tree)}\n```", "    ")
+    return f'??? example "Defaults as YAML"\n\n{fence}'
+
+
+def _section(key: str, depth: int) -> str | None:
+    """Name the group a key belongs to: its first segment below the page.
+
+    ``depth`` is the number of leading segments shared by every key on the
+    page; None for a key that is the page's own prefix. Underscore namespaces
+    (``global._hopsworks``) are skipped, and list items
+    (``wipeWhenUninstall[3]``) group under their list. An object key and its
+    children share a group.
+    """
+    rest = _segments(key)[depth:]
+    if len(rest) > 1 and rest[0].startswith("_"):
+        rest = rest[1:]
+    return _LIST_INDEX.sub("", rest[0]) if rest else None
+
+
+def _heading(level: str, title: str, anchor: str) -> str:
+    # Explicit ids, because mkdocs-autorefs resolves [text][id] site-wide: a
+    # generated "## terminal" would make the Terminal guide's anchor ambiguous.
+    slug = re.sub(r"[^a-z0-9_-]+", "-", anchor.lower()).strip("-")
+    return f"{level} {title} {{ #{slug} }}"
+
+
+def _section_body(rows: list[_Row]) -> str:
+    block = _values_file_block(rows)
+    entries = _render_entries(rows)
+    return f"{block}\n\n{entries}" if block else entries
+
+
+def _render_rows(rows: list[_Row], depth: int, level: str, anchor: str) -> str:
+    groups: dict[str | None, list[_Row]] = {}
+    for row in rows:
+        groups.setdefault(_section(row.key, depth), []).append(row)
+    sections = sorted(
+        (name, group)
+        for name, group in groups.items()
+        if name is not None and len(group) >= _MIN_SECTION_ROWS
+    )
+    named = {name for name, _ in sections}
+    general = [row for row in rows if _section(row.key, depth) not in named]
+    if not sections:
+        return _section_body(general)
+    parts = []
+    if general:
+        title = _heading(level, "General", f"{anchor}-general")
+        parts.append(f"{title}\n\n{_section_body(general)}")
+    for name, group in sections:
+        title = _heading(level, name, f"{anchor}-{name}")
+        parts.append(f"{title}\n\n{_section_body(group)}")
+    return "\n\n".join(parts)
+
+
+def _key_link(key: str, targets: dict[str, str]) -> str:
+    return f"[`{key}`]({targets[key]})" if key in targets else f"`{key}`"
+
+
+def _condition_text(condition: str | None, targets: dict[str, str]) -> str:
+    keys = [p.strip() for p in (condition or "").split(",") if p.strip()]
+    paths = [_key_link(key, targets) for key in keys]
+    if not paths:
+        return "Always deployed."
+    if len(paths) == 1:
+        return f"Deployed when {paths[0]} is `true`."
+    return (
+        "Deployed according to the first of these values that is set: "
+        f"{', '.join(paths)}."
+    )
+
+
+def _upstream_link(dependency: dict, problems: list[str]) -> str:
+    name, version = dependency["name"], str(dependency["version"])
+    repository = str(dependency.get("repository", "")).rstrip("/")
+    label = f"`{name}` {version}"
+    template = _UPSTREAM_DOCS.get(repository)
+    if template is None:
+        problems.append(f"no docs link for chart {name} from {repository}")
+        return label
+    return f"[{label}]({template.format(name=name, version=version)})"
+
+
+def _upstream_admonition(key: str, upstream: list[dict], links: list[str]) -> str:
+    lines = [
+        f"- Values under `{key}.{dep.get('alias') or dep['name']}` go to "
+        f"{link} from `{dep.get('repository')}`."
+        for dep, link in zip(upstream, links)
+    ]
+    body = textwrap.indent("\n".join(lines), "    ")
+    return f'!!! info "Upstream charts"\n\n{body}'
+
+
+def _schema_section(prefix: str, name: str, link: str, rows: list[_Row]) -> str:
+    key = prefix.split(".")[0]
+    intro = (
+        f"These are the values of the {link} chart, set under `{prefix}`.\n"
+        "The defaults are that chart's own.\n"
+        f"Hopsworks overrides some of them: see the `{key}` and `{prefix}` "
+        "defaults above."
+    )
+    anchor = f"helm-values-{prefix}"
+    title = _heading("##", f"`{name}` chart values", anchor)
+    return f"{title}\n\n{intro}\n\n{_render_rows(rows, 2, '###', anchor)}"
+
+
+def _common_values(targets: dict[str, str], problems: list[str]) -> str:
+    lines = ["| Value | What it sets |", "| --- | --- |"]
+    for key, purpose in _COMMON_VALUES:
+        if key not in targets:
+            problems.append(f"common value {key} is not in the chart")
+            continue
+        lines.append(f"| {_key_link(key, targets)} | {purpose} |")
+    title = _heading("##", "Common values", "helm-values-common")
+    return f"{title}\n\n" + "\n".join(lines)
+
+
+def _inject(page: Path, body: str) -> None:
+    content = page.read_text(encoding="utf-8")
+    if _BEGIN not in content or _END not in content:
+        msg = f"Injection markers ({_BEGIN} / {_END}) not found in {page}"
+        raise typer.BadParameter(msg)
+    head = content[: content.index(_BEGIN) + len(_BEGIN)]
+    tail = content[content.index(_END) :]
+    page.write_text(f"{head}\n\n{body}\n\n{tail}", encoding="utf-8")
+
+
+@dataclass
+class _Page:
+    stub: Path
+    rows: list[_Row]
+    upstream: list[dict]
+    # (prefix, dependency, rows) of each upstream chart rendered from its schema.
+    schemas: list[tuple[str, dict, list[_Row]]]
+
+
+def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
+    readme = (chart / "README.md").read_text(encoding="utf-8")
+    if _VALUES_HEADING not in readme:
+        typer.echo(
+            "WARNING: '## Values' section not found in the chart README "
+            "(older chart versions predate it); leaving the page placeholders.",
+            err=True,
+        )
+        return
+    meta = _load_yaml(chart / "Chart.yaml")
+    version, app_version = meta.get("version", ""), meta.get("appVersion", "")
+    note = f"_Generated from the Hopsworks Helm chart `{version}`"
+    note += f" (Hopsworks `{app_version}`)._" if app_version else "._"
+    conditions = {
+        dep["name"]: dep.get("condition") for dep in meta.get("dependencies") or []
+    }
+    problems: list[str] = []
+
+    # A root README rendered without `helm-docs -u` (hopsworks-helm#2469) has
+    # only the root and global values; each subchart's README has its own,
+    # keyed from the subchart. With `-u` the root table repeats them all. The
+    # first row of a key wins, so a key the root chart overrides keeps the
+    # root's row in both layouts (`-u` lists it twice). The '## Values'
+    # section is the last one in a README, so take everything after its heading.
+    sources = [(readme, "")]
+    for subchart_readme in sorted((chart / "charts").glob("*/README.md")):
+        prefix = f"{subchart_readme.parent.name}."
+        sources.append((subchart_readme.read_text(encoding="utf-8"), prefix))
+    rows: list[_Row] = []
+    known: set[str] = set()
+    for text, prefix in sources:
+        if _VALUES_HEADING not in text:
+            continue
+        for row in _parse_rows(text.split(_VALUES_HEADING, 1)[1], prefix):
+            if row.key not in known:
+                rows.append(row)
+                known.add(row.key)
+    by_key: dict[str, list[_Row]] = {}
+    for row in rows:
+        if not row.key.startswith(_EXCLUDED_PREFIXES):
+            by_key.setdefault(_segments(row.key)[0], []).append(row)
+
+    # First pass: which page every key lands on, so pages can link each other.
+    pages: dict[str, _Page] = {}
+    stubs = sorted(
+        (p for p in pages_dir.glob("*.md") if p.name != _INDEX),
+        key=lambda p: (p.stem != _GLOBAL, p.stem),
+    )
+    for stub in stubs:
+        key = stub.stem
+        subchart = chart / "charts" / key
+        upstream = [
+            dep
+            for dep in _load_yaml(subchart / "Chart.yaml").get("dependencies") or []
+            if not str(dep.get("repository", "")).startswith("file://")
+        ]
+        page = _Page(stub, by_key.pop(key, []), upstream, [])
+        for dep in upstream:
+            if _RENDERED_SCHEMAS.get(key) != dep["name"]:
+                continue
+            schema = _dependency_schema(subchart, dep["name"])
+            if schema is None:
+                problems.append(
+                    f"no values.schema.json for {dep['name']} under {subchart}; "
+                    "run `helm dependency build` there to include it"
+                )
+                continue
+            prefix = f"{key}.{dep.get('alias') or dep['name']}"
+            page.schemas.append((prefix, dep, _schema_rows(schema, prefix)))
+        pages[key] = page
+    leftover = [row for rows in by_key.values() for row in rows]
+    unplaced = sorted(set(by_key) - _NO_PAGE)
+    if unplaced:
+        problems.append(
+            f"no page for top-level keys {', '.join(unplaced)}; add a stub with "
+            "the generation markers and a nav entry"
+        )
+    targets = {row.key: f"{_INDEX}#{_anchor(row.key)}" for row in leftover}
+    for page in pages.values():
+        for row in page.rows + [r for _, _, rows in page.schemas for r in rows]:
+            targets[row.key] = f"{page.stub.name}#{_anchor(row.key)}"
+
+    index_lines = ["| Values | Upstream charts | Keys |", "| --- | --- | --- |"]
+    for key, page in pages.items():
+        links = [_upstream_link(dep, problems) for dep in page.upstream]
+        parts = [note]
+        if key in conditions:
+            parts.append(_condition_text(conditions[key], targets))
+        if page.upstream:
+            parts.append(_upstream_admonition(key, page.upstream, links))
+        if page.rows:
+            parts.append(_render_rows(page.rows, 1, "##", f"helm-values-{key}"))
+        else:
+            parts.append(f"Chart `{version}` has no `{key}` values.")
+        count = len(page.rows)
+        by_name = dict(zip((dep["name"] for dep in page.upstream), links))
+        for prefix, dep, rows in page.schemas:
+            parts.append(
+                _schema_section(prefix, dep["name"], by_name[dep["name"]], rows)
             )
-            return None
-        readme = tar.extractfile(member).read().decode("utf-8")
-        # Direct subcharts only: "<chart>/charts/<name>/README.md".
-        subcharts = {
-            m.name.split("/")[2]: tar.extractfile(m).read().decode("utf-8")
-            for m in tar.getmembers()
-            if m.isfile()
-            and m.name.count("/") == 3
-            and m.name.split("/")[1] == "charts"
-            and m.name.endswith("/README.md")
-        }
-        return readme, subcharts, version, app_version
+            count += len(rows)
+        _inject(page.stub, "\n\n".join(parts))
+
+        # An aliased dependency (trino and trinotest) installs the same chart twice.
+        upstream_cell = ", ".join(dict.fromkeys(links))
+        index_lines.append(
+            f"| [`{key}`][helm-values-{key}] | {upstream_cell} | {count} |"
+        )
+
+    index = [
+        note,
+        _common_values(targets, problems),
+        _heading("##", "All values", "helm-values-pages")
+        + "\n\n"
+        + "\n".join(index_lines),
+    ]
+    if leftover:
+        title = _heading("##", "Other values", "helm-values-other")
+        index.append(f"{title}\n\n{_section_body(leftover)}")
+    _inject(pages_dir / _INDEX, "\n\n".join(index))
+    typer.echo(
+        f"Injected chart {version} values into {len(stubs)} pages "
+        f"({len(leftover)} rows without a page: {', '.join(sorted(by_key)) or 'none'})"
+    )
+    for problem in problems:
+        typer.echo(f"WARNING: {problem}", err=True)
+    if strict and problems:
+        typer.echo("ERROR: --strict and the warnings above were raised.", err=True)
+        raise typer.Exit(1)
 
 
 def gen_helm_values(
@@ -254,60 +798,50 @@ def gen_helm_values(
         str,
         typer.Option(envvar="NEXUS_PASSWORD", help="Nexus password (private repos)."),
     ] = "",
-    page: Annotated[
+    pages_dir: Annotated[
         Path,
-        typer.Option(help="Reference page to inject the values table into."),
-    ] = _DEFAULT_PAGE,
+        typer.Option(help="Folder of the reference pages to inject the values into."),
+    ] = _DEFAULT_PAGES_DIR,
+    strict: Annotated[
+        bool,
+        typer.Option(
+            help="Fail when a top-level key has no page, an upstream chart has "
+            "no docs link, a common value is missing or a rendered schema is "
+            "absent (the PR check)."
+        ),
+    ] = False,
 ) -> None:
-    """Inject the Helm chart README values table into the reference page.
+    """Inject the Helm chart values into the reference pages, one per top-level key.
 
-    Source the chart README either from a local checkout (``--chart``) or, for
-    CI, from the published chart package in a Nexus Helm repo (``--repo-url``,
-    optionally ``--chart-version`` for release matching). Slices the ``## Values``
-    table out of that README, appends the rows of each subchart README in the
-    package under the subchart's key prefix, and writes the result, with a line
-    recording the chart version, between the generation markers in ``page``.
-    The result is consumed by the documentation build and is not committed. If
-    no matching chart or no ``## Values`` section is found, the page placeholder
-    is left in place rather than failing the build.
+    Source the chart either from a local checkout (``--chart``) or, for CI,
+    from the published chart package in a Nexus Helm repo (``--repo-url``,
+    optionally ``--chart-version`` for release matching). Each ``<key>.md``
+    stub in ``pages_dir`` receives the rows of the chart README ``## Values``
+    table under that key, the subchart's deployment condition and links to the
+    upstream charts it installs; ``index.md`` receives the common values, the
+    overview table and any rows whose key has no stub. The result is consumed
+    by the documentation build and is not committed. If no matching chart or
+    no ``## Values`` section is found, the page placeholders are left in place
+    rather than failing the build; a values row that does not parse always
+    fails it.
     """
     if chart:
-        readme: str = (chart / "README.md").read_text(encoding="utf-8")
-        subcharts = {
-            path.parent.name: path.read_text(encoding="utf-8")
-            for path in (chart / "charts").glob("*/README.md")
-        }
-        meta = yaml.safe_load((chart / "Chart.yaml").read_text(encoding="utf-8")) or {}
-        version = str(meta.get("version", ""))
-        app_version = str(meta.get("appVersion", ""))
-    elif repo_url:
-        resolved = _readme_from_registry(repo_url, chart_version, username, password)
-        if resolved is None:
-            return
-        readme, subcharts, version, app_version = resolved
-    else:
-        raise typer.BadParameter("provide either --chart <dir> or --repo-url <url>")
-
-    if _VALUES_HEADING not in readme:
-        typer.echo(
-            "WARNING: '## Values' section not found in the chart README "
-            "(older chart versions predate it); leaving the page placeholder.",
-            err=True,
-        )
+        _generate(chart, pages_dir, strict)
         return
-    # The '## Values' section is the last one in the README, so take everything
-    # after its heading to EOF -- that is the full Key/Type/Default/Description table.
-    table = readme.split(_VALUES_HEADING, 1)[1].strip()
-    table = _neutralize_markdown_refs(_with_subchart_rows(table, subcharts))
-
-    note = f"_Generated from the Hopsworks Helm chart `{version}`"
-    note += f" (Hopsworks `{app_version}`)._" if app_version else "._"
-
-    content = page.read_text()
-    if _BEGIN not in content or _END not in content:
-        msg = f"Injection markers ({_BEGIN} / {_END}) not found in {page}"
-        raise typer.BadParameter(msg)
-    head = content[: content.index(_BEGIN) + len(_BEGIN)]
-    tail = content[content.index(_END) :]
-    page.write_text(f"{head}\n\n{note}\n\n{table}\n\n{tail}")
-    typer.echo(f"Injected chart {version} values ({table.count(chr(10)) + 1} lines)")
+    if not repo_url:
+        raise typer.BadParameter("provide either --chart <dir> or --repo-url <url>")
+    archive = _archive_from_registry(repo_url, chart_version, username, password)
+    if archive is None:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        with tarfile.open(fileobj=io.BytesIO(archive), mode="r:gz") as tar:
+            tar.extractall(tmp, filter="data")
+        charts = [p.parent for p in Path(tmp).glob("*/Chart.yaml")]
+        if len(charts) != 1:
+            typer.echo(
+                "WARNING: expected one chart at the top of the package; "
+                "leaving the page placeholders.",
+                err=True,
+            )
+            return
+        _generate(charts[0], pages_dir, strict)
