@@ -379,25 +379,25 @@ def _schema_rows(schema: dict, prefix: str) -> list[_Row]:
     return rows
 
 
-def _dependency_schema(subchart: Path, name: str) -> dict | None:
+def _dependency_schema(subchart: Path, name: str, version: str) -> dict | None:
     """Return the values.schema.json of a subchart's vendored dependency.
 
     A packaged chart has the dependency unpacked under ``charts/<name>/``; a
-    local checkout has the archive ``helm dependency build`` downloads. None
-    when neither is present.
+    local checkout has the ``<name>-<version>.tgz`` archive ``helm dependency
+    build`` downloads for the pinned version. None when neither is present.
     """
     unpacked = subchart / "charts" / name / "values.schema.json"
     if unpacked.is_file():
         return json.loads(unpacked.read_text(encoding="utf-8"))
-    for archive in sorted((subchart / "charts").glob(f"{name}-*.tgz")):
-        with tarfile.open(archive, mode="r:gz") as tar:
-            try:
-                member = tar.extractfile(f"{name}/values.schema.json")
-            except KeyError:
-                continue
-            if member is not None:
-                return json.load(member)
-    return None
+    archive = subchart / "charts" / f"{name}-{version}.tgz"
+    if not archive.is_file():
+        return None
+    with tarfile.open(archive, mode="r:gz") as tar:
+        try:
+            member = tar.extractfile(f"{name}/values.schema.json")
+        except KeyError:
+            return None
+        return json.load(member) if member is not None else None
 
 
 class _BlockDumper(yaml.SafeDumper):
@@ -413,9 +413,11 @@ _BlockDumper.add_representer(str, _represent_str)
 
 
 def _dump_yaml(value: object) -> str:
-    return yaml.dump(
+    dumped = yaml.dump(
         value, Dumper=_BlockDumper, sort_keys=False, allow_unicode=True, width=1000
     ).rstrip()
+    # A lone plain scalar is followed by the "..." document end marker.
+    return dumped.removesuffix("\n...")
 
 
 def _default_value(default: str) -> object:
@@ -437,10 +439,12 @@ def _default_value(default: str) -> object:
 
 def _default_block(row: _Row) -> str:
     value = _default_value(row.default)
-    if isinstance(value, dict | list):
-        lang, body = "yaml", _dump_yaml(value)
+    # YAML for every parsed value: a string default such as '["/bin/bash", …]'
+    # keeps its quotes, so it is not copied into a values file as a list.
+    if value is _PROSE:
+        lang, body = "text", row.default.strip("`")
     else:
-        lang, body = "text", row.default.strip("`") if value is _PROSE else str(value)
+        lang, body = "yaml", _dump_yaml(value)
     fence = textwrap.indent(f"```{lang}\n{body}\n```", "    ")
     return f'??? note "Default"\n\n{fence}'
 
@@ -728,7 +732,7 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
         for dep in upstream:
             if _RENDERED_SCHEMAS.get(key) != dep["name"]:
                 continue
-            schema = _dependency_schema(subchart, dep["name"])
+            schema = _dependency_schema(subchart, dep["name"], str(dep["version"]))
             if schema is None:
                 problems.append(
                     f"no values.schema.json for {dep['name']} under {subchart}; "
