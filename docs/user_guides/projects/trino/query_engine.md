@@ -47,7 +47,7 @@ The expand icon in the results header opens the results in a full-size dialog, w
 ### Statements
 
 The SQL runner runs one statement at a time, and a trailing semicolon is removed before the statement is sent.
-A statement that returns no rows, such as `CREATE TABLE` or `INSERT`, reports what it did instead of an empty table.
+A statement that changes data or the catalog reports what it did instead of a table of results: `CREATE TABLE succeeded`, or for `INSERT`, `UPDATE`, `DELETE`, `MERGE` and `CREATE TABLE ... AS SELECT` the number of rows it wrote, such as `INSERT succeeded (2 rows)`.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/sql-create-table.png" alt="A CREATE TABLE statement reported as succeeded" />
