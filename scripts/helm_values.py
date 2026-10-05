@@ -70,6 +70,40 @@ def _neutralize_markdown_refs(text: str) -> str:
     return text
 
 
+def _subchart_rows(readme: str, name: str) -> list[str]:
+    """Return a subchart README's values rows, keys prefixed with ``name.``.
+
+    The prefix makes each key the path a user sets from the parent chart.
+    Only table rows are kept, since a README rendered from helm-docs' default
+    template carries a footer after the table.
+    """
+    if _VALUES_HEADING not in readme:
+        return []
+    section = readme.split(_VALUES_HEADING, 1)[1]
+    return [
+        f"| {name}.{line[2:]}"
+        for line in section.splitlines()
+        if line.startswith("| ") and not line.startswith("| Key ")
+    ]
+
+
+def _with_subchart_rows(table: str, subcharts: dict[str, str]) -> str:
+    """Append each subchart's values rows to the parent chart's values table.
+
+    Charts generated with ``helm-docs -u`` already embed every subchart row in
+    the parent table, so a row already present verbatim is skipped and those
+    charts render as before.
+    """
+    present = set(table.splitlines())
+    extra = [
+        row
+        for name in sorted(subcharts)
+        for row in _subchart_rows(subcharts[name], name)
+        if row not in present
+    ]
+    return "\n".join([table, *extra]) if extra else table
+
+
 def _http_get(url: str, username: str, password: str) -> bytes:
     """GET a URL, optionally with HTTP basic auth. Fail loudly on errors."""
     request = urllib.request.Request(url)
@@ -120,8 +154,10 @@ def _select_chart(entries: list[dict], chart_version: str | None) -> dict | None
 
 def _readme_from_registry(
     repo_url: str, chart_version: str | None, username: str, password: str
-) -> tuple[str, str, str] | None:
-    """Resolve a chart in a Helm (Nexus) repo and return (readme, version, appVersion).
+) -> tuple[str, dict[str, str], str, str] | None:
+    """Resolve a chart in a Helm (Nexus) repo.
+
+    Returns (readme, subchart readmes by name, version, appVersion).
 
     Returns None (and warns) if nothing suitable is found, so the build keeps
     the page placeholder instead of failing.
@@ -180,8 +216,17 @@ def _readme_from_registry(
                 err=True,
             )
             return None
-        extracted = tar.extractfile(member)
-        return extracted.read().decode("utf-8"), version, app_version
+        readme = tar.extractfile(member).read().decode("utf-8")
+        # Direct subcharts only: "<chart>/charts/<name>/README.md".
+        subcharts = {
+            m.name.split("/")[2]: tar.extractfile(m).read().decode("utf-8")
+            for m in tar.getmembers()
+            if m.isfile()
+            and m.name.count("/") == 3
+            and m.name.split("/")[1] == "charts"
+            and m.name.endswith("/README.md")
+        }
+        return readme, subcharts, version, app_version
 
 
 def gen_helm_values(
@@ -219,14 +264,19 @@ def gen_helm_values(
     Source the chart README either from a local checkout (``--chart``) or, for
     CI, from the published chart package in a Nexus Helm repo (``--repo-url``,
     optionally ``--chart-version`` for release matching). Slices the ``## Values``
-    table out of that README and writes it, with a line recording the chart
-    version, between the generation markers in ``page``. The result is consumed
-    by the documentation build and is not committed. If no matching chart or no
-    ``## Values`` section is found, the page placeholder is left in place rather
-    than failing the build.
+    table out of that README, appends the rows of each subchart README in the
+    package under the subchart's key prefix, and writes the result, with a line
+    recording the chart version, between the generation markers in ``page``.
+    The result is consumed by the documentation build and is not committed. If
+    no matching chart or no ``## Values`` section is found, the page placeholder
+    is left in place rather than failing the build.
     """
     if chart:
         readme: str = (chart / "README.md").read_text(encoding="utf-8")
+        subcharts = {
+            path.parent.name: path.read_text(encoding="utf-8")
+            for path in (chart / "charts").glob("*/README.md")
+        }
         meta = yaml.safe_load((chart / "Chart.yaml").read_text(encoding="utf-8")) or {}
         version = str(meta.get("version", ""))
         app_version = str(meta.get("appVersion", ""))
@@ -234,7 +284,7 @@ def gen_helm_values(
         resolved = _readme_from_registry(repo_url, chart_version, username, password)
         if resolved is None:
             return
-        readme, version, app_version = resolved
+        readme, subcharts, version, app_version = resolved
     else:
         raise typer.BadParameter("provide either --chart <dir> or --repo-url <url>")
 
@@ -247,7 +297,8 @@ def gen_helm_values(
         return
     # The '## Values' section is the last one in the README, so take everything
     # after its heading to EOF -- that is the full Key/Type/Default/Description table.
-    table = _neutralize_markdown_refs(readme.split(_VALUES_HEADING, 1)[1].strip())
+    table = readme.split(_VALUES_HEADING, 1)[1].strip()
+    table = _neutralize_markdown_refs(_with_subchart_rows(table, subcharts))
 
     note = f"_Generated from the Hopsworks Helm chart `{version}`"
     note += f" (Hopsworks `{app_version}`)._" if app_version else "._"
