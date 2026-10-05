@@ -2493,7 +2493,8 @@ body.hops-zoom-lock {
   margin: 0;
 }
 /* Deprecated values stay listed (an old override still has to validate) but
-   recede, with a muted label after the key. */
+   recede: a muted label after the key and a muted description. The muting is
+   the theme's light foreground, not opacity, which took the text below 4.5:1. */
 .md-typeset .hops-values-deprecated {
   margin-left: 0.4em;
   padding: 0.05em 0.4em;
@@ -2505,9 +2506,8 @@ body.hops-zoom-lock {
   text-transform: uppercase;
   vertical-align: middle;
 }
-.md-typeset .hops-values dt:has(.hops-values-deprecated),
 .md-typeset .hops-values dt:has(.hops-values-deprecated) + dd {
-  opacity: 0.6;
+  color: var(--md-default-fg-color--light);
 }
 /* Filter box (js/values-filter.js), pinned under the header while the long
    pages scroll. */
