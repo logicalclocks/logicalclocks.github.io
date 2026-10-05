@@ -270,6 +270,7 @@
 ##### Model Deployment
 - [Deployment Creation](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment/index.md))
 - [Deployment State](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-state/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-state/index.md))
+- [Deployment Versions](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-versions/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-versions/index.md))
 - [Deployment Schema](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-schema/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/deployment-schema/index.md))
 - [Predictor (KServe)](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/index.md))
 - [Transformer (KServe)](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformer/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformer/index.md))

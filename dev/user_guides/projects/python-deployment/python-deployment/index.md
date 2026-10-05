@@ -1,4 +1,4 @@
-# Python Deployment
+# Python Deployment { #python-deployment }
 
 ## Introduction
 
@@ -21,6 +21,8 @@ In each Python deployment, you can configure the following:
     2. [Resources](#resources)
     3. [Autoscaling](#autoscaling)
     4. [Scheduling](#scheduling)
+
+Like model deployments, Python deployments keep a numbered history of their configuration, so a change to the script, environment, resources or scaling can be saved as a new version and rolled back, see [Versions](#versions).
 
 ## Web UI
 
@@ -232,3 +234,14 @@ If the cluster has Kueue enabled, you can select a queue for your deployment fro
 Queues control resource allocation and scheduling priority across the cluster.
 
 For full details on scheduling configuration, see the [Scheduling Guide](../../mlops/serving/scheduling.md).
+
+## Versions
+
+A Python deployment keeps its configuration in numbered versions, the same way a model deployment does.
+In the edit form, `Save` edits the active version in place and `Save as new version` stores the changes as a new version and activates it.
+The `Versions` card on the overview page lists the versions, shows the configuration of each one, and rolls back to an earlier one.
+
+!!! info "Not covered by versions"
+    Scheduling and Knative mode are not part of a version, so a rollback keeps their current values.
+    A script read from a HopsFS path or a git repository is stored in the version as that path or repository, so a rollback does not bring back earlier code, and the deployment restarts on every save to pick up the current one.
+    For full details, see the [Deployment Versions Guide][deployment-versions].

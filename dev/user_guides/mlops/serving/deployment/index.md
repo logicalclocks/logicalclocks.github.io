@@ -244,7 +244,8 @@ Predictor and transformer scripts run on separate components and, therefore, sca
 Additionally, artifact files can also contain a **server configuration file** that helps detach configuration used within the model deployment from the model server or the implementation of the predictor and transformer scripts.
 Inside a model deployment, the local path to the configuration file is stored in the `CONFIG_FILE_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)).
 
-Each deployment tracks its artifact files through a ==deployment version==, an integer (1, 2, 3...) that is incremented whenever the artifact content changes (e.g., updating a predictor script or configuration file).
+Each deployment keeps its configuration, including its artifact files, in numbered ==deployment versions==.
+A save edits the active version in place unless you save it as a new version, and earlier versions can be reactivated with a rollback, see the [Deployment Versions Guide][deployment-versions].
 
 Inside a model deployment, the local path to the artifact files is stored in the `ARTIFACT_FILES_PATH` environment variable (see [environment variables](../serving/predictor.md#environment-variables)).
 
