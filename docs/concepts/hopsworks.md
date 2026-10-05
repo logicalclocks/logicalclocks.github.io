@@ -23,7 +23,7 @@ Hopsworks logs all inference requests to Kafka to enable easy monitoring of depl
 
 ## Vector Index
 
-A feature group with an embedding column can have a vector index, based on [OpenSearch kNN](https://opensearch.org/docs/latest/search-plugins/knn/index/) ([FAISS](https://ai.facebook.com/tools/faiss/) and [nmslib](https://github.com/nmslib/nmslib)).
+A feature group with an embedding column can have a vector index, based on [OpenSearch kNN](https://opensearch.org/docs/latest/search-plugins/knn/index/) (on the [FAISS](https://ai.facebook.com/tools/faiss/) engine, which has replaced the deprecated [nmslib](https://github.com/nmslib/nmslib) engine as the default).
 The vector index includes out-of-the-box support for authentication, access control, filtering, backup-and-restore, and horizontal scalability.
 The Feature Store and its vector index are often used together to build scalable recommender systems, such as ranking-and-retrieval for real-time recommendations.
 

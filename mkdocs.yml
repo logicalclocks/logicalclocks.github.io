@@ -295,6 +295,7 @@ nav:
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
           - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
           - Search Index: setup_installation/admin/search_index.md
+          - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
