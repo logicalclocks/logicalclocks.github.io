@@ -480,6 +480,7 @@
 - [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_logging​_config](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_logging_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_logging_config/index.md))
 - [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_schema](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_schema/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_schema/index.md))
 - [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_tracing​_config](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_tracing_config/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_tracing_config/index.md))
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_version](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_version/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/deployment_version/index.md))
 - [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> inference​_batcher](https://docs.hopsworks.ai/latest/python-api/hsml/inference_batcher/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/inference_batcher/index.md))
 - [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> inference​_logger](https://docs.hopsworks.ai/latest/python-api/hsml/inference_logger/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/inference_logger/index.md))
 
