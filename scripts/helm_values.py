@@ -116,6 +116,11 @@ _EXTERNAL_LINK = re.compile(r"\[[^\]\n]+\]\(https?://[^)\s]+\)")
 _HOLD_OPEN = chr(0xE000)
 _HOLD_CLOSE = chr(0xE001)
 _HOLD_RE = re.compile(re.escape(_HOLD_OPEN) + r"(\d+)" + re.escape(_HOLD_CLOSE))
+# The site has no magiclink extension, so a bare URL in a description renders
+# as plain text until it is wrapped as a Markdown autolink.
+_BARE_URL = re.compile(r"(?<![<\w])https?://[^\s<>`]+")
+_LINK_OR_CODE = re.compile(f"({_CODE_SPAN.pattern}|{_EXTERNAL_LINK.pattern})")
+_URL_TRAILER = ".,;:!?'\""
 
 # A helm-docs values row: | key | type | default | description |. The default
 # is matched first as a whole code span because it can contain " | " itself
@@ -175,6 +180,26 @@ def _neutralize_markdown_refs(text: str) -> str:
             break
         text = new
     return text
+
+
+def _wrap_url(match: re.Match) -> str:
+    url = match.group(0).rstrip(_URL_TRAILER)
+    while url.endswith(")") and url.count("(") < url.count(")"):
+        url = url[:-1].rstrip(_URL_TRAILER)
+    return f"<{url}>{match.group(0)[len(url) :]}"
+
+
+def _autolink(text: str) -> str:
+    """Wrap bare URLs as ``<url>``, leaving code spans and Markdown links alone.
+
+    Trailing punctuation and an unbalanced closing parenthesis stay outside
+    the link: "(see https://x/y)." links ``https://x/y``.
+    """
+    parts = _LINK_OR_CODE.split(text)
+    # re.split puts the captured code spans and links at the odd indices.
+    for i in range(0, len(parts), 2):
+        parts[i] = _BARE_URL.sub(_wrap_url, parts[i])
+    return "".join(parts)
 
 
 def _http_get(url: str, username: str, password: str) -> bytes:
@@ -450,7 +475,8 @@ def _render_entries(rows: list[_Row]) -> str:
             facts.append(f"default {_neutralize_markdown_refs(row.default)}")
         lines = [term, f":   {', '.join(facts) or 'Value'}."]
         if row.description:
-            lines.append(f"    {_neutralize_markdown_refs(row.description)}")
+            description = _autolink(_neutralize_markdown_refs(row.description))
+            lines.append(f"    {description}")
         if long_default:
             lines += ["", textwrap.indent(_default_block(row), "    ")]
         entries.append("\n".join(lines))
