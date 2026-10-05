@@ -1,7 +1,7 @@
 # Helm chart values reference
 
 This page lists every value you can configure when deploying Hopsworks with the Hopsworks Helm chart.
-It is generated from the chart's `README.md`.
+It is generated from the `README.md` files of the chart and its subcharts.
 On a released version of the docs it matches the Hopsworks Helm chart for that release; on the development docs it reflects the latest chart published to the development channel.
 
 You set these values in the `values.<cloud>.yaml` file that you pass to `helm install`.
