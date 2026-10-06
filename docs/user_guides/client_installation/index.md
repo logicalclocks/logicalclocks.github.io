@@ -180,7 +180,7 @@ A medallion layer organizes tables as bronze (raw data as it arrived), silver (c
 Hopsworks installs an archived schematized tag, `medallion_table`, whose `layer` is `bronze`, `silver` or `gold` and whose `lifecycle` is `dev`, `staging` or `prod`; every change of a table's value is kept in the tag history.
 When you ingest data with a dltHub data source, **Tag as bronze tables** in the review, off by default, tags every feature group it creates as bronze.
 
-**New Medallion Layer**, in the Factory, lists two factories, **Silver layer** and **Gold layer**; the silver one builds a silver layer from the project's bronze feature groups.
+**New Medallion Layer**, in the Factory, lists two factories, **Silver layer** and **Gold Data Mart**; the silver one builds a silver layer from the project's bronze feature groups.
 A project without feature groups has nothing to build from: ingest raw data as bronze tables first.
 The page asks for the bronze tables to build from (only those tagged bronze are shown while any are), the silver tasks (deduplicate, cast types, standardize values, handle nulls, validate with a rejects table, protect personal data, conform entities, surrogate keys, referential checks), additional tasks in your own words, the engine, the refresh cadence and the lifecycle.
 The engine is dbt on Trino unless an additional task needs code SQL does not express well, when PySpark is suggested.
@@ -202,7 +202,7 @@ Every job has a delete icon that asks whether to also delete the feature groups 
 
 ### Build a gold medallion layer of data marts
 
-**New Medallion Layer** with **Gold layer** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
+**New Medallion Layer** with **Gold Data Mart** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
 The page asks for those queries, the model, the silver tables to read, the standards every data mart follows (naming, modeling, documentation and quality, proposed and editable), and the first data mart.
 
 A gold layer is a set of data marts, each added, changed and deleted on its own, with its own fact and dimension tables and its own jobs, `<layer>-<mart>-<refresh>`, at its own refresh.
@@ -222,15 +222,19 @@ The layer's page shows each mart with its phases, tables, jobs and verification 
 ```bash
 hops factory run medallion-silver [--answers answers.json]   # record a silver layer and build it with Claude Code
 hops factory run medallion-gold [--answers answers.json]     # record a gold layer and its first data mart
-hops factory system mart-add <layer> --answers mart.json        # add a data mart to a gold layer
-hops factory system mart-update <layer> <mart> --answers mart.json  # change a data mart's requirements
-hops factory system mart-delete <layer> <mart> [--tables]       # delete a data mart's jobs, and its own tables
-hops factory system job-delete <layer> <job> [--tables]         # delete one job, and the tables only it writes
-hops factory system add-tables <silver layer> --answers new.json  # add bronze tables to a silver layer
+hops factory run medallion-gold <layer> --change add-mart [--answers mart.json]     # add a data mart to a gold layer
+hops factory run medallion-gold <layer> --change edit-mart [--answers mart.json]    # change a data mart's requirements
+hops factory run medallion-gold <layer> --change delete-mart  # delete a data mart's jobs, and if asked its own tables
+hops factory run medallion-gold <layer> --change delete-job   # delete one job, and if asked the tables only it writes
+hops factory run medallion-silver <layer> --change add-tables [--answers new.json]  # add bronze tables to a silver layer
 hops factory system status <layer>                  # write the layer's health report, status/report.html
-hops factory system backfill <layer>                # recompute the layer's tables from the whole history
+hops job run <job> --start-time 1970-01-01 --end-time <now> --wait  # backfill: recompute a job's tables from the whole history
 hops factory system delete <layer> --assets         # delete the layer, its jobs and tables; never what it reads
 ```
+
+A change to a built system, a layer's or any other, is one of its factory's `changes`: **Change** on the system's page lists them, and the layer pages' **Add data mart**, **Edit**, **Add tables** and delete icons open them.
+Each opens the change's form; saving records the request in the system's `system.yaml` (`changes`, `status: pending`) with `hops factory run <factory> <system> --change <id>`, and resumes the build in a Terminal tab, which carries out the pending requests first.
+A build deletes jobs and feature groups only with `hops factory system delete-assets`, which refuses a table the system reads or one of a lower medallion layer.
 
 ### Create your own factory
 
