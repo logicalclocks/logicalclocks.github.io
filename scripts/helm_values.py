@@ -7,7 +7,7 @@ import tempfile
 import textwrap
 import urllib.error
 import urllib.request
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Annotated
 
@@ -731,6 +731,48 @@ def _upstream_admonition(key: str, upstream: list[dict], links: list[str]) -> st
     return f'!!! info "Upstream charts"\n\n{body}'
 
 
+def _with_deployed_default(row: _Row, deployed: dict) -> _Row:
+    path = [segment.strip('"') for segment in _segments(row.key)[1:]]
+    if not path or any("[" in segment for segment in path):
+        return row
+    node: object = deployed
+    for segment in path:
+        if not isinstance(node, dict) or segment not in node:
+            return row
+        node = node[segment]
+    shown = _default_value(row.default)
+    if shown is _PROSE or shown == node:
+        return row
+    # helm-docs writes null as nil.
+    return replace(row, default="`nil`" if node is None else _json_code(node))
+
+
+def _deployed_rows(
+    rows: list[_Row], subchart: Path, root_override: object
+) -> list[_Row]:
+    """Show what Hopsworks deploys for a subchart's values.
+
+    The README rows carry the subchart's own defaults; the root chart's
+    values for it are merged over them the way Helm merges them. A
+    values.yaml PyYAML cannot read (Helm's parser is more lenient) leaves
+    the rows as they are, with a warning.
+    """
+    if not isinstance(root_override, dict) or not root_override:
+        return rows
+    try:
+        values = _load_yaml(subchart / "values.yaml")
+    except yaml.YAMLError as exc:
+        reason = getattr(exc, "problem", None) or exc
+        typer.echo(
+            f"WARNING: cannot parse {subchart / 'values.yaml'} ({reason}); "
+            "showing its own defaults without the root chart's overrides",
+            err=True,
+        )
+        return rows
+    deployed = _helm_merge(values, root_override)
+    return [_with_deployed_default(row, deployed) for row in rows]
+
+
 def _schema_section(prefix: str, name: str, link: str, rows: list[_Row]) -> str:
     key = prefix.split(".")[0]
     intro = (
@@ -831,7 +873,8 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
             for dep in _load_yaml(subchart / "Chart.yaml").get("dependencies") or []
             if not str(dep.get("repository", "")).startswith("file://")
         ]
-        page = _Page(stub, by_key.pop(key, []), upstream, [])
+        rows = _deployed_rows(by_key.pop(key, []), subchart, root_values.get(key))
+        page = _Page(stub, rows, upstream, [])
         for dep in upstream:
             if _RENDERED_SCHEMAS.get(key) != dep["name"]:
                 continue
