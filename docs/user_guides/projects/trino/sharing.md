@@ -67,7 +67,8 @@ Hopsworks reads the table's columns each time it updates the rules, and at least
 Between the change at the source and the next update, the new column is readable.
 A renamed column loses its mask with its old name and is denied under the new one.
 The sharing page marks such a share with the number of new columns and names them; edit the share and check them to share them.
-While the query engine is restarting, the rules keep denying what they denied before, as well as the columns recorded when the share was saved, until it is back, and a narrowed table whose columns cannot be read is left out of the share until they can.
+While the query engine is restarting, a narrowed table the rules already held keeps what they denied before, as well as the columns recorded when the share was saved, until it is back.
+A narrowed table the rules did not hold yet, because its share is new or was wider, or because it was left out before, stays out until the query engine is back, and a narrowed table whose columns cannot be read is left out of the share until they can.
 
 Iceberg and Delta Lake tables can also be read as of an earlier version, with `FOR VERSION AS OF` or `FOR TIMESTAMP AS OF`, and such a read has the columns the table had then.
 Hopsworks denies those columns too: every column the table has had at a version that can still be read, so a column dropped or renamed at the source stays denied under its old name.

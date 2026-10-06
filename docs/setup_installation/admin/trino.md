@@ -512,9 +512,10 @@ A publish reads the current columns of each table a share narrows to some of its
 A narrowed Iceberg or Delta Lake table also has the columns of its earlier versions read:
 
 - An Iceberg table on HopsFS: one more statement, and a read of its current metadata file, which lists every schema the table has had.
-  Hopsworks reads the file as the project user the table's columns are read as, and only up to 64 MiB.
-- Any other Iceberg table: one more statement, and one per schema the table has had and per snapshot older than its metadata log, at most 50.
+  Hopsworks reads the file as the project user the table's columns are read as, only up to 64 MiB, and uses it only when it names the snapshot Trino reports for it.
+- Any other Iceberg table: two more statements, and one per schema the table has had and per snapshot older than its metadata log, at most 50.
 - A Delta Lake table: one statement that reads every commit still in the table's log, and one more for the oldest of them.
+  The statement reads back from the newest commit to the first missing one, so versions before a gap in the log are not read; only log files removed by hand leave such a gap.
 
 Saving, editing or revoking a share returns once the share is recorded; the share shows **Applying** or **Revoking** until the publish has run and the query engine has loaded the file, about 15 seconds after the publish ends.
 Changes made while a publish runs are applied together by the next one.
