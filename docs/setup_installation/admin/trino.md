@@ -515,10 +515,13 @@ A narrowed Iceberg or Delta Lake table also has the columns of its earlier versi
   Hopsworks reads the file as the project user the table's columns are read as, only up to 64 MiB, and uses it only when it names the snapshot Trino reports for it.
 - Any other Iceberg table: two more statements, and one per snapshot not read before: one per schema the table has had, and every snapshot older than its metadata log, which keeps the last 100 entries by default.
   At most 50 snapshots are read per publish; a table with more is left out until later publishes have read them all.
+  A table with more than 10,000 such snapshots cannot be listed and is left out; expiring old snapshots, or keeping the table on HopsFS, avoids it.
 - A Delta Lake table: one statement that reads the commits since the last publish, or every commit still in the table's log the first time, and on that first read one more for the oldest of them.
   The statement reads back from the newest commit to the first missing one, so versions before a gap in the log are not read; only log files removed by hand leave such a gap.
 
 Each Hopsworks instance keeps what it has read in memory, so after a restart its first publish reads each table's history in full once.
+It reads it again at least once a day: a Delta Lake table in full on that publish, an Iceberg table's snapshots 50 per publish while the earlier reads still count, so the table is never left out for it.
+A publish forgets the tables no share narrows any more.
 Measured on a development cluster, as extra time per narrowed table on top of reading its current columns:
 
 | Table | 1 commit | 100 commits | 300 commits |
