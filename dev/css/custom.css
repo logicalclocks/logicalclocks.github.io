@@ -2468,3 +2468,87 @@ body.hops-zoom-lock {
   background: var(--md-default-bg-color);
   border: 1px solid var(--hops-border);
 }
+
+/* ---- Helm values reference: one entry per chart value ----------
+   The generated pages under setup_installation/common/helm_chart_values/
+   wrap their definition lists in .hops-values. Keys run to 90 characters,
+   so they cannot sit in a table (a table chip never wraps, see above);
+   each key is a hairline-separated row with its type, default and
+   description under it at table type size. */
+.md-typeset .hops-values dl {
+  margin: 0;
+}
+.md-typeset .hops-values dt {
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--hops-border);
+  font-size: 0.72rem;
+}
+.md-typeset .hops-values dd {
+  margin: 0.15rem 0 0.5rem 0;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+.md-typeset .hops-values dd p {
+  margin: 0;
+}
+/* Deprecated values stay listed (an old override still has to validate) but
+   recede: a muted label after the key and a muted description. The muting is
+   the theme's light foreground, not opacity, which took the text below 4.5:1. */
+.md-typeset .hops-values-deprecated {
+  margin-left: 0.4em;
+  padding: 0.05em 0.4em;
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 0.25rem;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.md-typeset .hops-values dt:has(.hops-values-deprecated) + dd {
+  color: var(--md-default-fg-color--light);
+}
+/* Filter box (js/values-filter.js), pinned under the header while the long
+   pages scroll. */
+.md-typeset .hops-values-filterbar {
+  position: sticky;
+  top: 2.4rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0 0.5rem;
+  padding: 0.4rem 0;
+  background: var(--md-default-bg-color);
+}
+.md-typeset .hops-values-filter {
+  flex: 1;
+  min-width: 0;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 1rem;
+  background: var(--hops-surface);
+  color: var(--md-default-fg-color);
+  font: inherit;
+  font-size: 0.72rem;
+}
+.md-typeset .hops-values-filter:focus {
+  outline: 2px solid var(--hops-accent);
+  outline-offset: 1px;
+}
+.md-typeset .hops-values-count {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.64rem;
+  white-space: nowrap;
+}
+/* A linked key or section lands below the header and the pinned filter bar,
+   not under it. */
+.md-content:has(.hops-values-filterbar) :is(h2, h3, dt)[id] {
+  scroll-margin-top: 5.6rem;
+}
+/* The filter hides a section's "Defaults as YAML" block with the hidden
+   attribute, which Material's `details { display: flow-root }` outranks. */
+.md-typeset details[hidden] {
+  display: none;
+}
