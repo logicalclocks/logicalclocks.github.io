@@ -10,7 +10,9 @@ Only a small subset of these values is needed for a typical install: "Common val
 
 "All values" lists the pages.
 Each page states when its subchart is deployed: when the condition names several values, Helm uses the first one that is set.
-"Upstream charts" are the third-party charts a subchart installs; their own values are documented upstream, and the link opens the version Hopsworks pins.
+"Upstream charts" are the charts a subchart installs from other Helm repositories, and each link opens a chart's documentation for the version Hopsworks pins.
+A page lists only the values Hopsworks sets for its upstream charts, except the RonDB page, which lists all of the RonDB chart's values.
+A default is the value Hopsworks deploys: the root chart's settings for a subchart are applied over the subchart's own defaults.
 Every value has its own link (the `#` next to its key), and each section has its defaults as a values file under "Defaults as YAML".
 
 <!-- BEGIN GENERATED VALUES -->

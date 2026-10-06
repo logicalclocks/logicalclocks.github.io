@@ -513,9 +513,9 @@ def _represent_str(dumper: yaml.SafeDumper, value: str) -> yaml.ScalarNode:
 _BlockDumper.add_representer(str, _represent_str)
 
 
-def _dump_yaml(value: object) -> str:
+def _dump_yaml(value: object, sort_keys: bool = False) -> str:
     dumped = yaml.dump(
-        value, Dumper=_BlockDumper, sort_keys=False, allow_unicode=True, width=1000
+        value, Dumper=_BlockDumper, sort_keys=sort_keys, allow_unicode=True, width=1000
     ).rstrip()
     # A lone plain scalar is followed by the "..." document end marker.
     return dumped.removesuffix("\n...")
@@ -578,7 +578,7 @@ def _render_entries(rows: list[_Row]) -> str:
         facts = [f"Type `{row.type_}`"] if row.type_ else []
         if row.default and not long_default:
             facts.append(f"default {_neutralize_markdown_refs(row.default)}")
-        facts += [_neutralize_markdown_refs(note) for note in row.notes]
+        facts += row.notes
         lines = [term, f":   {', '.join(facts) or 'Value'}."]
         if row.description:
             description = _autolink(_neutralize_markdown_refs(row.description))
@@ -638,7 +638,9 @@ def _values_file_block(rows: list[_Row]) -> str | None:
             _set_path(tree, _key_path(row.key), value)
     if not tree:
         return None
-    fence = textwrap.indent(f"```yaml\n{_dump_yaml(tree)}\n```", "    ")
+    # Sorted, because the insertion order is by depth.
+    body = _dump_yaml(tree, sort_keys=True)
+    fence = textwrap.indent(f"```yaml\n{body}\n```", "    ")
     return f'??? example "Defaults as YAML"\n\n{fence}'
 
 
@@ -660,8 +662,11 @@ def _section(key: str, depth: int) -> str | None:
 def _heading(level: str, title: str, anchor: str) -> str:
     # Explicit ids, because mkdocs-autorefs resolves [text][id] site-wide: a
     # generated "## terminal" would make the Terminal guide's anchor ambiguous.
-    slug = re.sub(r"[^a-z0-9_-]+", "-", anchor.lower()).strip("-")
-    return f"{level} {title} {{ #{slug} }}"
+    return f"{level} {title} {{ #{_slug(anchor)} }}"
+
+
+def _slug(anchor: str) -> str:
+    return re.sub(r"[^a-z0-9_-]+", "-", anchor.lower()).strip("-")
 
 
 def _section_body(rows: list[_Row]) -> str:
@@ -721,14 +726,49 @@ def _upstream_link(dependency: dict, problems: list[str]) -> str:
     return f"[{label}]({template.format(name=name, version=version)})"
 
 
-def _upstream_admonition(key: str, upstream: list[dict], links: list[str]) -> str:
-    lines = [
-        f"- Values under `{key}.{dep.get('alias') or dep['name']}` go to "
-        f"{link} from `{dep.get('repository')}`."
-        for dep, link in zip(upstream, links)
-    ]
+def _upstream_admonition(
+    charts: list[tuple[str, dict, str]], listed: dict[str, str]
+) -> str:
+    """Name the key, docs and repository of each upstream chart a page installs.
+
+    ``charts`` holds (values key, dependency, docs link); ``listed`` maps the
+    values key of a chart whose own values the page renders to a link there.
+    """
+    lines = []
+    unlisted = []
+    for prefix, dep, link in charts:
+        line = f"- Values under `{prefix}` go to {link} from `{dep.get('repository')}`"
+        if prefix in listed:
+            line += f", and all of them are listed under {listed[prefix]}"
+        else:
+            unlisted.append(f"`{prefix}`")
+        lines.append(f"{line}.")
+    if unlisted:
+        keys = unlisted[0]
+        if len(unlisted) > 1:
+            keys = f"{', '.join(unlisted[:-1])} and {unlisted[-1]}"
+        lines += [
+            "",
+            f"Only the values Hopsworks sets under {keys} are listed on this page.",
+        ]
+        if len(unlisted) == 1:
+            lines.append(
+                "Any other value of the chart can be set there too; the link opens "
+                "its documentation for the version Hopsworks pins."
+            )
+        else:
+            lines.append(
+                "Any other value of the charts can be set under the same keys; each "
+                "link opens the chart's documentation for the version Hopsworks pins."
+            )
     body = textwrap.indent("\n".join(lines), "    ")
     return f'!!! info "Upstream charts"\n\n{body}'
+
+
+def _upstream_note(link: str, listed: str | None) -> str:
+    if listed:
+        return f"passed to the {link} chart, whose values are listed under {listed}"
+    return f"passed to the {link} chart, whose other values are documented there"
 
 
 def _with_deployed_default(row: _Row, deployed: dict) -> _Row:
@@ -916,13 +956,33 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
     index_lines = ["| Values | Upstream charts | Keys |", "| --- | --- | --- |"]
     for key, page in pages.items():
         links = [_upstream_link(dep, problems) for dep in page.upstream]
+        charts = [
+            (f"{key}.{dep.get('alias') or dep['name']}", dep, link)
+            for dep, link in zip(page.upstream, links)
+        ]
+        listed = {
+            prefix: f"[`{dep['name']}` chart values](#{_slug(f'helm-values-{prefix}')})"
+            for prefix, dep, _ in page.schemas
+        }
+        # The entry of the key a chart is configured under links its docs too,
+        # for a reader who lands on it from an anchor below the admonition.
+        notes = {
+            prefix: _upstream_note(link, listed.get(prefix))
+            for prefix, _, link in charts
+        }
+        rows = [
+            replace(row, notes=(*row.notes, notes[row.key]))
+            if row.key in notes
+            else row
+            for row in page.rows
+        ]
         parts = [note]
         if key in conditions:
             parts.append(_condition_text(conditions[key], targets))
-        if page.upstream:
-            parts.append(_upstream_admonition(key, page.upstream, links))
-        if page.rows:
-            parts.append(_render_rows(page.rows, 1, "##", f"helm-values-{key}"))
+        if charts:
+            parts.append(_upstream_admonition(charts, listed))
+        if rows:
+            parts.append(_render_rows(rows, 1, "##", f"helm-values-{key}"))
         else:
             parts.append(f"Chart `{version}` has no `{key}` values.")
         count = len(page.rows)
