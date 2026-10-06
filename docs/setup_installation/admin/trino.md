@@ -355,7 +355,7 @@ A feature group shared with a subset of its features adds a catalog rule on the 
 - A column that should be hidden is readable: it is missing from the rule's `columns`.
   Each publish denies every column the table has at that moment except the shared ones, so a column added at the source is readable only until the next publish, at most one reconcile interval.
 - A narrowed table is refused although its share is **Active**: the last publish could not read the table's columns, or for an Iceberg or Delta Lake table the columns of its earlier versions, so it left the table out of the rules rather than grant it with columns it could not deny; the Hopsworks log names the table.
-  An Iceberg table whose metadata file is outside HopsFS, over 64 MiB or unreadable by that project user is also left out when reading its earlier columns takes more than 50 snapshots.
+  An Iceberg table whose metadata file is outside HopsFS, over 64 MiB or unreadable by that project user is also left out until its earlier columns are read, 50 snapshots per publish.
 - `rules.json` and `rules.json.last-good` differ for minutes: the newest file is not confirmed, so check that the query engine is reachable; the reconcile verifies it again and restores the last good file if the query engine refuses it.
 
 ## Credential files a project supplies
@@ -513,9 +513,23 @@ A narrowed Iceberg or Delta Lake table also has the columns of its earlier versi
 
 - An Iceberg table on HopsFS: one more statement, and a read of its current metadata file, which lists every schema the table has had.
   Hopsworks reads the file as the project user the table's columns are read as, only up to 64 MiB, and uses it only when it names the snapshot Trino reports for it.
-- Any other Iceberg table: two more statements, and one per schema the table has had and per snapshot older than its metadata log, at most 50.
-- A Delta Lake table: one statement that reads every commit still in the table's log, and one more for the oldest of them.
+- Any other Iceberg table: two more statements, and one per snapshot not read before: one per schema the table has had, and every snapshot older than its metadata log, which keeps the last 100 entries by default.
+  At most 50 snapshots are read per publish; a table with more is left out until later publishes have read them all.
+- A Delta Lake table: one statement that reads the commits since the last publish, or every commit still in the table's log the first time, and on that first read one more for the oldest of them.
   The statement reads back from the newest commit to the first missing one, so versions before a gap in the log are not read; only log files removed by hand leave such a gap.
+
+Each Hopsworks instance keeps what it has read in memory, so after a restart its first publish reads each table's history in full once.
+Measured on a development cluster, as extra time per narrowed table on top of reading its current columns:
+
+| Table | 1 commit | 100 commits | 300 commits |
+| --- | --- | --- | --- |
+| Delta Lake feature group, first read | 0.1 s | 1.9 s | 6.6 s |
+| Delta Lake feature group, later publishes | not measured | not measured | none measurable |
+| Iceberg table on HopsFS (metadata file size) | 0.1 s (4 KB) | 0.1 s (203 KB) | 0.3 s (556 KB) |
+| Iceberg table read through its snapshots, snapshots to read | 1 | 3 | 201 |
+
+A later publish of the 300-commit table, reading from the 290th or 299th commit, took as long as `SELECT 1`.
+Reading the current columns of the Delta Lake table also grew, from 0.5 s at 100 commits to 2.7 s at 300.
 
 Saving, editing or revoking a share returns once the share is recorded; the share shows **Applying** or **Revoking** until the publish has run and the query engine has loaded the file, about 15 seconds after the publish ends.
 Changes made while a publish runs are applied together by the next one.
