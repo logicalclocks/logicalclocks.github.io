@@ -69,8 +69,9 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         # --strict turns the generator's warnings (a subchart without a page, an
         # upstream chart without a docs link, a missing common value or RonDB
-        # schema, a RonDB override the schema does not declare) into a failed
-        # PR check; the deploy workflow only warns.
+        # schema, a RonDB override the schema does not declare, two entries on
+        # a page with one anchor) into a failed PR check; the deploy workflow
+        # only warns.
         run: |
           if [ "$BASE_REF" = "main" ]; then
             # dev docs: latest chart from the (private) dev channel. Fork PRs do

@@ -950,8 +950,18 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
         )
     targets = {row.key: f"{_INDEX}#{_anchor(row.key)}" for row in leftover}
     for page in pages.values():
+        by_anchor: dict[str, list[str]] = {}
         for row in page.rows + [r for _, _, rows in page.schemas for r in rows]:
+            by_anchor.setdefault(_anchor(row.key), []).append(row.key)
             targets[row.key] = f"{page.stub.name}#{_anchor(row.key)}"
+        problems += [
+            f"{page.stub.name}: {len(keys)} entries for #{anchor} "
+            f"({', '.join(dict.fromkeys(keys))}); either a README row the rendered "
+            "schema also lists (a helm-docs comment on a key under it), or keys "
+            "an anchor cannot tell apart"
+            for anchor, keys in by_anchor.items()
+            if len(keys) > 1
+        ]
 
     index_lines = ["| Values | Upstream charts | Keys |", "| --- | --- | --- |"]
     for key, page in pages.items():
@@ -1056,8 +1066,8 @@ def gen_helm_values(
         typer.Option(
             help="Fail when a top-level key has no page, an upstream chart has "
             "no docs link, a common value is missing, a rendered schema is "
-            "absent, or an override names a key that schema does not declare "
-            "(the PR check)."
+            "absent, an override names a key that schema does not declare, or "
+            "two entries on a page share an anchor (the PR check)."
         ),
     ] = False,
 ) -> None:
