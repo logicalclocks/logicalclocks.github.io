@@ -77,7 +77,7 @@ It then writes the following files into the current directory:
 | `AGENTS.md` | Instructions for the agent: the project you are connected to, where the `hopsworks` library is installed on this machine, and how to use the `hops` CLI and the skills. |
 | `.claude/skills/hops/SKILL.md` | A reference for the `hops` CLI. |
 | `.claude/commands/hops.md` | The `/hops` slash command for Claude Code: a fast menu to explore data, build or edit a Superset dashboard (`/hops dashboard`) or a Python app (`/hops app`), and show status. It runs on Haiku; the building is done by the agents below. |
-| `.claude/commands/hops-ml.md` | The `/hops-ml` slash command: the `hops build` interview inside Claude Code, on Haiku, recorded in `system.yaml` as you answer. |
+| `.claude/commands/hops-ml.md` | The `/hops-ml` slash command: the `hops mlsystem create` interview inside Claude Code, on Haiku, recorded in `system.yaml` as you answer. |
 | `.claude/commands/hops-build.md` | The `/hops-build` slash command: completes the specification the interview recorded and builds the ML system to a pull request, on your session's model. |
 | `.claude/agents/hops-dashboard-builder.md` | The Claude Code sub-agent `/hops` runs to build, edit or delete a dashboard. |
 | `.claude/agents/hops-app-builder.md` | The Claude Code sub-agent `/hops` runs to build, edit or delete an app and fix it until it serves. |
@@ -122,25 +122,25 @@ hops skills show hops-fg
 ### Build an ML system
 
 ```bash
-hops build
+hops mlsystem create
 ```
 
-`hops build` first asks what you want to build: a new ML system, which it asks you to describe, or an example ML system (churn, batch; personalized recommendations, real-time; a help desk agent, agentic) that runs on synthetic data and includes an app.
+`hops mlsystem create` first asks what you want to build: a new ML system, which it asks you to describe, or an example ML system (churn, batch; personalized recommendations, real-time; a help desk agent, agentic) that runs on synthetic data and includes an app.
 The help desk agent answers from documents you upload to `Resources/helpdesk-docs` (PDF, text, Markdown, Word or OpenDocument), which a job cuts into passages and embeds with a sentence-transformers model downloaded into the Model Registry, and from the customer's recent events; it is a LangGraph agent deployment with a JavaScript chat app.
-For it, `hops build` asks for an OpenAI-compatible LLM endpoint, model and API key (read without echo) and saves them as your account environment variables `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`, which the agent reads.
+For it, `hops mlsystem create` asks for an OpenAI-compatible LLM endpoint, model and API key (read without echo) and saves them as your account environment variables `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`, which the agent reads.
 It then asks the questions that follow from the system type: how often predictions are made for a batch system, the latency and throughput for a real-time one, the LLM for an agentic one, the data to learn from, how the predictions are used, and where the code goes.
 One Claude Code call on Haiku reads your description and recommends the system type and a name; the other questions are plain prompts.
 Each answer is written to `<slug>/system.yaml` in the current directory as you give it.
 
 A new data source is created with `hops datasource create`, and its password or key is read without echo and passed to it in an environment variable, so it never appears on the command line or in `system.yaml`.
 
-When the interview is done, `hops build` starts Claude Code with `/hops-build <slug>`, which completes the specification and builds the feature, training and inference pipelines.
-Each system's directory holds an `AGENTS.md` saying the system is built from `system.yaml`; `hops build` and the **Factory** page start Claude Code in that directory, so it reads it, checks what a change to `system.yaml` means for the pipelines and the assets they create, and finds what a changed component affects downstream with `hops fg lineage`, `hops fv lineage`, `hops td lineage`, `hops model lineage` and `hops deployment lineage`.
+When the interview is done, `hops mlsystem create` starts Claude Code with `/hops-build <slug>`, which completes the specification and builds the feature, training and inference pipelines.
+Each system's directory holds an `AGENTS.md` saying the system is built from `system.yaml`; `hops mlsystem create` and the **Factory** page start Claude Code in that directory, so it reads it, checks what a change to `system.yaml` means for the pipelines and the assets they create, and finds what a changed component affects downstream with `hops fg lineage`, `hops fv lineage`, `hops td lineage`, `hops model lineage` and `hops deployment lineage`.
 Inside tmux, as in the Hopsworks terminal, it opens a new tmux window named after the system, so several systems can be built at once.
-Pass `--no-launch` to record the interview only, and `hops build <slug>` to resume a system.
-`hops build --example <name>` (`churn-example`, `recs-example` or `helpdesk-example`) builds an example without the menu, and resumes it if it already exists.
+Pass `--no-launch` to record the interview only, and `hops mlsystem create <slug>` to resume a system.
+`hops mlsystem create --example <name>` (`churn-example`, `recs-example` or `helpdesk-example`) builds an example without the menu, and resumes it if it already exists.
 
-`hops build` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
+`hops mlsystem create` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
 A GitHub repository the build creates, an example's included, is named `hops-<slug>`, or `hops-<slug>-<project>` when you already have one of that name.
 **Factory**, in the project menu below Catalog, holds the ML system factory and the medallion layer factory.
 Its ML system factory lists the project's systems for every member, when the project has registered systems or the cluster has the terminal: each with its type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a GitHub repository.
@@ -150,7 +150,7 @@ For an agentic system the LLM's endpoint, model and key are saved as your accoun
 For a batch or real-time system, **Monitoring** sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
 The build turns them into feature logging on the feature view, feature monitoring checks and alerts, and sends a failure alert for every job the system owns to the project's alert receiver.
 The examples are listed under **New ML System**; each opens with its requirements filled in.
-**Create** runs `hops build --answers` in a Terminal tab named after the system, which asks only what the page left out and starts Claude Code on `/hops-build <name>`; the page then locks the requirements and opens the system once it is registered.
+**Create** runs `hops mlsystem create --answers` in a Terminal tab named after the system, which asks only what the page left out and starts Claude Code on `/hops-build <name>`; the page then locks the requirements and opens the system once it is registered.
 
 A system's page shows its phases, what is done and what is left, what it has made, and its requirements, locked.
 **Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
@@ -163,7 +163,7 @@ A system whose directory is deleted disappears from the list.
 **Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
 
 ```bash
-hops mlsystem create [<name>]            # the same as hops build: interview, then build with Claude Code
+hops mlsystem create [<name>]            # interview for a new system, then build it with Claude Code
 hops mlsystem list                       # the project's systems and whether you can open their code
 hops mlsystem register <dir> [--name N]  # register or refresh one by hand
 hops mlsystem remove <name-or-id>        # remove it from the list; its code is kept
