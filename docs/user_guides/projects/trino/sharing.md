@@ -73,7 +73,7 @@ Iceberg and Delta Lake tables can also be read as of an earlier version, with `F
 Hopsworks denies those columns too: every column the table has had at a version that can still be read, so a column dropped or renamed at the source stays denied under its old name.
 This covers Iceberg and Delta Lake catalogs, and the Iceberg and Delta Lake tables of a Lakehouse catalog.
 Hive and Hudi tables cannot be read as of an earlier version.
-An Iceberg table stored outside HopsFS has its earlier columns read one snapshot at a time, and is left out of the share when that takes more than 50 snapshots; the Hopsworks log names the table.
+An Iceberg table whose metadata file is outside HopsFS, larger than 64 MiB, or not readable by the catalog's owner has its earlier columns read one snapshot at a time, and is left out of the share when that takes more than 50 snapshots; the Hopsworks log names the table.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/share-edit-columns.png" alt="Editing the columns of a share" />

@@ -355,7 +355,7 @@ A feature group shared with a subset of its features adds a catalog rule on the 
 - A column that should be hidden is readable: it is missing from the rule's `columns`.
   Each publish denies every column the table has at that moment except the shared ones, so a column added at the source is readable only until the next publish, at most one reconcile interval.
 - A narrowed table is refused although its share is **Active**: the last publish could not read the table's columns, or for an Iceberg or Delta Lake table the columns of its earlier versions, so it left the table out of the rules rather than grant it with columns it could not deny; the Hopsworks log names the table.
-  An Iceberg table stored outside HopsFS is also left out when reading its earlier columns takes more than 50 snapshots.
+  An Iceberg table whose metadata file is outside HopsFS, over 64 MiB or unreadable by that project user is also left out when reading its earlier columns takes more than 50 snapshots.
 - `rules.json` and `rules.json.last-good` differ for minutes: the newest file is not confirmed, so check that the query engine is reachable; the reconcile verifies it again and restores the last good file if the query engine refuses it.
 
 ## Credential files a project supplies
@@ -512,7 +512,8 @@ A publish reads the current columns of each table a share narrows to some of its
 A narrowed Iceberg or Delta Lake table also has the columns of its earlier versions read:
 
 - An Iceberg table on HopsFS: one more statement, and a read of its current metadata file, which lists every schema the table has had.
-- An Iceberg table elsewhere: one more statement, and one per schema the table has had and per snapshot older than its metadata log, at most 50.
+  Hopsworks reads the file as the project user the table's columns are read as, and only up to 64 MiB.
+- Any other Iceberg table: one more statement, and one per schema the table has had and per snapshot older than its metadata log, at most 50.
 - A Delta Lake table: one statement that reads every commit still in the table's log, and one more for the oldest of them.
 
 Saving, editing or revoking a share returns once the share is recorded; the share shows **Applying** or **Revoking** until the publish has run and the query engine has loaded the file, about 15 seconds after the publish ends.
