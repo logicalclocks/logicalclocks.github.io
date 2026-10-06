@@ -111,6 +111,8 @@ _COMMON_VALUES = (
 )
 # Marks a default that is prose rather than a value (see _default_value).
 _PROSE = object()
+# Marks a schema key without a default, or a key no override mentions.
+_ABSENT = object()
 
 # Inline code spans and genuine external links are kept verbatim; everything
 # else has its square brackets escaped (see _neutralize_markdown_refs). The link
@@ -149,6 +151,8 @@ class _Row:
     type_: str
     default: str
     description: str
+    # Extra facts for the entry's first line: schema constraints, overrides.
+    notes: tuple[str, ...] = ()
 
 
 def _neutralize_markdown_refs(text: str) -> str:
@@ -353,16 +357,67 @@ def _resolve_ref(node: dict, defs: dict) -> dict:
     return {**defs[ref.removeprefix("#/$defs/")], **siblings}
 
 
-def _schema_rows(schema: dict, prefix: str) -> list[_Row]:
+def _helm_merge(base: dict, override: dict) -> dict:
+    """Coalesce two layers of Helm values the way Helm does.
+
+    Maps merge key by key, any other value (lists included) replaces the base
+    one, and a null removes the key; it is kept here as None, which is what
+    the chart's templates then see.
+    """
+    merged = dict(base)
+    for key, value in override.items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = _helm_merge(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
+
+
+def _json_code(value: object) -> str:
+    return f"`{json.dumps(value, separators=(',', ':'))}`"
+
+
+def _override_note(chart_default: object, chart: str) -> str:
+    if chart_default is _ABSENT:
+        return f"set by Hopsworks, the `{chart}` chart has no default"
+    if len(_json_code(chart_default)) > _MAX_INLINE_DEFAULT:
+        return f"Hopsworks overrides the `{chart}` chart default"
+    return (
+        f"Hopsworks overrides the `{chart}` chart default {_json_code(chart_default)}"
+    )
+
+
+def _constraints(node: dict) -> tuple[str, ...]:
+    # `required` is left out: it means "present when the parent object is",
+    # which the defaults already satisfy, so it would read as "you must set it".
+    notes = [
+        f"{word} {_json_code(node[word])}"
+        for word in ("minimum", "maximum")
+        if word in node
+    ]
+    if "pattern" in node:
+        notes.append(f"pattern `{node['pattern']}`")
+    examples = node.get("examples") or ([node["example"]] if "example" in node else [])
+    if examples:
+        notes.append(f"example {_json_code(examples[0])}")
+    return tuple(notes)
+
+
+def _schema_rows(
+    schema: dict, prefix: str, overrides: dict | None = None, chart: str = ""
+) -> list[_Row]:
     """Flatten a values.schema.json into rows keyed under ``prefix``.
 
-    Array item properties are listed as ``key[].field``. Only local
-    ``#/$defs/`` references are resolved.
+    ``overrides`` are the values the parent chart sets for this one; their
+    effect replaces the schema default, and the entry names the ``chart``'s
+    own default. Overrides under array items are not applied. Array item
+    properties are listed as ``key[].field``. Only local ``#/$defs/``
+    references are resolved.
     """
     defs = schema.get("$defs") or {}
     rows: list[_Row] = []
 
-    def _walk(node: dict, path: str) -> None:
+    def _walk(node: dict, path: str, override: object) -> None:
         for name, child in (node.get("properties") or {}).items():
             child = _resolve_ref(child, defs)
             key = f"{path}.{name}"
@@ -374,16 +429,55 @@ def _schema_rows(schema: dict, prefix: str) -> list[_Row]:
                 description = f"{description} One of: {allowed}.".strip()
             if isinstance(type_, list):
                 type_ = "|".join(type_)
-            default = ""
-            if "default" in child:
-                default = f"`{json.dumps(child['default'], separators=(',', ':'))}`"
-            rows.append(_Row(key, type_, default, description))
-            _walk(child, key)
+            value = child.get("default", _ABSENT)
+            notes: tuple[str, ...] = ()
+            child_override = (
+                override.get(name, _ABSENT) if isinstance(override, dict) else _ABSENT
+            )
+            # A map override on an object with declared properties lands on
+            # the child entries instead.
+            if child_override is not _ABSENT and not (
+                child.get("properties") and isinstance(child_override, dict)
+            ):
+                effective = child_override
+                if isinstance(child_override, dict) and isinstance(value, dict):
+                    effective = _helm_merge(value, child_override)
+                if effective != value:
+                    notes = (_override_note(value, chart),)
+                    value = effective
+            default = "" if value is _ABSENT else _json_code(value)
+            notes += _constraints(child)
+            rows.append(_Row(key, type_, default, description, notes))
+            _walk(child, key, child_override)
             if isinstance(child.get("items"), dict):
-                _walk(_resolve_ref(child["items"], defs), f"{key}[]")
+                _walk(_resolve_ref(child["items"], defs), f"{key}[]", _ABSENT)
 
-    _walk(schema, prefix)
+    _walk(schema, prefix, overrides or {})
     return rows
+
+
+def _undeclared_overrides(schema: dict, overrides: dict, prefix: str) -> list[str]:
+    """Return the override keys the schema does not declare.
+
+    Below a free-form map (an object without declared properties) any key is
+    accepted. An undeclared key is usually an override the chart has renamed
+    or dropped, which then silently stops applying.
+    """
+    defs = schema.get("$defs") or {}
+    found: list[str] = []
+
+    def _walk(node: dict, override: object, path: str) -> None:
+        properties = node.get("properties")
+        if not properties or not isinstance(override, dict):
+            return
+        for name, value in override.items():
+            if name in properties:
+                _walk(_resolve_ref(properties[name], defs), value, f"{path}.{name}")
+            else:
+                found.append(f"{path}.{name}")
+
+    _walk(schema, overrides, prefix)
+    return found
 
 
 def _dependency_schema(subchart: Path, name: str, version: str) -> dict | None:
@@ -484,6 +578,7 @@ def _render_entries(rows: list[_Row]) -> str:
         facts = [f"Type `{row.type_}`"] if row.type_ else []
         if row.default and not long_default:
             facts.append(f"default {_neutralize_markdown_refs(row.default)}")
+        facts += [_neutralize_markdown_refs(note) for note in row.notes]
         lines = [term, f":   {', '.join(facts) or 'Value'}."]
         if row.description:
             description = _autolink(_neutralize_markdown_refs(row.description))
@@ -640,9 +735,9 @@ def _schema_section(prefix: str, name: str, link: str, rows: list[_Row]) -> str:
     key = prefix.split(".")[0]
     intro = (
         f"These are the values of the {link} chart, set under `{prefix}`.\n"
-        "The defaults are that chart's own.\n"
-        f"Hopsworks overrides some of them: see the `{key}` and `{prefix}` "
-        "defaults above."
+        "The defaults are what Hopsworks deploys: the chart's own, with the "
+        f"`{key}` and `{prefix}` overrides above applied.\n"
+        "Where Hopsworks overrides a value, the entry also gives the chart's own default."
     )
     anchor = f"helm-values-{prefix}"
     title = _heading("##", f"`{name}` chart values", anchor)
@@ -689,6 +784,7 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
         )
         return
     meta = _load_yaml(chart / "Chart.yaml")
+    root_values = _load_yaml(chart / "values.yaml")
     version, app_version = meta.get("version", ""), meta.get("appVersion", "")
     note = f"_Generated from the Hopsworks Helm chart `{version}`"
     note += f" (Hopsworks `{app_version}`)._" if app_version else "._"
@@ -746,8 +842,21 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
                     "run `helm dependency build` there to include it"
                 )
                 continue
-            prefix = f"{key}.{dep.get('alias') or dep['name']}"
-            page.schemas.append((prefix, dep, _schema_rows(schema, prefix)))
+            dep_key = dep.get("alias") or dep["name"]
+            prefix = f"{key}.{dep_key}"
+            # What Hopsworks deploys: the dependency's defaults, then the
+            # subchart's values for it, then the root chart's.
+            overrides = _helm_merge(
+                _load_yaml(subchart / "values.yaml").get(dep_key) or {},
+                (root_values.get(key) or {}).get(dep_key) or {},
+            )
+            problems += [
+                f"Hopsworks overrides {path}, which the {dep['name']} "
+                f"{dep['version']} schema does not declare"
+                for path in _undeclared_overrides(schema, overrides, prefix)
+            ]
+            rows = _schema_rows(schema, prefix, overrides, dep["name"])
+            page.schemas.append((prefix, dep, rows))
         pages[key] = page
     leftover = [row for rows in by_key.values() for row in rows]
     unplaced = sorted(set(by_key) - _NO_PAGE)
@@ -843,8 +952,9 @@ def gen_helm_values(
         bool,
         typer.Option(
             help="Fail when a top-level key has no page, an upstream chart has "
-            "no docs link, a common value is missing or a rendered schema is "
-            "absent (the PR check)."
+            "no docs link, a common value is missing, a rendered schema is "
+            "absent, or an override names a key that schema does not declare "
+            "(the PR check)."
         ),
     ] = False,
 ) -> None:
