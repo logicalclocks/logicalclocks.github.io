@@ -480,6 +480,34 @@ def _undeclared_overrides(schema: dict, overrides: dict, prefix: str) -> list[st
     return found
 
 
+def _null_override_problems(
+    override: object, keys: list[str], prefix: str
+) -> list[str]:
+    """Report the keys an override sets to null although keys under them are listed.
+
+    Helm removes such a key with everything below it, while the entries under
+    it keep showing their chart defaults and "Defaults as YAML" rebuilds them.
+    """
+    found: list[str] = []
+
+    def _walk(node: object, path: str) -> None:
+        if not isinstance(node, dict):
+            return
+        for name, value in node.items():
+            # Keys quote a segment that contains a dot.
+            child = f'{path}."{name}"' if "." in str(name) else f"{path}.{name}"
+            if value is not None:
+                _walk(value, child)
+            elif any(k.startswith((f"{child}.", f"{child}[")) for k in keys):
+                found.append(
+                    f"Hopsworks sets {child} to null, which removes the values "
+                    "listed under it, but their entries still show the chart defaults"
+                )
+
+    _walk(override, prefix)
+    return found
+
+
 def _dependency_schema(subchart: Path, name: str, version: str) -> dict | None:
     """Return the values.schema.json of a subchart's vendored dependency.
 
@@ -913,7 +941,12 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
             for dep in _load_yaml(subchart / "Chart.yaml").get("dependencies") or []
             if not str(dep.get("repository", "")).startswith("file://")
         ]
-        rows = _deployed_rows(by_key.pop(key, []), subchart, root_values.get(key))
+        rows = by_key.pop(key, [])
+        root_override = root_values.get(key)
+        problems += _null_override_problems(
+            root_override, [row.key for row in rows], key
+        )
+        rows = _deployed_rows(rows, subchart, root_override)
         page = _Page(stub, rows, upstream, [])
         for dep in upstream:
             if _RENDERED_SCHEMAS.get(key) != dep["name"]:
@@ -939,6 +972,9 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
                 for path in _undeclared_overrides(schema, overrides, prefix)
             ]
             rows = _schema_rows(schema, prefix, overrides, dep["name"])
+            problems += _null_override_problems(
+                overrides, [row.key for row in rows], prefix
+            )
             page.schemas.append((prefix, dep, rows))
         pages[key] = page
     leftover = [row for rows in by_key.values() for row in rows]
@@ -1066,8 +1102,9 @@ def gen_helm_values(
         typer.Option(
             help="Fail when a top-level key has no page, an upstream chart has "
             "no docs link, a common value is missing, a rendered schema is "
-            "absent, an override names a key that schema does not declare, or "
-            "two entries on a page share an anchor (the PR check)."
+            "absent, an override names a key that schema does not declare, "
+            "two entries on a page share an anchor, or an override sets a key "
+            "to null with values listed under it (the PR check)."
         ),
     ] = False,
 ) -> None:
