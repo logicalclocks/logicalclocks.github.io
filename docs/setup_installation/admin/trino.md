@@ -265,6 +265,7 @@ The rules the query engine enforces can be read under **Cluster Settings** → *
 Beside it, `access-control/rules.json.last-good` is the last file the query engine loaded.
 They differ from a publish until Hopsworks confirms the query engine loaded the new file, a few seconds later.
 If they stay different, the new file is not confirmed yet, for example because the query engine was unreachable, and the next reconcile checks again.
+That check only happens while **trino_reconcile_enabled** is on.
 A file the query engine refused does not stay: the last good file goes back in its place, and the shares the refused file added are marked **Failed**.
 The groups the rules name are in `auth/group.db`.
 
@@ -444,6 +445,11 @@ Trino behavior can be customized through cluster configuration variables. To mod
 - **trino_default_catalog**: Default catalog of the Superset database connections created for new project members (default: `delta`).
   Connections created before a change keep the catalog they were created with.
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
+- **trino_reconcile_enabled**: Rebuild the login and group files from the database and republish the access-control rules on the reconcile interval (default: `true`).
+  Do not disable it.
+  It is what confirms a published rules file once the query engine was unreachable when Hopsworks first checked: without it, shares stay **Applying** or **Revoking** and the new file never becomes the last good one, until another share change publishes again.
+  It is also what brings a changed base policy from a chart upgrade to the query engine, and what replaces a rules, login or group file that was edited, corrupted or deleted.
+- **trino_reconcile_interval_ms**: How often the reconcile runs, in milliseconds (default: `300000`)
 - **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount][recovering-catalog-files-lost-from-the-mount])
 - **trino_catalog_max_per_project**: Catalogs a *newly created* project may create (default: `10`).
   It seeds each project's own allowance, which is then edited per project under Cluster Settings, Projects; changing it does not move the allowance of a project that already exists.
