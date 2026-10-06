@@ -1,7 +1,7 @@
 import typer
 
 from .check import check
-from .helm_values import gen_helm_values
+from .helm_values import gen_helm_values, reset_helm_values
 from .linkchecker import linkchecker
 from .markdownlint import markdownlint
 from .serve import serve
@@ -16,3 +16,4 @@ cli.command()(markdownlint)
 cli.command()(linkchecker)
 cli.command()(snakeoil)
 cli.command()(gen_helm_values)
+cli.command()(reset_helm_values)
