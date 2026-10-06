@@ -12,10 +12,15 @@ Only a small subset of these values is needed for a typical install; the table b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791274048` (Hopsworks `5.2.0`)._
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| airflow | object | `{"csi":{}}` | override airflow values |
+| arrowflight | object | `{}` | override arrow flight values |
+| certs-operator | object | `{}` | override certs-operator values |
+| consul | object | `{"consul":{"server":{"storageClass":null}}}` | override consul values |
+| docker-registry | object | `{"storageClassName":null}` | override docker-registry values |
 | global._hopsworks.airflow.enabled | bool | `true` | Enable or disable the installation of the airflow sub chart |
 | global._hopsworks.airflow.keysSecretName | string | `"hopsworks-airflow-keys"` | Name of the Secret holding the shared-bearer secret that hopsworks-instance uses to call the Airflow `/auth/internal/*` routes. Must match airflow.airflowApi.keysSecretName so the same Secret is mounted on both sides. The default `airflow-webserver-airflow-crypto-material` is the cert-only secret and does NOT contain `internal-shared-secret`, so the hopsworks-instance pod fails to mount on a fresh v3 install. |
 | global._hopsworks.airflowApiKeySecretName | string | `"airflow-api-key"` |  |
@@ -161,11 +166,6 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.
 | global._kserve.servingruntime.vllmopenai | object | `{"tag":"v0.28.0"}` | vLLM-OpenAI runtime image tag. Drives both the kserve ClusterServingRuntime image and the kube_serving_vllm_versions hopsworks variable seed. |
 | global.imageDigests | object | `{}` | map image name to sha digest to be used instead of tags for reproducible deployment  |
 | global.unmanagedLoadBalancers | object | `{}` | Load balancer configuration when using unmanaged LB, in AWS is the TargetGroup ARNs for each service       |
-| airflow | object | `{"csi":{}}` | override airflow values |
-| arrowflight | object | `{}` | override arrow flight values |
-| certs-operator | object | `{}` | override certs-operator values |
-| consul | object | `{"consul":{"server":{"storageClass":null}}}` | override consul values |
-| docker-registry | object | `{"storageClassName":null}` | override docker-registry values |
 | grafana | object | `{"grafana":{"global":{"imageRegistry":"docker.hops.works"}}}` | override grafana values |
 | hive | object | `{}` | override hive values |
 | hopsfs | object | `{"datanode":{"count":5,"storage":{"size":"100Gi","storageClassName":null}},"namenode":{"resources":{"limits":{"memory":"2048Mi"},"requests":{"memory":"1024Mi"}}},"objectStorage":{"enabled":true}}` | override hopsfs values |
@@ -185,9 +185,9 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.
 | prometheus | object | `{"prometheus":{"server":{"persistentVolume":{"enabled":true,"storageClass":null}}}}` | override prometheus values |
 | ray | object | `{}` | override ray values |
 | rondb | object | `{"rondb":{"clusterSize":{"activeDataReplicas":2,"maxNumMySQLServers":1,"maxNumRdrs":2,"minNumMySQLServers":1,"minNumRdrs":1,"numNodeGroups":1},"enableSecurityContext":true,"images":{"mysqldExporter":{"registry":"docker.hops.works"},"rondb":{"registry":"docker.hops.works"},"toolbox":{"name":"hwutils","registry":"docker.hops.works","tag":"1.10-SNAPSHOT"}},"meta":{"mysqld":{"externalLoadBalancer":{"annotations":{},"class":null,"enabled":true,"name":"mysqld-external"}},"rdrs":{"externalLoadBalancer":{"annotations":{},"class":null,"enabled":true,"name":"rdrs-external"},"statefulSet":{"endToEndTls":{"enabled":true}}}},"mysql":{"credentialsSecretName":"mysql-users-secrets","exporter":{"enabled":true},"users":[{"host":"%","privileges":[{"database":"*","privileges":["ALL"],"table":"*","withGrantOption":true}],"username":"hopsworksroot"}]},"networkPolicy":{"mgmds":{"ingressSelectors":[{"podSelector":{"matchLabels":{"access":"mgmd-and-ndbmtd"}}}]},"ndbmtds":{"ingressSelectors":[{"podSelector":{"matchLabels":{"access":"mgmd-and-ndbmtd"}}}]}},"resources":{"requests":{"storage":{"classes":{"binlogFiles":null,"default":null,"diskColumns":null}}}},"serviceAccountAnnotations":{}}}` | override rondb values |
-| spark | object | `{}` | override sparkt values |
-| superset | object | `{"mysql":{"enabled":true},"superset":{"redis":{"enabled":true}}}` | override  superset values |
-| trino | object | `{}` | override  trino values |
+| spark | object | `{}` | override spark values |
+| superset | object | `{"mysql":{"enabled":true},"superset":{"redis":{"enabled":true}}}` | override superset values |
+| trino | object | `{}` | override trino values |
 | vpa | object | `{}` | override vpa values |
 | airflow.airflowApi.basePath | string | `"/hopsworks-api/airflow"` |  |
 | airflow.airflowApi.bundleRoot | string | `"/opt/airflow/hopsworks-bundle/dags"` |  |
@@ -1412,7 +1412,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.
 | hopsworks.variables.elastic_logs_index_expiration | string | `"604800000"` |  |
 | hopsworks.variables.elastic_opendistro_security_enabled | string | `"true"` |  |
 | hopsworks.variables.elastic_user | string | `"elastic"` |  |
-| hopsworks.variables.elastic_version | string | `"2.19.5"` |  |
+| hopsworks.variables.elastic_version | string | `"3.8.0"` |  |
 | hopsworks.variables.enable_adls_storage_connectors | string | `"false"` |  |
 | hopsworks.variables.enable_bigquery_storage_connectors | string | `"true"` |  |
 | hopsworks.variables.enable_bring_your_own_kafka | string | `"false"` |  |
@@ -1522,7 +1522,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.
 | hopsworks.variables.kafka_version | string | `"4.3.1"` |  |
 | hopsworks.variables.kibana_https_enabled | string | `"true"` |  |
 | hopsworks.variables.kibana_multi_tenancy_enabled | string | `"true"` |  |
-| hopsworks.variables.kibana_version | string | `"2.19.5"` |  |
+| hopsworks.variables.kibana_version | string | `"3.8.0"` |  |
 | hopsworks.variables.kube_api_max_attempts | string | `"20"` |  |
 | hopsworks.variables.kube_hopsworks_default_service_account | string | `"hopsworks-default"` |  |
 | hopsworks.variables.kube_knative_domain_name | string | `"hopsworks.ai"` |  |
@@ -2435,7 +2435,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.
 | olk.dashboard.startup_timeout | int | `5000` |  |
 | olk.dashboard.tolerations | list | `[]` |  |
 | olk.dashboard.topologySpreadConstraint | object | `{}` | The default topology spread constraint. If not defined the global topology spread constraint would be used instead. |
-| olk.dashboard.version | string | `"2.19.6.7"` |  |
+| olk.dashboard.version | string | `"3.8.0.0"` |  |
 | olk.filebeat.config.name | string | `"filebeat-config"` |  |
 | olk.filebeat.enabled | bool | `true` |  |
 | olk.filebeat.extraNamespaces | list | `[]` | extra namespaces to process their container logs. By default the release name space and the Hopsworks project namespaces are whitelisted. |
@@ -2517,10 +2517,12 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.
 | olk.opensearch.externalLoadBalancer.enabled | string | `nil` | Enable External Load Balancers for Opensearch. If not set the .global._hopsworks.externalLoadBalancers.enabled will be used instead |
 | olk.opensearch.externalLoadBalancer.managed | string | `nil` | Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead |
 | olk.opensearch.externalLoadBalancer.nodeSelector | object | `{}` | selector for nodes the load balancer can use to route traffic |
+| olk.opensearch.indexUpgrade.activeDeadlineSeconds | int | `3600` | Deadline for the whole pre-upgrade index pass. A reindex copies each index twice to preserve its name, so raise this for clusters holding large pre-2.0 indices; the hook prints the sizes and an estimate before it starts. Bounds a stuck copy so it fails the hook instead of hanging the upgrade. The timeout given to helm upgrade has to be at least this long, or helm gives up on the hook first. The deadline is per release: a satellite has its own OpenSearch and its own pass at its own upgrade, so it sets its own value. Upgrade every satellite to 5.1 before central moves to 5.2, since a satellite still on 1.3 is two majors behind a 5.2 central. A satellite moving to 5.2 ahead of central is untested. |
+| olk.opensearch.indexUpgrade.enabled | bool | `true` | Let the pre-upgrade hook fix a cluster that still holds indices created before OpenSearch 2.0, which a 3.x node refuses to boot with. It reindexes the indices that carry data, preserving their names, and deletes only the ones the platform recreates or expires by itself (logs, audit, `pypi_libraries_*`, query insights and security analytics plugin indices); anything it does not recognise is reindexed, never deleted, including `featurestore`, `projects`, ISM policies and `.kibana*`. Embedding indices (`<projectId>__embedding*`) come back on the faiss engine rather than nmslib, which is what Hopsworks 5.1 creates and the only one of the two that accepts the filter the 5.1+ client sends; approximate neighbour results can shift slightly. Every other index keeps its engine. While it copies, every client but the admin certificate is refused, reads included, so Hopsworks search, OpenSearch Dashboards, logstash and OnlineFS get a 403 until the hook exits; a hook killed outright leaves them refused until the upgrade is rerun. Set to false to have the hook report the offending indices and fail instead, leaving the remediation to the operator. A cluster still running OpenSearch 1.x is refused rather than fixed, whatever this is set to: reindexing on a 1.x node recreates the index pre-2.0 again, so a 1.x cluster has to be upgraded to a 2.x Hopsworks release first. |
 | olk.opensearch.jvmOpts | string | `""` | JVM Options to provide to Opensearch |
 | olk.opensearch.knn.cache_expire | bool | `true` |  |
-| olk.opensearch.knn.circuit_breaker.percent | float | `0.75` |  |
-| olk.opensearch.knn.circuit_breaker.triggered | bool | `true` |  |
+| olk.opensearch.knn.circuit_breaker.percent | float | `75` | knn.circuit_breaker.unset.percentage: a tripped k-NN breaker clears once the graph cache falls below this percentage (0 to 100) of knn.memory.circuit_breaker.limit |
+| olk.opensearch.knn.circuit_breaker.triggered | bool | `false` | knn.circuit_breaker.triggered is a flag the k-NN plugin sets on a memory trip and clears itself. Keep it false: OpenSearch 2.6 and later apply it at node start, and true rejects every vector write, translog replay included, until the plugin clears it |
 | olk.opensearch.knn.index_threads | int | `1` |  |
 | olk.opensearch.knn.memory.circuit_breaker.limit | string | `"50%"` |  |
 | olk.opensearch.mandatoryIndices\[0\] | string | `"projects"` |  |
@@ -2556,14 +2558,14 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791182654` (Hopsworks `5.
 | olk.opensearch.service.headlessName | string | `"opensearch-headless"` |  |
 | olk.opensearch.serviceAccount.annotations | object | `{}` | service account annotations |
 | olk.opensearch.serviceAccountName | string | `"opensearch"` |  |
-| olk.opensearch.setVMMaxMapCount | bool | `true` | https://docs.opensearch.org/2.19/install-and-configure/install-opensearch/index/#important-settings |
+| olk.opensearch.setVMMaxMapCount | bool | `true` | https://docs.opensearch.org/3.8/install-and-configure/install-opensearch/index/#important-settings |
 | olk.opensearch.storageClassName | string | `nil` | storage class name |
 | olk.opensearch.storage_size | string | `"20Gi"` |  |
 | olk.opensearch.tolerations | list | `[]` |  |
 | olk.opensearch.topologySpreadConstraint | object | `{}` | The default topology spread constraint. If not defined the global topology spread constraint would be used instead. |
 | olk.opensearch.transport_port | int | `9300` |  |
 | olk.opensearch.ttlSecondsAfterFinished | string | `nil` | TTL in seconds for the create-repos Job. Overrides global default. |
-| olk.opensearch.version | string | `"2.19.6.3"` |  |
+| olk.opensearch.version | string | `"3.8.0.0"` |  |
 | olk.prometheus-elasticsearch-exporter | object | `{"es":{"sslSkipVerify":true,"uri":"https://elastic_exporter:elastic_exporterpw@{{ include \"olk.exporter.opensearchHost\" . }}:9200"},"image":{"registry":"docker.hops.works","repository":"prometheus/elasticsearch-exporter","tag":"1.11.0-alpine-h1.1"},"nodeSelector":{},"resources":{"limits":{"cpu":"800m","memory":"200Mi"},"requests":{"cpu":"300m","memory":"128Mi"}},"service":{"annotations":{"prometheus.io/path":"/metrics","prometheus.io/port":"9108","prometheus.io/scheme":"http","prometheus.io/scrape":"true"},"httpPort":9108},"tolerations":[]}` | override prometheus elasticsearch exporter values |
 | onlinefs.apiKey.email | string | `"onlinefs@hopsworks.ai"` |  |
 | onlinefs.apiKey.password | string | `"onlinefspw"` |  |
