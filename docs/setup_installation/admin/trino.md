@@ -518,9 +518,11 @@ Measured on a development cluster with a PostgreSQL source: four shares, each of
 | 0 (one schema shared whole) | 0 | 5.6 s | 25 KB | 35 | 0.9 s |
 | 25 | 100 | 10.9 s | 204 KB | 231 | 0.9 s |
 | 100 | 400 | 21 s | 744 KB | 831 | 0.9 s |
-| 300 | 1,200 | about 55 s, two shares saved | 1.28 MB | not measured | not measured |
+| 300 | 1,200 | not measured | 2.19 MB | 2,431 | 0.9 s |
 
 The query time is through the Hopsworks API, for a receiving project, the catalog's owner and `SELECT 1` alike, and did not change with the size of the file.
+The publish duration at 300 tables per share was not measured on its own.
+With the four shares saved one after another, a save took 5 to 7 seconds at 100 tables per share and 16 to 17 seconds at 300, mostly checking the tables and columns the share names, and all four shares were **Active** 41 and 119 seconds after the last save.
 A publish costs about 75 ms per distinct narrowed table on top of a fixed 5 seconds.
 The file grows by about 1.8 KB per narrowed table, mostly the hidden columns each narrowed rule denies.
 
