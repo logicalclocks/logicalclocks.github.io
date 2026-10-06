@@ -601,16 +601,18 @@ def _key_path(key: str) -> list[str | int]:
 def _set_path(tree: dict, path: list[str | int], value: object) -> None:
     node: object = tree
     for step, next_step in zip(path, path[1:]):
-        child: dict | list = {} if isinstance(next_step, str) else []
         if isinstance(node, list) and isinstance(step, int):
             node.extend([None] * (step + 1 - len(node)))
-            if node[step] is None:
-                node[step] = child
-            node = node[step]
+            current = node[step]
         elif isinstance(node, dict):
-            node = node.setdefault(step, child)
+            current = node.get(step)
         else:
             return
+        # A parent's scalar or null default gives way to a listed child.
+        if not isinstance(current, (dict, list)):
+            current = {} if isinstance(next_step, str) else []
+            node[step] = current
+        node = current
     last = path[-1]
     if isinstance(node, list) and isinstance(last, int):
         node.extend([None] * (last + 1 - len(node)))
@@ -622,16 +624,14 @@ def _set_path(tree: dict, path: list[str | int], value: object) -> None:
 def _values_file_block(rows: list[_Row]) -> str | None:
     """Return the rows' defaults nested as in a values file, as a collapsed block.
 
-    Only keys without listed children are set, so an object default never
-    shadows the entries under it. Array item fields (``key[].field``) and
-    prose defaults are left out. None when nothing is left.
+    Parents are set before their children, so a listed child refines an
+    object default and the keys it does not list stay. Array item fields
+    (``key[].field``) and prose defaults are left out. None when nothing is
+    left.
     """
-    keys = sorted(row.key for row in rows)
     tree: dict = {}
-    for row in sorted(rows, key=lambda r: r.key):
+    for row in sorted(rows, key=lambda r: len(_key_path(r.key))):
         if "[]" in row.key:
-            continue
-        if any(k.startswith((f"{row.key}.", f"{row.key}[")) for k in keys):
             continue
         value = _default_value(row.default)
         if value is not _PROSE:
