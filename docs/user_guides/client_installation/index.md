@@ -163,6 +163,7 @@ A system whose directory is deleted disappears from the list.
 **Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
 
 ```bash
+hops mlsystem create [<name>]            # the same as hops build: interview, then build with Claude Code
 hops mlsystem list                       # the project's systems and whether you can open their code
 hops mlsystem register <dir> [--name N]  # register or refresh one by hand
 hops mlsystem remove <name-or-id>        # remove it from the list; its code is kept
@@ -217,6 +218,7 @@ The layer's page shows each mart with its phases, tables, jobs and verification 
 ```bash
 hops medallion silver --answers answers.json      # record a silver layer and build it with Claude Code
 hops medallion gold --answers answers.json        # record a gold layer and its first data mart
+hops medallion create silver|gold --answers answers.json  # the same two commands
 hops medallion mart-add <layer> --answers mart.json        # add a data mart to a gold layer
 hops medallion mart-update <layer> <mart> --answers mart.json  # change a data mart's requirements
 hops medallion mart-delete <layer> <mart> [--tables]       # delete a data mart's jobs, and its own tables
