@@ -352,7 +352,9 @@ A feature group shared with a subset of its features adds a catalog rule on the 
 
 - The share is **Active** but a query is refused: find the share's rules by the receiving project's group, then look for a rule above them that matches the same principal and object first.
 - The share's rules are not in the file: the share is still **Applying**, or it is **Failed** and its status says why.
-- A column that should be hidden is readable: it is missing from the rule's `columns`, typically a column added after the share was saved; saving the share again adds it as unshared.
+- A column that should be hidden is readable: it is missing from the rule's `columns`.
+  Each publish denies every column the table has at that moment except the shared ones, so a column added at the source is readable only until the next publish, at most one reconcile interval.
+- A narrowed table is refused although its share is **Active**: the last publish could not read the table's columns, so it left the table out of the rules rather than grant it with columns it could not deny; the Hopsworks log names the table.
 - `rules.json` and `rules.json.last-good` differ for minutes: the newest file is not confirmed, so check that the query engine is reachable; the reconcile verifies it again and restores the last good file if the query engine refuses it.
 
 ## Credential files a project supplies
@@ -501,6 +503,31 @@ The code's defaults apply until an administrator creates one, so searching for t
 | `max_mountable_secret_upload_bytes` | `33554432` | largest upload request, refused before the body is read |
 
 Turning the store off is described in [Turning the store off][turning-the-store-off].
+
+#### How sharing scales
+
+Every change to a share, and every reconcile, publishes the whole rules file again.
+A publish reads the current columns of each table a share narrows to some of its columns, one statement per table, so its duration grows with the number of distinct narrowed tables across all shares.
+Saving, editing or revoking a share returns once the share is recorded; the share shows **Applying** or **Revoking** until the publish has run and the query engine has loaded the file, about 15 seconds after the publish ends.
+Changes made while a publish runs are applied together by the next one.
+
+Measured on a development cluster with a PostgreSQL source: four shares, each of a project catalog or a private catalog with one of two projects, each narrowed to N tables with two of their six columns shared.
+
+| Tables per share | Narrowed tables in the rules | Publish duration | `rules.json` size | Table rules | Median query time |
+| --- | --- | --- | --- | --- | --- |
+| 0 (one schema shared whole) | 0 | 5.6 s | 25 KB | 35 | 0.9 s |
+| 25 | 100 | 10.9 s | 204 KB | 231 | 0.9 s |
+| 100 | 400 | 21 s | 744 KB | 831 | 0.9 s |
+| 300 | 1,200 | about 55 s, two shares saved | 1.28 MB | not measured | not measured |
+
+The query time is through the Hopsworks API, for a receiving project, the catalog's owner and `SELECT 1` alike, and did not change with the size of the file.
+A publish costs about 75 ms per distinct narrowed table on top of a fixed 5 seconds.
+The file grows by about 1.8 KB per narrowed table, mostly the hidden columns each narrowed rule denies.
+
+With the file above about a megabyte, a query once failed with `Invalid JSON file '/opt/hopsworks/trino/access-control/rules.json'` caused by `java.io.IOException: Input/output error`.
+The query engine reads the file through the HopsFS mount, and the read failed while a new file was replacing it; the file itself was complete.
+The query succeeds when run again.
+Hopsworks does not take such a read failure for a broken file, so it neither restores the last good file nor fails the shares being applied.
 
 ### Test coordinator resource cost
 
