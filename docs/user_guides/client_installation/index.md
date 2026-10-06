@@ -230,6 +230,49 @@ hops factory medallion backfill <name-or-id>              # recompute the layer'
 hops factory medallion delete <name-or-id> --assets       # delete the layer, its jobs and tables; never what it reads
 ```
 
+### Create your own factory
+
+A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
+The **Factory** page shows a section for each of the project's factories, with **New** opening the form it generates.
+The two built-in factories, `mlsystem` and `medallion`, are read-only; clone one to change it.
+
+**Factory > Manage factories** lists every factory with its version and how many systems it built.
+A data owner can create a factory, clone any factory, import a YAML file, export one, enable or disable a project factory, and delete one that has no systems left.
+The editor changes the questions, phases and build instructions as a form or as YAML, previews the form beside it, and saves each change as a new version; a system keeps the version it was built with.
+Importing shows the factory's build instructions in full first: Claude Code follows them in your Terminal, with your credentials.
+
+A clone of a built-in keeps the built-in's form and build; its own questions are recorded in `requirements.extra` and its instructions in `factory.instructions` of each system's `system.yaml`, which the built-in build follows too.
+
+```yaml
+apiVersion: hopsworks.ai/factory/v1
+kind: Factory
+name: churn-review
+title: Churn review
+form:
+  sections:
+    - id: basics
+      title: Basics
+      fields:
+        - {id: name, type: slug, label: Name, required: true}
+        - {id: question, type: textarea, label: "What should it answer?", required: true}
+phases:
+  - {key: build, label: Build, minutes: 20}
+build:
+  skills: [hops-superset]
+  instructions: Build a dashboard that answers requirements.question.
+```
+
+```bash
+hops factory validate churn-review.yaml      # check a definition without a cluster
+hops factory import churn-review.yaml        # review it, then add it to the project
+hops factory clone mlsystem fraud-ml         # start from a built-in
+hops factory export churn-review             # write churn-review.factory.yaml
+hops factory churn-review create --answers answers.json
+hops factory delete churn-review             # refused while it has systems
+```
+
+The `hops-factory` skill lists every field type and rule.
+
 ## Hopsworks Java Library
 
 If you want to interact with the Hopsworks Feature Store from environments such as Spark or Beam, you can use the Hopsworks Feature Store (Hopsworks) Java library.
