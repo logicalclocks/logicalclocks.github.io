@@ -110,7 +110,14 @@ helm dependency build <path-to-hopsworks-helm>/charts/rondb # only needed for th
 uv run --extra cli hopsworks-docs gen-helm-values --chart <path-to-hopsworks-helm>
 ```
 
-This rewrites the pages in place, so restore them (`git checkout docs/setup_installation/common/helm_chart_values/`) before committing.
+This rewrites the pages in place, so put the placeholders back before committing:
+
+```bash
+uv run --extra cli hopsworks-docs reset-helm-values
+```
+
+The reset only touches the text between the generation markers, so edits to a page title or intro survive it.
+The PR check runs the same reset and fails if it changes a committed page, since a committed copy of the values would be published as-is by any build that leaves the page alone.
 
 ## Checking links
 

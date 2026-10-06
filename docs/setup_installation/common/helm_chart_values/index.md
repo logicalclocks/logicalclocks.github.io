@@ -14,6 +14,8 @@ Each page states when its subchart is deployed: when the condition names several
 Every value has its own link (the `#` next to its key), and each section has its defaults as a values file under "Defaults as YAML".
 
 <!-- BEGIN GENERATED VALUES -->
+
 _The values tables are generated from the Hopsworks Helm chart during the documentation build._
-_To preview them locally, run `uv run --extra cli hopsworks-docs gen-helm-values --chart <path-to-hopsworks-helm>`._
+_To preview them locally, run `uv run --extra cli hopsworks-docs gen-helm-values --chart <path-to-hopsworks-helm>`, and `uv run hopsworks-docs reset-helm-values` before committing._
+
 <!-- END GENERATED VALUES -->

@@ -25,6 +25,13 @@ _GLOBAL = "global"
 _VALUES_HEADING = "\n## Values\n"
 _BEGIN = "<!-- BEGIN GENERATED VALUES -->"
 _END = "<!-- END GENERATED VALUES -->"
+# What the committed pages hold between the markers (see reset_helm_values).
+_PLACEHOLDER = "_The values table is generated from the Hopsworks Helm chart during the documentation build._"
+_INDEX_PLACEHOLDER = (
+    "_The values tables are generated from the Hopsworks Helm chart during the documentation build._\n"
+    "_To preview them locally, run `uv run --extra cli hopsworks-docs gen-helm-values --chart <path-to-hopsworks-helm>`,"
+    " and `uv run hopsworks-docs reset-helm-values` before committing._"
+)
 
 # Test-harness settings (loadtest credentials and the like), not deployment
 # configuration.
@@ -875,3 +882,21 @@ def gen_helm_values(
             )
             return
         _generate(charts[0], pages_dir, strict)
+
+
+def reset_helm_values(
+    pages_dir: Annotated[
+        Path,
+        typer.Option(help="Folder of the reference pages to reset."),
+    ] = _DEFAULT_PAGES_DIR,
+) -> None:
+    """Put the committed placeholder back between the markers of every values page.
+
+    Undoes ``gen-helm-values`` in a working copy, since the generated values
+    are never committed; text outside the markers is kept. The PR check runs
+    this and fails when it changes a committed page.
+    """
+    pages = sorted(pages_dir.glob("*.md"))
+    for page in pages:
+        _inject(page, _INDEX_PLACEHOLDER if page.name == _INDEX else _PLACEHOLDER)
+    typer.echo(f"Reset {len(pages)} pages in {pages_dir} to their placeholders")
