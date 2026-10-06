@@ -145,12 +145,14 @@ A GitHub repository the build creates, an example's included, is named `hops-<sl
 **Factory**, in the project menu below Catalog, holds the ML system factory and the medallion layer factory.
 Its ML system factory lists the project's systems for every member, when the project has registered systems or the cluster has the terminal: each with its type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a GitHub repository.
 **Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
-**New ML System** opens the main requirements of a new system: its name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its type (batch, real-time or agentic) with the cadence or the latency and throughput, its data (feature groups in the project, or synthetic data described in a sentence), and how its predictions are used.
+**New ML System** lists three factories, **Batch ML system**, **Real-time ML system** and **Agentic system**, and their examples.
+Each opens its form: the system's name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its targets (a batch system's cadence and run time, a real-time or agentic system's latency and throughput), its data (feature groups in the project, synthetic data described in a sentence, and files), and how its predictions are used.
+Sections with defaults show a one-line summary of their answers, with **Edit** to change them.
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
-For a batch or real-time system, **Monitoring** sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
+For a batch or real-time system, **Monitoring** (collapsed) sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
 The build turns them into feature logging on the feature view, feature monitoring checks and alerts, and sends a failure alert for every job the system owns to the project's alert receiver.
-The examples are listed under **New ML System**; each opens with its requirements filled in.
-**Create** runs `hops factory mlsystem create --answers` in a Terminal tab named after the system, which asks only what the page left out and starts Claude Code on `/hops-build <name>`; the page then locks the requirements and opens the system once it is registered.
+The examples are listed under **New ML System**; each opens its factory's form filled in.
+**Create** runs `hops factory ml-batch create --answers` (or `ml-realtime`, `ml-agent`) in a Terminal tab named after the system, which records it and starts Claude Code on `/hops-build <name>`; the page opens the system once it is registered.
 
 A system's page shows its phases, what is done and what is left, what it has made, and its requirements, locked.
 **Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
@@ -177,13 +179,13 @@ A medallion layer organizes tables as bronze (raw data as it arrived), silver (c
 Hopsworks installs an archived schematized tag, `medallion_table`, whose `layer` is `bronze`, `silver` or `gold` and whose `lifecycle` is `dev`, `staging` or `prod`; every change of a table's value is kept in the tag history.
 When you ingest data with a dltHub data source, **Tag as bronze tables** in the review, off by default, tags every feature group it creates as bronze.
 
-**New Medallion Layer**, in the Factory, builds a silver layer from the project's bronze feature groups.
+**New Medallion Layer**, in the Factory, lists two factories, **Silver layer** and **Gold layer**; the silver one builds a silver layer from the project's bronze feature groups.
 A project without feature groups has nothing to build from: ingest raw data as bronze tables first.
 The page asks for the bronze tables to build from (only those tagged bronze are shown while any are), the silver tasks (deduplicate, cast types, standardize values, handle nulls, validate with a rejects table, protect personal data, conform entities, surrogate keys, referential checks), additional tasks in your own words, the engine, the refresh cadence and the lifecycle.
 The engine is dbt on Trino unless an additional task needs code SQL does not express well, when PySpark is suggested.
 Each bronze table has its own refresh, hourly, daily or weekly; a silver table refreshes as often as its most frequently updated source, and the layer gets one job per refresh, each with its own schedule and freshness target.
 It also asks how the tables behave, with defaults: history (`latest`, one row per key, or `full`, every version by time), deletes in bronze (`ignore` or `propagate`), bronze schema changes (`fail`, or `evolve` by adding new columns), a late-data lookback re-read before each window (none, a day or a week), the share of rejected rows above which a run fails, with an alert when one fails, and a freshness target.
-**Create** runs `hops factory medallion silver --answers` in a Terminal tab named after the layer, which records its specification in `<name>/system.yaml` and starts Claude Code on `/hops-silver <name>`.
+**Create** runs `hops factory medallion-silver create --answers` in a Terminal tab named after the layer, which records its specification in `<name>/system.yaml` and starts Claude Code on `/hops-silver <name>`.
 
 The build profiles the bronze tables, designs the silver tables, writes and tests the code, backfills the whole bronze history once, schedules the job and tags the silver feature groups `layer: silver`, and verifies one window.
 Silver tables are feature groups, materialized, never views, and in third normal form: one table per entity or event, every column depending on its table's key alone, lookups in tables of their own, and no aggregates, which belong in gold.
@@ -199,7 +201,7 @@ Every job has a delete icon that asks whether to also delete the feature groups 
 
 ### Build a gold medallion layer of data marts
 
-**New Medallion Layer** with **gold** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
+**New Medallion Layer** with **Gold layer** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
 The page asks for those queries, the model, the silver tables to read, the standards every data mart follows (naming, modeling, documentation and quality, proposed and editable), and the first data mart.
 
 A gold layer is a set of data marts, each added, changed and deleted on its own, with its own fact and dimension tables and its own jobs, `<layer>-<mart>-<refresh>`, at its own refresh.
@@ -213,7 +215,7 @@ A data mart's requirements are:
 - **Verification**: example questions with the answers expected, in plain English; the totals that must reconcile, and with what; and how refreshes and reruns are proven correct. The build runs every check after the backfill and again after a refresh, records the results, and does not mark the mart built until each passes.
 - **Quality and access**: the invariants to test, what happens when a check fails (fail the run, quarantine the failing rows, or warn), who may read which rows and columns, and the projects it is shared with.
 
-**Create** runs `hops factory medallion gold --answers` and starts Claude Code on `/hops-gold <name>`, which builds each mart: its requirements, the design of its facts and dimensions (a dimension used by several marts is built once and shared), the dbt models with their tests, the backfill with the verification, the schedule and tags (`layer: gold`, the silver tables as parents), and a verified refresh.
+**Create** runs `hops factory medallion-gold create --answers` and starts Claude Code on `/hops-gold <name>`, which builds each mart: its requirements, the design of its facts and dimensions (a dimension used by several marts is built once and shared), the dbt models with their tests, the backfill with the verification, the schedule and tags (`layer: gold`, the silver tables as parents), and a verified refresh.
 The layer's page shows each mart with its phases, tables, jobs and verification results: **Edit** changes its requirements and applies the change, **Add data mart** adds one, and deleting a mart deletes its jobs and, if asked, its tables that no other mart lists.
 
 ```bash
@@ -234,14 +236,16 @@ hops factory medallion delete <name-or-id> --assets       # delete the layer, it
 
 A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
 The **Factory** page shows a section for each of the project's factories, with **New** opening the form it generates.
-The two built-in factories, `mlsystem` and `medallion`, are read-only; clone one to change it.
+The five built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `medallion-silver` and `medallion-gold`, are read-only; clone one to change it.
+A form has no conditions: every question of a section is shown, and a section with defaults can be collapsed to a summary of its answers with **Edit**.
 
 **Factory > Manage factories** lists every factory with its version and how many systems it built.
 A data owner can create a factory, clone any factory, import a YAML file, export one, enable or disable a project factory, and delete one that has no systems left.
 The editor changes the questions, phases and build instructions as a form or as YAML, previews the form beside it, and saves each change as a new version; a system keeps the version it was built with.
 Importing shows the factory's build instructions in full first: Claude Code follows them in your Terminal, with your credentials.
 
-A clone of a built-in keeps the built-in's form and build; its own questions are recorded in `requirements.extra` and its instructions in `factory.instructions` of each system's `system.yaml`, which the built-in build follows too.
+A clone of a built-in keeps the built-in's questions and build; answers the built-in build does not read are recorded in `requirements.extra` and the clone's instructions in `factory.instructions` of each system's `system.yaml`, which the built-in build follows too.
+A definition's questions can be text, numbers, checkboxes, one or some of a list of options, one or several feature groups, a list of entries each with its own questions, and account variables, which are saved in your account and never in `system.yaml`; presets are named sets of starting answers, listed under the factory's **New** button.
 
 ```yaml
 apiVersion: hopsworks.ai/factory/v1
