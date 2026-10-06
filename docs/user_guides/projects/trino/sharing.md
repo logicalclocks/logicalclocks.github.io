@@ -67,10 +67,13 @@ Hopsworks reads the table's columns each time it updates the rules, and at least
 Between the change at the source and the next update, the new column is readable.
 A renamed column loses its mask with its old name and is denied under the new one.
 The sharing page marks such a share with the number of new columns and names them; edit the share and check them to share them.
-While the query engine is restarting, the rules keep the columns recorded when the share was saved until it is back, and a narrowed table whose columns cannot be read is left out of the share until they can.
+While the query engine is restarting, the rules keep denying what they denied before, as well as the columns recorded when the share was saved, until it is back, and a narrowed table whose columns cannot be read is left out of the share until they can.
 
-Iceberg and Delta Lake tables can also be read as of an earlier version, which has the columns the table had then.
-A column dropped or renamed before the table was shared is readable that way, under its old name, until those versions expire.
+Iceberg and Delta Lake tables can also be read as of an earlier version, with `FOR VERSION AS OF` or `FOR TIMESTAMP AS OF`, and such a read has the columns the table had then.
+Hopsworks denies those columns too: every column the table has had at a version that can still be read, so a column dropped or renamed at the source stays denied under its old name.
+This covers Iceberg and Delta Lake catalogs, and the Iceberg and Delta Lake tables of a Lakehouse catalog.
+Hive and Hudi tables cannot be read as of an earlier version.
+An Iceberg table stored outside HopsFS has its earlier columns read one snapshot at a time, and is left out of the share when that takes more than 50 snapshots; the Hopsworks log names the table.
 
 <figure>
   <img src="../../../../assets/images/guides/trino/share-edit-columns.png" alt="Editing the columns of a share" />
@@ -195,6 +198,7 @@ Adding features to a shared feature group does not widen the share: a new featur
 The access rules are updated before the request that adds the features returns.
 A column that reaches the table some other way, such as a Delta write that merges a new column into the schema, is denied too, once Hopsworks next reads the table's columns: at least every five minutes by default, and on every share change.
 If the table's columns cannot be read, the share is left out of the rules until they can.
+The columns an Iceberg or Delta Lake feature group had at an earlier version are denied as well, as described in [Sharing some columns of a table][sharing-some-columns-of-a-table].
 Unsharing the feature group, or deleting it, removes access within seconds.
 
 ### Feature groups that are not queryable

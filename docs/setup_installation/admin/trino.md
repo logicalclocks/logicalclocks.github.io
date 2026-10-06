@@ -339,7 +339,7 @@ A share of catalog `seeda__postgresql` with `seedc`, covering table `public.cust
 The list of denied columns in the rule is shortened here.
 
 - The catalog rule makes the catalog visible to the receiving project, read-only.
-- The table rule grants `SELECT` on the table and lists the columns it denies: the unchecked ones, and the connector's hidden columns, such as `$path`.
+- The table rule grants `SELECT` on the table and lists the columns it denies: the unchecked ones, the connector's hidden columns, such as `$path`, and, for an Iceberg or Delta Lake table, every column the table had at a version that can still be read.
   A table shared whole has a table rule without `columns`, a schema shared whole has `table: .*`, and a catalog shared whole has `schema: .*` too.
 - The rule after it, with no privileges, denies the table's metadata tables, such as `customers$partitions`, which Trino checks by their own name.
 - The function rule denies the receiving project the catalog's functions, which the base policy would otherwise give it.
@@ -354,7 +354,8 @@ A feature group shared with a subset of its features adds a catalog rule on the 
 - The share's rules are not in the file: the share is still **Applying**, or it is **Failed** and its status says why.
 - A column that should be hidden is readable: it is missing from the rule's `columns`.
   Each publish denies every column the table has at that moment except the shared ones, so a column added at the source is readable only until the next publish, at most one reconcile interval.
-- A narrowed table is refused although its share is **Active**: the last publish could not read the table's columns, so it left the table out of the rules rather than grant it with columns it could not deny; the Hopsworks log names the table.
+- A narrowed table is refused although its share is **Active**: the last publish could not read the table's columns, or for an Iceberg or Delta Lake table the columns of its earlier versions, so it left the table out of the rules rather than grant it with columns it could not deny; the Hopsworks log names the table.
+  An Iceberg table stored outside HopsFS is also left out when reading its earlier columns takes more than 50 snapshots.
 - `rules.json` and `rules.json.last-good` differ for minutes: the newest file is not confirmed, so check that the query engine is reachable; the reconcile verifies it again and restores the last good file if the query engine refuses it.
 
 ## Credential files a project supplies
@@ -508,10 +509,16 @@ Turning the store off is described in [Turning the store off][turning-the-store-
 
 Every change to a share, and every reconcile, publishes the whole rules file again.
 A publish reads the current columns of each table a share narrows to some of its columns, one statement per table, so its duration grows with the number of distinct narrowed tables across all shares.
+A narrowed Iceberg or Delta Lake table also has the columns of its earlier versions read:
+
+- An Iceberg table on HopsFS: one more statement, and a read of its current metadata file, which lists every schema the table has had.
+- An Iceberg table elsewhere: one more statement, and one per schema the table has had and per snapshot older than its metadata log, at most 50.
+- A Delta Lake table: one statement that reads every commit still in the table's log, and one more for the oldest of them.
+
 Saving, editing or revoking a share returns once the share is recorded; the share shows **Applying** or **Revoking** until the publish has run and the query engine has loaded the file, about 15 seconds after the publish ends.
 Changes made while a publish runs are applied together by the next one.
 
-Measured on a development cluster with a PostgreSQL source: four shares, each of a project catalog or a private catalog with one of two projects, each narrowed to N tables with two of their six columns shared.
+Measured on a development cluster with a PostgreSQL source, which has no earlier versions to read: four shares, each of a project catalog or a private catalog with one of two projects, each narrowed to N tables with two of their six columns shared.
 
 | Tables per share | Narrowed tables in the rules | Publish duration | `rules.json` size | Table rules | Median query time |
 | --- | --- | --- | --- | --- | --- |
