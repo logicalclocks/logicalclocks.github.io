@@ -141,7 +141,7 @@ Pass `--no-launch` to record the system only.
 
 `hops factory run` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
 A GitHub repository the build creates, an example's included, is named `hops-<slug>`, or `hops-<slug>-<project>` when you already have one of that name.
-**Factory**, in the project menu below Catalog, holds the ML system factory and the medallion layer factory.
+**Factory**, in the project menu below Catalog, holds the ML system factory and the analytics layer factory.
 Its ML system factory lists the project's systems for every member, when the project has registered systems or the cluster has the terminal: each with its type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a GitHub repository.
 **Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
 **New ML System** lists three factories, **Batch ML system**, **Real-time ML system** and **Agentic system**, and their examples.
@@ -174,16 +174,16 @@ hops factory system remove <system>                 # remove it from the list; i
 hops factory system delete <system> --assets [--repo]  # also delete what it created, and its repository
 ```
 
-### Build a silver medallion layer
+### Build a silver analytics layer
 
-A medallion layer organizes tables as bronze (raw data as it arrived), silver (cleansed and conformed) and gold (consumption-ready).
-Hopsworks installs an archived schematized tag, `medallion_table`, whose `layer` is `bronze`, `silver` or `gold` and whose `lifecycle` is `dev`, `staging` or `prod`; every change of a table's value is kept in the tag history.
+An analytics layer organizes tables as bronze (raw data as it arrived), silver (cleansed and conformed) and gold (consumption-ready).
+Hopsworks installs an archived schematized tag, `analytics_table`, whose `layer` is `bronze`, `silver` or `gold` and whose `lifecycle` is `dev`, `staging` or `prod`; every change of a table's value is kept in the tag history.
 When you ingest data with a dltHub data source, **Tag as bronze tables** in the review, off by default, tags every feature group it creates as bronze.
 
-**New Medallion Layer**, in the Factory, lists two factories, **Silver layer** and **Data Mart**; the silver one builds a silver layer from the project's bronze feature groups.
+**New Analytics**, in the Factory, lists two factories, **Silver layer** and **Data Mart**; the silver one builds a silver layer from the project's bronze feature groups.
 A project without feature groups has nothing to build from: ingest raw data as bronze tables first, or build the example bronze layer.
 
-**Examples** in the same menu lists example layers. **Synthetic clickstream (bronze)** builds a bronze layer of generated web shop data with `hops factory run medallion-bronze --preset clickstream-example`, which copies the generator into `clickstream-bronze/` and starts Claude Code on `/hops-bronze clickstream-bronze`.
+**Examples** in the same menu lists example layers. **Synthetic clickstream (bronze)** builds a bronze layer of generated web shop data with `hops factory run analytics-bronze --preset clickstream-example`, which copies the generator into `clickstream-bronze/` and starts Claude Code on `/hops-bronze clickstream-bronze`.
 It writes four offline Delta feature groups tagged `layer: bronze`: `clickstream_customers`, `clickstream_products`, `clickstream_orders` and `clickstream_clicks`.
 A backfill job writes the 30 days up to the last midnight: 10,000 customers, 1,000 products, 20,000 orders and 1,000,000 clicks.
 An hourly job writes 10,000 clicks an hour, and a daily job writes the day's new customers, products and orders and its changes: profile updates, price changes, discontinued products and order status changes.
@@ -192,7 +192,7 @@ The page asks for the bronze tables to build from (only those tagged bronze are 
 The engine is dbt on Trino unless an additional task needs code SQL does not express well, when PySpark is suggested.
 Each bronze table has its own refresh, hourly, daily or weekly; a silver table refreshes as often as its most frequently updated source, and the layer gets one job per refresh, each with its own schedule and freshness target.
 It also asks how the tables behave, with defaults: history (`latest`, one row per key, or `full`, every version by time), deletes in bronze (`ignore` or `propagate`), bronze schema changes (`fail`, or `evolve` by adding new columns), a late-data lookback re-read before each window (none, a day or a week), the share of rejected rows above which a run fails, with an alert when one fails, and a freshness target.
-**Create** runs `hops factory run medallion-silver --answers` in a Terminal tab named after the layer, which records its specification in `<name>/system.yaml` and starts Claude Code on `/hops-silver <name>`.
+**Create** runs `hops factory run analytics-silver --answers` in a Terminal tab named after the layer, which records its specification in `<name>/system.yaml` and starts Claude Code on `/hops-silver <name>`.
 
 The build profiles the bronze tables, designs the silver tables, writes and tests the code, backfills the whole bronze history once, schedules the job and tags the silver feature groups `layer: silver`, and verifies one window.
 Silver tables are feature groups, materialized, never views, and in third normal form: one table per entity or event, every column depending on its table's key alone, lookups in tables of their own, and no aggregates, which belong in gold.
@@ -202,13 +202,13 @@ Every silver table records its bronze tables as its parents, so the lineage show
 A layer's page shows its requirements as they were filled in.
 **Status** on a built layer's page reports the job's runs and each table's rows, last write against the freshness target, rejected share against the limit, and file layout, with a box for asking Claude Code anything about the report, filled in with a request to fix the problems it found; **Backfill** reprocesses every bronze row into the silver tables, running each job.
 A layer's page shows its phases, the silver tables and jobs it made, the bronze tables it reads, and its tasks, with links to the layer's GitHub repository and to its dbt code in the file browser.
-A medallion's silver and gold layers share one GitHub repository, `hops-<prefix>`, where the prefix is the layer's name without `-silver` or `-gold`: each layer is a directory in it, a gold layer joins the repository of the silver layer it reads, and the build uses the repository when it exists, creates it when it does not, and pushes every commit to it.
+An analytics pipeline's silver and gold layers share one GitHub repository, `hops-<prefix>`, where the prefix is the layer's name without `-silver` or `-gold`: each layer is a directory in it, a gold layer joins the repository of the silver layer it reads, and the build uses the repository when it exists, creates it when it does not, and pushes every commit to it.
 Every job has a delete icon that asks whether to also delete the feature groups only that job writes; **Add tables** adds bronze tables, each with its refresh, and describes the silver tables wanted from them, which Claude Code designs and builds with the rest.
 **Delete** removes the layer from the Factory, or deletes it with its jobs, tables and directory; the tables a layer reads are never deleted.
 
-### Build a gold medallion layer of data marts
+### Build a gold analytics layer of data marts
 
-**New Medallion Layer** with **Data Mart** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
+**New Analytics** with **Data Mart** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
 The page asks for those queries, the model, the first data mart's refresh and freshness target, and the silver tables to read.
 On a cluster with Platform Intelligence, **Suggest** selects the silver tables the answers so far call for, and drafts answers to the folded questions below that are still blank; change any of them as you like.
 The standards every data mart follows (naming, modeling, documentation and quality, proposed and editable) and the first data mart's requirements below are folded away: anything left blank is drafted by the build from the layer's questions and the silver tables, for you to confirm, and recorded in `system.yaml`, where you can edit it later.
@@ -226,18 +226,18 @@ A data mart's requirements are:
 - **Quality and access**: the invariants to test, what happens when a check fails (fail the run, quarantine the failing rows, or warn), who may read which rows and columns, and the projects it is shared with.
 - **Dashboards**: in plain text, the dashboards to build from the mart: for each, who reads it, the questions it answers, and the charts and filters wanted. Optional.
 
-**Create** runs `hops factory run medallion-gold --answers` and starts Claude Code on `/hops-gold <name>`, which builds each mart: its requirements, the design of its facts and dimensions (a dimension used by several marts is built once and shared), the dbt models with their tests, the backfill with the verification, the schedule and tags (`layer: gold`, the silver tables as parents), a verified refresh, and last the Superset dashboards the mart asks for, each over its gold tables and checked against the mart's verified numbers.
+**Create** runs `hops factory run analytics-gold --answers` and starts Claude Code on `/hops-gold <name>`, which builds each mart: its requirements, the design of its facts and dimensions (a dimension used by several marts is built once and shared), the dbt models with their tests, the backfill with the verification, the schedule and tags (`layer: gold`, the silver tables as parents), a verified refresh, and last the Superset dashboards the mart asks for, each over its gold tables and checked against the mart's verified numbers.
 The layer's page shows each mart with its phases, tables, jobs, verification results and links to its dashboards: **Edit** changes its requirements and applies the change, **Add data mart** adds one, and deleting a mart deletes its jobs and, if asked, its tables that no other mart lists.
 
 ```bash
-hops factory run medallion-bronze --preset clickstream-example  # build the example bronze layer of generated data
-hops factory run medallion-silver [--answers answers.json]   # record a silver layer and build it with Claude Code
-hops factory run medallion-gold [--answers answers.json]     # record a gold layer and its first data mart
-hops factory run medallion-gold <layer> --change add-mart [--answers mart.json]     # add a data mart to a gold layer
-hops factory run medallion-gold <layer> --change edit-mart [--answers mart.json]    # change a data mart's requirements
-hops factory run medallion-gold <layer> --change delete-mart  # delete a data mart's jobs, and if asked its own tables
-hops factory run medallion-gold <layer> --change delete-job   # delete one job, and if asked the tables only it writes
-hops factory run medallion-silver <layer> --change add-tables [--answers new.json]  # add bronze tables to a silver layer
+hops factory run analytics-bronze --preset clickstream-example  # build the example bronze layer of generated data
+hops factory run analytics-silver [--answers answers.json]   # record a silver layer and build it with Claude Code
+hops factory run analytics-gold [--answers answers.json]     # record a gold layer and its first data mart
+hops factory run analytics-gold <layer> --change add-mart [--answers mart.json]     # add a data mart to a gold layer
+hops factory run analytics-gold <layer> --change edit-mart [--answers mart.json]    # change a data mart's requirements
+hops factory run analytics-gold <layer> --change delete-mart  # delete a data mart's jobs, and if asked its own tables
+hops factory run analytics-gold <layer> --change delete-job   # delete one job, and if asked the tables only it writes
+hops factory run analytics-silver <layer> --change add-tables [--answers new.json]  # add bronze tables to a silver layer
 hops factory system status <layer>                  # write the layer's health report, status/report.html
 hops job run <job> --start-time 1970-01-01 --end-time <now> --wait  # backfill: recompute a job's tables from the whole history
 hops factory system delete <layer> --assets         # delete the layer, its jobs and tables; never what it reads
@@ -245,13 +245,13 @@ hops factory system delete <layer> --assets         # delete the layer, its jobs
 
 A change to a built system, a layer's or any other, is one of its factory's `changes`: **Change** on the system's page lists them, and the layer pages' **Add data mart**, **Edit**, **Add tables** and delete icons open them.
 Each opens the change's form; saving records the request in the system's `system.yaml` (`changes`, `status: pending`) with `hops factory run <factory> <system> --change <id>`, and resumes the build in a Terminal tab, which carries out the pending requests first.
-A build deletes jobs and feature groups only with `hops factory system delete-assets`, which refuses a table the system reads or one of a lower medallion layer.
+A build deletes jobs and feature groups only with `hops factory system delete-assets`, which refuses a table the system reads or one of a lower analytics layer.
 
 ### Create your own factory
 
 A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
 The **Factory** page shows a section for each of the project's factories, with **New** opening the form it generates.
-The six built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `medallion-bronze`, `medallion-silver` and `medallion-gold`, are read-only; clone one to change it.
+The six built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `analytics-bronze`, `analytics-silver` and `analytics-gold`, are read-only; clone one to change it.
 A form has no conditions: every question of a section is shown, and a section with defaults can be collapsed to a summary of its answers with **Edit**.
 
 **Factory > Manage factories** lists every factory with its version and how many systems it built.
