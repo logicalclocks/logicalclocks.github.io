@@ -209,7 +209,10 @@ Every job has a delete icon that asks whether to also delete the feature groups 
 ### Build a gold medallion layer of data marts
 
 **New Medallion Layer** with **Data Mart** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
-The page asks for those queries, the model, the silver tables to read, the standards every data mart follows (naming, modeling, documentation and quality, proposed and editable), and the first data mart.
+The page asks for those queries, the model, the first data mart's refresh and freshness target, and the silver tables to read.
+On a cluster with Platform Intelligence, **Suggest** selects the silver tables the answers so far call for, and drafts answers to the folded questions below that are still blank; change any of them as you like.
+The standards every data mart follows (naming, modeling, documentation and quality, proposed and editable) and the first data mart's requirements below are folded away: anything left blank is drafted by the build from the layer's questions and the silver tables, for you to confirm, and recorded in `system.yaml`, where you can edit it later.
+The first data mart is named after the layer.
 
 A gold layer is a set of data marts, each added, changed and deleted on its own, with its own fact and dimension tables and its own jobs, `<layer>-<mart>-<refresh>`, at its own refresh.
 A data mart's requirements are:
