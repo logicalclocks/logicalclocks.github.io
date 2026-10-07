@@ -307,6 +307,8 @@ Hopsworks 4.6 changed the feature logging layout: transformed and untransformed 
 Feature views that enabled logging before the upgrade keep their original pair of logging feature groups unchanged.
 Model deployments and batch jobs that still run a pre-4.6 client keep logging to those feature views without any code change or downtime.
 Clients from 4.6 onwards also keep working against them: predictions and the model identity are written into the original columns, and `feature_view.read_log(model_name=..., model_version=...)` filters on the original `hsml_model` column.
+On these feature views, `model_name` and `model_version` must be passed together, both to `read_log()` and to `log()`, and passing only one raises an error.
+The `hsml_model` column stores `<model_name>_<model_version>` as one value, so a filter on the name alone would be a prefix match, which cannot express "any version" because `_` is a wildcard and sibling model names share the prefix.
 Calling `feature_view.delete_log()` on such a feature view deletes the original pair and recreates the logs in the combined layout on the `realtime` transport, or on the `job` transport with `feature_view.delete_log(transport="job")`.
 A deployment that still runs a pre-4.6 client cannot write to the recreated group and its logs are lost, so update the deployment's environment to a 4.6 or later client before deleting the log.
 
