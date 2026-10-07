@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791295130` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791369399` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2828,7 +2828,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tensorflow_version: 2.20.0
         testconnector_image_version: '1.0'
         tf_spark_connector_version: ''
-        trino_default_catalog: hive
+        trino_default_catalog: delta
         trino_events_cleaner_batch_size: '1000'
         trino_events_delete_after_days: '61'
         twofactor_auth: 'false'
@@ -4271,7 +4271,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `""`.
 
 `hopsworks.variables.trino_default_catalog` <a class="headerlink" href="#helm.hopsworks.variables.trino_default_catalog" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_default_catalog }
-:   Type `string`, default `"hive"`.
+:   Type `string`, default `"delta"`.
 
 `hopsworks.variables.trino_events_cleaner_batch_size` <a class="headerlink" href="#helm.hopsworks.variables.trino_events_cleaner_batch_size" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_events_cleaner_batch_size }
 :   Type `string`, default `"1000"`.
