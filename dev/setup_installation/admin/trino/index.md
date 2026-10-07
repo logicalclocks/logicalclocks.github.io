@@ -220,6 +220,140 @@ A catalog whose `${HOPSWORKS_SECRET:<name>}` reference no longer resolves cannot
 The repair reports it, leaves any file it already has in place, because that copy resolved when it was approved and still works, and carries on with every other catalog.
 Its owner has to repoint the reference at an existing secret.
 
+## Access control and sharing
+
+The query engine decides who can read what with Trino's file-based access control, from a rules file published into the Trino files store as `access-control/rules.json`.
+Hopsworks owns that file and rebuilds it whenever a share changes, and on a schedule every five minutes by default.
+
+The file is composed from two parts:
+
+- The base policy, from the Helm value `trino.accessControl.rules`, which the chart renders into the ConfigMap `hopsworks-trino-access-control-base`.
+  It grants each project its own catalogs and feature store, and each user their private catalogs, written only from projects where the user is a Data Owner.
+  Administrators see every catalog but read only `system`, `tpch` and `tpcds`, because the query engine's administrator is also the identity Hopsworks itself uses, and a view recorded as owned by it would otherwise read any project's data.
+  The administrators' SQL console therefore cannot read a project's tables; query them as a member of the project.
+- One set of rules per share, for [catalog shares and feature group shares][sharing-catalogs-and-feature-groups].
+  A share names the receiving project's existing `<project>__data_owner` and `<project>__data_scientist` groups, so sharing never changes the group file.
+
+Change the base policy through the Helm value and an upgrade.
+An edit to the published `rules.json` is overwritten by the next rebuild, within minutes.
+
+Every rebuilt file is validated before it is published, and a file that fails validation is not published: the shares that caused it are marked **Failed** with the reason, and the file in place stays as it was.
+After publishing, Hopsworks checks that the query engine still answers once it has re-read the file, and restores the last file that worked if it does not, because Trino refuses every query while its rules file is unreadable.
+
+### The shared feature store catalogs
+
+The chart ships two kinds of catalog over the feature store:
+
+- `delta`, `hudi`, `iceberg` and `hive` impersonate the querying user, so HopsFS permissions apply on top of the access-control rules.
+  They serve a project's own feature groups, and feature groups or feature stores shared whole, which HopsFS grants the receiving project.
+- `delta_shared`, `hudi_shared` and `iceberg_shared` do not impersonate.
+  They read HopsFS as the `trino` user, which is a HopsFS superuser, because a feature group shared with a subset of its features grants the receiving project no HopsFS access.
+
+For the second kind the access-control rules are the only gate.
+The base policy grants nobody access to them, not even administrators, and Hopsworks adds a rule per subset share that allows the receiving project the shared features of that one table and denies the rest.
+They are read-only at the connector as well, so no rule can let a query write through them.
+Do not add rules for these catalogs to the base policy: any rule that reaches one of them reads every project's feature store.
+Administrators are denied them because Trino runs a view as the user recorded as its owner, so a view recorded as owned by an administrator would reach them too.
+
+### Reading the rules file
+
+The rules the query engine enforces can be read under **Cluster Settings** → **Query Engine** → **Files**, as `access-control/rules.json`.
+Beside it, `access-control/rules.json.last-good` is the last file the query engine loaded.
+They differ from a publish until Hopsworks confirms the query engine loaded the new file, a few seconds later.
+If they stay different, the new file is not confirmed yet, for example because the query engine was unreachable, and the next reconcile checks again.
+That check only happens while **trino_reconcile_enabled** is on.
+A file the query engine refused does not stay: the last good file goes back in its place, and the shares the refused file added are marked **Failed**.
+The groups the rules name are in `auth/group.db`.
+
+#### Who the rules match
+
+A query runs as a principal named `<project>__<username>`, for example `seeda__seed1000` for user `seed1000` in project `seeda`.
+Its groups are the member's role in that project, `<project>__data_owner` or `<project>__data_scientist`, and `<owner>__shared_featurestore` for each project `<owner>` whose feature store is shared with that project.
+Group `admin` has one member, the query engine administrator, which is the identity Hopsworks itself uses.
+Project names and usernames cannot contain `__`, so a pattern such as `.*__(.*)` splits a principal unambiguously, and `$1` in a later field stands for what the pattern captured.
+
+Each section of the file (`catalogs`, `schemas`, `tables`, `functions`, `queries`) is checked on its own.
+In a section, the first rule whose user, group and object all match decides, and a request no rule matches is denied.
+The order of the rules is therefore the policy: a broader rule placed first would answer before a narrower one.
+
+#### The order of the rules
+
+Every section keeps the same order, and the rules Hopsworks adds for shares go in one place in it:
+
+1. The administrator rules.
+2. A deny for each private catalog whose owner's account was deleted, until the catalog is removed.
+   It comes before the private-owner rules because a later account with the same username would match them.
+3. The private-owner rules.
+   They come before the shares so that sharing a private catalog with a project the owner belongs to never narrows the owner's own access.
+4. The share rules.
+5. The rest of the base policy: every project's own catalogs and feature store.
+
+#### The base policy
+
+The `catalogs` section of the base policy, in order:
+
+| Rule | Effect |
+| --- | --- |
+| `group: admin`, `allow: none` on `iceberg_shared`, `delta_shared` and `hudi_shared` | The administrator never sees the shared feature store catalogs. |
+| `group: admin`, `catalog: .*`, `allow: read-only` | The administrator sees every other catalog, without writing to any. |
+| `user: .*__(.*)`, `group: .*__data_owner`, `catalog: _$1__.*`, `allow: all` | The owner of a private catalog reads and writes it from a project where they are a Data Owner. |
+| `user: .*__(.*)`, `catalog: _$1__.*`, `allow: read-only` | The owner reads it from any other project. |
+| `catalog: tpch` and `tpcds`, `allow: read-only` | Everyone reads the sample catalogs. |
+| `catalog: iceberg`, `delta`, `hive`, `hudi`, `allow: all` | Everyone reaches the feature store catalogs; the table rules decide what they read. |
+| `group: (.*)__data_owner`, `catalog: $1__.*`, `allow: all` | A project's Data Owners read and write its catalogs. |
+| `group: (.*)__data_scientist`, `catalog: $1__.*`, `allow: read-only` | Its Data Scientists read them. |
+| `catalog: system`, `allow: read-only` | Everyone reads the `system` catalog. |
+
+The `tables` section follows the same pattern: the administrator reads only `system`, `tpch` and `tpcds`, the private-owner rules mirror the catalog ones, and each project reaches the schema `<project>_featurestore` in the feature store catalogs, all of it for its Data Owners, reading for its Data Scientists and for projects its feature store is shared with.
+The `schemas` section gives schema ownership, which is what creating and dropping schemas needs, to Data Owners only.
+The `functions` section lets everyone run builtin functions, and the Data Owners of a project run the `system` functions of their project's catalogs, such as `system.query` on a JDBC catalog.
+
+#### The rules a share adds
+
+Hopsworks writes the names in a share rule as literals between `\Q` and `\E`, so a name containing regular expression syntax matches only itself.
+A share names the receiving project's two role groups in one pattern, `\Q<project>\E__data_(?:owner|scientist)`, so searching the file for `\Qseedc\E__data_` finds every rule a share to `seedc` added.
+
+A share of catalog `seeda__postgresql` with `seedc`, covering table `public.customers` with column `created` unchecked and column `name` masked, adds these rules:
+
+```json
+{"catalogs": [
+  {"group": "\\Qseedc\\E__data_(?:owner|scientist)", "catalog": "\\Qseeda__postgresql\\E", "allow": "read-only"}
+],
+"tables": [
+  {"group": "\\Qseedc\\E__data_(?:owner|scientist)", "catalog": "\\Qseeda__postgresql\\E",
+   "schema": "\\Qpublic\\E", "table": "\\Qcustomers\\E", "privileges": ["SELECT"],
+   "columns": [{"name": "created", "allow": false}, {"name": "$path", "allow": false},
+               {"name": "name", "mask": "'***'"}]},
+  {"group": "\\Qseedc\\E__data_(?:owner|scientist)", "catalog": "\\Qseeda__postgresql\\E",
+   "schema": "\\Qpublic\\E", "table": "\\Qcustomers\\E\\$.*", "privileges": []}
+],
+"functions": [
+  {"group": "\\Qseedc\\E__data_(?:owner|scientist)", "catalog": "\\Qseeda__postgresql\\E", "privileges": []}
+]}
+```
+
+The list of denied columns in the rule is shortened here.
+
+- The catalog rule makes the catalog visible to the receiving project, read-only.
+- The table rule grants `SELECT` on the table and lists the columns it denies: the unchecked ones, the connector's hidden columns, such as `$path`, and, for an Iceberg or Delta Lake table, every column the table had at a version that can still be read.
+  A table shared whole has a table rule without `columns`, a schema shared whole has `table: .*`, and a catalog shared whole has `schema: .*` too.
+- The rule after it, with no privileges, denies the table's metadata tables, such as `customers$partitions`, which Trino checks by their own name.
+- The function rule denies the receiving project the catalog's functions, which the base policy would otherwise give it.
+  A share of a private catalog also adds, before that deny, a rule letting the owner keep running the catalog's `system` functions.
+
+A feature group shared whole adds one table rule on `hive|iceberg|delta|hudi` for its table in the owner's feature store.
+A feature group shared with a subset of its features adds a catalog rule on the shared catalog of its format, such as `delta_shared`, and a table rule there that denies every unshared feature and hidden column, followed by the metadata table deny.
+
+#### Debugging a share
+
+- The share is **Active** but a query is refused: find the share's rules by the receiving project's group, then look for a rule above them that matches the same principal and object first.
+- The share's rules are not in the file: the share is still **Applying**, or it is **Failed** and its status says why.
+- A column that should be hidden is readable: it is missing from the rule's `columns`.
+  Each publish denies every column the table has at that moment except the shared ones, so a column added at the source is readable only until the next publish, at most one reconcile interval.
+- A narrowed table is refused although its share is **Active**: the last publish could not read the table's columns, or for an Iceberg or Delta Lake table the columns of its earlier versions, so it left the table out of the rules rather than grant it with columns it could not deny; the Hopsworks log names the table.
+  An Iceberg table whose metadata file is outside HopsFS, over 64 MiB or unreadable by that project user is also left out until its earlier columns are read, 50 snapshots per publish.
+- `rules.json` and `rules.json.last-good` differ for minutes: the newest file is not confirmed, so check that the query engine is reachable; the reconcile verifies it again and restores the last good file if the query engine refuses it.
+
 ## Credential files a project supplies
 
 A connector that authenticates with a file, such as an Oracle wallet or a Java keystore, cannot be served by a catalog property alone.
@@ -307,8 +441,14 @@ Trino behavior can be customized through cluster configuration variables. To mod
 **Available Variables:**
 
 - **trino_enabled**: Enable or disable Trino cluster-wide (default: `false`)
-- **trino_default_catalog**: Default catalog used for Superset queries (default: `hive`)
+- **trino_default_catalog**: Default catalog of the Superset database connections created for new project members (default: `delta`).
+  Connections created before a change keep the catalog they were created with.
 - **trino_test_coordinator_enabled**: Enable the optional test coordinator that backs the "Test connection" action for user-created catalogs (default: `true`)
+- **trino_reconcile_enabled**: Rebuild the login and group files from the database and republish the access-control rules on the reconcile interval (default: `true`).
+  Do not disable it.
+  It is what confirms a published rules file once the query engine was unreachable when Hopsworks first checked: without it, shares stay **Applying** or **Revoking** and the new file never becomes the last good one, until another share change publishes again.
+  It is also what brings a changed base policy from a chart upgrade to the query engine, and what replaces a rules, login or group file that was edited, corrupted or deleted.
+- **trino_reconcile_interval_ms**: How often the reconcile runs, in milliseconds (default: `300000`)
 - **trino_catalog_reconcile_enabled**: Rebuild the user-catalog Secrets from the database on a schedule, for a cluster that has lost them (default: `false`, see [Recovering catalog files lost from the mount][recovering-catalog-files-lost-from-the-mount])
 - **trino_catalog_max_per_project**: Catalogs a *newly created* project may create (default: `10`).
   It seeds each project's own allowance, which is then edited per project under Cluster Settings, Projects; changing it does not move the allowance of a project that already exists.
@@ -360,6 +500,58 @@ The code's defaults apply until an administrator creates one, so searching for t
 | `max_mountable_secret_upload_bytes` | `33554432` | largest upload request, refused before the body is read |
 
 Turning the store off is described in [Turning the store off][turning-the-store-off].
+
+#### How sharing scales
+
+Every change to a share, and every reconcile, publishes the whole rules file again.
+A publish reads the current columns of each table a share narrows to some of its columns, one statement per table, so its duration grows with the number of distinct narrowed tables across all shares.
+A narrowed Iceberg or Delta Lake table also has the columns of its earlier versions read:
+
+- An Iceberg table on HopsFS: one more statement, and a read of its current metadata file, which lists every schema the table has had.
+  Hopsworks reads the file as the project user the table's columns are read as, only up to 64 MiB, and uses it only when it names the snapshot Trino reports for it.
+- Any other Iceberg table: two more statements, and one per snapshot not read before: one per schema the table has had, and every snapshot older than its metadata log, which keeps the last 100 entries by default.
+  At most 50 snapshots are read per publish; a table with more is left out until later publishes have read them all.
+  A table with more than 10,000 such snapshots cannot be listed and is left out; expiring old snapshots, or keeping the table on HopsFS, avoids it.
+- A Delta Lake table: one statement that reads the commits since the last publish, or every commit still in the table's log the first time, and on that first read one more for the oldest of them.
+  The statement reads back from the newest commit to the first missing one, so versions before a gap in the log are not read; only log files removed by hand leave such a gap.
+
+Each Hopsworks instance keeps what it has read in memory, so after a restart its first publish reads each table's history in full once.
+It reads it again at least once a day: a Delta Lake table in full on that publish, an Iceberg table's snapshots 50 per publish while the earlier reads still count, so the table is never left out for it.
+A publish forgets the tables no share narrows any more.
+Measured on a development cluster, as extra time per narrowed table on top of reading its current columns:
+
+| Table | 1 commit | 100 commits | 300 commits |
+| --- | --- | --- | --- |
+| Delta Lake feature group, first read | 0.1 s | 1.9 s | 6.6 s |
+| Delta Lake feature group, later publishes | not measured | not measured | none measurable |
+| Iceberg table on HopsFS (metadata file size) | 0.1 s (4 KB) | 0.1 s (203 KB) | 0.3 s (556 KB) |
+| Iceberg table read through its snapshots, snapshots to read | 1 | 3 | 201 |
+
+A later publish of the 300-commit table, reading from the 290th or 299th commit, took as long as `SELECT 1`.
+Reading the current columns of the Delta Lake table also grew, from 0.5 s at 100 commits to 2.7 s at 300.
+
+Saving, editing or revoking a share returns once the share is recorded; the share shows **Applying** or **Revoking** until the publish has run and the query engine has loaded the file, about 15 seconds after the publish ends.
+Changes made while a publish runs are applied together by the next one.
+
+Measured on a development cluster with a PostgreSQL source, which has no earlier versions to read: four shares, each of a project catalog or a private catalog with one of two projects, each narrowed to N tables with two of their six columns shared.
+
+| Tables per share | Narrowed tables in the rules | Publish duration | `rules.json` size | Table rules | Median query time |
+| --- | --- | --- | --- | --- | --- |
+| 0 (one schema shared whole) | 0 | 5.6 s | 25 KB | 35 | 0.9 s |
+| 25 | 100 | 10.9 s | 204 KB | 231 | 0.9 s |
+| 100 | 400 | 21 s | 744 KB | 831 | 0.9 s |
+| 300 | 1,200 | not measured | 2.19 MB | 2,431 | 0.9 s |
+
+The query time is through the Hopsworks API, for a receiving project, the catalog's owner and `SELECT 1` alike, and did not change with the size of the file.
+The publish duration at 300 tables per share was not measured on its own.
+With the four shares saved one after another, a save took 5 to 7 seconds at 100 tables per share and 16 to 17 seconds at 300, mostly checking the tables and columns the share names, and all four shares were **Active** 41 and 119 seconds after the last save.
+A publish costs about 75 ms per distinct narrowed table on top of a fixed 5 seconds.
+The file grows by about 1.8 KB per narrowed table, mostly the hidden columns each narrowed rule denies.
+
+With the file above about a megabyte, a query once failed with `Invalid JSON file '/opt/hopsworks/trino/access-control/rules.json'` caused by `java.io.IOException: Input/output error`.
+The query engine reads the file through the HopsFS mount, and the read failed while a new file was replacing it; the file itself was complete.
+The query succeeds when run again.
+Hopsworks does not take such a read failure for a broken file, so it neither restores the last good file nor fails the shares being applied.
 
 ### Test coordinator resource cost
 

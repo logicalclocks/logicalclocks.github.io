@@ -245,6 +245,7 @@
 #### Query Engine (Trino)
 - [Query Engine](https://docs.hopsworks.ai/latest/user_guides/projects/trino/query_engine/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/trino/query_engine/index.md))
 - [Trino Catalogs](https://docs.hopsworks.ai/latest/user_guides/projects/trino/catalogs/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/trino/catalogs/index.md))
+- [Sharing](https://docs.hopsworks.ai/latest/user_guides/projects/trino/sharing/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/trino/sharing/index.md))
 - [Superset](https://docs.hopsworks.ai/latest/user_guides/projects/superset/superset/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/superset/superset/index.md))
 
 ### MLOps

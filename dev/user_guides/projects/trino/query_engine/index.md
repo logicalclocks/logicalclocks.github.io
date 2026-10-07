@@ -18,26 +18,77 @@ The SQL runner is where you write and execute SQL queries against your data.
 
 **To run a query:**
 
-1. Pick a **Catalog** and a **Schema**.
+1. Pick a **Catalog** and a **Schema** in the **Explorer**.
    The tables in that schema are then listed below, and you can write the query against bare table names instead of qualifying every one.
 2. Write the query in the editor, or click a table to start from `SELECT * FROM <table>`.
 3. Choose a row limit, which is appended to the query as a `LIMIT`.
-4. Click **Run**.
+4. Click **Run query**, or press `Ctrl/Cmd + Enter`.
 
-Results appear below the editor on two tabs: **Results** holds the rows, and **Table** holds the column names and types.
-The editor auto-completes catalogs, schemas, tables and columns, and **Add query** opens a second tab so several queries can be kept side by side.
+The results appear below the editor, with each column's type under its name.
+The header reports the state of the run, how long it took, how many rows it processed and how many it returned.
+The editor auto-completes catalogs, schemas, tables and columns with `Ctrl + Space`, and **Add query** opens a second tab so several queries can be kept side by side.
 
 <figure>
-  <img src="../../../../assets/images/guides/trino/sql-runner.png" alt="SQL runner" />
+  <img src="../../../../assets/images/guides/trino/sql-runner.png" alt="The SQL runner with a query over the tpch catalog and its results" />
   <figcaption>SQL runner</figcaption>
+</figure>
+
+The expand icon in the results header opens the results in a full-size dialog, with the same run status, so a wide table can be read without scrolling sideways.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/sql-results-full.png" alt="The results of a query opened in the full-size results dialog" />
+  <figcaption>Results in full</figcaption>
+</figure>
+
+### Statements
+
+The SQL runner runs one statement at a time, and a trailing semicolon is removed before the statement is sent.
+A statement that changes data or the catalog reports what it did instead of a table of results: `CREATE TABLE succeeded`, or for `INSERT`, `UPDATE`, `DELETE`, `MERGE` and `CREATE TABLE ... AS SELECT` the number of rows it wrote, such as `INSERT succeeded (2 rows)`.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/sql-create-table.png" alt="A CREATE TABLE statement reported as succeeded" />
+  <figcaption>A statement that returns no rows</figcaption>
+</figure>
+
+Every statement runs in a session of its own.
+Statements that only change the session (`USE`, `SET SESSION`, `RESET SESSION`, `SET ROLE`, `SET PATH`, `SET TIME ZONE`, `PREPARE`, `DEALLOCATE`, and the transaction statements) therefore succeed and change nothing for the next statement, and the SQL runner says so.
+Choose the catalog and schema in the **Explorer** instead of with `USE`.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/sql-use-note.png" alt="A USE statement reported as having no effect" />
+  <figcaption>A session statement</figcaption>
+</figure>
+
+### Records
+
+End a statement with `\G` instead of `;` to see each row as a record, one column and value per line, the way the Trino CLI prints it.
+`\G` is not SQL: like a trailing semicolon, it is removed before the statement is sent.
+Records suit wide rows and long values; the records view shows the first 200 rows, so end the statement with `;` to see more in the grid.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/sql-records-view.png" alt="Query results shown as records after ending the statement with \G" />
+  <figcaption>Results as records</figcaption>
+</figure>
+
+### Query plans
+
+`EXPLAIN` shows the plan Trino would run for a statement.
+A plain `EXPLAIN` shows the plan as text, the way Trino prints it.
+`EXPLAIN (FORMAT GRAPHVIZ)` opens on a **Graph** view that draws the operators and the data flowing between them, grouped by fragment, which can be zoomed and moved around; **Text** beside it shows the Graphviz source.
+`EXPLAIN (FORMAT JSON)` and `EXPLAIN (TYPE IO)` are shown as indented JSON.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/sql-plan-graph.png" alt="The Graph view of an EXPLAIN (FORMAT GRAPHVIZ) plan in the full-size results dialog" />
+  <figcaption>A query plan as a graph</figcaption>
 </figure>
 
 ### SQL Statement Syntax Help
 
-Need help with SQL syntax? Click the help icon in the SQL runner to access the complete reference of all allowed SQL statement syntax. This includes SELECT statements, functions, data types, operators, and more. The syntax reference is readily available without leaving the query interface.
+The help icon in the editor opens the syntax of every SQL statement Trino supports, from `ALTER` to `VALUES`, including the clauses of `SELECT` such as time travel with `FOR TIMESTAMP | VERSION AS OF`, `TABLESAMPLE`, `UNNEST` and `JSON_TABLE`.
+It also lists the keyboard shortcuts and the statements that have no effect in the SQL runner.
 
 <figure>
-  <img src="../../../../assets/images/guides/trino/sql-statement-syntax.png" alt="SQL statement syntax" />
+  <img src="../../../../assets/images/guides/trino/sql-statement-syntax.png" alt="The SQL syntax help open on the SELECT statement" />
   <figcaption>SQL statement syntax</figcaption>
 </figure>
 

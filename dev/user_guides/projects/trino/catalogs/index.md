@@ -4,13 +4,22 @@ A Trino catalog makes an external data source queryable from the query engine.
 Each catalog names a Trino connector and the properties that connector needs to reach the source, such as a connection URL and credentials.
 Once a catalog is live, its databases and tables can be queried from the SQL runner alongside your feature groups.
 
-Navigate to **Query Engine** → **Catalogs** in your project to see the project's catalogs together with the cluster's shared default catalogs.
-A catalog you create is named `<project>__<name>` and is queryable only inside your own project.
-Only a project Data Owner can create, edit or delete one.
+Navigate to **Query Engine** → **Catalogs** in your project to see the project's catalogs and your own private catalogs.
+The cluster's shared default catalogs are listed once you add **Default** to the **Type** filter.
+A catalog belongs either to the project or to you:
+
+- A **project catalog** is named `<project>__<name>` and is queryable inside the project.
+  The project's Data Owners create, edit, delete and share it.
+- A **private catalog** is named `_<username>__<name>` and follows you into every project you are a member of.
+  Only you edit, delete or share it.
+  See [Private catalogs][private-catalogs].
+
+Only a Data Owner of the current project can create a catalog of either kind.
+A catalog is queryable outside its own project, or outside your projects for a private one, only once it is shared, as described in [Sharing Catalogs and Feature Groups][sharing-catalogs-and-feature-groups].
 
 <figure>
   <img src="../../../../assets/images/guides/trino/catalogs-list.png" alt="Catalogs list" />
-  <figcaption>The project's catalogs alongside the cluster's shared default catalogs</figcaption>
+  <figcaption>The project's catalogs, a private catalog, and the cluster's shared default catalogs</figcaption>
 </figure>
 
 A catalog change is recorded immediately, but it reaches the query engine only when the engine restarts, because Trino reads catalogs at startup.
@@ -88,6 +97,32 @@ If a catalog needs to outlive your account, have someone recreate it under their
 
     Create the secret by typing or pasting the value as text when you intend to reference it from a catalog.
     For a credential that is naturally a file, use a mountable secret instead.
+
+## Private catalogs
+
+Choose **Private** as the owner when creating a catalog to make it yours rather than the project's.
+The name prefix becomes `_<username>__`, for example `_meb10000__sales`, and the catalog is listed in every project you are a member of.
+
+<figure>
+  <img src="../../../../assets/images/guides/trino/create-private-catalog.png" alt="Creating a private catalog" />
+  <figcaption>A private catalog takes your username as its prefix and can reference only your own secrets</figcaption>
+</figure>
+
+A private catalog differs from a project catalog in what it can reach and who controls it:
+
+- It can reference only your own Hopsworks secrets and your own mountable secrets, which you manage under **Account Settings** → **Secrets**.
+  A project's mountable secrets are not available to it, because the catalog would carry them into every other project you are a member of.
+  See [Mountable secrets for private catalogs][mountable-secrets-for-private-catalogs].
+- It cannot be created from a data source, because a data source's credential belongs to the project.
+  Enter the connection details yourself instead.
+- Only you can edit, delete or share it, from any of your projects and whatever your role there, so being made a Data Scientist in a project does not lock you out of your own catalogs.
+  Other members of your projects cannot query it unless you share it with their project.
+- You write to it only from a project where you are a Data Owner, and read it from any other.
+  In a project where you are a Data Scientist you can only read that project's data, and a private catalog writable from there would let you copy the data into a catalog you then read from your other projects.
+- The number of private catalogs you can own has the same limit as a project's catalogs, ten by default.
+
+When your account is deleted, your private catalogs are marked for removal and stop being queryable at once, and their shares are removed with them.
+They stay denied to everyone, including a later account with the same username, until they are removed like any deleted catalog, as described in [When the catalog goes live][when-the-catalog-goes-live].
 
 ## Testing the connection
 
@@ -167,9 +202,24 @@ Testing the connection before saving catches most of these earlier.
 
 ## Who can query a catalog
 
-Access to a user-created catalog is granted at the catalog level per project: a project's Data Owners can read and write, and Data Scientists can read.
-There is no per-schema or per-table configuration for these catalogs.
-To limit what a catalog exposes, scope the database user in the connection credentials at the source, since the query engine reads the external system as that user and can only ever see what those credentials allow.
+Inside the project that owns a project catalog, its Data Owners can read and write, and its Data Scientists can read.
+A private catalog can be read by you from any of your projects, and written only from a project where you are a Data Owner.
+
+Other projects can read a catalog only through a share, which grants read access to the whole catalog, one schema, one table, or some columns of a table, optionally with masked values.
+See [Sharing Catalogs and Feature Groups][sharing-catalogs-and-feature-groups].
+
+The query engine reads the external system as the database user in the connection credentials, so no share can expose more than those credentials allow.
+Scoping that database user at the source remains the strongest limit on what a catalog can reach.
+
+A Data Owner of the project can also run a JDBC catalog's `system.query` table function, which passes a query to the source database as that database user.
+The query engine sends it as a subquery, so the database rejects a statement that changes data, but a database function that changes data as a side effect still runs.
+Give the database user only the privileges the catalog's Data Owners should have.
+The receiving project of a share cannot run the catalog's functions at all.
+
+Read access to an Iceberg or Delta Lake table also allows its table procedures, `ALTER TABLE ... EXECUTE` with `optimize`, `expire_snapshots`, `remove_orphan_files` or `rollback_to_snapshot`, because the query engine does not check them against the access rules.
+A Data Scientist of the project can therefore rewrite, expire or roll back the tables of the project's Iceberg and Delta Lake catalogs, and so can you on your private catalog from a project where you are a Data Scientist, although neither can write rows.
+Set the connector's `iceberg.security` or `delta.security` property to `read_only` on a catalog that must not be changed this way; the query engine then refuses table procedures to everyone and reading is unchanged.
+`CALL` procedures, such as `system.unregister_table`, are refused to everyone.
 
 ## Creating a catalog from the Python client
 
