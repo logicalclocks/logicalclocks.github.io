@@ -302,7 +302,34 @@ nav:
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
       - ArrowFlight Server with DuckDB: setup_installation/common/arrow_flight_duckdb.md
-      - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
+      - Helm Chart Values Reference:
+          - setup_installation/common/helm_chart_values/index.md
+          - global: setup_installation/common/helm_chart_values/global.md
+          - airflow: setup_installation/common/helm_chart_values/airflow.md
+          - arrowflight: setup_installation/common/helm_chart_values/arrowflight.md
+          - brewer: setup_installation/common/helm_chart_values/brewer.md
+          - certs-operator: setup_installation/common/helm_chart_values/certs-operator.md
+          - consul: setup_installation/common/helm_chart_values/consul.md
+          - docker-registry: setup_installation/common/helm_chart_values/docker-registry.md
+          - grafana: setup_installation/common/helm_chart_values/grafana.md
+          - hive: setup_installation/common/helm_chart_values/hive.md
+          - hopsfs: setup_installation/common/helm_chart_values/hopsfs.md
+          - hopsworks: setup_installation/common/helm_chart_values/hopsworks.md
+          - hw-kueue: setup_installation/common/helm_chart_values/hw-kueue.md
+          - hw-kyverno: setup_installation/common/helm_chart_values/hw-kyverno.md
+          - judge: setup_installation/common/helm_chart_values/judge.md
+          - kafka: setup_installation/common/helm_chart_values/kafka.md
+          - kserve: setup_installation/common/helm_chart_values/kserve.md
+          - minio: setup_installation/common/helm_chart_values/minio.md
+          - olk: setup_installation/common/helm_chart_values/olk.md
+          - onlinefs: setup_installation/common/helm_chart_values/onlinefs.md
+          - prometheus: setup_installation/common/helm_chart_values/prometheus.md
+          - ray: setup_installation/common/helm_chart_values/ray.md
+          - rondb: setup_installation/common/helm_chart_values/rondb.md
+          - spark: setup_installation/common/helm_chart_values/spark.md
+          - superset: setup_installation/common/helm_chart_values/superset.md
+          - trino: setup_installation/common/helm_chart_values/trino.md
+          - vpa: setup_installation/common/helm_chart_values/vpa.md
   - Python API: python-api
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
@@ -363,6 +390,7 @@ extra_css:
 
 extra_javascript:
   - js/quickstart-fullscreen.js
+  - js/values-filter.js
 
 plugins:
   - search
