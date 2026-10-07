@@ -215,9 +215,10 @@ A data mart's requirements are:
 - **Freshness and changes**: the refresh and freshness target, how late arrivals, updates and deletes are processed, and whether corrections restate published results.
 - **Verification**: example questions with the answers expected, in plain English; the totals that must reconcile, and with what; and how refreshes and reruns are proven correct. The build runs every check after the backfill and again after a refresh, records the results, and does not mark the mart built until each passes.
 - **Quality and access**: the invariants to test, what happens when a check fails (fail the run, quarantine the failing rows, or warn), who may read which rows and columns, and the projects it is shared with.
+- **Dashboards**: in plain text, the dashboards to build from the mart: for each, who reads it, the questions it answers, and the charts and filters wanted. Optional.
 
-**Create** runs `hops factory run medallion-gold --answers` and starts Claude Code on `/hops-gold <name>`, which builds each mart: its requirements, the design of its facts and dimensions (a dimension used by several marts is built once and shared), the dbt models with their tests, the backfill with the verification, the schedule and tags (`layer: gold`, the silver tables as parents), and a verified refresh.
-The layer's page shows each mart with its phases, tables, jobs and verification results: **Edit** changes its requirements and applies the change, **Add data mart** adds one, and deleting a mart deletes its jobs and, if asked, its tables that no other mart lists.
+**Create** runs `hops factory run medallion-gold --answers` and starts Claude Code on `/hops-gold <name>`, which builds each mart: its requirements, the design of its facts and dimensions (a dimension used by several marts is built once and shared), the dbt models with their tests, the backfill with the verification, the schedule and tags (`layer: gold`, the silver tables as parents), a verified refresh, and last the Superset dashboards the mart asks for, each over its gold tables and checked against the mart's verified numbers.
+The layer's page shows each mart with its phases, tables, jobs, verification results and links to its dashboards: **Edit** changes its requirements and applies the change, **Add data mart** adds one, and deleting a mart deletes its jobs and, if asked, its tables that no other mart lists.
 
 ```bash
 hops factory run medallion-silver [--answers answers.json]   # record a silver layer and build it with Claude Code
