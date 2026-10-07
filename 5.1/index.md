@@ -227,7 +227,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 
 | Task | Start here |
 | --- | --- |
-| :material-rocket-launch-outline: Deploy | [AWS](setup_installation/aws/getting_started.md), [Azure](setup_installation/azure/getting_started.md), [GCP](setup_installation/gcp/getting_started.md), [on-prem](setup_installation/on_prem/contact_hopsworks.md), [Helm values](setup_installation/common/helm_chart_values.md) |
+| :material-rocket-launch-outline: Deploy | [AWS](setup_installation/aws/getting_started.md), [Azure](setup_installation/azure/getting_started.md), [GCP](setup_installation/gcp/getting_started.md), [on-prem](setup_installation/on_prem/contact_hopsworks.md), [Helm values][helm-chart-values-reference] |
 | :material-monitor-dashboard: Operate | [Administration](setup_installation/admin/index.md), [monitoring](setup_installation/admin/monitoring/grafana.md), [alerts](setup_installation/admin/alert.md), [HA and DR](setup_installation/admin/ha-dr/intro.md), [service operations](setup_installation/admin/operationLogs.md) |
 | :material-wrench-outline: Troubleshoot | [Model serving](user_guides/mlops/serving/troubleshooting.md), [Python deployments](user_guides/projects/python-deployment/troubleshooting.md), [online ingestion](user_guides/fs/feature_group/online_ingestion_observability.md), [Jupyter session capacity](user_guides/projects/jupyter/session_capacity_warnings.md) |
 | :material-arrow-up-circle-outline: Upgrade | [3.x to 4.0 migration](user_guides/migration/40_migration.md), [Airflow 3 upgrade](user_guides/projects/airflow/airflow3_upgrade.md), [Airflow 3 operator notes](setup_installation/admin/airflow3.md) |
@@ -248,7 +248,7 @@ Independent [feature, training and inference pipelines](concepts/fti.md), connec
 :material-tune:{ .hops-colophon-ico } Configure and query
 { .hops-colophon-cap }
 
-- [Helm chart values](setup_installation/common/helm_chart_values.md)
+- [Helm chart values][helm-chart-values-reference]
 - [Cluster configuration](setup_installation/admin/variables.md)
 - [Query engine (Trino)](user_guides/projects/trino/query_engine.md)
 - [Vector similarity search](user_guides/fs/vector_similarity_search.md)
