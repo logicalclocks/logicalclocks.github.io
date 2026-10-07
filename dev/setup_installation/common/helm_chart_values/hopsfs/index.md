@@ -4,7 +4,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791369399` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -32,7 +32,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         name: hopsfs
         pullPolicy: IfNotPresent
         registry: ''
-        tag: 3.4.3.3-EE-RC0
+        tag: 3.4.3.3-EE-RC1
       namenode:
         resources:
           limits:
@@ -118,7 +118,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Override the full registry+path prefix (must end with /). When set (non-empty), takes precedence over global._hopsworks.imageRegistry, bypassing the hardcoded /hopsworks/ segment. Use for custom HopsFS images at non-standard paths, e.g. "docker.hops.works/dev/salman/". Leave empty to use global._hopsworks.imageRegistry + "/hopsworks/".
 
 `hopsfs.image.tag` <a class="headerlink" href="#helm.hopsfs.image.tag" title="Permanent link">#</a> { #helm.hopsfs.image.tag }
-:   Type `string`, default `"3.4.3.3-EE-RC0"`.
+:   Type `string`, default `"3.4.3.3-EE-RC1"`.
 
 `hopsfs.nuke_db_in_retry` <a class="headerlink" href="#helm.hopsfs.nuke_db_in_retry" title="Permanent link">#</a> { #helm.hopsfs.nuke_db_in_retry }
 :   Type `bool`, default `false`.

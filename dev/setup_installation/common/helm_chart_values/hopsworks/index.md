@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791369399` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2542,7 +2542,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         grafana_version: 9.3.16
         ha_enabled: 'true'
         hadoop_dir: /srv/hops/hadoop
-        hadoop_version: 3.4.3.3-EE-RC0
+        hadoop_version: 3.4.3.3-EE-RC1
         hdfs_base_storage_policy: CLOUD
         hdfs_default_quota: -1L
         hdfs_log_storage_policy: CLOUD
@@ -3367,7 +3367,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"/srv/hops/hadoop"`.
 
 `hopsworks.variables.hadoop_version` <a class="headerlink" href="#helm.hopsworks.variables.hadoop_version" title="Permanent link">#</a> { #helm.hopsworks.variables.hadoop_version }
-:   Type `string`, default `"3.4.3.3-EE-RC0"`.
+:   Type `string`, default `"3.4.3.3-EE-RC1"`.
 
 `hopsworks.variables.hdfs_base_storage_policy` <a class="headerlink" href="#helm.hopsworks.variables.hdfs_base_storage_policy" title="Permanent link">#</a> { #helm.hopsworks.variables.hdfs_base_storage_policy }
 :   Type `string`, default `"CLOUD"`.

@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791369399` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -912,7 +912,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791369399` (Hopsworks `5.
             enabled: true
             image:
               repository: hopsworks/hopsfs-mount
-              tag: 3.4.3.3-EE-RC0-1
+              tag: 3.4.3.3-EE-RC1-1
             mechanism: csi
             mountPath: /opt/hopsworks/mounts
             storeRoot: /apps/mountable-secrets
@@ -1027,7 +1027,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791369399` (Hopsworks `5.
         enabled: true
         image:
           repository: hopsworks/hopsfs-mount
-          tag: 3.4.3.3-EE-RC0-1
+          tag: 3.4.3.3-EE-RC1-1
         mechanism: csi
         mountPath: /opt/hopsworks/mounts
         storeRoot: /apps/mountable-secrets
@@ -1058,7 +1058,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791369399` (Hopsworks `5.
     Repository of the small bash image the Trino init containers wait-trino-files and assemble-catalogs run in. The dedicated hopsfs-mount image built in docker-images (90.8 MB); the mount sidecars themselves run global._hopsworks.csi.image.
 
 `global._hopsworks.trino.mountableSecrets.image.tag` <a class="headerlink" href="#helm.global._hopsworks.trino.mountableSecrets.image.tag" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountableSecrets.image.tag }
-:   Type `string`, default `"3.4.3.3-EE-RC0-1"`.
+:   Type `string`, default `"3.4.3.3-EE-RC1-1"`.
     Tag for the sidecar image, `<artifact version>-<image fix>`. The first half is the hops-fuse-mount artifact version, not the platform version: the image carries the HopsFS FUSE client and nothing else, so it turns over with HopsFS. Keep that half in step with charts/hopsfs image.tag, since the FUSE client should match the HopsFS line it talks to. The second half moves when the image is rebuilt without the artifact changing, a base bump or a security rebuild, so such a rebuild cannot silently replace the bytes behind a tag already deployed. Both halves are pinned here on purpose.
 
 `global._hopsworks.trino.mountableSecrets.mountPath` <a class="headerlink" href="#helm.global._hopsworks.trino.mountableSecrets.mountPath" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountableSecrets.mountPath }
