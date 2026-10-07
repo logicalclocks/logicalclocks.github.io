@@ -181,7 +181,13 @@ Hopsworks installs an archived schematized tag, `medallion_table`, whose `layer`
 When you ingest data with a dltHub data source, **Tag as bronze tables** in the review, off by default, tags every feature group it creates as bronze.
 
 **New Medallion Layer**, in the Factory, lists two factories, **Silver layer** and **Data Mart**; the silver one builds a silver layer from the project's bronze feature groups.
-A project without feature groups has nothing to build from: ingest raw data as bronze tables first.
+A project without feature groups has nothing to build from: ingest raw data as bronze tables first, or build the example bronze layer.
+
+**Examples** in the same menu lists example layers. **Synthetic clickstream (bronze)** builds a bronze layer of generated web shop data with `hops factory run medallion-bronze --preset clickstream-example`, which copies the generator into `clickstream-bronze/` and starts Claude Code on `/hops-bronze clickstream-bronze`.
+It writes four offline Delta feature groups tagged `layer: bronze`: `clickstream_customers`, `clickstream_products`, `clickstream_orders` and `clickstream_clicks`.
+A backfill job writes the 30 days up to the last midnight: 10,000 customers, 1,000 products, 20,000 orders and 1,000,000 clicks.
+An hourly job writes 10,000 clicks an hour, and a daily job writes the day's new customers, products and orders and its changes: profile updates, price changes, discontinued products and order status changes.
+The data is raw on purpose, for a silver layer to cleanse: about 0.001% of clicks arrive twice under a new `ingest_id`, and an order's lines are a JSON array in its `items` column.
 The page asks for the bronze tables to build from (only those tagged bronze are shown while any are), the silver tasks (deduplicate, cast types, standardize values, handle nulls, validate with a rejects table, protect personal data, conform entities, surrogate keys, referential checks), additional tasks in your own words, the engine, the refresh cadence and the lifecycle.
 The engine is dbt on Trino unless an additional task needs code SQL does not express well, when PySpark is suggested.
 Each bronze table has its own refresh, hourly, daily or weekly; a silver table refreshes as often as its most frequently updated source, and the layer gets one job per refresh, each with its own schedule and freshness target.
@@ -221,6 +227,7 @@ A data mart's requirements are:
 The layer's page shows each mart with its phases, tables, jobs, verification results and links to its dashboards: **Edit** changes its requirements and applies the change, **Add data mart** adds one, and deleting a mart deletes its jobs and, if asked, its tables that no other mart lists.
 
 ```bash
+hops factory run medallion-bronze --preset clickstream-example  # build the example bronze layer of generated data
 hops factory run medallion-silver [--answers answers.json]   # record a silver layer and build it with Claude Code
 hops factory run medallion-gold [--answers answers.json]     # record a gold layer and its first data mart
 hops factory run medallion-gold <layer> --change add-mart [--answers mart.json]     # add a data mart to a gold layer
@@ -241,7 +248,7 @@ A build deletes jobs and feature groups only with `hops factory system delete-as
 
 A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
 The **Factory** page shows a section for each of the project's factories, with **New** opening the form it generates.
-The five built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `medallion-silver` and `medallion-gold`, are read-only; clone one to change it.
+The six built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `medallion-bronze`, `medallion-silver` and `medallion-gold`, are read-only; clone one to change it.
 A form has no conditions: every question of a section is shown, and a section with defaults can be collapsed to a summary of its answers with **Edit**.
 
 **Factory > Manage factories** lists every factory with its version and how many systems it built.
