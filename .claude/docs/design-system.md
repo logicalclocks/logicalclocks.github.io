@@ -237,6 +237,9 @@ Three rules keep them inside the column:
 - Material floors every header at 5rem; that floor is removed, so a narrow column (`#`, a flag) takes only what it needs.
 - Content tabs are linked (`content.tabs.link`): picking Java on one set switches every set on the page and the choice persists. Tab strips are compact segmented controls sitting 0.35rem above their block.
 
+Where the chips themselves are too long for any column, use a list, not a table.
+The generated Helm values pages (`setup_installation/common/helm_chart_values/`) carry keys up to 90 characters, so each value is a definition-list entry inside `.hops-values`: the key chip on a hairline-separated row, its type, default and description under it at table type size.
+
 ## Theme features
 
 Set in `mkdocs.yml` under `theme.features`. Current set and why:

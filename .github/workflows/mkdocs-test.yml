@@ -31,6 +31,25 @@ jobs:
       - name: Install Python dependencies
         run: uv sync --extra cli
 
+      # The Helm values pages are filled by gen-helm-values at build time and
+      # never committed. A committed copy is published as-is whenever a build
+      # leaves the page alone (no matching chart in Nexus yet), so the check
+      # resets every page to its placeholder and fails if that changed one.
+      - name: Check the Helm values pages hold only their placeholders
+        run: |
+          hopsworks-docs reset-helm-values
+          if ! git diff --exit-code --stat -- docs/setup_installation/common/helm_chart_values/; then
+            echo "::error::Generated Helm values content is committed in docs/setup_installation/common/helm_chart_values/ (files above)."
+            echo "Those pages are generated during the documentation build and must hold only their placeholder."
+            echo "To fix it, in your branch run:"
+            echo "  uv run --extra cli hopsworks-docs reset-helm-values"
+            echo "  git add docs/setup_installation/common/helm_chart_values/"
+            echo "  git commit -m 'Reset the Helm values pages to their placeholders'"
+            echo "The reset keeps any edit outside the generated block (a page title, its intro line, a new page)."
+            echo "To preview the values locally, run gen-helm-values, then the reset above before committing."
+            exit 1
+          fi
+
       - name: Install Hopsworks Python API
         run: uv pip install hopsworks-api/python
 
@@ -48,13 +67,18 @@ jobs:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           BASE_REF: ${{ github.base_ref }}
+        # --strict turns the generator's warnings (a subchart without a page, an
+        # upstream chart without a docs link, a missing common value or RonDB
+        # schema, a RonDB override the schema does not declare, two entries on
+        # a page with one anchor, a null override with values listed under it)
+        # into a failed PR check; the deploy workflow only warns.
         run: |
           if [ "$BASE_REF" = "main" ]; then
             # dev docs: latest chart from the (private) dev channel. Fork PRs do
             # not receive secrets, so skip (keep the page placeholder) when the
             # Nexus credentials are absent rather than failing the build.
             if [ -n "$NEXUS_USER" ]; then
-              hopsworks-docs gen-helm-values \
+              hopsworks-docs gen-helm-values --strict \
                 --repo-url https://nexus.hops.works/repository/hopsworks-helm-dev
             else
               echo "Nexus credentials not available (e.g. a fork PR); keeping the values reference placeholder."
@@ -62,7 +86,7 @@ jobs:
           else
             # release docs: latest patch of the chart version (major.minor) for this docs version.
             # The released repo is public, so fetch anonymously (clear any creds).
-            NEXUS_USER= NEXUS_PASSWORD= hopsworks-docs gen-helm-values \
+            NEXUS_USER= NEXUS_PASSWORD= hopsworks-docs gen-helm-values --strict \
               --repo-url https://nexus.hops.works/repository/hopsworks-helm \
               --chart-version "${BASE_REF#branch-}"
           fi
