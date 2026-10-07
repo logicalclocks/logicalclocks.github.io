@@ -228,6 +228,7 @@ nav:
           - Query Engine (Trino):
               - Query Engine: user_guides/projects/trino/query_engine.md
               - Trino Catalogs: user_guides/projects/trino/catalogs.md
+              - Sharing: user_guides/projects/trino/sharing.md
           - Superset: user_guides/projects/superset/superset.md
       - MLOps:
           - user_guides/mlops/index.md

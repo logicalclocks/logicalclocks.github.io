@@ -12,8 +12,9 @@ A **mountable secret** is a named bundle of files that belongs to your project.
 You upload the files once, then refer to the bundle by name from a catalog property, and Hopsworks substitutes the real location when the catalog is written for Trino.
 The files are stored where project members cannot read or write them directly, and a catalog can only ever reach its own project's bundles.
 
-Only a project Data Owner can list, create or delete mountable secrets.
+Only a project Data Owner can list, create or delete a project's mountable secrets.
 Through the API the same endpoints need an API key with the `MOUNTABLE_SECRET` scope.
+Private catalogs use mountable secrets that belong to your account instead, described in [Mountable secrets for private catalogs][mountable-secrets-for-private-catalogs].
 
 ## Creating a bundle
 
@@ -135,6 +136,27 @@ connection-password=${HOPSWORKS_SECRET:oracle_password}
 
 Take the host, port and `service_name` from the alias's entry in the wallet's `tnsnames.ora`, and drop `retry_delay`, which means nothing once `retry_count` is zero.
 A catalog can keep this form, and doing so records which consumer group it connects to instead of leaving it to an alias name.
+
+## Mountable secrets for private catalogs
+
+A [private catalog][private-catalogs] follows its owner into every project they are a member of, so it cannot reference a project's bundles: it would carry them into the owner's other projects.
+It references bundles that belong to your account instead.
+
+Open **Account Settings**, then **Secrets**, and use the **Mountable secrets** section below your secrets.
+Creating, listing and deleting work as for a project's bundles, and the same limits apply, counted per account rather than per project.
+
+<figure>
+  <img src="../../../../assets/images/guides/mountable_secrets/account-mountable-secrets.png" alt="Mountable secrets on the account Secrets page" />
+  <figcaption>Bundles that belong to your account, for use by your private catalogs from any project</figcaption>
+</figure>
+
+A private catalog references your bundles with the same `${HOPSWORKS_MOUNT:<bundle>}` forms, and a project catalog cannot reference them.
+Names, sizes, hashes and timestamps of your bundles are visible to you alone.
+The same caution applies as for a project's bundles: where the cluster runs a Trino test coordinator, every mountable secret on it is readable from that coordinator.
+
+Through the API, your account's bundles are at `/users/mountable-secrets`, with the same operations as a project's and an API key with the `MOUNTABLE_SECRET` scope.
+
+When your account is deleted, your bundles are deleted with it.
 
 ## When the feature is unavailable
 
