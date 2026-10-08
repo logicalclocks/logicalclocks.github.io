@@ -126,7 +126,7 @@ hops factory run ml-batch        # or ml-realtime, ml-agent
 ```
 
 `hops factory run <factory>` asks the factory's questions in the terminal, section by section, with the factory's defaults: for `ml-batch` the system's name, what it should predict, its cadence and run time, its data (feature groups in the project, synthetic data described in a sentence, and files), how its predictions are used, and its monitoring.
-`--answers answers.json` takes the answers from a file instead, as the **Factory** page writes it, and `--preset <id>` starts from one of the factory's examples (`churn-example`, `recs-example`, `gis-example`, `helpdesk-example` or `run-example`, as `hops factory get <factory>` lists them under `presets`).
+`--answers answers.json` takes the answers from a file instead, as the **Factory** page writes it, and `--preset <id>` starts from one of the factory's examples (`churn-example`, `recs-example`, `fraud-example`, `gis-example`, `helpdesk-example` or `run-example`, as `hops factory get <factory>` lists them under `presets`).
 The help desk agent answers from documents you upload to `Resources/helpdesk-docs` (PDF, text, Markdown, Word or OpenDocument), which a job cuts into passages and embeds with a sentence-transformers model downloaded into the Model Registry, and from the customer's recent events; it is a LangGraph agent deployment with a JavaScript chat app.
 For an agentic system, `hops factory run ml-agent` asks for an OpenAI-compatible LLM endpoint, model and API key (read without echo), unless your account already has them, and saves them as your account environment variables `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`, which the agent reads.
 The answers are written to `<slug>/system.yaml` in the current directory, and what they leave out, such as where the code goes, is asked next.
@@ -141,25 +141,34 @@ Pass `--no-launch` to record the system only.
 
 `hops factory run` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
 A GitHub repository the build creates, an example's included, is named `hops-<slug>`, or `hops-<slug>-<project>` when you already have one of that name.
-**Factory**, in the project menu below Catalog, holds the ML system factory and the analytics layer factory.
-Its ML system factory lists the project's systems for every member, when the project has registered systems or the cluster has the terminal: each with its type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a GitHub repository.
+**Factory**, in the project menu below Catalog, opens on a box: describe the system you want, and Claude Code picks the factory that fits from the project's enabled factories and fills in its form, asking what it cannot tell from the description.
+That Claude Code runs in a Terminal tab of its own, `factory-intake`, with no tool but its questions, and its instructions allow it only to choose a factory.
+Its suggestion shows below the box: the factory, whether it is a new system or one of the factory's blueprints, the system's name and what it does.
+**Build** opens the factory's form with those answers and starts the build when they pass the form's checks; **Review the form** opens it filled in, for you to check and press **Create**.
+**From Template** lists the factories without the description: **ML System** holds **Batch ML system**, **Real-time ML system** and **Agentic system**, **Analytics** the analytics layer factories, and each has a **Blueprints** submenu of its examples, each opening its factory's form filled in.
+The cogwheel opens **Manage factories**.
+**Existing Systems**, shown once a factory has built a system, lists the project's systems for every member: each with its factory, type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a Git repository; the box above it filters the list.
 **Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
-**New ML System** lists three factories, **Batch ML system**, **Real-time ML system** and **Agentic system**, and their examples.
-Each opens its form: the system's name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its targets (a batch system's cadence and run time, a real-time or agentic system's latency and throughput), its data (feature groups in the project, synthetic data described in a sentence, and files), and how its predictions are used.
+Each ML system form asks for the system's name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its targets (a batch system's cadence and run time, a real-time or agentic system's latency and throughput), its data (feature groups in the project, synthetic data described in a sentence, and files), and how its predictions are used.
+Every form starts with **Create new GitHub repo**, checked; unchecked, it asks for the URL of an existing GitHub, GitLab, Bitbucket or other Git repository, which the build pushes to with git alone.
 Sections with defaults show a one-line summary of their answers, with **Edit** to change them.
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
 For a batch or real-time system, **Monitoring** (collapsed) sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
 The build turns them into feature logging on the feature view, feature monitoring checks and alerts, and sends a failure alert for every job the system owns to the project's alert receiver.
-The examples are listed under **New ML System**; each opens its factory's form filled in.
 **Create** runs `hops factory run ml-batch --answers` (or `ml-realtime`, `ml-agent`) in a Terminal tab named after the system, which records it and starts Claude Code on `/hops-build <name>`; the page opens the system once it is registered.
 
-A system's page shows its phases, what is done and what is left, what it has made, and its requirements, locked.
+A system's page is a chat beside the system.
+The chat is the conversation of the Claude Code in the system's Terminal tab, the build while it runs: its replies, its tool calls folded to one line, and its questions and permission requests as cards whose options answer them.
+A message you send is typed into that tab; when no Claude Code runs there, the first one starts it with the system's `system.yaml` and asks for an overview of the system.
+The Terminal panel closes and the project menu collapses while the chat is shown, and the Terminal must be running for the chat to reach Claude Code.
+Beside the chat, **App** shows the system's app or dashboards in the page; while the app is stopped, **Start app** starts the deployments it calls and then the app, and while it is starting or redeploying the button says so instead.
+**Assets** shows the system with its status, repository, files, phases and actions, then what it has made in three columns, the feature, training and inference pipelines, each asset linked to its page with its state, and its jobs below.
+**system.yaml** shows the specification, and **Build history** the phases, what is done and what is left, and the requirements, locked.
 **Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
-**system.yaml** opens the specification to read or edit.
 **Architecture** opens the system's architecture: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
 A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
-**Status**, once every phase is done, checks the system's jobs over the last day and its deployments and app, and shows the report.
-**Back** on the architecture and status pages, like the browser's back button, returns to the system's page.
+**Status**, once every phase is done, checks the system's jobs over the last day and its deployments and app, shows the report, and sends its findings to the chat, where Claude Code summarizes them and suggests fixes.
+A Hopsworks administrator can turn the chat off with the `factory_chat_enabled` variable: a system's page then shows its views at the full width, and **Status** opens the report on a page of its own.
 A system whose directory is deleted disappears from the list.
 **Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
 
@@ -180,10 +189,10 @@ An analytics layer organizes tables as bronze (raw data as it arrived), silver (
 Hopsworks installs an archived schematized tag, `analytics_table`, whose `layer` is `bronze`, `silver` or `gold` and whose `lifecycle` is `dev`, `staging` or `prod`; every change of a table's value is kept in the tag history.
 When you ingest data with a dltHub data source, **Tag as bronze tables** in the review, off by default, tags every feature group it creates as bronze.
 
-**New Analytics**, in the Factory, lists two factories, **Silver layer** and **Data Mart**; the silver one builds a silver layer from the project's bronze feature groups.
+**From Template > Analytics**, in the Factory, lists two factories, **Silver layer** and **Data Mart**; the silver one builds a silver layer from the project's bronze feature groups.
 A project without feature groups has nothing to build from: ingest raw data as bronze tables first, or build the example bronze layer.
 
-**Examples** in the same menu lists example layers. **Synthetic clickstream (bronze)** builds a bronze layer of generated web shop data with `hops factory run analytics-bronze --preset clickstream-example`, which copies the generator into `clickstream-bronze/` and starts Claude Code on `/hops-bronze clickstream-bronze`.
+**Blueprints** in the same menu lists example layers. **Synthetic clickstream (bronze)** builds a bronze layer of generated web shop data with `hops factory run analytics-bronze --preset clickstream-example`, which copies the generator into `clickstream-bronze/` and starts Claude Code on `/hops-bronze clickstream-bronze`.
 It writes four offline Delta feature groups tagged `layer: bronze`: `clickstream_customers`, `clickstream_products`, `clickstream_orders` and `clickstream_clicks`.
 A backfill job writes the 30 days up to the last midnight: 10,000 customers, 1,000 products, 20,000 orders and 1,000,000 clicks.
 An hourly job writes 10,000 clicks an hour, and a daily job writes the day's new customers, products and orders and its changes: profile updates, price changes, discontinued products and order status changes.
@@ -208,7 +217,7 @@ Every job has a delete icon that asks whether to also delete the feature groups 
 
 ### Build a gold analytics layer of data marts
 
-**New Analytics** with **Data Mart** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
+**From Template > Analytics > Data Mart** builds a gold layer from silver tables: a Kimball dimensional model, a star or snowflake schema, for the queries the layer will serve.
 The page asks for those queries, the model, the first data mart's refresh and freshness target, and the silver tables to read.
 On a cluster with Platform Intelligence, **Suggest** selects the silver tables the answers so far call for, and drafts answers to the folded questions below that are still blank; change any of them as you like.
 The standards every data mart follows (naming, modeling, documentation and quality, proposed and editable) and the first data mart's requirements below are folded away: anything left blank is drafted by the build from the layer's questions and the silver tables, for you to confirm, and recorded in `system.yaml`, where you can edit it later.
@@ -250,7 +259,7 @@ A build deletes jobs and feature groups only with `hops factory system delete-as
 ### Create your own factory
 
 A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
-The **Factory** page shows a section for each of the project's factories, with **New** opening the form it generates.
+The project's own factories are listed under **From Template** with the built-in ones of their kind, each opening the form it generates.
 The six built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `analytics-bronze`, `analytics-silver` and `analytics-gold`, are read-only; clone one to change it.
 A form has no conditions: every question of a section is shown, and a section with defaults can be collapsed to a summary of its answers with **Edit**.
 
@@ -260,7 +269,7 @@ The editor changes the questions, phases and build instructions as a form or as 
 Importing shows the factory's build instructions in full first: Claude Code follows them in your Terminal, with your credentials.
 
 A clone of a built-in keeps the built-in's questions and build; answers the built-in build does not read are recorded in `requirements.extra` and the clone's instructions in `factory.instructions` of each system's `system.yaml`, which the built-in build follows too.
-A definition's questions can be text, numbers, checkboxes, one or some of a list of options, one or several feature groups, a list of entries each with its own questions, and account variables, which are saved in your account and never in `system.yaml`; presets are named sets of starting answers, listed under the factory's **New** button.
+A definition's questions can be text, numbers, checkboxes, one or some of a list of options, one or several feature groups, a list of entries each with its own questions, and account variables, which are saved in your account and never in `system.yaml`; presets are named sets of starting answers, listed as the factory's **Blueprints**.
 
 ```yaml
 apiVersion: hopsworks.ai/factory/v1
