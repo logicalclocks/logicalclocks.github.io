@@ -219,10 +219,10 @@ That includes the app-path and routing variables above, plus other platform-mana
 
 ## Database and feature store access
 
-Every app gets access to the project's feature store data by default (**Database access** in the create dialog, `db_access` in the SDK, `--no-db-access` in the CLI to opt out):
+Every app can reach the project's feature store data from inside the pod:
 
-- the project's **online feature store database** on RonDB (MySQL protocol), where the online feature group tables live and where the app can keep its own tables: sessions, settings, agent memory, job results;
-- when Trino is enabled on the cluster, the project's **offline feature groups** through the [Trino query engine](../trino/query_engine.md).
+- the project's **online feature store database** on RonDB (MySQL protocol), where the online feature group tables live and where the app can keep its own tables: sessions, settings, agent memory, job results. This is on by default and controlled by **Database access** in the create dialog, `db_access` in the SDK and `--no-db-access` in the CLI;
+- when Trino is enabled on the cluster, the project's **offline feature groups** through the [Trino query engine](../trino/query_engine.md). This does not depend on the database access flag: an app created with `db_access=False` still gets the Trino variables.
 
 The database is created on demand the first time an app with database access starts, so it works in a project that never created an online feature group. The app finds everything in its environment; nothing has to be configured.
 
@@ -232,7 +232,7 @@ The database is created on demand the first time an app with database access sta
 | `MYSQL_DB` | the project database, the project name in lowercase |
 | `MYSQL_USER` | the MySQL user of the person who **started** the app |
 | `MYSQL_PASSWORD_SECRET_NAME` | the Hopsworks secret holding that user's password |
-| `TRINO_HOST`, `TRINO_PORT` | the Trino coordinator (HTTPS) |
+| `TRINO_HOST`, `TRINO_PORT` | the Trino coordinator (HTTPS), when Trino is enabled |
 | `TRINO_USER` | the Trino user of the person who started the app, `<project>__<username>` |
 | `TRINO_PASSWORD_SECRET_NAME` | the Hopsworks secret holding that user's Trino password |
 | `TRINO_SCHEMA` | the project's offline feature store schema, `<project>_featurestore` |
@@ -393,7 +393,7 @@ apps = project.get_app_api()
 app = apps.create_app(
     "customer_dashboard",
     app_path="Resources/app.py",
-    db_access=True,  # default: online database and Trino access, see above
+    db_access=True,  # default: the online database, see above
 )
 
 app.run()
@@ -444,7 +444,7 @@ hops app delete <name> --yes
 Use `--git-url` and `--entrypoint-script` for Git-backed Streamlit apps.
 Use `--entrypoint-command` and `--app-port` for custom apps.
 Add `--git-auto-redeploy` to roll a Git-backed app onto every new commit.
-Pass `--no-db-access` for an app that must not get the database and Trino variables.
+Pass `--no-db-access` for an app that must not get the online database variables; Trino access does not depend on it.
 
 ## See also
 
