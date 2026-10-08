@@ -246,20 +246,31 @@ The variables are listed on the app details page under **Environment variables**
 
 ```python
 import os
+
 import hopsworks
 import pymysql
 
-project = hopsworks.login()                      # in-cluster: no prompt
+
+project = hopsworks.login()  # in-cluster: no prompt
 
 # Online feature store / the app's own tables
 password = project.get_secrets_api().get(os.environ["MYSQL_PASSWORD_SECRET_NAME"])
-conn = pymysql.connect(host=os.environ["MYSQL_HOST"], port=int(os.environ["MYSQL_PORT"]),
-                       user=os.environ["MYSQL_USER"], password=password, database=os.environ["MYSQL_DB"])
+conn = pymysql.connect(
+    host=os.environ["MYSQL_HOST"],
+    port=int(os.environ["MYSQL_PORT"]),
+    user=os.environ["MYSQL_USER"],
+    password=password,
+    database=os.environ["MYSQL_DB"],
+)
 
 # Offline feature groups through Trino
-trino = project.get_trino_api().connect(catalog="delta", schema=os.environ["TRINO_SCHEMA"])
+trino = project.get_trino_api().connect(
+    catalog="delta", schema=os.environ["TRINO_SCHEMA"]
+)
 cursor = trino.cursor()
-cursor.execute("SELECT * FROM transactions_1 WHERE event_time >= DATE '2025-01-01' LIMIT 100")
+cursor.execute(
+    "SELECT * FROM transactions_1 WHERE event_time >= DATE '2025-01-01' LIMIT 100"
+)
 rows = cursor.fetchall()
 ```
 
@@ -382,7 +393,7 @@ apps = project.get_app_api()
 app = apps.create_app(
     "customer_dashboard",
     app_path="Resources/app.py",
-    db_access=True,          # default: online database and Trino access, see above
+    db_access=True,  # default: online database and Trino access, see above
 )
 
 app.run()
