@@ -227,7 +227,7 @@ Every app gets access to the project's feature store data by default (**Database
 The database is created on demand the first time an app with database access starts, so it works in a project that never created an online feature group. The app finds everything in its environment; nothing has to be configured.
 
 | Variable | Value |
-|---|---|
+| --- | --- |
 | `MYSQL_HOST`, `MYSQL_PORT` | the online feature store MySQL server |
 | `MYSQL_DB` | the project database, the project name in lowercase |
 | `MYSQL_USER` | the MySQL user of the person who **started** the app |
