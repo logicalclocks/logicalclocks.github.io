@@ -35400,7 +35400,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -35425,29 +35425,29 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.
 | --- | --- | --- |
 | [`global`][helm-values-global] |  | 145 |
 | [`airflow`][helm-values-airflow] |  | 151 |
-| [`arrowflight`][helm-values-arrowflight] |  | 45 |
+| [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
 | [`consul`][helm-values-consul] | [`consul` 1.8.16](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.16) | 24 |
 | [`docker-registry`][helm-values-docker-registry] |  | 90 |
 | [`grafana`][helm-values-grafana] | [`grafana` 7.0.17](https://artifacthub.io/packages/helm/grafana/grafana/7.0.17) | 7 |
-| [`hive`][helm-values-hive] |  | 77 |
-| [`hopsfs`][helm-values-hopsfs] |  | 219 |
+| [`hive`][helm-values-hive] |  | 78 |
+| [`hopsfs`][helm-values-hopsfs] |  | 221 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 932 |
+| [`hopsworks`][helm-values-hopsworks] |  | 934 |
 | [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 94 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |
 | [`judge`][helm-values-judge] |  | 23 |
-| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.2.0](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.2.0) | 98 |
+| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.2.0](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.2.0) | 100 |
 | [`kserve`][helm-values-kserve] |  | 266 |
 | [`minio`][helm-values-minio] |  | 42 |
-| [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 163 |
+| [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 164 |
 | [`onlinefs`][helm-values-onlinefs] |  | 93 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.20](https://github.com/logicalclocks/rondb-helm/blob/v26.2.20/values.schema.json) | 462 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) | 464 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 25 |
-| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 37 |
+| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 38 |
 | [`vpa`][helm-values-vpa] |  | 18 |
 
 ## Other values { #helm-values-other }
@@ -35478,7 +35478,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -36573,7 +36573,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -37439,7 +37439,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -37631,6 +37631,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         class: null
         enabled: null
         managed: null
+        nodePort: null
         nodeSelector: {}
     ```
 
@@ -37651,6 +37652,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `arrowflight.externalLoadBalancer.managed` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`arrowflight.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `arrowflight.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -37716,7 +37721,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -37904,7 +37909,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -38237,7 +38242,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -38688,7 +38693,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -39186,7 +39191,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -39230,6 +39235,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         class: null
         enabled: false
         managed: null
+        nodePort: null
         nodeSelector: {}
     ```
 
@@ -39250,6 +39256,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hive.externalLoadBalancer.managed` <a class="headerlink" href="#helm.hive.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.hive.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`hive.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.hive.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.hive.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hive.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.hive.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.hive.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -39594,7 +39604,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -39762,6 +39772,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           enabled: null
           loadBalancerClass: null
           managed: null
+          nodePort: null
         monitoringPort: 50076
         nodeSelector: {}
         podDisruptionBudget:
@@ -39837,6 +39848,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsfs.datanode.loadBalancer.managed` <a class="headerlink" href="#helm.hopsfs.datanode.loadBalancer.managed" title="Permanent link">#</a> { #helm.hopsfs.datanode.loadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`hopsfs.datanode.loadBalancer.nodePort` <a class="headerlink" href="#helm.hopsfs.datanode.loadBalancer.nodePort" title="Permanent link">#</a> { #helm.hopsfs.datanode.loadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsfs.datanode.monitoringPort` <a class="headerlink" href="#helm.hopsfs.datanode.monitoringPort" title="Permanent link">#</a> { #helm.hopsfs.datanode.monitoringPort }
 :   Type `int`, default `50076`.
@@ -40042,6 +40057,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           enabled: null
           loadBalancerClass: null
           managed: null
+          nodePort: null
         maxBlocksPerFile: 10240
         maxDirectMemorySize: 1024
         maxDirectoryItems: 131072
@@ -40237,6 +40253,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsfs.namenode.loadBalancer.managed` <a class="headerlink" href="#helm.hopsfs.namenode.loadBalancer.managed" title="Permanent link">#</a> { #helm.hopsfs.namenode.loadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`hopsfs.namenode.loadBalancer.nodePort` <a class="headerlink" href="#helm.hopsfs.namenode.loadBalancer.nodePort" title="Permanent link">#</a> { #helm.hopsfs.namenode.loadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsfs.namenode.maxBlocksPerFile` <a class="headerlink" href="#helm.hopsfs.namenode.maxBlocksPerFile" title="Permanent link">#</a> { #helm.hopsfs.namenode.maxBlocksPerFile }
 :   Type `int`, default `10240`.
@@ -40723,7 +40743,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -40993,7 +41013,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43284,7 +43304,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.service.worker.external.https.nodePort` <a class="headerlink" href="#helm.hopsworks.service.worker.external.https.nodePort" title="Permanent link">#</a> { #helm.hopsworks.service.worker.external.https.nodePort }
 :   Type `string`, default `nil`.
-    Explicit nodePort for the https service when type is NodePort. Null lets Kubernetes allocate one from the cluster's node-port range.
+    Explicit nodePort for the https service when type is NodePort. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsworks.service.worker.external.https.port` <a class="headerlink" href="#helm.hopsworks.service.worker.external.https.port" title="Permanent link">#</a> { #helm.hopsworks.service.worker.external.https.port }
 :   Type `int`, default `28181`.
@@ -43641,8 +43661,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         lifecycle_webhook_url: ''
         livy_startup_timeout: '240'
         livy_version: 0.8.4-incubating-SNAPSHOT-bin
+        loadbalancer_external_domain_datanode: null
         loadbalancer_external_domain_feature_query: null
         loadbalancer_external_domain_mysqld: null
+        loadbalancer_external_domain_namenode: null
         loadbalancer_external_domain_online_store_rest_server: null
         loadbalancer_external_domain_opensearch: null
         loadbalancer_external_domain_trino: null
@@ -44699,6 +44721,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.livy_version` <a class="headerlink" href="#helm.hopsworks.variables.livy_version" title="Permanent link">#</a> { #helm.hopsworks.variables.livy_version }
 :   Type `string`, default `"0.8.4-incubating-SNAPSHOT-bin"`.
 
+`hopsworks.variables.loadbalancer_external_domain_datanode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_datanode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_datanode }
+:   Type `string`, default `nil`.
+    The domain name of the external load balancer for the HopsFS datanodes. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
+
 `hopsworks.variables.loadbalancer_external_domain_feature_query` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_feature_query" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_feature_query }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for arrowflight. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
@@ -44706,6 +44732,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.loadbalancer_external_domain_mysqld` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_mysqld" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_mysqld }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for mysqld. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
+
+`hopsworks.variables.loadbalancer_external_domain_namenode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_namenode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_namenode }
+:   Type `string`, default `nil`.
+    The domain name of the external load balancer for the HopsFS namenode. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
 
 `hopsworks.variables.loadbalancer_external_domain_online_store_rest_server` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_online_store_rest_server" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_online_store_rest_server }
 :   Type `string`, default `nil`.
@@ -45679,7 +45709,7 @@ Values under `hw-kueue` configure Kueue, the job queueing controller, and the qu
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -46374,7 +46404,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -46857,7 +46887,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46992,7 +47022,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -47227,6 +47257,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
               consulServiceName: onlinefs
           externalLoadBalancer:
             annotations: {}
+            bootstrapNodePort: null
             class: null
             dns: ''
             enabled: null
@@ -47234,6 +47265,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
             managed: null
             nodeSelector: {}
             startingAdvertisedPort: 9093
+            startingNodePort: null
           image:
             name: kafka
             tag: 1.2.0-kafka-4.3.1-h1
@@ -47402,6 +47434,10 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 :   Type `object`, default `{}`.
     load balancer annotations
 
+`kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the bootstrap service when the load balancer is unmanaged (managed: false). Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
 `kafka.cluster.kafka.externalLoadBalancer.class` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.class" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.class }
 :   Type `string`, default `nil`.
     load balancer class name
@@ -47429,6 +47465,10 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 `kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort }
 :   Type `int`, default `9093`.
     In case of unmanaged Load Balancers this is the starting advertised port for the brokers  
+
+`kafka.cluster.kafka.externalLoadBalancer.startingNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.startingNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.startingNodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for broker 0 when the load balancer is unmanaged (managed: false); broker N gets startingNodePort + N, as with startingAdvertisedPort. Null lets Kubernetes allocate them from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `kafka.cluster.kafka.image` <a class="headerlink" href="#helm.kafka.cluster.kafka.image" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.image }
 :   Type `object`, default `{"name":"kafka","tag":"1.2.0-kafka-4.3.1-h1"}`.
@@ -47842,7 +47882,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -48050,7 +48090,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 
 `kserve.cert_manager.version` <a class="headerlink" href="#helm.kserve.cert_manager.version" title="Permanent link">#</a> { #helm.kserve.cert_manager.version }
 :   Type `string`, default `"v1.21.1"`.
-    cert-manager version. v1.21 is the line whose supported Kubernetes range (1.33-1.36) covers this chart's kubeVersion window (1.34-1.36); kserve-deps.env pins v1.17 (KServe CI), which is EOL and tops out at Kubernetes 1.33.
+    cert-manager version. v1.21 supports Kubernetes 1.33-1.36; kserve-deps.env pins v1.17 (KServe CI), which is EOL and tops out at Kubernetes 1.33.
 
 </div>
 
@@ -49394,7 +49434,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -49649,7 +49689,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -50310,6 +50350,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           class: null
           enabled: null
           managed: null
+          nodePort: null
           nodeSelector: {}
         indexUpgrade:
           activeDeadlineSeconds: 3600
@@ -50428,6 +50469,10 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 `olk.opensearch.externalLoadBalancer.managed` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`olk.opensearch.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `olk.opensearch.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -50613,7 +50658,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Always deployed.
 
@@ -51118,7 +51163,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -51278,7 +51323,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -51425,13 +51470,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.20](https://github.com/logicalclocks/rondb-helm/blob/v26.2.20/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -51641,7 +51686,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.20](https://github.com/logicalclocks/rondb-helm/blob/v26.2.20/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -51776,7 +51821,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.20](https://github.com/logicalclocks/rondb-helm/blob/v26.2.20/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -52409,6 +52454,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               enabled: true
               managed: true
               name: mysqld-external
+              nodePort: null
               nodeSelector: {}
               port: 3306
             headlessClusterIp:
@@ -52442,6 +52488,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               enabled: true
               managed: true
               name: rdrs-external
+              nodePort: null
               nodeSelector: {}
             headlessClusterIpName: rdrs-cluster-ip
             ingress:
@@ -52697,6 +52744,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.meta.mysqld.externalLoadBalancer.name` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.name" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.name }
 :   Type `string`, default `"mysqld-external"`.
 
+`rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `65535`.
+    Explicit nodePort for the service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range.
+
 `rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
     selector for nodes the load balancer can use to route traffic
@@ -52801,6 +52852,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
 `rondb.rondb.meta.rdrs.externalLoadBalancer.name` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.name" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.name }
 :   Type `string`, default `"rdrs-external"`.
+
+`rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `65535`.
+    Explicit nodePort for the service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range.
 
 `rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -54163,7 +54218,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55748,7 +55803,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -56831,7 +56886,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -57039,6 +57094,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         class: null
         enabled: null
         managed: null
+        nodePort: null
         nodeSelector: {}
     ```
 
@@ -57059,6 +57115,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `trino.externalLoadBalancer.managed` <a class="headerlink" href="#helm.trino.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`trino.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.trino.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `trino.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.trino.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -57134,7 +57194,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

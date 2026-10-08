@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -212,7 +212,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 
 `kserve.cert_manager.version` <a class="headerlink" href="#helm.kserve.cert_manager.version" title="Permanent link">#</a> { #helm.kserve.cert_manager.version }
 :   Type `string`, default `"v1.21.1"`.
-    cert-manager version. v1.21 is the line whose supported Kubernetes range (1.33-1.36) covers this chart's kubeVersion window (1.34-1.36); kserve-deps.env pins v1.17 (KServe CI), which is EOL and tops out at Kubernetes 1.33.
+    cert-manager version. v1.21 supports Kubernetes 1.33-1.36; kserve-deps.env pins v1.17 (KServe CI), which is EOL and tops out at Kubernetes 1.33.
 
 </div>
 

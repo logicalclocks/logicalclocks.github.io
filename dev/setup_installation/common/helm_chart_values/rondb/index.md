@@ -4,13 +4,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.20](https://github.com/logicalclocks/rondb-helm/blob/v26.2.20/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -220,7 +220,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.20](https://github.com/logicalclocks/rondb-helm/blob/v26.2.20/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -355,7 +355,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.20](https://github.com/logicalclocks/rondb-helm/blob/v26.2.20/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -988,6 +988,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               enabled: true
               managed: true
               name: mysqld-external
+              nodePort: null
               nodeSelector: {}
               port: 3306
             headlessClusterIp:
@@ -1021,6 +1022,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               enabled: true
               managed: true
               name: rdrs-external
+              nodePort: null
               nodeSelector: {}
             headlessClusterIpName: rdrs-cluster-ip
             ingress:
@@ -1276,6 +1278,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.meta.mysqld.externalLoadBalancer.name` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.name" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.name }
 :   Type `string`, default `"mysqld-external"`.
 
+`rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `65535`.
+    Explicit nodePort for the service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range.
+
 `rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
     selector for nodes the load balancer can use to route traffic
@@ -1380,6 +1386,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
 `rondb.rondb.meta.rdrs.externalLoadBalancer.name` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.name" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.name }
 :   Type `string`, default `"rdrs-external"`.
+
+`rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `65535`.
+    Explicit nodePort for the service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range.
 
 `rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.

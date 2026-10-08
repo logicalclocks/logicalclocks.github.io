@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2295,7 +2295,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.service.worker.external.https.nodePort` <a class="headerlink" href="#helm.hopsworks.service.worker.external.https.nodePort" title="Permanent link">#</a> { #helm.hopsworks.service.worker.external.https.nodePort }
 :   Type `string`, default `nil`.
-    Explicit nodePort for the https service when type is NodePort. Null lets Kubernetes allocate one from the cluster's node-port range.
+    Explicit nodePort for the https service when type is NodePort. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsworks.service.worker.external.https.port` <a class="headerlink" href="#helm.hopsworks.service.worker.external.https.port" title="Permanent link">#</a> { #helm.hopsworks.service.worker.external.https.port }
 :   Type `int`, default `28181`.
@@ -2652,8 +2652,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         lifecycle_webhook_url: ''
         livy_startup_timeout: '240'
         livy_version: 0.8.4-incubating-SNAPSHOT-bin
+        loadbalancer_external_domain_datanode: null
         loadbalancer_external_domain_feature_query: null
         loadbalancer_external_domain_mysqld: null
+        loadbalancer_external_domain_namenode: null
         loadbalancer_external_domain_online_store_rest_server: null
         loadbalancer_external_domain_opensearch: null
         loadbalancer_external_domain_trino: null
@@ -3710,6 +3712,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.livy_version` <a class="headerlink" href="#helm.hopsworks.variables.livy_version" title="Permanent link">#</a> { #helm.hopsworks.variables.livy_version }
 :   Type `string`, default `"0.8.4-incubating-SNAPSHOT-bin"`.
 
+`hopsworks.variables.loadbalancer_external_domain_datanode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_datanode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_datanode }
+:   Type `string`, default `nil`.
+    The domain name of the external load balancer for the HopsFS datanodes. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
+
 `hopsworks.variables.loadbalancer_external_domain_feature_query` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_feature_query" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_feature_query }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for arrowflight. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
@@ -3717,6 +3723,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.loadbalancer_external_domain_mysqld` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_mysqld" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_mysqld }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for mysqld. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
+
+`hopsworks.variables.loadbalancer_external_domain_namenode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_namenode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_namenode }
+:   Type `string`, default `nil`.
+    The domain name of the external load balancer for the HopsFS namenode. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
 
 `hopsworks.variables.loadbalancer_external_domain_online_store_rest_server` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_online_store_rest_server" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_online_store_rest_server }
 :   Type `string`, default `nil`.

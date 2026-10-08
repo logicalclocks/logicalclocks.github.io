@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791370120` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791461629` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -665,6 +665,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           class: null
           enabled: null
           managed: null
+          nodePort: null
           nodeSelector: {}
         indexUpgrade:
           activeDeadlineSeconds: 3600
@@ -783,6 +784,10 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 `olk.opensearch.externalLoadBalancer.managed` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`olk.opensearch.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `olk.opensearch.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
