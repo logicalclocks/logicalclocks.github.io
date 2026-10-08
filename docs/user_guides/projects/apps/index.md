@@ -222,7 +222,7 @@ That includes the app-path and routing variables above, plus other platform-mana
 Every app can reach the project's feature store data from inside the pod:
 
 - the project's **online feature store database** on RonDB (MySQL protocol), where the online feature group tables live and where the app can keep its own tables: sessions, settings, agent memory, job results. This is on by default and controlled by **Database access** in the create dialog, `db_access` in the SDK and `--no-db-access` in the CLI;
-- when Trino is enabled on the cluster, the project's **offline feature groups** through the [Trino query engine](../trino/query_engine.md). This does not depend on the database access flag: an app created with `db_access=False` still gets the Trino variables.
+- the project's **offline feature groups**. A Python app reads them with the Hopsworks Python SDK, as any other Hopsworks client does: [feature group](../../fs/feature_group/index.md) reads and [feature view](../../fs/feature_view/batch-data.md) batch data. When Trino is enabled on the cluster, the app also gets the [Trino query engine](../trino/query_engine.md) as an SQL path to the same tables, which is what an app in another language uses. This does not depend on the database access flag: an app created with `db_access=False` still gets the Trino variables.
 
 The database is created on demand the first time an app with database access starts, so it works in a project that never created an online feature group. The app finds everything in its environment; nothing has to be configured.
 
@@ -244,16 +244,35 @@ The variables are listed on the app details page under **Environment variables**
 
 ### Python
 
-```python
-import os
+Read offline feature groups with the Hopsworks Python SDK first. It is what the rest of the platform uses, it knows the feature group's format and location, and a feature view adds point-in-time joins and the model's transformations, so a dashboard and the model it shows stay consistent.
 
+```python
 import hopsworks
-import pymysql
 
 
 project = hopsworks.login()  # in-cluster: no prompt
+fs = project.get_feature_store()
 
-# Online feature store / the app's own tables
+# Offline feature group: a DataFrame, filtered and projected on the server side
+transactions = fs.get_feature_group("transactions", version=1)
+recent = (
+    transactions.select(["cc_num", "amount", "event_time"])
+    .filter(transactions.event_time >= "2025-01-01")
+    .read()
+)
+
+# Feature view: batch data with the point-in-time joins and transformations of the model
+fv = fs.get_feature_view("fraud_model", version=1)
+batch = fv.get_batch_data(start_time="2025-01-01", end_time="2025-02-01")
+```
+
+The online database is for the app's own tables and for primary-key lookups on the online feature group tables:
+
+```python
+import os
+
+import pymysql
+
 password = project.get_secrets_api().get(os.environ["MYSQL_PASSWORD_SECRET_NAME"])
 conn = pymysql.connect(
     host=os.environ["MYSQL_HOST"],
@@ -262,8 +281,13 @@ conn = pymysql.connect(
     password=password,
     database=os.environ["MYSQL_DB"],
 )
+```
 
-# Offline feature groups through Trino
+Create the app's own tables with an explicit `ENGINE=NDBCLUSTER`, a primary key, and an `app_` prefix so they never collide with feature group tables (`<feature_group>_<version>`). Write features through `feature_group.insert()`, not straight into the online tables; reading them with SQL is fine.
+
+Trino is an extra option for a Python app: ad-hoc SQL over the offline tables, a join with another Trino catalog, or a query the SDK does not express. The SDK wraps the connection:
+
+```python
 trino = project.get_trino_api().connect(
     catalog="delta", schema=os.environ["TRINO_SCHEMA"]
 )
@@ -273,8 +297,6 @@ cursor.execute(
 )
 rows = cursor.fetchall()
 ```
-
-Create the app's own tables with an explicit `ENGINE=NDBCLUSTER`, a primary key, and an `app_` prefix so they never collide with feature group tables (`<feature_group>_<version>`). Write features through `feature_group.insert()`, not straight into the online tables; reading them with SQL is fine.
 
 ### JavaScript
 
