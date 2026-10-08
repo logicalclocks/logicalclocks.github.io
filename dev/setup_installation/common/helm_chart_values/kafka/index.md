@@ -4,7 +4,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791470908` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791477965` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -228,6 +228,8 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
                 bytes: -1
                 checkIntervalMs: 300000
                 hours: 168
+            minInsyncReplicas: 1
+            replicationFactor: 1
           dependencies:
             glassfish:
               consulServiceName: glassfish
@@ -396,6 +398,14 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 `kafka.cluster.kafka.config.log.retention.hours` <a class="headerlink" href="#helm.kafka.cluster.kafka.config.log.retention.hours" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.config.log.retention.hours }
 :   Type `int`, default `168`.
     The number of hours to keep a log segment before deleting it.
+
+`kafka.cluster.kafka.config.minInsyncReplicas` <a class="headerlink" href="#helm.kafka.cluster.kafka.config.minInsyncReplicas" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.config.minInsyncReplicas }
+:   Type `int`, default `1`.
+    min.insync.replicas and transaction.state.log.min.isr: the replicas that must acknowledge a write from a producer using acks=all, the Kafka client default, before it is accepted. At most replicationFactor, and no more than the fewest replicas any existing topic has: a topic with fewer rejects acks=all writes.
+
+`kafka.cluster.kafka.config.replicationFactor` <a class="headerlink" href="#helm.kafka.cluster.kafka.config.replicationFactor" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.config.replicationFactor }
+:   Type `int`, default `1`.
+    Replication factor of the topics Kafka creates itself: __consumer_offsets, __transaction_state and any topic created without one. At most replicas. It applies to topics created after it is set; existing topics keep theirs. Topics Hopsworks creates take theirs from hopsworks.variables.kafka_num_replicas.
 
 `kafka.cluster.kafka.dependencies.glassfish.consulServiceName` <a class="headerlink" href="#helm.kafka.cluster.kafka.dependencies.glassfish.consulServiceName" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.dependencies.glassfish.consulServiceName }
 :   Type `string`, default `"glassfish"`.
