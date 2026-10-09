@@ -167,8 +167,9 @@ Beside the chat, **App** shows the system's app or dashboards in the page; while
 **Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
 **Architecture** opens the system's architecture: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
 A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
-**Status**, once every phase is done, checks the system's jobs over the last day and its deployments and app, shows the report, and sends its findings to the chat, where Claude Code summarizes them and suggests fixes.
-A Hopsworks administrator can turn the chat off with the `factory_chat_enabled` variable: a system's page then shows its views at the full width, and **Status** opens the report on a page of its own.
+**Status**, a view beside the others once every phase is done, checks the system's jobs over the last day, what its feature pipelines wrote, and its deployments and app, shows the report, and sends its findings to the chat, where Claude Code summarizes them and suggests fixes.
+For each feature pipeline the report sets the rows it read against the rows it wrote in the window, and checks each output for columns with nulls and for hours or days with no rows.
+A Hopsworks administrator can turn the chat off with `hopsworks.factory_chat_enabled: false` in the Helm values, the `factory_chat_enabled` variable: a system's page then shows its views at the full width, and **Status** is a button among the system's actions that opens the report on a page of its own.
 A system whose directory is deleted disappears from the list.
 **Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
 
@@ -256,11 +257,39 @@ A change to a built system, a layer's or any other, is one of its factory's `cha
 Each opens the change's form; saving records the request in the system's `system.yaml` (`changes`, `status: pending`) with `hops factory run <factory> <system> --change <id>`, and resumes the build in a Terminal tab, which carries out the pending requests first.
 A build deletes jobs and feature groups only with `hops factory system delete-assets`, which refuses a table the system reads or one of a lower analytics layer.
 
+### Build a data pipeline
+
+**From Template > Analytics > Data pipeline** builds one scheduled pipeline that reads data sources, transforms them and writes the results to feature groups or files.
+The form asks for its name, the repository, the engine (PySpark, DuckDB, Polars, or dbt on Trino), and in your own words its data sources, its transformations and its outputs, with how often it runs.
+**Create** runs `hops factory run analytics-pipeline --answers` in a Terminal tab named after the pipeline and starts Claude Code on `/hops-factory-analytics-pipeline <name>`; the page opens the pipeline with the chat beside it.
+
+The first phase settles the requirements with you in the chat.
+Claude Code looks at the feature groups, data sources and files you named, then asks what it cannot tell, with options drawn from what it found: the exact sources and how they join, each transformation's rules, each output's name, primary key, event time and whether it is online, whether a run reads only its window or all the data, the columns that must never be null, and whether you want a dashboard to inspect the outputs: Superset, a custom dashboard app, or none.
+It writes the answers to `system.yaml`, says back what the pipeline will read, do and write, and builds only once you confirm.
+
+The pipeline's `system.yaml` holds only a `features` block, the feature pipeline section an ML system has, with no training or inference pipeline:
+
+```yaml
+features:
+  pipelines:
+    - name: orders
+      engine: polars
+      reads: [{feature_group: raw_orders, version: 1}, {data_source: crm, table: customers}]
+      transformations: [drop test orders, join customers on customer_id, revenue per customer and day]
+      writes: [{feature_group: orders_daily, version: 1, primary_key: [customer_id], event_time: day}]
+      quality: {max_null_pct: 5, not_null: [customer_id, day]}
+      job: {name: orders-pipeline-orders, schedule: {cron: "0 0 2 * * ?"}}
+dashboard: {kind: superset, dashboards: [{name: Orders, url: <url>}]}
+```
+
+The build then writes and tests the code, runs it over the history you asked for, schedules the job, builds the dashboard, which the system's **App** view shows, and verifies one run with `hops factory system status`.
+A Polars or DuckDB pipeline is a Python job that never starts a Spark job: the feature groups it writes have statistics off.
+
 ### Create your own factory
 
 A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
 The project's own factories are listed under **From Template** with the built-in ones of their kind, each opening the form it generates.
-The six built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `analytics-bronze`, `analytics-silver` and `analytics-gold`, are read-only; clone one to change it.
+The seven built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `analytics-bronze`, `analytics-silver`, `analytics-gold` and `analytics-pipeline`, are read-only; clone one to change it.
 A form has no conditions: every question of a section is shown, and a section with defaults can be collapsed to a summary of its answers with **Edit**.
 
 **Factory > Manage factories** lists every factory with its version and how many systems it built.
