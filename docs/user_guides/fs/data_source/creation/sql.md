@@ -69,16 +69,15 @@ Pick the `SQL` card to open the creation form.
 Enter the details for your database.
 Start by giving the connector a **name** and an optional **description**.
 
-1. The form opens with `Source` set to `SQL`.
+1. The form opens for the database whose card you picked in the gallery (MySQL, PostgreSQL, Oracle, SQL Server and the others), which sets the database type.
    Click `Change source` to pick a different one.
-2. Select the database type (MySQL, PostgreSQL, Oracle, or SQL Server).
-3. Enter the host endpoint.
+2. Enter the host endpoint.
    Leave it empty when using an Oracle wallet: the wallet supplies the connection details, and the database field names the TNS alias to use.
-4. Enter the database name (service name for Oracle).
-5. Specify the port.
-6. Provide the username and password.
-7. For Oracle with mTLS, upload the wallet zip file and provide the wallet password (if required).
-8. Click on "Save Credentials".
+3. Enter the database name (service name for Oracle).
+4. Specify the port.
+5. Provide the username and password.
+6. For Oracle with mTLS, upload the wallet zip file and provide the wallet password (if required).
+7. Click on "Save Credentials".
 
 <figure markdown>
   ![SQL Connector Creation](../../../../assets/images/guides/fs/data_source/sql_creation.png)
