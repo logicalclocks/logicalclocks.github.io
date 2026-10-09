@@ -229,6 +229,7 @@ nav:
           - Query Engine (Trino):
               - Query Engine: user_guides/projects/trino/query_engine.md
               - Trino Catalogs: user_guides/projects/trino/catalogs.md
+              - Sharing: user_guides/projects/trino/sharing.md
           - Superset: user_guides/projects/superset/superset.md
       - MLOps:
           - user_guides/mlops/index.md
@@ -326,7 +327,34 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
-      - Helm Chart Values Reference: setup_installation/common/helm_chart_values.md
+      - Helm Chart Values Reference:
+          - setup_installation/common/helm_chart_values/index.md
+          - global: setup_installation/common/helm_chart_values/global.md
+          - airflow: setup_installation/common/helm_chart_values/airflow.md
+          - arrowflight: setup_installation/common/helm_chart_values/arrowflight.md
+          - certs-operator: setup_installation/common/helm_chart_values/certs-operator.md
+          - consul: setup_installation/common/helm_chart_values/consul.md
+          - docker-registry: setup_installation/common/helm_chart_values/docker-registry.md
+          - grafana: setup_installation/common/helm_chart_values/grafana.md
+          - hive: setup_installation/common/helm_chart_values/hive.md
+          - hopsfs: setup_installation/common/helm_chart_values/hopsfs.md
+          - hopsfs-csi: setup_installation/common/helm_chart_values/hopsfs-csi.md
+          - hopsworks: setup_installation/common/helm_chart_values/hopsworks.md
+          - hw-kueue: setup_installation/common/helm_chart_values/hw-kueue.md
+          - hw-kyverno: setup_installation/common/helm_chart_values/hw-kyverno.md
+          - judge: setup_installation/common/helm_chart_values/judge.md
+          - kafka: setup_installation/common/helm_chart_values/kafka.md
+          - kserve: setup_installation/common/helm_chart_values/kserve.md
+          - minio: setup_installation/common/helm_chart_values/minio.md
+          - olk: setup_installation/common/helm_chart_values/olk.md
+          - onlinefs: setup_installation/common/helm_chart_values/onlinefs.md
+          - prometheus: setup_installation/common/helm_chart_values/prometheus.md
+          - ray: setup_installation/common/helm_chart_values/ray.md
+          - rondb: setup_installation/common/helm_chart_values/rondb.md
+          - spark: setup_installation/common/helm_chart_values/spark.md
+          - superset: setup_installation/common/helm_chart_values/superset.md
+          - trino: setup_installation/common/helm_chart_values/trino.md
+          - vpa: setup_installation/common/helm_chart_values/vpa.md
   - Python API: python-api
   - Java API: javadoc
   - Reference:
@@ -400,6 +428,7 @@ extra_javascript:
   - js/hops-viz.js
   - js/hops-viz-tooltip.js
   - js/prov-hover.js
+  - js/values-filter.js
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
 # Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.
