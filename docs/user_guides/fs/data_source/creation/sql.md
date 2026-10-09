@@ -117,6 +117,12 @@ No JDBC driver or wallet files are needed on the client, and the Spark JDBC limi
 
 ## SQL Server-Specific Notes
 
+### Host and port
+
+The **Host** is a host name or an IPv4 address.
+For a named instance, enter the server's host name and the port the instance listens on, not `host\instance`: the JDBC driver would connect to the port and the Python engine to the instance, which can be different servers.
+For an IPv6-only server, use a host name that resolves to it, because the JDBC driver does not accept an IPv6 address in its URL.
+
 ### Databases, schemas and tables
 
 SQL Server names a table `database.schema.table`.
