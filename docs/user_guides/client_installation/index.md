@@ -145,8 +145,9 @@ A GitHub repository the build creates, an example's included, is named `hops-<sl
 They show as buttons below the box, the most likely highlighted in the middle; a box above them says why the selected factory fits and what it would build, and picking another factory explains that one.
 The green **Build** button opens the selected factory's form, at its blueprint when the description is one, filled in with what the description says, for you to check and press **Create**.
 This needs Platform Intelligence configured on the cluster; without it, pick a factory from **From Template**.
-A factory's form has a chat beside it for filling in the requirements.
-The chat's first message writes a draft `system.yaml` in `factory-drafts/<factory>` of your HopsFS home, with the form's answers, and starts Claude Code there; it reads the project's data, asks what it needs, and writes the answers into the draft, which the form shows as it changes.
+A factory's form has a chat beside it for settling the requirements, and it starts on its own when the form opens.
+It writes a draft `system.yaml` in `factory-drafts/<factory>` of your HopsFS home, with the form's answers, and starts Claude Code there, which says in a few lines what will be built and asks only the few questions that change it: the data, what it produces and for whom, how often and how much history, a dashboard or app, and who hears about failures; technical details are left to the build.
+It writes your answers into the draft, which the form shows as it changes, and notes what the form has no field for, which the build receives too; then it summarizes again and asks whether to create the system or change something.
 What you type in the form goes to Claude Code with your next message.
 Say in the chat that you want to create the system, and Claude Code checks the required answers and the page creates it, as **Create** does; **Back** and **Create** are at the top right of the page.
 **From Template** lists the factories without the description: **ML System** holds **Batch ML system**, **Real-time ML system** and **Agentic system**, **Analytics** the analytics layer factories, and each has a **Blueprints** submenu of its examples, each opening its factory's form filled in.
@@ -269,10 +270,8 @@ A build deletes jobs and feature groups only with `hops factory system delete-as
 The form asks for its name, the repository, the engine (PySpark, DuckDB, Polars, or dbt on Trino), and in your own words its data sources, its transformations and its outputs, with how often it runs.
 **Create** runs `hops factory run analytics-pipeline --answers` in a Terminal tab named after the pipeline and starts Claude Code on `/hops-factory-analytics-pipeline <name>`; the page opens the pipeline with the chat beside it.
 
-The first phase settles the requirements with you in the chat.
-Claude Code looks at the feature groups, data sources and files you named, then asks what it cannot tell, with options drawn from what it found: the exact sources and how they join, each transformation's rules, each output's name, primary key, event time and whether it is online, whether a run reads only its window or all the data, how much history to backfill before the first scheduled run (a number of days, or of hours for an hourly pipeline, all of it, or none), the columns that must never be null, alerting, and whether you want a dashboard to inspect the outputs: Superset, a custom dashboard app, or none.
-For alerting it recommends what usually works: alert on failed and killed runs as critical and on long-running ones as a warning, to a channel someone watches (Slack, PagerDuty or email); no alert on every success, which gets ignored, unless a downstream team needs the signal; a warning when a run writes no rows or breaks the quality rules; and alerts that carry the pipeline and job, the window, rows in and out, the error with the last log lines, the link to the run's logs, and the next step.
-It writes the answers to `system.yaml`, says back what the pipeline will read, do and write, and builds only once you confirm.
+The requirements are settled in the form's chat before the pipeline is created, as for every factory, including how much history to backfill, alerting and a dashboard to inspect the outputs (Superset, a custom dashboard app, or none).
+The build's first phase does not ask them again: it profiles the sources and decides the technical details with best practice, the exact sources and joins, output keys, the incremental window, quality rules, the backfill and the alerts (failed and killed runs as critical and long-running ones as a warning, no alert per success, a warning when a run writes nothing or breaks its quality rules), as the chat's notes say or by default, and asks only when something essential is missing.
 
 The pipeline's `system.yaml` holds only a `features` block, the feature pipeline section an ML system has, with no training or inference pipeline:
 
