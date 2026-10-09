@@ -161,7 +161,7 @@ For an agentic system the LLM's endpoint, model and key are saved as your accoun
 For a batch or real-time system, **Monitoring** (collapsed) sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
 The build turns them into feature logging on the feature view, feature monitoring checks and alerts, and sends a failure alert for every job the system owns to the project's alert receiver.
 **Create** runs `hops factory run ml-batch --answers` (or `ml-realtime`, `ml-agent`) in a Terminal tab named after the system, which records it and starts Claude Code on `/hops-build <name>`; the page opens the system once it is registered.
-**Location**, above the form of every factory, sets the folder the system's directory goes in, which holds its code and is its git repository: your home folder in the project by default, `Resources` so every member can open the code, or any folder of the project you can write to; from the CLI, run `hops factory run` in that folder.
+**Location**, above the form of every factory, sets the folder the system's directory goes in, which holds its code and is its git repository: your home folder in the project by default, or another folder of the project you can write to, such as one in `Resources` so every member can open the code; from the CLI, run `hops factory run` in that folder.
 
 A system's page is a chat beside the system.
 The chat is the conversation of the Claude Code in the system's Terminal tab, the build while it runs: its replies, its tool calls folded to one line, and its questions and permission requests as cards whose options answer them.
