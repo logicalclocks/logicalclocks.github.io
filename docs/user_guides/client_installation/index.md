@@ -145,6 +145,10 @@ A GitHub repository the build creates, an example's included, is named `hops-<sl
 They show as buttons below the box, the most likely highlighted in the middle; a box above them says why the selected factory fits and what it would build, and picking another factory explains that one.
 The green **Build** button opens the selected factory's form, at its blueprint when the description is one, filled in with what the description says, for you to check and press **Create**.
 This needs Platform Intelligence configured on the cluster; without it, pick a factory from **From Template**.
+A factory's form has a chat beside it for filling in the requirements.
+The chat's first message writes a draft `system.yaml` in `factory-drafts/<factory>` of your HopsFS home, with the form's answers, and starts Claude Code there; it reads the project's data, asks what it needs, and writes the answers into the draft, which the form shows as it changes.
+What you type in the form goes to Claude Code with your next message.
+Say in the chat that you want to create the system, and Claude Code checks the required answers and the page creates it, as **Create** does; **Back** and **Create** are at the top right of the page.
 **From Template** lists the factories without the description: **ML System** holds **Batch ML system**, **Real-time ML system** and **Agentic system**, **Analytics** the analytics layer factories, and each has a **Blueprints** submenu of its examples, each opening its factory's form filled in.
 The cogwheel opens **Manage factories**.
 **Existing Systems**, shown once a factory has built a system, lists the project's systems for every member: each with its factory, type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a Git repository; the box above it filters the list.
