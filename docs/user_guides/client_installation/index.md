@@ -163,11 +163,13 @@ A message you send is typed into that tab; when no Claude Code runs there, the f
 The Terminal panel closes and the project menu collapses while the chat is shown, and the Terminal must be running for the chat to reach Claude Code.
 Beside the chat, **App** shows the system's app or dashboards in the page; while the app is stopped, **Start app** starts the deployments it calls and then the app, and while it is starting or redeploying the button says so instead.
 **Assets** shows the system with its status, repository, files, phases and actions, then what it has made in three columns, the feature, training and inference pipelines, each asset linked to its page with its state, and its jobs below.
-**system.yaml** shows the specification, and **Build history** the phases, what is done and what is left, and the requirements, locked.
+**System Details** shows the specification, `system.yaml`, at the top, then the phases, what is done and what is left, and the requirements, locked.
 **Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
 **Architecture** opens the system's architecture: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
 A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
-**Status**, a view beside the others once every phase is done, checks the system's jobs over the last day, what its feature pipelines wrote, and its deployments and app, shows the report, and sends its findings to the chat, where Claude Code summarizes them and suggests fixes.
+**Status**, a view after **Assets** once every phase is done, shows the last status report.
+Pick how far back it looks, **1 day**, **7 days** or **Custom** (a number of days or hours), and press **Generate Report**: it checks the system's jobs, what its feature pipelines wrote, and its deployments and app over that window, shows the report, and sends its findings to the chat, where Claude Code summarizes them and suggests fixes.
+The browser remembers the window you picked.
 For each feature pipeline the report sets the rows it read against the rows it wrote in the window, and checks each output for columns with nulls and for hours or days with no rows.
 A Hopsworks administrator can turn the chat off with `hopsworks.factory_chat_enabled: false` in the Helm values, the `factory_chat_enabled` variable: a system's page then shows its views at the full width, and **Status** is a button among the system's actions that opens the report on a page of its own.
 A system whose directory is deleted disappears from the list.
@@ -264,7 +266,8 @@ The form asks for its name, the repository, the engine (PySpark, DuckDB, Polars,
 **Create** runs `hops factory run analytics-pipeline --answers` in a Terminal tab named after the pipeline and starts Claude Code on `/hops-factory-analytics-pipeline <name>`; the page opens the pipeline with the chat beside it.
 
 The first phase settles the requirements with you in the chat.
-Claude Code looks at the feature groups, data sources and files you named, then asks what it cannot tell, with options drawn from what it found: the exact sources and how they join, each transformation's rules, each output's name, primary key, event time and whether it is online, whether a run reads only its window or all the data, how much history to backfill before the first scheduled run (a number of days, or of hours for an hourly pipeline, all of it, or none), the columns that must never be null, and whether you want a dashboard to inspect the outputs: Superset, a custom dashboard app, or none.
+Claude Code looks at the feature groups, data sources and files you named, then asks what it cannot tell, with options drawn from what it found: the exact sources and how they join, each transformation's rules, each output's name, primary key, event time and whether it is online, whether a run reads only its window or all the data, how much history to backfill before the first scheduled run (a number of days, or of hours for an hourly pipeline, all of it, or none), the columns that must never be null, alerting, and whether you want a dashboard to inspect the outputs: Superset, a custom dashboard app, or none.
+For alerting it recommends what usually works: alert on failed and killed runs as critical and on long-running ones as a warning, to a channel someone watches (Slack, PagerDuty or email); no alert on every success, which gets ignored, unless a downstream team needs the signal; a warning when a run writes no rows or breaks the quality rules; and alerts that carry the pipeline and job, the window, rows in and out, the error with the last log lines, the link to the run's logs, and the next step.
 It writes the answers to `system.yaml`, says back what the pipeline will read, do and write, and builds only once you confirm.
 
 The pipeline's `system.yaml` holds only a `features` block, the feature pipeline section an ML system has, with no training or inference pipeline:
@@ -279,11 +282,12 @@ features:
       writes: [{feature_group: orders_daily, version: 1, primary_key: [customer_id], event_time: day}]
       quality: {max_null_pct: 5, not_null: [customer_id, day]}
       backfill: {last: 30d}
+      alerts: {receiver: {name: data-oncall, slack: ["#data-alerts"]}, on: [{status: failed, severity: critical}]}
       job: {name: orders-pipeline-orders, schedule: {cron: "0 0 2 * * ?"}}
 dashboard: {kind: superset, dashboards: [{name: Orders, url: <url>}]}
 ```
 
-The build then writes and tests the code, backfills the days or hours you asked for, schedules the job, builds the dashboard, which the system's **App** view shows, and verifies one run with `hops factory system status`.
+The build then writes and tests the code, backfills the days or hours you asked for, schedules the job, sets up its alerts, builds the dashboard, which the system's **App** view shows, and verifies one run with `hops factory system status`.
 A Polars or DuckDB pipeline is a Python job that never starts a Spark job: the feature groups it writes have statistics off.
 
 ### Create your own factory
