@@ -177,8 +177,12 @@ Pick how far back it looks, **1 day**, **7 days** or **Custom** (a number of day
 The browser remembers the window you picked.
 For each feature pipeline the report sets the rows it read against the rows it wrote in the window, and checks each output for columns with nulls and for hours or days with no rows.
 A Hopsworks administrator can turn the chat off with `hopsworks.factory_chat_enabled: false` in the Helm values, the `factory_chat_enabled` variable: a system's page then shows its views at the full width, and **Status** is a button among the system's actions that opens the report on a page of its own.
-A system whose directory is deleted disappears from the list.
+A system whose directory is deleted shows as unavailable, and leaves the list 24 hours later.
+Registering a directory needs write access to it, and refreshing a registered system needs its owner or a Data owner, so a member cannot claim another member's system.
+A system records the factory version and the digest of the definition it was built from, and keeps them when it is refreshed.
 **Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
+An asset another system in the project also names is kept, and so is an asset whose name does not contain the system's name unless its description names the system: a system made from an example starts from the example's `system.yaml`, and its delete must not remove the example's app or tables.
+The delete lists each asset it kept and why.
 
 ```bash
 hops factory list                                   # the factories and how many systems each built
@@ -189,6 +193,8 @@ hops factory system register <dir> [--name N]       # register or refresh one by
 hops factory system status <system>                 # write its health report, status/report.html
 hops factory system remove <system>                 # remove it from the list; its code is kept
 hops factory system delete <system> --assets [--repo]  # also delete what it created, and its repository
+hops factory system write-doc <system> --expected-sha256 H --from F  # replace system.yaml unless it changed since it was read
+hops factory system lease show|acquire|renew|release <system>  # the build lease that keeps two builds off one system
 ```
 
 ### Build a silver analytics layer
