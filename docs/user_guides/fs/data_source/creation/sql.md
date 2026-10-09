@@ -3,7 +3,7 @@
 ## Introduction
 
 The SQL Data Source connects Hopsworks to a Relational Database Service.
-Supported database types are **MySQL**, **PostgreSQL**, and **Oracle**.
+Supported database types are **MySQL**, **PostgreSQL**, **Oracle**, and **Microsoft SQL Server** (including Azure SQL Database).
 Using this connector, you can query and update data in your relational database from Hopsworks.
 
 In this guide, you will configure a Data Source in Hopsworks to securely store the authentication information needed to set up a connection to your database instance.
@@ -27,8 +27,9 @@ Before you begin, ensure you have the following information from your database i
 
 - **Database:** The name of the database to connect to.
   For Oracle, this is the **service name** (e.g. `ORCL` or a TNS alias).
+  For SQL Server, this is the database the login connects to by default; every database the login can access can still be browsed.
 
-- **Port:** The port to connect to (e.g. `3306` for MySQL, `5432` for PostgreSQL, `1521` for Oracle).
+- **Port:** The port to connect to (e.g. `3306` for MySQL, `5432` for PostgreSQL, `1521` for Oracle, `1433` for SQL Server).
 
 - **Username and Password:** A username and password with the necessary permissions to access the required tables.
 
@@ -70,7 +71,7 @@ Start by giving the connector a **name** and an optional **description**.
 
 1. The form opens with `Source` set to `SQL`.
    Click `Change source` to pick a different one.
-2. Select the database type (MySQL, PostgreSQL, or Oracle).
+2. Select the database type (MySQL, PostgreSQL, Oracle, or SQL Server).
 3. Enter the host endpoint.
    Leave it empty when using an Oracle wallet: the wallet supplies the connection details, and the database field names the TNS alias to use.
 4. Enter the database name (service name for Oracle).
@@ -93,7 +94,7 @@ The following notes apply only to Oracle.
 
 The Oracle JDBC driver JAR (e.g. `ojdbc11.jar`) must be available on the Spark classpath.
 Upload it via the [Jupyter configuration][how-to-run-a-pyspark-notebook] or [Job configuration][how-to-run-a-pyspark-job] in `Additional Jars`.
-The MySQL and PostgreSQL drivers are included in Hopsworks by default.
+The MySQL, PostgreSQL and SQL Server drivers are included in Hopsworks by default.
 
 ### Spark JDBC limitations
 
@@ -113,6 +114,25 @@ The MySQL and PostgreSQL drivers are included in Hopsworks by default.
 
 The Python engine reads Oracle via the Hopsworks Arrow Flight service, which handles the database connection server-side.
 No JDBC driver or wallet files are needed on the client, and the Spark JDBC limitations above do not apply.
+
+## SQL Server-Specific Notes
+
+### Databases, schemas and tables
+
+SQL Server names a table `database.schema.table`.
+When you browse a SQL Server data source, the database is the top level and the schema (often `dbo`) is the group, so an external feature group over a browsed table reads `[database].[schema].[table]`.
+A hand-written query can use the same three-part name, which lets one data source read any database on the server that the login can access.
+Write such a query as a plain `SELECT`: Hopsworks reads it as a derived table, where SQL Server does not accept a `WITH` clause.
+
+Azure SQL Database does not support three-part names across databases.
+Create one data source per Azure SQL database, with that database in the **Database** field.
+
+### Encryption and certificates
+
+Every connection is encrypted, and the server certificate is validated against the public certificate authorities, including its host name.
+For a server with a self-signed certificate, such as a default SQL Server installation, add the argument `trustServerCertificate` with the value `true`.
+This applies to Spark, the query engine, the Python engine and DLTHub ingestion alike.
+Spark and the query engine use Microsoft's JDBC driver, so other JDBC connection properties can be added as arguments the same way; the Python engine and DLTHub ingestion read only `trustServerCertificate`.
 
 ## Next Steps
 
