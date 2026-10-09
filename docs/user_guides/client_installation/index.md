@@ -264,7 +264,7 @@ The form asks for its name, the repository, the engine (PySpark, DuckDB, Polars,
 **Create** runs `hops factory run analytics-pipeline --answers` in a Terminal tab named after the pipeline and starts Claude Code on `/hops-factory-analytics-pipeline <name>`; the page opens the pipeline with the chat beside it.
 
 The first phase settles the requirements with you in the chat.
-Claude Code looks at the feature groups, data sources and files you named, then asks what it cannot tell, with options drawn from what it found: the exact sources and how they join, each transformation's rules, each output's name, primary key, event time and whether it is online, whether a run reads only its window or all the data, the columns that must never be null, and whether you want a dashboard to inspect the outputs: Superset, a custom dashboard app, or none.
+Claude Code looks at the feature groups, data sources and files you named, then asks what it cannot tell, with options drawn from what it found: the exact sources and how they join, each transformation's rules, each output's name, primary key, event time and whether it is online, whether a run reads only its window or all the data, how much history to backfill before the first scheduled run (a number of days, or of hours for an hourly pipeline, all of it, or none), the columns that must never be null, and whether you want a dashboard to inspect the outputs: Superset, a custom dashboard app, or none.
 It writes the answers to `system.yaml`, says back what the pipeline will read, do and write, and builds only once you confirm.
 
 The pipeline's `system.yaml` holds only a `features` block, the feature pipeline section an ML system has, with no training or inference pipeline:
@@ -278,11 +278,12 @@ features:
       transformations: [drop test orders, join customers on customer_id, revenue per customer and day]
       writes: [{feature_group: orders_daily, version: 1, primary_key: [customer_id], event_time: day}]
       quality: {max_null_pct: 5, not_null: [customer_id, day]}
+      backfill: {last: 30d}
       job: {name: orders-pipeline-orders, schedule: {cron: "0 0 2 * * ?"}}
 dashboard: {kind: superset, dashboards: [{name: Orders, url: <url>}]}
 ```
 
-The build then writes and tests the code, runs it over the history you asked for, schedules the job, builds the dashboard, which the system's **App** view shows, and verifies one run with `hops factory system status`.
+The build then writes and tests the code, backfills the days or hours you asked for, schedules the job, builds the dashboard, which the system's **App** view shows, and verifies one run with `hops factory system status`.
 A Polars or DuckDB pipeline is a Python job that never starts a Spark job: the feature groups it writes have statistics off.
 
 ### Create your own factory
