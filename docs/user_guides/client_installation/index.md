@@ -141,10 +141,10 @@ Pass `--no-launch` to record the system only.
 
 `hops factory run` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
 A GitHub repository the build creates, an example's included, is named `hops-<slug>`, or `hops-<slug>-<project>` when you already have one of that name.
-**Factory**, in the project menu below Catalog, opens on a box: describe the system you want, and Claude Code picks the factory that fits from the project's enabled factories and fills in its form, asking what it cannot tell from the description.
-That Claude Code runs in a Terminal tab of its own, `factory-intake`, with no tool but its questions, and its instructions allow it only to choose a factory.
-Its suggestion shows below the box: the factory, whether it is a new system or one of the factory's blueprints, the system's name and what it does.
-**Build** opens the factory's form with those answers and starts the build when they pass the form's checks; **Review the form** opens it filled in, for you to check and press **Create**.
+**Factory**, in the project menu below Catalog, opens on a box: describe the system you want, and Platform Intelligence finds the project's factories that could build it, up to five.
+They show as buttons below the box, the most likely highlighted in the middle; a box above them says why the selected factory fits and what it would build, and picking another factory explains that one.
+The green **Build** button opens the selected factory's form, at its blueprint when the description is one, filled in with what the description says, for you to check and press **Create**.
+This needs Platform Intelligence configured on the cluster; without it, pick a factory from **From Template**.
 **From Template** lists the factories without the description: **ML System** holds **Batch ML system**, **Real-time ML system** and **Agentic system**, **Analytics** the analytics layer factories, and each has a **Blueprints** submenu of its examples, each opening its factory's form filled in.
 The cogwheel opens **Manage factories**.
 **Existing Systems**, shown once a factory has built a system, lists the project's systems for every member: each with its factory, type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a Git repository; the box above it filters the list.
