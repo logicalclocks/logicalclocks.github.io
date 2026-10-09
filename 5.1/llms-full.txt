@@ -32510,7 +32510,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 ## Common values { #helm-values-common }
 
@@ -32535,28 +32535,28 @@ _Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
 | --- | --- | --- |
 | [`global`][helm-values-global] |  | 119 |
 | [`airflow`][helm-values-airflow] |  | 141 |
-| [`arrowflight`][helm-values-arrowflight] |  | 45 |
+| [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
 | [`consul`][helm-values-consul] | [`consul` 1.8.16](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.16) | 24 |
 | [`docker-registry`][helm-values-docker-registry] |  | 90 |
 | [`grafana`][helm-values-grafana] | [`grafana` 7.0.17](https://artifacthub.io/packages/helm/grafana/grafana/7.0.17) | 7 |
-| [`hive`][helm-values-hive] |  | 77 |
-| [`hopsfs`][helm-values-hopsfs] |  | 219 |
-| [`hopsworks`][helm-values-hopsworks] |  | 888 |
+| [`hive`][helm-values-hive] |  | 78 |
+| [`hopsfs`][helm-values-hopsfs] |  | 221 |
+| [`hopsworks`][helm-values-hopsworks] |  | 892 |
 | [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 94 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 56 |
 | [`judge`][helm-values-judge] |  | 23 |
-| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 0.45.2](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/0.45.2) | 86 |
+| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 0.45.2](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/0.45.2) | 88 |
 | [`kserve`][helm-values-kserve] |  | 240 |
 | [`minio`][helm-values-minio] |  | 42 |
-| [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 161 |
+| [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 162 |
 | [`onlinefs`][helm-values-onlinefs] |  | 93 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.18](https://github.com/logicalclocks/rondb-helm/blob/v26.2.18/values.schema.json) | 432 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) | 464 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 16 |
-| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 30 |
+| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 31 |
 | [`vpa`][helm-values-vpa] |  | 18 |
 
 ## Other values { #helm-values-other }
@@ -32587,7 +32587,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 ## General { #helm-values-global-general }
 
@@ -33473,7 +33473,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -34235,7 +34235,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -34425,6 +34425,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         class: null
         enabled: null
         managed: null
+        nodePort: null
         nodeSelector: {}
     ```
 
@@ -34445,6 +34446,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `arrowflight.externalLoadBalancer.managed` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`arrowflight.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `arrowflight.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -34510,7 +34515,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -34698,7 +34703,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -35031,7 +35036,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -35480,7 +35485,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -35978,7 +35983,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -36022,6 +36027,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         class: null
         enabled: false
         managed: null
+        nodePort: null
         nodeSelector: {}
     ```
 
@@ -36042,6 +36048,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hive.externalLoadBalancer.managed` <a class="headerlink" href="#helm.hive.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.hive.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`hive.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.hive.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.hive.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hive.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.hive.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.hive.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -36386,7 +36396,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -36554,6 +36564,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           enabled: null
           loadBalancerClass: null
           managed: null
+          nodePort: null
         monitoringPort: 50076
         nodeSelector: {}
         podDisruptionBudget:
@@ -36629,6 +36640,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsfs.datanode.loadBalancer.managed` <a class="headerlink" href="#helm.hopsfs.datanode.loadBalancer.managed" title="Permanent link">#</a> { #helm.hopsfs.datanode.loadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`hopsfs.datanode.loadBalancer.nodePort` <a class="headerlink" href="#helm.hopsfs.datanode.loadBalancer.nodePort" title="Permanent link">#</a> { #helm.hopsfs.datanode.loadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsfs.datanode.monitoringPort` <a class="headerlink" href="#helm.hopsfs.datanode.monitoringPort" title="Permanent link">#</a> { #helm.hopsfs.datanode.monitoringPort }
 :   Type `int`, default `50076`.
@@ -36834,6 +36849,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           enabled: null
           loadBalancerClass: null
           managed: null
+          nodePort: null
         maxBlocksPerFile: 10240
         maxDirectMemorySize: 1024
         maxDirectoryItems: 131072
@@ -37029,6 +37045,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsfs.namenode.loadBalancer.managed` <a class="headerlink" href="#helm.hopsfs.namenode.loadBalancer.managed" title="Permanent link">#</a> { #helm.hopsfs.namenode.loadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`hopsfs.namenode.loadBalancer.nodePort` <a class="headerlink" href="#helm.hopsfs.namenode.loadBalancer.nodePort" title="Permanent link">#</a> { #helm.hopsfs.namenode.loadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsfs.namenode.maxBlocksPerFile` <a class="headerlink" href="#helm.hopsfs.namenode.maxBlocksPerFile" title="Permanent link">#</a> { #helm.hopsfs.namenode.maxBlocksPerFile }
 :   Type `int`, default `10240`.
@@ -37515,7 +37535,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -37566,6 +37586,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       nameOverride: null
       nodeSelector: {}
       objectStorageEnvInformation: null
+      opensearchReindex:
+        enabled: true
       payaraVersion: 6.2025.11-jdk21.0
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
@@ -37781,6 +37803,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `nil`.
     override object storage list of of environment variables
 
+`hopsworks.opensearchReindex.enabled` <a class="headerlink" href="#helm.hopsworks.opensearchReindex.enabled" title="Permanent link">#</a> { #helm.hopsworks.opensearchReindex.enabled }
+:   Type `bool`, default `true`.
+    Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
+
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
 :   Type `string`, default `"6.2025.11-jdk21.0"`.
 
@@ -37992,7 +38018,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.buildkitd.priorityClass.value` <a class="headerlink" href="#helm.hopsworks.buildkitd.priorityClass.value" title="Permanent link">#</a> { #helm.hopsworks.buildkitd.priorityClass.value }
 :   Type `int`, default `1000000`.
-    The same 1000000 as rondb-high-priority, which is what the build Jobs now run at. Equal ranks matter more than the absolute number here: the scheduler only preempts a lower priority, so putting the daemon level with its own clients is what stops a burst of build Jobs evicting the daemon they are about to talk to. Leaving it below them would have made that inversion real for the first time, since the Jobs' priority class had never actually been applied before. Lower it only alongside the build Jobs' class, never on its own.
+    Must not be below the build Jobs' priority (docker_operations_buildkit_priority_class, 0 by default): the scheduler only preempts a lower priority, so a daemon below its own clients can be evicted by a burst of build Jobs.
 
 `hopsworks.buildkitd.priorityClassName` <a class="headerlink" href="#helm.hopsworks.buildkitd.priorityClassName" title="Permanent link">#</a> { #helm.hopsworks.buildkitd.priorityClassName }
 :   Type `string`, default `""`.
@@ -39801,7 +39827,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.service.worker.external.https.nodePort` <a class="headerlink" href="#helm.hopsworks.service.worker.external.https.nodePort" title="Permanent link">#</a> { #helm.hopsworks.service.worker.external.https.nodePort }
 :   Type `string`, default `nil`.
-    Explicit nodePort for the https service when type is NodePort. Null lets Kubernetes allocate one from the cluster's node-port range.
+    Explicit nodePort for the https service when type is NodePort. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsworks.service.worker.external.https.port` <a class="headerlink" href="#helm.hopsworks.service.worker.external.https.port" title="Permanent link">#</a> { #helm.hopsworks.service.worker.external.https.port }
 :   Type `int`, default `28181`.
@@ -39871,7 +39897,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.1.0
+        base_image_version: 5.1.1
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -39881,6 +39907,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         command_search_fs_history_enable: 'false'
         command_search_fs_history_window_as_s: '3600'
         command_search_fs_process_timer_period_as_ms: '1000'
+        command_search_fs_reindex_queue_wait_as_ms: '1800000'
         command_search_fs_retry_per_clean_interval: '5'
         conda_default_repo: defaults
         default_jupyter_environment: pandas-training-pipeline
@@ -39904,7 +39931,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         docker_operations_buildkit_extra_args: ''
         docker_operations_buildkit_limit_cpu: '2'
         docker_operations_buildkit_limit_memory: 4G
-        docker_operations_buildkit_priority_class: rondb-high-priority
+        docker_operations_buildkit_priority_class: ''
         docker_operations_buildkit_replicas: '1'
         docker_operations_buildkit_request_cpu: 200m
         docker_operations_buildkit_request_memory: 500Mi
@@ -40099,8 +40126,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         lifecycle_webhook_url: ''
         livy_startup_timeout: '240'
         livy_version: 0.8.4-incubating-SNAPSHOT-bin
+        loadbalancer_external_domain_datanode: null
         loadbalancer_external_domain_feature_query: null
         loadbalancer_external_domain_mysqld: null
+        loadbalancer_external_domain_namenode: null
         loadbalancer_external_domain_online_store_rest_server: null
         loadbalancer_external_domain_opensearch: null
         loadbalancer_external_domain_trino: null
@@ -40360,7 +40389,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.1.0"`.
+:   Type `string`, default `"5.1.1"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -40388,6 +40417,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.command_search_fs_process_timer_period_as_ms` <a class="headerlink" href="#helm.hopsworks.variables.command_search_fs_process_timer_period_as_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.command_search_fs_process_timer_period_as_ms }
 :   Type `string`, default `"1000"`.
+
+`hopsworks.variables.command_search_fs_reindex_queue_wait_as_ms` <a class="headerlink" href="#helm.hopsworks.variables.command_search_fs_reindex_queue_wait_as_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.command_search_fs_reindex_queue_wait_as_ms }
+:   Type `string`, default `"1800000"`.
+    How long a featurestore search reindex run waits for the search command queue to empty and for the featurestore index template to be installed before it is aborted, in milliseconds. The reindex empties the index first, so it only starts on an empty queue, and the template gives the new index its mappings. A run aborted this way is reported under Cluster Settings > Service Operations > OpenSearch Index Commands, where it can be requested again.
 
 `hopsworks.variables.command_search_fs_retry_per_clean_interval` <a class="headerlink" href="#helm.hopsworks.variables.command_search_fs_retry_per_clean_interval" title="Permanent link">#</a> { #helm.hopsworks.variables.command_search_fs_retry_per_clean_interval }
 :   Type `string`, default `"5"`.
@@ -40470,7 +40503,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"4G"`.
 
 `hopsworks.variables.docker_operations_buildkit_priority_class` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_buildkit_priority_class" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_buildkit_priority_class }
-:   Type `string`, default `"rondb-high-priority"`.
+:   Type `string`, default `""`.
 
 `hopsworks.variables.docker_operations_buildkit_replicas` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_buildkit_replicas" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_buildkit_replicas }
 :   Type `string`, default `"1"`.
@@ -41079,6 +41112,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.livy_version` <a class="headerlink" href="#helm.hopsworks.variables.livy_version" title="Permanent link">#</a> { #helm.hopsworks.variables.livy_version }
 :   Type `string`, default `"0.8.4-incubating-SNAPSHOT-bin"`.
 
+`hopsworks.variables.loadbalancer_external_domain_datanode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_datanode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_datanode }
+:   Type `string`, default `nil`.
+    The domain name of the external load balancer for the HopsFS datanodes. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
+
 `hopsworks.variables.loadbalancer_external_domain_feature_query` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_feature_query" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_feature_query }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for arrowflight. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
@@ -41086,6 +41123,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.loadbalancer_external_domain_mysqld` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_mysqld" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_mysqld }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for mysqld. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
+
+`hopsworks.variables.loadbalancer_external_domain_namenode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_namenode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_namenode }
+:   Type `string`, default `nil`.
+    The domain name of the external load balancer for the HopsFS namenode. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
 
 `hopsworks.variables.loadbalancer_external_domain_online_store_rest_server` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_online_store_rest_server" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_online_store_rest_server }
 :   Type `string`, default `nil`.
@@ -41990,7 +42031,7 @@ Values under `hw-kueue` configure Kueue, the job queueing controller, and the qu
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -42685,7 +42726,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -43156,7 +43197,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43291,7 +43332,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -43526,6 +43567,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
               consulServiceName: onlinefs
           externalLoadBalancer:
             annotations: {}
+            bootstrapNodePort: null
             class: null
             dns: ''
             enabled: null
@@ -43533,6 +43575,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
             managed: null
             nodeSelector: {}
             startingAdvertisedPort: 9093
+            startingNodePort: null
           jvmOptions: {}
           nodeSelector: {}
           podAntiAffinity:
@@ -43698,6 +43741,10 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 :   Type `object`, default `{}`.
     load balancer annotations
 
+`kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the bootstrap service when the load balancer is unmanaged (managed: false). Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
 `kafka.cluster.kafka.externalLoadBalancer.class` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.class" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.class }
 :   Type `string`, default `nil`.
     load balancer class name
@@ -43725,6 +43772,10 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 `kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort }
 :   Type `int`, default `9093`.
     In case of unmanaged Load Balancers this is the starting advertised port for the brokers  
+
+`kafka.cluster.kafka.externalLoadBalancer.startingNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.startingNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.startingNodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for broker 0 when the load balancer is unmanaged (managed: false); broker N gets startingNodePort + N, as with startingAdvertisedPort. Null lets Kubernetes allocate them from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `kafka.cluster.kafka.jvmOptions` <a class="headerlink" href="#helm.kafka.cluster.kafka.jvmOptions" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.jvmOptions }
 :   Type `object`, default `{}`.
@@ -43966,7 +44017,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -45370,7 +45421,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -45625,7 +45676,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -46284,13 +46335,14 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           class: null
           enabled: null
           managed: null
+          nodePort: null
           nodeSelector: {}
         jvmOpts: ''
         knn:
           cache_expire: true
           circuit_breaker:
-            percent: 0.75
-            triggered: true
+            percent: 75
+            triggered: false
           index_threads: 1
           memory:
             circuit_breaker:
@@ -46400,6 +46452,10 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
 
+`olk.opensearch.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
 `olk.opensearch.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
     selector for nodes the load balancer can use to route traffic
@@ -46412,10 +46468,12 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 :   Type `bool`, default `true`.
 
 `olk.opensearch.knn.circuit_breaker.percent` <a class="headerlink" href="#helm.olk.opensearch.knn.circuit_breaker.percent" title="Permanent link">#</a> { #helm.olk.opensearch.knn.circuit_breaker.percent }
-:   Type `float`, default `0.75`.
+:   Type `float`, default `75`.
+    knn.circuit_breaker.unset.percentage: a tripped k-NN breaker clears once the graph cache falls below this percentage (0 to 100) of knn.memory.circuit_breaker.limit
 
 `olk.opensearch.knn.circuit_breaker.triggered` <a class="headerlink" href="#helm.olk.opensearch.knn.circuit_breaker.triggered" title="Permanent link">#</a> { #helm.olk.opensearch.knn.circuit_breaker.triggered }
-:   Type `bool`, default `true`.
+:   Type `bool`, default `false`.
+    knn.circuit_breaker.triggered is a flag the k-NN plugin sets on a memory trip and clears itself. Keep it false: OpenSearch 2.6 and later apply it at node start, and true rejects every vector write, translog replay included, until the plugin clears it
 
 `olk.opensearch.knn.index_threads` <a class="headerlink" href="#helm.olk.opensearch.knn.index_threads" title="Permanent link">#</a> { #helm.olk.opensearch.knn.index_threads }
 :   Type `int`, default `1`.
@@ -46574,7 +46632,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Always deployed.
 
@@ -47077,7 +47135,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47237,7 +47295,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -47384,13 +47442,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.18](https://github.com/logicalclocks/rondb-helm/blob/v26.2.18/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -47600,7 +47658,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.18](https://github.com/logicalclocks/rondb-helm/blob/v26.2.18/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -47735,7 +47793,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.18](https://github.com/logicalclocks/rondb-helm/blob/v26.2.18/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -47758,7 +47816,6 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
         serviceAccountAnnotations: {}
         skipMgmdPreUpgradeRollout: false
         staticCpuManagerPolicy: false
-        terminationGracePeriodSeconds: 60
         tls:
           caSecretName: null
     ```
@@ -47812,10 +47869,6 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.staticCpuManagerPolicy` <a class="headerlink" href="#helm.rondb.rondb.staticCpuManagerPolicy" title="Permanent link">#</a> { #helm.rondb.rondb.staticCpuManagerPolicy }
 :   Type `boolean`, default `false`.
     Whether the Kubernetes cluster has been configured with a static CPU manager policy. This is an optimization for RonDB data nodes. These have a scheduler which executes jobs within hundreds of microseconds (very quick). If the data nodes are pinned to CPUs, they can run CPU spnning to avoid context switching inbetween jobs.
-
-`rondb.rondb.terminationGracePeriodSeconds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds }
-:   Type `integer`, default `60`, minimum `10`.
-    TerminationGracePeriodSeconds for data nodes. For debugging. When removing the *entire* cluster, taking down data nodes will hang, since they try to contact the MGMd on shutdown. Hence, this is a way of shortening this wait.
 
 `rondb.rondb.tls` <a class="headerlink" href="#helm.rondb.rondb.tls" title="Permanent link">#</a> { #helm.rondb.rondb.tls }
 :   Type `object`.
@@ -48202,7 +48255,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             name: rondb
             registry: docker.hops.works
             repository: hopsworks
-            tag: 26.02.10
+            tag: 26.02.11
           toolbox:
             name: hwutils
             registry: docker.hops.works
@@ -48264,7 +48317,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.rondb.tag` <a class="headerlink" href="#helm.rondb.rondb.images.rondb.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.rondb.tag }
-:   Type `string`, default `"26.02.10"`.
+:   Type `string`, default `"26.02.11"`.
     The version of RonDB to use; This should always be equivalent to .Chart.AppVersion
 
 `rondb.rondb.images.toolbox` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox }
@@ -48373,6 +48426,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               enabled: true
               managed: true
               name: mysqld-external
+              nodePort: null
               nodeSelector: {}
               port: 3306
             headlessClusterIp:
@@ -48406,6 +48460,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               enabled: true
               managed: true
               name: rdrs-external
+              nodePort: null
               nodeSelector: {}
             headlessClusterIpName: rdrs-cluster-ip
             ingress:
@@ -48661,6 +48716,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.meta.mysqld.externalLoadBalancer.name` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.name" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.name }
 :   Type `string`, default `"mysqld-external"`.
 
+`rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `65535`.
+    Explicit nodePort for the service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range.
+
 `rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
     selector for nodes the load balancer can use to route traffic
@@ -48765,6 +48824,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
 `rondb.rondb.meta.rdrs.externalLoadBalancer.name` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.name" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.name }
 :   Type `string`, default `"rdrs-external"`.
+
+`rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `65535`.
+    Explicit nodePort for the service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range.
 
 `rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -49342,9 +49405,33 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             slotsPerNode: 1
           hpa:
             additionalMetrics: []
+          maxKeepaliveRequests: 0
+          probePort:
+            enabled: true
+            port: 4407
+          probes:
+            liveness:
+              failureThreshold: 12
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              timeoutSeconds: 5
+            readiness:
+              failureThreshold: 3
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              timeoutSeconds: 3
+            startup:
+              failureThreshold: 11
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              timeoutSeconds: 2
           security:
             apiKey:
               cacheRefreshIntervalMS: 180000
+          ttlPurge:
+            activeWindow: null
+            enable: null
+          uploadPath: /tmp/rdrs-uploads
     ```
 
 <div class="hops-values" markdown>
@@ -49376,6 +49463,74 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `array`, default `[]`.
     Additional metrics to use for the HPA. This is useful for custom metrics that are not supported by default.
 
+`rondb.rondb.rdrs.maxKeepaliveRequests` <a class="headerlink" href="#helm.rondb.rondb.rdrs.maxKeepaliveRequests" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.maxKeepaliveRequests }
+:   Type `integer`, default `0`, minimum `0`, maximum `4294967295`, example `1000`.
+    Maximum number of requests served on one keep-alive connection to the RDRS main port; after it the connection is closed gracefully (Connection: close). 0 (the default) disables the limit. A Kubernetes Service balances per TCP connection, so long-lived connections keep the skew that builds up after a rolling restart; bounding their lifetime lets clients re-balance. Each reconnect costs a TCP+TLS handshake: use a high value (1000 recommended, not below 500) and only where post-restart skew is observed. Does not apply to the probe port. Requires an RDRS image with REST.MaxKeepaliveRequests support (releases 26.02.11 and newer on the 26.02 line); at 0 the key is not emitted, so older images keep working.
+
+`rondb.rondb.rdrs.probePort` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probePort" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probePort }
+:   Type `object`.
+    Dedicated RDRS probe listener. It serves only the ping and health endpoints, from its own thread, so Kubernetes probes keep being answered while every worker thread is blocked on data-node operations (a stalled data node otherwise fails the liveness probe of all RDRS pods at once). The probe port performs NO authentication, regardless of the PingRequiresAuth/HealthRequiresAuth settings. It is not published as a port of any Service or Ingress, but like any pod port it is reachable via pod IPs and the headless Service's DNS records; where isolation is required, enforce it with a NetworkPolicy. Requires an RDRS image with REST.ProbePort support (releases 26.02.11 and newer on the 26.02 line): older images reject the unknown config keys at startup, so set enabled to false for pinned older images. Trade-off: the probe port answers as long as the process lives, so an RDRS whose worker threads are permanently wedged is not restarted by liveness.
+
+`rondb.rondb.rdrs.probePort.enabled` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probePort.enabled" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probePort.enabled }
+:   Type `boolean`, default `true`.
+    Serve ping/health on the dedicated probe port and point the startup, liveness and readiness probes at it (ping answers 503 until the main port accepts connections, so startup semantics are unchanged). false emits no probe configuration keys and points all probes back at the main port: the escape hatch for pinned RDRS images that predate REST.ProbePort.
+
+`rondb.rondb.rdrs.probePort.port` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probePort.port" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probePort.port }
+:   Type `integer`, default `4407`, minimum `1`, maximum `65535`.
+    TCP port of the dedicated probe listener. Must differ from the main REST port (4406).
+
+`rondb.rondb.rdrs.probes` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes }
+:   Type `object`.
+    Timings of the RDRS container probes; the HTTP path, port and scheme are set by the chart. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.probes. A probe gives up after roughly (failureThreshold - 1) * periodSeconds + timeoutSeconds of consecutive failures.
+
+`rondb.rondb.rdrs.probes.liveness` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness }
+:   Type `object`.
+    Checks /ping and restarts RDRS when it keeps failing. With rdrs.probePort.enabled (the default) /ping is answered from the dedicated probe thread, which keeps responding through data-node failures, so the defaults are ample. With probePort.enabled=false /ping shares the worker threads: while a failed data node has not yet been declared dead, requests touching it block and /ping cannot answer. Detection takes ~25 seconds per data node, so in that mode size (failureThreshold - 1) * periodSeconds + timeoutSeconds above ~25 seconds per data node that can go silent at once, plus ~40 seconds. The defaults give ~115 seconds; restarting the data nodes of 8 node groups in parallel needs failureThreshold 30 (~295 seconds).
+
+`rondb.rondb.rdrs.probes.liveness.failureThreshold` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness.failureThreshold" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness.failureThreshold }
+:   Type `integer`, default `12`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.liveness.initialDelaySeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness.initialDelaySeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness.initialDelaySeconds }
+:   Type `integer`, default `5`, minimum `0`.
+
+`rondb.rondb.rdrs.probes.liveness.periodSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness.periodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness.periodSeconds }
+:   Type `integer`, default `10`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.liveness.timeoutSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness.timeoutSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness.timeoutSeconds }
+:   Type `integer`, default `5`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.readiness` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness }
+:   Type `object`.
+    Checks /health. A pod that keeps failing is removed from the Service after ~13 to 18 seconds with the defaults; connections it already holds stay open. More than one failure is required so that a single slow check under load does not take the pod out of the Service.
+
+`rondb.rondb.rdrs.probes.readiness.failureThreshold` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness.failureThreshold" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness.failureThreshold }
+:   Type `integer`, default `3`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.readiness.initialDelaySeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness.initialDelaySeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness.initialDelaySeconds }
+:   Type `integer`, default `5`, minimum `0`.
+
+`rondb.rondb.rdrs.probes.readiness.periodSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness.periodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness.periodSeconds }
+:   Type `integer`, default `5`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.readiness.timeoutSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness.timeoutSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness.timeoutSeconds }
+:   Type `integer`, default `3`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.startup` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup }
+:   Type `object`.
+    Checks /ping until RDRS first answers; liveness and readiness only start after it passes. RDRS opens its port once it has preloaded its caches from RonDB, about 25 seconds with a few hundred feature views. Raise failureThreshold if that preload takes longer than the ~57 seconds allowed.
+
+`rondb.rondb.rdrs.probes.startup.failureThreshold` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.failureThreshold" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.failureThreshold }
+:   Type `integer`, default `11`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.startup.initialDelaySeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.initialDelaySeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.initialDelaySeconds }
+:   Type `integer`, default `5`, minimum `0`.
+
+`rondb.rondb.rdrs.probes.startup.periodSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.periodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.periodSeconds }
+:   Type `integer`, default `5`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.startup.timeoutSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.timeoutSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.timeoutSeconds }
+:   Type `integer`, default `2`, minimum `1`.
+
 `rondb.rondb.rdrs.security` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security }
 :   Type `object`.
 
@@ -49385,6 +49540,22 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS }
 :   Type `integer`, default `180000`, minimum `1000`.
     How often the API key cache refreshes project associations from the database (in milliseconds). Lower values reduce staleness when project memberships change but increase database load.
+
+`rondb.rondb.rdrs.ttlPurge` <a class="headerlink" href="#helm.rondb.rondb.rdrs.ttlPurge" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.ttlPurge }
+:   Type `object`.
+    TTL purge worker settings of every RDRS pod, rendered as the TTLPurge section of rest_api.json. The section is rendered only when at least one field is set, because RDRS older than RonDB 26.02.9 rejects the TTLPurge key and does not start. Changes reach running pods only when they restart; a cluster-wide window in the mysql.ttl_purge_ctrl table takes precedence over activeWindow and needs no restart. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.ttlPurge. Unknown fields fail the render, so a misspelled field cannot silently leave purging running around the clock.
+
+`rondb.rondb.rdrs.ttlPurge.activeWindow` <a class="headerlink" href="#helm.rondb.rondb.rdrs.ttlPurge.activeWindow" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.ttlPurge.activeWindow }
+:   Type `string|null`, default `null`, pattern `^$|^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$`.
+    Daily UTC window during which the TTL purge worker deletes expired rows, formatted "HH:MM-HH:MM" (e.g. "03:00-05:00"); it wraps past midnight when start > end (e.g. "23:00-02:00"). Start and end must differ. When null or empty, purging runs around the clock. A valid window in mysql.ttl_purge_ctrl (ctrl_id 2/3) takes precedence.
+
+`rondb.rondb.rdrs.ttlPurge.enable` <a class="headerlink" href="#helm.rondb.rondb.rdrs.ttlPurge.enable" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.ttlPurge.enable }
+:   Type `boolean|null`, default `null`.
+    Whether the RDRS pods run the TTL purge worker, which deletes expired rows of TTL tables. When null, RDRS decides (enabled). Can still be changed per pod at runtime through PUT /0.1.0/ttl-purge/config, until the pod restarts.
+
+`rondb.rondb.rdrs.uploadPath` <a class="headerlink" href="#helm.rondb.rondb.rdrs.uploadPath" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.uploadPath }
+:   Type `string`, default `"/tmp/rdrs-uploads"`.
+    Writable directory where RDRS buffers HTTP request bodies larger than 64KiB. The container's working directory is not writable (RDRS runs as uid 1000): without this, every startup logs 256 'Permission denied' errors and oversized bodies are silently read as empty. Requires an RDRS image with REST.UploadPath support (releases 26.02.11 and newer on the 26.02 line); set to the empty string for pinned older images, which reject the unknown key.
 
 </div>
 
@@ -49883,6 +50054,54 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
 </div>
 
+### terminationGracePeriodSeconds { #helm-values-rondb-rondb-terminationgraceperiodseconds }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    rondb:
+      rondb:
+        terminationGracePeriodSeconds:
+          binlogServers: 30
+          mgmds: 30
+          mysqlds: 30
+          ndbmtds: 300
+          rdrs: 30
+          replicaAppliers: 30
+    ```
+
+<div class="hops-values" markdown>
+
+`rondb.rondb.terminationGracePeriodSeconds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds }
+:   Type `object|integer`, minimum `10`.
+    Pod terminationGracePeriodSeconds per RonDB service type. The chart's daemons stop on SIGTERM, so this is a ceiling, not a wait: a pod is removed as soon as its processes have exited. The legacy integer form (charts up to 26.2.19) still validates (minimum 10) and keeps its meaning: it overrides the data nodes only, every other component keeps 30. Helm drops null keys before schema validation: a null whole key falls back to the defaults, a null component key is rejected (all six keys are required; partial values files still work because Helm merges in the chart defaults).
+
+`rondb.rondb.terminationGracePeriodSeconds.binlogServers` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.binlogServers" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.binlogServers }
+:   Type `integer`, default `30`, minimum `10`.
+    Binlog server MySQLds; see mysqlds.
+
+`rondb.rondb.terminationGracePeriodSeconds.mgmds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.mgmds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.mgmds }
+:   Type `integer`, default `30`, minimum `10`.
+    MGMd stops within seconds; this matches the Kubernetes default.
+
+`rondb.rondb.terminationGracePeriodSeconds.mysqlds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.mysqlds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.mysqlds }
+:   Type `integer`, default `30`, minimum `10`.
+    Used by MySQLds and DDL MySQLds; mysqld stops within seconds under no load, but allow time for open transactions to close.
+
+`rondb.rondb.terminationGracePeriodSeconds.ndbmtds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.ndbmtds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.ndbmtds }
+:   Type `integer`, default `300`, minimum `30`.
+    Data nodes run a managed stop on SIGTERM: deactivate through the MGMd, then node shutdown with handover. Large nodes additionally need roughly 2 minutes per TB of data node memory for the kernel to tear the process down, so raise this for nodes above 1TB. Stops of several data nodes serialize at the MGMd. When deleting the entire cluster the MGMd may already be gone; data nodes then retry the deactivate for up to 60s before stopping directly.
+
+`rondb.rondb.terminationGracePeriodSeconds.rdrs` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.rdrs" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.rdrs }
+:   Type `integer`, default `30`, minimum `10`.
+    RDRS stops within a few seconds; this matches the Kubernetes default.
+
+`rondb.rondb.terminationGracePeriodSeconds.replicaAppliers` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.replicaAppliers" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.replicaAppliers }
+:   Type `integer`, default `30`, minimum `10`.
+    Replica applier pods: the controller container stops its run_applier.sh worker on SIGTERM, the pod's mysqld receives SIGTERM directly.
+
+</div>
+
 ### timeoutsMinutes { #helm-values-rondb-rondb-timeoutsminutes }
 
 ??? example "Defaults as YAML"
@@ -49971,7 +50190,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -51556,7 +51775,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52563,7 +52782,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52690,7 +52909,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v10
+          tag: 480-v11
         initContainers:
           coordinator:
           - command:
@@ -52955,7 +53174,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v10
+          tag: 480-v11
         initContainers:
           coordinator:
           - command:
@@ -53195,6 +53414,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         class: null
         enabled: null
         managed: null
+        nodePort: null
         nodeSelector: {}
     ```
 
@@ -53215,6 +53435,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `trino.externalLoadBalancer.managed` <a class="headerlink" href="#helm.trino.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`trino.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.trino.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `trino.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.trino.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -53530,7 +53754,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v10
+          tag: 480-v11
         initContainers:
           coordinator:
           - command:
@@ -54125,7 +54349,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v10
+          tag: 480-v11
         initContainers:
           coordinator:
           - command:
@@ -54423,7 +54647,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Repository location of the Trino image, typically `organization/imagename`
 
 `trino.trino.image.tag` <a class="headerlink" href="#helm.trino.trino.image.tag" title="Permanent link">#</a> { #helm.trino.trino.image.tag }
-:   Type `string`, default `"480-v10"`.
+:   Type `string`, default `"480-v11"`.
     Image tag for the Trino image. This value is explicitly pinned here and overrides any defaulting to `appVersion` from Chart.yaml.
 
 `trino.trino.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trino.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trino.initContainers.coordinator.2.name }
@@ -54448,7 +54672,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

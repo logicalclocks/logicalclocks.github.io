@@ -4,7 +4,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 

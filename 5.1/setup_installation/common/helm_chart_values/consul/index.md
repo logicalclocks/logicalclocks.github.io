@@ -4,7 +4,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 

@@ -4,7 +4,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -239,6 +239,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
               consulServiceName: onlinefs
           externalLoadBalancer:
             annotations: {}
+            bootstrapNodePort: null
             class: null
             dns: ''
             enabled: null
@@ -246,6 +247,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
             managed: null
             nodeSelector: {}
             startingAdvertisedPort: 9093
+            startingNodePort: null
           jvmOptions: {}
           nodeSelector: {}
           podAntiAffinity:
@@ -411,6 +413,10 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 :   Type `object`, default `{}`.
     load balancer annotations
 
+`kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the bootstrap service when the load balancer is unmanaged (managed: false). Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
 `kafka.cluster.kafka.externalLoadBalancer.class` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.class" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.class }
 :   Type `string`, default `nil`.
     load balancer class name
@@ -438,6 +444,10 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 `kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.startingAdvertisedPort }
 :   Type `int`, default `9093`.
     In case of unmanaged Load Balancers this is the starting advertised port for the brokers  
+
+`kafka.cluster.kafka.externalLoadBalancer.startingNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.startingNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.startingNodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for broker 0 when the load balancer is unmanaged (managed: false); broker N gets startingNodePort + N, as with startingAdvertisedPort. Null lets Kubernetes allocate them from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `kafka.cluster.kafka.jvmOptions` <a class="headerlink" href="#helm.kafka.cluster.kafka.jvmOptions" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.jvmOptions }
 :   Type `object`, default `{}`.

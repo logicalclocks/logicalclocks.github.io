@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55,6 +55,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       nameOverride: null
       nodeSelector: {}
       objectStorageEnvInformation: null
+      opensearchReindex:
+        enabled: true
       payaraVersion: 6.2025.11-jdk21.0
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
@@ -270,6 +272,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `nil`.
     override object storage list of of environment variables
 
+`hopsworks.opensearchReindex.enabled` <a class="headerlink" href="#helm.hopsworks.opensearchReindex.enabled" title="Permanent link">#</a> { #helm.hopsworks.opensearchReindex.enabled }
+:   Type `bool`, default `true`.
+    Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
+
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
 :   Type `string`, default `"6.2025.11-jdk21.0"`.
 
@@ -481,7 +487,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.buildkitd.priorityClass.value` <a class="headerlink" href="#helm.hopsworks.buildkitd.priorityClass.value" title="Permanent link">#</a> { #helm.hopsworks.buildkitd.priorityClass.value }
 :   Type `int`, default `1000000`.
-    The same 1000000 as rondb-high-priority, which is what the build Jobs now run at. Equal ranks matter more than the absolute number here: the scheduler only preempts a lower priority, so putting the daemon level with its own clients is what stops a burst of build Jobs evicting the daemon they are about to talk to. Leaving it below them would have made that inversion real for the first time, since the Jobs' priority class had never actually been applied before. Lower it only alongside the build Jobs' class, never on its own.
+    Must not be below the build Jobs' priority (docker_operations_buildkit_priority_class, 0 by default): the scheduler only preempts a lower priority, so a daemon below its own clients can be evicted by a burst of build Jobs.
 
 `hopsworks.buildkitd.priorityClassName` <a class="headerlink" href="#helm.hopsworks.buildkitd.priorityClassName" title="Permanent link">#</a> { #helm.hopsworks.buildkitd.priorityClassName }
 :   Type `string`, default `""`.
@@ -2290,7 +2296,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.service.worker.external.https.nodePort` <a class="headerlink" href="#helm.hopsworks.service.worker.external.https.nodePort" title="Permanent link">#</a> { #helm.hopsworks.service.worker.external.https.nodePort }
 :   Type `string`, default `nil`.
-    Explicit nodePort for the https service when type is NodePort. Null lets Kubernetes allocate one from the cluster's node-port range.
+    Explicit nodePort for the https service when type is NodePort. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsworks.service.worker.external.https.port` <a class="headerlink" href="#helm.hopsworks.service.worker.external.https.port" title="Permanent link">#</a> { #helm.hopsworks.service.worker.external.https.port }
 :   Type `int`, default `28181`.
@@ -2360,7 +2366,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.1.0
+        base_image_version: 5.1.1
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -2370,6 +2376,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         command_search_fs_history_enable: 'false'
         command_search_fs_history_window_as_s: '3600'
         command_search_fs_process_timer_period_as_ms: '1000'
+        command_search_fs_reindex_queue_wait_as_ms: '1800000'
         command_search_fs_retry_per_clean_interval: '5'
         conda_default_repo: defaults
         default_jupyter_environment: pandas-training-pipeline
@@ -2393,7 +2400,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         docker_operations_buildkit_extra_args: ''
         docker_operations_buildkit_limit_cpu: '2'
         docker_operations_buildkit_limit_memory: 4G
-        docker_operations_buildkit_priority_class: rondb-high-priority
+        docker_operations_buildkit_priority_class: ''
         docker_operations_buildkit_replicas: '1'
         docker_operations_buildkit_request_cpu: 200m
         docker_operations_buildkit_request_memory: 500Mi
@@ -2588,8 +2595,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         lifecycle_webhook_url: ''
         livy_startup_timeout: '240'
         livy_version: 0.8.4-incubating-SNAPSHOT-bin
+        loadbalancer_external_domain_datanode: null
         loadbalancer_external_domain_feature_query: null
         loadbalancer_external_domain_mysqld: null
+        loadbalancer_external_domain_namenode: null
         loadbalancer_external_domain_online_store_rest_server: null
         loadbalancer_external_domain_opensearch: null
         loadbalancer_external_domain_trino: null
@@ -2849,7 +2858,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.1.0"`.
+:   Type `string`, default `"5.1.1"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -2877,6 +2886,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.command_search_fs_process_timer_period_as_ms` <a class="headerlink" href="#helm.hopsworks.variables.command_search_fs_process_timer_period_as_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.command_search_fs_process_timer_period_as_ms }
 :   Type `string`, default `"1000"`.
+
+`hopsworks.variables.command_search_fs_reindex_queue_wait_as_ms` <a class="headerlink" href="#helm.hopsworks.variables.command_search_fs_reindex_queue_wait_as_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.command_search_fs_reindex_queue_wait_as_ms }
+:   Type `string`, default `"1800000"`.
+    How long a featurestore search reindex run waits for the search command queue to empty and for the featurestore index template to be installed before it is aborted, in milliseconds. The reindex empties the index first, so it only starts on an empty queue, and the template gives the new index its mappings. A run aborted this way is reported under Cluster Settings > Service Operations > OpenSearch Index Commands, where it can be requested again.
 
 `hopsworks.variables.command_search_fs_retry_per_clean_interval` <a class="headerlink" href="#helm.hopsworks.variables.command_search_fs_retry_per_clean_interval" title="Permanent link">#</a> { #helm.hopsworks.variables.command_search_fs_retry_per_clean_interval }
 :   Type `string`, default `"5"`.
@@ -2959,7 +2972,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"4G"`.
 
 `hopsworks.variables.docker_operations_buildkit_priority_class` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_buildkit_priority_class" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_buildkit_priority_class }
-:   Type `string`, default `"rondb-high-priority"`.
+:   Type `string`, default `""`.
 
 `hopsworks.variables.docker_operations_buildkit_replicas` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_buildkit_replicas" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_buildkit_replicas }
 :   Type `string`, default `"1"`.
@@ -3568,6 +3581,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.livy_version` <a class="headerlink" href="#helm.hopsworks.variables.livy_version" title="Permanent link">#</a> { #helm.hopsworks.variables.livy_version }
 :   Type `string`, default `"0.8.4-incubating-SNAPSHOT-bin"`.
 
+`hopsworks.variables.loadbalancer_external_domain_datanode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_datanode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_datanode }
+:   Type `string`, default `nil`.
+    The domain name of the external load balancer for the HopsFS datanodes. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
+
 `hopsworks.variables.loadbalancer_external_domain_feature_query` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_feature_query" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_feature_query }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for arrowflight. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
@@ -3575,6 +3592,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.loadbalancer_external_domain_mysqld` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_mysqld" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_mysqld }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for mysqld. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
+
+`hopsworks.variables.loadbalancer_external_domain_namenode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_namenode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_namenode }
+:   Type `string`, default `nil`.
+    The domain name of the external load balancer for the HopsFS namenode. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
 
 `hopsworks.variables.loadbalancer_external_domain_online_store_rest_server` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_online_store_rest_server" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_online_store_rest_server }
 :   Type `string`, default `nil`.

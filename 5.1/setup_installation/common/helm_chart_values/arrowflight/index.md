@@ -4,7 +4,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -194,6 +194,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         class: null
         enabled: null
         managed: null
+        nodePort: null
         nodeSelector: {}
     ```
 
@@ -214,6 +215,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `arrowflight.externalLoadBalancer.managed` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`arrowflight.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `arrowflight.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.arrowflight.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.arrowflight.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.

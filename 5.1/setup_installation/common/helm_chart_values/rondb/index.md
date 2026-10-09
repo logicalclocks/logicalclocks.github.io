@@ -4,13 +4,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.18](https://github.com/logicalclocks/rondb-helm/blob/v26.2.18/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -220,7 +220,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.18](https://github.com/logicalclocks/rondb-helm/blob/v26.2.18/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -355,7 +355,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.18](https://github.com/logicalclocks/rondb-helm/blob/v26.2.18/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -378,7 +378,6 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
         serviceAccountAnnotations: {}
         skipMgmdPreUpgradeRollout: false
         staticCpuManagerPolicy: false
-        terminationGracePeriodSeconds: 60
         tls:
           caSecretName: null
     ```
@@ -432,10 +431,6 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.staticCpuManagerPolicy` <a class="headerlink" href="#helm.rondb.rondb.staticCpuManagerPolicy" title="Permanent link">#</a> { #helm.rondb.rondb.staticCpuManagerPolicy }
 :   Type `boolean`, default `false`.
     Whether the Kubernetes cluster has been configured with a static CPU manager policy. This is an optimization for RonDB data nodes. These have a scheduler which executes jobs within hundreds of microseconds (very quick). If the data nodes are pinned to CPUs, they can run CPU spnning to avoid context switching inbetween jobs.
-
-`rondb.rondb.terminationGracePeriodSeconds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds }
-:   Type `integer`, default `60`, minimum `10`.
-    TerminationGracePeriodSeconds for data nodes. For debugging. When removing the *entire* cluster, taking down data nodes will hang, since they try to contact the MGMd on shutdown. Hence, this is a way of shortening this wait.
 
 `rondb.rondb.tls` <a class="headerlink" href="#helm.rondb.rondb.tls" title="Permanent link">#</a> { #helm.rondb.rondb.tls }
 :   Type `object`.
@@ -822,7 +817,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             name: rondb
             registry: docker.hops.works
             repository: hopsworks
-            tag: 26.02.10
+            tag: 26.02.11
           toolbox:
             name: hwutils
             registry: docker.hops.works
@@ -884,7 +879,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.rondb.tag` <a class="headerlink" href="#helm.rondb.rondb.images.rondb.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.rondb.tag }
-:   Type `string`, default `"26.02.10"`.
+:   Type `string`, default `"26.02.11"`.
     The version of RonDB to use; This should always be equivalent to .Chart.AppVersion
 
 `rondb.rondb.images.toolbox` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox }
@@ -993,6 +988,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               enabled: true
               managed: true
               name: mysqld-external
+              nodePort: null
               nodeSelector: {}
               port: 3306
             headlessClusterIp:
@@ -1026,6 +1022,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               enabled: true
               managed: true
               name: rdrs-external
+              nodePort: null
               nodeSelector: {}
             headlessClusterIpName: rdrs-cluster-ip
             ingress:
@@ -1281,6 +1278,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.meta.mysqld.externalLoadBalancer.name` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.name" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.name }
 :   Type `string`, default `"mysqld-external"`.
 
+`rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodePort }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `65535`.
+    Explicit nodePort for the service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range.
+
 `rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.rondb.rondb.meta.mysqld.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
     selector for nodes the load balancer can use to route traffic
@@ -1385,6 +1386,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
 `rondb.rondb.meta.rdrs.externalLoadBalancer.name` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.name" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.name }
 :   Type `string`, default `"rdrs-external"`.
+
+`rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodePort }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `65535`.
+    Explicit nodePort for the service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range.
 
 `rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.rondb.rondb.meta.rdrs.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -1962,9 +1967,33 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             slotsPerNode: 1
           hpa:
             additionalMetrics: []
+          maxKeepaliveRequests: 0
+          probePort:
+            enabled: true
+            port: 4407
+          probes:
+            liveness:
+              failureThreshold: 12
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              timeoutSeconds: 5
+            readiness:
+              failureThreshold: 3
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              timeoutSeconds: 3
+            startup:
+              failureThreshold: 11
+              initialDelaySeconds: 5
+              periodSeconds: 5
+              timeoutSeconds: 2
           security:
             apiKey:
               cacheRefreshIntervalMS: 180000
+          ttlPurge:
+            activeWindow: null
+            enable: null
+          uploadPath: /tmp/rdrs-uploads
     ```
 
 <div class="hops-values" markdown>
@@ -1996,6 +2025,74 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `array`, default `[]`.
     Additional metrics to use for the HPA. This is useful for custom metrics that are not supported by default.
 
+`rondb.rondb.rdrs.maxKeepaliveRequests` <a class="headerlink" href="#helm.rondb.rondb.rdrs.maxKeepaliveRequests" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.maxKeepaliveRequests }
+:   Type `integer`, default `0`, minimum `0`, maximum `4294967295`, example `1000`.
+    Maximum number of requests served on one keep-alive connection to the RDRS main port; after it the connection is closed gracefully (Connection: close). 0 (the default) disables the limit. A Kubernetes Service balances per TCP connection, so long-lived connections keep the skew that builds up after a rolling restart; bounding their lifetime lets clients re-balance. Each reconnect costs a TCP+TLS handshake: use a high value (1000 recommended, not below 500) and only where post-restart skew is observed. Does not apply to the probe port. Requires an RDRS image with REST.MaxKeepaliveRequests support (releases 26.02.11 and newer on the 26.02 line); at 0 the key is not emitted, so older images keep working.
+
+`rondb.rondb.rdrs.probePort` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probePort" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probePort }
+:   Type `object`.
+    Dedicated RDRS probe listener. It serves only the ping and health endpoints, from its own thread, so Kubernetes probes keep being answered while every worker thread is blocked on data-node operations (a stalled data node otherwise fails the liveness probe of all RDRS pods at once). The probe port performs NO authentication, regardless of the PingRequiresAuth/HealthRequiresAuth settings. It is not published as a port of any Service or Ingress, but like any pod port it is reachable via pod IPs and the headless Service's DNS records; where isolation is required, enforce it with a NetworkPolicy. Requires an RDRS image with REST.ProbePort support (releases 26.02.11 and newer on the 26.02 line): older images reject the unknown config keys at startup, so set enabled to false for pinned older images. Trade-off: the probe port answers as long as the process lives, so an RDRS whose worker threads are permanently wedged is not restarted by liveness.
+
+`rondb.rondb.rdrs.probePort.enabled` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probePort.enabled" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probePort.enabled }
+:   Type `boolean`, default `true`.
+    Serve ping/health on the dedicated probe port and point the startup, liveness and readiness probes at it (ping answers 503 until the main port accepts connections, so startup semantics are unchanged). false emits no probe configuration keys and points all probes back at the main port: the escape hatch for pinned RDRS images that predate REST.ProbePort.
+
+`rondb.rondb.rdrs.probePort.port` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probePort.port" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probePort.port }
+:   Type `integer`, default `4407`, minimum `1`, maximum `65535`.
+    TCP port of the dedicated probe listener. Must differ from the main REST port (4406).
+
+`rondb.rondb.rdrs.probes` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes }
+:   Type `object`.
+    Timings of the RDRS container probes; the HTTP path, port and scheme are set by the chart. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.probes. A probe gives up after roughly (failureThreshold - 1) * periodSeconds + timeoutSeconds of consecutive failures.
+
+`rondb.rondb.rdrs.probes.liveness` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness }
+:   Type `object`.
+    Checks /ping and restarts RDRS when it keeps failing. With rdrs.probePort.enabled (the default) /ping is answered from the dedicated probe thread, which keeps responding through data-node failures, so the defaults are ample. With probePort.enabled=false /ping shares the worker threads: while a failed data node has not yet been declared dead, requests touching it block and /ping cannot answer. Detection takes ~25 seconds per data node, so in that mode size (failureThreshold - 1) * periodSeconds + timeoutSeconds above ~25 seconds per data node that can go silent at once, plus ~40 seconds. The defaults give ~115 seconds; restarting the data nodes of 8 node groups in parallel needs failureThreshold 30 (~295 seconds).
+
+`rondb.rondb.rdrs.probes.liveness.failureThreshold` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness.failureThreshold" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness.failureThreshold }
+:   Type `integer`, default `12`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.liveness.initialDelaySeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness.initialDelaySeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness.initialDelaySeconds }
+:   Type `integer`, default `5`, minimum `0`.
+
+`rondb.rondb.rdrs.probes.liveness.periodSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness.periodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness.periodSeconds }
+:   Type `integer`, default `10`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.liveness.timeoutSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.liveness.timeoutSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.liveness.timeoutSeconds }
+:   Type `integer`, default `5`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.readiness` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness }
+:   Type `object`.
+    Checks /health. A pod that keeps failing is removed from the Service after ~13 to 18 seconds with the defaults; connections it already holds stay open. More than one failure is required so that a single slow check under load does not take the pod out of the Service.
+
+`rondb.rondb.rdrs.probes.readiness.failureThreshold` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness.failureThreshold" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness.failureThreshold }
+:   Type `integer`, default `3`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.readiness.initialDelaySeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness.initialDelaySeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness.initialDelaySeconds }
+:   Type `integer`, default `5`, minimum `0`.
+
+`rondb.rondb.rdrs.probes.readiness.periodSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness.periodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness.periodSeconds }
+:   Type `integer`, default `5`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.readiness.timeoutSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.readiness.timeoutSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.readiness.timeoutSeconds }
+:   Type `integer`, default `3`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.startup` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup }
+:   Type `object`.
+    Checks /ping until RDRS first answers; liveness and readiness only start after it passes. RDRS opens its port once it has preloaded its caches from RonDB, about 25 seconds with a few hundred feature views. Raise failureThreshold if that preload takes longer than the ~57 seconds allowed.
+
+`rondb.rondb.rdrs.probes.startup.failureThreshold` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.failureThreshold" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.failureThreshold }
+:   Type `integer`, default `11`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.startup.initialDelaySeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.initialDelaySeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.initialDelaySeconds }
+:   Type `integer`, default `5`, minimum `0`.
+
+`rondb.rondb.rdrs.probes.startup.periodSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.periodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.periodSeconds }
+:   Type `integer`, default `5`, minimum `1`.
+
+`rondb.rondb.rdrs.probes.startup.timeoutSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.timeoutSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.timeoutSeconds }
+:   Type `integer`, default `2`, minimum `1`.
+
 `rondb.rondb.rdrs.security` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security }
 :   Type `object`.
 
@@ -2005,6 +2102,22 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS }
 :   Type `integer`, default `180000`, minimum `1000`.
     How often the API key cache refreshes project associations from the database (in milliseconds). Lower values reduce staleness when project memberships change but increase database load.
+
+`rondb.rondb.rdrs.ttlPurge` <a class="headerlink" href="#helm.rondb.rondb.rdrs.ttlPurge" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.ttlPurge }
+:   Type `object`.
+    TTL purge worker settings of every RDRS pod, rendered as the TTLPurge section of rest_api.json. The section is rendered only when at least one field is set, because RDRS older than RonDB 26.02.9 rejects the TTLPurge key and does not start. Changes reach running pods only when they restart; a cluster-wide window in the mysql.ttl_purge_ctrl table takes precedence over activeWindow and needs no restart. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.ttlPurge. Unknown fields fail the render, so a misspelled field cannot silently leave purging running around the clock.
+
+`rondb.rondb.rdrs.ttlPurge.activeWindow` <a class="headerlink" href="#helm.rondb.rondb.rdrs.ttlPurge.activeWindow" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.ttlPurge.activeWindow }
+:   Type `string|null`, default `null`, pattern `^$|^([01][0-9]|2[0-3]):[0-5][0-9]-([01][0-9]|2[0-3]):[0-5][0-9]$`.
+    Daily UTC window during which the TTL purge worker deletes expired rows, formatted "HH:MM-HH:MM" (e.g. "03:00-05:00"); it wraps past midnight when start > end (e.g. "23:00-02:00"). Start and end must differ. When null or empty, purging runs around the clock. A valid window in mysql.ttl_purge_ctrl (ctrl_id 2/3) takes precedence.
+
+`rondb.rondb.rdrs.ttlPurge.enable` <a class="headerlink" href="#helm.rondb.rondb.rdrs.ttlPurge.enable" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.ttlPurge.enable }
+:   Type `boolean|null`, default `null`.
+    Whether the RDRS pods run the TTL purge worker, which deletes expired rows of TTL tables. When null, RDRS decides (enabled). Can still be changed per pod at runtime through PUT /0.1.0/ttl-purge/config, until the pod restarts.
+
+`rondb.rondb.rdrs.uploadPath` <a class="headerlink" href="#helm.rondb.rondb.rdrs.uploadPath" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.uploadPath }
+:   Type `string`, default `"/tmp/rdrs-uploads"`.
+    Writable directory where RDRS buffers HTTP request bodies larger than 64KiB. The container's working directory is not writable (RDRS runs as uid 1000): without this, every startup logs 256 'Permission denied' errors and oversized bodies are silently read as empty. Requires an RDRS image with REST.UploadPath support (releases 26.02.11 and newer on the 26.02 line); set to the empty string for pinned older images, which reject the unknown key.
 
 </div>
 
@@ -2500,6 +2613,54 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rondbConfig.UseTcInRRGroup` <a class="headerlink" href="#helm.rondb.rondb.rondbConfig.UseTcInRRGroup" title="Permanent link">#</a> { #helm.rondb.rondb.rondbConfig.UseTcInRRGroup }
 :   Type `boolean|null`, default `null`.
     When true, each recv thread distributes connections only to TC threads within the same Round Robin (RR) group; when false, it distributes them across all TC threads. RonDB default is true.
+
+</div>
+
+### terminationGracePeriodSeconds { #helm-values-rondb-rondb-terminationgraceperiodseconds }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    rondb:
+      rondb:
+        terminationGracePeriodSeconds:
+          binlogServers: 30
+          mgmds: 30
+          mysqlds: 30
+          ndbmtds: 300
+          rdrs: 30
+          replicaAppliers: 30
+    ```
+
+<div class="hops-values" markdown>
+
+`rondb.rondb.terminationGracePeriodSeconds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds }
+:   Type `object|integer`, minimum `10`.
+    Pod terminationGracePeriodSeconds per RonDB service type. The chart's daemons stop on SIGTERM, so this is a ceiling, not a wait: a pod is removed as soon as its processes have exited. The legacy integer form (charts up to 26.2.19) still validates (minimum 10) and keeps its meaning: it overrides the data nodes only, every other component keeps 30. Helm drops null keys before schema validation: a null whole key falls back to the defaults, a null component key is rejected (all six keys are required; partial values files still work because Helm merges in the chart defaults).
+
+`rondb.rondb.terminationGracePeriodSeconds.binlogServers` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.binlogServers" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.binlogServers }
+:   Type `integer`, default `30`, minimum `10`.
+    Binlog server MySQLds; see mysqlds.
+
+`rondb.rondb.terminationGracePeriodSeconds.mgmds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.mgmds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.mgmds }
+:   Type `integer`, default `30`, minimum `10`.
+    MGMd stops within seconds; this matches the Kubernetes default.
+
+`rondb.rondb.terminationGracePeriodSeconds.mysqlds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.mysqlds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.mysqlds }
+:   Type `integer`, default `30`, minimum `10`.
+    Used by MySQLds and DDL MySQLds; mysqld stops within seconds under no load, but allow time for open transactions to close.
+
+`rondb.rondb.terminationGracePeriodSeconds.ndbmtds` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.ndbmtds" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.ndbmtds }
+:   Type `integer`, default `300`, minimum `30`.
+    Data nodes run a managed stop on SIGTERM: deactivate through the MGMd, then node shutdown with handover. Large nodes additionally need roughly 2 minutes per TB of data node memory for the kernel to tear the process down, so raise this for nodes above 1TB. Stops of several data nodes serialize at the MGMd. When deleting the entire cluster the MGMd may already be gone; data nodes then retry the deactivate for up to 60s before stopping directly.
+
+`rondb.rondb.terminationGracePeriodSeconds.rdrs` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.rdrs" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.rdrs }
+:   Type `integer`, default `30`, minimum `10`.
+    RDRS stops within a few seconds; this matches the Kubernetes default.
+
+`rondb.rondb.terminationGracePeriodSeconds.replicaAppliers` <a class="headerlink" href="#helm.rondb.rondb.terminationGracePeriodSeconds.replicaAppliers" title="Permanent link">#</a> { #helm.rondb.rondb.terminationGracePeriodSeconds.replicaAppliers }
+:   Type `integer`, default `30`, minimum `10`.
+    Replica applier pods: the controller container stops its run_applier.sh worker on SIGTERM, the pod's mysqld receives SIGTERM directly.
 
 </div>
 

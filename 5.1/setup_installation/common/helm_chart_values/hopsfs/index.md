@@ -4,7 +4,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -172,6 +172,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           enabled: null
           loadBalancerClass: null
           managed: null
+          nodePort: null
         monitoringPort: 50076
         nodeSelector: {}
         podDisruptionBudget:
@@ -247,6 +248,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsfs.datanode.loadBalancer.managed` <a class="headerlink" href="#helm.hopsfs.datanode.loadBalancer.managed" title="Permanent link">#</a> { #helm.hopsfs.datanode.loadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`hopsfs.datanode.loadBalancer.nodePort` <a class="headerlink" href="#helm.hopsfs.datanode.loadBalancer.nodePort" title="Permanent link">#</a> { #helm.hopsfs.datanode.loadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsfs.datanode.monitoringPort` <a class="headerlink" href="#helm.hopsfs.datanode.monitoringPort" title="Permanent link">#</a> { #helm.hopsfs.datanode.monitoringPort }
 :   Type `int`, default `50076`.
@@ -452,6 +457,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           enabled: null
           loadBalancerClass: null
           managed: null
+          nodePort: null
         maxBlocksPerFile: 10240
         maxDirectMemorySize: 1024
         maxDirectoryItems: 131072
@@ -647,6 +653,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsfs.namenode.loadBalancer.managed` <a class="headerlink" href="#helm.hopsfs.namenode.loadBalancer.managed" title="Permanent link">#</a> { #helm.hopsfs.namenode.loadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`hopsfs.namenode.loadBalancer.nodePort` <a class="headerlink" href="#helm.hopsfs.namenode.loadBalancer.nodePort" title="Permanent link">#</a> { #helm.hopsfs.namenode.loadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `hopsfs.namenode.maxBlocksPerFile` <a class="headerlink" href="#helm.hopsfs.namenode.maxBlocksPerFile" title="Permanent link">#</a> { #helm.hopsfs.namenode.maxBlocksPerFile }
 :   Type `int`, default `10240`.

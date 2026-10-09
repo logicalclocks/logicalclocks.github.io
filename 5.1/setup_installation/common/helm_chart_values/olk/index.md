@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -663,13 +663,14 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           class: null
           enabled: null
           managed: null
+          nodePort: null
           nodeSelector: {}
         jvmOpts: ''
         knn:
           cache_expire: true
           circuit_breaker:
-            percent: 0.75
-            triggered: true
+            percent: 75
+            triggered: false
           index_threads: 1
           memory:
             circuit_breaker:
@@ -779,6 +780,10 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
 
+`olk.opensearch.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
 `olk.opensearch.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
     selector for nodes the load balancer can use to route traffic
@@ -791,10 +796,12 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 :   Type `bool`, default `true`.
 
 `olk.opensearch.knn.circuit_breaker.percent` <a class="headerlink" href="#helm.olk.opensearch.knn.circuit_breaker.percent" title="Permanent link">#</a> { #helm.olk.opensearch.knn.circuit_breaker.percent }
-:   Type `float`, default `0.75`.
+:   Type `float`, default `75`.
+    knn.circuit_breaker.unset.percentage: a tripped k-NN breaker clears once the graph cache falls below this percentage (0 to 100) of knn.memory.circuit_breaker.limit
 
 `olk.opensearch.knn.circuit_breaker.triggered` <a class="headerlink" href="#helm.olk.opensearch.knn.circuit_breaker.triggered" title="Permanent link">#</a> { #helm.olk.opensearch.knn.circuit_breaker.triggered }
-:   Type `bool`, default `true`.
+:   Type `bool`, default `false`.
+    knn.circuit_breaker.triggered is a flag the k-NN plugin sets on a memory trip and clears itself. Keep it false: OpenSearch 2.6 and later apply it at node start, and true rejects every vector write, translog replay included, until the plugin clears it
 
 `olk.opensearch.knn.index_threads` <a class="headerlink" href="#helm.olk.opensearch.knn.index_threads" title="Permanent link">#</a> { #helm.olk.opensearch.knn.index_threads }
 :   Type `int`, default `1`.

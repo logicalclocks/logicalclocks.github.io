@@ -4,7 +4,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.0` (Hopsworks `5.1.0`)._
+_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -131,7 +131,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v10
+          tag: 480-v11
         initContainers:
           coordinator:
           - command:
@@ -396,7 +396,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v10
+          tag: 480-v11
         initContainers:
           coordinator:
           - command:
@@ -636,6 +636,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         class: null
         enabled: null
         managed: null
+        nodePort: null
         nodeSelector: {}
     ```
 
@@ -656,6 +657,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `trino.externalLoadBalancer.managed` <a class="headerlink" href="#helm.trino.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.managed }
 :   Type `string`, default `nil`.
     Cloud provider provisions Load Balancers. If not set the .global._hopsworks.externalLoadBalancers.managed will be used instead
+
+`trino.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.trino.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `trino.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.trino.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.trino.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
@@ -971,7 +976,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v10
+          tag: 480-v11
         initContainers:
           coordinator:
           - command:
@@ -1566,7 +1571,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v10
+          tag: 480-v11
         initContainers:
           coordinator:
           - command:
@@ -1864,7 +1869,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Repository location of the Trino image, typically `organization/imagename`
 
 `trino.trino.image.tag` <a class="headerlink" href="#helm.trino.trino.image.tag" title="Permanent link">#</a> { #helm.trino.trino.image.tag }
-:   Type `string`, default `"480-v10"`.
+:   Type `string`, default `"480-v11"`.
     Image tag for the Trino image. This value is explicitly pinned here and overrides any defaulting to `appVersion` from Chart.yaml.
 
 `trino.trino.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trino.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trino.initContainers.coordinator.2.name }
