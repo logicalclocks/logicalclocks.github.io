@@ -213,6 +213,123 @@ Git-backed apps also receive the Git URL, provider, branch, and Streamlit entryp
 Some runtime names are reserved by the platform and cannot be overridden in the UI.
 That includes the app-path and routing variables above, plus other platform-managed names that start with `HOPS_`, `HOPSWORKS_`, `HOPSFS_`, or `AGENT_`.
 
+## Database and feature store access
+
+Every app can reach the project's feature store data from inside the pod:
+
+- the project's **online feature store database** on RonDB (MySQL protocol), where the online feature group tables live and where the app can keep its own tables: sessions, settings, agent memory, job results. This is on by default and controlled by **Database access** in the create dialog, `db_access` in the SDK and `--no-db-access` in the CLI;
+- the project's **offline feature groups**. A Python app reads them with the Hopsworks Python SDK, as any other Hopsworks client does: [feature group](../../fs/feature_group/index.md) reads and [feature view](../../fs/feature_view/batch-data.md) batch data. When Trino is enabled on the cluster, the app also gets the [Trino query engine](../trino/query_engine.md) as an SQL path to the same tables, which is what an app in another language uses. This does not depend on the database access flag: an app created with `db_access=False` still gets the Trino variables.
+
+The database is created on demand the first time an app with database access starts, so it works in a project that never created an online feature group. The app finds everything in its environment; nothing has to be configured.
+
+| Variable | Value |
+| --- | --- |
+| `MYSQL_HOST`, `MYSQL_PORT` | the online feature store MySQL server |
+| `MYSQL_DB` | the project database, the project name in lowercase |
+| `MYSQL_USER` | the MySQL user of the person who **started** the app |
+| `MYSQL_PASSWORD_SECRET_NAME` | the Hopsworks secret holding that user's password |
+| `TRINO_HOST`, `TRINO_PORT` | the Trino coordinator (HTTPS), when Trino is enabled |
+| `TRINO_USER` | the Trino user of the person who started the app, `<project>__<username>` |
+| `TRINO_PASSWORD_SECRET_NAME` | the Hopsworks secret holding that user's Trino password |
+| `TRINO_SCHEMA` | the project's offline feature store schema, `<project>_featurestore` |
+| `LIBHDFS_ROOT_CA_BUNDLE`, `NODE_EXTRA_CA_CERTS` | the cluster CA as a PEM file, so any HTTP client can verify the Hopsworks REST API and the Trino coordinator |
+
+Passwords are never placed in the environment. They are private secrets of the user who started the app, and the app reads them with its own credentials, through the Python SDK or the REST API. The privileges follow that user's project role: an app started by a Data Owner can create tables and write, an app started by a Data Scientist has read-only access. There is no `TRINO_CATALOG` because the catalog depends on each feature group's format: `delta` for Delta feature groups, `hudi` for Hudi ones.
+
+The variables are listed on the app details page under **Environment variables**, next to the per-app ones.
+
+### Python
+
+Read offline feature groups with the Hopsworks Python SDK first. It is what the rest of the platform uses, it knows the feature group's format and location, and a feature view adds point-in-time joins and the model's transformations, so a dashboard and the model it shows stay consistent.
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()  # in-cluster: no prompt
+fs = project.get_feature_store()
+
+# Offline feature group: a DataFrame, filtered and projected on the server side
+transactions = fs.get_feature_group("transactions", version=1)
+recent = (
+    transactions.select(["cc_num", "amount", "event_time"])
+    .filter(transactions.event_time >= "2025-01-01")
+    .read()
+)
+
+# Feature view: batch data with the point-in-time joins and transformations of the model
+fv = fs.get_feature_view("fraud_model", version=1)
+batch = fv.get_batch_data(start_time="2025-01-01", end_time="2025-02-01")
+```
+
+The online database is for the app's own tables and for primary-key lookups on the online feature group tables:
+
+```python
+import os
+
+import pymysql
+
+password = project.get_secrets_api().get(os.environ["MYSQL_PASSWORD_SECRET_NAME"])
+conn = pymysql.connect(
+    host=os.environ["MYSQL_HOST"],
+    port=int(os.environ["MYSQL_PORT"]),
+    user=os.environ["MYSQL_USER"],
+    password=password,
+    database=os.environ["MYSQL_DB"],
+)
+```
+
+Create the app's own tables with an explicit `ENGINE=NDBCLUSTER`, a primary key, and an `app_` prefix so they never collide with feature group tables (`<feature_group>_<version>`). Write features through `feature_group.insert()`, not straight into the online tables; reading them with SQL is fine.
+
+Trino is an extra option for a Python app: ad-hoc SQL over the offline tables, a join with another Trino catalog, or a query the SDK does not express. The SDK wraps the connection:
+
+```python
+trino = project.get_trino_api().connect(
+    catalog="delta", schema=os.environ["TRINO_SCHEMA"]
+)
+cursor = trino.cursor()
+cursor.execute(
+    "SELECT * FROM transactions_1 WHERE event_time >= DATE '2025-01-01' LIMIT 100"
+)
+rows = cursor.fetchall()
+```
+
+### JavaScript
+
+A [custom app](#custom-apps) can run Node.js: the `python-app-pipeline` environment ships Node and the `@hopsworks/app` module, which turns the variables above into ready-to-use connections. Import it from any app without adding it to `package.json`.
+
+```js
+import mysql from "mysql2/promise";
+import { mysqlConfig, trinoClient, query, getSecret } from "@hopsworks/app";
+
+// Online feature store / the app's own tables
+const pool = mysql.createPool({ ...(await mysqlConfig()), connectionLimit: 5 });
+const [rows] = await pool.execute("SELECT * FROM transactions_1 WHERE cc_num = ?", [ccNum]);
+
+// Offline feature groups through Trino; the catalog is the feature group's format
+const trino = await trinoClient({ catalog: "delta" });
+const recent = await query(trino,
+  "SELECT cc_num, amount, event_time FROM transactions_1 WHERE event_time >= DATE '2025-01-01' LIMIT 100");
+
+// Any other secret of the user who started the app
+const apiKey = await getSecret("openai_api_key");
+```
+
+`mysqlConfig()` returns `{ host, port, user, password, database }` for `mysql2`, `mysql` or `knex`. `trinoClient()` returns a client authenticated as the starting user that speaks the [Trino REST protocol](https://trino.io/docs/current/develop/client-protocol.html); `query()` collects a result as an array of row objects and `streamQuery()` yields rows page by page for large results, cancelling the query if you stop early. Integers above 2^53 come back as `BigInt`, so identifiers are never rounded. Both resolve the password once per process from the Hopsworks secret, and TLS to the platform works out of the box through `NODE_EXTRA_CA_CERTS`. Outside a Hopsworks pod the functions throw an error naming the missing variable; guard local development on `inHopsworks()`.
+
+```python
+node_app = apps.create_app(
+    "node_api",
+    app_kind="CUSTOM",
+    git_url="https://github.com/my-org/node-api.git",
+    git_provider="GitHub",
+    entrypoint_command='bash -lc "npm ci --omit=dev && exec node server.js"',
+    app_port=8080,
+)
+```
+
+Trino is the right path for scans and aggregations over the offline tables; primary-key lookups belong on the online tables. Trino's HTTP protocol has no bound parameters, so never interpolate user input into SQL text.
+
 ## Managing an app
 
 The Apps list and the app details page expose the same lifecycle actions:
@@ -249,7 +366,7 @@ The details page includes:
 - Monitoring configuration
 - Resource requests
 - Runtime environment
-- Per-app environment variables
+- Environment variables: the per-app ones and the database and feature store access variables the platform injects
 - App metrics and Kubernetes health
 
 ## Public access for Streamlit apps
@@ -294,6 +411,7 @@ apps = project.get_app_api()
 app = apps.create_app(
     "customer_dashboard",
     app_path="Resources/app.py",
+    db_access=True,  # default: the online database, see above
 )
 
 app.run()
@@ -344,6 +462,7 @@ hops app delete <name> --yes
 Use `--git-url` and `--entrypoint-script` for Git-backed Streamlit apps.
 Use `--entrypoint-command` and `--app-port` for custom apps.
 Add `--git-auto-redeploy` to roll a Git-backed app onto every new commit.
+Pass `--no-db-access` for an app that must not get the online database variables; Trino access does not depend on it.
 
 ## See also
 
@@ -352,3 +471,5 @@ Add `--git-auto-redeploy` to roll a Git-backed app onto every new commit.
 - [Python Deployment](../python-deployment/python-deployment.md)
 - [Session Capacity Warnings](../jupyter/session_capacity_warnings.md)
 - [Superset](../superset/superset.md)
+- [Query Engine (Trino)](../trino/query_engine.md)
+- [Secrets](../secrets/create_secret.md)
