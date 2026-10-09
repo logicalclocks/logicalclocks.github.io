@@ -20,6 +20,11 @@
       heading_level: 2
       show_root_heading: true
 
+::: hsfs.storage_connector.ElasticsearchConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hsfs.storage_connector.GcsConnector
     options:
       heading_level: 2
