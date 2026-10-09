@@ -10,8 +10,8 @@ In this guide, you will configure a Data Source in Hopsworks to securely store t
 When you're finished, you'll be able to query your SQL database using Hopsworks APIs.
 
 !!! note
-    Currently, it is only possible to create data sources in the Hopsworks UI.
-    You cannot create a data source programmatically.
+    This guide creates the data source in the Hopsworks UI.
+    The `hops` CLI creates the same data source with `hops datasource create sql <name> --database-type <type> ...`.
 
 ## Prerequisites
 
@@ -133,6 +133,8 @@ Every connection is encrypted, and the server certificate is validated against t
 For a server with a self-signed certificate, such as a default SQL Server installation, add the argument `trustServerCertificate` with the value `true`.
 This applies to Spark, the query engine, the Python engine and DLTHub ingestion alike.
 Spark and the query engine use Microsoft's JDBC driver, so other JDBC connection properties can be added as arguments the same way; the Python engine and DLTHub ingestion read only `trustServerCertificate`.
+The argument `encrypt=false` therefore turns off encryption for Spark and the query engine only: the Python engine and DLTHub ingestion always encrypt.
+The arguments cannot replace the host, port or database (`serverName`, `portNumber`, `databaseName`); the data source's own fields set those.
 
 ## Next Steps
 
