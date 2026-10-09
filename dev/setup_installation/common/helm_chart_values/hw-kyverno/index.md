@@ -4,7 +4,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791557095` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791567888` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

@@ -4,7 +4,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791557095` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791567888` (Hopsworks `5.2.0`)._
 
 Always deployed.
 

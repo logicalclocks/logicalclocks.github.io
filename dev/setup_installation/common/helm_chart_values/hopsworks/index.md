@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791557095` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791567888` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2494,6 +2494,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_adls_storage_connectors: 'false'
         enable_bigquery_storage_connectors: 'true'
         enable_bring_your_own_kafka: 'false'
+        enable_elasticsearch_storage_connectors: 'true'
         enable_feature_monitoring: 'true'
         enable_fix_receivers_timer: 'true'
         enable_gcs_storage_connectors: 'true'
@@ -3214,6 +3215,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.enable_bring_your_own_kafka` <a class="headerlink" href="#helm.hopsworks.variables.enable_bring_your_own_kafka" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_bring_your_own_kafka }
 :   Type `string`, default `"false"`.
+
+`hopsworks.variables.enable_elasticsearch_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_elasticsearch_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_elasticsearch_storage_connectors }
+:   Type `string`, default `"true"`.
 
 `hopsworks.variables.enable_feature_monitoring` <a class="headerlink" href="#helm.hopsworks.variables.enable_feature_monitoring" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_feature_monitoring }
 :   Type `string`, default `"true"`.
