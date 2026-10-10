@@ -144,7 +144,7 @@ A GitHub repository the build creates, an example's included, is named `hops-<sl
 **Factory**, in the project menu below Catalog, opens on a box: describe the system you want, and Platform Intelligence finds the project's factories that could build it, up to five.
 They show as buttons below the box, the most likely highlighted in the middle; a box above them says why the selected factory fits and what it would build, and picking another factory explains that one.
 The green **Build** button opens the selected factory's form, at its blueprint when the description is one, filled in with what the description says, for you to check and press **Create**.
-This needs Platform Intelligence configured on the cluster; without it, pick a factory from **From Template**.
+This needs Platform Intelligence configured on the cluster; without it the box is not shown, and you pick a factory from **From Template**.
 A factory's form has a chat beside it for settling the requirements, and it starts on its own when the form opens.
 It writes a draft `system.yaml` in `factory-drafts/<factory>` of your HopsFS home, with the form's answers, and starts Claude Code there, which says in a few lines what will be built and asks only the few questions that change it: the data, what it produces and for whom, how often and how much history, a dashboard or app, and who hears about failures; technical details are left to the build.
 It writes your answers into the draft, which the form shows as it changes, and notes what the form has no field for, which the build receives too; then it summarizes again and asks whether to create the system or change something.
@@ -170,6 +170,7 @@ The Terminal panel closes and the project menu collapses while the chat is shown
 Beside the chat, **App** shows the system's app or dashboards in the page; while the app is stopped, **Start app** starts the deployments it calls and then the app, and while it is starting or redeploying the button says so instead.
 **Assets** shows the system with its status, repository, files, phases and actions, then what it has made in three columns, the feature, training and inference pipelines, each asset linked to its page with its state, and its jobs below.
 **System Details** shows the specification, `system.yaml`, at the top, then the phases, what is done and what is left, and the requirements, locked.
+`system.yaml` shows what changed since your last message in the chat: added lines are highlighted and removed lines struck through, with the count of each; **Edit the file** opens the editor, and **Mark as seen** clears the highlights.
 **Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
 **Architecture** opens the system's architecture: its data sources, feature, training and inference pipelines and app, with the data flowing between them, redrawn as `system.yaml` changes.
 A box whose part of the specification changed since you last looked is marked until you click it; clicking a box shows that part of `system.yaml`, which you can edit and save, and boxes can be dragged.
