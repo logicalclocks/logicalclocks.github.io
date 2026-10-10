@@ -310,7 +310,7 @@ A Polars or DuckDB pipeline is a Python job that never starts a Spark job: the f
 Its chat settles the ingestion with you in rounds until you say it is final.
 Say where your data is and what should land in Hopsworks, and the chat fills in the data sources: each with its name, its kind, where it is, the tables to ingest, and whether it is available for real-time ML, which also loads the online feature store.
 For a data source the project already has, the chat lists its tables and asks which to ingest; a new one is created.
-**Credentials** takes the passwords, keys and tokens the new data sources need, each as a name, such as `CRM_PASSWORD`, and a hidden value: on **Create** each is saved as a private variable of your account, and only the names reach `system.yaml` and the chat.
+**Credentials** takes the passwords, keys and tokens the new data sources need, each as a name, such as `CRM_PASSWORD`, and a hidden value: on **Create** each is saved as a private variable of your account, the build stores it in its data source, which keeps it as Hopsworks keeps every data source's secrets, and then deletes the variable; only the names reach `system.yaml` and the chat.
 
 The chat previews each table and suggests, with its reason, the columns not to ingest, the columns to pseudonymize, which keep a keyed hash of each value so joins still work, and the rows to filter out.
 For each table the chat finds, from the source, the primary key and the event time, which become the feature group's, and whether the table is append-only: rows only added, never updated or deleted, as in events, logs and transactions, which are written with plain appends, much faster than the upserts a table whose rows change needs.
