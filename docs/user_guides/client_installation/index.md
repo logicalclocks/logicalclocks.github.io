@@ -304,11 +304,46 @@ dashboard: {kind: superset, dashboards: [{name: Orders, url: <url>}]}
 The build then writes and tests the code, backfills the days or hours you asked for, schedules the job, sets up its alerts, builds the dashboard, which the system's **App** view shows, and verifies one run with `hops factory system status`.
 A Polars or DuckDB pipeline is a Python job that never starts a Spark job: the feature groups it writes have statistics off.
 
+### Ingest data with dlt
+
+**From Template > Analytics > Data ingestion** copies data from databases, warehouses, object stores, SaaS apps and REST APIs into feature groups with dlt (DLTHub), on a schedule.
+Say in the form, or in its chat, where your data is and what should land in Hopsworks, and the chat fills in the data sources: each with its name, its kind, where it is, what to ingest, and whether it is available for real-time ML, which also loads the online feature store.
+A data source the project already has is reused, and a new one is created.
+**Credentials** takes the passwords, keys and tokens the new data sources need, each as a name, such as `CRM_PASSWORD`, and a hidden value: on **Create** each is saved as a private variable of your account, and only the names reach `system.yaml` and the chat.
+
+**Transformations** lists the ones ingestion commonly needs as checkboxes, applied to every table on the way in: snake_case column names, types cast, dates and timestamps parsed in UTC, text trimmed with empty strings as nulls, rows without a primary key dropped, one row per primary key kept, deleted and test records dropped, nested JSON flattened, personal data columns hashed or dropped, and ingestion time and source columns added.
+**Loading** sets whether each run upserts changed rows by primary key, appends new rows or replaces the table, how often it runs, how much history the first load copies, and whether the tables are tagged as bronze for a silver layer.
+
+The build creates the data sources and one feature group per table with its primary key and event time, then decides how the ingestion runs: the ingestion jobs Hopsworks runs in the shared `dlthub-ingestion-pipeline` environment by default, with a transform script for the transformations a column mapping cannot do, or its own dlt program when the source needs it.
+It clones the environment, as `<name>-dlt`, only when the ingestion needs a Python library the shared environment lacks.
+It records the result in `system.yaml`:
+
+```yaml
+ingestion:
+  sources:
+    - name: crm
+      kind: sql
+      reused: false
+      credentials: [CRM_PASSWORD]
+      tables:
+        - source: public.customers
+          ingested: {feature_group: crm_customers, version: 1}
+          primary_key: [customer_id]
+          online: true
+          write_mode: merge
+          cursor: updated_at
+  environment: {name: dlthub-ingestion-pipeline, cloned: false}
+  program: transform
+  job: {name: crm-ingestion-ingest, type: ingestion, schedule: {cron: "0 0 2 * * ?"}}
+```
+
+It then loads the history, schedules the job, and verifies a run against the source's row counts.
+
 ### Create your own factory
 
 A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
 The project's own factories are listed under **From Template** with the built-in ones of their kind, each opening the form it generates.
-The seven built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `analytics-bronze`, `analytics-silver`, `analytics-gold` and `analytics-pipeline`, are read-only; clone one to change it.
+The eight built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `analytics-bronze`, `analytics-silver`, `analytics-gold`, `analytics-pipeline` and `analytics-ingestion`, are read-only; clone one to change it.
 A form has no conditions: every question of a section is shown, and a section with defaults can be collapsed to a summary of its answers with **Edit**.
 
 **Factory > Manage factories** lists every factory with its version and how many systems it built.
@@ -317,7 +352,7 @@ The editor changes the questions, phases and build instructions as a form or as 
 Importing shows the factory's build instructions in full first: Claude Code follows them in your Terminal, with your credentials.
 
 A clone of a built-in keeps the built-in's questions and build; answers the built-in build does not read are recorded in `requirements.extra` and the clone's instructions in `factory.instructions` of each system's `system.yaml`, which the built-in build follows too.
-A definition's questions can be text, numbers, checkboxes, one or some of a list of options, one or several feature groups, a list of entries each with its own questions, and account variables, which are saved in your account and never in `system.yaml`; presets are named sets of starting answers, listed as the factory's **Blueprints**.
+A definition's questions can be text, numbers, checkboxes, one or some of a list of options, one or several feature groups, a list of entries each with its own questions, account variables, which are saved in your account and never in `system.yaml`, and credentials, named secrets saved the same way whose names alone reach `system.yaml`; presets are named sets of starting answers, listed as the factory's **Blueprints**.
 
 ```yaml
 apiVersion: hopsworks.ai/factory/v1
