@@ -169,6 +169,9 @@ A message you send is typed into that tab; when no Claude Code runs there, the f
 The Terminal panel closes and the project menu collapses while the chat is shown, and the Terminal must be running for the chat to reach Claude Code.
 Beside the chat, **App** shows the system's app or dashboards in the page; while the app is stopped, **Start app** starts the deployments it calls and then the app, and while it is starting or redeploying the button says so instead.
 **Assets** shows the system with its status, repository, files, phases and actions, then what it has made in three columns, the feature, training and inference pipelines, each asset linked to its page with its state, and its jobs below.
+A feature group shows when it last changed and the rows that commit appended, updated and deleted.
+A job shows its schedule (cron in UTC) and its next run, with **Edit** for its settings; a job that backfills has **Backfill**, which runs it once over a start and end time you choose, starting where its last backfill ended, and any other job has **Run**.
+An app, deployment or feature group that `system.yaml` records but the project does not have shows as missing, and the system's pages say it is not fully built, with a button that asks Claude Code to rebuild it.
 **System Details** shows the specification, `system.yaml`, at the top, then the phases, what is done and what is left, and the requirements, locked.
 `system.yaml` shows what changed since your last message in the chat: added lines are highlighted and removed lines struck through, with the count of each; **Edit the file** opens the editor, and **Mark as seen** clears the highlights.
 **Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
