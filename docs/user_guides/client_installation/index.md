@@ -307,12 +307,15 @@ A Polars or DuckDB pipeline is a Python job that never starts a Spark job: the f
 ### Ingest data with dlt
 
 **From Template > Analytics > Data ingestion** copies data from databases, warehouses, object stores, SaaS apps and REST APIs into feature groups with dlt (DLTHub), on a schedule.
-Say in the form, or in its chat, where your data is and what should land in Hopsworks, and the chat fills in the data sources: each with its name, its kind, where it is, what to ingest, and whether it is available for real-time ML, which also loads the online feature store.
-A data source the project already has is reused, and a new one is created.
+Its chat settles the ingestion with you in rounds until you say it is final.
+Say where your data is and what should land in Hopsworks, and the chat fills in the data sources: each with its name, its kind, where it is, the tables to ingest, and whether it is available for real-time ML, which also loads the online feature store.
+For a data source the project already has, the chat lists its tables and asks which to ingest; a new one is created.
 **Credentials** takes the passwords, keys and tokens the new data sources need, each as a name, such as `CRM_PASSWORD`, and a hidden value: on **Create** each is saved as a private variable of your account, and only the names reach `system.yaml` and the chat.
 
-**Transformations** lists the ones ingestion commonly needs as checkboxes, applied to every table on the way in: snake_case column names, types cast, dates and timestamps parsed in UTC, text trimmed with empty strings as nulls, rows without a primary key dropped, one row per primary key kept, deleted and test records dropped, nested JSON flattened, personal data columns hashed or dropped, and ingestion time and source columns added.
-**Loading** sets whether each run upserts changed rows by primary key, appends new rows or replaces the table, how often it runs, how much history the first load copies, and whether the tables are tagged as bronze for a silver layer.
+The chat previews each table and suggests, with its reason, the columns not to ingest, the columns to pseudonymize, which keep a keyed hash of each value so joins still work, and the rows to filter out.
+**Columns and rows** holds those choices, whether to add the ingestion time, and the transformations applied to every table, whose defaults make each table a valid feature group offline (Hive) and online (MySQL): column names as lowercase snake_case of at most 63 characters, types both stores hold, timestamps in UTC, nested JSON flattened, and one non-null primary key per row.
+**Schedule and history** sets how often it runs, whether to backfill all history, a window from a start to an end time, or nothing, and whether each run upserts changed rows by primary key, appends new rows or replaces the table.
+**Storage and inspection** sets the table format, Delta Lake by default, Apache Iceberg or Apache Hudi, a Superset dashboard to inspect the ingested data, and whether the tables are tagged as bronze for a silver layer.
 
 The build creates the data sources and one feature group per table with its primary key and event time, then decides how the ingestion runs: the ingestion jobs Hopsworks runs in the shared `dlthub-ingestion-pipeline` environment by default, with a transform script for the transformations a column mapping cannot do, or its own dlt program when the source needs it.
 It clones the environment, as `<name>-dlt`, only when the ingestion needs a Python library the shared environment lacks.
@@ -337,7 +340,7 @@ ingestion:
   job: {name: crm-ingestion-ingest, type: ingestion, schedule: {cron: "0 0 2 * * ?"}}
 ```
 
-It then loads the history, schedules the job, and verifies a run against the source's row counts.
+The chat stays open while it builds: it shows the rows each table loaded, with the dropped and pseudonymized columns as they are, and asks whether they are right before it schedules the job, builds the dashboard and verifies a run against the source's row counts.
 
 ### Create your own factory
 
