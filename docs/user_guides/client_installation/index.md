@@ -382,8 +382,10 @@ build:
   instructions: Build a dashboard that answers requirements.question.
 ```
 
+Every command, `validate` included, needs a logged-in session on a cluster whose `factory_enabled` variable is `true`.
+
 ```bash
-hops factory validate churn-review.yaml      # check a definition without a cluster
+hops factory validate churn-review.yaml      # check a definition
 hops factory import churn-review.yaml        # review it, then add it to the project
 hops factory clone ml-batch fraud-ml         # start from a built-in
 hops factory export churn-review             # write churn-review.factory.yaml
