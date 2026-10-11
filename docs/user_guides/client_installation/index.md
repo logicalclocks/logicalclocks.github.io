@@ -122,11 +122,13 @@ hops skills show hops-fg
 ### Build an ML system
 
 ```bash
-hops factory run ml-batch        # or ml-realtime, ml-agent
+hops factory run ml-batch        # or ml-realtime, ml-streaming, ml-agent
 ```
 
 `hops factory run <factory>` asks the factory's questions in the terminal, section by section, with the factory's defaults: for `ml-batch` the system's name, what it should predict, its cadence and run time, its data (feature groups in the project, synthetic data described in a sentence, and files), how its predictions are used, and its monitoring.
-`--answers answers.json` takes the answers from a file instead, as the **Factory** page writes it, and `--preset <id>` starts from one of the factory's examples (`churn-example`, `recs-example`, `fraud-example`, `gis-example`, `helpdesk-example` or `run-example`, as `hops factory get <factory>` lists them under `presets`).
+`--answers answers.json` takes the answers from a file instead, as the **Factory** page writes it, and `--preset <id>` starts from one of the factory's examples (`churn-example`, `recs-example`, `fraud-example`, `debitcard-example`, `gis-example`, `helpdesk-example` or `run-example`, as `hops factory get <factory>` lists them under `presets`).
+`ml-streaming` builds a real-time system whose batch features are dbt models run in Trino on a schedule and whose streaming features are a Spark Structured Streaming job; it also asks how often the dbt models run and the streaming window in minutes.
+Its `debitcard-example` generates a year of synthetic debit card authorisations, 1,000,000 by default, streams more on the same cards, and scores each card's last hour against its spending baseline with an Isolation Forest deployment and a Streamlit console.
 The help desk agent answers from documents you upload to `Resources/helpdesk-docs` (PDF, text, Markdown, Word or OpenDocument), which a job cuts into passages and embeds with a sentence-transformers model downloaded into the Model Registry, and from the customer's recent events; it is a LangGraph agent deployment with a JavaScript chat app.
 For an agentic system, `hops factory run ml-agent` asks for an OpenAI-compatible LLM endpoint, model and API key (read without echo), unless your account already has them, and saves them as your account environment variables `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`, which the agent reads.
 The answers are written to `<slug>/system.yaml` in the current directory, and what they leave out, such as where the code goes, is asked next.
@@ -160,7 +162,7 @@ Sections with defaults show a one-line summary of their answers, with **Edit** t
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
 For a batch or real-time system, **Monitoring** (collapsed) sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
 The build turns them into feature logging on the feature view, feature monitoring checks and alerts, and sends a failure alert for every job the system owns to the project's alert receiver.
-**Create** runs `hops factory run ml-batch --answers` (or `ml-realtime`, `ml-agent`) in a Terminal tab named after the system, which records it and starts Claude Code on `/hops-build <name>`; the page opens the system once it is registered.
+**Create** runs `hops factory run ml-batch --answers` (or `ml-realtime`, `ml-streaming`, `ml-agent`) in a Terminal tab named after the system, which records it and starts Claude Code on `/hops-build <name>`; the page opens the system once it is registered.
 **Location**, above the form of every factory, sets the folder the system's directory goes in, which holds its code and is its git repository: your home folder in the project by default, or another folder of the project you can write to, such as one in `Resources` so every member can open the code; from the CLI, run `hops factory run` in that folder.
 
 A system's page is a chat beside the system.
@@ -349,7 +351,7 @@ The chat stays open while it builds: it shows the rows each table loaded, with t
 
 A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
 The project's own factories are listed under **From Template** with the built-in ones of their kind, each opening the form it generates.
-The eight built-in factories, `ml-batch`, `ml-realtime`, `ml-agent`, `analytics-bronze`, `analytics-silver`, `analytics-gold`, `analytics-pipeline` and `analytics-ingestion`, are read-only; clone one to change it.
+The nine built-in factories, `ml-batch`, `ml-realtime`, `ml-streaming`, `ml-agent`, `analytics-bronze`, `analytics-silver`, `analytics-gold`, `analytics-pipeline` and `analytics-ingestion`, are read-only; clone one to change it.
 A form has no conditions: every question of a section is shown, and a section with defaults can be collapsed to a summary of its answers with **Edit**.
 
 **Factory > Manage factories** lists every factory with its version and how many systems it built.
