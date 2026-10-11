@@ -125,6 +125,7 @@ hops skills show hops-fg
 hops factory run ml-batch        # or ml-realtime, ml-streaming, ml-agent
 ```
 
+The Factory and every `hops factory` command are available only on a cluster whose `factory_enabled` variable is `true`; elsewhere the commands stop with `The Factory is not enabled for this Hopsworks cluster.`
 `hops factory run <factory>` asks the factory's questions in the terminal, section by section, with the factory's defaults: for `ml-batch` the system's name, what it should predict, its cadence and run time, its data (feature groups in the project, synthetic data described in a sentence, and files), how its predictions are used, and its monitoring.
 `--answers answers.json` takes the answers from a file instead, as the **Factory** page writes it, and `--preset <id>` starts from one of the factory's examples (`churn-example`, `recs-example`, `fraud-example`, `debitcard-example`, `gis-example`, `helpdesk-example` or `run-example`, as `hops factory get <factory>` lists them under `presets`).
 `ml-streaming` builds a real-time system whose batch features are dbt models run in Trino on a schedule and whose streaming features are a Spark Structured Streaming job; it also asks how often the dbt models run and the streaming window in minutes.
