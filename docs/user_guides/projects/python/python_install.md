@@ -120,7 +120,7 @@ A second install started while a build is running waits for it and then runs as 
   pnpm and Bun catalogs (`catalog:` specs) are resolved from the lockfile, `pnpm-workspace.yaml` or the root `package.json`.
   A binary `bun.lockb` is not read; run `bun install --save-text-lockfile` to get a `bun.lock` the import can use.
 - **Git repository** reads the `package.json` files of a repository at a branch, tag or commit and resolves them the same way, against the nearest lockfile.
-  A monorepo shows one entry per workspace to pick from.
+  A monorepo shows one entry per workspace to pick from; give the **package.json path** (for example `apps/web`) to read just that one, which also skips the rest of a large repository.
   Private repositories use the git providers configured under your account settings.
   Tick **Also install the repository itself** to install the repository as a package under the name its `package.json` declares, pinned to the commit the dialog read.
   Installing it runs npm; a repository that needs yarn, pnpm or Bun to build is reported but still attempted.
@@ -161,6 +161,9 @@ env.install_npm_from_package_json("package.json", lockfile_path="pnpm-lock.yaml"
 env.install_npm_from_git(
     "https://github.com/acme/mytool", ref="main", install_repository=True
 )
+
+# One package of a monorepo, by the path of its package.json.
+env.install_npm_from_git("https://github.com/acme/mono", path="packages/cli")
 ```
 
 `resolve_npm_package_json` and `inspect_npm_git` return what would be installed without installing it.
