@@ -291,7 +291,6 @@ You can customize the default predictor settings when creating a model deploymen
 
   my_deployment = my_model.deploy(
       # predictor configuration
-      model_server="PYTHON",
       script_file=predictor_script_path,
   )
   ```
