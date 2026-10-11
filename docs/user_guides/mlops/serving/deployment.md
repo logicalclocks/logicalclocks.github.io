@@ -162,7 +162,7 @@ This will create a deployment for your model with default values.
   ```
 
 !!! info "Predictor script and server configuration file"
-    You can provide a predictor script and a server configuration file directly in the `.deploy()` method using the `script_file` and `config_file` parameters. See the [Predictor Guide](predictor.md) for more details.
+    You can provide a predictor script and a server configuration file directly in the `.deploy()` method using the `script_file` and `config_file` parameters. Python and PyTorch models require a predictor script. See the [Predictor Guide](predictor.md) for more details.
 
 !!! api "API reference"
 
