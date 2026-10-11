@@ -104,9 +104,10 @@ Open the **Installed npm Libraries** tab beside the Python one and use **Install
 Installed npm packages are listed there and can be uninstalled the same way, so an environment
 records what it carries rather than accumulating changes nobody can see.
 
-The dialog builds one install list and installs it in one build.
+The dialog builds one install list and installs it as one operation and one build.
 Fill the list from any of its three tabs, in any combination, then press **Install**.
-Every package still gets its own entry in the list and can be retried or uninstalled on its own, but the environment image is rebuilt once for the whole list rather than once per package.
+While it runs, a list of several packages shows as a single entry named `npm-install-...` with the packages on its row; once the build has finished, the installed packages replace it in the listing, each with its own entry that can be uninstalled on its own.
+If the build fails, the single entry stays with the error, and retrying or deleting it applies to the whole list.
 A second install started while a build is running waits for it and then runs as its own build.
 
 - **Registry** searches the configured registry for one package and version at a time and adds it to the list.
