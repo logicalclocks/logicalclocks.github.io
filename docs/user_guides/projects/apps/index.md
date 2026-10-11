@@ -60,6 +60,8 @@ The create dialog lets you choose the app type, source, runtime environment, app
 
 ### App types
 
+The Flask, Gradio and Node.js types need Hopsworks 5.2 or later.
+
 - **Streamlit** apps are the default choice for dashboards and interactive ML UIs.
 - **Flask**, **Gradio** and **Node.js** apps are started from their app file, like Streamlit, with a command Hopsworks generates, and listen on the configured port like a custom app.
   Flask and Gradio take a `.py` file; Node.js takes a `.js`, `.mjs`, `.cjs`, `.ts` or `.mts` file.
@@ -149,7 +151,7 @@ The default readiness probe for Streamlit is `/_stcore/health`.
 
 ### Flask apps
 
-Flask apps are started with `flask run --app <file> --host 0.0.0.0 --port $APP_PORT`, so the file needs an `app` object, or an `app.py` style factory Flask can find.
+Flask apps are started with `flask --app <file> run --host 0.0.0.0 --port $APP_PORT`, so the file needs an `app` object, or an `app.py` style factory Flask can find.
 Hopsworks serves the app at its root, so define routes at `/` and `/health`.
 The proxy sends `X-Forwarded-Prefix` and the app also gets `APP_PUBLIC_PATH`; an app that builds absolute links can wrap itself in `ProxyFix(app.wsgi_app, x_prefix=1)` to generate them with the public path.
 
@@ -279,7 +281,7 @@ The platform injects app-specific variables such as:
 - `APP_KIND`
 - `APP_ARGS`
 
-Git-backed apps also receive the Git URL, provider, branch, and Streamlit entrypoint script.
+Git-backed apps also receive the Git URL, provider and branch, and the entrypoint script for every kind started from a file.
 
 `APP_BASE_URL_PATH` is only injected for legacy prefix-mode apps during migration.
 

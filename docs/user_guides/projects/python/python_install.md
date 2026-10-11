@@ -104,6 +104,7 @@ Open the **Installed npm Libraries** tab beside the Python one and use **Install
 Installed npm packages are listed there and can be uninstalled the same way, so an environment
 records what it carries rather than accumulating changes nobody can see.
 
+The install list, the package.json and git imports below, and the SDK methods for them need Hopsworks 5.2 or later; the `hopsworks` package of the same release has them.
 The dialog builds one install list and installs it as one operation and one build.
 Fill the list from any of its three tabs, in any combination, then press **Install**.
 While it runs, a list of several packages shows as a single entry named `npm-install-...` with the packages on its row; once the build has finished, the installed packages replace it in the listing, each with its own entry that can be uninstalled on its own.
