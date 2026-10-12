@@ -5,6 +5,11 @@
       show_root_full_path: true
       show_root_heading: true
 
+::: hsml.scaling_config.Autoscaler
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hsml.scaling_config.ComponentScalingConfig
     options:
       heading_level: 2
