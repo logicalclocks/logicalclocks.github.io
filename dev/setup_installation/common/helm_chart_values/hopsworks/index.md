@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791837298` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791844626` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2571,6 +2571,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         hiveserver_ssl_hostname: ''
         hops_db: hops
         hops_rpc_tls: 'true'
+        hopsable_proxy_enabled: 'false'
         hopsexamples_version: ''
         hopsfsmount_apparmor_profile: ''
         hopsfsmount_log_level: warn
@@ -2754,6 +2755,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         pythonapp_cores: '1.0'
         pythonapp_gpus: '0'
         pythonapp_memory: '2048'
+        pythonapp_proxy_token_ttl_ms: '900000'
         quotas_featuregroups_online_disabled: '-1'
         quotas_featuregroups_online_enabled: '-1'
         quotas_max_parallel_executions: '-1'
@@ -3430,6 +3432,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.hops_rpc_tls` <a class="headerlink" href="#helm.hopsworks.variables.hops_rpc_tls" title="Permanent link">#</a> { #helm.hopsworks.variables.hops_rpc_tls }
 :   Type `string`, default `"true"`.
 
+`hopsworks.variables.hopsable_proxy_enabled` <a class="headerlink" href="#helm.hopsworks.variables.hopsable_proxy_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.hopsable_proxy_enabled }
+:   Type `string`, default `"false"`.
+    Lets API-key clients mint proxy tokens for an app (POST /project/{id}/apps/{name}/proxy-token) and for Superset (POST /project/{id}/superset/proxy-token), so a gateway outside the cluster can relay them. Enable only on a cluster that serves Hopsable.
+
 `hopsworks.variables.hopsexamples_version` <a class="headerlink" href="#helm.hopsworks.variables.hopsexamples_version" title="Permanent link">#</a> { #helm.hopsworks.variables.hopsexamples_version }
 :   Type `string`, default `""`.
 
@@ -4012,6 +4018,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.pythonapp_memory` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_memory" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_memory }
 :   Type `string`, default `"2048"`.
+
+`hopsworks.variables.pythonapp_proxy_token_ttl_ms` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_proxy_token_ttl_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_proxy_token_ttl_ms }
+:   Type `string`, default `"900000"`.
+    Milliseconds an app proxy token (POST /project/{id}/apps/{name}/proxy-token) stays valid. It is pinned to one app and not renewable: the client mints a new one when it expires.
 
 `hopsworks.variables.quotas_featuregroups_online_disabled` <a class="headerlink" href="#helm.hopsworks.variables.quotas_featuregroups_online_disabled" title="Permanent link">#</a> { #helm.hopsworks.variables.quotas_featuregroups_online_disabled }
 :   Type `string`, default `"-1"`.
