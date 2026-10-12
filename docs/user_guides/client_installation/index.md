@@ -126,6 +126,7 @@ hops factory run ml-batch        # or ml-realtime, ml-streaming, ml-agent
 ```
 
 The Factory and every `hops factory` command are available only on a cluster whose `factory_enabled` variable is `true`; elsewhere the commands stop with `The Factory is not enabled for this Hopsworks cluster.`
+The Factory builds in the Terminal, so it also needs the Terminal enabled: the Helm chart sets `factory_enabled` only when `terminal.enabled` is true, and the menu hides the Factory while the Terminal is off. On a cluster where `factory_enabled` is not `true`, the Factory and ML system REST endpoints answer `403` with error code `150115`.
 `hops factory run <factory>` asks the factory's questions in the terminal, section by section, with the factory's defaults: for `ml-batch` the system's name, what it should predict, its cadence and run time, its data (feature groups in the project, synthetic data described in a sentence, and files), how its predictions are used, and its monitoring.
 `--answers answers.json` takes the answers from a file instead, as the **Factory** page writes it, and `--preset <id>` starts from one of the factory's examples (`churn-example`, `recs-example`, `fraud-example`, `debitcard-example`, `gis-example`, `helpdesk-example` or `run-example`, as `hops factory get <factory>` lists them under `presets`).
 `ml-streaming` builds a real-time system whose batch features are dbt models run in Trino on a schedule and whose streaming features are a Spark Structured Streaming job; it also asks how often the dbt models run and the streaming window in minutes.
@@ -196,6 +197,7 @@ A system whose directory is deleted shows as unavailable, and leaves the list 24
 Registering a directory needs write access to it, and refreshing a registered system needs its owner or a Data owner, so a member cannot claim another member's system.
 A system records the factory version and the digest of the definition it was built from, and keeps them when it is refreshed.
 **Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
+Deleting the assets or the repository needs a Data owner, since only a Data owner can delete apps, deployments and jobs; other members can delete the entry only.
 An asset another system in the project also names is kept, and so is an asset whose name does not contain the system's name unless its description names the system: a system made from an example starts from the example's `system.yaml`, and its delete must not remove the example's app or tables.
 The delete lists each asset it kept and why.
 **Delete** closes the system's Terminal tab, which stops its Claude Code, and the tab of its form's chat; while the assets are deleted, a notice shows that the delete is in progress.
@@ -284,7 +286,8 @@ hops factory system delete <layer> --assets         # delete the layer, its jobs
 
 A change to a built system, a layer's or any other, is one of its factory's `changes`: **Change** on the system's page lists them, and the layer pages' **Add data mart**, **Edit**, **Add tables** and delete icons open them.
 Each opens the change's form; saving records the request in the system's `system.yaml` (`changes`, `status: pending`) with `hops factory run <factory> <system> --change <id>`, and resumes the build in a Terminal tab, which carries out the pending requests first.
-A build deletes jobs and feature groups only with `hops factory system delete-assets`, which refuses a table the system reads or one of a lower analytics layer.
+A build deletes jobs and feature groups only with `hops factory system delete-assets`, which refuses a table the system reads or one of a lower analytics layer, anything another system names, and anything this system's `system.yaml` does not record or its name does not carry.
+A table with several versions needs `NAME:VERSION`.
 
 ### Build a data pipeline
 
