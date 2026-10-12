@@ -439,7 +439,7 @@ Things to know:
 - An open WebSocket counts as a request in flight. A Streamlit or Gradio tab that is open keeps the app up; the cooldown starts when the last tab closes.
 - A wake starts a fresh process. Streamlit reconnects and reruns the script from scratch, and session state is gone, as after any restart.
 - The cold-start timeout defaults to, and cannot exceed, the cluster's app ceiling, `pythonapp_cold_start_timeout_max_seconds` (60 seconds by default). The ceiling follows the ingress read timeout a wake request has to fit in; an administrator who raises the ingress timeout can raise the ceiling with it. A wake that takes longer fails the request that woke the app, but the pod keeps starting, and the next request finds it ready.
-- The start itself has to fit in the cooldown: an app nobody opens after a start goes idle once the cooldown has passed since the start.
+- The idle cooldown starts counting once the app is ready for the first time, so a slow start (image pull, environment setup) does not send it to zero before it has served; an app nobody opens goes idle one cooldown after it came up.
 - Auto-redeploy of a Git-backed app pauses while the app is idle, since nothing watches the branch; the pod clones the branch HEAD when it wakes.
 
 ### What the app details page shows
