@@ -309,6 +309,9 @@ On a feature group whose data source has shared credentials it tests the shared 
 ### Trino catalogs { #data-source-provided-credentials-trino }
 
 A provided Oracle data source can back a [Trino catalog][trino-catalogs], and each query through the catalog runs as the member who sends it.
+Such a catalog is always a [private catalog][private-catalogs] of the member who creates it, named `_<username>__<name>` and available in every project they belong to.
+Each member who wants to query the data source through Trino creates their own, as a Data Owner or a Data Scientist.
+A request for a project catalog from a provided data source is refused with `CREDENTIALS_MODE_NOT_SUPPORTED` (270337), and a catalog on a provided data source cannot be shared, so only its owner queries it.
 The catalog stores no login.
 Its properties name the Trino extra credentials that carry the username and password with each query:
 
@@ -333,11 +336,11 @@ A client that is not listed fetches your values from `GET /hopsworks-api/api/pro
 A member who has not set credentials for the data source has nothing to send, and the Oracle login fails.
 
 Creating the catalog requires you to have set your own credentials for the data source.
-For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is a copy of the creator's wallet; it only secures the transport, and every query still logs in with the querying member's username and password.
-The copy follows the creator's credentials: it is deleted when the creator removes their credentials or leaves the project, and rebuilt when the creator saves a new wallet.
-Hopsworks pins a hash of the copy, and if the copy is changed or replaced outside Hopsworks the catalog refuses to load until the creator saves their credentials again.
-The copy is also deleted when the catalog, the data source, the feature store or the project is deleted, and when the feature store is unshared from a project.
-`Test connection` on the catalog runs with the credentials of the member testing it.
+For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet into a [mountable secret of your account][mountable-secrets-for-private-catalogs]; it only secures the transport, and every query still logs in with your username and password.
+The wallet follows your credentials: it is rebuilt when you save a new wallet, and deleted when you remove your credentials, when you leave the project (your credentials go with it), when the data source is deleted, or when you delete your last catalog that uses it.
+The catalog itself stays, like any private catalog, until you delete it.
+It reads only in projects that can read the data source's feature store, since only there are your extra credentials for it sent, and without your credentials it no longer reads at all.
+`Test connection` on the catalog runs with your credentials.
 The catalog becomes queryable after the query engine restarts, as described in [When the catalog goes live][when-the-catalog-goes-live].
 
 !!! api "API reference"
