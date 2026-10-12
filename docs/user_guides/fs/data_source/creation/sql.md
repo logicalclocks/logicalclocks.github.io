@@ -142,7 +142,7 @@ Each member adds their credentials once per data source.
 Data owners and Data scientists can add credentials; Feature store restricted members and Observers cannot.
 For a data source in a feature store shared with your project, you add them in the project that owns the data source, see [feature groups from a shared feature store][external-feature-group-shared-feature-store].
 Hopsworks tests them by opening a connection and running `SELECT 1 FROM DUAL`, and saves nothing when the database rejects them.
-Validate and save are rate limited per user and data source to a few calls per minute; a call over the limit returns HTTP 429.
+Validate and save are rate limited to 5 calls per minute per user and data source; a call over the limit returns HTTP 429 with `DATA_SOURCE_CREDENTIALS_RATE_LIMITED` (270343).
 
 In the UI, open `Data Sources`, find the data source in the list and pick `My credentials` from its row actions.
 The `Credentials` column of the list shows `Shared`, or `Provided` with `Yours: set`, `Yours: missing` or `Yours: incomplete`.
