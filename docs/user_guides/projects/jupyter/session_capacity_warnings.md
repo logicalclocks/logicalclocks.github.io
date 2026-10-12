@@ -12,7 +12,7 @@ The badges sit next to the action button on three pages:
 
   ![WebSocket warnings on the Jupyter page](../../../assets/images/guides/jupyter/websocket-warnings-jupyter.png)
 
-- **Terminal**: next to the `Start Terminal` button inside the terminal panel.
+- **Terminal**: next to the `Start` button inside the terminal panel.
 
   ![WebSocket warnings on the Terminal panel](../../../assets/images/guides/jupyter/websocket-warnings-terminal.png)
 
@@ -38,7 +38,7 @@ On a single-instance deployment the two badges always agree, since the only inst
 
 ## What happens when a badge turns red
 
-- `Run Jupyter`, `Start Terminal`, and per-row `Start App` buttons are disabled while the **cluster** badge is red (no instance has capacity to serve a new session).
+- `Run Jupyter`, the terminal's `Start`, and per-row `Start App` buttons are disabled while the **cluster** badge is red (no instance has capacity to serve a new session).
   While only the instance badge is red the buttons stay enabled because refreshing or signing back in may land you on a different instance pod that still has capacity.
 - An already-running Jupyter server keeps working.
   Opening a new notebook tab inside a running Jupyter server may still fail if the pod that hosts it is at its per-session cap: the new tab's kernel WebSocket upgrade is closed with a `1013 TRY_AGAIN_LATER` close rather than attaching.
