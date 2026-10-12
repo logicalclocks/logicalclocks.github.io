@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791818871` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791837298` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -25,6 +25,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         annotations: {}
         create: true
       dropDatabase: false
+      factory_chat_enabled: true
+      factory_enabled: true
       flyway:
         replaceDDL: ''
       flywayconfigmapName: flyway-config
@@ -133,6 +135,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     ??? note "Default"
 
         ```yaml
+        factory_chat_enabled: true
+        factory_enabled: true
         lb:
           names:
             mysqld: mysqld-external
@@ -204,6 +208,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.dropDatabase` <a class="headerlink" href="#helm.hopsworks.dropDatabase" title="Permanent link">#</a> { #helm.hopsworks.dropDatabase }
 :   Type `bool`, default `false`.
     Should not be changed here. Leave this as a conscious choice for the user when installing. If set to true will drop databases when helm uninstall.
+
+`hopsworks.factory_chat_enabled` <a class="headerlink" href="#helm.hopsworks.factory_chat_enabled" title="Permanent link">#</a> { #helm.hopsworks.factory_chat_enabled }
+:   Type `bool`, default `true`.
+    Show a chat with Claude Code beside each system the Factory built; false shows the system's views alone.
+
+`hopsworks.factory_enabled` <a class="headerlink" href="#helm.hopsworks.factory_enabled" title="Permanent link">#</a> { #helm.hopsworks.factory_enabled }
+:   Type `bool`, default `true`.
+    Offer the Factory: show it in every project's menu and accept `hops factory` commands. Any value other than true turns it off.
 
 `hopsworks.flyway.replaceDDL` <a class="headerlink" href="#helm.hopsworks.flyway.replaceDDL" title="Permanent link">#</a> { #helm.hopsworks.flyway.replaceDDL }
 :   Type `string`, default `""`.
