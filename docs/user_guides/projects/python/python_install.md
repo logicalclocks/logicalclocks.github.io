@@ -101,6 +101,7 @@ jobs, Jupyter and the terminal. This is how you get a CLI tool or a JavaScript d
 environment.
 
 Open the **Installed npm Libraries** tab beside the Python one and use **Install npm package**.
+A base environment is immutable, so on one the tab offers **Clone env** instead, and **Install npm package** opens the same clone dialog; the clone then opens on its npm tab with the install dialog up.
 Installed npm packages are listed there and can be uninstalled the same way, so an environment
 records what it carries rather than accumulating changes nobody can see.
 
