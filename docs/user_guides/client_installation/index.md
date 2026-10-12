@@ -143,7 +143,7 @@ Pass `--no-launch` to record the system only.
 `hops factory run <factory> <slug>`, or `hops factory run <factory>` inside the system's directory, resumes a system: its `system.yaml` records the factory, the factory version and every answer, so it needs no answers file.
 
 `hops factory run` registers each system with the project, by the HopsFS directory of its code, or by its GitHub repository when you build from an external client.
-A GitHub repository the build creates, an example's included, is named `hops-<slug>`, or `hops-<slug>-<project>` when you already have one of that name.
+A GitHub repository the build creates, an example's included, is named `hops-<slug>`. When you already have a repository of that name, it is `hops-<slug>-<project>`, and when that is taken too, `hops-<slug>-<project>-2`, `hops-<slug>-<project>-3` and so on.
 **Factory**, in the project menu below Catalog, opens on a box: describe the system you want, and Platform Intelligence finds the project's factories that could build it, up to five.
 They show as buttons below the box, the most likely highlighted in the middle; a box above them says why the selected factory fits and what it would build, and picking another factory explains that one.
 The green **Build** button opens the selected factory's form, at its blueprint when the description is one, filled in with what the description says, for you to check and press **Create**.
@@ -157,7 +157,7 @@ Say in the chat that you want to create the system, and Claude Code checks the r
 The cogwheel opens **Manage factories**.
 **Existing Systems**, shown once a factory has built a system, lists the project's systems for every member: each with its factory, type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a Git repository; the box above it filters the list.
 **Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
-Each ML system form asks for the system's name, which is also its directory's and, as `hops-<name>`, its GitHub repository's (lowercase letters, digits and hyphens), what it should predict, its targets (a batch system's cadence and run time, a real-time or agentic system's latency and throughput), its data (feature groups in the project, synthetic data described in a sentence, and files), and how its predictions are used.
+Each ML system form asks for the system's name, which is also its directory's and, as `hops-<name>`, its GitHub repository's unless that name is taken (lowercase letters, digits and hyphens), what it should predict, its targets (a batch system's cadence and run time, a real-time or agentic system's latency and throughput), its data (feature groups in the project, synthetic data described in a sentence, and files), and how its predictions are used.
 Every form starts with **Create new GitHub repo**, checked; unchecked, it asks for the URL of an existing GitHub, GitLab, Bitbucket or other Git repository, which the build pushes to with git alone.
 Sections with defaults show a one-line summary of their answers, with **Edit** to change them.
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
