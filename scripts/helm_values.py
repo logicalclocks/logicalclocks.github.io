@@ -54,6 +54,7 @@ _UPSTREAM_DOCS = {
     "https://ray-project.github.io/kuberay-helm": "https://artifacthub.io/packages/helm/kuberay-operator/{name}/{version}",
     "https://trinodb.github.io/charts": "https://artifacthub.io/packages/helm/trino/{name}/{version}",
     "https://apache.github.io/superset": "https://artifacthub.io/packages/helm/superset/{name}/{version}",
+    "https://kedacore.github.io/charts": "https://artifacthub.io/packages/helm/kedacore/{name}/{version}",
     "oci://registry-1.docker.io/bitnamicharts": "https://artifacthub.io/packages/helm/bitnami/{name}/{version}",
     "https://kubeflow.github.io/spark-operator": "https://github.com/kubeflow/spark-operator/blob/v{version}/charts/spark-operator-chart/README.md",
     "https://repo.hops.works/master/kueue": "https://github.com/kubernetes-sigs/kueue/blob/v{version}/charts/kueue/README.md",
