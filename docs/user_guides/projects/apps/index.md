@@ -425,7 +425,7 @@ An app that [scales to zero when idle](#scale-to-zero-when-idle) shows `Idle` wh
 
 ### Scale to zero when idle
 
-By default an app scales to zero when idle: the pod goes away once no request has been in flight for the **idle cooldown** (300 seconds by default), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
+By default an app scales to zero when idle: the pod goes away once no request has been in flight for the **idle cooldown** (one hour by default, the cluster variable `pythonapp_idle_cooldown_seconds`), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
 Opening the app from the UI, or any request to its URL, is what wakes it.
 Turn **Scale to zero when idle** off for an app that must stay up: it then keeps its one pod, and any GPU it requested, for as long as it is started.
 
@@ -439,7 +439,7 @@ Things to know:
 - An open WebSocket counts as a request in flight. A Streamlit or Gradio tab that is open keeps the app up; the cooldown starts when the last tab closes.
 - A plain request, such as a Flask call, keeps the app active for a minute after it, and the cooldown counts from then: an app that answers short requests goes idle one cooldown plus a minute after the last one.
 - A wake starts a fresh process. Streamlit reconnects and reruns the script from scratch, and session state is gone, as after any restart.
-- The cold-start timeout defaults to, and cannot exceed, the cluster's app ceiling, `pythonapp_cold_start_timeout_max_seconds` (60 seconds by default). The ceiling follows the ingress read timeout a wake request has to fit in; an administrator who raises the ingress timeout can raise the ceiling with it. A wake that takes longer fails the request that woke the app, but the pod keeps starting, and the next request finds it ready.
+- The cold-start timeout defaults to, and cannot exceed, the cluster's app ceiling, `pythonapp_cold_start_timeout_max_seconds` (300 seconds by default). The ceiling has to fit the ingress read timeout a wake request passes through, which the Helm chart sets to the same 300 seconds (`ingress.annotations`, `nginx.ingress.kubernetes.io/proxy-read-timeout`); an administrator who changes one should change the other. A wake that takes longer fails the request that woke the app, but the pod keeps starting, and the next request finds it ready.
 - The idle cooldown starts counting once the app is ready for the first time, so a slow start (image pull, environment setup) does not send it to zero before it has served; an app nobody opens goes idle one cooldown after it came up.
 - Auto-redeploy of a Git-backed app pauses while the app is idle, since nothing watches the branch; the pod clones the branch HEAD when it wakes.
 
