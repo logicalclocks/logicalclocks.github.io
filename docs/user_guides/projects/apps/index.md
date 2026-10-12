@@ -543,7 +543,8 @@ app = apps.create_app(
 )
 
 app.run()
-# ... two minutes later
+# ... two minutes later, fetch the app again: state is read from the backend, not cached
+app = apps.get_app("customer_dashboard")
 print(app.state)  # IDLE; opening app.app_url wakes it
 ```
 
