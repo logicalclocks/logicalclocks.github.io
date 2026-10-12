@@ -139,8 +139,10 @@ hops datasource create sql oracle_sales --database-type ORACLE --host db.example
 ### Adding your credentials { #data-source-provided-credentials-add }
 
 Each member adds their credentials once per data source.
+Data owners and Data scientists can add credentials; Feature store restricted members and Observers cannot.
 For a data source in a feature store shared with your project, you add them in the project that owns the data source, see [feature groups from a shared feature store][external-feature-group-shared-feature-store].
 Hopsworks tests them by opening a connection and running `SELECT 1 FROM DUAL`, and saves nothing when the database rejects them.
+Validate and save are rate limited per user and data source to a few calls per minute; a call over the limit returns HTTP 429.
 
 In the UI, open `Data Sources`, find the data source in the list and pick `My credentials` from its row actions.
 The `Credentials` column of the list shows `Shared`, or `Provided` with `Yours: set`, `Yours: missing` or `Yours: incomplete`.
@@ -218,6 +220,8 @@ The names are editable in the dialog and through the `user_env_var`, `password_s
 Your home directory is readable by you alone, so the wallet is too.
 
 The data source keeps a reference to these entries, not a copy.
+Fetching or listing a provided data source returns the status of your binding and the names of your env var and secrets, never your username or password.
+The Python client reads the values from your own account entries when it needs them.
 Deleting the secret or the env var from your account leaves the binding `INCOMPLETE`, and the data source refuses to read until you set your credentials again.
 Removing your credentials deletes the binding, the wallet file, and the env var and secrets that carry the default names above.
 The same deletion happens for a member who is removed from the project, and for every member when the data source is deleted.
@@ -232,7 +236,9 @@ From Python, upload the wallet under a name of your own that is not in use, and 
 
 ### Runtime variables
 
-Every runtime you start in the project (a job, a Jupyter server, a terminal, an app or a Ray cluster) receives your credentials for each provided data source you have set them for:
+Every runtime you start in the project (a job, a Jupyter server, a terminal, an app or a Ray cluster) receives your credentials for each provided data source you have set them for.
+A job run receives them through a Kubernetes Secret created for that run, so the values are not in the pod spec that other project members can read.
+Code inside the runtime reads the same variables either way:
 
 | Variable | Value |
 | --- | --- |
@@ -251,6 +257,11 @@ password = os.environ["HOPS_DS_ORACLE_SALES_PASSWORD"]
 wallet = os.environ.get("HOPS_DS_ORACLE_SALES_WALLET_PATH")
 ```
 
+!!! warning "Scheduled jobs run with the creator's credentials"
+    A scheduled run starts as the job's creator and receives the creator's provided credentials.
+    Anyone who can edit the job, its configuration or its app file, can make the next scheduled run execute their code with the creator's database login.
+    Keep a job that reads a provided data source editable only by its owner.
+
 Model deployments do not receive these variables.
 A deployment is shared by the project and serves every caller with the same environment, so one member's credentials would answer everyone's requests.
 
@@ -258,7 +269,7 @@ The `HOPS_` prefix is reserved for the platform, so an account env var cannot sh
 Two provided data sources in one feature store cannot map to the same `<NAME>`; the second one is refused at creation.
 The Hopsworks client reads these variables itself inside a runtime, so a `read()` through the data source needs no further configuration there.
 It uses them only for the data source whose id is in `HOPS_DS_<NAME>_CONNECTOR_ID`.
-A data source with the same name in another feature store, such as one shared with the project, maps to the same variable names, so for it the client uses the credentials Hopsworks resolves for you when the data source is fetched.
+A data source with the same name in another feature store, such as one shared with the project, maps to the same variable names, so for it the client reads your values from your own account entries.
 
 The `/hopsfs` path in `HOPS_DS_<NAME>_WALLET_PATH` is not mounted in Spark.
 When that path does not exist, the client downloads your wallet from HopsFS to the Spark driver instead, so a Spark read needs no further configuration either.
@@ -324,6 +335,8 @@ A member who has not set credentials for the data source has nothing to send, an
 Creating the catalog requires you to have set your own credentials for the data source.
 For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is a copy of the creator's wallet; it only secures the transport, and every query still logs in with the querying member's username and password.
 The copy follows the creator's credentials: it is deleted when the creator removes their credentials or leaves the project, and rebuilt when the creator saves a new wallet.
+Hopsworks pins a hash of the copy, and if the copy is changed or replaced outside Hopsworks the catalog refuses to load until the creator saves their credentials again.
+The copy is also deleted when the catalog, the data source, the feature store or the project is deleted, and when the feature store is unshared from a project.
 `Test connection` on the catalog runs with the credentials of the member testing it.
 The catalog becomes queryable after the query engine restarts, as described in [When the catalog goes live][when-the-catalog-goes-live].
 
