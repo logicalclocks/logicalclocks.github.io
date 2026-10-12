@@ -230,6 +230,12 @@ In the feature group catalog, an external feature group you cannot read with you
 While a check is queued (`PENDING`) the card shows `Checking access` and keeps its normal look.
 A greyed-out feature group stays clickable, so its pages and its Data Source submenu remain reachable.
 
+### Feature groups from a shared feature store { #external-feature-group-shared-feature-store }
+
+Credentials for a provided data source belong to the project that owns the data source.
+To read a feature group from a feature store shared with your project, add your credentials in the project that owns its data source.
+In your own project, the Data Source submenu and the greyed-out card point you to the owning project instead of opening the credentials dialog.
+
 ### From the API and the CLI
 
 The same state is on the feature group object, and the check can be run from code:

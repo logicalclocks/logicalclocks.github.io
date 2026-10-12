@@ -77,8 +77,8 @@ Start by giving the connector a **name** and an optional **description**.
 5. Specify the port.
 6. For Oracle, choose under `Credentials` whether they are `Stored with the data source` (the default) or `Provided by each user`.
    With `Provided by each user` the username, password and wallet fields disappear and every member adds their own later, see [provided credentials][data-source-provided-credentials].
-7. Provide the username and password.
-8. For Oracle with mTLS, upload the wallet zip file and provide the wallet password (if required).
+7. For `Stored with the data source`, provide the username and password.
+8. For `Stored with the data source` on a database behind mTLS, upload the wallet zip file and provide the wallet password (if required).
 9. Click on "Save Credentials".
 
 <figure markdown>
@@ -136,19 +136,21 @@ Reads run with the credentials of the member who makes them, so a Data owner who
 hops datasource create sql oracle_sales --database-type ORACLE --host db.example.com --port 1521 --database ORCL --credentials-mode provided
 ```
 
-### Adding your credentials
+### Adding your credentials { #data-source-provided-credentials-add }
 
 Each member adds their credentials once per data source.
+For a data source in a feature store shared with your project, you add them in the project that owns the data source, see [feature groups from a shared feature store][external-feature-group-shared-feature-store].
 Hopsworks tests them by opening a connection and running `SELECT 1 FROM DUAL`, and saves nothing when the database rejects them.
 
 In the UI, open `Data Sources`, find the data source in the list and pick `My credentials` from its row actions.
-The `Credentials` column of the list shows `Shared`, or `Provided` with `Yours: set` or `Yours: missing`.
+The `Credentials` column of the list shows `Shared`, or `Provided` with `Yours: set`, `Yours: missing` or `Yours: incomplete`.
+`Yours: incomplete` means your binding references an account entry that no longer exists, see [where your credentials are stored][data-source-provided-credentials-storage].
 In the dialog, type a username and a password, or pick an env var and a secret you already keep in your account.
 For a database behind mTLS, upload the wallet zip and give its password.
 The upload is staged as a new file, see [replacing a wallet][data-source-provided-credentials-wallet].
 Click `Validate`, then `Save`.
 `Save` stays disabled until `Validate` has passed for the values in the dialog, and editing a field disables it again.
-`Remove my credentials` in the same dialog deletes your binding.
+`Remove my credentials` in the same dialog deletes your binding, your wallet file and the account entries saved under their default names.
 
 From Python, the same operations are methods on the SQL connector:
 
@@ -201,7 +203,7 @@ hops datasource credentials show oracle_sales --json
 
 `hops datasource list` shows the mode in its `CREDENTIALS` column: `shared`, `provided: yours set`, `provided: missing` or `provided: incomplete`.
 
-### Where your credentials are stored
+### Where your credentials are stored { #data-source-provided-credentials-storage }
 
 | Credential | Stored as | Default name |
 | --- | --- | --- |
@@ -217,7 +219,9 @@ Your home directory is readable by you alone, so the wallet is too.
 
 The data source keeps a reference to these entries, not a copy.
 Deleting the secret or the env var from your account leaves the binding `INCOMPLETE`, and the data source refuses to read until you set your credentials again.
-Removing your credentials deletes the binding and the wallet file and keeps the secret and the env var, since you may use them elsewhere.
+Removing your credentials deletes the binding, the wallet file, and the env var and secrets that carry the default names above.
+The same deletion happens for a member who is removed from the project, and for every member when the data source is deleted.
+Entries saved under names of your own stay in your account, since you may use them elsewhere.
 
 ### Replacing a wallet { #data-source-provided-credentials-wallet }
 
@@ -266,14 +270,21 @@ Hopsworks therefore keeps, per member and per external feature group on a provid
 
 | State | Meaning |
 | --- | --- |
-| `PENDING` | A check is queued and runs within about a minute |
+| `PENDING` | A check is queued and usually runs within a few minutes |
 | `OK` | Your credentials read the backing table |
 | `NO_CREDENTIALS` | You have not set complete credentials for the data source |
 | `INVALID_CREDENTIALS` | The database rejected the login, for example `ORA-01017` or `ORA-28000` |
 | `NO_ACCESS` | The login works but the table or query cannot be read: `ORA-00942`, which Oracle also returns for a missing privilege, or `ORA-01031` |
 | `ERROR` | Anything else, such as a network or TNS error or a timeout; the message is kept |
 
-A check runs for you on every feature group of the data source when you set or remove your credentials, and for every member with credentials when a Data owner mounts a new feature group.
+A check runs on every feature group of the data source in these cases:
+
+- For you, when you set or remove your credentials.
+- For every member with credentials, when a Data owner mounts a new feature group.
+- For a member who joins the project.
+- Every 10 minutes, in a reconcile pass that matches the stored states with the current members and credentials and queues a check for any event that was missed.
+
+Checks run in the background in batches, and each one may take up to a minute, so a state usually settles within a few minutes.
 The state is shown in the feature group catalog and in the feature group's [Data Source submenu][external-feature-group-data-source].
 It informs you and does not gate reads: a read in `NO_ACCESS` still goes to Oracle and fails there with the database error.
 
@@ -311,7 +322,8 @@ A client that is not listed fetches your values from `GET /hopsworks-api/api/pro
 A member who has not set credentials for the data source has nothing to send, and the Oracle login fails.
 
 Creating the catalog requires you to have set your own credentials for the data source.
-For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet; it only secures the transport, and every query still logs in with the querying member's username and password.
+For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is a copy of the creator's wallet; it only secures the transport, and every query still logs in with the querying member's username and password.
+The copy follows the creator's credentials: it is deleted when the creator removes their credentials or leaves the project, and rebuilt when the creator saves a new wallet.
 `Test connection` on the catalog runs with the credentials of the member testing it.
 The catalog becomes queryable after the query engine restarts, as described in [When the catalog goes live][when-the-catalog-goes-live].
 
@@ -319,6 +331,11 @@ The catalog becomes queryable after the query engine restarts, as described in [
 
     - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_data_source`][hsfs.feature_store.FeatureStore.get_data_source]
     - <code class="doc-symbol doc-symbol-method"></code> [`ExternalFeatureGroup.test_data_source_access`][hsfs.feature_group.ExternalFeatureGroup.test_data_source_access]
+    - <code class="doc-symbol doc-symbol-class"></code> `SqlConnector`
+        - <code class="doc-symbol doc-symbol-method"></code> [`validate_credentials`][data-source-provided-credentials-add]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_credentials`][data-source-provided-credentials-add]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_credentials`][data-source-provided-credentials-add]
+        - <code class="doc-symbol doc-symbol-method"></code> [`delete_credentials`][data-source-provided-credentials-add]
 
     <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
