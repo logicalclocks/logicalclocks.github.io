@@ -21763,8 +21763,9 @@ For full details on resource configuration, see the [Resources Guide](../../mlop
 
 ## Autoscaling
 
-Deployments use **Knative Pod Autoscaler (KPA)** to automatically scale the number of replicas based on traffic.
-You can configure the minimum and maximum number of instances as well as the scale metric (requests per second or concurrency).
+Deployments automatically scale the number of replicas between a minimum and a maximum.
+In Standard mode, the default, they are scaled by **KEDA** where the cluster has it, on CPU or memory utilization or on the requests at the gateway (concurrency or requests per second), and a minimum of 0 scales the deployment to zero when idle.
+In Knative mode they are scaled by the **Knative Pod Autoscaler (KPA)** on request traffic.
 
 For full details on autoscaling parameters, see the [Autoscaling Guide](../../mlops/serving/autoscaling.md).
 
@@ -24312,7 +24313,8 @@ Configure the resources to be allocated for predictor and transformer in a model
 ### Autoscaling
 
 Configure autoscaling for your model deployment, including scale metrics and scaling parameters, see the [Autoscaling Guide](autoscaling.md).
-How a deployment scales depends on whether it runs in KServe Knative or Standard mode, and scale-to-zero is available in Knative mode only, see [Deployment mode](autoscaling.md#deployment-mode).
+How a deployment scales depends on whether it runs in KServe Standard mode, scaled by KEDA where the cluster has it, or Knative mode, see [Deployment mode](autoscaling.md#deployment-mode).
+A minimum of 0 instances scales a deployment to zero when idle in either mode, see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
 ### Scheduling
 
@@ -24675,8 +24677,8 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 !!! info "Scale-to-zero capabilities"
     If scale-to-zero capabilities are enabled, you can see how the nº of instances of a running deployment goes to zero and the status changes to `idle`.
-    To enable scale-to-zero in a deployment, see [Resources Guide](resources.md).
-    Scale-to-zero, and therefore the `idle` status, apply to deployments in ==Knative== mode only, see [Deployment mode](autoscaling.md#deployment-mode).
+    To enable scale-to-zero in a deployment, set its minimum number of instances to 0, see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
+    In ==Standard== mode this needs KEDA on the cluster and a predictor without a transformer; in ==Knative== mode it is always available.
 
 ## Code
 
@@ -24746,7 +24748,7 @@ The status of a deployment is a high-level description of its current state.
     | CREATED  | Deployment has never been started                                                                                                            |
     | STARTING | Deployment is starting                                                                                                                       |
     | RUNNING  | Deployment is ready and running. Predictions are served without additional latencies.                                                        |
-    | IDLE     | Deployment is ready but scaled to zero or has no active replicas. Higher latencies (cold-start) are expected on the first inference request. Knative mode only. |
+    | IDLE     | Deployment is ready but scaled to zero or has no active replicas. Higher latencies (cold-start) are expected on the first inference request.                    |
     | FAILED   | Terminal state. The deployment has encountered an unrecoverable error. More details can be found in the status condition.                    |
     | UPDATING | Deployment is applying updates to the running instances                                                                                      |
     | STOPPING | Deployment is stopping                                                                                                                       |
@@ -26598,10 +26600,9 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     | Shared Memory (MB) | 128             | n/a            | n/a                                                |
 
 !!! tip "Automatic downscale of inactive instances"
-    Setting the number of instances to **0** for a component (predictor or transformer) enables **scale-to-zero**.
-    This means that all instances of the component will automatically scale down to zero after a default period of inactivity of 30 seconds.
-    Scale-to-zero is available in ==Knative== mode only.
-    A deployment in ==Standard== mode always keeps at least one instance of each component running, see [Deployment mode](autoscaling.md#deployment-mode).
+    Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
+    In ==Knative== mode this applies to the predictor and the transformer, once the stable window (60 seconds by default) has seen no traffic.
+    In ==Standard== mode it applies to the predictor of a deployment without a transformer, on a cluster with KEDA, after the idle cooldown (5 minutes by default), see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
 ## Web UI
 
@@ -26639,7 +26640,7 @@ Moreover, you can choose the minimum number of replicas for each of these compon
 
 !!! note "Scale-to-zero capabilities"
     Set the number of instances to **0** to enable scale-to-zero on the component.
-    This requires the deployment to run in ==Knative== mode, see [Deployment mode](autoscaling.md#deployment-mode).
+    In ==Standard== mode the field accepts 0 for the predictor of a deployment without a transformer on a cluster with KEDA, see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
 <p align="center">
   <figure>
@@ -26732,7 +26733,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ## Autoscaling
 
-Deployments can be configured to automatically scale the number of replicas, on traffic in Knative mode and on CPU or memory utilization in Standard mode.
+Deployments can be configured to automatically scale the number of replicas: on request traffic in Knative mode, and on CPU or memory utilization, the request metrics or the vLLM engine metrics in Standard mode.
 To learn about the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).
 
 ================================================================================
@@ -26747,8 +26748,8 @@ This guide explains how to set up **autoscaling** for model deployments using ei
 
 Autoscaling enables the deployment to use resources more efficiently, by growing and shrinking the allocated resources according to its actual, real-time usage.
 
-How a deployment scales depends on the mode it runs in.
-See [Deployment mode](#deployment-mode), [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) for details on the available scaling options in each mode.
+How a deployment scales depends on the mode it runs in and, in Standard mode, on the autoscaler the cluster provides.
+See [Deployment mode](#deployment-mode), [Scale metrics](#scale-metrics), [Scaling parameters](#scaling-parameters) and [Scale to zero when idle](#scale-to-zero-when-idle) for the available scaling options.
 
 ## Web UI
 
@@ -26783,9 +26784,24 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 In the `Autoscaling` section of the advanced form, you can configure the scaling parameters for the predictor and/or the transformer (if available).
 The `Knative` checkbox at the top of the section selects the [deployment mode](#deployment-mode) and decides which of the fields below are shown.
-With it checked, you can set the scale metric, target value, minimum and maximum instances, as well as the panic and stable window parameters.
-With it cleared, the deployment runs in Standard mode and you can set the minimum and maximum instances plus a CPU or memory scale metric and its target.
+It starts unchecked, so a new deployment runs in Standard mode unless you check it.
 The checkbox is disabled while the deployment is running, because the mode of a running deployment cannot be changed.
+
+With the checkbox cleared, the deployment runs in Standard mode and the form shows the fields of the autoscaler the cluster provides.
+Its tooltip names the one in effect: KEDA where the cluster has it, KServe's own Horizontal Pod Autoscaler (HPA) otherwise.
+
+- The minimum and maximum instances.
+  A minimum of **0** means scale to zero when idle, see [Scale to zero when idle](#scale-to-zero-when-idle).
+  The field accepts 0 for the predictor of a deployment without a transformer on a cluster with KEDA.
+  Equal minimum and maximum run a fixed number of instances with no autoscaler.
+- The scale metric and its target.
+  Under KEDA, a vLLM predictor can scale on the engine metrics (queue depth, KV-cache usage, running requests, queue time, time to first token, request latency) and any other predictor without a transformer on the concurrent requests or requests per second at the gateway, next to CPU and memory.
+  The target field relabels itself for the chosen metric.
+- Under KEDA, the scale-down and scale-up stabilization windows (empty means the cluster default) and one additional scale metric with its target.
+- With a minimum of 0, the idle cooldown and the cold-start timeout.
+  A vLLM deployment shows a warning, because the model reloads on every wake.
+
+With the checkbox checked, the deployment runs in Knative mode and you can set the scale metric (concurrent requests or requests per second), the target value, the minimum and maximum instances, and the panic and stable window parameters.
 
 <p align="center">
   <figure>
@@ -26802,6 +26818,10 @@ The checkbox is disabled while the deployment is running, because the mode of a 
 </p>
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
+
+!!! note "Deployments stored before KEDA was installed"
+    A Standard-mode deployment created on a cluster that then gets KEDA keeps its CPU or memory threshold, and KEDA runs it on its next save or start.
+    The edit form shows a note when a stored configuration still names KServe's HPA on a cluster that has KEDA, since saving moves it to KEDA.
 
 ## Code
 
@@ -26825,8 +26845,55 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 ### Step 2: Define the predictor scaling configuration
 
 You can use the [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig] class to configure the scaling options according to your preferences.
-Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections above.
+Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections below.
 Make sure the metric and parameters you set are valid for the [deployment mode](#deployment-mode) you deploy in.
+
+=== "Standard mode (KEDA)"
+
+    ```python
+    from hsml.scaling_config import PredictorScalingConfig, ScaleMetric
+
+
+    # scale on the requests in flight, measured at the gateway,
+    # and rest at zero when idle
+    predictor_scaling = PredictorScalingConfig(
+        min_instances=0,
+        max_instances=5,
+        scale_metric=ScaleMetric.CONCURRENCY,
+        target=20,
+        scale_down_stabilization_window_seconds=120,
+        idle_cooldown_seconds=300,
+        cold_start_timeout_seconds=120,
+    )
+    ```
+
+=== "Standard mode (vLLM engine metrics)"
+
+    ```python
+    from hsml.scaling_config import PredictorScalingConfig, ScaleMetric
+
+
+    # add an instance when more than 8 requests are being generated
+    # per instance, or when the KV cache passes 80%, whichever comes first
+    predictor_scaling = PredictorScalingConfig(
+        min_instances=1,
+        max_instances=2,
+        scale_metric=ScaleMetric.RUNNING_REQUESTS,
+        target=8,
+        additional_scale_metrics=[(ScaleMetric.KV_CACHE_USAGE, 80)],
+    )
+    ```
+
+=== "Standard mode (CPU)"
+
+    ```python
+    from hsml.scaling_config import PredictorScalingConfig
+
+
+    predictor_scaling = PredictorScalingConfig(
+        min_instances=1, max_instances=5, scale_metric="CPU", target=80
+    )
+    ```
 
 === "Knative mode"
 
@@ -26839,32 +26906,11 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
     )
     ```
 
-=== "Standard mode"
-
-    ```python
-    from hsml.scaling_config import PredictorScalingConfig
-
-
-    predictor_scaling = PredictorScalingConfig(
-        min_instances=1, max_instances=5, scale_metric="CPU", target=80
-    )
-    ```
-
 ### Step 3 (Optional): Define the transformer scaling configuration
 
 If a transformer script is also provided, you can use the [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig] class to configure the scaling options according to your preferences.
-Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections above.
-
-=== "Knative mode"
-
-    ```python
-    from hsml.scaling_config import TransformerScalingConfig
-
-
-    transformer_scaling = TransformerScalingConfig(
-        min_instances=1, max_instances=3, scale_metric="CONCURRENCY", target=50
-    )
-    ```
+Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections below.
+In Standard mode a transformer scales on CPU or memory and keeps at least one instance; the request metrics and scale to zero are for a predictor without a transformer.
 
 === "Standard mode"
 
@@ -26877,25 +26923,18 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
     )
     ```
 
-### Step 4: Create a deployment with the scaling configuration
-
 === "Knative mode"
 
     ```python
-    my_model = mr.get_model("my_model", version=1)
+    from hsml.scaling_config import TransformerScalingConfig
 
-    # optional
-    my_transformer = ms.create_transformer(
-        script_file="Resources/my_transformer.py",
-        scaling_configuration=transformer_scaling,
-    )
 
-    my_deployment = my_model.deploy(
-        scaling_configuration=predictor_scaling,
-        # optional:
-        transformer=my_transformer,
+    transformer_scaling = TransformerScalingConfig(
+        min_instances=1, max_instances=3, scale_metric="CONCURRENCY", target=50
     )
     ```
+
+### Step 4: Create a deployment with the scaling configuration
 
 === "Standard mode"
 
@@ -26910,7 +26949,25 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 
     my_deployment = my_model.deploy(
         scaling_configuration=predictor_scaling,
-        knative_mode=False,
+        # optional:
+        transformer=my_transformer,
+    )
+    ```
+
+=== "Knative mode"
+
+    ```python
+    my_model = mr.get_model("my_model", version=1)
+
+    # optional
+    my_transformer = ms.create_transformer(
+        script_file="Resources/my_transformer.py",
+        scaling_configuration=transformer_scaling,
+    )
+
+    my_deployment = my_model.deploy(
+        scaling_configuration=predictor_scaling,
+        knative_mode=True,
         # optional:
         transformer=my_transformer,
     )
@@ -26918,8 +26975,12 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 
 !!! note "Match the scaling configuration to the mode"
     The `knative_mode` argument selects the [deployment mode](#deployment-mode) of the deployment.
-    Leaving it unset deploys in Knative mode for every model server except vLLM, so a Standard scaling configuration needs `knative_mode=False` passed explicitly.
+    Leaving it unset deploys in Standard mode for every model server, so a Knative scaling configuration needs `knative_mode=True` passed explicitly.
     A scaling configuration that uses fields the chosen mode does not support is rejected, so set both together.
+
+!!! tip "Read the configuration back"
+    The backend fills in the defaults and settles the configuration on every start and save.
+    `my_deployment.save()` updates the object with what was stored, but `my_deployment.start()` only refreshes the state, so fetch the deployment again (`ms.get_deployment("my_deployment")`) and call `predictor.scaling_configuration.describe()` on it to see the configuration the deployment follows.
 
 !!! api "API reference"
 
@@ -26933,70 +26994,167 @@ Default values for scaling metrics and parameters are listed in the [Scale metri
 ## Deployment mode
 
 Every deployment runs on KServe in one of two modes.
-In ==Knative== mode, the deployment is backed by a Knative service that scales on request traffic and can scale to zero.
-In ==Standard== mode, the deployment is backed by a plain Kubernetes Deployment that always keeps at least one instance running and scales on CPU or memory utilization.
+In ==Standard== mode, the deployment is backed by a plain Kubernetes Deployment and an autoscaler the cluster provides: KEDA where it is installed, KServe's own HPA otherwise.
+In ==Knative== mode, the deployment is backed by a Knative service that scales on request traffic.
 Inference requests reach both modes through the same Istio endpoint, so the mode does not change how you send predictions to a deployment.
 
-!!! info "Knative and Standard mode"
+!!! info "Standard and Knative mode"
 
-    | Mode     | Backed by             | Scale-to-zero | Autoscaler                                                                                   |
-    | -------- | --------------------- | ------------- | -------------------------------------------------------------------------------------------- |
-    | Knative  | Knative service       | Yes           | [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/)                 |
-    | Standard | Kubernetes Deployment | No            | [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) |
+    | Mode     | Backed by             | Autoscaler                                                                                                                                                                            | Scale-to-zero                                                                        |
+    | -------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+    | Standard | Kubernetes Deployment | [KEDA](https://keda.sh/docs/latest/concepts/) where the cluster has it (the default), else [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) | With KEDA, for a predictor without a transformer, through the KEDA HTTP add-on        |
+    | Knative  | Knative service       | [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/)                                                                                                           | Yes                                                                                  |
 
-LLM deployments default to Standard mode, and deployments on every other model server default to Knative mode.
-LLMs load large model files and start slowly, so scaling them to zero costs a long cold start on the next request, and their throughput is bounded by GPU memory rather than by the number of concurrent requests.
+A new deployment runs in Standard mode for every model server; Knative mode is the opt-in.
+An update that leaves the mode unset keeps the stored one.
 
 The two modes are backed by different Kubernetes resources, so the mode of a deployment cannot be changed while it is running.
 Stop the deployment, change the mode, and start it again.
 Switching the mode clears the scaling settings that do not carry over and re-derives the defaults of the new mode.
 
+### Standard-mode autoscaler
+
+Where the cluster has KEDA, every Standard-mode deployment is scaled by KEDA: on CPU and memory utilization, on the request metrics measured at the gateway by the KEDA HTTP add-on, or on the vLLM engine metrics, with scale to zero when idle.
+KEDA is installed by the Hopsworks Helm chart by default, see [KEDA values][helm-values-hw-keda].
+A cluster without KEDA falls back to KServe's HPA, which scales on CPU and memory utilization only, always keeps at least one instance, and takes none of the KEDA settings.
+
+The Python SDK exposes the choice as the `autoscaler` argument (`Autoscaler.KEDA` or `Autoscaler.HPA`).
+Leaving it unset picks KEDA where it is installed, so there is normally no need to set it; the UI shows no selector and names the autoscaler in effect.
+KServe's HPA is kept as the fallback for clusters without KEDA and will be retired.
+
 !!! tip "Python SDK"
     From the Python SDK, the mode is selected with the `knative_mode` keyword
     argument: `True` for Knative mode, `False` for Standard mode.
-    Leaving it unset uses the default for the model server when creating a deployment,
+    Leaving it unset uses Standard mode when creating a deployment,
     and keeps the stored mode when updating one.
     See [`Model.deploy()`][hsml.model.Model.deploy] in the API reference.
 
 ## Scale metrics
 
-The metric a deployment can scale on depends on its [deployment mode](#deployment-mode), because the two modes are driven by different autoscalers.
-Setting a metric that the mode does not support is rejected.
+The metric a deployment can scale on depends on its [deployment mode](#deployment-mode), its autoscaler and its model server.
+Setting a metric that the deployment cannot scale on is rejected.
+Target values are per instance.
 
-| Scale Metric | Mode     | Default Target | Description                     |
-| ------------ | -------- | -------------- | ------------------------------- |
-| RPS          | Knative  | 200            | Requests per second per replica |
-| CONCURRENCY  | Knative  | 100            | Concurrent requests per replica |
-| CPU          | Standard | 80             | CPU utilization percentage      |
-| MEMORY       | Standard | 80             | Memory utilization percentage   |
+| Scale Metric          | Measures                                                       | Default Target | Standard (KEDA)                   | Standard (HPA) | Knative | Model servers              |
+| --------------------- | -------------------------------------------------------------- | -------------- | --------------------------------- | -------------- | ------- | -------------------------- |
+| `CPU`                 | CPU utilization, percentage of the request                     | 80             | Yes                               | Yes            | No      | All                        |
+| `MEMORY`              | Memory utilization, percentage of the request                  | 80             | Yes                               | Yes            | No      | All                        |
+| `CONCURRENCY`         | Concurrent requests, counted at the gateway                    | 100            | Predictor without a transformer   | No             | Yes     | Standard: all but vLLM     |
+| `RPS`                 | Requests per second, counted at the gateway                    | 200            | Predictor without a transformer   | No             | Yes     | Standard: all but vLLM     |
+| `QUEUE_DEPTH`         | Requests waiting in the engine (`vllm:num_requests_waiting`)   | 5              | Yes                               | No             | No      | vLLM                       |
+| `KV_CACHE_USAGE`      | KV-cache in use, percentage (`vllm:kv_cache_usage_perc`)       | 80             | Yes                               | No             | No      | vLLM                       |
+| `RUNNING_REQUESTS`    | Requests being generated (`vllm:num_requests_running`)         | 32             | Yes                               | No             | No      | vLLM                       |
+| `QUEUE_TIME`          | Average queue time over the last minute, ms                    | 1000           | Yes                               | No             | No      | vLLM                       |
+| `TIME_TO_FIRST_TOKEN` | Average time to first token over the last minute, ms           | 2000           | Yes                               | No             | No      | vLLM                       |
+| `REQUEST_LATENCY`     | Average end-to-end request latency over the last minute, ms    | 10000          | Yes                               | No             | No      | vLLM                       |
 
-Knative deployments default to `CONCURRENCY`.
+When no metric is set on a range of instances, a vLLM predictor scales on `QUEUE_DEPTH` under KEDA, every other Standard-mode component on `CPU`, and a Knative component on `CONCURRENCY`.
 See [Knative autoscaling metrics](https://knative.dev/docs/serving/autoscaling/autoscaling-metrics/) for more details on the Knative metrics.
 
-Standard deployments default to `CPU`, and scale between the minimum and maximum instances.
 Setting the minimum and maximum instances to the same value runs a fixed number of replicas instead, with no autoscaler and no scale metric.
-LLM deployments default to a fixed replica count, because every extra replica needs a GPU and GPU-bound pods scale poorly on CPU or memory utilization.
+LLM deployments default to a fixed replica count, because every extra replica needs a GPU.
+
+!!! info "How KEDA sizes the deployment"
+    KEDA runs replicas = ceil(metric value / target).
+    The engine metrics are summed over the instances, and the latency metrics are multiplied by the number of instances, so a latency metric grows and shrinks the deployment in proportion to how far the average sits from its target.
+    The request metrics count at the gateway: traffic sent straight to the predictor Service from inside the cluster is invisible to them, and to scale to zero.
 
 ## Scaling parameters
 
 The following parameters can be used to fine-tune the autoscaling behavior.
+
+| Parameter      | Mode | Default | Range | Description                                                                                                          |
+| -------------- | ---- | ------- | ----- | -------------------------------------------------------------------------------------------------------------------- |
+| `minInstances` | Both | n/a     | ≥ 0   | Minimum replicas; 0 is [scale to zero when idle](#scale-to-zero-when-idle)                                           |
+| `maxInstances` | Both | n/a     | ≥ 1   | Maximum replicas (cannot be less than min)                                                                           |
+
+### KEDA parameters
+
+These apply to a Standard-mode deployment scaled by KEDA.
+They are rejected under KServe's HPA, which ignores them, and in Knative mode.
+
+| Parameter                             | Default                     | Range  | Description                                                                                                                |
+| ------------------------------------- | --------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `scaleDownStabilizationWindowSeconds` | cluster default (300)       | 0–3600 | How long the metric must stay below target before instances are removed                                                    |
+| `scaleUpStabilizationWindowSeconds`   | cluster default (0)         | 0–3600 | How long the metric must stay above target before instances are added                                                      |
+| `additionalScaleMetrics`              | none                        | n/a    | Further metric and target pairs; the most demanding one decides the count. At most one request metric per deployment       |
+| `idleCooldownSeconds`                 | 300                         | 0–3600 | With a minimum of 0: seconds without a request before every instance is removed, independently of the stabilization window |
+| `coldStartTimeoutSeconds`             | 600                         | 1–3600 | With a minimum of 0: how long the first request is held while the deployment wakes                                         |
+
+The cluster defaults of the stabilization windows are set by the administrator in the Helm chart (`kserve.kserve.autoscaler.scaleDownStabilizationWindowSeconds` and `kserve.kserve.autoscaler.scaleUpStabilizationWindowSeconds`, see [KServe values][helm-values-kserve]); empty means the Kubernetes HPA defaults.
+
+### Knative parameters
+
+These apply to a deployment in Knative mode and are rejected in Standard mode.
 See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), [autoscaling concepts](https://knative.dev/docs/serving/autoscaling/autoscaling-concepts/) and [scale-to-zero](https://knative.dev/docs/serving/autoscaling/scale-to-zero/) in the Knative documentation for more details.
 
-| Parameter                     | Mode    | Default | Range  | Description                                                   |
-| ----------------------------- | ------- | ------- | ------ | ------------------------------------------------------------- |
-| `minInstances`                | Both    | n/a     | ≥ 0    | Minimum replicas (0 enables scale-to-zero, Knative mode only) |
-| `maxInstances`                | Both    | n/a     | ≥ 1    | Maximum replicas (cannot be less than min)                    |
-| `panicWindowPercentage`       | Knative | 10.0    | 1–100  | Panic window as percentage of stable window                   |
-| `stableWindowSeconds`         | Knative | 60      | 6–3600 | Stable window duration in seconds                             |
-| `panicThresholdPercentage`    | Knative | 200.0   | > 0    | Traffic threshold to trigger panic mode                       |
-| `scaleToZeroRetentionSeconds` | Knative | 0       | ≥ 0    | Time to retain pods before scaling to zero                    |
-
-The panic, stable window and scale-to-zero retention parameters are Knative Pod Autoscaler settings with no equivalent in a Kubernetes HPA, so a Standard deployment rejects them.
-A Standard deployment also requires at least one instance.
+| Parameter                     | Default | Range  | Description                                 |
+| ----------------------------- | ------- | ------ | ------------------------------------------- |
+| `panicWindowPercentage`       | 10.0    | 1–100  | Panic window as percentage of stable window |
+| `stableWindowSeconds`         | 60      | 6–3600 | Stable window duration in seconds           |
+| `panicThresholdPercentage`    | 200.0   | > 0    | Traffic threshold to trigger panic mode     |
+| `scaleToZeroRetentionSeconds` | 0       | ≥ 0    | Time to retain pods before scaling to zero  |
 
 !!! note "Cluster-level constraints"
-    ==Administrators== can set cluster-wide limits on the maximum and minimum number of instances.
+    ==Administrators== can set cluster-wide limits on the maximum and minimum number of instances (`kube_serving_max_num_instances` and `kube_serving_min_num_instances`).
     When the minimum is set to 0, scale-to-zero is enforced for all Knative deployments.
+    Whether Standard-mode deployments are scaled by KEDA follows `kube_keda_installed`, which the Helm chart sets when it installs KEDA (on by default), see [Cluster Configuration][cluster-configuration].
+
+## Scale to zero when idle
+
+A minimum of **0** instances means scale to zero when idle, in both modes.
+The deployment runs at least one instance while it serves requests, scales between one and the maximum on its metric, and removes all its instances after a period without requests.
+The next request wakes it: the request is held while an instance starts and is answered once the instance is ready, so expect a cold start on the first request after an idle period.
+A deployment at zero instances reports the `IDLE` status, see [Deployment State](deployment-state.md).
+
+- In **Knative** mode, Knative's autoscaler decides to scale to zero once its stable window (60 seconds by default) has seen no traffic, keeps the last pod for `scaleToZeroRetentionSeconds` beyond that, and holds the next request while a pod starts.
+- In **Standard** mode, the KEDA HTTP add-on fronts the deployment.
+  Its interceptor counts the requests to the deployment, KEDA removes every instance once `idleCooldownSeconds` have passed without one, and the interceptor holds the next request for up to `coldStartTimeoutSeconds` while an instance starts and passes its readiness probe.
+  The idle cooldown is independent of the scale-down stabilization window: once it expires, KEDA scales straight to zero, however many instances are running.
+  This requires KEDA on the cluster and a predictor without a transformer.
+  A fresh deployment gets a grace period before it may scale to zero, the larger of the idle cooldown and the cold-start timeout, so a long image pull or model load does not end in an immediate scale-down.
+
+Through the SDK the minimum is 1 unless set, so pass `min_instances=0` for scale to zero.
+The UI defaults a new deployment to a minimum of 0 wherever it can scale to zero.
+A minimum of 0 with a maximum of 1 is one instance while active and zero when idle.
+
+!!! warning "LLM cold starts"
+    An LLM deployment reloads its weights into the GPU on every wake, so the first request after an idle period takes as long as the deployment's first start.
+    Set `coldStartTimeoutSeconds` above the model's load time; a request held longer than the timeout fails.
+    Keep a minimum of 1 for anything with a strict latency objective.
+
+!!! info "Send requests through the endpoint"
+    Scale to zero and the request metrics are measured at the gateway.
+    Use the deployment's endpoint (`deployment.predict()`, the inference URL, or the OpenAI-compatible URL of a vLLM deployment).
+    Traffic sent straight to the predictor Service from inside the cluster never reaches the interceptor and the deployment scales to zero underneath it.
+
+## Rejected configurations
+
+A scaling configuration is validated on create, save and start.
+The request fails with a message naming the rule when it:
+
+- sets a minimum of 0 in Standard mode under KServe's HPA, or on a cluster without KEDA;
+- sets a minimum of 0, or a request metric (`CONCURRENCY`, `RPS`), on a Standard-mode deployment with a transformer;
+- sets `CONCURRENCY` or `RPS` on a vLLM deployment in Standard mode, or an engine metric on another model server;
+- sets the KEDA parameters under KServe's HPA, the Knative parameters in Standard mode, or an `autoscaler` in Knative mode;
+- sets a maximum of 0, or a maximum below the minimum.
+
+## When a deployment does not scale
+
+- **The configuration is not what was sent.**
+  Read it back, see the tip above.
+  A metric on a fixed replica count is cleared, and raising the minimum from 0 drops the idle timeouts.
+- **The metric does not see the load.**
+  Request metrics and scale to zero count at the gateway, so send load through the endpoint.
+  Utilization metrics are a percentage of the resource *request*, not the limit: a predictor requesting 2 cores that uses 1 sits at 50%.
+- **The maximum is already reached**, by the deployment's own maximum or the administrator's limit; a second vLLM instance also needs a second free GPU.
+- **Scale-in waits.**
+  While the deployment is active, KEDA waits for the scale-down stabilization window after the metric drops and KServe's HPA for its own 5-minute window.
+  Scale to zero follows its own clock: the idle cooldown after the last request, after which KEDA removes every instance at once; a fresh deployment also gets the initial grace period.
+- **It does not wake.**
+  The cold start must finish within `coldStartTimeoutSeconds`, which for an LLM means the full weight load.
+  The deployment's Grafana dashboards, linked from the deployment overview, show the instance count, the KEDA trigger values and the request and engine panels.
+  See the [Troubleshooting guide](troubleshooting.md) for the deployment logs.
 
 ================================================================================
 # Scheduling
@@ -30669,8 +30827,12 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `kube_hopsworks_user` | String | `hopsworks` | Settings.java |
 | `kube_image_builder_service_account` | String | `image-builder` | Settings.java |
 | `kube_img_pull_policy` | String | `Always` | Settings.java |
+| `kube_keda_http_interceptor_address` | String | *(empty string)* | Settings.java |
+| `kube_keda_http_scaler_address` | String | *(empty string)* | Settings.java |
+| `kube_keda_installed` | Boolean | `false` | Settings.java |
 | `kube_keystore_key` | String | `adminpw` | Settings.java |
 | `kube_keystore_path` | String | `/srv/hops/certs-dir/kube/hopsworks/hopsworks__kstore.jks` | Settings.java |
+| `kube_knative_domain_name` | String | `hopsworks.ai` | Settings.java |
 | `kube_knative_lb_domain` | String | *(empty string)* | Settings.java |
 | `kube_kserve_installed` | Boolean | `false` | Settings.java |
 | `kube_kserve_tensorflow_version` | String | *(empty string)* | Settings.java |
@@ -35695,6 +35857,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791802682` (Hopsworks `5.
 | [`hopsfs`][helm-values-hopsfs] |  | 221 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
 | [`hopsworks`][helm-values-hopsworks] |  | 936 |
+| [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0), [`keda-add-ons-http` 0.16.0](https://artifacthub.io/packages/helm/kedacore/keda-add-ons-http/0.16.0) | 20 |
 | [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 94 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |
 | [`judge`][helm-values-judge] |  | 23 |
@@ -35717,109 +35880,6 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791802682` (Hopsworks `5.
 
     ```yaml
     hopsworkslib: {}
-    hw-keda:
-      cleanupOnUninstall:
-        deleteCrds: true
-        enabled: true
-        finalizeTimeoutSeconds: 120
-        imagePullPolicy: IfNotPresent
-        nodeSelector: {}
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 50m
-            memory: 64Mi
-        tolerations: []
-        ttlSecondsAfterFinished: null
-      crdUpgradeJob:
-        enabled: true
-        imagePullPolicy: IfNotPresent
-        nodeSelector: {}
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 50m
-            memory: 64Mi
-        tolerations: []
-        ttlSecondsAfterFinished: null
-      hopsworkslib: {}
-      keda:
-        certificates:
-          autoGenerated: true
-          secretName: kedaorg-certs
-        crds:
-          install: false
-        image:
-          keda:
-            registry: docker.hops.works/ghcr.io
-            repository: kedacore/keda
-          metricsApiServer:
-            registry: docker.hops.works/ghcr.io
-            repository: kedacore/keda-metrics-apiserver
-          pullPolicy: IfNotPresent
-          webhooks:
-            registry: docker.hops.works/ghcr.io
-            repository: kedacore/keda-admission-webhooks
-        networkPolicy:
-          enabled: false
-        podAnnotations:
-          keda:
-            prometheus.io/path: /metrics
-            prometheus.io/port: '8080'
-            prometheus.io/scrape: 'true'
-        prometheus:
-          operator:
-            enabled: true
-            port: 8080
-        watchNamespace: ''
-      keda-add-ons-http:
-        crds:
-          install: false
-        images:
-          interceptor: docker.hops.works/ghcr.io/kedacore/http-add-on-interceptor
-          operator: docker.hops.works/ghcr.io/kedacore/http-add-on-operator
-          scaler: docker.hops.works/ghcr.io/kedacore/http-add-on-scaler
-        interceptor:
-          pullPolicy: IfNotPresent
-          readinessTimeout: 600s
-          replicas:
-            max: 10
-            min: 1
-          requestTimeout: 600s
-          resources:
-            limits:
-              cpu: '1'
-              memory: 256Mi
-            requests:
-              cpu: 250m
-              memory: 64Mi
-          responseHeaderTimeout: 600s
-        operator:
-          pullPolicy: IfNotPresent
-        podSecurityContext:
-          fsGroup: 1000
-          runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
-          supplementalGroups:
-          - 1000
-        scaler:
-          pullPolicy: IfNotPresent
-          replicas: 1
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          privileged: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
     ```
 
 <div class="hops-values" markdown>
@@ -35827,225 +35887,6 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791802682` (Hopsworks `5.
 `hopsworkslib` <a class="headerlink" href="#helm.hopsworkslib" title="Permanent link">#</a> { #helm.hopsworkslib }
 :   Type `object`, default `{}`.
     override hopsworkslib values
-
-`hw-keda` <a class="headerlink" href="#helm.hw-keda" title="Permanent link">#</a> { #helm.hw-keda }
-:   Type `object`, default `{}`.
-    override hw-keda values
-
-`hw-keda.cleanupOnUninstall` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall }
-:   Type `object`.
-    uninstall cleanup of what KEDA leaves behind that Helm never tracked. The keda.sh custom resources KServe and Hopsworks created in the project namespaces carry a finalizer only the operator can clear, and Helm deletes the operator before the CRDs, so without this hook every keda.sh CRD stays Terminating, the next install fails on it, and an uninstall that waits for deletion (helm's wait flag, Argo CD) never finishes. It runs pre-delete (deleting the custom resources while the operators can still finalize them) and post-delete (the operator's runtime TLS Secret, leftovers).
-
-    ??? note "Default"
-
-        ```yaml
-        deleteCrds: true
-        enabled: true
-        finalizeTimeoutSeconds: 120
-        imagePullPolicy: IfNotPresent
-        nodeSelector: {}
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 50m
-            memory: 64Mi
-        tolerations: []
-        ttlSecondsAfterFinished: null
-        ```
-
-`hw-keda.cleanupOnUninstall.deleteCrds` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.deleteCrds" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.deleteCrds }
-:   Type `bool`, default `true`.
-    also delete the keda.sh, http.keda.sh and eventing.keda.sh CRDs in the post-delete pass. They ship in crds/, which Helm never deletes, so without this an uninstall leaves the CRD definitions on the cluster. Only the definitions: both passes delete every object of those kinds first, whatever this is set to, since objects left under a finalizer with no operator block the CRDs. Off to keep the definitions for a KEDA installed by other means next; the Hopsworks backend recreates its ScaledObjects when a deployment starts
-
-`hw-keda.cleanupOnUninstall.enabled` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.enabled" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.enabled }
-:   Type `bool`, default `true`.
-    enable the KEDA cleanup hook, which runs before the release's resources are deleted (deleting the keda.sh custom resources while their operators can still finalize them, so the CRDs are not left Terminating and an uninstall that waits for deletion, with helm's wait flag or under Argo CD, finishes) and again after (the operator's runtime TLS Secret, anything created in between)
-
-`hw-keda.cleanupOnUninstall.finalizeTimeoutSeconds` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.finalizeTimeoutSeconds" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.finalizeTimeoutSeconds }
-:   Type `int`, default `120`.
-    seconds the pre-delete pass waits for the operators to finalize the deleted custom resources before clearing the finalizers itself
-
-`hw-keda.cleanupOnUninstall.imagePullPolicy` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.imagePullPolicy }
-:   Type `string`, default `"IfNotPresent"`.
-    pull policy of the toolbox image the cleanup Job runs; global._hopsworks.imagePullPolicy takes precedence when set
-
-`hw-keda.cleanupOnUninstall.nodeSelector` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.nodeSelector" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.nodeSelector }
-:   Type `object`, default `{}`.
-    nodeSelector of the cleanup Job; falls back to global._hopsworks.nodeSelector
-
-`hw-keda.cleanupOnUninstall.resources` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.resources" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.resources }
-:   Type `object`.
-    resources of the cleanup Job container. kubectl fetches each shipped CRD by name (the biggest, scaledjobs.keda.sh, is 668 KB) and lists the objects under it, never the whole CRD list
-
-    ??? note "Default"
-
-        ```yaml
-        limits:
-          cpu: 200m
-          memory: 256Mi
-        requests:
-          cpu: 50m
-          memory: 64Mi
-        ```
-
-`hw-keda.cleanupOnUninstall.tolerations` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.tolerations" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.tolerations }
-:   Type `list`, default `[]`.
-    tolerations of the cleanup Job; fall back to global._hopsworks.tolerations
-
-`hw-keda.cleanupOnUninstall.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.ttlSecondsAfterFinished }
-:   Type `string`, default `nil`.
-    TTL in seconds for the cleanup Job. Overrides the global default.
-
-`hw-keda.crdUpgradeJob` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob }
-:   Type `object`.
-    the pre-upgrade hook that keeps the KEDA and HTTP add-on CRDs current. They ship in crds/ rather than as templates (the ScaledJob CRD alone is 670 KB, which would put the Helm release secret over its 1 MiB limit), and Helm only creates crds/ on install and never touches it on upgrade, so this Job applies the same CRD files server-side on every upgrade, creating them on a release upgraded from a chart without this subchart and patching them on a KEDA bump.
-
-    ??? note "Default"
-
-        ```yaml
-        enabled: true
-        imagePullPolicy: IfNotPresent
-        nodeSelector: {}
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 50m
-            memory: 64Mi
-        tolerations: []
-        ttlSecondsAfterFinished: null
-        ```
-
-`hw-keda.crdUpgradeJob.enabled` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.enabled" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.enabled }
-:   Type `bool`, default `true`.
-    apply the shipped CRDs on upgrade
-
-`hw-keda.crdUpgradeJob.imagePullPolicy` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.imagePullPolicy }
-:   Type `string`, default `"IfNotPresent"`.
-    pull policy of the toolbox image the Job runs; global._hopsworks.imagePullPolicy takes precedence when set
-
-`hw-keda.crdUpgradeJob.nodeSelector` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.nodeSelector" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.nodeSelector }
-:   Type `object`, default `{}`.
-    nodeSelector of the Job; falls back to global._hopsworks.nodeSelector
-
-`hw-keda.crdUpgradeJob.resources` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.resources" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.resources }
-:   Type `object`.
-    resources of the Job container
-
-    ??? note "Default"
-
-        ```yaml
-        limits:
-          cpu: 200m
-          memory: 256Mi
-        requests:
-          cpu: 50m
-          memory: 64Mi
-        ```
-
-`hw-keda.crdUpgradeJob.tolerations` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.tolerations" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.tolerations }
-:   Type `list`, default `[]`.
-    tolerations of the Job; fall back to global._hopsworks.tolerations
-
-`hw-keda.crdUpgradeJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.ttlSecondsAfterFinished }
-:   Type `string`, default `nil`.
-    TTL in seconds for the CRD upgrade Job. Overrides the global default.
-
-`hw-keda.hopsworkslib` <a class="headerlink" href="#helm.hw-keda.hopsworkslib" title="Permanent link">#</a> { #helm.hw-keda.hopsworkslib }
-:   Type `object`, default `{}`.
-    override hopsworkslib values
-
-`hw-keda.keda` <a class="headerlink" href="#helm.hw-keda.keda" title="Permanent link">#</a> { #helm.hw-keda.keda }
-:   Type `object`.
-    override keda values. Everything not restated here is the upstream default: <https://github.com/kedacore/charts/blob/main/keda/values.yaml>
-
-    ??? note "Default"
-
-        ```yaml
-        certificates:
-          autoGenerated: true
-          secretName: kedaorg-certs
-        crds:
-          install: false
-        image:
-          keda:
-            registry: docker.hops.works/ghcr.io
-            repository: kedacore/keda
-          metricsApiServer:
-            registry: docker.hops.works/ghcr.io
-            repository: kedacore/keda-metrics-apiserver
-          pullPolicy: IfNotPresent
-          webhooks:
-            registry: docker.hops.works/ghcr.io
-            repository: kedacore/keda-admission-webhooks
-        networkPolicy:
-          enabled: false
-        podAnnotations:
-          keda:
-            prometheus.io/path: /metrics
-            prometheus.io/port: '8080'
-            prometheus.io/scrape: 'true'
-        prometheus:
-          operator:
-            enabled: true
-            port: 8080
-        watchNamespace: ''
-        ```
-
-`hw-keda.keda-add-ons-http` <a class="headerlink" href="#helm.hw-keda.keda-add-ons-http" title="Permanent link">#</a> { #helm.hw-keda.keda-add-ons-http }
-:   Type `object`.
-    override keda-add-ons-http values (the KEDA HTTP add-on, HWORKS-3113, always installed with KEDA). Everything not restated here is the upstream default: <https://github.com/kedacore/charts/blob/main/http-add-on/values.yaml>
-
-    ??? note "Default"
-
-        ```yaml
-        crds:
-          install: false
-        images:
-          interceptor: docker.hops.works/ghcr.io/kedacore/http-add-on-interceptor
-          operator: docker.hops.works/ghcr.io/kedacore/http-add-on-operator
-          scaler: docker.hops.works/ghcr.io/kedacore/http-add-on-scaler
-        interceptor:
-          pullPolicy: IfNotPresent
-          readinessTimeout: 600s
-          replicas:
-            max: 10
-            min: 1
-          requestTimeout: 600s
-          resources:
-            limits:
-              cpu: '1'
-              memory: 256Mi
-            requests:
-              cpu: 250m
-              memory: 64Mi
-          responseHeaderTimeout: 600s
-        operator:
-          pullPolicy: IfNotPresent
-        podSecurityContext:
-          fsGroup: 1000
-          runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
-          supplementalGroups:
-          - 1000
-        scaler:
-          pullPolicy: IfNotPresent
-          replicas: 1
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          privileged: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
-        ```
 
 </div>
 
@@ -46294,6 +46135,389 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 <!-- END GENERATED VALUES -->
 
 ================================================================================
+# hw-keda
+Source: https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-keda/
+
+# KEDA values { #helm-values-hw-keda }
+
+Values under `hw-keda` configure KEDA and its HTTP add-on, the autoscaler of Standard-mode model deployments: it scales them on CPU and memory, on the requests at the gateway and on the vLLM engine metrics, and scales them to zero when idle.
+The subchart is installed when `hopsworks.variables.kube_keda_installed` is true (the default), which also tells the Hopsworks backend to offer KEDA-backed scaling; without it, Standard-mode deployments fall back to KServe's own Horizontal Pod Autoscaler on CPU and memory.
+See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-deployment] for what deployments can do with it.
+
+<!-- BEGIN GENERATED VALUES -->
+
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791802682` (Hopsworks `5.2.0`)._
+
+Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
+
+!!! info "Upstream charts"
+
+    - Values under `hw-keda.keda` go to [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) from `https://kedacore.github.io/charts`.
+    - Values under `hw-keda.keda-add-ons-http` go to [`keda-add-ons-http` 0.16.0](https://artifacthub.io/packages/helm/kedacore/keda-add-ons-http/0.16.0) from `https://kedacore.github.io/charts`.
+
+    Only the values Hopsworks sets under `hw-keda.keda` and `hw-keda.keda-add-ons-http` are listed on this page.
+    Any other value of the charts can be set under the same keys; each link opens the chart's documentation for the version Hopsworks pins.
+
+## General { #helm-values-hw-keda-general }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-keda:
+      hopsworkslib: {}
+      keda:
+        certificates:
+          autoGenerated: true
+          secretName: kedaorg-certs
+        crds:
+          install: false
+        image:
+          keda:
+            registry: docker.hops.works/ghcr.io
+            repository: kedacore/keda
+          metricsApiServer:
+            registry: docker.hops.works/ghcr.io
+            repository: kedacore/keda-metrics-apiserver
+          pullPolicy: IfNotPresent
+          webhooks:
+            registry: docker.hops.works/ghcr.io
+            repository: kedacore/keda-admission-webhooks
+        networkPolicy:
+          enabled: false
+        podAnnotations:
+          keda:
+            prometheus.io/path: /metrics
+            prometheus.io/port: '8080'
+            prometheus.io/scrape: 'true'
+        prometheus:
+          operator:
+            enabled: true
+            port: 8080
+        watchNamespace: ''
+      keda-add-ons-http:
+        crds:
+          install: false
+        images:
+          interceptor: docker.hops.works/ghcr.io/kedacore/http-add-on-interceptor
+          operator: docker.hops.works/ghcr.io/kedacore/http-add-on-operator
+          scaler: docker.hops.works/ghcr.io/kedacore/http-add-on-scaler
+        interceptor:
+          pullPolicy: IfNotPresent
+          readinessTimeout: 600s
+          replicas:
+            max: 10
+            min: 1
+          requestTimeout: 600s
+          resources:
+            limits:
+              cpu: '1'
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 64Mi
+          responseHeaderTimeout: 600s
+        operator:
+          pullPolicy: IfNotPresent
+        podSecurityContext:
+          fsGroup: 1000
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          supplementalGroups:
+          - 1000
+        scaler:
+          pullPolicy: IfNotPresent
+          replicas: 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-keda` <a class="headerlink" href="#helm.hw-keda" title="Permanent link">#</a> { #helm.hw-keda }
+:   Type `object`, default `{}`.
+    override hw-keda values
+
+`hw-keda.hopsworkslib` <a class="headerlink" href="#helm.hw-keda.hopsworkslib" title="Permanent link">#</a> { #helm.hw-keda.hopsworkslib }
+:   Type `object`, default `{}`.
+    override hopsworkslib values
+
+`hw-keda.keda` <a class="headerlink" href="#helm.hw-keda.keda" title="Permanent link">#</a> { #helm.hw-keda.keda }
+:   Type `object`, passed to the [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) chart, whose other values are documented there.
+    override keda values. Everything not restated here is the upstream default: <https://github.com/kedacore/charts/blob/main/keda/values.yaml>
+
+    ??? note "Default"
+
+        ```yaml
+        certificates:
+          autoGenerated: true
+          secretName: kedaorg-certs
+        crds:
+          install: false
+        image:
+          keda:
+            registry: docker.hops.works/ghcr.io
+            repository: kedacore/keda
+          metricsApiServer:
+            registry: docker.hops.works/ghcr.io
+            repository: kedacore/keda-metrics-apiserver
+          pullPolicy: IfNotPresent
+          webhooks:
+            registry: docker.hops.works/ghcr.io
+            repository: kedacore/keda-admission-webhooks
+        networkPolicy:
+          enabled: false
+        podAnnotations:
+          keda:
+            prometheus.io/path: /metrics
+            prometheus.io/port: '8080'
+            prometheus.io/scrape: 'true'
+        prometheus:
+          operator:
+            enabled: true
+            port: 8080
+        watchNamespace: ''
+        ```
+
+`hw-keda.keda-add-ons-http` <a class="headerlink" href="#helm.hw-keda.keda-add-ons-http" title="Permanent link">#</a> { #helm.hw-keda.keda-add-ons-http }
+:   Type `object`, passed to the [`keda-add-ons-http` 0.16.0](https://artifacthub.io/packages/helm/kedacore/keda-add-ons-http/0.16.0) chart, whose other values are documented there.
+    override keda-add-ons-http values (the KEDA HTTP add-on, HWORKS-3113, always installed with KEDA). Everything not restated here is the upstream default: <https://github.com/kedacore/charts/blob/main/http-add-on/values.yaml>
+
+    ??? note "Default"
+
+        ```yaml
+        crds:
+          install: false
+        images:
+          interceptor: docker.hops.works/ghcr.io/kedacore/http-add-on-interceptor
+          operator: docker.hops.works/ghcr.io/kedacore/http-add-on-operator
+          scaler: docker.hops.works/ghcr.io/kedacore/http-add-on-scaler
+        interceptor:
+          pullPolicy: IfNotPresent
+          readinessTimeout: 600s
+          replicas:
+            max: 10
+            min: 1
+          requestTimeout: 600s
+          resources:
+            limits:
+              cpu: '1'
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 64Mi
+          responseHeaderTimeout: 600s
+        operator:
+          pullPolicy: IfNotPresent
+        podSecurityContext:
+          fsGroup: 1000
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          supplementalGroups:
+          - 1000
+        scaler:
+          pullPolicy: IfNotPresent
+          replicas: 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        ```
+
+</div>
+
+## cleanupOnUninstall { #helm-values-hw-keda-cleanuponuninstall }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-keda:
+      cleanupOnUninstall:
+        deleteCrds: true
+        enabled: true
+        finalizeTimeoutSeconds: 120
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-keda.cleanupOnUninstall` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall }
+:   Type `object`.
+    uninstall cleanup of what KEDA leaves behind that Helm never tracked. The keda.sh custom resources KServe and Hopsworks created in the project namespaces carry a finalizer only the operator can clear, and Helm deletes the operator before the CRDs, so without this hook every keda.sh CRD stays Terminating, the next install fails on it, and an uninstall that waits for deletion (helm's wait flag, Argo CD) never finishes. It runs pre-delete (deleting the custom resources while the operators can still finalize them) and post-delete (the operator's runtime TLS Secret, leftovers).
+
+    ??? note "Default"
+
+        ```yaml
+        deleteCrds: true
+        enabled: true
+        finalizeTimeoutSeconds: 120
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`hw-keda.cleanupOnUninstall.deleteCrds` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.deleteCrds" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.deleteCrds }
+:   Type `bool`, default `true`.
+    also delete the keda.sh, http.keda.sh and eventing.keda.sh CRDs in the post-delete pass. They ship in crds/, which Helm never deletes, so without this an uninstall leaves the CRD definitions on the cluster. Only the definitions: both passes delete every object of those kinds first, whatever this is set to, since objects left under a finalizer with no operator block the CRDs. Off to keep the definitions for a KEDA installed by other means next; the Hopsworks backend recreates its ScaledObjects when a deployment starts
+
+`hw-keda.cleanupOnUninstall.enabled` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.enabled" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.enabled }
+:   Type `bool`, default `true`.
+    enable the KEDA cleanup hook, which runs before the release's resources are deleted (deleting the keda.sh custom resources while their operators can still finalize them, so the CRDs are not left Terminating and an uninstall that waits for deletion, with helm's wait flag or under Argo CD, finishes) and again after (the operator's runtime TLS Secret, anything created in between)
+
+`hw-keda.cleanupOnUninstall.finalizeTimeoutSeconds` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.finalizeTimeoutSeconds" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.finalizeTimeoutSeconds }
+:   Type `int`, default `120`.
+    seconds the pre-delete pass waits for the operators to finalize the deleted custom resources before clearing the finalizers itself
+
+`hw-keda.cleanupOnUninstall.imagePullPolicy` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the toolbox image the cleanup Job runs; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-keda.cleanupOnUninstall.nodeSelector` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.nodeSelector" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the cleanup Job; falls back to global._hopsworks.nodeSelector
+
+`hw-keda.cleanupOnUninstall.resources` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.resources" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.resources }
+:   Type `object`.
+    resources of the cleanup Job container. kubectl fetches each shipped CRD by name (the biggest, scaledjobs.keda.sh, is 668 KB) and lists the objects under it, never the whole CRD list
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 200m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`hw-keda.cleanupOnUninstall.tolerations` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.tolerations" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the cleanup Job; fall back to global._hopsworks.tolerations
+
+`hw-keda.cleanupOnUninstall.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hw-keda.cleanupOnUninstall.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hw-keda.cleanupOnUninstall.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the cleanup Job. Overrides the global default.
+
+</div>
+
+## crdUpgradeJob { #helm-values-hw-keda-crdupgradejob }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-keda:
+      crdUpgradeJob:
+        enabled: true
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-keda.crdUpgradeJob` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob }
+:   Type `object`.
+    the pre-upgrade hook that keeps the KEDA and HTTP add-on CRDs current. They ship in crds/ rather than as templates (the ScaledJob CRD alone is 670 KB, which would put the Helm release secret over its 1 MiB limit), and Helm only creates crds/ on install and never touches it on upgrade, so this Job applies the same CRD files server-side on every upgrade, creating them on a release upgraded from a chart without this subchart and patching them on a KEDA bump.
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: true
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`hw-keda.crdUpgradeJob.enabled` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.enabled" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.enabled }
+:   Type `bool`, default `true`.
+    apply the shipped CRDs on upgrade
+
+`hw-keda.crdUpgradeJob.imagePullPolicy` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the toolbox image the Job runs; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-keda.crdUpgradeJob.nodeSelector` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.nodeSelector" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the Job; falls back to global._hopsworks.nodeSelector
+
+`hw-keda.crdUpgradeJob.resources` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.resources" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.resources }
+:   Type `object`.
+    resources of the Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 200m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`hw-keda.crdUpgradeJob.tolerations` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.tolerations" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the Job; fall back to global._hopsworks.tolerations
+
+`hw-keda.crdUpgradeJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the CRD upgrade Job. Overrides the global default.
+
+</div>
+
+<!-- END GENERATED VALUES -->
+
+================================================================================
 # hw-kueue
 Source: https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-kueue/
 
@@ -48482,7 +48706,7 @@ Source: https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_va
 
 # KServe values { #helm-values-kserve }
 
-Values under `kserve` configure KServe and Knative Serving, which run model deployments.
+Values under `kserve` configure KServe and Knative Serving, which run model deployments, including the cluster defaults for the stabilization windows of Standard-mode deployments scaled by KEDA (`kserve.kserve.autoscaler`, see [KEDA values][helm-values-hw-keda]).
 
 <!-- BEGIN GENERATED VALUES -->
 

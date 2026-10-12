@@ -353,6 +353,10 @@
          <lastmod>2026-10-12</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-keda/</loc>
+         <lastmod>2026-10-12</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-kueue/</loc>
          <lastmod>2026-10-12</lastmod>
     </url>

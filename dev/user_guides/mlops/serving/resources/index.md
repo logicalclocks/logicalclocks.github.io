@@ -15,10 +15,9 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     | Shared Memory (MB) | 128             | n/a            | n/a                                                |
 
 !!! tip "Automatic downscale of inactive instances"
-    Setting the number of instances to **0** for a component (predictor or transformer) enables **scale-to-zero**.
-    This means that all instances of the component will automatically scale down to zero after a default period of inactivity of 30 seconds.
-    Scale-to-zero is available in ==Knative== mode only.
-    A deployment in ==Standard== mode always keeps at least one instance of each component running, see [Deployment mode](autoscaling.md#deployment-mode).
+    Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
+    In ==Knative== mode this applies to the predictor and the transformer, once the stable window (60 seconds by default) has seen no traffic.
+    In ==Standard== mode it applies to the predictor of a deployment without a transformer, on a cluster with KEDA, after the idle cooldown (5 minutes by default), see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
 ## Web UI
 
@@ -56,7 +55,7 @@ Moreover, you can choose the minimum number of replicas for each of these compon
 
 !!! note "Scale-to-zero capabilities"
     Set the number of instances to **0** to enable scale-to-zero on the component.
-    This requires the deployment to run in ==Knative== mode, see [Deployment mode](autoscaling.md#deployment-mode).
+    In ==Standard== mode the field accepts 0 for the predictor of a deployment without a transformer on a cluster with KEDA, see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
 <p align="center">
   <figure>
@@ -149,5 +148,5 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 ## Autoscaling
 
-Deployments can be configured to automatically scale the number of replicas, on traffic in Knative mode and on CPU or memory utilization in Standard mode.
+Deployments can be configured to automatically scale the number of replicas: on request traffic in Knative mode, and on CPU or memory utilization, the request metrics or the vLLM engine metrics in Standard mode.
 To learn about the different autoscaling parameters, see the [Autoscaling Guide](autoscaling.md).

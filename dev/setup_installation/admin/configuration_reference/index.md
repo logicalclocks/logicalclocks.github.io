@@ -329,8 +329,12 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `kube_hopsworks_user` | String | `hopsworks` | Settings.java |
 | `kube_image_builder_service_account` | String | `image-builder` | Settings.java |
 | `kube_img_pull_policy` | String | `Always` | Settings.java |
+| `kube_keda_http_interceptor_address` | String | *(empty string)* | Settings.java |
+| `kube_keda_http_scaler_address` | String | *(empty string)* | Settings.java |
+| `kube_keda_installed` | Boolean | `false` | Settings.java |
 | `kube_keystore_key` | String | `adminpw` | Settings.java |
 | `kube_keystore_path` | String | `/srv/hops/certs-dir/kube/hopsworks/hopsworks__kstore.jks` | Settings.java |
+| `kube_knative_domain_name` | String | `hopsworks.ai` | Settings.java |
 | `kube_knative_lb_domain` | String | *(empty string)* | Settings.java |
 | `kube_kserve_installed` | Boolean | `false` | Settings.java |
 | `kube_kserve_tensorflow_version` | String | *(empty string)* | Settings.java |
