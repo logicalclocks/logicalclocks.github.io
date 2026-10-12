@@ -1,7 +1,15 @@
 # Release Pages
 
-`docs/releases/` holds one page per release, grouped by major version (`docs/releases/<major>/<X.Y.Z>.md`), newest first in `mkdocs.yml`.
-Add new releases to the top of their major's `nav:` group and to the list in `docs/releases/<major>/index.md`.
+The release pages are one site for every docs version, at `https://docs.hopsworks.ai/releases/`.
+Every docs version links to it from its nav, so a release note is written once and never backported.
+
+The source is `docs/releases/` on `main` only.
+`mkdocs.releases.yml` builds it, and the release workflow deploys it with mike as the hidden version `releases` on every push to `main`.
+The versioned docs leave `docs/releases/` out with `exclude_docs`, and CI fails a PR to a `branch-*` that touches it, because release branches never publish it.
+
+Each release has one page, grouped by major version (`docs/releases/<major>/<X.Y.Z>.md`), newest first.
+Add a new release to the top of its major's group in the `nav:` of `mkdocs.releases.yml` and to the list in `docs/releases/<major>/index.md`.
+`uv run hopsworks-docs check` builds this site too; preview it with `uv run mkdocs serve -f mkdocs.releases.yml`.
 
 ## Page shape
 

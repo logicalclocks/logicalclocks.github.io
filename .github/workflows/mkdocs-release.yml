@@ -142,6 +142,11 @@ jobs:
         if: ${{ env.BRANCH == 'main' }}
         run: mike deploy dev --prop-set hidden=true --push
 
+      # One release notes site for every docs version, built from main only.
+      - name: Deploy the release notes with mike
+        if: ${{ env.BRANCH == 'main' }}
+        run: mike deploy --config-file mkdocs.releases.yml releases --prop-set hidden=true --push
+
       - name: Deploy the release docs with mike
         if: ${{ env.BRANCH != 'main' }}
         run: mike deploy ${HOPSWORKS_VERSION} --push

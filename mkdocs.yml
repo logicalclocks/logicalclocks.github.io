@@ -361,13 +361,12 @@ nav:
   - Reference:
       - REST API Status Codes: reference/rest_error_codes.md
   - Docs for AI agents: ai.md
-  - Releases:
-      - releases/index.md
-      - 5.x:
-          - releases/5/index.md
-          - 5.1.0: releases/5/5.1.0.md
-          - 5.0.1: releases/5/5.0.1.md
-          - 5.0.0: releases/5/5.0.0.md
+  - Releases: https://docs.hopsworks.ai/releases/
+
+# The release pages are their own site, built from main only by mkdocs.releases.yml,
+# so every docs version links to the same copy. See .claude/docs/releases.md.
+exclude_docs: |
+  releases/
 
 theme:
   name: material

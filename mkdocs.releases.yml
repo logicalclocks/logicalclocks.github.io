@@ -1,0 +1,46 @@
+# The release notes site: one copy for every docs version, published by mike
+# from main only as the hidden version "releases" (https://docs.hopsworks.ai/releases/).
+# See .claude/docs/releases.md.
+INHERIT: mkdocs.yml
+
+site_name: "Hopsworks Releases"
+site_description: "Release notes, breaking changes and migrations for every Hopsworks release."
+docs_dir: docs/releases
+site_dir: site/releases
+strict: true
+
+nav:
+  - Releases: index.md
+  - 5.x:
+      - 5/index.md
+      - 5.1.0: 5/5.1.0.md
+      - 5.0.1: 5/5.0.1.md
+      - 5.0.0: 5/5.0.0.md
+  - Documentation: https://docs.hopsworks.ai/latest/
+
+# The site is not versioned, so no version selector and no outdated banner.
+extra:
+  version: null
+
+# search-scope.js is left out because this site has no Python API to scope to.
+extra_javascript:
+  - js/llm-copy.js
+  - js/card-links.js
+  - js/code-lang.js
+  - js/nav-collapse.js
+  - js/drill-nav.js
+  - js/external-links.js
+
+hooks:
+  - scripts/llms_hook.py
+  - scripts/releases_hook.py
+
+plugins:
+  - search
+  - autorefs
+  - minify:
+      minify_html: true
+      minify_css: true
+      minify_js: true
+  # Without canonical_version, mike keeps canonical URLs under /releases/.
+  - mike
