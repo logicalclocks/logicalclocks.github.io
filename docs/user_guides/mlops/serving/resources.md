@@ -20,7 +20,7 @@ For each component, you can set minimum (requests) and maximum (limits) resource
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
-    In ==Knative== mode this applies to the predictor and the transformer, after 30 seconds of inactivity by default.
+    In ==Knative== mode this applies to the predictor and the transformer, once the stable window (60 seconds by default) has seen no traffic.
     In ==Standard== mode it applies to the predictor of a deployment without a transformer, on a cluster with KEDA, after the idle cooldown (5 minutes by default), see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
 ## Web UI

@@ -238,7 +238,7 @@ In Standard mode a transformer scales on CPU or memory and keeps at least one in
 
 !!! tip "Read the configuration back"
     The backend fills in the defaults and settles the configuration on every start and save.
-    After `my_deployment.start()` or `my_deployment.save()`, `my_deployment.predictor.scaling_configuration.describe()` shows what is stored, which is what the deployment follows.
+    `my_deployment.save()` updates the object with what was stored, but `my_deployment.start()` only refreshes the state, so fetch the deployment again (`ms.get_deployment("my_deployment")`) and call `predictor.scaling_configuration.describe()` on it to see the configuration the deployment follows.
 
 !!! api "API reference"
 
@@ -331,15 +331,15 @@ The following parameters can be used to fine-tune the autoscaling behavior.
 These apply to a Standard-mode deployment scaled by KEDA.
 They are rejected under KServe's HPA, which ignores them, and in Knative mode.
 
-| Parameter                             | Default                     | Range  | Description                                                                                                              |
-| ------------------------------------- | --------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------ |
-| `scaleDownStabilizationWindowSeconds` | cluster default (300)       | 0–3600 | How long the metric must stay below target before instances are removed                                                  |
-| `scaleUpStabilizationWindowSeconds`   | cluster default (0)         | 0–3600 | How long the metric must stay above target before instances are added                                                    |
-| `additionalScaleMetrics`              | none                        | n/a    | Further metric and target pairs; the most demanding one decides the count. At most one request metric per deployment     |
-| `idleCooldownSeconds`                 | 300                         | 0–3600 | With a minimum of 0: seconds without a request before the last instance is removed                                       |
-| `coldStartTimeoutSeconds`             | 600                         | 1–3600 | With a minimum of 0: how long the first request is held while the deployment wakes                                       |
+| Parameter                             | Default                     | Range  | Description                                                                                                                |
+| ------------------------------------- | --------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `scaleDownStabilizationWindowSeconds` | cluster default (300)       | 0–3600 | How long the metric must stay below target before instances are removed                                                    |
+| `scaleUpStabilizationWindowSeconds`   | cluster default (0)         | 0–3600 | How long the metric must stay above target before instances are added                                                      |
+| `additionalScaleMetrics`              | none                        | n/a    | Further metric and target pairs; the most demanding one decides the count. At most one request metric per deployment       |
+| `idleCooldownSeconds`                 | 300                         | 0–3600 | With a minimum of 0: seconds without a request before every instance is removed, independently of the stabilization window |
+| `coldStartTimeoutSeconds`             | 600                         | 1–3600 | With a minimum of 0: how long the first request is held while the deployment wakes                                         |
 
-The cluster defaults of the stabilization windows are set by the administrator in the Helm chart (`kserve.autoscaler.scaleDownStabilizationWindowSeconds` and `scaleUpStabilizationWindowSeconds`, see [KServe values][helm-values-kserve]); empty means the Kubernetes HPA defaults.
+The cluster defaults of the stabilization windows are set by the administrator in the Helm chart (`kserve.kserve.autoscaler.scaleDownStabilizationWindowSeconds` and `kserve.kserve.autoscaler.scaleUpStabilizationWindowSeconds`, see [KServe values][helm-values-kserve]); empty means the Kubernetes HPA defaults.
 
 ### Knative parameters
 
@@ -361,13 +361,14 @@ See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), 
 ## Scale to zero when idle
 
 A minimum of **0** instances means scale to zero when idle, in both modes.
-The deployment runs at least one instance while it serves requests, scales between one and the maximum on its metric, and removes the last instance after a period without requests.
+The deployment runs at least one instance while it serves requests, scales between one and the maximum on its metric, and removes all its instances after a period without requests.
 The next request wakes it: the request is held while an instance starts and is answered once the instance is ready, so expect a cold start on the first request after an idle period.
 A deployment at zero instances reports the `IDLE` status, see [Deployment State](deployment-state.md).
 
-- In **Knative** mode, Knative's autoscaler removes the last pod after `scaleToZeroRetentionSeconds` of no traffic and holds the next request while a pod starts.
+- In **Knative** mode, Knative's autoscaler decides to scale to zero once its stable window (60 seconds by default) has seen no traffic, keeps the last pod for `scaleToZeroRetentionSeconds` beyond that, and holds the next request while a pod starts.
 - In **Standard** mode, the KEDA HTTP add-on fronts the deployment.
-  Its interceptor counts the requests to the deployment, KEDA removes the last instance after `idleCooldownSeconds` without one, and the interceptor holds the next request for up to `coldStartTimeoutSeconds` while an instance starts and passes its readiness probe.
+  Its interceptor counts the requests to the deployment, KEDA removes every instance once `idleCooldownSeconds` have passed without one, and the interceptor holds the next request for up to `coldStartTimeoutSeconds` while an instance starts and passes its readiness probe.
+  The idle cooldown is independent of the scale-down stabilization window: once it expires, KEDA scales straight to zero, however many instances are running.
   This requires KEDA on the cluster and a predictor without a transformer.
   A fresh deployment gets a grace period before it may scale to zero, the larger of the idle cooldown and the cold-start timeout, so a long image pull or model load does not end in an immediate scale-down.
 
@@ -406,7 +407,8 @@ The request fails with a message naming the rule when it:
   Utilization metrics are a percentage of the resource *request*, not the limit: a predictor requesting 2 cores that uses 1 sits at 50%.
 - **The maximum is already reached**, by the deployment's own maximum or the administrator's limit; a second vLLM instance also needs a second free GPU.
 - **Scale-in waits.**
-  KEDA waits for the scale-down stabilization window after the metric drops, KServe's HPA for its own 5-minute window, and scale to zero for the idle cooldown on top of that; a fresh deployment also gets the initial grace period.
+  While the deployment is active, KEDA waits for the scale-down stabilization window after the metric drops and KServe's HPA for its own 5-minute window.
+  Scale to zero follows its own clock: the idle cooldown after the last request, after which KEDA removes every instance at once; a fresh deployment also gets the initial grace period.
 - **It does not wake.**
   The cold start must finish within `coldStartTimeoutSeconds`, which for an LLM means the full weight load.
   The deployment's Grafana dashboards, linked from the deployment overview, show the instance count, the KEDA trigger values and the request and engine panels.
