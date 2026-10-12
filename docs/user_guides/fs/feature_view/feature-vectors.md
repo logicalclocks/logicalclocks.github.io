@@ -178,7 +178,7 @@ If `pk2` is not provided, this returns feature values from the first feature gro
     )
     ```
 
-!!! note "Behavior change for supplied and null keys in Python client 5.2"
+!!! attention "Behavior change for supplied and null keys in Python client 5.2"
     The Python client now returns each serving key you pass in the entry in its slot of the vector, when the key is a feature of the vector and the lookup did not return it.
     With `allow_missing=True`, an entry whose key matches no row returns `[99, None]` where it returned `[None, None]`, and the SQL client returns the key of a spine group instead of `None`.
     A null key value is now treated as an omitted key by the REST client, which used to fail with HTTP 400.
