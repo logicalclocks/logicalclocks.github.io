@@ -339,6 +339,7 @@ nav:
           - hopsfs: setup_installation/common/helm_chart_values/hopsfs.md
           - hopsfs-csi: setup_installation/common/helm_chart_values/hopsfs-csi.md
           - hopsworks: setup_installation/common/helm_chart_values/hopsworks.md
+          - hw-keda: setup_installation/common/helm_chart_values/hw-keda.md
           - hw-kueue: setup_installation/common/helm_chart_values/hw-kueue.md
           - hw-kyverno: setup_installation/common/helm_chart_values/hw-kyverno.md
           - judge: setup_installation/common/helm_chart_values/judge.md
