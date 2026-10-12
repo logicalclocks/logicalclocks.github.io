@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791721356` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791802682` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -864,6 +864,9 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         agent:
           image: kserve/agent
           tag: v0.21.0
+        autoscaler:
+          scaleDownStabilizationWindowSeconds: ''
+          scaleUpStabilizationWindowSeconds: ''
         controller:
           affinity: {}
           annotations: {}
@@ -1017,6 +1020,25 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 
 `kserve.kserve.agent.tag` <a class="headerlink" href="#helm.kserve.kserve.agent.tag" title="Permanent link">#</a> { #helm.kserve.kserve.agent.tag }
 :   Type `string`, default `"v0.21.0"`.
+
+`kserve.kserve.autoscaler` <a class="headerlink" href="#helm.kserve.kserve.autoscaler" title="Permanent link">#</a> { #helm.kserve.kserve.autoscaler }
+:   Type `object`.
+    Cluster defaults for the scale-down / scale-up stabilization windows of KEDA-scaled Standard-mode deployments (HWORKS-3106), in seconds; a deployment's scaling configuration overrides them. Empty means the Kubernetes HPA defaults (300 down, 0 up).
+
+    ??? note "Default"
+
+        ```yaml
+        scaleDownStabilizationWindowSeconds: ''
+        scaleUpStabilizationWindowSeconds: ''
+        ```
+
+`kserve.kserve.autoscaler.scaleDownStabilizationWindowSeconds` <a class="headerlink" href="#helm.kserve.kserve.autoscaler.scaleDownStabilizationWindowSeconds" title="Permanent link">#</a> { #helm.kserve.kserve.autoscaler.scaleDownStabilizationWindowSeconds }
+:   Type `string`, default `""`.
+    Seconds a metric must stay below target before replicas are removed; empty for the HPA default (300).
+
+`kserve.kserve.autoscaler.scaleUpStabilizationWindowSeconds` <a class="headerlink" href="#helm.kserve.kserve.autoscaler.scaleUpStabilizationWindowSeconds" title="Permanent link">#</a> { #helm.kserve.kserve.autoscaler.scaleUpStabilizationWindowSeconds }
+:   Type `string`, default `""`.
+    Seconds a metric must stay above target before replicas are added; empty for the HPA default (0).
 
 `kserve.kserve.controller.affinity` <a class="headerlink" href="#helm.kserve.kserve.controller.affinity" title="Permanent link">#</a> { #helm.kserve.kserve.controller.affinity }
 :   Type `object`, default `{}`.

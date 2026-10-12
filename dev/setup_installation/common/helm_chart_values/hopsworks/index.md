@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791721356` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791802682` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -110,6 +110,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             cpu: 20m
             memory: 20M
       variables:
+        kube_keda_installed: true
         kube_kserve_installed: true
         kube_serving_vllm_omni_versions: v0.28.0
         kube_serving_vllm_versions: v0.28.0
@@ -162,6 +163,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
                 nonProfiledCodeHeapSize: 48
                 profiledCodeHeapSize: 48
         variables:
+          kube_keda_installed: true
           kube_kserve_installed: true
           kube_serving_vllm_omni_versions: v0.28.0
           kube_serving_vllm_versions: v0.28.0
@@ -2604,6 +2606,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kibana_version: 3.8.0
         kube_api_max_attempts: '20'
         kube_hopsworks_default_service_account: hopsworks-default
+        kube_keda_installed: true
         kube_knative_domain_name: hopsworks.ai
         kube_knative_lb_domain: ''
         kube_kserve_installed: true
@@ -3564,6 +3567,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.kube_hopsworks_default_service_account` <a class="headerlink" href="#helm.hopsworks.variables.kube_hopsworks_default_service_account" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_hopsworks_default_service_account }
 :   Type `string`, default `"hopsworks-default"`.
+
+`hopsworks.variables.kube_keda_installed` <a class="headerlink" href="#helm.hopsworks.variables.kube_keda_installed" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_keda_installed }
+:   Type `bool`, default `true`.
+    Install KEDA (the hw-keda subchart, with its HTTP add-on) and let the backend autoscale Standard-mode deployments through it: on cpu, memory or the vLLM engine metrics, with scale-to-zero when idle. Without it Standard-mode deployments fall back to KServe's own HPA on cpu and memory, with no engine metrics and no scale-to-zero. The one switch for both sides, like kube_kserve_installed: the subchart condition and the backend variable read the same key, so neither can be on without the other.
 
 `hopsworks.variables.kube_knative_domain_name` <a class="headerlink" href="#helm.hopsworks.variables.kube_knative_domain_name" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_knative_domain_name }
 :   Type `string`, default `"hopsworks.ai"`.
