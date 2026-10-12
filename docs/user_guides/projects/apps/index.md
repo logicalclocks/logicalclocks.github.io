@@ -437,6 +437,7 @@ It is the only scaling an app does: an app always runs at most one replica.
 Things to know:
 
 - An open WebSocket counts as a request in flight. A Streamlit or Gradio tab that is open keeps the app up; the cooldown starts when the last tab closes.
+- A plain request, such as a Flask call, keeps the app active for a minute after it, and the cooldown counts from then: an app that answers short requests goes idle one cooldown plus a minute after the last one.
 - A wake starts a fresh process. Streamlit reconnects and reruns the script from scratch, and session state is gone, as after any restart.
 - The cold-start timeout defaults to, and cannot exceed, the cluster's app ceiling, `pythonapp_cold_start_timeout_max_seconds` (60 seconds by default). The ceiling follows the ingress read timeout a wake request has to fit in; an administrator who raises the ingress timeout can raise the ceiling with it. A wake that takes longer fails the request that woke the app, but the pod keeps starting, and the next request finds it ready.
 - The idle cooldown starts counting once the app is ready for the first time, so a slow start (image pull, environment setup) does not send it to zero before it has served; an app nobody opens goes idle one cooldown after it came up.
