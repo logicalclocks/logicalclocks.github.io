@@ -421,6 +421,24 @@ The Apps list and the app details page expose the same lifecycle actions:
 Edit and delete are only available when the app is stopped.
 The app URL is only shown once the backend confirms that the app is actually serving.
 That means `RUNNING` and `Serving` are not the same thing: `Serving` is the state where the Hopsworks proxy can reach the app end to end.
+An app that [scales to zero when idle](#scale-to-zero-when-idle) shows `Idle` while it has no pod; its URL stays, and opening it wakes it.
+
+### Scale to zero when idle
+
+An app keeps its one pod, and any GPU it requested, for as long as it is started.
+With **Scale to zero when idle** on, the pod goes away once no request has been in flight for the **idle cooldown** (300 seconds by default), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
+Opening the app from the UI, or any request to its URL, is what wakes it.
+
+The option needs KEDA and its HTTP add-on on the cluster (`kube_keda_installed`, installed by default), the same components that scale model deployments to zero; see [autoscaling](../../mlops/serving/autoscaling.md#scale-to-zero-when-idle).
+It is off for every app unless you turn it on, and it is the only scaling an app does: an app always runs at most one replica.
+
+Things to know:
+
+- An open WebSocket counts as a request in flight. A Streamlit or Gradio tab that is open keeps the app up; the cooldown starts when the last tab closes.
+- A wake starts a fresh process. Streamlit reconnects and reruns the script from scratch, and session state is gone, as after any restart.
+- The cold-start timeout defaults to, and cannot exceed, the cluster's app ceiling, `pythonapp_cold_start_timeout_max_seconds` (60 seconds by default). The ceiling follows the ingress read timeout a wake request has to fit in; an administrator who raises the ingress timeout can raise the ceiling with it. A wake that takes longer fails the request that woke the app, but the pod keeps starting, and the next request finds it ready.
+- The start itself has to fit in the cooldown: an app nobody opens after a start goes idle once the cooldown has passed since the start.
+- Auto-redeploy of a Git-backed app pauses while the app is idle, since nothing watches the branch; the pod clones the branch HEAD when it wakes.
 
 ### What the app details page shows
 
@@ -439,6 +457,7 @@ The details page includes:
 - Public access status for Streamlit apps
 - Git source details, if the app is Git-backed, including the branch, the deployed commit, and whether auto-redeploy is enabled
 - Monitoring configuration
+- Whether the app scales to zero when idle, with its cooldown and cold-start timeout
 - Resource requests
 - Runtime environment
 - Environment variables: the per-app ones and the database and feature store access variables the platform injects
@@ -512,6 +531,21 @@ node_app = apps.create_app(
 )
 ```
 
+A Streamlit app that scales to zero after two minutes without requests:
+
+```python
+app = apps.create_app(
+    "customer_dashboard",
+    app_path="Resources/app.py",
+    idle_scale_to_zero=True,
+    idle_cooldown_seconds=120,
+)
+
+app.run()
+# ... two minutes later
+print(app.state)  # IDLE; opening app.app_url wakes it
+```
+
 A Git-backed app that redeploys itself on every push:
 
 ```python
@@ -536,6 +570,7 @@ Common SDK methods:
 - `app.delete()`
 - `app.make_public()` / `app.make_private()`
 - `app.app_url`
+- `app.state`, `app.idle_scale_to_zero`, `app.idle_cooldown_seconds`, `app.cold_start_timeout_seconds`
 
 ## CLI
 
@@ -557,6 +592,7 @@ Use `--git-url` and `--entrypoint-script` for Git-backed Streamlit apps.
 Use `--entrypoint-command` and `--app-port` for custom apps.
 Add `--git-auto-redeploy` to roll a Git-backed app onto every new commit.
 Pass `--no-db-access` for an app that must not get the online database variables; Trino access does not depend on it.
+Add `--idle-scale-to-zero`, with `--idle-cooldown-seconds` and `--cold-start-timeout-seconds` if the defaults do not fit, for an app that scales to zero when idle.
 
 ## See also
 
