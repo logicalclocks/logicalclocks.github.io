@@ -417,6 +417,27 @@ The Apps list and the app details page expose the same lifecycle actions:
 Edit and delete are only available when the app is stopped.
 The app URL is only shown once the backend confirms that the app is actually serving.
 That means `RUNNING` and `Serving` are not the same thing: `Serving` is the state where the Hopsworks proxy can reach the app end to end.
+An app that [scales to zero when idle](#scale-to-zero-when-idle) shows `Idle` while it has no pod; its URL stays, and opening it wakes it.
+
+### Scale to zero when idle
+
+By default an app scales to zero when idle: the pod goes away once no request has been in flight for the **idle cooldown** (six hours by default, the cluster variable `pythonapp_idle_cooldown_seconds`), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
+Opening the app from the UI, or any request to its URL, is what wakes it.
+Turn **Scale to zero when idle** off for an app that must stay up: it then keeps its one pod, and any GPU it requested, for as long as it is started.
+
+The option needs KEDA and its HTTP add-on on the cluster (`kube_keda_installed`, installed by default), the same components that scale model deployments to zero; see [autoscaling](../../mlops/serving/autoscaling.md#scale-to-zero-when-idle).
+On a cluster without them the option is not offered and every app stays always on.
+Apps created before the option existed keep running always on until you edit them and turn it on.
+It is the only scaling an app does: an app always runs at most one replica.
+
+Things to know:
+
+- An open WebSocket counts as a request in flight. A Streamlit or Gradio tab that is open keeps the app up; the cooldown starts when the last tab closes.
+- A plain request, such as a Flask call, keeps the app active for a minute after it, and the cooldown counts from then: an app that answers short requests goes idle one cooldown plus a minute after the last one.
+- A wake starts a fresh process. Streamlit reconnects and reruns the script from scratch, and session state is gone, as after any restart.
+- The cold-start timeout defaults to, and cannot exceed, the cluster's app ceiling, `pythonapp_cold_start_timeout_max_seconds` (300 seconds by default). The request that woke the app also passes the ingress, whose read timeout (60 seconds for ingress-nginx unless an administrator raises it with the `nginx.ingress.kubernetes.io/proxy-read-timeout` annotation in the chart's `ingress.annotations`) fails it earlier whatever the interceptor would allow. A wake that outlasts either limit fails the request that woke the app, but the pod keeps starting, and the next request finds it ready.
+- The idle cooldown starts counting once the app is ready for the first time, so a slow start (image pull, environment setup) does not send it to zero before it has served; an app nobody opens goes idle one cooldown after it came up.
+- Auto-redeploy of a Git-backed app pauses while the app is idle, since nothing watches the branch; the pod clones the branch HEAD when it wakes.
 
 ### What the app details page shows
 
@@ -435,6 +456,7 @@ The details page includes:
 - Public access status for Streamlit apps
 - Git source details, if the app is Git-backed, including the branch, the deployed commit, and whether auto-redeploy is enabled
 - Monitoring configuration
+- Whether the app scales to zero when idle, with its cooldown and cold-start timeout
 - Resource requests
 - Runtime environment
 - Environment variables: the per-app ones and the database and feature store access variables the platform injects
@@ -508,6 +530,31 @@ node_app = apps.create_app(
 )
 ```
 
+A Streamlit app that scales to zero after two minutes without requests (scale to zero is on by default; the cooldown is what changes here):
+
+```python
+app = apps.create_app(
+    "customer_dashboard",
+    app_path="Resources/app.py",
+    idle_cooldown_seconds=120,
+)
+
+app.run()
+# ... two minutes later, fetch the app again: state is read from the backend, not cached
+app = apps.get_app("customer_dashboard")
+print(app.state)  # IDLE; opening app.app_url wakes it
+```
+
+An app that must stay up:
+
+```python
+app = apps.create_app(
+    "always_on_dashboard",
+    app_path="Resources/app.py",
+    idle_scale_to_zero=False,
+)
+```
+
 A Git-backed app that redeploys itself on every push:
 
 ```python
@@ -532,6 +579,7 @@ Common SDK methods:
 - `app.delete()`
 - `app.make_public()` / `app.make_private()`
 - `app.app_url`
+- `app.state`, `app.idle_scale_to_zero`, `app.idle_cooldown_seconds`, `app.cold_start_timeout_seconds`
 
 ## CLI
 
@@ -553,6 +601,7 @@ Use `--git-url` and `--entrypoint-script` for Git-backed Streamlit apps.
 Use `--entrypoint-command` and `--app-port` for custom apps.
 Add `--git-auto-redeploy` to roll a Git-backed app onto every new commit.
 Pass `--no-db-access` for an app that must not get the online database variables; Trino access does not depend on it.
+Apps scale to zero when idle by default; pass `--idle-cooldown-seconds` and `--cold-start-timeout-seconds` if the defaults do not fit, or `--no-idle-scale-to-zero` for an app that must stay up.
 
 ## See also
 
