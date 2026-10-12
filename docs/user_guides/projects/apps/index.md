@@ -425,7 +425,7 @@ An app that [scales to zero when idle](#scale-to-zero-when-idle) shows `Idle` wh
 
 ### Scale to zero when idle
 
-By default an app scales to zero when idle: the pod goes away once no request has been in flight for the **idle cooldown** (one hour by default, the cluster variable `pythonapp_idle_cooldown_seconds`), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
+By default an app scales to zero when idle: the pod goes away once no request has been in flight for the **idle cooldown** (six hours by default, the cluster variable `pythonapp_idle_cooldown_seconds`), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
 Opening the app from the UI, or any request to its URL, is what wakes it.
 Turn **Scale to zero when idle** off for an app that must stay up: it then keeps its one pod, and any GPU it requested, for as long as it is started.
 
