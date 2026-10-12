@@ -101,8 +101,32 @@ jobs, Jupyter and the terminal. This is how you get a CLI tool or a JavaScript d
 environment.
 
 Open the **Installed npm Libraries** tab beside the Python one and use **Install npm package**.
+A base environment is immutable, so on one the tab offers **Clone env** instead, and **Install npm package** opens the same clone dialog; the clone then opens on its npm tab with the install dialog up.
 Installed npm packages are listed there and can be uninstalled the same way, so an environment
 records what it carries rather than accumulating changes nobody can see.
+
+The install list, the package.json and git imports below, and the SDK methods for them need Hopsworks 5.2 or later; the `hopsworks` package of the same release has them.
+The dialog builds one install list and installs it as one operation and one build.
+Fill the list from the **Registry** and **package.json** tabs, in any combination, then press **Install**; the **Git repository** tab installs on its own.
+While it runs, a list of several packages shows as a single entry named `npm-install-...` with the packages on its row; once the build has finished, the installed packages replace it in the listing, each with its own entry that can be uninstalled on its own.
+If the build fails, the single entry stays with the error, and retrying or deleting it applies to the whole list.
+A second install started while a build is running waits for it and then runs as its own build.
+
+- **Registry** searches the configured registry for one package and version at a time and adds it to the list.
+- **package.json** installs what a `package.json` depends on, at exact versions.
+  Pick the file from the project, or upload it from your computer into the project's `Resources`, and the lockfile next to it when there is one: `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` (classic and Berry), `pnpm-lock.yaml` or `bun.lock`.
+  Versions pinned in `package.json` stand; where a lockfile is given its recorded versions win, because they are what the project actually ran; ranges and dist-tags without a lockfile entry resolve to the newest matching release in the registry.
+  `devDependencies` are left out unless you tick **Include devDependencies**.
+  Each dependency is shown with what it resolved to, or with the reason it was skipped: workspace siblings, `npm:` aliases, git, file and URL dependencies are not registry packages and cannot be installed this way.
+  Optional dependencies start unticked.
+  pnpm and Bun catalogs (`catalog:` specs) are resolved from the lockfile, `pnpm-workspace.yaml` or the root `package.json`.
+  A binary `bun.lockb` is not read; run `bun install --save-text-lockfile` to get a `bun.lock` the import can use.
+- **Git repository** reads the `package.json` files of a repository at a branch, tag or commit, resolves them the same way against the nearest lockfile, and installs what resolved as soon as the repository has been read, as its own build.
+  It skips the install list: make the choices before reading, with **Include devDependencies**, **Include optionalDependencies** and **Also install the repository itself**, which installs the repository as a package under the name its `package.json` declares, pinned to the commit read.
+  A monorepo installs the dependencies of every workspace; give the **package.json path** (for example `apps/web`) to read just that one, which also skips the rest of a large repository.
+  A dependency that cannot be resolved stops the install with the reason, so a `package.json` or lockfile can be fixed first.
+  Private repositories use the git providers configured under your account settings.
+  Installing the repository itself runs npm; a repository that needs yarn, pnpm or Bun to build is still attempted.
 
 What the platform accepts:
 
@@ -120,6 +144,32 @@ an environment and install your own version there instead.
 
 Packages come from the registry the cluster is configured to use. Ask your administrator if you
 need an internal registry; it is a cluster-wide setting rather than a per-environment one.
+
+From the Python SDK, the same three paths are `install_npm`, `install_npm_from_package_json` and `install_npm_from_git`:
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+env = project.get_environment_api().get_environment("my_custom_environment")
+
+# A list, one build.
+env.install_npm(["express@4.19.2", "lodash@4.17.21"], flags=["--no-fund"])
+
+# A package.json and its lockfile, local or in the project; devDependencies opt in.
+env.install_npm_from_package_json("package.json", lockfile_path="pnpm-lock.yaml")
+
+# A repository's dependencies, plus the repository itself pinned to the commit.
+env.install_npm_from_git(
+    "https://github.com/acme/mytool", ref="main", install_repository=True
+)
+
+# One package of a monorepo, by the path of its package.json.
+env.install_npm_from_git("https://github.com/acme/mono", path="packages/cli")
+```
+
+`resolve_npm_package_json` and `inspect_npm_git` return what would be installed without installing it.
 
 !!! note "Same name in both ecosystems"
     A name can exist on both PyPI and npm. The two are tracked separately, so installing `requests`
