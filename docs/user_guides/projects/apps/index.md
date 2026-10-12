@@ -425,12 +425,14 @@ An app that [scales to zero when idle](#scale-to-zero-when-idle) shows `Idle` wh
 
 ### Scale to zero when idle
 
-An app keeps its one pod, and any GPU it requested, for as long as it is started.
-With **Scale to zero when idle** on, the pod goes away once no request has been in flight for the **idle cooldown** (300 seconds by default), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
+By default an app scales to zero when idle: the pod goes away once no request has been in flight for the **idle cooldown** (300 seconds by default), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
 Opening the app from the UI, or any request to its URL, is what wakes it.
+Turn **Scale to zero when idle** off for an app that must stay up: it then keeps its one pod, and any GPU it requested, for as long as it is started.
 
 The option needs KEDA and its HTTP add-on on the cluster (`kube_keda_installed`, installed by default), the same components that scale model deployments to zero; see [autoscaling](../../mlops/serving/autoscaling.md#scale-to-zero-when-idle).
-It is off for every app unless you turn it on, and it is the only scaling an app does: an app always runs at most one replica.
+On a cluster without them the option is not offered and every app stays always on.
+Apps created before the option existed keep running always on until you edit them and turn it on.
+It is the only scaling an app does: an app always runs at most one replica.
 
 Things to know:
 
@@ -531,19 +533,28 @@ node_app = apps.create_app(
 )
 ```
 
-A Streamlit app that scales to zero after two minutes without requests:
+A Streamlit app that scales to zero after two minutes without requests (scale to zero is on by default; the cooldown is what changes here):
 
 ```python
 app = apps.create_app(
     "customer_dashboard",
     app_path="Resources/app.py",
-    idle_scale_to_zero=True,
     idle_cooldown_seconds=120,
 )
 
 app.run()
 # ... two minutes later
 print(app.state)  # IDLE; opening app.app_url wakes it
+```
+
+An app that must stay up:
+
+```python
+app = apps.create_app(
+    "always_on_dashboard",
+    app_path="Resources/app.py",
+    idle_scale_to_zero=False,
+)
 ```
 
 A Git-backed app that redeploys itself on every push:
@@ -592,7 +603,7 @@ Use `--git-url` and `--entrypoint-script` for Git-backed Streamlit apps.
 Use `--entrypoint-command` and `--app-port` for custom apps.
 Add `--git-auto-redeploy` to roll a Git-backed app onto every new commit.
 Pass `--no-db-access` for an app that must not get the online database variables; Trino access does not depend on it.
-Add `--idle-scale-to-zero`, with `--idle-cooldown-seconds` and `--cold-start-timeout-seconds` if the defaults do not fit, for an app that scales to zero when idle.
+Apps scale to zero when idle by default; pass `--idle-cooldown-seconds` and `--cold-start-timeout-seconds` if the defaults do not fit, or `--no-idle-scale-to-zero` for an app that must stay up.
 
 ## See also
 
