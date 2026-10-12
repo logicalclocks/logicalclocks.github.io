@@ -180,11 +180,11 @@ sc.delete_credentials()
 `get_credentials` returns the names of the account entries your binding references, never their values.
 
 From the CLI, `hops datasource credentials` has `set`, `validate`, `show` and `delete`.
-`--password -` and `--wallet-password -` read the value from stdin, and without either flag the `HOPSWORKS_DS_CREDENTIALS_PASSWORD` and `HOPSWORKS_DS_CREDENTIALS_WALLET_PASSWORD` environment variables are read.
+`--password -` and `--wallet-password -` read the value from stdin, one of them per call, and without either flag the `HOPSWORKS_DS_CREDENTIALS_PASSWORD` and `HOPSWORKS_DS_CREDENTIALS_WALLET_PASSWORD` environment variables are read.
 `--wallet` takes a local zip and stages it as a new wallet file for you.
 
 ```bash
-hops datasource credentials set oracle_sales --user SCOTT --password - --wallet ./Wallet_ORCL.zip --wallet-password -
+HOPSWORKS_DS_CREDENTIALS_WALLET_PASSWORD=... hops datasource credentials set oracle_sales --user SCOTT --password - --wallet ./Wallet_ORCL.zip
 hops datasource credentials show oracle_sales --json
 ```
 
