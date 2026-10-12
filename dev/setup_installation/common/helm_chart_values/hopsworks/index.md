@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791802682` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791818871` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2835,8 +2835,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         testconnector_image_version: '1.0'
         tf_spark_connector_version: ''
         trino_default_catalog: delta
-        trino_events_cleaner_batch_size: '1000'
+        trino_events_cleaner_batch_size: '100'
         trino_events_delete_after_days: '61'
+        trino_events_strip_details_after_days: '7'
         twofactor_auth: 'false'
         twofactor_excluded_groups: AGENT;CLUSTER_AGENT
         unix_usernames_conf: '{\"glassfish\":\"glassfish\",\"hdfs\":\"hdfs\",\"rmyarn\":\"rmyarn\",\"yarn\":\"yarn\",\"hive\":\"hive\",\"livy\":\"livy\",\"flink\":\"flink\",\"consul\":\"consul\",\"hopsmon\":\"hopsmon\",\"zookeeper\":\"zookeeper\",\"onlinefs\":\"onlinefs\",\"elastic\":\"elastic\",\"kagent\":\"kagent\",\"mysql\":\"mysql\",\"airflow\":\"airflow\"}'
@@ -4295,10 +4296,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"delta"`.
 
 `hopsworks.variables.trino_events_cleaner_batch_size` <a class="headerlink" href="#helm.hopsworks.variables.trino_events_cleaner_batch_size" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_events_cleaner_batch_size }
-:   Type `string`, default `"1000"`.
+:   Type `string`, default `"100"`.
 
 `hopsworks.variables.trino_events_delete_after_days` <a class="headerlink" href="#helm.hopsworks.variables.trino_events_delete_after_days" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_events_delete_after_days }
 :   Type `string`, default `"61"`.
+
+`hopsworks.variables.trino_events_strip_details_after_days` <a class="headerlink" href="#helm.hopsworks.variables.trino_events_strip_details_after_days" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_events_strip_details_after_days }
+:   Type `string`, default `"7"`.
+    Days after which a Trino query history row loses its query text, plan and JSON columns. The user, state and metric columns stay until trino_events_delete_after_days.
 
 `hopsworks.variables.twofactor_auth` <a class="headerlink" href="#helm.hopsworks.variables.twofactor_auth" title="Permanent link">#</a> { #helm.hopsworks.variables.twofactor_auth }
 :   Type `string`, default `"false"`.
