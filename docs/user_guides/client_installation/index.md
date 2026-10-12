@@ -153,12 +153,16 @@ It writes a draft `system.yaml` in `factory-drafts/<factory>` of your HopsFS hom
 It writes your answers into the draft, which the form shows as it changes, and notes what the form has no field for, which the build receives too; then it summarizes again and asks whether to create the system or change something.
 What you type in the form goes to Claude Code with your next message.
 Say in the chat that you want to create the system, and Claude Code checks the required answers and the page creates it, as **Create** does; **Back** and **Create** are at the top right of the page.
-**From Template** lists the factories without the description: **ML System** holds **Batch ML system**, **Real-time ML system** and **Agentic system**, **Analytics** the analytics layer factories, and each has a **Blueprints** submenu of its examples, each opening its factory's form filled in.
+The form's chat tab in the Terminal closes once the system is created.
+**From Template** lists the factories without the description: **ML System** holds **Batch ML system**, **Real-time ML system**, **Batch and streaming ML system** and **Agentic system**, **Analytics** the analytics layer factories, and each has a **Blueprints** submenu of its examples, each opening its factory's form filled in.
 The cogwheel opens **Manage factories**.
 **Existing Systems**, shown once a factory has built a system, lists the project's systems for every member: each with its factory, type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a Git repository; the box above it filters the list.
 **Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
+With the chat on, the tab stays hidden and the chat shows GitHub's one-time code with **Open GitHub's device page**, which copies the code and opens the page, and **Copy code**; without the chat, the device page opens on the click and the Terminal tab shows the code.
+The tab closes once the login succeeds.
 Each ML system form asks for the system's name, which is also its directory's and, as `hops-<name>`, its GitHub repository's unless that name is taken (lowercase letters, digits and hyphens), what it should predict, its targets (a batch system's cadence and run time, a real-time or agentic system's latency and throughput), its data (feature groups in the project, synthetic data described in a sentence, and files), and how its predictions are used.
 Every form starts with **Create new GitHub repo**, checked; unchecked, it asks for the URL of an existing GitHub, GitLab, Bitbucket or other Git repository, which the build pushes to with git alone.
+Checked, **Create** tells the build that you confirm the creation of the system's new private repository under your GitHub account, `hops-<name>` or the next free name above, so Claude Code does not stop to ask for that confirmation.
 Sections with defaults show a one-line summary of their answers, with **Edit** to change them.
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
 For a batch or real-time system, **Monitoring** (collapsed) sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
@@ -169,12 +173,15 @@ The build turns them into feature logging on the feature view, feature monitorin
 A system's page is a chat beside the system.
 The chat is the conversation of the Claude Code in the system's Terminal tab, the build while it runs: its replies, its tool calls folded to one line, and its questions and permission requests as cards whose options answer them.
 A message you send is typed into that tab; when no Claude Code runs there, the first one starts it with the system's `system.yaml` and asks for an overview of the system.
-The Terminal panel closes and the project menu collapses while the chat is shown, and the Terminal must be running for the chat to reach Claude Code.
+The Terminal panel closes and the project menu collapses while the chat is shown, on a factory's form and on a system's page; the menu stays collapsed when the Terminal opens, and its toggle opens it again. The Terminal must be running for the chat to reach Claude Code.
+When Claude Code in the Terminal is not logged in, the chat says so with **Log in to Claude Code**, which runs `/login`: the chat shows **Open the sign-in page** and a box for the code the page shows once you authorize.
+After the login Claude Code waits for Enter, and the chat shows `Logged in to Claude Code. Press Enter to continue.` with **Press Enter**.
+While Claude Code works, the line that says so has **Press Enter**, which sends Enter for a prompt Claude Code waits on in the Terminal outside the conversation, and **Show the Terminal**, which shows the Terminal's last lines with **Enter** and **Esc**.
 Beside the chat, **App** shows the system's app or dashboards in the page; while the app is stopped, **Start app** starts the deployments it calls and then the app, and while it is starting or redeploying the button says so instead.
 **Assets** shows the system with its status, repository, files, phases and actions, then what it has made in three columns, the feature, training and inference pipelines, each asset linked to its page with its state, and its jobs below.
 A feature group shows when it last changed and the rows that commit appended, updated and deleted.
 A job shows its schedule (cron in UTC) and its next run, with **Edit** for its settings; a job that backfills has **Backfill**, which runs it once over a start and end time you choose, starting where its last backfill ended, and any other job has **Run**.
-An app, deployment or feature group that `system.yaml` records but the project does not have shows as missing, and the system's pages say it is not fully built, with a button that asks Claude Code to rebuild it.
+An app, deployment or feature group that `system.yaml` records but the project does not have shows as missing once the phase that builds it is done, or the system is built; the system's pages then say it is not fully built, with a button that asks Claude Code to rebuild it. While a build runs, an asset its phase has not built yet is not reported.
 **System Details** shows the specification, `system.yaml`, at the top, then the phases, what is done and what is left, and the requirements, locked.
 `system.yaml` shows what changed since your last message in the chat: added lines are highlighted and removed lines struck through, with the count of each; **Edit the file** opens the editor, and **Mark as seen** clears the highlights.
 **Open in Terminal** brings the system's Terminal tab to the front, or opens one with Claude Code started in its directory.
@@ -191,6 +198,7 @@ A system records the factory version and the digest of the definition it was bui
 **Delete** asks what to delete: the system's entry in the list only, that and every asset the system created (its app, deployments, jobs, models, feature view and training data, the feature groups it writes, the data sources it created and its cloned environments; feature groups it only reads are kept), or those and its GitHub repository, which is deleted only when the build created it for this system alone. The assets are deleted in the terminal, downstream first, and the entry last, so a delete that fails part way leaves the system in the list to be deleted again. Deleting the assets also deletes the code directory; deleting the entry only keeps it.
 An asset another system in the project also names is kept, and so is an asset whose name does not contain the system's name unless its description names the system: a system made from an example starts from the example's `system.yaml`, and its delete must not remove the example's app or tables.
 The delete lists each asset it kept and why.
+**Delete** closes the system's Terminal tab, which stops its Claude Code, and the tab of its form's chat; while the assets are deleted, a notice shows that the delete is in progress.
 
 ```bash
 hops factory list                                   # the factories and how many systems each built
@@ -211,7 +219,7 @@ An analytics layer organizes tables as bronze (raw data as it arrived), silver (
 Hopsworks installs an archived schematized tag, `analytics_table`, whose `layer` is `bronze`, `silver` or `gold` and whose `lifecycle` is `dev`, `staging` or `prod`; every change of a table's value is kept in the tag history.
 When you ingest data with a dltHub data source, **Tag as bronze tables** in the review, off by default, tags every feature group it creates as bronze.
 
-**From Template > Analytics**, in the Factory, lists two factories, **Silver layer** and **Data Mart**; the silver one builds a silver layer from the project's bronze feature groups.
+**From Template > Analytics**, in the Factory, lists **Silver layer**, **Data Mart**, **Data pipeline** and **Data ingestion**; the bronze layer is built from its blueprint. **Silver layer** builds a silver layer from the project's bronze feature groups.
 A project without feature groups has nothing to build from: ingest raw data as bronze tables first, or build the example bronze layer.
 
 **Blueprints** in the same menu lists example layers. **Synthetic clickstream (bronze)** builds a bronze layer of generated web shop data with `hops factory run analytics-bronze --preset clickstream-example`, which copies the generator into `clickstream-bronze/` and starts Claude Code on `/hops-bronze clickstream-bronze`.
@@ -382,7 +390,7 @@ build:
   instructions: Build a dashboard that answers requirements.question.
 ```
 
-Every command, `validate` included, needs a logged-in session on a cluster whose `factory_enabled` variable is `true`.
+Every command but `validate`, which checks a local file without a cluster, needs a logged-in session on a cluster whose `factory_enabled` variable is `true`.
 
 ```bash
 hops factory validate churn-review.yaml      # check a definition
