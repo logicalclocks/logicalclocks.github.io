@@ -213,6 +213,7 @@
 
 #### Terminal
 - [Browser Terminal](https://docs.hopsworks.ai/latest/user_guides/compute/terminal/) ([md](https://docs.hopsworks.ai/latest/user_guides/compute/terminal/index.md))
+- [Start the Terminal](https://docs.hopsworks.ai/latest/user_guides/projects/terminal/start/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/terminal/start/index.md))
 - [Teleport Sessions](https://docs.hopsworks.ai/latest/user_guides/projects/terminal/teleport/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/terminal/teleport/index.md))
 
 #### Jobs
