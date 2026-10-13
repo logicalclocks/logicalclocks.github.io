@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791857111` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791863176` (Hopsworks `5.2.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -50,7 +50,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791857111` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 78 |
 | [`hopsfs`][helm-values-hopsfs] |  | 221 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 943 |
+| [`hopsworks`][helm-values-hopsworks] |  | 944 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0), [`keda-add-ons-http` 0.16.0](https://artifacthub.io/packages/helm/kedacore/keda-add-ons-http/0.16.0) | 20 |
 | [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 94 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |

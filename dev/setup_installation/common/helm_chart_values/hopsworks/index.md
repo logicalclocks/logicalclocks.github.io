@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791857111` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791863176` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2839,6 +2839,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         superset_proxy_connection_request_timeout_ms: '10000'
         superset_proxy_max_connections: '50'
         superset_proxy_read_timeout_ms: '180000'
+        superset_proxy_token_ttl_ms: '900000'
         superset_user_roles: Gamma,sql_lab,Dataset
         support_email_addr: support@hopsworks.ai
         tag_history_archive_max_events: '20000'
@@ -4286,6 +4287,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.superset_proxy_read_timeout_ms` <a class="headerlink" href="#helm.hopsworks.variables.superset_proxy_read_timeout_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_proxy_read_timeout_ms }
 :   Type `string`, default `"180000"`.
+
+`hopsworks.variables.superset_proxy_token_ttl_ms` <a class="headerlink" href="#helm.hopsworks.variables.superset_proxy_token_ttl_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_proxy_token_ttl_ms }
+:   Type `string`, default `"900000"`.
+    Milliseconds a Superset proxy token (POST /project/{id}/superset/proxy-token) stays valid. It is pinned to one project and not renewable: the client mints a new one when it expires.
 
 `hopsworks.variables.superset_user_roles` <a class="headerlink" href="#helm.hopsworks.variables.superset_user_roles" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_user_roles }
 :   Type `string`, default `"Gamma,sql_lab,Dataset"`.
