@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791844626` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791857111` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2752,8 +2752,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         python_job_memory: '2048'
         python_library_updates_monitor_interval: 1d
         python_pod_kill_grace_period_seconds: '60'
+        pythonapp_cold_start_timeout_max_seconds: '300'
         pythonapp_cores: '1.0'
         pythonapp_gpus: '0'
+        pythonapp_idle_cooldown_seconds: '21600'
         pythonapp_memory: '2048'
         pythonapp_proxy_token_ttl_ms: '900000'
         quotas_featuregroups_online_disabled: '-1'
@@ -4010,11 +4012,19 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.python_pod_kill_grace_period_seconds` <a class="headerlink" href="#helm.hopsworks.variables.python_pod_kill_grace_period_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.python_pod_kill_grace_period_seconds }
 :   Type `string`, default `"60"`.
 
+`hopsworks.variables.pythonapp_cold_start_timeout_max_seconds` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_cold_start_timeout_max_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_cold_start_timeout_max_seconds }
+:   Type `string`, default `"300"`.
+    The most seconds an app that scales to zero when idle may take to wake before the request that woke it fails, and so the ceiling and default of its cold-start timeout. The request that woke the app also waits at the ingress, whose read timeout (ingress-nginx: 60 s unless `ingress.annotations` sets `nginx.ingress.kubernetes.io/proxy-read-timeout`) fails it earlier whatever the interceptor would allow; the pod keeps starting and the next request finds it ready. Model deployments keep their own cold-start budget.
+
 `hopsworks.variables.pythonapp_cores` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_cores" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_cores }
 :   Type `string`, default `"1.0"`.
 
 `hopsworks.variables.pythonapp_gpus` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_gpus" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_gpus }
 :   Type `string`, default `"0"`.
+
+`hopsworks.variables.pythonapp_idle_cooldown_seconds` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_idle_cooldown_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_idle_cooldown_seconds }
+:   Type `string`, default `"21600"`.
+    Seconds without a request before an app that scales to zero when idle (HWORKS-3424) loses its pod, unless the app sets its own cooldown. Six hours.
 
 `hopsworks.variables.pythonapp_memory` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_memory" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_memory }
 :   Type `string`, default `"2048"`.
