@@ -48,7 +48,7 @@ The create dialog lets you choose the app type, source, runtime environment, app
 
 | Setting | Typical value |
 | --- | --- |
-| App type | `STREAMLIT` or `CUSTOM` |
+| App type | `STREAMLIT`, `FLASK`, `GRADIO`, `NODEJS` or `CUSTOM` |
 | Proxy routing mode | `Root routing` for new apps, `Compatibility prefix` for legacy apps |
 | App base path | `/` for the app root, `/myapp` for a subpath |
 | Readiness probe path | Leave empty to use the platform default |
@@ -60,9 +60,13 @@ The create dialog lets you choose the app type, source, runtime environment, app
 
 ### App types
 
+The Flask, Gradio and Node.js types need Hopsworks 5.2 or later.
+
 - **Streamlit** apps are the default choice for dashboards and interactive ML UIs.
-- **Custom** apps are any web service that listens on `APP_PORT`.
-  Common choices are Flask, FastAPI, Gradio, and JavaScript frameworks such as Express.
+- **Flask**, **Gradio** and **Node.js** apps are started from their app file, like Streamlit, with a command Hopsworks generates, and listen on the configured port like a custom app.
+  Flask and Gradio take a `.py` file; Node.js takes a `.js`, `.mjs`, `.cjs`, `.ts` or `.mts` file.
+- **Custom** apps are any web service that listens on `APP_PORT`, started with the entrypoint command you write.
+  Common choices are FastAPI, Django, Panel, and JavaScript frameworks that need their own command.
 
 Use `App base path` to choose where Hopsworks mounts the app.
 Set it to `/` for a root-based app or `/myapp` for a subpath.
@@ -77,8 +81,8 @@ The compatibility mode is only for migrating older apps.
   This is useful when you want a proper Git-backed CI/CD flow and when you want local file edits not to affect a running production app.
   The deployed app only sees the repository contents that are present when it starts, so changes in your working tree stay local until you commit, push, and redeploy.
 
-For Streamlit apps, a project file must be a `.py` file.
-For Git-backed Streamlit apps, you also need to provide the entrypoint script relative to the repository root.
+For Streamlit, Flask, Gradio and Node.js apps, the app file must have the extension of its type.
+For Git-backed apps of those types, you also need to provide the entrypoint script relative to the repository root.
 For custom apps, the entrypoint command is required and the app file is optional.
 
 #### Auto-redeploy on new commits
@@ -145,6 +149,67 @@ Hopsworks manages the mount prefix for you, so Streamlit apps can stay root-base
 If the app is Git-backed, the entrypoint script is relative to the repository root.
 The default readiness probe for Streamlit is `/_stcore/health`.
 
+### Flask apps
+
+Flask apps are started with `flask --app <file> run --host 0.0.0.0 --port $APP_PORT`, so the file needs an `app` object, or an `app.py` style factory Flask can find.
+Hopsworks serves the app at its root, so define routes at `/` and `/health`.
+The proxy sends `X-Forwarded-Prefix` and the app also gets `APP_PUBLIC_PATH`; an app that builds absolute links can wrap itself in `ProxyFix(app.wsgi_app, x_prefix=1)` to generate them with the public path.
+
+```python
+from flask import Flask, jsonify
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+
+app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_prefix=1)
+
+
+@app.get("/health")
+def health():
+    return jsonify(status="ok")
+
+
+@app.get("/")
+def home():
+    return jsonify(status="ready")
+```
+
+### Gradio apps
+
+A Gradio app is run as a plain script, so it has to call `launch()` itself.
+Leave the host, port and root path to Hopsworks: it sets `GRADIO_SERVER_NAME`, `GRADIO_SERVER_PORT` and `GRADIO_ROOT_PATH`, which `launch()` reads, so the app listens on the configured port and its asset and API URLs resolve through the proxy.
+A `server_port` or `root_path` hardcoded in `launch()` overrides those variables and breaks the readiness probe.
+
+```python
+import gradio as gr
+
+
+def greet(name):
+    return f"Hello {name}!"
+
+
+demo = gr.Interface(fn=greet, inputs="text", outputs="text")
+
+if __name__ == "__main__":
+    demo.launch()
+```
+
+### Node.js apps
+
+A Node.js app is run with `node <file>` and gets `PORT` and `HOST`, the Express convention.
+TypeScript entry files run through Node's built-in type stripping, so they need no build step for plain type annotations.
+Dependencies are not installed at start: install them into the environment as npm packages, which is what the package.json import in the environment's npm tab is for.
+The `@hopsworks/app` module the image ships gives the app its project secrets and database access.
+
+```javascript
+import express from "express";
+
+const app = express();
+app.get("/health", (req, res) => res.json({ status: "ok" }));
+app.get("/", (req, res) => res.json({ status: "ready" }));
+app.listen(process.env.PORT, process.env.HOST ?? "0.0.0.0");
+```
+
 ### Custom apps
 
 Custom apps should bind to `0.0.0.0` and use the injected `APP_PORT`.
@@ -182,11 +247,13 @@ if __name__ == "__main__":
 For new apps, use `App base path` in the UI or API and let Hopsworks handle the browser mount prefix.
 Keep `Proxy routing mode` set to `Root routing` for new apps.
 
+Flask, Gradio and Node.js apps always use root routing; the compatibility prefix is for custom and Streamlit apps written against the old proxy.
+
 Examples:
 
 - FastAPI: `@app.get("/health")`
 - Flask: `Blueprint(..., url_prefix="/")`
-- Gradio: `demo.launch(..., root_path=None)`
+- Gradio: `demo.launch()` with the root path left to `GRADIO_ROOT_PATH`
 - Express: `app.use("/", router)`
 
 If you are migrating an older app that still depends on `APP_BASE_URL_PATH`, keep the legacy pattern only until the app code can move to root-based routing.
@@ -203,14 +270,18 @@ The platform injects app-specific variables such as:
 
 - `APP_BASE_URL_PATH` for legacy prefix-mode apps only
 - `APP_PORT`
+- `APP_PUBLIC_PATH`, the browser path the app is served at, for apps that build absolute links
+- `APP_ENTRYPOINT_SCRIPT` for Git-backed apps started from a file
 - `STREAMLIT_BASE_URL_PATH`
 - `STREAMLIT_PORT`
+- `GRADIO_SERVER_NAME`, `GRADIO_SERVER_PORT` and `GRADIO_ROOT_PATH` for Gradio apps
+- `PORT` and `HOST` for Node.js apps; these two are not reserved, so an app can set its own
 - `APP_FILE`
 - `APP_PATH`
 - `APP_KIND`
 - `APP_ARGS`
 
-Git-backed apps also receive the Git URL, provider, branch, and Streamlit entrypoint script.
+Git-backed apps also receive the Git URL, provider and branch, and the entrypoint script for every kind started from a file.
 
 `APP_BASE_URL_PATH` is only injected for legacy prefix-mode apps during migration.
 
@@ -350,6 +421,27 @@ The Apps list and the app details page expose the same lifecycle actions:
 Edit and delete are only available when the app is stopped.
 The app URL is only shown once the backend confirms that the app is actually serving.
 That means `RUNNING` and `Serving` are not the same thing: `Serving` is the state where the Hopsworks proxy can reach the app end to end.
+An app that [scales to zero when idle](#scale-to-zero-when-idle) shows `Idle` while it has no pod; its URL stays, and opening it wakes it.
+
+### Scale to zero when idle
+
+By default an app scales to zero when idle: the pod goes away once no request has been in flight for the **idle cooldown** (six hours by default, the cluster variable `pythonapp_idle_cooldown_seconds`), the app shows the `Idle` state, and the next request brings the pod back: the request waits for up to the **cold-start timeout** while the app starts, then goes through.
+Opening the app from the UI, or any request to its URL, is what wakes it.
+Turn **Scale to zero when idle** off for an app that must stay up: it then keeps its one pod, and any GPU it requested, for as long as it is started.
+
+The option needs KEDA and its HTTP add-on on the cluster (`kube_keda_installed`, installed by default), the same components that scale model deployments to zero; see [autoscaling](../../mlops/serving/autoscaling.md#scale-to-zero-when-idle).
+On a cluster without them the option is not offered and every app stays always on.
+Apps created before the option existed keep running always on until you edit them and turn it on.
+It is the only scaling an app does: an app always runs at most one replica.
+
+Things to know:
+
+- An open WebSocket counts as a request in flight. A Streamlit or Gradio tab that is open keeps the app up; the cooldown starts when the last tab closes.
+- A plain request, such as a Flask call, keeps the app active for a minute after it, and the cooldown counts from then: an app that answers short requests goes idle one cooldown plus a minute after the last one.
+- A wake starts a fresh process. Streamlit reconnects and reruns the script from scratch, and session state is gone, as after any restart.
+- The cold-start timeout defaults to, and cannot exceed, the cluster's app ceiling, `pythonapp_cold_start_timeout_max_seconds` (300 seconds by default). The request that woke the app also passes the ingress, whose read timeout (60 seconds for ingress-nginx unless an administrator raises it with the `nginx.ingress.kubernetes.io/proxy-read-timeout` annotation in the chart's `ingress.annotations`) fails it earlier whatever the interceptor would allow. A wake that outlasts either limit fails the request that woke the app, but the pod keeps starting, and the next request finds it ready.
+- The idle cooldown starts counting once the app is ready for the first time, so a slow start (image pull, environment setup) does not send it to zero before it has served; an app nobody opens goes idle one cooldown after it came up.
+- Auto-redeploy of a Git-backed app pauses while the app is idle, since nothing watches the branch; the pod clones the branch HEAD when it wakes.
 
 ### What the app details page shows
 
@@ -368,6 +460,7 @@ The details page includes:
 - Public access status for Streamlit apps
 - Git source details, if the app is Git-backed, including the branch, the deployed commit, and whether auto-redeploy is enabled
 - Monitoring configuration
+- Whether the app scales to zero when idle, with its cooldown and cold-start timeout
 - Resource requests
 - Runtime environment
 - Environment variables: the per-app ones and the database and feature store access variables the platform injects
@@ -422,6 +515,50 @@ app.run()
 print(app.app_url)
 ```
 
+A Flask app from a project file, and a Node.js app from a repository:
+
+```python
+flask_app = apps.create_app(
+    "customer_api",
+    app_kind="FLASK",
+    app_path="Resources/api/app.py",
+    app_port=5000,
+)
+
+node_app = apps.create_app(
+    "customer_portal",
+    app_kind="NODEJS",
+    git_url="https://github.com/my-org/portal.git",
+    git_provider="GitHub",
+    entrypoint_script="src/server.js",
+)
+```
+
+A Streamlit app that scales to zero after two minutes without requests (scale to zero is on by default; the cooldown is what changes here):
+
+```python
+app = apps.create_app(
+    "customer_dashboard",
+    app_path="Resources/app.py",
+    idle_cooldown_seconds=120,
+)
+
+app.run()
+# ... two minutes later, fetch the app again: state is read from the backend, not cached
+app = apps.get_app("customer_dashboard")
+print(app.state)  # IDLE; opening app.app_url wakes it
+```
+
+An app that must stay up:
+
+```python
+app = apps.create_app(
+    "always_on_dashboard",
+    app_path="Resources/app.py",
+    idle_scale_to_zero=False,
+)
+```
+
 A Git-backed app that redeploys itself on every push:
 
 ```python
@@ -446,6 +583,7 @@ Common SDK methods:
 - `app.delete()`
 - `app.make_public()` / `app.make_private()`
 - `app.app_url`
+- `app.state`, `app.idle_scale_to_zero`, `app.idle_cooldown_seconds`, `app.cold_start_timeout_seconds`
 
 ## CLI
 
@@ -467,6 +605,7 @@ Use `--git-url` and `--entrypoint-script` for Git-backed Streamlit apps.
 Use `--entrypoint-command` and `--app-port` for custom apps.
 Add `--git-auto-redeploy` to roll a Git-backed app onto every new commit.
 Pass `--no-db-access` for an app that must not get the online database variables; Trino access does not depend on it.
+Apps scale to zero when idle by default; pass `--idle-cooldown-seconds` and `--cold-start-timeout-seconds` if the defaults do not fit, or `--no-idle-scale-to-zero` for an app that must stay up.
 
 ## See also
 

@@ -202,6 +202,7 @@ nav:
               - Session Capacity Warnings: user_guides/projects/jupyter/session_capacity_warnings.md
           - Terminal:
               - Browser Terminal: user_guides/compute/terminal.md
+              - Start the Terminal: user_guides/projects/terminal/start.md
               - Teleport Sessions: user_guides/projects/terminal/teleport.md
           - Jobs:
               - Run Python Job: user_guides/projects/jobs/python_job.md
@@ -339,6 +340,7 @@ nav:
           - hopsfs: setup_installation/common/helm_chart_values/hopsfs.md
           - hopsfs-csi: setup_installation/common/helm_chart_values/hopsfs-csi.md
           - hopsworks: setup_installation/common/helm_chart_values/hopsworks.md
+          - hw-keda: setup_installation/common/helm_chart_values/hw-keda.md
           - hw-kueue: setup_installation/common/helm_chart_values/hw-kueue.md
           - hw-kyverno: setup_installation/common/helm_chart_values/hw-kyverno.md
           - judge: setup_installation/common/helm_chart_values/judge.md

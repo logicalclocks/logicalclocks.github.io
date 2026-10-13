@@ -57,8 +57,8 @@ Additionally, you can find the nº of instances currently running by scrolling d
 
 !!! info "Scale-to-zero capabilities"
     If scale-to-zero capabilities are enabled, you can see how the nº of instances of a running deployment goes to zero and the status changes to `idle`.
-    To enable scale-to-zero in a deployment, see [Resources Guide](resources.md).
-    Scale-to-zero, and therefore the `idle` status, apply to deployments in ==Knative== mode only, see [Deployment mode](autoscaling.md#deployment-mode).
+    To enable scale-to-zero in a deployment, set its minimum number of instances to 0, see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
+    In ==Standard== mode this needs KEDA on the cluster and a predictor without a transformer; in ==Knative== mode it is always available.
 
 ## Code
 
@@ -128,7 +128,7 @@ The status of a deployment is a high-level description of its current state.
     | CREATED  | Deployment has never been started                                                                                                            |
     | STARTING | Deployment is starting                                                                                                                       |
     | RUNNING  | Deployment is ready and running. Predictions are served without additional latencies.                                                        |
-    | IDLE     | Deployment is ready but scaled to zero or has no active replicas. Higher latencies (cold-start) are expected on the first inference request. Knative mode only. |
+    | IDLE     | Deployment is ready but scaled to zero or has no active replicas. Higher latencies (cold-start) are expected on the first inference request.                    |
     | FAILED   | Terminal state. The deployment has encountered an unrecoverable error. More details can be found in the status condition.                    |
     | UPDATING | Deployment is applying updates to the running instances                                                                                      |
     | STOPPING | Deployment is stopping                                                                                                                       |
