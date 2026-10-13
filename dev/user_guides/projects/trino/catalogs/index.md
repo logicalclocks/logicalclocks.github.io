@@ -49,6 +49,12 @@ An Oracle data source that authenticates with a wallet is delivered the second w
 
 No credential is ever sent to the browser, and rotating one stays a single operation on the secret rather than an edit of every catalog that uses it.
 
+An Oracle data source with [provided credentials][data-source-provided-credentials] is the exception: its catalog stores no login, and each query logs in with the querying member's own credentials, sent as Trino extra credentials.
+Such a catalog is always a [private catalog][private-catalogs] of the member who creates it, and each member creates their own.
+The SQL runner and the Python client send them for you; other Trino clients must send them themselves.
+Creating such a catalog requires your own credentials for the data source, and its connection test runs as you.
+See [Trino catalogs on a data source with provided credentials][data-source-provided-credentials-trino].
+
 ## Creating a catalog by hand
 
 A source that has no Hopsworks data source is added by hand.
@@ -115,6 +121,7 @@ A private catalog differs from a project catalog in what it can reach and who co
   See [Mountable secrets for private catalogs][mountable-secrets-for-private-catalogs].
 - It cannot be created from a data source, because a data source's credential belongs to the project.
   Enter the connection details yourself instead.
+  A data source with [provided credentials][data-source-provided-credentials-trino] is the exception: its catalog is always private, reads with your own credentials, and cannot be shared.
 - Only you can edit, delete or share it, from any of your projects and whatever your role there, so being made a Data Scientist in a project does not lock you out of your own catalogs.
   Other members of your projects cannot query it unless you share it with their project.
 - You write to it only from a project where you are a Data Owner, and read it from any other.
@@ -209,6 +216,7 @@ Other projects can read a catalog only through a share, which grants read access
 See [Sharing Catalogs and Feature Groups][sharing-catalogs-and-feature-groups].
 
 The query engine reads the external system as the database user in the connection credentials, so no share can expose more than those credentials allow.
+A catalog on a data source with provided credentials reads as its owner's own database user instead.
 Scoping that database user at the source remains the strongest limit on what a catalog can reach.
 
 A Data Owner of the project can also run a JDBC catalog's `system.query` table function, which passes a query to the source database as that database user.
