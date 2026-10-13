@@ -6,17 +6,16 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791902687` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791916060` (Hopsworks `5.2.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
 !!! info "Upstream charts"
 
     - Values under `hw-keda.keda` go to [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) from `https://kedacore.github.io/charts`.
-    - Values under `hw-keda.keda-add-ons-http` go to [`keda-add-ons-http` 0.16.0](https://artifacthub.io/packages/helm/kedacore/keda-add-ons-http/0.16.0) from `https://kedacore.github.io/charts`.
 
-    Only the values Hopsworks sets under `hw-keda.keda` and `hw-keda.keda-add-ons-http` are listed on this page.
-    Any other value of the charts can be set under the same keys; each link opens the chart's documentation for the version Hopsworks pins.
+    Only the values Hopsworks sets under `hw-keda.keda` are listed on this page.
+    Any other value of the chart can be set there too; the link opens its documentation for the version Hopsworks pins.
 
 ## General { #helm-values-hw-keda-general }
 
@@ -148,7 +147,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         ```
 
 `hw-keda.keda-add-ons-http` <a class="headerlink" href="#helm.hw-keda.keda-add-ons-http" title="Permanent link">#</a> { #helm.hw-keda.keda-add-ons-http }
-:   Type `object`, passed to the [`keda-add-ons-http` 0.16.0](https://artifacthub.io/packages/helm/kedacore/keda-add-ons-http/0.16.0) chart, whose other values are documented there.
+:   Type `object`.
     override keda-add-ons-http values (the KEDA HTTP add-on, HWORKS-3113, always installed with KEDA). Everything not restated here is the upstream default: <https://github.com/kedacore/charts/blob/main/http-add-on/values.yaml>
 
     ??? note "Default"
