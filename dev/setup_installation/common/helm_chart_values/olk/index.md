@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791863176` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791875937` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -263,7 +263,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         extraNamespaces: []
         fullnameOverride: null
         image:
-          tag: 8.19.21
+          tag: 8.19.23
         kubernetesMetadata:
           cronjob: null
           deployment: null
@@ -346,7 +346,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     full name override
 
 `olk.filebeat.image.tag` <a class="headerlink" href="#helm.olk.filebeat.image.tag" title="Permanent link">#</a> { #helm.olk.filebeat.image.tag }
-:   Type `string`, default `"8.19.21"`.
+:   Type `string`, default `"8.19.23"`.
 
 `olk.filebeat.kubernetesMetadata.cronjob` <a class="headerlink" href="#helm.olk.filebeat.kubernetesMetadata.cronjob" title="Permanent link">#</a> { #helm.olk.filebeat.kubernetesMetadata.cronjob }
 :   Type `bool|null`, default `nil`.
