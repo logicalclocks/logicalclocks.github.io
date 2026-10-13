@@ -346,7 +346,7 @@ The catalog becomes queryable after the query engine restarts, as described in [
 !!! api "API reference"
 
     - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_data_source`][hsfs.feature_store.FeatureStore.get_data_source]
-    - <code class="doc-symbol doc-symbol-method"></code> [`ExternalFeatureGroup.test_data_source_access`][hsfs.feature_group.ExternalFeatureGroup.test_data_source_access]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ExternalFeatureGroup.test_data_source_access`][external-feature-group-data-source-access]
     - <code class="doc-symbol doc-symbol-class"></code> `SqlConnector`
         - <code class="doc-symbol doc-symbol-method"></code> [`validate_credentials`][data-source-provided-credentials-add]
         - <code class="doc-symbol doc-symbol-method"></code> [`set_credentials`][data-source-provided-credentials-add]

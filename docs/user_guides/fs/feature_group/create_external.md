@@ -236,7 +236,7 @@ Credentials for a provided data source belong to the project that owns the data 
 To read a feature group from a feature store shared with your project, add your credentials in the project that owns its data source.
 In your own project, the Data Source submenu and the greyed-out card point you to the owning project instead of opening the credentials dialog.
 
-### From the API and the CLI
+### From the API and the CLI { #external-feature-group-data-source-access }
 
 The same state is on the feature group object, and the check can be run from code:
 
@@ -268,7 +268,7 @@ hops fg test-access sales_external --version 1 --json
 !!! api "API reference"
 
     - <code class="doc-symbol doc-symbol-class"></code> [`ExternalFeatureGroup`][hsfs.feature_group.ExternalFeatureGroup]
-        - <code class="doc-symbol doc-symbol-attribute"></code> [`data_source_access`][hsfs.feature_group.ExternalFeatureGroup.data_source_access]
-        - <code class="doc-symbol doc-symbol-method"></code> [`test_data_source_access`][hsfs.feature_group.ExternalFeatureGroup.test_data_source_access]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`data_source_access`][external-feature-group-data-source-access]
+        - <code class="doc-symbol doc-symbol-method"></code> [`test_data_source_access`][external-feature-group-data-source-access]
 
     <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
