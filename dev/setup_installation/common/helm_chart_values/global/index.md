@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791916060` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791984668` (Hopsworks `5.2.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -902,7 +902,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791916060` (Hopsworks `5.
             mountWaitSeconds: 300
             storeRoot: /apps/trino
           image:
-            tag: 483-v1
+            tag: 483-v2
           mountRetryTimeLimit: 2m
           mountableSecrets:
             csi:
@@ -1002,11 +1002,11 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1791916060` (Hopsworks `5.
     Where the files live in HopsFS. Preset by charts/hopsfs, passed to the sidecar as `--srcDir` and seeded to the backend as `trino_files_path`. Moving it does not move existing files.
 
 `global._hopsworks.trino.image` <a class="headerlink" href="#helm.global._hopsworks.trino.image" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image }
-:   Type `object`, default `{"tag":"483-v1"}`.
+:   Type `object`, default `{"tag":"483-v2"}`.
     The Trino image this release deploys, restated here for the backend.
 
 `global._hopsworks.trino.image.tag` <a class="headerlink" href="#helm.global._hopsworks.trino.image.tag" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image.tag }
-:   Type `string`, default `"483-v1"`.
+:   Type `string`, default `"483-v2"`.
     The Trino image tag, seeded to the backend as `trino_image_tag` so it can tell when its connector-property table is stale. Duplicates trino.image.tag in charts/trino/values.yaml, which cannot be templated; charts/trino fails the render when they disagree. Bump both.
 
 `global._hopsworks.trino.mountRetryTimeLimit` <a class="headerlink" href="#helm.global._hopsworks.trino.mountRetryTimeLimit" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountRetryTimeLimit }
