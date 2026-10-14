@@ -366,7 +366,7 @@ nav:
 # The release pages are their own site, built from main only by mkdocs.releases.yml,
 # so every docs version links to the same copy. See .claude/docs/releases.md.
 exclude_docs: |
-  releases/
+  /releases/
 
 theme:
   name: material

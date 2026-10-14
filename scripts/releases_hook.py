@@ -3,17 +3,21 @@
 Its ``docs_dir`` is ``docs/releases``, so the stylesheets, scripts, logo and
 favicon the inherited config points at are outside it; this adds them from ``docs/``.
 
-A release page (``<major>/X.Y.Z.md``) declares ``released``, ``application`` and
-``python_client`` in its front matter. From those this renders the line under the
-page title, a "Python client" section linking the GitHub release notes of every
-client version new in that release, and the table of a major's ``index.md`` where
-it holds ``<!-- releases -->``.
+A release page (``<major>/X.Y.Z.md``) starts with ``# Hopsworks X.Y.Z { #hopsworks-X-Y-Z }``
+and declares ``released``, ``application`` and ``python_client`` in its front matter.
+From those this renders the line under the page title, a "Python client" section
+linking the GitHub release notes of every client version new in that release, and
+the table of a major's ``index.md`` where it holds ``<!-- releases -->``.
+
+With ``HOPSWORKS_DOCS_CHECK_CLIENT_TAGS`` set, as ``hopsworks-docs check`` does, the
+build fails if hopsworks-api has no tag for a client version it links.
 """
 
 from __future__ import annotations
 
 import os
 import re
+import subprocess
 
 from mkdocs.exceptions import PluginError
 from mkdocs.structure.files import File
@@ -23,10 +27,13 @@ from mkdocs.utils.meta import get_data
 RELEASE_PAGE = re.compile(r"^(\d+)/(\d+\.\d+\.\d+)\.md$")
 VERSION = re.compile(r"\d+\.\d+\.\d+")
 FIELDS = ("released", "application", "python_client")
-CLIENT_RELEASES = "https://github.com/logicalclocks/hopsworks-api/releases/tag/{}"
+CLIENT_REPO = "https://github.com/logicalclocks/hopsworks-api"
+CLIENT_RELEASES = CLIENT_REPO + "/releases/tag/{}"
 
 # major -> [(version, front matter)], oldest first; rebuilt by on_files on every build
 _releases = {}
+# client versions linked by this build
+_linked_clients = set()
 
 
 def on_files(files, *, config):
@@ -38,9 +45,12 @@ def on_files(files, *, config):
         config.theme["favicon"],
     ]
     for path in shared:
-        files.append(File(path, docs, config.site_dir, config.use_directory_urls))
+        # Skip URLs and theme defaults, which aren't under docs/.
+        if path and os.path.isfile(os.path.join(docs, path)):
+            files.append(File(path, docs, config.site_dir, config.use_directory_urls))
 
     _releases.clear()
+    _linked_clients.clear()
     for file in files.documentation_pages():
         match = RELEASE_PAGE.match(file.src_uri)
         if match:
@@ -65,8 +75,9 @@ def _read_release(file, version):
     fields = {field: str(meta[field]) for field in FIELDS}
     if not VERSION.fullmatch(fields["python_client"]):
         raise PluginError(f"{file.src_uri}: python_client must be a quoted X.Y.Z")
-    if markdown.lstrip().partition("\n")[0] != f"# Hopsworks {version}":
-        raise PluginError(f"{file.src_uri}: must start with '# Hopsworks {version}'")
+    title = f"# Hopsworks {version} {{ #{_anchor(version)} }}"
+    if markdown.lstrip().partition("\n")[0] != title:
+        raise PluginError(f"{file.src_uri}: must start with '{title}'")
     return fields
 
 
@@ -87,17 +98,19 @@ def _version(text):
 
 
 def _anchor(version):
-    return "hopsworks-" + version.replace(".", "")
+    return "hopsworks-" + version.replace(".", "-")
 
 
 def _client_link(version):
+    _linked_clients.add(version)
     return f"[{version}]({CLIENT_RELEASES.format(version)})"
 
 
 def _new_clients(release, previous_client, client):
     """The client versions new in ``release``, newest first.
 
-    hopsworks-api tags every patch of a minor, so the patches in between exist.
+    Every patch in between is listed, so a patch hopsworks-api never tagged fails
+    the tag check.
     """
     major, minor, patch = _version(client)
     if previous_client and _version(previous_client)[:2] == (major, minor):
@@ -154,6 +167,23 @@ def _releases_table(releases):
             f"| {_client_link(fields['python_client'])} |"
         )
     return "\n".join(lines)
+
+
+def on_post_build(*, config):
+    if not os.environ.get("HOPSWORKS_DOCS_CHECK_CLIENT_TAGS"):
+        return
+    refs = subprocess.run(
+        ["git", "ls-remote", "--tags", "--refs", CLIENT_REPO],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    tags = {line.rpartition("refs/tags/")[2] for line in refs.splitlines()}
+    missing = sorted(_linked_clients - tags, key=_version)
+    if missing:
+        raise PluginError(
+            f"hopsworks-api has no tag for the linked client versions {', '.join(missing)}"
+        )
 
 
 def on_page_markdown(markdown, *, page, config, files):

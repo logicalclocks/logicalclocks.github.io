@@ -10,11 +10,11 @@ The versioned docs leave `docs/releases/` out with `exclude_docs`, and CI fails 
 Each release has one page, grouped by major version (`docs/releases/<major>/<X.Y.Z>.md`), newest first.
 Add a new release to the top of its major's group in the `nav:` of `mkdocs.releases.yml`; the table in `docs/releases/<major>/index.md` is generated.
 A new major also needs `docs/releases/<major>/index.md` holding `# Hopsworks <major>.x` and `<!-- releases -->`, a nav group, and a link in `docs/releases/index.md`.
-`uv run hopsworks-docs check` builds this site too; preview it with `uv run mkdocs serve -f mkdocs.releases.yml`.
+`uv run hopsworks-docs check` builds this site too, and fails if hopsworks-api has no tag for a Python client version a page links; preview it with `uv run mkdocs serve -f mkdocs.releases.yml`.
 
 ## Page shape
 
-A release is a `hopsworks-helm` tag `vX.Y.Z`; the page is named after it and starts with `# Hopsworks X.Y.Z`.
+A release is a `hopsworks-helm` tag `vX.Y.Z`; the page is named after it and starts with `# Hopsworks X.Y.Z { #hopsworks-X-Y-Z }`, so link to it with `[X.Y.Z][hopsworks-X-Y-Z]`.
 Its front matter declares three versions, all quoted strings:
 
 ```yaml
@@ -33,12 +33,15 @@ Each page has three sections, in this order: `## Release notes`, `## Breaking ch
 A section with nothing to report keeps its heading and says so in one sentence, for example "There are no breaking changes in this release."
 
 A patch page lists the changes since the previous tag of its minor version.
-An X.Y.0 page lists the changes since the previous minor version, and an entry that also shipped in a patch release of that minor version ends with `(also in X.Y.Z)`, so readers on that patch can skip it.
+An X.Y.0 page lists the changes since the previous minor version.
+An entry that also shipped in a patch release of that minor version ends with `(also in [X.Y.Z][hopsworks-X-Y-Z])`, or `(also in X.Y.Z)` if that patch has no page, as for 4.8, so readers on that patch can skip it.
+Its release notes come after the new ones, condensed into one or two bullets per patch release, because the patch page has the details; a breaking change keeps its own entry with what to do.
 
 ## Writing entries
 
 - Write for users and operators, not developers; an entry is not a commit message.
 - Keep each entry to one line; add a second only for what a reader must act on, such as a value to set or a risk.
+- Leave out defaults, internals and explanations a reader doesn't act on; the values reference has the details.
 - Start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed, Upgraded.
 - Name the exact API, Helm value, config variable or CLI flag.
 - Leave out changes with no user-visible effect: tests, CI, refactors, and fixes for bugs that never shipped.

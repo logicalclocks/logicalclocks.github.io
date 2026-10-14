@@ -142,11 +142,6 @@ jobs:
         if: ${{ env.BRANCH == 'main' }}
         run: mike deploy dev --prop-set hidden=true --push
 
-      # One release notes site for every docs version, built from main only.
-      - name: Deploy the release notes with mike
-        if: ${{ env.BRANCH == 'main' }}
-        run: mike deploy --config-file mkdocs.releases.yml releases --prop-set hidden=true --push
-
       - name: Deploy the release docs with mike
         if: ${{ env.BRANCH != 'main' }}
         run: mike deploy ${HOPSWORKS_VERSION} --push
@@ -154,3 +149,38 @@ jobs:
       - name: Update latest docs if needed
         if: ${{ env.BRANCH != 'main' && steps.is-latest.outputs.result == 'true' }}
         run: mike alias ${HOPSWORKS_VERSION} latest --update-aliases --push
+
+  # One release notes site for every docs version, built from main only. It runs
+  # after publish-release, so the two never push gh-pages at once, but doesn't
+  # need it to succeed: the release notes build needs no javadoc or Helm values.
+  publish-release-notes:
+    needs: publish-release
+    if: ${{ !cancelled() && (github.event_name == 'push' && github.ref_name == 'main' || github.event_name == 'repository_dispatch' && github.event.client_payload.branch == 'main') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+
+      - name: Install Python dependencies
+        run: uv sync --extra cli
+
+      - name: Setup git for mike
+        run: |
+          git config --global user.name Mike
+          git config --global user.email mike@docs.hopsworks.ai
+
+      - name: Deploy the release notes with mike
+        run: mike deploy --config-file mkdocs.releases.yml releases --prop-set hidden=true --push
