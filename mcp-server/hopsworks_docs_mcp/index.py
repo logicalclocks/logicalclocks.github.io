@@ -17,7 +17,11 @@ import re
 import unicodedata
 from collections import Counter
 from dataclasses import dataclass, field
-from pathlib import Path
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 _FRONTMATTER = re.compile(r"^---\n.*?\n---\n", re.DOTALL)
 _WORD = re.compile(r"[a-z0-9]+")
@@ -56,7 +60,8 @@ class Page:
     title: str
     url: str
     markdown: str
-    tokens: list[str] = field(default_factory=list)
+    tf: Counter[str] = field(default_factory=Counter)
+    length: int = 0
 
     def sections(self) -> list[Section]:
         """Split the page into sections keyed by heading anchor."""
@@ -126,7 +131,8 @@ def _nav_titles(mkdocs_yml: Path) -> dict[str, str]:
         elif isinstance(node, dict):
             for title, value in node.items():
                 if isinstance(value, str) and value.endswith(".md"):
-                    out[value[:-3]] = title
+                    # YAML reads a title like `3.0` as a number.
+                    out[value[:-3]] = str(title)
                 else:
                     walk(value)
 
@@ -137,7 +143,7 @@ def _nav_titles(mkdocs_yml: Path) -> dict[str, str]:
 class DocsIndex:
     """In-memory, read-only index of the documentation pages."""
 
-    def __init__(self, docs_dir: Path, site_url: str = "https://docs.hopsworks.ai/"):
+    def __init__(self, docs_dir: Path, site_url: str):
         self.docs_dir = docs_dir
         self.site_url = site_url
         self.pages: dict[str, Page] = {}
@@ -163,15 +169,13 @@ class DocsIndex:
                 title=title,
                 url=_page_url(self.site_url, page_id),
                 markdown=markdown,
-                tokens=tokens,
+                tf=Counter(tokens),
+                length=len(tokens),
             )
         for page in self.pages.values():
-            for term in set(page.tokens):
-                self._df[term] += 1
+            self._df.update(page.tf.keys())
         if self.pages:
-            self._avg_len = sum(len(p.tokens) for p in self.pages.values()) / len(
-                self.pages
-            )
+            self._avg_len = sum(p.length for p in self.pages.values()) / len(self.pages)
 
     def search(self, query: str, limit: int = 5) -> list[tuple[Page, float, str]]:
         """BM25-rank pages against the query; return (page, score, snippet)."""
@@ -182,8 +186,8 @@ class DocsIndex:
         k1, b = 1.5, 0.75
         scored: list[tuple[Page, float]] = []
         for page in self.pages.values():
-            tf = Counter(page.tokens)
-            dl = len(page.tokens) or 1
+            tf = page.tf
+            dl = page.length or 1
             score = 0.0
             for term in q_terms:
                 if term not in tf:
