@@ -1,0 +1,176 @@
+# How To Clone a Git Repository
+
+## Introduction
+
+Repositories are cloned and managed within the scope of a project.
+The content of the repository will reside on the Hopsworks File System.
+The content of the repository can be edited from Jupyter notebooks and can for example be used to configure Jobs.
+Repositories can be managed from the Git section in the project settings.
+The Git overview in the project settings provides a list of repositories currently cloned within the project, the location of their content as well which branch and commit their HEAD is currently at.
+
+## Prerequisites
+
+- For cloning a private repository, you should configure a [Git Provider](configure_git_provider.md) with your git credentials.
+You can clone a GitHub and GitLab public repository without configuring the provider.
+However, for BitBucket you always need to configure the username and token to clone a repository.
+
+## UI
+
+### Step 1: Navigate to repositories
+
+In the left-hand sidebar found in your project click on `Project settings`, and then navigate to the `Git` section.
+
+This page lists all the cloned git repositories under `Repositories`, while operations performed on those repositories, e.g `push`/`pull`/`commit` are listed under `Git Executions`.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/git/repository_overview.png" alt="Repository overview">
+    <figcaption>Git repository overview</figcaption>
+  </figure>
+</p>
+
+### Step 2: Clone a repository
+
+To clone a new repository, click on the `Clone repository` button on the Git overview page.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/git/clone_repo_dialog.png" alt="Clone a repository">
+    <figcaption>Git clone</figcaption>
+  </figure>
+</p>
+
+You should first choose the git provider e.g., GitHub, GitLab or BitBucket.
+If you are cloning a private repository, remember to configure the host, username and token for the provider first in [Git Provider](configure_git_provider.md).
+The clone dialog also asks you to specify the URL of the repository to clone.
+The supported protocol is HTTPS.
+As an example, if the repository is hosted on GitHub, the URL should look like: `https://github.com/logicalclocks/hops-examples.git`.
+
+Then specify which branch you want to clone.
+By default the `main` branch will be used, however a different branch or commit can be specified by selecting `Clone from a specific branch`.
+
+You can select the folder, within your project, in which the repository should be cloned.
+By default, the repository is going to be cloned within the `Jupyter` dataset.
+However, by clicking on the location button, a different location can be selected.
+
+Finally, click on the `Clone repository` button to trigger the cloning of the repository.
+
+### Step 3: Track progress of the clone
+
+The progress of the git clone can be tracked under `Git Executions`.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/git/repo_cloning.png" alt="Clone a repository">
+    <figcaption>Track progress of clone</figcaption>
+  </figure>
+</p>
+
+### Step 4: Browse repository files
+
+In the `File browser` page you can now browse the files of the cloned repository.
+In the figure below, the repository is located in `Jupyter/hops-examples` directory.
+
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/git/browse_repo_files.png" alt="Browse repository files">
+    <figcaption>Browse repository files</figcaption>
+  </figure>
+</p>
+
+## Code
+
+You can also clone a repository through the hopsworks git API in python.
+
+### Step 1: Get the git API
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+
+git_api = project.get_git_api()
+```
+
+### Step 2: Clone the repository
+
+```python
+REPO_URL = (
+    "https://github.com/logicalclocks/hops-examples.git"  # git repository
+)
+HOPSWORKS_FOLDER = "Jupyter"  # path in Hopsworks filesystem to clone to
+PROVIDER = "GitHub"
+BRANCH = "master"  # optional branch to clone
+
+examples_repo = git_api.clone(
+    REPO_URL, HOPSWORKS_FOLDER, PROVIDER, branch=BRANCH
+)
+```
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_git_api`][hopsworks_common.project.Project.get_git_api]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitApi`][hopsworks_common.core.git_api.GitApi]
+        - <code class="doc-symbol doc-symbol-method"></code> [`clone`][hopsworks_common.core.git_api.GitApi.clone]
+    - <code class="doc-symbol doc-symbol-class"></code> [`GitRepo`][hopsworks_common.git_repo.GitRepo]
+    - <code class="doc-symbol doc-symbol-docs"></code> [Git management notebook](https://github.com/logicalclocks/hops-examples/blob/master/notebooks/services/git.ipynb)
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+## Errors and Troubleshooting
+
+### Invalid credentials
+
+This might happen when the credentials entered for the provider are incorrect.
+Try the following:
+
+- Confirm that the settings for the provider ( in Account Settings > Git providers) are correct.
+Each host row must carry the host, the username and the token.
+- Confirm that you have selected the correct Git provider when cloning the repository.
+- Ensure your personal access token has the correct repository access rights.
+- Ensure your personal access token has not expired.
+
+### Timeout errors
+
+Cloning a large repo or checking out a large branch may hit timeout errors.
+You can try again later if the system was under heavy load at the time.
+
+### Symlink errors
+
+Git repositories with symlinks are not yet supported, therefore cloning repositories with symlinks will fail.
+You can create a separate branch to remove the symlinks, and clone from this branch.
+
+### TLS certificate errors
+
+Cloning from a self-hosted GitLab, GitHub Enterprise or Bitbucket whose certificate is issued by a private certificate authority fails with `server certificate verification failed`.
+An administrator can configure the certificates to trust in [Cluster Configuration](../../../setup_installation/admin/variables.md):
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `git_custom_ca_configmap` | `""` | Name of a Kubernetes ConfigMap holding PEM-encoded CA certificates to trust. It must exist in every project namespace. |
+| `git_custom_ca_configmap_key` | `ca-bundle.crt` | The key within that ConfigMap. A single key may hold several concatenated certificates. |
+| `git_disable_tls_verification` | `false` | Skips certificate verification for every Git remote. |
+
+The configured certificates are trusted in addition to the public certificate authorities, so public providers keep working.
+These settings apply to HTTPS remotes only and have no effect on SSH.
+
+!!! warning
+    `git_disable_tls_verification` disables verification for all Git remotes, leaving those connections open to interception.
+    Prefer `git_custom_ca_configmap`.
+
+### Proxy errors
+
+If the cluster reaches your Git provider through an HTTP proxy, an administrator can configure one per provider in [Cluster Configuration](../../../setup_installation/admin/variables.md):
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `git_github_http_proxy`, `git_github_https_proxy` | `""` | Proxy for Git traffic to GitHub. |
+| `git_gitlab_http_proxy`, `git_gitlab_https_proxy` | `""` | Proxy for Git traffic to GitLab. |
+| `git_bitbucket_http_proxy`, `git_bitbucket_https_proxy` | `""` | Proxy for Git traffic to Bitbucket. |
+
+An empty value means a direct connection.
+
+## Going Further
+
+You can now start [Jupyter](../jupyter/python_notebook.md) from the cloned git repository path to work with the files.

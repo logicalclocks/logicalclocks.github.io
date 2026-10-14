@@ -1,0 +1,44 @@
+title: Hopsworks AI
+description: Role that allows Hopsworks AI to manage resources
+stage: GA
+includedPermissions:
+- compute.disks.create
+- compute.disks.createSnapshot
+- compute.snapshots.create
+- compute.snapshots.delete
+- compute.snapshots.setLabels
+- compute.snapshots.get
+- compute.snapshots.useReadOnly
+- compute.firewalls.create
+- compute.firewalls.delete
+- compute.firewalls.get
+- compute.firewalls.list
+- compute.firewalls.update
+- compute.globalOperations.get
+- compute.instances.create
+- compute.instances.delete
+- compute.instances.get
+- compute.instances.setLabels
+- compute.instances.setMetadata
+- compute.instances.setServiceAccount
+- compute.instances.start
+- compute.instances.stop
+- compute.instances.setMachineType
+- compute.networks.create
+- compute.networks.delete
+- compute.networks.get
+- compute.networks.list
+- compute.networks.updatePolicy
+- compute.projects.get
+- compute.subnetworks.create
+- compute.subnetworks.delete
+- compute.subnetworks.get
+- compute.subnetworks.list
+- compute.subnetworks.use
+- compute.subnetworks.useExternalIp
+- compute.zoneOperations.get
+- iam.serviceAccounts.actAs
+- iam.serviceAccounts.list
+- resourcemanager.projects.get
+- iam.roles.get
+- resourcemanager.projects.getIamPolicy
