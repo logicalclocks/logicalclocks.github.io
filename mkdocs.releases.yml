@@ -8,14 +8,31 @@ site_description: "Release notes, breaking changes and migrations for every Hops
 docs_dir: docs/releases
 site_dir: site/releases
 strict: true
+# A release page missing from the nav fails the strict build.
+validation:
+  nav:
+    omitted_files: warn
 
 nav:
   - Releases: index.md
   - 5.x:
       - 5/index.md
+      - 5.1.1: 5/5.1.1.md
       - 5.1.0: 5/5.1.0.md
+      - 5.0.13: 5/5.0.13.md
+      - 5.0.12: 5/5.0.12.md
+      - 5.0.11: 5/5.0.11.md
+      - 5.0.10: 5/5.0.10.md
+      - 5.0.9: 5/5.0.9.md
+      - 5.0.8: 5/5.0.8.md
+      - 5.0.6: 5/5.0.6.md
+      - 5.0.5: 5/5.0.5.md
+      - 5.0.4: 5/5.0.4.md
+      - 5.0.3: 5/5.0.3.md
+      - 5.0.2: 5/5.0.2.md
       - 5.0.1: 5/5.0.1.md
       - 5.0.0: 5/5.0.0.md
+  - Python client releases: https://github.com/logicalclocks/hopsworks-api/releases
   - Documentation: https://docs.hopsworks.ai/latest/
 
 # The site is not versioned, so no version selector and no outdated banner.
@@ -31,9 +48,10 @@ extra_javascript:
   - js/drill-nav.js
   - js/external-links.js
 
+# releases_hook first, so llms_hook exports the Markdown it generates.
 hooks:
-  - scripts/llms_hook.py
   - scripts/releases_hook.py
+  - scripts/llms_hook.py
 
 plugins:
   - search
