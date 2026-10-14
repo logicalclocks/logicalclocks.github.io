@@ -40,7 +40,10 @@ On a cluster installed before 5.1 the hook repairs what it finds:
 - It copies everything else and keeps its name, including `featurestore`, `projects`, the OpenSearch Dashboards saved objects, the index state management policies, the embedding indices behind similarity search, and `.opendistro_security`, which holds the roles and mappings that Hopsworks creates for restricted grants and feature group shares.
   Nothing else is deleted, because anything the hook does not recognise might hold data nothing can rebuild.
 
-### What keeps working
+From 5.1.2 you can run the same pass on 5.1.x first, in a window you choose and with vector ingestion off, as described in [Copying the indices on 5.1.x first][opensearch-copy-on-51].
+The hook then finds nothing left to copy.
+
+### What keeps working { #opensearch-what-keeps-working }
 
 The hook copies one index at a time and blocks writes only on the index it is copying.
 Reads keep working on every index, apart from the moment each index is swapped for its copy: a read then gets HTTP 404 while the name is missing, or 503 while the new index's shards start.
@@ -49,7 +52,7 @@ A write to the index being copied is refused with HTTP 403 until its copy is don
 
 - OnlineFS retries a vector write that the block refuses for about a minute, then marks the row failed.
   The hook warns for each embedding index that it expects to stay blocked for more than about 45 seconds.
-  To keep those rows, turn vector ingestion off around the upgrade, as in the [upgrade steps][opensearch-upgrade-steps].
+  To keep those rows, [copy the indices on 5.1.x first][opensearch-copy-on-51] with vector ingestion off, or turn it off around the upgrade, as in the [upgrade steps][opensearch-upgrade-steps].
 - Log lines that logstash ships to a log index while it is blocked may be missing.
 - A grant, a revoke or a feature group share fails while the hook copies `.opendistro_security`, which it copies last, and changes nothing.
   Repeat it after the upgrade.
@@ -84,7 +87,7 @@ Pass `helm upgrade --timeout` at least that long, or Helm gives up on the hook b
 The time grows with the size of your old indices, `featurestore` and the embedding indices in particular.
 As a guide, a copy ran at roughly 15 MB per second on a 16-CPU node, and slower disks or fewer CPUs take longer.
 Before it starts, the hook prints the size of every index it will copy, how long each one is expected to stay blocked, the total, and the configured deadline, and warns when the total exceeds the deadline.
-To read that report without changing anything, set `olk.opensearch.indexUpgrade.enabled` to `false`.
+To read that report without changing anything, set `olk.opensearch.indexUpgrade.mode` to `report`.
 The hook then lists the indices and fails, apart from finishing an index that an interrupted earlier run left half done, and you can raise the deadline and the timeout before running the real upgrade.
 A cluster with nothing to copy or delete gets no report: the hook prints `Nothing to do` and the upgrade goes ahead.
 Once it copies, the hook logs how long writes to each index were actually refused.
@@ -190,6 +193,67 @@ Upgrade every satellite to 5.1.x before the central cluster moves to 5.2.x, beca
 Then upgrade every satellite to 5.2.x before the central cluster, because a satellite's Kafka has to move to KRaft before the central upgrade converts the Strimzi resources.
 Hopsworks clients on OpenSearch 2.19 against a satellite's OpenSearch 3.8 were verified.
 
+To copy a satellite's indices on 5.1.x first, upgrade the satellite's release as described in the next section, since each release runs its own Job.
+
+## Copying the indices on 5.1.x first { #opensearch-copy-on-51 }
+
+From 5.1.2, the index pass can also run as a Job of a 5.1.x upgrade, in a window you choose and with vector ingestion off, so no row written to a feature group with embeddings is marked failed.
+The Job copies like the hook, one index at a time, and deletes nothing: the logs and the other indices that the platform recreates are left to the 5.2 hook, which then has nothing left to copy.
+
+The Job is a Helm `post-upgrade` hook, so it runs once the rest of the upgrade is in place.
+Vector ingestion is turned off in an upgrade of its own before the Job runs, so that no OnlineFS pod still writes vectors to an embedding index while that index is blocked.
+
+1. Check Kafka retention.
+    Rows written to feature groups with embeddings wait in Kafka while vector ingestion is off.
+    The effective retention of the OnlineFS topics, in time and in bytes, has to cover the run plus the catch-up afterwards, and the default is 168 hours.
+2. Get the report: upgrade to 5.1.2 or later with `olk.opensearch.indexUpgrade.mode` set to `report`.
+    The Job lists the indices, their sizes and how long each one stays blocked, and fails without changing anything, apart from finishing an index that an interrupted earlier run left half done.
+    A cluster with nothing to copy gets no report: the Job prints `Nothing to copy` and succeeds.
+    Raise `olk.opensearch.indexUpgrade.activeDeadlineSeconds` above the estimate if needed.
+    Pass `mode` with `--set`, not in your values file: 5.2.1 and later read the same key, and a stored `report` makes their hook report and fail.
+3. Turn vector ingestion off, and wait for OnlineFS to roll:
+
+    ```bash
+    helm upgrade hopsworks hopsworks/hopsworks -n hopsworks --version <5.1.2 or later> -f <your values> \
+      --set onlinefs.deployment.vectordb.enabled=false
+    kubectl rollout status deployment/onlinefs-deployment -n hopsworks
+    kubectl get pods -n hopsworks -l app=onlinefs
+    ```
+
+    Go on once the rollout is complete and no older or terminating OnlineFS pod is listed, because an old pod keeps writing vectors until it is gone.
+4. Run it with vector ingestion still off:
+
+    ```bash
+    helm upgrade hopsworks hopsworks/hopsworks -n hopsworks --version <the same 5.1.x> -f <your values> \
+      --set olk.opensearch.indexUpgrade.mode=copy \
+      --set onlinefs.deployment.vectordb.enabled=false \
+      --timeout <longer than activeDeadlineSeconds>
+    ```
+
+    Helm waits for the Job, so the upgrade succeeds or fails with it.
+    With ArgoCD, set `global._hopsworks.mode` to `upgrade`, because the Job renders only on an upgrade.
+5. Turn vector ingestion back on in the next upgrade, with the same chart version:
+
+    ```bash
+    helm upgrade hopsworks hopsworks/hopsworks -n hopsworks --version <the same 5.1.x> -f <your values> \
+      --set onlinefs.deployment.vectordb.enabled=true
+    ```
+
+    OnlineFS then writes the rows that waited in Kafka.
+6. Take a new snapshot after the 5.2 upgrade, not now: a snapshot taken on 5.1.x still holds the logs and other pre-2.0 indices that the Job leaves to the 5.2 hook, and a 3.x cluster cannot restore them.
+
+While the Job runs, reads and writes behave as described in [What keeps working][opensearch-what-keeps-working], with vector ingestion off.
+
+- Do not restart OpenSearch, because a node that starts while `.opendistro_security` is swapped for its copy creates that index again from the chart's files.
+- Do not run `run_security_admin.sh`, because it writes the security configuration that the Job may be copying.
+- Do not change mappings or index templates, because a mapping update on the index being copied is refused, and the Job stops if a change puts a field on nmslib.
+- The Job refuses nmslib fields that it would not convert, as the hook does, including those on log indices that the 5.2 hook would delete, because it deletes nothing itself.
+
+If Helm times out, the Job can still be running.
+Check `kubectl get jobs -n hopsworks -l component=opensearch-index-upgrade` before you retry or turn vector ingestion back on.
+Do not roll back, because a rollback turns vector ingestion back on while the Job may still be copying an embedding index.
+A rerun finishes what a stopped run left.
+
 ## Upgrade steps { #opensearch-upgrade-steps }
 
 1. Take a snapshot and check that it completed, because the index pass rewrites indices in place.
@@ -213,10 +277,12 @@ Hopsworks clients on OpenSearch 2.19 against a satellite's OpenSearch 3.8 were v
       So does `helm upgrade --reuse-values` from a chart that rendered them: set the two values explicitly, or upgrade with `--reset-then-reuse-values`.
     - On 5.1, similarity search with a filter fails on feature groups whose embedding index was created on 5.0, because the 5.1 client sends the filter inside the nearest-neighbor query and the nmslib engine rejects it.
       A client fix and the index pass both resolve it.
-3. Get the report: run the upgrade to 5.2.x with `olk.opensearch.indexUpgrade.enabled` set to `false`, as described in [Set the timeout][opensearch-set-the-timeout], and raise `olk.opensearch.indexUpgrade.activeDeadlineSeconds` above the estimate if needed.
-    Set it back to `true`, or remove it from your values, before the real upgrade, because with `false` the hook fails after the report.
-    With nothing to copy or delete the hook prints `Nothing to do` instead and succeeds, so that upgrade goes ahead: continue at step 6.
-4. If the report warns that an embedding index stays blocked for long, turn vector ingestion off first, on your current 5.1.x:
+3. Optionally, copy the indices on 5.1.x now, as described in [Copying the indices on 5.1.x first][opensearch-copy-on-51].
+    The hook in step 6 then finds nothing left to copy, and you can skip steps 4 and 5.
+4. Get the report: run the upgrade to 5.2.x with `--set olk.opensearch.indexUpgrade.mode=report`, as described in [Set the timeout][opensearch-set-the-timeout], and raise `olk.opensearch.indexUpgrade.activeDeadlineSeconds` above the estimate if needed.
+    Leave it out of the real upgrade, because with `report` the hook fails after the report.
+    With nothing to copy or delete the hook prints `Nothing to do` instead and succeeds, so that upgrade goes ahead: continue at step 7.
+5. If the report warns that an embedding index stays blocked for long, turn vector ingestion off first, on your current 5.1.x:
 
     ```bash
     helm upgrade hopsworks hopsworks/hopsworks -n hopsworks --version <current 5.1.x> -f <your values> \
@@ -228,14 +294,14 @@ Hopsworks clients on OpenSearch 2.19 against a satellite's OpenSearch 3.8 were v
     Wait until the rollout is complete and no older or terminating OnlineFS pod is listed, because an old pod keeps writing vectors until it is gone.
     Keep `--set onlinefs.deployment.vectordb.enabled=false` on the upgrade to 5.2.x in the next step.
     The rows written meanwhile stay in Kafka, as long as the topic still holds them, and are written to OpenSearch once ingestion is back on.
-5. Upgrade to 5.2.x with a `--timeout` at least as long as `olk.opensearch.indexUpgrade.activeDeadlineSeconds`, and watch the hook:
+6. Upgrade to 5.2.x with a `--timeout` at least as long as `olk.opensearch.indexUpgrade.activeDeadlineSeconds`, and watch the hook:
 
     ```bash
     kubectl logs -n hopsworks -l component=opensearch-index-upgrade -f
     ```
 
     It ends with `Every index is now on OpenSearch 2.0 or later. Safe to upgrade.`, or with `Nothing to do` when no index needed it.
-6. Verify the upgrade:
+7. Verify the upgrade:
 
     ```bash
     kubectl get pods -n hopsworks -l app=opensearch
@@ -247,9 +313,9 @@ Hopsworks clients on OpenSearch 2.19 against a satellite's OpenSearch 3.8 were v
     The `StartupException` count must be 0.
     Expect version `3.8.0`, `minimum_index_compatibility_version` `2.0.0` and green cluster health.
     Then run a search in the Hopsworks UI and a similarity search on a feature group with an embedding.
-7. If you turned vector ingestion off, turn it back on with a `helm upgrade` on 5.2.x and `--set onlinefs.deployment.vectordb.enabled=true`, and OnlineFS writes the rows that waited in Kafka.
+8. If you turned vector ingestion off, turn it back on with a `helm upgrade` on 5.2.x and `--set onlinefs.deployment.vectordb.enabled=true`, and OnlineFS writes the rows that waited in Kafka.
     Otherwise, insert again the rows that OnlineFS marked failed while an embedding index was blocked.
-8. Take a new snapshot once those rows are written, because a snapshot taken before the upgrade holds the pre-2.0 indices, which a 3.x cluster cannot restore.
+9. Take a new snapshot once those rows are written, because a snapshot taken before the upgrade holds the pre-2.0 indices, which a 3.x cluster cannot restore.
 
 ## If the hook fails { #opensearch-hook-fails }
 
@@ -293,7 +359,7 @@ OnlineFS restarting with `Failed to get all projects` meanwhile is expected, bec
 
 ### To reindex by hand { #opensearch-reindex-by-hand }
 
-To reindex by hand instead, set `olk.opensearch.indexUpgrade.enabled` to `false`.
+To reindex by hand instead, set `olk.opensearch.indexUpgrade.mode` to `report`.
 The hook then reports the offending indices and fails, and for each one you run:
 
 ```text
