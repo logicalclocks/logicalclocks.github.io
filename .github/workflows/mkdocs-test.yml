@@ -12,16 +12,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      # The release pages are published from main only (mkdocs.releases.yml), so
-      # an edit on a release branch would never reach the site.
+      # Every docs version shows the release pages of main, so an edit on a
+      # release branch would be overwritten by main's copy.
       - name: Check the release pages are only edited on main
         if: ${{ startsWith(github.base_ref, 'branch-') }}
         env:
           BASE_REF: ${{ github.base_ref }}
         run: |
           if ! git diff --exit-code --stat HEAD^1 HEAD -- docs/releases/; then
-            echo "::error::docs/releases/ is published from main only, so these changes on $BASE_REF would never reach the site. Make them in a PR to main."
+            echo "::error::docs/releases/ comes from main in every docs version, so these changes on $BASE_REF would never be published. Make them in a PR to main."
             exit 1
+          fi
+
+      - name: Add the release pages from main
+        if: ${{ startsWith(github.base_ref, 'branch-') }}
+        run: |
+          if [ -f scripts/releases_hook.py ]; then
+            git checkout origin/main -- docs/releases scripts/releases_hook.py
           fi
 
       - name: Checkout the API repo

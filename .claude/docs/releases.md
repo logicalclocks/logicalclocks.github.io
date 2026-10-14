@@ -1,16 +1,21 @@
 # Release Pages
 
-The release pages are one site for every docs version, at `https://docs.hopsworks.ai/releases/`.
-Every docs version links to it from its nav, so a release note is written once and never backported.
+Every docs version shows the same release pages, under `Releases` in its nav, so a release note is written once on `main` and never backported.
 
 The source is `docs/releases/` on `main` only.
-`mkdocs.releases.yml` builds it, and the release workflow deploys it with mike as the hidden version `releases` on every push to `main`.
-The versioned docs leave `docs/releases/` out with `exclude_docs`, and CI fails a PR to a `branch-*` that touches it, because release branches never publish it.
+A release branch build (`mkdocs-release.yml`, and `mkdocs-test.yml` for a PR to a `branch-*`) first copies `docs/releases/` and `scripts/releases_hook.py` from `main`.
+CI fails a PR to a `branch-*` that touches `docs/releases/`, because main's copy replaces it.
+A release branch shows the pages once it has the hook and the `Releases: releases/index.md` nav entry; older branches don't.
 
-Each release has one page, grouped by major version (`docs/releases/<major>/<X.Y.Z>.md`), newest first.
-Add a new release to the top of its major's group in the `nav:` of `mkdocs.releases.yml`; the table in `docs/releases/<major>/index.md` is generated.
-A new major also needs `docs/releases/<major>/index.md` holding `# Hopsworks <major>.x` and `<!-- releases -->`, a nav group, and a link in `docs/releases/index.md`.
-`uv run hopsworks-docs check` builds this site too, and fails if hopsworks-api has no tag for a Python client version a page links; preview it with `uv run mkdocs serve -f mkdocs.releases.yml`.
+`scripts/releases_hook.py` expands the `Releases: releases/index.md` nav entry into a page per release, grouped by major version and newest first, and generates the table in `docs/releases/<major>/index.md`.
+Each release has one page, `docs/releases/<major>/<X.Y.Z>.md`; no nav edit is needed.
+A new major also needs `docs/releases/<major>/index.md` holding `# Hopsworks <major>.x` and `<!-- releases -->`, and a link in `docs/releases/index.md`.
+`uv run hopsworks-docs check` fails if hopsworks-api has no tag for a Python client version a page links.
+
+Every build writes `releases/fingerprint.txt`, a hash of the release sources and the hook.
+After each docs build of `main`, `mkdocs-release-notes.yml` runs `hopsworks-docs sync-release-notes --rebuild`: it rebuilds every release branch whose deployed fingerprint doesn't match `main` with that branch's own workflow, then fails if any version, `dev` included, still doesn't match.
+A red run means a version shows outdated release pages, usually because its docs build is broken; fix the build and run the workflow again.
+`uv run hopsworks-docs sync-release-notes` without `--rebuild` only reports.
 
 ## Page shape
 

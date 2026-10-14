@@ -1,13 +1,20 @@
-"""MkDocs build hook for the release notes site (``mkdocs.releases.yml``).
+"""MkDocs build hook for the release pages in ``docs/releases/``.
 
-Its ``docs_dir`` is ``docs/releases``, so the stylesheets, scripts, logo and
-favicon the inherited config points at are outside it; this adds them from ``docs/``.
+Their source is on main only; a release branch build copies ``docs/releases/`` and
+this hook from main first, so every docs version shows the same release pages.
+The nav entry ``Releases: releases/index.md`` expands to a section with a page per
+release, newest first, and is dropped when ``docs/releases/`` is absent, as in a
+local build of a release branch.
 
-A release page (``<major>/X.Y.Z.md``) starts with ``# Hopsworks X.Y.Z { #hopsworks-X-Y-Z }``
-and declares ``released``, ``application`` and ``python_client`` in its front matter.
-From those this renders the line under the page title, a "Python client" section
-linking the GitHub release notes of every client version new in that release, and
-the table of a major's ``index.md`` where it holds ``<!-- releases -->``.
+A release page (``releases/<major>/X.Y.Z.md``) starts with
+``# Hopsworks X.Y.Z { #hopsworks-X-Y-Z }`` and declares ``released``, ``application``
+and ``python_client`` in its front matter. From those this renders the line under
+the page title, a "Python client" section linking the GitHub release notes of every
+client version new in that release, and the table of a major's ``index.md`` where it
+holds ``<!-- releases -->``.
+
+The build writes ``releases/fingerprint.txt``, a hash of the release sources and
+this hook, which ``hopsworks-docs sync-release-notes`` compares across versions.
 
 With ``HOPSWORKS_DOCS_CHECK_CLIENT_TAGS`` set, as ``hopsworks-docs check`` does, the
 build fails if hopsworks-api has no tag for a client version it links.
@@ -15,16 +22,23 @@ build fails if hopsworks-api has no tag for a client version it links.
 
 from __future__ import annotations
 
+import hashlib
+import logging
 import os
 import re
 import subprocess
+from pathlib import Path
 
 from mkdocs.exceptions import PluginError
-from mkdocs.structure.files import File
 from mkdocs.utils.meta import get_data
 
 
-RELEASE_PAGE = re.compile(r"^(\d+)/(\d+\.\d+\.\d+)\.md$")
+log = logging.getLogger("mkdocs.hooks.releases")
+
+RELEASES = "releases"
+NAV_ENTRY = "releases/index.md"
+FINGERPRINT = "releases/fingerprint.txt"
+RELEASE_PAGE = re.compile(r"^releases/(\d+)/(\d+\.\d+\.\d+)\.md$")
 VERSION = re.compile(r"\d+\.\d+\.\d+")
 FIELDS = ("released", "application", "python_client")
 CLIENT_REPO = "https://github.com/logicalclocks/hopsworks-api"
@@ -36,19 +50,72 @@ _releases = {}
 _linked_clients = set()
 
 
-def on_files(files, *, config):
-    docs = os.path.join(os.path.dirname(config.config_file_path), "docs")
-    shared = [
-        *config.extra_css,
-        *(str(script) for script in config.extra_javascript),
-        config.theme["logo"],
-        config.theme["favicon"],
-    ]
-    for path in shared:
-        # Skip URLs and theme defaults, which aren't under docs/.
-        if path and os.path.isfile(os.path.join(docs, path)):
-            files.append(File(path, docs, config.site_dir, config.use_directory_urls))
+def digest(hook, sources):
+    """Hash the hook source and the (path under docs/releases, content) pairs."""
+    result = hashlib.sha256(hook)
+    for path, content in sorted(sources):
+        result.update(path.encode() + b"\0" + content + b"\0")
+    return result.hexdigest()
 
+
+def fingerprint(docs_dir):
+    """The digest of the release sources under ``docs_dir`` and of this hook."""
+    root = Path(docs_dir) / RELEASES
+    sources = [
+        (path.relative_to(root).as_posix(), path.read_bytes())
+        for path in root.rglob("*")
+        if path.is_file()
+    ]
+    return digest(Path(__file__).read_bytes(), sources)
+
+
+def _release_nav(docs_dir):
+    """The nav section of the release pages, newest major and release first."""
+    root = Path(docs_dir) / RELEASES
+    majors = sorted(
+        (p for p in root.iterdir() if p.is_dir() and p.name.isdigit()),
+        key=lambda p: int(p.name),
+        reverse=True,
+    )
+    section: list = [NAV_ENTRY]
+    for major in majors:
+        versions = sorted(
+            (p.stem for p in major.glob("*.md") if VERSION.fullmatch(p.stem)),
+            key=_version,
+            reverse=True,
+        )
+        section.append(
+            {
+                f"{major.name}.x": [
+                    f"{RELEASES}/{major.name}/index.md",
+                    *({v: f"{RELEASES}/{major.name}/{v}.md"} for v in versions),
+                ]
+            }
+        )
+    return section
+
+
+def on_config(config):
+    present = (Path(config.docs_dir) / NAV_ENTRY).is_file()
+    if not config.nav:
+        return config
+    nav = []
+    for item in config.nav:
+        if isinstance(item, dict) and list(item.values()) == [NAV_ENTRY]:
+            if present:
+                nav.append({next(iter(item)): _release_nav(config.docs_dir)})
+            else:
+                log.info(
+                    "docs/releases/ is missing, so the Releases section is left out; "
+                    "copy it from main with: git checkout origin/main -- docs/releases"
+                )
+            continue
+        nav.append(item)
+    config.nav = nav
+    return config
+
+
+def on_files(files, *, config):
     _releases.clear()
     _linked_clients.clear()
     for file in files.documentation_pages():
@@ -170,6 +237,10 @@ def _releases_table(releases):
 
 
 def on_post_build(*, config):
+    if _releases:
+        target = Path(config.site_dir) / FINGERPRINT
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(fingerprint(config.docs_dir) + "\n")
     if not os.environ.get("HOPSWORKS_DOCS_CHECK_CLIENT_TAGS"):
         return
     refs = subprocess.run(
@@ -199,9 +270,9 @@ def on_page_markdown(markdown, *, page, config, files):
         title, _, body = markdown.lstrip().partition("\n")
         section = _client_section(version, releases)
         return f"{title}\n\n{header}\n{body.rstrip()}\n\n{section}\n"
-    if "<!-- releases -->" in markdown:
-        major = os.path.dirname(page.file.src_uri)
+    major = re.fullmatch(r"releases/(\d+)/index\.md", page.file.src_uri)
+    if major and "<!-- releases -->" in markdown:
         return markdown.replace(
-            "<!-- releases -->", _releases_table(_releases.get(major, []))
+            "<!-- releases -->", _releases_table(_releases.get(major[1], []))
         )
     return markdown

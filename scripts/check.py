@@ -12,16 +12,15 @@ def check():
     ensure_local(_DOCS_ROOT / "docs" / "polars_patch.inv")
     ensure_javadoc()
 
-    for config in ("mkdocs.yml", "mkdocs.releases.yml"):
-        subprocess.run(
-            [
-                "mkdocs",
-                "build",
-                "-s",
-                "-f",
-                str(_DOCS_ROOT / config),
-            ],
-            check=True,
-            # releases_hook checks that the linked Python client versions are tagged.
-            env={**os.environ, "HOPSWORKS_DOCS_CHECK_CLIENT_TAGS": "1"},
-        )
+    subprocess.run(
+        [
+            "mkdocs",
+            "build",
+            "-s",
+            "-f",
+            str(_DOCS_ROOT / "mkdocs.yml"),
+        ],
+        check=True,
+        # releases_hook checks that the linked Python client versions are tagged.
+        env={**os.environ, "HOPSWORKS_DOCS_CHECK_CLIENT_TAGS": "1"},
+    )

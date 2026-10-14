@@ -5,6 +5,7 @@ from .gen_config_vars import gen_config_vars
 from .helm_values import gen_helm_values, reset_helm_values
 from .linkchecker import linkchecker
 from .markdownlint import markdownlint
+from .release_notes import sync_release_notes
 from .serve import serve
 from .snakeoil import snakeoil
 
@@ -19,3 +20,4 @@ cli.command()(snakeoil)
 cli.command()(gen_helm_values)
 cli.command()(reset_helm_values)
 cli.command()(gen_config_vars)
+cli.command()(sync_release_notes)
