@@ -4,7 +4,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791984668` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791990450` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -35,7 +35,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: Always
           repository: sparkhistoryserver
-          tag: 4.1.3.0
+          tag: 4.1.3.1
         name: spark-history-server
         nodeSelector: {}
         probes:
@@ -116,7 +116,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: Always
           repository: sparkhistoryserver
-          tag: 4.1.3.0
+          tag: 4.1.3.1
         name: spark-history-server
         nodeSelector: {}
         probes:
