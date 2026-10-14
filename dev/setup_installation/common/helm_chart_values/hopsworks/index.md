@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792009544` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792016295` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2354,6 +2354,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         oomGuard: true
         proxyPodAppLabels: hopsworks-instance,hopsworks-admin
         proxyTokenTtlMs: '60000'
+        sessionHours: 8
         teleportCleanerIntervalMs: '86400000'
         teleportTtlDays: 7
     ```
@@ -2374,6 +2375,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.terminal.proxyTokenTtlMs` <a class="headerlink" href="#helm.hopsworks.terminal.proxyTokenTtlMs" title="Permanent link">#</a> { #helm.hopsworks.terminal.proxyTokenTtlMs }
 :   Type `string`, default `"60000"`.
     Milliseconds a CLI terminal-attach proxy token stays valid before its single WebSocket handshake.
+
+`hopsworks.terminal.sessionHours` <a class="headerlink" href="#helm.hopsworks.terminal.sessionHours" title="Permanent link">#</a> { #helm.hopsworks.terminal.sessionHours }
+:   Type `int`, default `8`.
+    Hours a terminal session lasts from its start, and what each extension adds; a client may ask for up to terminal_session_max_hours (terminal_session_hours). Written on every install and upgrade.
 
 `hopsworks.terminal.teleportCleanerIntervalMs` <a class="headerlink" href="#helm.hopsworks.terminal.teleportCleanerIntervalMs" title="Permanent link">#</a> { #helm.hopsworks.terminal.teleportCleanerIntervalMs }
 :   Type `string`, default `"86400000"`.
