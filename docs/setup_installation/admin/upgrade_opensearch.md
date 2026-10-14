@@ -30,7 +30,7 @@ When a 3.x node meets one it stops during startup, while its container keeps rep
 
 A `pre-upgrade` hook runs before the OpenSearch StatefulSet is touched, so the old cluster is still intact if it fails.
 It checks every index against the OpenSearch 2.0 floor.
-A cluster that has only ever held indices created by 2.x has nothing to fix, and the hook exits immediately.
+A cluster that has only ever held indices created by 2.x has no pre-2.0 index to fix, but the hook still runs the check in [Vector fields that would stay on nmslib][opensearch-nmslib-fields], and moves embedding indices that still use nmslib to faiss.
 
 On a cluster installed before 5.1 the hook repairs what it finds:
 
@@ -73,7 +73,32 @@ Indices created by Hopsworks 5.0 and earlier use nmslib, which OpenSearch has de
 The index pass therefore recreates each embedding index on faiss while it copies it, so similarity search with filters works once the upgrade to 5.2 is done.
 Until then, on 5.1, filtered search fails on feature groups whose embedding index was created on 5.0, as described in the upgrade steps below.
 Approximate nearest neighbor results can shift slightly, because the graph is rebuilt on a different engine.
-Indices that you created yourself, outside the Hopsworks embedding naming, keep their engine.
+On every other copied index, a vector field without an explicit engine comes back on faiss too, because 1.x defaulted it to nmslib and the copy is created on 2.19, which gives it faiss.
+Every other vector field keeps its engine, and one that would stay on nmslib stops the hook before it changes anything, as the next section describes.
+
+## Vector fields that would stay on nmslib { #opensearch-nmslib-fields }
+
+The nmslib library in OpenSearch 3.8 is built for CPUs with AVX-512, and a node whose CPU lacks it crashes when it loads the library: at startup, or at the first similarity search that reaches it.
+Intel Core processors from the 12th generation on, and AMD Zen 3 and older, such as EPYC Milan, lack AVX-512.
+
+So before it changes anything, the hook reads every index mapping and index template, and stops if a vector field would still be served by nmslib once it is done:
+
+- A field with `method.engine: nmslib`, except on the embedding indices that the hook moves to faiss (spaces `l2`, `cosinesimil` and `innerproduct`).
+- Any `l1` or `linf` field, because only nmslib supports these spaces in 3.x.
+- A field without an engine on an index that the hook does not copy and that was created before OpenSearch 2.19, because OpenSearch gave such a field nmslib before 2.18, and in some modes on 2.18, and segments keep the engine they were written with.
+- An index template, legacy, composable or component, that would create such a field, whether an index uses it or not.
+
+A model-based field passes, because k-NN trains only methods that need training, and nmslib has none.
+A field whose engine the hook cannot establish, for example because its index's creation version cannot be read, stops it too.
+The check has no override and does not look at the CPU, because a pod can be rescheduled onto another node.
+The hook runs the same check again after the copies, so a mapping or template change made meanwhile that puts a field on nmslib stops it.
+A satellite runs its own hook and checks its own fields.
+
+The hook log lists each index or template, field, space type and remedy:
+
+- `l2`, `cosinesimil` or `innerproduct`: rebuild the index with `method.engine: faiss`, as in [To reindex by hand][opensearch-reindex-by-hand].
+- `l1` or `linf`: no engine other than nmslib supports them in 3.x, so the application has to use another space type, or the index or template has to be deleted.
+- A template with another space type: set `method.engine: faiss` on the field, or delete the template.
 
 ## Security configuration
 
@@ -173,9 +198,12 @@ The hook log names the index and the reason.
   Leaving it closed does not help, since a 3.x node still refuses to start.
 - **Timed out:** raise `activeDeadlineSeconds` and `--timeout` together and retry.
   The retry resumes any index that was in the middle of a copy.
+- **nmslib vector fields:** see [Vector fields that would stay on nmslib][opensearch-nmslib-fields].
 - **No answer from the cluster:** the hook prints the address and the last HTTP code.
   `000` is a DNS or connection failure, or a rejected admin certificate.
   `401` or `403` means the certificate's distinguished name is not in `plugins.security.authcz.admin_dn`.
+
+### To reindex by hand { #opensearch-reindex-by-hand }
 
 To reindex by hand instead, set `olk.opensearch.indexUpgrade.enabled` to `false`.
 The hook then reports the offending indices and fails, and for each one you run:
