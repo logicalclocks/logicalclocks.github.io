@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1791990450` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792009544` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2563,7 +2563,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         hdfs_log_storage_policy: CLOUD
         hdfs_user: hdfs
         hdfscontentsmanager_base_hopsfs_client: libhdfs-go
-        hive2_version: 4.1.0.0-v1
+        hive2_version: 4.1.0.1-v1
         hive_conf_path: /srv/hops/apache-hive/conf
         hive_superuser: hive
         hive_warehouse: /apps/hive/warehouse
@@ -3412,7 +3412,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"libhdfs-go"`.
 
 `hopsworks.variables.hive2_version` <a class="headerlink" href="#helm.hopsworks.variables.hive2_version" title="Permanent link">#</a> { #helm.hopsworks.variables.hive2_version }
-:   Type `string`, default `"4.1.0.0-v1"`.
+:   Type `string`, default `"4.1.0.1-v1"`.
 
 `hopsworks.variables.hive_conf_path` <a class="headerlink" href="#helm.hopsworks.variables.hive_conf_path" title="Permanent link">#</a> { #helm.hopsworks.variables.hive_conf_path }
 :   Type `string`, default `"/srv/hops/apache-hive/conf"`.
