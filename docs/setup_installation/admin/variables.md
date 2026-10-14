@@ -47,3 +47,26 @@ Once you have set the desired properties, you can persist them by clicking *Crea
   <img src="../../../assets/images/admin/variables/new-variable.png" alt="Adding a new configuration property" />
   <figcaption>Adding a new configuration property</figcaption>
 </figure>
+
+## Restricting file uploads
+
+The `upload_policy` configuration controls who may upload files into the cluster.
+Uploads are otherwise available to every user with write access to a dataset, so this setting exists for clusters that ingest data only through governed pipelines, or that have to limit what enters the platform.
+
+| Value | Who may upload |
+| ----- | -------------- |
+| `enabled` | Any user with write access to the destination dataset. This is the default, so an existing cluster is unaffected until the value is changed. |
+| `admins_only` | Only members of the `HOPS_ADMIN` group. |
+| `disabled` | Nobody, administrators included. |
+
+The policy is enforced by the backend, so it applies to the Hopsworks UI and to clients such as the Python API alike.
+A refused upload returns HTTP 403.
+In the UI the upload controls are disabled instead, so a blocked user is told before starting an upload rather than watching it fail.
+
+You can set the value from the *Configuration* page described above, or at deploy time through the `hopsworks.variables.upload_policy` value of the Helm chart.
+A value set in the Helm chart is reapplied on every upgrade, so a change made from the Configuration page holds until the cluster is next upgraded.
+Any value other than the three above is treated as `enabled`, so that a typo cannot block uploads without anyone noticing.
+
+This setting governs uploading new files into the cluster, and nothing else.
+It does not restrict operations that only reference files already in the cluster filesystem, such as installing a Python library from a requirements file that is already in a project, because no file is transferred in that case.
+It also does not remove files that were uploaded before the value was changed.
