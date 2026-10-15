@@ -28,8 +28,10 @@ Moving a project in Run:ai deletes and recreates it, which deletes its workloads
 When a project is in another department than expected, the GPU view shows a warning and a Run:ai administrator moves it.
 
 New Run:ai projects get `run_ai_project_gpu_quota` deserved GPUs, `0` by default.
-A project without deserved GPUs can run preemptible batch jobs on idle GPUs, but not notebooks, terminals or deployments with GPUs, because Run:ai admits non-preemptible workloads only within quota.
-Assign quota to the projects in the Run:ai UI.
+Run:ai admits notebooks, terminals, Python apps and model deployments only within a project's quota, because it does not preempt them.
+Hopsworks checks the quota before it starts one of those with GPUs and refuses the start, with the number of GPUs the project has left, instead of leaving a pod waiting.
+Jobs are not checked: they are preemptible and run on idle GPUs over quota.
+Assign quota to the projects that need GPU notebooks or deployments in the Run:ai UI.
 
 ## Prerequisites
 
@@ -102,6 +104,20 @@ All numbers are for the project's default Run:ai node pool.
 | `available_non_preemptible` | GPUs notebooks, terminals and deployments can still get within quota |
 | `available_preemptible` | Idle GPUs a batch job could borrow over quota now; an estimate, a larger job still queues |
 | `warnings` | `RUN_AI_UNREACHABLE`, `RUN_AI_METRICS_MISSING`, `RUN_AI_PROJECT_NOT_READY`, `RUN_AI_DEPARTMENT_DRIFT`, `RUN_AI_BINDING_LEFT` |
+
+## Operational dependency
+
+Hopsworks keeps working when the Run:ai control plane is unreachable:
+
+- Project creation still succeeds; the project is bound to Run:ai later by the background pass or its first workload start.
+- Workloads in projects that are already bound start without calling the control plane, because the queue comes from the namespace label.
+- A workload in a project that is not bound yet starts without a Run:ai queue, and a warning is logged.
+- The quota check is skipped; Run:ai enforces the quota when it schedules the pod.
+
+Run:ai's own admission webhooks are a hard dependency: they are configured with `failurePolicy: Fail` for every namespace labelled `runai/queue`.
+When the `runai-admission-controller` or `admission` Deployment in the `runai` namespace is down, no pod can be created in a bound project namespace, Hopsworks system jobs in those namespaces included.
+Pods in the Hopsworks namespace are not affected.
+Monitor both Deployments like any other cluster-critical service.
 
 ## Turning the integration off
 
