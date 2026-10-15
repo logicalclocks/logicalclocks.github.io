@@ -59,7 +59,7 @@ Its release notes come after the new ones, condensed into one or two bullets per
 Release notes are one flat list with no subcategories.
 
 Breaking changes are changes that need users or operators to do something when they upgrade.
-Start each one with `**Action required:**` and say what changed, who is affected and what to do.
+Say in each one what changed, who is affected and what to do.
 A breaking change is not repeated in the release notes.
 
 Migrations are numbered steps under `### Before the upgrade`, `### Upgrade` and `### After the upgrade`.
