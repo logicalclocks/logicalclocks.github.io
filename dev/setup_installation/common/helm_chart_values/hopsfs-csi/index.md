@@ -4,7 +4,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792083639` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -23,7 +23,7 @@ Deployed when `global._hopsworks.csi.enabled` is `true`.
         pullPolicy: IfNotPresent
         registry: docker.hops.works
         repository: hopsworks/hopsfs-csi
-        tag: 0.1.0-SNAPSHOT
+        tag: 0.2.0-SNAPSHOT
       nameOverride: hopsfs-csi
       nodeSelector: {}
       sidecars:
@@ -90,7 +90,7 @@ Deployed when `global._hopsworks.csi.enabled` is `true`.
         pullPolicy: IfNotPresent
         registry: docker.hops.works
         repository: hopsworks/hopsfs-csi
-        tag: 0.1.0-SNAPSHOT
+        tag: 0.2.0-SNAPSHOT
         ```
 
 `hopsfs-csi.nameOverride` <a class="headerlink" href="#helm.hopsfs-csi.nameOverride" title="Permanent link">#</a> { #helm.hopsfs-csi.nameOverride }

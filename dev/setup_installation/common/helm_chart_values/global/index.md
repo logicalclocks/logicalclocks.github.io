@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792083639` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -29,7 +29,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.
           image:
             pullPolicy: IfNotPresent
             repository: hopsworks/hopsfs-csi
-            tag: 0.1.0-SNAPSHOT
+            tag: 0.2.0-SNAPSHOT
         executor_uid: 1235
         full_platform: true
         grafana:
@@ -108,7 +108,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.
         tolerations: []
         toolbox:
           image: hwutils
-          tag: 1.10-SNAPSHOT
+          tag: 1.11-SNAPSHOT
         topologySpreadConstraint:
           maxSkew: 1
           nodeAffinityPolicy: Honor
@@ -171,7 +171,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.
         image:
           pullPolicy: IfNotPresent
           repository: hopsworks/hopsfs-csi
-          tag: 0.1.0-SNAPSHOT
+          tag: 0.2.0-SNAPSHOT
         ```
 
 `global._hopsworks.csi.driverName` <a class="headerlink" href="#helm.global._hopsworks.csi.driverName" title="Permanent link">#</a> { #helm.global._hopsworks.csi.driverName }
@@ -344,7 +344,7 @@ _Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.
 :   Type `string`, default `"hwutils"`.
 
 `global._hopsworks.toolbox.tag` <a class="headerlink" href="#helm.global._hopsworks.toolbox.tag" title="Permanent link">#</a> { #helm.global._hopsworks.toolbox.tag }
-:   Type `string`, default `"1.10-SNAPSHOT"`.
+:   Type `string`, default `"1.11-SNAPSHOT"`.
 
 `global._hopsworks.topologySpreadConstraint` <a class="headerlink" href="#helm.global._hopsworks.topologySpreadConstraint" title="Permanent link">#</a> { #helm.global._hopsworks.topologySpreadConstraint }
 :   Type `object`.

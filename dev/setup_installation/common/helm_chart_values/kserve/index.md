@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792083639` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -48,7 +48,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
       servingTerminationGracePeriodSeconds: 120
       storageInitializer:
         image: hopsworks/storage-initializer
-        tag: 5.2.0-SNAPSHOT
+        tag: 5.3.0-SNAPSHOT
       webhook:
         minReplicas: 1
         podDisruptionBudget:
@@ -132,7 +132,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"hopsworks/storage-initializer"`.
 
 `kserve.storageInitializer.tag` <a class="headerlink" href="#helm.kserve.storageInitializer.tag" title="Permanent link">#</a> { #helm.kserve.storageInitializer.tag }
-:   Type `string`, default `"5.2.0-SNAPSHOT"`.
+:   Type `string`, default `"5.3.0-SNAPSHOT"`.
 
 `kserve.webhook.minReplicas` <a class="headerlink" href="#helm.kserve.webhook.minReplicas" title="Permanent link">#</a> { #helm.kserve.webhook.minReplicas }
 :   Type `int`, default `1`.
@@ -327,7 +327,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
           requests:
             cpu: '0.1'
             memory: 128Mi
-        tag: 5.2.0-SNAPSHOT
+        tag: 5.3.0-SNAPSHOT
     ```
 
 <div class="hops-values" markdown>
@@ -396,7 +396,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"128Mi"`.
 
 `kserve.inferenceLogger.tag` <a class="headerlink" href="#helm.kserve.inferenceLogger.tag" title="Permanent link">#</a> { #helm.kserve.inferenceLogger.tag }
-:   Type `string`, default `"5.2.0-SNAPSHOT"`.
+:   Type `string`, default `"5.3.0-SNAPSHOT"`.
 
 </div>
 
@@ -1006,7 +1006,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             verifySSL: ''
           storageSecretNameAnnotation: serving.kserve.io/secretName
           storageSpecSecretName: storage-config
-          tag: 5.2.0-SNAPSHOT
+          tag: 5.3.0-SNAPSHOT
           uidModelcar: 1010
         tolerations: []
         topologySpreadConstraint: {}
@@ -1413,7 +1413,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     Storage spec secret name.
 
 `kserve.kserve.storage.tag` <a class="headerlink" href="#helm.kserve.kserve.storage.tag" title="Permanent link">#</a> { #helm.kserve.kserve.storage.tag }
-:   Type `string`, default `"5.2.0-SNAPSHOT"`.
+:   Type `string`, default `"5.3.0-SNAPSHOT"`.
     Hopsworks-built storage initializer tag. Pinned to the Hopsworks version (matching storageInitializer.tag and what the model-serving-webhook publishes), not the KServe version anchor.
 
 `kserve.kserve.storage.uidModelcar` <a class="headerlink" href="#helm.kserve.kserve.storage.uidModelcar" title="Permanent link">#</a> { #helm.kserve.kserve.storage.uidModelcar }
@@ -1448,7 +1448,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         requireExternalUserLoginAfterHours: 720
         serviceAccount:
           annotations: {}
-        tag: 5.2.0-SNAPSHOT
+        tag: 5.3.0-SNAPSHOT
     ```
 
 <div class="hops-values" markdown>
@@ -1477,7 +1477,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     service account annotations
 
 `kserve.servingAuthenticator.tag` <a class="headerlink" href="#helm.kserve.servingAuthenticator.tag" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.tag }
-:   Type `string`, default `"5.2.0-SNAPSHOT"`.
+:   Type `string`, default `"5.3.0-SNAPSHOT"`.
 
 </div>
 
@@ -1502,7 +1502,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         replicaCount: 1
         serviceAccount:
           annotations: {}
-        tag: 5.2.0-SNAPSHOT
+        tag: 5.3.0-SNAPSHOT
         ttlSecondsAfterFinished: null
     ```
 
@@ -1558,7 +1558,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     service account annotations
 
 `kserve.servingWebhook.tag` <a class="headerlink" href="#helm.kserve.servingWebhook.tag" title="Permanent link">#</a> { #helm.kserve.servingWebhook.tag }
-:   Type `string`, default `"5.2.0-SNAPSHOT"`.
+:   Type `string`, default `"5.3.0-SNAPSHOT"`.
 
 `kserve.servingWebhook.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.kserve.servingWebhook.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.kserve.servingWebhook.ttlSecondsAfterFinished }
 :   Type `string`, default `nil`.

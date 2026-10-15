@@ -4,7 +4,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792083639` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -109,7 +109,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           registry: docker.hops.works
           repository: hopsworks/hwutils
           sha: ''
-          tag: 1.10-SNAPSHOT
+          tag: 1.11-SNAPSHOT
         extraConfigmapMounts:
         - configMap: '{{ include "hopsworks.grafana.conditionalProvidersName" . }}'
           mountPath: /etc/grafana/provisioning/dashboards/hopsworks-dashboardproviders.yaml
@@ -348,7 +348,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           registry: docker.hops.works
           repository: hopsworks/hwutils
           sha: ''
-          tag: 1.10-SNAPSHOT
+          tag: 1.11-SNAPSHOT
         extraConfigmapMounts:
         - configMap: '{{ include "hopsworks.grafana.conditionalProvidersName" . }}'
           mountPath: /etc/grafana/provisioning/dashboards/hopsworks-dashboardproviders.yaml

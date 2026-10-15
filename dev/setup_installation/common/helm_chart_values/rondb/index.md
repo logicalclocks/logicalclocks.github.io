@@ -4,7 +4,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792083639` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -39,7 +39,7 @@ Always deployed.
             name: hwutils
             registry: docker.hops.works
             repository: hopsworks
-            tag: 1.10-SNAPSHOT
+            tag: 1.11-SNAPSHOT
         meta:
           ddlMySQLd:
             clusterIp:
@@ -168,7 +168,7 @@ Always deployed.
             toolbox:
               name: hwutils
               registry: docker.hops.works
-              tag: 1.10-SNAPSHOT
+              tag: 1.11-SNAPSHOT
           meta:
             mysqld:
               externalLoadBalancer:
@@ -298,7 +298,7 @@ Always deployed.
             registry: docker.hops.works
             repository: hopsworks
             name: hwutils
-            tag: 1.10-SNAPSHOT
+            tag: 1.11-SNAPSHOT
           mysqldExporter:
             registry: docker.hops.works
             repository: hopsworks
@@ -822,7 +822,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             name: hwutils
             registry: docker.hops.works
             repository: hopsworks
-            tag: 1.10-SNAPSHOT
+            tag: 1.11-SNAPSHOT
           upgrade2410revokegrants:
             name: rondb
             registry: docker.io
@@ -895,7 +895,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.toolbox.tag` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox.tag }
-:   Type `string`, default `"1.10-SNAPSHOT"`, Hopsworks overrides the `rondb` chart default `"1.7"`.
+:   Type `string`, default `"1.11-SNAPSHOT"`, Hopsworks overrides the `rondb` chart default `"1.7"`.
 
 `rondb.rondb.images.upgrade2410revokegrants` <a class="headerlink" href="#helm.rondb.rondb.images.upgrade2410revokegrants" title="Permanent link">#</a> { #helm.rondb.rondb.images.upgrade2410revokegrants }
 :   Type `object`.

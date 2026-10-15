@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792083639` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2426,7 +2426,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.2.0-SNAPSHOT
+        base_image_version: 5.3.0-SNAPSHOT
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -2558,7 +2558,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         git_github_https_proxy: ''
         git_gitlab_http_proxy: ''
         git_gitlab_https_proxy: ''
-        git_image_version: 1.6-SNAPSHOT
+        git_image_version: 1.7-SNAPSHOT
         grafana_version: 9.3.16
         ha_enabled: 'true'
         hadoop_dir: /srv/hops/hadoop
@@ -2964,7 +2964,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.2.0-SNAPSHOT"`.
+:   Type `string`, default `"5.3.0-SNAPSHOT"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -3388,7 +3388,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Proxy for git traffic to GitLab over HTTPS. Empty means a direct connection.
 
 `hopsworks.variables.git_image_version` <a class="headerlink" href="#helm.hopsworks.variables.git_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.git_image_version }
-:   Type `string`, default `"1.6-SNAPSHOT"`.
+:   Type `string`, default `"1.7-SNAPSHOT"`.
 
 `hopsworks.variables.grafana_version` <a class="headerlink" href="#helm.hopsworks.variables.grafana_version" title="Permanent link">#</a> { #helm.hopsworks.variables.grafana_version }
 :   Type `string`, default `"9.3.16"`.
