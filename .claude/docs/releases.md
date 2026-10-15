@@ -50,6 +50,9 @@ Its release notes come after the new ones, condensed into one or two bullets per
 - Start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed.
 - Put version upgrades in `## Upgraded components`, not in the notes; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Fixed security vulnerabilities in the Strimzi operator and Kafka images".
 - Name the exact API, Helm value, config variable or CLI flag.
+- Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
+  Release pages show in every docs version, so link the docs of the release's minor version with an absolute URL (`https://docs.hopsworks.ai/5.2/...`), which a relative link to a page missing from an older version would break.
+  Link the chart's `UPGRADE.md`, `README.md` or `HELM4_MIGRATION.md` at the release tag (`https://github.com/logicalclocks/hopsworks-helm/blob/vX.Y.Z/...`) only for what no docs page covers.
 - Leave out changes with no user-visible effect: tests, CI, refactors, and fixes for bugs that never shipped.
 - Do not link Jira or private GitHub repos and do not name customers, because the docs are public.
 
@@ -60,7 +63,8 @@ Start each one with `**Action required:**` and say what changed, who is affected
 A breaking change is not repeated in the release notes.
 
 Migrations are numbered steps under `### Before the upgrade`, `### Upgrade` and `### After the upgrade`.
-Mark each step as required or optional, give copy-paste commands with `<placeholders>`, and say when a step can't be undone.
+Mark each step as required or optional and say when a step can't be undone.
+A step that the documentation describes links to it; give a copy-paste command with `<placeholders>` only when no page has one.
 
 ## Upgraded components
 
