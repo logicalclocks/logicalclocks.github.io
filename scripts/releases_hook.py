@@ -2,9 +2,9 @@
 
 Their source is on main only; a release branch build copies ``docs/releases/`` and
 this hook from main first, so every docs version shows the same release pages.
-The nav entry ``Releases: releases/index.md`` expands to a section with a page per
-release, newest first, and is dropped when ``docs/releases/`` is absent, as in a
-local build of a release branch.
+The nav entry ``Releases: releases/index.md`` expands to a section per major and
+minor version with a page per release, newest first, and is dropped when
+``docs/releases/`` is absent, as in a local build of a release branch.
 
 A release page (``releases/<major>/X.Y.Z.md``) starts with
 ``# Hopsworks X.Y.Z { #hopsworks-X-Y-Z }`` and declares ``released``, ``application``
@@ -70,7 +70,7 @@ def fingerprint(docs_dir):
 
 
 def _release_nav(docs_dir):
-    """The nav section of the release pages, newest major and release first."""
+    """The nav section of the release pages, grouped by major and minor, newest first."""
     root = Path(docs_dir) / RELEASES
     majors = sorted(
         (p for p in root.iterdir() if p.is_dir() and p.name.isdigit()),
@@ -84,11 +84,16 @@ def _release_nav(docs_dir):
             key=_version,
             reverse=True,
         )
+        minors: dict = {}
+        for v in versions:
+            minors.setdefault(v.rpartition(".")[0], []).append(
+                {v: f"{RELEASES}/{major.name}/{v}.md"}
+            )
         section.append(
             {
                 f"{major.name}.x": [
                     f"{RELEASES}/{major.name}/index.md",
-                    *({v: f"{RELEASES}/{major.name}/{v}.md"} for v in versions),
+                    *({minor: pages} for minor, pages in minors.items()),
                 ]
             }
         )
