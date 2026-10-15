@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792064611` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792074242` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -669,7 +669,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           nodeSelector: {}
         indexUpgrade:
           activeDeadlineSeconds: 3600
-          enabled: true
+          mode: copy
         jvmOpts: ''
         knn:
           cache_expire: true
@@ -795,11 +795,11 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 
 `olk.opensearch.indexUpgrade.activeDeadlineSeconds` <a class="headerlink" href="#helm.olk.opensearch.indexUpgrade.activeDeadlineSeconds" title="Permanent link">#</a> { #helm.olk.opensearch.indexUpgrade.activeDeadlineSeconds }
 :   Type `int`, default `3600`.
-    Deadline for the whole pre-upgrade index pass. A reindex copies each index twice to preserve its name, so raise this for clusters holding large pre-2.0 indices; the hook prints the sizes and an estimate before it starts. Bounds a stuck copy so it fails the hook instead of hanging the upgrade. The timeout given to helm upgrade has to be at least this long, or helm gives up on the hook first. The deadline is per release: a satellite has its own OpenSearch and its own pass at its own upgrade, so it sets its own value. Upgrade every satellite to 5.1 before central moves to 5.2, since a satellite still on 1.3 is two majors behind a 5.2 central. A satellite moving to 5.2 ahead of central is untested.
+    Deadline for the whole pre-upgrade index pass. Raise this for clusters holding large pre-2.0 indices; the hook prints the sizes and an estimate before it starts. Bounds a stuck copy so it fails the hook instead of hanging the upgrade. The timeout given to helm upgrade has to be at least this long, or helm gives up on the hook first. The deadline is per release: a satellite has its own OpenSearch and its own pass at its own upgrade, so it sets its own value. Upgrade every satellite to 5.1 before central moves to 5.2, since a satellite still on 1.3 is two majors behind a 5.2 central. A satellite moving to 5.2 ahead of central is untested.
 
-`olk.opensearch.indexUpgrade.enabled` <a class="headerlink" href="#helm.olk.opensearch.indexUpgrade.enabled" title="Permanent link">#</a> { #helm.olk.opensearch.indexUpgrade.enabled }
-:   Type `bool`, default `true`.
-    Let the pre-upgrade hook fix a cluster that still holds indices created before OpenSearch 2.0, which a 3.x node refuses to boot with. It reindexes the indices that carry data, preserving their names, and deletes only the ones the platform recreates or expires by itself (logs, audit, `pypi_libraries_*`, query insights and security analytics plugin indices); anything it does not recognise is reindexed, never deleted, including `featurestore`, `projects`, ISM policies and `.kibana*`. Embedding indices (`<projectId>__embedding*`) come back on the faiss engine rather than nmslib, which is what Hopsworks 5.1 creates and the only one of the two that accepts the filter the 5.1+ client sends; approximate neighbour results can shift slightly. Every other index keeps its engine. While it copies, every client but the admin certificate is refused, reads included, so Hopsworks search, OpenSearch Dashboards, logstash and OnlineFS get a 403 until the hook exits; a hook killed outright leaves them refused until the upgrade is rerun. Set to false to have the hook report the offending indices and fail instead, leaving the remediation to the operator. A cluster still running OpenSearch 1.x is refused rather than fixed, whatever this is set to: reindexing on a 1.x node recreates the index pre-2.0 again, so a 1.x cluster has to be upgraded to a 2.x Hopsworks release first.
+`olk.opensearch.indexUpgrade.mode` <a class="headerlink" href="#helm.olk.opensearch.indexUpgrade.mode" title="Permanent link">#</a> { #helm.olk.opensearch.indexUpgrade.mode }
+:   Type `string`, default `"copy"`.
+    What the pre-upgrade hook does with the indices created before OpenSearch 2.0, which a 3.x node refuses to boot with. `copy` copies them one at a time, behind a write block on that index alone, keeping their names, and deletes only indices the platform recreates or expires (logs, audit, `pypi_libraries_*`, plugin indices); embedding indices (`<projectId>__embedding*`) come back on faiss. `report` lists them with their sizes and block times and fails, changing nothing apart from finishing an index an interrupted earlier run left half done. Either way it stops before changing anything if a vector field would still be served by nmslib, whose 3.8 library crashes a node without AVX-512, and it refuses a cluster still on OpenSearch 1.x. From 5.1.2 the 5.1.x chart reads the same key to run the pass ahead of the 5.2 upgrade. See UPGRADE.md.
 
 `olk.opensearch.jvmOpts` <a class="headerlink" href="#helm.olk.opensearch.jvmOpts" title="Permanent link">#</a> { #helm.olk.opensearch.jvmOpts }
 :   Type `string`, default `""`.
