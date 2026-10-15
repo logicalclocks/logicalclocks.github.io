@@ -7,9 +7,7 @@ A release branch build (`mkdocs-release.yml`, and `mkdocs-test.yml` for a PR to 
 CI fails a PR to a `branch-*` that touches `docs/releases/`, because main's copy replaces it.
 A release branch shows the pages once it has the hook and the `Releases: releases/index.md` nav entry; older branches don't.
 
-`scripts/releases_hook.py` expands the `Releases: releases/index.md` nav entry into a page per release, grouped by major and minor version and newest first, and generates the table in `docs/releases/<major>/index.md`.
-Each release has one page, `docs/releases/<major>/<X.Y.Z>.md`; no nav edit is needed.
-A new major also needs `docs/releases/<major>/index.md` holding `# Hopsworks <major>.x` and `<!-- releases -->`, and a link in `docs/releases/index.md`.
+`scripts/releases_hook.py` expands the `Releases: releases/index.md` nav entry into a section per minor version, newest first, holding its release notes (`docs/releases/X.Y/index.md`) and its upgrade guide (`docs/releases/X.Y/upgrade.md`), and generates the table of all releases in `docs/releases/index.md`; no nav edit is needed.
 `uv run hopsworks-docs check` fails if hopsworks-api has no tag for a Python client version a page links.
 
 Every build writes `releases/fingerprint.txt`, a hash of the release sources and the hook.
@@ -19,36 +17,44 @@ A red run means a version shows outdated release pages, usually because its docs
 
 ## Page shape
 
-A release is a `hopsworks-helm` tag `vX.Y.Z`; the page is named after it and starts with `# Hopsworks X.Y.Z { #hopsworks-X-Y-Z }`, so link to it with `[X.Y.Z][hopsworks-X-Y-Z]`.
-Its front matter declares three versions, all quoted strings:
+The release notes of a minor version, `docs/releases/X.Y/index.md`, start with `# Hopsworks X.Y { #hopsworks-X-Y }` and hold one section per release, newest first: `## X.Y.Z { #hopsworks-X-Y-Z }`, so link to a release with `[X.Y.Z][hopsworks-X-Y-Z]`.
+A release is a `hopsworks-helm` tag `vX.Y.Z`.
+The front matter declares every release, newest first, with its versions as quoted strings:
 
 ```yaml
 ---
-released: "2026-09-28"     # date of the GitHub release
-application: "5.0.12"      # appVersion in charts/hopsworks/Chart.yaml at the tag
-python_client: "5.0.9"     # hopsworks-api version of the base images the chart deploys
+releases:
+  "5.1.1":
+    released: "2026-10-09"     # date of the GitHub release
+    application: "5.1.1"       # appVersion in charts/hopsworks/Chart.yaml at the tag
+    python_client: "5.1.1"     # hopsworks-api version of the base images the chart deploys
+  "5.1.0":
+    released: "2026-09-24"
+    application: "5.1.0"
+    python_client: "5.1.0"
 ---
 ```
 
 The Python client is `base-image/hopsworks-api-version.txt` in `docker-images` at the release commit whose `version.txt` matches `hopsworks.variables.base_image_version` at the tag.
-`scripts/releases_hook.py` turns the front matter into the line under the H1, the row in the major's table, and a `## Python client` section at the end of the page.
-That section links the GitHub release notes of every client version since the previous release of the same minor version, so the page shows what changed in the client too.
+Under each section title, `scripts/releases_hook.py` renders the release date, the release it lists the changes since, the application version and the Python client, linking the GitHub release notes of every client version new in the release.
 
-Each page has four sections, in this order: `## Release notes`, `## Breaking changes`, `## Migrations`, `## Upgraded components`; the hook appends `## Python client`.
-A section with nothing to report keeps its heading and says so in one sentence, for example "There are no breaking changes in this release."
+A patch release lists the changes since the previous release of its minor version, and an X.Y.0 since the first release of the previous minor version, so minor versions compare with each other: 5.2.0 with 5.1.0, 5.1.0 with 5.0.0.
+Each change is listed once, under the release that first shipped it, so an X.Y.0 leaves out the changes that already shipped in a patch release of the previous minor version; a sentence under its title says which of those patch releases it includes, and names any of their changes it lacks.
+5.0.0 is the exception: 4.8 has no pages, so its front matter declares `since: "4.8.2"`, the first 4.8 release, and an entry that also shipped in a 4.8 patch release ends with `(also in 4.8.N)`.
 
-A patch page lists the changes since the previous tag of its minor version.
-An X.Y.0 page lists the changes since the previous minor version.
-An entry that also shipped in a patch release of that minor version ends with `(also in [X.Y.Z][hopsworks-X-Y-Z])`, or `(also in X.Y.Z)` if that patch has no page, as for 4.8, so readers on that patch can skip it.
-Its release notes come after the new ones, condensed into one or two bullets per patch release, because the patch page has the details; a breaking change keeps its own entry with what to do.
+A release section has up to three subsections, in this order, and leaves out the ones with nothing to report: `### Breaking changes`, `### Release notes`, `### Upgraded components`.
+
+The upgrade guide of a minor version, `docs/releases/X.Y/upgrade.md`, starts with `# Upgrading to Hopsworks X.Y { #upgrading-to-X-Y }`.
+It has `## From <previous minor> { #upgrading-to-X-Y-0 }` and a `## To X.Y.Z { #upgrading-to-X-Y-Z }` for each patch release with steps, oldest first, each with numbered steps under `### Before the upgrade`, `### Upgrade` and `### After the upgrade`.
 
 ## Writing entries
 
 - Write for users and operators, not developers; an entry is not a commit message.
+- Make each entry one coherent change; don't combine unrelated changes in one entry, even small ones.
 - Keep each entry to one line; add a second only for what a reader must act on, such as a value to set or a risk.
 - Leave out defaults, internals and explanations a reader doesn't act on; the values reference has the details.
 - Start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed.
-- Put version upgrades in `## Upgraded components`, not in the notes; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Fixed security vulnerabilities in the Strimzi operator and Kafka images".
+- Put version upgrades in `### Upgraded components`, not in the notes; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Fixed security vulnerabilities in the Strimzi operator and Kafka images".
 - Name the exact API, Helm value, config variable or CLI flag.
 - Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
   Release pages show in every docs version, so link the docs of the release's minor version with an absolute URL (`https://docs.hopsworks.ai/5.2/...`), which a relative link to a page missing from an older version would break.
@@ -59,19 +65,18 @@ Its release notes come after the new ones, condensed into one or two bullets per
 Release notes are one flat list with no subcategories.
 
 Breaking changes are changes that need users or operators to do something when they upgrade.
-Say in each one what changed, who is affected and what to do.
+Say in each one what changed, who is affected and what to do, and link the upgrade guide step or the docs page that has the procedure.
 A breaking change is not repeated in the release notes.
 
-Migrations are numbered steps under `### Before the upgrade`, `### Upgrade` and `### After the upgrade`.
+Upgrade steps live in the upgrade guide, not in the release notes.
 Mark each step as required or optional and say when a step can't be undone.
 A step that the documentation describes links to it; give a copy-paste command with `<placeholders>` only when no page has one.
 
 ## Upgraded components
 
 A table of every component whose version changed in the chart, named after the two releases it compares: `| Component | 5.1.0 | 5.1.1 |`, one row per component, sorted by name.
-A patch page compares with the previous tag of its minor version, an X.Y.0 page with the previous X.Y.0 (4.8.2 for 5.0.0, the first 4.8 tag).
-On an X.Y.0 page, a version that already shipped in a patch release of the previous minor version ends with `(also in [X.Y.Z][hopsworks-X-Y-Z])`, or `(also in X.Y.Z)` without a page.
-If nothing changed, write "No components were upgraded in this release."
+It compares with the release the section lists the changes since; on an X.Y.0, a version that already shipped in a patch release of the previous minor version ends with `(also in [X.Y.Z][hopsworks-X-Y-Z])`, or `(also in 4.8.N)` for 4.8, which has no pages.
+A release without upgraded components has no such subsection.
 
 Generate it with `uv run hopsworks-docs release-components X.Y.Z --helm <hopsworks-helm> --rondb-helm <rondb-helm> --write`, which needs both checkouts with their tags.
 It fails when a version changed that no component in `scripts/release_components.py` covers; add the component there rather than editing the table by hand.
@@ -82,4 +87,4 @@ It takes the versions from the chart at both tags, not from commit messages:
 - for an image the chart doesn't pin, the default of the upstream chart at its dependency version from `UPSTREAM_DEFAULTS`, such as Prometheus `v2.51.2` from `prometheus` 25.20.2; it fails on a dependency version that isn't listed.
 
 It shows the image tag as the version; if a rebuilt image's tag doesn't name what it ships, add it to `SHIPS`, which gives `8.4.5-debian-12-r0-h3 (MySQL 8.4.11)`.
-It leaves out the Hopsworks application, which the line under the title gives, and prints the components new or removed in the release, which belong in the notes.
+It leaves out the Hopsworks application, which the line under the release title gives, and prints the components new or removed in the release, which belong in the notes.

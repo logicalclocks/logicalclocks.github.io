@@ -2,16 +2,17 @@
 
 Their source is on main only; a release branch build copies ``docs/releases/`` and
 this hook from main first, so every docs version shows the same release pages.
-The nav entry ``Releases: releases/index.md`` expands to a section per major and
-minor version with a page per release, newest first, and is dropped when
+The nav entry ``Releases: releases/index.md`` expands to a section per minor version,
+newest first, holding its release notes and its upgrade guide, and is dropped when
 ``docs/releases/`` is absent, as in a local build of a release branch.
 
-A release page (``releases/<major>/X.Y.Z.md``) starts with
-``# Hopsworks X.Y.Z { #hopsworks-X-Y-Z }`` and declares ``released``, ``application``
-and ``python_client`` in its front matter. From those this renders the line under
-the page title, a "Python client" section linking the GitHub release notes of every
-client version new in that release, and the table of a major's ``index.md`` where it
-holds ``<!-- releases -->``.
+The release notes of a minor version (``releases/X.Y/index.md``) declare every
+release in their front matter, newest first, and hold one
+``## X.Y.Z { #hopsworks-X-Y-Z }`` section per release in the same order. Under each
+section title this renders the release date, the release it lists the changes
+since, the application version and the Python client, linking the GitHub release
+notes of every client version new in that release. It also renders the table of
+all releases where ``releases/index.md`` holds ``<!-- releases -->``.
 
 The build writes ``releases/fingerprint.txt``, a hash of the release sources and
 this hook, which ``hopsworks-docs sync-release-notes`` compares across versions.
@@ -38,13 +39,15 @@ log = logging.getLogger("mkdocs.hooks.releases")
 RELEASES = "releases"
 NAV_ENTRY = "releases/index.md"
 FINGERPRINT = "releases/fingerprint.txt"
-RELEASE_PAGE = re.compile(r"^releases/(\d+)/(\d+\.\d+\.\d+)\.md$")
+NOTES_PAGE = re.compile(r"^releases/(\d+\.\d+)/index\.md$")
+UPGRADE_PAGE = "upgrade.md"
+SECTION = re.compile(r"^## (\d+\.\d+\.\d+) \{ #hopsworks-[\d-]+ \}$", re.MULTILINE)
 VERSION = re.compile(r"\d+\.\d+\.\d+")
 FIELDS = ("released", "application", "python_client")
 CLIENT_REPO = "https://github.com/logicalclocks/hopsworks-api"
 CLIENT_RELEASES = CLIENT_REPO + "/releases/tag/{}"
 
-# major -> [(version, front matter)], oldest first; rebuilt by on_files on every build
+# version -> front matter of every release, oldest first; rebuilt by on_files
 _releases = {}
 # client versions linked by this build
 _linked_clients = set()
@@ -69,34 +72,25 @@ def fingerprint(docs_dir):
     return digest(Path(__file__).read_bytes(), sources)
 
 
-def _release_nav(docs_dir):
-    """The nav section of the release pages, grouped by major and minor, newest first."""
+def _minors(docs_dir):
+    """The minor version folders with release notes, newest first."""
     root = Path(docs_dir) / RELEASES
-    majors = sorted(
-        (p for p in root.iterdir() if p.is_dir() and p.name.isdigit()),
-        key=lambda p: int(p.name),
+    return sorted(
+        (p for p in root.iterdir() if (p / "index.md").is_file()),
+        key=lambda p: _version(p.name),
         reverse=True,
     )
+
+
+def _release_nav(docs_dir):
     section: list = [NAV_ENTRY]
-    for major in majors:
-        versions = sorted(
-            (p.stem for p in major.glob("*.md") if VERSION.fullmatch(p.stem)),
-            key=_version,
-            reverse=True,
-        )
-        minors: dict = {}
-        for v in versions:
-            minors.setdefault(v.rpartition(".")[0], []).append(
-                {v: f"{RELEASES}/{major.name}/{v}.md"}
+    for minor in _minors(docs_dir):
+        pages: list = [f"{RELEASES}/{minor.name}/index.md"]
+        if (minor / UPGRADE_PAGE).is_file():
+            pages.append(
+                {f"Upgrading to {minor.name}": f"{RELEASES}/{minor.name}/{UPGRADE_PAGE}"}
             )
-        section.append(
-            {
-                f"{major.name}.x": [
-                    f"{RELEASES}/{major.name}/index.md",
-                    *({minor: pages} for minor, pages in minors.items()),
-                ]
-            }
-        )
+        section.append({minor.name: pages})
     return section
 
 
@@ -124,41 +118,58 @@ def on_files(files, *, config):
     _releases.clear()
     _linked_clients.clear()
     for file in files.documentation_pages():
-        match = RELEASE_PAGE.match(file.src_uri)
+        match = NOTES_PAGE.match(file.src_uri)
         if match:
-            major, version = match.groups()
-            _releases.setdefault(major, []).append(
-                (version, _read_release(file, version))
-            )
-    for releases in _releases.values():
-        releases.sort(key=lambda release: _version(release[0]))
-        _check_clients(releases)
+            _releases.update(_read_minor(file, match[1]))
+    ordered = sorted(_releases.items(), key=lambda release: _version(release[0]))
+    _releases.clear()
+    _releases.update(ordered)
+    _check_clients()
     return files
 
 
-def _read_release(file, version):
+def _read_minor(file, minor):
+    """The releases a minor version's page declares, checked against its sections."""
     with open(file.abs_src_path, encoding="utf-8") as source:
         markdown, meta = get_data(source.read())
-    missing = [field for field in FIELDS if not meta.get(field)]
-    if missing:
+    declared = meta.get("releases")
+    if not isinstance(declared, dict) or not declared:
+        raise PluginError(f"{file.src_uri}: front matter must declare its releases")
+    releases = {}
+    for version, fields in declared.items():
+        version = str(version)
+        if not VERSION.fullmatch(version) or version.rpartition(".")[0] != minor:
+            raise PluginError(f"{file.src_uri}: {version} is not a {minor} release")
+        fields = fields or {}
+        missing = [field for field in FIELDS if not fields.get(field)]
+        if missing:
+            raise PluginError(f"{file.src_uri}: {version} is missing {', '.join(missing)}")
+        if not VERSION.fullmatch(str(fields["python_client"])):
+            raise PluginError(f"{file.src_uri}: {version} python_client must be a quoted X.Y.Z")
+        if fields.get("since") and not version.endswith(".0"):
+            raise PluginError(f"{file.src_uri}: only an X.Y.0 release declares since")
+        releases[version] = {key: str(value) for key, value in fields.items()}
+    newest_first = sorted(releases, key=_version, reverse=True)
+    if list(releases) != newest_first:
+        raise PluginError(f"{file.src_uri}: list the releases newest first")
+    sections = SECTION.findall(markdown)
+    if sections != newest_first:
         raise PluginError(
-            f"{file.src_uri}: front matter is missing {', '.join(missing)}"
+            f"{file.src_uri}: needs a '## X.Y.Z {{ #hopsworks-X-Y-Z }}' section per "
+            f"release, newest first: {', '.join(newest_first)}"
         )
-    fields = {field: str(meta[field]) for field in FIELDS}
-    if not VERSION.fullmatch(fields["python_client"]):
-        raise PluginError(f"{file.src_uri}: python_client must be a quoted X.Y.Z")
-    title = f"# Hopsworks {version} {{ #{_anchor(version)} }}"
-    if markdown.lstrip().partition("\n")[0] != title:
-        raise PluginError(f"{file.src_uri}: must start with '{title}'")
-    return fields
+    for version in sections:
+        title = f"## {version} {{ #{_anchor(version)} }}"
+        if title not in markdown:
+            raise PluginError(f"{file.src_uri}: the section of {version} must be '{title}'")
+    return releases
 
 
-def _check_clients(releases):
-    for (before, old), (version, new) in zip(releases, releases[1:]):
-        same_minor = _version(before)[:2] == _version(version)[:2]
-        if same_minor and _version(new["python_client"]) < _version(
-            old["python_client"]
-        ):
+def _check_clients():
+    versions = list(_releases)
+    for before, version in zip(versions, versions[1:]):
+        old, new = _releases[before], _releases[version]
+        if _version(new["python_client"]) < _version(old["python_client"]):
             raise PluginError(
                 f"{version}: python_client {new['python_client']} is older than "
                 f"{old['python_client']} of {before}"
@@ -173,13 +184,34 @@ def _anchor(version):
     return "hopsworks-" + version.replace(".", "-")
 
 
+def _link(version):
+    return f"[{version}][{_anchor(version)}]" if version in _releases else version
+
+
 def _client_link(version):
     _linked_clients.add(version)
     return f"[{version}]({CLIENT_RELEASES.format(version)})"
 
 
-def _new_clients(release, previous_client, client):
-    """The client versions new in ``release``, newest first.
+def _since(version):
+    """The release ``version`` lists the changes since.
+
+    A patch compares with the previous release of its minor version, an X.Y.0 with
+    the first release of the previous minor version, or with the ``since`` it
+    declares when that minor version has no page, as 5.0.0 does for 4.8.
+    """
+    fields = _releases[version]
+    if fields.get("since"):
+        return fields["since"]
+    earlier = [v for v in _releases if _version(v) < _version(version)]
+    if not version.endswith(".0"):
+        return earlier[-1]
+    previous = [v for v in earlier if _version(v)[:2] == _version(earlier[-1])[:2]]
+    return previous[0]
+
+
+def _new_clients(previous_client, client):
+    """The client versions since ``previous_client``, oldest first.
 
     Every patch in between is listed, so a patch hopsworks-api never tagged fails
     the tag check.
@@ -187,55 +219,38 @@ def _new_clients(release, previous_client, client):
     major, minor, patch = _version(client)
     if previous_client and _version(previous_client)[:2] == (major, minor):
         first = _version(previous_client)[2] + 1
-    elif _version(release)[:2] == (major, minor):
+    else:
         first = 0
-    else:
-        first = patch
-    return [f"{major}.{minor}.{p}" for p in range(patch, first - 1, -1)]
+    return [f"{major}.{minor}.{p}" for p in range(first, patch + 1)]
 
 
-def _client_section(version, releases):
-    index = [release[0] for release in releases].index(version)
-    client = releases[index][1]["python_client"]
-    previous = None
-    if index > 0 and _version(releases[index - 1][0])[:2] == _version(version)[:2]:
-        previous = releases[index - 1]
-    lines = ["## Python client", ""]
-    if previous and previous[1]["python_client"] == client:
-        first = next(
-            r[0]
-            for r in releases
-            if _version(r[0])[:2] == _version(version)[:2]
-            and r[1]["python_client"] == client
-        )
-        lines.append(
-            f"Python environments keep the Python client {_client_link(client)}, "
-            f"which came with [{first}][{_anchor(first)}]."
-        )
-        return "\n".join(lines)
-    lines.append(f"Python environments come with the Python client {client}.")
-    if previous:
-        lines.append(
-            f"Release notes of the client versions since [{previous[0]}][{_anchor(previous[0])}]:"
-        )
-    else:
-        lines.append("Release notes of the client:")
-    lines.append("")
-    new = _new_clients(
-        version, previous[1]["python_client"] if previous else None, client
+def _client(version):
+    client = _releases[version]["python_client"]
+    previous = _releases.get(_since(version), {}).get("python_client")
+    if previous == client:
+        return f"Python client {_client_link(client)}, unchanged"
+    new = _new_clients(previous, client)
+    if len(new) == 1:
+        return f"Python client {_client_link(client)}"
+    return f"Python client {client} ({', '.join(_client_link(v) for v in new)})"
+
+
+def _header(version):
+    fields = _releases[version]
+    return (
+        f"Released on {fields['released']} · Changes since {_link(_since(version))} "
+        f"· Application {fields['application']} · {_client(version)}"
     )
-    lines.extend(f"- {_client_link(v)}" for v in new)
-    return "\n".join(lines)
 
 
-def _releases_table(releases):
+def _releases_table():
     lines = [
         "| Release | Released | Application | Python client |",
         "| ------- | -------- | ----------- | ------------- |",
     ]
-    for version, fields in reversed(releases):
+    for version, fields in reversed(_releases.items()):
         lines.append(
-            f"| [{version}][{_anchor(version)}] | {fields['released']} | {fields['application']} "
+            f"| {_link(version)} | {fields['released']} | {fields['application']} "
             f"| {_client_link(fields['python_client'])} |"
         )
     return "\n".join(lines)
@@ -263,21 +278,8 @@ def on_post_build(*, config):
 
 
 def on_page_markdown(markdown, *, page, config, files):
-    match = RELEASE_PAGE.match(page.file.src_uri)
-    if match:
-        major, version = match.groups()
-        releases = _releases[major]
-        fields = dict(releases)[version]
-        header = (
-            f"Released on {fields['released']} · Application {fields['application']} "
-            f"· [Python client {fields['python_client']}](#python-client)"
-        )
-        title, _, body = markdown.lstrip().partition("\n")
-        section = _client_section(version, releases)
-        return f"{title}\n\n{header}\n{body.rstrip()}\n\n{section}\n"
-    major = re.fullmatch(r"releases/(\d+)/index\.md", page.file.src_uri)
-    if major and "<!-- releases -->" in markdown:
-        return markdown.replace(
-            "<!-- releases -->", _releases_table(_releases.get(major[1], []))
-        )
+    if NOTES_PAGE.match(page.file.src_uri):
+        return SECTION.sub(lambda m: f"{m[0]}\n\n{_header(m[1])}", markdown)
+    if page.file.src_uri == NAV_ENTRY and "<!-- releases -->" in markdown:
+        return markdown.replace("<!-- releases -->", _releases_table())
     return markdown

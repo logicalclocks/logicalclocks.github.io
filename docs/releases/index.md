@@ -1,11 +1,10 @@
 # Releases
 
-Each release page lists the release notes, the breaking changes, the migrations to run when upgrading and the upgraded components.
-Releases are grouped by major and minor version, and the newest release comes first.
-Each page also links the release notes of the Python client versions its Python environments come with.
+Each Hopsworks minor version has a page with the release notes of its releases, newest first, and an upgrade guide.
+A release lists the breaking changes, the release notes and the upgraded components since the release named under its title: the previous release of its minor version, or for an X.Y.0, the previous X.Y.0.
+Each change is listed once, under the release that first shipped it.
 
-A patch release lists the changes since the previous release of its minor version, and an X.Y.0 release lists the changes since the previous minor version.
-When you upgrade, read the page of every release after yours, up to the one you upgrade to, oldest first.
-When you upgrade to a new minor version, start from its X.Y.0 page, which marks the entries that already shipped in a patch release of the previous minor version.
+To upgrade, move one minor version at a time.
+Act on the breaking changes of every release after yours, up to the one you upgrade to, and follow the upgrade guide of each minor version you move into.
 
-- [Hopsworks 5.x][hopsworks-5x]
+<!-- releases -->

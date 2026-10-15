@@ -21,7 +21,7 @@ HOPSWORKS = "charts/hopsworks/values.yaml"
 KSERVE = "charts/kserve/values.yaml"
 PROMETHEUS = "charts/prometheus/values.yaml"
 SUPERSET = "charts/superset/values.yaml"
-SECTION = "\n## Upgraded components\n"
+SUBSECTION = "### Upgraded components"
 
 # Where the chart sets each component's version: "<file>:<key>" in hopsworks-helm,
 # "rondb:<key>" in rondb-helm at the tag the rondb dependency names, or
@@ -402,8 +402,18 @@ def _release(tag):
     return tuple(int(part) for part in match.groups())
 
 
+def _page(release):
+    """The release notes page of ``release``'s minor version."""
+    return _DOCS_ROOT / "docs" / "releases" / release.rpartition(".")[0] / "index.md"
+
+
 def _baseline(helm, tag):
-    """The tag to compare with, and the tags to mark versions that shipped in."""
+    """The tag to compare with, and the tags to mark versions that shipped in.
+
+    A patch compares with the previous tag of its minor version. An X.Y.0 compares
+    with the first tag of the previous minor version and marks the versions that
+    shipped in one of its later tags.
+    """
     tags = sorted(
         (t for t in _git(helm, "tag", "--list", "v*").split() if RELEASE.fullmatch(t)),
         key=_release,
@@ -451,7 +461,7 @@ def _table(helm, rondb, old, new, markers):
             f"| {component} | {_cell(was)} | {_cell(now)}{_marker(marker) if marker else ''} |"
         )
     if not rows:
-        return "No components were upgraded in this release.\n"
+        return ""
     old, new = old.removeprefix("v"), new.removeprefix("v")
     header = [
         f"| Component | {old} | {new} |",
@@ -499,7 +509,29 @@ def release_components(
     if not write:
         typer.echo(table, nl=False)
         return
-    page = _DOCS_ROOT / "docs" / "releases" / release.split(".")[0] / f"{release}.md"
-    head = page.read_text().split(SECTION)[0].rstrip("\n")
-    page.write_text(f"{head}\n{SECTION}\n{table}")
+    page = _page(release)
+    page.write_text(_with_table(page.read_text(), release, table))
     typer.echo(f"Updated {page.relative_to(_DOCS_ROOT)}", err=True)
+
+
+def _with_table(text, release, table):
+    """``text`` with the Upgraded components of ``release``'s section set to ``table``.
+
+    A release without upgraded components gets no such section.
+    """
+    title = re.search(rf"^## {re.escape(release)} \{{ #[\w-]+ \}}$", text, re.MULTILINE)
+    if not title:
+        raise typer.BadParameter(f"{release} has no section in its page")
+    start = title.end()
+    following = re.search(r"^## ", text[start:], re.MULTILINE)
+    end = start + following.start() if following else len(text)
+    section = text[start:end].rstrip("\n")
+    old = re.search(
+        rf"^{re.escape(SUBSECTION)}\n.*?(?=^### |\Z)", section, re.MULTILINE | re.DOTALL
+    )
+    if old:
+        section = (section[: old.start()] + section[old.end() :]).rstrip("\n")
+    if table:
+        section += f"\n\n{SUBSECTION}\n\n{table.rstrip()}"
+    tail = text[end:]
+    return text[:start] + section + ("\n\n" + tail if tail else "\n")
