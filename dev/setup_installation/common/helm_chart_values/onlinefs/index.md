@@ -4,7 +4,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792052667` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792064611` (Hopsworks `5.2.0`)._
 
 Always deployed.
 
@@ -162,6 +162,7 @@ Always deployed.
             ronDbThreadNumber: 10
             threadNumber: 10
             vectorDbThreadNumber: 10
+            verifyFeatureGroupTopic: true
         producer: {}
     ```
 
@@ -250,6 +251,10 @@ Always deployed.
 
 `onlinefs.configmapOverrides.onlinefssite.service.vectorDbThreadNumber` <a class="headerlink" href="#helm.onlinefs.configmapOverrides.onlinefssite.service.vectorDbThreadNumber" title="Permanent link">#</a> { #helm.onlinefs.configmapOverrides.onlinefssite.service.vectorDbThreadNumber }
 :   Type `int`, default `10`.
+
+`onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic` <a class="headerlink" href="#helm.onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic" title="Permanent link">#</a> { #helm.onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic }
+:   Type `bool`, default `true`.
+    Drop records that did not arrive on the online topic of the feature group their headers name. Set to false only for a Kafka whose records reach OnlineFS on a topic other than the one Hopsworks resolves, such as topics renamed or prefixed by mirroring: any producer can then write into any project's online feature groups. Projects sharing a topic need no change.
 
 `onlinefs.configmapOverrides.producer` <a class="headerlink" href="#helm.onlinefs.configmapOverrides.producer" title="Permanent link">#</a> { #helm.onlinefs.configmapOverrides.producer }
 :   Type `object`, default `{}`.
