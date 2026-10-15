@@ -17,7 +17,71 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_The values tables are generated from the Hopsworks Helm chart during the documentation build._
-_To preview them locally, run `uv run --extra cli hopsworks-docs gen-helm-values --chart <path-to-hopsworks-helm>`, and `uv run hopsworks-docs reset-helm-values` before committing._
+_Generated from the Hopsworks Helm chart `5.2.0` (Hopsworks `5.2.0`)._
+
+## Common values { #helm-values-common }
+
+| Value | What it sets |
+| --- | --- |
+| [`global._hopsworks.cloudProvider`](global.md#helm.global._hopsworks.cloudProvider) | The cloud the cluster runs on; HopsFS, Consul and Hopsworks configure themselves from it. |
+| [`global._hopsworks.storageClassName`](global.md#helm.global._hopsworks.storageClassName) | The storage class of every persistent volume. |
+| [`global._hopsworks.imageRegistry`](global.md#helm.global._hopsworks.imageRegistry) | The registry the Hopsworks images are pulled from. |
+| [`global._hopsworks.imagePullSecrets`](global.md#helm.global._hopsworks.imagePullSecrets) | The pull secrets for that registry. |
+| [`global._hopsworks.managedDockerRegistery`](global.md#helm.global._hopsworks.managedDockerRegistery) | Use the cloud provider's container registry for the images Hopsworks builds for users. |
+| [`global._hopsworks.managedObjectStorage`](global.md#helm.global._hopsworks.managedObjectStorage) | Use a cloud bucket for HopsFS data and for the RonDB and OpenSearch backups. |
+| [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) | Deploy MinIO in the cluster; turn it off when a cloud bucket is used. |
+| [`global._hopsworks.externalLoadBalancers.enabled`](global.md#helm.global._hopsworks.externalLoadBalancers.enabled) | Expose services through LoadBalancer Services. |
+| [`hopsworks.ingress.host`](hopsworks.md#helm.hopsworks.ingress.host) | The host name of the Hopsworks UI and API. |
+| [`hopsworks.ingress.ingressClassName`](hopsworks.md#helm.hopsworks.ingress.ingressClassName) | The ingress controller that serves it. |
+| [`hopsworks.velero.backup.enabled`](hopsworks.md#helm.hopsworks.velero.backup.enabled) | Back up Kubernetes resources with Velero, which needs its own install. |
+| [`rondb.rondb.clusterSize`](rondb.md#helm.rondb.rondb.clusterSize) | The size of the RonDB cluster: data replicas, node groups, MySQL and REST API servers. |
+
+## All values { #helm-values-pages }
+
+| Values | Upstream charts | Keys |
+| --- | --- | --- |
+| [`global`][helm-values-global] |  | 145 |
+| [`airflow`][helm-values-airflow] |  | 151 |
+| [`arrowflight`][helm-values-arrowflight] |  | 46 |
+| [`certs-operator`][helm-values-certs-operator] |  | 29 |
+| [`consul`][helm-values-consul] | [`consul` 1.8.16](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.16) | 24 |
+| [`docker-registry`][helm-values-docker-registry] |  | 90 |
+| [`grafana`][helm-values-grafana] | [`grafana` 7.0.17](https://artifacthub.io/packages/helm/grafana/grafana/7.0.17) | 7 |
+| [`hive`][helm-values-hive] |  | 78 |
+| [`hopsfs`][helm-values-hopsfs] |  | 221 |
+| [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
+| [`hopsworks`][helm-values-hopsworks] |  | 945 |
+| [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 20 |
+| [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 94 |
+| [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |
+| [`judge`][helm-values-judge] |  | 23 |
+| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.2.0](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.2.0) | 102 |
+| [`kserve`][helm-values-kserve] |  | 269 |
+| [`minio`][helm-values-minio] |  | 42 |
+| [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 164 |
+| [`onlinefs`][helm-values-onlinefs] |  | 93 |
+| [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
+| [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) | 464 |
+| [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
+| [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 25 |
+| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 38 |
+| [`vpa`][helm-values-vpa] |  | 18 |
+
+## Other values { #helm-values-other }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hopsworkslib: {}
+    ```
+
+<div class="hops-values" markdown>
+
+`hopsworkslib` <a class="headerlink" href="#helm.hopsworkslib" title="Permanent link">#</a> { #helm.hopsworkslib }
+:   Type `object`, default `{}`.
+    override hopsworkslib values
+
+</div>
 
 <!-- END GENERATED VALUES -->
