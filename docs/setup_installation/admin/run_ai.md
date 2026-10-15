@@ -40,6 +40,7 @@ Assign quota to the projects in the Run:ai UI.
 3. A Run:ai service account for Hopsworks, created under Access, Service accounts in the Run:ai UI.
    Give it an access rule with the **System administrator** role at cluster scope.
    Hopsworks creates and deletes projects, reads departments, and reads node pool metrics, which needs cluster read permission.
+   When you create the access rule through the API instead of the UI, its `subjectId` is the service account's name, not its id.
 4. A Kubernetes Secret in the Hopsworks namespace that holds the service account's client secret:
 
     ```bash
