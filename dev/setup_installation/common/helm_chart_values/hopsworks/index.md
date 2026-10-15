@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792074242` (Hopsworks `5.2.0`)._
+_Generated from the Hopsworks Helm chart `5.2.0-alpha-1792078570` (Hopsworks `5.2.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2860,6 +2860,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         trino_events_cleaner_batch_size: '100'
         trino_events_delete_after_days: '61'
         trino_events_strip_details_after_days: '7'
+        trino_feature_group_subset_shares_enabled: 'false'
         twofactor_auth: 'false'
         twofactor_excluded_groups: AGENT;CLUSTER_AGENT
         unix_usernames_conf: '{\"glassfish\":\"glassfish\",\"hdfs\":\"hdfs\",\"rmyarn\":\"rmyarn\",\"yarn\":\"yarn\",\"hive\":\"hive\",\"livy\":\"livy\",\"flink\":\"flink\",\"consul\":\"consul\",\"hopsmon\":\"hopsmon\",\"zookeeper\":\"zookeeper\",\"onlinefs\":\"onlinefs\",\"elastic\":\"elastic\",\"kagent\":\"kagent\",\"mysql\":\"mysql\",\"airflow\":\"airflow\"}'
@@ -4346,6 +4347,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.trino_events_strip_details_after_days` <a class="headerlink" href="#helm.hopsworks.variables.trino_events_strip_details_after_days" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_events_strip_details_after_days }
 :   Type `string`, default `"7"`.
     Days after which a Trino query history row loses its query text, plan and JSON columns. The user, state and metric columns stay until trino_events_delete_after_days.
+
+`hopsworks.variables.trino_feature_group_subset_shares_enabled` <a class="headerlink" href="#helm.hopsworks.variables.trino_feature_group_subset_shares_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_feature_group_subset_shares_enabled }
+:   Type `string`, default `"false"`.
+    Serve feature groups shared with a subset of their features through Trino's *_shared catalogs. Those catalogs read HopsFS as a superuser, so a data owner who repoints a subset-shared table, or writes table metadata that names files outside it, could expose another project's files. Leave "false" until the Hive metastore authorizes table location and pointer changes (HWORKS-3366) and superuser reads are confined to the feature group's own directory. Whole feature group shares are not affected.
 
 `hopsworks.variables.twofactor_auth` <a class="headerlink" href="#helm.hopsworks.variables.twofactor_auth" title="Permanent link">#</a> { #helm.hopsworks.variables.twofactor_auth }
 :   Type `string`, default `"false"`.
