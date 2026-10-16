@@ -94,7 +94,7 @@ An instance archives its output when it exits, is restarted, or is stopped, whic
 !!! info ""
     Historical logs are convenient when a deployment fails occasionally, or when the instance you need to inspect is no longer running.
 
-Archives are written to `Logs/Serving/<deployment_name>/`, two files per instance run: `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.stdout.log` and `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.stderr.log`.
+Archives are written to `Logs/Serving/<deployment_name>/`, two files per instance run: `<UTC yyyyMMdd-HHmmss>.<run id>_<pod>_<component>.stdout.log` and `<UTC yyyyMMdd-HHmmss>.<run id>_<pod>_<component>.stderr.log`, where the run id ties the pair together.
 Unlike the live logs above, the archives keep standard output and standard error apart, the way job and app logs do; a stream the run wrote nothing to is left out.
 Archives written before Hopsworks 5.3 are a single interleaved `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.log` per run and stay readable next to the new ones.
 Browse them under the `Logs` section of the deployment overview page, or in the `Logs` dataset, and open one to read it.
