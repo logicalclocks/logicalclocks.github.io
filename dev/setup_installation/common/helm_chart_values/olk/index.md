@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792134505` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792163203` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -32,6 +32,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         storageClassName: null
       prometheus-elasticsearch-exporter:
         es:
+          cluster_settings: true
           sslSkipVerify: true
           uri: https://elastic_exporter:elastic_exporterpw@{{ include "olk.exporter.opensearchHost" . }}:9200
         image:
@@ -92,6 +93,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 
         ```yaml
         es:
+          cluster_settings: true
           sslSkipVerify: true
           uri: https://elastic_exporter:elastic_exporterpw@{{ include "olk.exporter.opensearchHost" . }}:9200
         image:
