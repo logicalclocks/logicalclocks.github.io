@@ -23,9 +23,21 @@ With `run_ai_enable` set, Hopsworks does the following:
 - Deleting a Hopsworks project deletes its Run:ai project.
 - Kueue and Run:ai are mutually exclusive: a cluster uses one, the other, or neither. The Helm install fails when both `global._hopsworks.kueue.enabled` and `run_ai_enable` are set, and Cluster settings refuses a change that would turn on both `kueue_installed` and `run_ai_enable`.
 
-Hopsworks never creates Run:ai departments and never moves a Run:ai project to another department.
-Moving a project in Run:ai deletes and recreates it, which deletes its workloads and assets.
-When a project is in another department than expected, the GPU view shows a warning and a Run:ai administrator moves it.
+Hopsworks never creates Run:ai departments.
+Each Hopsworks department other than the default needs a Run:ai department with exactly its name.
+
+## Moving a project to another department
+
+When an administrator moves a project to another department in the admin UI, Hopsworks moves its Run:ai project too, before it records the move:
+
+1. The move is refused while the project has running jobs, notebooks, terminals, apps or deployments, and when the target department has no Run:ai department of the same name.
+2. Run:ai cannot change a project's department in place, so Hopsworks deletes the Run:ai project and creates it again in the new department, bound to the same namespace.
+3. The new Run:ai project has no GPU quota, so the project's old quota is not taken from the new department's share.
+4. Hopsworks then moves the project, and the admin UI reminds you to re-add the project's GPU quota in Run:ai.
+
+Deleting a Run:ai project also deletes the Run:ai assets created in its scope, such as credentials and templates.
+If the project cannot be created in the new department, Hopsworks creates it again in the old one and the move fails.
+A project whose Run:ai project is in another department than expected, for example after a department was renamed, shows a warning in its GPU view.
 
 New Run:ai projects get `run_ai_project_gpu_quota` deserved GPUs, `0` by default.
 Run:ai admits notebooks, terminals, Python apps and model deployments only within a project's quota, because it does not preempt them.
