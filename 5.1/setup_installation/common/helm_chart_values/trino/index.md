@@ -4,7 +4,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
+_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -838,7 +838,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         additionalConfigProperties:
         - internal-communication.shared-secret=${ENV:TRINO_SHARED_SECRET}
         - http-server.process-forwarded=true
-        - event-listener.config-files=etc/mysql-event-listener.properties
         auth:
           groupsAuthSecret: trino-groups-file
           passwordAuthSecret: trino-password-file
@@ -846,10 +845,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         catalogs: []
         configMounts: []
         coordinator:
-          additionalConfigFiles:
-            mysql-event-listener.properties: |
-              event-listener.name=mysql
-              mysql-event-listener.db.url={{ include "trino.mysql.eventListener.db.url" . }}
           additionalJVMConfig:
           - --add-opens=java.base/java.nio=ALL-UNNAMED
           additionalVolumeMounts:
@@ -1218,10 +1213,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           create: true
           name: hopsworks-trino
         worker:
-          additionalConfigFiles:
-            mysql-event-listener.properties: |
-              event-listener.name=mysql
-              mysql-event-listener.db.url={{ include "trino.mysql.eventListener.db.url" . }}
           additionalJVMConfig:
           - --add-opens=java.base/java.nio=ALL-UNNAMED
           additionalVolumeMounts:
@@ -1433,7 +1424,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         additionalConfigProperties:
         - internal-communication.shared-secret=${ENV:TRINO_SHARED_SECRET}
         - http-server.process-forwarded=true
-        - event-listener.config-files=etc/mysql-event-listener.properties
         auth:
           groupsAuthSecret: trino-groups-file
           passwordAuthSecret: trino-password-file
@@ -1441,10 +1431,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         catalogs: []
         configMounts: []
         coordinator:
-          additionalConfigFiles:
-            mysql-event-listener.properties: |
-              event-listener.name=mysql
-              mysql-event-listener.db.url={{ include "trino.mysql.eventListener.db.url" . }}
           additionalJVMConfig:
           - --add-opens=java.base/java.nio=ALL-UNNAMED
           additionalVolumeMounts:
@@ -1813,10 +1799,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           create: true
           name: hopsworks-trino
         worker:
-          additionalConfigFiles:
-            mysql-event-listener.properties: |
-              event-listener.name=mysql
-              mysql-event-listener.db.url={{ include "trino.mysql.eventListener.db.url" . }}
           additionalJVMConfig:
           - --add-opens=java.base/java.nio=ALL-UNNAMED
           additionalVolumeMounts:

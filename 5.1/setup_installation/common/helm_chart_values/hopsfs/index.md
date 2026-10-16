@@ -4,7 +4,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
+_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 

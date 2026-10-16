@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
+_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
 
 ## Common values { #helm-values-common }
 
@@ -49,14 +49,14 @@ _Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
 | [`grafana`][helm-values-grafana] | [`grafana` 7.0.17](https://artifacthub.io/packages/helm/grafana/grafana/7.0.17) | 7 |
 | [`hive`][helm-values-hive] |  | 78 |
 | [`hopsfs`][helm-values-hopsfs] |  | 221 |
-| [`hopsworks`][helm-values-hopsworks] |  | 892 |
+| [`hopsworks`][helm-values-hopsworks] |  | 893 |
 | [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 94 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 56 |
 | [`judge`][helm-values-judge] |  | 23 |
 | [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 0.45.2](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/0.45.2) | 88 |
 | [`kserve`][helm-values-kserve] |  | 240 |
 | [`minio`][helm-values-minio] |  | 42 |
-| [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 162 |
+| [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 164 |
 | [`onlinefs`][helm-values-onlinefs] |  | 93 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |

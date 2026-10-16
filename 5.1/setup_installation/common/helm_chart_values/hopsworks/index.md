@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
+_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57,7 +57,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       objectStorageEnvInformation: null
       opensearchReindex:
         enabled: true
-      payaraVersion: 6.2025.11-jdk21.0
+      payaraVersion: 6.2025.11-jdk21.1
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
       podDisruptionBudget:
@@ -277,7 +277,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
-:   Type `string`, default `"6.2025.11-jdk21.0"`.
+:   Type `string`, default `"6.2025.11-jdk21.1"`.
 
 `hopsworks.payaraconfigmapName` <a class="headerlink" href="#helm.hopsworks.payaraconfigmapName" title="Permanent link">#</a> { #helm.hopsworks.payaraconfigmapName }
 :   Type `string`, default `"post-boot-commands"`.
@@ -1316,17 +1316,17 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           tag: null
         filebeat:
           imageName: filebeat
-          tag: 8.19.21
+          tag: 8.19.23
         migration:
           pullPolicy: IfNotPresent
           tag: null
         postInstall:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.0
+          tag: 6.2025.11-jdk21.1
         registry: null
         worker:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.0
+          tag: 6.2025.11-jdk21.1
     ```
 
 <div class="hops-values" markdown>
@@ -1351,7 +1351,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"filebeat"`.
 
 `hopsworks.image.filebeat.tag` <a class="headerlink" href="#helm.hopsworks.image.filebeat.tag" title="Permanent link">#</a> { #helm.hopsworks.image.filebeat.tag }
-:   Type `string`, default `"8.19.21"`.
+:   Type `string`, default `"8.19.23"`.
 
 `hopsworks.image.migration.pullPolicy` <a class="headerlink" href="#helm.hopsworks.image.migration.pullPolicy" title="Permanent link">#</a> { #helm.hopsworks.image.migration.pullPolicy }
 :   Type `string`, default `"IfNotPresent"`.
@@ -1365,7 +1365,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     pull policy for the admin sidecar's payara-node image. admindeployment.yaml already read this key before it was declared here, and its fallback cannot reach global._hopsworks.imagePullPolicy, so the sidecar was pinned to IfNotPresent with no way to override it.
 
 `hopsworks.image.postInstall.tag` <a class="headerlink" href="#helm.hopsworks.image.postInstall.tag" title="Permanent link">#</a> { #helm.hopsworks.image.postInstall.tag }
-:   Type `string`, default `"6.2025.11-jdk21.0"`.
+:   Type `string`, default `"6.2025.11-jdk21.1"`.
 
 `hopsworks.image.registry` <a class="headerlink" href="#helm.hopsworks.image.registry" title="Permanent link">#</a> { #helm.hopsworks.image.registry }
 :   Type `string`, default `nil`.
@@ -1375,7 +1375,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"IfNotPresent"`.
 
 `hopsworks.image.worker.tag` <a class="headerlink" href="#helm.hopsworks.image.worker.tag" title="Permanent link">#</a> { #helm.hopsworks.image.worker.tag }
-:   Type `string`, default `"6.2025.11-jdk21.0"`.
+:   Type `string`, default `"6.2025.11-jdk21.1"`.
 
 </div>
 
@@ -2366,7 +2366,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.1.1
+        base_image_version: 5.1.2
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -2753,8 +2753,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         testconnector_image_version: '1.0'
         tf_spark_connector_version: ''
         trino_default_catalog: hive
-        trino_events_cleaner_batch_size: '1000'
+        trino_events_cleaner_batch_size: '100'
         trino_events_delete_after_days: '61'
+        trino_events_strip_details_after_days: '7'
         twofactor_auth: 'false'
         twofactor_excluded_groups: AGENT;CLUSTER_AGENT
         unix_usernames_conf: '{\"glassfish\":\"glassfish\",\"hdfs\":\"hdfs\",\"rmyarn\":\"rmyarn\",\"yarn\":\"yarn\",\"hive\":\"hive\",\"livy\":\"livy\",\"flink\":\"flink\",\"consul\":\"consul\",\"hopsmon\":\"hopsmon\",\"zookeeper\":\"zookeeper\",\"onlinefs\":\"onlinefs\",\"elastic\":\"elastic\",\"kagent\":\"kagent\",\"mysql\":\"mysql\",\"airflow\":\"airflow\"}'
@@ -2858,7 +2859,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.1.1"`.
+:   Type `string`, default `"5.1.2"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -4088,10 +4089,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hive"`.
 
 `hopsworks.variables.trino_events_cleaner_batch_size` <a class="headerlink" href="#helm.hopsworks.variables.trino_events_cleaner_batch_size" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_events_cleaner_batch_size }
-:   Type `string`, default `"1000"`.
+:   Type `string`, default `"100"`.
 
 `hopsworks.variables.trino_events_delete_after_days` <a class="headerlink" href="#helm.hopsworks.variables.trino_events_delete_after_days" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_events_delete_after_days }
 :   Type `string`, default `"61"`.
+
+`hopsworks.variables.trino_events_strip_details_after_days` <a class="headerlink" href="#helm.hopsworks.variables.trino_events_strip_details_after_days" title="Permanent link">#</a> { #helm.hopsworks.variables.trino_events_strip_details_after_days }
+:   Type `string`, default `"7"`.
+    Days after which a Trino query history row loses its query text, plan and JSON columns. The user, state and metric columns stay until trino_events_delete_after_days.
 
 `hopsworks.variables.twofactor_auth` <a class="headerlink" href="#helm.hopsworks.variables.twofactor_auth" title="Permanent link">#</a> { #helm.hopsworks.variables.twofactor_auth }
 :   Type `string`, default `"false"`.

@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.1` (Hopsworks `5.1.1`)._
+_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -263,7 +263,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         extraNamespaces: []
         fullnameOverride: null
         image:
-          tag: 8.19.21
+          tag: 8.19.23
         kubernetesMetadata:
           cronjob: null
           deployment: null
@@ -346,7 +346,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     full name override
 
 `olk.filebeat.image.tag` <a class="headerlink" href="#helm.olk.filebeat.image.tag" title="Permanent link">#</a> { #helm.olk.filebeat.image.tag }
-:   Type `string`, default `"8.19.21"`.
+:   Type `string`, default `"8.19.23"`.
 
 `olk.filebeat.kubernetesMetadata.cronjob` <a class="headerlink" href="#helm.olk.filebeat.kubernetesMetadata.cronjob" title="Permanent link">#</a> { #helm.olk.filebeat.kubernetesMetadata.cronjob }
 :   Type `bool|null`, default `nil`.
@@ -665,6 +665,9 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           managed: null
           nodePort: null
           nodeSelector: {}
+        indexUpgrade:
+          activeDeadlineSeconds: 3600
+          mode: none
         jvmOpts: ''
         knn:
           cache_expire: true
@@ -787,6 +790,14 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 `olk.opensearch.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.olk.opensearch.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.olk.opensearch.externalLoadBalancer.nodeSelector }
 :   Type `object`, default `{}`.
     selector for nodes the load balancer can use to route traffic
+
+`olk.opensearch.indexUpgrade.activeDeadlineSeconds` <a class="headerlink" href="#helm.olk.opensearch.indexUpgrade.activeDeadlineSeconds" title="Permanent link">#</a> { #helm.olk.opensearch.indexUpgrade.activeDeadlineSeconds }
+:   Type `int`, default `3600`.
+    Deadline for the Job's whole pass. The Job prints the sizes and an estimate before it starts. The timeout given to helm upgrade has to be longer.
+
+`olk.opensearch.indexUpgrade.mode` <a class="headerlink" href="#helm.olk.opensearch.indexUpgrade.mode" title="Permanent link">#</a> { #helm.olk.opensearch.indexUpgrade.mode }
+:   Type `string`, default `"none"`.
+    Run the 5.2 upgrade's index pass in a post-upgrade Job of this 5.1.x upgrade, so that the upgrade to 5.2.1 or later finds nothing to copy. `none` renders nothing. `copy` copies the indices created before OpenSearch 2.0, which a 3.x node refuses to boot with, one at a time behind a write block on that index alone, and deletes nothing. `report` lists them with their sizes and expected block times and fails, changing nothing apart from finishing an index an interrupted earlier run left half done. Rendered on upgrade only. Turn vector ingestion off first, in an upgrade of its own (`onlinefs.deployment.vectordb.enabled=false`), and wait for the OnlineFS rollout. helm waits for the Job: give `--timeout` more than `activeDeadlineSeconds`. Pass it with `--set`: 5.2.1 and later read the same key, and a stored `report` makes their pre-upgrade hook fail. Steps: <https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade_opensearch/#opensearch-copy-on-51>
 
 `olk.opensearch.jvmOpts` <a class="headerlink" href="#helm.olk.opensearch.jvmOpts" title="Permanent link">#</a> { #helm.olk.opensearch.jvmOpts }
 :   Type `string`, default `""`.
