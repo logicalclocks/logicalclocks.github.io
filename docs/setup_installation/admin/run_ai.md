@@ -123,8 +123,8 @@ Hopsworks keeps working when the Run:ai control plane is unreachable:
 
 - Project creation still succeeds; the project is bound to Run:ai later by the background pass or its first workload start.
 - Workloads in projects that are already bound start without calling the control plane, because the queue comes from the namespace label.
-- A workload in a project that is not bound yet starts without a Run:ai queue, and a warning is logged.
-- The quota check is skipped; Run:ai enforces the quota when it schedules the pod.
+- A workload in a project that is not bound yet cannot start until Run:ai is reachable, because Run:ai only governs the namespaces it has bound and the workload would otherwise run outside the project's quota.
+- The quota check is skipped for bound projects; Run:ai enforces the quota when it schedules the pod.
 
 Run:ai's own admission webhooks are a hard dependency: they are configured with `failurePolicy: Fail` for every namespace labelled `runai/queue`.
 When the `runai-admission-controller` or `admission` Deployment in the `runai` namespace is down, no pod can be created in a bound project namespace, Hopsworks system jobs in those namespaces included.
