@@ -25,6 +25,7 @@ With `run_ai_enable` set, Hopsworks does the following:
 
 Hopsworks never creates Run:ai departments.
 Each Hopsworks department other than the default needs a Run:ai department with exactly its name.
+Hopsworks department names follow the same rule as Run:ai department names: up to 63 lowercase letters, digits and `-`, starting and ending with a letter or digit.
 
 ## Moving a project to another department
 
