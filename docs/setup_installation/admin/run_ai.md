@@ -21,7 +21,7 @@ With `run_ai_enable` set, Hopsworks does the following:
   Hopsworks also puts the `runai/queue` label on the workloads it creates.
 - Projects that existed before the integration was enabled are bound on their first workload start, or by a background pass every `run_ai_reconcile_interval_s` seconds.
 - Deleting a Hopsworks project deletes its Run:ai project.
-- Kueue integration is off while Run:ai is enabled, even when `kueue_installed` is set.
+- Kueue and Run:ai are mutually exclusive: a cluster uses one, the other, or neither. The Helm install fails when both `global._hopsworks.kueue.enabled` and `run_ai_enable` are set, and Cluster settings refuses a change that would turn on both `kueue_installed` and `run_ai_enable`.
 
 Hopsworks never creates Run:ai departments and never moves a Run:ai project to another department.
 Moving a project in Run:ai deletes and recreates it, which deletes its workloads and assets.
