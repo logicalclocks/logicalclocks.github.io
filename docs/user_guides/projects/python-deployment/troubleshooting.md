@@ -94,15 +94,17 @@ An instance archives its output when it exits, is restarted, or is stopped, whic
 !!! info ""
     Historical logs are convenient when a deployment fails occasionally, or when the instance you need to inspect is no longer running.
 
-Archives are written to `Logs/Serving/<deployment_name>/` and named `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.log`, one file per instance run.
+Archives are written to `Logs/Serving/<deployment_name>/`, two files per instance run: `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.stdout.log` and `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.stderr.log`.
+Unlike the live logs above, the archives keep standard output and standard error apart, the way job and app logs do; a stream the run wrote nothing to is left out.
+Archives written before Hopsworks 5.3 are a single interleaved `<UTC yyyyMMdd-HHmmss>_<pod>_<component>.log` per run and stay readable next to the new ones.
 Browse them under the `Logs` section of the deployment overview page, or in the `Logs` dataset, and open one to read it.
 
 Historical logs are only written for components that have disk logging enabled.
 See [configuring disk logging](#configuring-disk-logging) below, and note that only Python deployments support it: Python predictors have it on by default.
 
 !!! warning
-    The number of archives kept per deployment is capped by the `log_history_limit` cluster variable, which defaults to 30.
-    Once the cap is reached, the oldest archive is deleted each time a new one is written, so long-lived deployments do not fill the project with logs.
+    The number of runs kept per deployment is capped by the `log_history_limit` cluster variable, which defaults to 30.
+    Once the cap is reached, the oldest run's archives are deleted each time a new run is written, so long-lived deployments do not fill the project with logs.
 
 To retrieve archives with the Python library, use `deployment.download_logs()`, shown in [Step 5](#step-5-download-historical-logs) below.
 
