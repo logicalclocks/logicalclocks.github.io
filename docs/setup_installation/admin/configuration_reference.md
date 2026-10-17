@@ -98,6 +98,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `docker_base_image_python` | String | `python-feature-pipeline` | Settings.java |
 | `docker_base_image_python_app` | String | `python-app-pipeline` | Settings.java |
 | `docker_base_image_python_version` | String | `3.13` | Settings.java |
+| `docker_base_image_ray_rl_post_training` | String | `rl-post-training` | Settings.java |
 | `docker_base_image_ray_tensorflow_training` | String | `ray-tensorflow-training-pipeline` | Settings.java |
 | `docker_base_image_ray_torch_training` | String | `ray-torch-training-pipeline` | Settings.java |
 | `docker_base_image_ray_training` | String | `ray-training-pipeline` | Settings.java |
@@ -496,7 +497,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `ray_job_worker_gpus` | Integer | `0` | Settings.java |
 | `ray_job_worker_memory` | Integer | `4096` | Settings.java |
 | `ray_materialization_dir` | String | `/srv/hops/ray/job` | Settings.java |
-| `ray_version` | String | `2.9.0` | Settings.java |
+| `ray_version` | String | `2.59.0` | Settings.java |
 | `ray_warehouse_dir` | String | `ray-warehouse` | Settings.java |
 | `reject_remote_user_no_group` | Boolean | `false` | Settings.java |
 | `remote_auth_need_consent` | Boolean | `true` | Settings.java |
