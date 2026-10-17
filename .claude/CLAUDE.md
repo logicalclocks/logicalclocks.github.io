@@ -15,7 +15,7 @@ uv run hopsworks-docs linkchecker # check for broken links
 ## Rules
 
 - One sentence per line in all Markdown prose
-- Every new page must have an entry in the `nav:` section of `mkdocs.yml`
+- Every new page must have an entry in the `nav:` section of `mkdocs.yml` (release pages are listed automatically, see `.claude/docs/releases.md`)
 - `concepts/` is for "what" and "why"; `user_guides/` is for "how to"; `setup_installation/` is for infrastructure and admin
 - Python code blocks in Markdown must be syntactically valid and pass snakeoil/ruff at line length 88
 - Do not write prose in API reference pages — edit docstrings in `hopsworks-api` instead
@@ -27,4 +27,5 @@ uv run hopsworks-docs linkchecker # check for broken links
 - @docs/content.md — writing conventions, code blocks, linking, and assets
 - @docs/design-system.md — visual language: tokens, logo, nav, search, diagrams; read before any CSS/nav/visual change
 - @docs/captures.md — UI screenshots and GIFs: where the pixels come from, browser session, scoping rules, helpers
+- @docs/releases.md — release pages: page shape and how to write release notes, breaking changes and migrations
 - @docs/caveats/README.md — known gotchas; add new ones as separate files in this folder

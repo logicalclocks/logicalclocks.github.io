@@ -361,6 +361,8 @@ nav:
   - Reference:
       - REST API Status Codes: reference/rest_error_codes.md
   - Docs for AI agents: ai.md
+  # Expanded by scripts/releases_hook.py; see .claude/docs/releases.md.
+  - Releases: releases/index.md
 
 theme:
   name: material
@@ -433,7 +435,9 @@ extra_javascript:
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
 # Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.
+# releases_hook first, so llms_hook exports the Markdown it generates.
 hooks:
+  - scripts/releases_hook.py
   - scripts/llms_hook.py
 
 plugins:
