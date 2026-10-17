@@ -110,6 +110,10 @@ print(gpus.available_non_preemptible, gpus.available_preemptible)
 
 All numbers are for the project's default Run:ai node pool.
 
+In Cluster settings, the Departments and Projects pages show the **GPU quota** and **Allocated GPUs** of the Run:ai department or project each one is linked to, summed over node pools.
+A department or project with no Run:ai counterpart shows **Not linked in Run:ai**: a department with no Run:ai department of its name, whose projects then go to `run_ai_default_department`, or a project that is not bound to Run:ai yet.
+The numbers come from `GET /hopsworks-api/api/admin/kube/runai`.
+
 | Field | Meaning |
 | --- | --- |
 | `project`, `department` | Quota (deserved GPUs), limit, allocated and non-preemptible allocated GPUs |
