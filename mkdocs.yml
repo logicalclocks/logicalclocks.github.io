@@ -327,6 +327,7 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
+          - GPU Scheduling with Run:ai: setup_installation/admin/run_ai.md
       - Helm Chart Values Reference:
           - setup_installation/common/helm_chart_values/index.md
           - global: setup_installation/common/helm_chart_values/global.md
