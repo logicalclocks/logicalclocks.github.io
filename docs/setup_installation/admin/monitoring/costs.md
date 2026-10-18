@@ -495,6 +495,8 @@ The totals and the table cover the observed buckets only, and the coverage line 
 
 Completed hourly and 10-minute buckets are cached for up to one hour, and the current bucket is refreshed live, about every 30 seconds.
 The page therefore shows recent cost within a minute, and the cost of finished periods at most an hour late.
+Hopsworks fills this cache in the background every 10 minutes, so a page load normally only waits for the current bucket, under a second.
+Right after Hopsworks restarts, the first load of the Last day and Last week windows can take up to about 15 seconds, until the first background fill a minute after start.
 
 ### Efficiency { #costs-efficiency }
 
