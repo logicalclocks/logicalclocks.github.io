@@ -494,7 +494,8 @@ The totals and the table cover the observed buckets only, and the coverage line 
 ### Data freshness { #costs-freshness }
 
 Completed hourly and 10-minute buckets are cached for up to one hour, and the current bucket is refreshed live, about every 30 seconds.
-The page therefore shows recent cost within a minute, and the cost of finished periods at most an hour late.
+Hopsworks therefore shows what OpenCost has computed within a minute, and the cost of finished periods at most an hour late.
+A workload that just started can still take up to 5 minutes to appear, because OpenCost samples Prometheus every 5 minutes.
 Hopsworks fills this cache in the background every 10 minutes, so a page load normally only waits for the current bucket, under a second.
 Right after Hopsworks restarts, the first load of the Last day and Last week windows can take up to about 15 seconds, until the first background fill a minute after start.
 
@@ -536,7 +537,7 @@ When Hopsworks cannot read OpenCost, the page shows _OpenCost is not available_ 
 | `OpenCost asked for a token (401), and there is none at /var/run/secrets/opencost/token` | The credentials volume is not mounted. Set `hopsworks.opencost.enabled: true` and upgrade the Hopsworks chart. |
 | `OpenCost rejected Hopsworks' token (401): it must be a service-account token for the opencost audience` | The proxy's `--auth-token-audiences` does not match the token's audience `opencost`. |
 | `OpenCost denied Hopsworks (403): check the opencost-reader RoleBinding in the OpenCost namespace` | The `opencost-reader` RoleBinding is missing or names another service account or namespace. |
-| `No OpenCost certificate at /var/run/secrets/opencost/ca.crt: ...` | ConfigMap `opencost-ca` with key `ca.crt` is missing from the Hopsworks namespace. Create it, as in [Create the TLS certificate][costs-tls-certificate]. |
+| `No OpenCost certificate at /var/run/secrets/opencost/ca.crt: ...` | ConfigMap `opencost-ca` with key `ca.crt` is missing from the Hopsworks namespace. Recreate it from the certificate the proxy already serves: `kubectl -n opencost get secret opencost-tls -o jsonpath='{.data.tls\.crt}' \| base64 -d > ca.crt`, then `kubectl -n hopsworks create configmap opencost-ca --from-file=ca.crt`. A new certificate from [Create the TLS certificate][costs-tls-certificate] does not match the running proxy unless Secret `opencost-tls` is replaced too and OpenCost restarted. |
 | `OpenCost has no /allocation/compute at this URL (404)` | `opencost_api_url` points at something other than OpenCost. |
 | `opencost_api_url is misconfigured: expected http(s)://host:port, got ...` | The URL has a path, query or credentials in it. |
 
