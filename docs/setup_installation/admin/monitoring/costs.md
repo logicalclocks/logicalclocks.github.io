@@ -397,7 +397,7 @@ The table lists one row per namespace (or department), sorted by total cost, mos
 | CPU, GPU, RAM, Storage, Network | The cost of each resource. GPU is the cost of the GPUs alone. |
 | Other | Load balancers, shared and external costs. |
 | Total | The sum of the cost columns. |
-| GPU workloads, CPU workloads | The row's total split by workload class. They add up to Total. |
+| GPU workloads, CPU workloads | The row's total split by workload class. They add up to Total for namespace, department and Not a project rows; Idle capacity and Unmounted volumes have no workloads, so these columns show a dash there and are 0 in the API. |
 | Share | The row's total as a fraction of the window's total. |
 | Efficiency | Used over requested CPU and RAM, see [Efficiency][costs-efficiency]. |
 
@@ -463,31 +463,7 @@ GPU workloads: <gpu workloads> | CPU workloads: <cpu workloads>
 
 ### Project costs for data owners { #costs-project-data-owners }
 
-A project's data owners can read the cost of that project without being platform administrators; an API key needs the `PROJECT` scope.
-The response has the shape of the namespace view with the project's own row alone: no other project, no idle capacity or unmounted volumes, and no share.
-Its totals are the project's, and the coverage is the cluster's, so a bucket with data and no row is one in which the project cost nothing.
-Data scientists and members of other projects get HTTP 403.
-
-```python
-import hopsworks
-
-
-project = hopsworks.login()
-costs = hopsworks.get_costs_api().get_project_costs("month")
-print(costs.total_cost, costs.currency)
-
-other = hopsworks.get_costs_api().get_project_costs("week", project="fraud_detection")
-```
-
-`project` defaults to the project logged in to.
-The CLI command prints the same table for the active project, or for the one named with `--project`:
-
-```bash
-hops project costs --window month
-hops project costs --window week --project fraud_detection --json
-```
-
-The REST endpoint is `GET /hopsworks-api/api/project/<project id>/costs?window=<HOUR|DAY|WEEK|MONTH|YEAR>`.
+A project's data owners can read the cost of that project without being platform administrators, see [Project costs][project-costs-introduction].
 
 !!! api "API reference"
 
@@ -495,7 +471,6 @@ The REST endpoint is `GET /hopsworks-api/api/project/<project id>/costs?window=<
     - <code class="doc-symbol doc-symbol-class"></code> [`CostsApi`][hopsworks_common.core.costs_api.CostsApi]
         - <code class="doc-symbol doc-symbol-method"></code> [`get_namespace_costs`][hopsworks_common.core.costs_api.CostsApi.get_namespace_costs]
         - <code class="doc-symbol doc-symbol-method"></code> [`get_department_costs`][hopsworks_common.core.costs_api.CostsApi.get_department_costs]
-        - <code class="doc-symbol doc-symbol-method"></code> [`get_project_costs`][hopsworks_common.core.costs_api.CostsApi.get_project_costs]
     - <code class="doc-symbol doc-symbol-class"></code> [`NamespaceCosts`][hopsworks_common.cost.NamespaceCosts]
         - <code class="doc-symbol doc-symbol-method"></code> [`to_pandas`][hopsworks_common.cost.NamespaceCosts.to_pandas]
     - <code class="doc-symbol doc-symbol-class"></code> [`CostRow`][hopsworks_common.cost.CostRow]
