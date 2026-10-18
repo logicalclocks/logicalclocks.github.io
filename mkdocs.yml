@@ -301,6 +301,7 @@ nav:
           - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
+              - Costs: setup_installation/admin/monitoring/costs.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
               - Services Logs: setup_installation/admin/monitoring/services-logs.md
               - Service Log Labels: setup_installation/admin/monitoring/services-logs-labels.md
