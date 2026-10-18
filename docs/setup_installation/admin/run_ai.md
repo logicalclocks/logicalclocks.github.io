@@ -36,6 +36,8 @@ When an administrator moves a project to another department in the admin UI, Hop
 3. The new Run:ai project has no GPU quota, so the project's old quota is not taken from the new department's share.
 4. Hopsworks then moves the project, and the admin UI reminds you to re-add the project's GPU quota in Run:ai.
 
+Deleting a Hopsworks department moves its projects to the default department the same way, one at a time, so their Run:ai projects move to `run_ai_default_department` without GPU quota.
+The delete stops at the first project with running workloads: the projects moved before it stay in the default department, and the department keeps the rest until it is deleted again.
 Deleting a Run:ai project also deletes the Run:ai assets created in its scope, such as credentials and templates.
 If the project cannot be created in the new department, Hopsworks creates it again in the old one and the move fails.
 A project whose Run:ai project is in another department than expected, for example after a department was renamed, shows a warning in its GPU view.
