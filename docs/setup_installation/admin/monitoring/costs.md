@@ -512,6 +512,10 @@ The last hour and the last day are computed by OpenCost on request.
 Hopsworks stores the cost of each namespace for every complete UTC day, checking once an hour, and keeps those days for `opencost_history_retention_days` (400 by default).
 The last week, month and year are read from the stored days, and OpenCost computes only the days not stored yet, usually today.
 
+The stored days are rows of the Hopsworks database table `hopsworks.namespace_daily_cost` (one row per namespace and day), so they are included in RonDB backups and restored with the cluster.
+Reinstalling or upgrading OpenCost loses no history and needs nothing copied back: OpenCost has no store of its own, and Hopsworks serves the stored days without it.
+Losing Prometheus data loses only the days not stored yet: today, and yesterday until two hours after midnight UTC.
+
 History starts when OpenCost and Hopsworks with Costs enabled are both installed.
 A day is stored only while Prometheus still holds it, so a day is lost if Hopsworks is down for longer than 7 days after it.
 
