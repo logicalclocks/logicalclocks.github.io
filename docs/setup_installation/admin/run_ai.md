@@ -32,14 +32,14 @@ Hopsworks department names follow the same rule as Run:ai department names: up t
 When an administrator moves a project to another department in the admin UI, Hopsworks moves its Run:ai project too, before it records the move:
 
 1. Nothing happens in Run:ai when both departments map to the same Run:ai department, or the project is not bound to Run:ai yet.
-   Otherwise the move is refused while the project has workloads in Run:ai, running or queued: jobs, notebooks, terminals, apps or deployments.
+   Otherwise the move is refused while any pod runs or waits in the project's namespace: jobs, notebooks, terminals, apps or deployments.
 2. Run:ai cannot change a project's department in place, so Hopsworks deletes the Run:ai project and creates it again in the new department, bound to the same namespace.
 3. The new Run:ai project has no GPU quota, so the project's old quota is not taken from the new department's share.
    It also loses the access rules, limits and other node-pool settings of the old Run:ai project; Run:ai deletes project-scoped access rules with the project.
 4. Hopsworks then moves the project, and the admin UI reminds you to re-add the project's GPU quota and access rules in Run:ai.
 
 Deleting a Hopsworks department moves its projects to the default department the same way, one at a time, so their Run:ai projects move to `run_ai_default_department` without GPU quota.
-The delete stops at the first project with workloads in Run:ai: the projects moved before it stay in the default department, and the department keeps the rest until it is deleted again.
+The delete stops at the first project with a running or waiting pod: the projects moved before it stay in the default department, and the department keeps the rest until it is deleted again.
 Deleting a Run:ai project also deletes the Run:ai assets created in its scope, such as credentials and templates.
 If the project cannot be created in the new department, Hopsworks creates it again in the old one with its old quota and scheduling settings, and the move fails; the access rules of the old Run:ai project are not restored.
 A project whose Run:ai project is in another department than expected, for example after a department was renamed, shows a warning in its GPU view.
