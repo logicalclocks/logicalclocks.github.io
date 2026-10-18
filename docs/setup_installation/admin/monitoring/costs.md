@@ -514,6 +514,7 @@ The last week, month and year are read from the stored days, and OpenCost comput
 
 The stored days are rows of the Hopsworks database table `hopsworks.namespace_daily_cost` (one row per namespace and day), so they are included in RonDB backups and restored with the cluster.
 Reinstalling or upgrading OpenCost loses no history and needs nothing copied back: OpenCost has no store of its own, and Hopsworks serves the stored days without it.
+While OpenCost is not installed, the last week, month and year show the stored days, and the last hour and day say that OpenCost is not reachable.
 Losing Prometheus data loses only the days not stored yet: today, and yesterday until two hours after midnight UTC.
 
 History starts when OpenCost and Hopsworks with Costs enabled are both installed.
@@ -570,7 +571,7 @@ When Hopsworks cannot read OpenCost, the page shows _OpenCost is not available_ 
 | `OpenCost asked for a token (401), and there is none at /var/run/secrets/opencost/token` | The credentials volume is not mounted. Set `hopsworks.opencost.enabled: true` and upgrade the Hopsworks chart. |
 | `OpenCost rejected Hopsworks' token (401): it must be a service-account token for the opencost audience` | The proxy's `--auth-token-audiences` does not match the token's audience `opencost`. |
 | `OpenCost denied Hopsworks (403): check the opencost-reader RoleBinding in the OpenCost namespace` | The `opencost-reader` RoleBinding is missing or names another service account or namespace. |
-| `No OpenCost certificate at /var/run/secrets/opencost/ca.crt: ...` | ConfigMap `opencost-ca` with key `ca.crt` is missing from the Hopsworks namespace. Recreate it from the certificate the proxy already serves: `kubectl -n opencost get secret opencost-tls -o jsonpath='{.data.tls\.crt}' \| base64 -d > ca.crt`, then `kubectl -n hopsworks create configmap opencost-ca --from-file=ca.crt`. A new certificate from [Create the TLS certificate][costs-tls-certificate] does not match the running proxy unless Secret `opencost-tls` is replaced too and OpenCost restarted. |
+| `No OpenCost certificate at /var/run/secrets/opencost/ca.crt: ...` | ConfigMap `opencost-ca` with key `ca.crt` is missing from the Hopsworks namespace. Recreate it from the certificate the proxy already serves: `kubectl -n opencost get secret opencost-tls -o jsonpath='{.data.tls\.crt}' \| base64 -d > ca.crt`, then `kubectl -n hopsworks create configmap opencost-ca --from-file=ca.crt`. A new certificate from [Create the TLS certificate][costs-tls-certificate] does not match the running proxy unless Secret `opencost-tls` is replaced too and OpenCost restarted. Right after OpenCost is reinstalled this message is expected for about a minute, until the kubelet updates the file in the Hopsworks pods. |
 | `OpenCost has no /allocation/compute at this URL (404)` | `opencost_api_url` points at something other than OpenCost. |
 | `opencost_api_url is misconfigured: expected http(s)://host:port, got ...` | The URL has a path, query or credentials in it. |
 
