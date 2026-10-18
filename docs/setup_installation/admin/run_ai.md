@@ -24,22 +24,24 @@ With `run_ai_enable` set, Hopsworks does the following:
 - Kueue and Run:ai are mutually exclusive: a cluster uses one, the other, or neither. The Helm install fails when both `global._hopsworks.kueue.enabled` and `run_ai_enable` are set, and Cluster settings refuses a change that would turn on both `kueue_installed` and `run_ai_enable`.
 
 Hopsworks never creates Run:ai departments.
-Each Hopsworks department other than the default needs a Run:ai department with exactly its name.
+A project in a Hopsworks department goes to the Run:ai department with exactly that name when Run:ai has one, and otherwise to `run_ai_default_department`.
 Hopsworks department names follow the same rule as Run:ai department names: up to 63 lowercase letters, digits and `-`, starting and ending with a letter or digit.
 
 ## Moving a project to another department
 
 When an administrator moves a project to another department in the admin UI, Hopsworks moves its Run:ai project too, before it records the move:
 
-1. The move is refused while the project has running jobs, notebooks, terminals, apps or deployments, and when the target department has no Run:ai department of the same name.
+1. Nothing happens in Run:ai when both departments map to the same Run:ai department, or the project is not bound to Run:ai yet.
+   Otherwise the move is refused while the project has workloads in Run:ai, running or queued: jobs, notebooks, terminals, apps or deployments.
 2. Run:ai cannot change a project's department in place, so Hopsworks deletes the Run:ai project and creates it again in the new department, bound to the same namespace.
 3. The new Run:ai project has no GPU quota, so the project's old quota is not taken from the new department's share.
-4. Hopsworks then moves the project, and the admin UI reminds you to re-add the project's GPU quota in Run:ai.
+   It also loses the access rules, limits and other node-pool settings of the old Run:ai project; Run:ai deletes project-scoped access rules with the project.
+4. Hopsworks then moves the project, and the admin UI reminds you to re-add the project's GPU quota and access rules in Run:ai.
 
 Deleting a Hopsworks department moves its projects to the default department the same way, one at a time, so their Run:ai projects move to `run_ai_default_department` without GPU quota.
-The delete stops at the first project with running workloads: the projects moved before it stay in the default department, and the department keeps the rest until it is deleted again.
+The delete stops at the first project with workloads in Run:ai: the projects moved before it stay in the default department, and the department keeps the rest until it is deleted again.
 Deleting a Run:ai project also deletes the Run:ai assets created in its scope, such as credentials and templates.
-If the project cannot be created in the new department, Hopsworks creates it again in the old one and the move fails.
+If the project cannot be created in the new department, Hopsworks creates it again in the old one with its old quota and scheduling settings, and the move fails; the access rules of the old Run:ai project are not restored.
 A project whose Run:ai project is in another department than expected, for example after a department was renamed, shows a warning in its GPU view.
 
 New Run:ai projects get `run_ai_project_gpu_quota` deserved GPUs, `0` by default.
@@ -122,7 +124,7 @@ The numbers come from `GET /hopsworks-api/api/admin/kube/runai`.
 | `node_pool_gpus` | Total, allocated and idle GPUs in the node pool |
 | `available_non_preemptible` | GPUs notebooks, terminals and deployments can still get within quota |
 | `available_preemptible` | Idle GPUs a batch job could borrow over quota now; an estimate, a larger job still queues |
-| `warnings` | `RUN_AI_UNREACHABLE`, `RUN_AI_METRICS_MISSING`, `RUN_AI_PROJECT_NOT_READY`, `RUN_AI_DEPARTMENT_DRIFT`, `RUN_AI_BINDING_LEFT` |
+| `warnings` | `RUN_AI_UNREACHABLE`, `RUN_AI_METRICS_MISSING`, `RUN_AI_PROJECT_NOT_READY`, `RUN_AI_DEPARTMENT_DRIFT`, `RUN_AI_SCHEDULER_NOT_ENFORCED`, `RUN_AI_BINDING_LEFT` |
 
 ## Operational dependency
 
