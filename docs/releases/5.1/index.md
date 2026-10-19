@@ -23,7 +23,7 @@ The releases of Hopsworks 5.1, newest first.
   It applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the chart's `README.md` shows.
 - Fixed every OpenSearch restart deleting the OpenSearch roles of restricted-access grants and feature group shares, and every `helm upgrade` restarting OpenSearch.
   Grants and shares made before the last OpenSearch restart on 5.1.0 or 5.1.1 lost their roles, and granting or sharing again is refused: revoke and grant again, or unshare and share again.
-- Fixed security vulnerabilities in the Hopsworks certificate authority, Grafana, Filebeat and Superset images, and in the MySQL and Redis of Superset.
+- Addressed vulnerabilities in the Hopsworks certificate authority, Grafana, Filebeat and Superset images, and in the MySQL and Redis of Superset.
 - Added an opt-in Job that copies the OpenSearch indices created before OpenSearch 2.0 during a 5.1 upgrade, in a window you pick, so the upgrade to 5.2.1 or later has nothing left to copy; set `olk.opensearch.indexUpgrade.mode` to `report` to list them, or to `copy` ([values][values-olk-index-upgrade]).
   Turn vector ingestion off in an upgrade of its own first (`onlinefs.deployment.vectordb.enabled: false`), and pass the mode with `--set`, not in your values file, because 5.2.1 and later read the same key.
 - Changed the SQL Runner of the Query Engine page to fill the page, show row numbers and column types in the results, list a table's columns in the Explorer and draw `EXPLAIN (FORMAT GRAPHVIZ)` plans as a graph ([SQL Runner][docs-sql-runner]).
@@ -110,12 +110,12 @@ The releases of Hopsworks 5.1, newest first.
 - Addressed vulnerabilities in feature views (also in [5.0.8][hopsworks-5-0-8]).
 - Addressed vulnerabilities in project datasets (also in [5.0.10][hopsworks-5-0-10]).
 - Changed model deployments, jobs, Jupyter servers and terminals to each get their own serving API key.
-- Fixed security vulnerabilities in the Hopsworks server dependencies and in the Superset, Grafana, Prometheus, Consul, certificates operator, Docker registry, BuildKit, Istio, Knative Serving, KServe utilities, scikit-learn model server, Strimzi, OpenSearch, Logstash and Filebeat images.
-- Fixed security vulnerabilities in the Hopsworks server dependencies, in the Payara, HopsFS, Hive Metastore, ArrowFlight, OnlineFS, Airflow, Git, toolbox, base environment, Filebeat, Grafana, OpenSearch, OpenSearch Dashboards, Logstash, remote shuffle service and Superset images, and in the MySQL database of Superset (also in [5.0.8][hopsworks-5-0-8]).
-- Fixed security vulnerabilities in the Hopsworks and Hopsworks CA images (also in [5.0.6][hopsworks-5-0-6] and [5.0.9][hopsworks-5-0-9]).
-- Fixed security vulnerabilities in the MySQL database of Superset (also in [5.0.1][hopsworks-5-0-1]).
-- Fixed security vulnerabilities in the Strimzi operator and Kafka images (also in [5.0.3][hopsworks-5-0-3]).
-- Fixed security vulnerabilities in the ArrowFlight and remote shuffle service images (also in [5.0.10][hopsworks-5-0-10]).
+- Addressed vulnerabilities in the Hopsworks server dependencies and in the Superset, Grafana, Prometheus, Consul, certificates operator, Docker registry, BuildKit, Istio, Knative Serving, KServe utilities, scikit-learn model server, Strimzi, OpenSearch, Logstash and Filebeat images.
+- Addressed vulnerabilities in the Hopsworks server dependencies, in the Payara, HopsFS, Hive Metastore, ArrowFlight, OnlineFS, Airflow, Git, toolbox, base environment, Filebeat, Grafana, OpenSearch, OpenSearch Dashboards, Logstash, remote shuffle service and Superset images, and in the MySQL database of Superset (also in [5.0.8][hopsworks-5-0-8]).
+- Addressed vulnerabilities in the Hopsworks and Hopsworks CA images (also in [5.0.6][hopsworks-5-0-6] and [5.0.9][hopsworks-5-0-9]).
+- Addressed vulnerabilities in the MySQL database of Superset (also in [5.0.1][hopsworks-5-0-1]).
+- Addressed vulnerabilities in the Strimzi operator and Kafka images (also in [5.0.3][hopsworks-5-0-3]).
+- Addressed vulnerabilities in the ArrowFlight and remote shuffle service images (also in [5.0.10][hopsworks-5-0-10]).
 - Fixed RonDB data nodes reporting ready while the management server is unreachable, which let a rollout stop the healthy data node of the same node group and shut the cluster down; their liveness probe also no longer kills them then (also in [5.0.11][hopsworks-5-0-11]).
 - Fixed RonDB rolling restarts making healthy data nodes shut down; data nodes now wait for the rollout to settle (`rondb.rondb.ndbmtdSettleWait`) (also in [5.0.11][hopsworks-5-0-11]).
 - Fixed the Airflow migration Job losing tables on clusters with more than one RonDB MySQL server, so the upgrade never completed; it now uses only the DDL MySQL server (also in [5.0.13][hopsworks-5-0-13]).

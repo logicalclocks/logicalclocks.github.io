@@ -55,8 +55,8 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 - Fixed RonDB daemons ignoring SIGTERM, so every pod stop ended in a kill and a stopped data node could stall the cluster (also in [5.1.1][hopsworks-5-1-1]).
 - Changed the RonDB REST server probes to outlast a data node failure and to use their own port (also in [5.1.1][hopsworks-5-1-1]).
 - Fixed the RonDB REST server reading request bodies over 64 KiB as empty; it now buffers them in `rondb.rondb.rdrs.uploadPath` (also in [5.1.1][hopsworks-5-1-1]).
-- Fixed security vulnerabilities in the Airflow, HopsFS, Hive Metastore, Trino, Spark history server and Ray images, and in the Hopsworks server dependencies.
-- Fixed security vulnerabilities in the Payara, Hopsworks certificate authority, Grafana, Filebeat and Superset images and the MySQL and Redis of Superset (also in [5.1.2][hopsworks-5-1-2]).
+- Addressed vulnerabilities in the Airflow, HopsFS, Hive Metastore, Trino, Spark history server and Ray images, and in the Hopsworks server dependencies.
+- Addressed vulnerabilities in the Payara, Hopsworks certificate authority, Grafana, Filebeat and Superset images and the MySQL and Redis of Superset (also in [5.1.2][hopsworks-5-1-2]).
 - Fixed queued service operations failing on every retry when they removed a user from Superset or set up Superset for a project Observer (also in [5.1.2][hopsworks-5-1-2]).
 - Changed Trino to read its users, groups, user catalogs and access rules from HopsFS instead of Secrets, which fixes `helm upgrade` failing on clusters with many Trino catalogs or project members.
 - Fixed Helm 4 server-side apply conflicts on `helm upgrade` over the replicas of HPA-managed workloads other than the RonDB REST server, the rules of the Knative serving webhooks and the `rss-configuration` ConfigMap (see `HELM4_MIGRATION.md` in the 5.2 chart).

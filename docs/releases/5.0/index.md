@@ -56,7 +56,7 @@ The releases of Hopsworks 5.0, newest first.
 - Addressed vulnerabilities in jobs.
 - Fixed HopsFS staying in safe mode after all NameNodes restarted, a NameNode restart occasionally marking every block as corrupt, and NameNodes running out of file descriptors when many blocks are corrupt.
 - Fixed RonDB daemons ignoring SIGTERM, so every pod stop ended in a kill and a stopped data node could stall the cluster.
-- Fixed security vulnerabilities in the Payara, Hopsworks, Hopsworks CA, Hive Metastore, remote shuffle service, Spark operator, Filebeat, Logstash, Grafana, OpenSearch Dashboards and Superset images, in the MySQL and Redis of Superset, and in the Hopsworks server dependencies.
+- Addressed vulnerabilities in the Payara, Hopsworks, Hopsworks CA, Hive Metastore, remote shuffle service, Spark operator, Filebeat, Logstash, Grafana, OpenSearch Dashboards and Superset images, in the MySQL and Redis of Superset, and in the Hopsworks server dependencies.
 - Changed the RonDB REST server probes to use their own port, which keeps answering while a stalled data node blocks requests.
 - Fixed the RonDB REST server reading request bodies over 64 KiB as empty.
 - Added key pair authentication to DLT ingestion from Snowflake, which accounts that enforce MFA need ([Snowflake data source](https://docs.hopsworks.ai/5.0/user_guides/fs/data_source/creation/snowflake/)).
@@ -200,7 +200,7 @@ The releases of Hopsworks 5.0, newest first.
 
 - Addressed vulnerabilities in project datasets.
 - Fixed uploading files in the file browser deleting the files of the previous upload unless the page was reloaded.
-- Fixed security vulnerabilities in the ArrowFlight and remote shuffle service images.
+- Addressed vulnerabilities in the ArrowFlight and remote shuffle service images.
 - Fixed init containers that wait for a RonDB rollout giving up after 30 minutes, which failed the Hive Metastore, HopsFS, Airflow migration and CA pods when a RonDB restart took longer.
 - Added the GitHub Copilot and OpenCode CLIs to the web terminal, next to Claude Code and Codex; the coding agents share the skills in your home directory and keep their logins and sessions across terminal sessions.
 - Added GitHub Copilot as a provider of agent tasks, signed in with the token of a GitHub AI provider or of your github.com Git provider, which can't be a classic personal access token.
@@ -243,7 +243,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- Fixed security vulnerabilities in the Hopsworks and Hopsworks CA images.
+- Addressed vulnerabilities in the Hopsworks and Hopsworks CA images.
 - Fixed init containers without requests and limits being charged a namespace `LimitRange` default for the whole life of the pod; the RonDB and Consul charts are not covered yet.
 - Fixed Ray jobs and the Ray clusters of Jupyter failing to start on OpenShift, because their pods couldn't read the project certificates.
 - Fixed web terminals failing to start on OpenShift.
@@ -282,7 +282,7 @@ The releases of Hopsworks 5.0, newest first.
 ### What's changed
 
 - Addressed vulnerabilities in feature views.
-- Fixed security vulnerabilities in the Hopsworks server dependencies, in the Payara, HopsFS, Hive Metastore, ArrowFlight, OnlineFS, Airflow, Git, toolbox, base environment, Filebeat, Grafana, OpenSearch, OpenSearch Dashboards, Logstash, remote shuffle service and Superset images, and in the MySQL database of Superset.
+- Addressed vulnerabilities in the Hopsworks server dependencies, in the Payara, HopsFS, Hive Metastore, ArrowFlight, OnlineFS, Airflow, Git, toolbox, base environment, Filebeat, Grafana, OpenSearch, OpenSearch Dashboards, Logstash, remote shuffle service and Superset images, and in the MySQL database of Superset.
 - Added an upload policy, `hopsworks.variables.upload_policy`, that allows file uploads to everyone (`enabled`), to administrators only (`admins_only`) or to nobody (`disabled`), from the web UI and from clients such as the Python SDK; the web UI disables its upload controls for blocked users.
   The upgrade writes the value to the cluster, so a change made in the admin UI lasts until the next upgrade.
 - Fixed Kafka failing to start on clusters with many API groups, such as OpenShift, when the Vertical Pod Autoscaler (`global._hopsworks.vpaEnabled`) is on, because pod creation stalled for about 20 seconds.
@@ -331,7 +331,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- Fixed security vulnerabilities in the Hopsworks and Hopsworks CA images.
+- Addressed vulnerabilities in the Hopsworks and Hopsworks CA images.
 - Fixed Airflow failing to start on OpenShift with `airflow: command not found`.
 - Added the full color palette, interface styles such as border radius, border width and shadows, a live preview, and a branding export, import and reset to the Branding page of the cluster settings, shown when the cluster variable `enable_custom_branding` is `true`.
 - Fixed the create and edit forms of model and LLM deployments: a hidden tracing field could block saving, the vLLM image tag could stay blank, and editing a deployment reset its resources.
@@ -382,7 +382,7 @@ The releases of Hopsworks 5.0, newest first.
 ### What's changed
 
 - Fixed the Hopsworks admin pod getting stuck in CrashLoopBackOff when workers were slow to register; the admin sidecar now keeps retrying, restarts unregistered workers and redeploys Hopsworks after the admin container restarts.
-- Fixed security vulnerabilities in the Strimzi operator and Kafka images.
+- Addressed vulnerabilities in the Strimzi operator and Kafka images.
 - Changed the Hopsworks admin container to restart after about 10 minutes without a response (`hopsworks.probs.admin.livenessProbe`), with up to 30 minutes to start (`hopsworks.probs.admin.startupProbe`).
 
 ### Breaking changes
@@ -446,7 +446,7 @@ The releases of Hopsworks 5.0, newest first.
 ### What's changed
 
 - Fixed database initialization and migrations starting while RonDB was still restarting; they now wait up to 30 minutes for each RonDB StatefulSet to roll out.
-- Fixed security vulnerabilities in the MySQL database of Superset.
+- Addressed vulnerabilities in the MySQL database of Superset.
 - Added support for Kubernetes 1.35 and 1.36.
 - Added [model monitoring](https://docs.hopsworks.ai/5.0/user_guides/mlops/model_monitoring/), which compares the inference data a deployment logs with the model's training dataset and shows the drift on the deployment page, and [distribution comparison](https://docs.hopsworks.ai/5.0/user_guides/fs/feature_monitoring/distribution_comparison/) to feature monitoring; `hopsworks.variables.feature_monitoring_max_num_features` (default `15`) caps the features of a configuration.
 - Added [chaining of on-demand transformation functions](https://docs.hopsworks.ai/5.0/user_guides/fs/feature_group/on_demand_transformations/#chaining-on-demand-transformations), where the output of one function feeds another, with a view of the chain on the feature group and feature view pages.
@@ -504,10 +504,10 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 - Changed RonDB upgrades to roll the management server first, so data nodes no longer shut down with error 2305, and to fail when `rondb.rondb.clusterSize.numNodeGroups` differs from the running cluster, which RonDB can't change online (also in 4.8.6).
 - Fixed fresh installs failing and rolling back when the Knative Serving webhook was not ready yet.
 - Fixed `helm upgrade --force` failing with a conflict on unchanged chart Jobs, which now run again on every `helm upgrade` (also in 4.8.3).
-- Fixed security vulnerabilities in the OpenSearch image.
-- Fixed security vulnerabilities in the Payara image (also in 4.8.10).
-- Fixed security vulnerabilities in the Strimzi images and the Redis image of Superset (also in 4.8.6).
-- Fixed security vulnerabilities in the Grafana, OpenSearch Dashboards and remote shuffle service images, and in the MySQL image of Superset (also in 4.8.11).
+- Addressed vulnerabilities in the OpenSearch image.
+- Addressed vulnerabilities in the Payara image (also in 4.8.10).
+- Addressed vulnerabilities in the Strimzi images and the Redis image of Superset (also in 4.8.6).
+- Addressed vulnerabilities in the Grafana, OpenSearch Dashboards and remote shuffle service images, and in the MySQL image of Superset (also in 4.8.11).
 - Changed the Hopsworks UI to a new design, with a regrouped project sidebar.
 - Added Agent Tasks, jobs that run Claude Code or OpenAI Codex headless on a prompt, in the new `agent-job` environment; turn them off with `hopsworks.variables.agent_jobs_enabled: "false"`, see [Agent Tasks](https://docs.hopsworks.ai/5.0/user_guides/agents/tasks/).
 - Added Agent Deployments, the Python deployments without a model, listed under **Agents** and with optional OpenTelemetry tracing into project feature groups; see [Agent Deployments](https://docs.hopsworks.ai/5.0/user_guides/agents/deployments/).

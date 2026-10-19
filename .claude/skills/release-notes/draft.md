@@ -23,7 +23,7 @@ Read first, in full:
 1. Read its diff, not only its subject.
    A subject can promise more than the code does, and a later commit in the range can change or revert it.
 2. Decide whether users or operators notice it.
-   They notice: new or changed UI, REST API behaviour that SDK or UI users see, permissions and access, admin settings and cluster variables, error messages, performance they would feel (say what got faster), Helm values, and security fixes, as one entry per component group such as "Fixed security vulnerabilities in the Hopsworks server dependencies".
+   They notice: new or changed UI, REST API behaviour that SDK or UI users see, permissions and access, admin settings and cluster variables, error messages, performance they would feel (say what got faster), Helm values, and security fixes, as one entry per component group such as "Addressed vulnerabilities in the Hopsworks server dependencies".
    They don't: refactors, tests, CI, build plumbing, logging internals, the release version bump, a change that only supports another entry (fold it in), and a fix for a bug that never shipped, because it came in within the same range.
    Leave out `hopsworks-api` changes on their own, because the release's Python client subsection shows the hopsworks-api release notes; use them to understand an application change of the same ticket.
    A breaking change says, in a few words, what the behaviour was before, checked against the previous release.

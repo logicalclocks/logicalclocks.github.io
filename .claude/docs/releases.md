@@ -64,7 +64,7 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
 - Keep each entry to one line; add a second only for what a reader must act on, such as a value to set or a risk.
 - Leave out defaults, internals and explanations a reader doesn't act on; the values reference has the details.
 - Start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed; breaking changes are the exception, see below.
-- Put version upgrades in `### Upgraded components`, not under `### What's changed`; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Fixed security vulnerabilities in the Strimzi operator and Kafka images".
+- Put version upgrades in `### Upgraded components`, not under `### What's changed`; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Addressed vulnerabilities in the Strimzi operator and Kafka images".
 - Name the exact API, Helm value, config variable or CLI flag.
 - Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
   Release pages show in every docs version, so link the docs of the release's minor version with an absolute URL (`https://docs.hopsworks.ai/5.2/...`), which a relative link to a page missing from an older version would break.
@@ -74,7 +74,7 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
   Of the source repos, `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front`, `docker-images`, `flyingduck`, `clusterj-onlinefs`, `model-serving-webhook`, `model-serving-authenticator`, `hops-git`, `tools` and `sparkhistoryserver` are private; `hopsworks-api`, `rondb-helm` and the forks (`trino`, `hive`, `hudi`, `incubator-uniffle`, `spark`) are public.
   Check a repo with `gh repo view <org>/<repo> --json visibility` before linking it.
 - Write a security fix as "Addressed vulnerabilities in <component>", such as "Addressed vulnerabilities in jobs", and nothing more: never write "Fixed a security issue in", and never say what was exposed, who could exploit it or how, because the notes are public and clusters on older releases stay vulnerable.
-  Fixes of known vulnerabilities in dependencies and images stay one entry per group, such as "Fixed security vulnerabilities in the Grafana and Superset images".
+  Fixes of known vulnerabilities in dependencies and images stay one entry per group, such as "Addressed vulnerabilities in the Grafana and Superset images".
   A breaking change or upgrade step that a security fix needs says what to do, and at most that it addresses a vulnerability.
 
 `### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
