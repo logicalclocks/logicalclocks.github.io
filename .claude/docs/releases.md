@@ -17,7 +17,7 @@ A red run means a version shows outdated release pages, usually because its docs
 
 ## Page shape
 
-The release notes of a minor version, `docs/releases/X.Y/index.md`, start with `# Hopsworks X.Y { #hopsworks-X-Y }` and hold one section per release, newest first: `## X.Y.Z { #hopsworks-X-Y-Z }`, so link to a release with `[X.Y.Z][hopsworks-X-Y-Z]`.
+The release notes of a minor version, `docs/releases/X.Y/index.md`, start with `# Release notes { #hopsworks-X-Y }` and hold one section per release, newest first: `## X.Y.Z { #hopsworks-X-Y-Z }`, so link to a release with `[X.Y.Z][hopsworks-X-Y-Z]`.
 A release is a `hopsworks-helm` tag `vX.Y.Z`.
 The front matter declares every release, newest first, with its versions as quoted strings:
 
@@ -40,9 +40,15 @@ Under each section title, `scripts/releases_hook.py` renders the release date, t
 
 A patch release lists the changes since the previous release of its minor version, and an X.Y.0 since the first release of the previous minor version, so minor versions compare with each other: 5.2.0 with 5.1.0, 5.1.0 with 5.0.0.
 Each change is listed once, under the release that first shipped it, so an X.Y.0 leaves out the changes that already shipped in a patch release of the previous minor version; a sentence under its title says which of those patch releases it includes, and names any of their changes it lacks.
+A patch release of the previous minor version that comes out after the X.Y.0 can backport its changes; both releases then list them, and the X.Y.0 entry ends with `(also in [X.Y.Z][hopsworks-X-Y-Z])`.
+A release covers every change users or operators notice, from the chart (`hopsworks-helm` and `rondb-helm` commits between the tags) and from the application it ships (`hopsworks-ee` and `hopsworks-front`).
+Neither application repo has tags: a version's changes end at its `Release X.Y.Z` commit on `branch-X.Y-ee` or `branch-X.Y`, which is the last commit of that version, and start after the release commit of the application version the previous release ships.
+A chart release that keeps the application version has no application changes, and one that skips application versions includes them all.
+Leave out application changes users don't see, such as refactors, tests and build changes; leave out `hopsworks-api` changes, because the line under the release title links its release notes.
+A chart commit and an application commit for the same ticket are one entry.
 5.0.0 is the exception: 4.8 has no pages, so its front matter declares `since: "4.8.2"`, the first 4.8 release, and an entry that also shipped in a 4.8 patch release ends with `(also in 4.8.N)`.
 
-A release section has up to three subsections, in this order, and leaves out the ones with nothing to report: `### Breaking changes`, `### Release notes`, `### Upgraded components`.
+A release section has up to five subsections, in this order, and leaves out the ones with nothing to report: `### What's changed`, `### Configuration changes`, `### Breaking changes`, `### Deprecations`, `### Upgraded components`.
 
 The upgrade guide of a minor version, `docs/releases/X.Y/upgrade.md`, starts with `# Upgrading to Hopsworks X.Y { #upgrading-to-X-Y }`.
 It has `## From <previous minor> { #upgrading-to-X-Y-0 }` and a `## To X.Y.Z { #upgrading-to-X-Y-Z }` for each patch release with steps, oldest first, each with numbered steps under `### Before the upgrade`, `### Upgrade` and `### After the upgrade`.
@@ -54,7 +60,7 @@ It has `## From <previous minor> { #upgrading-to-X-Y-0 }` and a `## To X.Y.Z { #
 - Keep each entry to one line; add a second only for what a reader must act on, such as a value to set or a risk.
 - Leave out defaults, internals and explanations a reader doesn't act on; the values reference has the details.
 - Start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed.
-- Put version upgrades in `### Upgraded components`, not in the notes; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Fixed security vulnerabilities in the Strimzi operator and Kafka images".
+- Put version upgrades in `### Upgraded components`, not under `### What's changed`; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Fixed security vulnerabilities in the Strimzi operator and Kafka images".
 - Name the exact API, Helm value, config variable or CLI flag.
 - Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
   Release pages show in every docs version, so link the docs of the release's minor version with an absolute URL (`https://docs.hopsworks.ai/5.2/...`), which a relative link to a page missing from an older version would break.
@@ -62,13 +68,22 @@ It has `## From <previous minor> { #upgrading-to-X-Y-0 }` and a `## To X.Y.Z { #
 - Leave out changes with no user-visible effect: tests, CI, refactors, and fixes for bugs that never shipped.
 - Do not link Jira or private GitHub repos and do not name customers, because the docs are public.
 
-Release notes are one flat list with no subcategories.
+`### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
+
+`### Configuration changes` lists the changes to the Helm values themselves: values added or removed, changed defaults, fixes for a value that was ignored or rejected, and changes to `values.openshift.yaml` or `values.airgap.yaml`.
+A feature or fix keeps its entry under `### What's changed` and names the value that turns it on or tunes it, even when it is off by default.
+Split an entry that does both, so each change is listed once.
 
 Breaking changes are changes that need users or operators to do something when they upgrade.
 Say in each one what changed, who is affected and what to do, and link the upgrade guide step or the docs page that has the procedure.
-A breaking change is not repeated in the release notes.
+A breaking change is not repeated under `### What's changed`.
+
+Deprecations are what a release marks for removal but still accepts, such as a Helm value the chart keeps only so existing values files validate.
+Start each one with "Deprecated", and say what replaces it or that nothing reads it any more.
+Find them in the chart's values, where they are marked `DEPRECATED` or `deprecated: true`; removing one later is a breaking change.
 
 Upgrade steps live in the upgrade guide, not in the release notes.
+The 5.0 and 5.1 releases were written up after they shipped, so they have no upgrade guide.
 Mark each step as required or optional and say when a step can't be undone.
 A step that the documentation describes links to it; give a copy-paste command with `<placeholders>` only when no page has one.
 
