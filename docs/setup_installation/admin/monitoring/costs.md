@@ -374,13 +374,17 @@ The chart writes `enable_opencost` and the `opencost_*` variables into the datab
 ## Step 3: View the costs { #costs-view }
 
 Click on your name in the top right corner of the navigation bar, choose _Cluster Settings_, then choose _Costs_ in the left sidebar.
-The page URL keeps the window, the grouping and the chart view (`?window=MONTH&group=department&view=workload`), so a view can be shared as a link.
+The page URL keeps the window, the grouping, the filters and the chart view (`?window=MONTH&group=department&dept=7&view=workload`), so a view can be shared as a link.
 
 ### Toolbar { #costs-toolbar }
 
 - **Window**: _Last hour_, _Last day_, _Last week_ (the default), _Last month_ or _Last year_.
 - **Group by**: _Namespace_ or _Department_.
-- **Export CSV**: downloads the table, including the CPU core-hours and RAM GiB-hours requested and used behind each efficiency.
+- **Namespace** and **Department**: show only the selected namespaces or departments, in the table, the chart, the summary and the CSV.
+  _Not a project_ selects the namespaces that belong to no single department.
+  The Namespace filter is shown in the namespace grouping only; the Department filter applies to both.
+  While a filter is active, idle capacity and unmounted volumes are left out, the summary reads _Total (filtered)_, and each row's share is still its fraction of the whole window.
+- **Export CSV**: downloads the table as shown, filters applied, including the CPU core-hours and RAM GiB-hours requested and used behind each efficiency.
 - **Refresh**: fetches the window again.
 
 ### Summary { #costs-summary }
