@@ -58,7 +58,8 @@ Assign quota to the projects that need GPU notebooks or deployments in the Run:a
 2. The department named by `run_ai_default_department` exists in Run:ai.
    Every Run:ai installation has a department called `default`.
 3. A Run:ai service account for Hopsworks, created under Access, Service accounts in the Run:ai UI.
-   Give it an access rule at cluster scope with a role that covers the calls Hopsworks makes:
+   Give it an access rule with the **System administrator** role at cluster scope.
+   Of what that role grants, Hopsworks uses only these permissions:
 
     | Hopsworks needs to | Run:ai permission |
     | --- | --- |
@@ -67,8 +68,6 @@ Assign quota to the projects that need GPU notebooks or deployments in the Run:a
     | Find, bind, move and delete projects | Projects: View, Create, Delete |
     | Read GPU availability (node pool metrics) | Node pools: View |
 
-   Hopsworks has been tested with the **System administrator** role.
-   The **Editor** role grants all of the permissions above and should be enough, but has not been tested yet; Department administrator is not, because it cannot view clusters.
    When you create the access rule through the API instead of the UI, its `subjectId` is the service account's name, not its id.
 4. A Kubernetes Secret in the Hopsworks namespace that holds the service account's client secret:
 
