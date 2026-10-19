@@ -17,10 +17,11 @@ With `run_ai_enable` set, Hopsworks does the following:
 - On project creation, Hopsworks creates a Run:ai project with the name of the project's Kubernetes namespace, bound to that namespace (`requestedNamespace`), in the Run:ai department its Hopsworks department maps to (see below).
   It labels the namespace `runai/queue=<run:ai project>`.
   A Run:ai project that is already bound to the namespace is adopted instead.
+  Hopsworks marks the Run:ai projects it creates with the namespace label `hopsworks.ai/runai-project-id`, and only deletes or moves those; an adopted Run:ai project belongs to whoever bound it.
 - Run:ai's admission webhooks then schedule every pod in the namespace with `runai-scheduler` in the project's queue: jobs, notebooks, terminals, Ray clusters and model deployments.
   Hopsworks also puts the `runai/queue` label on the workloads it creates.
 - Projects that existed before the integration was enabled are bound on their first workload start, or by a background pass every `run_ai_reconcile_interval_s` seconds.
-- Deleting a Hopsworks project deletes its Run:ai project.
+- Deleting a Hopsworks project deletes the Run:ai project Hopsworks created for it, and leaves an adopted one in place.
 - Kueue and Run:ai are mutually exclusive: a cluster uses one, the other, or neither. The Helm install fails when both `global._hopsworks.kueue.enabled` and `run_ai_enable` are set, and Cluster settings refuses a change that would turn on both `kueue_installed` and `run_ai_enable`.
 
 Hopsworks never creates Run:ai departments.
@@ -31,7 +32,7 @@ Hopsworks department names follow the same rule as Run:ai department names: up t
 
 When an administrator moves a project to another department in the admin UI, Hopsworks moves its Run:ai project too, before it records the move:
 
-1. Nothing happens in Run:ai when both departments map to the same Run:ai department, or the project is not bound to Run:ai yet.
+1. Nothing happens in Run:ai when both departments map to the same Run:ai department, when the project is not bound to Run:ai yet, or when its Run:ai project was adopted rather than created by Hopsworks; an adopted project then reports `RUN_AI_DEPARTMENT_DRIFT` until a Run:ai administrator moves it.
    Otherwise the move is refused while any pod runs or waits in the project's namespace: jobs, notebooks, terminals, apps or deployments.
 2. Run:ai cannot change a project's department in place, so Hopsworks deletes the Run:ai project and creates it again in the new department, bound to the same namespace.
 3. The new Run:ai project has no GPU quota, so the project's old quota is not taken from the new department's share.
@@ -57,8 +58,17 @@ Assign quota to the projects that need GPU notebooks or deployments in the Run:a
 2. The department named by `run_ai_default_department` exists in Run:ai.
    Every Run:ai installation has a department called `default`.
 3. A Run:ai service account for Hopsworks, created under Access, Service accounts in the Run:ai UI.
-   Give it an access rule with the **System administrator** role at cluster scope.
-   Hopsworks creates and deletes projects, reads departments, and reads node pool metrics, which needs cluster read permission.
+   Give it an access rule at cluster scope with a role that covers the calls Hopsworks makes:
+
+    | Hopsworks needs to | Run:ai permission |
+    | --- | --- |
+    | Select the cluster | Clusters: View |
+    | Map departments, check drift, show the admin view | Departments: View |
+    | Find, bind, move and delete projects | Projects: View, Create, Delete |
+    | Read GPU availability (node pool metrics) | Node pools: View |
+
+   Hopsworks has been tested with the **System administrator** role.
+   The **Editor** role grants all of the permissions above and should be enough, but has not been tested yet; Department administrator is not, because it cannot view clusters.
    When you create the access rule through the API instead of the UI, its `subjectId` is the service account's name, not its id.
 4. A Kubernetes Secret in the Hopsworks namespace that holds the service account's client secret:
 
@@ -99,7 +109,8 @@ See [Cluster Configuration Variables Reference][cluster-configuration-variables-
 ## GPU availability
 
 With the integration enabled, a project's Kubernetes page in the Hopsworks UI shows a Run:ai GPU section, and the terminal offers GPUs only to projects with deserved Run:ai GPUs.
-The same numbers come from `GET /hopsworks-api/api/project/{id}/kube/gpu` and from the Python client:
+The same numbers come from `GET /hopsworks-api/api/project/{id}/kube/gpu` and from the Python client.
+Reading them has no side effects: a project that is not bound to Run:ai yet reports `RUN_AI_PROJECT_NOT_BOUND` instead of being bound.
 
 ```python
 import hopsworks
@@ -124,7 +135,7 @@ The numbers come from `GET /hopsworks-api/api/admin/kube/runai`.
 | `node_pool_gpus` | Total, allocated and idle GPUs in the node pool |
 | `available_non_preemptible` | GPUs notebooks, terminals and deployments can still get within quota |
 | `available_preemptible` | Idle GPUs a batch job could borrow over quota now; an estimate, a larger job still queues |
-| `warnings` | `RUN_AI_UNREACHABLE`, `RUN_AI_METRICS_MISSING`, `RUN_AI_PROJECT_NOT_READY`, `RUN_AI_DEPARTMENT_DRIFT`, `RUN_AI_SCHEDULER_NOT_ENFORCED`, `RUN_AI_BINDING_LEFT` |
+| `warnings` | `RUN_AI_UNREACHABLE`, `RUN_AI_METRICS_MISSING`, `RUN_AI_PROJECT_NOT_BOUND`, `RUN_AI_PROJECT_NOT_READY`, `RUN_AI_DEPARTMENT_DRIFT`, `RUN_AI_SCHEDULER_NOT_ENFORCED`, `RUN_AI_BINDING_LEFT` |
 
 ## Operational dependency
 
@@ -144,4 +155,5 @@ Monitor both Deployments like any other cluster-critical service.
 
 Setting `run_ai_enable` back to `false` stops Hopsworks from calling Run:ai, but the namespaces stay bound and Run:ai keeps scheduling their pods.
 The GPU view reports `RUN_AI_BINDING_LEFT` for such projects.
-To leave Run:ai, delete the Run:ai projects of the Hopsworks namespaces in Run:ai, which stops their workloads, and remove the `runai/queue` namespace label.
+To leave Run:ai, delete the Run:ai projects of the Hopsworks namespaces in Run:ai, which stops their workloads, and remove the `runai/queue` and `hopsworks.ai/runai-project-id` namespace labels.
+Do this before you enable Kueue: neither the Helm check nor Cluster settings detects namespaces Run:ai still binds, and Run:ai's admission webhooks and Kueue would then both act on the same pods.
