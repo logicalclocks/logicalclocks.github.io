@@ -305,8 +305,8 @@ kubectl run -n default opencost-probe --rm -i --restart=Never --image=curlimages
   https://opencost.opencost.svc.cluster.local:9443/allocation/compute
 ```
 
-It prints `401`, or times out where the CNI enforces the NetworkPolicy.
-The same request to `http://opencost.opencost.svc.cluster.local:9003/allocation/compute` must time out.
+It prints `401`, or `000` followed by kubectl reporting the pod failed where the CNI enforces the NetworkPolicy, because curl gives up after 5 seconds.
+The same request to `http://opencost.opencost.svc.cluster.local:9003/allocation/compute` must print `000`.
 If it answers, the CNI does not enforce the NetworkPolicy, and every pod in the cluster can read every namespace's costs on that port.
 
 The end-to-end check is the _Costs_ page after [Step 2][costs-enable-hopsworks]: if a piece is missing, the page names it, see [Troubleshooting][costs-troubleshooting].
@@ -405,7 +405,9 @@ When some buckets have no data, a notice above the chart says where the data sta
 The chart stacks the cost of each bucket of the window: 10-minute intervals for the last hour, hours for the last day, days for the last week and month, and calendar months for the last year.
 All times are UTC, and the bucket that has not ended yet is marked _in progress_.
 
-- **By namespace** (or **By department**): the 8 most expensive namespaces or departments of the window, then _Other_, then _Idle_. In the department grouping, _Not a project_ is its own series. A namespace keeps one colour across all buckets.
+- **By namespace** (or **By department**): the 8 most expensive namespaces or departments of the window, then _Other_, then _Idle_.
+  In the department grouping, _Not a project_ is its own series.
+  A namespace keeps one colour across all buckets.
 - **By workload**: GPU workloads, CPU workloads, Idle and Unmounted.
 
 A bucket without data has no bar and a _No data_ band, because its cost is unknown, which is different from a cost of zero.
@@ -432,8 +434,8 @@ Three rows are not projects:
 - **Unmounted volumes**: persistent volumes and load balancers that no pod uses.
 - **Not a project** (department grouping only): namespaces that belong to no project, such as the Hopsworks namespace, `kube-system`, `opencost` and the namespaces of deleted projects, plus namespaces shared by projects of different departments.
 
-When the table is narrower than about 1150 pixels, the GPU, Network and Other columns are hidden.
-Below about 900 pixels, Department and the workload columns are hidden too.
+When the table is narrower than 1248 pixels, the GPU, Network and Other columns are hidden.
+Below 1024 pixels, Department and the workload columns are hidden too.
 All columns are in the CSV export.
 
 ### Departments { #costs-departments }
@@ -582,16 +584,15 @@ Hopsworks jobs, notebooks, deployments and apps all have controllers.
 ## Troubleshooting { #costs-troubleshooting }
 
 When Hopsworks cannot read OpenCost, the page shows _OpenCost is not available_ with the cause, and the API returns HTTP 503 with error code 100081.
-Every cause starts with `OpenCost is not reachable at <url>:`, followed by one of the details below.
+Every cause except a misconfigured URL starts with `OpenCost is not reachable at <url>:`, followed by one of the details below.
 
 | Message | Cause and fix |
 | --- | --- |
 | A connection error, such as `UnknownHostException` or `ConnectException` | OpenCost is not running, or `opencost_api_url` does not point at the proxy. Check the OpenCost pod and the URL, and on an enforcing CNI check that the NetworkPolicy admits the Hopsworks pods on 9443. |
-| `OpenCost asked for a token (401), and there is none at /var/run/secrets/opencost/token` | The credentials volume is not mounted. Set `hopsworks.opencost.enabled: true` and upgrade the Hopsworks chart. |
 | `OpenCost rejected Hopsworks' token (401): it must be a service-account token for the opencost audience` | The proxy's `--auth-token-audiences` does not match the token's audience `opencost`. |
 | `The token at /var/run/secrets/opencost/token is not for the opencost audience, so it is not sent` | Something other than the chart's credentials volume is mounted there. Hopsworks sends only tokens for the `opencost` audience. |
 | `OpenCost denied Hopsworks (403): check the opencost-reader RoleBinding in the OpenCost namespace` | The `opencost-reader` RoleBinding is missing or names another service account or namespace. |
-| `No OpenCost certificate at /var/run/secrets/opencost/ca.crt: ...` | ConfigMap `opencost-ca` with key `ca.crt` is missing from the Hopsworks namespace. Recreate it as in [Recreate the certificate ConfigMap][costs-recreate-ca]. Right after OpenCost is reinstalled this message is expected for about a minute, until the kubelet updates the file in the Hopsworks pods. |
+| `No OpenCost certificate at /var/run/secrets/opencost/ca.crt: ...` | The credentials volume is not mounted, or ConfigMap `opencost-ca` with key `ca.crt` is missing from the Hopsworks namespace. For the volume, set `hopsworks.opencost.enabled: true` and upgrade the Hopsworks chart. Recreate it as in [Recreate the certificate ConfigMap][costs-recreate-ca]. Right after OpenCost is reinstalled this message is expected for about a minute, until the kubelet updates the file in the Hopsworks pods. |
 | `OpenCost has no /allocation/compute at this URL (404)` | `opencost_api_url` points at something other than OpenCost. |
 | `OpenCost rejected the query: ...` | OpenCost answered HTTP 400 to the query Hopsworks built, usually because its version is not the one this guide installs. |
 | `opencost_api_url is misconfigured: expected https://host:port, got ...` | The URL is not `https`, or has a path, query or credentials in it. |
@@ -601,9 +602,11 @@ Check that `opencost.prometheus.internal.serviceName` and `namespaceName` name t
 
 ### Recreate the certificate ConfigMap { #costs-recreate-ca }
 
-Recreate `opencost-ca` from the certificate the proxy already serves, so that it matches the running proxy:
+Recreate `opencost-ca` from the certificate the proxy already serves, so that it matches the running proxy.
+Set `HOPSWORKS_NAMESPACE` again in a new shell: with it empty, kubectl creates the ConfigMap in the context's namespace instead.
 
 ```bash
+HOPSWORKS_NAMESPACE=hopsworks
 kubectl -n opencost get secret opencost-tls -o jsonpath='{.data.tls\.crt}' | base64 -d > ca.crt
 kubectl -n "$HOPSWORKS_NAMESPACE" create configmap opencost-ca --from-file=ca.crt
 rm ca.crt
