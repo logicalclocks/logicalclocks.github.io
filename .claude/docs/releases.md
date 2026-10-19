@@ -15,6 +15,10 @@ After each docs build of `main`, `mkdocs-release-notes.yml` runs `hopsworks-docs
 A red run means a version shows outdated release pages, usually because its docs build is broken; fix the build and run the workflow again.
 `uv run hopsworks-docs sync-release-notes` without `--rebuild` only reports.
 
+To write the notes of a release, run the `/release-notes X.Y.Z` skill (`.claude/skills/release-notes/`).
+It collects the facts with `uv run hopsworks-docs release-inputs X.Y.Z`, which prints the release's commits in `hopsworks-helm`, `rondb-helm`, `hopsworks-ee` and `hopsworks-front`, its Helm value changes, its front matter and its Upgraded components table.
+Then it drafts the section, fact-checks every entry against the source and runs the strict build.
+
 ## Page shape
 
 The release notes of a minor version, `docs/releases/X.Y/index.md`, start with `# Release notes { #hopsworks-X-Y }` and hold one section per release, newest first: `## X.Y.Z { #hopsworks-X-Y-Z }`, so link to a release with `[X.Y.Z][hopsworks-X-Y-Z]`.
@@ -59,7 +63,7 @@ It has `## From <previous minor> { #upgrading-to-X-Y-0 }` and a `## To X.Y.Z { #
 - Make each entry one coherent change; don't combine unrelated changes in one entry, even small ones.
 - Keep each entry to one line; add a second only for what a reader must act on, such as a value to set or a risk.
 - Leave out defaults, internals and explanations a reader doesn't act on; the values reference has the details.
-- Start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed.
+- Start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed; breaking changes are the exception, see below.
 - Put version upgrades in `### Upgraded components`, not under `### What's changed`; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Fixed security vulnerabilities in the Strimzi operator and Kafka images".
 - Name the exact API, Helm value, config variable or CLI flag.
 - Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
@@ -70,13 +74,25 @@ It has `## From <previous minor> { #upgrading-to-X-Y-0 }` and a `## To X.Y.Z { #
 
 `### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
 
+Order the entries of every subsection by significance, most significant first, so a reader who stops early has read what matters most.
+Significance is how many users or operators an entry affects and how much: data loss, security, an outage or a failed upgrade outweigh a new feature, which outweighs an inconvenience.
+
+- `### What's changed`: fixes for data loss, security and outages, and the headline features of the release, first; then other features and changes; then smaller fixes.
+- `### Configuration changes`: changed defaults that change behaviour on upgrade first; then values that were ignored or rejected; then new values.
+- `### Breaking changes`: what makes the upgrade fail or loses data first; then what breaks a running workload; then values to change.
+- `### Deprecations`: what is most widely set first.
+
+On an X.Y.0, entries marked `(also in ...)` follow the same order; they are not grouped at the end.
+
 `### Configuration changes` lists the changes to the Helm values themselves: values added or removed, changed defaults, fixes for a value that was ignored or rejected, and changes to `values.openshift.yaml` or `values.airgap.yaml`.
 A feature or fix keeps its entry under `### What's changed` and names the value that turns it on or tunes it, even when it is off by default.
 Split an entry that does both, so each change is listed once.
 
 Breaking changes are changes that need users or operators to do something when they upgrade.
-Say in each one what changed, who is affected and what to do, and link the upgrade guide step or the docs page that has the procedure.
-A breaking change is not repeated under `### What's changed`.
+Say in each one what changed, who is affected and what to do, and link the upgrade guide step or the docs page that has the procedure; it may start with what changed, such as "`helm upgrade` now stops ...", or with what to do, such as "Remove `<value>` from your values ...".
+A fix, security fixes included, that takes away something users rely on is a breaking change.
+A breaking change is not repeated under `### What's changed`; a value it adds, removes or renames is still listed under `### Configuration changes`, which says what the value does, while the breaking change says what to do.
+A change that also ships in a patch release of another minor version is listed in both releases, without a marker.
 
 Deprecations are what a release marks for removal but still accepts, such as a Helm value the chart keeps only so existing values files validate.
 Start each one with "Deprecated", and say what replaces it or that nothing reads it any more.

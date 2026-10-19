@@ -510,7 +510,12 @@ def release_components(
         typer.echo(table, nl=False)
         return
     page = _page(release)
-    page.write_text(_with_table(page.read_text(), release, table))
+    text = page.read_text()
+    updated = _with_table(text, release, table)
+    if updated == text:
+        typer.echo(f"{page.relative_to(_DOCS_ROOT)} is up to date", err=True)
+        return
+    page.write_text(updated)
     typer.echo(f"Updated {page.relative_to(_DOCS_ROOT)}", err=True)
 
 
