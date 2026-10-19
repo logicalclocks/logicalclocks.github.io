@@ -8,9 +8,11 @@ Cost tracking must be enabled on the cluster by an administrator, see [Costs][co
 
 ## Prerequisites { #project-costs-prerequisites }
 
-- You are a data owner of the project. Data scientists, observers and members of other projects get HTTP 403.
+- You are a data owner of the project.
+  Data scientists, observers and members of other projects get HTTP 403.
 - An API key needs the `PROJECT` scope.
 - With cost tracking off the API answers HTTP 404 with error code 100083.
+- When OpenCost is not reachable the API answers HTTP 503 with error code 100081 and a general message; a cluster administrator sees the cause on the _Costs_ page.
 
 ## Step 1: Read the cost from Python { #project-costs-python }
 

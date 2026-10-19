@@ -38,11 +38,18 @@ The steps below create these objects by hand and install the published chart `op
 
 ### Create the TLS certificate { #costs-tls-certificate }
 
+Set the namespace Hopsworks runs in and the name of its Helm release; every command below uses them.
+The Hopsworks Prometheus Service is named after the release, `<release>-prometheus-server`.
+
+```bash
+HOPSWORKS_NAMESPACE=hopsworks
+HOPSWORKS_RELEASE=hopsworks
+```
+
 Create a self-signed certificate for the OpenCost Service and store it in Secret `opencost-tls`.
 Then publish only the certificate, without its key, as ConfigMap `opencost-ca` in the Hopsworks namespace, where the Hopsworks pods read it to verify OpenCost.
 
 ```bash
-HOPSWORKS_NAMESPACE=hopsworks
 kubectl create namespace opencost
 
 openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes -days 3650 \
@@ -56,10 +63,11 @@ rm tls.key tls.crt
 
 ### Create the proxy configuration, RBAC and NetworkPolicy { #costs-rbac-networkpolicy }
 
-Save the following as `opencost-access.yaml`.
-Replace `hopsworks` in the `RoleBinding` subject and in both `namespaceSelector` entries if Hopsworks runs in another namespace.
+Apply the proxy configuration, its RBAC, the RoleBinding that lets Hopsworks read OpenCost, and the NetworkPolicy.
+The shell fills in `$HOPSWORKS_NAMESPACE`:
 
-```yaml
+```bash
+cat <<EOF | kubectl apply -f -
 # Every request the proxy accepts is checked as "get services/proxy opencost".
 apiVersion: v1
 kind: ConfigMap
@@ -126,7 +134,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hopsworks-service-account
-    namespace: hopsworks
+    namespace: $HOPSWORKS_NAMESPACE
 ---
 # 9003 only from the Hopsworks Prometheus server, 9443 only from the Hopsworks pods.
 apiVersion: networking.k8s.io/v1
@@ -143,7 +151,7 @@ spec:
     - from:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: hopsworks
+              kubernetes.io/metadata.name: $HOPSWORKS_NAMESPACE
           podSelector:
             matchLabels:
               app.kubernetes.io/name: prometheus
@@ -152,15 +160,12 @@ spec:
     - from:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: hopsworks
+              kubernetes.io/metadata.name: $HOPSWORKS_NAMESPACE
           podSelector:
             matchLabels:
               app.kubernetes.io/name: hopsworks
       ports: [{port: 9443}]
-```
-
-```bash
-kubectl apply -f opencost-access.yaml
+EOF
 ```
 
 The NetworkPolicy takes effect only on a CNI that enforces NetworkPolicy.
@@ -195,8 +200,7 @@ opencost:
   prometheus:
     internal:
       enabled: true
-      serviceName: hopsworks-prometheus-server
-      namespaceName: hopsworks
+      # serviceName and namespaceName are set on the helm command below.
       port: 80
   ui:
     enabled: false
@@ -267,7 +271,6 @@ extraVolumes:
       name: opencost-kube-rbac-proxy
 ```
 
-Change `opencost.prometheus.internal.namespaceName` if Hopsworks runs in another namespace.
 To price the cluster at your own rates, replace the numbers under `opencost.customPricing.costModel`.
 
 ```bash
@@ -277,6 +280,8 @@ helm upgrade --install opencost opencost/opencost \
   --namespace opencost \
   --version 2.5.33 \
   --values opencost-values.yaml \
+  --set-string opencost.prometheus.internal.serviceName="$HOPSWORKS_RELEASE-prometheus-server" \
+  --set-string opencost.prometheus.internal.namespaceName="$HOPSWORKS_NAMESPACE" \
   --wait --timeout 10m
 ```
 
@@ -292,14 +297,26 @@ NAME                        READY   STATUS    RESTARTS   AGE
 opencost-<suffix>           2/2     Running   0          2m
 ```
 
+Check that OpenCost refuses unauthenticated reads, from a throwaway pod in another namespace:
+
+```bash
+kubectl run -n default opencost-probe --rm -i --restart=Never --image=curlimages/curl -- \
+  curl -sk -m 5 -o /dev/null -w '%{http_code}\n' \
+  https://opencost.opencost.svc.cluster.local:9443/allocation/compute
+```
+
+It prints `401`, or times out where the CNI enforces the NetworkPolicy.
+The same request to `http://opencost.opencost.svc.cluster.local:9003/allocation/compute` must time out.
+If it answers, the CNI does not enforce the NetworkPolicy, and every pod in the cluster can read every namespace's costs on that port.
+
 The end-to-end check is the _Costs_ page after [Step 2][costs-enable-hopsworks]: if a piece is missing, the page names it, see [Troubleshooting][costs-troubleshooting].
 
 ### Air-gapped clusters { #costs-air-gapped }
 
-Mirror the two images the install pulls into your registry:
+Mirror the two images the install pulls into your registry, from `docker.hops.works` or from their origin:
 
-- `ghcr.io/opencost/opencost:1.121.3`, the OpenCost exporter.
-- `quay.io/brancz/kube-rbac-proxy:v0.18.0`, the proxy sidecar.
+- `docker.hops.works/ghcr.io/opencost/opencost:1.121.3` (origin `ghcr.io/opencost/opencost:1.121.3`), the OpenCost exporter.
+- `docker.hops.works/quay.io/brancz/kube-rbac-proxy:v0.18.0` (origin `quay.io/brancz/kube-rbac-proxy:v0.18.0`), the proxy sidecar.
 
 The OpenCost UI image (`ghcr.io/opencost/opencost-ui`) is not needed, because the UI is disabled.
 
@@ -313,8 +330,13 @@ helm upgrade --install opencost ./opencost-2.5.33.tgz \
   --set opencost.exporter.image.registry=<your-registry> \
   --set opencost.exporter.image.repository=<path>/opencost \
   --set opencost.exporter.image.tag=1.121.3 \
+  --set-string opencost.prometheus.internal.serviceName="$HOPSWORKS_RELEASE-prometheus-server" \
+  --set-string opencost.prometheus.internal.namespaceName="$HOPSWORKS_NAMESPACE" \
   --wait --timeout 10m
 ```
+
+Setting `image.tag` replaces the chart's pinned reference, `1.121.3@sha256:4cdd173253e5abba048dfe2cfa968707a5b59d774157d5356940d0d923a6c281`, so the digest is no longer checked.
+Mirror that digest to keep the same image.
 
 Point the sidecar `image` under `opencost.extraContainers` in `opencost-values.yaml` at your mirror of `kube-rbac-proxy` as well.
 
@@ -336,16 +358,15 @@ This does two things:
 The token is valid for OpenCost only: its audience is `opencost`, so the Kubernetes API does not accept it.
 The ConfigMap is optional in the volume, so the pods start without it, but the _Costs_ page reports a missing certificate until it exists.
 
-The other settings are Helm values under `hopsworks.variables`:
+The settings are these Helm values:
 
 | Helm value | Default | Meaning |
 | --- | --- | --- |
 | `hopsworks.opencost.enabled` | `false` | Sets `enable_opencost` and mounts the credentials volume. |
 | `hopsworks.opencost.caConfigMapName` | `opencost-ca` | ConfigMap in the Hopsworks namespace whose `ca.crt` key holds the OpenCost certificate. |
-| `hopsworks.variables.opencost_api_url` | `https://opencost.opencost.svc.cluster.local:9443` | OpenCost API URL, in the form `http(s)://host:port` with no path. |
+| `hopsworks.variables.opencost_api_url` | `https://opencost.opencost.svc.cluster.local:9443` | OpenCost API URL, in the form `https://host:port` with no path. Plain `http` is refused, because the token would cross the network in cleartext. |
 | `hopsworks.variables.opencost_currency` | `USD` | Currency label shown next to every amount. Display only. |
 | `hopsworks.variables.opencost_history_retention_days` | `400` | Days of daily namespace cost history kept in the database. |
-| `hopsworks.variables.opencost_credentials_dir` | `/var/run/secrets/opencost` | Directory in the server pods holding `token` and `ca.crt`. The credentials volume is mounted here. |
 
 Set these in the Helm values, not in the [Cluster Configuration][cluster-configuration] page.
 The chart writes `enable_opencost` and the `opencost_*` variables into the database on every install and upgrade, so a change made in the UI is reset by the next `helm upgrade`.
@@ -407,7 +428,9 @@ Three rows are not projects:
 - **Unmounted volumes**: persistent volumes and load balancers that no pod uses.
 - **Not a project** (department grouping only): namespaces that belong to no project, such as the Hopsworks namespace, `kube-system`, `opencost` and the namespaces of deleted projects, plus namespaces shared by projects of different departments.
 
-On narrow screens the Department, GPU, Network, Other and workload columns are hidden.
+When the table is narrower than about 1150 pixels, the GPU, Network and Other columns are hidden.
+Below about 900 pixels, Department and the workload columns are hidden too.
+All columns are in the CSV export.
 
 ### Departments { #costs-departments }
 
@@ -461,9 +484,18 @@ Total <total> <currency>, idle <idle>, efficiency <efficiency>, <window> from <s
 GPU workloads: <gpu workloads> | CPU workloads: <cpu workloads>
 ```
 
-### Project costs for data owners { #costs-project-data-owners }
+The REST API is under `/hopsworks-api/api/admin/costs`, for platform administrators, with a session or an API key with the `ADMIN` scope:
 
-A project's data owners can read the cost of that project without being platform administrators, see [Project costs][project-costs-introduction].
+```text
+GET /hopsworks-api/api/admin/costs/namespaces?window=<HOUR|DAY|WEEK|MONTH|YEAR>
+GET /hopsworks-api/api/admin/costs/departments?window=<HOUR|DAY|WEEK|MONTH|YEAR>
+```
+
+`window` defaults to `WEEK`.
+Both answer the JSON the Python API reads: `window`, `start`, `end`, `currency`, `coverage`, `totals`, `items` and `buckets`.
+A field without a value is left out of the JSON rather than sent as `null`.
+An unknown window answers HTTP 400, and a caller who is not an administrator HTTP 403.
+Cost tracking turned off answers HTTP 404 with error code 100083, and OpenCost unreachable HTTP 503 with error code 100081.
 
 !!! api "API reference"
 
@@ -477,6 +509,10 @@ A project's data owners can read the cost of that project without being platform
     - <code class="doc-symbol doc-symbol-docs"></code> [OpenCost docs](https://opencost.io/docs/)
 
     <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+### Project costs for data owners { #costs-project-data-owners }
+
+A project's data owners can read the cost of that project without being platform administrators, see [Project costs][project-costs-introduction].
 
 ## How the costs are computed { #costs-computation }
 
@@ -523,32 +559,55 @@ Month and year efficiencies are computed from the summed hours of the stored day
 ### GPU and CPU workloads { #costs-gpu-cpu-workloads }
 
 A workload is a Kubernetes controller: a Job, Deployment, StatefulSet, SparkApplication, DaemonSet and so on.
-In each bucket, a workload that requested GPU-hours is a GPU workload, and every other workload is a CPU workload.
+In each hour, or each 10-minute interval in the last hour, a workload that requested GPU-hours is a GPU workload, and every other workload is a CPU workload.
 The class takes the workload's whole cost, including its CPU, RAM, storage and network, so GPU workloads is larger than the GPU column, which is the cost of the GPUs alone.
-A workload can be a GPU workload in one bucket and a CPU workload in the next.
+A workload can be a GPU workload in one hour and a CPU workload in the next.
+In a day, month or year it is split between the two classes by the hours in which it requested a GPU.
 
 Pods without a controller share one workload per namespace and are classified together.
 Hopsworks jobs, notebooks, deployments and apps all have controllers.
 
 ### Limitations { #costs-limitations }
 
-- OpenCost samples Prometheus every 5 minutes. A pod that starts and finishes between two samples, such as a job that runs for 30 seconds, may get no cost at all.
+- OpenCost samples Prometheus every 5 minutes.
+  A pod that starts and finishes between two samples, such as a job that runs for 30 seconds, may get no cost at all.
 - Costs can be slightly negative on a fresh OpenCost install, because of OpenCost's adjustments; they are shown as they are.
-- Costs follow OpenCost's pricing configuration. Change the prices in the OpenCost values and the currency label in `opencost_currency` together.
+- Costs follow OpenCost's pricing configuration.
+  Change the prices in the OpenCost values and the currency label in `opencost_currency` together.
 
 ## Troubleshooting { #costs-troubleshooting }
 
 When Hopsworks cannot read OpenCost, the page shows _OpenCost is not available_ with the cause, and the API returns HTTP 503 with error code 100081.
+Every cause starts with `OpenCost is not reachable at <url>:`, followed by one of the details below.
 
 | Message | Cause and fix |
 | --- | --- |
-| `OpenCost is not reachable at <url>: ...` followed by a connection error | OpenCost is not running, or `opencost_api_url` does not point at the proxy. Check the OpenCost pod and the URL, and on an enforcing CNI check that the NetworkPolicy admits the Hopsworks pods on 9443. |
+| A connection error, such as `UnknownHostException` or `ConnectException` | OpenCost is not running, or `opencost_api_url` does not point at the proxy. Check the OpenCost pod and the URL, and on an enforcing CNI check that the NetworkPolicy admits the Hopsworks pods on 9443. |
 | `OpenCost asked for a token (401), and there is none at /var/run/secrets/opencost/token` | The credentials volume is not mounted. Set `hopsworks.opencost.enabled: true` and upgrade the Hopsworks chart. |
 | `OpenCost rejected Hopsworks' token (401): it must be a service-account token for the opencost audience` | The proxy's `--auth-token-audiences` does not match the token's audience `opencost`. |
+| `The token at /var/run/secrets/opencost/token is not for the opencost audience, so it is not sent` | Something other than the chart's credentials volume is mounted there. Hopsworks sends only tokens for the `opencost` audience. |
 | `OpenCost denied Hopsworks (403): check the opencost-reader RoleBinding in the OpenCost namespace` | The `opencost-reader` RoleBinding is missing or names another service account or namespace. |
-| `No OpenCost certificate at /var/run/secrets/opencost/ca.crt: ...` | ConfigMap `opencost-ca` with key `ca.crt` is missing from the Hopsworks namespace. Recreate it from the certificate the proxy already serves: `kubectl -n opencost get secret opencost-tls -o jsonpath='{.data.tls\.crt}' \| base64 -d > ca.crt`, then `kubectl -n hopsworks create configmap opencost-ca --from-file=ca.crt`. A new certificate from [Create the TLS certificate][costs-tls-certificate] does not match the running proxy unless Secret `opencost-tls` is replaced too and OpenCost restarted. Right after OpenCost is reinstalled this message is expected for about a minute, until the kubelet updates the file in the Hopsworks pods. |
+| `No OpenCost certificate at /var/run/secrets/opencost/ca.crt: ...` | ConfigMap `opencost-ca` with key `ca.crt` is missing from the Hopsworks namespace. Recreate it as in [Recreate the certificate ConfigMap][costs-recreate-ca]. Right after OpenCost is reinstalled this message is expected for about a minute, until the kubelet updates the file in the Hopsworks pods. |
 | `OpenCost has no /allocation/compute at this URL (404)` | `opencost_api_url` points at something other than OpenCost. |
-| `opencost_api_url is misconfigured: expected http(s)://host:port, got ...` | The URL has a path, query or credentials in it. |
+| `OpenCost rejected the query: ...` | OpenCost answered HTTP 400 to the query Hopsworks built, usually because its version is not the one this guide installs. |
+| `opencost_api_url is misconfigured: expected https://host:port, got ...` | The URL is not `https`, or has a path, query or credentials in it. |
+
+A page that loads but shows no namespaces at all usually means OpenCost reads the wrong Prometheus.
+Check that `opencost.prometheus.internal.serviceName` and `namespaceName` name the Hopsworks Prometheus Service, `<release>-prometheus-server` in the Hopsworks namespace.
+
+### Recreate the certificate ConfigMap { #costs-recreate-ca }
+
+Recreate `opencost-ca` from the certificate the proxy already serves, so that it matches the running proxy:
+
+```bash
+kubectl -n opencost get secret opencost-tls -o jsonpath='{.data.tls\.crt}' | base64 -d > ca.crt
+kubectl -n "$HOPSWORKS_NAMESPACE" create configmap opencost-ca --from-file=ca.crt
+rm ca.crt
+```
+
+A new certificate from [Create the TLS certificate][costs-tls-certificate] does not match the running proxy unless Secret `opencost-tls` is replaced too and OpenCost restarted.
+
+### Cost tracking turned off { #costs-turned-off }
 
 When `enable_opencost` is `false`, _Costs_ is not in the sidebar, the page says _Cost tracking with OpenCost is not enabled on this cluster_, and the API returns HTTP 404 with error code 100083.
 Set `hopsworks.opencost.enabled: true` and upgrade the Hopsworks chart.
