@@ -27,7 +27,7 @@ Read first, in full:
    They don't: refactors, tests, CI, build plumbing, logging internals, the release version bump, a change that only supports another entry (fold it in), and a fix for a bug that never shipped, because it came in within the same range.
    Leave out `hopsworks-api` changes on their own, because the release's Python client subsection shows the hopsworks-api release notes; use them to understand an application change of the same ticket.
    A breaking change says, in a few words, what the behaviour was before, checked against the previous release.
-   A security fix gets a bare entry, such as "Fixed a security issue in jobs", with no detail of the issue, as the guide says; describe the issue only in your report, for the evidence.
+   A security fix is written "Addressed vulnerabilities in <component>", such as "Addressed vulnerabilities in jobs", with no detail of the issue, as the guide says; never write "Fixed a security issue in". Describe the issue only in your report, for the evidence.
 3. Pick the subsection: What's changed, Breaking changes, Deprecations or Configuration changes, as the guide defines them.
    A feature that a value turns on stays in What's changed and names the value.
 4. Write the entry as the guide says: a past-tense verb first, one line, a second line only for what the reader must act on, the exact value, API or setting, and a docs link where one exists.

@@ -73,9 +73,9 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
 - Do not link Jira or any private GitHub repo, and do not name customers, because the docs are public.
   Of the source repos, `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front`, `docker-images`, `flyingduck`, `clusterj-onlinefs`, `model-serving-webhook`, `model-serving-authenticator`, `hops-git`, `tools` and `sparkhistoryserver` are private; `hopsworks-api`, `rondb-helm` and the forks (`trino`, `hive`, `hudi`, `incubator-uniffle`, `spark`) are public.
   Check a repo with `gh repo view <org>/<repo> --json visibility` before linking it.
-- Give no details of a security issue a release fixes: name only where it was, such as "Fixed a security issue in jobs", never what was exposed, who could exploit it or how, because the notes are public and clusters on older releases stay vulnerable.
+- Write a security fix as "Addressed vulnerabilities in <component>", such as "Addressed vulnerabilities in jobs", and nothing more: never write "Fixed a security issue in", and never say what was exposed, who could exploit it or how, because the notes are public and clusters on older releases stay vulnerable.
   Fixes of known vulnerabilities in dependencies and images stay one entry per group, such as "Fixed security vulnerabilities in the Grafana and Superset images".
-  A breaking change or upgrade step that a security fix needs says what to do, and at most that it is for a security fix.
+  A breaking change or upgrade step that a security fix needs says what to do, and at most that it addresses a vulnerability.
 
 `### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
 
@@ -97,7 +97,7 @@ Breaking changes are changes that need users or operators to do something when t
 Say in each one what changed, what the behaviour was before, who is affected and what to do, and link the docs page that has the procedure; it may start with what changed, such as "`helm upgrade` now stops ...", or with what to do, such as "Remove `<value>` from your values ...".
 Outline the behaviour before the change in a few words, such as "instead of `default`" or "which used to keep them", so a reader can tell whether they relied on it; check it against the previous release, not the commit message.
 A breaking change that a security fix needs leaves the behaviour before out, because it would describe the issue; it says only what users could do that they no longer can, such as "can no longer be queried in Trino".
-A fix, security fixes included, that takes away something users rely on is a breaking change.
+A fix that takes away something users rely on is a breaking change, also when it addresses a vulnerability.
 A breaking change is not repeated under `### What's changed`; a value it adds, removes or renames is still listed under `### Configuration changes`, which says what the value does, while the breaking change says what to do.
 A change that ships in patch releases of two minor versions at about the same time, such as 5.0.14 and 5.1.2, is listed in both releases, without a marker; the `(also in ...)` marker is only for an X.Y.0 entry.
 

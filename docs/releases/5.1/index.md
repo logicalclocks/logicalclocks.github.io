@@ -19,8 +19,8 @@ The releases of Hopsworks 5.1, newest first.
 
 ### What's changed
 
-- Fixed a security issue in OpenSearch.
-  The fix applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the chart's `README.md` shows.
+- Addressed vulnerabilities in OpenSearch.
+  It applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the chart's `README.md` shows.
 - Fixed every OpenSearch restart deleting the OpenSearch roles of restricted-access grants and feature group shares, and every `helm upgrade` restarting OpenSearch.
   Grants and shares made before the last OpenSearch restart on 5.1.0 or 5.1.1 lost their roles, and granting or sharing again is refused: revoke and grant again, or unshare and share again.
 - Fixed security vulnerabilities in the Hopsworks certificate authority, Grafana, Filebeat and Superset images, and in the MySQL and Redis of Superset.
@@ -58,7 +58,7 @@ The releases of Hopsworks 5.1, newest first.
 
 ### What's changed
 
-- Fixed a security issue in jobs.
+- Addressed vulnerabilities in jobs.
 - Fixed OpenSearch losing unflushed vectors and rejecting vector writes for about two minutes on its first start on 5.1.
   A values file that sets `triggered: true` or `percent: 0.75`, or an upgrade with `--reuse-values`, keeps the problem.
 - Fixed the database migration of the upgrade from 5.0 failing when the feature groups have more than about 32,000 features in total.
@@ -105,10 +105,10 @@ The releases of Hopsworks 5.1, newest first.
 
 ### What's changed
 
-- Fixed a security issue in model serving.
-- Fixed a security issue in environment images.
-- Fixed a security issue in feature views (also in [5.0.8][hopsworks-5-0-8]).
-- Fixed a security issue in project datasets (also in [5.0.10][hopsworks-5-0-10]).
+- Addressed vulnerabilities in model serving.
+- Addressed vulnerabilities in environment images.
+- Addressed vulnerabilities in feature views (also in [5.0.8][hopsworks-5-0-8]).
+- Addressed vulnerabilities in project datasets (also in [5.0.10][hopsworks-5-0-10]).
 - Changed model deployments, jobs, Jupyter servers and terminals to each get their own serving API key.
 - Fixed security vulnerabilities in the Hopsworks server dependencies and in the Superset, Grafana, Prometheus, Consul, certificates operator, Docker registry, BuildKit, Istio, Knative Serving, KServe utilities, scikit-learn model server, Strimzi, OpenSearch, Logstash and Filebeat images.
 - Fixed security vulnerabilities in the Hopsworks server dependencies, in the Payara, HopsFS, Hive Metastore, ArrowFlight, OnlineFS, Airflow, Git, toolbox, base environment, Filebeat, Grafana, OpenSearch, OpenSearch Dashboards, Logstash, remote shuffle service and Superset images, and in the MySQL database of Superset (also in [5.0.8][hopsworks-5-0-8]).
@@ -258,7 +258,7 @@ The releases of Hopsworks 5.1, newest first.
 - `helm uninstall` now deletes the data volumes of the HopsFS DataNodes, MinIO, OpenSearch, Kafka, Consul and the remote shuffle service, for good, instead of keeping them (also in [5.0.2][hopsworks-5-0-2]).
   To keep them, set `global._hopsworks.wipeDataOnUninstall: false` or label the PVCs `hopsworks.ai/keep=true` before you uninstall; the Superset MySQL volume is deleted regardless.
 - OpenSearch drops vectors not yet flushed and rejects vector writes for about two minutes on its first start on 5.1, because of the default `olk.opensearch.knn.circuit_breaker` settings; set `triggered: false` and `percent: 75` under it, or upgrade to [5.1.1][hopsworks-5-1-1] instead.
-- Rebuild the environment images built from custom commands or with libraries from a private Git repository, and rotate the credentials in `hopsworks.dockerImage.packageAuth.secretName` and the Git tokens they use, for a security fix.
+- Rebuild the environment images built from custom commands or with libraries from a private Git repository, and rotate the credentials in `hopsworks.dockerImage.packageAuth.secretName` and the Git tokens they use, to address a vulnerability.
 - Raised the minimum Kubernetes version from 1.27 to 1.34; upgrade Kubernetes first, because Helm refuses to install or upgrade on an older cluster.
 - Every `helm upgrade`, including values-only ones, now rebuilds the feature store search index afterwards, which the 5.0 chart never did, signing in with `hopsworks.variables.admin_email` and `hopsworks.variables.admin_password`, and fails the upgrade if they don't sign in to the Hopsworks admin account.
   Set them to the admin account's credentials before you upgrade; if password login is disabled, upgrade to [5.1.1][hopsworks-5-1-1] instead.
@@ -281,7 +281,7 @@ The releases of Hopsworks 5.1, newest first.
   Remove them, or set `kafka.cluster.kafka.quotas.type: kafka`, `kafka.cluster.kafka.quotas.minAvailableRatioPerVolume: 0` and `kafka.cluster.kafka.authorizer.principalBuilderClass: ""` to enforce them.
 - Removed `hopsworks.variables.jupyter_spark_driver_memory_overhead_factor`, added in 5.0.10; the driver memory overhead of a notebook now comes from its Spark configuration (also in [5.0.12][hopsworks-5-0-12]).
   Remove it from your values before you upgrade, because the values schema rejects it; with `--reuse-values`, which keeps the old default, use `--reset-then-reuse-values`.
-- 5.1.0 came out before [5.0.14][hopsworks-5-0-14] and lacks most of its changes, such as a security fix in jobs; if you run 5.0.14, upgrade to [5.1.2][hopsworks-5-1-2] or later instead.
+- 5.1.0 came out before [5.0.14][hopsworks-5-0-14] and lacks most of its changes, such as the addressed vulnerabilities in jobs; if you run 5.0.14, upgrade to [5.1.2][hopsworks-5-1-2] or later instead.
 - 5.1.0 ships an older RonDB chart than [5.0.13][hopsworks-5-0-13], without `rondb.rondb.rdrs.probes`, so the RonDB REST server restarts again during a data node failure; if you run 5.0.13, upgrade to [5.1.1][hopsworks-5-1-1] or later instead.
 - `catalog-volume` moved from `trino.trino.configMounts` to the `additionalVolumes` and `additionalVolumeMounts` of `trino.trino.coordinator` and `trino.trino.worker`.
   If you override these lists, copy both entries from the chart's values and remove `catalog-volume` from an overridden `trino.trino.configMounts`, or the Trino pods don't start.

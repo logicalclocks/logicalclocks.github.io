@@ -53,7 +53,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- Fixed a security issue in jobs.
+- Addressed vulnerabilities in jobs.
 - Fixed HopsFS staying in safe mode after all NameNodes restarted, a NameNode restart occasionally marking every block as corrupt, and NameNodes running out of file descriptors when many blocks are corrupt.
 - Fixed RonDB daemons ignoring SIGTERM, so every pod stop ended in a kill and a stopped data node could stall the cluster.
 - Fixed security vulnerabilities in the Payara, Hopsworks, Hopsworks CA, Hive Metastore, remote shuffle service, Spark operator, Filebeat, Logstash, Grafana, OpenSearch Dashboards and Superset images, in the MySQL and Redis of Superset, and in the Hopsworks server dependencies.
@@ -198,7 +198,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- Fixed a security issue in project datasets.
+- Addressed vulnerabilities in project datasets.
 - Fixed uploading files in the file browser deleting the files of the previous upload unless the page was reloaded.
 - Fixed security vulnerabilities in the ArrowFlight and remote shuffle service images.
 - Fixed init containers that wait for a RonDB rollout giving up after 30 minutes, which failed the Hive Metastore, HopsFS, Airflow migration and CA pods when a RonDB restart took longer.
@@ -281,7 +281,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- Fixed a security issue in feature views.
+- Addressed vulnerabilities in feature views.
 - Fixed security vulnerabilities in the Hopsworks server dependencies, in the Payara, HopsFS, Hive Metastore, ArrowFlight, OnlineFS, Airflow, Git, toolbox, base environment, Filebeat, Grafana, OpenSearch, OpenSearch Dashboards, Logstash, remote shuffle service and Superset images, and in the MySQL database of Superset.
 - Added an upload policy, `hopsworks.variables.upload_policy`, that allows file uploads to everyone (`enabled`), to administrators only (`admins_only`) or to nobody (`disabled`), from the web UI and from clients such as the Python SDK; the web UI disables its upload controls for blocked users.
   The upgrade writes the value to the cluster, so a change made in the admin UI lasts until the next upgrade.
@@ -499,7 +499,7 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 
 ### What's changed
 
-- Fixed a security issue in the feature store.
+- Addressed vulnerabilities in the feature store.
 - Fixed external LoadBalancer Services, such as those of ArrowFlight, HopsFS, OpenSearch and Trino, not being created with Helm 3.20.1 and later; a component without its own setting again follows `global._hopsworks.externalLoadBalancers`.
 - Changed RonDB upgrades to roll the management server first, so data nodes no longer shut down with error 2305, and to fail when `rondb.rondb.clusterSize.numNodeGroups` differs from the running cluster, which RonDB can't change online (also in 4.8.6).
 - Fixed fresh installs failing and rolling back when the Knative Serving webhook was not ready yet.

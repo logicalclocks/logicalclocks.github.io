@@ -17,8 +17,8 @@ The releases of Hopsworks 5.2, newest first.
 ### What's changed
 
 - Fixed the 5.1 to 5.2 index pass failing with `field _id not found` on an index with an empty mapping, such as a `projects` index that was never written, and losing documents that were not yet refreshed when it copied an index.
-- Fixed a security issue in OpenSearch.
-  The fix applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the chart's `UPGRADE.md` shows.
+- Addressed vulnerabilities in OpenSearch.
+  It applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the chart's `UPGRADE.md` shows.
 - Changed the OpenSearch index pass of the 5.1 to 5.2 upgrade to copy one index at a time behind a write block on that index alone, instead of refusing every OpenSearch client, reads included, for the whole pass; upgrade 5.1 clusters to 5.2.1 rather than 5.2.0 ([what keeps working][docs-os-what-works]).
 - Fixed OpenSearch restarts and the 5.1 to 5.2 index pass deleting the OpenSearch roles behind restricted grants and feature group shares, which left a shared project with HTTP 403.
   Grants and shares made before the last OpenSearch restart on 5.2.0 lost their roles, and granting or sharing again is refused: revoke and grant again, or unshare and share again.
@@ -30,8 +30,8 @@ The releases of Hopsworks 5.2, newest first.
 
 - Remove `olk.opensearch.indexUpgrade.enabled` from your values, using `olk.opensearch.indexUpgrade.mode: report` in place of `false`, or the values schema rejects the upgrade.
 - `helm upgrade` now stops before changing anything, also on a cluster already on 5.2.0, if an OpenSearch vector field would still be served by nmslib, which crashes OpenSearch 3.8 nodes on CPUs without AVX-512, where 5.2.0 upgraded without checking; apply the remedy the hook's log gives for each index or template it names ([nmslib fields][docs-os-nmslib]).
-- Feature groups shared with a subset of their features can no longer be queried in Trino, only read online and in similarity search, to fix a security issue; share the whole feature group to query it in Trino.
-  `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` turns Trino access to them back on, which undoes the security fix.
+- Feature groups shared with a subset of their features can no longer be queried in Trino, only read online and in similarity search, to address a vulnerability; share the whole feature group to query it in Trino.
+  `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` turns Trino access to them back on, which undoes that.
 
 ### Configuration changes
 
@@ -45,8 +45,8 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 
 ### What's changed
 
-- Fixed a security issue in model deployments.
-- Fixed a security issue in jobs (also in [5.1.1][hopsworks-5-1-1]).
+- Addressed vulnerabilities in model deployments.
+- Addressed vulnerabilities in jobs (also in [5.1.1][hopsworks-5-1-1]).
 - Fixed model deployments answering 403 to users whose password an administrator set.
   Such users already on a temporary password regain access at their next password change or account update.
 - Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, `insert(wait_for_online_ingestion=True)` returning before the rows were online, and apps reporting the execution they replaced.
