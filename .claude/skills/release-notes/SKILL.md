@@ -1,33 +1,54 @@
 ---
 name: release-notes
-description: Write the release notes of a hopsworks-helm release, such as 5.1.0, into docs/releases. Collects the chart, rondb-helm, hopsworks-ee and hopsworks-front changes of the release, drafts its section and upgrade steps, fact-checks every entry against the source and runs the strict build. Use when asked to write, add, regenerate or audit the release notes of a Hopsworks release.
+description: Write the release notes of a hopsworks-helm release, such as 5.1.0, into docs/releases. Collects the changes of the release in the chart and in every Hopsworks repo whose component it moves, drafts its section and upgrade steps, fact-checks every entry against the source and runs the strict build. Use when asked to write, add, regenerate or audit the release notes of a Hopsworks release.
 argument-hint: <X.Y.Z>
 ---
 
 # Release notes for a release
 
-Writes the `## X.Y.Z` section of `docs/releases/X.Y/index.md`, and its steps in `docs/releases/X.Y/upgrade.md` when it has any, for the `hopsworks-helm` release given as the argument.
+Writes the `## X.Y.Z` section of `docs/releases/X.Y/index.md` for the `hopsworks-helm` release given as the argument.
 Read `.claude/docs/releases.md` in full first: it is the contract for the page shape and every writing rule, and this skill does not repeat it.
 
 The work has four stages, each checked before the next: collect the facts, draft, fact-check, build.
 A draft is never trusted: in the 2026-10 backfill, separate adversarial passes against the source changed about one drafted entry in six, many of them for a wrong claim.
 
+## 0. Main only
+
+Release notes are changed on `main` only, and reach the release branches from there: every docs version shows `main`'s `docs/releases/`, because the release branch builds copy it and the hook from `main` before they build, as `.claude/docs/releases.md` describes.
+Work on a branch of `main` whose pull request goes to `main`, and check it before anything else:
+
+```sh
+git fetch origin main
+git log --oneline origin/main..HEAD
+```
+
+It lists the commits the branch adds to `main`, which are only those of your change; a long list, or release commits of a `branch-X.Y`, means the branch is based on a release branch.
+
+Stop and tell the user if the branch isn't based on `main` or its pull request targets a `branch-*`: never change `docs/releases/` on a release branch, nor cherry-pick a release notes change to one; CI fails such a pull request, and the next release branch build would overwrite it anyway.
+
 ## 1. Sources
 
-The command needs five checkouts, read-only: `hopsworks-helm`, `rondb-helm`, `hopsworks-ee`, `hopsworks-front` and `docker-images`.
-They default to siblings of this repo (`../hopsworks-helm`, ...); if one is missing, ask the user where they are.
-Set `S` to the directory that holds them, so the commands below need no other paths, and set up this repo's environment once; afterwards run every command with `uv run --no-sync`, because a plain `uv run` syncs again without the `cli` extra:
+The facts come from every repo the release ships, read-only, all checked out side by side in one directory:
+
+- the charts, `hopsworks-helm` and `rondb-helm`;
+- the application, `hopsworks-ee` and `hopsworks-front`, and the Python client, `hopsworks-api`;
+- the images, `docker-images`, which builds the base environments and many other images;
+- the components the chart deploys from a Hopsworks repo, as `REPOS` in `scripts/release_inputs.py` maps them: `flyingduck`, `clusterj-onlinefs`, `model-serving-webhook`, `model-serving-authenticator`, `hops-git`, `tools`, `sparkhistoryserver`, and the forks `trino`, `hive`, `hudi`, `incubator-uniffle` and `spark`.
+
+HopsFS and RonDB repos are left out on purpose; `rondb-helm` stays.
+They default to siblings of this repo; if one is missing, `release-inputs` says so, and you ask the user where it is or clone it.
+Set `S` to the directory that holds them, and set up this repo's environment once; afterwards run every command with `uv run --no-sync`, because a plain `uv run` syncs again without the `cli` extra:
 
 ```sh
 S=<directory holding the five checkouts>
 uv sync --extra cli
 ```
 
-Fetch each checkout, and this repo's `branch-*` (links are checked against them), one refspec per `git fetch`, because a release often came out after the last fetch:
+Fetch every branch and tag of each checkout, and of this repo (links are checked against its `branch-*`), because a release often came out after the last fetch; component repos name their release branches in different ways, so fetch them all:
 
 ```sh
 git -C <repo> fetch origin --tags
-git -C <repo> fetch origin '+refs/heads/branch-*:refs/remotes/origin/branch-*'
+git -C <repo> fetch origin
 ```
 
 Never check out, commit or reset in those repos; read them with `git log`, `git show`, `git diff` and `git grep`.
@@ -36,7 +57,7 @@ Never check out, commit or reset in those repos; read them with `git log`, `git 
 
 ```sh
 mkdir -p .release-notes/<X.Y.Z>
-uv run --no-sync hopsworks-docs release-inputs <X.Y.Z> --helm $S/hopsworks-helm --rondb-helm $S/rondb-helm --ee $S/hopsworks-ee --front $S/hopsworks-front --docker-images $S/docker-images > .release-notes/<X.Y.Z>/inputs.md
+uv run --no-sync hopsworks-docs release-inputs <X.Y.Z> --sources $S > .release-notes/<X.Y.Z>/inputs.md
 ```
 
 `.release-notes/` is gitignored and lives in the repo, not in a temporary directory, so the work survives the session.
@@ -44,12 +65,15 @@ Read `inputs.md` in full. It gives:
 
 - the release it compares with, and the front matter (release date, application version, Python client);
 - every commit of the chart, of `rondb-helm` when the RonDB chart moved, and of `hopsworks-ee` and `hopsworks-front` between the `Release X.Y.Z` commits of the two application versions;
+- the commits of `hopsworks-api` and `docker-images` between the Python client and base image versions of the two releases, and of each component repo whose version moved, between the tags or `Release` commits of its two versions;
+  for a fork, only the Hopsworks commits (a ticket key in the subject) made between the two release dates, because Upgraded components covers the upstream version;
+  a repo without a tag or release commit for a version says so, and you find its commits by hand;
 - on an X.Y.0, `[shipped in vX.Y.Z]` on each commit a patch release of the previous minor version already shipped, and which of those patch releases' chart commits the X.Y.0 lacks;
 - the Helm values added, removed and changed, added lines that mention a deprecation, and the changed `values.*.yaml` overlays and `UPGRADE.md`;
   it doesn't say which removed values the values schema now rejects or which hooks changed, so check `values.schema.json` and the hook templates of the chart at the tag yourself;
 - the Upgraded components table, with a warning for a version no component covers.
 
-Stop and ask the user when it reports an `ERROR` (a release commit it can't find), a `released: "?"` (the GitHub release isn't published), or a RonDB chart that moves backwards.
+Stop and ask the user when it reports an `ERROR` (a release commit it can't find, or a checkout that is missing), a `released: "?"` (the GitHub release isn't published), or a RonDB chart that moves backwards.
 
 ## 3. Draft
 
@@ -69,14 +93,11 @@ Account for every commit and every value change: in an entry, in an existing ent
 - Read the diff of every commit you turn into an entry; a subject can promise more than the code does, and a later commit in the range can change or revert it.
 
 For up to about 40 commits, draft it yourself.
-Above that, split the commits into slices of about 40 (chart, rondb-helm, ee, front, values) and give each slice to a parallel agent at medium effort with `draft.md` in this folder as its brief, the slice, and the paths.
+Above that, split the commits into slices of about 40 (chart, rondb-helm, ee, front, api, images, components, values) and give each slice to a parallel agent at medium effort with `draft.md` in this folder as its brief, the slice, and the paths.
 Agents return entries with evidence and never edit the page; you merge their entries into the section, so no two writers touch one file.
 
-Write upgrade steps into `docs/releases/X.Y/upgrade.md` (`## From <previous minor>` for an X.Y.0, `## To X.Y.Z` for a patch) only when the release needs ordered action at upgrade.
-Signals are a changed `UPGRADE.md`, a migration Job or hook, or a breaking change that has to happen before or after the `helm upgrade`.
-Base the steps on the chart's `UPGRADE.md` at the tag, and link the docs pages that describe them.
-A `## To X.Y.Z` section serves readers who come from an earlier release of the minor version and readers who come straight from the previous minor version; say which steps apply to whom.
-When a patch release makes an existing step of the guide wrong, such as a step of `## From <previous minor>`, fix that step too and say so in the report.
+An X.Y.0 gets `### Upgrade steps` saying "No upgrade steps are listed for this release.", as the guide says; don't write steps into it for now.
+List in the report the steps the release needs at upgrade, from a changed `UPGRADE.md`, a migration Job or hook, or a breaking change that has to happen before or after the `helm upgrade`, so the user can decide on them.
 
 Order the entries of each subsection by significance, as the guide defines it, after merging; the agents' order only holds within their slice.
 
@@ -111,7 +132,7 @@ Both must pass; the strict build fails on a broken link, an anchor that doesn't 
 Tell the user:
 
 - the release, what it compares with, and the number of entries per subsection;
-- whether it has upgrade steps;
+- the upgrade steps the release needs, which the page doesn't list yet;
 - what the fact-check changed;
 - every `UNSURE` item, as a question;
 - the commits left out as not user-visible, as one line of short SHAs per repo.

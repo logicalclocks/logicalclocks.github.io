@@ -1,8 +1,10 @@
 """Collect the facts a release section is written from.
 
 Prints, for one ``hopsworks-helm`` release, the release it compares with, its front
-matter, the commits of the chart, of ``rondb-helm`` and of the application it ships
-(``hopsworks-ee``, ``hopsworks-front``), the Helm values it adds, removes or changes,
+matter, the commits of the chart, of ``rondb-helm``, of the application it ships
+(``hopsworks-ee``, ``hopsworks-front``), of the Python client and of every other
+component the chart deploys from a Hopsworks repo whose version changed (``REPOS``),
+the Helm values it adds, removes or changes,
 what the chart newly deprecates, and the Upgraded components table, as
 ``.claude/docs/releases.md`` describes. The ``/release-notes`` skill writes the
 section from this; nothing here is published, so it names commits freely.
@@ -24,6 +26,7 @@ from hopsworks_docs.scripts.release_components import (
     _release,
     _table,
     _uncovered,
+    _versions,
 )
 from hopsworks_docs.scripts.shared.docs_root import _DOCS_ROOT
 
@@ -34,9 +37,33 @@ VALUES = "charts/hopsworks/values.yaml"
 RONDB_CHART = "charts/rondb/Chart.yaml"
 # A merge suffix such as "(#1234)", or a backport marker such as "(5.0)" or "[5.1]".
 SUBJECT_NOISE = re.compile(r"\s*(\(#\d+\)|\(\d+\.\d+\)|\[\d+\.\d+\])\s*")
-# A version setting; the Upgraded components table covers these.
 # The checkouts default to siblings of this repo, as CI clones hopsworks-api.
 SOURCES = _DOCS_ROOT.parent
+# The repo that builds a component of the Upgraded components table, for the
+# components built by Hopsworks; HopsFS and RonDB are left out on purpose.
+# docker-images, which builds the base environment images and many other images,
+# hopsworks-ee, hopsworks-front and hopsworks-api have their own sections.
+REPOS = {
+    "ArrowFlight server": "flyingduck",
+    "Git image": "hops-git",
+    "Hive Metastore": "hive",
+    "Hudi bundle of the Hive Metastore": "hudi",
+    "Inference logger": "model-serving-webhook",
+    "Model serving authenticator": "model-serving-authenticator",
+    "Model serving webhook": "model-serving-webhook",
+    "OnlineFS": "clusterj-onlinefs",
+    "Remote shuffle service (Apache Uniffle)": "incubator-uniffle",
+    "Spark": "spark",
+    "Spark history server": "sparkhistoryserver",
+    "Storage initializer": "model-serving-webhook",
+    "Toolbox image (hwutils)": "tools",
+    "Trino": "trino",
+}
+# Forks of upstream projects: Upgraded components covers their upstream changes, so
+# only Hopsworks commits, whose subject starts with a ticket key, are listed.
+FORKS = {"hive", "hudi", "incubator-uniffle", "spark", "trino"}
+TICKET = re.compile(r"^\[?[A-Z][A-Z0-9]+-\d+\]")
+# A version setting; the Upgraded components table covers these.
 VERSION_LEAF = re.compile(r"(^|[._])(tag|version|image|digest)$", re.IGNORECASE)
 
 
@@ -118,6 +145,99 @@ def _release_commit(repo, branch, version):
         repo, "log", f"origin/{branch}", "-E", f"--grep={pattern}", "--format=%h"
     )
     return out.split()[0] if out.split() else None
+
+
+def _version_ref(repo, version):
+    """The tag or release commit of ``version`` in ``repo``, or None.
+
+    A tag named after the version, else the newest ``Release <version>`` or
+    ``[maven-release-plugin] prepare release <version>`` commit on origin.
+    """
+    for name in (version, f"v{version}"):
+        if _git(repo, "tag", "--list", name).strip():
+            return name
+    v = re.escape(version)
+    pattern = rf"^(Release v?{v}|\[maven-release-plugin\] prepare release {v})( |\(|$)"
+    out = _git(
+        repo, "log", "--remotes=origin", "-E", f"--grep={pattern}", "--format=%h"
+    )
+    if out.split():
+        return out.split()[0]
+    # A repo that releases by setting its version file, newest such commit first.
+    for path in ("version.txt", "VERSION"):
+        for commit in _git(
+            repo, "log", "--remotes=origin", "--format=%h", "--", path
+        ).split():
+            try:
+                if _git(repo, "show", f"{commit}:{path}").strip() == version:
+                    return commit
+            except subprocess.CalledProcessError:
+                continue
+    # An image rebuild, such as Trino 483-v2, is the source release 483.
+    rebuild = re.fullmatch(r"(.+)-v\d+", version)
+    return _version_ref(repo, rebuild[1]) if rebuild else None
+
+
+def _fork_section(lines, title, repo, since, until):
+    """The Hopsworks commits of a fork made between two chart releases."""
+    out = _git(
+        repo,
+        "log",
+        "--remotes=origin",
+        "--no-merges",
+        f"--since={since}",
+        f"--until={until}",
+        "--format=%h\t%s",
+    )
+    seen, rows = set(), []
+    for line in out.splitlines():
+        sha, subject = line.split("\t", 1)
+        if TICKET.match(subject) and _key(subject) not in seen:
+            seen.add(_key(subject))
+            rows.append(f"- {sha} {subject}")
+    note = "Approximate, by date and ticket key: check each against the release branch."
+    _section(
+        lines,
+        f"{title}: Hopsworks commits from {since} to {until} ({len(rows)})",
+        [note, "", *rows] if rows else [],
+        empty="No Hopsworks commits in that window.",
+    )
+
+
+def _repo_section(lines, title, repo, old_version, new_version, window=None):
+    """The commits of ``repo`` between two versions, or why they can't be listed.
+
+    For a fork, the Hopsworks commits made within ``window``, two dates.
+    """
+    if not (repo / ".git").exists():
+        _section(
+            lines, title, [f"ERROR: no checkout at {repo}; clone it and run again."]
+        )
+        return
+    if repo.name in FORKS and window and all(window):
+        _fork_section(lines, title, repo, *window)
+        return
+    old_ref, new_ref = _version_ref(repo, old_version), _version_ref(repo, new_version)
+    if not (old_ref and new_ref):
+        missing = [
+            v for v, r in ((old_version, old_ref), (new_version, new_ref)) if not r
+        ]
+        _section(
+            lines,
+            title,
+            [
+                f"No tag or release commit for {', '.join(missing)} in {repo.name}; "
+                "find the commits between the two versions by hand, for example from "
+                "the version bump commits or the release branches."
+            ],
+        )
+        return
+    commits = _range(repo, old_ref, new_ref, same_line=False)
+    _section(
+        lines,
+        f"{title}: {old_ref}..{new_ref} ({len(commits)} commits)",
+        [f"- {sha} {subject}" for sha, subject in commits],
+    )
 
 
 def _app_branch(repo_name, version):
@@ -207,23 +327,19 @@ def _section(lines, title, rows, empty="None."):
 
 def release_inputs(
     release: Annotated[str, typer.Argument(help="The release, e.g. 5.1.0.")],
-    helm: Annotated[
-        Path, typer.Option(help="A hopsworks-helm checkout with its tags.")
-    ] = SOURCES / "hopsworks-helm",
-    rondb_helm: Annotated[
-        Path, typer.Option(help="A rondb-helm checkout with its tags.")
-    ] = SOURCES / "rondb-helm",
-    ee: Annotated[
-        Path, typer.Option(help="A hopsworks-ee checkout with origin/branch-X.Y-ee.")
-    ] = SOURCES / "hopsworks-ee",
-    front: Annotated[
-        Path, typer.Option(help="A hopsworks-front checkout with origin/branch-X.Y.")
-    ] = SOURCES / "hopsworks-front",
-    docker_images: Annotated[
-        Path, typer.Option(help="A docker-images checkout.")
-    ] = SOURCES / "docker-images",
+    sources: Annotated[
+        Path,
+        typer.Option(
+            help="The directory holding the checkouts of hopsworks-helm, rondb-helm, "
+            "hopsworks-ee, hopsworks-front, hopsworks-api, docker-images and the repos "
+            "in REPOS, each fetched with its tags and release branches."
+        ),
+    ] = SOURCES,
 ):
     """Print the facts the release section of RELEASE is written from."""
+    helm, rondb_helm = sources / "hopsworks-helm", sources / "rondb-helm"
+    ee, front = sources / "hopsworks-ee", sources / "hopsworks-front"
+    docker_images, api = sources / "docker-images", sources / "hopsworks-api"
     tag = f"v{release}"
     tags = _tags(helm)
     if tag not in tags:
@@ -355,6 +471,54 @@ def release_inputs(
                 for sha, subject in commits
             ],
         )
+
+    # Python client, base environment images and the other components
+    old_base, old_client = _python_client(helm, docker_images, old)
+    if old_client and client and old_client != client:
+        _repo_section(
+            lines, f"hopsworks-api {old_client} -> {client}", api, old_client, client
+        )
+    else:
+        _section(lines, "hopsworks-api", [], empty=f"Unchanged ({client}).")
+    if old_base and base and old_base != base:
+        _repo_section(
+            lines,
+            f"docker-images {old_base} -> {base} (base environment images, and the "
+            "other images it builds)",
+            docker_images,
+            old_base,
+            base,
+        )
+    else:
+        _section(
+            lines,
+            "docker-images",
+            [],
+            empty=f"Base environment images unchanged ({base}); images docker-images "
+            "builds for other components may still have changed, see Upgraded components.",
+        )
+    before, after = _versions(helm, rondb_helm, old), _versions(helm, rondb_helm, tag)
+    by_repo = {}
+    for component, repo_name in REPOS.items():
+        if (
+            before.get(component)
+            and after.get(component)
+            and before[component] != after[component]
+        ):
+            by_repo.setdefault(
+                (repo_name, before[component], after[component]), []
+            ).append(component)
+    for (repo_name, was, now), components in sorted(by_repo.items()):
+        _repo_section(
+            lines,
+            f"{repo_name} {was} -> {now} ({', '.join(components)})",
+            sources / repo_name,
+            was,
+            now,
+            window=(_released(old), _released(tag)),
+        )
+    unchanged = sorted({REPOS[c] for c in REPOS} - {r for r, _, _ in by_repo})
+    _section(lines, "Component repos with no version change", [", ".join(unchanged)])
 
     # Values
     added, removed, changed = _values_diff(helm, old, tag)

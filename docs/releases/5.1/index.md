@@ -22,8 +22,8 @@ The releases of Hopsworks 5.1, newest first.
 
 ### What's changed
 
-- Fixed restricted project members reading every field of their project's embedding indices; they now read them only through a restricted-access grant or a feature group share, limited to the granted features ([sharing][docs-fs-sharing]).
-  The fix applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the [chart README][helm-readme-upgrade] shows.
+- Fixed a security issue in OpenSearch.
+  The fix applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the chart's `README.md` shows.
 - Fixed every OpenSearch restart deleting the OpenSearch roles of restricted-access grants and feature group shares, and every `helm upgrade` restarting OpenSearch.
   Grants and shares made before the last OpenSearch restart on 5.1.0 or 5.1.1 lost their roles, and granting or sharing again is refused: revoke and grant again, or unshare and share again.
 - Fixed security vulnerabilities in the Hopsworks certificate authority, Grafana, Filebeat and Superset images, and in the MySQL and Redis of Superset.
@@ -39,9 +39,9 @@ The releases of Hopsworks 5.1, newest first.
 
 ### Breaking changes
 
-- If your values restate `trino.trino.additionalConfigProperties` with its `event-listener.config-files` entry, remove that entry or add the listener files as the [chart README][helm-readme-upgrade] shows, or Trino doesn't start.
+- If your values restate `trino.trino.additionalConfigProperties` with its `event-listener.config-files` entry, remove that entry or add the listener files as the chart's `README.md` shows, or Trino doesn't start.
 - Recorded Trino queries now lose their query text, plan and JSON details after `hopsworks.variables.trino_events_strip_details_after_days` (`7`), and the first nightly cleanup after the upgrade strips every older one; set it to `61` or more to keep them.
-- The chart no longer enables Trino's MySQL event listener, which crash-looped the Trino coordinator after a RonDB MySQL server restart, so the admin [Trino query history][docs-trino-history] records no new queries; to keep it, add the listener as the [chart README][helm-readme-upgrade] shows.
+- The chart no longer enables Trino's MySQL event listener, which crash-looped the Trino coordinator after a RonDB MySQL server restart, so the admin [Trino query history][docs-trino-history] records no new queries; to keep it, add the listener as the chart's `README.md` shows.
 
 ### Upgraded components
 
@@ -59,7 +59,7 @@ The releases of Hopsworks 5.1, newest first.
 
 ### What's changed
 
-- Fixed Data scientists being able to update another member's job and so run code as that member; only the job's creator or a Data owner can now update it.
+- Fixed a security issue in jobs.
 - Fixed OpenSearch losing unflushed vectors and rejecting vector writes for about two minutes on its first start on 5.1; `olk.opensearch.knn.circuit_breaker.triggered` now defaults to `false` and `percent` to `75`.
   A values file that sets `triggered: true` or `percent: 0.75`, or an upgrade with `--reuse-values`, keeps the problem.
 - Fixed the database migration of the upgrade from 5.0 failing when the feature groups have more than about 32,000 features in total.
@@ -106,10 +106,10 @@ The releases of Hopsworks 5.1, newest first.
 
 ### What's changed
 
-- Fixed model serving requests over HTTPS skipping the model serving authenticator when `kserve.knative.https.enabled` is `true`.
-- Fixed images built from custom commands keeping the package repository credentials staged for the build, and libraries installed from a private Git repository leaving its token in the image history; rebuild those images, and rotate the credentials in `hopsworks.dockerImage.packageAuth.secretName` and those Git tokens.
+- Fixed a security issue in model serving.
+- Fixed a security issue in environment images.
 - Fixed security vulnerabilities in the Hopsworks server dependencies and in the Superset, Grafana, Prometheus, Consul, certificates operator, Docker registry, BuildKit, Istio, Knative Serving, KServe utilities, scikit-learn model server, Strimzi, OpenSearch, Logstash and Filebeat images.
-- Changed model deployments, jobs, Jupyter servers and terminals to each get their own serving API key, created when they start and deleted when they stop, instead of sharing one key per user.
+- Changed model deployments, jobs, Jupyter servers and terminals to each get their own serving API key.
 - Fixed database migrations crash-looping on a lock left by a transient Kubernetes API error, and restarting once on every fresh install.
 - Fixed Velero backups leaving out the Trino authentication Secrets, and the Velero storage location rejecting AWS S3 without a custom endpoint.
 - Fixed OpenSearch snapshot restores never finishing on single-node clusters, and indices staying closed after a failed restore.
@@ -171,6 +171,7 @@ The releases of Hopsworks 5.1, newest first.
 
 ### Breaking changes
 
+- Rebuild the environment images built from custom commands or with libraries from a private Git repository, and rotate the credentials in `hopsworks.dockerImage.packageAuth.secretName` and the Git tokens they use, for a security fix.
 - Raised the minimum Kubernetes version from 1.27 to 1.34; upgrade Kubernetes first, because Helm refuses to install or upgrade on an older cluster.
 - Every `helm upgrade`, including values-only ones, now rebuilds the feature store search index afterwards, signing in with `hopsworks.variables.admin_email` and `hopsworks.variables.admin_password`, and fails the upgrade if they don't sign in to the Hopsworks admin account.
   Set them to the admin account's credentials before you upgrade; if password login is disabled, upgrade to [5.1.1][hopsworks-5-1-1] instead.
@@ -181,7 +182,7 @@ The releases of Hopsworks 5.1, newest first.
 - The consul-k8s chart fails to render with `disable_hostname` in `consul.consul.server.extraConfig`; remove it, because `consul.consul.global.metrics.disableAgentHostName` (default `true`) replaces it.
 - The chart fails to render with `hopsworks.hopsfsMount.enabled: false`, because the new Trino mountable-secrets sidecar needs the HopsFS mount.
   Set `global._hopsworks.trino.mountableSecrets.enabled: false`, and override `trino.trino.initContainers` and `trino.trinotest.initContainers.coordinator` without the `mountable-secrets` container, as `values.openshift.yaml` does.
-- 5.1.0 came out before [5.0.14][hopsworks-5-0-14] and lacks most of its changes, such as the fix that stops Data scientists updating another member's job; if you run 5.0.14, upgrade to [5.1.2][hopsworks-5-1-2] or later instead.
+- 5.1.0 came out before [5.0.14][hopsworks-5-0-14] and lacks most of its changes, such as a security fix in jobs; if you run 5.0.14, upgrade to [5.1.2][hopsworks-5-1-2] or later instead.
 - 5.1.0 ships an older RonDB chart than [5.0.13][hopsworks-5-0-13], without `rondb.rondb.rdrs.probes`, so the RonDB REST server restarts again during a data node failure; if you run 5.0.13, upgrade to [5.1.1][hopsworks-5-1-1] or later instead.
 - Spark is upgraded from 3.5 to 4.1, which is built for Scala 2.13; rebuild job JARs built for Scala 2.12, and check your jobs against the [Spark migration guide](https://spark.apache.org/docs/latest/migration-guide.html).
 - Removed library installs from a conda channel, an `.egg` file or an `environment.yml` file, because the base environments are now uv virtualenvs without conda; use pip, a wheel, a Git repository, a `requirements.txt` file or custom commands instead ([installing libraries](https://docs.hopsworks.ai/5.1/user_guides/projects/python/python_install/)).
@@ -198,6 +199,10 @@ The releases of Hopsworks 5.1, newest first.
 
 - Deprecated `kserve.istio.gateways.http10` for `kserve.istio.gateways.ingress.http10`; the old key, ignored in 5.0, works again.
 - Deprecated `grafana.grafana.dashboardsConfigMaps`, which stays empty now that the dashboards ship in the Grafana image.
+
+### Upgrade steps
+
+No upgrade steps are listed for this release.
 
 ### Upgraded components
 
@@ -265,7 +270,5 @@ The releases of Hopsworks 5.1, newest first.
 | Vertical Pod Autoscaler installer | 1.2 | 1.7.1-2 |
 
 [docs-sql-runner]: https://docs.hopsworks.ai/5.1/user_guides/projects/trino/query_engine/#sql-runner
-[docs-fs-sharing]: https://docs.hopsworks.ai/5.1/user_guides/fs/sharing/sharing/
 [docs-trino-history]: https://docs.hopsworks.ai/5.1/setup_installation/admin/trino/#query-history
 [values-olk-index-upgrade]: https://docs.hopsworks.ai/5.1/setup_installation/common/helm_chart_values/olk/#helm.olk.opensearch.indexUpgrade.mode
-[helm-readme-upgrade]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.1.2/README.md#upgrade-the-helm-chart

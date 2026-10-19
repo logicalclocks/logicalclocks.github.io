@@ -67,7 +67,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- Fixed Data scientists being able to update another member's job and so run code as that member; only the job's creator or a Data owner can now update it.
+- Fixed a security issue in jobs.
 - Fixed HopsFS staying in safe mode after all NameNodes restarted, a NameNode restart occasionally marking every block as corrupt, and NameNodes running out of file descriptors when many blocks are corrupt.
 - Fixed RonDB daemons ignoring SIGTERM, so every pod stop ended in a kill and a stopped data node could stall the cluster.
 - Fixed security vulnerabilities in the Payara, Hopsworks, Hopsworks CA, Hive Metastore, remote shuffle service, Spark operator, Filebeat, Logstash, Grafana, OpenSearch Dashboards and Superset images, in the MySQL and Redis of Superset, and in the Hopsworks server dependencies.
@@ -99,7 +99,7 @@ The releases of Hopsworks 5.0, newest first.
 ### Breaking changes
 
 - The chart no longer turns on Trino's MySQL event listener, which crash-looped the Trino coordinator after a MySQL server restart, so the [Trino query history](https://docs.hopsworks.ai/5.0/setup_installation/admin/trino/#query-history) stops recording queries.
-  To keep it, add the listener to your values as the [chart README](https://github.com/logicalclocks/hopsworks-helm/blob/v5.0.14/README.md#upgrade-the-helm-chart) shows; recorded queries now lose their text and plan after `hopsworks.variables.trino_events_strip_details_after_days`, from the first nightly cleanup, so set it to `61` or more to keep them.
+  To keep it, add the listener to your values as the chart's `README.md` shows; recorded queries now lose their text and plan after `hopsworks.variables.trino_events_strip_details_after_days`, from the first nightly cleanup, so set it to `61` or more to keep them.
 - The RonDB REST server now uses a probe port and an upload path that need RonDB 26.02.11.
   If you pin `rondb.rondb.images.rondb.tag` to an older version, set `rondb.rondb.rdrs.probePort.enabled: false` and `rondb.rondb.rdrs.uploadPath: ""`, or the REST server doesn't start.
 
@@ -212,7 +212,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- Fixed project members being able to view, rename, move or delete the home directories of other members in the `Users` dataset; project search no longer covers `Users`.
+- Fixed a security issue in project datasets.
 - Fixed uploading files in the file browser deleting the files of the previous upload unless the page was reloaded.
 - Fixed security vulnerabilities in the ArrowFlight and remote shuffle service images.
 - Fixed init containers that wait for a RonDB rollout giving up after 30 minutes, which failed the Hive Metastore, HopsFS, Airflow migration and CA pods when a RonDB restart took longer.
@@ -294,7 +294,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- Fixed a user who can access only some of the feature groups of a feature view, from another project or as a restricted user, being able to read the feature view.
+- Fixed a security issue in feature views.
 - Fixed security vulnerabilities in the Hopsworks server dependencies, in the Payara, HopsFS, Hive Metastore, ArrowFlight, OnlineFS, Airflow, Git, toolbox, base environment, Filebeat, Grafana, OpenSearch, OpenSearch Dashboards, Logstash, remote shuffle service and Superset images, and in the MySQL database of Superset.
 - Added an upload policy, `hopsworks.variables.upload_policy`, that allows file uploads to everyone (`enabled`), to administrators only (`admins_only`) or to nobody (`disabled`), from the web UI and from clients such as the Python SDK; the web UI disables its upload controls for blocked users.
   The upgrade writes the value to the cluster, so a change made in the admin UI lasts until the next upgrade.
@@ -511,7 +511,7 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 
 ### What's changed
 
-- Fixed members with the Feature store restricted project role seeing feature views and OpenSearch data beyond the feature groups they were granted.
+- Fixed a security issue in the feature store.
 - Fixed external LoadBalancer Services, such as those of ArrowFlight, HopsFS, OpenSearch and Trino, not being created with Helm 3.20.1 and later; a component without its own setting again follows `global._hopsworks.externalLoadBalancers`.
 - Changed RonDB upgrades to roll the management server first, so data nodes no longer shut down with error 2305, and to fail when `rondb.rondb.clusterSize.numNodeGroups` differs from the running cluster, which RonDB can't change online (also in 4.8.6).
 - Fixed fresh installs failing and rolling back when the Knative Serving webhook was not ready yet.
@@ -610,6 +610,10 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 
 - Deprecated `airflow.reset_db_if_error`, which Airflow 3 ignores.
 - Deprecated `hopsfs.datanode.podDisruptionBudget.minAvailable`, which the DataNode PodDisruptionBudget no longer reads.
+
+### Upgrade steps
+
+No upgrade steps are listed for this release.
 
 ### Upgraded components
 

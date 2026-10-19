@@ -7,7 +7,7 @@ A release branch build (`mkdocs-release.yml`, and `mkdocs-test.yml` for a PR to 
 CI fails a PR to a `branch-*` that touches `docs/releases/`, because main's copy replaces it.
 A release branch shows the pages once it has the hook and the `Releases: releases/index.md` nav entry; older branches don't.
 
-`scripts/releases_hook.py` expands the `Releases: releases/index.md` nav entry into a section per minor version, newest first, holding its release notes (`docs/releases/X.Y/index.md`) and its upgrade guide (`docs/releases/X.Y/upgrade.md`), and generates the table of all releases in `docs/releases/index.md`; no nav edit is needed.
+`scripts/releases_hook.py` expands the `Releases: releases/index.md` nav entry into a section per minor version, newest first, holding its release notes (`docs/releases/X.Y/index.md`), and generates the table of all releases in `docs/releases/index.md`; no nav edit is needed.
 `uv run hopsworks-docs check` fails if hopsworks-api has no tag for a Python client version a page links.
 
 Every build writes `releases/fingerprint.txt`, a hash of the release sources and the hook.
@@ -16,7 +16,7 @@ A red run means a version shows outdated release pages, usually because its docs
 `uv run hopsworks-docs sync-release-notes` without `--rebuild` only reports.
 
 To write the notes of a release, run the `/release-notes X.Y.Z` skill (`.claude/skills/release-notes/`).
-It collects the facts with `uv run hopsworks-docs release-inputs X.Y.Z`, which prints the release's commits in `hopsworks-helm`, `rondb-helm`, `hopsworks-ee` and `hopsworks-front`, its Helm value changes, its front matter and its Upgraded components table.
+It collects the facts with `uv run hopsworks-docs release-inputs X.Y.Z`, which prints the release's commits in the charts, the application, the Python client, `docker-images` and every component repo whose version moved, its Helm value changes, its front matter and its Upgraded components table.
 Then it drafts the section, fact-checks every entry against the source and runs the strict build.
 
 ## Page shape
@@ -45,17 +45,17 @@ Under each section title, `scripts/releases_hook.py` renders the release date, t
 A patch release lists the changes since the previous release of its minor version, and an X.Y.0 since the first release of the previous minor version, so minor versions compare with each other: 5.2.0 with 5.1.0, 5.1.0 with 5.0.0.
 Each change is listed once, under the release that first shipped it, so an X.Y.0 leaves out the changes that already shipped in a patch release of the previous minor version; a sentence under its title says which of those patch releases it includes, and names any of their changes it lacks.
 A patch release of the previous minor version that comes out after the X.Y.0 can backport its changes; both releases then list them, and the X.Y.0 entry ends with `(also in [X.Y.Z][hopsworks-X-Y-Z])`.
-A release covers every change users or operators notice, from the chart (`hopsworks-helm` and `rondb-helm` commits between the tags) and from the application it ships (`hopsworks-ee` and `hopsworks-front`).
+A release covers every change users or operators notice, from the chart (`hopsworks-helm` and `rondb-helm` commits between the tags), from the application it ships (`hopsworks-ee` and `hopsworks-front`), and from the images and components it deploys from Hopsworks repos (`docker-images`, OnlineFS, ArrowFlight, the model serving webhook and authenticator, and the others `scripts/release_inputs.py` lists); the HopsFS and RonDB repos are not sources, the RonDB chart is.
 Neither application repo has tags: a version's changes end at its `Release X.Y.Z` commit on `branch-X.Y-ee` or `branch-X.Y`, which is the last commit of that version, and start after the release commit of the application version the previous release ships.
 A chart release that keeps the application version has no application changes, and one that skips application versions includes them all.
-Leave out application changes users don't see, such as refactors, tests and build changes; leave out `hopsworks-api` changes, because the line under the release title links its release notes.
+Leave out application changes users don't see, such as refactors, tests and build changes; leave out `hopsworks-api` changes, because the `### Python client` subsection shows its release notes.
 A chart commit and an application commit for the same ticket are one entry.
 5.0.0 is the exception: 4.8 has no pages, so its front matter declares `since: "4.8.2"`, the first 4.8 release, and an entry that also shipped in a 4.8 patch release ends with `(also in 4.8.N)`.
 
-A release section has up to five subsections, in this order, and leaves out the ones with nothing to report: `### What's changed`, `### Configuration changes`, `### Breaking changes`, `### Deprecations`, `### Upgraded components`.
-
-The upgrade guide of a minor version, `docs/releases/X.Y/upgrade.md`, starts with `# Upgrading to Hopsworks X.Y { #upgrading-to-X-Y }`.
-It has `## From <previous minor> { #upgrading-to-X-Y-0 }` and a `## To X.Y.Z { #upgrading-to-X-Y-Z }` for each patch release with steps, oldest first, each with numbered steps under `### Before the upgrade`, `### Upgrade` and `### After the upgrade`.
+A release section has up to six subsections, in this order, and leaves out the ones with nothing to report: `### What's changed`, `### Configuration changes`, `### Breaking changes`, `### Deprecations`, `### Upgrade steps`, `### Upgraded components`.
+`### Upgrade steps` is on every X.Y.0 and only there, even when empty, and describes the steps needed to upgrade to it from the previous minor version; for now it says "No upgrade steps are listed for this release." on every release.
+The hook appends a sixth, `### Python client`, which links the GitHub release notes of every hopsworks-api version new in the release; `docs/js/client-release-notes.js` replaces the links with those notes, fetched from the GitHub API in the reader's browser, one collapsed block per version, and keeps the links when GitHub can't be reached.
+Never write it by hand: the notes are hopsworks-api's own, shown as they are on GitHub.
 
 ## Writing entries
 
@@ -68,9 +68,12 @@ It has `## From <previous minor> { #upgrading-to-X-Y-0 }` and a `## To X.Y.Z { #
 - Name the exact API, Helm value, config variable or CLI flag.
 - Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
   Release pages show in every docs version, so link the docs of the release's minor version with an absolute URL (`https://docs.hopsworks.ai/5.2/...`), which a relative link to a page missing from an older version would break.
-  Link the chart's `UPGRADE.md`, `README.md` or `HELM4_MIGRATION.md` at the release tag (`https://github.com/logicalclocks/hopsworks-helm/blob/vX.Y.Z/...`) only for what no docs page covers.
+  For what no docs page covers, name the file of the chart that does, such as "see `UPGRADE.md` in the 5.2 chart": the packaged chart ships its `README.md`, `UPGRADE.md`, `HELM4_MIGRATION.md` and `values.*.yaml`, but its repo is private.
 - Leave out changes with no user-visible effect: tests, CI, refactors, and fixes for bugs that never shipped.
-- Do not link Jira or private GitHub repos and do not name customers, because the docs are public.
+- Do not link Jira or any private GitHub repo, `hopsworks-helm` included, and do not name customers, because the docs are public; of the source repos, only `hopsworks-api` is public.
+- Give no details of a security issue a release fixes: name only where it was, such as "Fixed a security issue in jobs", never what was exposed, who could exploit it or how, because the notes are public and clusters on older releases stay vulnerable.
+  Fixes of known vulnerabilities in dependencies and images stay one entry per group, such as "Fixed security vulnerabilities in the Grafana and Superset images".
+  A breaking change or upgrade step that a security fix needs says what to do, and at most that it is for a security fix.
 
 `### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
 
@@ -89,7 +92,7 @@ A feature or fix keeps its entry under `### What's changed` and names the value 
 Split an entry that does both, so each change is listed once.
 
 Breaking changes are changes that need users or operators to do something when they upgrade.
-Say in each one what changed, who is affected and what to do, and link the upgrade guide step or the docs page that has the procedure; it may start with what changed, such as "`helm upgrade` now stops ...", or with what to do, such as "Remove `<value>` from your values ...".
+Say in each one what changed, who is affected and what to do, and link the docs page that has the procedure; it may start with what changed, such as "`helm upgrade` now stops ...", or with what to do, such as "Remove `<value>` from your values ...".
 A fix, security fixes included, that takes away something users rely on is a breaking change.
 A breaking change is not repeated under `### What's changed`; a value it adds, removes or renames is still listed under `### Configuration changes`, which says what the value does, while the breaking change says what to do.
 A change that also ships in a patch release of another minor version is listed in both releases, without a marker.
@@ -98,8 +101,7 @@ Deprecations are what a release marks for removal but still accepts, such as a H
 Start each one with "Deprecated", and say what replaces it or that nothing reads it any more.
 Find them in the chart's values, where they are marked `DEPRECATED` or `deprecated: true`; removing one later is a breaking change.
 
-Upgrade steps live in the upgrade guide, not in the release notes.
-The 5.0 and 5.1 releases were written up after they shipped, so they have no upgrade guide.
+Once upgrade steps are written, they are numbered steps under `#### Before the upgrade`, `#### Upgrade` and `#### After the upgrade`.
 Mark each step as required or optional and say when a step can't be undone.
 A step that the documentation describes links to it; give a copy-paste command with `<placeholders>` only when no page has one.
 

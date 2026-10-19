@@ -431,6 +431,7 @@ extra_javascript:
   - js/hops-viz.js
   - js/hops-viz-tooltip.js
   - js/prov-hover.js
+  - js/client-release-notes.js
   - js/values-filter.js
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw

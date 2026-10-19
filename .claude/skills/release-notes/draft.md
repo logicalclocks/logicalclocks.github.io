@@ -15,8 +15,8 @@ Read first, in full:
 - No git writes in any repo: no checkout, switch, commit, stash, fetch, reset or worktree.
   Read with `git log`, `git show`, `git diff`, `git grep`, `git cherry` and `git log --cherry-pick`.
 - Don't run a build; the machine's memory is shared with other jobs.
-- The docs are public: an entry never names a customer, a Jira key, a PR number, a commit or the private repos `hopsworks-ee` and `hopsworks-front`.
-  Link the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute), or the chart's files at the release tag.
+- The docs are public: an entry never names a customer, a Jira key, a PR number, a commit or a source repo; it names the component, such as OnlineFS or the model serving webhook.
+  Link only the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute); never link a private GitHub repo, `hopsworks-helm` included, but name a chart file in text, such as "see `UPGRADE.md` in the 5.2 chart".
 
 ## For each change in your slice
 
@@ -25,15 +25,17 @@ Read first, in full:
 2. Decide whether users or operators notice it.
    They notice: new or changed UI, REST API behaviour that SDK or UI users see, permissions and access, admin settings and cluster variables, error messages, performance they would feel (say what got faster), Helm values, and security fixes, as one entry per component group such as "Fixed security vulnerabilities in the Hopsworks server dependencies".
    They don't: refactors, tests, CI, build plumbing, logging internals, the release version bump, a change that only supports another entry (fold it in), and a fix for a bug that never shipped, because it came in within the same range.
-   Leave out `hopsworks-api` changes: the release header links the Python client release notes.
+   Leave out `hopsworks-api` changes on their own, because the release's Python client subsection shows the hopsworks-api release notes; use them to understand an application change of the same ticket.
+   A security fix gets a bare entry, such as "Fixed a security issue in jobs", with no detail of the issue, as the guide says; describe the issue only in your report, for the evidence.
 3. Pick the subsection: What's changed, Configuration changes, Breaking changes or Deprecations, as the guide defines them.
    A feature that a value turns on stays in What's changed and names the value.
 4. Write the entry as the guide says: a past-tense verb first, one line, a second line only for what the reader must act on, the exact value, API or setting, and a docs link where one exists.
    Check that a link's page and anchor exist in the docs branch of the release's minor version: `git -C <docs> show origin/branch-X.Y:docs/<path>.md`.
    The Helm values reference is generated at build time, so for a `#helm.<path>` anchor check instead that the value exists in the chart at the release tag.
-5. Note the steps an operator has to take at upgrade, if any, for the upgrade guide.
+5. Note the steps an operator has to take at upgrade, if any; they go in the report, not on the page.
 
 Changes with the same ticket key in different repos are one entry.
+In a fork, only Hopsworks commits count; the upstream version change is in Upgraded components.
 
 Return the entries of each subsection in order of significance, most significant first, as the guide defines it.
 

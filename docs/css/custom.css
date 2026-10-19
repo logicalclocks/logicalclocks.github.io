@@ -2552,3 +2552,15 @@ body.hops-zoom-lock {
 .md-typeset details[hidden] {
   display: none;
 }
+
+/* Python client release notes at the end of each release on the release pages,
+   fetched from GitHub by docs/js/client-release-notes.js; without it the block
+   keeps its links. */
+.md-typeset .hops-client-notes__title {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+.md-typeset .hops-client-notes__body {
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--hops-border);
+}

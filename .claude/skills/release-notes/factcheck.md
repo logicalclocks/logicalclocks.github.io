@@ -15,8 +15,10 @@ The hard rules of `draft.md` in this folder apply to you too: don't edit any fil
    A fix for a bug that came in within the same range never shipped and is no entry.
 3. Noticed by users or operators, and worth a line.
 4. In the right subsection, as the guide defines them.
-5. Written to the rules: a past-tense verb first, one line plus at most one to act on, no Jira key, PR, commit, customer or private repo, absolute docs links of the release's minor version, one sentence per line.
-6. Every link resolves: the page exists in `origin/branch-X.Y` of the docs repo, and so does the anchor.
+5. No detail of a security issue: an entry for a security fix names only where it was, and nothing in an entry, a breaking change or an upgrade step says what was exposed, who could exploit it or how.
+   Check this first: it outweighs every other rule, because the notes are public.
+6. Written to the rules: a past-tense verb first, one line plus at most one to act on, no Jira key, PR, commit, customer, or link to a private GitHub repo (`hopsworks-helm` included), absolute docs links of the release's minor version, one sentence per line.
+7. Every link resolves: the page exists in `origin/branch-X.Y` of the docs repo, and so does the anchor.
    Material builds a heading's anchor from its text, lowercased, spaces as `-`, punctuation dropped; an explicit `{ #id }` overrides it.
    Helm values reference anchors look like `#helm.<path>`, and the value must exist in the chart of that minor version.
 

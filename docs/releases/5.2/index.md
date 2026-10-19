@@ -13,14 +13,13 @@ releases:
 # Release notes { #hopsworks-5-2 }
 
 The releases of Hopsworks 5.2, newest first.
-To upgrade from 5.1 or between 5.2 releases, follow [Upgrading to Hopsworks 5.2][upgrading-to-5-2].
 
 ## 5.2.1 { #hopsworks-5-2-1 }
 
 ### What's changed
 
 - Fixed the 5.1 to 5.2 index pass failing with `field _id not found` on an index with an empty mapping, such as a `projects` index that was never written, and losing documents that were not yet refreshed when it copied an index.
-- Fixed restricted project members reading every field of their project's embedding indices; they now read only the features of a grant or a share, and get HTTP 403 without one ([security configuration][docs-os-security]).
+- Fixed a security issue in OpenSearch.
 - Changed the OpenSearch index pass of the 5.1 to 5.2 upgrade to copy one index at a time behind a write block on that index alone, instead of refusing every OpenSearch client, reads included, for the whole pass; upgrade 5.1 clusters to 5.2.1 rather than 5.2.0 ([what keeps working][docs-os-what-works]).
 - Fixed OpenSearch restarts and the 5.1 to 5.2 index pass deleting the OpenSearch roles behind restricted grants and feature group shares, which left a shared project with HTTP 403, and every `helm upgrade` restarting OpenSearch.
 - Changed the OpenSearch index pass to run before the Kafka migration, so its report (`olk.opensearch.indexUpgrade.mode: report`) and its refusals stop an upgrade from 5.1 before anything changes ([set the timeout][docs-os-timeout]).
@@ -35,8 +34,8 @@ To upgrade from 5.1 or between 5.2 releases, follow [Upgrading to Hopsworks 5.2]
 
 - Remove `olk.opensearch.indexUpgrade.enabled` from your values, using `olk.opensearch.indexUpgrade.mode: report` in place of `false`, or the values schema rejects the upgrade.
 - `helm upgrade` now stops before changing anything, also on a cluster already on 5.2.0, if an OpenSearch vector field would still be served by nmslib, which crashes OpenSearch 3.8 nodes on CPUs without AVX-512; apply the remedy the hook's log gives for each index or template it names ([nmslib fields][docs-os-nmslib]).
-- Feature groups shared with a subset of their features can no longer be queried in Trino, only read online and in similarity search, because a data owner could point them at another project's files; share the whole feature group to query it in Trino ([upgrade guide][helm-upgrade-subset-shares]).
-  `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` turns Trino access to them back on, and with it that exposure.
+- Feature groups shared with a subset of their features can no longer be queried in Trino, only read online and in similarity search, to fix a security issue; share the whole feature group to query it in Trino.
+  `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` turns Trino access to them back on, which undoes the security fix.
 
 ## 5.2.0 { #hopsworks-5-2-0 }
 
@@ -46,12 +45,13 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 
 ### What's changed
 
-- Fixed model deployments answering 403 to users on a password an administrator set, and still admitting users deactivated or removed from the project; accounts and memberships from before the upgrade are corrected at their next change.
+- Fixed model deployments answering 403 to users whose password an administrator set.
+- Fixed a security issue in model deployments.
 - Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, `insert(wait_for_online_ingestion=True)` returning before the rows were online, and apps reporting the execution they replaced.
 - Fixed security vulnerabilities in the HopsFS, Hive Metastore, Trino, Spark history server and Ray images, and in the Hopsworks server dependencies.
 - Fixed queued service operations failing on every retry when they removed a user from Superset or set up Superset for a project Observer, and security vulnerabilities in the Payara, Hopsworks certificate authority, Grafana, Filebeat and Superset images and the MySQL and Redis of Superset (also in [5.1.2][hopsworks-5-1-2]).
 - Changed Trino to read its users, groups, user catalogs and access rules from HopsFS instead of Secrets, which fixes `helm upgrade` failing on clusters with many Trino catalogs or project members.
-- Fixed Helm 4 server-side apply conflicts on `helm upgrade` over the replicas of HPA-managed workloads other than the RonDB REST server, the rules of the Knative serving webhooks and the `rss-configuration` ConfigMap ([Helm 4 notes][helm4-migration]).
+- Fixed Helm 4 server-side apply conflicts on `helm upgrade` over the replicas of HPA-managed workloads other than the RonDB REST server, the rules of the Knative serving webhooks and the `rss-configuration` ConfigMap (see `HELM4_MIGRATION.md` in the 5.2 chart).
 - Added the HopsFS CSI driver, on by default (`global._hopsworks.csi.enabled`), which mounts HopsFS into Jupyter, web terminal, Python and Ray job, Python app, Python deployment, Airflow and Trino pods without a privileged container; Trino needs it ([values][values-hopsfs-csi]).
 - Added the KServe Standard deployment mode, the default for new model deployments, which runs a deployment as a Kubernetes Deployment instead of a Knative service; existing deployments keep Knative mode.
 - Added KEDA 2.21 and its HTTP add-on, installed by default (`hopsworks.variables.kube_keda_installed`), to autoscale Standard-mode deployments on CPU, memory, requests or vLLM engine metrics and scale them to zero ([scaling][docs-autoscaling], [values][values-hw-keda]).
@@ -122,29 +122,29 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 
 ### Breaking changes
 
-- Upgrade to 5.2 only from 5.1, satellites before central, with central and its satellites all under Helm or all under ArgoCD ([upgrade guide][helm-upgrade-guide]).
+- Upgrade to 5.2 only from 5.1, satellites before central, with central and its satellites all under Helm or all under ArgoCD (see `UPGRADE.md` in the 5.2 chart).
 - Upgrade 5.1 clusters to [5.2.1][hopsworks-5-2-1] instead of 5.2.0, whose OpenSearch index pass refuses every client and whose OpenSearch restarts delete the roles behind restricted-access grants and feature group shares; on [5.1.2][hopsworks-5-1-2], which fixed those restarts, 5.2.0 is a regression.
 - The upgrade migrates Kafka from ZooKeeper to KRaft, which can't be undone: give `helm upgrade` a long enough `--timeout`, never pass `--atomic` (`--rollback-on-failure` in Helm 4) or run `helm rollback`, and under ArgoCD sync twice ([Kafka 4 and KRaft][docs-kafka4-expect]).
-- On a cluster installed before 5.1, OpenSearch refuses every client while the upgrade copies its oldest indices; plan the outage and the timeout ([upgrade guide][helm-upgrade-opensearch]).
-- OpenSearch snapshot repositories on MinIO before `RELEASE.2025-01-20T14-49-07Z` and on other S3-compatible stores that require `Content-MD5` need `legacy_md5_checksum_calculation: true`, or the upgrade fails ([upgrade guide][helm-upgrade-opensearch]).
+- On a cluster installed before 5.1, OpenSearch refuses every client while the upgrade copies its oldest indices; plan the outage and the timeout ([upgrading OpenSearch][docs-os]).
+- OpenSearch snapshot repositories on MinIO before `RELEASE.2025-01-20T14-49-07Z` and on other S3-compatible stores that require `Content-MD5` need `legacy_md5_checksum_calculation: true`, or the upgrade fails ([upgrading OpenSearch][docs-os]).
 - The chart now creates a cluster-wide IngressClass named `istio`; if the cluster already has one, set `kserve.istio.ingressClass.enabled: false`, or the upgrade fails.
-- KEDA, installed by default, can't share a Kubernetes cluster with another KEDA or the OpenShift Custom Metrics Autoscaler, including the KEDA of another Hopsworks release such as a satellite; set `hopsworks.variables.kube_keda_installed: false` on all but one ([upgrade guide][helm-upgrade-keda]).
-- With `hopsworks.rbac.useExistingRole: true`, add the chart's new [ClusterRole grants][helm-role] on `scaledobjects`, `interceptorroutes`, `ingresses`, `networkpolicies` and `csidrivers`, or model deployments and project creation fail.
-- On OpenShift, use the `values.openshift.yaml` of the 5.2 chart, which creates an SCC for the privileged HopsFS CSI node plugin; if a cluster administrator owns SCCs, see the [hopsfs-csi README][helm-csi-scc].
+- KEDA, installed by default, can't share a Kubernetes cluster with another KEDA or the OpenShift Custom Metrics Autoscaler, including the KEDA of another Hopsworks release such as a satellite; set `hopsworks.variables.kube_keda_installed: false` on all but one (see `UPGRADE.md` in the 5.2 chart).
+- With `hopsworks.rbac.useExistingRole: true`, add the chart's new ClusterRole grants (`charts/hopsworks/templates/role.yaml`) on `scaledobjects`, `interceptorroutes`, `ingresses`, `networkpolicies` and `csidrivers`, or model deployments and project creation fail.
+- On OpenShift, use the `values.openshift.yaml` of the 5.2 chart, which creates an SCC for the privileged HopsFS CSI node plugin; if a cluster administrator owns SCCs, see `charts/hopsfs-csi/README.md` in the chart.
 - Overrides of the Trino `initContainers`, `additionalVolumes` or `additionalVolumeMounts`, including those [5.1.0][hopsworks-5-1-0] asked for with `hopsworks.hopsfsMount.enabled: false`, fail the render; remove the overrides, or copy the new entries from the chart into them.
 - Removed the KServe local model controller; if you set `kserve.kserve.localmodel.enabled: true`, remove it, or the chart fails to render.
 - With cluster backups on, Superset backups need an object store and, with `superset.auth.createSecrets: false`, the `backup.hops.works/include=true` label on its Secrets, or the chart fails to render; set `superset.backups.enabled: false` to skip them ([disaster recovery][docs-superset-backup]).
 - If your release namespace is longer than 34 characters, set `global._hopsworks.csi.driverName`, because the default driver name would exceed 63 characters.
-- With Helm 4, pass `--skip-crds` to a `helm install` on a cluster that already has the Strimzi CRDs, and after a reinstall run `helm upgrade` once to recreate the KEDA CRDs ([upgrade guide][helm-upgrade-strimzi]).
+- With Helm 4, pass `--skip-crds` to a `helm install` on a cluster that already has the Strimzi CRDs, and after a reinstall run `helm upgrade` once to recreate the KEDA CRDs (see `UPGRADE.md` in the 5.2 chart).
 - Kafka 4.3 rejects clients older than Apache Kafka 2.1 or librdkafka 1.8.2; upgrade them first ([client compatibility][docs-kafka4-clients]).
 - Project namespaces now get a NetworkPolicy that admits traffic only from the same namespace and the Hopsworks namespace; add any other namespace that reaches project pods, such as Istio or monitoring, to `hopsworks.variables.project_namespace_network_policy_allowed_namespaces` ([values][values-netpol]).
   Turning them off with `hopsworks.variables.project_namespace_network_policy_enabled: false` leaves the existing ones; delete them with `kubectl delete networkpolicy -A --field-selector metadata.name=hopsworks-project-isolation`.
-- Trino no longer records the admin query history, and its records lose their query text after `hopsworks.variables.trino_events_strip_details_after_days` (7); to keep either, or if your values restate `trino.trino.additionalConfigProperties`, see the [upgrade guide][helm-upgrade-trino] (also in [5.1.2][hopsworks-5-1-2]).
+- Trino no longer records the admin query history, and its records lose their query text after `hopsworks.variables.trino_events_strip_details_after_days` (7); to keep either, or if your values restate `trino.trino.additionalConfigProperties`, see `UPGRADE.md` in the 5.2 chart (also in [5.1.2][hopsworks-5-1-2]).
 - OpenSearch now reports its own version, `3.8.0`, instead of `7.10.2`; check clients that connect to it directly against the [OpenSearch 3.0 breaking changes](https://docs.opensearch.org/latest/breaking-changes/).
 - MongoDB data sources need MongoDB 4.2 or later; upgrade older MongoDB servers, or browsing and testing their data sources fails.
 - If you override `trino.trino.image.tag`, use a Hopsworks Trino image of `483-v2` or later and set `global._hopsworks.trino.image.tag` to the same tag.
 - If you set `trino.trino.serviceAccount.name`, set `trino.trinotest.serviceAccount.name` to the same name.
-- Web terminal sessions now last 8 hours, and every upgrade sets `terminal_session_hours` from `hopsworks.terminal.sessionHours`, replacing a value set in the admin UI ([upgrade guide][helm-upgrade-terminal]).
+- Web terminal sessions now last 8 hours, and every upgrade sets `terminal_session_hours` from `hopsworks.terminal.sessionHours`, replacing a value set in the admin UI (see `UPGRADE.md` in the 5.2 chart).
 
 ### Deprecations
 
@@ -152,6 +152,10 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 - Deprecated `hopsworks.variables.mount_hopsfs_in_python_job`, which only legacy Python jobs still read.
 - Deprecated `global._hopsworks.trino.mountableSecrets.mechanism`, `global._hopsworks.trino.userCatalogShards`, `trino.auth.adminUserPwdHash`, `trino.auth.monitoringUserPwdHash` and `hw-kyverno.policyExceptions.trino`, which nothing reads any more.
 - Deprecated the `environmentDTO` field of model deployments in the REST API; use `predictorEnvironment` and `transformerEnvironment`.
+
+### Upgrade steps
+
+No upgrade steps are listed for this release.
 
 ### Upgraded components
 
@@ -195,8 +199,6 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 [docs-os-timeout]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/#opensearch-set-the-timeout
 [docs-os-copy-51]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/#opensearch-copy-on-51
 [docs-os-nmslib]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/#opensearch-nmslib-fields
-[docs-os-security]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/#security-configuration
-[helm-upgrade-subset-shares]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.1/UPGRADE.md#feature-groups-shared-with-a-subset-of-their-features
 [docs-autoscaling]: https://docs.hopsworks.ai/5.2/user_guides/mlops/serving/autoscaling/
 [docs-apps-idle]: https://docs.hopsworks.ai/5.2/user_guides/projects/apps/#scale-to-zero-when-idle
 [docs-apps-types]: https://docs.hopsworks.ai/5.2/user_guides/projects/apps/#app-types
@@ -225,12 +227,4 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 [values-kafka]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/kafka/#helm.kafka.cluster.kafka.config.minInsyncReplicas
 [values-hopsworks-analytics]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsworks/#helm.hopsworks.variables.hopsworks_analytics
 [values-netpol]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsworks/#helm.hopsworks.variables.project_namespace_network_policy_enabled
-[helm-upgrade-guide]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/UPGRADE.md#51x-to-52x
-[helm-upgrade-opensearch]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/UPGRADE.md#opensearch-380
-[helm-upgrade-strimzi]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/UPGRADE.md#strimzi-crds
-[helm-upgrade-keda]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/UPGRADE.md#keda-autoscaling-of-standard-mode-deployments
-[helm-upgrade-trino]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/UPGRADE.md#trino-query-history
-[helm-upgrade-terminal]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/UPGRADE.md#terminal-session-length
-[helm4-migration]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/HELM4_MIGRATION.md
-[helm-role]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/charts/hopsworks/templates/role.yaml
-[helm-csi-scc]: https://github.com/logicalclocks/hopsworks-helm/blob/v5.2.0/charts/hopsfs-csi/README.md#when-the-cluster-administrators-own-the-scc
+[docs-os]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/

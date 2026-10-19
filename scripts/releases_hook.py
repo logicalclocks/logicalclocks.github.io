@@ -3,7 +3,7 @@
 Their source is on main only; a release branch build copies ``docs/releases/`` and
 this hook from main first, so every docs version shows the same release pages.
 The nav entry ``Releases: releases/index.md`` expands to a section per minor version,
-newest first, holding its release notes and its upgrade guide, and is dropped when
+newest first, holding its release notes, and is dropped when
 ``docs/releases/`` is absent, as in a local build of a release branch.
 
 The release notes of a minor version (``releases/X.Y/index.md``) declare every
@@ -40,7 +40,6 @@ RELEASES = "releases"
 NAV_ENTRY = "releases/index.md"
 FINGERPRINT = "releases/fingerprint.txt"
 NOTES_PAGE = re.compile(r"^releases/(\d+\.\d+)/index\.md$")
-UPGRADE_PAGE = "upgrade.md"
 SECTION = re.compile(r"^## (\d+\.\d+\.\d+) \{ #hopsworks-[\d-]+ \}$", re.MULTILINE)
 VERSION = re.compile(r"\d+\.\d+\.\d+")
 FIELDS = ("released", "application", "python_client")
@@ -85,12 +84,7 @@ def _minors(docs_dir):
 def _release_nav(docs_dir):
     section: list = [NAV_ENTRY]
     for minor in _minors(docs_dir):
-        pages: list = [f"{RELEASES}/{minor.name}/index.md"]
-        if (minor / UPGRADE_PAGE).is_file():
-            pages.append(
-                {f"Upgrading to {minor.name}": f"{RELEASES}/{minor.name}/{UPGRADE_PAGE}"}
-            )
-        section.append({minor.name: pages})
+        section.append({minor.name: f"{RELEASES}/{minor.name}/index.md"})
     return section
 
 
@@ -277,9 +271,43 @@ def on_post_build(*, config):
         )
 
 
+def _client_notes(version):
+    """The Python client subsection of a release.
+
+    It links the GitHub release notes of every client version new in the release;
+    ``docs/js/client-release-notes.js`` replaces the links with the notes themselves
+    in the reader's browser, and leaves them when GitHub can't be reached.
+    """
+    client = _releases[version]["python_client"]
+    previous = _releases.get(_since(version), {}).get("python_client")
+    if previous == client:
+        return f"### Python client\n\nThe Python client is unchanged, {client}."
+    new = _new_clients(previous, client)
+    links = ", ".join(_client_link(v) for v in new)
+    return (
+        "### Python client\n\n"
+        f'<div class="hops-client-notes" data-versions="{" ".join(new)}" markdown>\n\n'
+        f"The release notes of hopsworks-api {links}.\n\n</div>"
+    )
+
+
+def _with_client_notes(markdown):
+    """``markdown`` with the Python client subsection at the end of each release."""
+    titles = list(SECTION.finditer(markdown))
+    parts = [markdown[: titles[0].start()]] if titles else [markdown]
+    for title, following in zip(titles, [*titles[1:], None]):
+        end = following.start() if following else len(markdown)
+        body = markdown[title.end() : end].rstrip("\n")
+        version = title[1]
+        parts.append(
+            f"{title[0]}\n\n{_header(version)}{body}\n\n{_client_notes(version)}\n\n"
+        )
+    return "".join(parts)
+
+
 def on_page_markdown(markdown, *, page, config, files):
     if NOTES_PAGE.match(page.file.src_uri):
-        return SECTION.sub(lambda m: f"{m[0]}\n\n{_header(m[1])}", markdown)
+        return _with_client_notes(markdown)
     if page.file.src_uri == NAV_ENTRY and "<!-- releases -->" in markdown:
         return markdown.replace("<!-- releases -->", _releases_table())
     return markdown
