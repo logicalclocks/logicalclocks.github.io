@@ -2,11 +2,9 @@
 releases:
   "5.2.1":
     released: "2026-10-16"
-    application: "5.2.1"
     python_client: "5.2.1"
   "5.2.0":
     released: "2026-10-15"
-    application: "5.2.0"
     python_client: "5.2.1"
 ---
 
@@ -20,15 +18,13 @@ The releases of Hopsworks 5.2, newest first.
 
 - Fixed the 5.1 to 5.2 index pass failing with `field _id not found` on an index with an empty mapping, such as a `projects` index that was never written, and losing documents that were not yet refreshed when it copied an index.
 - Fixed a security issue in OpenSearch.
+  The fix applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the chart's `UPGRADE.md` shows.
 - Changed the OpenSearch index pass of the 5.1 to 5.2 upgrade to copy one index at a time behind a write block on that index alone, instead of refusing every OpenSearch client, reads included, for the whole pass; upgrade 5.1 clusters to 5.2.1 rather than 5.2.0 ([what keeps working][docs-os-what-works]).
-- Fixed OpenSearch restarts and the 5.1 to 5.2 index pass deleting the OpenSearch roles behind restricted grants and feature group shares, which left a shared project with HTTP 403, and every `helm upgrade` restarting OpenSearch.
+- Fixed OpenSearch restarts and the 5.1 to 5.2 index pass deleting the OpenSearch roles behind restricted grants and feature group shares, which left a shared project with HTTP 403.
+  Grants and shares made before the last OpenSearch restart on 5.2.0 lost their roles, and granting or sharing again is refused: revoke and grant again, or unshare and share again.
 - Changed the OpenSearch index pass to run before the Kafka migration, so its report (`olk.opensearch.indexUpgrade.mode: report`) and its refusals stop an upgrade from 5.1 before anything changes ([set the timeout][docs-os-timeout]).
 - Fixed the OpenSearch index pass not refusing a 5.0 cluster, still on OpenSearch 1.x, which can't be upgraded straight to 5.2.
-
-### Configuration changes
-
-- Changed `olk.opensearch.indexUpgrade.enabled` to `olk.opensearch.indexUpgrade.mode`: `copy`, the default, or `report`, which lists the indices the 5.1 to 5.2 upgrade would copy and how long each stays blocked, and fails before anything changes, the Kafka migration included ([set the timeout][docs-os-timeout]).
-  From 5.1.2 the 5.1 chart reads the same key to copy the indices before the 5.2 upgrade; pass it with `--set`, not in your values file ([copying on 5.1][docs-os-copy-51]).
+- Fixed every `helm upgrade` restarting OpenSearch.
 
 ### Breaking changes
 
@@ -37,23 +33,31 @@ The releases of Hopsworks 5.2, newest first.
 - Feature groups shared with a subset of their features can no longer be queried in Trino, only read online and in similarity search, to fix a security issue; share the whole feature group to query it in Trino.
   `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` turns Trino access to them back on, which undoes the security fix.
 
+### Configuration changes
+
+- Changed `olk.opensearch.indexUpgrade.enabled` to `olk.opensearch.indexUpgrade.mode`: `copy`, the default, or `report`, which lists the indices the 5.1 to 5.2 upgrade would copy and how long each stays blocked, and fails before anything changes, the Kafka migration included ([set the timeout][docs-os-timeout]).
+  From 5.1.2 the 5.1 chart reads the same key to copy the indices before the 5.2 upgrade; pass it with `--set`, not in your values file ([copying on 5.1][docs-os-copy-51]).
+- Added `hopsworks.variables.trino_feature_group_subset_shares_enabled` (default `"false"`), which lets Trino serve feature groups shared with a subset of their features.
+
 ## 5.2.0 { #hopsworks-5-2-0 }
 
 Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2-1] instead of 5.2.0, as its breaking changes explain.
 
 ### What's changed
 
-- Fixed model deployments answering 403 to users whose password an administrator set.
 - Fixed a security issue in model deployments.
 - Fixed a security issue in jobs (also in [5.1.1][hopsworks-5-1-1]).
+- Fixed model deployments answering 403 to users whose password an administrator set.
+  Such users already on a temporary password regain access at their next password change or account update.
 - Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, `insert(wait_for_online_ingestion=True)` returning before the rows were online, and apps reporting the execution they replaced.
-- Fixed OpenSearch losing unflushed vectors and rejecting vector writes for about two minutes on its first start on 5.1; `olk.opensearch.knn.circuit_breaker.triggered` now defaults to `false` and `percent` to `75` (also in [5.1.1][hopsworks-5-1-1]).
+- Fixed OpenSearch losing unflushed vectors and rejecting vector writes for about two minutes on its first start on 5.1 (also in [5.1.1][hopsworks-5-1-1]).
   A values file that sets `triggered: true` or `percent: 0.75`, or an upgrade with `--reuse-values`, keeps the problem.
 - Fixed RonDB daemons ignoring SIGTERM, so every pod stop ended in a kill and a stopped data node could stall the cluster (also in [5.1.1][hopsworks-5-1-1]).
 - Changed the RonDB REST server probes to outlast a data node failure and to use their own port (also in [5.1.1][hopsworks-5-1-1]).
 - Fixed the RonDB REST server reading request bodies over 64 KiB as empty; it now buffers them in `rondb.rondb.rdrs.uploadPath` (also in [5.1.1][hopsworks-5-1-1]).
-- Fixed security vulnerabilities in the HopsFS, Hive Metastore, Trino, Spark history server and Ray images, and in the Hopsworks server dependencies.
-- Fixed queued service operations failing on every retry when they removed a user from Superset or set up Superset for a project Observer, and security vulnerabilities in the Payara, Hopsworks certificate authority, Grafana, Filebeat and Superset images and the MySQL and Redis of Superset (also in [5.1.2][hopsworks-5-1-2]).
+- Fixed security vulnerabilities in the Airflow, HopsFS, Hive Metastore, Trino, Spark history server and Ray images, and in the Hopsworks server dependencies.
+- Fixed security vulnerabilities in the Payara, Hopsworks certificate authority, Grafana, Filebeat and Superset images and the MySQL and Redis of Superset (also in [5.1.2][hopsworks-5-1-2]).
+- Fixed queued service operations failing on every retry when they removed a user from Superset or set up Superset for a project Observer (also in [5.1.2][hopsworks-5-1-2]).
 - Changed Trino to read its users, groups, user catalogs and access rules from HopsFS instead of Secrets, which fixes `helm upgrade` failing on clusters with many Trino catalogs or project members.
 - Fixed Helm 4 server-side apply conflicts on `helm upgrade` over the replicas of HPA-managed workloads other than the RonDB REST server, the rules of the Knative serving webhooks and the `rss-configuration` ConfigMap (see `HELM4_MIGRATION.md` in the 5.2 chart).
 - Fixed the post-upgrade search index rebuild failing without the admin password, for example when password login is disabled, and running on every upgrade; it now runs in the background once per index format, and shows its progress and a **Reindex now** button under **Cluster settings > Service Operations > OpenSearch Index Commands** (also in [5.1.1][hopsworks-5-1-1]).
@@ -66,6 +70,7 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 - Changed LLM deployments to vLLM and vLLM-Omni v0.28.0; deployments created or edited on 5.1 keep v0.20.0 until you change their vLLM version, so keep the v0.20.0 images in a mirrored registry.
 - Changed the built-in Python environments to Python 3.13; custom environments keep the Python version they were built with.
 - Added support for Kubernetes 1.37; upgrade Hopsworks to 5.2 before the cluster, because 5.1 doesn't install on 1.37.
+  Under ArgoCD 3.4 or older with server-side apply, upgrade ArgoCD to 3.5 or ignore `spec.preventPodSchedulingIfMissing` on CSIDrivers before moving to 1.37, or ArgoCD stops syncing (see `UPGRADE.md` in the 5.2 chart).
 - Added sharing of Trino catalogs and feature groups with other projects, down to schemas, tables and columns, and private Trino catalogs of one user ([sharing][docs-trino-sharing], [private catalogs][docs-trino-private]).
 - Added real-time feature logging to an online feature group, for feature views that start logging on 5.2 ([feature logging][docs-feature-logging]).
 - Added scale to zero for idle Python apps when KEDA is installed, after `hopsworks.variables.pythonapp_idle_cooldown_seconds` (6 hours); with ingress-nginx, raise `nginx.ingress.kubernetes.io/proxy-read-timeout` in `hopsworks.ingress.annotations`, or the request that wakes an app fails after 60 seconds ([apps][docs-apps-idle]).
@@ -104,7 +109,7 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 - Fixed ingestion statistics runs piling up on frequently written feature groups and leaving other jobs pending; at most one runs per feature group.
 - Fixed deleted feature views, feature groups and projects coming back as empty entries, which blocked creating new ones with the same name.
 - Fixed Trino giving a project access to only one of several feature stores shared with it (also in [5.1.1][hopsworks-5-1-1]).
-- Fixed environment builds never starting when `rondb.rondb.priorityClass` is renamed; `hopsworks.variables.docker_operations_buildkit_priority_class` now defaults to empty, so builds run at the default priority and no longer preempt other pods (also in [5.1.1][hopsworks-5-1-1]).
+- Fixed environment builds never starting when `rondb.rondb.priorityClass` is renamed (also in [5.1.1][hopsworks-5-1-1]).
 - Fixed Python engine reads failing for queries with a filter on a joined feature group or a filter that compares features of two feature groups.
 - Fixed writes to Iceberg feature groups from Python jobs and apps failing with `Unable to load libhdfs`.
 - Fixed a Jupyter server that had just started failing requests on clusters with more than one Hopsworks instance.
@@ -115,29 +120,14 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 - Fixed Spark Connect in web terminals never starting on clusters that enforce the Kyverno restricted policies.
 - Fixed agent deployments that mount HopsFS never starting on OpenShift.
 - Fixed tags and keywords added right after an artifact was created missing from search.
+- Fixed Git operations failing with an I/O error when a Git provider proxy is set and HopsFS encryption at rest is on.
 - Fixed the table preview of a PostgreSQL data source failing for a role granted only some columns.
+- Fixed ArrowFlight reads of PostgreSQL `uuid` columns.
+- Fixed ArrowFlight queries of PostgreSQL data sources run by a read-only role.
+- Fixed ArrowFlight reads of MySQL data sources without a password.
+- Fixed ArrowFlight reads from S3 and AWS Glue data sources on OpenShift.
 - Fixed the **Why?** button of an online ingestion in a feature group's activity opening every OnlineFS log of the project instead of that ingestion's; it is now named **Logs** (also in [5.1.1][hopsworks-5-1-1]).
 - Fixed the dialogs of Git repository actions in the project settings closing on their own, and transformation function previews showing the imports of the defining module.
-
-### Configuration changes
-
-- Changed `rondb.rondb.terminationGracePeriodSeconds` to one value per component, and the data nodes' default from 60 to 300 seconds; an integer still sets only the data nodes (also in [5.1.1][hopsworks-5-1-1]).
-- Changed `hopsworks.variables.trino_default_catalog` from `hive` to `delta`, the catalog new Superset connections to Trino open in.
-- Changed the default driver memory of new Ray jobs (`hopsworks.variables.ray_job_driver_memory`) from 2048 to 4096 MB.
-- Changed `values.openshift.yaml` to turn on credential files for Trino catalogs (`global._hopsworks.trino.mountableSecrets.enabled`).
-- Changed `hopsworks.variables.trino_events_cleaner_batch_size` from 1000 to 100 (also in [5.1.2][hopsworks-5-1-2]).
-- Fixed `values.openshift.yaml` for the OpenShift `restricted-v2` SCC, covering Strimzi, the Kafka brokers and KRaft controllers, the Spark operator and the MySQL and Redis of Superset, and turned off the Prometheus node exporter, which OpenShift ships itself (also in [5.1.1][hopsworks-5-1-1]).
-  Use it with Helm 4 or Helm 3.17.1 or later, because older Helm 3 releases ignore its `null` overrides of subchart values.
-- Fixed `global._hopsworks.jobs.ttlSecondsAfterFinished: 0` being replaced by `86400`.
-- Fixed Helm 4 rejecting an empty `kafka.cluster.kafka.authorizer.authorizerClass`.
-- Fixed the values schema rejecting `hopsworks.variables.loadbalancer_external_domain_namenode` and `hopsworks.variables.loadbalancer_external_domain_datanode` (also in [5.1.1][hopsworks-5-1-1]).
-- Added `hopsworks.opensearchReindex.enabled` to turn off the post-upgrade search index rebuild, and `hopsworks.variables.command_search_fs_reindex_queue_wait_as_ms` to bound its wait for the search command queue (also in [5.1.1][hopsworks-5-1-1]).
-- Added `kafka.cluster.kafka.config.replicationFactor` and `minInsyncReplicas` for multi-broker Kafka; `minInsyncReplicas` above a topic's replicas makes `acks=all` writes to it fail ([values][values-kafka]).
-- Added `nodePort` values to pin the node ports of unmanaged external load balancers: ArrowFlight, OpenSearch, the HopsFS NameNode and DataNodes, Trino, the Hive Metastore, Kafka (`bootstrapNodePort`, `startingNodePort`) and the RonDB MySQL and REST servers (also in [5.1.1][hopsworks-5-1-1]).
-  The RonDB ones ignore `global._hopsworks.externalLoadBalancers.managed` and apply only when `rondb.rondb.meta.mysqld.externalLoadBalancer.managed` or `rondb.rondb.meta.rdrs.externalLoadBalancer.managed` is `false`.
-- Added `rondb.rondb.rdrs.probes` and `rondb.rondb.rdrs.probePort`, the settings and the port of the RonDB REST server probes, and `rondb.rondb.rdrs.maxKeepaliveRequests` to close a keep-alive connection after that many requests, so clients rebalance after a rolling restart (also in [5.1.1][hopsworks-5-1-1]).
-- Added `rondb.rondb.rdrs.ttlPurge.enable` and `activeWindow` to turn off the TTL purge of the RonDB REST server or limit it to a daily window (also in [5.1.1][hopsworks-5-1-1]).
-- Added `kserve.kserve.storage.resources` for the storage initializer that downloads models into deployment pods.
 
 ### Breaking changes
 
@@ -145,28 +135,29 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 - Upgrade 5.1 clusters to [5.2.1][hopsworks-5-2-1] instead of 5.2.0, whose OpenSearch index pass refuses every client and whose OpenSearch restarts delete the roles behind restricted-access grants and feature group shares; on [5.1.2][hopsworks-5-1-2], which fixed those restarts, 5.2.0 is a regression.
 - The upgrade migrates Kafka from ZooKeeper to KRaft, which can't be undone: give `helm upgrade` a long enough `--timeout`, never pass `--atomic` (`--rollback-on-failure` in Helm 4) or run `helm rollback`, and under ArgoCD sync twice ([Kafka 4 and KRaft][docs-kafka4-expect]).
 - On a cluster installed before 5.1, OpenSearch refuses every client while the upgrade copies its oldest indices; plan the outage and the timeout ([upgrading OpenSearch][docs-os]).
-- OpenSearch snapshot repositories on MinIO before `RELEASE.2025-01-20T14-49-07Z` and on other S3-compatible stores that require `Content-MD5`, which OpenSearch 2.19 sent and 3.8 doesn't, need `legacy_md5_checksum_calculation: true`, or the upgrade fails ([upgrading OpenSearch][docs-os]).
+- OpenSearch snapshot repositories you configure yourself under `olk.opensearch.backup.repositories` or `olk.opensearch.restore.repositories`, on MinIO before `RELEASE.2025-01-20T14-49-07Z` or other S3-compatible stores that require `Content-MD5`, which OpenSearch 2.19 sent and 3.8 doesn't, need `legacy_md5_checksum_calculation: true` in their `s3` block, or the upgrade fails; the chart already sets it on the repositories it generates for the bundled MinIO ([upgrading OpenSearch][docs-os]).
 - The chart now creates a cluster-wide IngressClass named `istio`, which 5.1 didn't; if the cluster already has one, set `kserve.istio.ingressClass.enabled: false`, or the upgrade fails.
 - KEDA, installed by default where 5.1 didn't install it, can't share a Kubernetes cluster with another KEDA or the OpenShift Custom Metrics Autoscaler, including the KEDA of another Hopsworks release such as a satellite; set `hopsworks.variables.kube_keda_installed: false` on all but one (see `UPGRADE.md` in the 5.2 chart).
-- With `hopsworks.rbac.useExistingRole: true`, add the chart's new ClusterRole grants (`charts/hopsworks/templates/role.yaml`) on `scaledobjects`, `interceptorroutes`, `ingresses`, `networkpolicies` and `csidrivers`, or model deployments and project creation fail.
+- With `hopsworks.rbac.useExistingRole: true`, add the chart's new ClusterRole grants (`charts/hopsworks/templates/role.yaml`) on `scaledobjects`, `interceptorroutes`, `ingresses`, `networkpolicies` and `csidrivers`, or model deployments, project creation and every pod that mounts HopsFS fail.
 - On OpenShift, use the `values.openshift.yaml` of the 5.2 chart, which creates an SCC for the privileged HopsFS CSI node plugin, new in 5.2; if a cluster administrator owns SCCs, see `charts/hopsfs-csi/README.md` in the chart.
-- Overrides of the Trino `initContainers`, `additionalVolumes` or `additionalVolumeMounts`, including those [5.1.0][hopsworks-5-1-0] asked for with `hopsworks.hopsfsMount.enabled: false`, fail the render; remove the overrides, or copy the new entries from the chart into them.
-- Removed the KServe local model controller; if you set `kserve.kserve.localmodel.enabled: true`, remove it, or the chart fails to render.
-- With cluster backups on, Superset backups, new in 5.2, need an object store and, with `superset.auth.createSecrets: false`, the `backup.hops.works/include=true` label on its Secrets, or the chart fails to render; set `superset.backups.enabled: false` to skip them ([disaster recovery][docs-superset-backup]).
-- If your release namespace is longer than 34 characters, set `global._hopsworks.csi.driverName`, because the default name of the HopsFS CSI driver, new in 5.2, would exceed 63 characters.
-- With Helm 4, pass `--skip-crds` to a `helm install` on a cluster that already has the Strimzi CRDs, and after a reinstall run `helm upgrade` once to recreate the KEDA CRDs (see `UPGRADE.md` in the 5.2 chart).
-- Kafka 4.3 rejects clients older than Apache Kafka 2.1 or librdkafka 1.8.2, which the Kafka 3.9 of 5.1 accepted; upgrade them first ([client compatibility][docs-kafka4-clients]).
-- Project namespaces now get a NetworkPolicy that admits traffic only from the same namespace and the Hopsworks namespace, where 5.1 restricted only web terminal pods; add any other namespace that reaches project pods, such as Istio or monitoring, to `hopsworks.variables.project_namespace_network_policy_allowed_namespaces` ([values][values-netpol]).
-  Turning them off with `hopsworks.variables.project_namespace_network_policy_enabled: false` leaves the existing ones; delete them with `kubectl delete networkpolicy -A --field-selector metadata.name=hopsworks-project-isolation`.
 - The post-upgrade search index rebuild signs in as the agent user, instead of with `hopsworks.variables.admin_email` and `admin_password`, and fails the `helm upgrade` if `hopsworks.agent_email` and `hopsworks.agent_password` (default `agent@hops.io`, `admin`) don't match that account (also in [5.1.1][hopsworks-5-1-1]).
   Set them, or turn the rebuild off with `hopsworks.opensearchReindex.enabled: false`.
 - The RonDB REST server now uses a probe port and an upload path that need RonDB 26.02.11, where 5.1.0 probed its REST port and set no upload path (also in [5.1.1][hopsworks-5-1-1]).
   If you pin `rondb.rondb.images.rondb.tag` to an older version, set `rondb.rondb.rdrs.probePort.enabled: false` and `rondb.rondb.rdrs.uploadPath: ""`, or the REST server doesn't start.
+- Overrides of the Trino `initContainers`, `additionalVolumes` or `additionalVolumeMounts`, including those [5.1.0][hopsworks-5-1-0] asked for with `hopsworks.hopsfsMount.enabled: false`, fail the render; remove the overrides, or copy the new entries from the chart into them.
+- If you override `trino.trino.image.tag`, use a Hopsworks Trino image of `483-v2` or later instead of the `480` images of 5.1, and set `global._hopsworks.trino.image.tag` to the same tag.
+- If you set `trino.trino.serviceAccount.name`, set `trino.trinotest.serviceAccount.name` to the same name, because the test coordinator now shares the Trino account instead of creating its own `hopsworks-trino-test`, or the chart fails to render.
+- Under ArgoCD, or with any `global._hopsworks.mode` other than `auto`, set `trino.auth.adminUserPwd` and `trino.auth.monitoringUserPwd`, which now default to empty instead of fixed passwords, or the chart fails to render.
+- Removed the KServe local model controller; if you set `kserve.kserve.localmodel.enabled: true`, remove it, or the chart fails to render.
+- With cluster backups on, Superset backups, new in 5.2, need an object store and, with `superset.auth.createSecrets: false`, the `backup.hops.works/include=true` label on its Secrets, or the chart fails to render; set `superset.backups.enabled: false` to skip them ([disaster recovery][docs-superset-backup]).
+- If your release namespace is longer than 34 characters, set `global._hopsworks.csi.driverName`, because the default name of the HopsFS CSI driver, new in 5.2, would exceed 63 characters.
+- With Helm 4, pass `--skip-crds` to a `helm install` on a cluster that already has the Strimzi CRDs, and after a reinstall run `helm upgrade` once to recreate the KEDA CRDs (see `UPGRADE.md` in the 5.2 chart).
+- Kafka 4.3 rejects clients older than Apache Kafka 2.1 or librdkafka 1.8.2, which the Kafka 3.9 of 5.1 accepted; upgrade them first; with your own Kafka cluster, its brokers must run Kafka 2.1 or later ([client compatibility][docs-kafka4-clients]).
+- Project namespaces now get a NetworkPolicy that admits traffic only from the same namespace and the Hopsworks namespace, where 5.1 restricted only web terminal pods; add any other namespace that reaches project pods, such as Istio or monitoring, to `hopsworks.variables.project_namespace_network_policy_allowed_namespaces` ([values][values-netpol]).
+  Turning them off with `hopsworks.variables.project_namespace_network_policy_enabled: false` leaves the existing ones; delete them with `kubectl delete networkpolicy -A --field-selector metadata.name=hopsworks-project-isolation`.
 - Trino no longer records the admin query history, and its records lose their query text after `hopsworks.variables.trino_events_strip_details_after_days` (7) instead of keeping it for 61 days; to keep either, or if your values restate `trino.trino.additionalConfigProperties`, see `UPGRADE.md` in the 5.2 chart (also in [5.1.2][hopsworks-5-1-2]).
 - OpenSearch now reports its own version, `3.8.0`, instead of `7.10.2`; check clients that connect to it directly against the [OpenSearch 3.0 breaking changes](https://docs.opensearch.org/latest/breaking-changes/).
 - MongoDB data sources need MongoDB 4.2 or later; upgrade older MongoDB servers, or browsing and testing their data sources fails.
-- If you override `trino.trino.image.tag`, use a Hopsworks Trino image of `483-v2` or later instead of the `480` images of 5.1, and set `global._hopsworks.trino.image.tag` to the same tag.
-- If you set `trino.trino.serviceAccount.name`, set `trino.trinotest.serviceAccount.name` to the same name, because the test coordinator now shares the Trino account instead of creating its own `hopsworks-trino-test`.
 - Web terminal sessions now last 8 hours instead of 4, and every upgrade sets `terminal_session_hours` from `hopsworks.terminal.sessionHours`, replacing a value set in the admin UI, which upgrades used to keep (see `UPGRADE.md` in the 5.2 chart).
 
 ### Deprecations
@@ -217,6 +208,36 @@ No upgrade steps are listed for this release.
 | Trino mountable-secrets sidecar | 3.4.3.3-EE-RC0-1 | 3.4.3.3-EE-RC1-1 |
 | vLLM | v0.20.0 | v0.28.0 |
 | vLLM-Omni | v0.20.0 | v0.28.0 |
+
+### Configuration changes
+
+- Changed the defaults of `olk.opensearch.knn.circuit_breaker.triggered` to `false` and `olk.opensearch.knn.circuit_breaker.percent` to `75` (also in [5.1.1][hopsworks-5-1-1]).
+- Changed the default of `hopsworks.variables.docker_operations_buildkit_priority_class` from `rondb-high-priority` to empty, so environment builds run at the default priority (also in [5.1.1][hopsworks-5-1-1]).
+- Changed `rondb.rondb.terminationGracePeriodSeconds` to one value per component, and the data nodes' default from 60 to 300 seconds; an integer still sets only the data nodes (also in [5.1.1][hopsworks-5-1-1]).
+- Changed `hopsworks.variables.trino_default_catalog` from `hive` to `delta`, the catalog new Superset connections to Trino open in.
+- Changed the default driver memory of new Ray jobs (`hopsworks.variables.ray_job_driver_memory`) from 2048 to 4096 MB.
+- Changed `values.openshift.yaml` to turn on credential files for Trino catalogs (`global._hopsworks.trino.mountableSecrets.enabled`).
+- Changed `hopsworks.variables.trino_events_cleaner_batch_size` from 1000 to 100 (also in [5.1.2][hopsworks-5-1-2]).
+- Changed `trino.trinotest.serviceAccount.create` to `false` and `name` to `hopsworks-trino`, so the test coordinator shares the Trino account.
+- Changed the defaults of `trino.auth.adminUserPwd` and `trino.auth.monitoringUserPwd` to empty, so the chart generates the passwords.
+- Fixed `values.openshift.yaml` for the OpenShift `restricted-v2` SCC, covering Strimzi, the Kafka brokers and KRaft controllers, the Spark operator and the MySQL and Redis of Superset, and turned off the Prometheus node exporter, which OpenShift ships itself (also in [5.1.1][hopsworks-5-1-1]).
+  Use it with Helm 4 or Helm 3.17.1 or later, because older Helm 3 releases ignore its `null` overrides of subchart values.
+- Fixed `global._hopsworks.jobs.ttlSecondsAfterFinished: 0` being replaced by `86400`.
+- Fixed Helm 4 rejecting an empty `kafka.cluster.kafka.authorizer.authorizerClass`.
+- Fixed the values schema rejecting `hopsworks.variables.loadbalancer_external_domain_namenode` and `hopsworks.variables.loadbalancer_external_domain_datanode` (also in [5.1.1][hopsworks-5-1-1]).
+- Added `hopsworks.opensearchReindex.enabled` to turn off the post-upgrade search index rebuild, and `hopsworks.variables.command_search_fs_reindex_queue_wait_as_ms` to bound its wait for the search command queue (also in [5.1.1][hopsworks-5-1-1]).
+- Added `kafka.cluster.kafka.config.replicationFactor` and `minInsyncReplicas` for multi-broker Kafka; `minInsyncReplicas` above a topic's replicas makes `acks=all` writes to it fail ([values][values-kafka]).
+- Added `nodePort` values to pin the node ports of unmanaged external load balancers: ArrowFlight, OpenSearch, the HopsFS NameNode and DataNodes, Trino, the Hive Metastore, Kafka (`bootstrapNodePort`, `startingNodePort`) and the RonDB MySQL and REST servers (also in [5.1.1][hopsworks-5-1-1]).
+  The RonDB ones ignore `global._hopsworks.externalLoadBalancers.managed` and apply only when `rondb.rondb.meta.mysqld.externalLoadBalancer.managed` or `rondb.rondb.meta.rdrs.externalLoadBalancer.managed` is `false`.
+- Added `rondb.rondb.rdrs.probes` and `rondb.rondb.rdrs.probePort`, the settings and the port of the RonDB REST server probes, and `rondb.rondb.rdrs.maxKeepaliveRequests` to close a keep-alive connection after that many requests, so clients rebalance after a rolling restart (also in [5.1.1][hopsworks-5-1-1]).
+- Added `rondb.rondb.rdrs.ttlPurge.enable` and `activeWindow` to turn off the TTL purge of the RonDB REST server or limit it to a daily window (also in [5.1.1][hopsworks-5-1-1]).
+- Added `kserve.kserve.storage.resources` for the storage initializer that downloads models into deployment pods.
+- Added `kserve.istio.ingressClass.enabled` and `kserve.istio.ingressClass.name` for the cluster-wide IngressClass the chart creates.
+- Added `hopsworks.variables.kube_keda_installed` (default `true`), which installs KEDA and lets model deployments autoscale through it.
+- Added `hopsworks.variables.project_namespace_network_policy_enabled` (default `true`) and `project_namespace_network_policy_allowed_namespaces` for the NetworkPolicy of project namespaces.
+- Added `superset.backups.enabled` (default `true`) for the Superset backups.
+- Added `global._hopsworks.csi.driverName` to name the HopsFS CSI driver of a release.
+- Added `hopsworks.terminal.sessionHours` (default `8`), which every upgrade writes to the web terminal session length.
 
 [docs-os-what-works]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/#opensearch-what-keeps-working
 [docs-os-timeout]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/#opensearch-set-the-timeout

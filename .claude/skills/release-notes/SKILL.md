@@ -1,6 +1,6 @@
 ---
 name: release-notes
-description: Write the release notes of a hopsworks-helm release, such as 5.1.0, into docs/releases. Collects the changes of the release in the chart and in every Hopsworks repo whose component it moves, drafts its section and upgrade steps, fact-checks every entry against the source and runs the strict build. Use when asked to write, add, regenerate or audit the release notes of a Hopsworks release.
+description: Write the release notes of a hopsworks-helm release, such as 5.1.0, into docs/releases. Collects the changes of the release in the chart and in every Hopsworks repo whose component it moves, drafts its section, fact-checks every entry against the source and runs the strict build. Use when asked to write, add, regenerate or audit the release notes of a Hopsworks release.
 argument-hint: <X.Y.Z>
 ---
 
@@ -40,7 +40,7 @@ They default to siblings of this repo; if one is missing, `release-inputs` says 
 Set `S` to the directory that holds them, and set up this repo's environment once; afterwards run every command with `uv run --no-sync`, because a plain `uv run` syncs again without the `cli` extra:
 
 ```sh
-S=<directory holding the five checkouts>
+S=<directory holding the checkouts>
 uv sync --extra cli
 ```
 
@@ -63,7 +63,7 @@ uv run --no-sync hopsworks-docs release-inputs <X.Y.Z> --sources $S > .release-n
 `.release-notes/` is gitignored and lives in the repo, not in a temporary directory, so the work survives the session.
 Read `inputs.md` in full. It gives:
 
-- the release it compares with, and the front matter (release date, application version, Python client);
+- the release it compares with, the front matter (release date, Python client), and the application version, which sets the `hopsworks-ee` and `hopsworks-front` ranges but isn't shown;
 - every commit of the chart, of `rondb-helm` when the RonDB chart moved, and of `hopsworks-ee` and `hopsworks-front` between the `Release X.Y.Z` commits of the two application versions;
 - the commits of `hopsworks-api` and `docker-images` between the Python client and base image versions of the two releases, and of each component repo whose version moved, between the tags or `Release` commits of its two versions;
   for a fork, only the Hopsworks commits (a ticket key in the subject) made between the two release dates, because Upgraded components covers the upstream version;
@@ -79,7 +79,7 @@ Stop and ask the user when it reports an `ERROR` (a release commit it can't find
 
 Add the release to the page first, so the section has a place:
 
-- its entry in the front matter `releases:` map, newest first, with the three versions from `inputs.md` as quoted strings;
+- its entry in the front matter `releases:` map, newest first, with the release date and Python client from `inputs.md` as quoted strings;
 - `## X.Y.Z { #hopsworks-X-Y-Z }` in release order, newest first;
 - for a new minor version, `docs/releases/X.Y/index.md` with `# Release notes { #hopsworks-X-Y }` and `The releases of Hopsworks X.Y, newest first.`, modelled on an existing minor page.
 

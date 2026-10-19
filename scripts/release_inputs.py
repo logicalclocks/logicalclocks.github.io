@@ -139,8 +139,8 @@ def _python_client(helm, images, tag):
 
 
 def _release_commit(repo, branch, version):
-    """The ``Release X.Y.Z`` commit of an application version: its last commit."""
-    pattern = rf"^Release {re.escape(version)}( \(#[0-9]+\))?$"
+    """The ``Release X.Y.Z`` (or ``Release for X.Y.Z``) commit of an application version."""
+    pattern = rf"^Release (for )?{re.escape(version)}( \(#[0-9]+\))?$"
     out = _git(
         repo, "log", f"origin/{branch}", "-E", f"--grep={pattern}", "--format=%h"
     )
@@ -157,7 +157,9 @@ def _version_ref(repo, version):
         if _git(repo, "tag", "--list", name).strip():
             return name
     v = re.escape(version)
-    pattern = rf"^(Release v?{v}|\[maven-release-plugin\] prepare release {v})( |\(|$)"
+    pattern = (
+        rf"^(Release (for )?v?{v}|\[maven-release-plugin\] prepare release {v})( |\(|$)"
+    )
     out = _git(
         repo, "log", "--remotes=origin", "-E", f"--grep={pattern}", "--format=%h"
     )
@@ -361,12 +363,15 @@ def release_inputs(
     # Front matter
     base, client = _python_client(helm, docker_images, tag)
     app, old_app = _application(helm, tag), _application(helm, old)
+    lines.append(
+        f"Application {app} ({CHART} appVersion; {old_app} at {old}); it sets the "
+        "hopsworks-ee and hopsworks-front ranges below and isn't part of the page."
+    )
     _section(
         lines,
         "Front matter",
         [
             f'released: "{_released(tag) or "?"}"  (GitHub release of {tag}; ? = not published yet or gh unavailable)',
-            f'application: "{app}"  ({CHART} appVersion; {old_app} at {old})',
             f'python_client: "{client or "?"}"  (base_image_version {base}; docker-images base-image/hopsworks-api-version.txt)',
         ]
         + (

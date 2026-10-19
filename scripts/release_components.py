@@ -532,11 +532,21 @@ def _with_table(text, release, table):
     end = start + following.start() if following else len(text)
     section = text[start:end].rstrip("\n")
     old = re.search(
-        rf"^{re.escape(SUBSECTION)}\n.*?(?=^### |\Z)", section, re.MULTILINE | re.DOTALL
+        rf"^{re.escape(SUBSECTION)}\n.*?(?=^### |^\[|\Z)",
+        section,
+        re.MULTILINE | re.DOTALL,
     )
     if old:
-        section = (section[: old.start()] + section[old.end() :]).rstrip("\n")
+        section = section[: old.start()] + section[old.end() :]
     if table:
-        section += f"\n\n{SUBSECTION}\n\n{table.rstrip()}"
+        # The table goes above Configuration changes, which ends a section, and
+        # above the link definitions that end the page.
+        after = re.search(r"^### Configuration changes$|^\[[^\]]+\]: ", section, re.M)
+        at = after.start() if after else len(section)
+        section = (
+            f"{section[:at].rstrip()}\n\n{SUBSECTION}\n\n{table.rstrip()}\n\n"
+            f"{section[at:]}"
+        )
+    section = re.sub(r"\n{3,}", "\n\n", section).rstrip("\n")
     tail = text[end:]
     return text[:start] + section + ("\n\n" + tail if tail else "\n")

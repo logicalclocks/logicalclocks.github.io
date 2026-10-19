@@ -10,7 +10,7 @@ The release notes of a minor version (``releases/X.Y/index.md``) declare every
 release in their front matter, newest first, and hold one
 ``## X.Y.Z { #hopsworks-X-Y-Z }`` section per release in the same order. Under each
 section title this renders the release date, the release it lists the changes
-since, the application version and the Python client, linking the GitHub release
+since, the Helm chart version and the Python client, linking the GitHub release
 notes of every client version new in that release. It also renders the table of
 all releases where ``releases/index.md`` holds ``<!-- releases -->``.
 
@@ -42,7 +42,7 @@ FINGERPRINT = "releases/fingerprint.txt"
 NOTES_PAGE = re.compile(r"^releases/(\d+\.\d+)/index\.md$")
 SECTION = re.compile(r"^## (\d+\.\d+\.\d+) \{ #hopsworks-[\d-]+ \}$", re.MULTILINE)
 VERSION = re.compile(r"\d+\.\d+\.\d+")
-FIELDS = ("released", "application", "python_client")
+FIELDS = ("released", "python_client")
 CLIENT_REPO = "https://github.com/logicalclocks/hopsworks-api"
 CLIENT_RELEASES = CLIENT_REPO + "/releases/tag/{}"
 
@@ -232,19 +232,19 @@ def _client(version):
 def _header(version):
     fields = _releases[version]
     return (
-        f"Released on {fields['released']} · Changes since {_link(_since(version))} "
-        f"· Application {fields['application']} · {_client(version)}"
+        f"Helm chart {version} · Released on {fields['released']} "
+        f"· Changes since {_link(_since(version))} · {_client(version)}"
     )
 
 
 def _releases_table():
     lines = [
-        "| Release | Released | Application | Python client |",
-        "| ------- | -------- | ----------- | ------------- |",
+        "| Helm chart | Released | Python client |",
+        "| ---------- | -------- | ------------- |",
     ]
     for version, fields in reversed(_releases.items()):
         lines.append(
-            f"| {_link(version)} | {fields['released']} | {fields['application']} "
+            f"| {_link(version)} | {fields['released']} "
             f"| {_client_link(fields['python_client'])} |"
         )
     return "\n".join(lines)

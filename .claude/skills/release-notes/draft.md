@@ -16,7 +16,7 @@ Read first, in full:
   Read with `git log`, `git show`, `git diff`, `git grep`, `git cherry` and `git log --cherry-pick`.
 - Don't run a build; the machine's memory is shared with other jobs.
 - The docs are public: an entry never names a customer, a Jira key, a PR number, a commit or a source repo; it names the component, such as OnlineFS or the model serving webhook.
-  Link only the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute); never link a private GitHub repo, `hopsworks-helm` included, but name a chart file in text, such as "see `UPGRADE.md` in the 5.2 chart".
+  Link only the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute); never link a private GitHub repo, such as `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front` or `docker-images`, but name a chart file in text, such as "see `UPGRADE.md` in the 5.2 chart".
 
 ## For each change in your slice
 
@@ -28,7 +28,7 @@ Read first, in full:
    Leave out `hopsworks-api` changes on their own, because the release's Python client subsection shows the hopsworks-api release notes; use them to understand an application change of the same ticket.
    A breaking change says, in a few words, what the behaviour was before, checked against the previous release.
    A security fix gets a bare entry, such as "Fixed a security issue in jobs", with no detail of the issue, as the guide says; describe the issue only in your report, for the evidence.
-3. Pick the subsection: What's changed, Configuration changes, Breaking changes or Deprecations, as the guide defines them.
+3. Pick the subsection: What's changed, Breaking changes, Deprecations or Configuration changes, as the guide defines them.
    A feature that a value turns on stays in What's changed and names the value.
 4. Write the entry as the guide says: a past-tense verb first, one line, a second line only for what the reader must act on, the exact value, API or setting, and a docs link where one exists.
    Check that a link's page and anchor exist in the docs branch of the release's minor version: `git -C <docs> show origin/branch-X.Y:docs/<path>.md`.

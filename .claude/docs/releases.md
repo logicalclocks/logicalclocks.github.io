@@ -30,17 +30,15 @@ The front matter declares every release, newest first, with its versions as quot
 releases:
   "5.1.1":
     released: "2026-10-09"     # date of the GitHub release
-    application: "5.1.1"       # appVersion in charts/hopsworks/Chart.yaml at the tag
     python_client: "5.1.1"     # hopsworks-api version of the base images the chart deploys
   "5.1.0":
     released: "2026-09-24"
-    application: "5.1.0"
     python_client: "5.1.0"
 ---
 ```
 
 The Python client is `base-image/hopsworks-api-version.txt` in `docker-images` at the release commit whose `version.txt` matches `hopsworks.variables.base_image_version` at the tag.
-Under each section title, `scripts/releases_hook.py` renders the release date, the release it lists the changes since, the application version and the Python client, linking the GitHub release notes of every client version new in the release.
+Under each section title, `scripts/releases_hook.py` renders the Helm chart version, the release date, the release it lists the changes since and the Python client, linking the GitHub release notes of every client version new in the release.
 
 A patch release lists the changes since the previous release of its minor version, and an X.Y.0 since the first release of the previous minor version, so minor versions compare with each other: 5.2.0 with 5.1.0, 5.1.0 with 5.0.0.
 An X.Y.0 lists every change since the previous X.Y.0, including those that already shipped in a patch release of the previous minor version, so a reader who upgrades from one X.Y.0 to the next finds them all in one place.
@@ -54,9 +52,9 @@ Leave out application changes users don't see, such as refactors, tests and buil
 A chart commit and an application commit for the same ticket are one entry.
 5.0.0 is the exception: 4.8 has no pages, so its front matter declares `since: "4.8.2"`, the first 4.8 release, and an entry that also shipped in a 4.8 patch release ends with `(also in 4.8.N)`.
 
-A release section has up to six subsections, in this order, and leaves out the ones with nothing to report: `### What's changed`, `### Configuration changes`, `### Breaking changes`, `### Deprecations`, `### Upgrade steps`, `### Upgraded components`.
+A release section has up to six subsections, in this order, and leaves out the ones with nothing to report: `### What's changed`, `### Breaking changes`, `### Deprecations`, `### Upgrade steps`, `### Upgraded components`, `### Configuration changes`.
 `### Upgrade steps` is on every X.Y.0 and only there, even when empty, and describes the steps needed to upgrade to it from the previous minor version; for now it says "No upgrade steps are listed for this release." on every release.
-The hook appends a sixth, `### Python client`, which links the GitHub release notes of every hopsworks-api version new in the release; `docs/js/client-release-notes.js` replaces the links with those notes, fetched from the GitHub API in the reader's browser, one collapsed block per version, and keeps the links when GitHub can't be reached.
+The hook appends a last one, `### Python client`, which links the GitHub release notes of every hopsworks-api version new in the release; `docs/js/client-release-notes.js` replaces the links with those notes, fetched from the GitHub API in the reader's browser, one collapsed block per version, and keeps the links when GitHub can't be reached.
 Never write it by hand: the notes are hopsworks-api's own, shown as they are on GitHub.
 
 ## Writing entries
@@ -70,9 +68,11 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
 - Name the exact API, Helm value, config variable or CLI flag.
 - Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
   Release pages show in every docs version, so link the docs of the release's minor version with an absolute URL (`https://docs.hopsworks.ai/5.2/...`), which a relative link to a page missing from an older version would break.
-  For what no docs page covers, name the file of the chart that does, such as "see `UPGRADE.md` in the 5.2 chart": the packaged chart ships its `README.md`, `UPGRADE.md`, `HELM4_MIGRATION.md` and `values.*.yaml`, but its repo is private.
+  For what no docs page covers, name the file of the chart that does, such as "see `UPGRADE.md` in the 5.2 chart": the packaged chart ships its `README.md`, `UPGRADE.md`, `HELM4_MIGRATION.md` and `values.*.yaml`, but `hopsworks-helm` is private.
 - Leave out changes with no user-visible effect: tests, CI, refactors, and fixes for bugs that never shipped.
-- Do not link Jira or any private GitHub repo, `hopsworks-helm` included, and do not name customers, because the docs are public; of the source repos, only `hopsworks-api` is public.
+- Do not link Jira or any private GitHub repo, and do not name customers, because the docs are public.
+  Of the source repos, `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front`, `docker-images`, `flyingduck`, `clusterj-onlinefs`, `model-serving-webhook`, `model-serving-authenticator`, `hops-git`, `tools` and `sparkhistoryserver` are private; `hopsworks-api`, `rondb-helm` and the forks (`trino`, `hive`, `hudi`, `incubator-uniffle`, `spark`) are public.
+  Check a repo with `gh repo view <org>/<repo> --json visibility` before linking it.
 - Give no details of a security issue a release fixes: name only where it was, such as "Fixed a security issue in jobs", never what was exposed, who could exploit it or how, because the notes are public and clusters on older releases stay vulnerable.
   Fixes of known vulnerabilities in dependencies and images stay one entry per group, such as "Fixed security vulnerabilities in the Grafana and Superset images".
   A breaking change or upgrade step that a security fix needs says what to do, and at most that it is for a security fix.
