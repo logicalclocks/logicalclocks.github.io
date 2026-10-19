@@ -43,8 +43,10 @@ The Python client is `base-image/hopsworks-api-version.txt` in `docker-images` a
 Under each section title, `scripts/releases_hook.py` renders the release date, the release it lists the changes since, the application version and the Python client, linking the GitHub release notes of every client version new in the release.
 
 A patch release lists the changes since the previous release of its minor version, and an X.Y.0 since the first release of the previous minor version, so minor versions compare with each other: 5.2.0 with 5.1.0, 5.1.0 with 5.0.0.
-Each change is listed once, under the release that first shipped it, so an X.Y.0 leaves out the changes that already shipped in a patch release of the previous minor version; a sentence under its title says which of those patch releases it includes, and names any of their changes it lacks.
-A patch release of the previous minor version that comes out after the X.Y.0 can backport its changes; both releases then list them, and the X.Y.0 entry ends with `(also in [X.Y.Z][hopsworks-X-Y-Z])`.
+An X.Y.0 lists every change since the previous X.Y.0, including those that already shipped in a patch release of the previous minor version, so a reader who upgrades from one X.Y.0 to the next finds them all in one place.
+Such an entry repeats the patch release's entry, checked against the X.Y.0, and ends its first line with `(also in [X.Y.Z][hopsworks-X-Y-Z])`, so readers on that patch can skip it.
+A change a patch release shipped and the X.Y.0 lacks is not repeated; a breaking change of the X.Y.0 says what is missing and what to do, as 5.1.0 does for the RonDB REST server probes of 5.0.13.
+A patch release of the previous minor version that comes out after the X.Y.0 can backport its changes; both releases then list them, with the same marker on the X.Y.0 entry.
 A release covers every change users or operators notice, from the chart (`hopsworks-helm` and `rondb-helm` commits between the tags), from the application it ships (`hopsworks-ee` and `hopsworks-front`), and from the images and components it deploys from Hopsworks repos (`docker-images`, OnlineFS, ArrowFlight, the model serving webhook and authenticator, and the others `scripts/release_inputs.py` lists); the HopsFS and RonDB repos are not sources, the RonDB chart is.
 Neither application repo has tags: a version's changes end at its `Release X.Y.Z` commit on `branch-X.Y-ee` or `branch-X.Y`, which is the last commit of that version, and start after the release commit of the application version the previous release ships.
 A chart release that keeps the application version has no application changes, and one that skips application versions includes them all.
@@ -92,10 +94,12 @@ A feature or fix keeps its entry under `### What's changed` and names the value 
 Split an entry that does both, so each change is listed once.
 
 Breaking changes are changes that need users or operators to do something when they upgrade.
-Say in each one what changed, who is affected and what to do, and link the docs page that has the procedure; it may start with what changed, such as "`helm upgrade` now stops ...", or with what to do, such as "Remove `<value>` from your values ...".
+Say in each one what changed, what the behaviour was before, who is affected and what to do, and link the docs page that has the procedure; it may start with what changed, such as "`helm upgrade` now stops ...", or with what to do, such as "Remove `<value>` from your values ...".
+Outline the behaviour before the change in a few words, such as "instead of `default`" or "which used to keep them", so a reader can tell whether they relied on it; check it against the previous release, not the commit message.
+A breaking change that a security fix needs leaves the behaviour before out, because it would describe the issue; it says only what users could do that they no longer can, such as "can no longer be queried in Trino".
 A fix, security fixes included, that takes away something users rely on is a breaking change.
 A breaking change is not repeated under `### What's changed`; a value it adds, removes or renames is still listed under `### Configuration changes`, which says what the value does, while the breaking change says what to do.
-A change that also ships in a patch release of another minor version is listed in both releases, without a marker.
+A change that ships in patch releases of two minor versions at about the same time, such as 5.0.14 and 5.1.2, is listed in both releases, without a marker; the `(also in ...)` marker is only for an X.Y.0 entry.
 
 Deprecations are what a release marks for removal but still accepts, such as a Helm value the chart keeps only so existing values files validate.
 Start each one with "Deprecated", and say what replaces it or that nothing reads it any more.

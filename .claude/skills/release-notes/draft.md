@@ -26,6 +26,7 @@ Read first, in full:
    They notice: new or changed UI, REST API behaviour that SDK or UI users see, permissions and access, admin settings and cluster variables, error messages, performance they would feel (say what got faster), Helm values, and security fixes, as one entry per component group such as "Fixed security vulnerabilities in the Hopsworks server dependencies".
    They don't: refactors, tests, CI, build plumbing, logging internals, the release version bump, a change that only supports another entry (fold it in), and a fix for a bug that never shipped, because it came in within the same range.
    Leave out `hopsworks-api` changes on their own, because the release's Python client subsection shows the hopsworks-api release notes; use them to understand an application change of the same ticket.
+   A breaking change says, in a few words, what the behaviour was before, checked against the previous release.
    A security fix gets a bare entry, such as "Fixed a security issue in jobs", with no detail of the issue, as the guide says; describe the issue only in your report, for the evidence.
 3. Pick the subsection: What's changed, Configuration changes, Breaking changes or Deprecations, as the guide defines them.
    A feature that a value turns on stays in What's changed and names the value.

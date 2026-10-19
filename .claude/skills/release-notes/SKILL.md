@@ -86,8 +86,9 @@ Add the release to the page first, so the section has a place:
 Then turn the facts into entries.
 Account for every commit and every value change: in an entry, in an existing entry it supports, or in the left-out list of the report.
 
-- An X.Y.0 leaves out a commit marked `[shipped in ...]` for a patch release that came out before it, and says under its title which of those patch releases it includes, naming any change it lacks, as the "Patch releases" part of `inputs.md` shows.
-  A commit shipped in a patch release that came out after it stays, with `(also in [X.Y.Z][hopsworks-X-Y-Z])`.
+- An X.Y.0 repeats the entries of the previous minor version's patch releases rather than drafting new ones for the commits marked `[shipped in ...]`: copy each patch entry into the same subsection, end its first line with `(also in [X.Y.Z][hopsworks-X-Y-Z])`, point its docs links at the X.Y.0's minor version, and check that the change is in the X.Y.0 and still described correctly there.
+  Leave out what the X.Y.0 lacks, as the "Patch releases" part of `inputs.md` shows, and say so in a breaking change.
+  A commit shipped in a patch release that came out after the X.Y.0 gets an entry with the same marker.
 - Commits of different repos with the same ticket key (`[HWORKS-1234]`) are one entry.
 - A change that also ships in a patch release of another minor version is listed in both releases, without a marker; check the ticket keys of a patch release against the other minor versions' patch releases of the same days.
 - Read the diff of every commit you turn into an entry; a subject can promise more than the code does, and a later commit in the range can change or revert it.

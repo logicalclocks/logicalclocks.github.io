@@ -100,7 +100,7 @@ The releases of Hopsworks 5.0, newest first.
 
 - The chart no longer turns on Trino's MySQL event listener, which crash-looped the Trino coordinator after a MySQL server restart, so the [Trino query history](https://docs.hopsworks.ai/5.0/setup_installation/admin/trino/#query-history) stops recording queries.
   To keep it, add the listener to your values as the chart's `README.md` shows; recorded queries now lose their text and plan after `hopsworks.variables.trino_events_strip_details_after_days`, from the first nightly cleanup, so set it to `61` or more to keep them.
-- The RonDB REST server now uses a probe port and an upload path that need RonDB 26.02.11.
+- The RonDB REST server now uses a probe port and an upload path that need RonDB 26.02.11, instead of probing its REST port with no upload path.
   If you pin `rondb.rondb.images.rondb.tag` to an older version, set `rondb.rondb.rdrs.probePort.enabled: false` and `rondb.rondb.rdrs.uploadPath: ""`, or the REST server doesn't start.
 
 ### Upgraded components
@@ -148,9 +148,9 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Breaking changes
 
-- The Airflow migration Job now waits for the DDL MySQL server, so the upgrade hangs with `rondb.rondb.meta.ddlMySQLd.enabled: false`.
+- The Airflow migration Job now waits for the DDL MySQL server, instead of any MySQL server, so the upgrade hangs with `rondb.rondb.meta.ddlMySQLd.enabled: false`.
   Keep it enabled if you use Airflow.
-- Removed the Kafka quota defaults Job, so `kafka.cluster.kafka.quotas.defaults` is ignored with `type: strimzi`, and fails the render with `type: kafka` when `enabled` is `true`.
+- Removed the Kafka quota defaults Job, which applied `kafka.cluster.kafka.quotas.defaults` to each client, so it is ignored with `type: strimzi`, and fails the render with `type: kafka` when `enabled` is `true`.
   If you set it, move your limits to `kafka.cluster.kafka.quotas.strimzi` or `kafka.cluster.kafka.quotas.kafka`, with new numbers: the `strimzi` rates are a total per broker, shared by all clients.
 - `quotas` on a user in `kafka.users` now fail the render under the default `strimzi` plugin, which never enforced them.
   Remove them, or set `kafka.cluster.kafka.quotas.type: kafka`, `kafka.cluster.kafka.quotas.minAvailableRatioPerVolume: 0` and `kafka.cluster.kafka.authorizer.principalBuilderClass: ""` to enforce them.
@@ -178,7 +178,7 @@ The releases of Hopsworks 5.0, newest first.
 
 - Removed `hopsworks.variables.jupyter_spark_driver_memory_overhead_factor`, added in 5.0.10; the driver memory overhead of a notebook now comes from its Spark configuration.
   Remove it from your values before you upgrade, because the values schema rejects it; with `--reuse-values`, which keeps the old default, use `--reset-then-reuse-values`.
-- Filebeat now keeps only the Kubernetes labels listed under `olk.filebeat.kubernetesMetadata`, and the `serviceLabelKey` of each `olk.logstash.extendServicesPipeline` entry, on service logs.
+- Filebeat now keeps only the Kubernetes labels listed under `olk.filebeat.kubernetesMetadata`, and the `serviceLabelKey` of each `olk.logstash.extendServicesPipeline` entry, on service logs, instead of every pod label.
   Add any other label you filter on to `olk.filebeat.kubernetesMetadata.extraPodLabels`, `extraNamespaceLabels` or `extraNodeLabels`; an overridden `olk.filebeat.logs_locations` keeps its own `add_kubernetes_metadata` processor and every label, so to get the fix set `addKubernetesMetadata: true` on each entry and drop that processor.
 
 ### Upgraded components
@@ -272,7 +272,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Breaking changes
 
-- Init containers now set CPU and memory requests and limits.
+- Init containers now set CPU and memory requests and limits, which most of them used to leave unset.
   If a namespace `LimitRange` has a `min` or `max` they don't fit, set `global._hopsworks.initContainerResources` before you upgrade, or Kubernetes rejects the pods.
 
 ### Upgraded components
@@ -311,7 +311,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Breaking changes
 
-- `vpa.image.tag` is now a string, so an override such as `1.2` fails the values schema.
+- `vpa.image.tag` is now a string, instead of a number, so an override such as `1.2` fails the values schema.
   If you override it, quote it and set it equal to `vpa.imagesTag` before you upgrade; with `--reuse-values` and `global._hopsworks.vpaEnabled: true`, use `--reset-then-reuse-values`.
 
 ### Upgraded components
@@ -405,7 +405,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Breaking changes
 
-- The admin liveness and startup probes now have a default `exec` handler, so a probe you set with `httpGet` or `tcpSocket` also needs `exec: null`, or Kubernetes rejects the pod.
+- The admin liveness and startup probes now have a default `exec` handler, instead of no probe, so a probe you set with `httpGet` or `tcpSocket` also needs `exec: null`, or Kubernetes rejects the pod.
   This needs Helm 4 or Helm 3.17.1 or later, because older Helm 3 releases ignore a `null` for a subchart value.
 
 ### Deprecations
@@ -441,7 +441,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Breaking changes
 
-- `helm uninstall` now deletes the data volumes of the HopsFS DataNodes, MinIO, OpenSearch, Kafka, Consul and the remote shuffle service, for good.
+- `helm uninstall` now deletes the data volumes of the HopsFS DataNodes, MinIO, OpenSearch, Kafka, Consul and the remote shuffle service, for good, instead of keeping them.
   To keep them, set `global._hopsworks.wipeDataOnUninstall: false` or label the PVCs `hopsworks.ai/keep=true` before you uninstall; the Superset MySQL volume is deleted regardless.
 
 ### Upgraded components
@@ -491,7 +491,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Breaking changes
 
-- Feature monitoring is now on by default, and the upgrade writes `hopsworks.variables.enable_feature_monitoring` to the cluster, replacing a value set in the admin UI.
+- Feature monitoring is now on by default, instead of off, and the upgrade writes `hopsworks.variables.enable_feature_monitoring` to the cluster, replacing a value set in the admin UI.
   To keep it off, set it to `'false'` before you upgrade.
 
 ### Upgraded components
@@ -593,15 +593,15 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 
 - Upgraded Airflow from 1.10 to Airflow 3, and DAGs written for Airflow 1.10 don't run on it.
   The upgrade drops and recreates the Airflow metadata database, so DAG run history and the Variables and Connections created in Airflow are lost for good; see [Airflow 3 in Hopsworks](https://docs.hopsworks.ai/5.0/user_guides/projects/airflow/airflow3_upgrade/).
-- Hopsworks now deletes finished job executions and their logs 90 days after they end, and deletes the older ones as soon as it starts after the upgrade.
+- Hopsworks now deletes finished job executions and their logs 90 days after they end, instead of keeping them, and deletes the older ones as soon as it starts after the upgrade.
   Copy the logs you want to keep before you upgrade; the cluster variable `executions_ttl_days` sets the retention (`0` turns it off) and takes effect when Hopsworks restarts.
 - Removed `hopsworks.variables.dlthub_image_name`, replaced by the `dlthub-ingestion-pipeline` environment, and `hopsworks.payara.executorService`, replaced by `hopsworks.payara.websocketProxy`.
   Remove them from your values before you upgrade, because the values schema rejects them.
-- `global._hopsworks.superset.mysql.enabled` and `global._hopsworks.superset.redis.enabled` must match `superset.mysql.enabled` and `superset.superset.redis.enabled`.
+- `global._hopsworks.superset.mysql.enabled` and `global._hopsworks.superset.redis.enabled` must match `superset.mysql.enabled` and `superset.superset.redis.enabled`, which used to be enough on their own.
   If you disabled the MySQL or Redis of Superset, also set the matching global value to `false`, or the chart fails to render.
-- The Spark operator pre-upgrade Job now pulls the `spark-operator-crds` image (`spark.sparkOperatorUpgradeJob.crdImage`) on every upgrade (also in 4.8.17).
+- The Spark operator pre-upgrade Job now pulls the `spark-operator-crds` image (`spark.sparkOperatorUpgradeJob.crdImage`) on every upgrade, instead of the toolbox image (also in 4.8.17).
   Air-gapped installations must mirror it first, or `helm upgrade` fails.
-- `hopsworks.variables.jupyter_shell_command` is now a JSON list of the command and its arguments.
+- `hopsworks.variables.jupyter_shell_command` is now a JSON list of the command and its arguments, instead of a path.
   If you set it, rewrite it as a list, for example `'["/bin/bash"]'`, because a plain path produces an invalid Jupyter configuration.
 - Removed `VLLM_USE_FLASHINFER_SAMPLER=0` from the vLLM serving runtimes (also in 4.8.7).
   If you serve vLLM models on GPUs older than compute capability 7.5, set it in `kserve.kserve.servingruntime.vllmopenai.env` or `kserve.kserve.servingruntime.vllmomni.env`.
