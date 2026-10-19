@@ -14,7 +14,7 @@ With it off, Hopsworks schedules and reports GPUs from the Kubernetes API as bef
 
 With `run_ai_enable` set, Hopsworks does the following:
 
-- On project creation, Hopsworks creates a Run:ai project with the name of the project's Kubernetes namespace, bound to that namespace (`requestedNamespace`), in the Run:ai department named by `run_ai_default_department`.
+- On project creation, Hopsworks creates a Run:ai project with the name of the project's Kubernetes namespace, bound to that namespace (`requestedNamespace`), in the Run:ai department its Hopsworks department maps to (see below).
   It labels the namespace `runai/queue=<run:ai project>`.
   A Run:ai project that is already bound to the namespace is adopted instead.
 - Run:ai's admission webhooks then schedule every pod in the namespace with `runai-scheduler` in the project's queue: jobs, notebooks, terminals, Ray clusters and model deployments.
@@ -64,7 +64,7 @@ Assign quota to the projects that need GPU notebooks or deployments in the Run:a
 
     ```bash
     kubectl -n hopsworks create secret generic runai-hopsworks \
-      --from-literal=clientSecret=<client secret>
+      --from-literal=clientSecret='<client secret>'
     ```
 
 ## Helm values
@@ -88,7 +88,7 @@ hopsworks:
 | `run_ai_client_secret_name` | empty | Secret holding the client secret |
 | `run_ai_client_secret_key` | `clientSecret` | Key of the client secret in that Secret |
 | `run_ai_cluster_name` | empty | Run:ai cluster to use; empty selects the only one |
-| `run_ai_default_department` | `default` | Department new Run:ai projects are created in |
+| `run_ai_default_department` | `default` | Run:ai department for projects in the default Hopsworks department, and in any department with no Run:ai department of the same name |
 | `run_ai_project_gpu_quota` | `0` | Deserved GPUs of each new Run:ai project |
 | `run_ai_ready_timeout_s` | `30` | Seconds project creation waits for the Run:ai project to become Ready |
 | `run_ai_reconcile_interval_s` | `600` | Seconds between passes that bind existing projects |
