@@ -13,7 +13,7 @@ Releases without steps are not listed here.
 3. Required: act on the breaking changes of [5.2.0][hopsworks-5-2-0], and if you upgrade with `--reuse-values`, use `--reset-then-reuse-values` instead, because `--reuse-values` keeps the 5.1 defaults.
 4. Required: run the Kafka checks in [Before upgrading: Kafka][helm-upgrade-kafka] and prepare as in [Before you start][docs-kafka4-before].
 5. Required on a cluster installed before 5.1: plan the OpenSearch outage, and raise `olk.opensearch.indexUpgrade.activeDeadlineSeconds` (3600) for large indices, as in [OpenSearch 3.8.0][helm-upgrade-opensearch].
-   Don't use `olk.opensearch.indexUpgrade.enabled: false` as a dry run, because the Kafka migration runs before it.
+   On 5.2.0, don't use `olk.opensearch.indexUpgrade.enabled: false` as a dry run, because the Kafka migration runs before it; on [5.2.1][upgrading-to-5-2-1], `olk.opensearch.indexUpgrade.mode: report` runs before the Kafka migration and is a safe dry run.
 6. Required if you pull images from a private registry: mirror the new images, and start from the 5.2 [`values.airgap.yaml`][helm-airgap], which sets the registry of each subchart, including the new HopsFS CSI driver and KEDA.
 7. Required if you deploy with ArgoCD: sync with `global._hopsworks.mode: upgrade`, without which the Kafka migration, the OpenSearch index pass and the move of the Trino users to HopsFS don't run, and set `trino.auth.adminUserPwd` and `trino.auth.monitoringUserPwd` to the current Trino passwords unless `trino.auth.createSecrets` is `false` ([values][values-trino-auth]).
 8. Required if your values set `trino.trino.auth.passwordAuthSecret` or `groupsAuthSecret`: copy those Secrets to `trino-password-file` and `trino-groups-file`, and remove the values.

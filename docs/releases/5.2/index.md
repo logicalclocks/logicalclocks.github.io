@@ -19,10 +19,11 @@ To upgrade from 5.1 or between 5.2 releases, follow [Upgrading to Hopsworks 5.2]
 
 ### What's changed
 
-- Changed the OpenSearch index pass of the 5.1 to 5.2 upgrade to copy one index at a time behind a write block on that index alone, instead of refusing every OpenSearch client, reads included, for the whole pass; upgrade 5.1 clusters to 5.2.1 rather than 5.2.0 ([what keeps working][docs-os-what-works]).
-- Fixed restricted project members reading every field of their project's embedding indices; they now read only the features of a grant or a share, and get HTTP 403 without one ([security configuration][docs-os-security]).
-- Fixed OpenSearch restarts and the 5.1 to 5.2 index pass deleting the OpenSearch roles behind restricted grants and feature group shares, which left a shared project with HTTP 403, and every `helm upgrade` restarting OpenSearch.
 - Fixed the 5.1 to 5.2 index pass failing with `field _id not found` on an index with an empty mapping, such as a `projects` index that was never written, and losing documents that were not yet refreshed when it copied an index.
+- Fixed restricted project members reading every field of their project's embedding indices; they now read only the features of a grant or a share, and get HTTP 403 without one ([security configuration][docs-os-security]).
+- Changed the OpenSearch index pass of the 5.1 to 5.2 upgrade to copy one index at a time behind a write block on that index alone, instead of refusing every OpenSearch client, reads included, for the whole pass; upgrade 5.1 clusters to 5.2.1 rather than 5.2.0 ([what keeps working][docs-os-what-works]).
+- Fixed OpenSearch restarts and the 5.1 to 5.2 index pass deleting the OpenSearch roles behind restricted grants and feature group shares, which left a shared project with HTTP 403, and every `helm upgrade` restarting OpenSearch.
+- Changed the OpenSearch index pass to run before the Kafka migration, so its report (`olk.opensearch.indexUpgrade.mode: report`) and its refusals stop an upgrade from 5.1 before anything changes ([set the timeout][docs-os-timeout]).
 - Fixed the OpenSearch index pass not refusing a 5.0 cluster, still on OpenSearch 1.x, which can't be upgraded straight to 5.2.
 
 ### Configuration changes
@@ -45,111 +46,111 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 
 ### What's changed
 
+- Fixed model deployments answering 403 to users on a password an administrator set, and still admitting users deactivated or removed from the project; accounts and memberships from before the upgrade are corrected at their next change.
+- Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, `insert(wait_for_online_ingestion=True)` returning before the rows were online, and apps reporting the execution they replaced.
+- Fixed security vulnerabilities in the HopsFS, Hive Metastore, Trino, Spark history server and Ray images, and in the Hopsworks server dependencies.
+- Fixed queued service operations failing on every retry when they removed a user from Superset or set up Superset for a project Observer, and security vulnerabilities in the Payara, Hopsworks certificate authority, Grafana, Filebeat and Superset images and the MySQL and Redis of Superset (also in [5.1.2][hopsworks-5-1-2]).
+- Changed Trino to read its users, groups, user catalogs and access rules from HopsFS instead of Secrets, which fixes `helm upgrade` failing on clusters with many Trino catalogs or project members.
+- Fixed Helm 4 server-side apply conflicts on `helm upgrade` over the replicas of HPA-managed workloads other than the RonDB REST server, the rules of the Knative serving webhooks and the `rss-configuration` ConfigMap ([Helm 4 notes][helm4-migration]).
 - Added the HopsFS CSI driver, on by default (`global._hopsworks.csi.enabled`), which mounts HopsFS into Jupyter, web terminal, Python and Ray job, Python app, Python deployment, Airflow and Trino pods without a privileged container; Trino needs it ([values][values-hopsfs-csi]).
 - Added the KServe Standard deployment mode, the default for new model deployments, which runs a deployment as a Kubernetes Deployment instead of a Knative service; existing deployments keep Knative mode.
 - Added KEDA 2.21 and its HTTP add-on, installed by default (`hopsworks.variables.kube_keda_installed`), to autoscale Standard-mode deployments on CPU, memory, requests or vLLM engine metrics and scale them to zero ([scaling][docs-autoscaling], [values][values-hw-keda]).
+- Added the Factory, where users build ML systems and analytics tables in the web terminal, with their code in Git or in Hopsworks only; it needs `hopsworks.terminal.enabled` (`hopsworks.factory_enabled`, `hopsworks.factory_chat_enabled`) ([Factory][docs-factory]).
+- Changed job, Jupyter, app and deployment logs to be read live from Kubernetes instead of being shipped to OpenSearch; Jupyter and app logs, and those of Python deployments with disk logging on (the default), are archived to the project's `Logs` dataset ([deployment logs][docs-serving-logs]).
+- Changed LLM deployments to vLLM and vLLM-Omni v0.28.0; deployments created or edited on 5.1 keep v0.20.0 until you change their vLLM version, so keep the v0.20.0 images in a mirrored registry.
+- Changed the built-in Python environments to Python 3.13; custom environments keep the Python version they were built with.
+- Added support for Kubernetes 1.37; upgrade Hopsworks to 5.2 before the cluster, because 5.1 doesn't install on 1.37.
+- Added sharing of Trino catalogs and feature groups with other projects, down to schemas, tables and columns, and private Trino catalogs of one user ([sharing][docs-trino-sharing], [private catalogs][docs-trino-private]).
+- Added real-time feature logging to an online feature group, for feature views that start logging on 5.2 ([feature logging][docs-feature-logging]).
 - Added scale to zero for idle Python apps when KEDA is installed, after `hopsworks.variables.pythonapp_idle_cooldown_seconds` (6 hours); with ingress-nginx, raise `nginx.ingress.kubernetes.io/proxy-read-timeout` in `hopsworks.ingress.annotations`, or the request that wakes an app fails after 60 seconds ([apps][docs-apps-idle]).
-- Added Flask, Gradio and Node.js apps, which start from their app file like Streamlit apps ([app types][docs-apps-types]).
 - Added database access for apps, on by default, which creates the project's online feature store database and gives the app its `MYSQL_*` connection variables; apps also get `TRINO_*` variables where the project has Trino ([database access][docs-apps-db]).
-- Added npm installs of many packages in one build, from a list, a `package.json` with its lockfile or a Git repository ([npm packages][docs-npm]).
+- Added Flask, Gradio and Node.js apps, which start from their app file like Streamlit apps ([app types][docs-apps-types]).
 - Added versions of model deployments, so an earlier configuration can be activated again ([versions][docs-deployment-versions]).
 - Added deployment schemas, which validate inference requests, and deployments of a model or a feature view without a predictor script ([deployment schema][docs-deployment-schema]).
 - Added separate Python environments for the predictor and the transformer of a model deployment.
-- Added real-time feature logging to an online feature group, for feature views that start logging on 5.2 ([feature logging][docs-feature-logging]).
-- Added event-time windows to feature monitoring, the default for new configurations on feature groups and feature views with an event time; existing configurations are unchanged ([time basis][docs-fm-time-basis]).
-- Added sharing of Trino catalogs and feature groups with other projects, down to schemas, tables and columns, and private Trino catalogs of one user ([sharing][docs-trino-sharing], [private catalogs][docs-trino-private]).
-- Added Trino connector table functions, such as `system.query`, for Data Owners on their project's Trino catalogs.
 - Added per-member credentials for Oracle data sources, so that each member reads with their own username, password and wallet, also through Trino catalogs and in jobs, Jupyter, terminals and apps ([provided credentials][docs-ds-provided]).
+- Added event-time windows to feature monitoring, the default for new configurations on feature groups and feature views with an event time; existing configurations are unchanged ([time basis][docs-fm-time-basis]).
 - Added `spine_df` to `FeatureView.get_batch_data` and the training data methods, to read features for rows you supply, within `hopsworks.variables.featurestore_asof_spine_max_rows` and the related size limits.
-- Added the Factory, where users build ML systems and analytics tables in the web terminal, with their code in Git or in Hopsworks only; it needs `hopsworks.terminal.enabled` (`hopsworks.factory_enabled`, `hopsworks.factory_chat_enabled`) ([Factory][docs-factory]).
-- Added a `hopsworks_analytics` project, off by default (`hopsworks.variables.hopsworks_analytics`), for cluster-wide Superset dashboards on the Hopsworks metadata, which exposes user email addresses to every Hopsworks administrator and to the model provider of the dashboard setup ([values][values-hopsworks-analytics]).
-- Added proxy tokens for apps and Superset, off by default (`hopsworks.variables.hopsable_proxy_enabled`), so that a gateway outside the cluster can relay requests to them for API-key clients.
+- Changed removing a member from a project to hand their home directory to a Data Owner, chosen in the remove dialog, instead of leaving it unreadable ([removed members][docs-member-files]).
+- Changed the feature store sharing card in the project settings to manage shares with projects and grants to restricted users, of the whole feature store or of single feature groups ([sharing][docs-fs-sharing]).
+- Changed project creation to give every project Trino and Superset where the cluster runs them, also through the REST API, where a request without a service list created a project with Kafka only.
+- Changed datasets to be searchable by name, description and tags; tags now attach to a whole dataset, and existing tags on files inside a dataset can be read and deleted but no longer added.
 - Added the `TERMINAL` API key scope, so that the `hops` CLI can start, extend and attach to web terminal sessions and teleport Claude Code sessions to them; staged teleport files are deleted after `hopsworks.terminal.teleportTtlDays` (7), and the unused `KUBE` and `SINK` scopes are removed ([teleport][docs-teleport], [scopes][docs-api-scopes]).
 - Added a memory guard to web terminals, on by default (`hopsworks.terminal.oomGuard`), which ends the process using the most memory instead of losing the session, and an out-of-memory notice when a session is lost anyway.
-- Added Elasticsearch, ClickHouse and Teradata as data sources.
-- Added an execution graph of the dbt models and tests to the executions of jobs on `dbt-pipeline` environments whose run writes one.
-- Added time-to-live settings to the feature group create and edit forms, which ask before a change deletes online rows ([TTL][docs-ttl]).
-- Added backups and restores of the Superset database, on by default with the cluster backups ([disaster recovery][docs-superset-backup]).
-- Added support for Kubernetes 1.37; upgrade Hopsworks to 5.2 before the cluster, because 5.1 doesn't install on 1.37.
-- Changed job, Jupyter, app and deployment logs to be read live from Kubernetes instead of being shipped to OpenSearch; Jupyter and app logs, and those of Python deployments with disk logging on (the default), are archived to the project's `Logs` dataset ([deployment logs][docs-serving-logs]).
-- Changed the built-in Python environments to Python 3.13; custom environments keep the Python version they were built with.
-- Changed LLM deployments to vLLM and vLLM-Omni v0.28.0; deployments created or edited on 5.1 keep v0.20.0 until you change their vLLM version, so keep the v0.20.0 images in a mirrored registry.
-- Changed Trino to read its users, groups, user catalogs and access rules from HopsFS instead of Secrets, which fixes `helm upgrade` failing on clusters with many Trino catalogs or project members.
 - Changed the Trino administrator, which the admin SQL console uses, to read only the `system`, `tpch` and `tpcds` catalogs.
 - Changed reads of a feature view whose feature groups all come from one Snowflake data source to run the point-in-time joins in Snowflake.
-- Changed datasets to be searchable by name, description and tags; tags now attach to a whole dataset, and existing tags on files inside a dataset can be read and deleted but no longer added.
+- Added npm installs of many packages in one build, from a list, a `package.json` with its lockfile or a Git repository ([npm packages][docs-npm]).
+- Added Trino connector table functions, such as `system.query`, for Data Owners on their project's Trino catalogs.
+- Added Elasticsearch, ClickHouse and Teradata as data sources.
+- Added backups and restores of the Superset database, on by default with the cluster backups ([disaster recovery][docs-superset-backup]).
+- Added a `hopsworks_analytics` project, off by default (`hopsworks.variables.hopsworks_analytics`), for cluster-wide Superset dashboards on the Hopsworks metadata, which exposes user email addresses to every Hopsworks administrator and to the model provider of the dashboard setup ([values][values-hopsworks-analytics]).
+- Added proxy tokens for apps and Superset, off by default (`hopsworks.variables.hopsable_proxy_enabled`), so that a gateway outside the cluster can relay requests to them for API-key clients.
+- Added time-to-live settings to the feature group create and edit forms, which ask before a change deletes online rows ([TTL][docs-ttl]).
+- Added an execution graph of the dbt models and tests to the executions of jobs on `dbt-pipeline` environments whose run writes one.
+- Changed the SQL Runner of the Query Engine page to fill the page, show row numbers and column types, list a table's columns and draw `EXPLAIN (FORMAT GRAPHVIZ)` plans as a graph, and fixed it leaving queries running and completing no column names after `FROM` (also in [5.1.2][hopsworks-5-1-2]).
 - Changed adding a member to a project to create the member's home directory in the background.
-- Changed removing a member from a project to hand their home directory to a Data Owner, chosen in the remove dialog, instead of leaving it unreadable ([removed members][docs-member-files]).
-- Changed project creation to give every project Trino and Superset where the cluster runs them, also through the REST API, where a request without a service list created a project with Kafka only.
 - Changed project creation to refuse a pre-created namespace longer than 25 characters, like a project name.
-- Changed the feature store sharing card in the project settings to manage shares with projects and grants to restricted users, of the whole feature store or of single feature groups ([sharing][docs-fs-sharing]).
 - Changed the Set up data source dialog to list each SQL engine and CRM vendor as its own choice, with a filter box, and the Snowflake form to accept a programmatic access token in its password field.
 - Changed the Jupyter overview to show the server's log archives and its configuration, which is saved when you start Jupyter.
 - Changed Hugging Face model imports to download a single commit, which can be given as a revision and is recorded in the model's description.
 - Changed the coding agent instruction files in members' home directories, such as `AGENTS.md`, to be updated on upgrade unless the member edited them.
 - Fixed filtered similarity search failing on embedding indices created before 5.1, which the upgrade rebuilds on faiss ([upgrading OpenSearch][docs-os-faiss]).
-- Fixed Helm 4 server-side apply conflicts on `helm upgrade` over the replicas of HPA-managed workloads other than the RonDB REST server, the rules of the Knative serving webhooks and the `rss-configuration` ConfigMap ([Helm 4 notes][helm4-migration]).
-- Fixed model deployments answering 403 to users on a password an administrator set, and still admitting users deactivated or removed from the project; accounts and memberships from before the upgrade are corrected at their next change.
-- Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, `insert(wait_for_online_ingestion=True)` returning before the rows were online, and apps reporting the execution they replaced.
-- Fixed tags and keywords added right after an artifact was created missing from search.
-- Fixed deleted feature views, feature groups and projects coming back as empty entries, which blocked creating new ones with the same name.
 - Fixed ingestion statistics runs piling up on frequently written feature groups and leaving other jobs pending; at most one runs per feature group.
+- Fixed deleted feature views, feature groups and projects coming back as empty entries, which blocked creating new ones with the same name.
 - Fixed Python engine reads failing for queries with a filter on a joined feature group or a filter that compares features of two feature groups.
 - Fixed writes to Iceberg feature groups from Python jobs and apps failing with `Unable to load libhdfs`.
-- Fixed the table preview of a PostgreSQL data source failing for a role granted only some columns.
 - Fixed a Jupyter server that had just started failing requests on clusters with more than one Hopsworks instance.
 - Fixed project creation sometimes failing and rolling back on a group that "already exists".
-- Fixed Spark Connect in web terminals never starting on clusters that enforce the Kyverno restricted policies.
-- Fixed agent deployments that mount HopsFS never starting on OpenShift.
-- Fixed the dialogs of Git repository actions in the project settings closing on their own, and transformation function previews showing the imports of the defining module.
 - Fixed the Hopsworks admin pod starting before the database migrations had finished.
 - Fixed the Hive Metastore `metastore-db-init` Job failing on a fresh install when it started before the HopsFS NameNode.
-- Fixed security vulnerabilities in the HopsFS, Hive Metastore, Trino, Spark history server and Ray images, and in the Hopsworks server dependencies.
-- Changed the SQL Runner of the Query Engine page to fill the page, show row numbers and column types, list a table's columns and draw `EXPLAIN (FORMAT GRAPHVIZ)` plans as a graph, and fixed it leaving queries running and completing no column names after `FROM` (also in [5.1.2][hopsworks-5-1-2]).
-- Fixed queued service operations failing on every retry when they removed a user from Superset or set up Superset for a project Observer, and security vulnerabilities in the Payara, Hopsworks certificate authority, Grafana, Filebeat and Superset images and the MySQL and Redis of Superset (also in [5.1.2][hopsworks-5-1-2]).
+- Fixed Spark Connect in web terminals never starting on clusters that enforce the Kyverno restricted policies.
+- Fixed agent deployments that mount HopsFS never starting on OpenShift.
+- Fixed tags and keywords added right after an artifact was created missing from search.
+- Fixed the table preview of a PostgreSQL data source failing for a role granted only some columns.
+- Fixed the dialogs of Git repository actions in the project settings closing on their own, and transformation function previews showing the imports of the defining module.
 
 ### Configuration changes
 
-- Added `kserve.kserve.storage.resources` for the storage initializer that downloads models into deployment pods.
-- Added `kafka.cluster.kafka.config.replicationFactor` and `minInsyncReplicas` for multi-broker Kafka; `minInsyncReplicas` above a topic's replicas makes `acks=all` writes to it fail ([values][values-kafka]).
-- Changed the default driver memory of new Ray jobs (`hopsworks.variables.ray_job_driver_memory`) from 2048 to 4096 MB.
 - Changed `hopsworks.variables.trino_default_catalog` from `hive` to `delta`, the catalog new Superset connections to Trino open in.
+- Changed the default driver memory of new Ray jobs (`hopsworks.variables.ray_job_driver_memory`) from 2048 to 4096 MB.
 - Changed `values.openshift.yaml` to turn on credential files for Trino catalogs (`global._hopsworks.trino.mountableSecrets.enabled`).
-- Fixed Helm 4 rejecting an empty `kafka.cluster.kafka.authorizer.authorizerClass`.
-- Fixed `global._hopsworks.jobs.ttlSecondsAfterFinished: 0` being replaced by `86400`.
 - Changed `hopsworks.variables.trino_events_cleaner_batch_size` from 1000 to 100 (also in [5.1.2][hopsworks-5-1-2]).
+- Fixed `global._hopsworks.jobs.ttlSecondsAfterFinished: 0` being replaced by `86400`.
+- Fixed Helm 4 rejecting an empty `kafka.cluster.kafka.authorizer.authorizerClass`.
+- Added `kafka.cluster.kafka.config.replicationFactor` and `minInsyncReplicas` for multi-broker Kafka; `minInsyncReplicas` above a topic's replicas makes `acks=all` writes to it fail ([values][values-kafka]).
+- Added `kserve.kserve.storage.resources` for the storage initializer that downloads models into deployment pods.
 
 ### Breaking changes
 
 - Upgrade to 5.2 only from 5.1, satellites before central, with central and its satellites all under Helm or all under ArgoCD ([upgrade guide][helm-upgrade-guide]).
 - Upgrade 5.1 clusters to [5.2.1][hopsworks-5-2-1] instead of 5.2.0, whose OpenSearch index pass refuses every client and whose OpenSearch restarts delete the roles behind restricted-access grants and feature group shares; on [5.1.2][hopsworks-5-1-2], which fixed those restarts, 5.2.0 is a regression.
 - The upgrade migrates Kafka from ZooKeeper to KRaft, which can't be undone: give `helm upgrade` a long enough `--timeout`, never pass `--atomic` (`--rollback-on-failure` in Helm 4) or run `helm rollback`, and under ArgoCD sync twice ([Kafka 4 and KRaft][docs-kafka4-expect]).
-- Kafka 4.3 rejects clients older than Apache Kafka 2.1 or librdkafka 1.8.2; upgrade them first ([client compatibility][docs-kafka4-clients]).
 - On a cluster installed before 5.1, OpenSearch refuses every client while the upgrade copies its oldest indices; plan the outage and the timeout ([upgrade guide][helm-upgrade-opensearch]).
-- OpenSearch now reports its own version, `3.8.0`, instead of `7.10.2`; check clients that connect to it directly against the [OpenSearch 3.0 breaking changes](https://docs.opensearch.org/latest/breaking-changes/).
 - OpenSearch snapshot repositories on MinIO before `RELEASE.2025-01-20T14-49-07Z` and on other S3-compatible stores that require `Content-MD5` need `legacy_md5_checksum_calculation: true`, or the upgrade fails ([upgrade guide][helm-upgrade-opensearch]).
-- KEDA, installed by default, can't share a Kubernetes cluster with another KEDA or the OpenShift Custom Metrics Autoscaler, including the KEDA of another Hopsworks release such as a satellite; set `hopsworks.variables.kube_keda_installed: false` on all but one ([upgrade guide][helm-upgrade-keda]).
 - The chart now creates a cluster-wide IngressClass named `istio`; if the cluster already has one, set `kserve.istio.ingressClass.enabled: false`, or the upgrade fails.
-- Removed the KServe local model controller; if you set `kserve.kserve.localmodel.enabled: true`, remove it, or the chart fails to render.
-- Project namespaces now get a NetworkPolicy that admits traffic only from the same namespace and the Hopsworks namespace; add any other namespace that reaches project pods, such as Istio or monitoring, to `hopsworks.variables.project_namespace_network_policy_allowed_namespaces` ([values][values-netpol]).
-  Turning them off with `hopsworks.variables.project_namespace_network_policy_enabled: false` leaves the existing ones; delete them with `kubectl delete networkpolicy -A --field-selector metadata.name=hopsworks-project-isolation`.
+- KEDA, installed by default, can't share a Kubernetes cluster with another KEDA or the OpenShift Custom Metrics Autoscaler, including the KEDA of another Hopsworks release such as a satellite; set `hopsworks.variables.kube_keda_installed: false` on all but one ([upgrade guide][helm-upgrade-keda]).
 - With `hopsworks.rbac.useExistingRole: true`, add the chart's new [ClusterRole grants][helm-role] on `scaledobjects`, `interceptorroutes`, `ingresses`, `networkpolicies` and `csidrivers`, or model deployments and project creation fail.
 - On OpenShift, use the `values.openshift.yaml` of the 5.2 chart, which creates an SCC for the privileged HopsFS CSI node plugin; if a cluster administrator owns SCCs, see the [hopsfs-csi README][helm-csi-scc].
 - Overrides of the Trino `initContainers`, `additionalVolumes` or `additionalVolumeMounts`, including those [5.1.0][hopsworks-5-1-0] asked for with `hopsworks.hopsfsMount.enabled: false`, fail the render; remove the overrides, or copy the new entries from the chart into them.
-- If you override `trino.trino.image.tag`, use a Hopsworks Trino image of `483-v2` or later and set `global._hopsworks.trino.image.tag` to the same tag.
-- If you set `trino.trino.serviceAccount.name`, set `trino.trinotest.serviceAccount.name` to the same name.
+- Removed the KServe local model controller; if you set `kserve.kserve.localmodel.enabled: true`, remove it, or the chart fails to render.
 - With cluster backups on, Superset backups need an object store and, with `superset.auth.createSecrets: false`, the `backup.hops.works/include=true` label on its Secrets, or the chart fails to render; set `superset.backups.enabled: false` to skip them ([disaster recovery][docs-superset-backup]).
 - If your release namespace is longer than 34 characters, set `global._hopsworks.csi.driverName`, because the default driver name would exceed 63 characters.
 - With Helm 4, pass `--skip-crds` to a `helm install` on a cluster that already has the Strimzi CRDs, and after a reinstall run `helm upgrade` once to recreate the KEDA CRDs ([upgrade guide][helm-upgrade-strimzi]).
-- MongoDB data sources need MongoDB 4.2 or later; upgrade older MongoDB servers, or browsing and testing their data sources fails.
-- Web terminal sessions now last 8 hours, and every upgrade sets `terminal_session_hours` from `hopsworks.terminal.sessionHours`, replacing a value set in the admin UI ([upgrade guide][helm-upgrade-terminal]).
+- Kafka 4.3 rejects clients older than Apache Kafka 2.1 or librdkafka 1.8.2; upgrade them first ([client compatibility][docs-kafka4-clients]).
+- Project namespaces now get a NetworkPolicy that admits traffic only from the same namespace and the Hopsworks namespace; add any other namespace that reaches project pods, such as Istio or monitoring, to `hopsworks.variables.project_namespace_network_policy_allowed_namespaces` ([values][values-netpol]).
+  Turning them off with `hopsworks.variables.project_namespace_network_policy_enabled: false` leaves the existing ones; delete them with `kubectl delete networkpolicy -A --field-selector metadata.name=hopsworks-project-isolation`.
 - Trino no longer records the admin query history, and its records lose their query text after `hopsworks.variables.trino_events_strip_details_after_days` (7); to keep either, or if your values restate `trino.trino.additionalConfigProperties`, see the [upgrade guide][helm-upgrade-trino] (also in [5.1.2][hopsworks-5-1-2]).
+- OpenSearch now reports its own version, `3.8.0`, instead of `7.10.2`; check clients that connect to it directly against the [OpenSearch 3.0 breaking changes](https://docs.opensearch.org/latest/breaking-changes/).
+- MongoDB data sources need MongoDB 4.2 or later; upgrade older MongoDB servers, or browsing and testing their data sources fails.
+- If you override `trino.trino.image.tag`, use a Hopsworks Trino image of `483-v2` or later and set `global._hopsworks.trino.image.tag` to the same tag.
+- If you set `trino.trino.serviceAccount.name`, set `trino.trinotest.serviceAccount.name` to the same name.
+- Web terminal sessions now last 8 hours, and every upgrade sets `terminal_session_hours` from `hopsworks.terminal.sessionHours`, replacing a value set in the admin UI ([upgrade guide][helm-upgrade-terminal]).
 
 ### Deprecations
 
-- Deprecated `global._hopsworks.trino.mountableSecrets.mechanism`, `global._hopsworks.trino.userCatalogShards`, `trino.auth.adminUserPwdHash`, `trino.auth.monitoringUserPwdHash` and `hw-kyverno.policyExceptions.trino`, which nothing reads any more.
-- Deprecated `hopsworks.variables.mount_hopsfs_in_python_job`, which only legacy Python jobs still read.
 - Deprecated the name of `kafka.cluster.zookeeper`, which now sizes and places the KRaft controllers; its `services.client.annotations` is no longer read.
+- Deprecated `hopsworks.variables.mount_hopsfs_in_python_job`, which only legacy Python jobs still read.
+- Deprecated `global._hopsworks.trino.mountableSecrets.mechanism`, `global._hopsworks.trino.userCatalogShards`, `trino.auth.adminUserPwdHash`, `trino.auth.monitoringUserPwdHash` and `hw-kyverno.policyExceptions.trino`, which nothing reads any more.
 - Deprecated the `environmentDTO` field of model deployments in the REST API; use `predictorEnvironment` and `transformerEnvironment`.
 
 ### Upgraded components
