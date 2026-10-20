@@ -9,3 +9,4 @@ This section serves to provide guides and examples for the common usage of agent
 - [Feedback](feedback/index.md): Verdicts on what an agent answered, from reviewers and from end users, and what reads them.
 - [Evaluation](evaluation/index.md): Suites of tasks graded by checks, the runs that execute them, and the gate a release reads.
 - [Monitoring](monitoring/index.md): Grading the traffic an agent actually served, on a schedule.
+- [Failure Analysis](failure_analysis/index.md): Turning feedback into regression tasks, with a reviewer deciding and a model drafting.

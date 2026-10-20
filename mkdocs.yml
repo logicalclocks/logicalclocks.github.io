@@ -279,6 +279,7 @@ nav:
           - Feedback: user_guides/agents/feedback/index.md
           - Evaluation: user_guides/agents/evaluation/index.md
           - Monitoring: user_guides/agents/monitoring/index.md
+          - Failure Analysis: user_guides/agents/failure_analysis/index.md
       - Migration 3.X to 4.0: user_guides/migration/40_migration.md
   - Administration:
       - setup_installation/index.md
