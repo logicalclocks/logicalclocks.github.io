@@ -32,6 +32,7 @@ This ingestion flow supports multiple data sources:
 
 - SQL-like sources can either create an external feature group or ingest data into a new feature group.
 - The SQL family currently includes Snowflake, BigQuery, Redshift, generic JDBC (MySQL, PostgreSQL, Oracle, SQL Server), and SAP HANA.
+- A [Hopsworks][data-source-hopsworks] source copies a feature group from another Hopsworks cluster, with full or incremental loads.
 - CRM and REST API sources use the ingestion path only.
 - Incremental loading is available for SQL and REST API sources.
 - CRM sources currently use full-load ingestion.

@@ -58,6 +58,14 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure][data-source-sap-hana]
 
+- :material-server-network:{ .lg .middle style="color:var(--hops-accent-text)" } **Hopsworks**
+
+    ---
+
+    Read and ingest feature groups from another Hopsworks cluster.
+
+    [:octicons-arrow-right-24: Configure][data-source-hopsworks]
+
 - :material-database:{ .lg .middle style="color:var(--hops-accent-text)" } **JDBC**
 
     ---
