@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792482579` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792495601` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2806,6 +2806,16 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         rondb_quotas: ''
         rondb_usage_cache_ttl_seconds: '60'
         rondb_usage_query_timeout_seconds: '10'
+        run_ai_client_id: ''
+        run_ai_client_secret_key: clientSecret
+        run_ai_client_secret_name: ''
+        run_ai_cluster_name: ''
+        run_ai_default_department: default
+        run_ai_enable: false
+        run_ai_project_gpu_quota: 0
+        run_ai_ready_timeout_s: 30
+        run_ai_reconcile_interval_s: 600
+        run_ai_url: http://runai-backend-traefik.runai-backend.svc.cluster.local:8080
         saas_entry_point_url: ''
         scikit_learn_version: 1.3.2
         service_jwt_exp_leeway_sec: '172800000'
@@ -4162,6 +4172,46 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.rondb_usage_query_timeout_seconds` <a class="headerlink" href="#helm.hopsworks.variables.rondb_usage_query_timeout_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.rondb_usage_query_timeout_seconds }
 :   Type `string`, default `"10"`.
     Query timeout (seconds) for the ndbinfo memory usage scan. Scan duration grows with the cluster's table count; raise this on large clusters if usage stops showing in the project quotas UI.
+
+`hopsworks.variables.run_ai_client_id` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_client_id" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_client_id }
+:   Type `string`, default `""`.
+    Client id of the Run:ai service account Hopsworks authenticates as. Give it the System administrator role at cluster scope; Hopsworks uses its Clusters, Departments and Node pools View and Projects View, Create and Delete permissions
+
+`hopsworks.variables.run_ai_client_secret_key` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_client_secret_key" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_client_secret_key }
+:   Type `string`, default `"clientSecret"`.
+    Key of the client secret in run_ai_client_secret_name
+
+`hopsworks.variables.run_ai_client_secret_name` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_client_secret_name" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_client_secret_name }
+:   Type `string`, default `""`.
+    Secret in the release namespace that holds the Run:ai service account's client secret
+
+`hopsworks.variables.run_ai_cluster_name` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_cluster_name" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_cluster_name }
+:   Type `string`, default `""`.
+    Run:ai cluster to use; empty selects the only cluster the control plane knows
+
+`hopsworks.variables.run_ai_default_department` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_default_department" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_default_department }
+:   Type `string`, default `"default"`.
+    Run:ai department for projects in the default Hopsworks department, and in any department with no Run:ai department of the same name. It must already exist
+
+`hopsworks.variables.run_ai_enable` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_enable" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_enable }
+:   Type `bool`, default `false`.
+    Let NVIDIA Run:ai schedule the GPUs of Hopsworks projects: each project is bound to a Run:ai project on its namespace and GPU availability is read from Run:ai. Needs run_ai_client_id and run_ai_client_secret_name, and cannot be combined with global._hopsworks.kueue.enabled. Only this value enables Run:ai: Cluster settings refuses changing it
+
+`hopsworks.variables.run_ai_project_gpu_quota` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_project_gpu_quota" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_project_gpu_quota }
+:   Type `int`, default `0`.
+    Deserved GPUs of each Run:ai project Hopsworks creates; Run:ai admins change quotas in Run:ai afterwards
+
+`hopsworks.variables.run_ai_ready_timeout_s` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_ready_timeout_s" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_ready_timeout_s }
+:   Type `int`, default `30`.
+    Seconds project creation waits for a new Run:ai project to become Ready
+
+`hopsworks.variables.run_ai_reconcile_interval_s` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_reconcile_interval_s" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_reconcile_interval_s }
+:   Type `int`, default `600`.
+    Seconds between passes that bind projects created before Run:ai was enabled
+
+`hopsworks.variables.run_ai_url` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_url" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_url }
+:   Type `string`, default `"http://runai-backend-traefik.runai-backend.svc.cluster.local:8080"`.
+    Run:ai control-plane URL reachable from the Payara pods
 
 `hopsworks.variables.saas_entry_point_url` <a class="headerlink" href="#helm.hopsworks.variables.saas_entry_point_url" title="Permanent link">#</a> { #helm.hopsworks.variables.saas_entry_point_url }
 :   Type `string`, default `""`.
