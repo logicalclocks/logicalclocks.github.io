@@ -69,6 +69,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `command_search_fs_history_enable` | Boolean | `false` | Settings.java |
 | `command_search_fs_history_window_as_s` | Long | `3600` | Settings.java |
 | `command_search_fs_process_timer_period_as_ms` | Long | `1000` | Settings.java |
+| `command_search_fs_reindex_queue_wait_as_ms` | Long | `1800000` | Settings.java |
 | `command_search_fs_retry_backoff_base_as_ms` | Long | `5000` | Settings.java |
 | `command_search_fs_retry_backoff_max_as_ms` | Long | `300000` | Settings.java |
 | `conda_default_repo` | String | `defaults` | Settings.java |
@@ -77,6 +78,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `created_by_label_value` | String | `hopsworks` | KubeSettings.java |
 | `cross_project_global_search_enabled` | Boolean | `true` | Settings.java |
 | `csi_driver_enabled` | Boolean | `false` | Settings.java |
+| `csi_driver_name` | String | `hopsfs.csi.logicalclocks.com` | Settings.java |
 | `csi_sidecar_image` | String | `docker.hops.works/hopsworks/hopsfs-csi:0.1.0-SNAPSHOT` | Settings.java |
 | `databricks_account_host_allowlist` | String | `accounts.cloud.databricks.com,accounts.azuredatabricks.net,accounts.gcp.databricks.com` | Settings.java |
 | `databricks_oauth_allow_private_ranges` | Boolean | `false` | Settings.java |
@@ -182,6 +184,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `enable_crm_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_custom_branding` | Boolean | `false` | Settings.java |
 | `enable_data_science_profile` | Boolean | `false` | Settings.java |
+| `enable_elasticsearch_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_feature_monitoring` | Boolean | `false` | Settings.java |
 | `enable_gcs_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_glue_storage_connectors` | Boolean | `true` | Settings.java |
@@ -205,6 +208,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `executions_cleaner_interval_ms` | Integer | `600000` | Settings.java |
 | `executions_per_job_limit` | Integer | `10000` | Settings.java |
 | `executions_ttl_days` | Integer | `90` | Settings.java |
+| `factory_enabled` | Boolean | `false` | Settings.java |
 | `feature_monitoring_max_num_features` | Integer | `15` | Settings.java |
 | `featurestore_asof_spine_max_bytes` | Long | `1073741824` | Settings.java |
 | `featurestore_asof_spine_max_columns` | Integer | `256` | Settings.java |
@@ -261,6 +265,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `hops_helm_install_namespace` | String | `hopsworks` *(duplicate key, also declared in Settings.java; values match)* | KubeSettings.java |
 | `hops_helm_install_namespace` | String | `hopsworks` *(duplicate key, also declared in KubeSettings.java; values match)* | Settings.java |
 | `hops_rpc_tls` | Boolean | `false` | Settings.java |
+| `hopsable_proxy_enabled` | Boolean | `false` | Settings.java |
 | `hopsfs_mount_mount_path` | String | `/hopsfs` | Settings.java |
 | `hopsfsmount_log_level` | String | `warn` | Settings.java |
 | `hopsfsmount_nn_connections` | Integer | `4` | Settings.java |
@@ -471,9 +476,12 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `python_job_memory` | Integer | `2048` | Settings.java |
 | `python_library_updates_monitor_interval` | String | `1d` | Settings.java |
 | `python_pod_kill_grace_period_seconds` | Long | `600` | Settings.java |
+| `pythonapp_cold_start_timeout_max_seconds` | Integer | `300` | Settings.java |
 | `pythonapp_cores` | Double | `1.0` | Settings.java |
 | `pythonapp_gpus` | Integer | `0` | Settings.java |
+| `pythonapp_idle_cooldown_seconds` | Integer | `21600` | Settings.java |
 | `pythonapp_memory` | Integer | `2048` | Settings.java |
+| `pythonapp_proxy_token_ttl_ms` | Long | `900000` | Settings.java |
 | `quotas_featuregroups_online_disabled` | Long | `-1` | Settings.java |
 | `quotas_featuregroups_online_enabled` | Long | `-1` | Settings.java |
 | `quotas_max_parallel_executions` | Long | `-1` | Settings.java |
@@ -511,6 +519,15 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `rondb_quotas` | String | *(empty string)* | Settings.java |
 | `rondb_usage_cache_ttl_seconds` | Integer | `60` | Settings.java |
 | `rondb_usage_query_timeout_seconds` | Integer | `10` | Settings.java |
+| `run_ai_client_id` | String | *(empty string)* | Settings.java |
+| `run_ai_client_secret` | String | `${env:RUN_AI_CLIENT_SECRET}` | Settings.java |
+| `run_ai_cluster_name` | String | *(empty string)* | Settings.java |
+| `run_ai_default_department` | String | `default` | Settings.java |
+| `run_ai_enable` | Boolean | `false` | Settings.java |
+| `run_ai_project_gpu_quota` | Integer | `0` | Settings.java |
+| `run_ai_ready_timeout_s` | Integer | `30` | Settings.java |
+| `run_ai_reconcile_interval_s` | Integer | `600` | Settings.java |
+| `run_ai_url` | String | `http://runai-backend-traefik.runai-backend.svc.cluster.local:8080` | Settings.java |
 | `saas_entry_point_url` | String | *(empty string)* | Settings.java |
 | `service_discovery_domain` | String | `consul` *(duplicate key, also declared in Settings.java; values match)* | CAConf.java |
 | `service_discovery_domain` | String | `consul` *(duplicate key, also declared in CAConf.java; values match)* | Settings.java |
@@ -571,6 +588,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `superset_proxy_connection_request_timeout_ms` | Integer | `10000` | Settings.java |
 | `superset_proxy_max_connections` | Integer | `50` | Settings.java |
 | `superset_proxy_read_timeout_ms` | Integer | `180000` | Settings.java |
+| `superset_proxy_token_ttl_ms` | Long | `900000` | Settings.java |
 | `superset_secret` | String | `superset-admin-credentials` | KubeSettings.java |
 | `superset_user_roles` | String | `Gamma,sql_lab` | Settings.java |
 | `tag_history_archive_max_events` | Integer | `20000` | Settings.java |
@@ -585,12 +603,13 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `terminal_oom_guard_enabled` | Boolean | `true` | Settings.java |
 | `terminal_proxy_pod_app_labels` | String | `hopsworks-instance,hopsworks-admin` | Settings.java |
 | `terminal_proxy_token_ttl_ms` | Long | `60000` | Settings.java |
-| `terminal_session_hours` | Integer | `4` | Settings.java |
+| `terminal_session_hours` | Integer | `8` | Settings.java |
 | `terminal_session_max_hours` | Integer | `24` | Settings.java |
 | `terminal_shm_size` | String | `1Gi` | Settings.java |
 | `terminal_spark_image` | String | `terminal-spark` | Settings.java |
 | `testconnector_image` | String | `docker.hops.works/hopsworks/testconnector:0.2` | Settings.java |
 | `testconnector_launcher` | String | `testconnector-launch.sh` | Settings.java |
+| `trino_access_control_base_configmap` | String | `hopsworks-trino-access-control-base` | KubeSettings.java |
 | `trino_catalog_approval_required` | Boolean | `false` | Settings.java |
 | `trino_catalog_max_bytes` | Integer | `16384` | Settings.java |
 | `trino_catalog_max_per_project` | Integer | `10` | Settings.java |
@@ -599,17 +618,18 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `trino_connectors` | String | `ai,bigquery,blackhole,cassandra,clickhouse,datasketches,delta_lake,druid,duckdb,elasticsearch,exasol,faker,gsheets,hive,hudi,iceberg,ignite,jmx,kafka,lakehouse,loki,mariadb,memory,mongodb,mysql,opensearch,oracle,pinot,postgresql,prometheus,redis,redshift,singlestore,snowflake,sqlserver,tpcds,tpch,trino_thrift` | Settings.java |
 | `trino_coordinator_deployment` | String | `hopsworks-trino-coordinator` | KubeSettings.java |
 | `trino_credentials_secret` | String | `trino-admin-credentials` | KubeSettings.java |
-| `trino_default_catalog` | String | `hive` | Settings.java |
+| `trino_default_catalog` | String | `delta` | Settings.java |
 | `trino_eager_restart` | Boolean | `false` | Settings.java |
 | `trino_eager_restart_poll_minutes` | Integer | `10` | Settings.java |
 | `trino_egress_probe_container` | String | `egress-probe` | KubeSettings.java |
 | `trino_enabled` | Boolean | `false` | Settings.java |
-| `trino_events_cleaner_batch_size` | Integer | `1000` | Settings.java |
+| `trino_events_cleaner_batch_size` | Integer | `100` | Settings.java |
 | `trino_events_delete_after_days` | Integer | `61` | Settings.java |
-| `trino_group_secret` | String | `trino-groups-file` | KubeSettings.java |
+| `trino_events_strip_details_after_days` | Integer | `7` | Settings.java |
+| `trino_files_path` | String | `/apps/trino` | Settings.java |
+| `trino_image_tag` | String | *(empty string)* | Settings.java |
 | `trino_max_catalogs` | Integer | `250` | Settings.java |
 | `trino_mountable_secrets_root` | String | `/opt/hopsworks/mounts` | KubeSettings.java |
-| `trino_password_secret` | String | `trino-password-file` | KubeSettings.java |
 | `trino_reconcile_enabled` | Boolean | `true` | Settings.java |
 | `trino_reconcile_interval_ms` | Long | `300000` | Settings.java |
 | `trino_scheduled_restart_enabled` | Boolean | `true` | Settings.java |
@@ -619,8 +639,6 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `trino_scheduled_restart_time` | String | `02:00` | Settings.java |
 | `trino_test_coordinator_deployment` | String | `hopsworks-trino-test-coordinator` | KubeSettings.java |
 | `trino_test_coordinator_enabled` | Boolean | `false` | Settings.java |
-| `trino_user_catalogs_max_shards` | String | `2` | KubeSettings.java |
-| `trino_user_catalogs_secret_prefix` | String | `hopsworks-trino-catalogs-user-` | KubeSettings.java |
 | `trino_worker_deployment` | String | `hopsworks-trino-worker` | KubeSettings.java |
 | `twofactor-excluded-groups` | String | `AGENT;CLUSTER_AGENT` | Settings.java |
 | `twofactor_auth` | String | `false` | Settings.java |
