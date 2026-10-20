@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792420861` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792482579` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57,6 +57,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       nameOverride: null
       nodeSelector: {}
       objectStorageEnvInformation: null
+      opencost:
+        caConfigMapName: opencost-ca
+        enabled: false
       opensearchReindex:
         enabled: true
       payaraVersion: 6.2025.11-jdk21.1
@@ -283,6 +286,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.objectStorageEnvInformation` <a class="headerlink" href="#helm.hopsworks.objectStorageEnvInformation" title="Permanent link">#</a> { #helm.hopsworks.objectStorageEnvInformation }
 :   Type `string`, default `nil`.
     override object storage list of of environment variables
+
+`hopsworks.opencost.caConfigMapName` <a class="headerlink" href="#helm.hopsworks.opencost.caConfigMapName" title="Permanent link">#</a> { #helm.hopsworks.opencost.caConfigMapName }
+:   Type `string`, default `"opencost-ca"`.
+    ConfigMap in the Hopsworks namespace whose ca.crt key holds the CA of the OpenCost kube-rbac-proxy certificate. Optional: the pods start without it.
+
+`hopsworks.opencost.enabled` <a class="headerlink" href="#helm.hopsworks.opencost.enabled" title="Permanent link">#</a> { #helm.hopsworks.opencost.enabled }
+:   Type `bool`, default `false`.
+    Enable the admin Costs page (seeds the enable_opencost variable) and mount the opencost-credentials projected volume (service account token with audience opencost, and the OpenCost CA) in the Payara pods at /var/run/secrets/opencost. Needs OpenCost installed behind kube-rbac-proxy.
 
 `hopsworks.opensearchReindex.enabled` <a class="headerlink" href="#helm.hopsworks.opensearchReindex.enabled" title="Permanent link">#</a> { #helm.hopsworks.opensearchReindex.enabled }
 :   Type `bool`, default `true`.
@@ -2723,6 +2734,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         onlinefs_service_thread_number: '10'
         onlinefs_user_email: onlinefs@hopsworks.ai
         onlinefs_user_password: onlinefspw
+        opencost_api_url: https://opencost.opencost.svc.cluster.local:9443
+        opencost_currency: USD
+        opencost_history_retention_days: '400'
         opensearch_default_embedding_index: ''
         opensearch_index_mapping_limit: '1000'
         opensearch_num_default_embedding_index: '1'
@@ -3904,6 +3918,18 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.onlinefs_user_password` <a class="headerlink" href="#helm.hopsworks.variables.onlinefs_user_password" title="Permanent link">#</a> { #helm.hopsworks.variables.onlinefs_user_password }
 :   Type `string`, default `"onlinefspw"`.
+
+`hopsworks.variables.opencost_api_url` <a class="headerlink" href="#helm.hopsworks.variables.opencost_api_url" title="Permanent link">#</a> { #helm.hopsworks.variables.opencost_api_url }
+:   Type `string`, default `"https://opencost.opencost.svc.cluster.local:9443"`.
+    Base URL of the OpenCost API the backend proxies for the admin Costs page. The default is the kube-rbac-proxy HTTPS port of the opencost chart installed in namespace opencost.
+
+`hopsworks.variables.opencost_currency` <a class="headerlink" href="#helm.hopsworks.variables.opencost_currency" title="Permanent link">#</a> { #helm.hopsworks.variables.opencost_currency }
+:   Type `string`, default `"USD"`.
+    Currency code shown next to costs on the admin Costs page. Display only: OpenCost prices in the currency of its own pricing configuration.
+
+`hopsworks.variables.opencost_history_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.opencost_history_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.opencost_history_retention_days }
+:   Type `string`, default `"400"`.
+    Days of daily per-namespace cost history kept in the database. Rows older than this are deleted. 400 covers the "Last year" window.
 
 `hopsworks.variables.opensearch_default_embedding_index` <a class="headerlink" href="#helm.hopsworks.variables.opensearch_default_embedding_index" title="Permanent link">#</a> { #helm.hopsworks.variables.opensearch_default_embedding_index }
 :   Type `string`, default `""`.
