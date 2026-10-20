@@ -105,8 +105,9 @@ fg.save()
 df = fg.read()
 ```
 
-A read sends the remote cluster a query for the selected features of the remote feature group, and the preview row limit when there is one.
+A read sends the remote cluster a query for the selected features of the remote feature group, and the row limit when there is one, from a preview or from `fg.read(limit=...)`.
 Filters are applied on this cluster after the read, so a filtered read transfers the whole feature group.
+A read is refused once it passes 2 GiB, since this cluster holds the remote rows in memory to run the query; read a large feature group with a limit, or copy it with an ingestion job.
 Reads use the Python engine.
 Spark cannot read an external feature group on a Hopsworks data source.
 
