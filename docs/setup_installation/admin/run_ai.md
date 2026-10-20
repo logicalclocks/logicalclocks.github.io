@@ -22,7 +22,7 @@ With `run_ai_enable` set, Hopsworks does the following:
   Hopsworks also puts the `runai/queue` label on the workloads it creates.
 - Projects that existed before the integration was enabled are bound on their first workload start, or by a background pass every `run_ai_reconcile_interval_s` seconds.
 - Deleting a Hopsworks project deletes the Run:ai project Hopsworks created for it, and leaves an adopted one in place.
-- Kueue and Run:ai are mutually exclusive: a cluster uses one, the other, or neither. The Helm install fails when both `global._hopsworks.kueue.enabled` and `run_ai_enable` are set, and Cluster settings refuses a change that would turn on both `kueue_installed` and `run_ai_enable`.
+- Kueue and Run:ai are mutually exclusive: a cluster uses one, the other, or neither. The Helm install fails when both `global._hopsworks.kueue.enabled` and `run_ai_enable` are set, and Cluster settings refuses turning on `kueue_installed` while Run:ai is enabled.
 
 Hopsworks never creates Run:ai departments.
 A project in a Hopsworks department goes to the Run:ai department with exactly that name when Run:ai has one, and otherwise to `run_ai_default_department`.
@@ -78,6 +78,8 @@ Assign quota to the projects that need GPU notebooks or deployments in the Run:a
 
 ## Helm values
 
+The integration is enabled through the Hopsworks Helm chart only: the chart also mounts the client secret into the Hopsworks pods.
+Cluster settings refuses changing `run_ai_enable`.
 Set these values on the Hopsworks chart and run `helm upgrade`:
 
 ```yaml
