@@ -8,3 +8,4 @@ This section serves to provide guides and examples for the common usage of agent
 - [Agent Memory](memory/index.md): The four memory tiers a deployment provides, how to configure them, and what a person can see and erase.
 - [Feedback](feedback/index.md): Verdicts on what an agent answered, from reviewers and from end users, and what reads them.
 - [Evaluation](evaluation/index.md): Suites of tasks graded by checks, the runs that execute them, and the gate a release reads.
+- [Monitoring](monitoring/index.md): Grading the traffic an agent actually served, on a schedule.
