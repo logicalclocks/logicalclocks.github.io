@@ -362,6 +362,7 @@
 - [Service Operations](https://docs.hopsworks.ai/latest/setup_installation/admin/operationLogs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/operationLogs/index.md))
 - [Query Engine (Trino)](https://docs.hopsworks.ai/latest/setup_installation/admin/trino/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/trino/index.md))
 - [Superset](https://docs.hopsworks.ai/latest/setup_installation/admin/superset/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/superset/index.md))
+- [GPU Scheduling with Run:ai](https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/index.md))
 
 ### Helm Chart Values Reference
 - [Helm chart values reference](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/index.md))
