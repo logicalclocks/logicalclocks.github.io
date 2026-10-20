@@ -20,6 +20,11 @@
       heading_level: 2
       show_root_heading: true
 
+::: hopsworks.get_costs_api
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hopsworks.get_current_project
     options:
       heading_level: 2
