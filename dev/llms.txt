@@ -300,6 +300,12 @@
 - [Agents](https://docs.hopsworks.ai/latest/user_guides/agents/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/index.md))
 - [Agent Tasks](https://docs.hopsworks.ai/latest/user_guides/agents/tasks/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/tasks/index.md))
 - [Agent Deployments](https://docs.hopsworks.ai/latest/user_guides/agents/deployments/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/deployments/index.md))
+- [Chat Contract](https://docs.hopsworks.ai/latest/user_guides/agents/chat_contract/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/chat_contract/index.md))
+- [Agent Memory](https://docs.hopsworks.ai/latest/user_guides/agents/memory/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/memory/index.md))
+- [Feedback](https://docs.hopsworks.ai/latest/user_guides/agents/feedback/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/feedback/index.md))
+- [Evaluation](https://docs.hopsworks.ai/latest/user_guides/agents/evaluation/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/evaluation/index.md))
+- [Monitoring](https://docs.hopsworks.ai/latest/user_guides/agents/monitoring/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/monitoring/index.md))
+- [Failure Analysis](https://docs.hopsworks.ai/latest/user_guides/agents/failure_analysis/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/failure_analysis/index.md))
 - [Migration 3.X to 4.0](https://docs.hopsworks.ai/latest/user_guides/migration/40_migration/) ([md](https://docs.hopsworks.ai/latest/user_guides/migration/40_migration/index.md))
 
 ## Administration

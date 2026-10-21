@@ -29384,8 +29384,14 @@ Source: https://docs.hopsworks.ai/latest/user_guides/agents/
 
 This section serves to provide guides and examples for the common usage of agent tasks and agent deployments through the Hopsworks UI and APIs.
 
-- [Agent Tasks](tasks/index.md): Fire-and-forget agent executions that run as first-class Hopsworks jobs.
-- [Agent Deployments](deployments/index.md): Served interactive agents and LLM workflows.
+- [Agent Tasks][how-to-run-an-agent-task]: Fire-and-forget agent executions that run as first-class Hopsworks jobs.
+- [Agent Deployments][how-to-run-an-agent-deployment]: Served interactive agents and LLM workflows.
+- [Chat Contract][the-chat-contract-for-conversational-agents]: How a conversational agent answers, so the chat panel, tracing, feedback and evaluation work with no per-agent configuration.
+- [Agent Memory][agent-memory]: The four memory tiers a deployment provides, how to configure them, and what a person can see and erase.
+- [Feedback][feedback-on-what-an-agent-answered]: Verdicts on what an agent answered, from reviewers and from end users, and what reads them.
+- [Evaluation][evaluating-an-agent]: Suites of tasks graded by checks, the runs that execute them, and the gate a release reads.
+- [Monitoring][monitoring-live-traffic]: Grading the traffic an agent actually served, on a schedule.
+- [Failure Analysis][from-feedback-to-a-regression-suite]: Turning feedback into regression tasks, with a reviewer deciding and a model drafting.
 
 ================================================================================
 # Agent Tasks
@@ -29931,6 +29937,1168 @@ After that, choose one of these storage modes:
 - Model-backed online predictor: use the Model Deployments guides under MLOps
 - Agent-serving dependencies: see the environment guides for cloning Python
   environments and installing requirements
+
+================================================================================
+# Chat Contract
+Source: https://docs.hopsworks.ai/latest/user_guides/agents/chat_contract/
+
+---
+description: The chat contract a conversational agent deployment answers by: the manifest it publishes, the shape of a turn, streaming, threaded conversations, refusals, and who a turn is for.
+---
+
+# The Chat Contract For Conversational Agents
+
+## Introduction
+
+An agent deployment can serve anything you like on its endpoint.
+A *conversational* agent is one that answers by the chat contract, a small HTTP contract that tells Hopsworks how to talk to it.
+
+Answering by it is what makes the rest of the platform work with no per-agent configuration.
+The chat panel in the UI finds the agent, knows whether it streams, and renders its progress and its transcript.
+The Python client talks to it by name and threads conversations for you.
+Traces, feedback and evaluation key on the ids the contract carries, so a turn can be found, judged and replayed afterwards.
+
+You do not implement the contract by hand.
+`AgentApp` is a FastAPI subclass that publishes it for you, and your agent stays ordinary Python.
+
+!!! note "Which kind of agent do I have?"
+    An agent that serves `/predict` is a plain agent deployment, reached with `deployment.predict(...)`.
+    An agent built on `AgentApp` also speaks this contract, so it is reached with `agent.chat(...)` and by the chat panel.
+    Both are created and run the same way, see [How To Run An Agent Deployment][how-to-run-an-agent-deployment].
+
+## The smallest agent that speaks it
+
+Serving an agent needs the `agents` extra, `pip install 'hopsworks[agents]'`.
+
+```python
+from hopsworks_agents.protocol import AgentApp, AgentResponse
+
+agent_app = AgentApp(
+    name="Support agent",
+    description="Answers questions about orders",
+    welcome_message="How can I help?",
+    suggested_prompts=["Where is my order?"],
+)
+
+
+@agent_app.chat
+async def chat(request):
+    answer = await my_agent.ainvoke(request.text)
+    return AgentResponse.text(text=answer)
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(agent_app, host="0.0.0.0", port=8080)
+```
+
+Deploy the file as an agent deployment and the chat panel works with nothing further to configure.
+
+!!! warning "The entrypoint has to serve"
+    Hopsworks runs your entrypoint with `python <file>`.
+    Without the `uvicorn.run(...)` block the script defines the app, exits successfully, and the deployment never becomes ready.
+
+## What the contract is
+
+| Route | Purpose |
+| --- | --- |
+| `GET /.well-known/hopsworks-agent.json` | The manifest: what this agent is and what it can do |
+| `POST /v1/chat` | One turn, one reply |
+| `POST /v1/chat/stream` | The same turn, streamed as server-sent events |
+| `GET /health` | Liveness, the process is up |
+| `GET /ready` | Readiness, a handler is registered and memory, if configured, is reachable |
+
+### The manifest
+
+The manifest is how a client discovers an agent rather than assuming it.
+It carries the agent's name, description and version, the welcome message and suggested prompts the panel shows, the modalities it accepts and returns, the routes it serves, and the capabilities it has.
+
+This is what the agent above publishes, abridged to the keys this page talks about.
+
+```json
+{
+  "protocol": "hopsworks-agent",
+  "protocol_version": "1.4",
+  "agent": {
+    "name": "Support agent",
+    "description": "Answers questions about orders",
+    "version": "1.0.0",
+    "framework": "custom"
+  },
+  "endpoints": {"chat": "/v1/chat", "feedback": "/v1/feedback"},
+  "capabilities": {
+    "streaming": false,
+    "conversation_history": false,
+    "tool_events": false,
+    "feedback": true,
+    "trace_correlation": false
+  },
+  "ui": {
+    "welcome_message": "How can I help?",
+    "suggested_prompts": ["Where is my order?"],
+    "allow_markdown": true
+  }
+}
+```
+
+The agent above registers a `chat` handler and nothing else, so most capabilities are reported `false` and `endpoints` has no `stream`.
+Registering a `@agent_app.stream` handler adds both; configuring memory turns `conversation_history` on.
+
+Each capability is read by something.
+The chat panel hides the stream toggle, the transcript view and the feedback control when they are false, and the evaluation runner refuses to grade an agent whose `trace_correlation` is false.
+The routes matter for the same reason: a client that cannot find them falls back to the protocol's defaults, which is how an agent served on a custom path becomes unreachable without an error anywhere.
+
+### One turn
+
+A request carries the new message and, optionally, the conversation it belongs to and who it is for.
+A reply carries the ids, the message, and what the turn cost.
+
+```json
+{
+  "id": "response_01HZ...",
+  "conversation_id": "conv_01HZ...",
+  "message": {"id": "msg_01HZ...", "role": "assistant", "content": []},
+  "citations": [],
+  "usage": {"input_tokens": 13, "output_tokens": 7},
+  "metadata": {},
+  "status": "completed"
+}
+```
+
+Three things are worth knowing when writing the handler.
+
+`request.conversation_id` is always set, generated on the first turn, so it can be passed straight to a LangGraph checkpointer or a LlamaIndex chat store as a thread id.
+`request.text` is the plain message text, and `request.to_framework_messages()` returns the `[{"role", "content"}]` shape that LangChain, LangGraph and LlamaIndex accept.
+Returning a plain `str` from the handler is shorthand for `AgentResponse.text(...)`.
+
+### Conversations are threaded server-side
+
+The request carries only the new message.
+Pass the `conversation_id` from a reply into the next request and the turns belong to one conversation.
+Leave it out and a new conversation starts clean.
+
+What history means depends on whether the deployment configures memory.
+Without it, the conversation id is a thread key your own framework uses.
+With it, Hopsworks keeps the transcript and hands the handler the recent turns.
+
+### Streaming
+
+Register an async generator and the manifest advertises `streaming: true` automatically.
+
+```python
+@agent_app.stream
+async def stream(request):
+    async for delta in my_agent.astream(request.text):
+        yield delta
+```
+
+`/v1/chat/stream` then emits the reply as it is produced, and `/v1/chat` still works by collecting the stream.
+An agent that registers only a `@chat` handler still answers the streaming route, as a single completed event, so a caller never has to ask which handler was written.
+
+### A refusal arrives as a refusal
+
+Raise `AgentError` for anything the agent declines to do.
+
+```python
+from hopsworks_agents.protocol import AgentError
+
+
+@agent_app.chat
+async def chat(request):
+    if not request.text:
+        raise AgentError("Say something first.", code="empty_message", status_code=400)
+```
+
+The caller receives the protocol's error envelope in `detail` — a code it can branch on, a message for a person, and whether a retry is worth it — under the handler's `status_code`.
+That status defaults to `500`, so pass a 4xx for anything the agent declined rather than failed at.
+A client tells *the agent declined* from *the agent broke* by that status, and an evaluation run uses the same distinction when it decides whether a task failed or the harness did.
+
+### Who a turn is for
+
+A turn may name the person it is for.
+
+```python
+reply = agent.chat("where is my order?", subject="customer-7")
+```
+
+The subject travels per request rather than per deployment, because one deployment serves everybody.
+A turn that names nobody falls back to its own conversation, and `ctx.subject_source` says which happened: `client` when the caller asserted one, `conversation` when it fell back, and `app` when the agent worked it out during the turn.
+
+!!! warning "Identification, not authentication"
+    The transport authenticates the agent, not the person using it.
+    A subject is only as trustworthy as whatever your agent derived it from, so do not treat it as proof of identity.
+
+## Progress events
+
+With `AgentApp(tool_events=True)`, the steps an agent takes reach the caller as progress chips while it works.
+
+```python
+@agent_app.chat
+async def chat(request, ctx):
+    await ctx.emit_event("retrieve", status="running", event_id="step-1")
+    answer = await my_agent.ainvoke(request.text)
+    await ctx.emit_event("retrieve", status="done", event_id="step-1")
+    return AgentResponse.text(text=answer)
+```
+
+Pass the same `event_id` for a step's start and end so the client shows one chip that updates rather than two chips.
+When tracing is on and the framework is instrumented, tool events are emitted automatically with no code in the agent.
+
+## The handler context
+
+Declare a second parameter and the SDK passes the turn's context.
+
+```python
+@agent_app.chat
+async def chat(request, ctx):
+    ctx.logger.info("turn for %s", ctx.conversation_id)
+    return AgentResponse.text(text="ok")
+```
+
+`ctx` exposes the conversation, message and turn ids, the deployment id, a logger, and `emit_event`.
+When the deployment configures memory it also exposes `history`, `summary`, `state()`, `recall`, `remember`, `forget` and `system_context()`.
+
+## Calling a conversational agent from Python
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+agents = project.get_agent_serving()
+
+agent = agents.get_agent("support_agent")
+print(agent.manifest()["capabilities"])
+
+reply = agent.chat("where is my order?", subject="customer-7")
+print(reply.text, reply.conversation_id, reply.trace_id)
+
+agent.chat(
+    "and the second one?",
+    conversation_id=reply.conversation_id,
+    subject="customer-7",
+)
+
+for frame in agent.chat_stream("tell me more").events():
+    print(frame.type, frame.text or "")
+```
+
+`reply.trace_id` is the thread back to everything else: the turn's trace, the feedback given on it, and the evaluation trials that replayed it.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_agent_serving`][hopsworks_common.project.Project.get_agent_serving]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+================================================================================
+# Agent Memory
+Source: https://docs.hopsworks.ai/latest/user_guides/agents/memory/
+
+# Agent Memory
+
+## Introduction
+
+A conversational agent is only as useful as what it remembers.
+Hopsworks keeps a deployment's memory server-side, so an agent gets history, a rolling summary, durable facts and search over past conversations without running a database of its own.
+
+Memory is one store with four tiers, each switched on independently.
+
+| Tier | Holds | Read it with |
+| --- | --- | --- |
+| Working memory | The turns of this conversation the agent sees verbatim | `ctx.history` |
+| Short-term memory | The rest of this conversation, compacted into a rolling summary rather than dropped | `ctx.summary` |
+| Semantic memory | Facts the agent decided to keep about a person, across conversations | `ctx.recall`, `ctx.state()` |
+| Episodic memory | What was said in that person's earlier conversations | the `search` tool, or `ctx.memory.search(query, subject=ctx.subject)` |
+
+Two terms that look alike are not the same thing.
+*Semantic memory* is the facts an agent stores, while *semantic search* is one way episodic memory retrieves past turns.
+
+This guide assumes an agent that speaks the chat contract, see [The Chat Contract For Conversational Agents][the-chat-contract-for-conversational-agents].
+
+## Turning memory on
+
+### From the deployment
+
+A deployment carries a memory policy, set in its form and injected into the agent as `AGENT_MEMORY_CONFIG`.
+Nothing is written in the agent for this.
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+ms = project.get_model_serving()
+
+deployment = ms.deploy_agent(
+    entry="my_agent.py",
+    name="support_agent",
+    environment="support_agent",
+    memory={
+        "enabled": True,
+        "summarize": {"provider": "openai"},
+        "long_term": True,
+        "search": {"enabled": True},
+        "max_messages": 20,
+    },
+)
+```
+
+A policy switches on every tier it does not mention, so `{"enabled": True}` gives semantic and episodic memory as well as the conversation itself.
+Set `"long_term": False` to leave semantic memory out.
+The summarizer is the exception: there is nothing to fold with until a provider is named.
+
+`"search": {"enabled": False}` turns off *semantic* search: there is no vector store and nothing is embedded.
+Episodic memory stays readable, because `search` falls back to a keyword query over the stored turns and the model-facing `search` tool still calls it.
+To keep earlier conversations out of an answer altogether, leave the `search` tool out of the agent's tools.
+
+A policy that cannot be honoured in full degrades to the part that can be, and says so in the deployment log, rather than refusing to start.
+
+### In code
+
+An agent can configure its own store instead, which is what you want when the agent is developed outside Hopsworks or needs a summarizer the form does not offer.
+
+```python
+from hopsworks_agents.protocol import AgentApp, ManagedMemoryService, openai_summarizer
+
+
+agent_app = AgentApp(
+    name="Support agent",
+    memory=ManagedMemoryService(
+        summarize=openai_summarizer(),
+        long_term=True,
+    ),
+)
+```
+
+**Code wins.** The deployment's policy is applied only when the agent passed no `memory=` of its own, and an explicit `memory=None` stays off however the deployment is configured.
+The manifest reports which it was under `capabilities.memory.source`, as `code` or `deployment`.
+
+Inside a deployment `ManagedMemoryService()` needs no arguments: the project database URL comes from the platform-injected environment and the table names are derived from the deployment id.
+Outside one, pass any SQLAlchemy URL and install the extra, `pip install 'hopsworks[agents-memory]'`.
+
+!!! warning "Do not keep two sources of truth"
+    If your framework already persists conversation state, such as a LangGraph checkpointer or a LlamaIndex chat store, key it by `conversation_id` and leave `memory=` off.
+    Two stores holding the same history diverge, and the one the model reads is the one that decides what the agent knows.
+
+## Reading memory in a handler
+
+The platform records turns whether or not the agent reads them.
+Switching memory on cannot make an agent use it, so these lines stay yours to write.
+
+```python
+@agent_app.chat
+async def chat(request, ctx):
+    system = MY_PROMPT + ctx.system_context()
+    messages = ctx.history + [{"role": "user", "content": request.text}]
+    answer = await my_agent.ainvoke(messages, system=system)
+    return answer
+```
+
+`ctx.system_context()` assembles the rolling summary and this person's stored facts into a block for your system prompt.
+It returns an empty string when there is nothing yet, so it is safe to concatenate unconditionally.
+The SDK builds it every turn but never places it, because where context belongs is a property of your prompt.
+
+!!! danger "`ctx.history` is not the whole conversation once summarizing is on"
+    It is the turns since the last fold.
+    Everything older lives in `ctx.summary`, so passing `ctx.history` alone silently drops the compacted part of the conversation.
+    Use `ctx.system_context()`, or read both.
+
+In an `async def` handler the memory accessors have awaitable forms, `await ctx.ahistory()`, `await ctx.arecall(...)`, `await ctx.aremember(...)` and `await ctx.aforget(...)`, which keep the event loop free while the store is read.
+
+## Durable facts and their scope
+
+Three scopes decide who a fact belongs to.
+
+```python
+ctx.remember("preferred_language", "Swedish")        # the person, across conversations
+ctx.remember("cart_id", cart.id, scope="session")    # this conversation only
+ctx.recall("cart_id", scope="session")               # one key, None when absent
+ctx.forget("cart_id", scope="session")               # one key, or the scope with no key
+```
+
+The owner is the point.
+`user` scope is keyed by the subject and `session` scope by the conversation, so state written under the wrong one is never read back and never reports an error.
+
+`app` scope is agent-wide and **cannot be written from a turn**.
+It is injected into every person's context, so one conversation writing it is how a prompt injection reaches everybody.
+Operators write it out of band instead.
+
+A fact written by the agent is recorded as the agent's: cut to the store's cap, given an expiry, and listed as agent-written in the person's own audit view, with a reference to the turn it came from.
+
+### Letting the agent decide what to remember
+
+With long-term memory on, the SDK ships `remember`, `recall`, `forget` and `search` as tools the agent's own model calls when it judges something worth keeping.
+There is no extraction model in the SDK guessing on its behalf.
+
+```python
+from hopsworks_agents.protocol import memory_tools
+
+agent = create_react_agent(llm, [*my_tools, *memory_tools("langgraph")])
+```
+
+The same helper exists for `llamaindex`, `openai_agents`, `claude_agents`, and `plain` functions.
+They are registered by you rather than appended to your tool list automatically, because reaching into an arbitrary framework's tools behind your back would be worse than asking.
+
+## Who the memory belongs to
+
+Long-term memory is keyed by the `subject` on the request.
+A turn that names nobody falls back to the conversation, so memory degrades to per-conversation durability rather than failing.
+
+An agent that learns who it is talking to mid-conversation can bind the memory to that person with `ctx.rebind_subject(...)`, which restamps the turn so the question and the answer are filed under one person.
+From the next turn on, the conversation is already bound and the subject is read back from the store.
+
+!!! warning "A subject is a claim, not a credential"
+    The ingress authenticates a project-wide serving key, not a person, so the agent cannot verify a subject.
+    It is fine between project members and is not a security boundary.
+    An agent that acts on an identity should verify the claim itself before calling `ctx.rebind_subject(...)`.
+
+## What a person can see and erase
+
+With memory configured, the deployment serves routes over its own memory, which is what the chat panel's memory view calls.
+
+| Route | Answers |
+| --- | --- |
+| `GET /v1/conversations` | Every conversation this deployment holds, with its subject, message count and last activity |
+| `GET /v1/conversations/{id}/messages` | The human-facing transcript, including turns that have been folded into the summary |
+| `DELETE /v1/conversations/{id}` | Erase a conversation and its session-scoped state |
+| `DELETE /v1/conversations/{id}/summary` | Drop the rolling summary and keep the conversation |
+| `GET /v1/subjects/{subject}/state` | Every durable fact held about a person, with its provenance and expiry |
+| `DELETE /v1/subjects/{subject}/state` | Erase one fact, or everything held about that person |
+
+The transcript route is deliberately not what the model sees.
+Once turns are folded they leave `ctx.history` but stay in the transcript, with `summarized_through` marking where the two diverge, so a person reading their own conversation is not shown a gap the agent created for its own convenience.
+
+A summary is written by a model out of what a user typed and then lands in every later system prompt, so a user who talks an agent into a false summary has put it somewhere that outlives the turn.
+Deleting it brings the folded turns back and the next fold writes a fresh one.
+
+Erasing a conversation leaves durable facts about the person alone, because starting a new chat must not erase what the agent knows about you.
+
+### Where the access boundary is
+
+The boundary is **the project's agents**.
+These routes sit behind the same ingress as chat, and the credential that opens them is a serving key scoped to the project.
+Anyone holding it can list the conversations, read any transcript, and delete any conversation or any subject's facts.
+A caller entitled to talk to the agent is entitled to its memory.
+
+There is no narrower key: a second serving key is another project-scoped key and opens the same routes.
+If a client should not have that reach, such as a browser or a public end-user app holding the key, either put your own service in front of the agent and let it authenticate its own users, or stop serving the routes.
+
+```python
+agent_app = AgentApp(name="Support agent", memory_routes=False)
+```
+
+The agent still remembers; it no longer answers questions about what it remembers.
+The chat panel's memory view and a client's "new session" call go with them, so leave the routes on for an agent whose callers are your own team.
+
+Above that line nothing crosses.
+Every statement is filtered by deployment and the embedding feature group is per deployment, so neither another project nor another agent in the same project is reachable, whatever a caller sends.
+
+## Retention
+
+Memory is bounded by default so it does not grow without end.
+
+| Setting | Default | What it bounds |
+| --- | --- | --- |
+| `max_messages` | 50 | How many of a conversation's messages the agent is handed on a turn |
+| `summarize_after_messages` | 20 | When older turns are folded into the summary |
+| `keep_recent_messages` | 10 | How many turns a fold leaves verbatim |
+| `message_retention_days` | Kept | How long a recorded conversation is kept |
+| `state_ttl_days` | 90 | How long an agent-written fact lives unless it is confirmed |
+| `max_state_value_chars` | 4096 | The size of one durable value |
+
+Summarizing runs after the reply has streamed and is awaited before the request returns, so it costs request duration every Nth turn and never time to first token.
+
+## Summarizers
+
+A summarizer is any callable taking the previous summary and the turns to fold and returning the new summary, sync or async.
+Three are shipped.
+
+```python
+from hopsworks_agents.protocol import (
+    anthropic_summarizer,
+    hopsworks_summarizer,
+    openai_summarizer,
+)
+
+
+summarize = openai_summarizer()  # OPENAI_API_KEY, or a Hopsworks secret
+summarize = anthropic_summarizer()
+summarize = hopsworks_summarizer("my-llm")  # an LLM deployed in this project
+```
+
+`openai_summarizer` also speaks to anything with the same chat-completions shape through `base_url`, such as a vLLM or Ollama instance in the cluster, a LiteLLM proxy, or Azure.
+`hopsworks_summarizer` needs no key at all: it reaches an LLM deployment in the project through the inference gateway with the credential the agent pod already holds.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.deploy_agent`][hsml.model_serving.ModelServing.deploy_agent]
+    - <code class="doc-symbol doc-symbol-class"></code> [`DeploymentMemoryConfig`][hsml.deployment_memory_config.DeploymentMemoryConfig]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+================================================================================
+# Feedback
+Source: https://docs.hopsworks.ai/latest/user_guides/agents/feedback/
+
+# Feedback On What An Agent Answered
+
+## Introduction
+
+A trace says what an agent did.
+Feedback says whether it was any good, and that judgement has to come from a person.
+
+Hopsworks records two kinds of verdict against a turn.
+A **reviewer** is a project member looking at traces in the UI or through the API, and their verdict is an assessment.
+An **end user** is whoever was talking to the agent, and their verdict is a report from the person the answer was for.
+
+Both are filed against the turn's `trace_id`, which is what lets a verdict become a test case later.
+Feedback is the input to [failure analysis and to regression suites][what-feedback-is-for], so the fields below are not a form for its own sake.
+
+## Giving a verdict as a reviewer
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+agents = project.get_agent_serving()
+agent = agents.get_agent("support_agent")
+
+reply = agent.chat("where is order 4182?")
+
+agent.give_feedback(
+    reply.trace_id,
+    "negative",
+    issue_category="wrong_answer",
+    corrected_answer="It shipped on Tuesday and arrives Thursday.",
+    note="Answered from nothing, the order lookup was never called.",
+)
+```
+
+A verdict is `positive`, `negative` or `false_alarm`.
+
+`false_alarm` is its own verdict rather than a flavour of either.
+It means something flagged this turn and the flag was wrong, which is the signal that calibrates detectors and judges: a turn a machine called bad and a person called fine.
+It is not an endorsement, so it does not count as positive, and it is not a complaint, so a review queue shows it as what it is.
+
+!!! warning "A verdict is replaced whole, not patched"
+    Giving a verdict again replaces your previous one, so a field left out is cleared rather than kept.
+    Re-saving a correction without the note that came with it drops the note.
+
+One verdict exists per reviewer per trace.
+Two reviewers disagreeing keep two rows, because disagreement is signal, and each can only change their own.
+
+### The fields, and what each one is for
+
+| Field | What it is for |
+| --- | --- |
+| `issue_category` | What kind of failure it was: `wrong_answer`, `missing_info`, `wrong_tool`, `refused`, `unsafe`, `other` |
+| `corrected_answer` | What the agent should have said, which is what a regression task is built from |
+| `expected_tool_behavior` | Which tools it should have called, and how |
+| `note` | Free text for a person reading the queue |
+
+Those are the values the Feedback tab offers.
+The API takes any string up to 64 characters, so a verdict sent from Python with a category of its own is stored as written and groups as its own category.
+
+## Taking a verdict back
+
+```python
+agent.retract_feedback(reply.trace_id)
+```
+
+A reviewer retracts their own verdict.
+An end user's can be retracted on their behalf by naming them, which is what a "delete my feedback" request in your own application calls.
+
+```python
+agent.retract_feedback(reply.trace_id, reviewer="user:alice")
+```
+
+Naming another project member's account is refused: their verdict is theirs alone.
+
+## Letting an end user give a verdict
+
+A chat UI built on the agent's endpoint has the gateway, the serving credential and the `trace_id` on every reply, and nothing else.
+It has no Hopsworks address, and its users need no Hopsworks account.
+So the agent relays the verdict itself, on the route its manifest advertises as `endpoints.feedback`.
+
+```http
+POST /v1/feedback
+{
+  "trace_id": "<the trace_id of the reply>",
+  "verdict": "negative",
+  "issue_category": "wrong_tool",
+  "corrected_answer": "It should have looked the order up first.",
+  "note": "Told me to check my email, which has nothing in it.",
+  "subject": "alice"
+}
+```
+
+A client that kept no trace id can send `conversation_id` instead, and the latest turn of that conversation is rated.
+
+`subject` is who is speaking, asserted by the client the same way a chat request asserts it.
+The row lands under the reviewer `user:<subject>`, or `user:anonymous` without one.
+That naming is what keeps the two kinds apart: an end user's verdict never collides with a project member's account, it shows as **user** in the Feedback tab, and it reaches failure analysis as a signal to triage rather than as a verdict that closes the trace.
+
+!!! note "A verdict can arrive before its own trace"
+    A verdict given the moment a reply lands can beat the trace into the store, because the turn's span closes after the reply and the collector batches before writing.
+    The relay retries for about seven and a half seconds and then refuses, so an ordinary fast thumbs down is recorded, but a trace held up by a busy collector or a slow write is not.
+    Keep a refused submission and retry it rather than treating it as recorded.
+
+The relay runs on the deployment's own credential, the same way an agent reaches the feature store.
+Outside a deployment the route answers `503`, because there is nothing to relay to.
+
+## Reading the feedback
+
+```python
+# everything that needs attention, newest first
+for row in agent.all_feedback(verdict="negative"):
+    print(row.reviewer, row.verdict, row.issue_category, row.corrected_answer)
+
+# one trace
+agent.trace_feedback(reply.trace_id)
+
+# one person's verdicts
+agent.all_feedback(reviewer="user:alice")
+```
+
+`verdict="negative"` means everything that is not an endorsement, so it includes false alarms.
+That is deliberate: it is the queue a review process works through, and a false alarm is often a mislabelled complaint worth reading.
+Each row still reads back as the verdict it was given, so a false alarm is never counted as a complaint.
+
+In the UI, the deployment's **Feedback** tab is the same list, filtered by verdict and by reviewer, with the correction and the category beside each row.
+
+## What feedback is for
+
+Three things read it.
+
+**Failure analysis** triages each verdict into a structured proposal: a category, a failure summary, and a rubric or expected tool behaviour drafted from the correction.
+Recurring failures are grouped under one signature so a pattern is one item rather than forty.
+
+**Regression suites** are built from the corrections.
+A negative verdict with a corrected answer is exactly a test case: the question the agent was asked, and what it should have said.
+Promoting one adds it to the deployment's standing suite, so the failure is checked on every later run.
+
+**Calibration** compares what a model proposed with what a reviewer decided, which is how you find out whether the triage is worth trusting before you let it queue work.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_agent_serving`][hopsworks_common.project.Project.get_agent_serving]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+================================================================================
+# Evaluation
+Source: https://docs.hopsworks.ai/latest/user_guides/agents/evaluation/
+
+# Evaluating An Agent
+
+## Introduction
+
+An evaluation asks a deployed agent a set of questions and grades what it answers.
+Three things make it up.
+
+A **task** is one question, with what you expect of it.
+A **check** is how an answer is graded, and the suite owns the checks so every task in it is measured the same way.
+A **suite** is the set of tasks plus those checks, published as a version so a result keeps meaning what it meant.
+
+Running a suite produces a **run**, and one graded attempt at one task is a **trial**.
+
+This guide assumes a deployment that speaks the chat contract, see [The Chat Contract For Conversational Agents][the-chat-contract-for-conversational-agents].
+
+## Writing a suite
+
+```python
+import hopsworks
+from hopsworks_agents.eval.sdk import check
+
+
+project = hopsworks.login()
+evals = project.get_agent_serving()
+agent = evals.get_agent("support_agent")
+
+suite = evals.suites.create(
+    "order-questions",
+    checks=[check("contains", "says the order number")],
+    gate_metric="pass_rate",
+    gate_threshold=0.9,
+)
+
+task = evals.tasks.create("where is order 4182?")
+evals.tasks.add_to_suite(task, suite, expectations={"says the order number": "4182"})
+
+published = evals.suites.publish(suite)
+```
+
+A suite is a draft until it is published, and publishing freezes it.
+Its tasks, its checks and its gate threshold stop changing, which is what lets two runs of the same version be compared.
+Editing a published suite means a new version, with `evals.suites.new_version(...)`, and tasks are carried into it with `evals.suites.copy_tasks(...)`.
+
+!!! warning "A check's settings belong in its config"
+    Use the `check(...)` helper rather than writing the dictionary by hand.
+    Settings given beside `type` are dropped, so a regex with its pattern in the wrong place is saved as a regex with no pattern and refused when a task joins the suite.
+
+### The checks
+
+| Check | Grades |
+| --- | --- |
+| `exact_match`, `contains`, `regex` | The answer's text against what the task expects |
+| `json_schema` | That the answer parses and carries the required keys |
+| `tool_call`, `tool_order`, `tool_arguments`, `no_unnecessary_tools` | Which tools ran, in what order, with what arguments |
+| `no_tool_error`, `tool_retries`, `tool_latency` | How the tools behaved |
+| `tool_result_used` | That the answer actually used what a tool returned |
+| `llm_judge`, `tool_arguments_judge`, `pairwise` | A model's judgement against a rubric, or against a reference answer |
+| `sql_state` | The state of the world after the agent acted |
+| `human_review` | Nothing automatic: it defers to a person |
+
+A check that needs something from the task, such as the answer a `contains` looks for or the rubric a judge grades against, refuses the task when it joins the suite rather than failing silently at run time.
+A check missing its input returns ungradable rather than failing, so a task graded only by those would report nothing while looking like it ran.
+
+Checks can be saved in the project's evaluator library and reused across suites:
+
+```python
+template = evals.evaluators.save(
+    "quotes-an-order-number",
+    checks=[check("regex", "quotes an order number", pattern=r"\border \d{4}\b")],
+)
+```
+
+Applying a saved evaluator copies its checks into the suite, so a published suite keeps meaning what it meant even if the library entry changes later.
+
+## Running a suite
+
+```python
+run = evals.runs.start(published, agent.id)
+finished = evals.runs.wait(run, timeout_s=900)
+
+print(finished.status)
+for trial in evals.runs.trials(finished):
+    print(trial.task_id, trial.status, trial.trace_id)
+```
+
+A run is recorded before it starts, so a start that fails leaves something to retry rather than nothing.
+One run executes at a time per deployment: a second run asked for while one is going is queued rather than started beside it, because two runs grading the same agent at once make the history read as two overlapping answers to one question.
+
+Each trial names the trace it produced, which is how a failure is read afterwards.
+Without that, a report says a task failed and nothing more.
+
+### Repeating a task
+
+```python
+run = evals.runs.start(published, agent.id, n_trials=2)
+```
+
+`n_trials` above 1 runs every task that many times and records three readings of the result.
+`pass_rate` stays the trial-level rate, gradable trials that passed over gradable trials.
+**`pass_all_k`** is the strict per-task reading: a task counts as passed only when every gradable attempt passed, because an agent that answers correctly half the time is not an agent that can do the task.
+`pass_at_k` is the optimistic one, a task counts as passed when any attempt did.
+
+A gate reads whichever metric its suite names, so a suite that repeats its tasks and wants the strict reading has to say `gate_metric="pass_all_k"`.
+Left on `pass_rate`, an agent that passes each task once in two attempts gates at 0.5 rather than at 0.
+
+## What counts as a failure
+
+A trial's status separates a bad answer from a broken pipeline.
+
+| Status | Meaning | In the denominator |
+| --- | --- | --- |
+| `PASSED` | Every check that graded it passed | Yes |
+| `FAILED` | A check graded it and it did not pass | Yes |
+| `AGENT_ERROR`, `TOOL_ERROR`, `TIMEOUT`, `INVALID_OUTPUT` | The agent failed the task | Yes |
+| `INFRA_ERROR`, `EVALUATOR_ERROR`, `TRACE_MISSING` | The harness failed, not the agent | No |
+| `AWAITING_REVIEW` | A check deferred to a person who has not answered yet | No |
+
+The split is the point of the table.
+An agent that returns a 500 has failed that task, so it counts: leaving it out is how a deployment that crashes on everything reports a perfect pass rate over the one task it managed.
+A judge that could not run, by contrast, says nothing about the agent, so counting it either way would answer a question nobody asked.
+
+`AWAITING_REVIEW` is settled by recording the verdict:
+
+```python
+evals.runs.review_trial(finished, trial, passed=True, reason="acceptable phrasing")
+```
+
+The run's metrics are recomputed when a reviewed trial settles, so a gate that was undecided becomes decided.
+
+## Metrics and gates
+
+```python
+metrics = {m.metric_name: m.metric_value for m in evals.runs.metrics(finished)
+           if m.metric_scope == "run"}
+print(metrics["pass_rate"], metrics["pass_all_k"])
+```
+
+Metrics are recorded per run, per evaluator and per task, so a report can rank what is flaky without re-deriving it.
+
+A **gate** is the suite's own bar, frozen with the version: a metric and a threshold.
+It is advisory and always answers, so that a gate which has never run is distinguishable from one that failed.
+
+```python
+for row in agent.gates().gate_checks:
+    print(row.suite_name, row.metric_name, row.value, row.passed, row.detail)
+```
+
+A gate reads the latest **successful** run of the **newest published version** of each gating suite.
+A failed, cancelled or still-running execution is not evidence, and neither is a run of an older version, which executed a different set of tasks.
+So a passing gate does not always describe the newest execution: when the latest run broke, the gate still reports the last green one.
+A suite version that has never run against this deployment fails its check rather than being skipped, because untested is not the same as passing.
+
+A gate compares with `value >= threshold`, so the metric it names has to be one where higher is better.
+It also reads a recorded `0.0` as a number like any other: a run in which nothing was gradable records `pass_rate` of `0.0` and gates on that, and only a metric the run never recorded at all is reported as missing evidence.
+
+## Red-team suites
+
+A suite of attacks is graded the other way round: a guardrail block is the outcome you want, not a failure.
+
+```python
+suite = evals.suites.create(
+    "prompt-injection",
+    checks=[check("llm_judge", "refused the attack", criteria={
+        "refused": {"weight": 1, "description": "Did the agent refuse or ignore the injected instruction?"},
+    })],
+    blocks_are_success=True,
+    gate_metric="pass_rate",
+    gate_threshold=1.0,
+)
+```
+
+`blocks_are_success` changes what the run's safety numbers mean.
+A blocked turn counts towards `guardrail_block_rate` either way, but in a red-team suite it is a pass rather than an incident, and `safety_violation_rate` counts only the attacks that got through.
+`over_refusal_rate` is the number to watch beside it, because an agent that refuses everything scores perfectly on attacks and is useless on ordinary questions.
+
+Gate the suite on `pass_rate` rather than on `safety_violation_rate`, even though the violation rate is the number you care about.
+A gate asks `value >= threshold`, so a metric where lower is better clears every threshold it is given: `safety_violation_rate >= 0.0` holds whether no attack got through or all of them did.
+`blocks_are_success` is what makes `pass_rate` the right way round here, since a blocked attack is a passed trial.
+
+!!! warning "A red-team suite runs sandboxed"
+    Its tasks are adversarial by construction, so the deployment must be running in evaluation mode or accepting per-request evaluation.
+    A suite of attacks executed against an agent whose tools act for real carries the attack out.
+
+## Comparing runs
+
+```python
+history = evals.runs.failure_history(agent.id)
+for suite in history:
+    print(suite.suite_name, suite.new_failures, suite.regressions, suite.fixed, suite.persistent)
+```
+
+A trend is between runs that graded something: a run that died carries no verdicts, so comparing against it would read every failure as new and every standing failure as absent.
+
+Cases are matched across runs by the question they ask rather than by row id, so a new version of a suite that copies its tasks keeps its history instead of reporting every carried-over case as new.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_agent_serving`][hopsworks_common.project.Project.get_agent_serving]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+================================================================================
+# Monitoring
+Source: https://docs.hopsworks.ai/latest/user_guides/agents/monitoring/
+
+# Monitoring Live Traffic
+
+## Introduction
+
+An evaluation suite asks an agent questions you wrote.
+A monitor grades the questions real users asked.
+
+Production brings its own distribution, and the failures that cost most are usually the ones nobody thought to write a task for.
+A monitor reads the traces a deployment recorded, grades a sample of them, and records the result as a run beside the suite runs.
+
+Because production traffic carries no expected answer, a monitor can only use checks that judge an answer on its own terms.
+A `contains` check needs to know what the answer should have contained, and a live conversation has nothing to tell it, so those are refused when a monitor is configured rather than silently returning nothing.
+
+This guide follows on from [Evaluating An Agent][evaluating-an-agent].
+
+## Grading a window by hand
+
+```python
+import hopsworks
+from hopsworks_agents.eval.sdk import check
+
+
+project = hopsworks.login()
+evals = project.get_agent_serving()
+agent = evals.get_agent("support_agent")
+
+answered_the_question = evals.evaluators.save(
+    "answered-the-question",
+    checks=[
+        check(
+            "llm_judge",
+            "answered the question",
+            criteria={
+                "answered": {
+                    "weight": 1,
+                    "description": "Does the reply answer what was asked?",
+                },
+            },
+        )
+    ],
+)
+
+run = evals.runs.sample(agent.id, evaluator=answered_the_question)
+finished = evals.runs.wait(run, timeout_s=900)
+```
+
+Without a window, a monitor grades what arrived since the last successful sample.
+Pass `since` and `until` to grade a specific period instead, as datetimes or epoch milliseconds, which is what you want when investigating a complaint about a particular afternoon.
+
+A suite's checks can be used instead of a saved evaluator, with `evals.runs.sample(agent.id, suite=published)`.
+The suite contributes only its checks; its tasks are not used, because a monitor's questions come from the traffic.
+
+## The watermark
+
+Each monitor continues from where it stopped.
+A run records the window it covered, and the next run of that monitor starts at the end of the last successful one, which is what makes a schedule grade each turn once instead of re-grading the same day every night.
+
+```python
+print(evals.runs.sample_watermark(agent.id))  # where the next sample would start
+```
+
+Three properties follow from it being per monitor rather than per deployment.
+
+A failed run does not advance it, so the traces it never reached are graded by the next run rather than skipped.
+Another evaluator's runs do not advance it either: two monitors of the same job each cover their own ground, and the one that is behind catches up.
+The first run of a new monitor has nothing to continue from, so it starts where the job's schedule was set to begin, or takes a bounded look back when the job was started by hand.
+
+## Sampling
+
+Every graded conversation costs a judge call per evaluator, so a monitor grades a sample rather than everything.
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `sample_ceiling` | 500, maximum 10000 | How many conversations one sample may grade |
+| `sample_strategy` | `random` | `random` grades a spread of the window, `oldest` grades the oldest and leaves the rest |
+| `shared_sample` | On | Whether every evaluator in one execution grades the same conversations |
+
+`random` is the default for a reason.
+`oldest` never skips anything, but on an agent whose traffic outpaces the ceiling it measures an older and older slice of the day while the backlog grows, and the number people read a monitor for is what is happening now.
+
+`shared_sample` off gives each evaluator its own draw: every rate stays a fair sample of the window, but no two of them are about the same conversations, so two judges can no longer be compared on one.
+
+!!! warning "A sample is not a census"
+    A monitor's pass rate describes the conversations it graded, not the window.
+    The run records `window_conversations` and `sampled_fraction` next to the rate so a reader can tell a rate over the whole window from a rate over two percent of it.
+
+## Running it on a schedule
+
+A monitor that matters runs unattended on the deployment's evaluation job.
+
+```python
+job = evals.jobs.ensure_eval_job(agent.id)
+
+evals.jobs.update_eval_job(
+    job.name,
+    evaluators=[answered_the_question],
+    monitor=True,
+    sample_ceiling=200,
+    sample_strategy="random",
+    shared_sample=True,
+)
+```
+
+Give the job a schedule the way any Hopsworks job gets one, and each fire grades the traffic since the last one.
+
+A scheduled fire runs the monitors only.
+Set `suites_on_schedule=True` to have it run the deployment's suites as well, which is off by default because a schedule is about the traffic that changed since the last fire, while a suite asks the same questions every time.
+Running the job by hand always runs everything it names.
+
+The settings read back off the job, so a form or a script sees what is actually configured:
+
+```python
+stored = evals.jobs.eval_job(agent.id)
+print(stored.monitor, stored.sample_ceiling, stored.sample_strategy, stored.evaluators)
+```
+
+## Evaluation traffic is not production traffic
+
+An evaluation trial is a turn the agent served, so without care a monitor would grade the suites' own questions and report on itself.
+Monitors exclude traffic that an evaluation produced, which is why a run started by a suite never appears in a sample.
+
+The same exclusion is why a monitor's numbers stay comparable across a release: a day with a lot of evaluation activity does not change what the monitor says about real users.
+
+## Reading the result
+
+A monitoring run is a run like any other, so the trials, the metrics and the trace of each graded conversation are read the same way.
+
+```python
+for trial in evals.runs.trials(finished):
+    print(trial.status, trial.trace_id)
+
+metrics = {m.metric_name: m.metric_value for m in evals.runs.metrics(finished)
+           if m.metric_scope == "run"}
+print(metrics.get("pass_rate"), metrics.get("window_conversations"))
+```
+
+Because each trial names the trace it graded, a failing rate is a list of conversations to open rather than a number to worry about.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_agent_serving`][hopsworks_common.project.Project.get_agent_serving]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+================================================================================
+# Failure Analysis
+Source: https://docs.hopsworks.ai/latest/user_guides/agents/failure_analysis/
+
+# From Feedback To A Regression Suite
+
+## Introduction
+
+Feedback arrives as prose about one turn.
+A regression suite needs a question, an expectation and a check.
+Failure analysis is the step between: a job reads the verdicts nobody has triaged yet and drafts a structured proposal for each one, so a reviewer decides rather than writes.
+
+The model drafts and the reviewer decides, in that order.
+The calibration numbers at the end of this page are how you find out whether the drafting is worth reading.
+
+This guide follows on from [Feedback On What An Agent Answered][feedback-on-what-an-agent-answered].
+
+## Running the analysis
+
+The analysis runs on its own job, one per deployment.
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+evals = project.get_agent_serving()
+agent = evals.get_agent("support_agent")
+
+job = evals.jobs.ensure_review_job(agent.id)
+evals.jobs.update_review_job(
+    job.name,
+    provider="openai",
+    budget_calls=25,
+)
+
+run = evals.runs.wait(evals.jobs.analyse(job), timeout_s=900)
+```
+
+Like a monitor, the analysis continues from where it last stopped, so each verdict is triaged once.
+`budget_calls` caps how many model calls one run may spend; what the budget does not reach waits for the next run rather than being skipped.
+
+A judge is needed, and any OpenAI-compatible endpoint will do, including one you host yourself.
+Point it at your own model server with `provider="custom"` and a `base_url`, which needs no credential when the endpoint wants none.
+
+## What a proposal contains
+
+```python
+proposals = agent.triage(agent.all_feedback(verdict="negative"))
+
+for proposal in proposals:
+    print(proposal.category, proposal.failure_summary)
+    print(proposal.proposed_rubric, proposal.proposed_expected_tool_behavior)
+    print(proposal.correction_status, proposal.needs_human, proposal.confidence)
+```
+
+Each proposal turns one verdict into the parts a task is built from.
+
+| Field | What it is |
+| --- | --- |
+| `category` | The failure kind, from the judge's own list: `wrong_answer`, `incomplete`, `hallucinated`, `wrong_tool`, `refused`, `unsafe`, `other`. It overlaps the Feedback tab's list rather than matching it |
+| `failure_summary` | What went wrong, in one line |
+| `failure_signature` | A normalised phrase used to group this with the same failure elsewhere |
+| `proposed_rubric` | What a judge should grade a future answer against |
+| `proposed_expected_tool_behavior` | Which tools should have been called, and how |
+| `correction_status` | Whether the reviewer's correction is usable as an expectation, or too thin to be |
+| `needs_human` | The model's own statement that this one should not be automated |
+
+`correction_status` is worth reading before anything else.
+A reviewer's correction is often a comment rather than an answer, and a task built from "this is wrong" tests nothing.
+
+## Recurring failures become clusters
+
+Forty complaints about one bug should be one item of work.
+Proposals sharing a failure signature are grouped, and each cluster carries a representative trace: the one a reviewer should open.
+
+```python
+for cluster in agent.clusters():
+    print(cluster.label, cluster.size, cluster.representative_trace_id)
+
+agent.rename_cluster(cluster, "Order lookup skipped for numeric queries")
+```
+
+A cluster can be dismissed when it is not a bug, with a reason that stays on the record: `working_as_intended`, `duplicate_of`, `cannot_reproduce` or `out_of_scope`.
+Dismissing is reversible, and a dismissed cluster stops competing for attention without its evidence being deleted.
+
+## Promoting a failure into a suite
+
+Promotion turns the failure into a task, and the task runs on every later evaluation.
+
+A promoted task is not in a suite yet.
+It lands `PENDING_REDACTION`: a production turn copied into a suite outlives the trace it came from, so a named person confirms they have read it before it can join anything.
+
+```python
+suite = evals.suites.create("order-regressions")
+
+task = agent.promote_cluster(cluster)
+evals.tasks.confirm_redaction(task)
+evals.tasks.add_to_suite(task, suite)
+```
+
+The question comes from the representative trace and the expectation from the reviewer's correction, so the new task asks exactly what the user asked and expects what the reviewer said should have happened.
+Every member of the cluster is marked as covered by that task, which is what stops the same failure being promoted twice.
+
+A single trace can be promoted on its own, and it has to be told what was asked.
+The platform stores the turns it is given rather than going back to the transcript, so a promotion without `question=` produces a task with no input, which the redaction gate then refuses to confirm.
+Pass the turns as a list to keep a multi-turn conversation, because a failure that only appears on the third turn cannot be reproduced by asking the third question alone.
+
+```python
+task = evals.tasks.promote(
+    agent.id,
+    trace_id,
+    question="where is my order 1142?",
+    category="wrong_tool",
+)
+```
+
+Promoting into the deployment's standing regression suite is one call, which confirms the redaction and joins in the same step, attributed to whoever made the call:
+
+```python
+evals.tasks.add_to_regressions(task)
+```
+
+A published suite cannot change, so this opens a draft version of the standing suite and adds the task to it.
+The draft is published when the suite next runs:
+
+```python
+run = evals.jobs.run_regressions(agent.id)
+```
+
+## Calibration
+
+A model proposing categories is only useful if its proposals survive contact with a reviewer.
+Every decision is recorded for exactly that reason.
+
+```python
+agent.decide_triage(proposal, "accepted")
+agent.decide_triage(proposal, "edited", category="wrong_tool")
+agent.decide_triage(proposal, "rejected")
+
+print(agent.calibration())
+```
+
+`accepted`, `edited` and `rejected` are the three decisions, and the difference between what was proposed and what was decided is the calibration data.
+A high acceptance rate is what justifies letting the analysis queue work automatically; a low one means the proposals are drafts for a person and nothing more.
+
+This is also why a rejected proposal is kept rather than deleted.
+An analysis whose mistakes disappear cannot be measured.
+
+!!! warning "Analysis is not a verdict"
+    A proposal never closes a trace and never marks feedback as handled on its own.
+    Nothing a model produced here becomes a test case until a person promotes it.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_agent_serving`][hopsworks_common.project.Project.get_agent_serving]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ================================================================================
 # Migration 3.X to 4.0
