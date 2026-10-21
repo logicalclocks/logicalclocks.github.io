@@ -314,6 +314,7 @@ Partition columns of other types, such as timestamps, are not supported.
 | `HUDI` | Spark | `partition_key`, and identity transforms of `partitioned_by` | A `replacecommit` that retires the partitions' file groups. |
 
 A `day(...)` or `bucket(...)` partition of an Iceberg or Hudi feature group cannot be named by a column value, so those columns are rejected.
+On an Iceberg feature group stored on HopsFS, the Python engine works only inside the Hopsworks cluster, such as in a Python job or a Jupyter notebook, because pyiceberg reaches HopsFS through libhdfs; from an external Python client, use a Spark job.
 
 The call returns the commit, or `None` when no existing partition matched, in which case nothing is committed.
 The commit's `rows_deleted` is `None` where the format does not record how many rows the dropped files held, which is always the case on Hudi.
