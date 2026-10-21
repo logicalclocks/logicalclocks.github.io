@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792585954` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792594833` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -645,6 +645,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         mysql:
           consulServiceName: mysql
           consulServiceTag: onlinefs
+          ddlConsulServiceName: mysqlddl
           port: 3306
         objectStorage:
           consulServiceName: minio
@@ -667,6 +668,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dependencies.mysql.consulServiceTag` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.consulServiceTag" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.consulServiceTag }
 :   Type `string`, default `"onlinefs"`.
+
+`hopsworks.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd); the database migrations connect here (HWORKS-3550). Set to mysql when the DDL node is disabled
 
 `hopsworks.dependencies.mysql.port` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.port" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.port }
 :   Type `int`, default `3306`.
