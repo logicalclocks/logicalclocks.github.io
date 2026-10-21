@@ -48,8 +48,9 @@ A patch release of the previous minor version that comes out after the X.Y.0 can
 A release covers every change users or operators notice, from the chart (`hopsworks-helm` and `rondb-helm` commits between the tags), from the application it ships (`hopsworks-ee` and `hopsworks-front`), and from the images and components it deploys from Hopsworks repos (`docker-images`, OnlineFS, ArrowFlight, the model serving webhook and authenticator, and the others `scripts/release_inputs.py` lists); the HopsFS and RonDB repos are not sources, the RonDB chart is.
 Neither application repo has tags: a version's changes end at its `Release X.Y.Z` commit on `branch-X.Y-ee` or `branch-X.Y`, which is the last commit of that version, and start after the release commit of the application version the previous release ships.
 A chart release that keeps the application version has no application changes, and one that skips application versions includes them all.
-Leave out application changes users don't see, such as refactors, tests and build changes; leave out `hopsworks-api` changes, because the `### Python client` subsection shows its release notes.
-A chart commit and an application commit for the same ticket are one entry.
+The Python and Java clients (`hopsworks-api`, the commits between the Python client versions of the two releases) are sources too: SDK features, behaviour changes, fixes, breaking changes and deprecations users of either client notice; the `### Python client` subsection still links the full hopsworks-api release notes.
+Leave out changes users don't see, such as refactors, tests, build changes, version bumps and dependency pins with no user-visible effect.
+A chart, application or client commit for the same ticket is one entry.
 5.0.0 is the exception: 4.8 has no pages, so its front matter declares `since: "4.8.2"`, the first 4.8 release, and an entry that also shipped in a 4.8 patch release ends with `(also in 4.8.N)`.
 
 A release section has up to six subsections, in this order, and leaves out the ones with nothing to report: `### What's changed`, `### Breaking changes`, `### Deprecations`, `### Upgrade steps`, `### Upgraded components`, `### Configuration changes`.
@@ -79,7 +80,20 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
 
 `### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
 
-Order the entries of every subsection by significance, most significant first, so a reader who stops early has read what matters most.
+An entry starts with the tags that say how users reach the change, so a reader can skip what they don't use:
+
+- `[API]`: the Python and Java clients, the `hops` CLI and the REST API;
+- `[FRONTEND]`: the Hopsworks UI;
+- `[HELM]`: the Helm charts: their values, install and upgrade, and cluster variables.
+
+Tag by where users notice the change, not by the repo it is in: a server change users see in the UI is `[FRONTEND]`, one they see through the clients or the REST API is `[API]`, and one they see in both carries both.
+A fix in a component the chart deploys, such as OnlineFS or ArrowFlight, takes the tag of where users notice it, such as `[API]` for a failed insert.
+An entry users reach in none of these ways, such as a fix of known vulnerabilities in images or of a component that only operators see, has no tag.
+An entry users reach in more than one way carries each tag, in that order, such as `- [API] [FRONTEND] Added ...`.
+Every entry of `### Configuration changes` is `[HELM]`.
+The tag stays out of a second line of an entry.
+
+Sort the entries of every subsection by their first tag, in the order above, then the entries without a tag, and within each group by significance, most significant first.
 Significance is how many users or operators an entry affects and how much: data loss, security, an outage or a failed upgrade outweigh a new feature, which outweighs an inconvenience.
 
 - `### What's changed`: fixes for data loss, security and outages, and the headline features of the release, first; then other features and changes; then smaller fixes.
@@ -88,6 +102,7 @@ Significance is how many users or operators an entry affects and how much: data 
 - `### Deprecations`: what is most widely set first.
 
 On an X.Y.0, entries marked `(also in ...)` follow the same order; they are not grouped at the end.
+`uv run hopsworks-docs check` fails on an unknown tag, tags out of order, or an entry out of tag order in its subsection.
 
 `### Configuration changes` lists the changes to the Helm values themselves: values added or removed, changed defaults, fixes for a value that was ignored or rejected, and changes to `values.openshift.yaml` or `values.airgap.yaml`.
 A feature or fix keeps its entry under `### What's changed` and names the value that turns it on or tunes it, even when it is off by default.

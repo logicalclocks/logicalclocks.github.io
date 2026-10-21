@@ -2564,3 +2564,17 @@ body.hops-zoom-lock {
   padding-left: 0.8rem;
   border-left: 1px solid var(--hops-border);
 }
+
+/* Release notes: the tags that say how users reach a change */
+.hops-release-tag {
+  display: inline-block;
+  padding: 0 0.35em;
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 0.2rem;
+  background: var(--hops-surface);
+  color: var(--hops-nav-fg);
+  font-family: var(--md-code-font-family);
+  font-size: 0.6rem;
+  line-height: 1.5;
+  vertical-align: 0.05em;
+}

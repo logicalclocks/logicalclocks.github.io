@@ -31,7 +31,7 @@ Stop and tell the user if the branch isn't based on `main` or its pull request t
 The facts come from every repo the release ships, read-only, all checked out side by side in one directory:
 
 - the charts, `hopsworks-helm` and `rondb-helm`;
-- the application, `hopsworks-ee` and `hopsworks-front`, and the Python client, `hopsworks-api`;
+- the application, `hopsworks-ee` and `hopsworks-front`, and the Python and Java clients, `hopsworks-api`;
 - the images, `docker-images`, which builds the base environments and many other images;
 - the components the chart deploys from a Hopsworks repo, as `REPOS` in `scripts/release_inputs.py` maps them: `flyingduck`, `clusterj-onlinefs`, `model-serving-webhook`, `model-serving-authenticator`, `hops-git`, `tools`, `sparkhistoryserver`, and the forks `trino`, `hive`, `hudi`, `incubator-uniffle` and `spark`.
 
@@ -100,7 +100,7 @@ Agents return entries with evidence and never edit the page; you merge their ent
 An X.Y.0 gets `### Upgrade steps` saying "No upgrade steps are listed for this release.", as the guide says; don't write steps into it for now.
 List in the report the steps the release needs at upgrade, from a changed `UPGRADE.md`, a migration Job or hook, or a breaking change that has to happen before or after the `helm upgrade`, so the user can decide on them.
 
-Order the entries of each subsection by significance, as the guide defines it, after merging; the agents' order only holds within their slice.
+Sort the entries of each subsection by first tag and within a tag by significance, as the guide defines it, after merging; the agents' order only holds within their slice.
 
 Generate the table last:
 

@@ -25,7 +25,9 @@ Read first, in full:
 2. Decide whether users or operators notice it.
    They notice: new or changed UI, REST API behaviour that SDK or UI users see, permissions and access, admin settings and cluster variables, error messages, performance they would feel (say what got faster), Helm values, and security fixes, as one entry per component group such as "Addressed vulnerabilities in the Hopsworks server dependencies".
    They don't: refactors, tests, CI, build plumbing, logging internals, the release version bump, a change that only supports another entry (fold it in), and a fix for a bug that never shipped, because it came in within the same range.
-   Leave out `hopsworks-api` changes on their own, because the release's Python client subsection shows the hopsworks-api release notes; use them to understand an application change of the same ticket.
+   Include `hopsworks-api` changes users of the Python or Java client notice, such as new or changed methods and arguments, behaviour changes, fixes, breaking changes and deprecations; leave out its tests, CI, version bumps and refactors.
+   Name the client when it isn't obvious ("in the Java client"), and link the API reference of the release's minor version where one exists.
+   A client change and an application change for the same ticket are one entry.
    A breaking change says, in a few words, what the behaviour was before, checked against the previous release.
    A security fix is written "Addressed vulnerabilities in <component>", such as "Addressed vulnerabilities in jobs", with no detail of the issue, as the guide says; never write "Fixed a security issue in". Describe the issue only in your report, for the evidence.
 3. Pick the subsection: What's changed, Breaking changes, Deprecations or Configuration changes, as the guide defines them.
@@ -38,7 +40,8 @@ Read first, in full:
 Changes with the same ticket key in different repos are one entry.
 In a fork, only Hopsworks commits count; the upstream version change is in Upgraded components.
 
-Return the entries of each subsection in order of significance, most significant first, as the guide defines it.
+Start each entry with its tags, as the guide defines them: how users reach the change, not the repo it is in.
+Return the entries of each subsection sorted by first tag, and within a tag by significance, most significant first, as the guide defines it.
 
 ## Report (your final message)
 

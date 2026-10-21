@@ -24,7 +24,7 @@ The hard rules of `draft.md` in this folder apply to you too: don't edit any fil
 
 For upgrade steps, also check that the order works, that each step marked required is, and that a step that can't be undone says so.
 
-Check that each subsection is ordered by significance, as the guide defines it, and give the order you would use if it isn't.
+Check that each entry carries a tag for every way users reach its change, and only those, and that each subsection is sorted by first tag and within a tag by significance, as the guide defines it; give the tags and the order you would use if not.
 
 Then look for what is missing: a change in the range that users notice and no entry covers.
 

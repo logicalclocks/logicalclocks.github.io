@@ -43,6 +43,10 @@ NOTES_PAGE = re.compile(r"^releases/(\d+\.\d+)/index\.md$")
 SECTION = re.compile(r"^## (\d+\.\d+\.\d+) \{ #hopsworks-[\d-]+ \}$", re.MULTILINE)
 VERSION = re.compile(r"\d+\.\d+\.\d+")
 FIELDS = ("released", "python_client")
+# how users reach a change, in the order entries carry and are sorted by them
+TAGS = ("API", "FRONTEND", "HELM")
+ENTRY_TAGS = re.compile(r"^- ((?:\[[A-Z]+\] )*)")
+UNTAGGED = ("Upgrade steps", "Upgraded components")
 CLIENT_REPO = "https://github.com/logicalclocks/hopsworks-api"
 CLIENT_RELEASES = CLIENT_REPO + "/releases/tag/{}"
 
@@ -156,7 +160,30 @@ def _read_minor(file, minor):
         title = f"## {version} {{ #{_anchor(version)} }}"
         if title not in markdown:
             raise PluginError(f"{file.src_uri}: the section of {version} must be '{title}'")
+    _check_tags(file, markdown)
     return releases
+
+
+def _check_tags(file, markdown):
+    """Every entry starts with known tags in order, and a subsection is sorted by them."""
+    version = subsection = None
+    previous = 0
+    for line in markdown.splitlines():
+        if title := SECTION.match(line):
+            version, subsection = title[1], None
+        elif line.startswith("### "):
+            subsection, previous = line[4:], 0
+        elif line.startswith("- ") and version and subsection not in UNTAGGED:
+            tags = re.findall(r"\[([A-Z]+)\]", ENTRY_TAGS.match(line)[1])
+            where = f"{file.src_uri}: {version} {subsection}: {line[:70]}"
+            if any(tag not in TAGS for tag in tags):
+                raise PluginError(f"{where}: use only the tags {', '.join(TAGS)}")
+            ranks = [TAGS.index(tag) for tag in tags] or [len(TAGS)]
+            if ranks != sorted(set(ranks)):
+                raise PluginError(f"{where}: list its tags once each, in the order {', '.join(TAGS)}")
+            if ranks[0] < previous:
+                raise PluginError(f"{where}: sort the entries by their first tag, untagged last")
+            previous = ranks[0]
 
 
 def _check_clients():
@@ -305,9 +332,20 @@ def _with_client_notes(markdown):
     return "".join(parts)
 
 
+def _tag_labels(markdown):
+    """Render the tags that start an entry as labels, before Markdown reads them as links."""
+
+    def labels(entry):
+        tags = re.findall(r"\[([A-Z]+)\]", entry[1])
+        spans = "".join(f'<span class="hops-release-tag">{tag}</span> ' for tag in tags)
+        return f"- {spans}"
+
+    return re.sub(r"^- ((?:\[[A-Z]+\] )+)", labels, markdown, flags=re.MULTILINE)
+
+
 def on_page_markdown(markdown, *, page, config, files):
     if NOTES_PAGE.match(page.file.src_uri):
-        return _with_client_notes(markdown)
+        return _with_client_notes(_tag_labels(markdown))
     if page.file.src_uri == NAV_ENTRY and "<!-- releases -->" in markdown:
         return markdown.replace("<!-- releases -->", _releases_table())
     return markdown
