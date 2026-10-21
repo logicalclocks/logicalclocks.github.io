@@ -100,6 +100,7 @@ fg = fs.create_external_feature_group(
     data_source=table,
     features=data.features,
     primary_key=["id"],
+    statistics_config=False,
 )
 fg.save()
 df = fg.read()
@@ -107,9 +108,9 @@ df = fg.read()
 
 A read sends the remote cluster a query for the selected features of the remote feature group, and the row limit when there is one, from a preview or from `fg.read(limit=...)`.
 Filters are applied on this cluster after the read, so a filtered read transfers the whole feature group.
-A read is refused once it passes 2 GiB, since this cluster holds the remote rows in memory to run the query; read a large feature group with a limit, or copy it with an ingestion job.
+A read is refused once the remote rows that this cluster's Hopsworks Query Service holds for all running queries pass 2 GiB, since it keeps them in memory to run the queries; read a large feature group with a limit, or copy it with an ingestion job.
 Reads use the Python engine.
-Spark cannot read an external feature group on a Hopsworks data source.
+Spark cannot read an external feature group on a Hopsworks data source, so create it with `statistics_config=False`: statistics are computed by a Spark job.
 
 !!! api "API reference"
 
