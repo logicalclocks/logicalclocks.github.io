@@ -70,23 +70,39 @@ Deploy the file as an agent deployment and the chat panel works with nothing fur
 The manifest is how a client discovers an agent rather than assuming it.
 It carries the agent's name, description and version, the welcome message and suggested prompts the panel shows, the modalities it accepts and returns, the routes it serves, and the capabilities it has.
 
+This is what the agent above publishes, abridged to the keys this page talks about.
+
 ```json
 {
   "protocol": "hopsworks-agent",
-  "protocol_version": "1.1",
-  "agent": {"name": "Support agent", "version": "1.0.0"},
-  "endpoints": {"chat": "/v1/chat", "stream": "/v1/chat/stream"},
+  "protocol_version": "1.4",
+  "agent": {
+    "name": "Support agent",
+    "description": "Answers questions about orders",
+    "version": "1.0.0",
+    "framework": "custom"
+  },
+  "endpoints": {"chat": "/v1/chat", "feedback": "/v1/feedback"},
   "capabilities": {
-    "streaming": true,
-    "conversation_history": true,
-    "tool_events": true,
-    "feedback": true
+    "streaming": false,
+    "conversation_history": false,
+    "tool_events": false,
+    "feedback": true,
+    "trace_correlation": false
+  },
+  "ui": {
+    "welcome_message": "How can I help?",
+    "suggested_prompts": ["Where is my order?"],
+    "allow_markdown": true
   }
 }
 ```
 
+The agent above registers a `chat` handler and nothing else, so most capabilities are reported `false` and `endpoints` has no `stream`.
+Registering a `@agent_app.stream` handler adds both; configuring memory turns `conversation_history` on.
+
 Each capability is read by something.
-The chat panel hides the stream toggle, the transcript view and the feedback control when they are false, and the evaluation runner refuses to grade an agent that cannot correlate a trace.
+The chat panel hides the stream toggle, the transcript view and the feedback control when they are false, and the evaluation runner refuses to grade an agent whose `trace_correlation` is false.
 The routes matter for the same reason: a client that cannot find them falls back to the protocol's defaults, which is how an agent served on a custom path becomes unreachable without an error anywhere.
 
 ### One turn
@@ -150,9 +166,9 @@ async def chat(request):
         raise AgentError("Say something first.", code="empty_message", status_code=400)
 ```
 
-The caller receives the protocol's error envelope, with a code it can branch on, a message for a person, and the status the handler chose.
-It does not receive a 500.
-That is what lets a client tell *the agent declined* from *the agent broke*, and it is the same distinction an evaluation run depends on when it decides whether a task failed or the harness did.
+The caller receives the protocol's error envelope in `detail` — a code it can branch on, a message for a person, and whether a retry is worth it — under the handler's `status_code`.
+That status defaults to `500`, so pass a 4xx for anything the agent declined rather than failed at.
+A client tells *the agent declined* from *the agent broke* by that status, and an evaluation run uses the same distinction when it decides whether a task failed or the harness did.
 
 ### Who a turn is for
 
@@ -231,10 +247,3 @@ for frame in agent.chat_stream("tell me more").events():
     - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_agent_serving`][hopsworks_common.project.Project.get_agent_serving]
 
     <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
-
-## What answering the contract gives you
-
-A chat panel that works, including attachments, progress chips, the transcript and the feedback control, with nothing to configure per agent.
-Traces of every turn, correlated by the ids above.
-Feedback from reviewers and from end users, filed against the turn it is about.
-Evaluation, because a suite replays recorded turns against the agent, which is only possible when a turn has a stable shape and an id.

@@ -10,8 +10,8 @@ Feedback arrives as prose about one turn.
 A regression suite needs a question, an expectation and a check.
 Failure analysis is the step between: a job reads the verdicts nobody has triaged yet and drafts a structured proposal for each one, so a reviewer decides rather than writes.
 
-The reviewer decides. The model drafts.
-That order is the whole design, and the calibration numbers at the end of this page are how you find out whether the drafting is worth reading.
+The model drafts and the reviewer decides, in that order.
+The calibration numbers at the end of this page are how you find out whether the drafting is worth reading.
 
 This guide follows on from [Feedback On What An Agent Answered][feedback-on-what-an-agent-answered].
 
@@ -58,7 +58,7 @@ Each proposal turns one verdict into the parts a task is built from.
 
 | Field | What it is |
 | --- | --- |
-| `category` | The failure kind, from the same enumeration a reviewer picks from |
+| `category` | The failure kind, from the judge's own list: `wrong_answer`, `incomplete`, `hallucinated`, `wrong_tool`, `refused`, `unsafe`, `other`. It overlaps the Feedback tab's list rather than matching it |
 | `failure_summary` | What went wrong, in one line |
 | `failure_signature` | A normalised phrase used to group this with the same failure elsewhere |
 | `proposed_rubric` | What a judge should grade a future answer against |
@@ -86,29 +86,47 @@ Dismissing is reversible, and a dismissed cluster stops competing for attention 
 
 ## Promoting a failure into a suite
 
-Promotion is the point of the whole path: the failure becomes a task, and the task runs on every later evaluation.
+Promotion turns the failure into a task, and the task runs on every later evaluation.
+
+A promoted task is not in a suite yet.
+It lands `PENDING_REDACTION`: a production turn copied into a suite outlives the trace it came from, so a named person confirms they have read it before it can join anything.
 
 ```python
+suite = evals.suites.create("order-regressions")
+
 task = agent.promote_cluster(cluster)
+evals.tasks.confirm_redaction(task)
 evals.tasks.add_to_suite(task, suite)
 ```
 
 The question comes from the representative trace and the expectation from the reviewer's correction, so the new task asks exactly what the user asked and expects what the reviewer said should have happened.
 Every member of the cluster is marked as covered by that task, which is what stops the same failure being promoted twice.
 
-A single trace can be promoted on its own in the same way, and a multi-turn conversation keeps its turns, because a failure that only appears on the third turn cannot be reproduced by asking the third question alone.
+A single trace can be promoted on its own, and it has to be told what was asked.
+The platform stores the turns it is given rather than going back to the transcript, so a promotion without `question=` produces a task with no input, which the redaction gate then refuses to confirm.
+Pass the turns as a list to keep a multi-turn conversation, because a failure that only appears on the third turn cannot be reproduced by asking the third question alone.
 
 ```python
-task = evals.tasks.promote(trace_id, category="wrong_tool")
+task = evals.tasks.promote(
+    agent.id,
+    trace_id,
+    question="where is my order 1142?",
+    category="wrong_tool",
+)
 ```
 
-Promoting into the deployment's standing regression suite is one call, and it handles the suite's versioning for you:
+Promoting into the deployment's standing regression suite is one call, which confirms the redaction and joins in the same step, attributed to whoever made the call:
 
 ```python
-evals.suites.add_to_regressions(agent.id, task)
+evals.tasks.add_to_regressions(task)
 ```
 
-A published suite cannot change, so adding to a standing suite opens a new draft version, carries the existing tasks into it, adds the new one and publishes it.
+A published suite cannot change, so this opens a draft version of the standing suite and adds the task to it.
+The draft is published when the suite next runs:
+
+```python
+run = evals.jobs.run_regressions(agent.id)
+```
 
 ## Calibration
 

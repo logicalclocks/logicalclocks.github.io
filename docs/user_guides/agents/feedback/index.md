@@ -54,12 +54,13 @@ Two reviewers disagreeing keep two rows, because disagreement is signal, and eac
 
 | Field | What it is for |
 | --- | --- |
-| `issue_category` | What kind of failure it was: `wrong_answer`, `incomplete`, `hallucinated`, `wrong_tool`, `refused`, `unsafe`, `other` |
+| `issue_category` | What kind of failure it was: `wrong_answer`, `missing_info`, `wrong_tool`, `refused`, `unsafe`, `other` |
 | `corrected_answer` | What the agent should have said, which is what a regression task is built from |
 | `expected_tool_behavior` | Which tools it should have called, and how |
 | `note` | Free text for a person reading the queue |
 
-`issue_category` is enumerated rather than free text because a category that is phrased differently every time cannot be counted or compared.
+Those are the values the Feedback tab offers.
+The API takes any string up to 64 characters, so a verdict sent from Python with a category of its own is stored as written and groups as its own category.
 
 ## Taking a verdict back
 
@@ -102,7 +103,8 @@ That naming is what keeps the two kinds apart: an end user's verdict never colli
 
 !!! note "A verdict can arrive before its own trace"
     A verdict given the moment a reply lands can beat the trace into the store, because the turn's span closes after the reply and the collector batches before writing.
-    The relay waits the trace out rather than refusing, so a fast thumbs down is recorded rather than lost.
+    The relay retries for about seven and a half seconds and then refuses, so an ordinary fast thumbs down is recorded, but a trace held up by a busy collector or a slow write is not.
+    Keep a refused submission and retry it rather than treating it as recorded.
 
 The relay runs on the deployment's own credential, the same way an agent reaches the feature store.
 Outside a deployment the route answers `503`, because there is nothing to relay to.
@@ -129,7 +131,7 @@ In the UI, the deployment's **Feedback** tab is the same list, filtered by verdi
 
 ## What feedback is for
 
-Feedback is not an archive. Three things read it.
+Three things read it.
 
 **Failure analysis** triages each verdict into a structured proposal: a category, a failure summary, and a rubric or expected tool behaviour drafted from the correction.
 Recurring failures are grouped under one signature so a pattern is one item rather than forty.

@@ -16,7 +16,7 @@ Memory is one store with four tiers, each switched on independently.
 | Working memory | The turns of this conversation the agent sees verbatim | `ctx.history` |
 | Short-term memory | The rest of this conversation, compacted into a rolling summary rather than dropped | `ctx.summary` |
 | Semantic memory | Facts the agent decided to keep about a person, across conversations | `ctx.recall`, `ctx.state()` |
-| Episodic memory | What was said in that person's earlier conversations | `ctx.search` |
+| Episodic memory | What was said in that person's earlier conversations | the `search` tool, or `ctx.memory.search(query, subject=ctx.subject)` |
 
 Two terms that look alike are not the same thing.
 *Semantic memory* is the facts an agent stores, while *semantic search* is one way episodic memory retrieves past turns.
@@ -52,8 +52,12 @@ deployment = ms.deploy_agent(
 ```
 
 A policy switches on every tier it does not mention, so `{"enabled": True}` gives semantic and episodic memory as well as the conversation itself.
-Set `"long_term": False` or `"search": {"enabled": False}` to leave one out.
+Set `"long_term": False` to leave semantic memory out.
 The summarizer is the exception: there is nothing to fold with until a provider is named.
+
+`"search": {"enabled": False}` turns off *semantic* search: there is no vector store and nothing is embedded.
+Episodic memory stays readable, because `search` falls back to a keyword query over the stored turns and the model-facing `search` tool still calls it.
+To keep earlier conversations out of an answer altogether, leave the `search` tool out of the agent's tools.
 
 A policy that cannot be honoured in full degrades to the part that can be, and says so in the deployment log, rather than refusing to start.
 
@@ -172,7 +176,6 @@ With memory configured, the deployment serves routes over its own memory, which 
 The transcript route is deliberately not what the model sees.
 Once turns are folded they leave `ctx.history` but stay in the transcript, with `summarized_through` marking where the two diverge, so a person reading their own conversation is not shown a gap the agent created for its own convenience.
 
-Dropping a summary matters more than it sounds.
 A summary is written by a model out of what a user typed and then lands in every later system prompt, so a user who talks an agent into a false summary has put it somewhere that outlives the turn.
 Deleting it brings the folded turns back and the next fold writes a fresh one.
 

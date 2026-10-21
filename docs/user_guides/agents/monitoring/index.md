@@ -9,7 +9,7 @@ description: Grading the traffic an agent actually served - what a monitor sampl
 An evaluation suite asks an agent questions you wrote.
 A monitor grades the questions real users asked.
 
-The difference matters: production brings its own distribution, and the failures that matter most are usually the ones nobody thought to write a task for.
+Production brings its own distribution, and the failures that cost most are usually the ones nobody thought to write a task for.
 A monitor reads the traces a deployment recorded, grades a sample of them, and records the result as a run beside the suite runs.
 
 Because production traffic carries no expected answer, a monitor can only use checks that judge an answer on its own terms.
@@ -28,8 +28,8 @@ project = hopsworks.login()
 evals = project.get_agent_serving()
 agent = evals.get_agent("support_agent")
 
-answers_in_kind = evals.evaluators.save(
-    "answers-in-kind",
+answered_the_question = evals.evaluators.save(
+    "answered-the-question",
     checks=[
         check(
             "llm_judge",
@@ -44,7 +44,7 @@ answers_in_kind = evals.evaluators.save(
     ],
 )
 
-run = evals.runs.sample(agent.id, evaluator=answers_in_kind)
+run = evals.runs.sample(agent.id, evaluator=answered_the_question)
 finished = evals.runs.wait(run, timeout_s=900)
 ```
 
@@ -97,7 +97,7 @@ job = evals.jobs.ensure_eval_job(agent.id)
 
 evals.jobs.update_eval_job(
     job.name,
-    evaluators=[answers_in_kind],
+    evaluators=[answered_the_question],
     monitor=True,
     sample_ceiling=200,
     sample_strategy="random",
