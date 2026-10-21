@@ -61659,6 +61659,22 @@ Source: https://docs.hopsworks.ai/latest/python-api/hsml/deployment_logging_conf
       show_root_heading: true
 
 ================================================================================
+# <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_memory​_config
+Source: https://docs.hopsworks.ai/latest/python-api/hsml/deployment_memory_config/
+
+::: hsml.deployment_memory_config
+    options:
+      heading_level: 1
+      members: false
+      show_root_full_path: true
+      show_root_heading: true
+
+::: hsml.deployment_memory_config.DeploymentMemoryConfig
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+================================================================================
 # <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> deployment​_schema
 Source: https://docs.hopsworks.ai/latest/python-api/hsml/deployment_schema/
 
