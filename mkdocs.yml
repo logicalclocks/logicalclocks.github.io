@@ -303,6 +303,7 @@ nav:
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
           - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
+          - Kueue outside the Hopsworks namespace: setup_installation/admin/kueue_external.md
           - Search Index: setup_installation/admin/search_index.md
           - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
           - Monitoring:
