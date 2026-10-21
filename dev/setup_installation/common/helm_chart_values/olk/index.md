@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792570010` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792585954` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -317,6 +317,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           path: /var/log/containers
           processors: []
         name: filebeat
+        namespaceSelector: ''
         resources:
           limits:
             memory: 400Mi
@@ -452,6 +453,10 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 
 `olk.filebeat.name` <a class="headerlink" href="#helm.olk.filebeat.name" title="Permanent link">#</a> { #helm.olk.filebeat.name }
 :   Type `string`, default `"filebeat"`.
+
+`olk.filebeat.namespaceSelector` <a class="headerlink" href="#helm.olk.filebeat.namespaceSelector" title="Permanent link">#</a> { #helm.olk.filebeat.namespaceSelector }
+:   Type `string`, default `""`.
+    Label selector (key=value or key1=value1,key2=value2) a project or satellite namespace must also match for its container logs to be processed. Set it when several Hopsworks deployments share a Kubernetes cluster, so that each one processes only the namespaces labelled for it. If empty, every project and satellite namespace in the cluster is processed.
 
 `olk.filebeat.resources.limits` <a class="headerlink" href="#helm.olk.filebeat.resources.limits" title="Permanent link">#</a> { #helm.olk.filebeat.resources.limits }
 :   Type `object`, default `{"memory":"400Mi"}`.
