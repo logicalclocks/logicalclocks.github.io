@@ -25,7 +25,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `agent_deployment_otel_enabled` | Boolean | `true` | Settings.java |
 | `agent_deployment_otel_image` | String | `docker.hops.works/hops-otel:5.0.0-SNAPSHOT` | Settings.java |
 | `agent_deployment_otel_input_token_price_per_million` | Double | `0.0` | Settings.java |
-| `agent_deployment_otel_memory_mb` | Integer | `1024` | Settings.java |
+| `agent_deployment_otel_memory_mb` | Integer | `2048` | Settings.java |
 | `agent_deployment_otel_output_token_price_per_million` | Double | `0.0` | Settings.java |
 | `agent_deployment_otel_ttl_seconds` | Integer | `86400` | Settings.java |
 | `agent_image` | String | `agent-job` | Settings.java |
@@ -92,6 +92,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `dlt_schema_fetch_job_deadline_seconds` | Long | `1800` | Settings.java |
 | `dlthub-warehouse` | String | `dlthub-warehouse` | Settings.java |
 | `dlthub_image_name` | String | `docker.hops.works/hopsworks/dlt` | Settings.java |
+| `docker_base_image_agent_pipeline` | String | `python-agent-pipeline` | Settings.java |
 | `docker_base_image_dbt` | String | `dbt-pipeline` | Settings.java |
 | `docker_base_image_dlthub` | String | `dlthub-ingestion-pipeline` | Settings.java |
 | `docker_base_image_minimal_inference` | String | `minimal-inference-pipeline` | Settings.java |
@@ -193,6 +194,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `enable_hopsfsmount_page_cache_in_jupyter` | Boolean | `false` | Settings.java |
 | `enable_kafka_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_mongodb_storage_connectors` | Boolean | `true` | Settings.java |
+| `enable_opencost` | Boolean | `false` | Settings.java |
 | `enable_opensearch_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_project_observer_role` | Boolean | `false` | Settings.java |
 | `enable_read_only_git_repositories` | Boolean | `false` | Settings.java |
@@ -442,6 +444,9 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `ongoing_backup` | Boolean | `false` | Settings.java |
 | `online_ingestion_max_per_featuregroup` | Integer | `1000` | Settings.java |
 | `onlinefs_service_thread_number` | Integer | `10` | Settings.java |
+| `opencost_api_url` | String | `https://opencost.opencost.svc.cluster.local:9443` | Settings.java |
+| `opencost_currency` | String | `USD` | Settings.java |
+| `opencost_history_retention_days` | Integer | `400` | Settings.java |
 | `opensearch_default_embedding_index` | String | *(empty string)* | Settings.java |
 | `opensearch_index_mapping_limit` | Integer | `1000` | Settings.java |
 | `opensearch_num_default_embedding_index` | Integer | `1` | Settings.java |
@@ -626,6 +631,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `trino_events_cleaner_batch_size` | Integer | `100` | Settings.java |
 | `trino_events_delete_after_days` | Integer | `61` | Settings.java |
 | `trino_events_strip_details_after_days` | Integer | `7` | Settings.java |
+| `trino_feature_group_subset_shares_enabled` | Boolean | `false` | Settings.java |
 | `trino_files_path` | String | `/apps/trino` | Settings.java |
 | `trino_image_tag` | String | *(empty string)* | Settings.java |
 | `trino_max_catalogs` | Integer | `250` | Settings.java |
