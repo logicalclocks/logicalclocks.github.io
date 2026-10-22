@@ -21,7 +21,7 @@ A fresh install that wants an external Kueue installs it first and sets `hw-kueu
 
 ## What the migration does
 
-The chart ships `charts/hw-kueue/files/migrate-to-external.sh`, which moves the cluster to Kueue 0.18.1 and keeps every Kueue object: ClusterQueues, Cohorts, ResourceFlavors, Topologies, LocalQueues, priority classes and Workloads.
+The chart ships `charts/hw-kueue/files/migrate-to-external.sh`; run it with `bash`, because `helm package` stores files without the execute bit. The script moves the cluster to Kueue 0.18.1 and keeps every Kueue object: ClusterQueues, Cohorts, ResourceFlavors, Topologies, LocalQueues, priority classes and Workloads.
 It runs in phases, and each one is safe to re-run:
 
 | Phase | What it does |
@@ -57,7 +57,7 @@ helm pull --untar <repo>/hopsworks --version <5.3 version>
 HELM_EXTRA_ARGS="<the flags you upgrade Hopsworks with>" \
 HOPSWORKS_URL=https://<hopsworks host> \
 HOPSWORKS_API_KEY=<admin API key> \
-  hopsworks/charts/hw-kueue/files/migrate-to-external.sh \
+  bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh \
   --hopsworks-chart <repo>/hopsworks --hopsworks-version <5.3 version> all
 ```
 
@@ -96,7 +96,7 @@ Everything under [Before you start](#before-you-start) applies, and:
 helm pull --untar <repo>/hopsworks --version <target version>
 HOPSWORKS_URL=https://<hopsworks host> \
 HOPSWORKS_API_KEY=<admin API key> \
-  hopsworks/charts/hw-kueue/files/migrate-to-external.sh --gitops \
+  bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh --gitops \
   --release <release> --namespace <namespace> --backup-dir ./kueue-backup all
 ```
 
@@ -184,7 +184,7 @@ LocalQueues are not exported, because Hopsworks creates and deletes them with pr
 
 Each step polls every 15 seconds for up to `--timeout`, then stops with `timed out waiting for ...`.
 Run the same command again: every phase checks what is already done and continues from there, and the restores are applied only once.
-A single phase can also be run on its own, such as `migrate-to-external.sh --gitops enable-hopsworks`.
+A single phase can also be run on its own, such as `bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh --gitops enable-hopsworks`.
 
 ### What the script writes
 
@@ -210,7 +210,7 @@ The script applies the Kueue CRDs itself and the HelmRelease skips them (`crds: 
 The `verify` phase checks the end state; run it on its own at any time:
 
 ```sh
-hopsworks/charts/hw-kueue/files/migrate-to-external.sh verify
+bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh verify
 ```
 
 To check by hand:
