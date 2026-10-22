@@ -80,6 +80,30 @@ If a user creates a feature group with the stream APIs enabled, then a Kafka top
 By default, a project can have up to 100 Kafka topics.
 Administrators can increase the number of Kafka topics a project is allowed to create by increasing the quota in the project admin UI.
 
+### OpenSearch
+
+A project stores its embedding indices, and any indices its data owners create, in the cluster's OpenSearch.
+Two quotas limit what it can store there:
+
+- **Index size**: the size, in MB of primary store, each of the project's indices may reach.
+  An index that reaches it turns read-only: rows written to it afterwards fail, while reads keep working.
+  OpenSearch checks the size every five minutes or so, so an index can grow past the limit by what is written in between.
+- **Embedding indices**: how many embedding indices the project may have.
+  Creating a feature group that would need another one fails with an error naming the limit.
+
+Both quotas are unlimited by default.
+Administrators can change the defaults on the _Quotas and Rate Limits_ page of the cluster settings, or by setting the following configuration in the [Configuration](../admin/variables.md) UI and/or the cluster definition:
+
+```yaml
+hopsworks:
+    opensearch_default_max_index_size_mb: [size limit of each index in MB, -1 for unlimited]
+    opensearch_default_max_num_embedding_indices: [number of embedding indices, -1 for unlimited]
+```
+
+Unlike the storage quotas, the defaults apply to every project that has no limit of its own, including existing ones.
+An administrator can give a project its own limits in this UI, or put it back on the defaults.
+Raising a project's index size limit makes its read-only indices writable again within a few minutes.
+
 ## Force deleting a project
 
 Administrators have the option to force delete a project.
