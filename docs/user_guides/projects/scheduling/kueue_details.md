@@ -16,6 +16,7 @@ The same queues are also used for Hopsworks internal jobs (zipping, git operatio
 ### Spark jobs
 
 Spark jobs run as Spark Operator `SparkApplication`s, which Kueue admits through its SparkApplication integration.
+They go to the project's default queue unless the job selects another; a Spark job saved without a queue, as all were before Kueue managed Spark, gets the default queue when it starts.
 Kueue reserves quota for the driver and a fixed number of executors, so on a cluster with Kueue a Spark job runs with static executors:
 
 - `spark.dynamicAllocation.enabled` must be `false`. A Spark job with dynamic allocation is refused when it is saved and when it is started (error code 130082).
