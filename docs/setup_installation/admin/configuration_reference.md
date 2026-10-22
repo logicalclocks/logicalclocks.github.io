@@ -25,7 +25,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `agent_deployment_otel_enabled` | Boolean | `true` | Settings.java |
 | `agent_deployment_otel_image` | String | `docker.hops.works/hops-otel:5.0.0-SNAPSHOT` | Settings.java |
 | `agent_deployment_otel_input_token_price_per_million` | Double | `0.0` | Settings.java |
-| `agent_deployment_otel_memory_mb` | Integer | `1024` | Settings.java |
+| `agent_deployment_otel_memory_mb` | Integer | `2048` | Settings.java |
 | `agent_deployment_otel_output_token_price_per_million` | Double | `0.0` | Settings.java |
 | `agent_deployment_otel_ttl_seconds` | Integer | `86400` | Settings.java |
 | `agent_image` | String | `agent-job` | Settings.java |
@@ -626,6 +626,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `trino_events_cleaner_batch_size` | Integer | `100` | Settings.java |
 | `trino_events_delete_after_days` | Integer | `61` | Settings.java |
 | `trino_events_strip_details_after_days` | Integer | `7` | Settings.java |
+| `trino_feature_group_subset_shares_enabled` | Boolean | `false` | Settings.java |
 | `trino_files_path` | String | `/apps/trino` | Settings.java |
 | `trino_image_tag` | String | *(empty string)* | Settings.java |
 | `trino_max_catalogs` | Integer | `250` | Settings.java |
