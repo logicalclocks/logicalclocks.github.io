@@ -12,6 +12,10 @@ In this guide you will learn how to package a model for [NVIDIA Triton Inference
     Triton deployments are available only on clusters where the administrator has enabled Triton and configured its image, see [Triton Inference Server][triton-admin].
     On other clusters `ms.get_triton_image_tags()` returns an empty list, the UI does not offer the Triton model server, and the API rejects Triton deployments.
 
+!!! warning "Python client 5.3 or later"
+    Triton models need the Hopsworks Python client 5.3 or later, in the jobs and notebooks that read the model registry too.
+    An older client raises `ValueError: framework TRITON is not a supported framework` whenever it reads a Triton model, for example when it lists the models of a registry that holds one.
+
 ## Model directory { #triton-model-directory }
 
 A Triton model in Hopsworks is one Triton model directory per model version.

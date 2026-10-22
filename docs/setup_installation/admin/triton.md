@@ -147,11 +147,15 @@ kubectl -n hopsworks get configmap config-deployment \
 The `kserve-tritonserver` runtime starts the configured image as follows.
 An image that meets these requirements needs no Hopsworks components: Hopsworks places the model files, certificates and API key in the pod itself.
 
-- **Command.** `tritonserver` is on the `PATH`, and Hopsworks starts it with:
+- **Command.** Hopsworks sets the container's arguments and keeps the image's entrypoint, so the entrypoint must run its arguments as a command, as NVIDIA's `/opt/nvidia/nvidia_entrypoint.sh` does, or the image must have no entrypoint.
+  `tritonserver` must be on the `PATH`.
+  The arguments are:
 
     ```text
     tritonserver --model-store=/mnt/models --http-port=8080 --grpc-port=9000 --model-control-mode=none --allow-metrics=true --metrics-port=8002
     ```
+
+    An image whose entrypoint is `tritonserver` itself would receive `tritonserver` again as its first argument, so give such an image an entrypoint script that runs its arguments.
 
 - **Ports.** HTTP on 8080 (Open Inference Protocol REST), gRPC on 9000 (Open Inference Protocol gRPC, served as h2c), and Prometheus metrics on 8002 at `/metrics`.
   In Standard mode, Prometheus scrapes port 8002.
