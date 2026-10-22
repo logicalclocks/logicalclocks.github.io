@@ -12,6 +12,7 @@ Once configured, you can use a remote feature group as the basis for an external
 Before you begin this guide you'll need the following from the remote Hopsworks cluster:
 
 - **Host**: The host name or IP address of the remote cluster, the one in the address of its user interface, without `https://` or a path.
+    The remote cluster must answer at this address: a redirect to another address is refused.
 - **Port**: The HTTPS port of the remote cluster.
     The default is `443`.
 - **Project**: The name of the project on the remote cluster to read from.
@@ -106,7 +107,8 @@ fg.save()
 df = fg.read()
 ```
 
-A read sends the remote cluster a query for the selected features of the remote feature group, and the row limit when there is one, from a preview or from `fg.read(limit=...)`.
+A read sends the remote cluster a query for the selected features of the remote feature group.
+The row limit of a preview or of `fg.read(limit=...)` is sent with it when the query only selects features of this one feature group: with a filter, join, aggregate or ordering the limit would change the result, so it is applied on this cluster after the read.
 Filters are applied on this cluster after the read, so a filtered read transfers the whole feature group.
 A read is refused once the remote rows that this cluster's Hopsworks Query Service holds for all running queries pass 2 GiB, since it keeps them in memory to run the queries; read a large feature group with a limit, or copy it with an ingestion job.
 Reads use the Python engine.

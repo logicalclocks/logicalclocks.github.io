@@ -375,7 +375,7 @@ df = fg.read()
 first_rows = fg.read(limit=50)
 ```
 
-With the Python engine, the Hopsworks Query Service stops after `limit` rows, so the cost of the read does not grow with the size of the feature group.
+With the Python engine, the Hopsworks Query Service stops reading once it has `limit` rows, so an unfiltered read of a large feature group stays cheap; with a filter it reads until `limit` rows match.
 With the Spark engine, the limit is applied to the Spark DataFrame.
 
 !!! api "API reference"
