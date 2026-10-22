@@ -317,7 +317,7 @@ A `day(...)` or `bucket(...)` partition of an Iceberg or Hudi feature group cann
 On an Iceberg feature group stored on HopsFS, the Python engine works only inside the Hopsworks cluster, such as in a Python job or a Jupyter notebook, because pyiceberg reaches HopsFS through libhdfs; from an external Python client, use a Spark job.
 
 The call returns the commit, or `None` when no existing partition matched, in which case nothing is committed.
-The commit's `rows_deleted` is `None` where the format does not record how many rows the dropped files held, which is always the case on Hudi.
+The commit's `rows_deleted` is `None` where the delete does not report how many rows the dropped files held: always on Hudi, and on Delta with the Python engine.
 
 The delete and the insert of a reload are two commits.
 Readers between them see the partitions missing, and if the insert fails the partitions stay deleted.
