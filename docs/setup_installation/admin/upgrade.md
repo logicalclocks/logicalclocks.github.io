@@ -221,3 +221,24 @@ hive:
 ```
 
 The Airflow `ddlConsulServiceName` cannot point at `mysql`, because its migrations need a single SQL node, so a cluster without the DDL SQL node runs with `global._hopsworks.airflow.enabled: false`.
+
+### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
+
+An agent deployment with tracing enabled runs a `hops-otlp` sidecar next to the agent.
+`hopsworks.variables.agent_deployment_otel_memory_mb` is both the memory request and the memory limit of that container, so the value is reserved on the node, not only allowed.
+From 5.2.2 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM-killed under ordinary traffic.
+
+- **Check capacity before you redeploy.**
+  A cluster that runs N traced agent deployments reserves 2 GiB x N for their sidecars, where it reserved 1 GiB x N.
+  On nodes sized for the old default, an agent pod recreated after the upgrade can stay `Pending` for lack of memory.
+  Count the traced agent deployments against the free memory of the nodes that schedule them before you redeploy them.
+- **Running pods keep the old reservation until they are recreated.**
+  The upgrade does not restart agent deployments, so nothing changes for a running one until it is stopped and started, saved, or rescheduled.
+  The increase arrives one deployment at a time, which is also why a shortage shows up later than the upgrade.
+- **Keeping 1024 keeps the OOM.**
+  `hopsworks.variables.agent_deployment_otel_memory_mb: "1024"` pins the old value on a cluster that cannot spare the memory, at the cost the increase removes.
+  The buffering fixes in the 5.2.2 sidecar image make an OOM much less likely than before, because what the sidecar holds no longer grows with how far the feature store write falls behind, but it remains the trade.
+- **What an OOM looks like.**
+  `hops-otlp` is an ordinary second container without probes, so the OOM kill restarts that container alone: the agent container's `restartCount` stays 0, and only the sidecar's `lastState` shows `OOMKilled`.
+  While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
+  Looking for agent restarts finds none.
