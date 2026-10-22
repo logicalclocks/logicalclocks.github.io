@@ -170,6 +170,7 @@ nav:
           - Projects:
               - Create Project: user_guides/projects/project/create_project.md
               - Manage Members: user_guides/projects/project/manage_members.md
+              - Project Costs: user_guides/projects/project/costs.md
           - Wizard: user_guides/projects/wizard.md
           - Search: user_guides/projects/search.md
           - Dataset Sharing: user_guides/projects/datasets/sharing.md
@@ -307,6 +308,7 @@ nav:
           - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
+              - Costs: setup_installation/admin/monitoring/costs.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
               - Services Logs: setup_installation/admin/monitoring/services-logs.md
               - Service Log Labels: setup_installation/admin/monitoring/services-logs-labels.md
