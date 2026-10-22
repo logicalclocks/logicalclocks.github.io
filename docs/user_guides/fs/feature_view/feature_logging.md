@@ -283,14 +283,15 @@ Those logs are covered by the commit job's or the materialization job's own exec
 ## Deleting Logs
 
 When log data is no longer needed, you might want to delete it to free up space and maintain data hygiene.
-This operation deletes the feature groups and recreates new ones.
+This operation deletes the logging feature group and recreates a new one.
 Scheduled materialization job and log timeline are reset as well.
 Pass `transport="realtime"` or `transport="job"` to recreate the logging group for the other transport.
 
 ### Delete Logs
 
 Remove all log entries.
-The `transformed` selector applies only to older feature views with separate logging groups.
+On a feature view that still has the pre-4.6 pair of logging feature groups, `delete_log()` deletes both and recreates the log in the combined layout; passing `transformed=True` or `transformed=False` does the same, because the pair can only be replaced as a whole.
+On the combined layout, `delete_log(transformed=True)` has nothing to delete and does nothing.
 
 ```python
 # Delete all log entries
@@ -298,3 +299,31 @@ feature_view.delete_log()
 ```
 
 Restart serving revisions after recreating a logging group so they load its new schema and destination.
+
+## Upgrade Compatibility with Pre-4.6 Feature Logging
+
+Hopsworks 4.6 changed the feature logging layout: transformed and untransformed features are logged into one combined feature group instead of a separate pair, labels are logged as `predicted_<label>` columns, and the model identity is stored in `model_name` and `model_version` columns instead of a single `hsml_model` column.
+
+Feature views that enabled logging before the upgrade keep their original pair of logging feature groups unchanged.
+Model deployments and batch jobs that still run a pre-4.6 client keep logging to those feature views without any code change or downtime.
+Clients from 4.6 onwards also keep working against them: predictions and the model identity are written into the original columns, and `feature_view.read_log(model_name=..., model_version=...)` filters on the original `hsml_model` column.
+On these feature views, `model_name` and `model_version` must be passed together, both to `read_log()` and to `log()`, and passing only one raises an error.
+The `hsml_model` column stores `<model_name>_<model_version>` as one value, so a filter on the name alone would be a prefix match, which cannot express "any version" because `_` is a wildcard and sibling model names share the prefix.
+Calling `feature_view.delete_log()` on such a feature view deletes the original pair and recreates the logs in the combined layout on the `realtime` transport, or on the `job` transport with `feature_view.delete_log(transport="job")`.
+A deployment that still runs a pre-4.6 client cannot write to the recreated group and its logs are lost, so update the deployment's environment to a 4.6 or later client before deleting the log.
+
+Enabling logging on a feature view created after the upgrade requires a 4.6 or later client.
+A pre-4.6 client cannot produce the combined layout, so its `feature_view.log(...)` calls against such feature views fail instead of writing incomplete rows.
+
+The first positional parameter of `feature_view.log()` changed in 4.6 from `untransformed_features` to `logging_data`.
+On feature views with the pre-4.6 pair of logging feature groups, positional calls written for the old signature are detected and keep working.
+
+```python
+# Positional call style written for pre-4.6 clients, still working on
+# feature views that predate the upgrade:
+feature_view.log(features, predictions)
+
+# Equivalent call that works on every feature view; use this form when
+# migrating code to a 4.6 or later client:
+feature_view.log(features, predictions=predictions)
+```
