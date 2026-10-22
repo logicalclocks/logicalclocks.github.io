@@ -218,6 +218,11 @@ The script applies the Kueue CRDs itself and the HelmRelease skips them (`crds: 
   Write queue objects as `kueue.x-k8s.io/v1beta2`: Kueue 0.20 serves no other version.
 - **Jobs in the Hopsworks namespace are queued.**
   Kueue 0.18 ignores the namespace it runs in, which is now `kueue-system`, so Kueue-labelled jobs in the Hopsworks namespace are queued.
+- **Spark jobs are queued, with static executors only.**
+  The script turns on Kueue's SparkApplication integration, so Spark jobs get quota and queueing.
+  Kueue reserves quota for a fixed number of executors, so Hopsworks refuses a Spark job with dynamic allocation on a Kueue cluster.
+  Spark jobs saved before the upgrade have dynamic allocation on: turn it off and set the number of executors before running them.
+  Spark in notebooks is unchanged.
 - **Workloads must be ready within 30 minutes.**
   Kueue 0.19 turns `waitForPodsReady` on by default: a workload whose pods are not all ready 30 minutes after admission is evicted and queued again.
 - **Ray sidecars count against quota.**
