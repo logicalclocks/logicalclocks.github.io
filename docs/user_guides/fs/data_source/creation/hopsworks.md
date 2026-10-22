@@ -122,7 +122,6 @@ Spark cannot read an external feature group on a Hopsworks data source, so creat
         - <code class="doc-symbol doc-symbol-method"></code> [`get_databases`][hsfs.core.data_source.DataSource.get_databases]
         - <code class="doc-symbol doc-symbol-method"></code> [`get_tables`][hsfs.core.data_source.DataSource.get_tables]
         - <code class="doc-symbol doc-symbol-method"></code> [`get_data`][hsfs.core.data_source.DataSource.get_data]
-    - <code class="doc-symbol doc-symbol-class"></code> [`HopsworksConnector`][hsfs.storage_connector.HopsworksConnector]
 
     <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
