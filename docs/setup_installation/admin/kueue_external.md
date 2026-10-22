@@ -1,14 +1,14 @@
 # Operator Notes: Kueue Outside the Hopsworks Namespace
 
-Administrative reference for cluster operators who run Kueue with Hopsworks and want to move it out of the Hopsworks release.
+Administrative reference for cluster operators who run Kueue with Hopsworks and upgrade to Hopsworks 5.3.
 
-With `global._hopsworks.kueue.enabled=true`, every Hopsworks release from 4.3 bundles Kueue 0.12.2 in the Hopsworks namespace.
-From 5.3, `hw-kueue.kueue.enabled=false` makes Hopsworks use a Kueue installed outside its release instead: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`.
+With `global._hopsworks.kueue.enabled=true`, Hopsworks releases 4.3 to 5.2 bundle Kueue 0.12.2 in the Hopsworks namespace.
+Hopsworks 5.3 bundles Kueue 0.20.2, and its backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
+A cluster that runs the bundled Kueue 0.12 therefore moves to a Kueue installed outside the Hopsworks release when it upgrades to 5.3: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`, which Hopsworks uses with `hw-kueue.kueue.enabled=false`.
 Hopsworks keeps its RBAC bindings to the Kueue roles and keeps queueing jobs through Kueue.
 
-The move is optional.
-A cluster that keeps the bundled Kueue needs nothing.
-A fresh install that wants an external Kueue installs it first and sets `hw-kueue.kueue.enabled=false`; this page is for clusters that already run the bundled one.
+A cluster without Kueue needs nothing.
+A fresh 5.3 install gets Kueue 0.20.2 in the Hopsworks namespace, or uses an external Kueue installed first with `hw-kueue.kueue.enabled=false`.
 
 ## Why `helm upgrade` alone cannot do it
 
@@ -21,7 +21,8 @@ A fresh install that wants an external Kueue installs it first and sets `hw-kueu
 
 ## What the migration does
 
-The chart ships `charts/hw-kueue/files/migrate-to-external.sh`; run it with `bash`, because `helm package` stores files without the execute bit. The script moves the cluster to Kueue 0.18.1 and keeps every Kueue object: ClusterQueues, Cohorts, ResourceFlavors, Topologies, LocalQueues, priority classes and Workloads.
+The chart ships `charts/hw-kueue/files/migrate-to-external.sh`; run it with `bash`, because `helm package` stores files without the execute bit. The script keeps every Kueue object: ClusterQueues, Cohorts, ResourceFlavors, Topologies, LocalQueues, priority classes and Workloads.
+It moves the cluster to Kueue 0.18.1, the last release that serves both `v1beta1` and `v1beta2`, rewrites every object as `v1beta2`, then upgrades to Kueue 0.20.2.
 It runs in phases, and each one is safe to re-run:
 
 | Phase | What it does |
@@ -31,10 +32,13 @@ It runs in phases, and each one is safe to re-run:
 | `remove-bundled` | Upgrades Hopsworks with Kueue off, which removes the bundled controller, its webhooks and its ClusterRoles. CRDs and queue objects stay. |
 | `replace-alpha-crds` | Snapshots the Cohorts, Topologies and ResourceFlavors, then replaces the `v1alpha1` Cohort and Topology CRDs. |
 | `install-kueue` | Applies the Kueue 0.18.1 CRDs, installs release `kueue` in `kueue-system` and restores the replaced objects. |
-| `migrate-storage` | Rewrites every object at `v1beta2` and prunes the CRDs' stored versions. |
+| `migrate-storage` | Rewrites every object at `v1beta2`, prunes the CRDs' stored versions and resets `managedFields` entries recorded at older versions. |
 | `enable-hopsworks` | Upgrades Hopsworks with Kueue on and `hw-kueue.kueue.enabled=false`. |
-| `verify` | Checks the controller, the stored versions, every backed-up queue object and the release values. |
+| `upgrade-kueue` | Upgrades release `kueue` to Kueue 0.20.2 (`--kueue-target`). Refuses while any Kueue CRD stores a version other than `v1beta2`, and refuses a downgrade. Resets the `managedFields` recorded at `v1beta1`, which Kueue 0.20 can no longer convert. |
+| `verify` | Checks the controller and its version, the stored versions, every backed-up queue object and the release values. |
 | `export-queues` | Writes the cluster-scoped queue objects as `v1beta2` manifests to `<backup-dir>/gitops/kueue-queues.yaml`, for clusters that keep their queues in Git. |
+
+The script applies the Kueue CRDs itself and installs release `kueue` without them, so `helm uninstall kueue` leaves the CRDs, and every queue, in place.
 
 A failed run resumes by running the same phase again, or `all`.
 `--dry-run` prints the commands that change the cluster; with `all` it stops after `remove-bundled`, whose result the later phases depend on.
@@ -46,7 +50,8 @@ A failed run resumes by running the same phase again, or `all`.
   From `remove-bundled` to `install-kueue` no Kueue runs, so a job created then runs outside quota.
   Workloads already admitted keep running, and Kueue 0.18.1 takes them over.
 - **Tools**: `kubectl`, `helm` 3.20 or later, `jq` and `yq` v4.
-- **Airgapped clusters** mirror `registry.k8s.io/kueue/kueue:v0.18.1` (the default image is `docker.hops.works/registry.k8s.io/kueue/kueue:v0.18.1`) and the `kueue` 0.18.1 chart; `--kueue-image` and `--kueue-repo` point the script at the mirror.
+- **Airgapped clusters** mirror the images `registry.k8s.io/kueue/kueue:v0.18.1` and `v0.20.2` (the default repository is `docker.hops.works/registry.k8s.io/kueue/kueue`) and the `kueue` 0.18.1 and 0.20.2 charts; `--kueue-image` and `--kueue-repo` point the script at the mirror.
+  `--kueue-repo` takes a chart repository URL or an `oci://` path, such as `oci://registry.k8s.io/kueue/charts`.
 - **An admin API key** lets the script refresh Hopsworks' settings after each upgrade.
   Without it Hopsworks picks up the change within 10 minutes, and a project created in those minutes gets its default queue at its first job.
 
@@ -63,7 +68,17 @@ HOPSWORKS_API_KEY=<admin API key> \
 
 Both Hopsworks upgrades run `helm upgrade --reset-then-reuse-values` with that chart, so the Hopsworks upgrade to 5.3 happens inside the window.
 Pass `--force-conflicts` in `HELM_EXTRA_ARGS` if your upgrades need it.
+`upgrade-kueue` runs after `enable-hopsworks`, because a Hopsworks backend older than 5.3 reads Kueue as `v1beta1`, which Kueue 0.20 no longer serves.
 `--namespace` and `--release` name a Hopsworks release other than `hopsworks` in `hopsworks`; `--help` lists every option.
+
+### A cluster already on Kueue 0.18.1
+
+A cluster moved to Kueue 0.18.1 in `kueue-system` by an earlier version of the script runs only the last two phases, after Hopsworks is on 5.3:
+
+```sh
+bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh upgrade-kueue
+bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh verify
+```
 
 ## Clusters managed by Flux
 
@@ -200,10 +215,15 @@ The script applies the Kueue CRDs itself and the HelmRelease skips them (`crds: 
 - **Queues are managed with `kubectl`.**
   With `hw-kueue.kueue.enabled=false` the chart no longer applies `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` or `topologies`.
   Queues defined there before the move are kept, but changing those values has no effect.
+  Write queue objects as `kueue.x-k8s.io/v1beta2`: Kueue 0.20 serves no other version.
 - **Jobs in the Hopsworks namespace are queued.**
   Kueue 0.18 ignores the namespace it runs in, which is now `kueue-system`, so Kueue-labelled jobs in the Hopsworks namespace are queued.
-- **The project queue utilisation view fails** until the Hopsworks backend reads Cohorts at `v1beta1`: `GET /project/{id}/kube/queueutilization` returns an error after the move.
-  Job submission, project queues and quotas are not affected.
+- **Workloads must be ready within 30 minutes.**
+  Kueue 0.19 turns `waitForPodsReady` on by default: a workload whose pods are not all ready 30 minutes after admission is evicted and queued again.
+- **Ray sidecars count against quota.**
+  From Kueue 0.19 the Ray autoscaler and job-submitter sidecars are charged to the head, so a queue sized exactly for its Ray heads may need more CPU and memory.
+- **Workloads without a priority class get `default`.**
+  From Kueue 0.20 such a workload gets the WorkloadPriorityClass named `default`, when one exists.
 
 ## Verify
 
@@ -224,5 +244,9 @@ kubectl get localqueues -A
 
 The controller is ready in `kueue-system`, none runs in the Hopsworks namespace, every CRD stores `["v1beta2"]`, and every queue from before the move is listed.
 
-With `hw-kueue.kueue.enabled=false` the chart refuses to render while the bundled controller still runs, while Cohorts are stored as `v1alpha1`, or when no Kueue serving `v1beta2` is installed.
+The chart checks the cluster before it renders:
+
+- With `hw-kueue.kueue.enabled=false`, it refuses while the bundled controller still runs, while Cohorts are stored as `v1alpha1`, or when no Kueue serving `v1beta2` is installed.
+- With `hw-kueue.kueue.enabled=true`, it refuses when the Kueue CRDs exist and the Hopsworks release does not own them: those of the bundled Kueue 0.12, or those of an external Kueue.
+
 `hw-kueue.enforcePrerequisiteCheck=false` turns the check off, for `helm template`.
