@@ -32,9 +32,9 @@ It runs in phases, and each one is safe to re-run:
 | `remove-bundled` | Upgrades Hopsworks with Kueue off, which removes the bundled controller, its webhooks and its ClusterRoles. CRDs and queue objects stay. |
 | `replace-alpha-crds` | Snapshots the Cohorts, Topologies and ResourceFlavors, then replaces the `v1alpha1` Cohort and Topology CRDs. |
 | `install-kueue` | Applies the Kueue 0.18.1 CRDs, installs release `kueue` in `kueue-system` and restores the replaced objects. |
-| `migrate-storage` | Rewrites every object at `v1beta2`, prunes the CRDs' stored versions and resets `managedFields` entries recorded at older versions. |
+| `migrate-storage` | Rewrites every object at `v1beta2`, prunes the CRDs' stored versions and drops the `managedFields` entries recorded at older versions. |
 | `enable-hopsworks` | Upgrades Hopsworks with Kueue on and `hw-kueue.kueue.enabled=false`. |
-| `upgrade-kueue` | Upgrades release `kueue` to Kueue 0.20.2 (`--kueue-target`). Refuses while any Kueue CRD stores a version other than `v1beta2`, and refuses a downgrade. Resets the `managedFields` recorded at `v1beta1`, which Kueue 0.20 can no longer convert. |
+| `upgrade-kueue` | Upgrades release `kueue` to Kueue 0.20.2 (`--kueue-target`). Refuses while any Kueue CRD stores a version other than `v1beta2`, and refuses a downgrade. Drops the `managedFields` entries recorded at `v1beta1`, which Kueue 0.20 can no longer convert. Takes the chart from `oci://registry.k8s.io/kueue/charts` (`--kueue-target-repo`). |
 | `verify` | Checks the controller and its version, the stored versions, every backed-up queue object and the release values. |
 | `export-queues` | Writes the cluster-scoped queue objects as `v1beta2` manifests to `<backup-dir>/gitops/kueue-queues.yaml`, for clusters that keep their queues in Git. |
 
@@ -50,8 +50,8 @@ A failed run resumes by running the same phase again, or `all`.
   From `remove-bundled` to `install-kueue` no Kueue runs, so a job created then runs outside quota.
   Workloads already admitted keep running, and Kueue 0.18.1 takes them over.
 - **Tools**: `kubectl`, `helm` 3.20 or later, `jq` and `yq` v4.
-- **Airgapped clusters** mirror the images `registry.k8s.io/kueue/kueue:v0.18.1` and `v0.20.2` (the default repository is `docker.hops.works/registry.k8s.io/kueue/kueue`) and the `kueue` 0.18.1 and 0.20.2 charts; `--kueue-image` and `--kueue-repo` point the script at the mirror.
-  `--kueue-repo` takes a chart repository URL or an `oci://` path, such as `oci://registry.k8s.io/kueue/charts`.
+- **Airgapped clusters** mirror the images `registry.k8s.io/kueue/kueue:v0.18.1` and `v0.20.2` (the default repository is `docker.hops.works/registry.k8s.io/kueue/kueue`) and the `kueue` 0.18.1 and 0.20.2 charts; `--kueue-image`, `--kueue-repo` and `--kueue-target-repo` point the script at the mirror.
+  `--kueue-repo` (the 0.18.1 chart) and `--kueue-target-repo` (the 0.20.2 chart) take a chart repository URL or an `oci://` path.
 - **An admin API key** lets the script refresh Hopsworks' settings after each upgrade.
   Without it Hopsworks picks up the change within 10 minutes, and a project created in those minutes gets its default queue at its first job.
 
