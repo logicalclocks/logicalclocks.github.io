@@ -68,25 +68,127 @@ Pass `--force-conflicts` in `HELM_EXTRA_ARGS` if your upgrades need it.
 ## Clusters managed by Flux
 
 When Flux manages the Hopsworks release, run the script with `--gitops`.
-Without it, `preflight` refuses: Flux would undo the script's `helm upgrade` at its next reconcile.
-With `--gitops` the script runs no `helm upgrade` and stops at each release change until Flux has applied it:
+Flux keeps running throughout: do not suspend any HelmRelease or Kustomization.
+The script never runs `helm upgrade`.
+At each step that changes a Helm release it prints the change, you commit it to the Git repository Flux reconciles, and the script waits until Flux has applied it.
+The kubectl work (backup, CRDs, restores, the storage rewrite, verification) the script does itself.
 
-| Phase | You commit | The script waits for |
-| --- | --- | --- |
-| `remove-bundled` | The chart version you upgrade to, and `global._hopsworks.kueue.enabled: false` in the Hopsworks HelmRelease values | The bundled Kueue controller to be gone |
-| `install-kueue` | `<backup-dir>/gitops/kueue.yaml`: the `kueue-system` namespace, a HelmRepository and HelmRelease `kueue`, with CRDs skipped on install and upgrade | The Kueue controller in `kueue-system` to be ready |
-| `enable-hopsworks` | `global._hopsworks.kueue.enabled: true` and `hw-kueue.kueue.enabled: false` | Both values in the Hopsworks release |
-| `export-queues` | `<backup-dir>/gitops/kueue-queues.yaml` under a Flux Kustomization, after `verify` passes | Nothing |
+Without `--gitops`, `preflight` and every step that would run `helm upgrade` refuse on a Flux-managed release, because Flux would undo the upgrade at its next reconcile.
 
-The script applies the Kueue CRDs itself and the HelmRelease skips them, so deleting the HelmRelease leaves every queue in place.
-`kueue-queues.yaml` holds the ResourceFlavors, Topologies, Cohorts, ClusterQueues, AdmissionChecks and WorkloadPriorityClasses as `kueue.x-k8s.io/v1beta2`; once it is committed, remove `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` and `topologies` from the Hopsworks values.
-LocalQueues are not exported: Hopsworks creates and deletes them with projects.
-Each wait lasts up to `--timeout` (default 60 minutes); running the phase again resumes it.
-The manifests use `helm.toolkit.fluxcd.io/v2` and `source.toolkit.fluxcd.io/v1`, which need Flux 2.3 or later.
+### Before you start with Flux
+
+Everything under [Before you start](#before-you-start) applies, and:
+
+- **Flux 2.3 or later.**
+  The files the script writes use `helm.toolkit.fluxcd.io/v2` and `source.toolkit.fluxcd.io/v1`; `flux version` shows the controllers' versions.
+- **Write access to the Git repository** that holds the Hopsworks HelmRelease, and a path in it that a Flux Kustomization applies, for the new Kueue release and, at the end, the queues.
+- **The Helm release name and namespace of Hopsworks.**
+  `flux get helmreleases -A` lists the HelmReleases; the Helm release name is the HelmRelease's `spec.releaseName`, or `<targetNamespace>-<name>` when that is unset, and `helm list -A` shows it.
+  Pass both with `--release` and `--namespace` unless they are `hopsworks` and `hopsworks`.
+- **Where the HelmRelease takes its values from**: `spec.values`, or a ConfigMap or Secret named in `spec.valuesFrom`.
+  The value changes below go there.
+- **A terminal that survives a dropped connection**, such as `tmux` or `screen`.
+  The script waits for each commit for up to `--timeout`, 60 minutes by default; pass a longer one, such as `--timeout 4h`, when commits go through review.
+
+### Step 1: Start the script
 
 ```sh
-hopsworks/charts/hw-kueue/files/migrate-to-external.sh --gitops all
+helm pull --untar <repo>/hopsworks --version <target version>
+HOPSWORKS_URL=https://<hopsworks host> \
+HOPSWORKS_API_KEY=<admin API key> \
+  hopsworks/charts/hw-kueue/files/migrate-to-external.sh --gitops \
+  --release <release> --namespace <namespace> --backup-dir ./kueue-backup all
 ```
+
+`--hopsworks-chart` is not needed: Flux upgrades Hopsworks.
+The script runs `preflight` and `backup`, then stops at the first change to commit.
+
+### Step 2: Turn off the bundled Kueue
+
+The script prints the change for `remove-bundled`.
+In the Hopsworks HelmRelease, set the chart version you upgrade to, and turn Kueue off in its values:
+
+```yaml
+spec:
+  chart:
+    spec:
+      version: "<target version>"
+  values:
+    global:
+      _hopsworks:
+        kueue:
+          enabled: false
+```
+
+Commit and push.
+To apply it without waiting for the next sync interval, run `flux reconcile helmrelease <name> -n <namespace> --with-source`.
+The script continues once the bundled Kueue controller is gone and the release shows the value.
+From here until Step 3 completes no Kueue runs: a job created in that window runs outside quota.
+
+### Step 3: Install Kueue
+
+The script replaces the `v1alpha1` Cohort and Topology CRDs, applies the new Kueue CRDs, and writes `<backup-dir>/gitops/kueue.yaml`: the `kueue-system` namespace, a HelmRepository and a HelmRelease `kueue`.
+Copy that file into a path of the Git repository that a Flux Kustomization applies, such as `clusters/<cluster>/kueue/kueue.yaml`, then commit and push.
+`flux reconcile kustomization <name> --with-source` applies it at once.
+
+Commit the file only when the script asks for it: the HelmRelease skips the CRDs, which the script applies just before.
+The script then waits for the Kueue controller, restores the Cohorts and Topologies, and rewrites every Kueue object at `v1beta2`.
+
+### Step 4: Point Hopsworks at the new Kueue
+
+The script prints the change for `enable-hopsworks`.
+In the Hopsworks HelmRelease values:
+
+```yaml
+spec:
+  values:
+    global:
+      _hopsworks:
+        kueue:
+          enabled: true
+    hw-kueue:
+      kueue:
+        enabled: false
+```
+
+Commit and push; the script continues once the release shows both values.
+
+### Step 5: Verify and move the queues into Git
+
+`verify` checks the end state, then `export-queues` writes `<backup-dir>/gitops/kueue-queues.yaml`: the ResourceFlavors, Topologies, Cohorts, ClusterQueues, AdmissionChecks and WorkloadPriorityClasses as `kueue.x-k8s.io/v1beta2`, with the server-set fields removed.
+Commit it under a Flux Kustomization of its own that depends on the one applying `kueue.yaml`:
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kueue-queues
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./clusters/<cluster>/kueue-queues
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: <git repository>
+  dependsOn:
+    - name: <kustomization applying kueue.yaml>
+```
+
+From then on the queues are changed in Git.
+With `prune: true`, a queue removed from Git is deleted from the cluster.
+Remove `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` and `topologies` from the Hopsworks values: with `hw-kueue.kueue.enabled=false` they have no effect.
+LocalQueues are not exported, because Hopsworks creates and deletes them with projects.
+
+### If a step times out or the script stops
+
+Each step polls every 15 seconds for up to `--timeout`, then stops with `timed out waiting for ...`.
+Run the same command again: every phase checks what is already done and continues from there, and the restores are applied only once.
+A single phase can also be run on its own, such as `migrate-to-external.sh --gitops enable-hopsworks`.
+
+### What the script writes
+
+The script applies the Kueue CRDs itself and the HelmRelease skips them (`crds: Skip` on install and upgrade), so deleting the HelmRelease leaves every queue in place.
 
 ## What changes
 
