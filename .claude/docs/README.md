@@ -27,6 +27,7 @@ Three directories under `docs/`, each for a distinct purpose:
 - `setup_installation/` — infrastructure setup, cloud deployment, admin configuration
 
 Every new page must also appear in the `nav:` section of `mkdocs.yml` or it will not be reachable.
+Release pages are the exception: the `Releases` entry lists them automatically, see `releases.md`.
 
 ## Python API Section
 
