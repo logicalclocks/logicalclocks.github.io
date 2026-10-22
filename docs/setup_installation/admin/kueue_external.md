@@ -168,7 +168,13 @@ spec:
 
 Commit and push; the script continues once the release shows both values.
 
-### Step 5: Verify and move the queues into Git
+### Step 5: Upgrade Kueue to 0.20.2
+
+The script applies the 0.20.2 CRDs and rewrites `<backup-dir>/gitops/kueue.yaml` for 0.20.2: the chart from `oci://registry.k8s.io/kueue/charts`, the Spark manager configuration and feature gate, and a post-render patch that keeps the chart's CRDs out of the release.
+Replace the file you committed in Step 3 with it, then commit and push.
+The script continues once the Kueue controller runs 0.20.2.
+
+### Step 6: Verify and move the queues into Git
 
 `verify` checks the end state, then `export-queues` writes `<backup-dir>/gitops/kueue-queues.yaml`: the ResourceFlavors, Topologies, Cohorts, ClusterQueues, AdmissionChecks and WorkloadPriorityClasses as `kueue.x-k8s.io/v1beta2`, with the server-set fields removed.
 Commit it under a Flux Kustomization of its own that depends on the one applying `kueue.yaml`:
@@ -204,6 +210,7 @@ A single phase can also be run on its own, such as `bash hopsworks/charts/hw-kue
 ### What the script writes
 
 The script applies the Kueue CRDs itself and the HelmRelease skips them (`crds: Skip` on install and upgrade), so deleting the HelmRelease leaves every queue in place.
+The 0.20.2 chart ships its CRDs as templates, which `crds: Skip` does not cover, so its HelmRelease also carries a kustomize post-render patch that removes them from what Flux installs.
 
 ## What changes
 
