@@ -57,7 +57,7 @@ If your Oracle database requires mutual TLS (mTLS) authentication, which is comm
 
 Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
 The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
-Pick the `SQL` card to open the creation form.
+Pick your database's card under `Database`, such as `MySQL`, `PostgreSQL`, `Oracle` or `SQL Server`, to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)

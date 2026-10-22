@@ -138,6 +138,8 @@ Hopsworks Feature Store does not support time-travel queries on external feature
 With the Python engine, `.read()` and `.show()` read an external feature group through the ArrowFlight Server with DuckDB, which Hopsworks enables by default.
 This supports external feature groups on Snowflake, BigQuery, Redshift, SQL databases (MySQL, PostgreSQL, Oracle, SQL Server and the other SQL database types), SAP HANA, Unity Catalog, MongoDB, Elasticsearch, another Hopsworks cluster, S3, GCS and AWS Glue.
 Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [`FeatureView.create_training_data`][hsfs.feature_view.FeatureView.create_training_data], [`FeatureView.create_train_test_split`][hsfs.feature_view.FeatureView.create_train_test_split] or [`FeatureView.create_train_validation_test_split`][hsfs.feature_view.FeatureView.create_train_validation_test_split].
+A training dataset with splits, transformation functions, a format other than Parquet or its own sink is materialized by a Spark job, and Spark cannot read a Hopsworks data source.
+For an external feature group on another Hopsworks cluster, use `create_training_data` without those, which the ArrowFlight Server materializes, or copy the remote feature group into a feature group of this cluster with a [dltHub ingestion job][ingest-data-with-dlthub] first.
 
 !!! api "API reference"
 
