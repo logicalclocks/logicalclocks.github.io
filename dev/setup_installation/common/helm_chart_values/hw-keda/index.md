@@ -6,7 +6,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792662915` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792672882` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -303,6 +303,10 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     hw-keda:
       crdUpgradeJob:
         enabled: true
+        image:
+          name: keda-crds
+          registry: ''
+          tag: 2.21.0-0.16.0-h1
         imagePullPolicy: IfNotPresent
         nodeSelector: {}
         resources:
@@ -320,12 +324,16 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 
 `hw-keda.crdUpgradeJob` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob }
 :   Type `object`.
-    the pre-upgrade hook that keeps the KEDA and HTTP add-on CRDs current. They ship in crds/ rather than as templates (the ScaledJob CRD alone is 670 KB, which would put the Helm release secret over its 1 MiB limit), and Helm only creates crds/ on install and never touches it on upgrade, so this Job applies the same CRD files server-side on every upgrade, creating them on a release upgraded from a chart without this subchart and patching them on a KEDA bump.
+    the pre-upgrade hook that keeps the KEDA and HTTP add-on CRDs current. They ship in crds/ rather than as templates (the ScaledJob CRD alone is 670 KB), and Helm only creates crds/ on install and never touches it on upgrade, so this Job applies the same CRD files server-side on every upgrade, creating them on a release upgraded from a chart without this subchart and patching them on a KEDA bump. It reads them from the keda-crds image (`image`), not a hook ConfigMap: Helm stores every hook manifest in the release Secret, and the CRDs would take 13% of its 1 MiB limit.
 
     ??? note "Default"
 
         ```yaml
         enabled: true
+        image:
+          name: keda-crds
+          registry: ''
+          tag: 2.21.0-0.16.0-h1
         imagePullPolicy: IfNotPresent
         nodeSelector: {}
         resources:
@@ -343,9 +351,25 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `bool`, default `true`.
     apply the shipped CRDs on upgrade
 
+`hw-keda.crdUpgradeJob.image` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image }
+:   Type `object`, default `{"name":"keda-crds","registry":"","tag":"2.21.0-0.16.0-h1"}`.
+    the image that carries the CRDs, one directory per pinned version (keda-<version>, keda-add-ons-http-<version>). The Job checks every file's sha256 against this chart's crds/ before applying anything, so the tag must be the build for this chart's KEDA and HTTP add-on versions.
+
+`hw-keda.crdUpgradeJob.image.name` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image.name" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image.name }
+:   Type `string`, default `"keda-crds"`.
+    image name
+
+`hw-keda.crdUpgradeJob.image.registry` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image.registry" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image.registry }
+:   Type `string`, default `""`.
+    registry and repository prefix of the image; empty means global._hopsworks.imageRegistry followed by /hopsworks
+
+`hw-keda.crdUpgradeJob.image.tag` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image.tag" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image.tag }
+:   Type `string`, default `"2.21.0-0.16.0-h1"`.
+    image tag, <keda>-<http-add-on>-h<revision>
+
 `hw-keda.crdUpgradeJob.imagePullPolicy` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.imagePullPolicy }
 :   Type `string`, default `"IfNotPresent"`.
-    pull policy of the toolbox image the Job runs; global._hopsworks.imagePullPolicy takes precedence when set
+    pull policy of the Job's toolbox and keda-crds images; global._hopsworks.imagePullPolicy takes precedence when set
 
 `hw-keda.crdUpgradeJob.nodeSelector` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.nodeSelector" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.nodeSelector }
 :   Type `object`, default `{}`.

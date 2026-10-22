@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792662915` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792672882` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2418,7 +2418,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         agent_deployment_otel_cpu: '0.5'
         agent_deployment_otel_enabled: 'true'
         agent_deployment_otel_image: otlp-sidecar
-        agent_deployment_otel_memory_mb: '1024'
+        agent_deployment_otel_memory_mb: '2048'
         agent_jobs_enabled: 'true'
         airflow_dir: /srv/hops/airflow
         airflow_enabled: true
@@ -2921,7 +2921,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"otlp-sidecar"`.
 
 `hopsworks.variables.agent_deployment_otel_memory_mb` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_otel_memory_mb" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_otel_memory_mb }
-:   Type `string`, default `"1024"`.
+:   Type `string`, default `"2048"`.
 
 `hopsworks.variables.agent_jobs_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_jobs_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_jobs_enabled }
 :   Type `string`, default `"true"`.
