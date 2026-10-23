@@ -29,7 +29,7 @@ The values are listed in [HopsFS CSI driver values][helm-values-hopsfs-csi].
 
 Each release registers its own driver, named `<namespace>.hopsfs.csi.logicalclocks.com` after the release namespace.
 Kubelet routes CSI calls by driver name alone, so the name per release is what lets two Hopsworks installations share a Kubernetes cluster.
-Each gets its own node plugin, socket, registration and CSIDriver object, also on the nodes both use, and uninstalling one never touches the other's mounts.
+Each gets its own node plugin, socket, registration and CSIDriver object, also on the nodes both use, and with different release names uninstalling one never touches the other's mounts or node plugin, as described in [Before you uninstall][uninstall-before].
 
 Kubernetes caps a CSI driver name at 63 characters, so a namespace longer than 34 characters needs a shorter name in `global._hopsworks.csi.driverName`.
 The render fails and names that value when it is needed.
@@ -48,7 +48,8 @@ A name set there must be unique in the Kubernetes cluster: two releases with one
 
 The node plugin needs `privileged`, `hostPath` volumes and `Bidirectional` mount propagation, none of which `restricted-v2` admits.
 `values.openshift.yaml` ships SecurityContextConstraints (SCC) for it through `hopsfs-csi.openshift.securityContextConstraints`, which `global._hopsworks.openshift.enabled` also turns on.
-The SCC is granted to the plugin's service account only, is named after the release and its namespace, and is installed as a `pre-install,pre-upgrade` hook so that it exists before the plugin pods are admitted.
+The SCC is granted to the plugin's service account only, is named after the release and its namespace, and is installed as a `pre-install,pre-upgrade,pre-rollback` hook so that it exists before the plugin pods are admitted.
+Its name, `<release>-<namespace>-hopsfs-csi-node-plugin`, is cut to 63 characters, so with a long release name and namespace find it with `oc get scc | grep hopsfs-csi-node-plugin`.
 The `hopsfs-fuse` sidecars run under `restricted-v2` with the user and group IDs from the namespace's range that the overlay sets.
 
 The CSIDriver carries the CSI volume admission profile `restricted` (`hopsfs-csi.openshift.csiEphemeralVolumeProfile`).

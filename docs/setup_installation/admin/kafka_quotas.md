@@ -11,14 +11,14 @@ Kafka runs one of two mutually exclusive quota plugins, chosen with `kafka.clust
 Almost every question about quotas reduces to which plugin is active, because each enforces something different and ignores the other's settings.
 
 Strimzi's own default is the built-in `kafka` plugin.
-The Hopsworks chart defaults to `strimzi`, which releases before 5.2.0 used without a choice.
+The Hopsworks chart defaults to `strimzi`, which releases before 5.0.13 and 5.1.0 used without a choice.
 The values are listed in [Kafka values][helm-values-kafka].
 
 ## Choosing a plugin { #kafka-quotas-plugin }
 
 | | `strimzi` | `kafka` (built-in) |
 | --- | --- | --- |
-| Per-tenant ceiling (`KafkaUser.spec.quotas`) | ignored | enforced |
+| Per-tenant ceiling (`KafkaUser.spec.quotas`) | ignored; a user in `kafka.users` fails the render | enforced |
 | Rate semantics | a total per broker, shared between clients | per user, per broker, shared by that user's client IDs |
 | Disk-fill guard (`minAvailable*`) | yes | no equivalent |
 | Exempting principals | `excludedPrincipals` | not possible |
@@ -120,8 +120,8 @@ A quota window is 11 samples of 1 second (`quotas.window`), and a shorter run re
 
 ## Migrating from the quota defaults { #kafka-quotas-defaults-migration }
 
-Charts before 5.2.0 had `quotas.defaults.*`, which drove a post-install Job that wrote a default quota for client IDs with `kafka-configs.sh`.
-5.2.0 removed that Job.
+Charts before 5.0.13 and 5.1.0 had `quotas.defaults.*`, which drove a post-install Job that wrote a default quota for client IDs with `kafka-configs.sh`.
+5.0.13 and 5.1.0 removed that Job.
 Setting `quotas.defaults.enabled: true` together with `type: kafka` fails the render, because a client-ID default left behind by the old Job takes effect under the built-in plugin.
 Under `type: strimzi` the flag is ignored, so existing values keep rendering.
 

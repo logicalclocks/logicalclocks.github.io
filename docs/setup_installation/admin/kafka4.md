@@ -128,7 +128,9 @@ With central under ArgoCD, its first 5.2 sync drops `v1beta2`, and a satellite m
 Helm 4 applies a chart's `crds/` on every `helm install`, over the CRDs already on the Kubernetes cluster, before it validates values or runs any hook.
 Install onto a Kubernetes cluster that already has the Strimzi CRDs, such as a reinstall of central or a second installation, with `--skip-crds`; the hook applies them.
 An install that ran without it and then failed can leave `v1beta2` unserved.
-Fix the cause and install again, after `helm uninstall` if Helm recorded the failed release: the pre-install hook finds the `hopsworks.ai/strimzi-v1beta2-served` annotation on the Kafka CRD and serves `v1beta2` again.
+Fix the cause and install again: the pre-install hook finds the `hopsworks.ai/strimzi-v1beta2-served` annotation on the Kafka CRD and serves `v1beta2` again.
+If Helm recorded the failed release, remove it first with `helm uninstall --no-hooks <release> -n <namespace>` and the cleanup in [What stays][uninstall-leftovers].
+An uninstall with hooks runs the failed release's cleanup Job, which on a Kubernetes cluster with another installation also deletes that installation's project namespaces, as described in [Before you uninstall][uninstall-before].
 
 A Kubernetes cluster upgraded with a 5.2 pre-release chart can be left on the 0.51.0 CRDs.
 The Strimzi operator then logs `Kafka <name> in namespace <namespace> was MODIFIED` every few seconds for each Kafka and runs at its CPU limit.

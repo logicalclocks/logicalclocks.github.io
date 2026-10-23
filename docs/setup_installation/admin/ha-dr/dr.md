@@ -526,12 +526,13 @@ kubectl delete restore.velero.io k8s-backups-users-resources -n velero --ignore-
 
 The same customization options for [RonDB and Opensearch](#customizations) backup IDs apply to in-place restore. You can override individual service backup IDs while keeping the global backup ID for HopsFS.
 
-### OpenSearch crash-loops after a restore on 5.2.1 { #opensearch-restore-crash-loop }
+### OpenSearch crash-loops after a restore on 5.2.0 and 5.2.1 { #opensearch-restore-crash-loop }
 
-On 5.2.1, an OpenSearch snapshot restore, in place or during a fresh install, can leave the `.opendistro_security` index closed.
+On 5.2.0 and 5.2.1, an OpenSearch snapshot restore, in place or during a fresh install, can leave the `.opendistro_security` index closed.
+5.1.2 runs the same restore Job; the crash-loop was not verified there.
 The restore Job closes that index without restoring it, and when OpenSearch restarts while the Job reopens the indices, the Job still completes with the index closed.
 From then on every OpenSearch start fails to apply the security configuration and exits: `opensearch-0` crash-loops and OpenSearch Dashboards stays down.
-The restore Job of 5.2.2 and later leaves that index open.
+The restore Job of 5.1.3, 5.2.2 and later leaves that index open.
 
 The symptom:
 

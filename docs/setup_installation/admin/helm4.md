@@ -49,6 +49,7 @@ It returns to the HPA's `minReplicas`, which for five of the six workloads is th
 Its PodDisruptionBudget is rendered from that same floor, so a registry whose floor is 1 gets no PodDisruptionBudget rather than a `minAvailable: 1` budget that would block every drain of its node.
 
 Take the first upgrade of an HPA-scaled release with Helm 4 and `--server-side=true`, which keeps the live count, unless a RonDB autoscaler holds its StatefulSet at another size than the chart's, as described in [RonDB][helm4-rondb].
+For a release installed by Helm 3 this is inferred rather than measured: a server-side apply that omits the field is not expected to remove the copy that the earlier client-side applies recorded.
 That works because `kube-controller-manager` co-owns `.spec.replicas` once the HPA has actually rescaled the workload.
 On a release whose HPA is enabled but has never fired, Helm is still the only owner and removes the field, so that release drops to 1 like the client-side path.
 If you upgrade client-side, expect one dip to a single replica per affected workload, and plan it like any other rolling change.
@@ -116,6 +117,13 @@ While the rules are absent no Knative resource is intercepted, so Knative resour
 If the Knative webhook Deployment is down or cannot be scheduled, the window lasts until it recovers.
 
 An upgrade with Helm 4 and SSA does not go through this window: the chart stops declaring the field, and the controller keeps ownership.
+
+## CRDs applied by a 5.0.x release { #helm4-retained-crds }
+
+Helm never deletes CRDs, and the KServe CRD upgrade Job applies the cert-manager, Knative and KServe CRDs server-side under its own field manager, so it owns their `app.kubernetes.io/version` label.
+A fresh Helm 4 install fails within seconds when that label on the CRDs differs from the value the chart installs.
+CRDs last applied by a 5.0.x release, whose CRD upgrade Job ships an older bundle, carry such a value.
+Before a fresh Helm 4 install into a Kubernetes cluster that still runs a 5.0.x release, upgrade that release with `helm upgrade` to a chart of 5.1.0 or later, so that its CRD upgrade Job applies the current CRDs.
 
 ## RonDB { #helm4-rondb }
 

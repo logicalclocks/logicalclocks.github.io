@@ -34,12 +34,10 @@ The values are listed in [KEDA values][helm-values-hw-keda].
 The images are mirrors of `ghcr.io/kedacore/*` under `docker.hops.works/ghcr.io/`.
 An airgapped install overrides them under `hw-keda.keda.image` and `hw-keda.keda-add-ons-http.images`, as the chart's `values.airgap.yaml` shows.
 From 5.2.2 the CRD upgrade hook also pulls `hopsworks/keda-crds`, as described in [CustomResourceDefinitions][keda-crds].
-It sits under `global._hopsworks.imageRegistry` like every Hopsworks image, so the chart's `vendor_images.sh` includes it and an airgap overlay needs nothing more for it.
+It is pulled from `global._hopsworks.imageRegistry` like every Hopsworks image, so mirror `hopsworks/keda-crds` next to the other Hopsworks images; an airgap overlay needs nothing more for it.
 
-KEDA 2.21.0 is the first release without CVE-2026-77524.
-The KServe controller and the HTTP add-on link the KEDA module for its types, so their upstream images, `kserve/kserve-controller:v0.21.0` and `ghcr.io/kedacore/http-add-on-*:0.16.0`, report the vulnerable version to scanners although they never run that code.
-The chart therefore ships Hopsworks rebuilds of both against KEDA 2.21.0, under the upstream image names with a `-h<revision>` tag: `kserve/kserve-controller:0.21.0-h1` and `ghcr.io/kedacore/http-add-on-*:0.16.0-h2`.
-These tags exist only on `docker.hops.works`, not on ghcr.io or Docker Hub, so an airgapped install mirrors them from there.
+The chart ships Hopsworks rebuilds of the KServe controller and of the HTTP add-on images, under the upstream image names with a `-h<revision>` tag: `kserve/kserve-controller:0.21.0-h1` and `ghcr.io/kedacore/http-add-on-*:0.16.0-h2`.
+These tags exist only on `docker.hops.works` and its public ECR mirrors, not on ghcr.io or Docker Hub, so an airgapped install mirrors them from there.
 
 ## CustomResourceDefinitions { #keda-crds }
 
@@ -95,6 +93,7 @@ A cleanup hook, `keda-cleanup`, therefore runs twice on `helm uninstall`:
 
 Allow for the first pass in the uninstall timeout.
 Turn the hook off with `hw-keda.cleanupOnUninstall.enabled: false` only when something else removes those resources.
+Without it the KEDA objects stay behind under a finalizer that nothing clears once the operators are gone, and deleting the CRDs later leaves them `Terminating`, which blocks the next install.
 
 Under an ArgoCD that runs no pre-delete hooks, as described in [Under ArgoCD][uninstall-argocd], the first pass does not run, and deleting the Application can wait on CRDs stuck in `Terminating`.
 There, delete the Standard-mode deployments, or the `keda.sh` objects, before you delete the Application.

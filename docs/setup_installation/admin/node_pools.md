@@ -18,7 +18,7 @@ The worker nodes are labelled but not tainted, so user workloads, which carry no
 
 The values below pin every Hopsworks workload, the installation and upgrade Jobs included, with three exceptions that schedule on the worker nodes:
 
-- The Consul chart's TLS and gossip encryption setup Jobs, which take no placement settings and run once during the install.
+- The Consul chart's TLS and gossip encryption setup Jobs, which run on every install and upgrade, and its TLS cleanup Job, which runs on uninstall; that chart takes no placement settings for them.
 - The Kueue controller, when Kueue is enabled, whose chart takes no placement settings.
 - The installation and maintenance Jobs of the Hopsworks subcharts before 5.2.2, which do not read the global settings there.
 
