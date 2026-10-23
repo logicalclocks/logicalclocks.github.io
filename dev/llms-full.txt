@@ -31274,6 +31274,8 @@ For the client libraries, see the [Client Installation](../user_guides/client_in
 :material-shield-check-outline:{ .hops-role-ico } Operate
 { .hops-role-cap }
 
+- [Upgrades](admin/upgrade.md)
+  What to do before and during each upgrade, one minor release at a time.
 - [Monitoring](admin/monitoring/grafana.md)
   Service dashboards, exported metrics and service logs.
 - [High availability and disaster recovery](admin/ha-dr/intro.md)
@@ -33103,9 +33105,10 @@ An administrator account on a Hopsworks cluster, and Helm access to the deployme
 The daemon is deployed by the Helm chart and is disabled by default:
 
 ```yaml
-hopsworks:
-  buildkitd:
-    enabled: true
+global:
+  _hopsworks:
+    buildkitd:
+      enabled: true
 ```
 
 Enabling it deploys a StatefulSet with its own state volume. Once it is running, the chart also points the backend at it: `docker_operations_buildkit_addr` and the client TLS settings are filled in from `buildkitd.name`, `buildkitd.port`, `buildkitd.replicas` and `buildkitd.tls`. You do not set those variables yourself unless you are pointing builds at a daemon the chart does not manage.
@@ -33158,9 +33161,36 @@ allowed_devices = ["/dev/fuse"]
 allowed_annotations = ["io.kubernetes.cri-o.Devices"]
 ```
 
-To allow the annotation only for this daemon rather than for every pod on the node, use a CRI-O
-workload with an `activation_annotation` and set the matching annotation through
-`buildkitd.podAnnotations`; `values.rhel8.yaml` in the chart shows the pairing.
+To allow the annotation only for this daemon rather than for every pod on the node, use a CRI-O workload that the daemon's pod opts into through its activation annotation:
+
+```toml
+[crio.runtime]
+allowed_devices = ["/dev/fuse"]
+
+[crio.runtime.workloads.buildkitd]
+activation_annotation = "io.hopsworks.buildkitd-devices"
+allowed_annotations = ["io.kubernetes.cri-o.Devices"]
+```
+
+```yaml
+hopsworks:
+  buildkitd:
+    podAnnotations:
+      io.hopsworks.buildkitd-devices: "true"
+```
+
+On containerd, install a device plugin or CDI provider that advertises `/dev/fuse`, and request the resource it advertises:
+
+```yaml
+hopsworks:
+  buildkitd:
+    rootless:
+      enabled: true
+      deviceInjection: "devicePlugin"
+      devicePluginResource: "github.com/fuse"   # whatever your provider advertises
+  variables:
+    docker_operations_oci_worker_snapshotter: "fuse-overlayfs"
+```
 
 Name the snapshotter explicitly rather than leaving it on `auto`. If FUSE turns out to be
 unavailable the daemon then fails where you can see it, instead of quietly selecting `native` and
@@ -33180,7 +33210,29 @@ rather than `native`, that a second identical build reuses layers from the first
 cache survives a restart of the StatefulSet. Under enforcing SELinux the device may additionally
 need a matching SCC or targeted policy; do not disable SELinux labelling wholesale to get past it.
 
-On RHEL 8 the rootful daemon above remains the recommended configuration.
+### RHEL 8 and other 4.18 kernels { #buildkitd-rhel8 }
+
+What sets RHEL 8 apart is its 4.18 kernel, which predates unprivileged overlayfs (5.11).
+Run the rootful daemon there: overlayfs in a privileged container has no kernel floor, so builds stack layers rather than copying them, and a privileged container runs SELinux-unconfined, so nothing needs a custom policy.
+Give it a dedicated, tainted builder node, as above.
+
+```yaml
+global:
+  _hopsworks:
+    buildkitd:
+      enabled: true
+hopsworks:
+  buildkitd:
+    rootless:
+      enabled: false
+  variables:
+    # With the rootful daemon, auto selects overlayfs.
+    docker_operations_oci_worker_snapshotter: "auto"
+```
+
+The rootless configurations above work on 4.18 through fuse-overlayfs, but have not been verified on a RHEL 8 node, which is why the rootful daemon is the recommended configuration there.
+This applies to RHEL 8 nodes running a current upstream Kubernetes.
+OpenShift releases recent enough for Hopsworks require RHCOS workers rather than RHEL 8, and OpenShift builds through buildah rather than through this daemon.
 
 ### Sizing the state volume
 
@@ -33238,7 +33290,7 @@ docker_operations_buildkit_cache_scope
 | `project` | Each project gets its own cache. No sharing at all. |
 | `off` | No cache mount. |
 
-A cache only survives between builds if the daemon does, so this pairs with `buildkitd.enabled`.
+A cache only survives between builds if the daemon does, so this pairs with `global._hopsworks.buildkitd.enabled`.
 
 `shared` is scoped by index configuration rather than by a single cluster-wide identifier. Two projects resolving through the same configuration share, which is the point; a project configured against a different private index gets a different cache, so it cannot receive an artifact fetched under someone else's credentials. Where the index configuration is cluster-wide, which is the normal setup, every project shares.
 
@@ -33315,7 +33367,8 @@ The chart ships **v0.31.2**. Do not pin below it. Earlier releases carry publish
 
 Both are fixed in v0.28.1; v0.31.2 also covers a Seccomp/AppArmor bypass, an unbounded-parsing denial of service, and a command injection through Git bundle checkout.
 
-A per-build daemon is affected by the same advisories, so this is not a reason to leave `buildkitd.enabled` off. Upgrading the image is the fix in both modes.
+A per-build daemon is affected by the same advisories, so this is not a reason to leave `global._hopsworks.buildkitd.enabled` off.
+Upgrading the image is the fix in both modes.
 
 If you repin to a different version, set `buildkitd.gc.keySyntax` to match it:
 
@@ -34154,121 +34207,6 @@ endpoint. The legacy `AllowMetricsSecurityManager` is gone.
 - Security model: `user_guides/projects/airflow/security_model.md`
 
 ================================================================================
-# Kafka 4 and KRaft upgrade notes
-Source: https://docs.hopsworks.ai/latest/setup_installation/admin/kafka4/
-
-# Operator Notes: Kafka 4 and KRaft in Hopsworks 5.2
-
-Administrative reference for cluster operators upgrading a self-managed Hopsworks cluster to 5.2.
-
-Hopsworks 5.2 moves the bundled Kafka from Strimzi 0.45 with Kafka 3.9 to Strimzi 1.2 with Kafka 4.3.1.
-Kafka 4 has no ZooKeeper, so an existing cluster is migrated to KRaft as part of the upgrade.
-The chart performs that migration itself; this page covers what to prepare and what to expect.
-The chart's own README has the mechanics, the failure modes and the verification steps; read it with `helm show readme hopsworks/hopsworks --version <5.2 version>`.
-
-A fresh 5.2 install needs none of this: it starts on KRaft.
-
-## What the upgrade does
-
-Two pre-upgrade hooks run before any new component is applied:
-
-1. `kafka-kraft-migration` carries the cluster from ZooKeeper to KRaft under the operator that is still running.
-   It adds the KRaft node pools, annotates the cluster for migration, waits for the metadata to move, and finalises.
-2. `strimzi-crd-upgrade` converts the Strimzi custom resources from the `v1beta2` API to `v1` and brings the CRDs up to the new operator's version.
-
-The release then replaces the operator with Strimzi 1.2 and rolls the brokers to Kafka 4.3.1.
-
-## What to expect
-
-- **The upgrade blocks while the migration runs.**
-  The hook waits three times, each bounded by `kafka.migrationJob.timeoutSeconds` (default 1800), so the worst case is 3 x that value.
-  Helm's `--timeout` applies to each hook on its own: give it at least that budget plus room for the rest of the release.
-  On timeout the hook fails rather than hangs, and re-running the upgrade resumes from wherever the operator got to.
-- **Broker pods are replaced about seven times**: during the migration, when the finalised cluster drops its ZooKeeper-era settings, and when the brokers move to Kafka 4.3.1.
-  A single-broker cluster is unavailable for the duration of each replacement; clusters with a replication factor above 1 roll without interruption.
-- **ZooKeeper and the new controllers run side by side** until the migration is finalised.
-  The controller pool inherits its sizing from the ZooKeeper settings, so the namespace needs headroom for both during the upgrade.
-- **Finalising KRaft is irreversible.**
-  Do not `helm rollback` after the migration has started, and do not run this upgrade with `--atomic`, which performs that rollback for you the moment a hook times out: the earlier revision puts the ZooKeeper-shaped Kafka resource back against a cluster that may already have finalised KRaft.
-  Re-run the upgrade instead.
-- **One `helm upgrade` migrates the cluster.**
-  The Strimzi CRDs finish moving on the next upgrade, whatever its reason; until then the 1.2.0 operator runs on the 0.51.0 schemas, which nothing the chart sets depends on.
-- **ArgoCD needs one manual step.**
-  ArgoCD renders the chart from its cached list of cluster APIs before the hooks run, so the first sync converts the CRDs and then stops on purpose with a message in the `strimzi-crd-upgrade` Job.
-  Then invalidate the cluster cache, hard-refresh the Application, and sync again; the second sync completes the upgrade.
-  In the UI: Settings, Clusters, the cluster, Invalidate Cache; then Refresh (Hard) and Sync on the Application.
-  From a terminal:
-
-    ```sh
-    curl -k -X POST "$ARGOCD_URL/api/v1/clusters/https%3A%2F%2Fkubernetes.default.svc/invalidate-cache?id.type=server" \
-      -H "Authorization: Bearer $ARGOCD_TOKEN" -H "Content-Type: application/json" -d '{}'
-    argocd app get hopsworks --hard-refresh
-    argocd app sync hopsworks
-    ```
-
-  The Application also needs an `ignoreDifferences` entry for the Kafka CRD, on a fresh install as much as on an upgrade.
-  Upstream's 1.2.0 Kafka CRD declares an empty `properties: {}` map under `status.clusterSecurity`, and the apiserver drops an empty map when it stores a CRD, so the live object never matches the render: without the entry the Application never reaches Synced and selfHeal re-applies that one CRD every five minutes.
-
-    ```yaml
-    spec:
-      ignoreDifferences:
-        - group: apiextensions.k8s.io
-          kind: CustomResourceDefinition
-          name: kafkas.kafka.strimzi.io
-          jqPathExpressions:
-            - .spec.versions[].schema.openAPIV3Schema.properties.status.properties.clusterSecurity.properties
-    ```
-
-## Before you start
-
-- **Airgapped clusters** mirror three images with the rest: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`.
-  The chart's `vendor_images.sh` includes them; nothing is fetched from the internet during the upgrade.
-- **A satellite cluster that shares the central operator** is upgraded before central.
-  The CRD conversion re-stores every Kafka resource on the Kubernetes cluster, and a satellite still on ZooKeeper would lose its ZooKeeper configuration in the process.
-  The conversion refuses while any other Kafka is not on KRaft, so the wrong order fails safely, but it blocks central's upgrade until the satellite is done.
-- **Clusters first installed on Hopsworks 4.3 or 4.5** still run Strimzi 0.39 CRDs, whose status schema cannot carry the migration state the hook reads, so the hook refuses rather than guess.
-  Apply the 0.45.2 CRD bundle first:
-
-    ```sh
-    kubectl apply --server-side -f \
-      https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.45.2/strimzi-crds-0.45.2.yaml
-    ```
-
-    Wait for the operator to reconcile, then run the upgrade.
-    Do not apply the 5.2 chart's own CRDs for that: the apiserver rejects them while `v1beta2` is still a stored version.
-    An airgapped cluster has to mirror that bundle too; the `strimzi/crds` image carries only the 0.51.0 and 1.2.0 bundles.
-- **Record the topics**, so you can confirm nothing was lost:
-
-    ```sh
-    kubectl exec -n <namespace> <cluster>-kafka-0 -c kafka -- bash -c '
-    topics=$(ls /var/lib/kafka/data-0/kafka-log0 | grep -E -- "-[0-9]+$" | grep -v "^__cluster_metadata" | sed -E "s/-[0-9]+$//" | sort -u)
-    printf "%s\n" "$topics"
-    printf "%s\n" "$topics" | wc -l'
-    ```
-
-## Verify
-
-```sh
-kubectl get strimzipodset <cluster>-zookeeper -n <namespace> --ignore-not-found
-kubectl get pods -n <namespace> -l strimzi.io/name=<cluster>-zookeeper
-kubectl get pods -n <namespace> -l strimzi.io/controller-role=true
-```
-
-Nothing for the first two, at least one controller pod for the third, and the same topic list as before.
-
-If the upgrade fails part-way, re-run it.
-The hook's log names what it was waiting for and the last state it saw, a timeout corrupts nothing because the operator migrates on its own schedule, and the re-run resumes from the live state.
-The one state the hook refuses outright is a cluster whose CRDs are too old to report `.status.kafkaMetadataState`, which is the 4.3 and 4.5 case above.
-
-## Client compatibility {#kafka4-client-compatibility}
-
-Kafka 4 dropped support for old protocol versions ([KIP-896](https://cwiki.apache.org/confluence/display/KAFKA/KIP-896%3A+Remove+old+client+protocol+API+versions+in+Kafka+4.0)).
-The 4.3.1 brokers accept Java clients from 2.1 and librdkafka-based clients (Python, Go, .NET) from 1.8.2.
-The clients shipped with Hopsworks 5.2 are within those ranges; check any producer or consumer you build against the cluster yourself.
-
-The same cut applies the other way round for a [bring-your-own Kafka cluster][external-kafka-cluster]: Hopsworks 5.2 connects with kafka-clients 4.3.1, so the external brokers must run Kafka 2.1 or newer.
-
-================================================================================
 # Search Index
 Source: https://docs.hopsworks.ai/latest/setup_installation/admin/search_index/
 
@@ -34365,6 +34303,1277 @@ Raising it does the opposite.
 !!! warning "Turning off cross-project search does not rewrite history"
     `cross_project_global_search_enabled` filters searches as they are made.
     It does not remove anything from the index, so switching it off restricts what users can find from that point on and is not a way to redact something already indexed.
+
+================================================================================
+# HopsFS DataNode Drain
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_datanode_drain/
+
+# HopsFS DataNode drain { #hopsfs-datanode-drain }
+
+## Introduction
+
+With asynchronous cloud upload, a HopsFS DataNode finalizes a block on its local volume and uploads it to object storage in the background.
+A DataNode that stops before its upload queue is empty leaves the blocks it has not uploaded yet on its local volume only.
+Draining a DataNode suspends it and waits until its queue is empty, so every finalized block is in object storage before the DataNode stops.
+
+The values on this page belong to the `hopsfs` subchart: set them under `hopsfs:` in the values of the Hopsworks chart.
+
+When `objectStorage.asyncUpload.enabled` is `true` and `datanode.gracefulDrain.enabled` is `true` (its default), every DataNode pod gets a `preStop` hook that runs `hdfs dfsadmin -drainAndSuspendDatanode`, and a `terminationGracePeriodSeconds` sized for the worst-case upload backlog.
+The hook covers routine pod deletions with no operator action: rolling restarts, pods recreated by `helm upgrade`, `kubectl drain`, and any eviction that respects the PodDisruptionBudget.
+
+Asynchronous upload is off by default (`objectStorage.asyncUpload.enabled: false`).
+Then the chart installs no `preStop` hook and keeps the default grace period of 30 seconds, because every finalized block is already in object storage when it is finalized.
+
+## Before you enable asynchronous upload
+
+The `preStop` hook is bounded by `terminationGracePeriodSeconds`, which is sized from `queueCapacity * blockSizeMiB / uploadThroughputMiBps`, as described in [Sizing the drain budget][hopsfs-drain-sizing].
+For typical workloads that budget exceeds the backlog and the drain completes before the grace period ends.
+If the backlog exceeds the budget, the kubelet stops the DataNode in the middle of the drain, and the blocks it has not uploaded stay on its volume only, as described in [Reading the outcome of a drain][hopsfs-drain-outcome].
+Size the budget for your workload's worst case.
+The most common adjustment is raising `datanode.gracefulDrain.uploadThroughputMiBps` when the actual upload throughput exceeds its conservative default of 35 MiB/s.
+
+Operators should know how to run `hdfs dfsadmin -drainAndSuspendDatanode` against a DataNode pod even when the hook does the work day to day: it is how you check a drain before you delete a pod, and how you diagnose a slow or stuck drain.
+If your environment does not let operators run it at all, for example where `kubectl exec` into DataNode pods is forbidden and no Hadoop client host exists outside the cluster, the hook still handles routine deletions.
+You then cannot diagnose a stuck drain or recover from one, so if the sized budget turns out too small and you cannot change it quickly, keep asynchronous upload off.
+Without it there is no upload backlog, and stopping a DataNode directly is safe in any environment.
+
+## Draining a DataNode by hand { #hopsfs-drain-manual }
+
+Drain by hand when you want explicit control: to drain before deleting a pod and check the result while the pod still exists, to run the drain from another pod so you can keep watching after the DataNode exits, or to debug a slow or stuck drain.
+The manual command and the hook call the same RPC and produce the same status line, JMX state and termination behaviour; only the hook ignores the command's exit code, as described below.
+
+1. Run the drain from a DataNode pod, or from any pod with `hdfs` on its path:
+
+    ```bash
+    kubectl exec -n hopsworks -it datanode-0 -- /srv/hops/hadoop/bin/hdfs \
+      dfsadmin -drainAndSuspendDatanode <pod-fqdn>:50020 -timeout <seconds>
+    ```
+
+    Replace `<pod-fqdn>` with the headless DNS name of the DataNode to drain, for example `datanode-1.datanode-headless.hopsworks.svc.cluster.local`, and `<seconds>` with the drain budget, usually the value the chart calculates for `terminationGracePeriodSeconds`.
+
+2. Wait for the final status line, which starts with `DRAINED`.
+    While the drain runs, the line starts with `DRAINING`.
+    The exit code is `0` for a completed drain, `1` for a timeout and `2` when the DataNode cannot be reached.
+
+3. Delete the pod once it reports `DRAINED`:
+
+    ```bash
+    kubectl delete pod -n hopsworks datanode-1
+    ```
+
+    The `preStop` hook then runs against a DataNode that is already suspended and returns at once.
+
+## How the preStop hook works
+
+On every voluntary pod termination, including a `kubectl delete pod` after a manual drain, the kubelet runs the hook before it sends `SIGTERM`.
+The hook:
+
+- Runs `hdfs dfsadmin -drainAndSuspendDatanode localhost:50020 -timeout <seconds>`, where `<seconds>` is `datanode.gracefulDrain.timeoutSecs`, or the calculated budget when that is not set.
+- Writes the full output of the command to `/tmp/drain-status.txt`, which you can read with `kubectl exec` while the pod is terminating.
+- Writes one line ending in `drain-exit=<code>` to `/dev/termination-log`, the container's termination message.
+- Always exits 0, so the kubelet sends `SIGTERM` after a timed-out or failed drain too.
+  A block counts as safe only once it is in object storage, which a `DRAINED` status confirms for every finalized block; the exit of the DataNode process says nothing about it.
+
+## Reading the outcome of a drain { #hopsfs-drain-outcome }
+
+A deleted DataNode pod takes its termination message with it, and the pod that replaces it starts without one.
+To keep the outcome of a drain, drain the DataNode by hand before you delete the pod, as described in [Draining a DataNode by hand][hopsfs-drain-manual], and read the command's own output.
+While the hook runs, follow its output in the terminating pod:
+
+```bash
+kubectl exec -n hopsworks datanode-1 -- tail -f /tmp/drain-status.txt
+```
+
+| Final status line and exit code | Meaning |
+| ------------------------------- | ------- |
+| `DRAINED`, exit code `0` | The drain completed: every finalized block reached object storage. |
+| `DRAINING`, exit code `1` | The drain timed out; some finalized blocks may not be in object storage yet. |
+| no status line, exit code `2` | The command could not reach the DataNode's IPC port, usually because the DataNode was already shutting down. |
+
+The blocks a timed-out drain did not upload remain on the DataNode's persistent volume.
+A DataNode that starts again on that volume uploads them.
+They are lost if the volume is lost first, for example with its node when the storage is local to the node, or when the volume is deleted before a DataNode starts on it again.
+
+## Sizing the drain budget { #hopsfs-drain-sizing }
+
+The default `terminationGracePeriodSeconds` is `queueCapacity * blockSizeMiB / uploadThroughputMiBps`.
+With the defaults (`objectStorage.datanode.asyncUpload.queueCapacity: 1000`, `namenode.blockSizeMiB: 128`, `datanode.gracefulDrain.uploadThroughputMiBps: 35`) that is `ceil(1000 * 128 / 35) = 3658` seconds, about 61 minutes.
+The calculation reads `namenode.blockSizeMiB` directly, so changing the block size keeps the budget consistent.
+
+- **Faster object storage:** raise `datanode.gracefulDrain.uploadThroughputMiBps`.
+  Doubling it halves the budget.
+- **A larger expected backlog:** raise `objectStorage.datanode.asyncUpload.queueCapacity`.
+  The budget grows linearly with it.
+- **A fixed budget:** set `datanode.gracefulDrain.timeoutSecs` (the drain RPC) and `datanode.gracefulDrain.terminationGracePeriodSecs` (the pod grace period).
+  Each can be set on its own.
+
+## Turning the hook off
+
+To remove the `preStop` hook while keeping asynchronous upload on:
+
+```yaml
+hopsfs:
+  datanode:
+    gracefulDrain:
+      enabled: false
+```
+
+The chart then omits both the `lifecycle` block and `terminationGracePeriodSeconds` from the DataNode pod, so the kubelet sends `SIGTERM` as soon as the pod is deleted and kills the DataNode after the default 30-second grace period, whatever its upload backlog.
+Use this only when the drain itself misbehaves.
+For an emergency shutdown without draining, the regular `shutdownDatanode` RPC is still available.
+
+## PodDisruptionBudget
+
+The DataNode PodDisruptionBudget sets `maxUnavailable: 1`, so evictions, such as those of a node drain, take down one DataNode at a time.
+It does not limit pods you delete yourself, so do not delete DataNode pods while a node drain is evicting another one.
+It protects client writes, not the drain budget.
+When two or more DataNodes are unavailable at once, a write that loses a member of its pipeline asks the NameNode for a replacement within a bounded number of retries, and fails if no healthy DataNode is available in time.
+The PodDisruptionBudget therefore applies whether asynchronous upload is on or off.
+
+With `datanode.count: 1`, the default, the chart renders no PodDisruptionBudget.
+
+================================================================================
+# HopsFS CSI Driver
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_csi/
+
+# HopsFS CSI Driver { #hopsfs-csi-driver }
+
+## Introduction
+
+Hopsworks mounts HopsFS into Airflow, Trino, and the jobs, notebooks and deployments it launches through a CSI driver, which the `hopsfs-csi` subchart installs.
+A privileged node plugin, run as a DaemonSet, performs the FUSE mount for each pod's inline volume and hands the connection to a `hopsfs-fuse` sidecar in the pod, which runs unprivileged and as a non-root user.
+The pods that mount HopsFS therefore carry no privileged container.
+
+The driver is on by default (`global._hopsworks.csi.enabled: true`).
+The node plugin is installed whenever something needs it: `global._hopsworks.full_platform`, Airflow or Trino.
+The values are listed in [HopsFS CSI driver values][helm-values-hopsfs-csi].
+
+## The node plugin { #hopsfs-csi-node-plugin }
+
+- A node without the plugin cannot start any pod that mounts HopsFS.
+  The DaemonSet therefore tolerates every taint, ignores `global._hopsworks.nodeSelector`, and runs at the `system-node-critical` priority.
+  Narrow its `nodeSelector` or `tolerations` only for nodes that will never run such a pod.
+- The plugin image is named once, in `global._hopsworks.csi.image`, with the registry from `global._hopsworks.imageRegistry`.
+  The plugin and every sidecar are built from it, because the two ends of the handoff speak one protocol and must not differ on a node.
+  The sig-storage helper images are pulled from the same registry under their upstream `registry.k8s.io` paths, so an airgapped install only sets the registry.
+- Before it builds a pod that mounts HopsFS, the Hopsworks backend checks that the driver is registered, so the Hopsworks ClusterRole gets `get` on `csidrivers`.
+  An install that sets `hopsworks.rbac.useExistingRole` adds that grant to its own role, or every such pod build fails with a 403.
+
+## The driver name { #hopsfs-csi-driver-name }
+
+Each release registers its own driver, named `<namespace>.hopsfs.csi.logicalclocks.com` after the release namespace.
+Kubelet routes CSI calls by driver name alone, so the name per release is what lets two Hopsworks installations share a Kubernetes cluster.
+Each gets its own node plugin, socket, registration and CSIDriver object, also on the nodes both use, and with different release names uninstalling one never touches the other's mounts or node plugin, as described in [Before you uninstall][uninstall-before].
+
+Kubernetes caps a CSI driver name at 63 characters, so a namespace longer than 34 characters needs a shorter name in `global._hopsworks.csi.driverName`.
+The render fails and names that value when it is needed.
+A name set there must be unique in the Kubernetes cluster: two releases with one name share one socket and one registration on every node they share, and uninstalling either one breaks the other.
+
+## Failure modes { #hopsfs-csi-failure-modes }
+
+- **A crashed or restarted `hopsfs-fuse` sidecar leaves the pod's mount dead until the pod is recreated.**
+  Reads and writes fail with `ENOTCONN`, and the restarted sidecar cannot resume the connection, so it crash-loops.
+  Delete the pod.
+- **A sidecar that never serves the mount**, for example because of bad certificates or an unreachable NameNode, leaves the pod's other containers in `ContainerCreating`.
+  Read the sidecar's log with `kubectl logs <pod> -c hopsfs-fuse`.
+- **A node without the plugin** cannot start any pod that mounts HopsFS, as described in [The node plugin][hopsfs-csi-node-plugin].
+
+## OpenShift { #hopsfs-csi-openshift }
+
+The node plugin needs `privileged`, `hostPath` volumes and `Bidirectional` mount propagation, none of which `restricted-v2` admits.
+`values.openshift.yaml` ships SecurityContextConstraints (SCC) for it through `hopsfs-csi.openshift.securityContextConstraints`, which `global._hopsworks.openshift.enabled` also turns on.
+The SCC is granted to the plugin's service account only, is named after the release and its namespace, and is installed as a `pre-install,pre-upgrade,pre-rollback` hook so that it exists before the plugin pods are admitted.
+Its name, `<release>-<namespace>-hopsfs-csi-node-plugin`, is cut to 63 characters, so with a long release name and namespace find it with `oc get scc | grep hopsfs-csi-node-plugin`.
+The `hopsfs-fuse` sidecars run under `restricted-v2` with the user and group IDs from the namespace's range that the overlay sets.
+
+The CSIDriver carries the CSI volume admission profile `restricted` (`hopsfs-csi.openshift.csiEphemeralVolumeProfile`).
+Leave it unless a cluster policy demands `baseline` or `privileged`, and never set it empty: without the profile, OpenShift requires `enforce=privileged` of every namespace that mounts the driver and rejects every Airflow and Trino pod.
+
+### When the cluster administrators own the SCC { #hopsfs-csi-admin-scc }
+
+Where whoever runs `helm install` may not create cluster-scoped SCCs, the cluster administrators create it, and the chart is told its name:
+
+```yaml
+hopsfs-csi:
+  openshift:
+    existingSecurityContextConstraints:
+      name: <the SCC they created>
+```
+
+The chart then renders no SCC, and its uninstall cleanup leaves that one alone.
+Give the administrators the chart's own SCC as the reference:
+
+```bash
+helm template <release> hopsworks/hopsworks --version <version> -n <namespace> \
+  --set hopsfs-csi.openshift.securityContextConstraints=true \
+  --show-only charts/hopsfs-csi/templates/scc.yaml
+```
+
+Whatever they derive from it must grant `system:serviceaccount:<release namespace>:hopsfs-csi-node-sa`, in its `users` list or through an RBAC `use` grant.
+
+A missing or wrong SCC would otherwise fail silently: the DaemonSet gets no pod, and every pod that mounts HopsFS stays in `ContainerCreating` with no event that names the cause.
+In this mode a `pre-install,pre-upgrade` hook Job therefore checks, before anything is installed:
+
+- that the SCC exists;
+- that it is the SCC that admits the plugin's pod template for the plugin's service account;
+- that a representative pod that mounts HopsFS passes a server-side dry-run create in the release namespace.
+
+When a check fails, the release fails, and the Job's log names the reason: a missing SCC, another SCC that admits the plugin first, or what the SCC lacks.
+
+Switching an existing release to this mode leaves the SCC that the chart created before in place, because it is a Helm hook and the upgrade does not remove it.
+The check fails while it exists, since it would keep admitting the plugin and hide a broken administrator SCC.
+Delete it once the administrators' SCC is in place.
+Running plugin pods are not affected, because an SCC is only consulted when a pod is admitted.
+An administrator SCC that keeps the chart's generated name is theirs and passes the check.
+
+```bash
+oc delete scc <release>-<namespace>-hopsfs-csi-node-plugin
+```
+
+## Uninstalling { #hopsfs-csi-uninstall }
+
+Kubelet can only unmount a CSI volume through the node plugin of its driver, so the plugin has to outlive the pods that mount HopsFS.
+On `helm uninstall`, or when the release namespace is deleted, the plugin keeps serving unmounts until none of its own mounts is left, and exits then.
+When it is only replaced, by a rollout or an eviction, it exits at once.
+`hopsfs-csi.node.terminationGracePeriodSeconds` (default 300) bounds the wait: keep it above the longest `terminationGracePeriodSeconds` of any pod that mounts HopsFS.
+
+A pod left in `Terminating` after an uninstall means the plugin stopped before kubelet unmounted the pod's volume.
+Force-delete the pod, and remove its `fuse.hopsfs` mount on the node with `nsenter --mount=/proc/1/ns/mnt umount -l <path>`.
+
+The CSIDriver object, which a pre-install hook creates on a first install so that it exists before the Deployments that mount it, and on OpenShift the SCC that the chart ships, are not release resources, so `helm uninstall` itself does not remove them.
+A post-delete hook (`hopsfs-csi.cleanupOnUninstall.enabled`, on by default) deletes both, best effort.
+After `helm uninstall --no-hooks`, delete them by hand:
+
+```bash
+kubectl delete csidriver <namespace>.hopsfs.csi.logicalclocks.com --ignore-not-found   # or your driverName
+oc delete scc <release>-<namespace>-hopsfs-csi-node-plugin --ignore-not-found          # OpenShift only
+```
+
+A reinstall does not depend on either: Helm replaces a CSIDriver or SCC that is still there.
+
+## Turning the driver off { #hopsfs-csi-off }
+
+Trino requires the driver: its password file, group file, access-control rules, user catalogs and mountable secrets reach its pods only through inline volumes of it.
+`global._hopsworks.csi.enabled: false` therefore renders only together with `global._hopsworks.trino.enabled: false`, and the render fails otherwise, rather than leaving every Trino pod in `ContainerCreating`.
+
+With the driver off, Airflow and the workloads Hopsworks launches go back to mounting HopsFS from a privileged container in the pod.
+On OpenShift the chart grants no SCC for that container, because the SCC it ships is for the node plugin only.
+The Airflow pods are then admitted only if the cluster already grants the Airflow service account `privileged`; without that grant `restricted-v2` rejects them and the Airflow Deployments stay at zero replicas.
+The same holds for the workloads Hopsworks launches.
+
+================================================================================
+# Dedicated Node Pools
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/node_pools/
+
+# Dedicated node pools { #dedicated-node-pools }
+
+## Introduction
+
+This guide pins the Hopsworks services to dedicated node pools.
+The example uses three pools:
+
+- **Head** nodes run the platform services.
+- **Database** nodes run the RonDB data nodes and nothing else.
+- **Worker** nodes run user workloads, such as jobs and notebooks, and the image preset of the internal docker registry.
+
+The head and database nodes are tainted, so only pods that tolerate the taint schedule there.
+The worker nodes are labelled but not tainted, so user workloads, which carry no toleration, land on them.
+
+The values below pin every Hopsworks workload, the installation and upgrade Jobs included, with three exceptions that schedule on the worker nodes:
+
+- The Consul chart's TLS and gossip encryption setup Jobs, which run on every install and upgrade, and its TLS cleanup Job, which runs on uninstall; that chart takes no placement settings for them.
+- The Kueue controller, when Kueue is enabled, whose chart takes no placement settings.
+- The installation and maintenance Jobs of the Hopsworks subcharts before 5.2.2, which do not read the global settings there.
+
+The DaemonSets (Filebeat, the HopsFS CSI node plugin and the registry configurer) tolerate every taint and run on all nodes.
+
+## Label and taint the nodes
+
+```bash
+kubectl label nodes head-node-1 head-node-n node=Head
+kubectl taint nodes head-node-1 head-node-n node=Head:NoSchedule
+kubectl label nodes db-node-1 db-node-n node=RonDB
+kubectl taint nodes db-node-1 db-node-n node=RonDB:NoSchedule
+kubectl label nodes worker-node-1 worker-node-n node=Worker
+```
+
+## Values
+
+`global._hopsworks.nodeSelector` and `global._hopsworks.tolerations` apply to every Hopsworks subchart that reads the globals, so they send the platform services to the head nodes.
+The upstream charts listed after them do not read the globals and get the same settings directly, through YAML anchors:
+
+- RonDB takes a setting per node type, which sends its data nodes (`ndbmtd`) to the database nodes and every other type to the head nodes.
+- Consul takes its `nodeSelector` and `tolerations` as multi-line strings rather than as YAML.
+- The Superset chart's top-level settings apply to its web, worker and init pods, and its MySQL and Redis take their own.
+- KEDA's top-level settings apply to its operator, metrics server and webhooks, and its HTTP add-on takes one setting per component.
+- Trino takes a setting for the coordinator and the workers, and another for the coordinator that tests user catalogs.
+
+```yaml
+global:
+  _hopsworks:
+    nodeSelector: &nodeSelector
+      node: Head
+    tolerations: &tolerations
+      - key: "node"
+        operator: "Equal"
+        value: "Head"
+        effect: "NoSchedule"
+
+rondb:
+  rondb:
+    nodeSelector:
+      mgmd: *nodeSelector
+      mysqld: *nodeSelector
+      rdrs: *nodeSelector
+      backup: *nodeSelector
+      ndbmtd:
+        node: RonDB
+    tolerations:
+      mgmd: *tolerations
+      mysqld: *tolerations
+      rdrs: *tolerations
+      backup: *tolerations
+      ndbmtd:
+        - key: "node"
+          operator: "Equal"
+          value: "RonDB"
+          effect: "NoSchedule"
+
+hopsworks:
+  dockerRegistry:
+    preset:
+      nodeSelector:
+        node: Worker
+
+consul:
+  consul:
+    global:
+      acls:
+        nodeSelector: |
+          node: Head
+        tolerations: |
+          - key: "node"
+            operator: "Equal"
+            value: "Head"
+            effect: "NoSchedule"
+    server:
+      nodeSelector: |
+        node: Head
+      tolerations: |
+        - key: "node"
+          operator: "Equal"
+          value: "Head"
+          effect: "NoSchedule"
+    syncCatalog:
+      nodeSelector: |
+        node: Head
+      tolerations: |
+        - key: "node"
+          operator: "Equal"
+          value: "Head"
+          effect: "NoSchedule"
+
+kafka:
+  strimzi-kafka-operator:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+
+olk:
+  prometheus-elasticsearch-exporter:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+
+grafana:
+  grafana:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+
+prometheus:
+  prometheus:
+    server:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    alertmanager:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    prometheus-pushgateway:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    kube-state-metrics:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+  prometheus-adapter:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+
+spark:
+  spark-operator:
+    webhook:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    controller:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    sparkOperatorUpgradeJob:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    hook:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+  historyServer:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+
+trino:
+  trino:
+    coordinator:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    worker:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+  trinotest:
+    coordinator:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+
+superset:
+  superset:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+    redis:
+      master:
+        nodeSelector: *nodeSelector
+        tolerations: *tolerations
+  mysql:
+    primary:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+
+hw-keda:
+  keda:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+  keda-add-ons-http:
+    operator:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    interceptor:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+    scaler:
+      nodeSelector: *nodeSelector
+      tolerations: *tolerations
+
+ray:
+  kuberay-operator:
+    nodeSelector: *nodeSelector
+    tolerations: *tolerations
+```
+
+A subchart setting overrides the global one, so the same pattern moves a single service to another pool.
+
+================================================================================
+# KEDA Autoscaling
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/keda/
+
+# KEDA Autoscaling { #keda-autoscaling }
+
+## Introduction
+
+Standard-mode model deployments run behind a plain Kubernetes Deployment, which Knative's request-based autoscaler does not see.
+KEDA scales them on CPU and memory, on the requests at the gateway, and for LLM deployments on the vLLM engine metrics, and its HTTP add-on scales them to zero when idle.
+What a deployment can do with it is described in [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-deployment].
+
+The Hopsworks Helm chart installs KEDA by default, through the `hw-keda` subchart.
+One value both installs the subchart and tells the Hopsworks backend that KEDA is there, so the backend never offers KEDA-backed scaling on a cluster without the operator.
+To leave KEDA out:
+
+```yaml
+hopsworks:
+  variables:
+    kube_keda_installed: false
+```
+
+Without KEDA, Standard-mode deployments fall back to KServe's own Horizontal Pod Autoscaler on CPU and memory, without the engine metrics and without scale to zero.
+The values are listed in [KEDA values][helm-values-hw-keda].
+
+## What the chart installs { #keda-components }
+
+- KEDA 2.21: the operator, the metrics API server and the admission webhooks, in the Hopsworks namespace.
+  The operator watches every namespace, because the ScaledObjects live in the project namespaces.
+  Upstream tests KEDA 2.21 on Kubernetes 1.34 to 1.36.
+- The KEDA HTTP add-on 0.16: its operator, interceptor and external scaler, next to KEDA.
+- The eight `keda.sh`, `http.keda.sh` and `eventing.keda.sh` CustomResourceDefinitions (CRDs).
+
+The images are mirrors of `ghcr.io/kedacore/*` under `docker.hops.works/ghcr.io/`.
+An airgapped install overrides them under `hw-keda.keda.image` and `hw-keda.keda-add-ons-http.images`, as the chart's `values.airgap.yaml` shows.
+From 5.2.2 the CRD upgrade hook also pulls `hopsworks/keda-crds`, as described in [CustomResourceDefinitions][keda-crds].
+It is pulled from `global._hopsworks.imageRegistry` like every Hopsworks image, so mirror `hopsworks/keda-crds` next to the other Hopsworks images; an airgap overlay needs nothing more for it.
+
+The chart ships Hopsworks rebuilds of the KServe controller and of the HTTP add-on images, under the upstream image names with a `-h<revision>` tag: `kserve/kserve-controller:0.21.0-h1` and `ghcr.io/kedacore/http-add-on-*:0.16.0-h2`.
+These tags exist only on `docker.hops.works` and its public ECR mirrors, not on ghcr.io or Docker Hub, so an airgapped install mirrors them from there.
+
+## CustomResourceDefinitions { #keda-crds }
+
+The CRDs ship in the subchart's `crds/` directory, which Helm creates only on install and never updates.
+A `pre-upgrade` hook, `keda-crd-upgrade`, therefore applies the same CRDs server-side on every upgrade: it creates them on a release upgraded from a chart without KEDA, and updates them when the KEDA version moves.
+Under ArgoCD it runs as a PreSync hook on every sync.
+
+From 5.2.2 the hook reads the CRDs from the `hopsworks/keda-crds` image (`hw-keda.crdUpgradeJob.image`) and checks each file against the chart's own copy before it applies anything, so an image built for another KEDA version fails the hook, naming the expected versions.
+5.2.0 and 5.2.1 passed the CRDs to the hook in a ConfigMap, `keda-crd-upgrade-crds`, which a failed upgrade can leave behind and later charts neither create nor delete.
+Delete a leftover by hand:
+
+```bash
+kubectl -n <namespace> delete configmap keda-crd-upgrade-crds --ignore-not-found
+```
+
+## Cluster requirements { #keda-requirements }
+
+- **One external metrics provider per Kubernetes cluster.**
+  KEDA registers the `v1beta1.external.metrics.k8s.io` APIService, which only one provider can hold.
+  Remove a KEDA that is already installed first, including the Custom Metrics Autoscaler operator on OpenShift, a KEDA fork that claims the same APIService, or leave the subchart off.
+  The `prometheus-adapter` that the chart ships serves `custom.metrics.k8s.io` only and does not conflict.
+- **Egress to Prometheus.**
+  The scalers query the Hopsworks Prometheus (`<release>-prometheus-server`, port 80, without authentication) with the operator's own service account.
+  A cluster that denies egress by default sets `hw-keda.keda.networkPolicy.enabled: true`, the upstream policy that admits the operator's egress to every pod.
+- **OpenShift.**
+  The KEDA pods run under `restricted-v2` unchanged: non-root, without a fixed UID, with all capabilities dropped, a read-only root filesystem and the `RuntimeDefault` seccomp profile.
+  No SecurityContextConstraints are shipped or needed.
+  `values.openshift.yaml` removes the HTTP add-on's `podSecurityContext.fsGroup: 1000`, so its pods are admitted with the namespace's UID range.
+
+## Idle scale to zero { #keda-http-add-on }
+
+KEDA alone cannot scale a deployment to zero, because a request that arrives at zero replicas has nothing to land on.
+The HTTP add-on puts an interceptor in the request path, which holds the first request while KEDA starts a replica.
+It is part of `hw-keda`, not a separate switch, and the chart gives the backend the addresses of its interceptor and scaler (`kube_keda_http_interceptor_address`, `kube_keda_http_scaler_address`).
+
+- For a deployment with idle scale to zero on, Hopsworks owns the ScaledObject, an `InterceptorRoute`, and an Istio Ingress in the project namespace that sends the deployment's hosts to the interceptor through an ExternalName Service.
+  KServe runs no autoscaler and creates no Ingress for that deployment.
+- The interceptor is in the request path of those deployments only; all other traffic goes straight to the Istio gateway.
+- The interceptor scales with its own load, from 1 to 10 replicas by default (`hw-keda.keda-add-ons-http.interceptor.replicas`).
+- Its request timeouts default to 600 seconds, so a cold start that loads a model does not fail the request that woke the deployment.
+
+## Uninstalling { #keda-uninstall }
+
+Helm never deletes the CRDs in `crds/`, and every ScaledObject carries a finalizer that only the KEDA operator clears.
+A cleanup hook, `keda-cleanup`, therefore runs twice on `helm uninstall`:
+
+- Before the release's resources are deleted (`pre-delete`), while the operators still run, it deletes every `keda.sh`, `http.keda.sh` and `eventing.keda.sh` resource.
+  It waits up to `hw-keda.cleanupOnUninstall.finalizeTimeoutSeconds` (120 seconds) for the operators to finalize them, then clears the finalizer from whatever is left.
+  An uninstall that waits for every resource to be gone, such as `helm uninstall --wait` or an ArgoCD deletion, then finishes.
+- After the release is deleted (`post-delete`), it deletes anything created in between, the TLS Secret the operator generated, and the CRDs themselves.
+  Set `hw-keda.cleanupOnUninstall.deleteCrds: false` to keep the CRDs, for example for a KEDA installed by other means next.
+  The Hopsworks backend recreates its ScaledObjects when a deployment starts.
+
+Allow for the first pass in the uninstall timeout.
+Turn the hook off with `hw-keda.cleanupOnUninstall.enabled: false` only when something else removes those resources.
+Without it the KEDA objects stay behind under a finalizer that nothing clears once the operators are gone, and deleting the CRDs later leaves them `Terminating`, which blocks the next install.
+
+Under an ArgoCD that runs no pre-delete hooks, as described in [Under ArgoCD][uninstall-argocd], the first pass does not run, and deleting the Application can wait on CRDs stuck in `Terminating`.
+There, delete the Standard-mode deployments, or the `keda.sh` objects, before you delete the Application.
+
+================================================================================
+# Kafka Quotas
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/
+
+# Kafka Quotas { #kafka-quotas }
+
+## Introduction
+
+Hopsworks runs its Kafka cluster with the [Strimzi operator](https://strimzi.io/).
+Kafka runs one of two mutually exclusive quota plugins, chosen with `kafka.cluster.kafka.quotas.type`.
+Almost every question about quotas reduces to which plugin is active, because each enforces something different and ignores the other's settings.
+
+Strimzi's own default is the built-in `kafka` plugin.
+The Hopsworks chart defaults to `strimzi`, which releases before 5.0.13 and 5.1.0 used without a choice.
+The values are listed in [Kafka values][helm-values-kafka].
+
+## Choosing a plugin { #kafka-quotas-plugin }
+
+| | `strimzi` | `kafka` (built-in) |
+| --- | --- | --- |
+| Per-tenant ceiling (`KafkaUser.spec.quotas`) | ignored; a user in `kafka.users` fails the render | enforced |
+| Rate semantics | a total per broker, shared between clients | per user, per broker, shared by that user's client IDs |
+| Disk-fill guard (`minAvailable*`) | yes | no equivalent |
+| Exempting principals | `excludedPrincipals` | not possible |
+| CPU and mutation-rate limits | no | `requestPercentage`, `controllerMutationRate` |
+| Metrics | aggregated only | per user and client ID |
+
+Pick `strimzi` to protect the cluster: cap the total throughput and stop the disks filling up.
+Pick `kafka` to isolate tenants from each other, which is the only mode in which a per-user quota has any effect.
+You cannot have both.
+Selecting `kafka` gives up the disk guard, so the chart requires you to set `minAvailableRatioPerVolume` to 0 explicitly rather than dropping the guard silently.
+
+## Per-tenant limits { #kafka-quotas-per-tenant }
+
+`KafkaUser.spec.quotas` is enforced only under `type: kafka`.
+Set a quota on each user:
+
+```yaml
+kafka:
+  cluster:
+    kafka:
+      authorizer:
+        principalBuilderClass: ""       # required, see below
+      quotas:
+        type: kafka
+        minAvailableRatioPerVolume: 0   # required: the guard exists only under strimzi
+  users:
+    - name: team_a
+      quotas:
+        producerByteRate: 5242880
+        consumerByteRate: 20971520
+        requestPercentage: 20
+      authorization: {...}
+```
+
+Per-user quotas require the default Kafka principal builder, `authorizer.principalBuilderClass: ""`.
+Strimzi stores the quota of a TLS user under the entity `CN=<username>`, and the built-in plugin matches it against the principal name of the connection.
+The chart's default builder, `io.hops.kafka.HopsPrincipalBuilder`, yields the bare CN with any differing subject alternative names appended, not `CN=<username>`, so the quota would never match and never be enforced.
+The chart therefore fails the render when a user declared in `kafka.users` carries `quotas` under `type: kafka` with the Hops builder.
+KafkaUsers created outside the chart are not checked.
+
+Switching the builder changes the principal form that every ACL and every `authorizer.superUsers` entry is matched against, so review `authorizer.superUsers` before you switch.
+The default user quota under `quotas.kafka.*` does not depend on the principal form and works under either builder.
+
+A principal without a quota of its own is unlimited.
+That is usually what you want for the platform's own clients, such as OnlineFS and the Strimzi Entity Operator, because the built-in plugin cannot exempt anyone.
+
+Optionally, set a default for the users without a quota under `quotas.kafka.*`.
+The Strimzi Cluster Operator writes and reconciles it as the default user quota, and a KafkaUser's own quota overrides it.
+Size it so that the platform's own clients still work: the default applies to internal users too, and this plugin has no way to exclude them, as [the Strimzi documentation](https://strimzi.io/docs/operators/1.2.0/configuring.html#type-QuotasPluginKafka-reference) warns.
+
+## Cluster-wide limits and the disk guard { #kafka-quotas-cluster-wide }
+
+```yaml
+kafka:
+  cluster:
+    kafka:
+      quotas:
+        type: strimzi
+        minAvailableRatioPerVolume: 0.01
+        strimzi:
+          producerByteRate: 104857600   # per broker, shared between clients
+          consumerByteRate: 209715200
+```
+
+The rates are a total per broker, shared between all clients that are not excluded, not a ceiling per client: one busy client can take most of it while the others are idle.
+`minAvailableRatioPerVolume` (default 0.01) and `minAvailableBytesPerVolume` (default 0, off) halt producers when the free space on a broker volume falls below them.
+
+`excludedPrincipals` does not work with `io.hops.kafka.HopsPrincipalBuilder`, the chart's default builder.
+That builder appends the alternative names of a certificate to its CN, joined with `;`, so a principal is a set of names rather than one name.
+Strimzi renders the exclusion list with `;` as the separator and the plugin splits on `;` with no escaping, so such a principal cannot be written as an entry.
+The chart fails the render on an entry that contains `;` or lacks the `User:` prefix, rather than rendering an exclusion that can never match.
+The multi-name principal is deliberate: it lets a service be named as a superuser by any of its identities.
+
+So with the Hops builder, a rate throttles the platform's own clients too.
+Verify the effect with `kafka-consumer-perf-test.sh` rather than by reading the Kafka resource.
+A cluster that sets `principalBuilderClass: ""` uses the default Kafka builder, whose principals can be written as entries, and there exclusions work.
+The chart renders only the entries you list in `quotas.strimzi.excludedPrincipals`, so when you set a rate, list the platform's own principals there yourself, in the exact form the broker sees.
+A superuser is exempt from ACLs, not from quotas.
+Strimzi adds its own broker and Cruise Control principals.
+
+## Verifying the quotas in force { #kafka-quotas-verify }
+
+Check which plugin a broker runs: the `strimzi` plugin installs a callback class, and the built-in plugin configures nothing.
+
+```sh
+kubectl get configmap <cluster>-kafka-0 -n <namespace> -o jsonpath='{.data.server\.config}' | grep quota
+```
+
+Then inspect the live quota entities:
+
+```sh
+kafka-configs.sh --bootstrap-server <broker>:9091 --command-config <cfg> --describe --entity-type users
+kafka-configs.sh --bootstrap-server <broker>:9091 --command-config <cfg> --describe --entity-type clients
+```
+
+Kafka resolves the most specific entity first, so a quota on a user beats a default.
+Measure with `kafka-consumer-perf-test.sh` over at least 30 seconds.
+A quota window is 11 samples of 1 second (`quotas.window`), and a shorter run reports well above the configured rate because of the burst allowed at the start.
+
+## Migrating from the quota defaults { #kafka-quotas-defaults-migration }
+
+Charts before 5.0.13 and 5.1.0 had `quotas.defaults.*`, which drove a post-install Job that wrote a default quota for client IDs with `kafka-configs.sh`.
+5.0.13 and 5.1.0 removed that Job.
+Setting `quotas.defaults.enabled: true` together with `type: kafka` fails the render, because a client-ID default left behind by the old Job takes effect under the built-in plugin.
+Under `type: strimzi` the flag is ignored, so existing values keep rendering.
+
+The Job wrote a lower-precedence entity (`/config/clients/<default>`) than the one Strimzi manages (`/config/users/<default>`), ran once per Helm operation, and was never reconciled.
+Under the `strimzi` plugin that those charts always used, the brokers never read what it wrote, so on most clusters it enforced nothing.
+The exception is a cluster with Strimzi 0.39 CRDs, the `strimzi-0.39` case of [Before you start][kafka4-before-you-start].
+Those CRDs dropped the `quotas` block when the Kafka resource was stored, the brokers ran the built-in plugin, and the Job's default applied to every client, OnlineFS included, while `defaults.enabled: true` was set.
+The CRD upgrade of the 5.2 upgrade fixes those CRDs, after which the `strimzi` callback takes over and that limit lapses.
+
+Replace the defaults with the fields of the plugin you choose.
+Do not copy the numbers across, because the three blocks limit different things:
+
+- `quotas.defaults.*` set a default per client ID, so each application had an allowance of its own.
+- `quotas.kafka.*` sets a default per user, per broker, and every client ID that authenticates as that user shares it.
+- `quotas.strimzi.*` sets one total per broker, shared by every client that is not excluded.
+
+The same figure is therefore tighter as a user default than as a client-ID default, and tighter again as a broker total.
+Applications that share a principal can be throttled by a user default that matches the old client-ID default.
+
+Before you upgrade an existing cluster, check what the Job already wrote.
+On a cluster that ran an earlier release with `defaults.enabled: true`, a client-ID default is still stored in Kafka.
+Under `strimzi`, with current CRDs, it has no effect, and it takes effect the moment the plugin changes to `kafka`.
+On a cluster with Strimzi 0.39 CRDs it has been in effect all along, and the upgrade lifts it, so choose the replacement rates before you upgrade.
+Check for it:
+
+```sh
+kafka-configs.sh --bootstrap-server <broker>:9091 --command-config <cfg> --describe --entity-type clients
+```
+
+To remove it:
+
+```sh
+kafka-configs.sh --bootstrap-server <broker>:9091 --command-config <cfg> \
+  --entity-type clients --entity-default --alter \
+  --delete-config producer_byte_rate,consumer_byte_rate,request_percentage
+```
+
+The chart does not remove it for you, because an operator may have set client-ID quotas deliberately.
+
+================================================================================
+# Uninstalling Hopsworks
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/
+
+# Uninstalling Hopsworks { #uninstalling-hopsworks }
+
+## Introduction
+
+`helm uninstall` deletes the release's resources, and hooks in the chart clean up what Helm does not track.
+An uninstall is destructive: the only way to bring an installation's data back is to restore it from a backup, as described in [Disaster Recovery][disaster-recovery].
+Read [Before you uninstall][uninstall-before] first.
+
+## Before you uninstall { #uninstall-before }
+
+- **Back up first.**
+  Every uninstall deletes the volumes of the RonDB data and management nodes and of the Superset database, whatever the settings below say, because their StatefulSets delete their volumes when they are deleted.
+- **`hopsworks.wipeWhenUninstall`** lists resource kinds.
+  After the uninstall, a post-delete Job deletes every resource of those kinds, in every namespace, that carries this release's name in `meta.helm.sh/release-name` or carries the `hopsworks.ai/project` label, and clears its finalizers.
+  The release name is matched in any namespace, so installations that share a Kubernetes cluster need different release names.
+  Hopsworks puts the `hopsworks.ai/project` label on the project namespaces it creates and on the network policy of every project.
+  The default list includes namespaces, so the project namespaces that Hopsworks created go too, with everything in them.
+  Namespaces provisioned in advance (`hopsworks.variables.kube_skip_namespace_creation: true`) carry no label unless you added `hopsworks.ai/project` yourself, for example so that 5.0 and 5.1 collect their logs; without it they stay, and only their project network policies go.
+  The label does not name the installation either.
+  On a Kubernetes cluster with more than one Hopsworks installation, the Job therefore also deletes the project namespaces that the other installations created, with everything in them, and the network policies of their projects, which those installations restore on their next reconcile.
+  Set the list empty (`hopsworks.wipeWhenUninstall: []`) to turn the Job off, on every installation of such a cluster.
+- **`global._hopsworks.wipeDataOnUninstall`** (default `true`) lets the cleanup hooks of the subcharts delete the data volumes their StatefulSets leave behind: HopsFS DataNodes, Kafka, OpenSearch, Consul, MinIO, the Spark shuffle servers and the BuildKit daemon, and the Superset database on clusters whose Superset StatefulSet predates its volume retention policy.
+  A volume labelled `hopsworks.ai/keep=true` is skipped.
+  The label protects a volume from these hooks only, not from `wipeWhenUninstall`, from a StatefulSet that deletes its own volumes, or from deleting the namespace.
+  Turning the setting off, or labelling a volume, leaves those volumes on the cluster; it is not a way to recover the installation.
+- **`hopsworks.dropDatabase`** (default `false`) drops the Hopsworks databases on uninstall.
+
+Helm runs the hooks of the deployed revision, so a change to any of these takes effect only once a `helm upgrade` has applied it.
+
+## Uninstall { #uninstall-steps }
+
+```bash
+helm uninstall <release> -n <namespace> --timeout=900s
+```
+
+Delete the namespace only when nothing in it has to stay.
+Deleting it deletes every persistent volume claim left in it, including those labelled `hopsworks.ai/keep=true` or kept by `wipeDataOnUninstall: false`, and with the reclaim policy `Delete` also the storage behind them.
+
+```bash
+kubectl delete namespace <namespace>
+```
+
+Each hook has to finish within the timeout.
+Two pre-delete hooks wait up to 120 seconds each for an operator to finalize its resources, the TLS certificates and KEDA, and a third calls the Hopsworks API.
+
+## What the hooks clean up { #uninstall-hooks }
+
+Before the release's resources are deleted, while the operators and Hopsworks still run:
+
+- every `HopsworksCert` in the release namespace is deleted, so that the certificate operator releases its finalizers (`certs-operator.gracefulCertTeardown`);
+- every KEDA resource is deleted and finalized, as described in [KEDA Autoscaling][keda-uninstall];
+- the API key of OnlineFS is deleted through the Hopsworks API;
+- the Spark remote shuffle service and the Knative validating webhook are removed.
+
+After the release's resources are deleted:
+
+- Secrets and ConfigMaps that services and setup Jobs created at runtime, such as webhook certificates and Consul tokens, are deleted;
+- the data volumes listed under `wipeDataOnUninstall` are deleted, and so are the Kafka node pools;
+- the KEDA CustomResourceDefinitions are deleted;
+- the HopsFS CSIDriver object and, on OpenShift, the SCC the chart ships are deleted, as described in [HopsFS CSI Driver][hopsfs-csi-uninstall];
+- the `wipeWhenUninstall` Job runs last.
+
+## What stays { #uninstall-leftovers }
+
+- **CustomResourceDefinitions.**
+  Helm never deletes CRDs.
+  Apart from KEDA's, the CRDs the chart installs, such as Strimzi's, KServe's and the certificate operator's, stay on the Kubernetes cluster, and a reinstall uses them.
+- **The `wipeWhenUninstall` Job's own ClusterRole and ClusterRoleBinding**, both named `<release>-uninstall-job`, after every uninstall with that Job on.
+  They keep cluster-wide delete rights on the kinds the Job deletes, so delete them:
+
+    ```bash
+    kubectl delete clusterrole,clusterrolebinding <release>-uninstall-job
+    ```
+
+- **Everything the hooks would delete, after `helm uninstall --no-hooks`.**
+  That includes the KEDA CRDs, and the Kafka node pools, whose brokers and controllers keep running with their volumes bound until you delete the pools:
+
+    ```bash
+    kubectl delete kafkanodepool -n <namespace> -l strimzi.io/cluster=<kafka cluster>
+    ```
+
+    `HopsworksCert` resources stay too, under a finalizer that nothing clears once the certificate operator is gone, and keep the namespace from being deleted.
+    Clear their finalizers:
+
+    ```bash
+    kubectl -n <namespace> get hopsworkscerts.certs.hopsworks.ai -o name \
+      | xargs -I{} kubectl -n <namespace> patch {} --type=merge -p '{"metadata":{"finalizers":[]}}'
+    ```
+
+    Delete the HopsFS CSIDriver and SCC by hand as well, as described in [HopsFS CSI Driver][hopsfs-csi-uninstall].
+- **Volumes no hook deletes.**
+  List them with `kubectl get pvc -n <namespace>` before you delete the namespace.
+
+## Under ArgoCD { #uninstall-argocd }
+
+ArgoCD runs `pre-delete` hooks as `PreDelete` hooks from ArgoCD 3.3 only, and `post-delete` hooks as `PostDelete` hooks from 2.10.
+From 2.10 to 3.2 the steps before the deletion do not run:
+
+- a post-delete hook clears the finalizers of the `HopsworksCert` resources instead;
+- KEDA's resources are not finalized first, which needs a step before you delete the Application, as described in [KEDA Autoscaling][keda-uninstall].
+
+================================================================================
+# Upgrading Hopsworks
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade/
+
+# Upgrading Hopsworks { #upgrading-hopsworks }
+
+## Introduction
+
+Upgrade a self-managed Hopsworks cluster one minor release at a time, in order.
+Skipping a minor release is not supported, and for OpenSearch it fails at startup.
+This page covers upgrades from 5.0.x and later.
+The commands assume Hopsworks is installed in the `hopsworks` namespace.
+
+| Upgrade | OpenSearch | What needs action |
+| ------- | ---------- | ----------------- |
+| [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
+| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+
+## Before every upgrade { #upgrade-before-every-upgrade }
+
+1. Take a backup and check that it completed, as described in [Disaster Recovery][disaster-recovery].
+2. Pass `helm upgrade --timeout` long enough for the hooks of that upgrade.
+   The upgrade from 5.1.x to 5.2.x has two that can run for hours: the [OpenSearch index pass][opensearch-set-the-timeout] and the [Kafka migration][kafka4-kraft-upgrade].
+3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start].
+4. If this is the first upgrade of the release with Helm 4, read [Upgrading with Helm 4][upgrading-with-helm-4] first.
+
+## 5.0.x to 5.1.x { #upgrade-50-to-51 }
+
+An upgrade from 5.0.13 or earlier to 5.1.2 or later also stops the Trino query history and strips the details of recorded queries after 7 days, which cannot be undone, as described in [Trino query history][upgrade-trino-query-history].
+
+### Kubernetes 1.34 { #upgrade-kubernetes-134 }
+
+5.1 requires Kubernetes 1.34 or later, up from 1.27 in 5.0, and `helm upgrade` refuses an older Kubernetes cluster.
+Upgrade Kubernetes first: 5.0.1 and later support up to 1.36, and 5.0.0 up to 1.34.
+
+### OpenSearch 2.19 { #upgrade-opensearch-219 }
+
+OpenSearch goes from 1.3.x to 2.19.x.
+The indices stay as they are, and the upgrade to 5.2 deals with those created by 1.x.
+Upgrade from 5.0 to 5.1.2 or later, which avoids the known issues of 5.1.0 and 5.1.1, as described in [Upgrading OpenSearch][opensearch-upgrade-steps] (step 2) and [Security configuration][opensearch-security-configuration].
+Then confirm that OpenSearch 2.19 is live and green before the next upgrade, as step 2 there shows.
+
+### First upgrade with Helm 4 { #upgrade-51-helm4 }
+
+The chart changes described in [Upgrading with Helm 4][upgrading-with-helm-4] ship from 5.2.0, so a 5.1.x chart still declares `.spec.replicas` next to the HPA of an autoscaled workload.
+A server-side Helm 4 upgrade to 5.1.x therefore fails with `conflict with "kube-controller-manager" with subresource "scale"` on a workload its HPA has rescaled.
+A release installed by Helm 3 stays client-side under Helm 4 unless you pass `--server-side=true`, and does not meet that conflict.
+An upgrade from 5.0 to 5.1 also conflicted on the `trino-password-file` and `trino-groups-file` Secrets, whose fields the backend owns.
+Running it again with `--force-conflicts` overwrites the Trino user database that the backend wrote (`password.db` and `group.db`), so check the Trino users afterwards.
+`--force-conflicts` applies to the whole release, as [The RSS ConfigMap][helm4-rss-configmap] explains.
+
+## 5.1.x to 5.2.x { #upgrade-51-to-52 }
+
+### OpenSearch 3.8.0 { #upgrade-opensearch-38 }
+
+Upgrade a 5.1.x cluster to 5.2.1 or later.
+OpenSearch 3.8.0 refuses to start on an index created before OpenSearch 2.0, so a `pre-upgrade` hook copies those indices on the running 2.19 cluster first.
+Follow [Upgrading OpenSearch][upgrading-opensearch]: it covers what keeps working during the pass, the timeout, the report, vector ingestion and the steps.
+
+### Kafka 4 and KRaft { #upgrade-kafka-kraft }
+
+The upgrade migrates every Kafka from ZooKeeper to KRaft and moves Strimzi from 0.45 to 1.2.
+Run the read-only checks in [Before you start][kafka4-before-you-start] first, and read [Kafka 4 and KRaft upgrade notes][kafka4-kraft-upgrade], including the step and the `ignoreDifferences` entry that ArgoCD needs.
+
+### Migration V109 waits for the statistics cleaner { #upgrade-v109-statistics-cleaner }
+
+Up to 5.1.2, a query of the statistics cleaner can take up to an hour on a cluster with many feature statistics; 5.1.3 fixes it.
+The 5.1.x pods keep running while the 5.2 schema migrations run, so each statement of migration V109 waits for that query on an upgrade from 5.1.2 or earlier to 5.2.0 or 5.2.1, or to any 5.2 release on a cluster that disables the DDL SQL node.
+From 5.2.2 the migrations run on the DDL SQL node and do not wait for it, as described in [Schema migrations run on the DDL SQL node][upgrade-ddl-sql-node].
+When you upgrade to 5.2.0 or 5.2.1, or with the DDL SQL node disabled, upgrade to the latest 5.1.x patch first.
+
+If V109 is already waiting, `Waiting for table metadata lock` shows in the processlist next to a `SELECT fds.* FROM hopsworks.feature_descriptive_statistics`.
+Scale `hopsworks-instance` to 0, `KILL` that query on its SQL node, and scale `hopsworks-instance` back up once Flyway has finished.
+
+### KEDA { #upgrade-keda }
+
+From 5.2 the chart installs KEDA 2.21 and its HTTP add-on by default (`hopsworks.variables.kube_keda_installed: true`), so this upgrade adds them to every existing release.
+[KEDA Autoscaling][keda-autoscaling] describes what the chart installs and what KEDA needs from the cluster.
+
+- **One external metrics provider per Kubernetes cluster.**
+  A Kubernetes cluster that already runs KEDA, or the OpenShift Custom Metrics Autoscaler, must have it removed first, or leave the subchart off with `hopsworks.variables.kube_keda_installed: false`, as described in [Cluster requirements][keda-requirements].
+- **The CRDs arrive through a pre-upgrade hook.**
+  The `keda-crd-upgrade` hook creates the KEDA CRDs before the operators start, as described in [CustomResourceDefinitions][keda-crds].
+  It needs the toolbox image, from 5.2.2 also the `hopsworks/keda-crds` image it reads the CRDs from, and a few seconds of the `--timeout`, and no step before `helm upgrade`.
+  A failed upgrade to 5.2.0 or 5.2.1 can leave a ConfigMap behind, which [CustomResourceDefinitions][keda-crds] says how to delete.
+- **Six more images to mirror on an airgapped cluster**, seven from 5.2.2: `ghcr.io/kedacore/keda`, `keda-metrics-apiserver` and `keda-admission-webhooks`, `ghcr.io/kedacore/http-add-on-operator`, `http-add-on-interceptor` and `http-add-on-scaler`, and from 5.2.2 `hopsworks/keda-crds`.
+  [What the chart installs][keda-components] names the values that override them.
+- **The upgrade does not change deployments.**
+  A Standard-mode deployment keeps its stored scaling configuration.
+  Where it named no autoscaler, KEDA runs it from its next start, with the same CPU or memory threshold as before.
+  Nothing scales to zero until a minimum of 0 is set.
+- **Uninstall takes longer**, because a cleanup hook waits for the KEDA operators before the release is deleted, as described in [Uninstalling][keda-uninstall].
+
+### Kubernetes 1.37 { #upgrade-kubernetes-137 }
+
+5.2 supports Kubernetes up to 1.37, but 5.1.x stops at 1.36.
+Upgrade Hopsworks to 5.2.x before you move the Kubernetes cluster to 1.37.
+
+Under ArgoCD before 3.5.0, an Application with the `ServerSideApply=true` sync option stops syncing on Kubernetes 1.37.
+Kubernetes 1.37 adds `spec.preventPodSchedulingIfMissing` to every CSIDriver, and the schema built into those ArgoCD versions lacks it, so the Application shows every resource as Unknown and syncs no new revision:
+
+```text
+ComparisonError: ... .spec.preventPodSchedulingIfMissing: field not declared in schema
+```
+
+Before you move the Kubernetes cluster to 1.37, do one of the following:
+
+- Upgrade ArgoCD to 3.5.0 or later (argo-cd Helm chart 10.2.3 or later), after reading its [3.4 to 3.5 upgrade notes](https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/3.4-3.5/).
+  For Hopsworks three of them matter.
+  Charts render with Helm 4.2, and `helm.version: v3` is ignored.
+  An OCI chart registry over plain HTTP needs `insecureOCIForceHttp: "true"` in its repository Secret, which has no effect if `insecure: "true"` is also set.
+  An HPA without metrics is now Degraded, so a sync right after a deploy can fail on the Knative `activator` HPA until `syncPolicy.retry` runs it again; to accept such HPAs, [override](https://argo-cd.readthedocs.io/en/stable/operator-manual/health/) the `autoscaling_HorizontalPodAutoscaler` health check in `argocd-cm`.
+- Stay on your ArgoCD version and add this to the Application:
+
+    ```yaml
+    spec:
+      ignoreDifferences:
+        - group: storage.k8s.io
+          kind: CSIDriver
+          jsonPointers:
+            - /spec/preventPodSchedulingIfMissing
+    ```
+
+### Trino query history { #upgrade-trino-query-history }
+
+From 5.0.14, 5.1.2 and 5.2.0 the chart no longer enables the Trino MySQL event listener, so `hopsworks.trino_queries` stops receiving rows, and the administrators' Trino query history shows only what was recorded before the upgrade.
+To keep it, add the listener in your values:
+
+```yaml
+trino:
+  trino:
+    additionalConfigProperties:
+      - internal-communication.shared-secret=${ENV:TRINO_SHARED_SECRET}
+      - http-server.process-forwarded=true
+      - event-listener.config-files=etc/mysql-event-listener.properties
+    coordinator:
+      additionalConfigFiles:
+        mysql-event-listener.properties: &mysqlEventListenerProperties |
+          event-listener.name=mysql
+          mysql-event-listener.db.url=jdbc:mysql://${ENV:MYSQL_ADDRESS}/${ENV:MYSQL_DB}?user=${ENV:MYSQL_USER}&password=${ENV:MYSQL_PASSWORD}&useSSL=false&allowPublicKeyRetrieval=true
+    worker:
+      additionalConfigFiles:
+        mysql-event-listener.properties: *mysqlEventListenerProperties
+```
+
+`additionalConfigProperties` replaces the chart's list, so it must repeat the chart's other entries.
+Both roles need the file, because the property reaches the workers too.
+
+From the same releases, recorded rows also lose their query text, plan and JSON columns after `hopsworks.variables.trino_events_strip_details_after_days` (7) days.
+User, state, timing and resource columns stay until `trino_events_delete_after_days` (61).
+The first nightly cleanup after the upgrade strips every existing row older than 7 days.
+Set the value to 61 or more to keep the details.
+
+### Feature groups shared with a subset of their features { #upgrade-trino-subset-shares }
+
+From 5.2.1, Trino serves feature groups shared with a subset of their features through `delta_shared`, `hudi_shared` and `iceberg_shared` only while `hopsworks.variables.trino_feature_group_subset_shares_enabled` is `"true"`.
+It defaults to `"false"`.
+Shares of a whole feature group, and the online and embedding access of a subset share, do not depend on it.
+
+Those catalogs read HopsFS as a superuser, and a data owner writes the table metadata that names a shared table's data files, so through the metastore they can point that table at another project's files.
+Keep the value at `"false"`.
+
+### `consul-server-acl-init` fails with `field is immutable` { #upgrade-consul-acl-init }
+
+The upgrade can fail on the `consul-server-acl-init` Job with `spec.template: field is immutable`.
+Delete that Job and run the upgrade again.
+
+## 5.2.x to 5.3.x { #upgrade-52-to-53 }
+
+OpenSearch stays on 3.8.0.
+An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
+An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which takes away the read access of restricted project members.
+
+### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
+
+From 5.3, the Trino `iceberg` catalog reads an ICEBERG feature group on HopsFS once Hopsworks has registered its current Iceberg metadata in the Hive metastore.
+Hopsworks does that on every commit, and when the client syncs after an empty save or a schema change, so a feature group created before the upgrade is readable from Trino after its next write.
+
+To register every existing ICEBERG feature group at once, call the backfill endpoint as an administrator, passing the returned `nextAfterId` as `afterId`, until it is null:
+
+```text
+POST /hopsworks-api/api/admin/featurestore/iceberg/metastore/backfill?afterId=0&limit=100
+```
+
+Each item of the response reports one feature group:
+
+- `PUBLISHED`: registered now.
+- `UP_TO_DATE`: already registered.
+- `NO_METADATA`: nothing committed yet.
+- `SKIPPED`: not mirrored, or deleted.
+- `FOREIGN_LOCATION`: its metastore table is not at the feature group's location, so it is not registered.
+- `FAILED`: with the error.
+
+The call is safe to repeat.
+Each feature group costs a few HopsFS reads and one metastore update, and there is no outage.
+
+Two Trino changes come with it:
+
+- The `hive` catalog no longer reads ICEBERG feature groups, because the Trino Hive connector refuses tables registered as Iceberg.
+  Queries and Superset datasets that read them through `hive` must move to `iceberg`.
+- In the `iceberg` catalog the feature store schema is read-only, for data owners too.
+
+Spark access by name (`spark.table`, `spark.sql`, `DESCRIBE`) to an ICEBERG feature group needs the Iceberg storage handler on the Spark classpath, which the base images carry from 5.2.
+Custom Python environments are not rebuilt on upgrade: a project environment cloned from a release before 5.2 keeps its own image, built from that release's base.
+Once a feature group is registered as `table_type=ICEBERG`, at its next commit or by the backfill, access by name from such an environment fails with `Failed to load storage handler` until the environment is rebuilt.
+Installing or uninstalling a library rebuilds the environment from the current base image.
+Reads and writes by path through the feature store client are not affected.
+
+### Filebeat registry { #upgrade-filebeat-registry }
+
+Releases before 5.3 mounted the Filebeat registry at a path Filebeat never wrote to, so every Filebeat restart, pod re-creation and `helm upgrade` shipped all of a node's current container logs again into `.services-*` and the project log indices.
+On the upgrade to 5.3:
+
+- The registry moves to `/var/lib/filebeat-data/<namespace>` on each node.
+  That directory starts empty, so each node ships its current container logs once more, as every restart did before.
+  Later restarts and upgrades resume from the registry.
+- Leave the existing contents of `/var/lib/filebeat-data` in place.
+  Nothing in the chart reads them, and they may belong to another Filebeat on the node.
+
+### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
+
+An agent deployment with tracing enabled runs a `hops-otlp` sidecar next to the agent.
+`hopsworks.variables.agent_deployment_otel_memory_mb` is both the memory request and the memory limit of that container, so the value is reserved on the node, not only allowed.
+From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM-killed under ordinary traffic.
+
+- **Check capacity before you redeploy.**
+  A cluster that runs N traced agent deployments reserves 2 GiB x N for their sidecars, where it reserved 1 GiB x N.
+  On nodes sized for the old default, an agent pod recreated after the upgrade can stay `Pending` for lack of memory.
+  Count the traced agent deployments against the free memory of the nodes that schedule them before you redeploy them.
+- **Running pods keep the old reservation until they are recreated.**
+  The upgrade does not restart agent deployments, so nothing changes for a running one until it is stopped and started, saved, or rescheduled.
+  The increase arrives one deployment at a time, which is also why a shortage shows up later than the upgrade.
+- **Keeping 1024 keeps the OOM.**
+  `hopsworks.variables.agent_deployment_otel_memory_mb: "1024"` pins the old value on a cluster that cannot spare the memory, at the cost the increase removes.
+  The buffering fixes in the 5.3 sidecar image make an OOM much less likely than before, because what the sidecar holds no longer grows with how far the feature store write falls behind, but it remains the trade.
+- **What an OOM looks like.**
+  `hops-otlp` is an ordinary second container without probes, so the OOM kill restarts that container alone: the agent container's `restartCount` stays 0, and only the sidecar's `lastState` shows `OOMKilled`.
+  While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
+  Looking for agent restarts finds none.
+
+## Changes from 5.2.2 { #upgrade-changes-from-522 }
+
+These changes ship in 5.2.2 and 5.3.0.
+They apply to an upgrade from 5.1.x to 5.2.2 or later, from 5.2.0 or 5.2.1 to a later 5.2 release, and from 5.2.0 or 5.2.1 to 5.3.
+
+### OnlineFS drops records that arrive on another topic { #upgrade-onlinefs-topics }
+
+OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
+Before, the headers alone decided, so a producer could write into another project's online feature groups.
+A record that fails the check is dropped, logged by OnlineFS (`Record dropped, it did not arrive on the online topic of the feature group in its headers`) and counted in `onlinefs_topic_mismatch_total`, on the Topics row of the OnlineFS dashboard.
+
+- **Producers that hold on to an old topic.**
+  After a project's topic changes, or a feature group moves from the project topic to a topic of its own, the records that producers keep writing to the old topic are dropped until those producers restart.
+  Producers that hold on to their topic include the inference logger of model deployments, streaming jobs and long-lived sessions.
+- **Records that reach OnlineFS on another topic name.**
+  A Kafka where records reach OnlineFS on a topic other than the one Hopsworks resolves for their feature group, such as a multi-region secondary that reads topics renamed or prefixed by mirroring, needs `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
+  With the check off, OnlineFS logs a warning at startup and attributes records by their headers, as before.
+  Projects that share a topic need no change: their records arrive on the topic resolved for them.
+- **A project can no longer use another project's online topic.**
+  Creating a project, changing its topic, creating an online feature group or changing its topic, or creating a Kafka topic fails with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026) when the topic is the online topic of another project, the topic of another project's feature group, or a topic another project owns.
+  The upgrade leaves a project or feature group already configured that way as it is, and updates that keep its topic still succeed.
+  A project whose own topic is taken that way cannot create online feature groups until it gets a topic of its own, while the project that created the topic, or whose default `<project>_onlinefs` topic it is, keeps using it.
+  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, this is not enforced.
+- **After the upgrade**, check that the topic mismatch panels stay at zero.
+  A drop from a legitimate producer means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
+
+### Schema migrations run on the DDL SQL node { #upgrade-ddl-sql-node }
+
+The hopsworks and HopsFS Flyway migrations and the Hive `schematool` connect to the DDL SQL node (`mysqlddl`, `rondb.rondb.meta.ddlMySQLd`), as the Airflow migrations already do.
+A migration no longer waits for application queries on the other SQL nodes that hold a related table, such as the statistics cleaner's query during migration V109.
+On a table that an application query holds itself, each statement waits up to `ndb_schema_dist_lock_wait_timeout` (30 seconds) and then completes with warning 1296 (`Distribution of ALTER TABLE ... failed`).
+The SQL node running that query keeps the old table definition: the query's transaction gets error 1412 (`Table definition has changed`) on its next statement on the table, and the first statement on the table after the transaction ends loads the new definition.
+The migration pods wait for the rollout of the DDL SQL node before they start.
+5.1.3 carries the same change, so it also applies to an upgrade to 5.1.3.
+
+The DDL SQL node is on by default.
+A cluster that disables it (`rondb.rondb.meta.ddlMySQLd.enabled: false`) points the migrations back at the application SQL nodes:
+
+```yaml
+hopsworks:
+  dependencies:
+    mysql:
+      ddlConsulServiceName: mysql
+hopsfs:
+  dependencies:
+    mysql:
+      ddlConsulServiceName: mysql
+hive:
+  metastore:
+    dependencies:
+      mysql:
+        ddlConsulServiceName: mysql
+```
+
+The Airflow `ddlConsulServiceName` cannot point at `mysql`, because its migrations need a single SQL node, so a cluster without the DDL SQL node runs with `global._hopsworks.airflow.enabled: false`.
+
+================================================================================
+# Upgrading with Helm 4
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/helm4/
+
+# Upgrading with Helm 4 { #upgrading-with-helm-4 }
+
+## Which apply mode you get { #helm4-apply-mode }
+
+Helm 4 applies manifests server-side.
+Under server-side apply (SSA) the API server records, per field, which manager last set it, and refuses an apply that would change a field another manager owns.
+Helm 3's client-side apply has no notion of field ownership.
+
+| Operation | Apply mode |
+| --------- | ---------- |
+| `helm install` with Helm 4 | server-side |
+| `helm upgrade` with Helm 4 | `--server-side=auto`, which inherits the mode of the previous release |
+| `helm upgrade` with Helm 4 on a release installed by Helm 3 | client-side, until you pass `--server-side=true` |
+| anything with Helm 3 | client-side |
+
+A release installed by Helm 3 and upgraded with Helm 4 therefore stays client-side.
+It never meets the server-side behaviour described below, and it never gets the server-side fixes either.
+
+From 5.2.0 the chart no longer competes with in-cluster controllers over three sets of fields.
+It no longer declares two of them at all: `.spec.replicas` on workloads that have a HorizontalPodAutoscaler (HPA), and the `.webhooks[].rules` of the two Knative Serving webhooks.
+The third, the controller-computed properties of the RSS ConfigMap, it still declares, but it now renders exactly what the Uniffle operator computes, so the two managers never disagree about the content.
+The two migrations below happen once, on the first upgrade to 5.2.0 or later of a release that ran an earlier chart.
+Charts before 5.2.0, 5.1.x included, still declare these fields.
+
+## `.spec.replicas` on workloads scaled by an HPA { #helm4-hpa-replicas }
+
+This affects `arrowflight`, `docker-registry`, `hopsworks-ca`, `onlinefs`, `logstash` and the Hopsworks worker Deployment, whenever the chart renders an HPA for them.
+The chart drops `replicas` exactly when it renders the workload's HPA.
+`arrowflight` and `docker-registry` are therefore not affected while a VerticalPodAutoscaler targets them (`global._hopsworks.vpaEnabled` together with `autoscalers.arrowflight.enabled` or `autoscalers.docker.enabled`), because that suppresses their HPA and the chart keeps declaring `replicas`.
+
+Charts before 5.2.0 declared `replicas` and shipped an HPA for the same workload.
+The first upgrade to 5.2.0 or later removes the field, and Kubernetes defaults a workload without `replicas` to 1.
+Measured on k3s v1.33.4 with an autoscaler holding the workload at 5 replicas:
+
+| Upgrade path | Live replicas after the first upgrade |
+| ------------ | ------------------------------------- |
+| Helm 3 to Helm 3 | 5 to 1 |
+| Helm 3 install, Helm 4 upgrade (`auto`, so client-side) | 5 to 1 |
+| Helm 4 (SSA) to Helm 4 (SSA) | 5 preserved |
+| any path, second and later upgrades | live count preserved |
+
+The HPA restores the count within one sync, about 15 seconds in that test, and the workload climbs back to its scaled size only as the metric drives it there.
+It returns to the HPA's `minReplicas`, which for five of the six workloads is the configured `replicas` value: `arrowflight.deployment.replicas`, `onlinefs.deployment.replicas`, `hopsworks.hopsworksCA.ca_count`, `hopsworks.replicaCount.worker` and `olk.logstash.replicas`.
+`docker-registry` is the exception: its HPA takes its own `docker-registry.hpa.minReplicas` (default 1), so a registry configured with `replicas: 2` and `hpa.minReplicas: 1` settles at 1, not 2.
+Its PodDisruptionBudget is rendered from that same floor, so a registry whose floor is 1 gets no PodDisruptionBudget rather than a `minAvailable: 1` budget that would block every drain of its node.
+
+Take the first upgrade of an HPA-scaled release with Helm 4 and `--server-side=true`, which keeps the live count, unless a RonDB autoscaler holds its StatefulSet at another size than the chart's, as described in [RonDB][helm4-rondb].
+For a release installed by Helm 3 this is inferred rather than measured: a server-side apply that omits the field is not expected to remove the copy that the earlier client-side applies recorded.
+That works because `kube-controller-manager` co-owns `.spec.replicas` once the HPA has actually rescaled the workload.
+On a release whose HPA is enabled but has never fired, Helm is still the only owner and removes the field, so that release drops to 1 like the client-side path.
+If you upgrade client-side, expect one dip to a single replica per affected workload, and plan it like any other rolling change.
+
+A fresh install starts at the same place: the workload is created without `.spec.replicas`, so Kubernetes defaults it to 1 and the HPA raises it to `minReplicas` on its next sync.
+With `--wait`, `helm install` can therefore return while a workload configured for more replicas still runs one.
+
+Charts before 5.2.0 were not neutral here either.
+On every client-side upgrade they reset an autoscaled workload to the chart's `replicas` value (5 to 3 in the same test), and on Helm 4 with SSA they failed with `conflict with "kube-controller-manager" with subresource "scale"`.
+
+Turning an HPA off after it has scaled its workload still conflicts under SSA, because the chart starts declaring `replicas` again while `kube-controller-manager` owns the field.
+Pass `--force-conflicts` for that one upgrade, or scale the workload to the configured value first.
+
+## The RSS ConfigMap { #helm4-rss-configmap }
+
+This only affects a release that ran a chart before 5.2.0 under Helm 4 with SSA.
+There, the Uniffle operator rewrote `.data.coordinator.conf` and `.data.server.conf` of the `rss-configuration` ConfigMap and took ownership of those fields away from Helm.
+From 5.2.0 the chart renders exactly what the operator computes, so on a fresh install the operator's write changes nothing and Helm stays the only owner.
+On a release that already lost the fields, ownership has to be handed back once.
+
+`helm upgrade --force-conflicts` does not do that.
+Applying the new, byte-identical content leaves the field co-owned by `helm` and the operator's `controller` manager, and the force has nothing to conflict with.
+The next real change of an RSS value then fails with `conflict with "controller" using v1: .data.server.conf`.
+Forcing a changed value reclaims only the key that changed and leaves the other one conflicting.
+
+Hand ownership back explicitly, once, before or after the upgrade:
+
+```bash
+NS=hopsworks   # your release namespace
+
+# Build a JSON patch that drops every non-Helm manager entry from managedFields.
+# Highest index first, so the removals do not renumber each other.
+kubectl -n "$NS" get configmap rss-configuration --show-managed-fields -o json \
+  | jq '[.metadata.managedFields | to_entries[] | select(.value.manager != "helm") | .key]
+        | sort | reverse
+        | map({op: "remove", path: ("/metadata/managedFields/" + (. | tostring))})' > /tmp/strip.json
+
+kubectl -n "$NS" patch configmap rss-configuration --type=json --patch-file /tmp/strip.json
+```
+
+Check that only `helm` remains:
+
+```bash
+kubectl -n "$NS" get configmap rss-configuration --show-managed-fields -o yaml
+```
+
+Under ArgoCD the applying manager is `argocd-controller`, not `helm`, so keep that entry instead.
+Whether ArgoCD applies server-side at all is decided by the `syncOptions` of the Application, which the chart does not control.
+Later `helm upgrade` runs that change an RSS value then apply cleanly, and the operator's next reconcile writes identical bytes, so it never takes the field back.
+
+Do not use a release-wide `helm upgrade --force-conflicts` instead.
+It is not limited to the ConfigMap: a forced apply also takes `.spec.replicas` back from `kube-controller-manager` and resets an autoscaled workload to the chart's value, for Hopsworks' own workloads and for the RonDB subchart alike.
+
+Resetting `managedFields` as a whole (`kubectl patch -p '{"metadata":{"managedFields":[{}]}}'`) is no substitute either.
+It attributes every field to a synthetic `before-first-apply` manager, and the same conflict comes back one apply later.
+
+## Knative Serving webhooks { #helm4-knative-webhooks }
+
+From 5.2.0 the chart no longer renders `.webhooks[].rules` for the Knative Serving mutating and validating webhook configurations.
+The Knative webhook controller owns them and rewrites them from its own resource registry.
+
+On the first client-side upgrade to 5.2.0 or later the rules are removed from the object until that controller reconciles them back.
+The controller watches the object, so the window is short, but only while the controller is running.
+While the rules are absent no Knative resource is intercepted, so Knative resources created or updated in that window skip Knative's defaulting and validation.
+If the Knative webhook Deployment is down or cannot be scheduled, the window lasts until it recovers.
+
+An upgrade with Helm 4 and SSA does not go through this window: the chart stops declaring the field, and the controller keeps ownership.
+
+## CRDs applied by a 5.0.x release { #helm4-retained-crds }
+
+Helm never deletes CRDs, and the KServe CRD upgrade Job applies the cert-manager, Knative and KServe CRDs server-side under its own field manager, so it owns their `app.kubernetes.io/version` label.
+A fresh Helm 4 install fails within seconds when that label on the CRDs differs from the value the chart installs.
+CRDs last applied by a 5.0.x release, whose CRD upgrade Job ships an older bundle, carry such a value.
+Before a fresh Helm 4 install into a Kubernetes cluster that still runs a 5.0.x release, upgrade that release with `helm upgrade` to a chart of 5.1.0 or later, so that its CRD upgrade Job applies the current CRDs.
+
+## RonDB { #helm4-rondb }
+
+The RonDB subchart (rondb-helm 26.2.21 in Hopsworks 5.2 and 5.3) still declares `replicas` alongside an HPA for its `rdrs` StatefulSet, and for `mysqld` at the RonDB chart's own default values.
+Every client-side upgrade therefore resets those StatefulSets to their configured `replicas`, and a Helm 4 upgrade with SSA conflicts with `kube-controller-manager` on them.
+
+With the Hopsworks defaults, an HPA scales `rdrs` between `rondb.rondb.clusterSize.minNumRdrs` (1) and `maxNumRdrs` (2).
+A server-side upgrade fails on that StatefulSet while its HPA holds it at another size than the chart's `replicas`, which `kubectl get hpa -n hopsworks` shows.
+Upgrade that release client-side instead (`--server-side=false` on a release installed with Helm 4), and accept the reset of the RonDB StatefulSets and the one-time dip of the Hopsworks workloads described above.
+Do not pass a release-wide `--force-conflicts` instead, for the reasons given under [The RSS ConfigMap][helm4-rss-configmap].
 
 ================================================================================
 # Upgrading OpenSearch
@@ -34498,7 +35707,7 @@ The hook log lists each index or template, field, space type and remedy:
 - `l1` or `linf`: no engine other than nmslib supports them in 3.x, so the application has to use another space type, or the index or template has to be deleted.
 - A template with another space type: set `method.engine: faiss` on the field, or delete the template.
 
-## Security configuration
+## Security configuration { #opensearch-security-configuration }
 
 At every pod start OpenSearch applies the security configuration that ships with the chart, once every node runs the same version (see below), and so does `run_security_admin.sh` when an operator runs it.
 From 5.1.2 on the 5.1 line, and from 5.2.1, this no longer replaces the roles and role mappings.
@@ -34552,7 +35761,7 @@ olk:
 
 AWS S3 does not need it.
 
-## Satellite clusters
+## Satellite clusters { #opensearch-satellite-clusters }
 
 A satellite cluster runs its own OpenSearch and gets its own index pass when it upgrades to 5.2.
 Its write blocks are confined to that satellite's OpenSearch, and `activeDeadlineSeconds` is set per release, so a satellite holding large embedding indices sets its own value and its own `--timeout`.
@@ -34574,11 +35783,13 @@ Vector ingestion is turned off in an upgrade of its own before the Job runs, so 
 1. Check Kafka retention.
     Rows written to feature groups with embeddings wait in Kafka while vector ingestion is off.
     The effective retention of the OnlineFS topics, in time and in bytes, has to cover the run plus the catch-up afterwards, and the default is 168 hours.
+
 2. Get the report: upgrade to 5.1.2 or later with `olk.opensearch.indexUpgrade.mode` set to `report`.
     The Job lists the indices, their sizes and how long each one stays blocked, and fails without changing anything, apart from finishing an index that an interrupted earlier run left half done.
     A cluster with nothing to copy gets no report: the Job prints `Nothing to copy` and succeeds.
     Raise `olk.opensearch.indexUpgrade.activeDeadlineSeconds` above the estimate if needed.
     Pass `mode` with `--set`, not in your values file: 5.2.1 and later read the same key, and a stored `report` makes their hook report and fail.
+
 3. Turn vector ingestion off, and wait for OnlineFS to roll:
 
     ```bash
@@ -34589,6 +35800,7 @@ Vector ingestion is turned off in an upgrade of its own before the Job runs, so 
     ```
 
     Go on once the rollout is complete and no older or terminating OnlineFS pod is listed, because an old pod keeps writing vectors until it is gone.
+
 4. Run it with vector ingestion still off:
 
     ```bash
@@ -34600,6 +35812,7 @@ Vector ingestion is turned off in an upgrade of its own before the Job runs, so 
 
     Helm waits for the Job, so the upgrade succeeds or fails with it.
     With ArgoCD, set `global._hopsworks.mode` to `upgrade`, because the Job renders only on an upgrade.
+
 5. Turn vector ingestion back on in the next upgrade, with the same chart version:
 
     ```bash
@@ -34608,6 +35821,7 @@ Vector ingestion is turned off in an upgrade of its own before the Job runs, so 
     ```
 
     OnlineFS then writes the rows that waited in Kafka.
+
 6. Take a new snapshot after the 5.2 upgrade, not now: a snapshot taken on 5.1.x still holds the logs and other pre-2.0 indices that the Job leaves to the 5.2 hook, and a 3.x cluster cannot restore them.
 
 While the Job runs, reads and writes behave as described in [What keeps working][opensearch-what-keeps-working], with vector ingestion off.
@@ -34640,16 +35854,21 @@ A rerun finishes what a stopped run left.
 
     Two known issues apply to this upgrade:
 
-    - On the first OpenSearch 2.19 start of each cluster, central or satellite, vector writes are rejected for about two minutes and the vectors that had not been flushed are lost.
-      The chart fixes this on the 5.1 line, and a values file that copied the old `knn.circuit_breaker` settings (`triggered: true` or `percent: 0.75`) keeps the problem.
+    - On the first OpenSearch 2.19 start of each cluster, central or satellite, 5.1.0 rejects vector writes for about two minutes and loses the vectors that had not been flushed.
+      Charts from 5.1.1 fix this, so upgrade from 5.0 to 5.1.1 or later.
+      A values file that copied the old `knn.circuit_breaker` settings (`triggered: true` or `percent: 0.75`) keeps the problem: remove those keys, or set them to `false` and `75`.
       So does `helm upgrade --reuse-values` from a chart that rendered them: set the two values explicitly, or upgrade with `--reset-then-reuse-values`.
-    - On 5.1, similarity search with a filter fails on feature groups whose embedding index was created on 5.0, because the 5.1 client sends the filter inside the nearest-neighbor query and the nmslib engine rejects it.
-      A client fix and the index pass both resolve it.
+      Vectors lost this way are still in the offline feature store and come back when the rows are inserted again.
+    - On 5.1, similarity search with a filter fails on feature groups whose embedding index was created on 5.0, because the 5.1.0 Python client sends the filter inside the nearest-neighbor query and the nmslib engine rejects it.
+      The Python client from 5.1.1 sends nmslib indices a query they accept, and the index pass of the 5.2 upgrade moves those indices to faiss.
+
 3. Optionally, copy the indices on 5.1.x now, as described in [Copying the indices on 5.1.x first][opensearch-copy-on-51].
     The hook in step 6 then finds nothing left to copy, and you can skip steps 4 and 5.
+
 4. Get the report: run the upgrade to 5.2.x with `--set olk.opensearch.indexUpgrade.mode=report`, as described in [Set the timeout][opensearch-set-the-timeout], and raise `olk.opensearch.indexUpgrade.activeDeadlineSeconds` above the estimate if needed.
     Leave it out of the real upgrade, because with `report` the hook fails after the report.
     With nothing to copy or delete the hook prints `Nothing to do` instead and succeeds, so that upgrade goes ahead: continue at step 7.
+
 5. If the report warns that an embedding index stays blocked for long, turn vector ingestion off first, on your current 5.1.x:
 
     ```bash
@@ -34662,6 +35881,7 @@ A rerun finishes what a stopped run left.
     Wait until the rollout is complete and no older or terminating OnlineFS pod is listed, because an old pod keeps writing vectors until it is gone.
     Keep `--set onlinefs.deployment.vectordb.enabled=false` on the upgrade to 5.2.x in the next step.
     The rows written meanwhile stay in Kafka, as long as the topic still holds them, and are written to OpenSearch once ingestion is back on.
+
 6. Upgrade to 5.2.x with a `--timeout` at least as long as `olk.opensearch.indexUpgrade.activeDeadlineSeconds`, and watch the hook:
 
     ```bash
@@ -34669,6 +35889,7 @@ A rerun finishes what a stopped run left.
     ```
 
     It ends with `Every index is now on OpenSearch 2.0 or later. Safe to upgrade.`, or with `Nothing to do` when no index needed it.
+
 7. Verify the upgrade:
 
     ```bash
@@ -34681,8 +35902,10 @@ A rerun finishes what a stopped run left.
     The `StartupException` count must be 0.
     Expect version `3.8.0`, `minimum_index_compatibility_version` `2.0.0` and green cluster health.
     Then run a search in the Hopsworks UI and a similarity search on a feature group with an embedding.
+
 8. If you turned vector ingestion off, turn it back on with a `helm upgrade` on 5.2.x and `--set onlinefs.deployment.vectordb.enabled=true`, and OnlineFS writes the rows that waited in Kafka.
     Otherwise, insert again the rows that OnlineFS marked failed while an embedding index was blocked.
+
 9. Take a new snapshot once those rows are written, because a snapshot taken before the upgrade holds the pre-2.0 indices, which a 3.x cluster cannot restore.
 
 ## If the hook fails { #opensearch-hook-fails }
@@ -34747,6 +35970,249 @@ Three things have to be right when you do it by hand:
   `_reindex` reads its source through a scroll, which the block does not cover, so the copy still runs, whereas a block on the destination refuses it.
   Keep writers stopped from the `DELETE` until the recreated index is filled, because a write to the missing name creates it from the index templates.
 - Use the admin certificate for `.opendistro_security`, `.opendistro-ism-config` and `.plugins-ml-config`, because these protected system indices answer 403 to the `admin` user's password.
+
+================================================================================
+# Kafka 4 and KRaft upgrade notes
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/kafka4/
+
+# Operator Notes: Kafka 4 and KRaft in Hopsworks 5.2 { #kafka4-kraft-upgrade }
+
+Administrative reference for cluster operators upgrading a self-managed Hopsworks cluster to 5.2.
+
+Hopsworks 5.2 moves the bundled Kafka from Strimzi 0.45 with Kafka 3.9 to Strimzi 1.2 with Kafka 4.3.1.
+Kafka 4 has no ZooKeeper, so an existing cluster is migrated to KRaft as part of the upgrade.
+The chart performs that migration itself; this page covers what to prepare, what to expect and how to verify the result.
+
+A fresh 5.2 install needs none of this: it starts on KRaft.
+
+## What the upgrade does
+
+Two pre-upgrade hooks run before any new component is applied:
+
+1. `kafka-kraft-migration` carries the cluster from ZooKeeper to KRaft under the operator that is still running.
+   It has to run before anything is applied, because the migration needs an operator that understands ZooKeeper, and that is the one the previous release left running.
+   It adds the KRaft node pools, annotates the cluster for migration, waits for the metadata to move, and finalises.
+   On a cluster already on KRaft it exits in seconds.
+2. `strimzi-crd-upgrade` converts the Strimzi custom resources from the `v1beta2` API to `v1` and brings the CRDs up to the new operator's version.
+
+The release then replaces the operator with Strimzi 1.2 and rolls the brokers to Kafka 4.3.1.
+
+## What to expect
+
+- **The upgrade blocks while the migration runs.**
+  The hook waits three times, each bounded by `kafka.migrationJob.timeoutSeconds` (default 1800), so the worst case is 3 x that value.
+  Helm's `--timeout` applies to each hook on its own: give it at least that budget plus room for the rest of the release.
+  On timeout the hook fails rather than hangs, and re-running the upgrade resumes from wherever the operator got to.
+- **Broker pods are replaced about seven times**: during the migration, when the finalised cluster drops its ZooKeeper-era settings, and when the brokers move to Kafka 4.3.1.
+  The controller pods are replaced twice.
+  Strimzi replaces pods rather than restarting containers, so `restartCount` stays 0 throughout; watch pod names and ages instead.
+  A single-broker cluster is unavailable for the duration of each replacement, and OnlineFS catches up afterwards; clusters with a replication factor above 1 roll without interruption.
+- **ZooKeeper and the new controllers run side by side** until the migration is finalised.
+  The controller pool inherits its sizing from the ZooKeeper settings, so the namespace needs headroom for both during the upgrade.
+- **Finalising KRaft is irreversible.**
+  Once the cluster reports `PreKRaft` or `KRaft`, ZooKeeper is gone.
+  Strimzi can roll back a migration before that point, but only with ZooKeeper support, which the Strimzi that 5.2 ships does not have, so the chart cannot drive that rollback.
+  Do not `helm rollback` after the migration has started, and do not run this upgrade with `--atomic`, which performs that rollback for you the moment a hook times out: the earlier revision puts the ZooKeeper-shaped Kafka resource back against a cluster that may already have finalised KRaft.
+  Re-run the upgrade instead.
+- **One `helm upgrade` migrates the cluster and its CRDs.**
+  The `strimzi-crd-upgrade` hook converts the resources still stored as `v1beta2` through the 0.51.0 CRDs, then applies the 1.2.0 CRDs in the same upgrade, as described in [Strimzi CRDs][kafka4-strimzi-crds].
+- **ArgoCD needs one manual step**, and every Application needs an `ignoreDifferences` entry for the Kafka CRD, as described in [Under ArgoCD][kafka4-argocd].
+
+## Before you start { #kafka4-before-you-start }
+
+Run these read-only checks first.
+The upgrade refuses, or waits until it times out, on each problem they find.
+
+1. **The Strimzi CRDs**, once per Kubernetes cluster:
+
+    ```sh
+    kubectl get crd kafkas.kafka.strimzi.io -o json | jq -r '
+      if any(.spec.versions[]; .name == "v1" and .served) then "converted"
+      elif any(.spec.versions[]; .name == "v1beta2" and (.schema.openAPIV3Schema.properties.status.properties | has("kafkaMetadataState"))) then "ok"
+      else "strimzi-0.39" end'
+    ```
+
+    - `ok`: nothing to do; go on with checks 2 to 4.
+    - `converted`: an earlier 5.2 upgrade converted the CRDs, which it does only once every Kafka on the Kubernetes cluster is on KRaft.
+      Nothing to do, and checks 2 to 4 do not apply: the state field is gone, and the operator may already be 1.2.
+    - `strimzi-0.39`: the CRDs cannot report the migration state, so the migration hook refuses rather than guess.
+      A cluster has these when it was first installed on Hopsworks 4.3, 4.5 or a 4.4 release before 4.4.19, and has been upgraded with `helm upgrade` or ArgoCD since.
+      Apply the Strimzi 0.45.2 CRDs, then wait until check 2 shows a state.
+      Without `--force-conflicts` the apply is refused on the fields their earlier installer owns:
+
+        ```sh
+        kubectl apply --server-side --force-conflicts -f \
+          https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.45.2/strimzi-crds-0.45.2.yaml
+        ```
+
+        Do not apply the 5.2 chart's own CRDs for that: the apiserver rejects them while `v1beta2` is still a stored version.
+        An airgapped cluster has to mirror that bundle too; the `strimzi/crds` image carries only the 0.51.0 and 1.2.0 bundles.
+
+2. **Every Kafka**, in all namespaces, because the central cluster's operator also runs the satellites':
+
+    ```sh
+    kubectl get kafkas.v1beta2.kafka.strimzi.io -A -o json | jq -r '.items[] |
+      "\(.metadata.namespace)/\(.metadata.name): state=\(.status.kafkaMetadataState // "<none>") ready=\([.status.conditions[]? | select(.type == "Ready") | .status] | first // "no") generation=\(.metadata.generation)/\(.status.observedGeneration // "?")"'
+    ```
+
+    Each line should read `state=ZooKeeper ready=True` with the two generation numbers equal, or `state=KRaft` for a satellite already on 5.2.
+
+    - `state=<none>`: the operator has not written the state yet, or check 1 printed `strimzi-0.39`.
+      Wait for the operator to reconcile.
+    - `state=KRaftMigration`, `KRaftDualWriting` or `KRaftPostMigration`: an earlier 5.2 attempt is still migrating.
+      Run that release's upgrade again.
+    - `ready` other than `True`, or two different generations: fix the Kafka first, because the migration waits for Ready at each step.
+
+3. **The operator**: one `strimzi-cluster-operator`, Ready, on 0.45.x.
+    It runs the migration before the upgrade replaces it.
+
+    ```sh
+    kubectl get deploy -A --field-selector metadata.name=strimzi-cluster-operator \
+      -o 'custom-columns=NAMESPACE:.metadata.namespace,READY:.status.readyReplicas,IMAGE:.spec.template.spec.containers[0].image'
+    ```
+
+4. **Capacity**: until the migration is finalised, each Kafka runs its ZooKeeper and a set of KRaft controllers with ZooKeeper's replicas, resources, storage size and storage class.
+    Leave room for that many more pods and persistent volumes.
+
+Then:
+
+- **Airgapped clusters** mirror three images with the rest: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`.
+  The chart's `vendor_images.sh` includes them; nothing is fetched from the internet during the upgrade.
+- **A satellite cluster that shares the central operator** is upgraded before central.
+  The CRD conversion re-stores every Kafka resource on the Kubernetes cluster, and a satellite still on ZooKeeper would lose its ZooKeeper configuration in the process.
+  The conversion refuses while any other Kafka is not on KRaft, so the wrong order fails safely, but it blocks central's upgrade until the satellite is done.
+- **Record the topics**, so you can confirm nothing was lost:
+
+    ```sh
+    kubectl exec -n <namespace> <cluster>-kafka-0 -c kafka -- bash -c '
+    topics=$(ls /var/lib/kafka/data-0/kafka-log0 | grep -E -- "-[0-9]+$" | grep -v "^__cluster_metadata" | sed -E "s/-[0-9]+$//" | sort -u)
+    printf "%s\n" "$topics"
+    printf "%s\n" "$topics" | wc -l'
+    ```
+
+## Strimzi CRDs { #kafka4-strimzi-crds }
+
+Strimzi 1.2 stores its resources as `kafka.strimzi.io/v1`.
+The `strimzi-crd-upgrade` hook converts CRDs that still store `v1beta2` through the 0.51.0 CRDs, then applies the 1.2.0 CRDs with `v1beta2` still served.
+
+Under Helm, `v1beta2` stays served on that Kubernetes cluster afterwards.
+Helm builds a release's current objects from the manifest it stored, so a release stored at `v1beta2`, such as a satellite upgraded to 5.2 before central, can only be upgraded while that version is served.
+ArgoCD renders every sync afresh and applies the `v1`-only CRDs in its Sync phase.
+
+Central and its satellites must be all under Helm or all under ArgoCD before central's first 5.2 upgrade; a mix of the two is not supported.
+With central under ArgoCD, its first 5.2 sync drops `v1beta2`, and a satellite managed by Helm and stored at `v1beta2` cannot be upgraded after it.
+
+Helm 4 applies a chart's `crds/` on every `helm install`, over the CRDs already on the Kubernetes cluster, before it validates values or runs any hook.
+Install onto a Kubernetes cluster that already has the Strimzi CRDs, such as a reinstall of central or a second installation, with `--skip-crds`; the hook applies them.
+An install that ran without it and then failed can leave `v1beta2` unserved.
+Fix the cause and install again: the pre-install hook finds the `hopsworks.ai/strimzi-v1beta2-served` annotation on the Kafka CRD and serves `v1beta2` again.
+If Helm recorded the failed release, remove it first with `helm uninstall --no-hooks <release> -n <namespace>` and the cleanup in [What stays][uninstall-leftovers].
+An uninstall with hooks runs the failed release's cleanup Job, which on a Kubernetes cluster with another installation also deletes that installation's project namespaces, as described in [Before you uninstall][uninstall-before].
+
+A Kubernetes cluster upgraded with a 5.2 pre-release chart can be left on the 0.51.0 CRDs.
+The Strimzi operator then logs `Kafka <name> in namespace <namespace> was MODIFIED` every few seconds for each Kafka and runs at its CPU limit.
+Upgrading central with 5.2.0 or later applies the 1.2.0 CRDs and ends it.
+To check, run the following; `false` means the Kubernetes cluster still has the 0.51.0 CRDs:
+
+```sh
+kubectl get crd kafkas.kafka.strimzi.io -o yaml \
+  | yq '.spec.versions[] | select(.name == "v1") | .schema.openAPIV3Schema.properties.status.properties | has("clusterSecurity")'
+```
+
+## Under ArgoCD { #kafka4-argocd }
+
+The first sync after the chart bump does not finish on its own, and finishing it is a manual step.
+ArgoCD renders the manifest once, before its PreSync hooks run, from the APIs the cluster serves at that moment, so on a 5.1 cluster the Kafka resources render at `v1beta2`.
+After the CRD conversion, the Sync phase would apply the new operator's CRDs, which serve `v1` only, and replace the operator under a Kafka resource it cannot reconcile.
+The `strimzi-crd-upgrade` hook therefore stops the sync after the conversion, and the cluster stays on the operator that understands it until a sync renders at `v1`.
+
+1. **Bump the Application to the 5.2 chart and let it sync.**
+    The PreSync hooks migrate the cluster to KRaft and convert the CRDs, then `strimzi-crd-upgrade` stops the sync with a message that says why.
+    The operation shows as failed on that hook, the previous operator keeps running, and the cluster is healthy: nothing needs to be undone.
+    ArgoCD retries the operation under the Application's retry policy; each retry re-runs the hooks, which are idempotent and take a minute or two, and stops at the same message.
+
+2. **Invalidate ArgoCD's cluster cache.**
+    The cache refreshes by itself only when a CRD is created or deleted, or on its periodic resync, and does not notice that a CRD's served versions changed: on ArgoCD 3.4.5 every retry rendered `v1beta2` again.
+    In the UI: Settings, Clusters, the cluster, Invalidate Cache.
+    The `argocd` CLI has no command for it; use the API, or restart the application controller:
+
+    ```sh
+    curl -k -X POST "$ARGOCD_URL/api/v1/clusters/https%3A%2F%2Fkubernetes.default.svc/invalidate-cache?id.type=server" \
+      -H "Authorization: Bearer $ARGOCD_TOKEN" -H "Content-Type: application/json" -d '{}'
+    ```
+
+3. **Hard-refresh the Application**, with Refresh, Hard in the UI, or:
+
+    ```sh
+    argocd app get hopsworks --hard-refresh
+    ```
+
+    The Kafka resources now show at `v1` and OutOfSync, with no ComparisonError on the Application.
+
+4. **Sync**, with the Sync button or `argocd app sync hopsworks`.
+    Auto-sync does not retry a revision whose last attempt failed, so this sync is manual.
+    It applies the 1.2.0 CRDs, the operator and the `v1` resources, upgrades Kafka, and runs the PostSync hooks.
+
+5. **Give the Application an `ignoreDifferences` entry for the Kafka CRD**, on a fresh install as much as on an upgrade.
+    Upstream's 1.2.0 Kafka CRD declares an empty `properties: {}` map under `status.clusterSecurity`, and the apiserver drops an empty map when it stores a CRD, so the live object never matches the render.
+    Without the entry the Application never reaches Synced, and selfHeal re-applies that one CRD every five minutes.
+    The entry matches nothing on 5.1.x, so you can add it before the upgrade.
+    `helm upgrade` is not affected.
+
+    ```yaml
+    spec:
+      ignoreDifferences:
+        - group: apiextensions.k8s.io
+          kind: CustomResourceDefinition
+          name: kafkas.kafka.strimzi.io
+          jqPathExpressions:
+            - .spec.versions[].schema.openAPIV3Schema.properties.status.properties.clusterSecurity.properties
+    ```
+
+    The annotation `argocd.argoproj.io/compare-options: ServerSideDiff=true` on the Application also settles it, but it changes how every resource in the Application is compared and takes effect only after a hard refresh, so prefer the narrower entry.
+
+The sync blocks while the migration hook runs, for the same reason a `helm upgrade` does: PreSync hooks finish before the Sync phase starts.
+The rendered manifest never mentions ZooKeeper or the migration annotation, because by the time the Sync phase applies it the cluster is already on KRaft.
+
+## Verify
+
+```sh
+kubectl get strimzipodset <cluster>-zookeeper -n <namespace> --ignore-not-found
+kubectl get pods -n <namespace> -l strimzi.io/name=<cluster>-zookeeper
+kubectl get pods -n <namespace> -l strimzi.io/controller-role=true
+```
+
+Nothing for the first two, at least one controller pod for the third, and the same topic list as before.
+
+Two checks look right but say nothing:
+
+- **StatefulSets.**
+  Strimzi has run every node pool in a StrimziPodSet since 0.35, so `kubectl get sts | grep zookeeper` returns nothing even on a live ZooKeeper cluster.
+  The ZooKeeper StrimziPodSet is what the operator creates only while ZooKeeper is real, and removes when the migration finalises.
+- **The `strimzi.io/kraft` annotation.**
+  The chart renders it, so it says what was asked for, not what happened.
+
+Read `.status.kafkaMetadataState` only while the upgrade runs, when the CRDs are still `v1beta2`, and expect exactly `KRaft`; a half-finished migration counts as not migrated:
+
+```sh
+kubectl get kafka <cluster> -n <namespace> -o jsonpath='{.status.kafkaMetadataState}'
+```
+
+The field exists in the `v1beta2` status schema only.
+Once `strimzi-crd-upgrade` has moved the stored version to `v1`, the field is pruned and a fully migrated cluster reports it empty.
+
+If the upgrade fails part-way, re-run it.
+The hook's log names what it was waiting for and the last state it saw, a timeout corrupts nothing because the operator migrates on its own schedule, and the re-run resumes from the live state.
+The one state the hook refuses outright is a cluster whose CRDs are too old to report `.status.kafkaMetadataState`, which is the `strimzi-0.39` case of [check 1][kafka4-before-you-start].
+Strimzi would read the migration annotation on such a cluster as already migrated and start the brokers on KRaft without copying the ZooKeeper metadata, so the hook stops instead.
+
+## Client compatibility {#kafka4-client-compatibility}
+
+Kafka 4 dropped support for old protocol versions ([KIP-896](https://cwiki.apache.org/confluence/display/KAFKA/KIP-896%3A+Remove+old+client+protocol+API+versions+in+Kafka+4.0)).
+The 4.3.1 brokers accept Java clients from 2.1 and librdkafka-based clients (Python, Go, .NET) from 1.8.2.
+The clients shipped with Hopsworks 5.2 are within those ranges; check any producer or consumer you build against the cluster yourself.
+
+The same cut applies the other way round for a [bring-your-own Kafka cluster][external-kafka-cluster]: Hopsworks 5.2 connects with kafka-clients 4.3.1, so the external brokers must run Kafka 2.1 or newer.
 
 ================================================================================
 # Services Dashboards
@@ -36739,6 +38205,55 @@ kubectl delete restore.velero.io k8s-backups-users-resources -n velero --ignore-
 #### In-place restore customizations
 
 The same customization options for [RonDB and Opensearch](#customizations) backup IDs apply to in-place restore. You can override individual service backup IDs while keeping the global backup ID for HopsFS.
+
+### OpenSearch crash-loops after a restore on 5.2.0 and 5.2.1 { #opensearch-restore-crash-loop }
+
+On 5.2.0 and 5.2.1, an OpenSearch snapshot restore, in place or during a fresh install, can leave the `.opendistro_security` index closed.
+5.1.2 runs the same restore Job; the crash-loop was not verified there.
+The restore Job closes that index without restoring it, and when OpenSearch restarts while the Job reopens the indices, the Job still completes with the index closed.
+From then on every OpenSearch start fails to apply the security configuration and exits: `opensearch-0` crash-loops and OpenSearch Dashboards stays down.
+The restore Job of 5.1.3, 5.2.2 and later leaves that index open.
+
+The symptom:
+
+```bash
+kubectl logs -n hopsworks opensearch-0 -c opensearch --previous \
+  | grep -E 'index_closed_exception|securityadmin push failed'
+```
+
+Each start answers HTTP for a few seconds before it exits.
+Reopen the index in that window with the admin certificate, and the start that the request reaches then applies the security configuration and becomes Ready.
+With more than one OpenSearch node, only the pod that applies the configuration crash-loops while the others stay Ready, and the same `_open` request sent through one of them needs no timing.
+
+```bash
+until kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c '
+  cd /usr/share/opensearch/config/certs-admin
+  for i in $(seq 1 240); do
+    code=$(curl -sk -o /dev/null -w "%{http_code}" -X POST \
+      --cert elkadmin_certificate_bundle.pem --key elkadmin_priv.pem \
+      https://localhost:9200/.opendistro_security/_open)
+    if [ "$code" = 200 ]; then exit 0; fi
+    sleep 0.5
+  done
+  exit 1'; do sleep 2; done
+```
+
+The indices the Job had not reopened yet are still closed.
+Once `opensearch-0` is Ready, list them and reopen the ones the restore closed; an index you closed on purpose before the restore is listed too.
+
+```bash
+kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c '
+  cd /usr/share/opensearch/config/certs-admin
+  curl -sk --cert elkadmin_certificate_bundle.pem --key elkadmin_priv.pem \
+    "https://localhost:9200/_cat/indices?h=index,status" | grep " close$"'
+kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c '
+  cd /usr/share/opensearch/config/certs-admin
+  curl -sk --cert elkadmin_certificate_bundle.pem --key elkadmin_priv.pem \
+    -X POST "https://localhost:9200/<index>/_open"'
+```
+
+The commands use the `elkadmin` certificate, the default `olk.opensearch.security.admin_locality`.
+Then check that the security configuration was applied, as described in [Security configuration][opensearch-security-configuration].
 
 ### Superset restore
 
