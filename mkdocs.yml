@@ -255,6 +255,7 @@ nav:
                   - Predictor (KServe): user_guides/mlops/serving/predictor.md
                   - Transformer (KServe): user_guides/mlops/serving/transformer.md
                   - Inference Logger: user_guides/mlops/serving/inference-logger.md
+                  - Transformation Tracing: user_guides/mlops/serving/transformation-tracing.md
                   - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
                   - Resources: user_guides/mlops/serving/resources.md
                   - Autoscaling: user_guides/mlops/serving/autoscaling.md
