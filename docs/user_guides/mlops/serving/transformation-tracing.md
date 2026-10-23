@@ -142,6 +142,9 @@ predict
         └── feature_view.log
 ```
 
+`feature_log` only queues the log write and returns, and `feature_log_write` runs on a background thread after the response is sent.
+The deployment page draws the write and `feature_view.log` as a separate background log process on its own time axis, so they are not counted in the request time.
+
 Only the first row of a request is traced, so a batch request records one `transformations` span; all of its rows are counted in the metrics.
 Traces are stored in the project's online feature store, so keep the sampling low on a deployment that serves many requests.
 
