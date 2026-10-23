@@ -264,7 +264,8 @@ On a default installation all values are valid.
 Before upgrading, check the live value of each key above in the values file and in the admin UI.
 
 `kube_scheduling_hopsfsmount_cpu_limits` and `kube_scheduling_jobinit_cpu_limits` move from -1 to empty, which means no CPU limit.
-Deploy a Hopsworks version that reads empty as no limit before this chart version.
+Hopsworks 5.3 reads empty as no limit.
+Do not run this chart version with an earlier Hopsworks image.
 The chart rejects -1 or 0 for these two keys, so remove any such override from the values file before upgrading.
 Hopsworks still reads a negative value set outside the chart as no limit.
 This is deprecated and a later release removes it.
