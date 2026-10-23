@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792760389` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792765925` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2533,6 +2533,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_feature_monitoring: 'true'
         enable_fix_receivers_timer: 'true'
         enable_gcs_storage_connectors: 'true'
+        enable_hopsworks_storage_connectors: 'true'
         enable_jupyter_python_kernel_non_kubernetes: 'false'
         enable_kafka_storage_connectors: 'true'
         enable_metadata_designer: ''
@@ -3282,6 +3283,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"true"`.
 
 `hopsworks.variables.enable_gcs_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_gcs_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_gcs_storage_connectors }
+:   Type `string`, default `"true"`.
+
+`hopsworks.variables.enable_hopsworks_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_hopsworks_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_hopsworks_storage_connectors }
 :   Type `string`, default `"true"`.
 
 `hopsworks.variables.enable_jupyter_python_kernel_non_kubernetes` <a class="headerlink" href="#helm.hopsworks.variables.enable_jupyter_python_kernel_non_kubernetes" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_jupyter_python_kernel_non_kubernetes }
