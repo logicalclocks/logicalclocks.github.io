@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792710116` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792744431` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -806,7 +806,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 
 `olk.opensearch.indexUpgrade.mode` <a class="headerlink" href="#helm.olk.opensearch.indexUpgrade.mode" title="Permanent link">#</a> { #helm.olk.opensearch.indexUpgrade.mode }
 :   Type `string`, default `"copy"`.
-    What the pre-upgrade hook does with the indices created before OpenSearch 2.0, which a 3.x node refuses to boot with. `copy` copies them one at a time, behind a write block on that index alone, keeping their names, and deletes only indices the platform recreates or expires (logs, audit, `pypi_libraries_*`, plugin indices); embedding indices (`<projectId>__embedding*`) come back on faiss. `report` lists them with their sizes and block times and fails, changing nothing apart from finishing an index an interrupted earlier run left half done. Either way it stops before changing anything if a vector field would still be served by nmslib, whose 3.8 library crashes a node without AVX-512, and it refuses a cluster still on OpenSearch 1.x. From 5.1.2 the 5.1.x chart reads the same key to run the pass ahead of the 5.2 upgrade. See UPGRADE.md.
+    What the pre-upgrade hook does with the indices created before OpenSearch 2.0, which a 3.x node refuses to boot with. `copy` copies them one at a time, behind a write block on that index alone, keeping their names, and deletes only indices the platform recreates or expires (logs, audit, `pypi_libraries_*`, plugin indices); embedding indices (`<projectId>__embedding*`) come back on faiss. `report` lists them with their sizes and block times and fails, changing nothing apart from finishing an index an interrupted earlier run left half done. Either way it stops before changing anything if a vector field would still be served by nmslib, whose 3.8 library crashes a node without AVX-512, and it refuses a cluster still on OpenSearch 1.x. From 5.1.2 the 5.1.x chart reads the same key to run the pass ahead of the 5.2 upgrade. See <https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade_opensearch/>.
 
 `olk.opensearch.jvmOpts` <a class="headerlink" href="#helm.olk.opensearch.jvmOpts" title="Permanent link">#</a> { #helm.olk.opensearch.jvmOpts }
 :   Type `string`, default `""`.

@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792710116` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792744431` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -497,7 +497,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.buildkitd.podAnnotations` <a class="headerlink" href="#helm.hopsworks.buildkitd.podAnnotations" title="Permanent link">#</a> { #helm.hopsworks.buildkitd.podAnnotations }
 :   Type `object`, default `{}`.
-    Extra annotations on the daemon pod. Exists mainly for CRI-O's workload activation route: when a node scopes allowed_annotations to a \[crio.runtime.workloads.*\] table rather than a runtime handler, the pod must carry that workload's activation_annotation for the device annotation to be honoured. See values.rhel8.yaml.
+    Extra annotations on the daemon pod. Exists mainly for CRI-O's workload activation route: when a node scopes allowed_annotations to a \[crio.runtime.workloads.*\] table rather than a runtime handler, the pod must carry that workload's activation_annotation for the device annotation to be honoured. See <https://docs.hopsworks.ai/latest/setup_installation/admin/build_performance/>.
 
 `hopsworks.buildkitd.port` <a class="headerlink" href="#helm.hopsworks.buildkitd.port" title="Permanent link">#</a> { #helm.hopsworks.buildkitd.port }
 :   Type `int`, default `1234`.
@@ -3120,7 +3120,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.docker_operations_buildkit_extra_args` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_buildkit_extra_args" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_buildkit_extra_args }
 :   Type `string`, default `""`.
-    Extra arguments appended to every buildctl invocation.  Empty by default. This previously shipped an S3 --export-cache/--import-cache pair. BuildKit resolves S3 credentials at the daemon rather than at the client, so whether it worked depended entirely on what identity the daemon had. On an EKS install with defaultServiceAccount annotations wired for IRSA (see values.aws.yaml) the daemonless build pod carried a web-identity token and the exporter worked. On a cluster with no AWS identity it could not: observed as "no EC2 IMDS role found ... context deadline exceeded" on every build, costing an IMDS timeout per build while caching nothing, with ignore-error hiding the failure rather than avoiding it.  Defaulting it empty therefore removes a remote cache that some installs did have. That is deliberate, because it failed closed and expensively everywhere else, but it is a behaviour change on upgrade rather than the removal of something inert.  Before re-enabling it, give the daemon real credentials and confirm the cache is actually being read. With the daemon enabled it is no longer the build pod, so the build pod's identity no longer applies to it: set buildkitd.serviceAccountName to an account carrying the cloud identity you want the exporter to use. A persistent daemon already avoids the base image re-pull this was reaching for, and does so without leaving the cluster.
+    Extra arguments appended to every buildctl invocation.  Empty by default. This previously shipped an S3 --export-cache/--import-cache pair. BuildKit resolves S3 credentials at the daemon rather than at the client, so whether it worked depended entirely on what identity the daemon had. On an EKS install with defaultServiceAccount annotations wired for IRSA (an eks.amazonaws.com/role-arn annotation) the daemonless build pod carried a web-identity token and the exporter worked. On a cluster with no AWS identity it could not: observed as "no EC2 IMDS role found ... context deadline exceeded" on every build, costing an IMDS timeout per build while caching nothing, with ignore-error hiding the failure rather than avoiding it.  Defaulting it empty therefore removes a remote cache that some installs did have. That is deliberate, because it failed closed and expensively everywhere else, but it is a behaviour change on upgrade rather than the removal of something inert.  Before re-enabling it, give the daemon real credentials and confirm the cache is actually being read. With the daemon enabled it is no longer the build pod, so the build pod's identity no longer applies to it: set buildkitd.serviceAccountName to an account carrying the cloud identity you want the exporter to use. A persistent daemon already avoids the base image re-pull this was reaching for, and does so without leaving the cluster.
 
 `hopsworks.variables.docker_operations_buildkit_limit_cpu` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_buildkit_limit_cpu" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_buildkit_limit_cpu }
 :   Type `string`, default `"2"`.
