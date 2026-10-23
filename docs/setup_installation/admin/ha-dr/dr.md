@@ -526,6 +526,55 @@ kubectl delete restore.velero.io k8s-backups-users-resources -n velero --ignore-
 
 The same customization options for [RonDB and Opensearch](#customizations) backup IDs apply to in-place restore. You can override individual service backup IDs while keeping the global backup ID for HopsFS.
 
+### OpenSearch crash-loops after a restore on 5.2.0 and 5.2.1 { #opensearch-restore-crash-loop }
+
+On 5.2.0 and 5.2.1, an OpenSearch snapshot restore, in place or during a fresh install, can leave the `.opendistro_security` index closed.
+5.1.2 runs the same restore Job; the crash-loop was not verified there.
+The restore Job closes that index without restoring it, and when OpenSearch restarts while the Job reopens the indices, the Job still completes with the index closed.
+From then on every OpenSearch start fails to apply the security configuration and exits: `opensearch-0` crash-loops and OpenSearch Dashboards stays down.
+The restore Job of 5.1.3, 5.2.2 and later leaves that index open.
+
+The symptom:
+
+```bash
+kubectl logs -n hopsworks opensearch-0 -c opensearch --previous \
+  | grep -E 'index_closed_exception|securityadmin push failed'
+```
+
+Each start answers HTTP for a few seconds before it exits.
+Reopen the index in that window with the admin certificate, and the start that the request reaches then applies the security configuration and becomes Ready.
+With more than one OpenSearch node, only the pod that applies the configuration crash-loops while the others stay Ready, and the same `_open` request sent through one of them needs no timing.
+
+```bash
+until kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c '
+  cd /usr/share/opensearch/config/certs-admin
+  for i in $(seq 1 240); do
+    code=$(curl -sk -o /dev/null -w "%{http_code}" -X POST \
+      --cert elkadmin_certificate_bundle.pem --key elkadmin_priv.pem \
+      https://localhost:9200/.opendistro_security/_open)
+    if [ "$code" = 200 ]; then exit 0; fi
+    sleep 0.5
+  done
+  exit 1'; do sleep 2; done
+```
+
+The indices the Job had not reopened yet are still closed.
+Once `opensearch-0` is Ready, list them and reopen the ones the restore closed; an index you closed on purpose before the restore is listed too.
+
+```bash
+kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c '
+  cd /usr/share/opensearch/config/certs-admin
+  curl -sk --cert elkadmin_certificate_bundle.pem --key elkadmin_priv.pem \
+    "https://localhost:9200/_cat/indices?h=index,status" | grep " close$"'
+kubectl exec -n hopsworks opensearch-0 -c opensearch -- bash -c '
+  cd /usr/share/opensearch/config/certs-admin
+  curl -sk --cert elkadmin_certificate_bundle.pem --key elkadmin_priv.pem \
+    -X POST "https://localhost:9200/<index>/_open"'
+```
+
+The commands use the `elkadmin` certificate, the default `olk.opensearch.security.admin_locality`.
+Then check that the security configuration was applied, as described in [Security configuration][opensearch-security-configuration].
+
 ### Superset restore
 
 Superset is restored by reloading its database from a backup (see [Superset backup][superset-backup]).

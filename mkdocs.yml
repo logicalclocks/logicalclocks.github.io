@@ -296,9 +296,18 @@ nav:
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
-          - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
           - Search Index: setup_installation/admin/search_index.md
-          - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
+          - HopsFS DataNode Drain: setup_installation/admin/hopsfs_datanode_drain.md
+          - HopsFS CSI Driver: setup_installation/admin/hopsfs_csi.md
+          - Dedicated Node Pools: setup_installation/admin/node_pools.md
+          - KEDA Autoscaling: setup_installation/admin/keda.md
+          - Kafka Quotas: setup_installation/admin/kafka_quotas.md
+          - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
+          - Upgrades:
+              - Upgrading Hopsworks: setup_installation/admin/upgrade.md
+              - Upgrading with Helm 4: setup_installation/admin/helm4.md
+              - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
+              - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
