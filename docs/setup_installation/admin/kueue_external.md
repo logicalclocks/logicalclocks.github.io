@@ -1,14 +1,14 @@
 # Operator Notes: Kueue Outside the Hopsworks Namespace
 
-Administrative reference for cluster operators who run Kueue with Hopsworks and upgrade to Hopsworks 5.3.
+Administrative reference for cluster operators who run Kueue with Hopsworks and upgrade to a Hopsworks release that bundles Kueue 0.20: a 5.2.x patch release, or 5.3.
 
 With `global._hopsworks.kueue.enabled=true`, Hopsworks releases 4.3 to 5.2 bundle Kueue 0.12.2 in the Hopsworks namespace.
-Hopsworks 5.3 bundles Kueue 0.20.3, and its backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
-A cluster that runs the bundled Kueue 0.12 therefore moves to a Kueue installed outside the Hopsworks release before it upgrades to 5.3, while it runs Hopsworks 5.1: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`, which Hopsworks uses with `hw-kueue.kueue.enabled=false`.
+Those releases bundle Kueue 0.20.3, and their backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
+A cluster that runs the bundled Kueue 0.12 therefore moves to a Kueue installed outside the Hopsworks release before that upgrade, while it runs Hopsworks 5.1: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`, which Hopsworks uses with `hw-kueue.kueue.enabled=false`.
 Hopsworks keeps its RBAC bindings to the Kueue roles and keeps queueing jobs through Kueue.
 
 A cluster without Kueue needs nothing.
-A fresh 5.3 install gets Kueue 0.20.3 in the Hopsworks namespace, or uses an external Kueue installed first with `hw-kueue.kueue.enabled=false`.
+A fresh install of such a release gets Kueue 0.20.3 in the Hopsworks namespace, or uses an external Kueue installed first with `hw-kueue.kueue.enabled=false`.
 
 ## Why `helm upgrade` alone cannot do it
 
@@ -21,9 +21,9 @@ A fresh 5.3 install gets Kueue 0.20.3 in the Hopsworks namespace, or uses an ext
 
 ## What the migration does
 
-The 5.1 chart ships `charts/hw-kueue/files/migrate-to-external.sh`; the 5.3 chart does not. Use the latest 5.1 chart, whose `--help` lists the `upgrade-kueue` phase. Run the script with `bash`, because `helm package` stores files without the execute bit. The script keeps every Kueue object: ClusterQueues, Cohorts, ResourceFlavors, Topologies, LocalQueues, priority classes and Workloads.
+The 5.1 chart ships `charts/hw-kueue/files/migrate-to-external.sh`; the charts with Kueue 0.20 do not. Use the latest 5.1 chart, whose `--help` lists the `upgrade-kueue` phase. Run the script with `bash`, because `helm package` stores files without the execute bit. The script keeps every Kueue object: ClusterQueues, Cohorts, ResourceFlavors, Topologies, LocalQueues, priority classes and Workloads.
 On 5.1 it moves the cluster to Kueue 0.18.1, the last release that serves both `v1beta1` and `v1beta2`, and rewrites every object as `v1beta2`.
-After the Hopsworks upgrade to 5.3, its `upgrade-kueue` phase upgrades Kueue to 0.20.3.
+After the Hopsworks upgrade to a release with Kueue 0.20, its `upgrade-kueue` phase upgrades Kueue to 0.20.3.
 It runs in phases, and each one is safe to re-run; `all` runs every phase except `upgrade-kueue`:
 
 | Phase | What it does |
@@ -35,8 +35,8 @@ It runs in phases, and each one is safe to re-run; `all` runs every phase except
 | `install-kueue` | Applies the Kueue 0.18.1 CRDs, installs release `kueue` in `kueue-system` and restores the replaced objects. |
 | `migrate-storage` | Rewrites every object at `v1beta2`, prunes the CRDs' stored versions and drops the `managedFields` entries recorded at older versions. |
 | `enable-hopsworks` | Upgrades Hopsworks with Kueue on and `hw-kueue.kueue.enabled=false`. |
-| `upgrade-kueue` | Upgrades release `kueue` to Kueue 0.20.3 (`--kueue-target`). Refuses while the Hopsworks release is older than 5.3, while any Kueue CRD stores a version other than `v1beta2`, while the Hopsworks release does not use the external Kueue or has not finished deploying, and refuses a downgrade. Keeps the `kueue` release's own values, and refuses a manager configuration that is not `config.kueue.x-k8s.io/v1beta2` before it changes anything. Drops the `managedFields` entries recorded at `v1beta1`, which Kueue 0.20 can no longer convert. Takes the chart from `oci://registry.k8s.io/kueue/charts` (`--kueue-target-repo`). |
-| `verify` | Checks the controller and its version (0.18.1 before Hopsworks 5.3, 0.20.3 after), the stored versions, every backed-up queue object and the release values. |
+| `upgrade-kueue` | Upgrades release `kueue` to Kueue 0.20.3 (`--kueue-target`). Refuses while the Hopsworks release's chart bundles a Kueue older than 0.20, while any Kueue CRD stores a version other than `v1beta2`, while the Hopsworks release does not use the external Kueue or has not finished deploying, and refuses a downgrade. Keeps the `kueue` release's own values, and refuses a manager configuration that is not `config.kueue.x-k8s.io/v1beta2` before it changes anything. Drops the `managedFields` entries recorded at `v1beta1`, which Kueue 0.20 can no longer convert. Takes the chart from `oci://registry.k8s.io/kueue/charts` (`--kueue-target-repo`). |
+| `verify` | Checks the controller and its version (0.18.1 before the Hopsworks upgrade, 0.20.3 after), the stored versions, every backed-up queue object and the release values. |
 | `export-queues` | Writes the cluster-scoped queue objects as `v1beta2` manifests to `<backup-dir>/gitops/kueue-queues.yaml`, for clusters that keep their queues in Git. |
 
 The script applies the Kueue CRDs itself and installs release `kueue` without them, so `helm uninstall kueue` leaves the CRDs, and every queue, in place.
@@ -77,8 +77,8 @@ The move runs in three steps.
     `verify` at the end of `all` expects Kueue 0.18.1.
     Jobs can be submitted again once it passes.
 
-2. Upgrade Hopsworks to 5.3, keeping `global._hopsworks.kueue.enabled=true` and `hw-kueue.kueue.enabled=false`.
-    Kueue 0.18.1 serves `v1beta2`, which the 5.3 backend reads.
+2. Upgrade Hopsworks to a release with Kueue 0.20, keeping `global._hopsworks.kueue.enabled=true` and `hw-kueue.kueue.enabled=false`.
+    Kueue 0.18.1 serves `v1beta2`, which its backend reads.
 
 3. Upgrade Kueue to 0.20.3, with the script from the 5.1 chart:
 
@@ -182,7 +182,7 @@ It then runs `verify` and `export-queues` (Step 6) against Kueue 0.18.1 and exit
 
 ### Step 5: Upgrade Hopsworks and Kueue
 
-Set the Hopsworks HelmRelease's chart version to 5.3, keeping the values from Step 4, then commit and push.
+Set the Hopsworks HelmRelease's chart version to a release with Kueue 0.20, keeping the values from Step 4, then commit and push.
 Once Flux has upgraded Hopsworks, run the script's last phase:
 
 ```sh

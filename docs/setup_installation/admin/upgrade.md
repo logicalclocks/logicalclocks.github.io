@@ -242,9 +242,9 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
 
 Optional.
-From 5.3, `hw-kueue.kueue.enabled=false` makes Hopsworks use a Kueue installed as its own release, `kueue` in `kueue-system`, in place of the Kueue 0.12.2 bundled in the Hopsworks namespace.
+From the 5.2.x patch release that bundles Kueue 0.20, and in 5.3, `hw-kueue.kueue.enabled=false` makes Hopsworks use a Kueue installed as its own release, `kueue` in `kueue-system`, in place of the Kueue 0.12.2 bundled in the Hopsworks namespace.
 A cluster that runs the bundled Kueue cannot be switched with `helm upgrade` alone: Kueue 0.12 stores Cohorts and Topologies as `v1alpha1`, which no later Kueue reads.
-The 5.1 chart's `migrate-to-external.sh` moves it across on 5.1 and keeps every queue; after the upgrade to 5.3 it upgrades Kueue to 0.20.3.
+The 5.1 chart's `migrate-to-external.sh` moves it across on 5.1 and keeps every queue; after the Hopsworks upgrade it upgrades Kueue to 0.20.3.
 Follow [Kueue outside the Hopsworks namespace](kueue_external.md), and stop submitting jobs while the move runs.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
