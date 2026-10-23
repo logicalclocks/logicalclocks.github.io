@@ -51,6 +51,8 @@ For the client libraries, see the [Client Installation](../user_guides/client_in
 :material-shield-check-outline:{ .hops-role-ico } Operate
 { .hops-role-cap }
 
+- [Upgrades](admin/upgrade.md)
+  What to do before and during each upgrade, one minor release at a time.
 - [Monitoring](admin/monitoring/grafana.md)
   Service dashboards, exported metrics and service logs.
 - [High availability and disaster recovery](admin/ha-dr/intro.md)
