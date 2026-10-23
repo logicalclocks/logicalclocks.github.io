@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792766629` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792773016` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -794,7 +794,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       dockerRegistry:
         buildkit:
           image: moby/buildkit
-          tag: v0.32.2
+          tag: v0.34.1
         preset:
           affinity: {}
           alternativeRegistry: null
@@ -835,7 +835,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"moby/buildkit"`.
 
 `hopsworks.dockerRegistry.buildkit.tag` <a class="headerlink" href="#helm.hopsworks.dockerRegistry.buildkit.tag" title="Permanent link">#</a> { #helm.hopsworks.dockerRegistry.buildkit.tag }
-:   Type `string`, default `"v0.32.2"`.
+:   Type `string`, default `"v0.34.1"`.
     Do not go below v0.31.2. Earlier releases carry published advisories, two of which matter more with the persistent daemon: a Git URL subdirectory path traversal, reachable because a library can be installed from a user-supplied Git URL, and a state-directory escape via a custom frontend, whose blast radius is every project once one daemon holds the state for all of them. Both fixed in v0.28.1; v0.31.2 also covers a Seccomp/AppArmor bypass, an unbounded-parsing DoS and a command injection through Git bundle checkout. A per-build daemon is affected the same way, so this is not a reason to leave the persistent one off.  Most of what a scanner reports on this image is the four `buildkit-cni-*` plugins, which no BuildKit release refreshes and which never run here: the image ships no CNI config, so buildkitd falls back to host networking.  The rootless variant is a separate image, used only when buildkitd.rootless.enabled is on. Both move together.  Moving this pin means revisiting buildkitd.gc.keySyntax, which is version dependent.
 
 `hopsworks.dockerRegistry.preset.affinity` <a class="headerlink" href="#helm.hopsworks.dockerRegistry.preset.affinity" title="Permanent link">#</a> { #helm.hopsworks.dockerRegistry.preset.affinity }
@@ -2440,7 +2440,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_file_path: /audit-logs
         audit_log_file_type: io.hops.hopsworks.audit.helper.JSONLogFormatter
         audit_log_size_limit: '256000000'
-        base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless
+        base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.34.1-rootless
         base_image_name: hopsworks-base
         base_image_version: 5.3.0-SNAPSHOT
         cert_mater_delay: 3m
@@ -2988,7 +2988,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"256000000"`.
 
 `hopsworks.variables.base_buildkit_image` <a class="headerlink" href="#helm.hopsworks.variables.base_buildkit_image" title="Permanent link">#</a> { #helm.hopsworks.variables.base_buildkit_image }
-:   Type `string`, default `"docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless"`.
+:   Type `string`, default `"docker.hops.works/hopsworks/moby/buildkit:v0.34.1-rootless"`.
 
 `hopsworks.variables.base_image_name` <a class="headerlink" href="#helm.hopsworks.variables.base_image_name" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_name }
 :   Type `string`, default `"hopsworks-base"`.

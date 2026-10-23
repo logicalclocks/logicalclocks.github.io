@@ -4,7 +4,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792766629` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792773016` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -252,7 +252,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
             startingNodePort: null
           image:
             name: kafka
-            tag: 1.2.0-kafka-4.3.1-h1
+            tag: 1.2.0-kafka-4.3.1-h2
           jvmOptions: {}
           nodeSelector: {}
           podAntiAffinity:
@@ -463,7 +463,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
     Explicit nodePort for broker 0 when the load balancer is unmanaged (managed: false); broker N gets startingNodePort + N, as with startingAdvertisedPort. Null lets Kubernetes allocate them from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `kafka.cluster.kafka.image` <a class="headerlink" href="#helm.kafka.cluster.kafka.image" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.image }
-:   Type `object`, default `{"name":"kafka","tag":"1.2.0-kafka-4.3.1-h1"}`.
+:   Type `object`, default `{"name":"kafka","tag":"1.2.0-kafka-4.3.1-h2"}`.
     a tag docker.hops.works does not carry, because only the `-h<N>` builds are published there. So clearing it also means pointing `strimzi-kafka-operator.defaultImageRegistry` at `quay.io` (or mirroring the plain upstream tags), and the same applies to the operator's Kafka Exporter and Cruise Control defaults if those are ever turned on.
 
 `kafka.cluster.kafka.jvmOptions` <a class="headerlink" href="#helm.kafka.cluster.kafka.jvmOptions" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.jvmOptions }

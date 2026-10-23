@@ -4,7 +4,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792766629` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792773016` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -297,7 +297,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           image: rss
           initImage: hops-rss-init
-          initImageVersion: 0.9.2
+          initImageVersion: 0.9.3
           pullPolicy: Always
         namespaceSelector: ''
         nodeSelector: {}
@@ -413,7 +413,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           image: rss
           initImage: hops-rss-init
-          initImageVersion: 0.9.2
+          initImageVersion: 0.9.3
           pullPolicy: Always
         namespaceSelector: ''
         nodeSelector: {}
@@ -621,7 +621,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           image:
             registry: docker.hops.works
             repository: hopsworks/spark-operator-crds
-            tag: 2.5.1-h1-1.9
+            tag: 2.5.1-h1-1.10
           nodeSelector: {}
           tolerations: []
           upgradeCrd: true
@@ -834,7 +834,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           image:
             registry: docker.hops.works
             repository: hopsworks/spark-operator-crds
-            tag: 2.5.1-h1-1.9
+            tag: 2.5.1-h1-1.10
           nodeSelector: {}
           tolerations: []
           upgradeCrd: true

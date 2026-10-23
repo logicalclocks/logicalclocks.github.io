@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792766629` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792773016` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -41,7 +41,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             tag: v0.28.0
       kserveUtilsImage:
         name: hopsworks/kserve-utils
-        tag: 0.1.11
+        tag: 0.1.12
       manager:
         serviceAccount:
           annotations: {}
@@ -118,7 +118,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"hopsworks/kserve-utils"`.
 
 `kserve.kserveUtilsImage.tag` <a class="headerlink" href="#helm.kserve.kserveUtilsImage.tag" title="Permanent link">#</a> { #helm.kserve.kserveUtilsImage.tag }
-:   Type `string`, default `"0.1.11"`.
+:   Type `string`, default `"0.1.12"`.
 
 `kserve.manager.serviceAccount.annotations` <a class="headerlink" href="#helm.kserve.manager.serviceAccount.annotations" title="Permanent link">#</a> { #helm.kserve.manager.serviceAccount.annotations }
 :   Type `object`, default `{}`.
@@ -924,7 +924,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               runAsNonRoot: true
               seccompProfile:
                 type: RuntimeDefault
-          rbacProxyImage: quay.io/brancz/kube-rbac-proxy:v0.18.0
+          rbacProxyImage: quay.io/brancz/kube-rbac-proxy:v0.23.0
           replicaCount: 1
           resources:
             limits:
@@ -1177,7 +1177,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         ```
 
 `kserve.kserve.controller.rbacProxyImage` <a class="headerlink" href="#helm.kserve.kserve.controller.rbacProxyImage" title="Permanent link">#</a> { #helm.kserve.kserve.controller.rbacProxyImage }
-:   Type `string`, default `"quay.io/brancz/kube-rbac-proxy:v0.18.0"`.
+:   Type `string`, default `"quay.io/brancz/kube-rbac-proxy:v0.23.0"`.
     KServe controller manager rbac proxy container image
 
 `kserve.kserve.controller.replicaCount` <a class="headerlink" href="#helm.kserve.kserve.controller.replicaCount" title="Permanent link">#</a> { #helm.kserve.kserve.controller.replicaCount }
