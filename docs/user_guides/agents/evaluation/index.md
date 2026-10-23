@@ -76,6 +76,51 @@ template = evals.evaluators.save(
 
 Applying a saved evaluator copies its checks into the suite, so a published suite keeps meaning what it meant even if the library entry changes later.
 
+### How a judge decides pass or fail
+
+An `llm_judge` asks its model for one score per criterion, on a scale of 1 to 5 unless `score_range` sets another.
+The model does not return the verdict; the judge works it out from those scores in three steps:
+
+1. **Weighted average.** Each score is multiplied by its criterion's weight, and the total is divided by the sum of the weights.
+   Weights are relative, so weights of 2 and 1 make the same judge as weights of 1 and 0.5.
+   A weight defaults to 1, and a weight of 0 means the criterion is scored and shown but does not count.
+2. **Pass score.** The trial passes when the average reaches `pass_score`, on the same scale as the scores.
+   It defaults to three quarters of the way up the scale, which is 4 on a 1 to 5 scale.
+3. **Floors.** A criterion can have a floor, shown as **never below** in the UI.
+   A score under the floor fails the trial however high the average is.
+
+```python
+check(
+    "llm_judge",
+    "gives sound advice",
+    criteria={
+        "correct": {"weight": 2, "description": "Is the advice correct?"},
+        "complete": {"weight": 1, "description": "Does it answer everything asked?"},
+        "disclaimer_present": {
+            "weight": 0.5,
+            "critical_min": 4,
+            "description": "Does the reply say it is not financial advice?",
+        },
+    },
+    thresholds={"pass_score": 3.5},
+)
+```
+
+Use a floor, not a large weight, for anything that must never be traded away, such as safety or a required disclaimer.
+A weight only changes how much a bad score pulls the average down, so enough good scores elsewhere still carry the trial.
+
+!!! note "The model never sees weights or floors"
+    The judge's model is shown each criterion's name and description, and scores each one on its own.
+    Raising a weight does not make the model stricter about that criterion; it only makes the criterion count for more in the average.
+    To change how a criterion is scored, change its description.
+
+If the model leaves out a criterion's score, or returns something that is not a number, the trial is ungradable rather than failed, because an average over whichever criteria came back would measure something different each time.
+A score outside the scale is clamped to it before the average and the floors are checked.
+
+The trial's score is the weighted average scaled to 0 to 1.
+Its assertions record what the verdict was made from: the raw score per criterion, the weighted score, the pass score, any floors that were broken, and the model's reasoning for each criterion.
+The reason reads, for example, `scored 3.80 of 5, needs 4` or `below the floor on disclaimer_present`, followed by that reasoning, for passes as well as failures.
+
 ## Running a suite
 
 ```python
