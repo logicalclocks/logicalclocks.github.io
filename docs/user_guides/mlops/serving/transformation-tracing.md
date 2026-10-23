@@ -106,7 +106,7 @@ A deployment created without tracing answers `400` with error code `240058`, as 
 
 The deployment page of a deployment that serves a feature view has a `Transformations` section.
 While tracing is on, the section lists the traced requests; expanding one shows its spans with their durations.
-While it is off, the section is titled `Feature View Transformations: Metrics` and says how to turn tracing on.
+While it is off, the section is titled `Feature View Transformations: Metrics` and shows `Tracing is disabled`; clicking it shows how to turn tracing on.
 On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the sampling.
 
 The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metrics` section, charts the metrics under `Feature view transformations`.
