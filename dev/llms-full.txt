@@ -2545,6 +2545,14 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure][data-source-sap-hana]
 
+- :material-server-network:{ .lg .middle style="color:var(--hops-accent-text)" } **Hopsworks**
+
+    ---
+
+    Read and ingest feature groups from another Hopsworks cluster.
+
+    [:octicons-arrow-right-24: Configure][data-source-hopsworks]
+
 - :material-database:{ .lg .middle style="color:var(--hops-accent-text)" } **JDBC**
 
     ---
@@ -3673,15 +3681,15 @@ Source: https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sql
 ## Introduction
 
 The SQL Data Source connects Hopsworks to a Relational Database Service.
-Supported database types are **MySQL**, **PostgreSQL**, and **Oracle**.
+Supported database types are **MySQL**, **PostgreSQL**, **Oracle**, and **Microsoft SQL Server** (including Azure SQL Database).
 Using this connector, you can query and update data in your relational database from Hopsworks.
 
 In this guide, you will configure a Data Source in Hopsworks to securely store the authentication information needed to set up a connection to your database instance.
 When you're finished, you'll be able to query your SQL database using Hopsworks APIs.
 
 !!! note
-    Currently, it is only possible to create data sources in the Hopsworks UI.
-    You cannot create a data source programmatically.
+    This guide creates the data source in the Hopsworks UI.
+    The `hops` CLI creates the same data source with `hops datasource create sql <name> --database-type <type> ...`.
 
 ## Prerequisites
 
@@ -3697,8 +3705,9 @@ Before you begin, ensure you have the following information from your database i
 
 - **Database:** The name of the database to connect to.
   For Oracle, this is the **service name** (e.g. `ORCL` or a TNS alias).
+  For SQL Server, this is the database the login connects to by default; every database the login can access can still be browsed.
 
-- **Port:** The port to connect to (e.g. `3306` for MySQL, `5432` for PostgreSQL, `1521` for Oracle).
+- **Port:** The port to connect to (e.g. `3306` for MySQL, `5432` for PostgreSQL, `1521` for Oracle, `1433` for SQL Server).
 
 - **Username and Password:** A username and password with the necessary permissions to access the required tables.
 
@@ -3726,7 +3735,7 @@ If your Oracle database requires mutual TLS (mTLS) authentication, which is comm
 
 Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
 The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
-Pick the `SQL` card to open the creation form.
+Pick your database's card under `Database`, such as `MySQL`, `PostgreSQL`, `Oracle` or `SQL Server`, to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -3738,18 +3747,17 @@ Pick the `SQL` card to open the creation form.
 Enter the details for your database.
 Start by giving the connector a **name** and an optional **description**.
 
-1. The form opens with `Source` set to `SQL`.
+1. The form opens for the database whose card you picked in the gallery (MySQL, PostgreSQL, Oracle, SQL Server and the others), which sets the database type.
    Click `Change source` to pick a different one.
-2. Select the database type (MySQL, PostgreSQL, or Oracle).
-3. Enter the host endpoint.
+2. Enter the host endpoint.
    Leave it empty when using an Oracle wallet: the wallet supplies the connection details, and the database field names the TNS alias to use.
-4. Enter the database name (service name for Oracle).
-5. Specify the port.
-6. For Oracle, choose under `Credentials` whether they are `Stored with the data source` (the default) or `Provided by each user`.
+3. Enter the database name (service name for Oracle).
+4. Specify the port.
+5. For Oracle, choose under `Credentials` whether they are `Stored with the data source` (the default) or `Provided by each user`.
    With `Provided by each user` the username, password and wallet fields disappear and every member adds their own later, see [provided credentials][data-source-provided-credentials].
-7. For `Stored with the data source`, provide the username and password.
-8. For `Stored with the data source` on a database behind mTLS, upload the wallet zip file and provide the wallet password (if required).
-9. Click on "Save Credentials".
+6. For `Stored with the data source`, provide the username and password.
+7. For `Stored with the data source` on a database behind mTLS, upload the wallet zip file and provide the wallet password (if required).
+8. Click on "Save Credentials".
 
 <figure markdown>
   ![SQL Connector Creation](../../../../assets/images/guides/fs/data_source/sql_creation.png)
@@ -3765,7 +3773,7 @@ The following notes apply only to Oracle.
 
 The Oracle JDBC driver JAR (e.g. `ojdbc11.jar`) must be available on the Spark classpath.
 Upload it via the [Jupyter configuration][how-to-run-a-pyspark-notebook] or [Job configuration][how-to-run-a-pyspark-job] in `Additional Jars`.
-The MySQL and PostgreSQL drivers are included in Hopsworks by default.
+The MySQL, PostgreSQL and SQL Server drivers are included in Hopsworks by default.
 
 ### Spark JDBC limitations
 
@@ -3785,6 +3793,33 @@ The MySQL and PostgreSQL drivers are included in Hopsworks by default.
 
 The Python engine reads Oracle via the Hopsworks Arrow Flight service, which handles the database connection server-side.
 No JDBC driver or wallet files are needed on the client, and the Spark JDBC limitations above do not apply.
+
+## SQL Server-Specific Notes
+
+### Host and port
+
+The **Host** is a host name or an IPv4 address.
+For a named instance, enter the server's host name and the port the instance listens on, not `host\instance`: the JDBC driver would connect to the port and the Python engine to the instance, which can be different servers.
+For an IPv6-only server, use a host name that resolves to it, because the JDBC driver does not accept an IPv6 address in its URL.
+
+### Databases, schemas and tables
+
+SQL Server names a table `database.schema.table`.
+When you browse a SQL Server data source, the database is the top level and the schema (often `dbo`) is the group, so an external feature group over a browsed table reads `[database].[schema].[table]`.
+A hand-written query can use the same three-part name, which lets one data source read any database on the server that the login can access.
+Write such a query as a plain `SELECT`: Hopsworks reads it as a derived table, where SQL Server does not accept a `WITH` clause.
+
+Azure SQL Database does not support three-part names across databases.
+Create one data source per Azure SQL database, with that database in the **Database** field.
+
+### Encryption and certificates
+
+Every connection is encrypted, and the server certificate is validated against the public certificate authorities, including its host name.
+For a server with a self-signed certificate, such as a default SQL Server installation, add the argument `trustServerCertificate` with the value `true`.
+This applies to Spark, the query engine, the Python engine and DLTHub ingestion alike.
+Spark and the query engine use Microsoft's JDBC driver, so other JDBC connection properties can be added as arguments the same way; the Python engine and DLTHub ingestion read only `trustServerCertificate`.
+The argument `encrypt=false` therefore turns off encryption for Spark and the query engine only: the Python engine and DLTHub ingestion always encrypt.
+The arguments cannot replace the host, port or database (`serverName`, `portNumber`, `databaseName`); the data source's own fields set those.
 
 ## Provided credentials for Oracle { #data-source-provided-credentials }
 
@@ -4525,6 +4560,143 @@ Certificate-based and JWT authentication are tracked as follow-up work.
 Move on to the [usage guide for data sources][data-source-usage] to see how you can use your newly created SAP HANA connector.
 
 ================================================================================
+# Hopsworks
+Source: https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/hopsworks/
+
+# How-To set up a Hopsworks Data Source { #data-source-hopsworks }
+
+## Introduction
+
+A Hopsworks Data Source connects to a project on another Hopsworks cluster.
+Its databases are the feature stores that the remote project can read, and its tables are their feature groups.
+
+Once configured, you can use a remote feature group as the basis for an external (on-demand) Feature Group, read through the remote cluster's Hopsworks Query Service, or copy it into a managed Feature Group of this cluster with a dltHub ingestion job.
+
+## Prerequisites
+
+Before you begin this guide you'll need the following from the remote Hopsworks cluster:
+
+- **Host**: The host name or IP address of the remote cluster, the one in the address of its user interface, without `https://` or a path.
+    The remote cluster must answer at this address: a redirect to another address is refused.
+- **Port**: The HTTPS port of the remote cluster.
+    The default is `443`.
+- **Project**: The name of the project on the remote cluster to read from.
+- **API key**: An API key of a member of that project, created on the remote cluster under `Account Settings` > `API keys`.
+    The key needs the `PROJECT` and `FEATURESTORE` scopes.
+    The data source reads what the key's user can read: the project's own feature store and the feature stores shared with the project.
+
+The remote cluster must have its Hopsworks Query Service enabled, and the Hopsworks Query Service must be reachable from this cluster.
+This cluster reads the remote cluster's `loadbalancer_external_domain_feature_query` variable to find it, and connects to it on port `5005`.
+When the variable is not set, it connects to the host of the data source on port `5005`.
+
+## Creation in the UI
+
+### Step 1: Set up new Data Source
+
+Head to the `Data Sources` view on Hopsworks and click `New data source`.
+The `Add a data source` catalog opens below.
+Pick the `Hopsworks` card to open the creation form.
+
+<figure markdown>
+  ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
+  <figcaption>The Data Source View in the User Interface</figcaption>
+</figure>
+
+### Step 2: Enter the remote cluster
+
+Enter the details for the remote cluster.
+Start by giving the data source a **name** and an optional **description**.
+
+1. Enter the **Host** of the remote cluster.
+2. Enter the **Port**, or leave it empty for `443`.
+3. Enter the name of the remote **Project**.
+4. Enter the **API key**.
+5. Leave **Verify the server certificate and hostname** checked, unless the remote cluster uses a self-signed certificate.
+    The setting applies to the REST calls to the remote cluster.
+    The connection to its Hopsworks Query Service always verifies the remote cluster's certificate against the remote project's certificate authority.
+6. Click on "Save Credentials".
+
+## Creation with the CLI
+
+```bash
+hops datasource create hopsworks remote_sales --host hopsworks.example.com --project sales --api-key - < key.txt
+```
+
+Add `--no-tls-verify` for a remote cluster with a self-signed certificate.
+
+## Browse the remote feature groups
+
+The data source lists the remote feature stores as databases, and their feature groups as tables named `<name>_<version>`.
+Spine groups are not listed, since they hold no data.
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+fs = project.get_feature_store()
+
+ds = fs.get_data_source("remote_sales")
+ds.get_databases()
+# ['sales_featurestore', 'shared_featurestore']
+[t.table for t in ds.get_tables("sales_featurestore")]
+# ['transactions_1', 'transactions_2']
+```
+
+## Mount a remote feature group
+
+An external feature group on a Hopsworks data source reads one remote feature group.
+It takes no SQL query, and Hopsworks cannot create a Trino catalog from this data source.
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+fs = project.get_feature_store()
+
+ds = fs.get_data_source("remote_sales")
+tables = ds.get_tables("sales_featurestore")
+table = next(t for t in tables if t.table == "transactions_2")
+data = table.get_data()
+
+fg = fs.create_external_feature_group(
+    name="remote_transactions",
+    version=1,
+    data_source=table,
+    features=data.features,
+    primary_key=["id"],
+    statistics_config=False,
+)
+fg.save()
+df = fg.read()
+```
+
+A read sends the remote cluster a query for the selected features of the remote feature group.
+The row limit of a preview or of `fg.read(limit=...)` is sent with it when the query only selects features of this one feature group: with a filter, join, aggregate or ordering the limit would change the result, so it is applied on this cluster after the read.
+Filters are applied on this cluster after the read, so a filtered read transfers the whole feature group.
+A read is refused once the remote rows that this cluster's Hopsworks Query Service holds for all running queries pass 2 GiB, since it keeps them in memory to run the queries; read a large feature group with a limit, or copy it with an ingestion job.
+Reads use the Python engine.
+Spark cannot read an external feature group on a Hopsworks data source, so create it with `statistics_config=False`: statistics are computed by a Spark job.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_data_source`][hsfs.feature_store.FeatureStore.get_data_source]
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_external_feature_group`][hsfs.feature_store.FeatureStore.create_external_feature_group]
+    - <code class="doc-symbol doc-symbol-class"></code> [`DataSource`][hsfs.core.data_source.DataSource]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_databases`][hsfs.core.data_source.DataSource.get_databases]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_tables`][hsfs.core.data_source.DataSource.get_tables]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_data`][hsfs.core.data_source.DataSource.get_data]
+
+    <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+## Use it as an ingestion source
+
+The data source can also be used with the dltHub-based ingestion workflow described in [Ingest Data with dltHub][ingest-data-with-dlthub], to copy a remote feature group into a managed feature group of this cluster.
+The ingestion job supports full loads and incremental loads.
+For an incremental load, the remote query only returns rows whose cursor column is at least the last value the previous run loaded.
+
+================================================================================
 # Usage
 Source: https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/
 
@@ -5180,6 +5352,20 @@ The DataFrame *must* contain the columns specified as primary keys, partition ke
 
 If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.
 
+### Read the feature data back
+
+`read` returns the feature group as a DataFrame, Pandas or Polars with the Python engine and Spark with the Spark engine.
+Pass `limit` to read only the first rows, for example to look at a large feature group without reading all of it:
+
+```python
+df = fg.read()
+
+first_rows = fg.read(limit=50)
+```
+
+With the Python engine, the Hopsworks Query Service stops reading once it has `limit` rows, so an unfiltered read of a large feature group stays cheap; with a filter it reads until `limit` rows match.
+With the Spark engine, the limit is applied to the Spark DataFrame.
+
 !!! api "API reference"
 
     - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_feature_group`][hsfs.feature_store.FeatureStore.create_feature_group]
@@ -5736,8 +5922,11 @@ Users can select which subset of the feature group data they want to make availa
 
 Hopsworks Feature Store does not support time-travel queries on external feature groups.
 
-Additionally, support for `.read()` and `.show()` methods when using by the Python engine is limited to external feature groups defined on BigQuery and Snowflake and only through the ArrowFlight Server with DuckDB, which Hopsworks enables by default.
+With the Python engine, `.read()` and `.show()` read an external feature group through the ArrowFlight Server with DuckDB, which Hopsworks enables by default.
+This supports external feature groups on Snowflake, BigQuery, Redshift, SQL databases (MySQL, PostgreSQL, Oracle, SQL Server and the other SQL database types), SAP HANA, Unity Catalog, MongoDB, Elasticsearch, another Hopsworks cluster, S3, GCS and AWS Glue.
 Nevertheless, external feature groups defined top of any data source can be used to create a training dataset from a Python environment invoking one of the following methods: [`FeatureView.create_training_data`][hsfs.feature_view.FeatureView.create_training_data], [`FeatureView.create_train_test_split`][hsfs.feature_view.FeatureView.create_train_test_split] or [`FeatureView.create_train_validation_test_split`][hsfs.feature_view.FeatureView.create_train_validation_test_split].
+A training dataset with splits, transformation functions, a format other than Parquet or its own sink is materialized by a Spark job, and Spark cannot read a Hopsworks data source.
+For an external feature group on another Hopsworks cluster, use `create_training_data` without those, which the ArrowFlight Server materializes, or copy the remote feature group into a feature group of this cluster with a [dltHub ingestion job][ingest-data-with-dlthub] first.
 
 !!! api "API reference"
 
@@ -5907,7 +6096,8 @@ Use `Ingest Data to New Feature Group` when you want to:
 This ingestion flow supports multiple data sources:
 
 - SQL-like sources can either create an external feature group or ingest data into a new feature group.
-- The SQL family currently includes Snowflake, BigQuery, Redshift, generic JDBC (MySQL, PostgreSQL, Oracle), and SAP HANA.
+- The SQL family currently includes Snowflake, BigQuery, Redshift, generic JDBC (MySQL, PostgreSQL, Oracle, SQL Server), and SAP HANA.
+- A [Hopsworks][data-source-hopsworks] source copies a feature group from another Hopsworks cluster, with full or incremental loads.
 - CRM and REST API sources use the ingestion path only.
 - Incremental loading is available for SQL and REST API sources.
 - CRM sources currently use full-load ingestion.
@@ -64122,6 +64312,11 @@ Source: https://docs.hopsworks.ai/latest/python-api/hsfs/storage_connector/
       show_root_heading: true
 
 ::: hsfs.storage_connector.HopsFSConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+::: hsfs.storage_connector.HopsworksConnector
     options:
       heading_level: 2
       show_root_heading: true

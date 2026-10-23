@@ -360,6 +360,20 @@ The DataFrame *must* contain the columns specified as primary keys, partition ke
 
 If a feature group is online enabled, the `insert` method will store the feature data to both the online and offline storage.
 
+### Read the feature data back
+
+`read` returns the feature group as a DataFrame, Pandas or Polars with the Python engine and Spark with the Spark engine.
+Pass `limit` to read only the first rows, for example to look at a large feature group without reading all of it:
+
+```python
+df = fg.read()
+
+first_rows = fg.read(limit=50)
+```
+
+With the Python engine, the Hopsworks Query Service stops reading once it has `limit` rows, so an unfiltered read of a large feature group stays cheap; with a filter it reads until `limit` rows match.
+With the Spark engine, the limit is applied to the Spark DataFrame.
+
 !!! api "API reference"
 
     - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_feature_group`][hsfs.feature_store.FeatureStore.create_feature_group]
