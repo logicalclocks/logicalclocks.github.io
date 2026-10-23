@@ -8,22 +8,24 @@ A KServe model deployment can include the following components:
 
 **`Predictor (KServe component)`**
 
-:   A predictor runs a model server (Python, TensorFlow Serving, or vLLM) that loads a trained model, handles inference requests and returns predictions.
+:   A predictor runs a model server (Python, TensorFlow Serving, vLLM, or NVIDIA Triton Inference Server) that loads a trained model, handles inference requests and returns predictions.
+    Triton is available on clusters where the administrator has enabled it with a Triton image.
 
 **`Transformer (KServe component)`**
 
 :   A ^^pre-processing^^ and ^^post-processing^^ component that can transform model inputs before predictions are made, and predictions before these are delivered back to the client.
-    Not available for vLLM deployments.
+    Not available for vLLM and Triton deployments.
 
 **`Inference Logger`**
 
 :   Hopsworks logs inputs and outputs of transformers and predictors to a ^^Kafka topic^^ that is part of the same project as the model.
     This is for storing inference requests and responses for later consumption and analysis, and is separate from the feature logging that powers [Model Monitoring](model_monitoring.md).
-    Not available for vLLM deployments.
+    Not available for vLLM and Triton deployments.
 
 **`Inference Batcher`**
 
 :   Inference requests can be batched to improve throughput (at the cost of slightly higher latency).
+    Triton deployments batch inside Triton instead, with the dynamic batching set in the model configuration.
 
 **`Istio Model Endpoint`**
 
