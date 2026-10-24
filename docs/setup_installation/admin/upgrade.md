@@ -15,7 +15,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. A Job checks that NetworkPolicy is enforced, and only reports on upgrade: [NetworkPolicy enforcement check][upgrade-netpol-enforcement-check]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -238,6 +238,50 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
   `hops-otlp` is an ordinary second container without probes, so the OOM kill restarts that container alone: the agent container's `restartCount` stays 0, and only the sidecar's `lastState` shows `OOMKilled`.
   While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
   Looking for agent restarts finds none.
+
+### NetworkPolicy enforcement check { #upgrade-netpol-enforcement-check }
+
+Project isolation and terminal isolation are NetworkPolicies, which do nothing without a CNI that enforces them.
+When either is on, a Job starts a listener pod in the release namespace, denies all ingress to it with a NetworkPolicy and checks that connections to it stop.
+The check probes the node the listener pod lands on, so a cluster where only some nodes enforce can pass.
+It reports one of three causes, each with the step and what to do:
+
+- no enforcer: `NetworkPolicies are not enforced: project isolation is off. Install a CNI that enforces NetworkPolicy, or set global._hopsworks.networkPolicy.enforcementCheck=false to skip.`
+- a broken probe: `probe broken: <step>: <cause>; NetworkPolicy enforcement not verified. Fix <cause>, or set ...`, for the Job start read, the leftover delete, the server pod create, the Ready wait, the pod IP read, the positive control, the policy create or the server not Ready after the poll, or `command failed at line <n>` at any step.
+- the time budget: `deadline: <step> did not finish within 140 s; ...`.
+
+The script checks a budget of 140 s from the Job's start, image pull included, before each step, and bounds every call to what is left; it ends within 165 s when its pod starts within about 140 s, else within 25 s of the pod's start.
+The Job's `activeDeadlineSeconds` of 180 is the backstop, and the listener pod has its own `activeDeadlineSeconds` of 180.
+
+**Install:** the check is a pre-install hook.
+On any of the three causes the hook Job fails and the install stops; the Job and its log stay for reading.
+A pass that cannot delete an earlier ConfigMap fails it too.
+The install also fails when the hook pod cannot start (Pending, image pull) within 180 s, and needs a `helm --timeout` above 180 s plus the other pre-install hooks.
+The hook's ServiceAccount, Role and RoleBinding are named `hopsworks-netpol-check-install`, so ones left by a failed install do not block the next upgrade.
+
+**Upgrade:** the check is a plain Job of the release, not a hook.
+Without `--wait-for-jobs`, the upgrade does not wait on the check and does not fail on it; the result is in ConfigMap `<release>-netpol-enforcement`: the message on any of the three causes, deleted on a pass.
+When the ConfigMap cannot be written, or a pass cannot delete an earlier one, the Job fails and its log holds the result.
+A slow image pull that runs the Job into its deadline leaves no report.
+
+With `helm upgrade --wait-for-jobs`, Helm waits for the check Job like any other Job of the release, and the upgrade fails when the Job ends Failed (a failed ConfigMap write or delete, or the 180 s deadline) or its pod cannot start before `--timeout`.
+Helm 3.20 fails as soon as the Job has failed (`jobReady` in `pkg/kube/ready.go`); Helm 4 waits until `--timeout` and then fails with the Job not ready (`statusWaiter.WaitWithJobs` in `pkg/kube/statuswait.go`).
+
+- ArgoCD renders with `helm template`, so the check runs as the install hook on every sync unless `global._hopsworks.mode` is `upgrade`.
+- Under ArgoCD with `global._hopsworks.mode: upgrade` the revision is always 1 and the Job has no TTL, so the check Job keeps its name until the chart changes it and does not run again on later syncs.
+  To run the check again, delete the Job (`kubectl -n <namespace> delete job -l app=hopsworks-netpol-check`) and sync.
+- `global._hopsworks.networkPolicy.enforcementCheck: false` turns the check off.
+- The check is on by default on purpose: project isolation is on by default, so a cluster that cannot enforce it has to be told.
+
+Leftovers: the ConfigMap is not part of the release and stays after `helm uninstall` and after the check is turned off.
+A failed install leaves the hook Job and its `-install` ServiceAccount, Role and RoleBinding, which `helm uninstall` does not remove.
+Under Argo CD without pruning, a finished upgrade Job stays too.
+A run killed before its cleanup leaves its probe pod and policy until its Job is deleted.
+All of them carry `app=hopsworks-netpol-check`:
+
+```bash
+kubectl -n <namespace> delete job,configmap,serviceaccount,role,rolebinding -l app=hopsworks-netpol-check
+```
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
