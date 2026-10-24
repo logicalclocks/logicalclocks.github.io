@@ -181,6 +181,45 @@ Deleting it brings the folded turns back and the next fold writes a fresh one.
 
 Erasing a conversation leaves durable facts about the person alone, because starting a new chat must not erase what the agent knows about you.
 
+### Reading memory from Python
+
+The Python client wraps those routes, and searches earlier conversations by similarity:
+
+```python
+import hopsworks
+
+agents = hopsworks.login().get_agent_serving()
+agent = agents.get_agent("support_agent")
+
+# the conversations the agent stored, most recently active first
+for conversation in agent.memory_conversations(subject="dana@example.com"):
+    print(conversation["conversation_id"], conversation["message_count"])
+
+# one of them as stored: messages, the rolling summary, and whose it is
+stored = agent.memory_transcript(conversation["conversation_id"])
+print(stored["subject"], stored["summary"])
+
+# what the agent remembers about a person
+for fact in agent.memory_facts("dana@example.com"):
+    print(fact["key"], fact["value"], fact["updated_at"])
+
+# earlier messages nearest in meaning to a question
+for hit in agent.memory_search("what do they eat?", subject="dana@example.com", k=5):
+    print(hit["score"], hit["role"], hit["content"])
+```
+
+`memory_conversations`, `memory_transcript` and `memory_facts` read what the agent stored, through the routes above, so they need the agent running.
+They differ from `agent.conversation(session_id)`, which rebuilds what was said from the traces and exists whether or not the agent keeps memory.
+
+`memory_search` does not go through the agent.
+With semantic search on, every message the agent ingests is embedded into the deployment's memory feature group, `agent_memory_<deployment id>`, and `memory_search` runs a similarity search over that feature group with the same subject and conversation filters the agent's own `search` tool uses.
+It works with the agent stopped.
+
+The query has to be embedded by the model that embedded the messages, otherwise the distances mean nothing.
+That model is recorded in the feature group's description, and by default `memory_search` loads it as a sentence-transformers model, which needs `sentence-transformers` installed where you run it.
+For any other model, pass `embedder=`, a callable from text to a vector; when it carries a `model_id` that differs from the recorded one, the search is refused rather than answered with unrelated neighbours.
+An agent without semantic search has no memory feature group, and the search returns nothing; it never creates one.
+
 ### Where the access boundary is
 
 The boundary is **the project's agents**.
