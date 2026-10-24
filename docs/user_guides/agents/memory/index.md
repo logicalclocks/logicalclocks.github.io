@@ -188,6 +188,7 @@ The Python client reads the same memory without going through the agent, from th
 ```python
 import hopsworks
 
+
 agents = hopsworks.login().get_agent_serving()
 agent = agents.get_agent("support_agent")
 
