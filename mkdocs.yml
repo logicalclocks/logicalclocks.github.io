@@ -85,6 +85,7 @@ nav:
                   - Unity Catalog: user_guides/fs/data_source/creation/unity_catalog.md
                   - SAP HANA: user_guides/fs/data_source/creation/sap_hana.md
                   - Hopsworks: user_guides/fs/data_source/creation/hopsworks.md
+                  - SharePoint: user_guides/fs/data_source/creation/sharepoint.md
               - Usage: user_guides/fs/data_source/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
