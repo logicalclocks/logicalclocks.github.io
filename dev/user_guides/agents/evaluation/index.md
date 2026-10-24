@@ -72,6 +72,51 @@ template = evals.evaluators.save(
 
 Applying a saved evaluator copies its checks into the suite, so a published suite keeps meaning what it meant even if the library entry changes later.
 
+### How a judge decides pass or fail
+
+An `llm_judge` asks its model for one score per criterion, on a scale of 1 to 5 unless `score_range` sets another.
+The model does not return the verdict; the judge works it out from those scores in three steps:
+
+1. **Weighted average.** Each score is multiplied by its criterion's weight, and the total is divided by the sum of the weights.
+   Weights are relative, so weights of 2 and 1 make the same judge as weights of 1 and 0.5.
+   A weight defaults to 1, and a weight of 0 means the criterion is scored and shown but does not count.
+2. **Pass score.** The trial passes when the average reaches `pass_score`, on the same scale as the scores.
+   It defaults to three quarters of the way up the scale, which is 4 on a 1 to 5 scale.
+3. **Floors.** A criterion can have a floor, shown as **never below** in the UI.
+   A score under the floor fails the trial however high the average is.
+
+```python
+check(
+    "llm_judge",
+    "gives sound advice",
+    criteria={
+        "correct": {"weight": 2, "description": "Is the advice correct?"},
+        "complete": {"weight": 1, "description": "Does it answer everything asked?"},
+        "disclaimer_present": {
+            "weight": 0.5,
+            "critical_min": 4,
+            "description": "Does the reply say it is not financial advice?",
+        },
+    },
+    thresholds={"pass_score": 3.5},
+)
+```
+
+Use a floor, not a large weight, for anything that must never be traded away, such as safety or a required disclaimer.
+A weight only changes how much a bad score pulls the average down, so enough good scores elsewhere still carry the trial.
+
+!!! note "The model never sees weights or floors"
+    The judge's model is shown each criterion's name and description, and scores each one on its own.
+    Raising a weight does not make the model stricter about that criterion; it only makes the criterion count for more in the average.
+    To change how a criterion is scored, change its description.
+
+If the model leaves out a criterion's score, or returns something that is not a number, the trial is ungradable rather than failed, because an average over whichever criteria came back would measure something different each time.
+A score outside the scale is clamped to it before the average and the floors are checked.
+
+The trial's score is the weighted average scaled to 0 to 1.
+Its assertions record what the verdict was made from: the raw score per criterion, the weighted score, the pass score, any floors that were broken, and the model's reasoning for each criterion.
+The reason reads, for example, `scored 3.80 of 5, needs 4` or `below the floor on disclaimer_present`, followed by that reasoning, for passes as well as failures.
+
 ## Running a suite
 
 ```python
@@ -151,7 +196,13 @@ So a passing gate does not always describe the newest execution: when the latest
 A suite version that has never run against this deployment fails its check rather than being skipped, because untested is not the same as passing.
 
 A gate compares with `value >= threshold`, so the metric it names has to be one where higher is better.
-It also reads a recorded `0.0` as a number like any other: a run in which nothing was gradable records `pass_rate` of `0.0` and gates on that, and only a metric the run never recorded at all is reported as missing evidence.
+A run in which nothing was gradable records no `pass_rate`, so a gate on it reports missing evidence rather than a pass rate of `0.0`.
+Recorded as `0.0`, a run whose judge could not be called read as an agent that got every answer wrong.
+The run's `ungradable_rate` says how much of it went ungraded, and `agent_error_rate` how much of it the agent did not answer.
+A run of nothing but `AGENT_ERROR` trials still records `pass_rate` `0.0` and fails its gate, because nobody got an answer, and `agent_error_rate` of `1.0` beside it says the agent was down rather than wrong.
+
+A trial whose turn takes longer than the evaluation job allows is recorded as `TIMEOUT`, which counts as a failure like an agent error, and `timeout_rate` says how many there were.
+The limit is ten minutes by default; set `trial_timeout_s` on the evaluation job, up to an hour, for an agent whose turns take longer, such as one that runs analysts with web search.
 
 ## Red-team suites
 
@@ -190,6 +241,8 @@ for suite in history:
 ```
 
 A trend is between runs that graded something: a run that died carries no verdicts, so comparing against it would read every failure as new and every standing failure as absent.
+A task whose every trial was an agent error or a timeout is reported as `unanswered` rather than as a new failure or a regression.
+A run the agent answered nothing in is never the baseline either, so the run after an outage is compared with the last run the agent answered in, rather than being credited with fixing every task.
 
 Cases are matched across runs by the question they ask rather than by row id, so a new version of a suite that copies its tasks keeps its history instead of reporting every carried-over case as new.
 

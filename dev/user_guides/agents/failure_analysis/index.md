@@ -34,6 +34,10 @@ run = evals.runs.wait(evals.jobs.analyse(job), timeout_s=900)
 ```
 
 Like a monitor, the analysis continues from where it last stopped, so each verdict is triaged once.
+
+It also starts on its own when the deployment's evaluation job asks for it, which it does by default.
+When an execution's last run finishes, the analysis runs if a suite found a new failure or a regression, or if a monitor failed a conversation it graded.
+The same failures again start nothing, and since an analysis reads only the verdicts given after its previous run, an hourly monitor that keeps failing on the same kind of turn does not pay for the same triage twice.
 `budget_calls` caps how many model calls one run may spend; what the budget does not reach waits for the next run rather than being skipped.
 
 A judge is needed, and any OpenAI-compatible endpoint will do, including one you host yourself.
