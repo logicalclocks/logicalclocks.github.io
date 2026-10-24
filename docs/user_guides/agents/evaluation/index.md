@@ -205,6 +205,9 @@ Recorded as `0.0`, a run whose judge could not be called read as an agent that g
 The run's `ungradable_rate` says how much of it went ungraded, and `agent_error_rate` how much of it the agent did not answer.
 A run of nothing but `AGENT_ERROR` trials still records `pass_rate` `0.0` and fails its gate, because nobody got an answer, and `agent_error_rate` of `1.0` beside it says the agent was down rather than wrong.
 
+A trial whose turn takes longer than the evaluation job allows is recorded as `TIMEOUT`, which counts as a failure like an agent error, and `timeout_rate` says how many there were.
+The limit is ten minutes by default; set `trial_timeout_s` on the evaluation job, up to an hour, for an agent whose turns take longer, such as one that runs analysts with web search.
+
 ## Red-team suites
 
 A suite of attacks is graded the other way round: a guardrail block is the outcome you want, not a failure.
@@ -242,7 +245,7 @@ for suite in history:
 ```
 
 A trend is between runs that graded something: a run that died carries no verdicts, so comparing against it would read every failure as new and every standing failure as absent.
-A task whose every trial was an agent error is reported as `unanswered` rather than as a new failure or a regression.
+A task whose every trial was an agent error or a timeout is reported as `unanswered` rather than as a new failure or a regression.
 A run the agent answered nothing in is never the baseline either, so the run after an outage is compared with the last run the agent answered in, rather than being credited with fixing every task.
 
 Cases are matched across runs by the question they ask rather than by row id, so a new version of a suite that copies its tasks keeps its history instead of reporting every carried-over case as new.
