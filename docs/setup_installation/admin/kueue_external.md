@@ -1,16 +1,48 @@
 # Operator Notes: Kueue Outside the Hopsworks Namespace
 
-Administrative reference for cluster operators who run Kueue with Hopsworks and upgrade to a Hopsworks release that bundles Kueue 0.20: a 5.2.x patch release, or 5.3.
+Administrative reference for cluster operators who run Kueue with Hopsworks, install a Hopsworks release that uses Kueue 0.20 (a 5.2.x patch release, or 5.3), or upgrade to one.
 
 With `global._hopsworks.kueue.enabled=true`, Hopsworks releases 4.3 to 5.2 bundle Kueue 0.12.2 in the Hopsworks namespace.
-A 5.2.x patch release and 5.3 bundle Kueue 0.20.3, and their backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
+A 5.2.x patch release and 5.3 ship no Kueue: they use Kueue 0.20.3 installed outside the Hopsworks release, and their backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
 A cluster that runs the bundled Kueue 0.12 therefore moves to a Kueue installed outside the Hopsworks release: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`, which Hopsworks uses with `hw-kueue.kueue.enabled=false`.
 On Hopsworks 5.1 it moves before the upgrade; on 5.2.0 and 5.2.1, which ship no migration script, it moves as part of the upgrade ([From Hopsworks 5.2.0 or 5.2.1](#from-hopsworks-520-or-521)).
 Hopsworks keeps its RBAC bindings to the Kueue roles and keeps queueing jobs through Kueue.
 
 A cluster without Kueue needs nothing.
-A fresh install of such a release gets Kueue 0.20.3 in the Hopsworks namespace, or uses an external Kueue installed first with `hw-kueue.kueue.enabled=false`.
-The bundled Kueue's CRDs ship in the chart's `crds/` directory with `argocd.argoproj.io/sync-options: Prune=false,Delete=false`, so Helm and Argo CD install them and neither deletes them, or the queues with them.
+A fresh install of such a release with Kueue installs Kueue first ([Fresh install](#fresh-install)).
+
+## Fresh install
+
+The Hopsworks chart ships no Kueue, as it ships no Kyverno: install Kueue 0.20.3 first, as release `kueue` in `kueue-system`, then Hopsworks with `global._hopsworks.kueue.enabled=true`.
+The chart's `upgrade-kueue.sh` installs it with the SparkApplication integration Hopsworks queues Spark jobs through:
+
+```sh
+helm pull --untar <repo>/hopsworks --version <version>
+bash hopsworks/charts/hw-kueue/files/upgrade-kueue.sh install
+helm install hopsworks hopsworks -n hopsworks --set global._hopsworks.kueue.enabled=true ...
+```
+
+It applies the Kueue CRDs itself and installs release `kueue` without them, so uninstalling it never deletes the queues.
+With `--gitops` it writes the HelmRelease and the CRDs to commit, as in [Clusters managed by Flux](#clusters-managed-by-flux).
+The Hopsworks chart then creates the default queues, ResourceFlavor `default-flavor`, Topology `default`, Cohort `cluster` and ClusterQueue `other`, when they are missing.
+The default ResourceFlavor selects nodes labelled `cloud.provider.com/region=europe`; label the nodes, or change `hw-kueue.resourceFlavours`.
+
+With Argo CD, install Kueue as an Application of its own, synced before the Hopsworks one: the chart `kueue` version 0.20.3 from `oci://registry.k8s.io/kueue/charts`, release name `kueue` in `kueue-system`, with these values:
+
+```yaml
+fullnameOverride: kueue
+controllerManager:
+  featureGates:
+    - name: SparkApplicationIntegration
+      enabled: true
+managerConfig:
+  controllerManagerConfigYaml: |
+    # the chart's default, with sparkoperator.k8s.io/sparkapplication
+    # added to integrations.frameworks
+```
+
+That chart keeps its CRDs among its templates, so Argo CD upgrades them with a version bump.
+Leave the `resources-finalizer.argocd.argoproj.io` finalizer off that Application: deleting it then leaves the CRDs, and every queue, in place.
 
 ## Why `helm upgrade` alone cannot do it
 
@@ -39,7 +71,7 @@ Every Kueue object is kept: ClusterQueues, Cohorts, ResourceFlavors, Topologies,
 | `replace-alpha-crds` | Snapshots the Cohorts, Topologies and ResourceFlavors, then replaces the `v1alpha1` Cohort and Topology CRDs. |
 | `install-kueue` | Applies the Kueue 0.18.1 CRDs, installs release `kueue` in `kueue-system` and restores the replaced objects. |
 | `migrate-storage` | Rewrites every object at `v1beta2` and prunes the CRDs' stored versions. |
-| `enable-hopsworks` | Upgrades Hopsworks with Kueue on and `hw-kueue.kueue.enabled=false`. |
+| `enable-hopsworks` | Upgrades Hopsworks with Kueue on and `hw-kueue.kueue.enabled=false`, which a 5.2.x patch release or 5.3 keeps by default. |
 | `verify` | Checks the controller, the stored versions, every backed-up queue object and the release values. |
 | `export-queues` | Writes the cluster-scoped queue objects as `v1beta2` manifests to `<backup-dir>/gitops/kueue-queues.yaml`, for clusters that keep their queues in Git. |
 
@@ -81,7 +113,7 @@ The move runs in three steps.
     `verify` at the end of `all` expects Kueue 0.18.1.
     Jobs can be submitted again once it passes.
 
-2. Upgrade Hopsworks to a release with Kueue 0.20, keeping `global._hopsworks.kueue.enabled=true` and `hw-kueue.kueue.enabled=false`.
+2. Upgrade Hopsworks to a release with Kueue 0.20, keeping `global._hopsworks.kueue.enabled=true`.
     Kueue 0.18.1 serves `v1beta2`, which its backend reads.
 
 3. Upgrade Kueue to 0.20.3, with the script from the new chart:
@@ -262,7 +294,7 @@ spec:
 
 From then on the queues are changed in Git.
 With `prune: true`, a queue removed from Git is deleted from the cluster.
-Remove `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` and `topologies` from the Hopsworks values: with `hw-kueue.kueue.enabled=false` they have no effect.
+Remove `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` and `topologies` from the Hopsworks values: the chart creates those queues only when they are missing, and Git now owns them.
 LocalQueues are not exported, because Hopsworks creates and deletes them with projects.
 
 ### If a step times out or the script stops
@@ -286,8 +318,8 @@ Commit it next to `kueue.yaml`, in place of any Kueue CRDs there: Flux applies C
 - **Cohorts get `parentName`** in place of `parent`.
   ClusterQueues keep their quotas, fair sharing, preemption and borrowing settings; Kueue converts `cohort`, `admissionChecks` and the `flavorFungibility` values `Borrow` and `Preempt` to their `v1beta2` forms.
 - **Queues are managed with `kubectl`.**
-  With `hw-kueue.kueue.enabled=false` the chart no longer applies `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` or `topologies`.
-  Queues defined there before the move are kept, but changing those values has no effect.
+  The chart creates the queues in `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` and `topologies` only when they are missing.
+  Existing queues are kept as they are, and changing those values has no effect on them.
   Write queue objects as `kueue.x-k8s.io/v1beta2`: Kueue 0.20 serves no other version.
 - **Spark jobs are queued, with static executors only.**
   `upgrade-kueue.sh` turns on Kueue's SparkApplication integration, so Spark jobs get quota and queueing.
@@ -325,8 +357,7 @@ The controller is ready in `kueue-system`, none runs in the Hopsworks namespace,
 
 The chart checks the cluster before it renders:
 
-- With `hw-kueue.kueue.enabled=false`, it refuses while the bundled controller still runs, while Cohorts are stored as `v1alpha1`, or when no Kueue serving `v1beta2` is installed.
-- With `hw-kueue.kueue.enabled=true`, it refuses when Kueue CRDs exist that the chart did not install, those without the label `hw-kueue.hops.works/bundled-crds`: those of the bundled Kueue 0.12, or those of an external Kueue.
-  It also refuses an upgrade that turns the bundled Kueue on while its CRDs are missing, since `helm upgrade` does not install a chart's `crds/`.
+- It refuses while the bundled Kueue's controller still runs, while Cohorts are stored as `v1alpha1`, or when no Kueue serving `v1beta2` is installed.
+- It refuses `hw-kueue.kueue.enabled=true`: the chart ships no Kueue.
 
 `hw-kueue.enforcePrerequisiteCheck=false` turns the check off, for `helm template`.
