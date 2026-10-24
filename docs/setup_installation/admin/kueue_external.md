@@ -289,8 +289,6 @@ Commit it next to `kueue.yaml`, in place of any Kueue CRDs there: Flux applies C
   With `hw-kueue.kueue.enabled=false` the chart no longer applies `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` or `topologies`.
   Queues defined there before the move are kept, but changing those values has no effect.
   Write queue objects as `kueue.x-k8s.io/v1beta2`: Kueue 0.20 serves no other version.
-- **Jobs in the Hopsworks namespace are queued.**
-  Kueue 0.18 ignores the namespace it runs in, which is now `kueue-system`, so Kueue-labelled jobs in the Hopsworks namespace are queued.
 - **Spark jobs are queued, with static executors only.**
   `upgrade-kueue.sh` turns on Kueue's SparkApplication integration, so Spark jobs get quota and queueing.
   Kueue reserves quota for a fixed number of executors, so on a Kueue cluster Spark jobs run static executors.

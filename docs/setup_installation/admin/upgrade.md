@@ -248,6 +248,13 @@ The 5.1 chart's `migrate-to-external.sh` moves it to Kueue 0.18.1 in `kueue-syst
 After the Hopsworks upgrade, the new chart's `upgrade-kueue.sh` upgrades Kueue to 0.20.3.
 Follow [Kueue outside the Hopsworks namespace](kueue_external.md), and stop submitting jobs while the move runs.
 
+What changes for users and operators ([details](kueue_external.md#what-changes)):
+
+- Spark jobs are queued, with static executors: a job saved with dynamic allocation runs its dynamic-allocation minimum, and `spark.dynamicAllocation.enabled=true` in its Spark properties is refused.
+- A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
+- The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
+- A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
