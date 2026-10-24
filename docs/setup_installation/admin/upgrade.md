@@ -241,8 +241,9 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
 
 ### MinIO priority class and registry probes { #upgrade-minio-priority }
 
-When a node runs short of disk, the kubelet evicts its lowest-priority pods first.
-Before 5.3 MinIO had no priority class, so it could be evicted before ordinary workloads, and HopsFS had no block store until it came back.
+When a node runs short of disk, the kubelet evicts pods ranked by their usage against their requests, then by priority.
+Before 5.3 MinIO had no priority class, so it could be evicted ahead of ordinary workloads, and HopsFS had no block store until it came back.
+A priority class moves MinIO later in that order; it does not prevent its eviction.
 
 - The chart creates a cluster-scoped PriorityClass `<release>-minio-priority` (value 1000000) and sets it on the MinIO StatefulSet.
   The account that runs `helm upgrade` needs permission to create PriorityClasses.
