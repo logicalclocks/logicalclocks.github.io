@@ -183,7 +183,7 @@ Erasing a conversation leaves durable facts about the person alone, because star
 
 ### Reading memory from Python
 
-The Python client wraps those routes, and searches earlier conversations by similarity:
+The Python client reads the same memory without going through the agent, from the feature groups it is kept in, and searches earlier conversations by similarity:
 
 ```python
 import hopsworks
@@ -208,12 +208,12 @@ for hit in agent.memory_search("what do they eat?", subject="dana@example.com", 
     print(hit["score"], hit["role"], hit["content"])
 ```
 
-`memory_conversations`, `memory_transcript` and `memory_facts` read what the agent stored, through the routes above, so they need the agent running.
+None of them needs the agent running.
+`memory_conversations`, `memory_transcript` and `memory_facts` read the project's memory feature groups, `agent_memory_messages`, `agent_memory_conversations` and `agent_memory_facts`, filtered to this deployment, and apply the rules the agent applies: a conversation is filed under the latest person it was bound to, and expired facts are left out.
+So what an agent remembered can still be read after it is stopped.
 They differ from `agent.conversation(session_id)`, which rebuilds what was said from the traces and exists whether or not the agent keeps memory.
 
-`memory_search` does not go through the agent.
-With semantic search on, every message the agent ingests is embedded into the deployment's memory feature group, `agent_memory_<deployment id>`, and `memory_search` runs a similarity search over that feature group with the same subject and conversation filters the agent's own `search` tool uses.
-It works with the agent stopped.
+With semantic search on, every message the agent ingests is also embedded into the deployment's own feature group, `agent_memory_<deployment id>`, and `memory_search` runs a similarity search over it with the same subject and conversation filters the agent's own `search` tool uses.
 
 The query has to be embedded by the model that embedded the messages, otherwise the distances mean nothing.
 That model is recorded in the feature group's description, and by default `memory_search` loads it as a sentence-transformers model, which needs `sentence-transformers` installed where you run it.
