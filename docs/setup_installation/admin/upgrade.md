@@ -15,7 +15,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [new variables for the resources of the hopsfs-fuse and envoy sidecars][upgrade-sidecar-resources], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -217,6 +217,61 @@ On the upgrade to 5.3:
   Later restarts and upgrades resume from the registry.
 - Leave the existing contents of `/var/lib/filebeat-data` in place.
   Nothing in the chart reads them, and they may belong to another Filebeat on the node.
+
+### hopsfs-fuse and envoy sidecar resources { #upgrade-sidecar-resources }
+
+5.3 adds three variables, each empty by default, which keeps the pod resources of 5.2:
+
+- `kube_scheduling_hopsfsmount_memory_requests_mb` is the memory request of the hopsfs-fuse sidecar, in MiB.
+  Empty means it is not set, so Kubernetes uses `kube_scheduling_hopsfsmount_memory_limits_mb`.
+- `python_app_envoy_cpu_limit` and `python_app_envoy_memory_limit_mb` are the limits of the envoy sidecar of a Python app.
+  Empty means they equal `python_app_envoy_cpu` and `python_app_envoy_memory_mb`.
+
+5.3 checks these values when it builds a pod.
+An invalid value fails the start with an error that names the key.
+On a default installation all values are valid.
+
+- `kube_scheduling_hopsfsmount_cpu_requests`, `kube_scheduling_hopsfsmount_memory_requests_mb`, `kube_scheduling_jobinit_cpu_requests` and `kube_scheduling_jobinit_memory_requests_mb`: a negative value fails.
+  Before, a negative request was dropped.
+- `kube_scheduling_hopsfsmount_memory_limits_mb` and `kube_scheduling_jobinit_memory_limits_mb`: 0 or below fails.
+  Before, the limit was dropped.
+- `kube_scheduling_hopsfsmount_cpu_limits` and `kube_scheduling_jobinit_cpu_limits`: 0 fails.
+  Before, 0 meant no limit.
+  A negative value still means no limit, as described below.
+- A hopsfs-fuse or job-init request above its limit fails.
+  Before, Kubernetes rejected the pod.
+- A bad hopsfs-fuse key fails every start of a pod that runs the hopsfs-fuse sidecar.
+  A bad job-init key fails every Spark and Ray job start, and every Jupyter start whose Spark environment replaces the Uniffle client.
+  For example, `kube_scheduling_jobinit_cpu_requests=-1` fails every Spark and Ray job start.
+- `python_app_envoy_cpu` and `python_app_envoy_memory_mb`: a negative value fails.
+  `python_app_envoy_cpu_limit` and `python_app_envoy_memory_limit_mb`: 0 or below fails.
+  A request above its limit fails.
+  Every start of a Python app with monitoring fails.
+  Before, the values went into the pod unchecked.
+- `git_watcher_cpu` and `git_watcher_memory_mb`: 0 or below fails.
+  Every start of a Python app or agent deployment with git auto-redeploy fails.
+  Before, the values went into the pod unchecked.
+- `agent_deployment_otel_cpu` and `agent_deployment_otel_memory_mb`: 0 or below fails.
+  Every start of a traced agent deployment fails, for example with `agent_deployment_otel_memory_mb=0`.
+  Before, the values went into the pod unchecked.
+- Every key above: a value that is not a number, or not finite (`NaN`, `Infinity`), fails.
+  `git_watcher_memory_mb`, `agent_deployment_otel_memory_mb`, `python_app_envoy_memory_mb` and `python_app_envoy_memory_limit_mb` are whole numbers, so a decimal there fails too.
+  The `kube_scheduling_*_mb` keys accept a decimal.
+- `docker_operations_buildkit_storage`, `docker_operations_buildkit_request_cpu`, `docker_operations_buildkit_request_memory`, `docker_operations_buildkit_limit_cpu` and `docker_operations_buildkit_limit_memory`: a value that is not a Kubernetes quantity, or a negative one, fails.
+  Every Python environment image build fails.
+  Before, Kubernetes rejected the build pod without naming the key.
+
+Before upgrading, check the live value of each key above in the values file and in the admin UI.
+
+`kube_scheduling_hopsfsmount_cpu_limits` and `kube_scheduling_jobinit_cpu_limits` move from -1 to empty, which means no CPU limit.
+Hopsworks 5.3 reads empty as no limit.
+Do not run this chart version with an earlier Hopsworks image.
+The chart rejects -1 or 0 for these two keys, so remove any such override from the values file before upgrading.
+Hopsworks still reads a negative value set outside the chart as no limit.
+This is deprecated and a later release removes it.
+
+Chart-owned: set `kube_scheduling_hopsfsmount_memory_requests_mb`, `python_app_envoy_cpu_limit` and `python_app_envoy_memory_limit_mb` in values.
+An admin-UI change is reset on the next upgrade.
 
 ### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
 
