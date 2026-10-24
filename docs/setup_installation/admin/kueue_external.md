@@ -3,7 +3,7 @@
 Administrative reference for cluster operators who run Kueue with Hopsworks and upgrade to a Hopsworks release that bundles Kueue 0.20: a 5.2.x patch release, or 5.3.
 
 With `global._hopsworks.kueue.enabled=true`, Hopsworks releases 4.3 to 5.2 bundle Kueue 0.12.2 in the Hopsworks namespace.
-Those releases bundle Kueue 0.20.3, and their backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
+A 5.2.x patch release and 5.3 bundle Kueue 0.20.3, and their backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
 A cluster that runs the bundled Kueue 0.12 therefore moves to a Kueue installed outside the Hopsworks release: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`, which Hopsworks uses with `hw-kueue.kueue.enabled=false`.
 On Hopsworks 5.1 it moves before the upgrade; on 5.2.0 and 5.2.1, which ship no migration script, it moves as part of the upgrade ([From Hopsworks 5.2.0 or 5.2.1](#from-hopsworks-520-or-521)).
 Hopsworks keeps its RBAC bindings to the Kueue roles and keeps queueing jobs through Kueue.
