@@ -243,6 +243,7 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
 
 Project isolation and terminal isolation are NetworkPolicies, which do nothing without a CNI that enforces them.
 When either is on, a Job starts a listener pod in the release namespace, denies all ingress to it with a NetworkPolicy and checks that connections to it stop.
+The check probes the node the listener pod lands on, so a cluster where only some nodes enforce can pass.
 It reports one of three causes, each with the step and what to do:
 
 - no enforcer: `NetworkPolicies are not enforced: project isolation is off. Install a CNI that enforces NetworkPolicy, or set global._hopsworks.networkPolicy.enforcementCheck=false to skip.`
