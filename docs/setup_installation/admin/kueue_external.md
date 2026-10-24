@@ -4,11 +4,13 @@ Administrative reference for cluster operators who run Kueue with Hopsworks and 
 
 With `global._hopsworks.kueue.enabled=true`, Hopsworks releases 4.3 to 5.2 bundle Kueue 0.12.2 in the Hopsworks namespace.
 Those releases bundle Kueue 0.20.3, and their backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
-A cluster that runs the bundled Kueue 0.12 therefore moves to a Kueue installed outside the Hopsworks release before that upgrade, while it runs Hopsworks 5.1: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`, which Hopsworks uses with `hw-kueue.kueue.enabled=false`.
+A cluster that runs the bundled Kueue 0.12 therefore moves to a Kueue installed outside the Hopsworks release: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`, which Hopsworks uses with `hw-kueue.kueue.enabled=false`.
+On Hopsworks 5.1 it moves before the upgrade; on 5.2.0 and 5.2.1, which ship no migration script, it moves as part of the upgrade ([From Hopsworks 5.2.0 or 5.2.1](#from-hopsworks-520-or-521)).
 Hopsworks keeps its RBAC bindings to the Kueue roles and keeps queueing jobs through Kueue.
 
 A cluster without Kueue needs nothing.
 A fresh install of such a release gets Kueue 0.20.3 in the Hopsworks namespace, or uses an external Kueue installed first with `hw-kueue.kueue.enabled=false`.
+The bundled Kueue's CRDs ship in the chart's `crds/` directory with `argocd.argoproj.io/sync-options: Prune=false,Delete=false`, so Helm and Argo CD install them and neither deletes them, or the queues with them.
 
 ## Why `helm upgrade` alone cannot do it
 
@@ -94,10 +96,42 @@ The move runs in three steps.
 
 `upgrade-kueue.sh` refuses to run while the Hopsworks release's chart bundles a Kueue older than 0.20, while the release does not use the external Kueue or has not finished deploying, while any Kueue CRD stores a version other than `v1beta2`, and refuses a downgrade.
 It applies the Kueue CRDs itself and keeps them out of the release, keeps the `kueue` release's own values, and refuses a manager configuration that is not `config.kueue.x-k8s.io/v1beta2` before it changes anything.
+A release that turns `TopologyAwareScheduling` off keeps it off: Kueue 0.20 adds six topology-aware scheduling gates, on by default, that depend on it, and the script turns them off too, since Kueue refuses to start with a gate on whose dependency is off.
 It turns on Kueue's SparkApplication integration and drops the `managedFields` entries recorded at `v1beta1`, which Kueue 0.20 can no longer convert.
 It takes the chart from `oci://registry.k8s.io/kueue/charts` (`--kueue-repo`), version 0.20.3 (`--kueue-version`).
 
 `--namespace` and `--release` name a Hopsworks release other than `hopsworks` in `hopsworks`; `--help` lists every option.
+
+Both scripts read and upgrade Helm release records, directly or through Flux's helm-controller, which keeps them.
+A Hopsworks or Kueue release managed by Argo CD, which renders charts and stores no Helm release, is not supported by either script.
+
+## From Hopsworks 5.2.0 or 5.2.1
+
+Hopsworks 5.2.0 and 5.2.1 bundle Kueue 0.12.2 and ship no migration script.
+The 5.1 chart's `migrate-to-external.sh` does the move on them too, run phase by phase: the phases up to `migrate-storage` keep Hopsworks on its current chart, and `enable-hopsworks` upgrades it to the new release.
+Hopsworks is never downgraded.
+
+```sh
+helm pull --untar --untardir v51 <repo>/hopsworks --version <latest 5.1 version>
+M="bash v51/hopsworks/charts/hw-kueue/files/migrate-to-external.sh"
+export HELM_EXTRA_ARGS="<the flags you upgrade Hopsworks with>"
+export HOPSWORKS_URL=https://<hopsworks host> HOPSWORKS_API_KEY=<admin API key>
+
+# Kueue off, Hopsworks stays on its current version
+for phase in preflight backup remove-bundled replace-alpha-crds install-kueue migrate-storage; do
+  $M --hopsworks-chart <repo>/hopsworks --hopsworks-version <current 5.2 version> $phase || break
+done
+# Hopsworks upgraded to the release with Kueue 0.20, on the external Kueue
+$M --hopsworks-chart <repo>/hopsworks --hopsworks-version <new version> enable-hopsworks
+$M verify
+
+helm pull --untar --untardir new <repo>/hopsworks --version <new version>
+bash new/hopsworks/charts/hw-kueue/files/upgrade-kueue.sh
+```
+
+`enable-hopsworks` upgrades Hopsworks with `--reset-then-reuse-values`, Kueue on and `hw-kueue.kueue.enabled=false`; Kueue 0.18.1 serves `v1beta2`, which the new backend reads.
+From `remove-bundled` until `install-kueue` no Kueue runs, as on 5.1.
+With Flux, follow [Clusters managed by Flux](#clusters-managed-by-flux) with the same split: keep the current 5.2 chart version in Step 2, and set the new version in Step 4.
 
 ## Clusters managed by Flux
 
@@ -201,8 +235,8 @@ bash new/hopsworks/charts/hw-kueue/files/upgrade-kueue.sh --gitops \
 
 With `--gitops` it runs no `helm upgrade`.
 It applies the 0.20.3 CRDs and writes `./kueue-upgrade/kueue.yaml` (`--out-dir`): the HelmRelease `kueue` for 0.20.3 with the release's values, the chart from `oci://registry.k8s.io/kueue/charts`, the Spark manager configuration and feature gate, and a post-render patch that keeps the chart's CRDs out of the release.
-Replace the file you committed in Step 3 with it, then commit and push.
-The script continues once Flux runs the 0.20.3 controller, then checks the end state.
+Replace the file you committed in Step 3 with it, add `./kueue-upgrade/kueue-crds.yaml` next to it, then commit and push.
+The script continues once Flux runs the 0.20.3 controller with the SparkApplication integration on, then checks the end state.
 
 ### Step 6: Verify and move the queues into Git
 
@@ -241,6 +275,8 @@ A single phase can also be run on its own, such as `bash hopsworks/charts/hw-kue
 
 The script applies the Kueue CRDs itself and the HelmRelease skips them (`crds: Skip` on install and upgrade), so deleting the HelmRelease leaves every queue in place.
 The 0.20.3 chart ships its CRDs as templates, which `crds: Skip` does not cover, so the HelmRelease `upgrade-kueue.sh` writes also carries a kustomize post-render patch that removes them from what Flux installs.
+`upgrade-kueue.sh` also writes the CRDs it applied to `./kueue-upgrade/kueue-crds.yaml`, annotated `kustomize.toolkit.fluxcd.io/prune: disabled`.
+Commit it next to `kueue.yaml`, in place of any Kueue CRDs there: Flux applies CRDs before the objects that use them, so Git can restore Kueue on an empty cluster, and never prunes them, so removing the file does not delete the queues.
 
 ## What changes
 
@@ -257,8 +293,10 @@ The 0.20.3 chart ships its CRDs as templates, which `crds: Skip` does not cover,
   Kueue 0.18 ignores the namespace it runs in, which is now `kueue-system`, so Kueue-labelled jobs in the Hopsworks namespace are queued.
 - **Spark jobs are queued, with static executors only.**
   `upgrade-kueue.sh` turns on Kueue's SparkApplication integration, so Spark jobs get quota and queueing.
-  Kueue reserves quota for a fixed number of executors, so Hopsworks refuses a Spark job with dynamic allocation on a Kueue cluster.
-  Spark jobs saved before the upgrade have dynamic allocation on: turn it off and set the number of executors before running them.
+  Kueue reserves quota for a fixed number of executors, so on a Kueue cluster Spark jobs run static executors.
+  A job saved with dynamic allocation, as every Spark job was by default, runs its dynamic-allocation minimum, at least one executor: it is converted and saved at its next start, save, or read of the project default.
+  A job that needs more executors sets `spark.executor.instances`.
+  `spark.dynamicAllocation.enabled=true` in a job's Spark properties is refused.
   Spark in notebooks is unchanged.
 - **Workloads must be ready within 30 minutes.**
   Kueue 0.19 turns `waitForPodsReady` on by default: a workload whose pods are not all ready 30 minutes after admission is evicted and queued again.
@@ -290,6 +328,7 @@ The controller is ready in `kueue-system`, none runs in the Hopsworks namespace,
 The chart checks the cluster before it renders:
 
 - With `hw-kueue.kueue.enabled=false`, it refuses while the bundled controller still runs, while Cohorts are stored as `v1alpha1`, or when no Kueue serving `v1beta2` is installed.
-- With `hw-kueue.kueue.enabled=true`, it refuses when the Kueue CRDs exist and the Hopsworks release does not own them: those of the bundled Kueue 0.12, or those of an external Kueue.
+- With `hw-kueue.kueue.enabled=true`, it refuses when Kueue CRDs exist that the chart did not install, those without the label `hw-kueue.hops.works/bundled-crds`: those of the bundled Kueue 0.12, or those of an external Kueue.
+  It also refuses an upgrade that turns the bundled Kueue on while its CRDs are missing, since `helm upgrade` does not install a chart's `crds/`.
 
 `hw-kueue.enforcePrerequisiteCheck=false` turns the check off, for `helm template`.
