@@ -309,6 +309,7 @@ nav:
               - Upgrading with Helm 4: setup_installation/admin/helm4.md
               - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
               - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
+              - Kueue outside the Hopsworks namespace: setup_installation/admin/kueue_external.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
