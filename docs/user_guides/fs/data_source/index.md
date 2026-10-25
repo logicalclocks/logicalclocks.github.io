@@ -90,6 +90,14 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure](creation/crm_sales_analytics.md)
 
+- :simple-gmail:{ .lg .middle style="color:#EA4335" } **Gmail**
+
+    ---
+
+    Copy a mailbox into a Delta feature group with a scheduled sync job.
+
+    [:octicons-arrow-right-24: Configure][data-source-gmail]
+
 - :material-folder-network-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **HopsFS**
 
     ---
