@@ -239,6 +239,24 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
   While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
   Looking for agent restarts finds none.
 
+### MinIO priority class and registry probes { #upgrade-minio-priority }
+
+When a node runs short of disk, the kubelet evicts pods ranked by their usage against their requests, then by priority.
+Before 5.3 MinIO had no priority class, so it could be evicted ahead of ordinary workloads, and HopsFS had no block store until it came back.
+A priority class moves MinIO later in that order; it does not prevent its eviction.
+
+- The chart creates a cluster-scoped PriorityClass `<release>-minio-priority` (value 1000000) and sets it on the MinIO StatefulSet.
+  The account that runs `helm upgrade` needs permission to create PriorityClasses.
+  The value cannot be changed after the class is created.
+  To use an existing class, set `minio.priorityClassName`; to keep MinIO without a priority class, set `minio.priorityClass.create: false`.
+- The MinIO pod is recreated by the upgrade, so HopsFS reads and writes through MinIO pause until it is ready again.
+- The registry's liveness probe checks that the process answers, and its readiness probe keeps `/v2/`.
+  While MinIO is unavailable the registry pods leave the service instead of restarting, and image pulls fail until MinIO is back.
+  The registry pods are recreated by the upgrade.
+- The registry no longer logs its S3 requests (`REGISTRY_STORAGE_S3_LOGLEVEL` is `off`).
+- A new Prometheus alert, `NodeRootFilesystemLow` (warning), fires when a node's root filesystem has less than 15% free for 10 minutes.
+  It is only rendered when `prometheus-node-exporter.enabled` is true.
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
