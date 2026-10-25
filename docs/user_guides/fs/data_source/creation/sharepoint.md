@@ -222,15 +222,17 @@ The `Syncs` tab links it in the `Index` column once the first run has created it
 | `created_by`, `modified_by` | display names of the author and the last editor |
 | `content_hash` | SharePoint's quickXorHash of the content |
 | `sync_id`, `execution_id`, `indexed_at` | the sync and the run that last wrote the row, and when |
-| `ingestion_date` | the partition: the UTC day the file was first copied in |
+| `ingestion_date` | the partition: the UTC day the file was first indexed, which is the day it was copied in, or for a file already in the dataset, the day indexing was turned on |
 
 The table holds no file content; the file is in the dataset at `hopsfs_path`.
 
 Each run that does not fail lists the folder with its SharePoint metadata and compares it with the table:
 
-- A file whose copy is in the dataset and that has no row, or whose path, size, modification time, editor or hash changed, is written. A new file goes into today's partition; a changed or renamed file keeps the partition of the day it first arrived.
-- A row whose file is gone from both SharePoint and the dataset is deleted. A copy-only sync keeps its files, so it keeps their rows too.
-- A file that failed to copy is not indexed until a run copies it.
+- A file whose copy is in the dataset and that has no row, or whose path, size, modification time, editor or hash changed, is written.
+  A new file goes into today's partition; a changed or renamed file keeps the partition of the day it was first indexed.
+- A row whose file is gone from both SharePoint and the dataset is deleted, and so is a row whose path now holds another SharePoint file.
+  A copy-only sync keeps its files, so it keeps their rows too.
+- A file whose copy failed keeps its current row, or gets none, until a run copies it.
 
 A run that stopped at its time budget leaves the index to the next run.
 A run that copied its files but could not write the index is reported as partial with the error, and the next run brings the index up to date.
@@ -244,6 +246,7 @@ A file a copy-only sync kept after it was deleted in SharePoint has no metadata 
 Turning it off keeps the feature group, and a new name starts a new one.
 The sync script must be template version 2 or later; reset it to default if the data source page shows an older version.
 Deleting the sync deletes the feature group, unless the files are kept.
+The name of an index must not be that of an existing feature group, and a sync deletes only the feature group its runs created.
 
 In a terminal, the feature store is mounted at `/hopsfs/featurestore/<project>_featurestore.db/`, and the DuckDB CLI reads the index with its `delta` extension:
 
