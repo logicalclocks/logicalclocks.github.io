@@ -339,6 +339,31 @@ agent = agents.deploy_agent(
 
 Without prices every turn reports a cost of zero.
 
+### Finding a trace
+
+The **Traces** card on the agent's page lists the most recent traces, grouped by conversation, with their session, subject, status and execution time.
+To filter the list, pick the field to search in the dropdown beside the search box and type a value:
+
+- **Input or output** matches words said in the conversation, by the person or by the agent;
+- **Subject** matches the person a turn was for, exactly, so a partial value finds nothing;
+- **Session** matches a conversation id;
+- **Trace ID** matches one trace.
+
+Clicking a subject or a session in the list fills in the same search, so one click shows every conversation with that person, or every turn of that conversation.
+Changing the field clears the box, because a value typed for one field rarely means anything in another.
+
+Once a trace is open, the search box above its span tree filters the spans by any of their fields: name, type, status, messages, attributes and events.
+A span that matches keeps its ancestors in view, so it stays in context.
+
+The same search is available from Python:
+
+```python
+for trace in agent.traces(search="customer-7", search_field="subject", limit=20):
+    print(trace.trace_id, trace.session_id, trace.status_code)
+```
+
+`search_field` is `messages` (the default), `subject`, `session_id` or `trace_id`.
+
 ## Next steps
 
 - [Agent Memory][agent-memory]: conversation history, a rolling summary, facts that outlive a conversation, and search over earlier conversations.
