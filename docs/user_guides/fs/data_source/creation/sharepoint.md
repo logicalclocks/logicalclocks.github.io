@@ -245,11 +245,11 @@ Turning it off keeps the feature group, and a new name starts a new one.
 The sync script must be template version 2 or later; reset it to default if the data source page shows an older version.
 Deleting the sync deletes the feature group, unless the files are kept.
 
-In a terminal, the feature store is mounted at `/hopsfs/featurestore/`, and the DuckDB CLI reads the index with its `delta` extension:
+In a terminal, the feature store is mounted at `/hopsfs/featurestore/<project>_featurestore.db/`, and the DuckDB CLI reads the index with its `delta` extension:
 
 ```bash
 duckdb -c "SELECT file_name, modified_by, modified_at, web_url
-FROM delta_scan('/hopsfs/featurestore/sharepoint_reports_1')
+FROM delta_scan('/hopsfs/featurestore/acme_featurestore.db/sharepoint_reports_1')
 WHERE file_type = 'pdf' ORDER BY modified_at DESC LIMIT 20;"
 ```
 
