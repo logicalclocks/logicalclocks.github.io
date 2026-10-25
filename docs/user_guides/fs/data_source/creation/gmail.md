@@ -196,7 +196,10 @@ The `attachments` column lists the full paths of a message's files, such as `/Pr
 
 - `INCREMENTAL_TIMESTAMP` (the default): the first run copies the mailbox from the start date on, or the whole mailbox without one.
     Every later run upserts only the messages received since the previous run.
+    The first run reads the mailbox a week at a time, oldest first, and upserts every 5000 messages, so the feature group fills while it runs and a run that fails resumes from its last upsert.
     The upserts are keyed by `message_id`, so a retried run, or a run that overlaps the previous one, never duplicates a message.
+    A scheduled run that starts while the previous run is still copying does nothing and succeeds.
+    Gmail limits how many requests a user's mailbox serves per minute, so a backfill of tens of thousands of emails can take hours; the job log reports when Gmail throttles it.
 - `FULL_LOAD`: every run copies all the selected messages from the start date on, overwrites the feature group, and rebuilds the attachments directory.
     A run that selects no messages leaves the feature group as it was.
 
