@@ -110,6 +110,7 @@ Resource allocation for the Spark driver and executors can be configured, also t
   Raise it when executors are OOMKilled.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
+  On a cluster that schedules jobs with Kueue, only static is allowed: a job with dynamic allocation is refused, and new jobs default to static ([Spark jobs and Kueue](../scheduling/kueue_details.md#spark-jobs)).
 
 <p align="center">
   <figure>
@@ -245,7 +246,7 @@ The following table describes the job configuration parameters for a SPARK job.
 | <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
 | <nobr>`conf['spark.driver.memoryOverheadFactor']`</nobr> | float | Fraction of the driver memory added to the driver pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
 | <nobr>`conf['spark.executor.memoryOverheadFactor']`</nobr> | float | Fraction of the executor memory added to each executor pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
-| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors | `true` |
+| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors. Must be `false` on a cluster with Kueue | `true`, `false` with Kueue |
 | <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr> | int | Minimum number of executors with dynamic allocation | `1` |
 | <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr> | int | Maximum number of executors with dynamic allocation | `2` |
 | <nobr>`conf['spark.dynamicAllocation.initialExecutors']`</nobr> | int | Initial number of executors with dynamic allocation | `1` |
