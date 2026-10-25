@@ -103,7 +103,9 @@ Click `Next: Create sync` to save the data source and set up the first sync.
     - `Keep in sync on a schedule` mirrors the folder on a schedule: every 15 minutes, hourly, daily, weekly, or a custom [Quartz cron expression](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) in UTC.
       A mirror also deletes files that were deleted in SharePoint.
 5. **Alert on failure**: an alert receiver notified when a run fails or is killed.
-6. Under `Advanced`:
+6. **Index the files in a feature group**: keep a feature group with one row per file; see [The file index](#the-file-index).
+   **Feature group** names it; empty means `sharepoint_<dataset>`.
+7. Under `Advanced`:
     - **Include** and **Exclude** patterns, in [rclone filter syntax](https://rclone.org/filtering/), one per line.
     - **Maximum file size** in MB; larger files are skipped. `0` copies every file.
     - **Mirror deletions**, to change the default of the option chosen under `When`.
@@ -203,6 +205,56 @@ changes = duckdb.sql(
 
 Each run of a sync deletes the sync's audit days older than `data_source_audit_retention_days`.
 
+### The file index
+
+A sync with indexing on keeps version 1 of a Delta feature group, `sharepoint_<dataset>` by default, with one row per file in the dataset.
+The `Syncs` tab links it in the `Index` column once the first run has created it.
+
+| Column | Content |
+|---|---|
+| `file_id` | SharePoint item id, the primary key; it stays the same when the file is renamed or moved |
+| `site_id`, `drive_id` | the site and the document library |
+| `file_name`, `file_type` | the name, and its extension in lowercase |
+| `sharepoint_path`, `web_url` | the path in the library, and a link to the file in SharePoint |
+| `hopsfs_path` | the copy in the dataset, `/Projects/<project>/<dataset>/...` |
+| `mime_type`, `size_bytes` | content type and size in bytes |
+| `created_at`, `modified_at` | SharePoint creation and last modification times, UTC |
+| `created_by`, `modified_by` | display names of the author and the last editor |
+| `content_hash` | SharePoint's quickXorHash of the content |
+| `sync_id`, `execution_id`, `indexed_at` | the sync and the run that last wrote the row, and when |
+| `ingestion_date` | the partition: the UTC day the file was first copied in |
+
+The table holds no file content; the file is in the dataset at `hopsfs_path`.
+
+Each run that does not fail lists the folder with its SharePoint metadata and compares it with the table:
+
+- A file whose copy is in the dataset and that has no row, or whose path, size, modification time, editor or hash changed, is written. A new file goes into today's partition; a changed or renamed file keeps the partition of the day it first arrived.
+- A row whose file is gone from both SharePoint and the dataset is deleted. A copy-only sync keeps its files, so it keeps their rows too.
+- A file that failed to copy is not indexed until a run copies it.
+
+A run that stopped at its time budget leaves the index to the next run.
+A run that copied its files but could not write the index is reported as partial with the error, and the next run brings the index up to date.
+
+The rows are written and deleted with delta-rs through the feature group's `insert` and `remove_rows`, so each run adds commits to the feature group's activity.
+A run that finds a day before today with more than one data file compacts the days from there on into files of about 200 MB, then vacuums files unused for 7 days.
+delta-rs 1.4 rewrites a file to delete rows from it and does not write deletion vectors, so the table does not enable them.
+
+Indexing can be turned on for an existing sync: its next run indexes every copied file that is still in the SharePoint folder.
+A file a copy-only sync kept after it was deleted in SharePoint has no metadata to index, so it gets no row.
+Turning it off keeps the feature group, and a new name starts a new one.
+The sync script must be template version 2 or later; reset it to default if the data source page shows an older version.
+Deleting the sync deletes the feature group, unless the files are kept.
+
+In a terminal, the feature store is mounted at `/hopsfs/featurestore/`, and the DuckDB CLI reads the index with its `delta` extension:
+
+```bash
+duckdb -c "SELECT file_name, modified_by, modified_at, web_url
+FROM delta_scan('/hopsfs/featurestore/sharepoint_reports_1')
+WHERE file_type = 'pdf' ORDER BY modified_at DESC LIMIT 20;"
+```
+
+Use `delta_scan`, not `read_parquet` over the partition directories: until a vacuum, those directories also hold the files of deleted and rewritten rows.
+
 ### Failures
 
 A run that cannot reach SharePoint, cannot find its folder, or fails in rclone fails its job execution.
@@ -212,7 +264,7 @@ The sync's `last error` and the execution's logs show the cause, and the alert r
 ### Deleting a sync
 
 Deleting a sync deletes its job, schedule and alerts.
-By default it also deletes the dataset and the audit log.
+By default it also deletes the dataset, the audit log and the index feature group.
 With `Keep the files`, the dataset stays as an ordinary dataset, still writable by data owners only, and its audit log is kept and no longer rotated.
 A data source with syncs cannot be deleted; delete its syncs first.
 
@@ -251,11 +303,14 @@ sync = sharepoint.create_sync(
     dataset_name="reports",
     schedule="0 0 * ? * *",
     include=["*.pdf", "*.xlsx"],
+    index_files=True,
 )
 sync.status()
 sync.run()
 sync.get_audit()
 sync.set_schedule("0 0 2 ? * *")
+index = sync.get_index_feature_group()
+sync.update(index_files=False)
 sync.delete(keep_files=True)
 ```
 
@@ -274,6 +329,8 @@ sync.delete(keep_files=True)
         - <code class="doc-symbol doc-symbol-method"></code> [`run`][hsfs.core.sharepoint_sync.SharePointSync.run]
         - <code class="doc-symbol doc-symbol-method"></code> [`get_audit`][hsfs.core.sharepoint_sync.SharePointSync.get_audit]
         - <code class="doc-symbol doc-symbol-method"></code> [`set_schedule`][hsfs.core.sharepoint_sync.SharePointSync.set_schedule]
+        - <code class="doc-symbol doc-symbol-method"></code> [`update`][hsfs.core.sharepoint_sync.SharePointSync.update]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_index_feature_group`][hsfs.core.sharepoint_sync.SharePointSync.get_index_feature_group]
         - <code class="doc-symbol doc-symbol-method"></code> [`delete`][hsfs.core.sharepoint_sync.SharePointSync.delete]
     - <code class="doc-symbol doc-symbol-docs"></code> [rclone filtering](https://rclone.org/filtering/)
 
@@ -289,10 +346,11 @@ hops datasource create sharepoint finance_sharepoint \
 hops datasource sharepoint drives finance_sharepoint
 hops datasource sharepoint folders finance_sharepoint --drive <drive id> --path Reports
 hops datasource sharepoint copy finance_sharepoint --drive <drive id> --folder Reports/2025 --dataset reports_2025
-hops datasource sharepoint sync create finance_sharepoint --drive <drive id> --folder Reports/2026 --dataset reports --cron "0 0 * ? * *"
+hops datasource sharepoint sync create finance_sharepoint --drive <drive id> --folder Reports/2026 --dataset reports --cron "0 0 * ? * *" --index-files
+hops datasource sharepoint sync index finance_sharepoint <sync id> --off
 hops datasource sharepoint sync list finance_sharepoint
 hops datasource sharepoint sync audit finance_sharepoint <sync id> --day 2026-10-22
 hops datasource sharepoint sync delete finance_sharepoint <sync id> --keep-files
 ```
 
-`hops datasource sharepoint sync` also has `status`, `run`, `pause`, `resume`, `resync`, `schedule` and `set-folder`, and `hops datasource sharepoint reset-script` restores the sync script.
+`hops datasource sharepoint sync` also has `status`, `run`, `pause`, `resume`, `resync`, `schedule`, `set-folder` and `index`, and `hops datasource sharepoint reset-script` restores the sync script.
