@@ -1,280 +1,355 @@
 ---
-description: Documentation on how to configure and run an Agent Deployment on Hopsworks.
+description: How to write, deploy and talk to a conversational agent on Hopsworks, and the chat contract it answers by.
 ---
 
 # How To Run An Agent Deployment
 
 ## Introduction
 
-Agent Deployments are **server-only KServe deployments with no model attached**.
-You provide an entrypoint Python script that starts a REST server.
-Hopsworks exposes it behind an endpoint.
-Use Agent Deployments for interactive agents and LLM workflows.
-The service needs to stay up and answer requests.
+An agent deployment is a long-running service that answers people: a chat assistant, a tool-using agent, or an LLM workflow behind an endpoint.
+You write it as ordinary Python with the framework you prefer, such as LangGraph, LlamaIndex, the OpenAI Agents SDK, or none.
+Hopsworks runs it, gives it an endpoint, and connects it to the rest of the platform.
 
-If you need a fire-and-forget background run, use [Agent Tasks](../tasks/index.md)
-instead.
+An agent built on `AgentApp` answers by the [chat contract][the-chat-contract], a small HTTP contract that tells Hopsworks how to talk to it.
+That is what makes everything around the agent work with no per-agent configuration:
 
-Common use cases:
+- the chat panel in the UI finds the agent, streams its replies and shows its progress;
+- the Python client talks to it by name and threads conversations for you;
+- traces, feedback, evaluation and memory key on the ids the contract carries, so a turn can be found, judged and replayed afterwards.
 
-- **Interactive assistants** - a chat or tool-using agent that stays online
-- **LLM workflows** - a deterministic sequence of retrieval, reasoning, and
-  generation steps that you want to expose as a service
-- **RAG-backed services** - an agent that reads Feature Store context and uses
-  it to answer questions
+For a fire-and-forget run that does a job and exits, use [Agent Tasks][how-to-run-an-agent-task] instead.
 
 ## Where to find it in the UI
 
 In the project sidebar, go to **Agents** and then **Agent Deployments**.
-The list page shows the agent deployments in the project, along with the same
-type of detail page you use for model deployments.
+Each agent's page shows its status, logs and configuration, a chat panel to talk to it, its traces, and an **Evaluation** tab for its suites, monitors and analysis.
 
-## Create and manage an agent deployment
+## Write the agent
 
-The most common way to create one is with the SDK or the CLI:
+Serving an agent needs the `agents` extra, `pip install 'hopsworks[agents]'`.
 
-```bash
-hops agent list
-hops agent create my_agent.py --name my_agent --requirements requirements.txt --environment my_agent
-hops agent start my_agent
-hops agent query my_agent --data '{"prompt": "hello"}'
-hops agent logs my_agent
-hops agent info my_agent
-hops agent stop my_agent
-hops agent delete my_agent --yes
+```python
+from hopsworks_agents.protocol import AgentApp, AgentResponse
+
+
+agent_app = AgentApp(
+    name="Support agent",
+    description="Answers questions about orders",
+    welcome_message="How can I help?",
+    suggested_prompts=["Where is my order?"],
+)
+
+
+@agent_app.chat
+async def chat(request):
+    answer = await my_agent.ainvoke(request.text)
+    return AgentResponse.text(text=answer)
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(agent_app, host="0.0.0.0", port=8080)
 ```
 
-Use `hops agent list` first to confirm auth and serving are reachable.
+`my_agent` stands for whatever does the work: a LangGraph graph, a LlamaIndex agent, a plain function.
+`AgentApp` is a FastAPI application that serves the chat contract around your handler, so the file above is a complete agent.
+
+!!! warning "The entrypoint has to serve"
+    Hopsworks runs your entrypoint with `python <file>`.
+    Without the `uvicorn.run(...)` block the script defines the app, exits successfully, and the deployment never becomes ready.
+
+## Deploy and manage it
 
 ```python
 import hopsworks
 
 
 project = hopsworks.login()
-ms = project.get_model_serving()
+agents = project.get_agent_serving()
 
-deployment = ms.deploy_agent(
-    entry="my_agent.py",  # .py file or a dir with pyproject.toml
-    name="my_agent",
+agent = agents.deploy_agent(
+    "support_agent.py",
+    name="support_agent",
     requirements="requirements.txt",
-    environment="my_agent",
-    upload_dir="Resources/agents",  # default
+    environment="support_agent",
+    tracing={"enabled": True},
 )
-deployment.start(await_running=600)
-print(deployment.predict(inputs={"prompt": "hello"}))
-# After editing the code: re-create, then deployment.restart()
+agent.start()
+
+reply = agent.chat("Where is my order?")
+print(reply.text)
 ```
 
-After creation, the deployment appears in the Agent Deployments list where you
-can inspect its status, logs, endpoints, and configuration.
+The entry is a `.py` file, or a directory with a `pyproject.toml` that is built as a package.
+`deploy_agent` creates the agent on the first call and updates it on the next ones.
+It leaves the agent's running state alone, so after changing the code call `agent.restart()` to roll a running agent onto it.
+`requirements` are installed into `environment`, a Python environment of the project that is created when it does not exist yet.
+
+The same lifecycle from the terminal:
+
+```bash
+hops agent list                      # what agents exist
+hops agent create support_agent.py --name support_agent \
+  --requirements requirements.txt --environment support_agent
+hops agent start support_agent       # waits until it is running
+hops agent info support_agent        # status, endpoint, source and commit
+hops agent logs support_agent        # startup and request errors
+hops agent stop support_agent
+hops agent delete support_agent --yes
+```
+
+Run `hops agent list` first to confirm that authentication and serving are reachable.
 
 ### Deploy from a Git repository
 
 An agent can be served from a Git repository instead of a project file.
-The repository is cloned every time the deployment starts, so a restart picks up whatever the branch points at.
+The repository is cloned every time the deployment starts, so a restart picks up whatever the branch points at, and every file beside the entry comes along with it.
 
-Supported providers are GitHub, GitLab, and BitBucket.
+Supported providers are GitHub, GitLab and BitBucket.
 Configure the provider credentials once under project settings, see [Configure a Git Provider](../../projects/git/configure_git_provider.md).
 
 ```python
-deployment = ms.deploy_agent(
-    entry="src/agent.py",  # path inside the repository
-    name="my_agent",
+agent = agents.deploy_agent(
+    "src/agent.py",  # a path inside the repository
+    name="support_agent",
     git_url="https://github.com/my-org/my-agent.git",
     git_provider="GitHub",
     git_branch="main",
-    environment="my_agent",
+    environment="support_agent",
 )
 ```
 
-`entry` is interpreted relative to the repository root rather than as a HopsFS path.
-If you leave `git_branch` unset, the clone follows the repository's default branch.
+The entry is relative to the repository root rather than a HopsFS path.
+Without `git_branch` the clone follows the repository's default branch.
 
 ### Auto-redeploy on new commits
 
-A Git-backed agent can roll itself onto the branch HEAD whenever a new commit is pushed:
+With `git_auto_redeploy=True`, a Git-backed agent rolls itself onto the branch head whenever a new commit is pushed.
+Hopsworks polls the branch and rolls the deployment when it moves, and the running version keeps answering until the new one is ready.
+Hopsworks rejects the flag for an agent deployed from a project file, because there is no branch to follow.
+A stopped agent is not rolled; it clones the branch head on its next start.
 
-```python
-deployment = ms.deploy_agent(
-    entry="src/agent.py",
-    name="my_agent",
-    git_url="https://github.com/my-org/my-agent.git",
-    git_provider="GitHub",
-    git_branch="main",
-    git_auto_redeploy=True,
-    environment="my_agent",
-)
+The agent's **Artifact files** card shows the repository, the branch, the commit it is running, and whether auto-redeploy is on.
+
+## The chat contract
+
+You do not implement the contract by hand: `AgentApp` serves these routes around your handler.
+
+| Route | Purpose |
+| --- | --- |
+| `GET /.well-known/hopsworks-agent.json` | The manifest: what this agent is and what it can do |
+| `POST /v1/chat` | One turn, one reply |
+| `POST /v1/chat/stream` | The same turn, streamed as server-sent events |
+| `GET /health` | Liveness, the process is up |
+| `GET /ready` | Readiness, a handler is registered and memory, if configured, is reachable |
+
+### The manifest
+
+The manifest is how a client discovers an agent rather than assuming it.
+It carries the agent's name, description and version, the welcome message and suggested prompts the chat panel shows, the modalities it accepts and returns, the routes it serves, and its capabilities.
+
+This is what the agent above publishes, abridged to the keys this page talks about:
+
+```json
+{
+  "protocol": "hopsworks-agent",
+  "agent": {
+    "name": "Support agent",
+    "description": "Answers questions about orders"
+  },
+  "endpoints": {"chat": "/v1/chat", "feedback": "/v1/feedback"},
+  "capabilities": {
+    "streaming": false,
+    "conversation_history": false,
+    "tool_events": false,
+    "feedback": true,
+    "trace_correlation": false
+  },
+  "ui": {
+    "welcome_message": "How can I help?",
+    "suggested_prompts": ["Where is my order?"]
+  }
+}
 ```
 
-Hopsworks polls the remote branch and rolls the deployment when it moves.
-The running version keeps serving requests until the new one is ready.
+Each capability is read by something.
+The chat panel hides the stream toggle, the transcript view and the feedback control when they are false, and the evaluation runner refuses to grade an agent whose `trace_correlation` is false.
+Registering a `@agent_app.stream` handler turns `streaming` on and adds a `stream` endpoint, and configuring [memory][agent-memory] turns `conversation_history` on.
 
-The flag only applies to Git-backed agents, and Hopsworks rejects it for an agent deployed from a project file.
-A stopped deployment is not rolled; it clones the branch HEAD on its next start.
+### One turn
 
-The deployment's **Artifact files** card shows the repository, the branch, the commit it is running, and whether auto-redeploy is enabled.
-The entrypoint links to the file in the repository at that commit.
+A request carries the new message and, optionally, the conversation it belongs to and who it is for.
+A reply carries the ids, the message, and what the turn cost:
 
-## Small example
+```json
+{
+  "id": "response_01HZ...",
+  "conversation_id": "conv_01HZ...",
+  "message": {"id": "msg_01HZ...", "role": "assistant", "content": []},
+  "usage": {"input_tokens": 13, "output_tokens": 7},
+  "status": "completed"
+}
+```
 
-The file below shows a simple agent program that uses LlamaIndex, FastAPI,
-and OpenTelemetry.
-The deployment runs the file with `python`, so the file is the server: it listens on port 8080, answers the readiness probe on `/`, and serves `/predict` and `/v1/models/<name>:predict`, the two paths a prediction request arrives on.
+In the handler, `request.text` is the message text, and `request.to_framework_messages()` returns the `[{"role", "content"}]` shape that LangChain, LangGraph and LlamaIndex accept.
+`request.conversation_id` is always set, generated on the first turn, so it can be passed straight to a LangGraph checkpointer or a LlamaIndex chat store as a thread id.
+Returning a plain `str` from the handler is shorthand for `AgentResponse.text(...)`.
 
-Set `ANTHROPIC_API_KEY` in the deployment environment. Hopsworks injects the
-`OTEL_EXPORTER_OTLP_*` environment variables for the deployment, so the
-OpenTelemetry exporter can stay configuration-free.
+### Conversations
+
+The request carries only the new message.
+Pass the `conversation_id` from a reply into the next request and the turns belong to one conversation; leave it out and a new conversation starts.
+With [memory][agent-memory] configured, Hopsworks keeps the transcript and hands the handler the recent turns.
+Without it, the conversation id is a thread key your own framework uses.
+
+### Streaming
+
+Register an async generator and the agent streams:
 
 ```python
-import asyncio
-import os
+@agent_app.stream
+async def stream(request):
+    async for delta in my_agent.astream(request.text):
+        yield delta
+```
 
-import uvicorn
-from fastapi import FastAPI
-from llama_index.core.agent.workflow import ReActAgent
-from llama_index.core.tools import FunctionTool
-from llama_index.llms.anthropic import Anthropic
-from openinference.instrumentation.llama_index import LlamaIndexInstrumentor
-from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.sdk import trace as trace_sdk
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+`/v1/chat/stream` then emits the reply as it is produced, and `/v1/chat` still works by collecting the stream.
+An agent that registers only a `@chat` handler still answers the streaming route, as a single completed event, so a caller never has to ask which handler was written.
 
+### Refusals
 
-def add(a: float, b: float) -> float:
-    """Adds two numbers."""
-    return a + b
+Raise `AgentError` for anything the agent declines to do:
+
+```python
+from hopsworks_agents.protocol import AgentError
 
 
-def subtract(a: float, b: float) -> float:
-    """Subtracts two numbers."""
-    return a - b
+@agent_app.chat
+async def chat(request):
+    if not request.text:
+        raise AgentError("Say something first.", code="empty_message", status_code=400)
+    return await my_agent.ainvoke(request.text)
+```
 
+The caller receives the error in `detail`, with a code it can branch on, a message for a person, and whether a retry is worth it, under the handler's `status_code`.
+That status defaults to `500`, so pass a 4xx for anything the agent declined rather than failed at.
+A client tells a refusal from a breakage by that status, and an evaluation run uses the same distinction when it decides whether the agent failed a task or did not answer it.
 
-def multiply(a: float, b: float) -> float:
-    """Multiplies two numbers."""
-    return a * b
+### Who a turn is for
 
+A turn may name the person it is for:
 
-def divide(a: float, b: float) -> float:
-    """Divides two numbers."""
-    if b == 0:
-        raise ValueError("Cannot divide by zero.")
-    return a / b
+```python
+reply = agent.chat("Where is my order?", subject="customer-7")
+```
 
+The subject travels with each request rather than with the deployment, because one deployment serves everybody, and it is what long-term memory is keyed by.
+A turn that names nobody falls back to its own conversation, and `ctx.subject_source` says which happened: `client` when the caller named someone, `conversation` when it fell back, and `app` when the agent worked it out during the turn.
 
-def build_tracer_provider():
-    endpoint = os.environ.get(
-        "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT",
-        "http://localhost:4318/v1/traces",
-    )
+!!! warning "Identification, not authentication"
+    The endpoint authenticates whoever calls the agent, not the person using it.
+    A subject is only as trustworthy as whatever your agent derived it from, so do not treat it as proof of identity.
 
-    tracer_provider = trace_sdk.TracerProvider()
-    tracer_provider.add_span_processor(
-        SimpleSpanProcessor(OTLPSpanExporter(endpoint=endpoint))
-    )
-    return tracer_provider
+### Progress events
 
+With `AgentApp(tool_events=True)`, the steps an agent takes reach the caller as progress chips while it works:
 
-class AgentPredictor:
-    def __init__(self):
-        self.tracer_provider = build_tracer_provider()
+```python
+@agent_app.chat
+async def chat(request, ctx):
+    await ctx.emit_event("retrieve", status="running", event_id="step-1")
+    answer = await my_agent.ainvoke(request.text)
+    await ctx.emit_event("retrieve", status="done", event_id="step-1")
+    return AgentResponse.text(text=answer)
+```
 
-        LlamaIndexInstrumentor().instrument(tracer_provider=self.tracer_provider)
+Pass the same `event_id` for a step's start and end, so the client shows one chip that updates rather than two.
+When tracing is on and the framework is instrumented, tool calls are reported this way with no code in the agent.
 
-        llm = Anthropic(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=1024,
-            temperature=0.0,
-        )
+### The handler context
 
-        tools = [
-            FunctionTool.from_defaults(add),
-            FunctionTool.from_defaults(subtract),
-            FunctionTool.from_defaults(multiply),
-            FunctionTool.from_defaults(divide),
-        ]
+Declare a second parameter and the SDK passes the turn's context:
 
-        self.agent = ReActAgent(
-            tools=tools,
-            llm=llm,
-        )
+```python
+@agent_app.chat
+async def chat(request, ctx):
+    ctx.logger.info("turn for %s", ctx.conversation_id)
+    return AgentResponse.text(text="ok")
+```
 
-    async def _predict_async(self, inputs):
-        prompt = inputs.get("prompt", "")
-        result = await self.agent.run(prompt)
-        return {"answer": str(result)}
+`ctx` exposes the conversation, message and turn ids, the deployment id, the subject, a logger, and `emit_event`.
+When the deployment configures memory it also exposes `history`, `summary`, `state()`, `recall`, `remember`, `forget` and `system_context()`, see [Agent Memory][agent-memory].
 
-    def predict(self, inputs):
-        return asyncio.run(self._predict_async(inputs))
+### Talking to an agent from Python
 
+```python
+agent = agents.get_agent("support_agent")
+print(agent.manifest()["capabilities"])
 
-predictor = AgentPredictor()
+reply = agent.chat("Where is my order?", subject="customer-7")
+print(reply.text, reply.conversation_id, reply.trace_id)
 
-agent_app = FastAPI()
-
-FastAPIInstrumentor.instrument_app(
-    agent_app,
-    tracer_provider=predictor.tracer_provider,
+agent.chat(
+    "And the second one?",
+    conversation_id=reply.conversation_id,
+    subject="customer-7",
 )
 
-
-@agent_app.get("/")
-def ready():
-    return {"status": "ok"}
-
-
-def predict_instances(payload: dict):
-    instances = payload.get("instances", [payload])
-    return {"predictions": [predictor.predict(i) for i in instances]}
-
-
-# Where the Hopsworks inference endpoint forwards a request.
-@agent_app.post("/predict")
-def predict(payload: dict):
-    return predict_instances(payload)
-
-
-# KServe's path, which deployment.predict() uses inside the cluster.
-@agent_app.post("/v1/models/{target}")
-def kserve_predict(target: str, payload: dict):
-    return predict_instances(payload)
-
-
-@agent_app.post("/query")
-def query(payload: dict):
-    return predictor.predict(payload)
-
-
-if __name__ == "__main__":
-    uvicorn.run(agent_app, host="0.0.0.0", port=8080)
+for frame in agent.chat_stream("Tell me more").events():
+    print(frame.type, frame.text or "")
 ```
+
+`reply.trace_id` is the thread back to everything else: the turn's trace, the feedback given on it, and the evaluation trials that replayed it.
+`chat` waits 120 seconds by default; pass `timeout=` for an agent whose turns take longer.
 
 ## Tracing
 
-Agent Deployments can be configured with OpenTelemetry tracing.
+With `tracing={"enabled": True}`, every turn is traced with OpenTelemetry: the turn, each model call with its tokens, and each tool call with its arguments and result.
+Hopsworks injects the `OTEL_EXPORTER_OTLP_*` settings into the deployment, so the agent needs no exporter configuration.
+The traces appear on the agent's page, and feedback, evaluation and monitoring read them.
 
-When tracing is enabled, Hopsworks automatically provisions four online,
-Delta-backed feature groups in the project's Feature Store:
+The first traced deployment in a project creates four feature groups in its feature store:
 
-- `otel_spans` - root spans and trace summary fields
-- `otel_span_attributes` - span attributes as key-value pairs
-- `otel_events` - span events
-- `otel_event_attributes` - event attributes as key-value pairs
+- `otel_spans`, root spans and trace summary fields;
+- `otel_span_attributes`, span attributes as key-value pairs;
+- `otel_events`, span events;
+- `otel_event_attributes`, event attributes as key-value pairs.
 
-The Traces UI reads from these feature groups, and the first traced deployment
-in a project creates them automatically if they do not already exist.
+`otel_tracing_storage` chooses where traces are written:
 
-After that, choose one of these storage modes:
+- `online`, the default, writes them to the online store, where the UI reads them;
+- `offline` writes them only offline, so the UI shows no trace summaries, but they can be read from the offline feature groups with the Python API;
+- `both` writes them to both, so they show in the UI and are kept cost-effectively for long-term retention, which is the recommended choice for a production agent.
 
-- `online` - the default; writes traces to only online
-- `offline` - writes traces to only offline. You will no be able to see the traces summaries in the UI, but you can
-  use the hopsworks-api to read the offline feature groups and reconstruct the traces from there.
-- `both` - export traces to both online and offline feature groups. This is the recommended option for production deployments, as it allows you to see the traces in the UI and also have them stored cost-effectively for long-term retention.
+Set the model's prices so each trace carries its cost:
+
+```python
+agent = agents.deploy_agent(
+    "support_agent.py",
+    name="support_agent",
+    tracing={
+        "enabled": True,
+        "otel_tracing_storage": "both",
+        "input_token_price_per_million_tokens": 3.0,
+        "output_token_price_per_million_tokens": 15.0,
+    },
+)
+```
+
+Without prices every turn reports a cost of zero.
 
 ## Next steps
 
-- Scheduled, non-interactive coding agent: [Agent Tasks](../tasks/index.md)
-- Model-backed online predictor: use the Model Deployments guides under MLOps
-- Agent-serving dependencies: see the environment guides for cloning Python
-  environments and installing requirements
+- [Agent Memory][agent-memory]: conversation history, a rolling summary, facts that outlive a conversation, and search over earlier conversations.
+- [Feedback][feedback-on-what-an-agent-answered]: verdicts on what the agent answered, from reviewers and from end users.
+- [Evaluation][evaluating-an-agent]: suites of tasks graded by checks, and the gate a release reads.
+- [Monitoring][monitoring-live-traffic]: grading the traffic the agent served, on a schedule.
+- [Failure Analysis][from-feedback-to-a-regression-suite]: turning failures into regression tasks.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_agent_serving`][hopsworks_common.project.Project.get_agent_serving]
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.deploy_agent`][hsml.model_serving.ModelServing.deploy_agent]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

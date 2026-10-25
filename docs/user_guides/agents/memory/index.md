@@ -21,7 +21,7 @@ Memory is one store with four tiers, each switched on independently.
 Two terms that look alike are not the same thing.
 *Semantic memory* is the facts an agent stores, while *semantic search* is one way episodic memory retrieves past turns.
 
-This guide assumes an agent that speaks the chat contract, see [The Chat Contract For Conversational Agents][the-chat-contract-for-conversational-agents].
+This guide assumes an agent that speaks the chat contract, see [the chat contract][the-chat-contract].
 
 ## Turning memory on
 
