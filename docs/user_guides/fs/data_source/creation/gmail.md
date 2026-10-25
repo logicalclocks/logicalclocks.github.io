@@ -223,7 +223,7 @@ Click `Configure sync job` to create one, or the pencil icon of a sync job to ed
 4. **Search query:** optional, a [Gmail search query](https://support.google.com/mail/answer/7190) written as in the Gmail search box, such as `from:billing@example.com has:attachment`.
 5. **Labels:** optional, the Gmail label ids a message must carry, such as `INBOX`.
 6. **Loading strategy:** `Incremental` or `Full load (backfill)`, and an optional **Start date**: only emails received on or after it are copied.
-7. **Environment:** the Python environment of the job, by default the project's default for Python jobs.
+7. **Environment:** the Python environment of the job; left empty, a new job runs in `python-feature-pipeline`.
 8. **Schedule:** `None`, `Hourly` or `Daily` (00:00 UTC).
 9. Check `Start after creation` to run the job when it is saved.
 
@@ -260,7 +260,7 @@ job = gmail.sync(
 - `initial_value`: the earliest receive time to copy, as a date or datetime, a date string, or epoch milliseconds.
 - `schedule`: `hourly`, `daily`, or `None` to leave the job's schedule as it is.
 - `job_name`: defaults to `<data source name>_gmail_sync`.
-- `environment`: the Python environment; defaults to the project's default for Python jobs.
+- `environment`: the Python environment; a new job defaults to `python-feature-pipeline`.
 - `start`: whether to start a run now, without waiting for it.
 
 `sync` returns the job.
