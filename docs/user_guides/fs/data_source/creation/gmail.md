@@ -189,6 +189,7 @@ Attachments are written as files under the sync job's attachments directory:
 ```
 
 The default attachments directory is `Resources/gmail/<feature group>`.
+HopsFS file names are limited to Latin-1 characters, so a sync job replaces any other characters in an attachment's file name with `_` and shortens names longer than 200 bytes; a second attachment with the same name in a message gets a `-2` suffix.
 It must be a directory inside a dataset, outside `Resources/jobs`, and not the dataset itself.
 The `attachments` column lists the full paths of a message's files, such as `/Projects/myproject/Resources/gmail/support_examples/day=2026-10-24/18c2f0a1b2c3d4e5/invoice.pdf`.
 
