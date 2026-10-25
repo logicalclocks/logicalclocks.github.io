@@ -242,3 +242,19 @@ From 5.2.2 the default is 2048, up from 1024, because at 1 GiB the sidecar was O
   `hops-otlp` is an ordinary second container without probes, so the OOM kill restarts that container alone: the agent container's `restartCount` stays 0, and only the sidecar's `lastState` shows `OOMKilled`.
   While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
   Looking for agent restarts finds none.
+
+### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
+
+Required for a cluster that runs the Kueue bundled with Hopsworks (`global._hopsworks.kueue.enabled=true`); a cluster without Kueue needs nothing.
+From the 5.2.x patch release that uses Kueue 0.20, and in 5.3, Hopsworks uses a Kueue installed as its own release, `kueue` in `kueue-system`, in place of the Kueue 0.12.2 bundled in the Hopsworks namespace: the chart ships no Kueue.
+The new chart refuses to upgrade a release that still runs the bundled Kueue 0.12, and a cluster that runs it cannot be switched with `helm upgrade` alone: Kueue 0.12 stores Cohorts and Topologies as `v1alpha1`, which no later Kueue reads.
+The 5.1 chart's `migrate-to-external.sh` moves it to Kueue 0.18.1 in `kueue-system` and keeps every queue, on 5.1, or on 5.2.0 and 5.2.1 together with the Hopsworks upgrade.
+After the Hopsworks upgrade, the new chart's `upgrade-kueue.sh` upgrades Kueue to 0.20.3.
+Follow [Kueue outside the Hopsworks namespace](kueue_external.md), and stop submitting jobs while the move runs.
+
+What changes for users and operators ([details](kueue_external.md#what-changes)):
+
+- Spark jobs are queued, with static executors: a job saved with dynamic allocation runs its dynamic-allocation minimum, and `spark.dynamicAllocation.enabled=true` in its Spark properties is refused.
+- A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
+- The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
+- A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
