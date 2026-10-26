@@ -199,8 +199,9 @@ The `attachments` column lists the full paths of a message's files, such as `/Pr
     Every later run upserts only the messages received since the previous run.
     The first run reads the mailbox a week at a time, oldest first, and upserts every 5000 messages, so the feature group fills while it runs and a run that fails resumes from its last upsert.
     The upserts are keyed by `message_id`, so a retried run, or a run that overlaps the previous one, never duplicates a message.
-    A scheduled run that starts while the previous run is still copying does nothing and succeeds.
-    Gmail limits how many requests a user's mailbox serves per minute, so a backfill of tens of thousands of emails can take hours; the job log reports when Gmail throttles it.
+    The schedule starts no run while another run of the job is still copying, so an hourly job first runs once the backfill ends; a run started by hand meanwhile does nothing and succeeds.
+    Gmail limits how many requests a user's mailbox serves per minute, so a backfill of tens of thousands of emails can take hours.
+    A throttled run waits and retries until Gmail serves it again, and never fails because of throttling; the job log reports how often Gmail throttled it.
 - `FULL_LOAD`: every run copies all the selected messages from the start date on, overwrites the feature group, and rebuilds the attachments directory.
     A run that selects no messages leaves the feature group as it was.
 
