@@ -3,15 +3,15 @@
 ## Introduction
 
 The SQL Data Source connects Hopsworks to a Relational Database Service.
-Supported database types are **MySQL**, **PostgreSQL**, and **Oracle**.
+Supported database types are **MySQL**, **PostgreSQL**, **Oracle**, and **Microsoft SQL Server** (including Azure SQL Database).
 Using this connector, you can query and update data in your relational database from Hopsworks.
 
 In this guide, you will configure a Data Source in Hopsworks to securely store the authentication information needed to set up a connection to your database instance.
 When you're finished, you'll be able to query your SQL database using Hopsworks APIs.
 
 !!! note
-    Currently, it is only possible to create data sources in the Hopsworks UI.
-    You cannot create a data source programmatically.
+    This guide creates the data source in the Hopsworks UI.
+    The `hops` CLI creates the same data source with `hops datasource create sql <name> --database-type <type> ...`.
 
 ## Prerequisites
 
@@ -27,8 +27,9 @@ Before you begin, ensure you have the following information from your database i
 
 - **Database:** The name of the database to connect to.
   For Oracle, this is the **service name** (e.g. `ORCL` or a TNS alias).
+  For SQL Server, this is the database the login connects to by default; every database the login can access can still be browsed.
 
-- **Port:** The port to connect to (e.g. `3306` for MySQL, `5432` for PostgreSQL, `1521` for Oracle).
+- **Port:** The port to connect to (e.g. `3306` for MySQL, `5432` for PostgreSQL, `1521` for Oracle, `1433` for SQL Server).
 
 - **Username and Password:** A username and password with the necessary permissions to access the required tables.
 
@@ -56,7 +57,7 @@ If your Oracle database requires mutual TLS (mTLS) authentication, which is comm
 
 Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
 The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
-Pick the `SQL` card to open the creation form.
+Pick your database's card under `Database`, such as `MySQL`, `PostgreSQL`, `Oracle` or `SQL Server`, to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -68,18 +69,17 @@ Pick the `SQL` card to open the creation form.
 Enter the details for your database.
 Start by giving the connector a **name** and an optional **description**.
 
-1. The form opens with `Source` set to `SQL`.
+1. The form opens for the database whose card you picked in the gallery (MySQL, PostgreSQL, Oracle, SQL Server and the others), which sets the database type.
    Click `Change source` to pick a different one.
-2. Select the database type (MySQL, PostgreSQL, or Oracle).
-3. Enter the host endpoint.
+2. Enter the host endpoint.
    Leave it empty when using an Oracle wallet: the wallet supplies the connection details, and the database field names the TNS alias to use.
-4. Enter the database name (service name for Oracle).
-5. Specify the port.
-6. For Oracle, choose under `Credentials` whether they are `Stored with the data source` (the default) or `Provided by each user`.
+3. Enter the database name (service name for Oracle).
+4. Specify the port.
+5. For Oracle, choose under `Credentials` whether they are `Stored with the data source` (the default) or `Provided by each user`.
    With `Provided by each user` the username, password and wallet fields disappear and every member adds their own later, see [provided credentials][data-source-provided-credentials].
-7. For `Stored with the data source`, provide the username and password.
-8. For `Stored with the data source` on a database behind mTLS, upload the wallet zip file and provide the wallet password (if required).
-9. Click on "Save Credentials".
+6. For `Stored with the data source`, provide the username and password.
+7. For `Stored with the data source` on a database behind mTLS, upload the wallet zip file and provide the wallet password (if required).
+8. Click on "Save Credentials".
 
 <figure markdown>
   ![SQL Connector Creation](../../../../assets/images/guides/fs/data_source/sql_creation.png)
@@ -95,7 +95,7 @@ The following notes apply only to Oracle.
 
 The Oracle JDBC driver JAR (e.g. `ojdbc11.jar`) must be available on the Spark classpath.
 Upload it via the [Jupyter configuration][how-to-run-a-pyspark-notebook] or [Job configuration][how-to-run-a-pyspark-job] in `Additional Jars`.
-The MySQL and PostgreSQL drivers are included in Hopsworks by default.
+The MySQL, PostgreSQL and SQL Server drivers are included in Hopsworks by default.
 
 ### Spark JDBC limitations
 
@@ -115,6 +115,33 @@ The MySQL and PostgreSQL drivers are included in Hopsworks by default.
 
 The Python engine reads Oracle via the Hopsworks Arrow Flight service, which handles the database connection server-side.
 No JDBC driver or wallet files are needed on the client, and the Spark JDBC limitations above do not apply.
+
+## SQL Server-Specific Notes
+
+### Host and port
+
+The **Host** is a host name or an IPv4 address.
+For a named instance, enter the server's host name and the port the instance listens on, not `host\instance`: the JDBC driver would connect to the port and the Python engine to the instance, which can be different servers.
+For an IPv6-only server, use a host name that resolves to it, because the JDBC driver does not accept an IPv6 address in its URL.
+
+### Databases, schemas and tables
+
+SQL Server names a table `database.schema.table`.
+When you browse a SQL Server data source, the database is the top level and the schema (often `dbo`) is the group, so an external feature group over a browsed table reads `[database].[schema].[table]`.
+A hand-written query can use the same three-part name, which lets one data source read any database on the server that the login can access.
+Write such a query as a plain `SELECT`: Hopsworks reads it as a derived table, where SQL Server does not accept a `WITH` clause.
+
+Azure SQL Database does not support three-part names across databases.
+Create one data source per Azure SQL database, with that database in the **Database** field.
+
+### Encryption and certificates
+
+Every connection is encrypted, and the server certificate is validated against the public certificate authorities, including its host name.
+For a server with a self-signed certificate, such as a default SQL Server installation, add the argument `trustServerCertificate` with the value `true`.
+This applies to Spark, the query engine, the Python engine and DLTHub ingestion alike.
+Spark and the query engine use Microsoft's JDBC driver, so other JDBC connection properties can be added as arguments the same way; the Python engine and DLTHub ingestion read only `trustServerCertificate`.
+The argument `encrypt=false` therefore turns off encryption for Spark and the query engine only: the Python engine and DLTHub ingestion always encrypt.
+The arguments cannot replace the host, port or database (`serverName`, `portNumber`, `databaseName`); the data source's own fields set those.
 
 ## Provided credentials for Oracle { #data-source-provided-credentials }
 
