@@ -208,7 +208,7 @@ The reply is a stream of AG-UI events:
 | `TOOL_CALL_START`, `_ARGS`, `_END`, `_RESULT` | A tool call the agent made, with its arguments and its result |
 | `STEP_STARTED`, `STEP_FINISHED` | A step the agent reported, see [progress events][progress-events] |
 | `CUSTOM` named `hopsworks.media` | An image, file or audio part of the answer |
-| `RUN_FINISHED` | Token usage, and the trace id, subject and citations under `result.hopsworks` |
+| `RUN_FINISHED` | Token usage, and the trace id, subject and citations under `result.hopsworks`; an `outcome` of `interrupt` when the agent [asks a person first][asking-a-person-first] |
 | `RUN_ERROR` | Why the run failed, see [refusals][refusals] |
 
 The trace id is in `RUN_STARTED` so that a client still has it when the run fails.
@@ -273,6 +273,42 @@ A turn that names nobody falls back to its own conversation, and `ctx.subject_so
 !!! warning "Identification, not authentication"
     The endpoint authenticates whoever calls the agent, not the person using it.
     A subject is only as trustworthy as whatever your agent derived it from, so do not treat it as proof of identity.
+
+### Asking a person first
+
+An agent can pause a turn to ask a person, and go on with their answer, for an action that should not happen without approval:
+
+```python
+@agent_app.chat
+async def chat(request, ctx):
+    order = await find_order(request.text)
+    answer = ctx.interrupt(
+        f"Refund {order.amount} to order {order.id}?",
+        key=f"refund-{order.id}",
+        response_schema={
+            "type": "object",
+            "properties": {"approved": {"type": "boolean"}},
+            "required": ["approved"],
+        },
+    )
+    if answer.cancelled or not answer.payload.get("approved"):
+        return "Understood, no refund."
+    await refund(order)
+    return "Refunded."
+```
+
+The first time, `ctx.interrupt` ends the run with an AG-UI interrupt: `RUN_FINISHED` whose `outcome` names the question, its reason and the JSON Schema of the answer.
+The chat panel shows it as a card: Approve and Reject for a yes or no question, a form built from the schema otherwise, and Dismiss to decline to answer.
+The answer resumes the turn with a new run on the same thread whose `resume` answers the question; the turn runs again from the start, and this time `ctx.interrupt` returns the answer.
+
+- Everything before the call runs again when the turn resumes, so ask before acting, never after.
+- `key` names the question the same way on every run of the turn; without it the question is named by its place in the turn.
+- The agent keeps the paused turn's message and what it asked, so a resume carries no message, and one that answers a question that was not asked, or one that has expired, is refused.
+- A turn may ask several times; each pause asks one question, and the client answers only what is open.
+- `answer.cancelled` is a person declining to answer; a refusal to go ahead is an answer with a payload that says so.
+
+From Python, a paused reply has `reply.interrupted` and `reply.interrupts`, and `agent.chat(None, conversation_id=reply.conversation_id, resume={"refund-42": {"approved": True}})` answers it.
+In an evaluation run nobody is there to answer: the runner answers from the task context's `interrupt_answers`, by question id, and cancels the rest.
 
 ### Progress events
 
