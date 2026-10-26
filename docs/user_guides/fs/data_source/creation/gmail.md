@@ -215,7 +215,7 @@ The feature group is an archive of the mailbox:
 - An incremental run refuses a feature group that was filled for a different mailbox, query or labels.
     After changing the query or the labels, run a full load, or sync into a new feature group.
 
-Two sync jobs cannot write the same feature group, nor attachment directories that overlap, since their runs would overwrite each other's rows and files.
+Two sync jobs, of Gmail or [Outlook][data-source-outlook] data sources, cannot write the same feature group, nor attachment directories that overlap, since their runs would overwrite each other's rows and files.
 
 ### Configure a sync job in the UI
 
@@ -316,7 +316,7 @@ hops datasource sync-jobs support_inbox
         - <code class="doc-symbol doc-symbol-method"></code> [`list_sync_jobs`][hsfs.storage_connector.GmailConnector.list_sync_jobs]
         - <code class="doc-symbol doc-symbol-method"></code> [`get_sync_job`][hsfs.storage_connector.GmailConnector.get_sync_job]
         - <code class="doc-symbol doc-symbol-method"></code> [`delete_sync_job`][hsfs.storage_connector.GmailConnector.delete_sync_job]
-    - <code class="doc-symbol doc-symbol-class"></code> [`GmailSyncJobConfig`][hsfs.storage_connector.GmailSyncJobConfig]
+    - <code class="doc-symbol doc-symbol-class"></code> [`MailSyncJobConfig`][hsfs.storage_connector.MailSyncJobConfig]
 
     <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 

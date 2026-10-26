@@ -98,6 +98,14 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure][data-source-gmail]
 
+- :material-microsoft-outlook:{ .lg .middle style="color:#0078D4" } **Outlook**
+
+    ---
+
+    Copy a Microsoft 365 or Outlook.com mailbox into a Delta feature group with a scheduled sync job.
+
+    [:octicons-arrow-right-24: Configure][data-source-outlook]
+
 - :material-folder-network-outline:{ .lg .middle style="color:var(--hops-accent-text)" } **HopsFS**
 
     ---

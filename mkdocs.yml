@@ -86,6 +86,7 @@ nav:
                   - SAP HANA: user_guides/fs/data_source/creation/sap_hana.md
                   - Hopsworks: user_guides/fs/data_source/creation/hopsworks.md
                   - Gmail: user_guides/fs/data_source/creation/gmail.md
+                  - Outlook: user_guides/fs/data_source/creation/outlook.md
               - Usage: user_guides/fs/data_source/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
