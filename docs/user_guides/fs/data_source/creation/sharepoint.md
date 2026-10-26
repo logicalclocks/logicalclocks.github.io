@@ -325,19 +325,19 @@ sync.delete(keep_files=True)
 !!! api "API reference"
 
     - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_data_source`][hsfs.feature_store.FeatureStore.create_data_source]
-    - <code class="doc-symbol doc-symbol-class"></code> [`SharePointConnector`][hsfs.storage_connector.SharePointConnector]
-        - <code class="doc-symbol doc-symbol-method"></code> [`list_drives`][hsfs.storage_connector.SharePointConnector.list_drives]
-        - <code class="doc-symbol doc-symbol-method"></code> [`list_folders`][hsfs.storage_connector.SharePointConnector.list_folders]
-        - <code class="doc-symbol doc-symbol-method"></code> [`copy_folder`][hsfs.storage_connector.SharePointConnector.copy_folder]
-        - <code class="doc-symbol doc-symbol-method"></code> [`create_sync`][hsfs.storage_connector.SharePointConnector.create_sync]
-    - <code class="doc-symbol doc-symbol-class"></code> [`SharePointSync`][hsfs.core.sharepoint_sync.SharePointSync]
-        - <code class="doc-symbol doc-symbol-method"></code> [`status`][hsfs.core.sharepoint_sync.SharePointSync.status]
-        - <code class="doc-symbol doc-symbol-method"></code> [`run`][hsfs.core.sharepoint_sync.SharePointSync.run]
-        - <code class="doc-symbol doc-symbol-method"></code> [`get_audit`][hsfs.core.sharepoint_sync.SharePointSync.get_audit]
-        - <code class="doc-symbol doc-symbol-method"></code> [`set_schedule`][hsfs.core.sharepoint_sync.SharePointSync.set_schedule]
-        - <code class="doc-symbol doc-symbol-method"></code> [`update`][hsfs.core.sharepoint_sync.SharePointSync.update]
-        - <code class="doc-symbol doc-symbol-method"></code> [`get_index_feature_group`][hsfs.core.sharepoint_sync.SharePointSync.get_index_feature_group]
-        - <code class="doc-symbol doc-symbol-method"></code> [`delete`][hsfs.core.sharepoint_sync.SharePointSync.delete]
+    - <code class="doc-symbol doc-symbol-class"></code> `SharePointConnector`
+        - <code class="doc-symbol doc-symbol-method"></code> `list_drives`
+        - <code class="doc-symbol doc-symbol-method"></code> `list_folders`
+        - <code class="doc-symbol doc-symbol-method"></code> `copy_folder`
+        - <code class="doc-symbol doc-symbol-method"></code> `create_sync`
+    - <code class="doc-symbol doc-symbol-class"></code> `SharePointSync`
+        - <code class="doc-symbol doc-symbol-method"></code> `status`
+        - <code class="doc-symbol doc-symbol-method"></code> `run`
+        - <code class="doc-symbol doc-symbol-method"></code> `get_audit`
+        - <code class="doc-symbol doc-symbol-method"></code> `set_schedule`
+        - <code class="doc-symbol doc-symbol-method"></code> `update`
+        - <code class="doc-symbol doc-symbol-method"></code> `get_index_feature_group`
+        - <code class="doc-symbol doc-symbol-method"></code> `delete`
     - <code class="doc-symbol doc-symbol-docs"></code> [rclone filtering](https://rclone.org/filtering/)
 
     <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
