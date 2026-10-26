@@ -155,6 +155,9 @@ Members of the project can read the dataset like any other.
 While a file downloads, rclone writes it as `<name>.<fingerprint>.partial` and renames it when it is complete, so readers may see `.partial` files during a run.
 A run that is killed can leave one behind; the next mirror run removes it.
 
+The synced files count against the project's storage quota, which an administrator sets per project; the maximum file size limits each file, not the total.
+When the quota is full, the files that do not fit fail, the run is reported as partial with the error `the project's storage quota is full`, and the next run copies them once there is room.
+
 ### The audit log
 
 Every run that changes the dataset writes one CSV file:
@@ -211,7 +214,7 @@ A sync with indexing on keeps version 1 of a Delta feature group, `sharepoint_<d
 The `Syncs` tab links it in the `Index` column once the first run has created it.
 
 | Column | Content |
-|---|---|
+| --- | --- |
 | `file_id` | SharePoint item id, the primary key; it stays the same when the file is renamed or moved |
 | `site_id`, `drive_id` | the site and the document library |
 | `file_name`, `file_type` | the name, and its extension in lowercase |
