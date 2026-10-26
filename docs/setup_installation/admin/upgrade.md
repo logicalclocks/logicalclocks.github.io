@@ -289,7 +289,7 @@ Before, it created no topics there, so every topic had to exist before ingestion
   A non-empty `topicList` in the same section replaces the pattern and does not include the topics Hopsworks creates.
   A cluster set up with a topic list sets `topicList: ""`, and widens `topicPattern` until it also matches the project topics it consumes that do not end in `_onlinefs`.
 - **Model serving does not log to an external Kafka.**
-  The inference logger reaches only the bundled Kafka, so a deployment created with inference logging gets no topic, and one cannot select an existing topic (`BAD_TOPIC`).
+  The inference logger reaches only the bundled Kafka, so a deployment created with inference logging gets no topic, and selecting an existing topic for it is refused.
 
 ### Notification topics and shared feature stores { #upgrade-notification-topics }
 
