@@ -5,7 +5,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -22,7 +22,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
       kueue:
         enabled: false
       kueueApiVersion: v1beta2
-      kueueNamespace: kueue-system
       resourceFlavours:
       - annotations: {}
         labels: {}
@@ -68,10 +67,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `hw-kueue.kueueApiVersion` <a class="headerlink" href="#helm.hw-kueue.kueueApiVersion" title="Permanent link">#</a> { #helm.hw-kueue.kueueApiVersion }
 :   Type `string`, default `"v1beta2"`.
     The kueue.x-k8s.io version the backend of this chart reads. Read by files/upgrade-kueue.sh to tell this chart from 5.2.1 and earlier; do not change.
-
-`hw-kueue.kueueNamespace` <a class="headerlink" href="#helm.hw-kueue.kueueNamespace" title="Permanent link">#</a> { #helm.hw-kueue.kueueNamespace }
-:   Type `string`, default `"kueue-system"`.
-    Namespace of release kueue; the queue Job waits for its webhook there.
 
 `hw-kueue.resourceFlavours` <a class="headerlink" href="#helm.hw-kueue.resourceFlavours" title="Permanent link">#</a> { #helm.hw-kueue.resourceFlavours }
 :   Type `list`.
@@ -348,6 +343,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           enabled: true
         localqueue:
           enabled: true
+        metricsReader:
+          enabled: true
         resourceFlavors:
           enabled: true
         topologies:
@@ -366,6 +363,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `hw-kueue.rbac.localqueue.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.localqueue.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.localqueue.enabled }
 :   Type `bool`, default `true`.
+
+`hw-kueue.rbac.metricsReader.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.metricsReader.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.metricsReader.enabled }
+:   Type `bool`, default `true`.
+    Bind the Hopsworks Prometheus server's service account to Kueue's metrics-reader ClusterRole, so the chart's kueue scrape job is authorized
 
 `hw-kueue.rbac.resourceFlavors.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.resourceFlavors.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.resourceFlavors.enabled }
 :   Type `bool`, default `true`.

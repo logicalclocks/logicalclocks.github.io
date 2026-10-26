@@ -40712,7 +40712,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -40735,7 +40735,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 145 |
+| [`global`][helm-values-global] |  | 147 |
 | [`airflow`][helm-values-airflow] |  | 151 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
@@ -40745,7 +40745,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 222 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 964 |
+| [`hopsworks`][helm-values-hopsworks] |  | 976 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |
@@ -40791,7 +40791,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -40852,6 +40852,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.
           enabled: true
         kueue:
           enabled: false
+          namespace: kueue-system
+          queueModel: shared
         managedObjectStorage:
           enabled: false
           s3: null
@@ -41031,6 +41033,14 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.
 
 `global._hopsworks.kueue.enabled` <a class="headerlink" href="#helm.global._hopsworks.kueue.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.enabled }
 :   Type `bool`, default `false`.
+
+`global._hopsworks.kueue.namespace` <a class="headerlink" href="#helm.global._hopsworks.kueue.namespace" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.namespace }
+:   Type `string`, default `"kueue-system"`.
+    Namespace of release kueue, the Kueue Hopsworks uses. The queue Job waits for its webhook there, and Prometheus scrapes Kueue's metrics only in this namespace
+
+`global._hopsworks.kueue.queueModel` <a class="headerlink" href="#helm.global._hopsworks.kueue.queueModel" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.queueModel }
+:   Type `string`, default `"shared"`.
+    shared: every project submits to the default queues (hopsworks.variables.kueue_project_default_*). per_project: each project gets its own ClusterQueue and LocalQueue, which Hopsworks renders from the compute allocations set under Cluster settings, Compute Allocation, and only then is the Hopsworks service account bound to Kueue's ClusterQueue, Cohort and ResourceFlavor editor ClusterRoles. Seeds the Hopsworks variable kueue_queue_model. Set per_project at install; moving a running cluster from shared is not supported yet
 
 `global._hopsworks.managedObjectStorage` <a class="headerlink" href="#helm.global._hopsworks.managedObjectStorage" title="Permanent link">#</a> { #helm.global._hopsworks.managedObjectStorage }
 :   Type `object`, default `{"enabled":false,"s3":null}`.
@@ -41886,7 +41896,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -42752,7 +42762,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43034,7 +43044,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43222,7 +43232,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43555,7 +43565,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44006,7 +44016,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44504,7 +44514,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44922,7 +44932,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46066,7 +46076,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -46336,7 +46346,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -48793,6 +48803,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         command_search_fs_reindex_queue_wait_as_ms: '1800000'
         command_search_fs_retry_per_clean_interval: '5'
         conda_default_repo: defaults
+        data_source_audit_retention_days: '7'
+        data_source_sync_job_cores: '0.5'
+        data_source_sync_job_memory: '1024'
+        data_source_sync_lifecycle_stale_minutes: '10'
+        data_source_sync_max_run_minutes: '0'
+        data_source_sync_min_interval_minutes: '5'
+        data_source_sync_stop_wait_seconds: '120'
+        data_source_sync_transfers: '4'
         default_jupyter_environment: pandas-training-pipeline
         default_python_job_environment: pandas-training-pipeline
         disable_password_login: 'false'
@@ -48873,6 +48891,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_public_apps: false
         enable_read_only_git_repositories: 'false'
         enable_redshift_storage_connectors: 'true'
+        enable_sharepoint_storage_connectors: 'true'
         enable_snowflake_storage_connectors: 'true'
         enable_user_search: 'true'
         epipe_version: 0.20.0
@@ -48996,8 +49015,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kube_type: kube_cluster
         kube_user_workload_tolerations: ''
         kubernetes_installed: 'true'
+        kueue_history_retention_days: 90
         kueue_project_default_cluster_queue: other
         kueue_project_default_local_queue: other
+        kueue_reconcile_interval_s: 300
+        kueue_rollup_retention_days: 100
         kueue_system_jobs_cluster_queue: ''
         kueue_system_jobs_local_queue: ''
         ldap_account_status: '2'
@@ -49384,6 +49406,38 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.conda_default_repo` <a class="headerlink" href="#helm.hopsworks.variables.conda_default_repo" title="Permanent link">#</a> { #helm.hopsworks.variables.conda_default_repo }
 :   Type `string`, default `"defaults"`.
 
+`hopsworks.variables.data_source_audit_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.data_source_audit_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_audit_retention_days }
+:   Type `string`, default `"7"`.
+    Days of audit logs kept per data source sync, cluster-wide. 0 keeps them forever.
+
+`hopsworks.variables.data_source_sync_job_cores` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_job_cores" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_job_cores }
+:   Type `string`, default `"0.5"`.
+    Cores given to a data source sync job when the sync is created.
+
+`hopsworks.variables.data_source_sync_job_memory` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_job_memory" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_job_memory }
+:   Type `string`, default `"1024"`.
+    Memory in MB given to a data source sync job when the sync is created.
+
+`hopsworks.variables.data_source_sync_lifecycle_stale_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_lifecycle_stale_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_lifecycle_stale_minutes }
+:   Type `string`, default `"10"`.
+    Minutes a data source sync may stay CREATING or DELETING before the UI offers Retry.
+
+`hopsworks.variables.data_source_sync_max_run_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_max_run_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_max_run_minutes }
+:   Type `string`, default `"0"`.
+    Longest a data source sync run may take in minutes. 0 is unlimited.
+
+`hopsworks.variables.data_source_sync_min_interval_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_min_interval_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_min_interval_minutes }
+:   Type `string`, default `"5"`.
+    Shortest interval in minutes a data source sync schedule may fire at.
+
+`hopsworks.variables.data_source_sync_stop_wait_seconds` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_stop_wait_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_stop_wait_seconds }
+:   Type `string`, default `"120"`.
+    Seconds a forced sync delete waits for the running execution to stop.
+
+`hopsworks.variables.data_source_sync_transfers` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_transfers" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_transfers }
+:   Type `string`, default `"4"`.
+    Default number of files a data source sync transfers in parallel.
+
 `hopsworks.variables.default_jupyter_environment` <a class="headerlink" href="#helm.hopsworks.variables.default_jupyter_environment" title="Permanent link">#</a> { #helm.hopsworks.variables.default_jupyter_environment }
 :   Type `string`, default `"pandas-training-pipeline"`.
 
@@ -49641,6 +49695,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.enable_redshift_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_redshift_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_redshift_storage_connectors }
 :   Type `string`, default `"true"`.
+
+`hopsworks.variables.enable_sharepoint_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_sharepoint_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_sharepoint_storage_connectors }
+:   Type `string`, default `"true"`.
+    Enables SharePoint data sources and their syncs into project datasets.
 
 `hopsworks.variables.enable_snowflake_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_snowflake_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_snowflake_storage_connectors }
 :   Type `string`, default `"true"`.
@@ -50033,11 +50091,23 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.kubernetes_installed` <a class="headerlink" href="#helm.hopsworks.variables.kubernetes_installed" title="Permanent link">#</a> { #helm.hopsworks.variables.kubernetes_installed }
 :   Type `string`, default `"true"`.
 
+`hopsworks.variables.kueue_history_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.kueue_history_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_history_retention_days }
+:   Type `int`, default `90`.
+    Days of Compute Allocation history (Audit tab operations and corrections) kept; older rows are deleted hourly on the primary
+
 `hopsworks.variables.kueue_project_default_cluster_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_project_default_cluster_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_project_default_cluster_queue }
 :   Type `string`, default `"other"`.
 
 `hopsworks.variables.kueue_project_default_local_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_project_default_local_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_project_default_local_queue }
 :   Type `string`, default `"other"`.
+
+`hopsworks.variables.kueue_reconcile_interval_s` <a class="headerlink" href="#helm.hopsworks.variables.kueue_reconcile_interval_s" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_reconcile_interval_s }
+:   Type `int`, default `300`.
+    Seconds between passes that put back Kueue objects changed outside Hopsworks, with global._hopsworks.kueue.queueModel per_project. Read when Hopsworks starts
+
+`hopsworks.variables.kueue_rollup_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.kueue_rollup_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_rollup_retention_days }
+:   Type `int`, default `100`.
+    Days of hourly Compute Allocation analytics rollups kept. The longest range Analytics shows is 90 days
 
 `hopsworks.variables.kueue_system_jobs_cluster_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_system_jobs_cluster_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_system_jobs_cluster_queue }
 :   Type `string`, default `""`.
@@ -51186,7 +51256,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -51593,7 +51663,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -51610,7 +51680,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
       kueue:
         enabled: false
       kueueApiVersion: v1beta2
-      kueueNamespace: kueue-system
       resourceFlavours:
       - annotations: {}
         labels: {}
@@ -51656,10 +51725,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `hw-kueue.kueueApiVersion` <a class="headerlink" href="#helm.hw-kueue.kueueApiVersion" title="Permanent link">#</a> { #helm.hw-kueue.kueueApiVersion }
 :   Type `string`, default `"v1beta2"`.
     The kueue.x-k8s.io version the backend of this chart reads. Read by files/upgrade-kueue.sh to tell this chart from 5.2.1 and earlier; do not change.
-
-`hw-kueue.kueueNamespace` <a class="headerlink" href="#helm.hw-kueue.kueueNamespace" title="Permanent link">#</a> { #helm.hw-kueue.kueueNamespace }
-:   Type `string`, default `"kueue-system"`.
-    Namespace of release kueue; the queue Job waits for its webhook there.
 
 `hw-kueue.resourceFlavours` <a class="headerlink" href="#helm.hw-kueue.resourceFlavours" title="Permanent link">#</a> { #helm.hw-kueue.resourceFlavours }
 :   Type `list`.
@@ -51936,6 +52001,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           enabled: true
         localqueue:
           enabled: true
+        metricsReader:
+          enabled: true
         resourceFlavors:
           enabled: true
         topologies:
@@ -51954,6 +52021,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `hw-kueue.rbac.localqueue.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.localqueue.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.localqueue.enabled }
 :   Type `bool`, default `true`.
+
+`hw-kueue.rbac.metricsReader.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.metricsReader.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.metricsReader.enabled }
+:   Type `bool`, default `true`.
+    Bind the Hopsworks Prometheus server's service account to Kueue's metrics-reader ClusterRole, so the chart's kueue scrape job is authorized
 
 `hw-kueue.rbac.resourceFlavors.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.resourceFlavors.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.resourceFlavors.enabled }
 :   Type `bool`, default `true`.
@@ -51978,7 +52049,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52461,7 +52532,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -52596,7 +52667,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -53466,7 +53537,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -55040,7 +55111,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -55295,7 +55366,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -56271,7 +56342,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -56781,7 +56852,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56941,7 +57012,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -57088,7 +57159,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -60006,7 +60077,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -61591,7 +61662,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -62674,7 +62745,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -62982,7 +63053,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

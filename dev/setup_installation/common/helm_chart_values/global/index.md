@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -65,6 +65,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.
           enabled: true
         kueue:
           enabled: false
+          namespace: kueue-system
+          queueModel: shared
         managedObjectStorage:
           enabled: false
           s3: null
@@ -244,6 +246,14 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.
 
 `global._hopsworks.kueue.enabled` <a class="headerlink" href="#helm.global._hopsworks.kueue.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.enabled }
 :   Type `bool`, default `false`.
+
+`global._hopsworks.kueue.namespace` <a class="headerlink" href="#helm.global._hopsworks.kueue.namespace" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.namespace }
+:   Type `string`, default `"kueue-system"`.
+    Namespace of release kueue, the Kueue Hopsworks uses. The queue Job waits for its webhook there, and Prometheus scrapes Kueue's metrics only in this namespace
+
+`global._hopsworks.kueue.queueModel` <a class="headerlink" href="#helm.global._hopsworks.kueue.queueModel" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.queueModel }
+:   Type `string`, default `"shared"`.
+    shared: every project submits to the default queues (hopsworks.variables.kueue_project_default_*). per_project: each project gets its own ClusterQueue and LocalQueue, which Hopsworks renders from the compute allocations set under Cluster settings, Compute Allocation, and only then is the Hopsworks service account bound to Kueue's ClusterQueue, Cohort and ResourceFlavor editor ClusterRoles. Seeds the Hopsworks variable kueue_queue_model. Set per_project at install; moving a running cluster from shared is not supported yet
 
 `global._hopsworks.managedObjectStorage` <a class="headerlink" href="#helm.global._hopsworks.managedObjectStorage" title="Permanent link">#</a> { #helm.global._hopsworks.managedObjectStorage }
 :   Type `object`, default `{"enabled":false,"s3":null}`.

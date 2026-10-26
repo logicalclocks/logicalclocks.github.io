@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2461,6 +2461,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         command_search_fs_reindex_queue_wait_as_ms: '1800000'
         command_search_fs_retry_per_clean_interval: '5'
         conda_default_repo: defaults
+        data_source_audit_retention_days: '7'
+        data_source_sync_job_cores: '0.5'
+        data_source_sync_job_memory: '1024'
+        data_source_sync_lifecycle_stale_minutes: '10'
+        data_source_sync_max_run_minutes: '0'
+        data_source_sync_min_interval_minutes: '5'
+        data_source_sync_stop_wait_seconds: '120'
+        data_source_sync_transfers: '4'
         default_jupyter_environment: pandas-training-pipeline
         default_python_job_environment: pandas-training-pipeline
         disable_password_login: 'false'
@@ -2541,6 +2549,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_public_apps: false
         enable_read_only_git_repositories: 'false'
         enable_redshift_storage_connectors: 'true'
+        enable_sharepoint_storage_connectors: 'true'
         enable_snowflake_storage_connectors: 'true'
         enable_user_search: 'true'
         epipe_version: 0.20.0
@@ -2664,8 +2673,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kube_type: kube_cluster
         kube_user_workload_tolerations: ''
         kubernetes_installed: 'true'
+        kueue_history_retention_days: 90
         kueue_project_default_cluster_queue: other
         kueue_project_default_local_queue: other
+        kueue_reconcile_interval_s: 300
+        kueue_rollup_retention_days: 100
         kueue_system_jobs_cluster_queue: ''
         kueue_system_jobs_local_queue: ''
         ldap_account_status: '2'
@@ -3052,6 +3064,38 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.conda_default_repo` <a class="headerlink" href="#helm.hopsworks.variables.conda_default_repo" title="Permanent link">#</a> { #helm.hopsworks.variables.conda_default_repo }
 :   Type `string`, default `"defaults"`.
 
+`hopsworks.variables.data_source_audit_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.data_source_audit_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_audit_retention_days }
+:   Type `string`, default `"7"`.
+    Days of audit logs kept per data source sync, cluster-wide. 0 keeps them forever.
+
+`hopsworks.variables.data_source_sync_job_cores` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_job_cores" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_job_cores }
+:   Type `string`, default `"0.5"`.
+    Cores given to a data source sync job when the sync is created.
+
+`hopsworks.variables.data_source_sync_job_memory` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_job_memory" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_job_memory }
+:   Type `string`, default `"1024"`.
+    Memory in MB given to a data source sync job when the sync is created.
+
+`hopsworks.variables.data_source_sync_lifecycle_stale_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_lifecycle_stale_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_lifecycle_stale_minutes }
+:   Type `string`, default `"10"`.
+    Minutes a data source sync may stay CREATING or DELETING before the UI offers Retry.
+
+`hopsworks.variables.data_source_sync_max_run_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_max_run_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_max_run_minutes }
+:   Type `string`, default `"0"`.
+    Longest a data source sync run may take in minutes. 0 is unlimited.
+
+`hopsworks.variables.data_source_sync_min_interval_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_min_interval_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_min_interval_minutes }
+:   Type `string`, default `"5"`.
+    Shortest interval in minutes a data source sync schedule may fire at.
+
+`hopsworks.variables.data_source_sync_stop_wait_seconds` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_stop_wait_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_stop_wait_seconds }
+:   Type `string`, default `"120"`.
+    Seconds a forced sync delete waits for the running execution to stop.
+
+`hopsworks.variables.data_source_sync_transfers` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_transfers" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_transfers }
+:   Type `string`, default `"4"`.
+    Default number of files a data source sync transfers in parallel.
+
 `hopsworks.variables.default_jupyter_environment` <a class="headerlink" href="#helm.hopsworks.variables.default_jupyter_environment" title="Permanent link">#</a> { #helm.hopsworks.variables.default_jupyter_environment }
 :   Type `string`, default `"pandas-training-pipeline"`.
 
@@ -3309,6 +3353,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.enable_redshift_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_redshift_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_redshift_storage_connectors }
 :   Type `string`, default `"true"`.
+
+`hopsworks.variables.enable_sharepoint_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_sharepoint_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_sharepoint_storage_connectors }
+:   Type `string`, default `"true"`.
+    Enables SharePoint data sources and their syncs into project datasets.
 
 `hopsworks.variables.enable_snowflake_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_snowflake_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_snowflake_storage_connectors }
 :   Type `string`, default `"true"`.
@@ -3701,11 +3749,23 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.kubernetes_installed` <a class="headerlink" href="#helm.hopsworks.variables.kubernetes_installed" title="Permanent link">#</a> { #helm.hopsworks.variables.kubernetes_installed }
 :   Type `string`, default `"true"`.
 
+`hopsworks.variables.kueue_history_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.kueue_history_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_history_retention_days }
+:   Type `int`, default `90`.
+    Days of Compute Allocation history (Audit tab operations and corrections) kept; older rows are deleted hourly on the primary
+
 `hopsworks.variables.kueue_project_default_cluster_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_project_default_cluster_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_project_default_cluster_queue }
 :   Type `string`, default `"other"`.
 
 `hopsworks.variables.kueue_project_default_local_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_project_default_local_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_project_default_local_queue }
 :   Type `string`, default `"other"`.
+
+`hopsworks.variables.kueue_reconcile_interval_s` <a class="headerlink" href="#helm.hopsworks.variables.kueue_reconcile_interval_s" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_reconcile_interval_s }
+:   Type `int`, default `300`.
+    Seconds between passes that put back Kueue objects changed outside Hopsworks, with global._hopsworks.kueue.queueModel per_project. Read when Hopsworks starts
+
+`hopsworks.variables.kueue_rollup_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.kueue_rollup_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_rollup_retention_days }
+:   Type `int`, default `100`.
+    Days of hourly Compute Allocation analytics rollups kept. The longest range Analytics shows is 90 days
 
 `hopsworks.variables.kueue_system_jobs_cluster_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_system_jobs_cluster_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_system_jobs_cluster_queue }
 :   Type `string`, default `""`.
