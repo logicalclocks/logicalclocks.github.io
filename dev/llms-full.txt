@@ -64299,6 +64299,22 @@ Source: https://docs.hopsworks.ai/latest/python-api/hsfs/core/online_ingestion_r
       show_root_heading: true
 
 ================================================================================
+# <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> sharepoint​_sync
+Source: https://docs.hopsworks.ai/latest/python-api/hsfs/core/sharepoint_sync/
+
+::: hsfs.core.sharepoint_sync
+    options:
+      heading_level: 1
+      members: false
+      show_root_full_path: true
+      show_root_heading: true
+
+::: hsfs.core.sharepoint_sync.SharePointSync
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+================================================================================
 # <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> statistics​_comparison​_config
 Source: https://docs.hopsworks.ai/latest/python-api/hsfs/core/statistics_comparison_config/
 
@@ -64703,6 +64719,11 @@ Source: https://docs.hopsworks.ai/latest/python-api/hsfs/storage_connector/
       show_root_heading: true
 
 ::: hsfs.storage_connector.SapHanaConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+::: hsfs.storage_connector.SharePointConnector
     options:
       heading_level: 2
       show_root_heading: true
