@@ -208,7 +208,7 @@ The reply is a stream of AG-UI events:
 | `TOOL_CALL_START`, `_ARGS`, `_END`, `_RESULT` | A tool call the agent made, with its arguments and its result |
 | `STEP_STARTED`, `STEP_FINISHED` | A step the agent reported, see [progress events][progress-events] |
 | `CUSTOM` named `hopsworks.media` | An image, file or audio part of the answer |
-| `RUN_FINISHED` | Token usage, and the trace id, subject and citations under `result.hopsworks`; an `outcome` of `interrupt` when the agent [asks a person first][asking-a-person-first] |
+| `RUN_FINISHED` | Token usage, and the trace id, subject and citations under `result.hopsworks`, plus `text` when the agent's final answer rewrote the text it streamed; an `outcome` of `interrupt` when the agent [asks a person first][asking-a-person-first] |
 | `RUN_ERROR` | Why the run failed, see [refusals][refusals] |
 
 The trace id is in `RUN_STARTED` so that a client still has it when the run fails.
@@ -303,7 +303,7 @@ The answer resumes the turn with a new run on the same thread whose `resume` ans
 
 - Everything before the call runs again when the turn resumes, so ask before acting, never after.
 - `key` names the question the same way on every run of the turn; without it the question is named by its place in the turn.
-- The agent keeps the paused turn's message and what it asked, so a resume carries no message, and one that answers a question that was not asked, or one that has expired, is refused.
+- The agent keeps the paused turn's request and what it asked, so a resume carries only the answers and the turn runs again with the same message and context. A resume that answers a question that was not asked, or one that has expired, is refused, and so is one on a conversation that is not waiting on a question (answered already, or the agent restarted since): send the message again instead.
 - A turn may ask several times; each pause asks one question, and the client answers only what is open.
 - `answer.cancelled` is a person declining to answer; a refusal to go ahead is an answer with a payload that says so.
 
