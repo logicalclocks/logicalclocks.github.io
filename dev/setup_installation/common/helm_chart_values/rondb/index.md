@@ -4,13 +4,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1792926657` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793026678` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.22](https://github.com/logicalclocks/rondb-helm/blob/v26.2.22/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -220,7 +220,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.22](https://github.com/logicalclocks/rondb-helm/blob/v26.2.22/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -355,7 +355,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.22](https://github.com/logicalclocks/rondb-helm/blob/v26.2.22/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -817,7 +817,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             name: rondb
             registry: docker.hops.works
             repository: hopsworks
-            tag: 26.02.11
+            tag: 26.02.12
           toolbox:
             name: hwutils
             registry: docker.hops.works
@@ -879,7 +879,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.rondb.tag` <a class="headerlink" href="#helm.rondb.rondb.images.rondb.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.rondb.tag }
-:   Type `string`, default `"26.02.11"`.
+:   Type `string`, default `"26.02.12"`.
     The version of RonDB to use; This should always be equivalent to .Chart.AppVersion
 
 `rondb.rondb.images.toolbox` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox }
@@ -1965,8 +1965,27 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
           externalMetadataCluster:
             mgmds: []
             slotsPerNode: 1
+          featureStore:
+            metadataCachePreloadThreads: null
           hpa:
             additionalMetrics: []
+          internal:
+            bufferPoolSharePercent: null
+            bufferShrinkAfterS: 900
+            disableTransparentHugePages: null
+            maxBlobTextValueBytes: null
+            maxBuffers: null
+            maxHttpReqSize: null
+            maxOperationsPerBatchRequest: null
+            maxOperationsPerNdbExecute: null
+            operationIdMaxSize: null
+            preAllocatedBuffers: null
+            scanRespBufferSize: null
+            scanTimingEnabled: null
+            slowScanBufferSize: null
+            slowScanThresholdUs: null
+          log:
+            level: null
           maxKeepaliveRequests: 0
           probePort:
             enabled: true
@@ -1987,9 +2006,24 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               initialDelaySeconds: 5
               periodSeconds: 5
               timeoutSeconds: 2
+          rateLimit:
+            enable: null
+            fullApiKey: null
+          rest:
+            idleConnectionTimeoutS: null
+            numThreads: null
+            useCompression: null
+            useSingleTransaction: null
+          rondb:
+            connectionRetries: null
+            connectionRetryDelayInSec: null
+            opRetryInitialDelayInMS: null
+            opRetryJitterInMS: null
+            opRetryOnTransientErrorsCount: null
           security:
             apiKey:
               cacheRefreshIntervalMS: 180000
+              preloadThreads: null
           ttlPurge:
             activeWindow: null
             enable: null
@@ -2017,6 +2051,14 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rdrs.externalMetadataCluster.slotsPerNode` <a class="headerlink" href="#helm.rondb.rondb.rdrs.externalMetadataCluster.slotsPerNode" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.externalMetadataCluster.slotsPerNode }
 :   Type `integer`, default `1`, minimum `1`, maximum `1`.
 
+`rondb.rondb.rdrs.featureStore` <a class="headerlink" href="#helm.rondb.rondb.rdrs.featureStore" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.featureStore }
+:   Type `object`.
+    Feature store settings of every RDRS pod, rendered as the FeatureStore section of rest_api.json only when a key is set, so RDRS images that predate a key keep starting. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.featureStore.
+
+`rondb.rondb.rdrs.featureStore.metadataCachePreloadThreads` <a class="headerlink" href="#helm.rondb.rondb.rdrs.featureStore.metadataCachePreloadThreads" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.featureStore.metadataCachePreloadThreads }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `4294967295`.
+    Threads that preload the feature view metadata cache from RonDB in parallel at startup (FeatureStore.FeatureStoreMetadataCache.PreloadThreads); the startup probe passes only once preloading is done. At least 1. RDRS default 3.
+
 `rondb.rondb.rdrs.hpa` <a class="headerlink" href="#helm.rondb.rondb.rdrs.hpa" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.hpa }
 :   Type `object`.
     Horizontal Pod Autoscaler for RDRS
@@ -2024,6 +2066,74 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rdrs.hpa.additionalMetrics` <a class="headerlink" href="#helm.rondb.rondb.rdrs.hpa.additionalMetrics" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.hpa.additionalMetrics }
 :   Type `array`, default `[]`.
     Additional metrics to use for the HPA. This is useful for custom metrics that are not supported by default.
+
+`rondb.rondb.rdrs.internal` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal }
+:   Type `object`.
+    Request handling, scan diagnostics and memory settings of every RDRS pod, rendered as the Internal section of rest_api.json. Each key is rendered only when set, and the section only when at least one key is set, so RDRS images that predate a key keep starting (they reject unknown keys). DisableTransparentHugePages, MaxHttpReqSize, MaxBuffers, BufferPoolSharePercent, BufferShrinkAfterS, MaxBlobTextValueBytes, MaxOperationsPerBatchRequest and MaxOperationsPerNdbExecute need RDRS 26.02.12 or newer. When a key is null, RDRS uses its own default; for maxBuffers that default (0) derives the cap from the pod's memory limit. The request and response buffer sizes are not settings: RDRS computes them from the RonDB row limits (ReqBufferSize and RespBufferSize were removed from RDRS in RONDB-1144). When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.internal.
+
+`rondb.rondb.rdrs.internal.bufferPoolSharePercent` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.bufferPoolSharePercent" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.bufferPoolSharePercent }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `90`.
+    Share of the pod's memory limit the buffer pools, together with the JSON responses written from them, may use when maxBuffers is derived. RDRS default 50; the rest is left for the JSON parse buffers, the NDB API and the process itself, so keep the memory limit at 2 GiB or more.
+
+`rondb.rondb.rdrs.internal.bufferShrinkAfterS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.bufferShrinkAfterS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.bufferShrinkAfterS }
+:   Type `integer|null`, default `900`, minimum `0`, maximum `4294967295`.
+    Seconds of idle time after which buffers above preAllocatedBuffers are unmapped and returned to the OS. 0 disables the shrink. Chart default 900 (15 minutes), so a pool that serves bursts some minutes apart keeps its buffers; this is the one Internal key the chart renders by default. null leaves the RDRS default, 300 (five minutes); RDRS images before 26.02.12 reject the key, so set it to null with them.
+
+`rondb.rondb.rdrs.internal.disableTransparentHugePages` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.disableTransparentHugePages" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.disableTransparentHugePages }
+:   Type `boolean|null`, default `null`.
+    Internal.DisableTransparentHugePages. RDRS 26.02.12 and newer opts its process out of transparent huge pages at startup (prctl PR_SET_THP_DISABLE); false allows THP again. On nodes with transparent_hugepage/enabled=always, khugepaged collapses the sparse memory of an idle RDRS into resident 2 MiB pages until the pod reaches its memory limit and is restarted by its probes, with no traffic and nothing logged. Leave it null unless THP is wanted. Images before 26.02.12 do not opt out and reject the key: leave it null with them and set transparent_hugepage/enabled=madvise on the nodes. RDRS default true.
+
+`rondb.rondb.rdrs.internal.maxBlobTextValueBytes` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxBlobTextValueBytes" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxBlobTextValueBytes }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Largest BLOB or TEXT value, in stored bytes, that a read returns (Internal.MaxBlobTextValueBytes). A read of a larger value fails with 413 naming the column; in a batch only that operation fails. 0 means no limit. RDRS default 2097152 (2 MiB).
+
+`rondb.rondb.rdrs.internal.maxBuffers` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxBuffers" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxBuffers }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Cap on the buffers of each kind the pool may hold; a request that needs more is answered 503 "buffer pool exhausted". 0 or null: derived from the pod's memory limit and bufferPoolSharePercent. When non-zero, it must be at least 2 and at least preAllocatedBuffers (RDRS default 128); the chart fails the render otherwise, as rdrs2 would refuse to start.
+
+`rondb.rondb.rdrs.internal.maxHttpReqSize` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxHttpReqSize" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxHttpReqSize }
+:   Type `integer|null`, default `null`, minimum `256`, maximum `4294967295`.
+    Maximum HTTP body size of a REST request in bytes (Internal.MaxHttpReqSize; RDRS images before 26.02.12 call it maxReqSize); larger bodies are rejected before RDRS parses them. Every worker thread keeps a parse buffer of this size, so rest.numThreads times this value is part of the pod's memory budget. At least 256. RDRS default 1048576 (1 MiB).
+
+`rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `4294967295`.
+    Largest number of operations one batch request may carry (for a batch feature store request: entries); larger batches are answered 413 before any buffer is taken. Large batches of wide rows can take most of a 2 GiB pod's buffer pool; raise the RDRS memory limit for such workloads. RDRS default 4096.
+
+`rondb.rondb.rdrs.internal.maxOperationsPerNdbExecute` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxOperationsPerNdbExecute" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxOperationsPerNdbExecute }
+:   Type `integer|null`, default `null`, minimum `50`, maximum `512`.
+    Operations of a batch request RDRS sends to NDB in one execute round; not a cap on the batch request (see maxOperationsPerBatchRequest). Between 50 and 512. RDRS default 128. Replaces BatchMaxSize, which RDRS 26.02.12 and newer no longer reads.
+
+`rondb.rondb.rdrs.internal.operationIdMaxSize` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.operationIdMaxSize" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.operationIdMaxSize }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4096`.
+    Maximum length of an operation ID string in a batch request (Internal.OperationIDMaxSize). At most 4096. RDRS default 256.
+
+`rondb.rondb.rdrs.internal.preAllocatedBuffers` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.preAllocatedBuffers" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.preAllocatedBuffers }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Request and response buffers of each kind mapped at startup and never released by the idle shrink. RDRS default 128.
+
+`rondb.rondb.rdrs.internal.scanRespBufferSize` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.scanRespBufferSize" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.scanRespBufferSize }
+:   Type `integer|null`, default `null`, minimum `1024`, maximum `4294967295`.
+    Initial reservation for the JSON of a scan response, in bytes; the buffer grows when a response exceeds it. At least 1024. RDRS default 262144 (256 KiB).
+
+`rondb.rondb.rdrs.internal.scanTimingEnabled` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.scanTimingEnabled" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.scanTimingEnabled }
+:   Type `boolean|null`, default `null`.
+    Collect scan timing metrics: a per-scan timing breakdown and a circular buffer of slow scans for diagnostics. RDRS default false.
+
+`rondb.rondb.rdrs.internal.slowScanBufferSize` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.slowScanBufferSize" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.slowScanBufferSize }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Number of slow scan entries kept in the circular buffer (needs scanTimingEnabled). RDRS default 1000.
+
+`rondb.rondb.rdrs.internal.slowScanThresholdUs` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.slowScanThresholdUs" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.slowScanThresholdUs }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Scans taking longer than this many microseconds are recorded in the slow scan buffer (needs scanTimingEnabled). RDRS default 10000 (10 ms).
+
+`rondb.rondb.rdrs.log` <a class="headerlink" href="#helm.rondb.rondb.rdrs.log" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.log }
+:   Type `object`.
+    Logging of every RDRS pod, rendered as the Log section of rest_api.json. The pod logs to stdout, so the log file keys (FilePath, MaxSizeMb, MaxBackups, MaxAge) are not exposed. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.log.
+
+`rondb.rondb.rdrs.log.level` <a class="headerlink" href="#helm.rondb.rondb.rdrs.log.level" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.log.level }
+:   Type `enum`, default `null`.
+    Log level (Log.Level), rendered only when set; null leaves RDRS at its own default, warn. Current rdrs2 releases parse the key but do not act on it (logging goes through the NDB event logger at a fixed level). One of: `"panic"`, `"fatal"`, `"error"`, `"warn"`, `"warning"`, `"info"`, `"debug"`, `"trace"`, `null`.
 
 `rondb.rondb.rdrs.maxKeepaliveRequests` <a class="headerlink" href="#helm.rondb.rondb.rdrs.maxKeepaliveRequests" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.maxKeepaliveRequests }
 :   Type `integer`, default `0`, minimum `0`, maximum `4294967295`, example `1000`.
@@ -2093,6 +2203,62 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rdrs.probes.startup.timeoutSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.timeoutSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.timeoutSeconds }
 :   Type `integer`, default `2`, minimum `1`.
 
+`rondb.rondb.rdrs.rateLimit` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rateLimit" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rateLimit }
+:   Type `object`.
+    USER rate limiting of the NDB traffic of every RDRS pod (RONDB-978), rendered as the RateLimit section of rest_api.json only when a key is set, so RDRS images that predate it keep starting. The identity is always the Hopsworks API key of the request: RateLimit.Identity has no other legal value and is not exposed. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.rateLimit.
+
+`rondb.rondb.rdrs.rateLimit.enable` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rateLimit.enable" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rateLimit.enable }
+:   Type `boolean|null`, default `null`.
+    Tag the NDB transactions of REST requests with the request's API key so the data nodes enforce USER rate limits. The data nodes must run with ActivateRateLimits, and an identity without a provisioned USER entity runs unmetered. RDRS default false.
+
+`rondb.rondb.rdrs.rateLimit.fullApiKey` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rateLimit.fullApiKey" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rateLimit.fullApiKey }
+:   Type `boolean|null`, default `null`.
+    Use the full API key as the rate limit identity (RateLimit.FullAPIKey) instead of its prefix. RDRS default false.
+
+`rondb.rondb.rdrs.rest` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest }
+:   Type `object`.
+    HTTP server settings of every RDRS pod, rendered into the REST section of rest_api.json next to the chart-managed listener keys (ServerIP, ServerPort, ProbeEnable, ProbePort). Each key is rendered only when set, so RDRS images that predate a key keep starting (they reject unknown keys). rdrs.maxKeepaliveRequests and rdrs.uploadPath are the same kind of key and stay where they are. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.rest.
+
+`rondb.rondb.rdrs.rest.idleConnectionTimeoutS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest.idleConnectionTimeoutS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest.idleConnectionTimeoutS }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Seconds a keep-alive connection on the main port may sit idle before RDRS closes it; 0 keeps the built-in 60 second timeout. Complements rdrs.maxKeepaliveRequests for clients that hold connections open but send rarely. Does not apply to the probe port. Requires an RDRS image with REST.IdleConnectionTimeoutS support (releases 26.02.11 and newer on the 26.02 line). RDRS default 0.
+
+`rondb.rondb.rdrs.rest.numThreads` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest.numThreads" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest.numThreads }
+:   Type `integer|null`, default `null`, minimum `2`, maximum `991`.
+    Worker threads of the RDRS HTTP server (REST.NumThreads). Each thread holds a JSON parse buffer of internal.maxHttpReqSize bytes (1 MiB by default), so the thread count is part of the pod's memory budget. Between 2 and 991. RDRS default 64.
+
+`rondb.rondb.rdrs.rest.useCompression` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest.useCompression" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest.useCompression }
+:   Type `boolean|null`, default `null`.
+    Send responses gzip-compressed. RDRS default true.
+
+`rondb.rondb.rdrs.rest.useSingleTransaction` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest.useSingleTransaction" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest.useSingleTransaction }
+:   Type `boolean|null`, default `null`.
+    Run all operations of a batch request in one NDB transaction. RDRS default true.
+
+`rondb.rondb.rdrs.rondb` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb }
+:   Type `object`.
+    Connection and retry settings of every RDRS pod towards RonDB. The chart renders each set key into BOTH the RonDB (data) and the RonDBMetadataCluster (metadata) sections of rest_api.json, which have the same keys; the management server addresses, connection pool sizes and node IDs of both sections come from rondbConfig and rdrs.externalMetadataCluster. Each key is rendered only when set. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.rondb.
+
+`rondb.rondb.rdrs.rondb.connectionRetries` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.connectionRetries" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.connectionRetries }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Attempts to connect to the cluster before RDRS gives up. RDRS default 5.
+
+`rondb.rondb.rdrs.rondb.connectionRetryDelayInSec` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.connectionRetryDelayInSec" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.connectionRetryDelayInSec }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Seconds to wait after a failed connection attempt before trying again. RDRS default 5.
+
+`rondb.rondb.rdrs.rondb.opRetryInitialDelayInMS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.opRetryInitialDelayInMS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.opRetryInitialDelayInMS }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Delay in milliseconds before the first retry of an operation. RDRS default 500.
+
+`rondb.rondb.rdrs.rondb.opRetryJitterInMS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.opRetryJitterInMS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.opRetryJitterInMS }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Random jitter in milliseconds added to each retry delay. RDRS default 100.
+
+`rondb.rondb.rdrs.rondb.opRetryOnTransientErrorsCount` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.opRetryOnTransientErrorsCount" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.opRetryOnTransientErrorsCount }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Times an operation that failed with a transient NDB error is retried. RDRS default 3.
+
 `rondb.rondb.rdrs.security` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security }
 :   Type `object`.
 
@@ -2100,8 +2266,12 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `object`.
 
 `rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS }
-:   Type `integer`, default `180000`, minimum `1000`.
+:   Type `integer`, default `180000`, minimum `1000`, maximum `4294967295`.
     How often the API key cache refreshes project associations from the database (in milliseconds). Lower values reduce staleness when project memberships change but increase database load.
+
+`rondb.rondb.rdrs.security.apiKey.preloadThreads` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security.apiKey.preloadThreads" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security.apiKey.preloadThreads }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `4294967295`.
+    Threads that preload the API key cache from RonDB in parallel at startup (Security.APIKey.PreloadThreads); the startup probe passes only once preloading is done. At least 1. RDRS default 3. Rendered only when set, so RDRS images that predate the key keep starting.
 
 `rondb.rondb.rdrs.ttlPurge` <a class="headerlink" href="#helm.rondb.rondb.rdrs.ttlPurge" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.ttlPurge }
 :   Type `object`.
@@ -2143,7 +2313,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               mysqldExportersMiB: 100
               mysqldMiB: 1400
               ndbmtdsMiB: 5000
-              rdrsMiB: 500
+              rdrsMiB: 2048
           requests:
             cpus:
               benchs: 1
@@ -2155,7 +2325,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               benchsMiB: 100
               mysqldExportersMiB: 50
               mysqldMiB: 650
-              rdrsMiB: 100
+              rdrsMiB: 2048
             storage:
               binlogGiB: 4
               classes:
@@ -2226,7 +2396,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
     It is recommended to keep this above 5GiB, otherwise some memory parts will be configured manually.
 
 `rondb.rondb.resources.limits.memory.rdrsMiB` <a class="headerlink" href="#helm.rondb.rondb.resources.limits.memory.rdrsMiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.limits.memory.rdrsMiB }
-:   Type `integer`, default `500`.
+:   Type `integer`, default `2048`.
 
 `rondb.rondb.resources.requests` <a class="headerlink" href="#helm.rondb.rondb.resources.requests" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests }
 :   Type `object`.
@@ -2266,7 +2436,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
     This can usually be kept at the default independent of the load
 
 `rondb.rondb.resources.requests.memory.rdrsMiB` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.memory.rdrsMiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.memory.rdrsMiB }
-:   Type `integer`, default `100`.
+:   Type `integer`, default `2048`.
 
 `rondb.rondb.resources.requests.storage` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.storage" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.storage }
 :   Type `object`.
