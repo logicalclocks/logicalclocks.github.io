@@ -303,7 +303,9 @@ The answer resumes the turn with a new run on the same thread whose `resume` ans
 
 - Everything before the call runs again when the turn resumes, so ask before acting, never after.
 - `key` names the question the same way on every run of the turn; without it the question is named by its place in the turn.
-- The agent keeps the paused turn's request and what it asked, so a resume carries only the answers and the turn runs again with the same message and context. A resume that answers a question that was not asked, or one that has expired, is refused, and so is one on a conversation that is not waiting on a question (answered already, or the agent restarted since): send the message again instead.
+- The agent keeps the paused turn's request and what it asked, so a resume carries only the answers and the turn runs again with the same message and context. A resume that answers a question that was not asked, or one that has expired, is refused, and so is one on a conversation that is not waiting on a question (answered already): send the message again instead.
+- With agent memory, the open questions are stored with it, so any replica can take the answer and a restart forgets nothing; two replicas given the same answer do not both act on it. Without memory they are kept by the replica that asked, and an answer that reaches another one is refused.
+- The stored question is deleted once it is answered, when a new message moves the conversation on instead, or when the conversation is deleted.
 - A turn may ask several times; each pause asks one question, and the client answers only what is open.
 - `answer.cancelled` is a person declining to answer; a refusal to go ahead is an answer with a payload that says so.
 
