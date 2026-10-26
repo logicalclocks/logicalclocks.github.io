@@ -208,6 +208,7 @@ The feature group is an archive of the mailbox:
 
 - An incremental run does not remove the messages deleted in Gmail, and does not follow label changes; a full load does.
 - Spam, trash and drafts are not copied.
+- A message whose headers or body cannot be parsed is left out, and the job log names its Gmail message id.
 - Messages received in the last minute are left to the next run, since Gmail can still be indexing them.
 - A message that is imported into the mailbox later with an older receive time, such as mail migrated from another account, falls before the incremental cursor and is copied only by a full load.
 - An incremental run refuses a feature group that was filled for a different mailbox, query or labels.
