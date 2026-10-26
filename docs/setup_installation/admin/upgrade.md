@@ -314,7 +314,12 @@ Done in two stages it causes no downtime for any deployment, Standard or Knative
 
 Before the first stage:
 
-1. Keep an inventory to verify against afterwards: the Standard-mode InferenceServices (`kubectl get isvc -A -l serving.kserve.io/deploymentMode=Standard`), which of them scale to zero (`kubectl get ingress -A -l serving.hops.works/keda-idle=true`), and the Knative-mode ones.
+1. Keep an inventory to verify against afterwards: the Standard-mode InferenceServices, which carry the `serving.kserve.io/deploymentMode` annotation, which of them scale to zero (`kubectl get ingress -A -l serving.hops.works/keda-idle=true`), and the Knative-mode ones.
+
+    ```bash
+    kubectl get isvc -A -o json | jq -r '.items[] | select(.metadata.annotations["serving.kserve.io/deploymentMode"] == "Standard") | .metadata.namespace + "/" + .metadata.name'
+    ```
+
 2. The Istio ingress Service, its ports and its load balancer are not touched; confirm it is healthy.
 3. Gateway API CRDs already on the cluster belong to whoever installed them, and the chart's hook leaves them alone, as described in [CustomResourceDefinitions][envoy-gateway-crds]: it fails the upgrade on an older standard bundle of another owner, which only that owner can upgrade.
    On OpenShift 4.19 or later and on GKE the platform owns them: set `hw-envoy-gateway.gatewayApiCrds.enabled: false`, as `values.openshift.yaml` does.
@@ -329,7 +334,7 @@ This stage can stay for as long as wanted.
 
 **Stage 2**, `kserveStandardMode: true`, then `helm upgrade`.
 The KServe controller restarts and creates HTTPRoutes for every Standard-mode InferenceService whose predictor is ready; their Istio Ingresses stay and keep serving.
-The Hopsworks backend restarts and, on its primary instance, migrates each Standard-mode deployment: it creates the routes and the policy it owns, waits until the Gateway, the routes and the policies report accepted, and only then deletes the deployment's Istio Ingress, and for a scale-to-zero deployment the idle Ingress and its ExternalName Service.
+The Hopsworks backend does not restart: its primary instance sees the new KServe ingress configuration within a minute and migrates each Standard-mode deployment: it creates the routes and the policy it owns, waits until the Gateway, the routes and the policies report accepted, and only then deletes the deployment's Istio Ingress, and for a scale-to-zero deployment the idle Ingress and its ExternalName Service.
 A deployment whose routes are not accepted keeps its Ingress and is retried every minute.
 One whose predictor is not ready is left alone until it is, because KServe gives it no routes before, and the backend's full pass every ten minutes moves it after.
 The backend log reports each deployment.
@@ -343,12 +348,16 @@ Turning both values off in one upgrade works too, but Standard-mode hosts answer
 `enabled: false` leaves the GatewayClass `<release>-envoy-gateway`, the Gateway API and Envoy Gateway CRDs, and the certificate Secrets `envoy-gateway`, `envoy`, `envoy-rate-limit` and `envoy-oidc-hmac` in the release namespace.
 They are inert and are reused if the feature is turned on again.
 With the feature off, the subchart and its uninstall cleanup are no longer part of the release, so an uninstall leaves them too.
-Remove them by hand once they are no longer wanted, leaving the Gateway API CRDs where the platform owns them:
+Remove them by hand once they are no longer wanted.
+Delete the Gateway API CRDs only where the chart's hook installed them, which its field manager `envoy-gateway-crd-install` shows, and only when nothing else on the cluster uses them: deleting a CRD deletes every object of its kind, other owners' Gateways and routes included.
 
 ```bash
 kubectl delete gatewayclass <release>-envoy-gateway
 kubectl delete secret -n <namespace> envoy-gateway envoy envoy-rate-limit envoy-oidc-hmac
-kubectl get crd -o name | grep -E 'gateway.envoyproxy.io|gateway.networking.k8s.io' | xargs kubectl delete
+kubectl get crd -o name | grep 'gateway.envoyproxy.io' | xargs kubectl delete
+kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.managedFields[*].manager}'
+# Only if the output names envoy-gateway-crd-install:
+kubectl get crd -o name | grep 'gateway.networking.k8s.io' | xargs kubectl delete
 ```
 
 **Roll back with `helm upgrade`, not `helm rollback`.**
@@ -362,9 +371,11 @@ kubectl delete -n "$NS" virtualservice,destinationrule "$GW-forward" --ignore-no
 kubectl delete -n "$NS" gateway "$GW" --ignore-not-found
 kubectl delete -n "$NS" securitypolicy,backendtrafficpolicy,clienttrafficpolicy,envoyproxy "$GW" --ignore-not-found
 kubectl delete -n "$NS" httproute,securitypolicy -l serving.hops.works/gateway-route
-kubectl delete referencegrant -A -l serving.hops.works/gateway-route
+for ns in $(kubectl get namespace -l serving.hops.works/gateway-routes="$NS" -o name); do
+  kubectl delete referencegrant -n "${ns#namespace/}" -l serving.hops.works/gateway-route
+done
 kubectl delete -n "$NS" deployment,service,serviceaccount,configmap,poddisruptionbudget -l app.kubernetes.io/managed-by=envoy-gateway
-kubectl label namespace -l serving.hops.works/gateway-routes serving.hops.works/gateway-routes-
+kubectl label namespace -l serving.hops.works/gateway-routes="$NS" serving.hops.works/gateway-routes-
 ```
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }

@@ -71,18 +71,20 @@ kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.annot
 
 On OpenShift 4.19 and later, and on GKE, the platform owns the Gateway API CRDs.
 `values.openshift.yaml` sets `hw-envoy-gateway.gatewayApiCrds.enabled: false`, so the Job applies the Envoy Gateway set only and checks that the kinds it needs exist; set the same value on GKE.
-Whether Envoy Gateway 1.9 runs against the Gateway API version OpenShift ships is not verified yet, so the feature stays off there.
+Installing with the feature on is verified on OKD 4.21, against the Gateway API CRDs the platform ships.
 
 ## Cluster requirements { #envoy-gateway-requirements }
 
 - **Namespaces that may attach routes.**
-  The Gateway admits routes only from namespaces labelled `serving.hops.works/gateway-routes=true`: the project namespaces, for KServe's host routes, and the release namespace, for the backend's path and idle routes.
-  The apply hook labels the release namespace and every project namespace on each install and upgrade, and the backend labels each project namespace it routes from then on.
-  An HTTPRoute anywhere else cannot claim a deployment's host or path, or see its callers' keys.
+  The Gateway admits routes only from namespaces labelled `serving.hops.works/gateway-routes=<release namespace>`: the project namespaces, for KServe's host routes, and the release namespace, for the backend's path and idle routes.
+  The apply hook labels the release namespace on each install and upgrade, and the backend labels each project namespace before it moves a deployment of that project to the Gateway.
+  An HTTPRoute anywhere else, another Hopsworks release's included, cannot claim a deployment's host or path, or see its callers' keys.
+  Each release's Envoy Gateway controller manages only its own GatewayClass, by a controller name that carries the release namespace (`gateway.envoyproxy.io/hopsworks-<release namespace>`).
 - **Backend permissions with `rbac.useExistingRole`.**
   The chart then renders no backend role.
   Add to the existing one `get, list, watch, create, update, patch, delete` on `httproutes` and `referencegrants` of `gateway.networking.k8s.io` and on `securitypolicies` of `gateway.envoyproxy.io`, and `get, list, watch` on `gateways`.
-  The backend also labels namespaces, which the default role already allows with `patch` on `namespaces`.
+  The backend also labels the namespaces it routes, which needs `get` and `patch` on `namespaces`, and checks the Gateway Service's endpoints, which needs `get` and `list` on `endpointslices` of `discovery.k8s.io` (the default role has it through `rbac.extraRoleRules`).
+  With the feature off the backend runs without these grants, also on a cluster that carries the Gateway API CRDs.
 - **The Gateway Service.**
   It is `ClusterIP` by default, and Istio forwards to it.
   `kserve.envoyGateway.service.type: NodePort`, with ports under `kserve.envoyGateway.service.nodePorts` distinct from Istio's, or `LoadBalancer`, exposes it directly next to Istio.
