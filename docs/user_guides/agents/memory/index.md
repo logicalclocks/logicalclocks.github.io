@@ -79,7 +79,7 @@ agent_app = AgentApp(
 ```
 
 **Code wins.** The deployment's policy is applied only when the agent passed no `memory=` of its own, and an explicit `memory=None` stays off however the deployment is configured.
-The manifest reports which it was under `capabilities.memory.source`, as `code` or `deployment`.
+The manifest reports which it was under `capabilities.custom.hopsworks.memory.source`, as `code` or `deployment`.
 
 Inside a deployment `ManagedMemoryService()` needs no arguments: the project database URL comes from the platform-injected environment and the table names are derived from the deployment id.
 Outside one, pass any SQLAlchemy URL and install the extra, `pip install 'hopsworks[agents-memory]'`.

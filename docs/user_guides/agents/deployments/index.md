@@ -1,5 +1,5 @@
 ---
-description: How to write, deploy and talk to a conversational agent on Hopsworks, and the chat contract it answers by.
+description: How to write, deploy and talk to a conversational agent on Hopsworks, and the AG-UI chat contract it answers by.
 ---
 
 # How To Run An Agent Deployment
@@ -10,7 +10,7 @@ An agent deployment is a long-running service that answers people: a chat assist
 You write it as ordinary Python with the framework you prefer, such as LangGraph, LlamaIndex, the OpenAI Agents SDK, or none.
 Hopsworks runs it, gives it an endpoint, and connects it to the rest of the platform.
 
-An agent built on `AgentApp` answers by the [chat contract][the-chat-contract], a small HTTP contract that tells Hopsworks how to talk to it.
+An agent built on `AgentApp` answers by the [chat contract][the-chat-contract]: AG-UI, the open agent–user protocol, with a few Hopsworks extensions.
 That is what makes everything around the agent work with no per-agent configuration:
 
 - the chat panel in the UI finds the agent, streams its replies and shows its progress;
@@ -134,78 +134,99 @@ The agent's **Artifact files** card shows the repository, the branch, the commit
 
 ## The chat contract
 
+An agent built on `AgentApp` speaks [AG-UI](https://docs.ag-ui.com), the open protocol between an agent and the interface a person uses.
+Any AG-UI client, such as a [CopilotKit](https://www.copilotkit.ai) page, can talk to it with no adapter, and so do the Hopsworks chat panel and Python client.
+What Hopsworks adds rides in AG-UI's own extension points, under a `hopsworks` key, so a client that knows nothing of it ignores it.
+
 You do not implement the contract by hand: `AgentApp` serves these routes around your handler.
 
 | Route | Purpose |
 | --- | --- |
 | `GET /.well-known/hopsworks-agent.json` | The manifest: what this agent is and what it can do |
-| `POST /v1/chat` | One turn, one reply |
-| `POST /v1/chat/stream` | The same turn, streamed as server-sent events |
+| `POST /v1/run` | One AG-UI run: a `RunAgentInput` in, AG-UI events out as server-sent events |
+| `POST /v1/chat` | The same turn as one JSON reply, for a caller that does not stream |
 | `GET /health` | Liveness, the process is up |
 | `GET /ready` | Readiness, a handler is registered and memory, if configured, is reachable |
 
 ### The manifest
 
-The manifest is how a client discovers an agent rather than assuming it.
-It carries the agent's name, description and version, the welcome message and suggested prompts the chat panel shows, the modalities it accepts and returns, the routes it serves, and its capabilities.
+AG-UI has no way for a client to discover an agent, so the manifest is how the chat panel finds it.
+It carries the agent's name and description, the welcome message and suggested prompts the chat panel shows, the routes it serves, and its capabilities.
+The capabilities are AG-UI's `AgentCapabilities`, and what only Hopsworks reads is under `capabilities.custom.hopsworks`.
 
 This is what the agent above publishes, abridged to the keys this page talks about:
 
 ```json
 {
-  "protocol": "hopsworks-agent",
-  "agent": {
-    "name": "Support agent",
-    "description": "Answers questions about orders"
-  },
-  "endpoints": {"chat": "/v1/chat", "feedback": "/v1/feedback"},
+  "protocol": "ag-ui",
+  "protocol_version": "1.0",
+  "agent": {"name": "Support agent", "description": "Answers questions about orders"},
+  "endpoints": {"run": "/v1/run", "chat": "/v1/chat", "feedback": "/v1/feedback"},
   "capabilities": {
-    "streaming": false,
-    "conversation_history": false,
-    "tool_events": false,
-    "feedback": true,
-    "trace_correlation": false
+    "transport": {"streaming": true},
+    "humanInTheLoop": {"feedback": true},
+    "custom": {
+      "hopsworks": {
+        "streaming": false,
+        "conversation_history": false,
+        "tool_events": false,
+        "feedback": true,
+        "trace_correlation": false
+      }
+    }
   },
-  "ui": {
-    "welcome_message": "How can I help?",
-    "suggested_prompts": ["Where is my order?"]
-  }
+  "ui": {"welcome_message": "How can I help?", "suggested_prompts": ["Where is my order?"]}
 }
 ```
 
-Each capability is read by something.
-The chat panel hides the stream toggle, the transcript view and the feedback control when they are false, and the evaluation runner refuses to grade an agent whose `trace_correlation` is false.
-Registering a `@agent_app.stream` handler turns `streaming` on and adds a `stream` endpoint, and configuring [memory][agent-memory] turns `conversation_history` on.
+Each Hopsworks capability is read by something.
+`streaming` says the answer arrives token by token rather than whole, which is what the chat panel's stream toggle is about.
+The chat panel hides the transcript view and the feedback control when theirs are false, and the evaluation runner refuses to grade an agent whose `trace_correlation` is false.
+Registering a `@agent_app.stream` handler turns `streaming` on, and configuring [memory][agent-memory] turns `conversation_history` on.
 
-### One turn
+### One run
 
-A request carries the new message and, optionally, the conversation it belongs to and who it is for.
-A reply carries the ids, the message, and what the turn cost:
+A run sends the new message, as an AG-UI `RunAgentInput`:
 
 ```json
 {
-  "id": "response_01HZ...",
-  "conversation_id": "conv_01HZ...",
-  "message": {"id": "msg_01HZ...", "role": "assistant", "content": []},
-  "usage": {"input_tokens": 13, "output_tokens": 7},
-  "status": "completed"
+  "threadId": "conv_01HZ...",
+  "runId": "run_01HZ...",
+  "messages": [{"id": "msg_1", "role": "user", "content": "Where is my order?"}],
+  "tools": [],
+  "context": [],
+  "forwardedProps": {"hopsworks": {"subject": "customer-7"}}
 }
 ```
 
+The reply is a stream of AG-UI events:
+
+| Event | What it carries |
+| --- | --- |
+| `RUN_STARTED` | The thread and the run, and the trace id under `metadata.hopsworks` |
+| `TEXT_MESSAGE_START`, `_CONTENT`, `_END` | The answer, piece by piece |
+| `TOOL_CALL_START`, `_ARGS`, `_END`, `_RESULT` | A tool call the agent made, with its arguments and its result |
+| `STEP_STARTED`, `STEP_FINISHED` | A step the agent reported, see [progress events][progress-events] |
+| `CUSTOM` named `hopsworks.media` | An image, file or audio part of the answer |
+| `RUN_FINISHED` | Token usage, and the trace id, subject and citations under `result.hopsworks` |
+| `RUN_ERROR` | Why the run failed, see [refusals][refusals] |
+
+The trace id is in `RUN_STARTED` so that a client still has it when the run fails.
+
 In the handler, `request.text` is the message text, and `request.to_framework_messages()` returns the `[{"role", "content"}]` shape that LangChain, LangGraph and LlamaIndex accept.
-`request.conversation_id` is always set, generated on the first turn, so it can be passed straight to a LangGraph checkpointer or a LlamaIndex chat store as a thread id.
+`request.conversation_id` is the run's thread, generated on the first turn, so it can be passed straight to a LangGraph checkpointer or a LlamaIndex chat store as a thread id.
 Returning a plain `str` from the handler is shorthand for `AgentResponse.text(...)`.
 
 ### Conversations
 
-The request carries only the new message.
-Pass the `conversation_id` from a reply into the next request and the turns belong to one conversation; leave it out and a new conversation starts.
-With [memory][agent-memory] configured, Hopsworks keeps the transcript and hands the handler the recent turns.
-Without it, the conversation id is a thread key your own framework uses.
+Send the `threadId` from a run's `RUN_STARTED` with the next run, and the turns belong to one conversation; send an empty one and a new conversation starts.
+An AG-UI client may also resend the conversation's earlier messages.
+With [memory][agent-memory] configured, Hopsworks keeps the transcript, hands the handler the recent turns, and ignores the resent messages, so a client cannot rewrite what was said.
+Without it, the resent messages reach the handler as `request.prior_messages`, and `to_framework_messages()` returns them before the new message.
 
 ### Streaming
 
-Register an async generator and the agent streams:
+Register an async generator and the answer streams token by token:
 
 ```python
 @agent_app.stream
@@ -214,8 +235,8 @@ async def stream(request):
         yield delta
 ```
 
-`/v1/chat/stream` then emits the reply as it is produced, and `/v1/chat` still works by collecting the stream.
-An agent that registers only a `@chat` handler still answers the streaming route, as a single completed event, so a caller never has to ask which handler was written.
+Each piece goes out as a `TEXT_MESSAGE_CONTENT` event, and `/v1/chat` still works by collecting the stream.
+An agent that registers only a `@chat` handler answers a run with one text message, so a caller never has to ask which handler was written.
 
 ### Refusals
 
@@ -232,8 +253,9 @@ async def chat(request):
     return await my_agent.ainvoke(request.text)
 ```
 
-The caller receives the error in `detail`, with a code it can branch on, a message for a person, and whether a retry is worth it, under the handler's `status_code`.
-That status defaults to `500`, so pass a 4xx for anything the agent declined rather than failed at.
+A run ends in `RUN_ERROR` with the error's `message` and `code`, and with the handler's `status_code` and whether a retry is worth it under `metadata.hopsworks`.
+On `/v1/chat` the same error is the HTTP status, with `detail` as the body.
+The status defaults to `500`, so pass a 4xx for anything the agent declined rather than failed at.
 A client tells a refusal from a breakage by that status, and an evaluation run uses the same distinction when it decides whether the agent failed a task or did not answer it.
 
 ### Who a turn is for
@@ -244,6 +266,7 @@ A turn may name the person it is for:
 reply = agent.chat("Where is my order?", subject="customer-7")
 ```
 
+On the wire it is `forwardedProps.hopsworks.subject`.
 The subject travels with each request rather than with the deployment, because one deployment serves everybody, and it is what long-term memory is keyed by.
 A turn that names nobody falls back to its own conversation, and `ctx.subject_source` says which happened: `client` when the caller named someone, `conversation` when it fell back, and `app` when the agent worked it out during the turn.
 
@@ -253,7 +276,9 @@ A turn that names nobody falls back to its own conversation, and `ctx.subject_so
 
 ### Progress events
 
-With `AgentApp(tool_events=True)`, the steps an agent takes reach the caller as progress chips while it works:
+With `AgentApp(tool_events=True)`, what the agent does reaches the caller while it works, and the chat panel shows it as progress chips.
+Tool calls need no code: when tracing is on and the framework is instrumented, each tool call goes out as AG-UI tool-call events, with its arguments and its result.
+Other steps, such as a retrieval or a plan, the agent reports itself:
 
 ```python
 @agent_app.chat
@@ -264,8 +289,8 @@ async def chat(request, ctx):
     return AgentResponse.text(text=answer)
 ```
 
+Each report is an AG-UI `STEP_STARTED` or `STEP_FINISHED` event, with the status, message and data under its `metadata.hopsworks`.
 Pass the same `event_id` for a step's start and end, so the client shows one chip that updates rather than two.
-When tracing is on and the framework is instrumented, tool calls are reported this way with no code in the agent.
 
 ### The handler context
 
@@ -280,12 +305,13 @@ async def chat(request, ctx):
 
 `ctx` exposes the conversation, message and turn ids, the deployment id, the subject, a logger, and `emit_event`.
 When the deployment configures memory it also exposes `history`, `summary`, `state()`, `recall`, `remember`, `forget` and `system_context()`, see [Agent Memory][agent-memory].
+`request` also carries what the run sent beyond the message: `run_id`, `messages`, `tools`, `state` and `forwarded_props`.
 
 ### Talking to an agent from Python
 
 ```python
 agent = agents.get_agent("support_agent")
-print(agent.manifest()["capabilities"])
+print(agent.manifest()["capabilities"]["custom"]["hopsworks"])
 
 reply = agent.chat("Where is my order?", subject="customer-7")
 print(reply.text, reply.conversation_id, reply.trace_id)
@@ -300,6 +326,7 @@ for frame in agent.chat_stream("Tell me more").events():
     print(frame.type, frame.text or "")
 ```
 
+`chat_stream` sends an AG-UI run and reads its events; each frame keeps the event it came from in `frame.raw`.
 `reply.trace_id` is the thread back to everything else: the turn's trace, the feedback given on it, and the evaluation trials that replayed it.
 `chat` waits 120 seconds by default; pass `timeout=` for an agent whose turns take longer.
 
