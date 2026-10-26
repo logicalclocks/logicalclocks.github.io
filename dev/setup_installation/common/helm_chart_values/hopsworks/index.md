@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793026678` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793042302` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2538,6 +2538,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_kafka_storage_connectors: 'true'
         enable_metadata_designer: ''
         enable_opensearch_storage_connectors: 'true'
+        enable_public_apps: false
         enable_read_only_git_repositories: 'false'
         enable_redshift_storage_connectors: 'true'
         enable_snowflake_storage_connectors: 'true'
@@ -3299,6 +3300,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.enable_opensearch_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_opensearch_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_opensearch_storage_connectors }
 :   Type `string`, default `"true"`.
+
+`hopsworks.variables.enable_public_apps` <a class="headerlink" href="#helm.hopsworks.variables.enable_public_apps" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_public_apps }
+:   Type `bool`, default `false`.
 
 `hopsworks.variables.enable_read_only_git_repositories` <a class="headerlink" href="#helm.hopsworks.variables.enable_read_only_git_repositories" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_read_only_git_repositories }
 :   Type `string`, default `"false"`.
