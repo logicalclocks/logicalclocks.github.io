@@ -192,6 +192,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `enable_google_sheets_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_hopsfsmount_page_cache_in_jobs` | Boolean | `true` | Settings.java |
 | `enable_hopsfsmount_page_cache_in_jupyter` | Boolean | `false` | Settings.java |
+| `enable_hopsworks_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_kafka_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_mongodb_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_opencost` | Boolean | `false` | Settings.java |
@@ -211,7 +212,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `executions_per_job_limit` | Integer | `10000` | Settings.java |
 | `executions_ttl_days` | Integer | `90` | Settings.java |
 | `factory_enabled` | Boolean | `false` | Settings.java |
-| `feature_monitoring_max_num_features` | Integer | `15` | Settings.java |
+| `feature_monitoring_max_num_features` | Integer | `32` | Settings.java |
 | `featurestore_asof_spine_max_bytes` | Long | `1073741824` | Settings.java |
 | `featurestore_asof_spine_max_columns` | Integer | `256` | Settings.java |
 | `featurestore_asof_spine_max_file_age_ms` | Long | `86400000` | Settings.java |
@@ -583,6 +584,15 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `staging_dir` | String | `/srv/hops/domains/domain1/staging` | Settings.java |
 | `statistics_cleaner_batch_size` | Integer | `1000` | Settings.java |
 | `statistics_cleaner_interval_ms` | Integer | `900000` | Settings.java |
+| `statistics_incremental_allowed` | Boolean | `true` | Settings.java |
+| `statistics_incremental_enabled` | Boolean | `false` | Settings.java |
+| `statistics_incremental_full_profile_every` | Integer | `50` | Settings.java |
+| `statistics_job_bytes_per_executor` | Long | `0` | Settings.java |
+| `statistics_job_driver_memory` | String | *(empty string)* | Settings.java |
+| `statistics_job_executor_cores` | String | *(empty string)* | Settings.java |
+| `statistics_job_executor_memory` | String | *(empty string)* | Settings.java |
+| `statistics_job_max_executors` | String | *(empty string)* | Settings.java |
+| `statistics_retention_rows_per_entity` | Integer | `0` | Settings.java |
 | `streamlit_sharing` | Boolean | `false` | Settings.java |
 | `sudoers_dir` | String | `/srv/hops/sbin` *(duplicate key, also declared in Settings.java; values match)* | CAConf.java |
 | `sudoers_dir` | String | `/srv/hops/sbin` *(duplicate key, also declared in CAConf.java; values match)* | Settings.java |
