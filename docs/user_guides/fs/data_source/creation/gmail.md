@@ -226,7 +226,8 @@ Click `Configure sync job` to create one, or the pencil icon of a sync job to ed
 2. **Feature group:** leave it empty for the default name derived from the mailbox.
 3. **Attachments directory:** leave it empty for `Resources/gmail/<feature group>`, or pick a directory.
 4. **Search query:** optional, a [Gmail search query](https://support.google.com/mail/answer/7190) written as in the Gmail search box, such as `from:billing@example.com has:attachment`.
-5. **Labels:** optional, the Gmail label ids a message must carry, such as `INBOX`.
+5. **Mailboxes:** optional, the labels to sync, such as Inbox or Sent, picked from the mailbox's labels; a message carrying any of the checked labels is copied.
+    With none checked, every message except spam, trash and drafts is copied.
 6. **Loading strategy:** `Incremental` or `Full load (backfill)`, and an optional **Start date**: only emails received on or after it are copied.
 7. **Environment:** the Python environment of the job; left empty, a new job runs in `python-feature-pipeline`.
 8. **Schedule:** `None`, `Hourly` or `Daily` (00:00 UTC).
@@ -260,7 +261,7 @@ job = gmail.sync(
 
 - `feature_group_name`: defaults to the name derived from the mailbox.
 - `attachments_path`: defaults to `Resources/gmail/<feature group>`.
-- `query`, `labels`: select the messages, as in the UI.
+- `query`, `labels`: select the messages, as in the UI; `labels` takes label ids, which `get_labels()` lists by name.
 - `loading_strategy`: `INCREMENTAL_TIMESTAMP` or `FULL_LOAD`.
 - `initial_value`: the earliest receive time to copy, as a date or datetime, a date string, or epoch milliseconds.
 - `schedule`: `hourly`, `daily`, or `None` to leave the job's schedule as it is.
@@ -294,11 +295,13 @@ Deleting a sync job deletes the job and its schedule; the feature group and the 
 ### Configure a sync job with the CLI
 
 ```bash
+hops datasource labels support_inbox
 hops datasource sync support_inbox --start-date 2026-01-01 --label INBOX --schedule hourly
 hops datasource sync-jobs support_inbox
 ```
 
 `hops datasource sync` takes `--feature-group`, `--attachments-path`, `--query`, `--label` (repeatable), `--strategy`, `--start-date`, `--schedule`, `--job-name`, `--environment` and `--start/--no-start`, with the defaults of the Python SDK.
+`hops datasource labels` lists the ids and names of the mailbox's labels, for `--label`.
 `hops datasource sync-jobs` lists each sync job with its feature group, attachments directory and loading strategy.
 
 !!! api "API reference"
