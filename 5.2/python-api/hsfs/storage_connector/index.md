@@ -45,6 +45,11 @@
       heading_level: 2
       show_root_heading: true
 
+::: hsfs.storage_connector.HopsworksConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hsfs.storage_connector.JdbcConnector
     options:
       heading_level: 2
