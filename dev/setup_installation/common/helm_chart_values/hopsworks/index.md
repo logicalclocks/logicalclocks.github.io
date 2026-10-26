@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793051799` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793055646` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2809,6 +2809,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         pythonapp_idle_cooldown_seconds: '21600'
         pythonapp_memory: '2048'
         pythonapp_proxy_token_ttl_ms: '900000'
+        pythonapp_unready_timeout_seconds: '600'
         quotas_featuregroups_online_disabled: '-1'
         quotas_featuregroups_online_enabled: '-1'
         quotas_max_parallel_executions: '-1'
@@ -4165,6 +4166,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.pythonapp_proxy_token_ttl_ms` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_proxy_token_ttl_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_proxy_token_ttl_ms }
 :   Type `string`, default `"900000"`.
     Milliseconds an app proxy token (POST /project/{id}/apps/{name}/proxy-token) stays valid. It is pinned to one app and not renewable: the client mints a new one when it expires.
+
+`hopsworks.variables.pythonapp_unready_timeout_seconds` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_unready_timeout_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_unready_timeout_seconds }
+:   Type `string`, default `"600"`.
+    Seconds an app that has been ready may go without a ready container before its execution ends and the app's pods, Deployment and KEDA objects are removed (HWORKS-3572). Above the kubelet's five-minute cap on the wait between restarts of a crashing container, so one such wait cannot end an app that is about to come back; the same 600 s as a Kubernetes Deployment's progressDeadlineSeconds. Before an app is first ready, `python_job_kube_waiting_timeout_ms` applies as for every job.
 
 `hopsworks.variables.quotas_featuregroups_online_disabled` <a class="headerlink" href="#helm.hopsworks.variables.quotas_featuregroups_online_disabled" title="Permanent link">#</a> { #helm.hopsworks.variables.quotas_featuregroups_online_disabled }
 :   Type `string`, default `"-1"`.
