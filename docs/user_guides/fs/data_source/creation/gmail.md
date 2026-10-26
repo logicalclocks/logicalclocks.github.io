@@ -153,8 +153,8 @@ The job upserts one row per email into a Delta feature group, version 1, that it
     A name that would start with a digit is prefixed with `mail_`.
     You can set another name of lower case letters, digits and `_` that starts with a letter, at most 63 characters long.
 - **Primary key:** `message_id`.
-- **Event time:** `internal_date`, the time Gmail received the message.
-- **Partitions:** `day` (`YYYY-MM-DD`) of the receive time in UTC.
+- **Event time:** `internal_date`, Gmail's `internalDate`: when Gmail accepted the message, or for mail imported into the mailbox, the sender's `Date`.
+- **Partitions:** `day` (`YYYY-MM-DD`) of `internal_date` in UTC.
     New messages are added as new files, so an hourly job adds about one Parquet file to the current day every hour.
     The first run after a day ends in UTC compacts that day's files into files of up to 192 MiB, aiming at 100 to 250 MB.
 
@@ -163,7 +163,7 @@ The job upserts one row per email into a Delta feature group, version 1, that it
 | `message_id` | string | Gmail message id, the primary key |
 | `thread_id` | string | Gmail thread id |
 | `history_id` | string | Gmail history id |
-| `internal_date` | timestamp | Receive time in UTC, the event time |
+| `internal_date` | timestamp | Gmail's `internalDate` in UTC, the event time |
 | `day` | string | Receive date, `YYYY-MM-DD`, partition key |
 | `hour` | string | Receive hour, `HH` |
 | `date_header` | string | The raw `Date` header |
@@ -196,7 +196,7 @@ The `attachments` column lists the full paths of a message's files, such as `/Pr
 ### Loading strategies
 
 - `INCREMENTAL_TIMESTAMP` (the default): the first run copies the mailbox from the start date on, or the whole mailbox without one.
-    Every later run upserts only the messages received since the previous run.
+    Every later run upserts only the messages Gmail received since the previous run, whatever their `internal_date`.
     The first run reads the mailbox a week at a time, oldest first, and upserts every 5000 messages, so the feature group fills while it runs and a run that fails resumes from its last upsert.
     The upserts are keyed by `message_id`, so a retried run, or a run that overlaps the previous one, never duplicates a message.
     The schedule starts no run while another run of the job is still copying, so an hourly job first runs once the backfill ends; a run started by hand meanwhile does nothing and succeeds.
