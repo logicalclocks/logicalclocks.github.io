@@ -15,7 +15,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -302,6 +302,70 @@ Before, it created no topics there, so every topic had to exist before ingestion
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
   Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
   Reading through a shared feature store is unchanged.
+
+### Envoy Gateway { #upgrade-envoy-gateway }
+
+New in 5.3 and off by default: an upgrade that leaves `global._hopsworks.envoyGateway` alone routes nothing differently.
+It restarts two pods once: the KServe controller, which from 5.3 restarts whenever its ingress configuration changes, and `model-serving-authenticator`, which gains the Gateway listener and a readiness probe.
+Neither costs a request: KServe keeps serving from the running deployments while its controller restarts, and the authenticator's old pod answers until the new one is ready.
+
+Turning it on routes Standard-mode model deployments through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door, as described in [Envoy Gateway][envoy-gateway].
+Done in two stages it causes no downtime for any deployment, Standard or Knative: the external endpoint does not change, Knative traffic never leaves Istio, and each Standard-mode deployment is moved once its new routes are accepted, without restarting it.
+
+Before the first stage:
+
+1. Keep an inventory to verify against afterwards: the Standard-mode InferenceServices (`kubectl get isvc -A -l serving.kserve.io/deploymentMode=Standard`), which of them scale to zero (`kubectl get ingress -A -l serving.hops.works/keda-idle=true`), and the Knative-mode ones.
+2. The Istio ingress Service, its ports and its load balancer are not touched; confirm it is healthy.
+3. Gateway API CRDs already on the cluster belong to whoever installed them, and the chart's hook leaves them alone, as described in [CustomResourceDefinitions][envoy-gateway-crds]: it fails the upgrade on an older standard bundle of another owner, which only that owner can upgrade.
+   On OpenShift 4.19 or later and on GKE the platform owns them: set `hw-envoy-gateway.gatewayApiCrds.enabled: false`, as `values.openshift.yaml` does.
+4. The hook Jobs that install the CRDs and the GatewayClass, apply the Gateway objects and generate the certificates run before the templates, a few seconds each, so they need nothing more from the `--timeout`.
+5. With `rbac.useExistingRole`, add the Gateway API permissions listed under [Cluster requirements][envoy-gateway-requirements] to the existing backend role, because the chart then renders none.
+
+**Stage 1**, `global._hopsworks.envoyGateway.enabled: true` with `kserveStandardMode: false`, then `helm upgrade`.
+`enabled` on its own would also switch KServe, because `kserveStandardMode` defaults to `true`: set it to `false` explicitly for this stage.
+Envoy Gateway, the Gateway `kserve-ingress-gateway` and the forward rule from Istio come up, and no request is affected.
+Check that `kubectl get gateway -n <namespace> kserve-ingress-gateway` reports `Programmed`.
+This stage can stay for as long as wanted.
+
+**Stage 2**, `kserveStandardMode: true`, then `helm upgrade`.
+The KServe controller restarts and creates HTTPRoutes for every Standard-mode InferenceService whose predictor is ready; their Istio Ingresses stay and keep serving.
+The Hopsworks backend restarts and, on its primary instance, migrates each Standard-mode deployment: it creates the routes and the policy it owns, waits until the Gateway, the routes and the policies report accepted, and only then deletes the deployment's Istio Ingress, and for a scale-to-zero deployment the idle Ingress and its ExternalName Service.
+A deployment whose routes are not accepted keeps its Ingress and is retried every minute.
+One whose predictor is not ready is left alone until it is, because KServe gives it no routes before, and the backend's full pass every ten minutes moves it after.
+The backend log reports each deployment.
+Verify against the inventory: no Istio-class Ingress is left for a ready Standard-mode deployment (`kubectl get ingress -A -l serving.kserve.io/inferenceservice`), every Standard-mode deployment answers on both URL shapes through the Istio endpoint, and the Knative deployments are unchanged.
+
+**Rolling back** is staged the same way, and restarts no deployment.
+First `kserveStandardMode: false` and `helm upgrade`: KServe goes back to Ingresses, and the backend recreates the Istio side of every deployment and removes its Gateway routes 30 seconds after the Ingress is back, the time it gives Istio to program it.
+Then, once `kubectl get ingress -A -l serving.kserve.io/inferenceservice` again lists every ready Standard-mode deployment of the inventory, `enabled: false` and `helm upgrade`, which removes the Gateway, the forward rule and the subchart: the `kserve-ingress-gateway-apply` hook deletes the Gateway objects, the per-project ReferenceGrants and the namespace labels, and waits for the controller to remove the Envoy proxies before Helm removes the controller with the subchart.
+Turning both values off in one upgrade works too, but Standard-mode hosts answer 404 at Istio from the moment the forward rule is gone until KServe has recreated their Ingresses, about the time the KServe controller takes to restart and reconcile.
+
+`enabled: false` leaves the GatewayClass `<release>-envoy-gateway`, the Gateway API and Envoy Gateway CRDs, and the certificate Secrets `envoy-gateway`, `envoy`, `envoy-rate-limit` and `envoy-oidc-hmac` in the release namespace.
+They are inert and are reused if the feature is turned on again.
+With the feature off, the subchart and its uninstall cleanup are no longer part of the release, so an uninstall leaves them too.
+Remove them by hand once they are no longer wanted, leaving the Gateway API CRDs where the platform owns them:
+
+```bash
+kubectl delete gatewayclass <release>-envoy-gateway
+kubectl delete secret -n <namespace> envoy-gateway envoy envoy-rate-limit envoy-oidc-hmac
+kubectl get crd -o name | grep -E 'gateway.envoyproxy.io|gateway.networking.k8s.io' | xargs kubectl delete
+```
+
+**Roll back with `helm upgrade`, not `helm rollback`.**
+The Gateway objects are written and removed by `pre-install` and `pre-upgrade` hooks, and `helm rollback` runs only the `pre-rollback` and `post-rollback` hooks of the revision it goes back to, so none of this cleanup happens; `--atomic` on a failed upgrade that first enabled the feature rolls back the same way.
+Helm then removes the controller and leaves the Gateway, its EnvoyProxy, the policies, the forward rule, the GatewayClass, which owns the Envoy proxies, so they stay too, the certificate Secrets and the backend's routes, policies and ReferenceGrants.
+If that happened, upgrade again with `enabled: false` from the 5.3 chart, whose hook removes them, or remove them by hand, and then the GatewayClass and the Secrets as above:
+
+```bash
+NS=<namespace>; GW=kserve-ingress-gateway
+kubectl delete -n "$NS" virtualservice,destinationrule "$GW-forward" --ignore-not-found
+kubectl delete -n "$NS" gateway "$GW" --ignore-not-found
+kubectl delete -n "$NS" securitypolicy,backendtrafficpolicy,clienttrafficpolicy,envoyproxy "$GW" --ignore-not-found
+kubectl delete -n "$NS" httproute,securitypolicy -l serving.hops.works/gateway-route
+kubectl delete referencegrant -A -l serving.hops.works/gateway-route
+kubectl delete -n "$NS" deployment,service,serviceaccount,configmap,poddisruptionbudget -l app.kubernetes.io/managed-by=envoy-gateway
+kubectl label namespace -l serving.hops.works/gateway-routes serving.hops.works/gateway-routes-
+```
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
