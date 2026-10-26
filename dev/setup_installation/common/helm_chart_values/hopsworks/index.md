@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793049555` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793051799` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2010,6 +2010,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           verbs:
           - get
           - list
+        nodeLabels:
+          edit: false
+        priorityClasses:
+          edit: false
         useExistingRole: false
     ```
 
@@ -2114,6 +2118,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.rbac.extraRoleRules[7].verbs[1]` <a class="headerlink" href="#helm.hopsworks.rbac.extraRoleRules.7.verbs.1" title="Permanent link">#</a> { #helm.hopsworks.rbac.extraRoleRules.7.verbs.1 }
 :   Type `string`, default `"list"`.
+
+`hopsworks.rbac.nodeLabels.edit` <a class="headerlink" href="#helm.hopsworks.rbac.nodeLabels.edit" title="Permanent link">#</a> { #helm.hopsworks.rbac.nodeLabels.edit }
+:   Type `bool`, default `false`.
+    Let admins add, change and remove node labels from Cluster settings, Kubernetes Scheduler: grants patch on nodes, cluster-wide. RBAC cannot limit the grant to labels, so it also covers taints and spec.unschedulable; Hopsworks itself changes only the labels it set and refuses keys under kubernetes.io, k8s.io, nvidia.com and feature.node.kubernetes.io. Needs variables.label_priority_write 'true'
+
+`hopsworks.rbac.priorityClasses.edit` <a class="headerlink" href="#helm.hopsworks.rbac.priorityClasses.edit" title="Permanent link">#</a> { #helm.hopsworks.rbac.priorityClasses.edit }
+:   Type `bool`, default `false`.
+    Let admins create and delete PriorityClasses from Cluster settings, Kubernetes Scheduler: grants create, update, patch and delete on priorityclasses. Hopsworks deletes only the classes it created. Needs variables.label_priority_write 'true'
 
 `hopsworks.rbac.useExistingRole` <a class="headerlink" href="#helm.hopsworks.rbac.useExistingRole" title="Permanent link">#</a> { #helm.hopsworks.rbac.useExistingRole }
 :   Type `bool`, default `false`.
@@ -2680,6 +2692,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kueue_rollup_retention_days: 100
         kueue_system_jobs_cluster_queue: ''
         kueue_system_jobs_local_queue: ''
+        label_priority_write: 'true'
         ldap_account_status: '2'
         ldap_attr_binary: java.naming.ldap.attributes.binary
         ldap_dyn_group_target: memberOf
@@ -3772,6 +3785,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.kueue_system_jobs_local_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_system_jobs_local_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_system_jobs_local_queue }
 :   Type `string`, default `""`.
+
+`hopsworks.variables.label_priority_write` <a class="headerlink" href="#helm.hopsworks.variables.label_priority_write" title="Permanent link">#</a> { #helm.hopsworks.variables.label_priority_write }
+:   Type `string`, default `"true"`.
+    'false' makes node labels and PriorityClasses read only in Cluster settings, Kubernetes Scheduler, whatever the RBAC, and leaves out the grants of rbac.nodeLabels.edit and rbac.priorityClasses.edit. With 'true', each is editable once its rbac.*.edit grant is on
 
 `hopsworks.variables.ldap_account_status` <a class="headerlink" href="#helm.hopsworks.variables.ldap_account_status" title="Permanent link">#</a> { #helm.hopsworks.variables.ldap_account_status }
 :   Type `string`, default `"2"`.
