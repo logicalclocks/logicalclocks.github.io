@@ -278,7 +278,7 @@ Before, it created no topics there, so every topic had to exist before ingestion
   A delete that Kafka refuses keeps the topic in the project's topic list; one refused while deleting a project is logged by the backend with the topic's name and cluster.
 - **Topics recorded before the upgrade stay on the bundled Kafka.**
   Before 5.3 Hopsworks created every topic it recorded on the bundled Kafka, also for projects that had no `kafka_connector` yet.
-  The upgrade adds the nullable column `project_topics.external_kafka` (migration V123, an online `ALTER`), and a row without it is deleted on the bundled Kafka, as before, never on the external cluster.
+  The upgrade adds the nullable column `project_topics.external_kafka` (migration V128, an online `ALTER`), and a row without it is deleted on the bundled Kafka, as before, never on the external cluster.
   A project without a `kafka_connector` still creates its topics on the bundled Kafka, so create the connector before the project's first feature group.
 - **Partitions and replicas.**
   The project topic and the online and stream feature group topics get `hopsworks.variables.onlinefs_service_thread_number` partitions (default 10) and `hopsworks.variables.kafka_num_replicas` replicas (default 1); topics created through the topic API get the partitions and replicas they ask for.
