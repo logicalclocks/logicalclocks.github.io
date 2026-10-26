@@ -22,7 +22,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 1. Take a backup and check that it completed, as described in [Disaster Recovery][disaster-recovery].
 2. Pass `helm upgrade --timeout` long enough for the hooks of that upgrade.
    The upgrade from 5.1.x to 5.2.x has two that can run for hours: the [OpenSearch index pass][opensearch-set-the-timeout] and the [Kafka migration][kafka4-kraft-upgrade].
-3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start].
+3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start], and leave [KEDA][keda-satellite-clusters] out of them.
 4. If this is the first upgrade of the release with Helm 4, read [Upgrading with Helm 4][upgrading-with-helm-4] first.
 
 ## 5.0.x to 5.1.x { #upgrade-50-to-51 }
@@ -49,6 +49,25 @@ A release installed by Helm 3 stays client-side under Helm 4 unless you pass `--
 An upgrade from 5.0 to 5.1 also conflicted on the `trino-password-file` and `trino-groups-file` Secrets, whose fields the backend owns.
 Running it again with `--force-conflicts` overwrites the Trino user database that the backend wrote (`password.db` and `group.db`), so check the Trino users afterwards.
 `--force-conflicts` applies to the whole release, as [The RSS ConfigMap][helm4-rss-configmap] explains.
+
+### Satellite clusters on 5.0 { #upgrade-50-to-51-satellites }
+
+Upgrade the central cluster first, as described in [Satellite clusters][opensearch-satellite-clusters].
+Until a satellite is on 5.1, the central cluster's 5.1 Python client writes to the satellite's 5.0 online store and searches its OpenSearch 1.3.
+The following restrictions apply during this window, also for workloads that use no 5.1 feature:
+
+- Similarity search fails with `[knn] unknown token [START_OBJECT] after [filter]` on an embedding feature group created after the central upgrade.
+  The 5.1 central cluster creates its index on faiss, and the client puts the search filters inside the nearest-neighbor query for faiss, which OpenSearch 1.3 cannot parse.
+  Embedding feature groups created before the central upgrade keep working, and search recovers once the satellite is on 5.1.
+- In a stream feature group, an insert with several rows for one primary key leaves the last of those rows in the online store instead of the one with the latest event time, and rows of a feature group with a time-to-live that have already expired can be written to the online store.
+  The 5.1 client marks those rows for the offline store only, in a way the 5.0 online store does not read.
+  The offline store is not affected, and feature groups that are not stream feature groups drop those rows in the client.
+  The rows stay as they are after the satellite's upgrade, so insert the newest values of the affected keys again once the satellite is on 5.1.
+- Creating a new cosine embedding feature group fails while the satellite runs OpenSearch 1.3, for both shared project indexes and dedicated indexes.
+  The central cluster creates the embedding fields with the faiss engine, whose OpenSearch 1.3 implementation does not support the `cosinesimil` space type.
+  Postpone creation of these feature groups until the target satellite is upgraded to 5.1 and runs OpenSearch 2.19.
+
+Deletes and `upsert_if_newer` work as on 5.1.
 
 ## 5.1.x to 5.2.x { #upgrade-51-to-52 }
 
