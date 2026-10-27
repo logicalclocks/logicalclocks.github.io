@@ -167,10 +167,10 @@ Uninstalling Hopsworks with the feature on removes the Envoy proxies, the Gatewa
 KServe's own routes live in the project namespaces and go when those are deleted.
 The CRDs stay, because other software on the cluster may use them.
 
-!!! warning "`cleanupOnUninstall.deleteCrds` deletes every Gateway API CRD"
+!!! warning "`cleanupOnUninstall.deleteCrds` deletes the Envoy Gateway CRDs"
 
-    With `hw-envoy-gateway.cleanupOnUninstall.deleteCrds: true`, uninstalling deletes the Envoy Gateway CRDs and, unless `gatewayApiCrds.enabled` is `false`, the Gateway API CRDs, whoever installed them.
-    Deleting a CRD deletes every object of its kind on the cluster, so set it only when nothing else uses them.
+    With `hw-envoy-gateway.cleanupOnUninstall.deleteCrds: true`, uninstalling deletes the Envoy Gateway CRDs, and the Gateway API CRDs only if the chart installed them; Gateway API CRDs from the platform or another tool stay.
+    Deleting a CRD deletes every object of its kind on the cluster, so set it only when no other Envoy Gateway runs on the cluster.
 
 ??? note "What stays after turning the feature off"
 
