@@ -309,9 +309,11 @@ New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mo
 
 - **Nothing moves unless you turn it on.**
   An upgrade that leaves `global._hopsworks.envoyGateway` alone routes every request as before.
-- **Two components restart once, without failing a request.**
-  The KServe controller restarts, because from 5.3 it restarts whenever its ingress configuration changes, and the running deployments keep serving meanwhile.
-  `model-serving-authenticator` restarts with a new listener for the Gateway, and its old pod answers until the new one is ready.
+- **Two components restart during the upgrade.**
+  The KServe controller restarts, and the running deployments keep serving meanwhile.
+  From 5.3 it also restarts on any later upgrade that changes its ingress configuration, such as turning Envoy Gateway routing on or off.
+  `model-serving-authenticator` restarts with a new listener for the Gateway.
+  While its old pod is replaced, a few requests can get a 403, because the 5.2 pod stops without waiting for the new one; from 5.3 its restarts wait, so later ones lose no request.
 
 To turn it on in a cluster with running deployments, upgrade twice, so that the Gateway is up before any deployment moves.
 Clients keep their endpoint, Knative-mode deployments stay on Istio, and no deployment restarts.
@@ -342,7 +344,7 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     ```
 
     Set `kserveStandardMode: false` explicitly: it defaults to `true`, which would also move the deployments in this upgrade.
-    No request is affected.
+    The deployments keep their Istio routes, so no traffic moves yet.
     The Gateway is ready when it reports `Programmed`:
 
     ```bash

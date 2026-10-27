@@ -60,7 +60,7 @@ All values are listed in [Envoy Gateway values][helm-values-hw-envoy-gateway], a
 - The Gateway `kserve-ingress-gateway` and the Envoy proxies behind it, with a policy that checks every request's API key.
 - The CustomResourceDefinitions (CRDs) of Envoy Gateway and of the Gateway API, as described in [CustomResourceDefinitions][envoy-gateway-crds].
 
-The KServe controller restarts on the first 5.3 upgrade and again whenever `kserveStandardMode` changes.
+The KServe controller restarts on the first 5.3 upgrade, and again on any upgrade that turns the routing of Standard-mode deployments through Envoy Gateway on or off.
 The deployments themselves are never restarted.
 
 ## Images { #envoy-gateway-images }
