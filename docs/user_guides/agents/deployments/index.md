@@ -395,11 +395,16 @@ Project members open it with their Hopsworks login.
 To share it with people who have no Hopsworks account, turn on the app's public link on its page, or with `app.make_public()`; anyone holding the link can then chat with the agent, until you turn the link off.
 Public links need public apps to be enabled on the cluster.
 
-**Who a visitor is.**
-Each visitor is anonymous.
-The app sets a cookie with a random id in the visitor's browser, and sends every turn with a subject derived from it, so each visitor has their own [memory][agent-memory], whatever the page claims.
-Conversations belong to the visitor who started them: the app refuses a turn on another visitor's conversation.
+**Who is chatting.**
+The app decides, never the page.
+A project member chats as their Hopsworks user, the same subject the chat panel uses, so the agent's [memory][agent-memory] of them is the same in both, and the page says who they are signed in as.
+Hopsworks tells the app who the member is with a signature only the app can check, so nobody else can claim to be them.
+Anyone who opened the public link is anonymous: the app sets a cookie with a random id in their browser and derives their subject from it, so each visitor has their own memory.
+Conversations belong to whoever started them: the app refuses a turn on anyone else's conversation.
 No serving key reaches the browser: the app's server talks to the agent inside the cluster, and only forwards turns and feedback, never the routes that read or erase memory.
+
+**What people thought of the answers.**
+A thumbs up or down given in the app reaches the agent's **Feedback** tab marked **via chat app**, and `Feedback.given_via` is `chat-app` in Python, so you can tell it from feedback given in the chat panel.
 
 **Changing it.**
 Set these as the app's environment variables:
@@ -409,7 +414,17 @@ Set these as the app's environment variables:
 | `CHAT_TITLE` | The page title; the agent's name by default |
 | `CHAT_WELCOME` | The first thing the page says |
 | `CHAT_SHOW_TOOL_CALLS` | `false` hides tool calls and steps from visitors |
+| `CHAT_ACCENT_COLOR` | The accent colour, such as `#0b5fff` |
+| `CHAT_LOGO_URL` | An `https://` image for the header |
+| `CHAT_THEME_DIR` | A folder of the project, such as `Resources/chat-theme`, with your own styles and logo |
 | `CHAT_MAX_RUNS_PER_MINUTE` | Turns per visitor per minute; 20 by default |
+
+For a theme folder, upload a `theme.css` and a logo named `logo.svg`, `logo.png`, `logo.jpg` or `logo.webp` to it, set `CHAT_THEME_DIR`, and restart the app.
+`theme.css` is loaded after the page's own styles, so it can change anything they set; the page's colours are CSS variables such as `--accent`, `--bg` and `--surface`, so a theme can be as small as one line:
+
+```css
+:root { --accent: #0b5fff; --bg: #f4f7ff; }
+```
 
 The app's code comes with the platform, so it is updated with Hopsworks rather than copied into your project.
 For a page of your own design, write an AG-UI client against [the chat contract][the-chat-contract] instead.
