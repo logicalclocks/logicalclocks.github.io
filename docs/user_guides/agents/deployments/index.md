@@ -368,6 +368,54 @@ for frame in agent.chat_stream("Tell me more").events():
 `reply.trace_id` is the thread back to everything else: the turn's trace, the feedback given on it, and the evaluation trials that replayed it.
 `chat` waits 120 seconds by default; pass `timeout=` for an agent whose turns take longer.
 
+## Share an agent through a chat app
+
+The chat panel is for project members working in Hopsworks.
+To put an agent in front of other people, such as support staff, a pilot customer, or a colleague trying it out, create its **chat app**: a ready-made chat page, run as a Hopsworks [app][apps], that speaks AG-UI to the agent.
+
+Create it in any of three places:
+
+- tick **Create a chat app** when you deploy the agent;
+- select **Create chat app** in the **Chat app** card on the agent's page;
+- call it from Python:
+
+```python
+agent = project.get_agent_serving().get_agent("support_agent")
+app = agent.create_chat_app()  # named support_agent_chat; pass name= for another
+print(app.app_url)
+
+agent.chat_app()  # the app, or None when the agent has none
+```
+
+The app streams the agent's replies and shows its tool calls, takes attachments, shows the agent's questions as an approval card, and lets people rate a reply.
+It is an ordinary app otherwise: its logs, settings and resources are on its page under **Apps**, and it scales to zero when nobody uses it.
+
+**Who can open it.**
+Project members open it with their Hopsworks login.
+To share it with people who have no Hopsworks account, turn on the app's public link on its page, or with `app.make_public()`; anyone holding the link can then chat with the agent, until you turn the link off.
+Public links need public apps to be enabled on the cluster.
+
+**Who a visitor is.**
+Each visitor is anonymous.
+The app sets a cookie with a random id in the visitor's browser, and sends every turn with a subject derived from it, so each visitor has their own [memory][agent-memory], whatever the page claims.
+Conversations belong to the visitor who started them: the app refuses a turn on another visitor's conversation.
+No serving key reaches the browser: the app's server talks to the agent inside the cluster, and only forwards turns and feedback, never the routes that read or erase memory.
+
+**Changing it.**
+Set these as the app's environment variables:
+
+| Variable | Effect |
+| --- | --- |
+| `CHAT_TITLE` | The page title; the agent's name by default |
+| `CHAT_WELCOME` | The first thing the page says |
+| `CHAT_SHOW_TOOL_CALLS` | `false` hides tool calls and steps from visitors |
+| `CHAT_MAX_RUNS_PER_MINUTE` | Turns per visitor per minute; 20 by default |
+
+The app's code comes with the platform, so it is updated with Hopsworks rather than copied into your project.
+For a page of your own design, write an AG-UI client against [the chat contract][the-chat-contract] instead.
+
+Deleting the agent deletes its chat app.
+
 ## Tracing
 
 With `tracing={"enabled": True}`, every turn is traced with OpenTelemetry: the turn, each model call with its tokens, and each tool call with its arguments and result.
