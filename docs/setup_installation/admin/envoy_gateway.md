@@ -47,11 +47,11 @@ Knative traffic is checked once, by Istio, as before.
 
 ## Images { #envoy-gateway-images }
 
-- `docker.hops.works/docker.io/envoyproxy/gateway`: the controller, which also runs the certificate generation Job and the shutdown manager sidecar of each proxy.
-- `docker.hops.works/docker.io/envoyproxy/envoy`: the data plane.
+- `docker.hops.works/envoyproxy/gateway`: the controller, which also runs the certificate generation Job and the shutdown manager sidecar of each proxy.
+- `docker.hops.works/envoyproxy/envoy`: the data plane.
 - `docker.hops.works/hopsworks/envoy-gateway-crds`: the CRDs, read by the hook.
 
-The two `envoyproxy` images are mirrors at the upstream path under the registry root, like the `kube-rbac-proxy` image, not under the `hopsworks` project.
+The two `envoyproxy` images are mirrors of the Docker Hub images at the same path under the registry root, like the `istio` and `kserve` images, not under the `hopsworks` project.
 An airgapped install overrides them under `hw-envoy-gateway.controller.image`, `hw-envoy-gateway.envoyProxy.image` and `hw-envoy-gateway.crdImage`, as the chart's `values.airgap.yaml` shows.
 The data plane image and the pull secrets reach the Envoy proxies through the controller's configuration, so the same override covers the proxies the controller deploys.
 
