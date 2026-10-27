@@ -20,18 +20,7 @@ It applies to deployments created with `model.deploy(...)` from a model with a f
 
 ## Code
 
-### Step 1: Connect to Hopsworks
-
-```python
-import hopsworks
-
-
-project = hopsworks.login()
-mr = project.get_model_registry()
-ms = project.get_model_serving()
-```
-
-### Step 2: Deploy with tracing
+### Step 1: Deploy with tracing
 
 ```python
 import hopsworks
@@ -42,6 +31,22 @@ model = project.get_model_registry().get_model("fraud_model", version=1)
 
 deployment = model.deploy(
     name="fraud",
+    tracing={"enabled": True, "sampling_percentage": 10},
+)
+deployment.start()
+```
+
+A feature view deployment takes the same argument:
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+fv = project.get_feature_store().get_feature_view("transactions", version=1)
+
+deployment = fv.deploy(
+    training_dataset_version=1,
     tracing={"enabled": True, "sampling_percentage": 10},
 )
 deployment.start()
@@ -63,7 +68,7 @@ deployment.tracing = {"enabled": True}
 deployment.save()
 ```
 
-### Step 3: Switch tracing off and on while the deployment runs
+### Step 2: Switch tracing off and on while the deployment runs
 
 ```python
 import hopsworks
@@ -79,6 +84,7 @@ deployment.set_tracing(active=True, sampling_percentage=50)
 The deployment is not restarted.
 Its pods apply the change within about a minute, and pods started later begin with it.
 Switched off, the deployment records no metrics and no traces and runs no timing code.
+Only requests are ever traced: Prometheus scrapes of the deployment and its other endpoints are not.
 
 The same change over the REST API, where a field left out keeps its value:
 
@@ -90,7 +96,7 @@ curl -X PUT \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/serving/$DEPLOYMENT_ID/tracing"
 ```
 
-A deployment created without tracing answers `400` with error code `240058`, as does a `samplingPercentage` outside 0 to 100.
+A deployment created without tracing answers `400` with error code `240059`, as does a `samplingPercentage` outside 0 to 100.
 
 !!! api "API reference"
 
@@ -159,3 +165,5 @@ Measured on a feature view with five transformation functions:
 | Tracing on, request sampled | about 0.4 ms |
 
 The collector sidecar requests 0.5 CPU and 1 GiB of memory per replica by default, set by the cluster administrator.
+A deployment created with tracing serves its requests with one worker process per replica, so that its metrics count every request; scale it with replicas.
+Setting the `KSERVE_WORKERS` environment variable raises the worker count, and the metrics then count only the requests of the worker each scrape reaches.
