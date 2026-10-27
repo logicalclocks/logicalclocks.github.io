@@ -80,6 +80,11 @@
       heading_level: 2
       show_root_heading: true
 
+::: hsfs.storage_connector.SharePointConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hsfs.storage_connector.SnowflakeConnector
     options:
       heading_level: 2
