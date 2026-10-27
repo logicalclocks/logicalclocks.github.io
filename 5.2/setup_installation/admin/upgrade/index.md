@@ -217,3 +217,40 @@ hive:
 ```
 
 The Airflow `ddlConsulServiceName` cannot point at `mysql`, because its migrations need a single SQL node, so a cluster without the DDL SQL node runs with `global._hopsworks.airflow.enabled: false`.
+
+### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
+
+An agent deployment with tracing enabled runs a `hops-otlp` sidecar next to the agent.
+`hopsworks.variables.agent_deployment_otel_memory_mb` is both the memory request and the memory limit of that container, so the value is reserved on the node, not only allowed.
+From 5.2.2 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM-killed under ordinary traffic.
+
+- **Check capacity before you redeploy.**
+  A cluster that runs N traced agent deployments reserves 2 GiB x N for their sidecars, where it reserved 1 GiB x N.
+  On nodes sized for the old default, an agent pod recreated after the upgrade can stay `Pending` for lack of memory.
+  Count the traced agent deployments against the free memory of the nodes that schedule them before you redeploy them.
+- **Running pods keep the old reservation until they are recreated.**
+  The upgrade does not restart agent deployments, so nothing changes for a running one until it is stopped and started, saved, or rescheduled.
+  The increase arrives one deployment at a time, which is also why a shortage shows up later than the upgrade.
+- **Keeping 1024 keeps the OOM.**
+  `hopsworks.variables.agent_deployment_otel_memory_mb: "1024"` pins the old value on a cluster that cannot spare the memory, at the cost the increase removes.
+  The buffering fixes in the 5.2.2 sidecar image make an OOM much less likely than before, because what the sidecar holds no longer grows with how far the feature store write falls behind, but it remains the trade.
+- **What an OOM looks like.**
+  `hops-otlp` is an ordinary second container without probes, so the OOM kill restarts that container alone: the agent container's `restartCount` stays 0, and only the sidecar's `lastState` shows `OOMKilled`.
+  While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
+  Looking for agent restarts finds none.
+
+### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
+
+Required for a cluster that runs the Kueue bundled with Hopsworks (`global._hopsworks.kueue.enabled=true`); a cluster without Kueue needs nothing.
+From the 5.2.x patch release that uses Kueue 0.20, and in 5.3, Hopsworks uses a Kueue installed as its own release, `kueue` in `kueue-system`, in place of the Kueue 0.12.2 bundled in the Hopsworks namespace: the chart ships no Kueue.
+The new chart refuses to upgrade a release that still runs the bundled Kueue 0.12, and a cluster that runs it cannot be switched with `helm upgrade` alone: Kueue 0.12 stores Cohorts and Topologies as `v1alpha1`, which no later Kueue reads.
+The 5.1 chart's `migrate-to-external.sh` moves it to Kueue 0.18.1 in `kueue-system` and keeps every queue, on 5.1, or on 5.2.0 and 5.2.1 together with the Hopsworks upgrade.
+After the Hopsworks upgrade, the new chart's `upgrade-kueue.sh` upgrades Kueue to 0.20.3.
+Follow [Kueue outside the Hopsworks namespace](kueue_external.md), and stop submitting jobs while the move runs.
+
+What changes for users and operators ([details](kueue_external.md#what-changes)):
+
+- Spark jobs are queued, with static executors: a job saved with dynamic allocation runs its dynamic-allocation minimum, and `spark.dynamicAllocation.enabled=true` in its Spark properties is refused.
+- A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
+- The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
+- A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).

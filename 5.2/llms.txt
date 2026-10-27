@@ -84,6 +84,7 @@
 - [Unity Catalog](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/unity_catalog/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/unity_catalog/index.md))
 - [SAP HANA](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sap_hana/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sap_hana/index.md))
 - [Hopsworks](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/hopsworks/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/hopsworks/index.md))
+- [SharePoint](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sharepoint/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sharepoint/index.md))
 - [Usage](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/index.md))
 
 #### Feature Group
@@ -339,6 +340,7 @@
 - [Upgrading with Helm 4](https://docs.hopsworks.ai/latest/setup_installation/admin/helm4/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/helm4/index.md))
 - [Upgrading OpenSearch](https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade_opensearch/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade_opensearch/index.md))
 - [Kafka 4 and KRaft upgrade notes](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka4/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka4/index.md))
+- [Kueue outside the Hopsworks namespace](https://docs.hopsworks.ai/latest/setup_installation/admin/kueue_external/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kueue_external/index.md))
 
 #### Monitoring
 - [Services Dashboards](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/grafana/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/monitoring/grafana/index.md))
@@ -373,6 +375,7 @@
 - [Service Operations](https://docs.hopsworks.ai/latest/setup_installation/admin/operationLogs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/operationLogs/index.md))
 - [Query Engine (Trino)](https://docs.hopsworks.ai/latest/setup_installation/admin/trino/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/trino/index.md))
 - [Superset](https://docs.hopsworks.ai/latest/setup_installation/admin/superset/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/superset/index.md))
+- [GPU Scheduling with Run:ai](https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/index.md))
 
 ### Helm Chart Values Reference
 - [Helm chart values reference](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/index.md))

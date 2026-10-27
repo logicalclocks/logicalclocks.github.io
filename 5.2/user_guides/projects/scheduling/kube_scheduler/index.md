@@ -6,7 +6,7 @@ Hopsworks allows users to configure some Kubernetes scheduler abstractions, such
 Hopsworks also supports additional scheduling abstractions backed by Kueue.
 This includes [Queues](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/), [Cohorts](https://kueue.sigs.k8s.io/docs/concepts/cohort/) and [Topologies](https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/).
 All these scheduling abstractions are supported in jobs, jupyter notebooks and model deployments.
-Kueue abstractions however, are currently not supported for Spark jobs.
+Spark jobs run in Kueue queues with static executors only: see [Spark jobs](./kueue_details.md#spark-jobs).
 
 Hopsworks Admins can control which labels and priority classes can be used in the cluster (see [Admin configuration](#admin-configuration) section) and by which project (see [Project Configuration](#project-configuration) section)
 

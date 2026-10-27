@@ -209,6 +209,10 @@
          <lastmod>2026-10-27</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/kueue_external/</loc>
+         <lastmod>2026-10-27</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/node_pools/</loc>
          <lastmod>2026-10-27</lastmod>
     </url>
@@ -222,6 +226,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/roleChaining/</loc>
+         <lastmod>2026-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/</loc>
          <lastmod>2026-10-27</lastmod>
     </url>
     <url>
@@ -570,6 +578,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sap_hana/</loc>
+         <lastmod>2026-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sharepoint/</loc>
          <lastmod>2026-10-27</lastmod>
     </url>
     <url>

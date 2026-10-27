@@ -4697,6 +4697,373 @@ The ingestion job supports full loads and incremental loads.
 For an incremental load, the remote query only returns rows whose cursor column is at least the last value the previous run loaded.
 
 ================================================================================
+# SharePoint
+Source: https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sharepoint/
+
+# How-To set up a SharePoint Data Source
+
+## Introduction
+
+A SharePoint data source connects a Hopsworks project to a [SharePoint Online](https://learn.microsoft.com/en-us/sharepoint/introduction) site.
+It does not back feature groups.
+Instead, it copies a folder of one of the site's document libraries into a dataset of the project, either once or on a schedule.
+
+Each copy is a **sync**.
+A sync runs as an ordinary Python job in the project, which uses [rclone](https://rclone.org/) to copy the files.
+Every run that changes something writes a small CSV audit file that lists the changed paths, so downstream jobs can process only what changed.
+
+Data only flows from SharePoint into Hopsworks.
+Changes made in Hopsworks are never written back to SharePoint.
+
+## Prerequisites
+
+### Microsoft Entra ID application
+
+Hopsworks signs in to Microsoft Graph as an application, with the client credentials flow.
+A tenant administrator registers the application and grants it access to the site:
+
+1. In the [Microsoft Entra admin center](https://entra.microsoft.com), open `Applications`, then `App registrations`, and click `New registration`.
+   Choose `Accounts in this organizational directory only`.
+   No redirect URI is needed.
+2. Note the `Application (client) ID` and the `Directory (tenant) ID` on the overview page.
+3. Under `API permissions`, add a Microsoft Graph **application** permission, then click `Grant admin consent`.
+   Use one of:
+    - `Sites.Selected`, then grant the application `read` on the site with `POST /sites/{site-id}/permissions`.
+      This limits the application to the sites you grant.
+    - `Sites.Read.All`, which lets the application read every site in the tenant.
+4. Under `Certificates & secrets`, create a client secret and copy its **Value**.
+   The value is shown only once; the `Secret ID` next to it is not the secret.
+
+The client secret is stored in the Hopsworks secret store.
+The data source API never returns it, and the data source form leaves it blank when you edit the data source.
+The sync job receives it at the start of each run, through a call that only a run of that sync, started by a data owner, can make.
+A client secret has an expiry date, so set a new one on the data source before the old one expires.
+
+### Site
+
+You need the URL of the SharePoint site, for example `https://contoso.sharepoint.com/sites/Finance`.
+The tenant must have a SharePoint Online license; without one, Microsoft Graph returns `Tenant does not have a SPO license` for every site.
+
+### Network access
+
+The sync job and the Hopsworks backend connect to Microsoft Entra ID, Microsoft Graph and the tenant's SharePoint hosts over HTTPS.
+For the global cloud these are `login.microsoftonline.com`, `graph.microsoft.com` and `<tenant>.sharepoint.com`; the US Government and China clouds use their own hosts.
+Clusters that restrict outbound traffic must allow them.
+
+### Client version
+
+The Python client and the `hops` CLI support SharePoint data sources from Hopsworks 5.2.2.
+Clients older than 5.2.2 do not know the SharePoint type and fail to list a feature store's data sources once it has one, so upgrade the client in environments that list data sources.
+
+### Cluster settings
+
+SharePoint data sources are enabled by the cluster variable `enable_sharepoint_storage_connectors` (default `true`).
+The following cluster variables, set by an administrator, apply to every sync:
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `data_source_audit_retention_days` | `7` | Days of audit files kept per sync. `0` keeps them forever. |
+| `data_source_sync_min_interval_minutes` | `5` | Shortest interval a sync schedule may fire at. |
+| `data_source_sync_job_memory` | `1024` | Memory in MB of a new sync job. |
+| `data_source_sync_job_cores` | `0.5` | Cores of a new sync job. |
+| `data_source_sync_transfers` | `4` | Files a sync copies in parallel, unless the sync sets its own value. |
+| `data_source_sync_max_run_minutes` | `0` | Longest a run may take before it stops; `0` is unlimited. |
+
+## Creation in the UI
+
+### Step 1: Set up a new data source
+
+Head to the `Data Sources` view in Hopsworks and click `New data source`.
+Pick the `SharePoint` card, in the `Files & documents` category.
+
+<figure markdown>
+  ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
+  <figcaption>The Data Source view in the user interface</figcaption>
+</figure>
+
+### Step 2: Enter the connection details
+
+1. **Name** and an optional **Description**.
+2. **Cloud**: `Global`, `US Government` or `China`, the Microsoft cloud of the tenant.
+3. **Tenant ID** and **Client ID** of the application.
+4. **Client secret**: the secret value.
+5. **Site URL**.
+6. Under `Advanced`, **Site ID**: only needed for an application granted `Sites.Selected` that is not allowed to look the site up by its URL.
+
+Click `Test connection` to check the credentials.
+On success, Hopsworks lists the site's document libraries.
+Click `Next: Create sync` to save the data source and set up the first sync.
+
+### Step 3: Create a sync
+
+1. **Document library**: a library of the site.
+2. **Folder**: the folder to copy; the library root copies the whole library.
+3. **Dataset name**: a new dataset in the project root that receives the files.
+4. **When**:
+    - `Copy once now` copies the folder once.
+      A later run, started by hand, adds new and changed files but never deletes.
+    - `Keep in sync on a schedule` mirrors the folder on a schedule: every 15 minutes, hourly, daily, weekly, or a custom [Quartz cron expression](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) in UTC.
+      A mirror also deletes files that were deleted in SharePoint.
+5. **Alert on failure**: an alert receiver notified when a run fails or is killed.
+6. **Index the files in a feature group**: keep a feature group with one row per file; see [The file index](#the-file-index).
+   **Feature group** names it; empty means `sharepoint_<dataset>`.
+7. Under `Advanced`:
+    - **Include** and **Exclude** patterns, in [rclone filter syntax](https://rclone.org/filtering/), one per line.
+    - **Maximum file size** in MB; larger files are skipped. `0` copies every file.
+    - **Mirror deletions**, to change the default of the option chosen under `When`.
+    - **Verify file contents**: compare checksums on every run, or every N runs.
+      Other runs compare size and modification time only, so a file changed without a change of either is only picked up by a checksum run.
+    - **Parallel transfers**.
+
+The page then opens the data source's `Syncs` tab.
+
+## The data source page
+
+The data source page has three tabs.
+
+- **Connection**: the connection details.
+  The cloud, tenant and site cannot change while the data source has syncs.
+- **Syncs**: one row per sync, with its library and folder, schedule, state, last run, and number and size of files.
+  The row menu offers `Sync now`, `Pause` or `Resume`, `Remove schedule` or `Add schedule`, `Full resync`, `Edit` and `Delete`.
+  `Full resync` runs the sync with checksum comparison.
+  Below the table, the audit card of the selected sync shows its audit directory, retention, the rows of a day's audit files, and a DuckDB query over them.
+- **Code**: the sync script of the data source, described below.
+
+## How a sync runs
+
+### The sync job
+
+Each sync is a Python job named `sharepoint_<data source>_<dataset>`, marked with a `SharePoint sync` badge in the `Jobs` view.
+It runs in the `python-feature-pipeline` environment, as the user who started it or, for a scheduled run, the user who created the job.
+A run by a user who is not a data owner of the project fails, so when the sync's creator leaves the project, another data owner takes the sync over by editing it.
+Its executions, logs, resources and alerts are managed like those of any job.
+A run of a sync that is already running exits without copying anything.
+
+### The sync script
+
+All syncs of a data source run the script `DataSources/<data source>/sharepoint_sync.py` in the project.
+Hopsworks writes the script when the data source is created and never overwrites it, so data owners can change it, for example to post-process the copied files.
+The `Code` tab shows whether the script still matches the platform template, and `Reset to default` restores the template.
+
+### The synced dataset
+
+The synced dataset is a mirror of the SharePoint folder.
+The file browser hides the upload, new folder, move, rename and delete actions inside it.
+Data owners can still change files in it through the API, but a mirror run puts back what SharePoint has and removes what it does not, so change the files in SharePoint instead.
+Deleting, moving or changing the permissions of the dataset itself is refused with error `110057`; change or delete the sync instead.
+The dataset can be shared with other projects read-only.
+Members of the project can read the dataset like any other.
+
+While a file downloads, rclone writes it as `<name>.<fingerprint>.partial` and renames it when it is complete, so readers may see `.partial` files during a run.
+A run that is killed can leave one behind; the next mirror run removes it.
+
+The synced files count against the project's storage quota, which an administrator sets per project; the maximum file size limits each file, not the total.
+When the quota is full, the files that do not fit fail, the run is reported as partial with the error `the project's storage quota is full`, and the next run copies them once there is room.
+
+### The audit log
+
+Every run that changes the dataset writes one CSV file:
+
+```text
+DataSources/<data source>/audit/<dataset>/date=<YYYY-MM-DD>/<HHMMSS>Z_<execution id>.csv
+```
+
+A run that changes nothing writes no file.
+Each row is one changed path, relative to the dataset root:
+
+```csv
+execution_id,op,kind,path,src_path
+812,added,file,Sales/2026/q3.csv,
+812,updated,file,Sales/2026/q2.csv,
+812,deleted,file,Sales/2025/q4.csv,
+812,renamed,file,Sales/2026/q1-final.csv,Sales/2026/q1.csv
+812,added,dir,Sales/2027,
+```
+
+`op` is `added`, `updated`, `deleted` or `renamed`, `kind` is `file` or `dir`, and `src_path` is the old path of a renamed file.
+Files that failed to copy are not listed, since they did not change.
+
+rclone skips OneNote notebooks and shortcuts to other libraries; they are counted as skipped and are not copied.
+
+File and folder names are stored in Unicode NFC form, so a name SharePoint keeps decomposed, as files uploaded from macOS often are, is stored with precomposed letters such as `Å`.
+HopsFS stores names in Latin-1, so a name with a character outside it, such as `ł`, `€` or Chinese characters, cannot be copied; the run fails for that file and its error names the file, and renaming it in SharePoint lets the next run copy it.
+
+The `date=` directories are Hive-style partitions, so a filter on `date` reads only the matching days.
+From a Python job, with DuckDB from the `python-feature-pipeline` environment:
+
+```python
+import duckdb
+
+
+changes = duckdb.sql(
+    """
+    SELECT date, execution_id, op, kind, path, src_path
+    FROM read_csv('/hopsfs/DataSources/finance_sharepoint/audit/reports/*/*.csv',
+                  hive_partitioning = true,
+                  columns = {'execution_id': 'BIGINT', 'op': 'VARCHAR',
+                             'kind': 'VARCHAR', 'path': 'VARCHAR',
+                             'src_path': 'VARCHAR'})
+    WHERE date >= DATE '2026-10-19' AND op IN ('added', 'updated')
+    """
+).df()
+```
+
+Each run of a sync deletes the sync's audit days older than `data_source_audit_retention_days`.
+
+### The file index
+
+A sync with indexing on keeps version 1 of a Delta feature group, `sharepoint_<dataset>` by default, with one row per file in the dataset.
+The `Syncs` tab links it in the `Index` column once the first run has created it.
+
+| Column | Content |
+| --- | --- |
+| `file_id` | SharePoint item id, the primary key; it stays the same when the file is renamed or moved |
+| `site_id`, `drive_id` | the site and the document library |
+| `file_name`, `file_type` | the name, and its extension in lowercase |
+| `sharepoint_path`, `web_url` | the path in the library, and a link to the file in SharePoint |
+| `hopsfs_path` | the copy in the dataset, `/Projects/<project>/<dataset>/...` |
+| `mime_type`, `size_bytes` | content type and size in bytes |
+| `created_at`, `modified_at` | SharePoint creation and last modification times, UTC |
+| `created_by`, `modified_by` | display names of the author and the last editor |
+| `content_hash` | SharePoint's quickXorHash of the content |
+| `sync_id`, `execution_id`, `indexed_at` | the sync and the run that last wrote the row, and when |
+| `ingestion_date` | the partition: the UTC day the file was first indexed, which is the day it was copied in, or for a file already in the dataset, the day indexing was turned on |
+
+The table holds no file content; the file is in the dataset at `hopsfs_path`.
+
+Each run that does not fail lists the folder with its SharePoint metadata and compares it with the table:
+
+- A file whose copy is in the dataset and that has no row, or whose path, size, modification time, editor or hash changed, is written.
+  A new file goes into today's partition; a changed or renamed file keeps the partition of the day it was first indexed.
+- A row whose file is gone from both SharePoint and the dataset is deleted, and so is a row whose path now holds another SharePoint file.
+  A copy-only sync keeps its files, so it keeps their rows too.
+- A file whose copy failed keeps its current row, or gets none, until a run copies it.
+
+A run that stopped at its time budget leaves the index to the next run.
+A run that copied its files but could not write the index is reported as partial with the error, and the next run brings the index up to date.
+
+The rows are written and deleted with delta-rs through the feature group's `insert` and `remove_rows`, so each run adds commits to the feature group's activity.
+A run that finds a day before today with more than one data file compacts the days from there on into files of about 200 MB, then vacuums files unused for 7 days.
+delta-rs 1.4 rewrites a file to delete rows from it and does not write deletion vectors, so the table does not enable them.
+
+Indexing can be turned on for an existing sync: its next run indexes every copied file that is still in the SharePoint folder.
+A file a copy-only sync kept after it was deleted in SharePoint has no metadata to index, so it gets no row.
+Turning it off keeps the feature group, and a new name starts a new one.
+The sync script must be template version 2 or later; reset it to default if the data source page shows an older version.
+Deleting the sync deletes the feature group, unless the files are kept.
+The name of an index must not be that of an existing feature group, and a sync deletes only the feature group its runs created.
+
+In a terminal, the feature store is mounted at `/hopsfs/featurestore/<project>_featurestore.db/`, and the DuckDB CLI reads the index with its `delta` extension:
+
+```bash
+duckdb -c "SELECT file_name, modified_by, modified_at, web_url
+FROM delta_scan('/hopsfs/featurestore/acme_featurestore.db/sharepoint_reports_1')
+WHERE file_type = 'pdf' ORDER BY modified_at DESC LIMIT 20;"
+```
+
+Use `delta_scan`, not `read_parquet` over the partition directories: until a vacuum, those directories also hold the files of deleted and rewritten rows.
+
+### Failures
+
+A run that cannot reach SharePoint, cannot find its folder, or fails in rclone fails its job execution.
+A run in which some files fail to copy completes the others, skips deletions, fails its execution, and retries the failed files on the next run.
+The sync's `last error` and the execution's logs show the cause, and the alert receiver chosen for the sync is notified.
+
+### Deleting a sync
+
+Deleting a sync deletes its job, schedule and alerts.
+By default it also deletes the dataset, the audit log and the index feature group.
+With `Keep the files`, the dataset stays as an ordinary dataset, still writable by data owners only, and its audit log is kept and no longer rotated.
+A data source with syncs cannot be deleted; delete its syncs first.
+
+## Using the Python client
+
+```python
+import hopsworks
+from hsfs.storage_connector import SharePointConnector
+
+
+project = hopsworks.login()
+fs = project.get_feature_store()
+
+sharepoint = fs.create_data_source(
+    SharePointConnector(
+        id=None,
+        name="finance_sharepoint",
+        featurestore_id=fs.id,
+        tenant_id="00000000-0000-0000-0000-000000000000",
+        client_id="00000000-0000-0000-0000-000000000000",
+        client_secret=hopsworks.get_secrets_api().get_secret("sharepoint").value,
+        site_url="https://contoso.sharepoint.com/sites/Finance",
+    )
+).storage_connector
+
+drive = sharepoint.list_drives()[0]
+sharepoint.list_folders(drive_id=drive["id"], path="Reports")
+
+copy = sharepoint.copy_folder(
+    drive_id=drive["id"], folder_path="Reports/2025", dataset_name="reports_2025"
+)
+
+sync = sharepoint.create_sync(
+    drive_id=drive["id"],
+    folder_path="Reports/2026",
+    dataset_name="reports",
+    schedule="0 0 * ? * *",
+    include=["*.pdf", "*.xlsx"],
+    index_files=True,
+)
+sync.status()
+sync.run()
+sync.get_audit()
+sync.set_schedule("0 0 2 ? * *")
+index = sync.get_index_feature_group()
+sync.update(index_files=False)
+sync.delete(keep_files=True)
+```
+
+`create_sync` creates an hourly schedule unless you pass another `schedule`; `schedule=None` creates a sync that runs only when started.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.create_data_source`][hsfs.feature_store.FeatureStore.create_data_source]
+    - <code class="doc-symbol doc-symbol-class"></code> `SharePointConnector`
+        - <code class="doc-symbol doc-symbol-method"></code> `list_drives`
+        - <code class="doc-symbol doc-symbol-method"></code> `list_folders`
+        - <code class="doc-symbol doc-symbol-method"></code> `copy_folder`
+        - <code class="doc-symbol doc-symbol-method"></code> `create_sync`
+    - <code class="doc-symbol doc-symbol-class"></code> `SharePointSync`
+        - <code class="doc-symbol doc-symbol-method"></code> `status`
+        - <code class="doc-symbol doc-symbol-method"></code> `run`
+        - <code class="doc-symbol doc-symbol-method"></code> `get_audit`
+        - <code class="doc-symbol doc-symbol-method"></code> `set_schedule`
+        - <code class="doc-symbol doc-symbol-method"></code> `update`
+        - <code class="doc-symbol doc-symbol-method"></code> `get_index_feature_group`
+        - <code class="doc-symbol doc-symbol-method"></code> `delete`
+    - <code class="doc-symbol doc-symbol-docs"></code> [rclone filtering](https://rclone.org/filtering/)
+
+    <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+## Using the CLI
+
+```bash
+export HOPSWORKS_DS_SHAREPOINT_CLIENT_SECRET=<secret value>
+hops datasource create sharepoint finance_sharepoint \
+  --tenant-id <tenant id> --client-id <client id> \
+  --site-url https://contoso.sharepoint.com/sites/Finance
+hops datasource sharepoint drives finance_sharepoint
+hops datasource sharepoint folders finance_sharepoint --drive <drive id> --path Reports
+hops datasource sharepoint copy finance_sharepoint --drive <drive id> --folder Reports/2025 --dataset reports_2025
+hops datasource sharepoint sync create finance_sharepoint --drive <drive id> --folder Reports/2026 --dataset reports --cron "0 0 * ? * *" --index-files
+hops datasource sharepoint sync index finance_sharepoint <sync id> --off
+hops datasource sharepoint sync list finance_sharepoint
+hops datasource sharepoint sync audit finance_sharepoint <sync id> --day 2026-10-22
+hops datasource sharepoint sync delete finance_sharepoint <sync id> --keep-files
+```
+
+`hops datasource sharepoint sync` also has `status`, `run`, `pause`, `resume`, `resync`, `schedule`, `set-folder` and `index`, and `hops datasource sharepoint reset-script` restores the sync script.
+
+================================================================================
 # Usage
 Source: https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/
 
@@ -19933,6 +20300,7 @@ Resource allocation for the Spark driver and executors can be configured, also t
   Raise it when executors are OOMKilled.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
+  On a cluster that schedules jobs with Kueue, only static is allowed: a job with dynamic allocation is refused, and new jobs default to static ([Spark jobs and Kueue](../scheduling/kueue_details.md#spark-jobs)).
 
 <p align="center">
   <figure>
@@ -20071,7 +20439,7 @@ The following table describes the job configuration parameters for a PYSPARK job
 | <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
 | <nobr>`conf['spark.driver.memoryOverheadFactor']`</nobr> | float | Fraction of the driver memory added to the driver pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
 | <nobr>`conf['spark.executor.memoryOverheadFactor']`</nobr> | float | Fraction of the executor memory added to each executor pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
-| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors | `true` |
+| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors. Must be `false` on a cluster with Kueue | `true`, `false` with Kueue |
 | <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr> | int | Minimum number of executors with dynamic allocation | `1` |
 | <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr> | int | Maximum number of executors with dynamic allocation | `2` |
 | <nobr>`conf['spark.dynamicAllocation.initialExecutors']`</nobr> | int | Initial number of executors with dynamic allocation | `1` |
@@ -20233,6 +20601,7 @@ Resource allocation for the Spark driver and executors can be configured, also t
   Raise it when executors are OOMKilled.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
+  On a cluster that schedules jobs with Kueue, only static is allowed: a job with dynamic allocation is refused, and new jobs default to static ([Spark jobs and Kueue](../scheduling/kueue_details.md#spark-jobs)).
 
 <p align="center">
   <figure>
@@ -20368,7 +20737,7 @@ The following table describes the job configuration parameters for a SPARK job.
 | <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
 | <nobr>`conf['spark.driver.memoryOverheadFactor']`</nobr> | float | Fraction of the driver memory added to the driver pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
 | <nobr>`conf['spark.executor.memoryOverheadFactor']`</nobr> | float | Fraction of the executor memory added to each executor pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
-| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors | `true` |
+| <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors. Must be `false` on a cluster with Kueue | `true`, `false` with Kueue |
 | <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr> | int | Minimum number of executors with dynamic allocation | `1` |
 | <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr> | int | Maximum number of executors with dynamic allocation | `2` |
 | <nobr>`conf['spark.dynamicAllocation.initialExecutors']`</nobr> | int | Initial number of executors with dynamic allocation | `1` |
@@ -21138,7 +21507,7 @@ Hopsworks allows users to configure some Kubernetes scheduler abstractions, such
 Hopsworks also supports additional scheduling abstractions backed by Kueue.
 This includes [Queues](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/), [Cohorts](https://kueue.sigs.k8s.io/docs/concepts/cohort/) and [Topologies](https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/).
 All these scheduling abstractions are supported in jobs, jupyter notebooks and model deployments.
-Kueue abstractions however, are currently not supported for Spark jobs.
+Spark jobs run in Kueue queues with static executors only: see [Spark jobs](./kueue_details.md#spark-jobs).
 
 Hopsworks Admins can control which labels and priority classes can be used in the cluster (see [Admin configuration](#admin-configuration) section) and by which project (see [Project Configuration](#project-configuration) section)
 
@@ -21291,9 +21660,21 @@ Hopsworks provides the integration with Kueue to provide the additional scheduli
 Hopsworks currently acts only as a "reader" to the Kueue abstractions and currently does not manage the lifecycle of Kueue abstraction with the exception of the default localqueue for each namespace.
 All the other abstractions are expected to be managed by the administrators of Hopsworks, directly on the Kubernetes cluster.
 
-However Hopsworks and Kueue integration currently only supports frameworks python and ray for jobs, notebooks and model deployments.
+Kueue schedules Python and Ray jobs, Spark jobs, notebooks and model deployments.
 The same queues are also used for Hopsworks internal jobs (zipping, git operations, python library installation).
-Spark is currently not supported, and thus will not be managed by Kueue for scheduling, and instead it will bypass the queues setup (important to note when thinking about queue quotas) and instead are managed directly by the Kubernetes Scheduler.
+
+### Spark jobs
+
+Spark jobs run as Spark Operator `SparkApplication`s, which Kueue admits through its SparkApplication integration.
+They go to the project's default queue unless the job selects another; a Spark job saved without a queue, as all were before Kueue managed Spark, gets the default queue when it starts.
+Kueue reserves quota for the driver and a fixed number of executors, so on a cluster with Kueue a Spark job runs with static executors:
+
+- `spark.dynamicAllocation.enabled` must be `false`. A Spark job with dynamic allocation is refused when it is saved and when it is started (error code 130082).
+- `spark.executor.instances` sets the number of executors Kueue reserves quota for.
+- New Spark jobs default to static executors, as many as the dynamic-allocation maximum.
+- Spark jobs created before Kueue was enabled have dynamic allocation on, the earlier default. Turn it off and set the number of executors before running them.
+
+Spark in Jupyter notebooks runs in client mode and is not managed by Kueue, so it keeps dynamic allocation.
 
 ### Resource flavors
 
@@ -21302,17 +21683,17 @@ The resource flavor defines the resources that a queue will later manage.
 Hopsworks helm chart installs and uses a default ResourceFlavor
 
 ```yaml
-apiVersion: kueue.x-k8s.io/v1beta1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: ResourceFlavor
 metadata:
   name: default-flavor
 spec:
   nodeLabels:
     cloud.provider.com/region: europe
-  topologyName: default
 ```
 
-Node labels filter the available nodes to this resource flavor and is required for [topologies](#topologies)
+Node labels filter the available nodes to this resource flavor.
+A flavor that names a topology with `topologyName` makes Kueue place pods by that [topology](#topologies).
 
 ### Cluster Queues
 
@@ -21320,12 +21701,12 @@ Node labels filter the available nodes to this resource flavor and is required f
 The default hopsworks queue looks like:
 
 ```yaml
-apiVersion: kueue.x-k8s.io/v1beta1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: ClusterQueue
 metadata:
   name: other
 spec:
-  cohort: cluster
+  cohortName: cluster
   namespaceSelector: {}
   preemption:
     borrowWithinCohort:
@@ -21371,7 +21752,7 @@ An administrator can define the default queue for projects user jobs and system 
 Hopsworks defines a default `cluster` cohort
 
 ```yaml
-apiVersion: kueue.x-k8s.io/v1alpha1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: Cohort
 metadata:
   name: cluster
@@ -21395,7 +21776,7 @@ spec:
         nominalQuota: 50
 ```
 
-Cohorts can contain other cohorts and thus you can create a hierarchy of cohorts.
+Cohorts can contain other cohorts, through `parentName`, and thus you can create a hierarchy of cohorts.
 Cohorts can set [fair sharing weight](https://kueue.sigs.k8s.io/docs/concepts/admission_fair_sharing/) where using
 
 ```yaml
@@ -21411,7 +21792,7 @@ in the definition of a cohort, the user can control a priority towards borrowing
 Hopsworks defines a default topology:
 
 ```yaml
-apiVersion: kueue.x-k8s.io/v1alpha1
+apiVersion: kueue.x-k8s.io/v1beta2
 kind: Topology
 metadata:
   name: default
@@ -21422,7 +21803,7 @@ spec:
   - nodeLabel: kubernetes.io/hostname
 ```
 
-The topology is defined in the Resource Flavor used by a Cluster Queue.
+A Cluster Queue uses a topology through the `topologyName` of its Resource Flavor; the default flavor names none.
 
 When creating a new job, the user can select a topology unit for the job to run in and thus decide if all pods of a job should run on the same hostname, in the same zone or in the same region.
 The user can select the topology for jobs, notebooks and deployments from `Advanced options`, in the `Scheduler` section of the full configuration page.
@@ -31437,7 +31818,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `agent_deployment_otel_enabled` | Boolean | `true` | Settings.java |
 | `agent_deployment_otel_image` | String | `docker.hops.works/hops-otel:5.0.0-SNAPSHOT` | Settings.java |
 | `agent_deployment_otel_input_token_price_per_million` | Double | `0.0` | Settings.java |
-| `agent_deployment_otel_memory_mb` | Integer | `1024` | Settings.java |
+| `agent_deployment_otel_memory_mb` | Integer | `2048` | Settings.java |
 | `agent_deployment_otel_output_token_price_per_million` | Double | `0.0` | Settings.java |
 | `agent_deployment_otel_ttl_seconds` | Integer | `86400` | Settings.java |
 | `agent_image` | String | `agent-job` | Settings.java |
@@ -31481,6 +31862,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `command_search_fs_history_enable` | Boolean | `false` | Settings.java |
 | `command_search_fs_history_window_as_s` | Long | `3600` | Settings.java |
 | `command_search_fs_process_timer_period_as_ms` | Long | `1000` | Settings.java |
+| `command_search_fs_reindex_queue_wait_as_ms` | Long | `1800000` | Settings.java |
 | `command_search_fs_retry_backoff_base_as_ms` | Long | `5000` | Settings.java |
 | `command_search_fs_retry_backoff_max_as_ms` | Long | `300000` | Settings.java |
 | `conda_default_repo` | String | `defaults` | Settings.java |
@@ -31489,6 +31871,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `created_by_label_value` | String | `hopsworks` | KubeSettings.java |
 | `cross_project_global_search_enabled` | Boolean | `true` | Settings.java |
 | `csi_driver_enabled` | Boolean | `false` | Settings.java |
+| `csi_driver_name` | String | `hopsfs.csi.logicalclocks.com` | Settings.java |
 | `csi_sidecar_image` | String | `docker.hops.works/hopsworks/hopsfs-csi:0.1.0-SNAPSHOT` | Settings.java |
 | `databricks_account_host_allowlist` | String | `accounts.cloud.databricks.com,accounts.azuredatabricks.net,accounts.gcp.databricks.com` | Settings.java |
 | `databricks_oauth_allow_private_ranges` | Boolean | `false` | Settings.java |
@@ -31594,6 +31977,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `enable_crm_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_custom_branding` | Boolean | `false` | Settings.java |
 | `enable_data_science_profile` | Boolean | `false` | Settings.java |
+| `enable_elasticsearch_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_feature_monitoring` | Boolean | `false` | Settings.java |
 | `enable_gcs_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_glue_storage_connectors` | Boolean | `true` | Settings.java |
@@ -31617,6 +32001,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `executions_cleaner_interval_ms` | Integer | `600000` | Settings.java |
 | `executions_per_job_limit` | Integer | `10000` | Settings.java |
 | `executions_ttl_days` | Integer | `90` | Settings.java |
+| `factory_enabled` | Boolean | `false` | Settings.java |
 | `feature_monitoring_max_num_features` | Integer | `15` | Settings.java |
 | `featurestore_asof_spine_max_bytes` | Long | `1073741824` | Settings.java |
 | `featurestore_asof_spine_max_columns` | Integer | `256` | Settings.java |
@@ -31673,6 +32058,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `hops_helm_install_namespace` | String | `hopsworks` *(duplicate key, also declared in Settings.java; values match)* | KubeSettings.java |
 | `hops_helm_install_namespace` | String | `hopsworks` *(duplicate key, also declared in KubeSettings.java; values match)* | Settings.java |
 | `hops_rpc_tls` | Boolean | `false` | Settings.java |
+| `hopsable_proxy_enabled` | Boolean | `false` | Settings.java |
 | `hopsfs_mount_mount_path` | String | `/hopsfs` | Settings.java |
 | `hopsfsmount_log_level` | String | `warn` | Settings.java |
 | `hopsfsmount_nn_connections` | Integer | `4` | Settings.java |
@@ -31883,9 +32269,12 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `python_job_memory` | Integer | `2048` | Settings.java |
 | `python_library_updates_monitor_interval` | String | `1d` | Settings.java |
 | `python_pod_kill_grace_period_seconds` | Long | `600` | Settings.java |
+| `pythonapp_cold_start_timeout_max_seconds` | Integer | `300` | Settings.java |
 | `pythonapp_cores` | Double | `1.0` | Settings.java |
 | `pythonapp_gpus` | Integer | `0` | Settings.java |
+| `pythonapp_idle_cooldown_seconds` | Integer | `21600` | Settings.java |
 | `pythonapp_memory` | Integer | `2048` | Settings.java |
+| `pythonapp_proxy_token_ttl_ms` | Long | `900000` | Settings.java |
 | `quotas_featuregroups_online_disabled` | Long | `-1` | Settings.java |
 | `quotas_featuregroups_online_enabled` | Long | `-1` | Settings.java |
 | `quotas_max_parallel_executions` | Long | `-1` | Settings.java |
@@ -31923,6 +32312,15 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `rondb_quotas` | String | *(empty string)* | Settings.java |
 | `rondb_usage_cache_ttl_seconds` | Integer | `60` | Settings.java |
 | `rondb_usage_query_timeout_seconds` | Integer | `10` | Settings.java |
+| `run_ai_client_id` | String | *(empty string)* | Settings.java |
+| `run_ai_client_secret` | String | `${env:RUN_AI_CLIENT_SECRET}` | Settings.java |
+| `run_ai_cluster_name` | String | *(empty string)* | Settings.java |
+| `run_ai_default_department` | String | `default` | Settings.java |
+| `run_ai_enable` | Boolean | `false` | Settings.java |
+| `run_ai_project_gpu_quota` | Integer | `0` | Settings.java |
+| `run_ai_ready_timeout_s` | Integer | `30` | Settings.java |
+| `run_ai_reconcile_interval_s` | Integer | `600` | Settings.java |
+| `run_ai_url` | String | `http://runai-backend-traefik.runai-backend.svc.cluster.local:8080` | Settings.java |
 | `saas_entry_point_url` | String | *(empty string)* | Settings.java |
 | `service_discovery_domain` | String | `consul` *(duplicate key, also declared in Settings.java; values match)* | CAConf.java |
 | `service_discovery_domain` | String | `consul` *(duplicate key, also declared in CAConf.java; values match)* | Settings.java |
@@ -31983,6 +32381,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `superset_proxy_connection_request_timeout_ms` | Integer | `10000` | Settings.java |
 | `superset_proxy_max_connections` | Integer | `50` | Settings.java |
 | `superset_proxy_read_timeout_ms` | Integer | `180000` | Settings.java |
+| `superset_proxy_token_ttl_ms` | Long | `900000` | Settings.java |
 | `superset_secret` | String | `superset-admin-credentials` | KubeSettings.java |
 | `superset_user_roles` | String | `Gamma,sql_lab` | Settings.java |
 | `tag_history_archive_max_events` | Integer | `20000` | Settings.java |
@@ -31997,12 +32396,13 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `terminal_oom_guard_enabled` | Boolean | `true` | Settings.java |
 | `terminal_proxy_pod_app_labels` | String | `hopsworks-instance,hopsworks-admin` | Settings.java |
 | `terminal_proxy_token_ttl_ms` | Long | `60000` | Settings.java |
-| `terminal_session_hours` | Integer | `4` | Settings.java |
+| `terminal_session_hours` | Integer | `8` | Settings.java |
 | `terminal_session_max_hours` | Integer | `24` | Settings.java |
 | `terminal_shm_size` | String | `1Gi` | Settings.java |
 | `terminal_spark_image` | String | `terminal-spark` | Settings.java |
 | `testconnector_image` | String | `docker.hops.works/hopsworks/testconnector:0.2` | Settings.java |
 | `testconnector_launcher` | String | `testconnector-launch.sh` | Settings.java |
+| `trino_access_control_base_configmap` | String | `hopsworks-trino-access-control-base` | KubeSettings.java |
 | `trino_catalog_approval_required` | Boolean | `false` | Settings.java |
 | `trino_catalog_max_bytes` | Integer | `16384` | Settings.java |
 | `trino_catalog_max_per_project` | Integer | `10` | Settings.java |
@@ -32011,17 +32411,19 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `trino_connectors` | String | `ai,bigquery,blackhole,cassandra,clickhouse,datasketches,delta_lake,druid,duckdb,elasticsearch,exasol,faker,gsheets,hive,hudi,iceberg,ignite,jmx,kafka,lakehouse,loki,mariadb,memory,mongodb,mysql,opensearch,oracle,pinot,postgresql,prometheus,redis,redshift,singlestore,snowflake,sqlserver,tpcds,tpch,trino_thrift` | Settings.java |
 | `trino_coordinator_deployment` | String | `hopsworks-trino-coordinator` | KubeSettings.java |
 | `trino_credentials_secret` | String | `trino-admin-credentials` | KubeSettings.java |
-| `trino_default_catalog` | String | `hive` | Settings.java |
+| `trino_default_catalog` | String | `delta` | Settings.java |
 | `trino_eager_restart` | Boolean | `false` | Settings.java |
 | `trino_eager_restart_poll_minutes` | Integer | `10` | Settings.java |
 | `trino_egress_probe_container` | String | `egress-probe` | KubeSettings.java |
 | `trino_enabled` | Boolean | `false` | Settings.java |
-| `trino_events_cleaner_batch_size` | Integer | `1000` | Settings.java |
+| `trino_events_cleaner_batch_size` | Integer | `100` | Settings.java |
 | `trino_events_delete_after_days` | Integer | `61` | Settings.java |
-| `trino_group_secret` | String | `trino-groups-file` | KubeSettings.java |
+| `trino_events_strip_details_after_days` | Integer | `7` | Settings.java |
+| `trino_feature_group_subset_shares_enabled` | Boolean | `false` | Settings.java |
+| `trino_files_path` | String | `/apps/trino` | Settings.java |
+| `trino_image_tag` | String | *(empty string)* | Settings.java |
 | `trino_max_catalogs` | Integer | `250` | Settings.java |
 | `trino_mountable_secrets_root` | String | `/opt/hopsworks/mounts` | KubeSettings.java |
-| `trino_password_secret` | String | `trino-password-file` | KubeSettings.java |
 | `trino_reconcile_enabled` | Boolean | `true` | Settings.java |
 | `trino_reconcile_interval_ms` | Long | `300000` | Settings.java |
 | `trino_scheduled_restart_enabled` | Boolean | `true` | Settings.java |
@@ -32031,8 +32433,6 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `trino_scheduled_restart_time` | String | `02:00` | Settings.java |
 | `trino_test_coordinator_deployment` | String | `hopsworks-trino-test-coordinator` | KubeSettings.java |
 | `trino_test_coordinator_enabled` | Boolean | `false` | Settings.java |
-| `trino_user_catalogs_max_shards` | String | `2` | KubeSettings.java |
-| `trino_user_catalogs_secret_prefix` | String | `hopsworks-trino-catalogs-user-` | KubeSettings.java |
 | `trino_worker_deployment` | String | `hopsworks-trino-worker` | KubeSettings.java |
 | `twofactor-excluded-groups` | String | `AGENT;CLUSTER_AGENT` | Settings.java |
 | `twofactor_auth` | String | `false` | Settings.java |
@@ -33780,6 +34180,9 @@ An airgapped install overrides them under `hw-keda.keda.image` and `hw-keda.keda
 From 5.2.2 the CRD upgrade hook also pulls `hopsworks/keda-crds`, as described in [CustomResourceDefinitions][keda-crds].
 It is pulled from `global._hopsworks.imageRegistry` like every Hopsworks image, so mirror `hopsworks/keda-crds` next to the other Hopsworks images; an airgap overlay needs nothing more for it.
 
+From 5.2.2 the chart ships Hopsworks rebuilds of the KServe controller and of the HTTP add-on images, under the upstream image names with a `-h<revision>` tag: `kserve/kserve-controller:0.21.0-h1` and `ghcr.io/kedacore/http-add-on-*:0.16.0-h2`.
+These tags exist only on `docker.hops.works` and its public ECR mirrors, not on ghcr.io or Docker Hub, so an airgapped install mirrors them from there.
+
 ## CustomResourceDefinitions { #keda-crds }
 
 The CRDs ship in the subchart's `crds/` directory, which Helm creates only on install and never updates.
@@ -34330,6 +34733,43 @@ hive:
 ```
 
 The Airflow `ddlConsulServiceName` cannot point at `mysql`, because its migrations need a single SQL node, so a cluster without the DDL SQL node runs with `global._hopsworks.airflow.enabled: false`.
+
+### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
+
+An agent deployment with tracing enabled runs a `hops-otlp` sidecar next to the agent.
+`hopsworks.variables.agent_deployment_otel_memory_mb` is both the memory request and the memory limit of that container, so the value is reserved on the node, not only allowed.
+From 5.2.2 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM-killed under ordinary traffic.
+
+- **Check capacity before you redeploy.**
+  A cluster that runs N traced agent deployments reserves 2 GiB x N for their sidecars, where it reserved 1 GiB x N.
+  On nodes sized for the old default, an agent pod recreated after the upgrade can stay `Pending` for lack of memory.
+  Count the traced agent deployments against the free memory of the nodes that schedule them before you redeploy them.
+- **Running pods keep the old reservation until they are recreated.**
+  The upgrade does not restart agent deployments, so nothing changes for a running one until it is stopped and started, saved, or rescheduled.
+  The increase arrives one deployment at a time, which is also why a shortage shows up later than the upgrade.
+- **Keeping 1024 keeps the OOM.**
+  `hopsworks.variables.agent_deployment_otel_memory_mb: "1024"` pins the old value on a cluster that cannot spare the memory, at the cost the increase removes.
+  The buffering fixes in the 5.2.2 sidecar image make an OOM much less likely than before, because what the sidecar holds no longer grows with how far the feature store write falls behind, but it remains the trade.
+- **What an OOM looks like.**
+  `hops-otlp` is an ordinary second container without probes, so the OOM kill restarts that container alone: the agent container's `restartCount` stays 0, and only the sidecar's `lastState` shows `OOMKilled`.
+  While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
+  Looking for agent restarts finds none.
+
+### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
+
+Required for a cluster that runs the Kueue bundled with Hopsworks (`global._hopsworks.kueue.enabled=true`); a cluster without Kueue needs nothing.
+From the 5.2.x patch release that uses Kueue 0.20, and in 5.3, Hopsworks uses a Kueue installed as its own release, `kueue` in `kueue-system`, in place of the Kueue 0.12.2 bundled in the Hopsworks namespace: the chart ships no Kueue.
+The new chart refuses to upgrade a release that still runs the bundled Kueue 0.12, and a cluster that runs it cannot be switched with `helm upgrade` alone: Kueue 0.12 stores Cohorts and Topologies as `v1alpha1`, which no later Kueue reads.
+The 5.1 chart's `migrate-to-external.sh` moves it to Kueue 0.18.1 in `kueue-system` and keeps every queue, on 5.1, or on 5.2.0 and 5.2.1 together with the Hopsworks upgrade.
+After the Hopsworks upgrade, the new chart's `upgrade-kueue.sh` upgrades Kueue to 0.20.3.
+Follow [Kueue outside the Hopsworks namespace](kueue_external.md), and stop submitting jobs while the move runs.
+
+What changes for users and operators ([details](kueue_external.md#what-changes)):
+
+- Spark jobs are queued, with static executors: a job saved with dynamic allocation runs its dynamic-allocation minimum, and `spark.dynamicAllocation.enabled=true` in its Spark properties is refused.
+- A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
+- The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
+- A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
 
 ================================================================================
 # Upgrading with Helm 4
@@ -35106,6 +35546,374 @@ The 4.3.1 brokers accept Java clients from 2.1 and librdkafka-based clients (Pyt
 The clients shipped with Hopsworks 5.2 are within those ranges; check any producer or consumer you build against the cluster yourself.
 
 The same cut applies the other way round for a [bring-your-own Kafka cluster][external-kafka-cluster]: Hopsworks 5.2 connects with kafka-clients 4.3.1, so the external brokers must run Kafka 2.1 or newer.
+
+================================================================================
+# Kueue outside the Hopsworks namespace
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/kueue_external/
+
+# Operator Notes: Kueue Outside the Hopsworks Namespace
+
+Administrative reference for cluster operators who run Kueue with Hopsworks, install a Hopsworks release that uses Kueue 0.20 (a 5.2.x patch release, or 5.3), or upgrade to one.
+
+With `global._hopsworks.kueue.enabled=true`, Hopsworks releases 4.3 to 5.2 bundle Kueue 0.12.2 in the Hopsworks namespace.
+A 5.2.x patch release and 5.3 ship no Kueue: they use Kueue 0.20.3 installed outside the Hopsworks release, and their backend reads Kueue objects as `kueue.x-k8s.io/v1beta2`, which Kueue 0.12 does not serve.
+A cluster that runs the bundled Kueue 0.12 therefore moves to a Kueue installed outside the Hopsworks release: release `kueue` in namespace `kueue-system`, installed with `fullnameOverride: kueue`, which Hopsworks uses with `hw-kueue.kueue.enabled=false`.
+On Hopsworks 5.1 it moves before the upgrade; on 5.2.0 and 5.2.1, which ship no migration script, it moves as part of the upgrade ([From Hopsworks 5.2.0 or 5.2.1](#from-hopsworks-520-or-521)).
+Hopsworks keeps its RBAC bindings to the Kueue roles and keeps queueing jobs through Kueue.
+
+A cluster without Kueue needs nothing.
+A fresh install of such a release with Kueue installs Kueue first ([Fresh install](#fresh-install)).
+
+## Fresh install
+
+The Hopsworks chart ships no Kueue, as it ships no Kyverno: install Kueue 0.20.3 first, as release `kueue` in `kueue-system`, then Hopsworks with `global._hopsworks.kueue.enabled=true`.
+The chart's `upgrade-kueue.sh` installs it with the SparkApplication integration Hopsworks queues Spark jobs through:
+
+```sh
+helm pull --untar <repo>/hopsworks --version <version>
+bash hopsworks/charts/hw-kueue/files/upgrade-kueue.sh install
+helm install hopsworks hopsworks -n hopsworks --set global._hopsworks.kueue.enabled=true ...
+```
+
+It applies the Kueue CRDs itself and installs release `kueue` without them, so uninstalling it never deletes the queues.
+With `--gitops` it writes the HelmRelease and the CRDs to commit, as in [Clusters managed by Flux](#clusters-managed-by-flux).
+The Hopsworks chart then creates the default queues, ResourceFlavor `default-flavor`, Topology `default`, Cohort `cluster` and ClusterQueue `other`, when they are missing.
+The default ResourceFlavor selects nodes labelled `cloud.provider.com/region=europe`; label the nodes, or change `hw-kueue.resourceFlavours`.
+
+With Argo CD, install Kueue as an Application of its own, synced before the Hopsworks one: the chart `kueue` version 0.20.3 from `oci://registry.k8s.io/kueue/charts`, release name `kueue` in `kueue-system`, with these values:
+
+```yaml
+fullnameOverride: kueue
+controllerManager:
+  featureGates:
+    - name: SparkApplicationIntegration
+      enabled: true
+managerConfig:
+  controllerManagerConfigYaml: |
+    # the chart's default, with sparkoperator.k8s.io/sparkapplication
+    # added to integrations.frameworks
+```
+
+That chart keeps its CRDs among its templates, so Argo CD upgrades them with a version bump.
+Leave the `resources-finalizer.argocd.argoproj.io` finalizer off that Application: deleting it then leaves the CRDs, and every queue, in place.
+
+## Why `helm upgrade` alone cannot do it
+
+- **Kueue 0.12 stores Cohorts and Topologies as `v1alpha1`**, which no Kueue from 0.13 on can read.
+  Their CRDs have to be replaced and the objects restored.
+- **The Kueue CRDs belong to no Helm release.**
+  The bundled chart ships them in its `crds/` directory, which Helm installs once and never upgrades.
+- **The new release creates cluster-wide objects under the names the Hopsworks release owns**: the `kueue-*` ClusterRoles, the webhook configurations and the visibility APIService.
+  The Hopsworks release has to drop them first.
+
+## What the migration does
+
+Two scripts do the move, each shipped with the release it runs on; run them with `bash`, because `helm package` stores files without the execute bit:
+
+- On Hopsworks 5.1, the 5.1 chart's `charts/hw-kueue/files/migrate-to-external.sh` moves the cluster to Kueue 0.18.1, the last release that serves both `v1beta1` and `v1beta2`, and rewrites every object as `v1beta2`. A 5.1 cluster stays on Kueue 0.18.
+- After the Hopsworks upgrade to a release with Kueue 0.20, that chart's `charts/hw-kueue/files/upgrade-kueue.sh` upgrades Kueue to 0.20.3.
+
+Every Kueue object is kept: ClusterQueues, Cohorts, ResourceFlavors, Topologies, LocalQueues, priority classes and Workloads.
+`migrate-to-external.sh` runs in phases, and each one is safe to re-run; `all` runs them in order:
+
+| Phase | What it does |
+| --- | --- |
+| `preflight` | Checks the tools and the release. Refuses admitted, unfinished Workloads unless given `--allow-admitted`. |
+| `backup` | Saves every Kueue object, the Kueue CRDs and the release values to `--backup-dir`. |
+| `remove-bundled` | Upgrades Hopsworks with Kueue off, which removes the bundled controller, its webhooks and its ClusterRoles. CRDs and queue objects stay. |
+| `replace-alpha-crds` | Snapshots the Cohorts, Topologies and ResourceFlavors, then replaces the `v1alpha1` Cohort and Topology CRDs. |
+| `install-kueue` | Applies the Kueue 0.18.1 CRDs, installs release `kueue` in `kueue-system` and restores the replaced objects. |
+| `migrate-storage` | Rewrites every object at `v1beta2` and prunes the CRDs' stored versions. |
+| `enable-hopsworks` | Upgrades Hopsworks with Kueue on and `hw-kueue.kueue.enabled=false`, which a 5.2.x patch release or 5.3 keeps by default. |
+| `verify` | Checks the controller, the stored versions, every backed-up queue object and the release values. |
+| `export-queues` | Writes the cluster-scoped queue objects as `v1beta2` manifests to `<backup-dir>/gitops/kueue-queues.yaml`, for clusters that keep their queues in Git. |
+
+The script applies the Kueue CRDs itself and installs release `kueue` without them, so `helm uninstall kueue` leaves the CRDs, and every queue, in place.
+
+A failed run resumes by running the same phase again, or `all`.
+`--dry-run` prints the commands that change the cluster; with `all` it stops after `remove-bundled`, whose result the later phases depend on.
+
+## Before you start
+
+- **Take a snapshot** and check that it completed: from `replace-alpha-crds` on, rollback is the snapshot.
+- **Plan a maintenance window and stop submitting jobs.**
+  From `remove-bundled` to `install-kueue` no Kueue runs, so a job created then runs outside quota.
+  Workloads already admitted keep running, and Kueue 0.18.1 takes them over.
+- **Tools**: `kubectl`, `helm` 3.20 or later, `jq` and `yq` v4.
+- **Kueue images**: both scripts default to the repository `docker.hops.works/registry.k8s.io/kueue/kueue`; `--kueue-image registry.k8s.io/kueue/kueue` takes the upstream images.
+- **Airgapped clusters** mirror the images `registry.k8s.io/kueue/kueue:v0.18.1` and `v0.20.3` and the `kueue` 0.18.1 and 0.20.3 charts.
+  `--kueue-image` and `--kueue-repo` point each script at the mirror; `--kueue-repo` takes a chart repository URL or an `oci://` path.
+- **An admin API key** lets the script refresh Hopsworks' settings after each upgrade.
+  Without it Hopsworks picks up the change within 10 minutes, and a project created in those minutes gets its default queue at its first job.
+
+## Run the migration
+
+The move runs in three steps.
+
+1. On Hopsworks 5.1, move the cluster to Kueue 0.18.1:
+
+    ```sh
+    helm pull --untar <repo>/hopsworks --version <latest 5.1 version>
+    HELM_EXTRA_ARGS="<the flags you upgrade Hopsworks with>" \
+    HOPSWORKS_URL=https://<hopsworks host> \
+    HOPSWORKS_API_KEY=<admin API key> \
+      bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh \
+      --hopsworks-chart <repo>/hopsworks --hopsworks-version <latest 5.1 version> all
+    ```
+
+    Both Hopsworks upgrades in `all` run `helm upgrade --reset-then-reuse-values` with that chart.
+    Pass `--force-conflicts` in `HELM_EXTRA_ARGS` if your upgrades need it.
+    `verify` at the end of `all` expects Kueue 0.18.1.
+    Jobs can be submitted again once it passes.
+
+2. Upgrade Hopsworks to a release with Kueue 0.20, keeping `global._hopsworks.kueue.enabled=true`.
+    Kueue 0.18.1 serves `v1beta2`, which its backend reads.
+
+3. Upgrade Kueue to 0.20.3, with the script from the new chart:
+
+    ```sh
+    helm pull --untar --untardir new <repo>/hopsworks --version <new version>
+    bash new/hopsworks/charts/hw-kueue/files/upgrade-kueue.sh
+    ```
+
+    It upgrades release `kueue`, then checks the end state; `upgrade-kueue.sh verify` runs the check on its own.
+    Until then Kueue 0.18.1 queues jobs, and Spark jobs run without queueing.
+
+`upgrade-kueue.sh` refuses to run while the Hopsworks release's chart bundles a Kueue older than 0.20, while the release does not use the external Kueue or has not finished deploying, while any Kueue CRD stores a version other than `v1beta2`, and refuses a downgrade.
+It applies the Kueue CRDs itself and keeps them out of the release, keeps the `kueue` release's own values, and refuses a manager configuration that is not `config.kueue.x-k8s.io/v1beta2` before it changes anything.
+A release that turns `TopologyAwareScheduling` off keeps it off: Kueue 0.20 adds six topology-aware scheduling gates, on by default, that depend on it, and the script turns them off too, since Kueue refuses to start with a gate on whose dependency is off.
+It turns on Kueue's SparkApplication integration and drops the `managedFields` entries recorded at `v1beta1`, which Kueue 0.20 can no longer convert.
+It takes the chart from `oci://registry.k8s.io/kueue/charts` (`--kueue-repo`), version 0.20.3 (`--kueue-version`).
+
+`--namespace` and `--release` name a Hopsworks release other than `hopsworks` in `hopsworks`; `--help` lists every option.
+
+Both scripts read and upgrade Helm release records, directly or through Flux's helm-controller, which keeps them.
+A Hopsworks or Kueue release managed by Argo CD, which renders charts and stores no Helm release, is not supported by either script.
+
+## From Hopsworks 5.2.0 or 5.2.1
+
+Hopsworks 5.2.0 and 5.2.1 bundle Kueue 0.12.2 and ship no migration script.
+The 5.1 chart's `migrate-to-external.sh` does the move on them too, run phase by phase: the phases up to `migrate-storage` keep Hopsworks on its current chart, and `enable-hopsworks` upgrades it to the new release.
+Hopsworks is never downgraded.
+
+```sh
+helm pull --untar --untardir v51 <repo>/hopsworks --version <latest 5.1 version>
+M="bash v51/hopsworks/charts/hw-kueue/files/migrate-to-external.sh"
+export HELM_EXTRA_ARGS="<the flags you upgrade Hopsworks with>"
+export HOPSWORKS_URL=https://<hopsworks host> HOPSWORKS_API_KEY=<admin API key>
+
+# Kueue off, Hopsworks stays on its current version
+for phase in preflight backup remove-bundled replace-alpha-crds install-kueue migrate-storage; do
+  $M --hopsworks-chart <repo>/hopsworks --hopsworks-version <current 5.2 version> $phase || break
+done
+# Hopsworks upgraded to the release with Kueue 0.20, on the external Kueue
+$M --hopsworks-chart <repo>/hopsworks --hopsworks-version <new version> enable-hopsworks
+$M verify
+
+helm pull --untar --untardir new <repo>/hopsworks --version <new version>
+bash new/hopsworks/charts/hw-kueue/files/upgrade-kueue.sh
+```
+
+`enable-hopsworks` upgrades Hopsworks with `--reset-then-reuse-values`, Kueue on and `hw-kueue.kueue.enabled=false`; Kueue 0.18.1 serves `v1beta2`, which the new backend reads.
+From `remove-bundled` until `install-kueue` no Kueue runs, as on 5.1.
+With Flux, follow [Clusters managed by Flux](#clusters-managed-by-flux) with the same split: keep the current 5.2 chart version in Step 2, and set the new version in Step 4.
+
+## Clusters managed by Flux
+
+When Flux manages the Hopsworks release, run the script with `--gitops`.
+Flux keeps running throughout: do not suspend any HelmRelease or Kustomization.
+The script never runs `helm upgrade`.
+At each step that changes a Helm release it prints the change, you commit it to the Git repository Flux reconciles, and the script waits until Flux has applied it.
+The kubectl work (backup, CRDs, restores, the storage rewrite, verification) the script does itself.
+
+Without `--gitops`, `preflight` and every step that would run `helm upgrade` refuse on a Flux-managed release, because Flux would undo the upgrade at its next reconcile.
+
+### Before you start with Flux
+
+Everything under [Before you start](#before-you-start) applies, and:
+
+- **Flux 2.3 or later.**
+  The files the script writes use `helm.toolkit.fluxcd.io/v2` and `source.toolkit.fluxcd.io/v1`; `flux version` shows the controllers' versions.
+- **Write access to the Git repository** that holds the Hopsworks HelmRelease, and a path in it that a Flux Kustomization applies, for the new Kueue release and, at the end, the queues.
+- **The Helm release name and namespace of Hopsworks.**
+  `flux get helmreleases -A` lists the HelmReleases; the Helm release name is the HelmRelease's `spec.releaseName`, or `<targetNamespace>-<name>` when that is unset, and `helm list -A` shows it.
+  Pass both with `--release` and `--namespace` unless they are `hopsworks` and `hopsworks`.
+- **Where the HelmRelease takes its values from**: `spec.values`, or a ConfigMap or Secret named in `spec.valuesFrom`.
+  The value changes below go there.
+- **A terminal that survives a dropped connection**, such as `tmux` or `screen`.
+  The script waits for each commit for up to `--timeout`, 60 minutes by default; pass a longer one, such as `--timeout 4h`, when commits go through review.
+
+### Step 1: Start the script
+
+```sh
+helm pull --untar <repo>/hopsworks --version <latest 5.1 version>
+HOPSWORKS_URL=https://<hopsworks host> \
+HOPSWORKS_API_KEY=<admin API key> \
+  bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh --gitops \
+  --release <release> --namespace <namespace> --backup-dir ./kueue-backup all
+```
+
+`--hopsworks-chart` is not needed: Flux upgrades Hopsworks.
+The script runs `preflight` and `backup`, then stops at the first change to commit.
+
+### Step 2: Turn off the bundled Kueue
+
+The script prints the change for `remove-bundled`.
+In the Hopsworks HelmRelease, set the latest 5.1 chart version, and turn Kueue off in its values:
+
+```yaml
+spec:
+  chart:
+    spec:
+      version: "<latest 5.1 version>"
+  values:
+    global:
+      _hopsworks:
+        kueue:
+          enabled: false
+```
+
+Commit and push.
+To apply it without waiting for the next sync interval, run `flux reconcile helmrelease <name> -n <namespace> --with-source`.
+The script continues once the bundled Kueue controller is gone and the release shows the value.
+From here until Step 3 completes no Kueue runs: a job created in that window runs outside quota.
+
+### Step 3: Install Kueue
+
+The script replaces the `v1alpha1` Cohort and Topology CRDs, applies the new Kueue CRDs, and writes `<backup-dir>/gitops/kueue.yaml`: the `kueue-system` namespace, a HelmRepository and a HelmRelease `kueue`.
+Copy that file into a path of the Git repository that a Flux Kustomization applies, such as `clusters/<cluster>/kueue/kueue.yaml`, then commit and push.
+`flux reconcile kustomization <name> --with-source` applies it at once.
+
+Commit the file only when the script asks for it: the HelmRelease skips the CRDs, which the script applies just before.
+The script then waits for the Kueue controller, restores the Cohorts and Topologies, and rewrites every Kueue object at `v1beta2`.
+
+### Step 4: Point Hopsworks at the new Kueue
+
+The script prints the change for `enable-hopsworks`.
+In the Hopsworks HelmRelease values:
+
+```yaml
+spec:
+  values:
+    global:
+      _hopsworks:
+        kueue:
+          enabled: true
+    hw-kueue:
+      kueue:
+        enabled: false
+```
+
+Commit and push; the script continues once the release shows both values.
+It then runs `verify` and `export-queues` (Step 6) and exits.
+
+### Step 5: Upgrade Hopsworks and Kueue
+
+Set the Hopsworks HelmRelease's chart version to a release with Kueue 0.20, keeping the values from Step 4, then commit and push.
+Once Flux has upgraded Hopsworks, run the new chart's `upgrade-kueue.sh`:
+
+```sh
+helm pull --untar --untardir new <repo>/hopsworks --version <new version>
+bash new/hopsworks/charts/hw-kueue/files/upgrade-kueue.sh --gitops \
+  --release <release> --namespace <namespace>
+```
+
+With `--gitops` it runs no `helm upgrade`.
+It applies the 0.20.3 CRDs and writes `./kueue-upgrade/kueue.yaml` (`--out-dir`): the HelmRelease `kueue` for 0.20.3 with the release's values, the chart from `oci://registry.k8s.io/kueue/charts`, the Spark manager configuration and feature gate, and a post-render patch that keeps the chart's CRDs out of the release.
+Replace the file you committed in Step 3 with it, add `./kueue-upgrade/kueue-crds.yaml` next to it, then commit and push.
+The script continues once Flux runs the 0.20.3 controller with the SparkApplication integration on, then checks the end state.
+
+### Step 6: Verify and move the queues into Git
+
+`verify` checks the end state, then `export-queues` writes `<backup-dir>/gitops/kueue-queues.yaml`: the ResourceFlavors, Topologies, Cohorts, ClusterQueues, AdmissionChecks and WorkloadPriorityClasses as `kueue.x-k8s.io/v1beta2`, with the server-set fields removed.
+Commit it under a Flux Kustomization of its own that depends on the one applying `kueue.yaml`:
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kueue-queues
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./clusters/<cluster>/kueue-queues
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: <git repository>
+  dependsOn:
+    - name: <kustomization applying kueue.yaml>
+```
+
+From then on the queues are changed in Git.
+With `prune: true`, a queue removed from Git is deleted from the cluster.
+Remove `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` and `topologies` from the Hopsworks values: the chart creates those queues only when they are missing, and Git now owns them.
+LocalQueues are not exported, because Hopsworks creates and deletes them with projects.
+
+### If a step times out or the script stops
+
+Each step polls every 15 seconds for up to `--timeout`, then stops with `timed out waiting for ...`.
+Run the same command again: every phase checks what is already done and continues from there, and the restores are applied only once.
+A single phase can also be run on its own, such as `bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh --gitops enable-hopsworks`.
+
+### What the script writes
+
+The script applies the Kueue CRDs itself and the HelmRelease skips them (`crds: Skip` on install and upgrade), so deleting the HelmRelease leaves every queue in place.
+The 0.20.3 chart ships its CRDs as templates, which `crds: Skip` does not cover, so the HelmRelease `upgrade-kueue.sh` writes also carries a kustomize post-render patch that removes them from what Flux installs.
+`upgrade-kueue.sh` also writes the CRDs it applied to `./kueue-upgrade/kueue-crds.yaml`, annotated `kustomize.toolkit.fluxcd.io/prune: disabled`.
+Commit it next to `kueue.yaml`, in place of any Kueue CRDs there: Flux applies CRDs before the objects that use them, so Git can restore Kueue on an empty cluster, and never prunes them, so removing the file does not delete the queues.
+
+## What changes
+
+- **ResourceFlavors lose `topologyName`.**
+  Topology-aware scheduling is on by default from Kueue 0.14, and no bundled release used it.
+  A cluster that enabled it on purpose needs its own handling before the move.
+- **Cohorts get `parentName`** in place of `parent`.
+  ClusterQueues keep their quotas, fair sharing, preemption and borrowing settings; Kueue converts `cohort`, `admissionChecks` and the `flavorFungibility` values `Borrow` and `Preempt` to their `v1beta2` forms.
+- **Queues are managed with `kubectl`.**
+  The chart creates the queues in `hw-kueue.clusterQueues`, `cohorts`, `resourceFlavours` and `topologies` only when they are missing.
+  Existing queues are kept as they are, and changing those values has no effect on them.
+  Write queue objects as `kueue.x-k8s.io/v1beta2`: Kueue 0.20 serves no other version.
+- **Spark jobs are queued, with static executors only.**
+  `upgrade-kueue.sh` turns on Kueue's SparkApplication integration, so Spark jobs get quota and queueing.
+  Kueue reserves quota for a fixed number of executors, so on a Kueue cluster Spark jobs run static executors.
+  A job saved with dynamic allocation, as every Spark job was by default, runs its dynamic-allocation minimum, at least one executor: it is converted and saved at its next start, save, or read of the project default.
+  A job that needs more executors sets `spark.executor.instances`.
+  `spark.dynamicAllocation.enabled=true` in a job's Spark properties is refused.
+  Spark in notebooks is unchanged.
+- **Workloads must be ready within 30 minutes.**
+  Kueue 0.19 turns `waitForPodsReady` on by default: a workload whose pods are not all ready 30 minutes after admission is evicted and queued again.
+- **Ray sidecars count against quota.**
+  From Kueue 0.19 the Ray autoscaler and job-submitter sidecars are charged to the head, so a queue sized exactly for its Ray heads may need more CPU and memory.
+- **Workloads without a priority class get `default`.**
+  From Kueue 0.20 such a workload gets the WorkloadPriorityClass named `default`, when one exists.
+
+## Verify
+
+Each script checks the end state, and runs the check on its own at any time:
+
+```sh
+bash hopsworks/charts/hw-kueue/files/migrate-to-external.sh verify   # on 5.1
+bash new/hopsworks/charts/hw-kueue/files/upgrade-kueue.sh verify     # after the upgrade to Kueue 0.20
+```
+
+To check by hand:
+
+```sh
+kubectl -n kueue-system get deployment kueue-controller-manager
+kubectl get crd -l app.kubernetes.io/name=kueue -o custom-columns=NAME:.metadata.name,STORED:.status.storedVersions
+kubectl get clusterqueues,cohorts,resourceflavors
+kubectl get localqueues -A
+```
+
+The controller is ready in `kueue-system`, none runs in the Hopsworks namespace, every CRD stores `["v1beta2"]`, and every queue from before the move is listed.
+
+The chart checks the cluster before it renders:
+
+- It refuses while the bundled Kueue's controller still runs, while Cohorts are stored as `v1alpha1`, or when no Kueue serving `v1beta2` is installed.
+- It refuses `hw-kueue.kueue.enabled=true`: the chart ships no Kueue.
+
+`hw-kueue.enforcePrerequisiteCheck=false` turns the check off, for `helm template`.
 
 ================================================================================
 # Services Dashboards
@@ -38368,6 +39176,167 @@ After modifying any configuration variable:
 - **Role defaults**: Set `superset_user_roles` to provide appropriate baseline permissions
 - **Testing changes**: Test configuration changes in a development environment first
 - **Documentation**: Document any custom configuration changes and update your Helm values accordingly.
+
+================================================================================
+# GPU Scheduling with Run:ai
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/
+
+# GPU Scheduling with NVIDIA Run:ai
+
+On a Kubernetes cluster where NVIDIA Run:ai manages the GPUs, Hopsworks can hand GPU scheduling and GPU accounting to Run:ai.
+Each Hopsworks project then becomes a Run:ai project, and Run:ai's quotas, fair share and preemption apply to every pod the project runs.
+
+The integration is off by default.
+With it off, Hopsworks schedules and reports GPUs from the Kubernetes API as before.
+
+## What Hopsworks does
+
+With `run_ai_enable` set, Hopsworks does the following:
+
+- On project creation, Hopsworks creates a Run:ai project with the name of the project's Kubernetes namespace, bound to that namespace (`requestedNamespace`), in the Run:ai department its Hopsworks department maps to (see below).
+  It labels the namespace `runai/queue=<run:ai project>`.
+  A Run:ai project that is already bound to the namespace is adopted instead.
+  Hopsworks marks the Run:ai projects it creates with the namespace label `hopsworks.ai/runai-project-id`, and only deletes or moves those; an adopted Run:ai project belongs to whoever bound it.
+- Run:ai's admission webhooks then schedule every pod in the namespace with `runai-scheduler` in the project's queue: jobs, notebooks, terminals, Ray clusters and model deployments.
+  Hopsworks also puts the `runai/queue` label on the workloads it creates.
+- Projects that existed before the integration was enabled are bound on their first workload start, or by a background pass every `run_ai_reconcile_interval_s` seconds.
+- Deleting a Hopsworks project deletes the Run:ai project Hopsworks created for it, and leaves an adopted one in place.
+- Kueue and Run:ai are mutually exclusive: a cluster uses one, the other, or neither. The Helm install fails when both `global._hopsworks.kueue.enabled` and `run_ai_enable` are set, and Cluster settings refuses turning on `kueue_installed` while Run:ai is enabled.
+
+Hopsworks never creates Run:ai departments.
+A project in a Hopsworks department goes to the Run:ai department with exactly that name when Run:ai has one, and otherwise to `run_ai_default_department`.
+Hopsworks department names follow the same rule as Run:ai department names: up to 63 lowercase letters, digits and `-`, starting and ending with a letter or digit.
+
+## Moving a project to another department
+
+When an administrator moves a project to another department in the admin UI, Hopsworks moves its Run:ai project too, before it records the move:
+
+1. Nothing happens in Run:ai when both departments map to the same Run:ai department, when the project is not bound to Run:ai yet, or when its Run:ai project was adopted rather than created by Hopsworks; an adopted project then reports `RUN_AI_DEPARTMENT_DRIFT` until a Run:ai administrator moves it.
+   Otherwise the move is refused while any pod runs or waits in the project's namespace: jobs, notebooks, terminals, apps or deployments.
+2. Run:ai cannot change a project's department in place, so Hopsworks deletes the Run:ai project and creates it again in the new department, bound to the same namespace.
+3. The new Run:ai project has no GPU quota, so the project's old quota is not taken from the new department's share.
+   It also loses the access rules, limits and other node-pool settings of the old Run:ai project; Run:ai deletes project-scoped access rules with the project.
+4. Hopsworks then moves the project, and the admin UI reminds you to re-add the project's GPU quota and access rules in Run:ai.
+
+Deleting a Hopsworks department moves its projects to the default department the same way, one at a time, so their Run:ai projects move to `run_ai_default_department` without GPU quota.
+The delete stops at the first project with a running or waiting pod: the projects moved before it stay in the default department, and the department keeps the rest until it is deleted again.
+Deleting a Run:ai project also deletes the Run:ai assets created in its scope, such as credentials and templates.
+If the project cannot be created in the new department, Hopsworks creates it again in the old one with its old quota and scheduling settings, and the move fails; the access rules of the old Run:ai project are not restored.
+A project whose Run:ai project is in another department than expected, for example after a department was renamed, shows a warning in its GPU view.
+
+New Run:ai projects get `run_ai_project_gpu_quota` deserved GPUs, `0` by default.
+Run:ai admits notebooks, terminals, Python apps and model deployments only within a project's quota, because it does not preempt them.
+Hopsworks checks the quota before it starts one of those with GPUs and refuses the start, with the number of GPUs the project has left, instead of leaving a pod waiting.
+Jobs are not checked: they are preemptible and run on idle GPUs over quota.
+Assign quota to the projects that need GPU notebooks or deployments in the Run:ai UI.
+
+## Prerequisites
+
+1. Run:ai is installed on the same Kubernetes cluster as Hopsworks, and its control plane is reachable from the Hopsworks pods.
+   The default `run_ai_url` is the in-cluster address of a self-hosted control plane, `http://runai-backend-traefik.runai-backend.svc.cluster.local:8080`.
+2. The department named by `run_ai_default_department` exists in Run:ai.
+   Every Run:ai installation has a department called `default`.
+3. A Run:ai service account for Hopsworks, created under Access, Service accounts in the Run:ai UI.
+   Give it an access rule with the **System administrator** role at cluster scope.
+   Of what that role grants, Hopsworks uses only these permissions:
+
+    | Hopsworks needs to | Run:ai permission |
+    | --- | --- |
+    | Select the cluster | Clusters: View |
+    | Map departments, check drift, show the admin view | Departments: View |
+    | Find, bind, move and delete projects | Projects: View, Create, Delete |
+    | Read GPU availability (node pool metrics) | Node pools: View |
+
+   When you create the access rule through the API instead of the UI, its `subjectId` is the service account's name, not its id.
+4. A Kubernetes Secret in the Hopsworks namespace that holds the service account's client secret:
+
+    ```bash
+    kubectl -n hopsworks create secret generic runai-hopsworks \
+      --from-literal=clientSecret='<client secret>'
+    ```
+
+## Helm values
+
+The integration is enabled through the Hopsworks Helm chart only: the chart also mounts the client secret into the Hopsworks pods.
+Cluster settings refuses changing `run_ai_enable`.
+Set these values on the Hopsworks chart and run `helm upgrade`:
+
+```yaml
+hopsworks:
+  variables:
+    run_ai_enable: true
+    run_ai_client_id: "<client id>"
+    run_ai_client_secret_name: runai-hopsworks
+    run_ai_client_secret_key: clientSecret
+```
+
+| Value | Default | Meaning |
+| --- | --- | --- |
+| `run_ai_enable` | `false` | Turns the integration on |
+| `run_ai_url` | in-cluster control plane | Run:ai control-plane URL |
+| `run_ai_client_id` | empty | Client id of the service account |
+| `run_ai_client_secret_name` | empty | Secret holding the client secret |
+| `run_ai_client_secret_key` | `clientSecret` | Key of the client secret in that Secret |
+| `run_ai_cluster_name` | empty | Run:ai cluster to use; empty selects the only one |
+| `run_ai_default_department` | `default` | Run:ai department for projects in the default Hopsworks department, and in any department with no Run:ai department of the same name |
+| `run_ai_project_gpu_quota` | `0` | Deserved GPUs of each new Run:ai project |
+| `run_ai_ready_timeout_s` | `30` | Seconds project creation waits for the Run:ai project to become Ready |
+| `run_ai_reconcile_interval_s` | `600` | Seconds between passes that bind existing projects |
+
+These values are written to the Hopsworks configuration on every `helm upgrade`.
+See [Cluster Configuration Variables Reference][cluster-configuration-variables-reference] for all variables.
+
+## GPU availability
+
+With the integration enabled, a project's Kubernetes page in the Hopsworks UI shows a Run:ai GPU section, and the terminal offers GPUs only to projects with deserved Run:ai GPUs.
+The same numbers come from `GET /hopsworks-api/api/project/{id}/kube/gpu` and from the Python client.
+Reading them has no side effects: a project that is not bound to Run:ai yet reports `RUN_AI_PROJECT_NOT_BOUND` instead of being bound.
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+
+gpus = project.get_gpu_availability()
+print(gpus.project, gpus.department)
+print(gpus.available_non_preemptible, gpus.available_preemptible)
+```
+
+All numbers are for the project's default Run:ai node pool.
+
+In Cluster settings, the Departments and Projects pages show the **GPU quota** and **Allocated GPUs** of the Run:ai department or project each one is linked to, summed over node pools.
+A department or project with no Run:ai counterpart shows **Not linked in Run:ai**: a department with no Run:ai department of its name, whose projects then go to `run_ai_default_department`, or a project that is not bound to Run:ai yet.
+The numbers come from `GET /hopsworks-api/api/admin/kube/runai`.
+
+| Field | Meaning |
+| --- | --- |
+| `project`, `department` | Quota (deserved GPUs), limit, allocated and non-preemptible allocated GPUs |
+| `node_pool_gpus` | Total, allocated and idle GPUs in the node pool |
+| `available_non_preemptible` | GPUs notebooks, terminals and deployments can still get within quota |
+| `available_preemptible` | Idle GPUs a batch job could borrow over quota now; an estimate, a larger job still queues |
+| `warnings` | `RUN_AI_UNREACHABLE`, `RUN_AI_METRICS_MISSING`, `RUN_AI_PROJECT_NOT_BOUND`, `RUN_AI_PROJECT_NOT_READY`, `RUN_AI_DEPARTMENT_DRIFT`, `RUN_AI_SCHEDULER_NOT_ENFORCED`, `RUN_AI_BINDING_LEFT` |
+
+## Operational dependency
+
+Hopsworks keeps working when the Run:ai control plane is unreachable:
+
+- Project creation still succeeds; the project is bound to Run:ai later by the background pass or its first workload start.
+- Workloads in projects that are already bound start without calling the control plane, because the queue comes from the namespace label.
+- A workload in a project that is not bound yet cannot start until Run:ai is reachable, because Run:ai only governs the namespaces it has bound and the workload would otherwise run outside the project's quota.
+- The quota check is skipped for bound projects; Run:ai enforces the quota when it schedules the pod.
+
+Run:ai's own admission webhooks are a hard dependency: they are configured with `failurePolicy: Fail` for every namespace labelled `runai/queue`.
+When the `runai-admission-controller` or `admission` Deployment in the `runai` namespace is down, no pod can be created in a bound project namespace, Hopsworks system jobs in those namespaces included.
+Pods in the Hopsworks namespace are not affected.
+Monitor both Deployments like any other cluster-critical service.
+
+## Turning the integration off
+
+Setting `run_ai_enable` back to `false` stops Hopsworks from calling Run:ai, but the namespaces stay bound and Run:ai keeps scheduling their pods.
+The GPU view reports `RUN_AI_BINDING_LEFT` for such projects.
+To leave Run:ai, delete the Run:ai projects of the Hopsworks namespaces in Run:ai, which stops their workloads, and remove the `runai/queue` and `hopsworks.ai/runai-project-id` namespace labels.
+Do this before you enable Kueue: neither the Helm check nor Cluster settings detects namespaces Run:ai still binds, and Run:ai's admission webhooks and Kueue would then both act on the same pods.
 
 ================================================================================
 # Helm chart values reference
@@ -49144,6 +50113,7 @@ Source: https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_va
 # Kueue values { #helm-values-hw-kueue }
 
 Values under `hw-kueue` configure Kueue, the job queueing controller, and the queues Hopsworks schedules jobs with.
+With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release; [Kueue outside the Hopsworks namespace](../../admin/kueue_external.md) covers moving an existing cluster there.
 
 <!-- BEGIN GENERATED VALUES -->
 
