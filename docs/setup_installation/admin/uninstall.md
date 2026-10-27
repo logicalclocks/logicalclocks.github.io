@@ -100,10 +100,11 @@ After the release's resources are deleted:
     ```bash
     kubectl -n <namespace> delete secret sql-dml-generated
     kubectl -n <namespace> rollout restart deployment hopsworks-ca
-    kubectl -n <namespace> rollout status deployment hopsworks-ca
+    kubectl -n <namespace> rollout status deployment hopsworks-ca --timeout=600s
     kubectl -n <namespace> rollout restart deployment certs-operator-controller-manager
     ```
 
+    When the rollout does not finish within the timeout, read `kubectl -n <namespace> logs deployment/hopsworks-ca` before restarting the certificate operator.
     With `global._hopsworks.skipDatabaseMigration: true` the dml does not run, so a rotation changes the certificate operator and Airflow keys but not the internal service key.
 - **Volumes no hook deletes.**
   List them with `kubectl get pvc -n <namespace>` before you delete the namespace.
