@@ -36,6 +36,9 @@ An airgapped install overrides them under `hw-keda.keda.image` and `hw-keda.keda
 From 5.2.2 the CRD upgrade hook also pulls `hopsworks/keda-crds`, as described in [CustomResourceDefinitions][keda-crds].
 It is pulled from `global._hopsworks.imageRegistry` like every Hopsworks image, so mirror `hopsworks/keda-crds` next to the other Hopsworks images; an airgap overlay needs nothing more for it.
 
+From 5.2.2 the chart ships Hopsworks rebuilds of the KServe controller and of the HTTP add-on images, under the upstream image names with a `-h<revision>` tag: `kserve/kserve-controller:0.21.0-h1` and `ghcr.io/kedacore/http-add-on-*:0.16.0-h2`.
+These tags exist only on `docker.hops.works` and its public ECR mirrors, not on ghcr.io or Docker Hub, so an airgapped install mirrors them from there.
+
 ## CustomResourceDefinitions { #keda-crds }
 
 The CRDs ship in the subchart's `crds/` directory, which Helm creates only on install and never updates.
