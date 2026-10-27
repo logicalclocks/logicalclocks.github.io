@@ -6,8 +6,8 @@ See [Envoy Gateway][envoy-gateway] for what the chart installs and what the clus
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793119237` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
 
-Chart `5.3.0-alpha-1793119237` has no `hw-envoy-gateway` values.
+Chart `5.3.0-alpha-1793128340` has no `hw-envoy-gateway` values.
 
 <!-- END GENERATED VALUES -->
