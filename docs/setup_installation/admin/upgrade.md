@@ -239,16 +239,14 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
   While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
   Looking for agent restarts finds none.
 
-### MinIO priority class and registry probes { #upgrade-minio-priority }
+### MinIO as a critical pod and registry probes { #upgrade-minio-priority }
 
-When a node runs short of disk, the kubelet evicts pods ranked by their usage against their requests, then by priority.
-Before 5.3 MinIO had no priority class, so it could be evicted ahead of ordinary workloads, and HopsFS had no block store until it came back.
-A priority class moves MinIO later in that order; it does not prevent its eviction.
+When a node runs short of disk, the kubelet evicts the pods that use more ephemeral storage than they request first, then by priority.
+It never evicts a critical pod (priority class `system-cluster-critical` or `system-node-critical`), and while the pressure lasts it admits only critical pods.
+Before 5.3 MinIO was not critical, so it could be evicted ahead of ordinary workloads and could not start again until the pressure cleared; HopsFS had no block store in that time.
+Evicting MinIO frees no disk: its data is a hostPath volume.
 
-- The chart creates a cluster-scoped PriorityClass `<release>-minio-priority` (value 1000000) and sets it on the MinIO StatefulSet.
-  The account that runs `helm upgrade` needs permission to create PriorityClasses.
-  The value cannot be changed after the class is created.
-  To use an existing class, set `minio.priorityClassName`; to keep MinIO without a priority class, set `minio.priorityClass.create: false`.
+- The MinIO StatefulSet runs with priority class `system-cluster-critical` (`minio.priorityClassName`).
 - The MinIO pod is recreated by the upgrade, so HopsFS reads and writes through MinIO pause until it is ready again.
 - The registry's liveness probe checks that the process answers, and its readiness probe keeps `/v2/`.
   While MinIO is unavailable the registry pods leave the service instead of restarting, and image pulls fail until MinIO is back.
