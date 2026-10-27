@@ -390,6 +390,7 @@ agent.chat_app()  # the app, or None when the agent has none
 
 The app streams the agent's replies and shows its tool calls, takes attachments, shows the agent's questions as an approval card, and lets people rate a reply.
 Its page is [CopilotKit](https://github.com/CopilotKit/CopilotKit)'s open-source chat, served with CopilotKit's runtime by the app itself: nothing is sent to CopilotKit.
+A new conversation opens with the agent's `welcome_message` and its `suggested_prompts` (the `AgentApp` arguments the chat panel also uses), and a sidebar lists each person's own conversations, so they can go back to one; an agent with [memory][agent-memory] keeps them across restarts of the app.
 It is an ordinary app otherwise: its logs, settings and resources are on its page under **Apps**, and it scales to zero when nobody uses it.
 
 **Who can open it.**
