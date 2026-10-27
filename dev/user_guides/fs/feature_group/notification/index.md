@@ -10,13 +10,17 @@ In this guide you will learn how to enable Change Data Capture (CDC) for online 
 ## Prerequisites
 
 Before you begin this guide we suggest you read the [Feature Group](../../../concepts/fs/feature_group/fg_overview.md) concept page to understand what a feature group is and how it fits in the ML pipeline.
-Subsequently [create a Kafka topic](../../projects/kafka/create_topic.md), this topic will be used for storing Change Data Capture events.
+
+The topic that stores the Change Data Capture events is a [Kafka topic](../../projects/kafka/create_topic.md) of the feature group's project, like its ingestion topic.
+Hopsworks creates it when the feature group is created or moves to it, if it does not exist yet.
+It deletes the topic with the feature group, or when the feature group moves to another notification topic, if Hopsworks created it and no other feature group uses it.
+A topic of another project cannot be a notification topic, because that project could delete it.
 
 ## Using Hopsworks APIs
 
 ### Create a Feature Group with Change Data Capture using Python
 
-To enable Change Data Capture for an online-enabled feature group using the Hopsworks APIs you need to [create a feature group](./create.md) and set the `notification_topic_name` properties value to the previously created topic.
+To enable Change Data Capture for an online-enabled feature group using the Hopsworks APIs you need to [create a feature group](./create.md) and set its `notification_topic_name` property to the topic to send the events to.
 
 === "Python"
 

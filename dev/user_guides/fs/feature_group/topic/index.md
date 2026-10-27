@@ -25,7 +25,7 @@ Setting `topic_name` to an empty string clears the feature group override, so th
 
 !!! note "Topics of online-enabled feature groups must end in `_onlinefs`"
     The OnlineFS service subscribes to the topics matching the `.*_onlinefs` pattern, so a topic whose name does not match it is never consumed into the online feature store.
-    Administrators can change the pattern with the `onlinefs/kafka_consumer/topic_pattern` configuration option, or replace it with an explicit topic list as described in the [external Kafka cluster][external-kafka-cluster] guide.
+    Administrators can change the pattern with the `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern` Helm value, as described in the [external Kafka cluster][external-kafka-cluster] guide.
 
 ## Before you change the topic
 
@@ -89,15 +89,15 @@ Navigate to `Project Settings` → `Kafka` and use `Edit project topic` in the `
 As with a feature group topic, you are asked to confirm before the change is applied.
 
 !!! note
-    The `Project Topic` card is only shown when the cluster is configured to use an [external Kafka cluster][external-kafka-cluster], since that is the case in which the topic is not managed by Hopsworks.
+    The `Project Topic` card is only shown when the cluster is configured to use an [external Kafka cluster][external-kafka-cluster], since projects on the embedded cluster use their default topic.
 
 ## Topic creation
 
 When you set a topic that does not exist yet, Hopsworks creates it in the project with the cluster defaults for feature store topics.
 Topics count against the project's Kafka topic quota, which an administrator can raise as described in the [Kafka topics][kafka-topics] administration guide.
 
-When the cluster is configured to use an external Kafka cluster, Hopsworks does not provision topics.
-Create the topic in the external cluster first, otherwise ingestion fails as soon as the feature group starts producing to it.
+When the cluster is configured to use an [external Kafka cluster][external-kafka-cluster], Hopsworks creates the topic there too, unless it already exists, in which case it is used as it is.
+The `kafka_connector` data source of the project needs permission to create topics for that, as described in that guide.
 
 ## API Reference
 

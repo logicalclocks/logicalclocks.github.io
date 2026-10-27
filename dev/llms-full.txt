@@ -5193,6 +5193,18 @@ For reading data streams, the Kafka Data Source supports reading a Kafka topic i
     df = connector.read_stream(topic="kafka_topic_name")
     ```
 
+Producers and consumers of your own, written with `confluent-kafka`, get their client configuration from the Kafka Data Source.
+The `kafka_connector` data source of a project is the connection the feature store clients write to Kafka with:
+
+=== "Python"
+
+    ```python
+    from confluent_kafka import Producer
+
+    connector = feature_store.get_data_source("kafka_connector").storage_connector
+    producer = Producer(connector.confluent_options())
+    ```
+
 ## Creating an External Feature Group
 
 Another important aspect of a data source is its ability to facilitate creation of external feature groups with the [Connector API](../../../concepts/fs/feature_group/external_fg.md). [External feature groups](../feature_group/create_external.md) are basically offline feature groups and essentially stored as tables on external data sources.
@@ -8456,13 +8468,17 @@ In this guide you will learn how to enable Change Data Capture (CDC) for online 
 ## Prerequisites
 
 Before you begin this guide we suggest you read the [Feature Group](../../../concepts/fs/feature_group/fg_overview.md) concept page to understand what a feature group is and how it fits in the ML pipeline.
-Subsequently [create a Kafka topic](../../projects/kafka/create_topic.md), this topic will be used for storing Change Data Capture events.
+
+The topic that stores the Change Data Capture events is a [Kafka topic](../../projects/kafka/create_topic.md) of the feature group's project, like its ingestion topic.
+Hopsworks creates it when the feature group is created or moves to it, if it does not exist yet.
+It deletes the topic with the feature group, or when the feature group moves to another notification topic, if Hopsworks created it and no other feature group uses it.
+A topic of another project cannot be a notification topic, because that project could delete it.
 
 ## Using Hopsworks APIs
 
 ### Create a Feature Group with Change Data Capture using Python
 
-To enable Change Data Capture for an online-enabled feature group using the Hopsworks APIs you need to [create a feature group](./create.md) and set the `notification_topic_name` properties value to the previously created topic.
+To enable Change Data Capture for an online-enabled feature group using the Hopsworks APIs you need to [create a feature group](./create.md) and set its `notification_topic_name` property to the topic to send the events to.
 
 === "Python"
 
@@ -8567,7 +8583,7 @@ Setting `topic_name` to an empty string clears the feature group override, so th
 
 !!! note "Topics of online-enabled feature groups must end in `_onlinefs`"
     The OnlineFS service subscribes to the topics matching the `.*_onlinefs` pattern, so a topic whose name does not match it is never consumed into the online feature store.
-    Administrators can change the pattern with the `onlinefs/kafka_consumer/topic_pattern` configuration option, or replace it with an explicit topic list as described in the [external Kafka cluster][external-kafka-cluster] guide.
+    Administrators can change the pattern with the `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern` Helm value, as described in the [external Kafka cluster][external-kafka-cluster] guide.
 
 ## Before you change the topic
 
@@ -8631,15 +8647,15 @@ Navigate to `Project Settings` → `Kafka` and use `Edit project topic` in the `
 As with a feature group topic, you are asked to confirm before the change is applied.
 
 !!! note
-    The `Project Topic` card is only shown when the cluster is configured to use an [external Kafka cluster][external-kafka-cluster], since that is the case in which the topic is not managed by Hopsworks.
+    The `Project Topic` card is only shown when the cluster is configured to use an [external Kafka cluster][external-kafka-cluster], since projects on the embedded cluster use their default topic.
 
 ## Topic creation
 
 When you set a topic that does not exist yet, Hopsworks creates it in the project with the cluster defaults for feature store topics.
 Topics count against the project's Kafka topic quota, which an administrator can raise as described in the [Kafka topics][kafka-topics] administration guide.
 
-When the cluster is configured to use an external Kafka cluster, Hopsworks does not provision topics.
-Create the topic in the external cluster first, otherwise ingestion fails as soon as the feature group starts producing to it.
+When the cluster is configured to use an [external Kafka cluster][external-kafka-cluster], Hopsworks creates the topic there too, unless it already exists, in which case it is used as it is.
+The `kafka_connector` data source of the project needs permission to create topics for that, as described in that guide.
 
 ## API Reference
 
@@ -32956,50 +32972,118 @@ This guide will cover how to configure an Hopsworks cluster to leverage an exter
 
 ## Configure the external Kafka cluster integration
 
-To enable the integration with an external Kafka cluster, you should set the `enable_bring_your_own_kafka` [configuration option](../admin/variables.md) to `true`.
-This can also be achieved in the cluster definition by setting the following attribute:
+To enable the integration with an external Kafka cluster, set the `enable_bring_your_own_kafka` [configuration option](../admin/variables.md) to `true`.
+In the Helm values used to deploy Hopsworks:
 
 ```yaml
 hopsworks:
-  enable_bring_your_own_kafka: "true"
+  variables:
+    enable_bring_your_own_kafka: "true"
 ```
 
 ### Online Feature Store service configuration
 
-In addition to the configuration changes above, you should also configure the Online Feature Store service (OnlineFS in short) to connect to the external Kafka cluster.
-This can be achieved by provisioning the necessary credentials for OnlineFS to subscribe and consume messages from Kafka topics used by the Hopsworks feature store.
-
-OnlineFs can be configured to use these credentials by adding the following configurations to the cluster definition used to deploy Hopsworks:
+The Online Feature Store service (OnlineFS in short) consumes the feature store topics and writes them to the online feature store, so it needs to connect to the external Kafka cluster too.
+Point it at the brokers and give it the credentials it needs:
 
 ```yaml
-  onlinefs:
-    config_dir: "/home/ubuntu/cluster-definitions/byok"
-    kafka_consumers:
-      topic_list: "comma separated list of kafka topics to subscribe to"
+onlinefs:
+  dependencies:
+    kafka:
+      url: "cluster_identifier.us-east-2.aws.confluent.cloud:9092"
+      securityProtocol: SASL_SSL
+  configmapOverrides:
+    kafka:
+      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
+      sasl.mechanism: PLAIN
+    kafkaVectorDb:
+      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
+      sasl.mechanism: PLAIN
+    producer:
+      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
+      sasl.mechanism: PLAIN
 ```
 
-In particular, the `onlinefs/config_dir` should contain the credentials necessary for the Kafka consumers to authenticate.
-Additionally the directory should contain a file name `onlinefs-kafka.properties` with the Kafka consumer configuration.
-The following is an example of the `onlinefs-kafka.properties` file:
+OnlineFS opens three Kafka clients on these brokers, and each section of `configmapOverrides` adds or overrides the properties of one of them, so any client configuration the external cluster needs goes into all three:
 
-```properties
-bootstrap.servers=cluster_identifier.us-east-2.aws.confluent.cloud:9092
-security.protocol=SASL_SSL
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";
-sasl.mechanism=PLAIN
+- `kafka`: the consumer that writes the feature group rows to RonDB.
+- `kafkaVectorDb`: the consumer that writes embeddings to the vector database.
+- `producer`: the producer of the notifications of feature groups that have a notification topic.
+
+With a `securityProtocol` other than `PLAINTEXT`, the chart also points the three clients at the truststore and keystore of the Hopsworks certificates.
+The values are stored in the OnlineFS ConfigMap, so the password in `sasl.jaas.config` is readable there in plain text.
+
+The OnlineFS principal needs Describe and Read on the topics it consumes, Describe and Read on the consumer groups `onlinefs_rondb` and `onlinefs_vectordb`, and Write on the notification topics.
+
+OnlineFS subscribes to the topics matching `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern`, by default `.*_onlinefs`.
+A non-empty `topicList` in the same section replaces the pattern and does not include the topics Hopsworks creates later, so their data would never reach the online feature store.
+A cluster set up with a topic list sets `topicList` to an empty string, and widens `topicPattern` until it also matches the project topics it consumes that do not end in `_onlinefs`:
+
+```yaml
+onlinefs:
+  configmapOverrides:
+    onlinefssite:
+      kafkaConsumer:
+        topicList: ""
+        topicPattern: ".*_onlinefs|my_project_topic"
 ```
 
-!!! note "Hopsworks will not provision topics"
-    Please note that when using an external Kafka cluster, Hopsworks will not provision the topics for the different projects.
-    Users are responsible for provisioning the necessary topics and configure the projects accordingly (see next section).
-    Users should also specify the list of topics OnlineFS should subscribe to by providing the `onlinefs/kafka_consumers/topic_list` option in the cluster definition.
+## Topics on the external Kafka cluster
 
-### Project configuration
+Hopsworks creates and deletes the topics the feature store needs on the external cluster, as it does on its embedded cluster.
+It connects with the `kafka_connector` data source of each project (see [Data Source configuration](#data-source-configuration)).
+The Hopsworks pods call the brokers of that data source for every topic they create or look up, so the brokers must be reachable from the Hopsworks pods with its settings.
 
-#### Topic configuration
+- Creating an online or stream feature group, changing a feature group's topic or notification topic, setting the project topic, or creating a topic through the Kafka topic API creates the topic when it does not exist yet.
+- A stream feature group that is not online-enabled writes to a topic named after the project, with no suffix, unless the project or the feature group names a topic, so take that name into account when granting permissions by topic prefix.
+- A topic that already exists is used as it is, and Hopsworks never deletes it.
+- A topic Hopsworks created is deleted with its feature group or project, or when its feature group moves to another topic or notification topic, unless another project used the same topic name when it was created, in which case it is left in place.
+  A feature group's topic also stays while another feature group still writes to it or sends its notifications to it.
+- A topic Hopsworks created belongs to its project, so other projects cannot use it as their online or notification topic, because deleting that project would delete it.
+  Topics Hopsworks did not create can be shared between projects.
+- Topics and schemas are changed only through a project's own feature store: through a feature store shared from another project, the change is refused, because it would be made in that project and on its cluster.
+- A project without a `kafka_connector` data source has its topics created on the embedded cluster, and Hopsworks deletes them there later, also after the data source is added.
+  Create the data source before the project's first feature group so that its topics are created on the external cluster.
 
-As mentioned above, when configuring Hopsworks to use an external Kafka cluster, Hopsworks will not provision the topics for the different projects.
-Instead, when creating a project, users will be asked to provide the topic name to use for the feature store operations.
+!!! warning "Topics are deleted by name"
+    When Hopsworks deletes a topic it created on an external cluster, it deletes it on the cluster the project's `kafka_connector` points at then, which may differ from the cluster it was created on.
+    Pointing a `kafka_connector` at another cluster while the project still has topics Hopsworks created there makes Hopsworks delete the topics of the same names on the new cluster, so delete those topics, or the project, first.
+
+The principal of the `kafka_connector` data source needs the following permissions on the topics of its project:
+
+| Permission | Needed for |
+| --- | --- |
+| Describe | Checking whether a topic exists. Producing to a topic needs it too. |
+| Write | Producing to the topics. The feature store clients take their producer configuration from this data source, so without it inserts fail with an authorization error. |
+| Read | Reading the topics. The offline materialization job reads the ingested rows from the topics with this data source. |
+| Read on the consumer groups starting with `spark-kafka-relation-` | The offline materialization job reads the topics with Spark, which joins consumer groups of that prefix. |
+| Create | Creating topics that do not exist yet. Without it, the operations that create a topic fail with the broker's reason. |
+| Delete | Deleting the topics Hopsworks created. Without it, a topic stays on the cluster and in the project's topic list. |
+
+Hopsworks records the topics it creates by name only, so the name of a topic it creates must be unique across the Hopsworks cluster, even when projects connect to different external clusters.
+
+The project topic and the online and stream feature group topics get `onlinefs_service_thread_number` partitions, by default 10, and `kafka_num_replicas` replicas, by default 1.
+Topics created through the Kafka topic API get the partitions and replicas they ask for.
+Where `min.insync.replicas` is above a topic's replicas, producers that write with `acks=all` fail with `NotEnoughReplicas`, so set `kafka_num_replicas` to the replication factor of the external cluster:
+
+```yaml
+hopsworks:
+  variables:
+    kafka_num_replicas: "3"
+```
+
+The variable applies to every project, also to a project without a `kafka_connector` data source, whose topics are created on the embedded cluster, which refuses more replicas than it has brokers.
+
+!!! note "No inference logging to an external Kafka"
+    The inference logger of model deployments can only reach the embedded Kafka cluster.
+    With an external Kafka cluster, a deployment created with inference logging gets no topic, and selecting an existing topic for it is refused.
+
+## Project configuration
+
+### Topic configuration
+
+When creating a project, users can provide the topic name to use for the feature store operations.
+Hopsworks creates the topic on the external cluster with the first feature group that writes to it, or when the topic is changed later, if it does not exist yet.
 The topic can be changed later from `Project Settings` → `Kafka`, and individual feature groups can override it, as described in the [ingestion topic][feature-group-ingestion-topic] guide.
 
 <p align="center">
@@ -33009,11 +33093,14 @@ The topic can be changed later from `Project Settings` → `Kafka`, and individu
   </figure>
 </p>
 
-#### Data Source configuration
+### Data Source configuration
 
-Users should create a [Kafka Data Source](../../user_guides/fs/data_source/creation/kafka.md) named `kafka_connector` which is going to be used by the feature store clients to configure the necessary Kafka producers to send data.
+Users should create a [Kafka Data Source](../../user_guides/fs/data_source/creation/kafka.md) named `kafka_connector`.
+Hopsworks uses it to create and delete the project's topics, and the feature store clients use it to configure the Kafka producers that send data.
 The configuration is done for each project to ensure its members have the necessary authentication/authorization.
 If the data source is not found in the project, default values referring to Hopsworks managed Kafka will be used.
+
+Producers and consumers of your own get the same configuration from the data source, as described in the [Data Source usage guide](../../user_guides/fs/data_source/usage.md#streaming-based-connector).
 
 ================================================================================
 # Cluster Administration
@@ -35826,7 +35913,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -36066,6 +36153,54 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 - The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
 - A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
 
+### Bring your own Kafka: Hopsworks creates and deletes topics { #upgrade-byok-topics }
+
+From 5.3, with `enable_bring_your_own_kafka`, Hopsworks creates and deletes the topics it needs on the [external Kafka][external-kafka-cluster], as it does on the bundled one.
+It connects with each feature store's `kafka_connector`.
+Before, it created no topics there, so every topic had to exist before ingestion.
+
+- **The backend connects to the external brokers.**
+  The operations below make the Hopsworks pods call the brokers of the project's `kafka_connector`, also for a topic that already exists, so those brokers must be reachable from the Hopsworks pods with the connector's settings.
+  Otherwise the operations fail with `KAFKA_UNAVAILABLE` (190021) after 30 seconds, `TOPIC_FETCH_FAILED` (190023) when the broker refuses to describe the topic, or `KAFKA_GENERIC_ERROR` (190007) when the client cannot be set up.
+- **Topics that already exist are used as they are.**
+  Hopsworks describes a topic before creating it, and never deletes a topic it found already there.
+  Topics created before the upgrade keep working with the same `kafka_connector` credentials, which already need Describe on them to produce.
+- **Missing topics are created.**
+  Creating an online or stream feature group, changing a feature group's topic or notification topic, setting the project topic in `Project Settings` → `Kafka`, or creating a topic through the topic API creates the topic on the external cluster when it does not exist.
+  A stream feature group that is not online-enabled writes to a topic named after the project, with no suffix, unless the project or the feature group names one.
+  For that the `kafka_connector` principal needs Create on those topics, and Delete for Hopsworks to remove them again.
+  Without Create, these operations fail with `TOPIC_CREATION_FAILED` (190024) and the broker's reason; before 5.3 they succeeded and ingestion failed later on the missing topic.
+- **Hopsworks deletes only the topics it created**, with their feature group or project, or when a feature group moves to another topic, and only those no other project used when they were created.
+  A feature group's topic also stays while another feature group names it or while it is the project topic.
+  A topic Hopsworks created on the external cluster is deleted by name on the cluster the project's `kafka_connector` points at when it is deleted.
+  A delete that Kafka refuses keeps the topic in the project's topic list; one refused while deleting a project is logged by the backend with the topic's name and cluster.
+- **Topics recorded before the upgrade stay on the bundled Kafka.**
+  Before 5.3 Hopsworks created every topic it recorded on the bundled Kafka, also for projects that had no `kafka_connector` yet.
+  The upgrade adds the nullable column `project_topics.external_kafka` (migration V130, an online `ALTER`), and a row without it is deleted on the bundled Kafka, as before, never on the external cluster.
+  A project without a `kafka_connector` still creates its topics on the bundled Kafka, so create the connector before the project's first feature group.
+- **Partitions and replicas.**
+  The project topic and the online and stream feature group topics get `hopsworks.variables.onlinefs_service_thread_number` partitions (default 10) and `hopsworks.variables.kafka_num_replicas` replicas (default 1); topics created through the topic API get the partitions and replicas they ask for.
+  Where `min.insync.replicas` is above a topic's replicas, producers that write with `acks=all` fail with `NotEnoughReplicas`, so set `kafka_num_replicas` to the external cluster's replication factor.
+  The variable applies to every project: one without a `kafka_connector` creates its topics on the bundled Kafka, which refuses more replicas than it has brokers with `TOPIC_REPLICATION_ERROR` (190005).
+- **OnlineFS must subscribe by pattern.**
+  OnlineFS picks up new topics only through `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern` (default `.*_onlinefs`).
+  A non-empty `topicList` in the same section replaces the pattern and does not include the topics Hopsworks creates.
+  A cluster set up with a topic list sets `topicList: ""`, and widens `topicPattern` until it also matches the project topics it consumes that do not end in `_onlinefs`.
+- **Model serving does not log to an external Kafka.**
+  The inference logger reaches only the bundled Kafka, so a deployment created with inference logging gets no topic, and selecting an existing topic for it is refused.
+
+### Notification topics and shared feature stores { #upgrade-notification-topics }
+
+- **A notification topic belongs to its project.**
+  A feature group's notification topic (Change Data Capture) is a topic of its project from 5.3, like its ingestion topic.
+  Hopsworks creates it when the feature group is created or moves to another notification topic, if it does not exist yet, and deletes it with the feature group, or on such a move, when Hopsworks created it and no other feature group uses it.
+  A feature group whose notification topic is another project's topic is refused with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026).
+  A notification topic set before the upgrade is left as it is until its feature group moves to another one.
+- **Kafka changes through a shared feature store are refused.**
+  Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
+  Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
+  Reading through a shared feature store is unchanged.
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
@@ -36088,7 +36223,8 @@ A record that fails the check is dropped, logged by OnlineFS (`Record dropped, i
   Creating a project, changing its topic, creating an online feature group or changing its topic, or creating a Kafka topic fails with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026) when the topic is the online topic of another project, the topic of another project's feature group, or a topic another project owns.
   The upgrade leaves a project or feature group already configured that way as it is, and updates that keep its topic still succeed.
   A project whose own topic is taken that way cannot create online feature groups until it gets a topic of its own, while the project that created the topic, or whose default `<project>_onlinefs` topic it is, keeps using it.
-  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, this is not enforced.
+  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, 5.2.2 does not enforce this.
+  From 5.3 a topic on an external Kafka is refused only when another project owns it because Hopsworks created it for that project, as described in [Bring your own Kafka][upgrade-byok-topics].
 - **After the upgrade**, check that the topic mismatch panels stay at zero.
   A drop from a legitimate producer means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
 
@@ -65933,6 +66069,11 @@ Do not hand-edit the tables below; regenerate them instead.
 | 100077 | `RDRS_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The RonDB REST Server could not be reached. |
 | 100078 | `TTL_PURGE_TABLE_NOT_FOUND` | 404 NOT_FOUND | The TTL purge worker is not tracking this table. |
 | 100079 | `TERMINAL_INVALID_HOURS` | 400 BAD_REQUEST | The requested terminal session length is out of range. |
+| 100080 | `NPM_GIT_INSPECT_FAILED` | 400 BAD_REQUEST | The git repository could not be read. |
+| 100081 | `OPENCOST_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | OpenCost could not be reached. |
+| 100082 | `OPENCOST_BAD_REQUEST` | 400 BAD_REQUEST | Invalid cost query. |
+| 100083 | `OPENCOST_NOT_ENABLED` | 404 NOT_FOUND | Cost tracking with OpenCost is not enabled on this cluster. |
+| 100084 | `OPENCOST_NAMESPACE_SHARED` | 409 CONFLICT | The project's namespace is shared with other projects, so its costs cannot be told apart. |
 
 ## DatasetErrorCode
 
@@ -66096,6 +66237,9 @@ Do not hand-edit the tables below; regenerate them instead.
 | 130076 | `GIT_AUTO_REDEPLOY_NOT_SUPPORTED` | 400 BAD_REQUEST | Git auto-redeploy is only supported for apps deployed from a git repository |
 | 130077 | `JOB_DESCRIPTION_TOO_LONG` | 400 BAD_REQUEST | Job description is too long. |
 | 130078 | `INVALID_MEMORY_OVERHEAD_FACTOR` | 400 BAD_REQUEST | Memory overhead factor must be greater than zero. |
+| 130079 | `JOB_UPDATE_FORBIDDEN` | 403 FORBIDDEN | Only the job creator or a Data owner can update this job. |
+| 130080 | `PYTHON_APP_ENTRYPOINT_INVALID` | 400 BAD_REQUEST | The app file is missing or is not a file of the app type's kind. |
+| 130081 | `PYTHON_APP_IDLE_SCALE_TO_ZERO_INVALID` | 400 BAD_REQUEST | Invalid scale-to-zero configuration for the app. |
 
 ## RequestErrorCode
 
@@ -66208,6 +66352,25 @@ Do not hand-edit the tables below; regenerate them instead.
 | 150099 | `LAST_DATA_OWNER_NOT_ALLOWED` | 403 FORBIDDEN | Removing the last data owner of the project is not allowed. |
 | 150100 | `FILE_OWNER_NOT_DATA_OWNER` | 400 BAD_REQUEST | The member chosen to take over the removed member's files must be a data owner in this project. |
 | 150101 | `SYSTEM_PROJECT_REMOVAL_NOT_ALLOWED` | 400 BAD_REQUEST | This project is managed by Hopsworks and cannot be deleted. |
+| 150102 | `PROJECT_NAMESPACE_TOO_LONG` | 400 BAD_REQUEST | Project namespace is too long - cannot be longer than 25 characters. |
+| 150103 | `ML_SYSTEM_NOT_FOUND` | 404 NOT_FOUND | ML system not found in this project. |
+| 150104 | `ML_SYSTEM_PATH_INVALID` | 400 BAD_REQUEST | An ML system's code must be a directory in this project or a Git repository URL. |
+| 150105 | `FACTORY_NOT_FOUND` | 404 NOT_FOUND | Factory not found in this project. |
+| 150106 | `FACTORY_INVALID` | 400 BAD_REQUEST | The factory definition is not valid. |
+| 150107 | `FACTORY_EXISTS` | 409 CONFLICT | A factory of this name already exists in this project. |
+| 150108 | `FACTORY_BUILTIN_READ_ONLY` | 403 FORBIDDEN | A built-in factory cannot be changed or deleted; clone it instead. |
+| 150109 | `FACTORY_HAS_SYSTEMS` | 409 CONFLICT | The factory still has systems; delete them before the factory. |
+| 150110 | `FACTORY_VERSION_CONFLICT` | 409 CONFLICT | The factory changed since you read it; reload it and try again. |
+| 150111 | `ML_SYSTEM_FACTORY_VERSION_INVALID` | 400 BAD_REQUEST | The factory version or definition digest does not match a stored definition of the factory. |
+| 150112 | `ML_SYSTEM_PATH_FORBIDDEN` | 403 FORBIDDEN | You cannot write to this directory, so you cannot register it as a system. |
+| 150113 | `ML_SYSTEM_LIST_FAILED` | 500 INTERNAL_SERVER_ERROR | Could not list the systems of this project. |
+| 150114 | `ML_SYSTEM_PAGE_INVALID` | 400 BAD_REQUEST | offset and limit must not be negative. |
+| 150115 | `FACTORY_DISABLED` | 403 FORBIDDEN | The Factory is not enabled on this cluster. |
+| 150116 | `DEPARTMENT_NOT_FOUND` | 404 NOT_FOUND | Department not found. |
+| 150117 | `DEPARTMENT_ALREADY_EXISTS` | 409 CONFLICT | A department with this name already exists. |
+| 150118 | `DEPARTMENT_NAME_INVALID` | 400 BAD_REQUEST | Department names are 1-63 lowercase letters, digits and '-', starting and ending with a letter or digit. |
+| 150119 | `DEPARTMENT_DEFAULT_CANNOT_BE_DELETED` | 400 BAD_REQUEST | The default department cannot be deleted. |
+| 150120 | `DEPARTMENT_MOVE_REFUSED` | 409 CONFLICT | The project cannot be moved to this department now. |
 
 ## UserErrorCode
 
@@ -66283,6 +66446,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 160072 | `SECRET_VALUE_TOO_LARGE` | 400 BAD_REQUEST | Secret value is too large. |
 | 160073 | `ENV_VAR_INVALID_VALUE` | 400 BAD_REQUEST | Environment variable value is invalid. |
 | 160074 | `ACCOUNT_DELETION_PENDING_CLEANUP` | 409 CONFLICT | Account still has records awaiting background cleanup. Retry shortly. |
+| 160075 | `LLM_PROVIDER_NOT_FOUND` | 404 NOT_FOUND | LLM provider not found. |
+| 160076 | `LLM_API_KEY_MISSING` | 400 BAD_REQUEST | No API key is saved for this LLM provider. |
 
 ## MetadataErrorCode
 
@@ -66305,7 +66470,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 190000 | `TOPIC_NOT_FOUND` | 404 NOT_FOUND | No topics found |
 | 190001 | `BROKER_METADATA_ERROR` | 500 INTERNAL_SERVER_ERROR | An error occurred while retrieving topic metadata from broker |
 | 190002 | `TOPIC_ALREADY_EXISTS` | 409 CONFLICT | Kafka topic already exists in database. Pick a different topic name |
-| 190003 | `TOPIC_ALREADY_EXISTS_IN_ZOOKEEPER` | 409 CONFLICT | Kafka topic already exists in ZooKeeper. Pick a different topic name |
+| 190003 | `TOPIC_ALREADY_EXISTS_IN_ZOOKEEPER` | 409 CONFLICT | Kafka topic already exists in the broker. Pick a different topic name |
 | 190004 | `TOPIC_LIMIT_REACHED` | 412 PRECONDITION_FAILED | Topic limit reached. Contact your administrator to increase the number of topics that can be created for this project. |
 | 190005 | `TOPIC_REPLICATION_ERROR` | 400 BAD_REQUEST | Maximum topic replication factor exceeded |
 | 190006 | `SCHEMA_NOT_FOUND` | 404 NOT_FOUND | Topic has no schema attached to it. |
@@ -66328,6 +66493,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 190023 | `TOPIC_FETCH_FAILED` | 500 INTERNAL_SERVER_ERROR | Could not fetch topic details. |
 | 190024 | `TOPIC_CREATION_FAILED` | 500 INTERNAL_SERVER_ERROR | Could not create topic. |
 | 190025 | `BROKER_MISSING` | 404 NOT_FOUND | Could not find a broker endpoint. |
+| 190026 | `TOPIC_IN_USE_BY_ANOTHER_PROJECT` | 409 CONFLICT | Kafka topic is used by another project's feature store. Pick a different topic name |
+| 190027 | `CHANGE_THROUGH_SHARED_FEATURE_STORE` | 403 FORBIDDEN | Kafka topics and schemas can only be changed through the project's own feature store. |
 
 ## SecurityErrorCode
 
@@ -66780,6 +66947,18 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270331 | `ASOF_SPINE_FILTER_ON_SPINE_COLUMN` | 400 BAD_REQUEST | A filter references a column the inference spine supplies. |
 | 270332 | `ASOF_SPINE_NO_FEATURE_VIEW` | 400 BAD_REQUEST | The inference spine does not name a feature view that can be read. |
 | 270333 | `ASOF_MAX_FEATURE_AGE_INVALID` | 400 BAD_REQUEST | The feature view's max feature age is not a positive duration. |
+| 270334 | `DATA_SOURCE_CREDENTIALS_NOT_PROVIDED` | 400 BAD_REQUEST | You have not added your credentials for this data source. |
+| 270335 | `DATA_SOURCE_CREDENTIALS_INCOMPLETE` | 400 BAD_REQUEST | Your credentials for this data source reference a secret or env variable that no longer exists. |
+| 270336 | `DATA_SOURCE_CREDENTIALS_INVALID` | 400 BAD_REQUEST | The credentials were rejected by the data source. |
+| 270337 | `CREDENTIALS_MODE_NOT_SUPPORTED` | 400 BAD_REQUEST | Provided credentials are not supported for this data source type or operation. |
+| 270338 | `CREDENTIALS_MODE_IMMUTABLE` | 400 BAD_REQUEST | The credentials mode of a data source cannot be changed. |
+| 270339 | `INVALID_CREDENTIALS_MODE_ARGS` | 400 BAD_REQUEST | A data source with provided credentials cannot store credentials. |
+| 270340 | `INVALID_WALLET_PATH` | 400 BAD_REQUEST | The wallet must be in your home directory in this project. |
+| 270341 | `DATA_SOURCE_ENV_NAME_COLLISION` | 400 BAD_REQUEST | Another data source with provided credentials maps to the same env variable names. |
+| 270342 | `DATA_SOURCE_WALLET_DELETE_FAILED` | 500 INTERNAL_SERVER_ERROR | Could not delete a data source wallet. |
+| 270343 | `DATA_SOURCE_CREDENTIALS_RATE_LIMITED` | 429 TOO_MANY_REQUESTS | Too many credential checks against this data source; try again in a minute. |
+| 270344 | `ICEBERG_METASTORE_SYNC_NOT_SUPPORTED` | 400 BAD_REQUEST | Only ICEBERG feature groups on HopsFS are registered as Iceberg tables in the Hive metastore. |
+| 270345 | `ICEBERG_METASTORE_SYNC_ERROR` | 500 INTERNAL_SERVER_ERROR | Could not register the feature group's current Iceberg metadata in the Hive metastore. |
 
 ## AirflowErrorCode
 
@@ -66912,6 +67091,9 @@ Do not hand-edit the tables below; regenerate them instead.
 | 370008 | `INVALID_MANDATORY_TAG` | 400 BAD_REQUEST | Invalid mandatory tag |
 | 370009 | `TAG_MIGRATION_ONGOING` | 503 SERVICE_UNAVAILABLE | Tag migration in progress, wait for it to finish before issuing tag operations. |
 | 370010 | `TAG_ARCHIVE_TOO_MANY_ATTACHMENTS` | 400 BAD_REQUEST | The schema is attached to more artifacts than one archive transaction can cover. |
+| 370011 | `TAG_PATH_NOT_TAGGABLE` | 400 BAD_REQUEST | Only dataset roots can be tagged. Tagging a file or a directory inside a dataset is no longer supported. |
+| 370012 | `TAG_WRITE_DENIED` | 403 FORBIDDEN | Not allowed to change the tags of this dataset. |
+| 370013 | `TAG_MIGRATION_PENDING` | 409 CONFLICT | This dataset still has legacy tags in HopsFS that could not be migrated. Resolve them before changing its tags. |
 
 ## CloudErrorCode
 
@@ -66968,6 +67150,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 410007 | `NOT_IMPLEMENTED` | 501 NOT_IMPLEMENTED | Internal error dealing with new artifact type |
 | 410008 | `DB_QUERY_ERROR` | 500 INTERNAL_SERVER_ERROR | DB error on query |
 | 410009 | `ARTIFACT_DELETED` | 500 INTERNAL_SERVER_ERROR | Artifact was deleted before command could be executed |
+| 410010 | `REINDEX_IN_PROGRESS` | 409 CONFLICT | A featurestore reindex run is already in progress |
 
 ## GitOpErrorCode
 
@@ -67023,6 +67206,14 @@ Do not hand-edit the tables below; regenerate them instead.
 | 510002 | `LOCAL_QUEUE_ALREADY_EXISTS` | 400 BAD_REQUEST | Local queue already exists |
 | 510003 | `LOCAL_QUEUE_CREATION_FAILED` | 500 INTERNAL_SERVER_ERROR | Local queue creation failed |
 | 510004 | `ERROR_FETCHING_QUEUE` | 500 INTERNAL_SERVER_ERROR | Error fetching configured queue |
+| 510005 | `RUN_AI_DISABLED` | 400 BAD_REQUEST | Run:ai integration is not enabled |
+| 510006 | `RUN_AI_NOT_CONFIGURED` | 503 SERVICE_UNAVAILABLE | Run:ai integration is not configured |
+| 510007 | `RUN_AI_UNREACHABLE` | 503 SERVICE_UNAVAILABLE | Run:ai control plane is unreachable |
+| 510008 | `RUN_AI_REQUEST_FAILED` | 502 BAD_GATEWAY | Run:ai control plane rejected the request |
+| 510009 | `RUN_AI_PROJECT_CONFLICT` | 409 CONFLICT | A Run:ai project with this name is bound to another namespace |
+| 510010 | `RUN_AI_DEPARTMENT_NOT_FOUND` | 404 NOT_FOUND | Run:ai department not found |
+| 510011 | `RUN_AI_GPU_QUOTA_EXCEEDED` | 409 CONFLICT | Not enough GPUs left in the project's Run:ai quota |
+| 510012 | `RUN_AI_PROJECT_BUSY` | 409 CONFLICT | The Run:ai project has running workloads |
 
 ## PlatformIntelligenceErrorCode
 
@@ -67032,6 +67223,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 520013 | `METADATA_INFERENCE_FAILED` | 500 INTERNAL_SERVER_ERROR | Metadata inference failed. |
 | 520014 | `VLLM_CONFIG_GENERATION_FAILED` | 500 INTERNAL_SERVER_ERROR | vLLM config generation failed. |
 | 520015 | `DEPLOYMENT_GENERATION_FAILED` | 500 INTERNAL_SERVER_ERROR | Deployment generation failed. |
+| 520016 | `SOURCE_SUGGESTION_FAILED` | 500 INTERNAL_SERVER_ERROR | Source table suggestion failed. |
+| 520017 | `FACTORY_MATCH_FAILED` | 500 INTERNAL_SERVER_ERROR | Factory matching failed. |
 
 ## FeatureStoreMetricsErrorCode
 
@@ -67065,6 +67258,11 @@ Do not hand-edit the tables below; regenerate them instead.
 | 540017 | `CATALOG_MOUNT_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The Trino pods do not mount the credential-file store |
 | 540018 | `CATALOG_PROJECT_NOT_READY` | 503 SERVICE_UNAVAILABLE | A previous project of this name is still being deleted; catalogs cannot be created until that finishes |
 | 540019 | `DATASOURCE_NOT_MAPPABLE` | 400 BAD_REQUEST | This data source cannot be mapped to a Trino catalog |
+| 540020 | `TRINO_FILE_NOT_FOUND` | 404 NOT_FOUND | No such file in the Trino files tree |
+| 540021 | `CATALOG_SHARE_NOT_FOUND` | 404 NOT_FOUND | Trino catalog share not found |
+| 540022 | `CATALOG_SHARE_INVALID` | 400 BAD_REQUEST | Invalid Trino catalog share |
+| 540023 | `CATALOG_SHARE_NOT_ALLOWED` | 403 FORBIDDEN | Not allowed to share this Trino catalog |
+| 540024 | `CATALOG_CHANGE_NOT_ALLOWED` | 403 FORBIDDEN | Not allowed to change this Trino catalog |
 
 ## AiProviderErrorCode
 
