@@ -15,7 +15,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. Four startup and hook waits now time out: [Waits with a timeout][upgrade-bounded-waits]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -238,6 +238,18 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
   `hops-otlp` is an ordinary second container without probes, so the OOM kill restarts that container alone: the agent container's `restartCount` stays 0, and only the sidecar's `lastState` shows `OOMKilled`.
   While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
   Looking for agent restarts finds none.
+
+### Waits with a timeout { #upgrade-bounded-waits }
+
+Four waits exit non-zero after a timeout, so a stall shows: a Deployment pod or container restarts, and a Job uses up its retries and fails.
+
+- `global._hopsworks.mysql.rolloutWaitSeconds` (21600, 6 h): the `wait-for-mysqlds-rollout` init container's wait for the RonDB data node and mysqld StatefulSets.
+  Raise it before an upgrade that expects a longer RonDB recovery.
+- `hopsworks.envs.postInstall.WORKER_REGISTER_TIMEOUT_SEC` (3600): the admin sidecar's wait for a first worker to register with the DAS.
+- `hopsworks.envs.postInstall.ADMIN_READY_TIMEOUT_SEC` (3600): the admin sidecar's wait for the DAS to be ready.
+- `hopsworks.updateLoadBalancerDomains.deadlineSeconds` (5400): the whole run of the `hopsworks-update-lb-domains` post-install and post-upgrade hook, every kubectl and mysql call included.
+  The Job waits for an address only on a Service of type LoadBalancer.
+  With unmanaged load balancers the external Services are NodePort: preset each `hopsworks.variables.loadbalancer_external_domain_*`, or the Job logs the one missing and the domain stays unset.
 
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
 
