@@ -104,6 +104,7 @@ kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.annot
 
     On OpenShift 4.19 and later, and on GKE, the platform provides the Gateway API CRDs.
     Set `hw-envoy-gateway.gatewayApiCrds.enabled: false` so the chart uses them; `values.openshift.yaml` already does.
+    On GKE Standard, enable the Gateway API on the cluster first, because GKE installs the CRDs only then (Autopilot has it on).
     The chart then only checks that they exist, not their version, so make sure the platform's Gateway API version is one Envoy Gateway 1.9 supports.
     This setup is verified on OKD 4.21.
 
@@ -170,7 +171,7 @@ The CRDs stay, because other software on the cluster may use them.
 !!! warning "`cleanupOnUninstall.deleteCrds` deletes the Envoy Gateway CRDs"
 
     With `hw-envoy-gateway.cleanupOnUninstall.deleteCrds: true`, uninstalling deletes the Envoy Gateway CRDs, and the Gateway API CRDs only if the chart installed them; Gateway API CRDs from the platform or another tool stay.
-    Deleting a CRD deletes every object of its kind on the cluster, so set it only when no other Envoy Gateway runs on the cluster.
+    Deleting a CRD deletes every object of its kind on the cluster, so set it only when nothing else uses those CRDs: no other Envoy Gateway, and no other software that uses the Gateway API, such as another ingress controller or a service mesh.
 
 ??? note "What stays after turning the feature off"
 

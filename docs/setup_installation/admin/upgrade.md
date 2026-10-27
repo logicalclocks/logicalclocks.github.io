@@ -330,6 +330,7 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
         Set `hw-envoy-gateway.gatewayApiCrds.enabled: false` before you turn the feature on.
         The platform owns the Gateway API CRDs there, and the chart must use them rather than install its own, as described in [CustomResourceDefinitions][envoy-gateway-crds].
         `values.openshift.yaml` already sets it.
+        On GKE Standard, enable the Gateway API on the cluster first: GKE installs the CRDs only then, and the upgrade fails without them.
 
     With `rbac.useExistingRole`, add the permissions listed under [Cluster requirements][envoy-gateway-requirements] to the backend role.
 
