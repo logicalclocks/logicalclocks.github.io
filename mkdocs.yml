@@ -310,6 +310,7 @@ nav:
           - HopsFS CSI Driver: setup_installation/admin/hopsfs_csi.md
           - Dedicated Node Pools: setup_installation/admin/node_pools.md
           - KEDA Autoscaling: setup_installation/admin/keda.md
+          - Envoy Gateway: setup_installation/admin/envoy_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
           - Upgrades:
@@ -360,6 +361,7 @@ nav:
           - hopsfs: setup_installation/common/helm_chart_values/hopsfs.md
           - hopsfs-csi: setup_installation/common/helm_chart_values/hopsfs-csi.md
           - hopsworks: setup_installation/common/helm_chart_values/hopsworks.md
+          - hw-envoy-gateway: setup_installation/common/helm_chart_values/hw-envoy-gateway.md
           - hw-keda: setup_installation/common/helm_chart_values/hw-keda.md
           - hw-kueue: setup_installation/common/helm_chart_values/hw-kueue.md
           - hw-kyverno: setup_installation/common/helm_chart_values/hw-kyverno.md
