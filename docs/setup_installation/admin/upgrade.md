@@ -15,7 +15,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -302,6 +302,75 @@ Before, it created no topics there, so every topic had to exist before ingestion
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
   Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
   Reading through a shared feature store is unchanged.
+
+### Envoy Gateway { #upgrade-envoy-gateway }
+
+New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mode model deployments through the Kubernetes Gateway API, with Istio still the front door.
+
+- **Nothing moves unless you turn it on.**
+  An upgrade that leaves `global._hopsworks.envoyGateway` alone routes every request as before.
+- **Two components restart during the upgrade.**
+  The KServe controller restarts, and the running deployments keep serving meanwhile.
+  From 5.3 it also restarts on any later upgrade that changes its ingress configuration, such as turning Envoy Gateway routing on or off.
+  `model-serving-authenticator` restarts with a new listener for the Gateway.
+  While its old pod is replaced, a few requests can get a 403, because the 5.2 pod stops without waiting for the new one; from 5.3 its restarts wait, so later ones lose no request.
+
+To turn it on in a cluster with running deployments, upgrade twice, so that the Gateway is up before any deployment moves.
+Clients keep their endpoint, Knative-mode deployments stay on Istio, and no deployment restarts.
+
+1. **Prepare.**
+    List the Standard-mode deployments, to check them at the end:
+
+    ```bash
+    kubectl get isvc -A -o json | jq -r '.items[] | select(.metadata.annotations["serving.kserve.io/deploymentMode"] == "Standard") | .metadata.namespace + "/" + .metadata.name'
+    ```
+
+    !!! warning "OpenShift 4.19 or later, and GKE"
+
+        Set `hw-envoy-gateway.gatewayApiCrds.enabled: false` before you turn the feature on.
+        The platform owns the Gateway API CRDs there, and the chart must use them rather than install its own, as described in [CustomResourceDefinitions][envoy-gateway-crds].
+        `values.openshift.yaml` already sets it.
+        On GKE Standard, enable the Gateway API on the cluster first: GKE installs the CRDs only then, and the upgrade fails without them.
+
+    With `rbac.useExistingRole`, add the permissions listed under [Cluster requirements][envoy-gateway-requirements] to the backend role.
+
+2. **Install Envoy Gateway** with `helm upgrade` and these values:
+
+    ```yaml
+    global:
+      _hopsworks:
+        envoyGateway:
+          enabled: true
+          kserveStandardMode: false
+    ```
+
+    Set `kserveStandardMode: false` explicitly: it defaults to `true`, which would also move the deployments in this upgrade.
+    The deployments keep their Istio routes, so no traffic moves yet.
+    The Gateway is ready when it reports `Programmed`:
+
+    ```bash
+    kubectl get gateways.gateway.networking.k8s.io -n <namespace> kserve-ingress-gateway
+    ```
+
+    Hopsworks checks the rest itself before it moves a deployment: the Gateway's policy, the routes and a request through Envoy.
+    You can stay at this step for as long as you need.
+
+3. **Move the deployments** with `helm upgrade` and `kserveStandardMode: true`.
+    The KServe controller restarts, and Hopsworks starts moving the Standard-mode deployments within a minute.
+    Each one moves once its new routes are accepted, and its Istio route keeps serving until then; a deployment still waiting is retried every minute.
+    A deployment that is not ready is picked up after it becomes ready, at the next full pass, every ten minutes.
+    The backend log reports each deployment it moves.
+
+4. **Check** against the list from step 1:
+    - No Istio Ingress is left for a ready Standard-mode deployment, neither KServe's nor, for a deployment that scales to zero, the idle one:
+
+        ```bash
+        kubectl get ingress -A -l serving.kserve.io/inferenceservice
+        kubectl get ingress -A -l serving.hops.works/keda-idle=true
+        ```
+
+    - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
+    - The Knative-mode deployments are unchanged.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
