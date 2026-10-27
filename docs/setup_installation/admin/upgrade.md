@@ -309,7 +309,7 @@ New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mo
 
 - **Nothing moves unless you turn it on.**
   An upgrade that leaves `global._hopsworks.envoyGateway` alone routes every request as before.
-- **Two pods restart once, without failing a request.**
+- **Two components restart once, without failing a request.**
   The KServe controller restarts, because from 5.3 it restarts whenever its ingress configuration changes, and the running deployments keep serving meanwhile.
   `model-serving-authenticator` restarts with a new listener for the Gateway, and its old pod answers until the new one is ready.
 
@@ -343,16 +343,29 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
 
     Set `kserveStandardMode: false` explicitly: it defaults to `true`, which would also move the deployments in this upgrade.
     No request is affected.
-    The Gateway is ready when `kubectl get gateway -n <namespace> kserve-ingress-gateway` reports `Programmed`.
+    The Gateway is ready when it reports `Programmed`:
+
+    ```bash
+    kubectl get gateways.gateway.networking.k8s.io -n <namespace> kserve-ingress-gateway
+    ```
+
+    Hopsworks checks the rest itself before it moves a deployment: the Gateway's policy, the routes and a request through Envoy.
     You can stay at this step for as long as you need.
 
 3. **Move the deployments** with `helm upgrade` and `kserveStandardMode: true`.
-    Within a minute, Hopsworks moves each Standard-mode deployment to the Gateway once its new routes are accepted, and its Istio route keeps serving until then.
-    A deployment that is not ready moves once it is, within ten minutes.
+    The KServe controller restarts, and Hopsworks starts moving the Standard-mode deployments within a minute.
+    Each one moves once its new routes are accepted, and its Istio route keeps serving until then; a deployment still waiting is retried every minute.
+    A deployment that is not ready is picked up after it becomes ready, at the next full pass, every ten minutes.
     The backend log reports each deployment it moves.
 
 4. **Check** against the list from step 1:
-    - `kubectl get ingress -A -l serving.kserve.io/inferenceservice` shows no Ingress left for a ready Standard-mode deployment.
+    - No Istio Ingress is left for a ready Standard-mode deployment, neither KServe's nor, for a deployment that scales to zero, the idle one:
+
+        ```bash
+        kubectl get ingress -A -l serving.kserve.io/inferenceservice
+        kubectl get ingress -A -l serving.hops.works/keda-idle=true
+        ```
+
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 

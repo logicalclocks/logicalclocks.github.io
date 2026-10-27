@@ -5,7 +5,7 @@ description: Serve Standard-mode model deployments through the Kubernetes Gatewa
 # Envoy Gateway { #envoy-gateway }
 
 From 5.3, Hopsworks can route Standard-mode model deployments through the Kubernetes Gateway API, on Envoy Gateway.
-KServe builds its Standard mode and its generative AI features (`LLMInferenceService`, llm-d, the agent router) on the Gateway API, so this is the path those features follow.
+KServe builds its Standard mode and its generative AI features (`LLMInferenceService`, llm-d, the agent router) on the Gateway API, and this is the routing they build on.
 
 Nothing changes for the clients of your deployments.
 Istio stays the front door, with the same endpoint, ports and URLs, and forwards Standard-mode traffic to Envoy Gateway inside the cluster.
@@ -22,8 +22,9 @@ Knative-mode deployments keep running through Istio as before.
 
 Two values in `global._hopsworks.envoyGateway` control the feature:
 
-- `enabled` installs Envoy Gateway and its Gateway, without moving any traffic.
-- `kserveStandardMode` moves the Standard-mode deployments to it, and is `true` by default.
+- `enabled` installs Envoy Gateway and its Gateway.
+- `kserveStandardMode` moves the Standard-mode deployments to it.
+  It is `true` by default, so `enabled` alone does both; set it to `false` to install Envoy Gateway without moving any traffic.
 
 === "New installation"
 
@@ -59,8 +60,8 @@ All values are listed in [Envoy Gateway values][helm-values-hw-envoy-gateway], a
 - The Gateway `kserve-ingress-gateway` and the Envoy proxies behind it, with a policy that checks every request's API key.
 - The CustomResourceDefinitions (CRDs) of Envoy Gateway and of the Gateway API, as described in [CustomResourceDefinitions][envoy-gateway-crds].
 
-When the deployments move, the KServe controller restarts once.
-The deployments themselves are not restarted.
+The KServe controller restarts on the first 5.3 upgrade and again whenever `kserveStandardMode` changes.
+The deployments themselves are never restarted.
 
 ## Images { #envoy-gateway-images }
 
@@ -103,6 +104,7 @@ kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.annot
 
     On OpenShift 4.19 and later, and on GKE, the platform provides the Gateway API CRDs.
     Set `hw-envoy-gateway.gatewayApiCrds.enabled: false` so the chart uses them; `values.openshift.yaml` already does.
+    The chart then only checks that they exist, not their version, so make sure the platform's Gateway API version is one Envoy Gateway 1.9 supports.
     This setup is verified on OKD 4.21.
 
 ## Cluster requirements { #envoy-gateway-requirements }
@@ -115,6 +117,7 @@ kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.annot
 - **Isolation.**
   Only the namespaces of your Hopsworks installation can attach routes to its Gateway, and each installation's controller manages only its own Gateway.
   Hopsworks labels those namespaces itself, so there is nothing to configure.
+  The Envoy Gateway CRDs are shared by the whole cluster, though, and the chart updates them to its version, so another Envoy Gateway on the same cluster must work with Envoy Gateway 1.9's CRDs.
 
 ??? note "Permissions for `rbac.useExistingRole`"
 
@@ -128,8 +131,8 @@ kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.annot
     | `""` | `namespaces` | `get`, `patch` |
     | `discovery.k8s.io` | `endpointslices` | `get`, `list` |
 
-    Add them before you turn the feature on.
-    With the feature off, Hopsworks works without them.
+    The last two rows are usually in place already, because Hopsworks needs them for other features.
+    Add the Gateway rows before you turn the feature on, and keep them until it is fully turned off: Hopsworks needs them to move the deployments back to Istio.
 
 ??? note "Expose the Gateway directly"
 
@@ -144,16 +147,30 @@ kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.annot
 ## Turn it off or uninstall { #envoy-gateway-uninstall }
 
 To turn the feature off, upgrade twice in the reverse order.
-First set `kserveStandardMode: false`, which moves the deployments back to Istio without restarting them.
-Once `kubectl get ingress -A -l serving.kserve.io/inferenceservice` lists every ready Standard-mode deployment again, set `enabled: false`, which removes Envoy Gateway.
+
+1. Set `kserveStandardMode: false`, which moves the deployments back to Istio without restarting them.
+    Hopsworks keeps each deployment's Gateway routes until its Istio route has been in place for 30 seconds.
+2. Wait until Hopsworks has moved every deployment back, which is when no Gateway route of Hopsworks is left:
+
+    ```bash
+    kubectl get httproutes.gateway.networking.k8s.io -n <namespace> -l serving.hops.works/gateway-route
+    ```
+
+3. Set `enabled: false`, which removes Envoy Gateway.
 
 !!! warning "Use `helm upgrade`, not `helm rollback`"
 
     The Gateway objects are created and removed by install and upgrade hooks, which `helm rollback` does not run, so a rollback would leave them and the Envoy proxies behind.
-    If that happened, upgrade again with `enabled: false`, which removes them.
+    If that happened, upgrade with `enabled: true` and `kserveStandardMode: false`, which brings the Envoy Gateway controller back, and then turn the feature off as above, so the controller can remove the proxies.
 
-Uninstalling Hopsworks with the feature on removes the Envoy proxies, the Gateway objects and the routes.
-The CRDs stay, because other software on the cluster may use the Gateway API ones; set `hw-envoy-gateway.cleanupOnUninstall.deleteCrds` to remove them too.
+Uninstalling Hopsworks with the feature on removes the Envoy proxies, the Gateway objects and the routes Hopsworks created.
+KServe's own routes live in the project namespaces and go when those are deleted.
+The CRDs stay, because other software on the cluster may use them.
+
+!!! warning "`cleanupOnUninstall.deleteCrds` deletes every Gateway API CRD"
+
+    With `hw-envoy-gateway.cleanupOnUninstall.deleteCrds: true`, uninstalling deletes the Envoy Gateway CRDs and, unless `gatewayApiCrds.enabled` is `false`, the Gateway API CRDs, whoever installed them.
+    Deleting a CRD deletes every object of its kind on the cluster, so set it only when nothing else uses them.
 
 ??? note "What stays after turning the feature off"
 
@@ -161,7 +178,7 @@ The CRDs stay, because other software on the cluster may use the Gateway API one
     They do nothing on their own, and are reused if you turn the feature on again.
     Once the feature is off, uninstalling Hopsworks leaves them too.
 
-    To remove them, delete the Gateway API CRDs only if the chart installed them, and nothing else on the cluster uses them, because deleting a CRD deletes every object of its kind:
+    To remove them, delete the CRDs only if nothing else on the cluster uses them, and the Gateway API ones only if the chart installed them, because deleting a CRD deletes every object of its kind:
 
     ```bash
     kubectl delete gatewayclass <release>-envoy-gateway
