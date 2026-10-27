@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -292,6 +292,192 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 
 `kserve.dependencies.registry.registryProtocol` <a class="headerlink" href="#helm.kserve.dependencies.registry.registryProtocol" title="Permanent link">#</a> { #helm.kserve.dependencies.registry.registryProtocol }
 :   Type `string`, default `"https"`.
+
+</div>
+
+## envoyGateway { #helm-values-kserve-envoygateway }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    kserve:
+      envoyGateway:
+        applyJob:
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          ttlSecondsAfterFinished: null
+        platformAssignedIds: false
+        podDisruptionBudget:
+          enabled: true
+          minAvailable: 1
+        replicaCount: 1
+        resources:
+          limits:
+            cpu: '2'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        service:
+          annotations: {}
+          nodePorts:
+            http: 32090
+            https: 32453
+          type: ClusterIP
+        shutdown:
+          drainTimeout: 60s
+        shutdownManager:
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+    ```
+
+<div class="hops-values" markdown>
+
+`kserve.envoyGateway` <a class="headerlink" href="#helm.kserve.envoyGateway" title="Permanent link">#</a> { #helm.kserve.envoyGateway }
+:   Type `object`.
+    the Envoy data plane of the Hopsworks Gateway, rendered when global._hopsworks.envoyGateway.enabled: Standard-mode deployments are routed through the Kubernetes Gateway API on Envoy Gateway, which runs next to Istio. Istio stays the external front door and forwards their traffic to this Gateway in-cluster; see the umbrella chart README. Scheduling follows istio.nodeSelector and istio.tolerations, like the Istio ingress.
+
+    ??? note "Default"
+
+        ```yaml
+        applyJob:
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          ttlSecondsAfterFinished: null
+        platformAssignedIds: false
+        podDisruptionBudget:
+          enabled: true
+          minAvailable: 1
+        replicaCount: 1
+        resources:
+          limits:
+            cpu: '2'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        service:
+          annotations: {}
+          nodePorts:
+            http: 32090
+            https: 32453
+          type: ClusterIP
+        shutdown:
+          drainTimeout: 60s
+        shutdownManager:
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+        ```
+
+`kserve.envoyGateway.applyJob` <a class="headerlink" href="#helm.kserve.envoyGateway.applyJob" title="Permanent link">#</a> { #helm.kserve.envoyGateway.applyJob }
+:   Type `object`.
+    the pre-install, pre-upgrade hook Job that applies the Gateway objects (EnvoyProxy, Gateway, policies, Istio forward rule) server-side, and removes them once global._hopsworks.envoyGateway.enabled is turned off. A hook because their kinds come from CRDs the release installs itself, which Helm checks before any template is applied.
+
+    ??? note "Default"
+
+        ```yaml
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        ttlSecondsAfterFinished: null
+        ```
+
+`kserve.envoyGateway.applyJob.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.applyJob.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.applyJob.resources }
+:   Type `object`.
+    resources of the Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`kserve.envoyGateway.applyJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.kserve.envoyGateway.applyJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.kserve.envoyGateway.applyJob.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the apply Job. Overrides the global default.
+
+`kserve.envoyGateway.platformAssignedIds` <a class="headerlink" href="#helm.kserve.envoyGateway.platformAssignedIds" title="Permanent link">#</a> { #helm.kserve.envoyGateway.platformAssignedIds }
+:   Type `bool`, default `false`.
+    leave the user and group ids of the Envoy proxy pods to the platform. Envoy Gateway runs them as 65532, which OpenShift's restricted-v2 refuses unless the namespace range holds it; values.openshift.yaml turns this on.
+
+`kserve.envoyGateway.replicaCount` <a class="headerlink" href="#helm.kserve.envoyGateway.replicaCount" title="Permanent link">#</a> { #helm.kserve.envoyGateway.replicaCount }
+:   Type `int`, default `1`.
+    Envoy proxy replicas, like istio.gateways.ingress.replicaCount
+
+`kserve.envoyGateway.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.resources }
+:   Type `object`.
+    resources of the Envoy container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '2'
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        ```
+
+`kserve.envoyGateway.service.annotations` <a class="headerlink" href="#helm.kserve.envoyGateway.service.annotations" title="Permanent link">#</a> { #helm.kserve.envoyGateway.service.annotations }
+:   Type `object`, default `{}`.
+    annotations of the Gateway's Service, for a cloud load balancer
+
+`kserve.envoyGateway.service.nodePorts` <a class="headerlink" href="#helm.kserve.envoyGateway.service.nodePorts" title="Permanent link">#</a> { #helm.kserve.envoyGateway.service.nodePorts }
+:   Type `object`, default `{"http":32090,"https":32453}`.
+    the NodePorts of a directly exposed Gateway; distinct from the Istio ingress ones (istio.gateways.ingress.http2Port and httpsPort) so both can be exposed at once
+
+`kserve.envoyGateway.service.type` <a class="headerlink" href="#helm.kserve.envoyGateway.service.type" title="Permanent link">#</a> { #helm.kserve.envoyGateway.service.type }
+:   Type `string`, default `"ClusterIP"`.
+    type of the Gateway's Service. ClusterIP: reachable in-cluster only, which is all Istio's forward rule and the backend need. NodePort or LoadBalancer additionally expose the Gateway directly, on its own ports, next to the Istio ingress; that is where the path-based routes and policies the backend owns are reached from outside, and the end state once Istio is deprecated.
+
+`kserve.envoyGateway.shutdown.drainTimeout` <a class="headerlink" href="#helm.kserve.envoyGateway.shutdown.drainTimeout" title="Permanent link">#</a> { #helm.kserve.envoyGateway.shutdown.drainTimeout }
+:   Type `string`, default `"60s"`.
+    how long a terminating Envoy pod keeps draining connections before it exits
+
+`kserve.envoyGateway.shutdownManager.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.shutdownManager.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.shutdownManager.resources }
+:   Type `object`.
+    resources of the shutdown-manager sidecar of every Envoy pod. Upstream sets requests only (10m, 32Mi) and the EnvoyProxy API has no field for it, so the chart patches the generated Deployment.
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 200m
+          memory: 128Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        ```
 
 </div>
 

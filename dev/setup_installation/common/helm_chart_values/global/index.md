@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -30,6 +30,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.
             pullPolicy: IfNotPresent
             repository: hopsworks/hopsfs-csi
             tag: 0.2.0-SNAPSHOT
+        envoyGateway:
+          enabled: false
+          gatewayName: kserve-ingress-gateway
+          kserveStandardMode: true
         executor_uid: 1235
         full_platform: true
         grafana:
@@ -179,6 +183,22 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.
 `global._hopsworks.csi.driverName` <a class="headerlink" href="#helm.global._hopsworks.csi.driverName" title="Permanent link">#</a> { #helm.global._hopsworks.csi.driverName }
 :   Type `string`, default `""`.
     The CSI driver name of this release. Empty (the default) derives `<namespace>.hopsfs.csi.logicalclocks.com` from the release namespace, one name per release, which is what lets two Hopsworks installs share a cluster: kubelet routes CSI calls by driver name alone, so each release gets its own node plugin, socket, registration and CSIDriver object, also on nodes both installs use, and uninstalling one never touches the other's mounts (HWORKS-3297). Kubernetes caps a CSI driver name at 63 characters, so a namespace longer than 34 characters must set a shorter name here. Any name set here must be unique in the cluster: two releases on one name share one socket directory and one kubelet registration on every node they share, so neither is isolated from the other, which is the fault the per-release name removes; that is not a supported setup. Whatever the name, it is computed once (`hopsworkslib.csiDriverName`) for the plugin, the Airflow and Trino volumes and the backend `csi_driver_name` variable, so nothing can drift.
+
+`global._hopsworks.envoyGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway }
+:   Type `object`.
+    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: false
+        gatewayName: kserve-ingress-gateway
+        kserveStandardMode: true
+        ```
+
+`global._hopsworks.envoyGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.gatewayName }
+:   Type `string`, default `"kserve-ingress-gateway"`.
+    name of the Gateway, EnvoyProxy and Envoy Service in the release namespace; KServe's inferenceservice-config and the backend refer to it
 
 `global._hopsworks.executor_uid` <a class="headerlink" href="#helm.global._hopsworks.executor_uid" title="Permanent link">#</a> { #helm.global._hopsworks.executor_uid }
 :   Type `int`, default `1235`.

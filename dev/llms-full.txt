@@ -41109,7 +41109,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -41132,7 +41132,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 147 |
+| [`global`][helm-values-global] |  | 149 |
 | [`airflow`][helm-values-airflow] |  | 151 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
@@ -41143,13 +41143,13 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.
 | [`hopsfs`][helm-values-hopsfs] |  | 222 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
 | [`hopsworks`][helm-values-hopsworks] |  | 980 |
-| [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 0 |
+| [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |
 | [`judge`][helm-values-judge] |  | 23 |
 | [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.2.0](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.2.0) | 102 |
-| [`kserve`][helm-values-kserve] |  | 269 |
+| [`kserve`][helm-values-kserve] |  | 281 |
 | [`minio`][helm-values-minio] |  | 42 |
 | [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 165 |
 | [`onlinefs`][helm-values-onlinefs] |  | 94 |
@@ -41189,7 +41189,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -41215,6 +41215,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.
             pullPolicy: IfNotPresent
             repository: hopsworks/hopsfs-csi
             tag: 0.2.0-SNAPSHOT
+        envoyGateway:
+          enabled: false
+          gatewayName: kserve-ingress-gateway
+          kserveStandardMode: true
         executor_uid: 1235
         full_platform: true
         grafana:
@@ -41364,6 +41368,22 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.
 `global._hopsworks.csi.driverName` <a class="headerlink" href="#helm.global._hopsworks.csi.driverName" title="Permanent link">#</a> { #helm.global._hopsworks.csi.driverName }
 :   Type `string`, default `""`.
     The CSI driver name of this release. Empty (the default) derives `<namespace>.hopsfs.csi.logicalclocks.com` from the release namespace, one name per release, which is what lets two Hopsworks installs share a cluster: kubelet routes CSI calls by driver name alone, so each release gets its own node plugin, socket, registration and CSIDriver object, also on nodes both installs use, and uninstalling one never touches the other's mounts (HWORKS-3297). Kubernetes caps a CSI driver name at 63 characters, so a namespace longer than 34 characters must set a shorter name here. Any name set here must be unique in the cluster: two releases on one name share one socket directory and one kubelet registration on every node they share, so neither is isolated from the other, which is the fault the per-release name removes; that is not a supported setup. Whatever the name, it is computed once (`hopsworkslib.csiDriverName`) for the plugin, the Airflow and Trino volumes and the backend `csi_driver_name` variable, so nothing can drift.
+
+`global._hopsworks.envoyGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway }
+:   Type `object`.
+    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: false
+        gatewayName: kserve-ingress-gateway
+        kserveStandardMode: true
+        ```
+
+`global._hopsworks.envoyGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.gatewayName }
+:   Type `string`, default `"kserve-ingress-gateway"`.
+    name of the Gateway, EnvoyProxy and Envoy Service in the release namespace; KServe's inferenceservice-config and the backend refer to it
 
 `global._hopsworks.executor_uid` <a class="headerlink" href="#helm.global._hopsworks.executor_uid" title="Permanent link">#</a> { #helm.global._hopsworks.executor_uid }
 :   Type `int`, default `1235`.
@@ -42294,7 +42314,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -43160,7 +43180,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43442,7 +43462,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43630,7 +43650,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43963,7 +43983,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44414,7 +44434,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44912,7 +44932,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -45330,7 +45350,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46474,7 +46494,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -46744,7 +46764,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -51676,9 +51696,430 @@ See [Envoy Gateway][envoy-gateway] for what the chart installs and what the clus
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
-Chart `5.3.0-alpha-1793128340` has no `hw-envoy-gateway` values.
+Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
+
+## General { #helm-values-hw-envoy-gateway-general }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-envoy-gateway:
+      crdImage:
+        name: envoy-gateway-crds
+        registry: ''
+        tag: v1.9.2-h1
+      envoyProxy:
+        image:
+          registry: ''
+          repository: envoyproxy/envoy
+          tag: distroless-v1.39.1
+      gatewayApiCrds:
+        enabled: true
+      gatewayClass:
+        controllerName: ''
+      hopsworkslib: {}
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-envoy-gateway` <a class="headerlink" href="#helm.hw-envoy-gateway" title="Permanent link">#</a> { #helm.hw-envoy-gateway }
+:   Type `object`, default `{}`.
+    override hw-envoy-gateway values
+
+`hw-envoy-gateway.crdImage` <a class="headerlink" href="#helm.hw-envoy-gateway.crdImage" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdImage }
+:   Type `object`, default `{"name":"envoy-gateway-crds","registry":"","tag":"v1.9.2-h1"}`.
+    the image that carries the Envoy Gateway and Gateway API CRDs (docker-images envoy-gateway-crds, on the hwutils toolbox image). The CRDs cannot ship in the chart: they are 3.8 MB and Helm keeps the chart files in a release Secret capped at 1 MiB, so the install and upgrade hook applies them from this image with server-side apply, the way the Istio CRDs are applied from the istioctl image. The tag starts with the Envoy Gateway release (Chart.yaml appVersion) followed by an image revision.
+
+`hw-envoy-gateway.crdImage.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.crdImage.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdImage.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry plus the hopsworks project
+
+`hw-envoy-gateway.envoyProxy` <a class="headerlink" href="#helm.hw-envoy-gateway.envoyProxy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.envoyProxy }
+:   Type `object`.
+    the Envoy data plane image the controller deploys for every Gateway, a mirror of the Docker Hub image envoyproxy/envoy at the same path. The tag is the default of this Envoy Gateway release.
+
+    ??? note "Default"
+
+        ```yaml
+        image:
+          registry: ''
+          repository: envoyproxy/envoy
+          tag: distroless-v1.39.1
+        ```
+
+`hw-envoy-gateway.envoyProxy.image.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.envoyProxy.image.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.envoyProxy.image.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry
+
+`hw-envoy-gateway.gatewayApiCrds` <a class="headerlink" href="#helm.hw-envoy-gateway.gatewayApiCrds" title="Permanent link">#</a> { #helm.hw-envoy-gateway.gatewayApiCrds }
+:   Type `object`, default `{"enabled":true}`.
+    the Gateway API CRDs (gateway.networking.k8s.io). Off on a cluster whose platform owns them: OpenShift 4.19 and later (the Ingress Operator manages them and refuses foreign copies) and GKE. The hook then applies the Envoy Gateway CRDs only and checks the Gateway API ones exist.
+
+`hw-envoy-gateway.gatewayClass` <a class="headerlink" href="#helm.hw-envoy-gateway.gatewayClass" title="Permanent link">#</a> { #helm.hw-envoy-gateway.gatewayClass }
+:   Type `object`, default `{"controllerName":""}`.
+    the GatewayClass this chart creates. Its name is release-prefixed (hopsworkslib.moduleFullname of "envoy-gateway") and the kserve subchart's Gateway refers to it the same way.
+
+`hw-envoy-gateway.gatewayClass.controllerName` <a class="headerlink" href="#helm.hw-envoy-gateway.gatewayClass.controllerName" title="Permanent link">#</a> { #helm.hw-envoy-gateway.gatewayClass.controllerName }
+:   Type `string`, default `""`.
+    the controller name the GatewayClass and the controller agree on. Empty means gateway.envoyproxy.io/hopsworks-<release namespace>: Envoy Gateway manages every GatewayClass with its controller name, so each release needs its own, distinct from the upstream default as well so that an Envoy Gateway a customer runs for other purposes never programs the Hopsworks class. Immutable on an existing GatewayClass.
+
+`hw-envoy-gateway.hopsworkslib` <a class="headerlink" href="#helm.hw-envoy-gateway.hopsworkslib" title="Permanent link">#</a> { #helm.hw-envoy-gateway.hopsworkslib }
+:   Type `object`, default `{}`.
+    override hopsworkslib values
+
+</div>
+
+## certgen { #helm-values-hw-envoy-gateway-certgen }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-envoy-gateway:
+      certgen:
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-envoy-gateway.certgen` <a class="headerlink" href="#helm.hw-envoy-gateway.certgen" title="Permanent link">#</a> { #helm.hw-envoy-gateway.certgen }
+:   Type `object`.
+    the certgen hook, which creates the controller's and the proxies' xDS certificates on install and leaves them alone on upgrade (verified: a repeated upgrade keeps the Secrets' resourceVersion)
+
+    ??? note "Default"
+
+        ```yaml
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`hw-envoy-gateway.certgen.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.certgen.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.certgen.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the certgen container; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-envoy-gateway.certgen.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.certgen.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.certgen.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the certgen Job; falls back to global._hopsworks.nodeSelector
+
+`hw-envoy-gateway.certgen.resources` <a class="headerlink" href="#helm.hw-envoy-gateway.certgen.resources" title="Permanent link">#</a> { #helm.hw-envoy-gateway.certgen.resources }
+:   Type `object`.
+    resources of the certgen container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`hw-envoy-gateway.certgen.tolerations` <a class="headerlink" href="#helm.hw-envoy-gateway.certgen.tolerations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.certgen.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the certgen Job; fall back to global._hopsworks.tolerations
+
+`hw-envoy-gateway.certgen.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hw-envoy-gateway.certgen.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hw-envoy-gateway.certgen.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the certgen Job. Overrides the global default.
+
+</div>
+
+## cleanupOnUninstall { #helm-values-hw-envoy-gateway-cleanuponuninstall }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-envoy-gateway:
+      cleanupOnUninstall:
+        deleteCrds: false
+        enabled: true
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-envoy-gateway.cleanupOnUninstall` <a class="headerlink" href="#helm.hw-envoy-gateway.cleanupOnUninstall" title="Permanent link">#</a> { #helm.hw-envoy-gateway.cleanupOnUninstall }
+:   Type `object`.
+    uninstall cleanup of what the controller leaves behind that Helm never tracked: the Envoy proxy Deployments and Services it created for the Gateways (the controller is deleted with the release and cannot remove them any more), the finalizer it holds on the GatewayClass while Gateways exist, and the certificate Secrets certgen wrote at install time. Runs post-delete only: Argo CD runs pre-delete hooks only from 3.3.
+
+    ??? note "Default"
+
+        ```yaml
+        deleteCrds: false
+        enabled: true
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`hw-envoy-gateway.cleanupOnUninstall.deleteCrds` <a class="headerlink" href="#helm.hw-envoy-gateway.cleanupOnUninstall.deleteCrds" title="Permanent link">#</a> { #helm.hw-envoy-gateway.cleanupOnUninstall.deleteCrds }
+:   Type `bool`, default `false`.
+    also delete the Envoy Gateway CRDs and, when gatewayApiCrds.enabled and this chart installed them, the Gateway API CRDs. Off by default, which keeps the definitions the way a chart's crds/ directory would, for an Envoy Gateway installed by other means next; the objects stored under them (routes, policies) go with their namespaces.
+
+`hw-envoy-gateway.cleanupOnUninstall.enabled` <a class="headerlink" href="#helm.hw-envoy-gateway.cleanupOnUninstall.enabled" title="Permanent link">#</a> { #helm.hw-envoy-gateway.cleanupOnUninstall.enabled }
+:   Type `bool`, default `true`.
+    enable the cleanup hook
+
+`hw-envoy-gateway.cleanupOnUninstall.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.cleanupOnUninstall.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.cleanupOnUninstall.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the toolbox image the cleanup Job runs; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-envoy-gateway.cleanupOnUninstall.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.cleanupOnUninstall.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.cleanupOnUninstall.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the cleanup Job; falls back to global._hopsworks.nodeSelector
+
+`hw-envoy-gateway.cleanupOnUninstall.resources` <a class="headerlink" href="#helm.hw-envoy-gateway.cleanupOnUninstall.resources" title="Permanent link">#</a> { #helm.hw-envoy-gateway.cleanupOnUninstall.resources }
+:   Type `object`.
+    resources of the cleanup Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`hw-envoy-gateway.cleanupOnUninstall.tolerations` <a class="headerlink" href="#helm.hw-envoy-gateway.cleanupOnUninstall.tolerations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.cleanupOnUninstall.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the cleanup Job; fall back to global._hopsworks.tolerations
+
+`hw-envoy-gateway.cleanupOnUninstall.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hw-envoy-gateway.cleanupOnUninstall.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hw-envoy-gateway.cleanupOnUninstall.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the cleanup Job. Overrides the global default.
+
+</div>
+
+## controller { #helm-values-hw-envoy-gateway-controller }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-envoy-gateway:
+      controller:
+        image:
+          registry: ''
+          repository: envoyproxy/gateway
+          tag: v1.9.2
+        imagePullPolicy: IfNotPresent
+        logLevel: info
+        nodeSelector: {}
+        podDisruptionBudget:
+          minAvailable: 0
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        serviceAccount:
+          annotations: {}
+        tolerations: []
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-envoy-gateway.controller` <a class="headerlink" href="#helm.hw-envoy-gateway.controller" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller }
+:   Type `object`.
+    the Envoy Gateway controller (the envoy-gateway Deployment). It programs the Envoy proxies the kserve subchart's Gateway asks for and runs in the release namespace, watching every namespace, because the HTTPRoutes KServe creates live in the project namespaces.
+
+    ??? note "Default"
+
+        ```yaml
+        image:
+          registry: ''
+          repository: envoyproxy/gateway
+          tag: v1.9.2
+        imagePullPolicy: IfNotPresent
+        logLevel: info
+        nodeSelector: {}
+        podDisruptionBudget:
+          minAvailable: 0
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        serviceAccount:
+          annotations: {}
+        tolerations: []
+        ```
+
+`hw-envoy-gateway.controller.image` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.image" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.image }
+:   Type `object`, default `{"registry":"","repository":"envoyproxy/gateway","tag":"v1.9.2"}`.
+    the controller image, a mirror of the Docker Hub image envoyproxy/gateway under the Hopsworks registry at the same path (docker.hops.works/envoyproxy/gateway). The same image runs the certgen hook and the shutdown-manager sidecar of every Envoy pod. The tag is the Envoy Gateway release (Chart.yaml appVersion).
+
+`hw-envoy-gateway.controller.image.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.image.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.image.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry
+
+`hw-envoy-gateway.controller.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the controller image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-envoy-gateway.controller.logLevel` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.logLevel" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.logLevel }
+:   Type `string`, default `"info"`.
+    log level of the controller
+
+`hw-envoy-gateway.controller.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the controller; falls back to global._hopsworks.nodeSelector
+
+`hw-envoy-gateway.controller.podDisruptionBudget` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.podDisruptionBudget" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.podDisruptionBudget }
+:   Type `object`, default `{"minAvailable":0}`.
+    PodDisruptionBudget of the controller; minAvailable 0 renders none
+
+`hw-envoy-gateway.controller.replicas` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.replicas" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.replicas }
+:   Type `int`, default `1`.
+    replicas of the controller. One is enough: the proxies keep serving while it restarts, and leader election covers more.
+
+`hw-envoy-gateway.controller.resources` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.resources" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.resources }
+:   Type `object`.
+    resources of the controller container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        ```
+
+`hw-envoy-gateway.controller.serviceAccount.annotations` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.serviceAccount.annotations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.serviceAccount.annotations }
+:   Type `object`, default `{}`.
+    annotations of the controller's service account, merged over global._hopsworks.serviceAccountAnnotations
+
+`hw-envoy-gateway.controller.tolerations` <a class="headerlink" href="#helm.hw-envoy-gateway.controller.tolerations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.controller.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the controller; fall back to global._hopsworks.tolerations
+
+</div>
+
+## crdInstallJob { #helm-values-hw-envoy-gateway-crdinstalljob }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-envoy-gateway:
+      crdInstallJob:
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-envoy-gateway.crdInstallJob` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob }
+:   Type `object`.
+    the pre-install and pre-upgrade hook that applies the CRDs from crdImage. Server-side apply creates or patches as needed, so it is idempotent and safe under Argo CD, where the hook becomes a PreSync on every sync.
+
+    ??? note "Default"
+
+        ```yaml
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`hw-envoy-gateway.crdInstallJob.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the CRD image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-envoy-gateway.crdInstallJob.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the Job; falls back to global._hopsworks.nodeSelector
+
+`hw-envoy-gateway.crdInstallJob.resources` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.resources" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.resources }
+:   Type `object`.
+    resources of the Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`hw-envoy-gateway.crdInstallJob.tolerations` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.tolerations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the Job; fall back to global._hopsworks.tolerations
+
+`hw-envoy-gateway.crdInstallJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the CRD install Job. Overrides the global default.
+
+</div>
 
 <!-- END GENERATED VALUES -->
 
@@ -51694,7 +52135,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52101,7 +52542,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52487,7 +52928,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52970,7 +53411,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -53105,7 +53546,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -53975,7 +54416,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -54263,6 +54704,192 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 
 `kserve.dependencies.registry.registryProtocol` <a class="headerlink" href="#helm.kserve.dependencies.registry.registryProtocol" title="Permanent link">#</a> { #helm.kserve.dependencies.registry.registryProtocol }
 :   Type `string`, default `"https"`.
+
+</div>
+
+## envoyGateway { #helm-values-kserve-envoygateway }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    kserve:
+      envoyGateway:
+        applyJob:
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          ttlSecondsAfterFinished: null
+        platformAssignedIds: false
+        podDisruptionBudget:
+          enabled: true
+          minAvailable: 1
+        replicaCount: 1
+        resources:
+          limits:
+            cpu: '2'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        service:
+          annotations: {}
+          nodePorts:
+            http: 32090
+            https: 32453
+          type: ClusterIP
+        shutdown:
+          drainTimeout: 60s
+        shutdownManager:
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+    ```
+
+<div class="hops-values" markdown>
+
+`kserve.envoyGateway` <a class="headerlink" href="#helm.kserve.envoyGateway" title="Permanent link">#</a> { #helm.kserve.envoyGateway }
+:   Type `object`.
+    the Envoy data plane of the Hopsworks Gateway, rendered when global._hopsworks.envoyGateway.enabled: Standard-mode deployments are routed through the Kubernetes Gateway API on Envoy Gateway, which runs next to Istio. Istio stays the external front door and forwards their traffic to this Gateway in-cluster; see the umbrella chart README. Scheduling follows istio.nodeSelector and istio.tolerations, like the Istio ingress.
+
+    ??? note "Default"
+
+        ```yaml
+        applyJob:
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          ttlSecondsAfterFinished: null
+        platformAssignedIds: false
+        podDisruptionBudget:
+          enabled: true
+          minAvailable: 1
+        replicaCount: 1
+        resources:
+          limits:
+            cpu: '2'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        service:
+          annotations: {}
+          nodePorts:
+            http: 32090
+            https: 32453
+          type: ClusterIP
+        shutdown:
+          drainTimeout: 60s
+        shutdownManager:
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+        ```
+
+`kserve.envoyGateway.applyJob` <a class="headerlink" href="#helm.kserve.envoyGateway.applyJob" title="Permanent link">#</a> { #helm.kserve.envoyGateway.applyJob }
+:   Type `object`.
+    the pre-install, pre-upgrade hook Job that applies the Gateway objects (EnvoyProxy, Gateway, policies, Istio forward rule) server-side, and removes them once global._hopsworks.envoyGateway.enabled is turned off. A hook because their kinds come from CRDs the release installs itself, which Helm checks before any template is applied.
+
+    ??? note "Default"
+
+        ```yaml
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        ttlSecondsAfterFinished: null
+        ```
+
+`kserve.envoyGateway.applyJob.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.applyJob.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.applyJob.resources }
+:   Type `object`.
+    resources of the Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`kserve.envoyGateway.applyJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.kserve.envoyGateway.applyJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.kserve.envoyGateway.applyJob.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the apply Job. Overrides the global default.
+
+`kserve.envoyGateway.platformAssignedIds` <a class="headerlink" href="#helm.kserve.envoyGateway.platformAssignedIds" title="Permanent link">#</a> { #helm.kserve.envoyGateway.platformAssignedIds }
+:   Type `bool`, default `false`.
+    leave the user and group ids of the Envoy proxy pods to the platform. Envoy Gateway runs them as 65532, which OpenShift's restricted-v2 refuses unless the namespace range holds it; values.openshift.yaml turns this on.
+
+`kserve.envoyGateway.replicaCount` <a class="headerlink" href="#helm.kserve.envoyGateway.replicaCount" title="Permanent link">#</a> { #helm.kserve.envoyGateway.replicaCount }
+:   Type `int`, default `1`.
+    Envoy proxy replicas, like istio.gateways.ingress.replicaCount
+
+`kserve.envoyGateway.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.resources }
+:   Type `object`.
+    resources of the Envoy container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '2'
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        ```
+
+`kserve.envoyGateway.service.annotations` <a class="headerlink" href="#helm.kserve.envoyGateway.service.annotations" title="Permanent link">#</a> { #helm.kserve.envoyGateway.service.annotations }
+:   Type `object`, default `{}`.
+    annotations of the Gateway's Service, for a cloud load balancer
+
+`kserve.envoyGateway.service.nodePorts` <a class="headerlink" href="#helm.kserve.envoyGateway.service.nodePorts" title="Permanent link">#</a> { #helm.kserve.envoyGateway.service.nodePorts }
+:   Type `object`, default `{"http":32090,"https":32453}`.
+    the NodePorts of a directly exposed Gateway; distinct from the Istio ingress ones (istio.gateways.ingress.http2Port and httpsPort) so both can be exposed at once
+
+`kserve.envoyGateway.service.type` <a class="headerlink" href="#helm.kserve.envoyGateway.service.type" title="Permanent link">#</a> { #helm.kserve.envoyGateway.service.type }
+:   Type `string`, default `"ClusterIP"`.
+    type of the Gateway's Service. ClusterIP: reachable in-cluster only, which is all Istio's forward rule and the backend need. NodePort or LoadBalancer additionally expose the Gateway directly, on its own ports, next to the Istio ingress; that is where the path-based routes and policies the backend owns are reached from outside, and the end state once Istio is deprecated.
+
+`kserve.envoyGateway.shutdown.drainTimeout` <a class="headerlink" href="#helm.kserve.envoyGateway.shutdown.drainTimeout" title="Permanent link">#</a> { #helm.kserve.envoyGateway.shutdown.drainTimeout }
+:   Type `string`, default `"60s"`.
+    how long a terminating Envoy pod keeps draining connections before it exits
+
+`kserve.envoyGateway.shutdownManager.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.shutdownManager.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.shutdownManager.resources }
+:   Type `object`.
+    resources of the shutdown-manager sidecar of every Envoy pod. Upstream sets requests only (10m, 32Mi) and the EnvoyProxy API has no field for it, so the chart patches the generated Deployment.
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 200m
+          memory: 128Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        ```
 
 </div>
 
@@ -55549,7 +56176,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -55804,7 +56431,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -56780,7 +57407,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -57290,7 +57917,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57450,7 +58077,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -57597,7 +58224,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -60515,7 +61142,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -62100,7 +62727,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63183,7 +63810,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63491,7 +64118,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793128340` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793132897` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
