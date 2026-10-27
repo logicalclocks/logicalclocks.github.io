@@ -89,6 +89,8 @@ Installing with the feature on is verified on OKD 4.21, against the Gateway API 
   It is `ClusterIP` by default, and Istio forwards to it.
   `kserve.envoyGateway.service.type: NodePort`, with ports under `kserve.envoyGateway.service.nodePorts` distinct from Istio's, or `LoadBalancer`, exposes it directly next to Istio.
   That is where the path-based routes and their policies are reached from outside, and the end state once Istio is deprecated.
+  On the Gateway itself the path must name the project exactly as its namespace or as the project name, and the deployment exactly as its name: `/v1/my-proj/mstd/...` and `/v1/My_Proj/mstd/...` for project `My_Proj`.
+  Other spellings, such as `/v1/MY_PROJ/mstd/...` or `/v1/my-proj/MSTD/...`, get a 404 there, while the Istio front door accepts them because its Lua filter lowercases the project segment and turns any other character into `-`.
   It is not supported yet on AWS with unmanaged load balancers, because the chart has no target-group binding for it.
 - **`model-serving-authenticator` 5.3 or later.**
   The path-based routes of a directly exposed Gateway authorize on its second listener, Service port 81, where the deployment comes from a path the policy sets rather than from the client's Host.
