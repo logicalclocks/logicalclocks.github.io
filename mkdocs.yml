@@ -86,6 +86,7 @@ nav:
                   - SAP HANA: user_guides/fs/data_source/creation/sap_hana.md
                   - Hopsworks: user_guides/fs/data_source/creation/hopsworks.md
                   - Gmail: user_guides/fs/data_source/creation/gmail.md
+                  - SharePoint: user_guides/fs/data_source/creation/sharepoint.md
               - Usage: user_guides/fs/data_source/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
@@ -316,6 +317,7 @@ nav:
               - Upgrading with Helm 4: setup_installation/admin/helm4.md
               - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
               - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
+              - Kueue outside the Hopsworks namespace: setup_installation/admin/kueue_external.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
