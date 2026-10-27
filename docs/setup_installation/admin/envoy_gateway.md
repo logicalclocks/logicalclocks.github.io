@@ -48,7 +48,7 @@ Two values in `global._hopsworks.envoyGateway` control the feature:
           kserveStandardMode: false # set to true in the second upgrade
     ```
 
-    Follow [Envoy Gateway][upgrade-envoy-gateway] in the upgrade guide, which lists the checks between the two upgrades and how to roll back.
+    Follow [Envoy Gateway][upgrade-envoy-gateway] in the upgrade guide, which lists the checks before, between and after the two upgrades.
     Each deployment moves once its new routes are accepted, without a restart and without failed requests.
 
 All values are listed in [Envoy Gateway values][helm-values-hw-envoy-gateway], and the Gateway's own settings under `kserve.envoyGateway` in [KServe values][helm-values-kserve].
@@ -143,14 +143,31 @@ kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.annot
 
 ## Turn it off or uninstall { #envoy-gateway-uninstall }
 
-To turn the feature off, upgrade in the reverse order, as described in [Envoy Gateway][upgrade-envoy-gateway] in the upgrade guide: first `kserveStandardMode: false`, then `enabled: false`.
+To turn the feature off, upgrade twice in the reverse order.
+First set `kserveStandardMode: false`, which moves the deployments back to Istio without restarting them.
+Once `kubectl get ingress -A -l serving.kserve.io/inferenceservice` lists every ready Standard-mode deployment again, set `enabled: false`, which removes Envoy Gateway.
 
-!!! warning "Roll back with `helm upgrade`, not `helm rollback`"
+!!! warning "Use `helm upgrade`, not `helm rollback`"
 
-    The Gateway objects are created and removed by install and upgrade hooks, which `helm rollback` does not run.
-    A rollback would leave them, and the Envoy proxies, behind; the upgrade guide lists how to remove them by hand.
+    The Gateway objects are created and removed by install and upgrade hooks, which `helm rollback` does not run, so a rollback would leave them and the Envoy proxies behind.
+    If that happened, upgrade again with `enabled: false`, which removes them.
 
 Uninstalling Hopsworks with the feature on removes the Envoy proxies, the Gateway objects and the routes.
 The CRDs stay, because other software on the cluster may use the Gateway API ones; set `hw-envoy-gateway.cleanupOnUninstall.deleteCrds` to remove them too.
 
-If the feature was turned off before uninstalling, the GatewayClass, the CRDs and a few certificate Secrets stay behind, as described in the upgrade guide.
+??? note "What stays after turning the feature off"
+
+    `enabled: false` leaves the GatewayClass `<release>-envoy-gateway`, the CRDs and the certificate Secrets `envoy-gateway`, `envoy`, `envoy-rate-limit` and `envoy-oidc-hmac`.
+    They do nothing on their own, and are reused if you turn the feature on again.
+    Once the feature is off, uninstalling Hopsworks leaves them too.
+
+    To remove them, delete the Gateway API CRDs only if the chart installed them, and nothing else on the cluster uses them, because deleting a CRD deletes every object of its kind:
+
+    ```bash
+    kubectl delete gatewayclass <release>-envoy-gateway
+    kubectl delete secret -n <namespace> envoy-gateway envoy envoy-rate-limit envoy-oidc-hmac
+    kubectl get crd -o name | grep 'gateway.envoyproxy.io' | xargs kubectl delete
+    # The Gateway API CRDs, only if this prints envoy-gateway-crd-install:
+    kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.managedFields[*].manager}'
+    kubectl get crd -o name | grep 'gateway.networking.k8s.io' | xargs kubectl delete
+    ```

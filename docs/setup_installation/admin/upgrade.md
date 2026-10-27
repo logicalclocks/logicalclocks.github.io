@@ -305,78 +305,51 @@ Before, it created no topics there, so every topic had to exist before ingestion
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
 
-New in 5.3 and off by default: an upgrade that leaves `global._hopsworks.envoyGateway` alone routes nothing differently.
-It restarts two pods once: the KServe controller, which from 5.3 restarts whenever its ingress configuration changes, and `model-serving-authenticator`, which gains the Gateway listener and a readiness probe.
-Neither costs a request: KServe keeps serving from the running deployments while its controller restarts, and the authenticator's old pod answers until the new one is ready.
+New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mode model deployments through the Kubernetes Gateway API, with Istio still the front door.
 
-Turning it on routes Standard-mode model deployments through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door, as described in [Envoy Gateway][envoy-gateway].
-Done in two stages it causes no downtime for any deployment, Standard or Knative: the external endpoint does not change, Knative traffic never leaves Istio, and each Standard-mode deployment is moved once its new routes are accepted, without restarting it.
+- **Nothing moves unless you turn it on.**
+  An upgrade that leaves `global._hopsworks.envoyGateway` alone routes every request as before.
+- **Two pods restart once, without failing a request.**
+  The KServe controller restarts, because from 5.3 it restarts whenever its ingress configuration changes, and the running deployments keep serving meanwhile.
+  `model-serving-authenticator` restarts with a new listener for the Gateway, and its old pod answers until the new one is ready.
 
-Before the first stage:
+To turn it on in a cluster with running deployments, upgrade twice, so that the Gateway is up before any deployment moves.
+Clients keep their endpoint, Knative-mode deployments stay on Istio, and no deployment restarts.
 
-1. Keep an inventory to verify against afterwards: the Standard-mode InferenceServices, which carry the `serving.kserve.io/deploymentMode` annotation, which of them scale to zero (`kubectl get ingress -A -l serving.hops.works/keda-idle=true`), and the Knative-mode ones.
+1. **Prepare.**
+    List the Standard-mode deployments, to check them at the end:
 
     ```bash
     kubectl get isvc -A -o json | jq -r '.items[] | select(.metadata.annotations["serving.kserve.io/deploymentMode"] == "Standard") | .metadata.namespace + "/" + .metadata.name'
     ```
 
-2. The Istio ingress Service, its ports and its load balancer are not touched; confirm it is healthy.
-3. Gateway API CRDs already on the cluster belong to whoever installed them, and the chart's hook leaves them alone, as described in [CustomResourceDefinitions][envoy-gateway-crds]: it fails the upgrade on an older standard bundle of another owner, which only that owner can upgrade.
-   On OpenShift 4.19 or later and on GKE the platform owns them: set `hw-envoy-gateway.gatewayApiCrds.enabled: false`, as `values.openshift.yaml` does.
-4. The hook Jobs that install the CRDs and the GatewayClass, apply the Gateway objects and generate the certificates run before the templates, a few seconds each, so they need nothing more from the `--timeout`.
-5. With `rbac.useExistingRole`, add the Gateway API permissions listed under [Cluster requirements][envoy-gateway-requirements] to the existing backend role, because the chart then renders none.
+    On OpenShift 4.19 or later and on GKE, set `hw-envoy-gateway.gatewayApiCrds.enabled: false`, because the platform owns the Gateway API CRDs, as described in [CustomResourceDefinitions][envoy-gateway-crds]; `values.openshift.yaml` already does.
+    With `rbac.useExistingRole`, add the permissions listed under [Cluster requirements][envoy-gateway-requirements] to the backend role.
 
-**Stage 1**, `global._hopsworks.envoyGateway.enabled: true` with `kserveStandardMode: false`, then `helm upgrade`.
-`enabled` on its own would also switch KServe, because `kserveStandardMode` defaults to `true`: set it to `false` explicitly for this stage.
-Envoy Gateway, the Gateway `kserve-ingress-gateway` and the forward rule from Istio come up, and no request is affected.
-Check that `kubectl get gateway -n <namespace> kserve-ingress-gateway` reports `Programmed`.
-This stage can stay for as long as wanted.
+2. **Install Envoy Gateway** with `helm upgrade` and these values:
 
-**Stage 2**, `kserveStandardMode: true`, then `helm upgrade`.
-The KServe controller restarts and creates HTTPRoutes for every Standard-mode InferenceService whose predictor is ready; their Istio Ingresses stay and keep serving.
-The Hopsworks backend does not restart: its primary instance sees the new KServe ingress configuration within a minute and migrates each Standard-mode deployment: it creates the routes and the policy it owns, waits until the Gateway, the routes and the policies report accepted, and only then deletes the deployment's Istio Ingress, and for a scale-to-zero deployment the idle Ingress and its ExternalName Service.
-A deployment whose routes are not accepted keeps its Ingress and is retried every minute.
-One whose predictor is not ready is left alone until it is, because KServe gives it no routes before, and the backend's full pass every ten minutes moves it after.
-The backend log reports each deployment.
-Verify against the inventory: no Istio-class Ingress is left for a ready Standard-mode deployment (`kubectl get ingress -A -l serving.kserve.io/inferenceservice`), every Standard-mode deployment answers on both URL shapes through the Istio endpoint, and the Knative deployments are unchanged.
+    ```yaml
+    global:
+      _hopsworks:
+        envoyGateway:
+          enabled: true
+          kserveStandardMode: false
+    ```
 
-**Rolling back** is staged the same way, and restarts no deployment.
-First `kserveStandardMode: false` and `helm upgrade`: KServe goes back to Ingresses, and the backend recreates the Istio side of every deployment and removes its Gateway routes 30 seconds after the Ingress is back, the time it gives Istio to program it.
-Then, once `kubectl get ingress -A -l serving.kserve.io/inferenceservice` again lists every ready Standard-mode deployment of the inventory, `enabled: false` and `helm upgrade`, which removes the Gateway, the forward rule and the subchart: the `kserve-ingress-gateway-apply` hook deletes the Gateway objects, the per-project ReferenceGrants and the namespace labels, and waits for the controller to remove the Envoy proxies before Helm removes the controller with the subchart.
-Turning both values off in one upgrade works too, but Standard-mode hosts answer 404 at Istio from the moment the forward rule is gone until KServe has recreated their Ingresses, about the time the KServe controller takes to restart and reconcile.
+    Set `kserveStandardMode: false` explicitly: it defaults to `true`, which would also move the deployments in this upgrade.
+    No request is affected.
+    The Gateway is ready when `kubectl get gateway -n <namespace> kserve-ingress-gateway` reports `Programmed`.
+    You can stay at this step for as long as you need.
 
-`enabled: false` leaves the GatewayClass `<release>-envoy-gateway`, the Gateway API and Envoy Gateway CRDs, and the certificate Secrets `envoy-gateway`, `envoy`, `envoy-rate-limit` and `envoy-oidc-hmac` in the release namespace.
-They are inert and are reused if the feature is turned on again.
-With the feature off, the subchart and its uninstall cleanup are no longer part of the release, so an uninstall leaves them too.
-Remove them by hand once they are no longer wanted.
-Delete the Gateway API CRDs only where the chart's hook installed them, which its field manager `envoy-gateway-crd-install` shows, and only when nothing else on the cluster uses them: deleting a CRD deletes every object of its kind, other owners' Gateways and routes included.
+3. **Move the deployments** with `helm upgrade` and `kserveStandardMode: true`.
+    Within a minute, Hopsworks moves each Standard-mode deployment to the Gateway once its new routes are accepted, and its Istio route keeps serving until then.
+    A deployment that is not ready moves once it is, within ten minutes.
+    The backend log reports each deployment it moves.
 
-```bash
-kubectl delete gatewayclass <release>-envoy-gateway
-kubectl delete secret -n <namespace> envoy-gateway envoy envoy-rate-limit envoy-oidc-hmac
-kubectl get crd -o name | grep 'gateway.envoyproxy.io' | xargs kubectl delete
-kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.managedFields[*].manager}'
-# Only if the output names envoy-gateway-crd-install:
-kubectl get crd -o name | grep 'gateway.networking.k8s.io' | xargs kubectl delete
-```
-
-**Roll back with `helm upgrade`, not `helm rollback`.**
-The Gateway objects are written and removed by `pre-install` and `pre-upgrade` hooks, and `helm rollback` runs only the `pre-rollback` and `post-rollback` hooks of the revision it goes back to, so none of this cleanup happens; `--atomic` on a failed upgrade that first enabled the feature rolls back the same way.
-Helm then removes the controller and leaves the Gateway, its EnvoyProxy, the policies, the forward rule, the GatewayClass, which owns the Envoy proxies, so they stay too, the certificate Secrets and the backend's routes, policies and ReferenceGrants.
-If that happened, upgrade again with `enabled: false` from the 5.3 chart, whose hook removes them, or remove them by hand, and then the GatewayClass and the Secrets as above:
-
-```bash
-NS=<namespace>; GW=kserve-ingress-gateway
-kubectl delete -n "$NS" virtualservice,destinationrule "$GW-forward" --ignore-not-found
-kubectl delete -n "$NS" gateway "$GW" --ignore-not-found
-kubectl delete -n "$NS" securitypolicy,backendtrafficpolicy,clienttrafficpolicy,envoyproxy "$GW" --ignore-not-found
-kubectl delete -n "$NS" httproute,securitypolicy -l serving.hops.works/gateway-route
-for ns in $(kubectl get namespace -l serving.hops.works/gateway-routes="$NS" -o name); do
-  kubectl delete referencegrant -n "${ns#namespace/}" -l serving.hops.works/gateway-route
-done
-kubectl delete -n "$NS" deployment,service,serviceaccount,configmap,poddisruptionbudget -l app.kubernetes.io/managed-by=envoy-gateway
-kubectl label namespace -l serving.hops.works/gateway-routes="$NS" serving.hops.works/gateway-routes-
-```
+4. **Check** against the list from step 1:
+    - `kubectl get ingress -A -l serving.kserve.io/inferenceservice` shows no Ingress left for a ready Standard-mode deployment.
+    - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
+    - The Knative-mode deployments are unchanged.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
