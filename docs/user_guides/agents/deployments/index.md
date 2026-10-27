@@ -22,7 +22,8 @@ For a fire-and-forget run that does a job and exits, use [Agent Tasks][how-to-ru
 ## Where to find it in the UI
 
 In the project sidebar, go to **Agents** and then **Agent Deployments**.
-Each agent's page shows its status, logs and configuration, a chat panel to talk to it, its traces, and an **Evaluation** tab for its suites, monitors and analysis.
+Each agent's page shows its status, logs and configuration, its traces, and an **Evaluation** tab for its suites, monitors and analysis.
+**Chat in panel** at the top opens a chat panel beside the page to talk to it, and **Open in chat app** opens its [chat app][share-an-agent-through-a-chat-app].
 
 ## Write the agent
 
@@ -376,7 +377,7 @@ To put an agent in front of other people, such as support staff, a pilot custome
 Create it in any of three places:
 
 - tick **Create a chat app** when you deploy the agent;
-- select **Create chat app** in the **Chat app** card on the agent's page;
+- select **Open in chat app** at the top of the agent's page, next to **Chat in panel**: it creates the app when the agent has none, and afterwards opens it in a new tab;
 - call it from Python:
 
 ```python
