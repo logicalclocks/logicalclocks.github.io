@@ -242,7 +242,7 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
 ### MinIO as a critical pod and registry probes { #upgrade-minio-priority }
 
 When a node runs short of disk, the kubelet evicts the pods that use more ephemeral storage than they request first, then by priority.
-It never evicts a critical pod (priority class `system-cluster-critical` or `system-node-critical`), and while the pressure lasts it admits only critical pods.
+Under resource pressure its eviction manager does not evict a critical pod (priority class `system-cluster-critical` or `system-node-critical`) and admits only critical pods.
 Before 5.3 MinIO was not critical, so it could be evicted ahead of ordinary workloads and could not start again until the pressure cleared; HopsFS had no block store in that time.
 Evicting MinIO frees no disk: its data is a hostPath volume.
 
