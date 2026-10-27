@@ -403,7 +403,7 @@ The app decides, never the page.
 A project member chats as their Hopsworks user, the same subject the chat panel uses, so the agent's [memory][agent-memory] of them is the same in both, and the page says who they are signed in as.
 Hopsworks tells the app who the member is with a signature only the app can check, so nobody else can claim to be them.
 Anyone who opened the public link is anonymous: the app sets a cookie with a random id in their browser and derives their subject from it, so each visitor has their own memory.
-Conversations belong to whoever started them: the app refuses a turn on anyone else's conversation.
+Each person's conversations are kept apart: whatever conversation a page asks for, it only ever reaches that person's own.
 No serving key reaches the browser: the app's server talks to the agent inside the cluster, and only forwards turns and feedback, never the routes that read or erase memory.
 
 **What people thought of the answers.**
