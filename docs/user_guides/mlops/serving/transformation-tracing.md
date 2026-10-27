@@ -152,7 +152,25 @@ predict
 The deployment page draws the write and `feature_view.log` as a separate background log process on its own time axis, so they are not counted in the request time.
 
 Only the first row of a request is traced, so a batch request records one `transformations` span; all of its rows are counted in the metrics.
-Traces are stored in the project's online feature store, so keep the sampling low on a deployment that serves many requests.
+
+## Trace storage limits
+
+Traces are stored in the online feature store's disk tablespace, which feature groups with disk columns share.
+Three cluster settings bound what model and feature view deployments store there:
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `serving_tracing_max_traces_per_minute` | `60` | Most traces one predictor pod records per minute, whatever the sampling percentage. Below 1, no cap. |
+| `serving_tracing_retention_days` | `7` | Traces older than this are deleted. `0` keeps them. |
+| `serving_tracing_pause_free_percent` | `20` | Tracing is paused on every model and feature view deployment while less than this percentage of the tablespace is free. |
+
+Hopsworks checks the tablespace every 5 minutes.
+A paused deployment reads `paused_reason == "DISK_NEARLY_FULL"` on `deployment.tracing`, and its page says tracing is paused.
+Deleted traces free space for later traces in the same tables, not in the tablespace, so a pause lifts once an administrator adds a data file to the tablespace and at least 10 points more than the threshold are free.
+The settings are Helm values under `hopsworks.variables`; a changed cap reaches running pods the next time their tracing is switched or they restart.
+Deleting a deployment deletes its traces.
+
+The `LowDiskDataFileExtents` alert fires when less than 20% of the tablespace is free.
 
 ## Overhead
 
