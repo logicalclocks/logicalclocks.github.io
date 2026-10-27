@@ -338,6 +338,7 @@
 - [HopsFS CSI Driver](https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_csi/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_csi/index.md))
 - [Dedicated Node Pools](https://docs.hopsworks.ai/latest/setup_installation/admin/node_pools/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/node_pools/index.md))
 - [KEDA Autoscaling](https://docs.hopsworks.ai/latest/setup_installation/admin/keda/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/keda/index.md))
+- [Envoy Gateway](https://docs.hopsworks.ai/latest/setup_installation/admin/envoy_gateway/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/envoy_gateway/index.md))
 - [Kafka Quotas](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/index.md))
 - [Uninstalling Hopsworks](https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/index.md))
 
@@ -396,6 +397,7 @@
 - [hopsfs](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hopsfs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hopsfs/index.md))
 - [hopsfs-csi](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hopsfs-csi/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hopsfs-csi/index.md))
 - [hopsworks](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hopsworks/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hopsworks/index.md))
+- [hw-envoy-gateway](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-envoy-gateway/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-envoy-gateway/index.md))
 - [hw-keda](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-keda/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-keda/index.md))
 - [hw-kueue](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-kueue/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-kueue/index.md))
 - [hw-kyverno](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-kyverno/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-kyverno/index.md))

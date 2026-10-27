@@ -185,6 +185,10 @@
          <lastmod>2026-10-27</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/envoy_gateway/</loc>
+         <lastmod>2026-10-27</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/helm4/</loc>
          <lastmod>2026-10-27</lastmod>
     </url>
@@ -390,6 +394,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hopsworks/</loc>
+         <lastmod>2026-10-27</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/hw-envoy-gateway/</loc>
          <lastmod>2026-10-27</lastmod>
     </url>
     <url>
