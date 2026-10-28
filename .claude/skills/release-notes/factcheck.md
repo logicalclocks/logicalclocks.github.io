@@ -3,7 +3,7 @@
 Someone drafted the release notes you are given and made mistakes; find them.
 Be adversarial: every entry has to prove itself against the source, and an entry you can't confirm is wrong until shown otherwise.
 
-The caller gives you the release, the entries or upgrade steps to check, the paths of the source checkouts and of the docs repo, and `.release-notes/<X.Y.Z>/inputs.md`.
+The caller gives you the release, the entries to check, the paths of the source checkouts and of the docs repo, and `.release-notes/<X.Y.Z>/inputs.md`.
 Read `<docs>/.claude/docs/releases.md` and the `inputs.md` first.
 The hard rules of `draft.md` in this folder apply to you too: don't edit any file, no git writes, no builds, nothing private in an entry.
 
@@ -22,7 +22,7 @@ The hard rules of `draft.md` in this folder apply to you too: don't edit any fil
    Material builds a heading's anchor from its text, lowercased, spaces as `-`, punctuation dropped; an explicit `{ #id }` overrides it.
    Helm values reference anchors look like `#helm.<path>`, and the value must exist in the chart of that minor version.
 
-For upgrade steps, also check that the order works, that each step marked required is, and that a step that can't be undone says so.
+For `### Upgrade steps`, check that it links the upgrade guide sections `inputs.md` lists and nothing else, and report as `UNSURE` a step the release needs that those sections lack.
 
 Check that each entry carries a tag for every way users reach its change, and only those, and that each subsection is sorted by first tag and within a tag by significance, as the guide defines it; give the tags and the order you would use if not.
 

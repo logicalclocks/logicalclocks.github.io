@@ -54,7 +54,11 @@ A chart, application or client commit for the same ticket is one entry.
 5.0.0 is the exception: 4.8 has no pages, so its front matter declares `since: "4.8.2"`, the first 4.8 release, and an entry that also shipped in a 4.8 patch release ends with `(also in 4.8.N)`.
 
 A release section has up to six subsections, in this order, and leaves out the ones with nothing to report: `### What's changed`, `### Breaking changes`, `### Deprecations`, `### Upgrade steps`, `### Upgraded components`, `### Configuration changes`.
-`### Upgrade steps` is on every X.Y.0 and only there, even when empty, and describes the steps needed to upgrade to it from the previous minor version; for now it says "No upgrade steps are listed for this release." on every release.
+`### Upgrade steps` links the sections of the upgrade guide, `docs/setup_installation/admin/upgrade.md`, that an upgrade to the release follows, and doesn't repeat them, so each step is written and kept up to date in one place.
+Every X.Y.0 has it: it links `Before every upgrade` and the section from the previous minor version, such as `5.1.x to 5.2.x`, or says "No upgrade steps are listed for this release." when the guide has no such section, as for 5.0.0.
+A patch release has it only when the guide has a `Changes from X.Y.Z` section for it, and links that section.
+The guide is in the docs from 5.2 on, so 5.1.0 links the 5.2 docs; `release-inputs` prints the sections and the docs version to link.
+A step the release needs that the guide lacks belongs in the guide, which changes on the release branches like any other docs page, not in the release notes.
 The hook appends a last one, `### Python client`, which links the GitHub release notes of every hopsworks-api version new in the release; `docs/js/client-release-notes.js` replaces the links with those notes, fetched from the GitHub API in the reader's browser, one collapsed block per version, and keeps the links when GitHub can't be reached.
 Never write it by hand: the notes are hopsworks-api's own, shown as they are on GitHub.
 
@@ -69,7 +73,8 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
 - Name the exact API, Helm value, config variable or CLI flag.
 - Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
   Release pages show in every docs version, so link the docs of the release's minor version with an absolute URL (`https://docs.hopsworks.ai/5.2/...`), which a relative link to a page missing from an older version would break.
-  For what no docs page covers, name the file of the chart that does, such as "see `UPGRADE.md` in the 5.2 chart": the packaged chart ships its `README.md`, `UPGRADE.md`, `HELM4_MIGRATION.md` and `values.*.yaml`, but `hopsworks-helm` is private.
+  For what no docs page covers, name the file of the chart that does, such as "see `values.openshift.yaml` in the 5.2 chart": the packaged chart ships its `README.md` and `values.*.yaml`, but `hopsworks-helm` is private.
+  Up to 5.2.1 it also shipped `UPGRADE.md` and `HELM4_MIGRATION.md`; they are docs pages now, the upgrade guide and Upgrading with Helm 4, so link those.
 - Leave out changes with no user-visible effect: tests, CI, refactors, and fixes for bugs that never shipped.
 - Do not link Jira or any private GitHub repo, and do not name customers, because the docs are public.
   Of the source repos, `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front`, `docker-images`, `flyingduck`, `clusterj-onlinefs`, `model-serving-webhook`, `model-serving-authenticator`, `hops-git`, `tools` and `sparkhistoryserver` are private; `hopsworks-api`, `rondb-helm` and the forks (`trino`, `hive`, `hudi`, `incubator-uniffle`, `spark`) are public.
@@ -119,10 +124,6 @@ A change that ships in patch releases of two minor versions at about the same ti
 Deprecations are what a release marks for removal but still accepts, such as a Helm value the chart keeps only so existing values files validate.
 Start each one with "Deprecated", and say what replaces it or that nothing reads it any more.
 Find them in the chart's values, where they are marked `DEPRECATED` or `deprecated: true`; removing one later is a breaking change.
-
-Once upgrade steps are written, they are numbered steps under `#### Before the upgrade`, `#### Upgrade` and `#### After the upgrade`.
-Mark each step as required or optional and say when a step can't be undone.
-A step that the documentation describes links to it; give a copy-paste command with `<placeholders>` only when no page has one.
 
 ## Upgraded components
 

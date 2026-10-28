@@ -202,7 +202,7 @@ Upgrade 5.1 clusters, and 5.1.2 clusters in particular, to [5.2.1][hopsworks-5-2
 
 ### Upgrade steps
 
-No upgrade steps are listed for this release.
+Follow [Before every upgrade][docs-upgrade-before] and [5.1.x to 5.2.x][docs-upgrade-51-to-52] in the upgrade guide.
 
 ### Upgraded components
 
@@ -306,3 +306,5 @@ No upgrade steps are listed for this release.
 [values-hopsworks-analytics]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsworks/#helm.hopsworks.variables.hopsworks_analytics
 [values-netpol]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsworks/#helm.hopsworks.variables.project_namespace_network_policy_enabled
 [docs-os]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/
+[docs-upgrade-before]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-before-every-upgrade
+[docs-upgrade-51-to-52]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-51-to-52

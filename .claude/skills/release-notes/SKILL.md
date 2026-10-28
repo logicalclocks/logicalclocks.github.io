@@ -44,7 +44,7 @@ S=<directory holding the checkouts>
 uv sync --extra cli
 ```
 
-Fetch every branch and tag of each checkout, and of this repo (links are checked against its `branch-*`), because a release often came out after the last fetch; component repos name their release branches in different ways, so fetch them all:
+Fetch every branch and tag of each checkout, and of this repo (links are checked against its `branch-*`, and `release-inputs` reads the upgrade guide from them), because a release often came out after the last fetch; component repos name their release branches in different ways, so fetch them all:
 
 ```sh
 git -C <repo> fetch origin --tags
@@ -69,8 +69,9 @@ Read `inputs.md` in full. It gives:
   for a fork, only the Hopsworks commits (a ticket key in the subject) made between the two release dates, because Upgraded components covers the upstream version;
   a repo without a tag or release commit for a version says so, and you find its commits by hand;
 - on an X.Y.0, `[shipped in vX.Y.Z]` on each commit a patch release of the previous minor version already shipped, and which of those patch releases' chart commits the X.Y.0 lacks;
-- the Helm values added, removed and changed, added lines that mention a deprecation, and the changed `values.*.yaml` overlays and `UPGRADE.md`;
+- the Helm values added, removed and changed, added lines that mention a deprecation, and the changed `values.*.yaml` overlays;
   it doesn't say which removed values the values schema now rejects or which hooks changed, so check `values.schema.json` and the hook templates of the chart at the tag yourself;
+- the sections of the upgrade guide that `### Upgrade steps` links, with the docs version to link, or that the guide has none for the release;
 - the Upgraded components table, with a warning for a version no component covers.
 
 Stop and ask the user when it reports an `ERROR` (a release commit it can't find, or a checkout that is missing), a `released: "?"` (the GitHub release isn't published), or a RonDB chart that moves backwards.
@@ -97,8 +98,8 @@ For up to about 40 commits, draft it yourself.
 Above that, split the commits into slices of about 40 (chart, rondb-helm, ee, front, api, images, components, values) and give each slice to a parallel agent at medium effort with `draft.md` in this folder as its brief, the slice, and the paths.
 Agents return entries with evidence and never edit the page; you merge their entries into the section, so no two writers touch one file.
 
-An X.Y.0 gets `### Upgrade steps` saying "No upgrade steps are listed for this release.", as the guide says; don't write steps into it for now.
-List in the report the steps the release needs at upgrade, from a changed `UPGRADE.md`, a migration Job or hook, or a breaking change that has to happen before or after the `helm upgrade`, so the user can decide on them.
+Write `### Upgrade steps` as the guide says, linking the upgrade guide sections `inputs.md` lists.
+Read those sections, and list in the report the steps the release needs at upgrade that they lack, from a migration Job or hook, or a breaking change that has to happen before or after the `helm upgrade`, so the user can add them to the guide.
 
 Sort the entries of each subsection by first tag and within a tag by significance, as the guide defines it, after merging; the agents' order only holds within their slice.
 
@@ -113,11 +114,11 @@ Remove link definitions that no entry uses any more; markdownlint fails on them.
 
 ## 4. Fact-check
 
-Give the drafted section, and the upgrade steps, to fresh agents at medium effort with `factcheck.md` in this folder as their brief.
+Give the drafted section to fresh agents at medium effort with `factcheck.md` in this folder as their brief.
 Split the section by subsection when it has more than about 30 entries, one agent per part.
-Don't edit the section or the steps while they run: they check the text as it was when they started, and an edit under them makes their findings stale.
+Don't edit the section while they run: they check the text as it was when they started, and an edit under them makes their findings stale.
 They check the final wording against the source and report fixes with evidence; apply them once all of them have reported.
-Check again, with a fresh agent, every entry or step a fix rewrote substantially or a fact-check added.
+Check again, with a fresh agent, every entry a fix rewrote substantially or a fact-check added.
 
 ## 5. Build
 
@@ -133,7 +134,7 @@ Both must pass; the strict build fails on a broken link, an anchor that doesn't 
 Tell the user:
 
 - the release, what it compares with, and the number of entries per subsection;
-- the upgrade steps the release needs, which the page doesn't list yet;
+- the upgrade steps the release needs that the upgrade guide lacks;
 - what the fact-check changed;
 - every `UNSURE` item, as a question;
 - the commits left out as not user-visible, as one line of short SHAs per repo.

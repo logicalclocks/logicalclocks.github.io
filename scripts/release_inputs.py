@@ -5,7 +5,8 @@ matter, the commits of the chart, of ``rondb-helm``, of the application it ships
 (``hopsworks-ee``, ``hopsworks-front``), of the Python client and of every other
 component the chart deploys from a Hopsworks repo whose version changed (``REPOS``),
 the Helm values it adds, removes or changes,
-what the chart newly deprecates, and the Upgraded components table, as
+what the chart newly deprecates, the upgrade guide sections its Upgrade steps link,
+and the Upgraded components table, as
 ``.claude/docs/releases.md`` describes. The ``/release-notes`` skill writes the
 section from this; nothing here is published, so it names commits freely.
 """
@@ -65,6 +66,11 @@ FORKS = {"hive", "hudi", "incubator-uniffle", "spark", "trino"}
 TICKET = re.compile(r"^\[?[A-Z][A-Z0-9]+-\d+\]")
 # A version setting; the Upgraded components table covers these.
 VERSION_LEAF = re.compile(r"(^|[._])(tag|version|image|digest)$", re.IGNORECASE)
+GUIDE = "docs/setup_installation/admin/upgrade.md"
+GUIDE_URL = "https://docs.hopsworks.ai/{}/setup_installation/admin/upgrade/#{}"
+# Every heading of the upgrade guide sets its anchor.
+GUIDE_HEADING = re.compile(r"^(##+) (.+?) \{ #([\w-]+) \}$", re.MULTILINE)
+RELEASE_BRANCH = re.compile(r"^origin/branch-(\d+)\.(\d+)$")
 
 
 def _tags(helm):
@@ -322,6 +328,55 @@ def _shipped_in(repo, line_tags, keys_of):
     return first
 
 
+def _upgrade_guide(release, since):
+    """The upgrade guide sections an upgrade to RELEASE follows, as rows.
+
+    An X.Y.0 follows the section from the previous minor version, a patch release
+    its ``Changes from X.Y.Z`` section, read from the oldest release branch of this
+    repo, from the release's minor version on, whose guide has it.
+    """
+    minor = tuple(int(p) for p in release.split(".")[:2])
+    if release.endswith(".0"):
+        title = f"{since.rpartition('.')[0]}.x to {release.rpartition('.')[0]}.x"
+    else:
+        title = f"Changes from {release}"
+    refs = _git(
+        _DOCS_ROOT, "for-each-ref", "--format=%(refname:short)", "refs/remotes/origin"
+    ).split()
+    branches = sorted(
+        ((int(m[1]), int(m[2])), ref)
+        for ref in refs
+        if (m := RELEASE_BRANCH.match(ref))
+    )
+    for version, ref in branches:
+        if version < minor:
+            continue
+        try:
+            guide = _git(_DOCS_ROOT, "show", f"{ref}:{GUIDE}")
+        except subprocess.CalledProcessError:
+            continue
+        headings = GUIDE_HEADING.findall(guide)
+        start = next(
+            (i for i, h in enumerate(headings) if h[:2] == ("##", title)), None
+        )
+        if start is None:
+            continue
+        docs = "{}.{}".format(*version)
+        rows = [f"From {ref}:{GUIDE}; link the {docs} docs.", ""]
+        if release.endswith(".0"):
+            before = next(h for h in headings if h[1] == "Before every upgrade")
+            rows.append(f"- {before[1]}: {GUIDE_URL.format(docs, before[2])}")
+        rows.append(f"- {title}: {GUIDE_URL.format(docs, headings[start][2])}")
+        for level, text, anchor in headings[start + 1 :]:
+            if level == "##":
+                break
+            rows.append(f"    - {text}: {GUIDE_URL.format(docs, anchor)}")
+        return rows
+    return [
+        f"No release branch from {minor[0]}.{minor[1]} on has the section {title!r}."
+    ]
+
+
 def _section(lines, title, rows, empty="None."):
     lines += ["", f"## {title}", ""]
     lines += rows or [empty]
@@ -550,11 +605,10 @@ def release_inputs(
     other = [
         p
         for p in _git(helm, "diff", "--name-only", old, tag).split()
-        if re.search(r"(^|/)(values\.[\w-]+\.yaml|UPGRADE\.md|HELM4_MIGRATION\.md)$", p)
+        if re.search(r"(^|/)values\.[\w-]+\.yaml$", p)
     ]
-    _section(
-        lines, "Changed values overlays and upgrade docs", [f"- {p}" for p in other]
-    )
+    _section(lines, "Changed values overlays", [f"- {p}" for p in other])
+    _section(lines, "Upgrade guide", _upgrade_guide(release, since))
 
     # Components
     uncovered = _uncovered(helm, rondb_helm, old, tag)

@@ -16,7 +16,7 @@ Read first, in full:
   Read with `git log`, `git show`, `git diff`, `git grep`, `git cherry` and `git log --cherry-pick`.
 - Don't run a build; the machine's memory is shared with other jobs.
 - The docs are public: an entry never names a customer, a Jira key, a PR number, a commit or a source repo; it names the component, such as OnlineFS or the model serving webhook.
-  Link only the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute); never link a private GitHub repo, such as `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front` or `docker-images`, but name a chart file in text, such as "see `UPGRADE.md` in the 5.2 chart".
+  Link only the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute); never link a private GitHub repo, such as `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front` or `docker-images`, but name a chart file in text, such as "see `values.openshift.yaml` in the 5.2 chart".
 
 ## For each change in your slice
 
@@ -35,7 +35,7 @@ Read first, in full:
 4. Write the entry as the guide says: a past-tense verb first, one line, a second line only for what the reader must act on, the exact value, API or setting, and a docs link where one exists.
    Check that a link's page and anchor exist in the docs branch of the release's minor version: `git -C <docs> show origin/branch-X.Y:docs/<path>.md`.
    The Helm values reference is generated at build time, so for a `#helm.<path>` anchor check instead that the value exists in the chart at the release tag.
-5. Note the steps an operator has to take at upgrade, if any; they go in the report, not on the page.
+5. Note the steps an operator has to take at upgrade, if any, and whether the upgrade guide sections in `inputs.md` cover them; they go in the report, not on the page.
 
 Changes with the same ticket key in different repos are one entry.
 In a fork, only Hopsworks commits count; the upstream version change is in Upgraded components.
@@ -46,6 +46,6 @@ Return the entries of each subsection sorted by first tag, and within a tag by s
 ## Report (your final message)
 
 - `ENTRY <subsection>: <text>` with its evidence: repo, short SHA(s) or `file@tag`;
-- `STEP <before|upgrade|after>: <text>` with its evidence, for upgrade steps;
+- `STEP <before|upgrade|after>: <text>` with its evidence and the guide section that covers it, or `not in the guide`, for upgrade steps;
 - `LEFT OUT: <repo> <short SHAs>`, one line per repo, for changes users don't notice;
 - `UNSURE: <question>` for anything you could not settle from the source.
