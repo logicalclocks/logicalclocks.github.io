@@ -1137,6 +1137,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 370011 | `TAG_PATH_NOT_TAGGABLE` | 400 BAD_REQUEST | Only dataset roots can be tagged. Tagging a file or a directory inside a dataset is no longer supported. |
 | 370012 | `TAG_WRITE_DENIED` | 403 FORBIDDEN | Not allowed to change the tags of this dataset. |
 | 370013 | `TAG_MIGRATION_PENDING` | 409 CONFLICT | This dataset still has legacy tags in HopsFS that could not be migrated. Resolve them before changing its tags. |
+| 370014 | `TAG_SCHEMA_IN_USE` | 409 CONFLICT | The tag schema is still in use and cannot be deleted. |
 
 ## CloudErrorCode
 
