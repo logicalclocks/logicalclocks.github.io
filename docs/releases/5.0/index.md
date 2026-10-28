@@ -53,18 +53,18 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
+- [API] [FRONTEND] Fixed queued project and member operations, such as Superset access changes, failing for good after 68 attempts, for project Observers, or when removing a member's Superset user; a failing operation now retries once a day.
 - [API] Changed Spark engine reads of a feature view whose feature groups all come from one Snowflake data source to run the whole query, point-in-time joins included, in Snowflake instead of reading each feature group in full.
+- [API] [FRONTEND] Added key pair authentication to DLT ingestion from Snowflake, which accounts that enforce MFA need ([Snowflake data source](https://docs.hopsworks.ai/5.0/user_guides/fs/data_source/creation/snowflake/)).
+- [API] Fixed reads of external feature groups failing on chained point-in-time joins, on joins with a prefix or extra primary keys, and, in the Python engine, when they leave out a feature appended to the feature group.
 - [API] Fixed external Spark clients failing to read, write or delete DELTA feature groups when the HopsFS NameNode and DataNode load balancers are disabled.
 - [API] Fixed the Python client installing pyarrow 26 next to NumPy 1, with which importing `hsfs.feature_group` fails with `pyarrow requires NumPy 2.0 or newer`; it now requires pyarrow below 26.
-- [API] Fixed `SnowflakeConnector.connector_options()` in the Python client failing for a data source with key pair authentication, and leaving out the role set on the data source.
-- [API] [FRONTEND] Addressed vulnerabilities in jobs.
-- [API] [FRONTEND] Added key pair authentication to DLT ingestion from Snowflake, which accounts that enforce MFA need ([Snowflake data source](https://docs.hopsworks.ai/5.0/user_guides/fs/data_source/creation/snowflake/)).
-- [API] Fixed reads of external feature groups failing on chained point-in-time joins, on joins with a prefix or extra primary keys, and after features were appended to the feature group.
-- [API] Fixed Snowflake reads through the Hopsworks Query Service, such as Python engine reads, using the Snowflake user's default role instead of the role set on the data source.
-- [API] [FRONTEND] Fixed queued project and member operations, such as Superset access changes, failing for good after 68 attempts, for project Observers, or when removing a member's Superset user; a failing operation now retries once a day.
-- [API] [FRONTEND] Fixed a killed Spark job with pending executors staying in the aggregating logs state for up to 20 minutes.
 - [API] [FRONTEND] Fixed Trino giving a project access to only one of several feature stores shared with it.
+- [API] [FRONTEND] Fixed a new project that reuses the name of a project still being deleted losing its members' Trino and Superset access and its dataset shares when the old project's delete ran.
 - [API] [FRONTEND] Fixed Git operations failing with an I/O error when a Git provider proxy is set on a cluster with HopsFS encryption at rest.
+- [API] [FRONTEND] Fixed a killed Spark job with pending executors staying in the aggregating logs state for up to 20 minutes.
+- [API] Fixed `SnowflakeConnector.connector_options()` in the Python client failing for a data source with key pair authentication, and leaving out the role set on the data source.
+- [API] Fixed Snowflake reads through the Hopsworks Query Service, such as Python engine reads, using the Snowflake user's default role instead of the role set on the data source.
 - [API] [FRONTEND] Fixed DLT ingestion rejecting a load whose decimal values are narrower than the precision of the source column.
 - [FRONTEND] Added a **Stop** button to the SQL Runner, and leaving the SQL Runner now stops the running query; the run status shows the elapsed time and the rows the query engine processed.
 - [FRONTEND] Changed the SQL Runner layout: the results fill the panel with row numbers and column types, the Explorer lists a table's columns, autocomplete completes the statement at the cursor, `EXPLAIN` plans render as JSON or a graph, and long plans and table definitions scroll instead of overflowing.
@@ -77,8 +77,10 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Breaking changes
 
+- [API] [FRONTEND] Data Scientists can no longer change a job another member created, other than its schedule, to address a vulnerability; ask its creator or a Data Owner of the project to change it.
 - [HELM] The chart no longer turns on Trino's MySQL event listener, which crash-looped the Trino coordinator after a MySQL server restart, so the [Trino query history](https://docs.hopsworks.ai/5.0/setup_installation/admin/trino/#query-history) stops recording queries.
   To keep it, add the listener to your values as the chart's `README.md` shows; recorded queries now lose their text and plan after `hopsworks.variables.trino_events_strip_details_after_days`, from the first nightly cleanup, so set it to `61` or more to keep them.
+- [HELM] If your values restate `trino.trino.additionalConfigProperties` with its `event-listener.config-files` entry, which the 5.0.13 chart set by default, remove that entry or add the listener files as the chart's `README.md` shows, or Trino doesn't start.
 - [HELM] The RonDB REST server now uses a probe port and an upload path that need RonDB 26.02.11, instead of probing its REST port with no upload path.
   If you pin `rondb.rondb.images.rondb.tag` to an older version, set `rondb.rondb.rdrs.probePort.enabled: false` and `rondb.rondb.rdrs.uploadPath: ""`, or the REST server doesn't start.
 
@@ -109,6 +111,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Configuration changes
 
+- [HELM] Removed the MySQL event listener from the default `trino.trino.additionalConfigProperties` and from `trino.trino.coordinator.additionalConfigFiles` and `trino.trino.worker.additionalConfigFiles`.
 - [HELM] Changed `rondb.rondb.terminationGracePeriodSeconds` to one value per component, 300 seconds for `ndbmtds` instead of 60, and 30 for the others; a plain number still sets the data nodes only.
 - [HELM] Added `hopsworks.variables.trino_events_strip_details_after_days` (default `7`) and changed the default `hopsworks.variables.trino_events_cleaner_batch_size` to `100`.
 - [HELM] Changed the Superset init image to its own `superset/dockerize` repository, also in `values.airgap.yaml`; if you override `superset.superset.initImage.repository`, point it at a mirror of that image.
@@ -145,6 +148,7 @@ The releases of Hopsworks 5.0, newest first.
 
 - [HELM] Added `kafka.cluster.kafka.quotas.type` to choose the Kafka quota plugin: `strimzi` (the default), set under `kafka.cluster.kafka.quotas.strimzi`, or `kafka`, which enforces per-user quotas from `kafka.users[].quotas` and defaults from `kafka.cluster.kafka.quotas.kafka`.
   `kafka` also needs `kafka.cluster.kafka.quotas.minAvailableRatioPerVolume: 0`, per-user quotas need `kafka.cluster.kafka.authorizer.principalBuilderClass: ""`, which changes how ACLs and `superUsers` match principals, and none of these settings take effect on clusters first installed on Hopsworks 4.3 or 4.5.
+- [HELM] Added `airflow.dependencies.mysql.ddlConsulServiceName` (default `mysqlddl`), the DDL MySQL server the Airflow migration Job connects to.
 - [HELM] Added `onlinefs.deployment.strategy` to set the rollout strategy of OnlineFS.
 - [HELM] Added `rondb.rondb.rdrs.probes` to configure the RonDB REST server probes.
 
@@ -155,10 +159,10 @@ The releases of Hopsworks 5.0, newest first.
 - [API] Fixed the Python client installing PyMySQL 1.2.1 or later, with which `import hsfs` fails with an `ImportError`; it now requires PyMySQL below 1.2.1.
 - [API] [FRONTEND] Added **Driver overhead factor** and **Executor overhead factor** to the Spark configuration of jobs, Jupyter and project defaults, which set `spark.driver.memoryOverheadFactor` and `spark.executor.memoryOverheadFactor`, also as `driver_memory_overhead_factor` and `executor_memory_overhead_factor` of `JobConfiguration` in the Python client ([PySpark jobs](https://docs.hopsworks.ai/5.0/user_guides/projects/jobs/pyspark_job/)).
   Jupyter Spark sessions now default both to `0.4`, as PySpark jobs do, so notebooks and their executors request more memory than before.
-- [FRONTEND] Added a **Monitor** button to each running Spark application on the Jupyter page, showing its driver and executor pods, and fixed the Jupyter server monitor showing a Spark executor as the notebook pod; the Grafana link there is now called **Metrics**.
+- [FRONTEND] Added a **Monitor** button to each running Spark application on the Jupyter page, showing its driver and executor pods, and fixed the Jupyter server monitor showing a Spark executor as the notebook pod; the Grafana link there and in the job drawer menu is now called **Metrics**.
+- [HELM] Fixed service logs being dropped from the `.services` OpenSearch index when Kubernetes labels pushed it past 1000 fields.
 - [HELM] Changed the memory split of the remote shuffle servers to stop heap out-of-memory crashes: 20% of `spark.rss.shuffleServer.resources.limits.memory` is reserved for native memory and the rest is split 25% heap, 75% off-heap.
 - [HELM] Fixed the remote shuffle servers never receiving their off-heap memory setting, which left their buffers about nine times too small.
-- [HELM] Fixed service logs being dropped from the `.services` OpenSearch index when Kubernetes labels pushed it past 1000 fields.
 
 ### Breaking changes
 
@@ -176,6 +180,8 @@ The releases of Hopsworks 5.0, newest first.
 ### Configuration changes
 
 - [HELM] Changed the default `spark.rss.shuffleServer.bufferCapacityRatio` to `0.6` and `spark.rss.shuffleServer.resources.limits.cpu` to `2000m`.
+- [HELM] Removed `hopsworks.variables.jupyter_spark_driver_memory_overhead_factor`, the driver memory overhead of Jupyter servers in Spark environments, which now comes from the notebook's Spark configuration.
+- [HELM] Added `olk.filebeat.kubernetesMetadata`, the pod, namespace and node labels Filebeat keeps on service logs (`extraPodLabels`, `extraNamespaceLabels`, `extraNodeLabels` for your own), and `addKubernetesMetadata` on each `olk.filebeat.logs_locations` entry.
 
 ## 5.0.11 { #hopsworks-5-0-11 }
 
@@ -202,26 +208,27 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
-- [API] [FRONTEND] Added the GitHub Copilot and OpenCode CLIs to the web terminal, next to Claude Code and Codex; the coding agents share the skills in your home directory, which `hops skills list` now lists, and keep their logins and sessions across terminal sessions.
-- [API] Fixed creating an agent task with `JobApi.create_job` in the Python client failing with `'appPath' not set in job configuration`.
 - [API] [FRONTEND] Addressed vulnerabilities in project datasets.
+- [API] [FRONTEND] Added the GitHub Copilot and OpenCode CLIs to the web terminal, next to Claude Code and Codex; the coding agents share the skills in your home directory, which `hops skills list` now lists, and keep their logins and sessions across terminal sessions.
+- [API] [FRONTEND] Added GitHub Copilot as a provider of agent tasks, signed in with the token of a GitHub AI provider or of your github.com Git provider, which can't be a classic personal access token.
+- [API] Changed `GET /project/{id}/jupyter/running` to return `204 No Content` instead of `404` when no Jupyter server is running.
+- [API] Fixed writes to an online feature group failing after its table was truncated.
 - [API] [FRONTEND] Fixed Git operations failing to authenticate when a provider token or password contains special characters.
   The upgrade converts the saved credentials; if a provider still fails, save it again in your account settings.
-- [API] [FRONTEND] Changed `GET /project/{id}/jupyter/running` to return `204 No Content` instead of `404` when no Jupyter server is running.
-- [API] Fixed writes to an online feature group failing after its table was truncated.
-- [FRONTEND] Added GitHub Copilot as a provider of agent tasks, signed in with the token of a GitHub AI provider or of your github.com Git provider, which can't be a classic personal access token.
+- [API] Fixed creating an agent task with `JobApi.create_job` in the Python client failing with `'appPath' not set in job configuration`.
+- [API] [FRONTEND] Fixed agent tasks that run at the same time failing to sign in to Claude Code, because they shared one credentials file.
+- [FRONTEND] Fixed uploading files in the file browser deleting the files of the previous upload unless the page was reloaded.
+- [FRONTEND] [HELM] Fixed the Jupyter server of Spark environments running out of memory: it now adds an overhead (`hopsworks.variables.jupyter_spark_driver_memory_overhead_factor`) and a floor (`jupyter_spark_notebook_server_memory_floor_mb`) to the driver memory.
+- [FRONTEND] Fixed `kubectl` failing in every web terminal, because terminals never got a kubeconfig.
+- [FRONTEND] Fixed the project home page crashing with "Something went wrong while loading this page" because of the Feature usage card.
 - [FRONTEND] Added a Copilot tab and a Business Glossary for each coding agent to the Agents page of the cluster settings, now called Coding Agents.
-- [FRONTEND] Fixed Spark executors started from Jupyter having no CPU limit and rounding fractional executor cores up to a whole core; they now get the executor cores of the session as request and limit, as job executors do.
 - [FRONTEND] Added the status of the TTL purge of online feature groups: a TTL purge card on the feature group overview and a TTL Purge page in the cluster settings.
 - [FRONTEND] Added a read-only `featurestore` directory to the web terminal with the files of the project's offline feature store.
+- [FRONTEND] Fixed Spark executors started from Jupyter having no CPU limit and rounding fractional executor cores up to a whole core; they now get the executor cores of the session as request and limit, as job executors do.
 - [FRONTEND] Fixed creating or editing a BigQuery data source failing with a gRPC error when the form lists the GCP projects.
-- [FRONTEND] Fixed uploading files in the file browser deleting the files of the previous upload unless the page was reloaded.
-- [FRONTEND] Fixed the project home page crashing with "Something went wrong while loading this page" because of the Feature usage card.
 - [FRONTEND] Removed the Plans dialog from the web terminal.
-- [FRONTEND] Fixed `kubectl` failing in every web terminal, because terminals never got a kubeconfig.
-- [FRONTEND] [HELM] Fixed the Jupyter server of Spark environments running out of memory: it now adds an overhead (`hopsworks.variables.jupyter_spark_driver_memory_overhead_factor`) and a floor (`jupyter_spark_notebook_server_memory_floor_mb`) to the driver memory.
-- [HELM] Added support for Git repositories behind a private CA or an HTTP proxy: set `hopsworks.variables.git_custom_ca_configmap` to a ConfigMap that exists in every project namespace, `git_<provider>_http_proxy` and `git_<provider>_https_proxy` for GitHub, GitLab and BitBucket, or `git_disable_tls_verification`.
 - [HELM] Fixed init containers that wait for a RonDB rollout giving up after 30 minutes, which failed the Hive Metastore, HopsFS, Airflow migration and CA pods when a RonDB restart took longer.
+- [HELM] Added support for Git repositories behind a private CA or an HTTP proxy: set `hopsworks.variables.git_custom_ca_configmap` to a ConfigMap that exists in every project namespace, `git_<provider>_http_proxy` and `git_<provider>_https_proxy` for GitHub, GitLab and BitBucket, or `git_disable_tls_verification`.
 - [HELM] Added the `KafkaAuthenticationFailures` Prometheus alert for clients that keep failing to authenticate, for example with an expired certificate.
 - Addressed vulnerabilities in the ArrowFlight and remote shuffle service images.
 
@@ -252,13 +259,13 @@ The releases of Hopsworks 5.0, newest first.
 - [API] [FRONTEND] Fixed Ray jobs and the Ray clusters of Jupyter failing to start on OpenShift, because their pods couldn't read the project certificates.
 - [API] [FRONTEND] Fixed the state of a Spark or Ray job execution switching between queued and running while one of its pods couldn't be scheduled.
 - [FRONTEND] Fixed web terminals failing to start on OpenShift.
-- [HELM] Fixed init containers without requests and limits being charged a namespace `LimitRange` default for the whole life of the pod; the RonDB and Consul charts are not covered yet.
 - [HELM] Fixed the KServe local model controller image (`kserve.kserve.localmodel.enabled`) failing to pull.
 - Addressed vulnerabilities in the Hopsworks and Hopsworks CA images.
+- Fixed Python jobs, notebooks, apps and agent tasks crashing with a segmentation fault when they list or change the owner of a HopsFS directory through pydoop.
 
 ### Breaking changes
 
-- [HELM] Init containers now set CPU and memory requests and limits, which most of them used to leave unset.
+- [HELM] Init containers now set CPU and memory requests and limits, which most of them used to leave unset, so a namespace `LimitRange` default is no longer charged to the pod for its whole life; the RonDB and Consul charts are not covered yet.
   If a namespace `LimitRange` has a `min` or `max` they don't fit, set `global._hopsworks.initContainerResources` before you upgrade, or Kubernetes rejects the pods.
 
 ### Upgraded components
@@ -288,16 +295,18 @@ The releases of Hopsworks 5.0, newest first.
 
 - [API] [FRONTEND] [HELM] Added an upload policy, `hopsworks.variables.upload_policy`, that allows file uploads to everyone (`enabled`), to administrators only (`admins_only`) or to nobody (`disabled`), from the web UI and from clients such as the Python SDK; the web UI disables its upload controls for blocked users, and `upload(overwrite=True)` in the Python client no longer deletes the existing file when the policy blocks the upload.
   The upgrade writes the value to the cluster, so a change made in the admin UI lasts until the next upgrade.
+- [API] [FRONTEND] Addressed vulnerabilities in feature views.
 - [API] [FRONTEND] Added deleting rows from a feature group with `remove_rows` in the Python client and `removeRows` in the Java client, which delete from both stores of an online feature group unless `storage` is `"offline"` or `"online"`; online ingestion results and the ingestion activity in the UI show them as deleted rows.
 - [API] Added project member management (`Project.get_members`, `add_member`, `remove_member`), feature group access for members with the Feature store restricted role (`FeatureGroup.grant_restricted_access`, `revoke_restricted_access`, `get_restricted_access`) and user administration (`hopsworks.get_users_api()`) to the Python client.
 - [API] Fixed `share`, `shared_with` and `unshare` of feature groups and feature stores, and `DatasetApi.unshare`, failing in the Python client.
-- [API] Fixed online feature vectors failing with a `ValueError` on `TIMESTAMP(n)` and `DATETIME(n)` features with fractional seconds, and similarity search results losing the milliseconds of timestamps.
-- [API] [FRONTEND] Addressed vulnerabilities in feature views.
 - [API] Fixed Arrow Flight queries of partitioned DELTA feature groups failing once the feature group is older than `delta.logRetentionDuration`.
+- [API] Fixed online feature vectors failing with a `ValueError` on `TIMESTAMP(n)` and `DATETIME(n)` features with fractional seconds, and similarity search results losing the milliseconds of timestamps.
+- [API] Fixed inserts with the `upsert_if_newer` online ingestion option failing for online feature groups with a composite primary key.
 - [FRONTEND] Fixed the **SQL Runner** returning a different number of rows on each run, ignoring the row limit for some queries and discarding the typed query when the limit changed; it now shows the row count of a result.
 - [FRONTEND] Fixed project members with the Observer role being offered Superset actions that fail; the UI now disables them.
-- [HELM] Fixed Superset queries through Trino logging `Access Denied: Cannot access catalog system`, and project creation and new project members logging Trino `Access Denied: Invalid credentials` errors before their Superset connection is ready.
 - [HELM] Fixed Kafka failing to start on clusters with many API groups, such as OpenShift, when the Vertical Pod Autoscaler (`global._hopsworks.vpaEnabled`) is on, because pod creation stalled for about 20 seconds.
+- [HELM] Added `hopsworks.jupyter.notebookConfig.enableUploads`; set it to `false` to block file uploads from the Jupyter UI and base64 uploads through the Jupyter Contents API.
+- [HELM] Fixed Superset queries through Trino logging `Access Denied: Cannot access catalog system`, and project creation and new project members logging Trino `Access Denied: Invalid credentials` errors before their Superset connection is ready.
 - Addressed vulnerabilities in the Hopsworks server dependencies, in the Payara, HopsFS, Hive Metastore, ArrowFlight, OnlineFS, Airflow, Git, toolbox, base environment, Filebeat, Grafana, OpenSearch, OpenSearch Dashboards, Logstash, remote shuffle service and Superset images, and in the MySQL database of Superset.
 
 ### Breaking changes
@@ -337,7 +346,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Configuration changes
 
-- [HELM] Added `hopsworks.jupyter.notebookConfig.enableUploads`; set it to `false` to block file uploads from the Jupyter UI and base64 uploads through the Jupyter Contents API.
+- [HELM] Changed the default Trino access rules, `trino.trino.accessControl.rules`, to let every user read the `system.metadata` tables; if you override the rules, add the same grant.
 
 ## 5.0.6 { #hopsworks-5-0-6 }
 
@@ -346,8 +355,8 @@ The releases of Hopsworks 5.0, newest first.
 - [FRONTEND] Added the full color palette, interface styles such as border radius, border width and shadows, a live preview, and a branding export, import and reset to the Branding page of the cluster settings, shown when the cluster variable `enable_custom_branding` is `true`.
 - [FRONTEND] Fixed the create and edit forms of model and LLM deployments: a hidden tracing field could block saving, the vLLM image tag could stay blank, and editing a deployment reset its resources.
 - [FRONTEND] Fixed feature monitoring charts not showing the standard deviation.
+- [HELM] Fixed Airflow failing to start on OpenShift with `airflow: command not found`.
 - Addressed vulnerabilities in the Hopsworks and Hopsworks CA images.
-- Fixed Airflow failing to start on OpenShift with `airflow: command not found`.
 
 ### Upgraded components
 
@@ -361,6 +370,10 @@ The releases of Hopsworks 5.0, newest first.
 
 ## 5.0.5 { #hopsworks-5-0-5 }
 
+### What's changed
+
+- [HELM] Added sequenced rollouts that restart the RonDB data nodes one node group at a time on clusters with more than one node group, turned on with `rondb.rondb.ndbmtdSequencedRollout.enabled` (default `false`).
+
 ### Upgraded components
 
 | Component | 5.0.4 | 5.0.5 |
@@ -370,14 +383,12 @@ The releases of Hopsworks 5.0, newest first.
 ### Configuration changes
 
 - [HELM] Added `rondb.rondb.timeoutsMinutes.ndbmtdStartupProbe` and `rondb.rondb.timeoutsMinutes.mysqldStartupProbe`, the startup probe timeouts of the RonDB data nodes and MySQL servers, and raised them from 25 to 120 minutes and from about 17 to 20 minutes.
-- [HELM] Added `rondb.rondb.ndbmtdSequencedRollout.enabled` (default `false`) to roll the RonDB data nodes one node group at a time, on clusters with more than one node group.
 
 ## 5.0.4 { #hopsworks-5-0-4 }
 
 ### What's changed
 
-- [API] [HELM] Fixed online feature store ingestion skipping rows that failed with transient RonDB errors, such as `Rowid already allocated`, during a RonDB upgrade; it now pauses and retries until they are written.
-  Set the pause between retries with `onlinefs.configmapOverrides.onlinefssite.service.pauseRetrySleepMs` (default `5000`).
+- [API] [HELM] Fixed online feature store ingestion skipping rows that failed with transient RonDB errors, such as `Rowid already allocated`, during a RonDB upgrade; it now pauses and retries every `onlinefs.configmapOverrides.onlinefssite.service.pauseRetrySleepMs` until they are written.
 
 ### Upgraded components
 
@@ -394,12 +405,11 @@ The releases of Hopsworks 5.0, newest first.
 ### What's changed
 
 - [HELM] Fixed the Hopsworks admin pod getting stuck in CrashLoopBackOff when workers were slow to register; the admin sidecar now keeps retrying, restarts unregistered workers and redeploys Hopsworks after the admin container restarts.
-- [HELM] Changed the Hopsworks admin container to restart after about 10 minutes without a response (`hopsworks.probs.admin.livenessProbe`), with up to 30 minutes to start (`hopsworks.probs.admin.startupProbe`).
 - Addressed vulnerabilities in the Strimzi operator and Kafka images.
 
 ### Breaking changes
 
-- [HELM] The admin liveness and startup probes now have a default `exec` handler, instead of no probe, so a probe you set with `httpGet` or `tcpSocket` also needs `exec: null`, or Kubernetes rejects the pod.
+- [HELM] The Hopsworks admin container now has a liveness probe (`hopsworks.probs.admin.livenessProbe`) that restarts it after about 10 minutes without a response and a startup probe (`hopsworks.probs.admin.startupProbe`) that gives it up to 30 minutes to start, instead of no probes, so a probe you set with `httpGet` or `tcpSocket` also needs `exec: null`, or Kubernetes rejects the pod.
   This needs Helm 4 or Helm 3.17.1 or later, because older Helm 3 releases ignore a `null` for a subchart value.
 
 ### Deprecations
@@ -423,13 +433,13 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
+- [API] Fixed online feature store ingestion stalling after a feature group with pending records was deleted.
 - [API] [FRONTEND] Added [mandatory tags](https://docs.hopsworks.ai/5.0/user_guides/fs/tags/mandatory_tags/) for models and deployments, and tags on deployments, which the Python client sets with `Deployment.add_tag` and reports in `missing_mandatory_tags` of a model or deployment.
   Model tags move from HopsFS to the database the first time a model is read or tagged after the upgrade, and a tag that no longer matches its schema is dropped.
+- [API] [FRONTEND] [HELM] Fixed deleting a feature group failing after many online ingestions; Hopsworks now keeps the latest 1000 online ingestions of each feature group (cluster variable `online_ingestion_max_per_featuregroup`).
 - [API] Fixed `get_tag` and `get_tags` of feature groups, feature views, training datasets, models and datasets in the Python client failing with a `TypeError` when a tag value is not a plain string.
 - [API] Fixed random splits of training datasets with the Python engine ignoring `seed`, so they were not reproducible.
 - [API] Fixed importing the Python client reseeding Python's global `random` module.
-- [API] [FRONTEND] [HELM] Fixed deleting a feature group failing after many online ingestions; Hopsworks now keeps the latest 1000 online ingestions of each feature group (cluster variable `online_ingestion_max_per_featuregroup`).
-- [API] Fixed online feature store ingestion stalling after a feature group with pending records was deleted.
 - [FRONTEND] Changed projects created without the `Users` dataset to get it, with a home folder for each member, automatically after the upgrade, instead of asking the data owner to enable private user directories.
 - [FRONTEND] Fixed saving the Alertmanager configuration in the admin UI silently failing when it sets a boolean or numeric option, such as `smtp_require_tls` or `max_alerts`.
 - [FRONTEND] Fixed the data preview of a feature view's logging feature group failing.
@@ -454,6 +464,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Configuration changes
 
+- [HELM] Added `global._hopsworks.wipeDataOnUninstall` (default `true`) to delete the data volumes on `helm uninstall`.
 - [HELM] Added `cleanupOnUninstall.enabled` to each component chart, such as `hopsworks.cleanupOnUninstall.enabled`, and `certs-operator.gracefulCertTeardown.enabled`, to turn off the uninstall cleanup of that component.
 
 ## 5.0.1 { #hopsworks-5-0-1 }
@@ -466,6 +477,7 @@ The releases of Hopsworks 5.0, newest first.
 - [API] [FRONTEND] [HELM] Added Git repositories as a source for agent deployments (`git_url`, `git_provider` and `git_branch` of `deploy_agent` in the Python client), token prices per deployment to estimate the LLM cost (`input_token_price_per_million_tokens` and `output_token_price_per_million_tokens` of `DeploymentTracingConfig`), and dashboards of traces, LLM calls, tokens, cost and tool calls.
   Agent deployments now mount HopsFS, which on clusters with Kyverno needs `hw-kyverno.policyExceptions.pythonDeployment.enabled` (default `true`).
 - [API] [FRONTEND] [HELM] Added an app base path, a proxy routing mode and a readiness probe path to [apps](https://docs.hopsworks.ai/5.0/user_guides/projects/apps/), set in the Python client with `app_base_path` and `readiness_probe_path` of `create_app`, so an app can be served from its root without `APP_BASE_URL_PATH`; existing apps keep the prefix routing, and the App Metrics Grafana dashboard shows zero instead of "No data" for apps without traffic.
+- [API] [FRONTEND] Fixed model deployments with images from the managed Docker registry failing to start.
 - [API] [FRONTEND] Fixed failed or partly deleted projects counting against the owner's maximum number of projects.
 - [API] [FRONTEND] Fixed ingestion with dltHub and schema fetching from NoSQL data sources failing when the project, data source or table names are long.
 - [FRONTEND] [HELM] Added the online feature store (RonDB) quotas and memory usage to the project settings, a banner on project pages near or over quota, and a Quotas and Rate Limits page in the cluster settings for the defaults of new projects; HopsFS quotas are now labelled GB instead of TB, the unit they always had.
@@ -477,12 +489,14 @@ The releases of Hopsworks 5.0, newest first.
 - [FRONTEND] Fixed project membership changes being slow, and Airflow requests timing out or failing with server errors, when Airflow is turned off (`global._hopsworks.airflow.enabled: false`).
 - [FRONTEND] Fixed project pages showing a "Feature not enabled: DATA_SCIENCE_PROFILE" error when the data science profile is off; the model registry, deployments and apps are now hidden from the menu.
 - [FRONTEND] [HELM] Fixed Superset redirecting to its internal host behind a reverse proxy that rewrites the Host header; set `hopsworks.variables.hopsworks_public_proxy_url` to the public `host[:port]`.
-- [HELM] Added a lifecycle webhook that posts user, project and membership events to `hopsworks.variables.lifecycle_webhook_url`, tagged with `lifecycle_webhook_cluster_id` and signed with HMAC-SHA256 when `lifecycle_webhook_secret` is set.
-- [HELM] Fixed environment builds against the managed Docker registry ignoring `hopsworks.variables.docker_operations_push_insecure` and failing on a self-signed certificate; set the new `hopsworks.variables.docker_operations_registry_http` to `"true"` for a registry served over plain HTTP.
 - [HELM] Fixed database initialization and migrations starting while RonDB was still restarting; they now wait up to 30 minutes for each RonDB StatefulSet to roll out.
 - [HELM] Added support for Kubernetes 1.35 and 1.36.
-- [HELM] Fixed model deployments with images from the managed Docker registry failing to start.
+- [HELM] Added an external LoadBalancer for the Hive Metastore, turned on with `hive.externalLoadBalancer.enabled` (default `false`), so that clients outside Kubernetes, such as external Spark applications, can reach it.
+- [HELM] Added a lifecycle webhook that posts user, project and membership events to `hopsworks.variables.lifecycle_webhook_url`, tagged with `lifecycle_webhook_cluster_id` and signed with HMAC-SHA256 when `lifecycle_webhook_secret` is set.
+- [HELM] Fixed environment builds against the managed Docker registry ignoring `hopsworks.variables.docker_operations_push_insecure` and failing on a self-signed certificate; set the new `hopsworks.variables.docker_operations_registry_http` to `"true"` for a registry served over plain HTTP.
 - Addressed vulnerabilities in the MySQL database of Superset.
+- Changed the base environment images to Node.js 26.3.0, instead of 20.
+- Fixed `npm install -g` and `corepack enable` failing for the non-root user in jobs, notebooks, apps and deployments that run on the base environment images.
 
 ### Breaking changes
 
@@ -509,18 +523,16 @@ The releases of Hopsworks 5.0, newest first.
 ### Configuration changes
 
 - [HELM] Added `rondb.rondb.mysql.exporter.maxOpenConnections` (default `1`), the connections of the RonDB MySQL metrics exporter; the render fails if it exceeds `rondb.rondb.mysql.exporter.maxUserConnections`.
-- [HELM] Added `hive.externalLoadBalancer.enabled` (default `false`) to expose the Hive Metastore outside Kubernetes, for example to external Spark applications.
 - [HELM] Added `kserve.kserve.servingruntime.vllmopenai.imageRegistry` and `kserve.kserve.servingruntime.vllmomni.imageRegistry` to pull the vLLM images from a mirror.
 - [HELM] Added `hopsworks.velero.backup.storageLocation.s3ForcePathStyle` for S3-compatible backup stores that need path-style addressing.
 - [HELM] Added `rondb.rondb.rondbConfig.UseTcInRRGroup` and `rondb.rondb.rondbConfig.MaxRRGroupSize` to tune the RonDB round-robin groups.
 
 ## 5.0.0 { #hopsworks-5-0-0 }
 
-Entries marked with a 4.8 release also shipped in that 4.8 patch release, so you can skip them if you upgrade from it or a later one.
-If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgrade to the latest 5.0 release instead of 5.0.0.
-
 ### What's changed
 
+- [API] [FRONTEND] Addressed vulnerabilities in the feature store.
+- [API] [FRONTEND] Fixed the Hopsworks REST API and UI stalling when many Jupyter, terminal or app sessions are open.
 - [API] [FRONTEND] [HELM] Added Agent Deployments, the Python deployments without a model, listed under **Agents** and with optional OpenTelemetry tracing into project feature groups, created in the Python client with `ModelServing.deploy_agent`; see [Agent Deployments](https://docs.hopsworks.ai/5.0/user_guides/agents/deployments/).
   Size the tracing sidecar with `hopsworks.variables.agent_deployment_otel_cpu` and `agent_deployment_otel_memory_mb`, or turn tracing off for the cluster with `agent_deployment_otel_enabled: "false"`.
 - [API] [FRONTEND] [HELM] Added Apps, Streamlit dashboards and custom web apps such as Flask, FastAPI or Gradio that run as long-lived services in a project, on the new `python-app-pipeline` environment, also managed in the Python client with `Project.get_app_api()`; see [Apps](https://docs.hopsworks.ai/5.0/user_guides/projects/apps/).
@@ -533,9 +545,9 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 - [API] [FRONTEND] [HELM] Added request metrics to apps: an Envoy sidecar measures requests and latency, shown with CPU, memory and Kubernetes status on the app page and in the new App Metrics Grafana dashboard.
 - [API] [FRONTEND] Added the datasets shared with a project to the HopsFS mount of Jupyter, jobs, apps and terminals, under `/hopsfs/shared-datasets/<project>/<dataset>`.
 - [API] [FRONTEND] Added the `hops` CLI to the Python client package, to work with feature groups, feature views, training datasets, models, deployments, agents, apps, jobs and data sources from a shell, with browser sign-in that creates an API key for the project you pick.
-- [API] [FRONTEND] [HELM] Added an optional transform script to dltHub ingestion jobs (`transform_script_path` of `SinkJobConfiguration` in the Python client), which now run in the `dlthub-ingestion-pipeline` environment, and memory and CPU recommendations to the ingestion forms; see [Ingest data with dltHub](https://docs.hopsworks.ai/5.0/user_guides/fs/feature_group/ingest_with_dlthub/).
+- [API] [FRONTEND] [HELM] Added an optional transform script to dltHub ingestion jobs (`transform_script_path` of `SinkJobConfiguration` in the Python client), which now run in the `dlthub-ingestion-pipeline` environment; see [Ingest data with dltHub](https://docs.hopsworks.ai/5.0/user_guides/fs/feature_group/ingest_with_dlthub/).
 - [API] [FRONTEND] Added downloading models from Hugging Face into the Model Registry from the UI or with `ModelRegistry.hf_download` in the Python client; see [Import a model from Hugging Face](https://docs.hopsworks.ai/5.0/user_guides/mlops/registry/import_huggingface/).
-- [API] [FRONTEND] Added deleting a feature group together with the feature views that use it (`deleteFeatureViews`), or with `force` while keeping them, and removing a feature group or feature store shared with your project without deleting the original.
+- [API] [FRONTEND] Added deleting a feature group together with the feature views that use it (`FeatureGroup.delete(delete_feature_views=True)` in the Python client), or with `force=True` while keeping them, and removing a feature group or feature store shared with your project without deleting the original.
 - [API] Added a choice of a hash or an ordered index for the primary key of online feature groups (`primary_key_index_type` in `OnlineConfig`).
 - [API] Added lookback windows to point-in-time joins (`lookback` of feature view reads and training data) and extra filters to batch data reads of feature views (`extra_filter` of `get_batch_data`) (also in 4.8.10).
 - [API] [FRONTEND] [HELM] Added the `vllm-omni` serving runtime and a choice of vLLM version for each deployment (`vllm_image_tag` in the Python client), and moved the `vllm-openai` runtime to the `vllm/vllm-openai` image (also in 4.8.7).
@@ -550,17 +562,21 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 - [API] Changed the Python client to stop sending usage data unless the environment variable `ENABLE_HOPSWORKS_USAGE` is `true`.
 - [API] [FRONTEND] Added environment variables to deployments (`env_vars` in the Python client) (also in 4.8.6).
 - [API] [FRONTEND] Added uploading a file as a secret (`create_secret_from_file` in the Python client) (also in 4.8.9).
-- [API] Added `source=opensearch` to the deployment logs API, to read the logs of stopped deployments.
-- [API] Fixed `hopsworks.login()` from outside the cluster failing when model serving has no Istio load balancer.
-- [API] Fixed dltHub ingestion jobs created from the Python client failing on source columns whose names the feature store changes, such as names with upper-case letters.
-- [API] [FRONTEND] [HELM] Addressed vulnerabilities in the feature store.
+- [API] Added `Deployment.read_logs()` and `Deployment.tail_logs()` to the Python client, which read the logs of stopped deployments from OpenSearch by default.
 - [API] Added the `TIMESTAMP(n)` and `DATETIME(n)` online types with fractional seconds (also in 4.8.7).
 - [API] [HELM] Changed job runs to fail with HTTP 429 when the user already has 10 queued executions of the job (cluster variable `quotas_max_queued_executions_per_user_per_job`, `-1` turns the limit off).
 - [API] Changed ArrowFlight queries to read only the partitions and files that match their filters (also in 4.8.3).
 - [API] [FRONTEND] Changed Python deployments without a model to reject request batching and inference logging, which they don't support.
+- [API] Fixed `hopsworks.login()` from outside the cluster failing when model serving has no Istio load balancer (also in 4.8.20).
+- [API] Fixed dltHub ingestion jobs created from the Python client failing on source columns whose names the feature store changes, such as names with upper-case letters (also in 4.8.7).
+- [API] Fixed OnlineFS stopping writes to an online feature group after a single "No such table existed" error, such as right after the table was created; it now retries first.
+- [API] [FRONTEND] Fixed Python job logs being lost when the job is stopped, or when the first runs of a job end at the same time.
+- [API] Fixed Spark writes to partitioned HUDI feature groups created with an older Hudi version failing (also in 4.8.7).
+- [API] Fixed OnlineFS counting rows of an online ingestion more than once, so the progress showed more rows processed than were inserted.
 - [API] Fixed a failed or concurrent feature group creation leaving a Hive table behind that blocked creating the feature group again.
 - [API] Fixed new feature group and training dataset locations naming a NameNode pod IP (also in 4.8.7).
 - [API] [FRONTEND] Fixed model deployments being rejected on OpenShift by the `restricted-v2` security context constraint.
+- [FRONTEND] Changed the Hopsworks UI to a new design, with a regrouped project sidebar.
 - [FRONTEND] [HELM] Added Agent Tasks, jobs that run Claude Code or OpenAI Codex headless on a prompt, in the new `agent-job` environment; turn them off with `hopsworks.variables.agent_jobs_enabled: "false"`, see [Agent Tasks](https://docs.hopsworks.ai/5.0/user_guides/agents/tasks/).
 - [FRONTEND] [HELM] Added the Wizard, which opens on an empty project, asks what to build and from which data, and hands a kickoff prompt to Claude Code in the web terminal; it can import the feature groups of the `hopsworks_default` project (cluster variable `default_featurestore_project_name`).
 - [FRONTEND] [HELM] Added Spark and GPU web terminals, and Claude Code, OpenAI Codex, the `hops` CLI and a `kubectl` limited to the project in every terminal; with `hopsworks.terminal.enabled`, the chart also pushes the terminal images.
@@ -573,23 +589,23 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 - [FRONTEND] [HELM] Changed starting a Jupyter server, terminal or app to fail with HTTP 503 when the cluster is at its session limit, and added session capacity badges to those pages and WebSocket proxy panels to the Hopsworks Grafana dashboard; see [WebSocket proxy pool](https://docs.hopsworks.ai/5.0/setup_installation/admin/monitoring/websocket-pool/).
 - [FRONTEND] [HELM] Changed web terminal sessions to end after 4 hours instead of 8 (cluster variable `terminal_session_hours`).
 - [FRONTEND] Changed the error pages of the Hopsworks server from the Payara defaults to Hopsworks pages.
+- [FRONTEND] Added drag-and-drop upload of files and folders to the file browser.
+- [FRONTEND] Added memory and CPU recommendations for dltHub ingestion jobs (**Estimate resources**) to the feature group creation and ingestion job forms.
 - [FRONTEND] [HELM] Fixed downloading Superset charts through Hopsworks, and the Hopsworks proxy passing only 5 Superset requests at a time; tune its connection pool and timeouts with `hopsworks.variables.superset_proxy_*`.
 - [FRONTEND] Fixed BigQuery previews failing for SQL queries and for BigQuery projects with a hyphen in their name, previews scanning the whole table, and the **Materialization Dataset** error staying after **BigQuery Project** was filled.
 - [FRONTEND] Fixed feature store metrics counting Hudi metadata columns as features (also in 4.8.9).
-- [FRONTEND] Changed the Hopsworks UI to a new design, with a regrouped project sidebar.
-- [FRONTEND] Added drag-and-drop upload of files and folders to the file browser.
 - [FRONTEND] Fixed the UI hanging when a web terminal failed to start.
 - [FRONTEND] Fixed adding an expectation to an expectation suite in the UI.
 - [FRONTEND] Fixed the pagination of the feature usage table (also in 4.8.9).
 - [FRONTEND] Fixed libhdfs in Jupyter not finding HopsFS with a custom Consul domain (also in 4.8.7).
 - [FRONTEND] Fixed web terminals failing to pull their image from a registry that needs credentials.
+- [HELM] Fixed external LoadBalancer Services, such as those of ArrowFlight, HopsFS, OpenSearch and Trino, not being created with Helm 3.20.1 and later; a component without its own setting again follows `global._hopsworks.externalLoadBalancers`.
+- [HELM] Fixed fresh installs failing and rolling back when the Knative Serving webhook was not ready yet.
+- [HELM] Changed RonDB upgrades to roll the management server first, so data nodes no longer shut down with error 2305, and to fail when `rondb.rondb.clusterSize.numNodeGroups` differs from the running cluster, which RonDB can't change online (also in 4.8.6).
+- [HELM] Fixed `helm upgrade --force` failing with a conflict on unchanged chart Jobs, which now run again on every `helm upgrade` (also in 4.8.3).
 - [HELM] Added `ddl-mysqld`, a separate MySQL server for online feature store schema changes, enabled by default with `rondb.rondb.meta.ddlMySQLd.enabled` (also in 4.8.4).
 - [HELM] Added Kyverno policy exceptions so apps and web terminals start under Kyverno policies (`hw-kyverno.policyExceptions.pythonapp.enabled`, `hw-kyverno.policyExceptions.terminal.enabled`).
 - [HELM] Added CPU and memory requests and limits to the initialization step of Spark and Ray jobs, tuned with `hopsworks.variables.kube_scheduling_jobinit_*`, and to Git operation pods, so namespace quotas count them.
-- [HELM] Fixed external LoadBalancer Services, such as those of ArrowFlight, HopsFS, OpenSearch and Trino, not being created with Helm 3.20.1 and later; a component without its own setting again follows `global._hopsworks.externalLoadBalancers`.
-- [HELM] Changed RonDB upgrades to roll the management server first, so data nodes no longer shut down with error 2305, and to fail when `rondb.rondb.clusterSize.numNodeGroups` differs from the running cluster, which RonDB can't change online (also in 4.8.6).
-- [HELM] Fixed fresh installs failing and rolling back when the Knative Serving webhook was not ready yet.
-- [HELM] Fixed `helm upgrade --force` failing with a conflict on unchanged chart Jobs, which now run again on every `helm upgrade` (also in 4.8.3).
 - [HELM] Added asynchronous upload of HopsFS blocks to object storage (`hopsfs.objectStorage.asyncUpload.enabled`, off by default).
   With it on, a stopping DataNode first uploads its pending blocks, which can take about an hour (`hopsfs.datanode.gracefulDrain`); turning that drain off can lose them.
 - [HELM] Added Grafana dashboards and Prometheus alerts for the MySQL and Redis of Superset, and capped the Superset Redis memory at 256 MB with `allkeys-lru` eviction.
@@ -604,19 +620,26 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
 
 ### Breaking changes
 
+- [API] [FRONTEND] Hopsworks now deletes finished job executions and their logs 90 days after they end, instead of keeping them, and deletes the older ones as soon as it starts after the upgrade.
+  Copy the logs you want to keep before you upgrade; the cluster variable `executions_ttl_days` sets the retention (`0` turns it off) and takes effect when Hopsworks restarts.
+- [API] `Model.save` in the Python client now moves model files saved from a path under `/mnt/hopsfs` into the model registry, instead of uploading a copy and keeping the originals; pass `keep_original_files=True` to keep them.
 - [API] In a job with a schedule, `read()` of a feature group with an event time now reads only the rows of the run's data interval, from `HOPS_START_TIME` to `HOPS_END_TIME`, instead of the whole feature group, when it's called without `start_time`, `end_time` or `wallclock_time`.
   Pass `start_time` and `end_time` where a scheduled job must read more; see [Schedule a job](https://docs.hopsworks.ai/5.0/user_guides/projects/jobs/schedule_job/).
 - [API] `create_feature_group` in the Python client now creates a DELTA feature group by default, and fails when the `deltalake` package is missing, instead of falling back to HUDI; `time_travel_format=None` now creates a feature group without time travel, instead of choosing the default.
   Set `time_travel_format` to `"DELTA"` or `"HUDI"` explicitly where you relied on the old behaviour.
-- [API] `Model.save` in the Python client now moves model files saved from a path under `/mnt/hopsfs` into the model registry, instead of uploading a copy and keeping the originals; pass `keep_original_files=True` to keep them.
-- [API] The `disable_online_ingestion_count` write option of feature group inserts is now read from `online_ingestion_options` in the Python and Java clients, so a top-level `disable_online_ingestion_count` is ignored; move it into `online_ingestion_options`.
 - [API] The Python client no longer supports Python 3.9; use Python 3.10 to 3.13, see the [client installation guide](https://docs.hopsworks.ai/5.0/user_guides/client_installation/).
 - [API] The Python client now prefixes its internal functions and methods, those not in the API reference, with an underscore, such as `hopsworks_common.client.get_instance()`, which is now `_get_instance()`, so code that calls them fails.
   Use the documented API instead.
-- [API] [FRONTEND] Hopsworks now deletes finished job executions and their logs 90 days after they end, instead of keeping them, and deletes the older ones as soon as it starts after the upgrade.
-  Copy the logs you want to keep before you upgrade; the cluster variable `executions_ttl_days` sets the retention (`0` turns it off) and takes effect when Hopsworks restarts.
+- [API] The `disable_online_ingestion_count` write option of feature group inserts is now read from `online_ingestion_options` in the Python and Java clients, so a top-level `disable_online_ingestion_count` is ignored; move it into `online_ingestion_options`, or in Java rename the key to `online_ingestion_options.disable_online_ingestion_count`.
 - [FRONTEND] [HELM] Upgraded Airflow from 1.10 to Airflow 3, and DAGs written for Airflow 1.10 don't run on it.
   The upgrade drops and recreates the Airflow metadata database, so DAG run history and the Variables and Connections created in Airflow are lost for good; see [Airflow 3 in Hopsworks](https://docs.hopsworks.ai/5.0/user_guides/projects/airflow/airflow3_upgrade/).
+- [HELM] 5.0.0's Airflow migration Job connects through the round-robin MySQL service, so on a cluster with more than one RonDB MySQL server the upgrade to Airflow 3 splits the Airflow schema across servers and never completes; upgrade to [5.0.13][hopsworks-5-0-13] or later instead.
+- [HELM] 5.0.0 supports Kubernetes up to 1.34 only, without the Kubernetes 1.35 and 1.36 support of 4.8.13; if you run 4.8.13 or later on Kubernetes 1.35 or 1.36, upgrade to [5.0.1][hopsworks-5-0-1] or later instead.
+- [HELM] 5.0.0 doesn't have `kserve.kserve.servingruntime.vllmopenai.imageRegistry` and `kserve.kserve.servingruntime.vllmomni.imageRegistry`, which 4.8.13 added, so the values schema rejects them; if you set them, upgrade to [5.0.1][hopsworks-5-0-1] or later instead.
+- [HELM] 5.0.0 doesn't have `hive.externalLoadBalancer`, `global.unmanagedLoadBalancers.metastore`, `hopsworks.variables.hopsworks_public_proxy_url`, `global._hopsworks.wipeDataOnUninstall`, `certs-operator.gracefulCertTeardown` and the `cleanupOnUninstall` value of the charts, such as `hopsworks.cleanupOnUninstall`, which 4.8.14 added, so the values schema rejects them; if you set them, upgrade to [5.0.2][hopsworks-5-0-2] or later instead.
+- [HELM] 5.0.0 doesn't have `hopsworks.envs.postInstall.ASADMIN_TIMEOUT_SEC`, `ASADMIN_DEPLOY_TIMEOUT_SEC` and `DEPLOY_RETRY_INTERVAL_SEC`, which 4.8.17 added, so the values schema rejects them; if you set them, upgrade to [5.0.3][hopsworks-5-0-3] or later instead.
+- [HELM] 5.0.0 doesn't have `docker-registry.affinity`, `minio.affinity` and `hopsworks.dockerRegistry.preset.affinity`, which 4.8.18 added, so the values schema rejects them; if you set them, upgrade to [5.0.6][hopsworks-5-0-6] or later instead.
+- [HELM] 5.0.0 doesn't have `global._hopsworks.initContainerResources` and `olk.filebeat.kubernetesMetadata`, which 4.8.21 added, so the values schema rejects them; if you set them, upgrade to [5.0.12][hopsworks-5-0-12] or later instead.
 - [HELM] Removed `hopsworks.variables.dlthub_image_name`, replaced by the `dlthub-ingestion-pipeline` environment, and `hopsworks.payara.executorService`, replaced by `hopsworks.payara.websocketProxy`.
   Remove them from your values before you upgrade, because the values schema rejects them.
 - [HELM] `global._hopsworks.superset.mysql.enabled` and `global._hopsworks.superset.redis.enabled` must match `superset.mysql.enabled` and `superset.superset.redis.enabled`, which used to be enough on their own.
@@ -627,6 +650,10 @@ If you run 4.8.13 or later, or use Airflow with more than one MySQL server, upgr
   If you set it, rewrite it as a list, for example `'["/bin/bash"]'`, because a plain path produces an invalid Jupyter configuration.
 - [HELM] Removed `VLLM_USE_FLASHINFER_SAMPLER=0` from the vLLM serving runtimes (also in 4.8.7).
   If you serve vLLM models on GPUs older than compute capability 7.5, set it in `kserve.kserve.servingruntime.vllmopenai.env` or `kserve.kserve.servingruntime.vllmomni.env`.
+- The base environments now run Python 3.12, NumPy 2, CUDA 13, PyTorch 2.11, scikit-learn 1.8, TensorFlow 2.19 and Ray 2.55, instead of Python 3.11, NumPy 1.26, CUDA 12.8, PyTorch 2.8, scikit-learn 1.3, TensorFlow 2.17 and Ray 2.39, and the upgrade moves them to these versions, so jobs, notebooks and deployments on them can break.
+  Test your code against the new versions before you upgrade; an environment you cloned is not upgraded, so if it fails afterwards, clone the new base environment and reinstall your libraries, see [Concerning upgrades][docs-env-clone-upgrades].
+- The scikit-learn model server, which serves scikit-learn models deployed without a predictor script, now runs scikit-learn 1.8 instead of 1.3, so a deployment of a model saved with scikit-learn 1.3 can fail to start, as gradient boosting models do, or fail every request, as random forests do.
+  Train such models again with scikit-learn 1.8, for example in the 5.0 base environments, and deploy the new model version ([model server][docs-model-server]).
 
 ### Deprecations
 
@@ -644,6 +671,7 @@ No upgrade steps are listed for this release.
 | Airflow image | 4.8.0 | 5.0.0 |
 | ArrowFlight server | 4.8.0 | 5.0.0 |
 | Base environment images | 4.8.1 | 5.0.0 |
+| Brewer | 4.8.0 | 5.0.0 |
 | Git image | 1.3 | 1.4 |
 | Grafana | 10.2.2-h3 | 10.2.2-h6 (also in 4.8.11) |
 | Hive Metastore | 3.0.0.13.15 | 3.0.0.14.5-v1 |
@@ -656,7 +684,7 @@ No upgrade steps are listed for this release.
 | OpenSearch Dashboards | 1.3.6.3 | 1.3.6.6 (also in 4.8.11) |
 | Payara | 6.2024.12-jdk17.2 | 6.2024.12-jdk17.6 |
 | Python in the base environments | 3.11 | 3.12 |
-| Ray | 2.9.0 | 2.55.1 |
+| Ray | 2.39.0 | 2.55.1 |
 | Remote shuffle service (Apache Uniffle) | 0.10.5 | 0.10.7 (also in 4.8.11) |
 | RonDB | 26.02.2 | 26.02.4 (also in 4.8.11) |
 | scikit-learn model server | 0.14.0 | 0.14.1 |
@@ -679,6 +707,10 @@ No upgrade steps are listed for this release.
   Plan for the extra CPU requests of the 5 default DataNodes.
 - [HELM] Fixed `hopsfs.namenode.auditLog.enableStatOperation` and `enableListOperation` being ignored; the NameNode no longer audit-logs stat and list operations unless you set them to `true` (also in 4.8.8).
 - [HELM] Changed `hopsfs.image.registry`, when set, to override `global._hopsworks.imageRegistry` as the full registry and path prefix of the HopsFS image, ending in `/`.
+- [HELM] Removed `hopsworks.variables.dlthub_image_name`, the image of dltHub ingestion jobs, which now run in the `dlthub-ingestion-pipeline` environment.
+- [HELM] Removed `hopsworks.payara.executorService`, the thread pool of the Jupyter WebSocket proxy, replaced by `hopsworks.payara.websocketProxy`.
+- [HELM] Added `global._hopsworks.superset.mysql.enabled` and `global._hopsworks.superset.redis.enabled`, which must match `superset.mysql.enabled` and `superset.superset.redis.enabled`.
+- [HELM] Added `spark.sparkOperatorUpgradeJob.crdImage`, the image of the Spark operator pre-upgrade Job (also in 4.8.17).
 - [HELM] Added the Superset, Trino and Kueue images to `values.airgap.yaml`.
 - [HELM] Added `hopsworks.payara.websocketProxy` to tune the WebSocket proxy of Jupyter, terminals and apps, such as `maxSessionsPerApp` (default `500` per pod).
 - [HELM] Added `hopsworks.variables.kube_user_workload_tolerations` for tolerations on user workloads such as Jupyter, jobs and deployments (also in 4.8.8).
@@ -692,3 +724,6 @@ No upgrade steps are listed for this release.
 - [HELM] Added `arrowflight.deployment.server.hopsfs_query_mode` to make the ArrowFlight server load feature group data into DuckDB tables (`table`) instead of views (`view`) (also in 4.8.3).
 - [HELM] Added `BackupLogBufferSize` to `rondb.rondb.rondbConfig` (also in 4.8.6).
 - [HELM] Added `PartitionsPerNode` to `rondb.rondb.rondbConfig` (also in 4.8.11).
+
+[docs-env-clone-upgrades]: https://docs.hopsworks.ai/5.0/user_guides/projects/python/python_env_clone/#concerning-upgrades
+[docs-model-server]: https://docs.hopsworks.ai/5.0/user_guides/mlops/serving/predictor/#model-server
