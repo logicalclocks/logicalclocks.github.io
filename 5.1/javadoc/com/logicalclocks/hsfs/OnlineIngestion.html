@@ -132,7 +132,9 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#waitForCompletion(int,int)" class="member-name-link">waitForCompletion</a><wbr>(int&nbsp;timeout,
  int&nbsp;period)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Blocks until every entry of this ingestion is ingested or <code>timeout</code> seconds have passed.</div>
+</div>
 </div>
 </div>
 </div>
@@ -202,6 +204,9 @@ loadScripts(document, 'script');</script>
                        throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/InterruptedException.html" title="class or interface in java.lang" class="external-link">InterruptedException</a>,
 <a href="FeatureStoreException.html" title="class in com.logicalclocks.hsfs">FeatureStoreException</a>,
 <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Blocks until every entry of this ingestion is ingested or <code>timeout</code> seconds have passed.
+ A <code>timeout</code> of 0 waits until every entry is ingested; an ingestion without an entry count cannot tell
+ when that is, so with 0 its wait does not end on its own, and it logs a warning when it starts.</div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/InterruptedException.html" title="class or interface in java.lang" class="external-link">InterruptedException</a></code></dd>
