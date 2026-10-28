@@ -174,13 +174,24 @@ The `LowDiskDataFileExtents` alert fires when less than 20% of the tablespace is
 
 ## Overhead
 
-Measured on a feature view with five transformation functions:
+The figures below are a guideline to the overhead to expect, not a guarantee: they depend on the transformation functions, the hardware and the load.
+They were measured on a feature view with five transformation functions.
 
 | State | Added time per feature vector |
 | --- | --- |
 | Tracing switched off, or deployment created without tracing | none |
-| Tracing on, request not sampled | about 17 µs |
-| Tracing on, request sampled | about 0.4 ms |
+| Tracing on, request not sampled | 17 to 34 µs, about 45% of the transformations' own time |
+| Tracing on, request sampled | 0.4 to 0.65 ms |
+
+Request latency inside the predictor pod, for 300 sequential requests of one row each:
+
+| Deployment | p50 | p95 | p99 |
+| --- | --- | --- | --- |
+| Created without tracing | 3.1 ms | 4.3 ms | 4.9 to 5.1 ms |
+| Tracing on, 10% sampled | 3.6 to 4.1 ms | 6.6 to 7.1 ms | 8.4 ms |
+
+The p95 and p99 of the traced deployment fall on its sampled requests.
+Tracing does not change the predictor's memory: both deployments peaked at about 420 MB resident.
 
 The collector sidecar requests 0.5 CPU and 1 GiB of memory per replica by default, set by the cluster administrator.
 A deployment created with tracing serves its requests with one worker process per replica, so that its metrics count every request; scale it with replicas.
