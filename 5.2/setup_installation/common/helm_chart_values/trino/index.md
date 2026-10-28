@@ -4,7 +4,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
+_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -119,7 +119,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           name: hopsfs
           registry: ''
           tag: 3.4.3.3-EE-RC1
-        ttlSecondsAfterFinished: 3600
+        ttlSecondsAfterFinished: null
         waitSeconds: 600
     ```
 
@@ -136,7 +136,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           name: hopsfs
           registry: ''
           tag: 3.4.3.3-EE-RC1
-        ttlSecondsAfterFinished: 3600
+        ttlSecondsAfterFinished: null
         waitSeconds: 600
         ```
 
@@ -157,8 +157,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Image tag. Keep in step with `hopsfs.image.tag` in charts/hopsfs/values.yaml.
 
 `trino.authSeeder.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.trino.authSeeder.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.trino.authSeeder.ttlSecondsAfterFinished }
-:   Type `int`, default `3600`.
-    Seconds to keep the finished Jobs; their logs record what was seeded.
+:   Type `string`, default `nil`.
+    Seconds to keep the finished Jobs; their logs record what was seeded. Null uses `global._hopsworks.jobs.ttlSecondsAfterFinished` (86400). The seed Job is not a hook, so Helm's wait covers it: a TTL that ends before the rest of the install deletes the Job first and the install hangs.
 
 `trino.authSeeder.waitSeconds` <a class="headerlink" href="#helm.trino.authSeeder.waitSeconds" title="Permanent link">#</a> { #helm.trino.authSeeder.waitSeconds }
 :   Type `int`, default `600`.
@@ -257,7 +257,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 483-v2
+          tag: 483-v3
         initContainers:
           coordinator:
           - null
@@ -287,7 +287,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Repository location of the Trino image, typically `organization/imagename`
 
 `trino.trino.image.tag` <a class="headerlink" href="#helm.trino.trino.image.tag" title="Permanent link">#</a> { #helm.trino.trino.image.tag }
-:   Type `string`, default `"483-v2"`.
+:   Type `string`, default `"483-v3"`.
     Image tag for the Trino image. This value is explicitly pinned here and overrides any defaulting to `appVersion` from Chart.yaml.
 
 `trino.trino.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trino.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trino.initContainers.coordinator.2.name }

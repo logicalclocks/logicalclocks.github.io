@@ -4,7 +4,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
+_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -107,6 +107,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             port: 8182
           mysql:
             consulServiceName: mysql
+            ddlConsulServiceName: mysqlddl
             port: 3306
           namenode:
             consulServiceName: namenode
@@ -231,6 +232,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hive.metastore.dependencies.mysql.consulServiceName` <a class="headerlink" href="#helm.hive.metastore.dependencies.mysql.consulServiceName" title="Permanent link">#</a> { #helm.hive.metastore.dependencies.mysql.consulServiceName }
 :   Type `string`, default `"mysql"`.
+
+`hive.metastore.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.hive.metastore.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.hive.metastore.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd); schematool connects here (HWORKS-3550). Set to mysql when the DDL node is disabled
 
 `hive.metastore.dependencies.mysql.port` <a class="headerlink" href="#helm.hive.metastore.dependencies.mysql.port" title="Permanent link">#</a> { #helm.hive.metastore.dependencies.mysql.port }
 :   Type `int`, default `3306`.

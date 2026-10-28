@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
+_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
 
 ## General { #helm-values-global-general }
 
@@ -65,6 +65,8 @@ _Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
           enabled: true
         kueue:
           enabled: false
+          namespace: kueue-system
+          queueModel: shared
         managedObjectStorage:
           enabled: false
           s3: null
@@ -244,6 +246,14 @@ _Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
 
 `global._hopsworks.kueue.enabled` <a class="headerlink" href="#helm.global._hopsworks.kueue.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.enabled }
 :   Type `bool`, default `false`.
+
+`global._hopsworks.kueue.namespace` <a class="headerlink" href="#helm.global._hopsworks.kueue.namespace" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.namespace }
+:   Type `string`, default `"kueue-system"`.
+    Namespace of release kueue, the Kueue Hopsworks uses. The queue Job waits for its webhook there, and Prometheus scrapes Kueue's metrics only in this namespace
+
+`global._hopsworks.kueue.queueModel` <a class="headerlink" href="#helm.global._hopsworks.kueue.queueModel" title="Permanent link">#</a> { #helm.global._hopsworks.kueue.queueModel }
+:   Type `string`, default `"shared"`.
+    shared: every project submits to the default queues (hopsworks.variables.kueue_project_default_*). per_project: each project gets its own ClusterQueue and LocalQueue, which Hopsworks renders from the compute allocations set under Cluster settings, Compute Allocation, and only then is the Hopsworks service account bound to Kueue's ClusterQueue, Cohort and ResourceFlavor editor ClusterRoles. Seeds the Hopsworks variable kueue_queue_model. Set per_project at install; moving a running cluster from shared is not supported yet
 
 `global._hopsworks.managedObjectStorage` <a class="headerlink" href="#helm.global._hopsworks.managedObjectStorage" title="Permanent link">#</a> { #helm.global._hopsworks.managedObjectStorage }
 :   Type `object`, default `{"enabled":false,"s3":null}`.
@@ -902,7 +912,7 @@ _Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
             mountWaitSeconds: 300
             storeRoot: /apps/trino
           image:
-            tag: 483-v2
+            tag: 483-v3
           mountRetryTimeLimit: 2m
           mountableSecrets:
             csi:
@@ -1002,11 +1012,11 @@ _Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
     Where the files live in HopsFS. Preset by charts/hopsfs, passed to the sidecar as `--srcDir` and seeded to the backend as `trino_files_path`. Moving it does not move existing files.
 
 `global._hopsworks.trino.image` <a class="headerlink" href="#helm.global._hopsworks.trino.image" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image }
-:   Type `object`, default `{"tag":"483-v2"}`.
+:   Type `object`, default `{"tag":"483-v3"}`.
     The Trino image this release deploys, restated here for the backend.
 
 `global._hopsworks.trino.image.tag` <a class="headerlink" href="#helm.global._hopsworks.trino.image.tag" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image.tag }
-:   Type `string`, default `"483-v2"`.
+:   Type `string`, default `"483-v3"`.
     The Trino image tag, seeded to the backend as `trino_image_tag` so it can tell when its connector-property table is stale. Duplicates trino.image.tag in charts/trino/values.yaml, which cannot be templated; charts/trino fails the render when they disagree. Bump both.
 
 `global._hopsworks.trino.mountRetryTimeLimit` <a class="headerlink" href="#helm.global._hopsworks.trino.mountRetryTimeLimit" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountRetryTimeLimit }

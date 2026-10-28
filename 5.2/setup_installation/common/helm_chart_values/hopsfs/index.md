@@ -4,7 +4,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
+_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -326,6 +326,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           port: 1186
         mysql:
           consulServiceName: mysql
+          ddlConsulServiceName: mysqlddl
           port: 3306
         objectStorage:
           consulServiceName: minio
@@ -351,6 +352,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsfs.dependencies.mysql.consulServiceName` <a class="headerlink" href="#helm.hopsfs.dependencies.mysql.consulServiceName" title="Permanent link">#</a> { #helm.hopsfs.dependencies.mysql.consulServiceName }
 :   Type `string`, default `"mysql"`.
+
+`hopsfs.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.hopsfs.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.hopsfs.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd); the Flyway migrations connect here (HWORKS-3550). Set to mysql when the DDL node is disabled
 
 `hopsfs.dependencies.mysql.port` <a class="headerlink" href="#helm.hopsfs.dependencies.mysql.port" title="Permanent link">#</a> { #helm.hopsfs.dependencies.mysql.port }
 :   Type `int`, default `3306`.

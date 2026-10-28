@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
+_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -32,12 +32,13 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         storageClassName: null
       prometheus-elasticsearch-exporter:
         es:
+          cluster_settings: true
           sslSkipVerify: true
           uri: https://elastic_exporter:elastic_exporterpw@{{ include "olk.exporter.opensearchHost" . }}:9200
         image:
           registry: docker.hops.works
           repository: prometheus/elasticsearch-exporter
-          tag: 1.11.0-alpine-h1.1
+          tag: 1.11.0-alpine-h2.1
         nodeSelector: {}
         resources:
           limits:
@@ -92,12 +93,13 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 
         ```yaml
         es:
+          cluster_settings: true
           sslSkipVerify: true
           uri: https://elastic_exporter:elastic_exporterpw@{{ include "olk.exporter.opensearchHost" . }}:9200
         image:
           registry: docker.hops.works
           repository: prometheus/elasticsearch-exporter
-          tag: 1.11.0-alpine-h1.1
+          tag: 1.11.0-alpine-h2.1
         nodeSelector: {}
         resources:
           limits:
@@ -160,7 +162,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         startup_timeout: 5000
         tolerations: []
         topologySpreadConstraint: {}
-        version: 3.8.0.0
+        version: 3.8.0.1
     ```
 
 <div class="hops-values" markdown>
@@ -246,7 +248,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.dashboard.version` <a class="headerlink" href="#helm.olk.dashboard.version" title="Permanent link">#</a> { #helm.olk.dashboard.version }
-:   Type `string`, default `"3.8.0.0"`.
+:   Type `string`, default `"3.8.0.1"`.
 
 </div>
 
@@ -522,7 +524,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           type: ClusterIP
         tolerations: []
         topologySpreadConstraint: {}
-        version: 7.17.29.6
+        version: 7.17.29.7
         workers: 4
     ```
 
@@ -633,7 +635,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.logstash.version` <a class="headerlink" href="#helm.olk.logstash.version" title="Permanent link">#</a> { #helm.olk.logstash.version }
-:   Type `string`, default `"7.17.29.6"`.
+:   Type `string`, default `"7.17.29.7"`.
 
 `olk.logstash.workers` <a class="headerlink" href="#helm.olk.logstash.workers" title="Permanent link">#</a> { #helm.olk.logstash.workers }
 :   Type `int`, default `4`.
@@ -799,7 +801,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 
 `olk.opensearch.indexUpgrade.mode` <a class="headerlink" href="#helm.olk.opensearch.indexUpgrade.mode" title="Permanent link">#</a> { #helm.olk.opensearch.indexUpgrade.mode }
 :   Type `string`, default `"copy"`.
-    What the pre-upgrade hook does with the indices created before OpenSearch 2.0, which a 3.x node refuses to boot with. `copy` copies them one at a time, behind a write block on that index alone, keeping their names, and deletes only indices the platform recreates or expires (logs, audit, `pypi_libraries_*`, plugin indices); embedding indices (`<projectId>__embedding*`) come back on faiss. `report` lists them with their sizes and block times and fails, changing nothing apart from finishing an index an interrupted earlier run left half done. Either way it stops before changing anything if a vector field would still be served by nmslib, whose 3.8 library crashes a node without AVX-512, and it refuses a cluster still on OpenSearch 1.x. From 5.1.2 the 5.1.x chart reads the same key to run the pass ahead of the 5.2 upgrade. See UPGRADE.md.
+    What the pre-upgrade hook does with the indices created before OpenSearch 2.0, which a 3.x node refuses to boot with. `copy` copies them one at a time, behind a write block on that index alone, keeping their names, and deletes only indices the platform recreates or expires (logs, audit, `pypi_libraries_*`, plugin indices); embedding indices (`<projectId>__embedding*`) come back on faiss. `report` lists them with their sizes and block times and fails, changing nothing apart from finishing an index an interrupted earlier run left half done. Either way it stops before changing anything if a vector field would still be served by nmslib, whose 3.8 library crashes a node without AVX-512, and it refuses a cluster still on OpenSearch 1.x. From 5.1.2 the 5.1.x chart reads the same key to run the pass ahead of the 5.2 upgrade. See <https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade_opensearch/>.
 
 `olk.opensearch.jvmOpts` <a class="headerlink" href="#helm.olk.opensearch.jvmOpts" title="Permanent link">#</a> { #helm.olk.opensearch.jvmOpts }
 :   Type `string`, default `""`.

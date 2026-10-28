@@ -5,16 +5,9 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
+_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
-
-!!! info "Upstream charts"
-
-    - Values under `hw-kueue.kueue` go to [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) from `https://repo.hops.works/master/kueue/`.
-
-    Only the values Hopsworks sets under `hw-kueue.kueue` are listed on this page.
-    Any other value of the chart can be set there too; the link opens its documentation for the version Hopsworks pins.
 
 ## General { #helm-values-hw-kueue-general }
 
@@ -22,87 +15,13 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
     ```yaml
     hw-kueue:
+      enforcePrerequisiteCheck: true
       fullnameOverride: kueue
       hopsworkslib: {}
       imagePullPolicy: Always
       kueue:
-        controllerManager:
-          featureGates:
-          - enabled: false
-            name: TopologyAwareScheduling
-          imagePullSecrets: []
-          livenessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 15
-            periodSeconds: 20
-            successThreshold: 1
-            timeoutSeconds: 1
-          manager:
-            containerSecurityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-            image:
-              pullPolicy: Always
-              repository: docker.hops.works/registry.k8s.io/kueue/kueue
-            podAnnotations: {}
-            podSecurityContext:
-              runAsNonRoot: true
-              seccompProfile:
-                type: RuntimeDefault
-            resources:
-              limits:
-                cpu: '2'
-                memory: 512Mi
-              requests:
-                cpu: 500m
-                memory: 512Mi
-          podDisruptionBudget:
-            enabled: false
-            minAvailable: 1
-          readinessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
-          replicas: 1
-          topologySpreadConstraints: []
-        enableCertManager: false
-        enableKueueViz: false
-        enablePrometheus: false
-        enableVisibilityAPF: false
-        enableVisibilityServerAuth: true
-        fullnameOverride: kueue
-        kubernetesClusterDomain: cluster.local
-        metrics:
-          prometheusNamespace: monitoring
-          serviceMonitor:
-            tlsConfig:
-              insecureSkipVerify: true
-        metricsService:
-          annotations: {}
-          ports:
-          - name: metrics
-            port: 8443
-            protocol: TCP
-            targetPort: 8443
-          type: ClusterIP
-        nameOverride: kueue
-        webhookService:
-          ipDualStack:
-            enabled: false
-            ipFamilies:
-            - IPv6
-            - IPv4
-            ipFamilyPolicy: PreferDualStack
-          ports:
-          - port: 443
-            protocol: TCP
-            targetPort: 9443
-          type: ClusterIP
-      nameOverride: kueue
+        enabled: false
+      kueueApiVersion: v1beta2
       resourceFlavours:
       - annotations: {}
         labels: {}
@@ -112,7 +31,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             cloud.provider.com/region: europe
           nodeTaints: {}
           tolerations: {}
-          topologyName: default
       topologies:
       - levels:
         - nodeLabel: cloud.provider.com/region
@@ -127,8 +45,13 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 :   Type `object`, default `{}`.
     override hw-kueue values
 
+`hw-kueue.enforcePrerequisiteCheck` <a class="headerlink" href="#helm.hw-kueue.enforcePrerequisiteCheck" title="Permanent link">#</a> { #helm.hw-kueue.enforcePrerequisiteCheck }
+:   Type `bool`, default `true`.
+    Refuse to render while the bundled Kueue 0.12 or its v1alpha1 storage is still on the cluster, or when no Kueue serving kueue.x-k8s.io/v1beta2 is installed. Set false for helm template.
+
 `hw-kueue.fullnameOverride` <a class="headerlink" href="#helm.hw-kueue.fullnameOverride" title="Permanent link">#</a> { #helm.hw-kueue.fullnameOverride }
 :   Type `string`, default `"kueue"`.
+    Name prefix of the objects of release kueue, the Kueue Hopsworks uses (installed with fullnameOverride kueue): the Hopsworks bindings name its ClusterRoles.
 
 `hw-kueue.hopsworkslib` <a class="headerlink" href="#helm.hw-kueue.hopsworkslib" title="Permanent link">#</a> { #helm.hw-kueue.hopsworkslib }
 :   Type `object`, default `{}`.
@@ -138,92 +61,12 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 :   Type `string`, default `"Always"`.
 
 `hw-kueue.kueue` <a class="headerlink" href="#helm.hw-kueue.kueue" title="Permanent link">#</a> { #helm.hw-kueue.kueue }
-:   Type `object`, passed to the [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) chart, whose other values are documented there.
-    override kueue values
+:   Type `object`, default `{"enabled":false}`.
+    This chart ships no Kueue. kueue.enabled stays false, as the 5.1 chart's migrate-to-external.sh and files/upgrade-kueue.sh check it; true is refused.
 
-    ??? note "Default"
-
-        ```yaml
-        controllerManager:
-          featureGates:
-          - enabled: false
-            name: TopologyAwareScheduling
-          imagePullSecrets: []
-          livenessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 15
-            periodSeconds: 20
-            successThreshold: 1
-            timeoutSeconds: 1
-          manager:
-            containerSecurityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-            image:
-              pullPolicy: Always
-              repository: docker.hops.works/registry.k8s.io/kueue/kueue
-            podAnnotations: {}
-            podSecurityContext:
-              runAsNonRoot: true
-              seccompProfile:
-                type: RuntimeDefault
-            resources:
-              limits:
-                cpu: '2'
-                memory: 512Mi
-              requests:
-                cpu: 500m
-                memory: 512Mi
-          podDisruptionBudget:
-            enabled: false
-            minAvailable: 1
-          readinessProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
-          replicas: 1
-          topologySpreadConstraints: []
-        enableCertManager: false
-        enableKueueViz: false
-        enablePrometheus: false
-        enableVisibilityAPF: false
-        enableVisibilityServerAuth: true
-        fullnameOverride: kueue
-        kubernetesClusterDomain: cluster.local
-        metrics:
-          prometheusNamespace: monitoring
-          serviceMonitor:
-            tlsConfig:
-              insecureSkipVerify: true
-        metricsService:
-          annotations: {}
-          ports:
-          - name: metrics
-            port: 8443
-            protocol: TCP
-            targetPort: 8443
-          type: ClusterIP
-        nameOverride: kueue
-        webhookService:
-          ipDualStack:
-            enabled: false
-            ipFamilies:
-            - IPv6
-            - IPv4
-            ipFamilyPolicy: PreferDualStack
-          ports:
-          - port: 443
-            protocol: TCP
-            targetPort: 9443
-          type: ClusterIP
-        ```
-
-`hw-kueue.nameOverride` <a class="headerlink" href="#helm.hw-kueue.nameOverride" title="Permanent link">#</a> { #helm.hw-kueue.nameOverride }
-:   Type `string`, default `"kueue"`.
+`hw-kueue.kueueApiVersion` <a class="headerlink" href="#helm.hw-kueue.kueueApiVersion" title="Permanent link">#</a> { #helm.hw-kueue.kueueApiVersion }
+:   Type `string`, default `"v1beta2"`.
+    The kueue.x-k8s.io version the backend of this chart reads. Read by files/upgrade-kueue.sh to tell this chart from 5.2.1 and earlier; do not change.
 
 `hw-kueue.resourceFlavours` <a class="headerlink" href="#helm.hw-kueue.resourceFlavours" title="Permanent link">#</a> { #helm.hw-kueue.resourceFlavours }
 :   Type `list`.
@@ -240,7 +83,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               cloud.provider.com/region: europe
             nodeTaints: {}
             tolerations: {}
-            topologyName: default
         ```
 
 `hw-kueue.topologies[0].levels[0].nodeLabel` <a class="headerlink" href="#helm.hw-kueue.topologies.0.levels.0.nodeLabel" title="Permanent link">#</a> { #helm.hw-kueue.topologies.0.levels.0.nodeLabel }
@@ -488,163 +330,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 </div>
 
-## managerConfig { #helm-values-hw-kueue-managerconfig }
-
-??? example "Defaults as YAML"
-
-    ```yaml
-    hw-kueue:
-      managerConfig:
-        clientConnection:
-          burst: 100
-          qps: 50
-        controller:
-          groupKindConcurrency:
-            ClusterQueue.kueue.x-k8s.io: 1
-            Job.batch: 5
-            LocalQueue.kueue.x-k8s.io: 1
-            Pod: 5
-            ResourceFlavor.kueue.x-k8s.io: 1
-            Workload.kueue.x-k8s.io: 5
-        excludedNamespaces:
-        - kube-system
-        - kueue-system
-        - kyverno
-        fairSharing:
-          enable: true
-          preemptionStrategies:
-          - LessThanOrEqualToFinalShare
-          - LessThanInitialShare
-        health:
-          healthProbeBindAddress: 8081
-        integrations:
-          frameworks:
-          - batch/job
-          - kubeflow.org/mpijob
-          - ray.io/rayjob
-          - ray.io/raycluster
-          - jobset.x-k8s.io/jobset
-          - kubeflow.org/paddlejob
-          - kubeflow.org/pytorchjob
-          - kubeflow.org/tfjob
-          - kubeflow.org/xgboostjob
-          - workload.codeflare.dev/appwrapper
-          - pod
-          - deployment
-          - statefulset
-        leaderElection:
-          leaderElect: true
-          resourceName: c1f6bfd2.kueue.x-k8s.io
-        manageJobsWithoutQueueName: false
-        metrics:
-          bindAddress: 8443
-        webhook:
-          port: 9443
-    ```
-
-<div class="hops-values" markdown>
-
-`hw-kueue.managerConfig.clientConnection.burst` <a class="headerlink" href="#helm.hw-kueue.managerConfig.clientConnection.burst" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.clientConnection.burst }
-:   Type `int`, default `100`.
-
-`hw-kueue.managerConfig.clientConnection.qps` <a class="headerlink" href="#helm.hw-kueue.managerConfig.clientConnection.qps" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.clientConnection.qps }
-:   Type `int`, default `50`.
-
-`hw-kueue.managerConfig.controller.groupKindConcurrency."ClusterQueue.kueue.x-k8s.io"` <a class="headerlink" href="#helm.hw-kueue.managerConfig.controller.groupKindConcurrency.ClusterQueue.kueue.x-k8s.io" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.controller.groupKindConcurrency.ClusterQueue.kueue.x-k8s.io }
-:   Type `int`, default `1`.
-
-`hw-kueue.managerConfig.controller.groupKindConcurrency."Job.batch"` <a class="headerlink" href="#helm.hw-kueue.managerConfig.controller.groupKindConcurrency.Job.batch" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.controller.groupKindConcurrency.Job.batch }
-:   Type `int`, default `5`.
-
-`hw-kueue.managerConfig.controller.groupKindConcurrency."LocalQueue.kueue.x-k8s.io"` <a class="headerlink" href="#helm.hw-kueue.managerConfig.controller.groupKindConcurrency.LocalQueue.kueue.x-k8s.io" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.controller.groupKindConcurrency.LocalQueue.kueue.x-k8s.io }
-:   Type `int`, default `1`.
-
-`hw-kueue.managerConfig.controller.groupKindConcurrency."ResourceFlavor.kueue.x-k8s.io"` <a class="headerlink" href="#helm.hw-kueue.managerConfig.controller.groupKindConcurrency.ResourceFlavor.kueue.x-k8s.io" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.controller.groupKindConcurrency.ResourceFlavor.kueue.x-k8s.io }
-:   Type `int`, default `1`.
-
-`hw-kueue.managerConfig.controller.groupKindConcurrency."Workload.kueue.x-k8s.io"` <a class="headerlink" href="#helm.hw-kueue.managerConfig.controller.groupKindConcurrency.Workload.kueue.x-k8s.io" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.controller.groupKindConcurrency.Workload.kueue.x-k8s.io }
-:   Type `int`, default `5`.
-
-`hw-kueue.managerConfig.controller.groupKindConcurrency.Pod` <a class="headerlink" href="#helm.hw-kueue.managerConfig.controller.groupKindConcurrency.Pod" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.controller.groupKindConcurrency.Pod }
-:   Type `int`, default `5`.
-
-`hw-kueue.managerConfig.excludedNamespaces[0]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.excludedNamespaces.0" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.excludedNamespaces.0 }
-:   Type `string`, default `"kube-system"`.
-
-`hw-kueue.managerConfig.excludedNamespaces[1]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.excludedNamespaces.1" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.excludedNamespaces.1 }
-:   Type `string`, default `"kueue-system"`.
-
-`hw-kueue.managerConfig.excludedNamespaces[2]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.excludedNamespaces.2" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.excludedNamespaces.2 }
-:   Type `string`, default `"kyverno"`.
-
-`hw-kueue.managerConfig.fairSharing.enable` <a class="headerlink" href="#helm.hw-kueue.managerConfig.fairSharing.enable" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.fairSharing.enable }
-:   Type `bool`, default `true`.
-
-`hw-kueue.managerConfig.fairSharing.preemptionStrategies[0]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.fairSharing.preemptionStrategies.0" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.fairSharing.preemptionStrategies.0 }
-:   Type `string`, default `"LessThanOrEqualToFinalShare"`.
-
-`hw-kueue.managerConfig.fairSharing.preemptionStrategies[1]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.fairSharing.preemptionStrategies.1" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.fairSharing.preemptionStrategies.1 }
-:   Type `string`, default `"LessThanInitialShare"`.
-
-`hw-kueue.managerConfig.health.healthProbeBindAddress` <a class="headerlink" href="#helm.hw-kueue.managerConfig.health.healthProbeBindAddress" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.health.healthProbeBindAddress }
-:   Type `int`, default `8081`.
-
-`hw-kueue.managerConfig.integrations.frameworks[0]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.0" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.0 }
-:   Type `string`, default `"batch/job"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[10]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.10" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.10 }
-:   Type `string`, default `"pod"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[11]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.11" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.11 }
-:   Type `string`, default `"deployment"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[12]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.12" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.12 }
-:   Type `string`, default `"statefulset"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[1]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.1" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.1 }
-:   Type `string`, default `"kubeflow.org/mpijob"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[2]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.2" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.2 }
-:   Type `string`, default `"ray.io/rayjob"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[3]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.3" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.3 }
-:   Type `string`, default `"ray.io/raycluster"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[4]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.4" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.4 }
-:   Type `string`, default `"jobset.x-k8s.io/jobset"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[5]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.5" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.5 }
-:   Type `string`, default `"kubeflow.org/paddlejob"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[6]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.6" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.6 }
-:   Type `string`, default `"kubeflow.org/pytorchjob"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[7]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.7" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.7 }
-:   Type `string`, default `"kubeflow.org/tfjob"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[8]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.8" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.8 }
-:   Type `string`, default `"kubeflow.org/xgboostjob"`.
-
-`hw-kueue.managerConfig.integrations.frameworks[9]` <a class="headerlink" href="#helm.hw-kueue.managerConfig.integrations.frameworks.9" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.integrations.frameworks.9 }
-:   Type `string`, default `"workload.codeflare.dev/appwrapper"`.
-
-`hw-kueue.managerConfig.leaderElection.leaderElect` <a class="headerlink" href="#helm.hw-kueue.managerConfig.leaderElection.leaderElect" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.leaderElection.leaderElect }
-:   Type `bool`, default `true`.
-
-`hw-kueue.managerConfig.leaderElection.resourceName` <a class="headerlink" href="#helm.hw-kueue.managerConfig.leaderElection.resourceName" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.leaderElection.resourceName }
-:   Type `string`, default `"c1f6bfd2.kueue.x-k8s.io"`.
-
-`hw-kueue.managerConfig.manageJobsWithoutQueueName` <a class="headerlink" href="#helm.hw-kueue.managerConfig.manageJobsWithoutQueueName" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.manageJobsWithoutQueueName }
-:   Type `bool`, default `false`.
-
-`hw-kueue.managerConfig.metrics.bindAddress` <a class="headerlink" href="#helm.hw-kueue.managerConfig.metrics.bindAddress" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.metrics.bindAddress }
-:   Type `int`, default `8443`.
-
-`hw-kueue.managerConfig.webhook.port` <a class="headerlink" href="#helm.hw-kueue.managerConfig.webhook.port" title="Permanent link">#</a> { #helm.hw-kueue.managerConfig.webhook.port }
-:   Type `int`, default `9443`.
-
-</div>
-
 ## rbac { #helm-values-hw-kueue-rbac }
 
 ??? example "Defaults as YAML"
@@ -657,6 +342,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         cohort:
           enabled: true
         localqueue:
+          enabled: true
+        metricsReader:
           enabled: true
         resourceFlavors:
           enabled: true
@@ -676,6 +363,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `hw-kueue.rbac.localqueue.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.localqueue.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.localqueue.enabled }
 :   Type `bool`, default `true`.
+
+`hw-kueue.rbac.metricsReader.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.metricsReader.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.metricsReader.enabled }
+:   Type `bool`, default `true`.
+    Bind the Hopsworks Prometheus server's service account to Kueue's metrics-reader ClusterRole, so the chart's kueue scrape job is authorized
 
 `hw-kueue.rbac.resourceFlavors.enabled` <a class="headerlink" href="#helm.hw-kueue.rbac.resourceFlavors.enabled" title="Permanent link">#</a> { #helm.hw-kueue.rbac.resourceFlavors.enabled }
 :   Type `bool`, default `true`.

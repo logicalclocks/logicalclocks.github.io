@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.1` (Hopsworks `5.2.1`)._
+_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -59,7 +59,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       objectStorageEnvInformation: null
       opensearchReindex:
         enabled: true
-      payaraVersion: 6.2025.11-jdk21.1
+      payaraVersion: 6.2025.11-jdk21.2
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
       podDisruptionBudget:
@@ -289,7 +289,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.2"`.
 
 `hopsworks.payaraconfigmapName` <a class="headerlink" href="#helm.hopsworks.payaraconfigmapName" title="Permanent link">#</a> { #helm.hopsworks.payaraconfigmapName }
 :   Type `string`, default `"post-boot-commands"`.
@@ -486,7 +486,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.buildkitd.podAnnotations` <a class="headerlink" href="#helm.hopsworks.buildkitd.podAnnotations" title="Permanent link">#</a> { #helm.hopsworks.buildkitd.podAnnotations }
 :   Type `object`, default `{}`.
-    Extra annotations on the daemon pod. Exists mainly for CRI-O's workload activation route: when a node scopes allowed_annotations to a \[crio.runtime.workloads.*\] table rather than a runtime handler, the pod must carry that workload's activation_annotation for the device annotation to be honoured. See values.rhel8.yaml.
+    Extra annotations on the daemon pod. Exists mainly for CRI-O's workload activation route: when a node scopes allowed_annotations to a \[crio.runtime.workloads.*\] table rather than a runtime handler, the pod must carry that workload's activation_annotation for the device annotation to be honoured. See <https://docs.hopsworks.ai/latest/setup_installation/admin/build_performance/>.
 
 `hopsworks.buildkitd.port` <a class="headerlink" href="#helm.hopsworks.buildkitd.port" title="Permanent link">#</a> { #helm.hopsworks.buildkitd.port }
 :   Type `int`, default `1234`.
@@ -634,6 +634,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         mysql:
           consulServiceName: mysql
           consulServiceTag: onlinefs
+          ddlConsulServiceName: mysqlddl
           port: 3306
         objectStorage:
           consulServiceName: minio
@@ -656,6 +657,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dependencies.mysql.consulServiceTag` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.consulServiceTag" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.consulServiceTag }
 :   Type `string`, default `"onlinefs"`.
+
+`hopsworks.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd); the database migrations connect here (HWORKS-3550). Set to mysql when the DDL node is disabled
 
 `hopsworks.dependencies.mysql.port` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.port" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.port }
 :   Type `int`, default `3306`.
@@ -778,7 +783,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       dockerRegistry:
         buildkit:
           image: moby/buildkit
-          tag: v0.32.2
+          tag: v0.34.1
         preset:
           affinity: {}
           alternativeRegistry: null
@@ -819,7 +824,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"moby/buildkit"`.
 
 `hopsworks.dockerRegistry.buildkit.tag` <a class="headerlink" href="#helm.hopsworks.dockerRegistry.buildkit.tag" title="Permanent link">#</a> { #helm.hopsworks.dockerRegistry.buildkit.tag }
-:   Type `string`, default `"v0.32.2"`.
+:   Type `string`, default `"v0.34.1"`.
     Do not go below v0.31.2. Earlier releases carry published advisories, two of which matter more with the persistent daemon: a Git URL subdirectory path traversal, reachable because a library can be installed from a user-supplied Git URL, and a state-directory escape via a custom frontend, whose blast radius is every project once one daemon holds the state for all of them. Both fixed in v0.28.1; v0.31.2 also covers a Seccomp/AppArmor bypass, an unbounded-parsing DoS and a command injection through Git bundle checkout. A per-build daemon is affected the same way, so this is not a reason to leave the persistent one off.  Most of what a scanner reports on this image is the four `buildkit-cni-*` plugins, which no BuildKit release refreshes and which never run here: the image ships no CNI config, so buildkitd falls back to host networking.  The rootless variant is a separate image, used only when buildkitd.rootless.enabled is on. Both move together.  Moving this pin means revisiting buildkitd.gc.keySyntax, which is version dependent.
 
 `hopsworks.dockerRegistry.preset.affinity` <a class="headerlink" href="#helm.hopsworks.dockerRegistry.preset.affinity" title="Permanent link">#</a> { #helm.hopsworks.dockerRegistry.preset.affinity }
@@ -1323,7 +1328,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       image:
         admin:
           imageName: hopsworks
-          mysqlConnectorVersion: 8.0.21.1
+          mysqlConnectorVersion: 8.0.21.2
           mysqlStorageImageName: hopsworks-mysql-connector
           pullPolicy: IfNotPresent
           tag: null
@@ -1335,11 +1340,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           tag: null
         postInstall:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.1
+          tag: 6.2025.11-jdk21.2
         registry: null
         worker:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.1
+          tag: 6.2025.11-jdk21.2
     ```
 
 <div class="hops-values" markdown>
@@ -1348,7 +1353,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks"`.
 
 `hopsworks.image.admin.mysqlConnectorVersion` <a class="headerlink" href="#helm.hopsworks.image.admin.mysqlConnectorVersion" title="Permanent link">#</a> { #helm.hopsworks.image.admin.mysqlConnectorVersion }
-:   Type `string`, default `"8.0.21.1"`.
+:   Type `string`, default `"8.0.21.2"`.
 
 `hopsworks.image.admin.mysqlStorageImageName` <a class="headerlink" href="#helm.hopsworks.image.admin.mysqlStorageImageName" title="Permanent link">#</a> { #helm.hopsworks.image.admin.mysqlStorageImageName }
 :   Type `string`, default `"hopsworks-mysql-connector"`.
@@ -1378,7 +1383,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     pull policy for the admin sidecar's payara-node image. admindeployment.yaml already read this key before it was declared here, and its fallback cannot reach global._hopsworks.imagePullPolicy, so the sidecar was pinned to IfNotPresent with no way to override it.
 
 `hopsworks.image.postInstall.tag` <a class="headerlink" href="#helm.hopsworks.image.postInstall.tag" title="Permanent link">#</a> { #helm.hopsworks.image.postInstall.tag }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.2"`.
 
 `hopsworks.image.registry` <a class="headerlink" href="#helm.hopsworks.image.registry" title="Permanent link">#</a> { #helm.hopsworks.image.registry }
 :   Type `string`, default `nil`.
@@ -1388,7 +1393,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"IfNotPresent"`.
 
 `hopsworks.image.worker.tag` <a class="headerlink" href="#helm.hopsworks.image.worker.tag" title="Permanent link">#</a> { #helm.hopsworks.image.worker.tag }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.2"`.
 
 </div>
 
@@ -1994,6 +1999,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           verbs:
           - get
           - list
+        nodeLabels:
+          edit: false
+        priorityClasses:
+          edit: false
         useExistingRole: false
     ```
 
@@ -2098,6 +2107,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.rbac.extraRoleRules[7].verbs[1]` <a class="headerlink" href="#helm.hopsworks.rbac.extraRoleRules.7.verbs.1" title="Permanent link">#</a> { #helm.hopsworks.rbac.extraRoleRules.7.verbs.1 }
 :   Type `string`, default `"list"`.
+
+`hopsworks.rbac.nodeLabels.edit` <a class="headerlink" href="#helm.hopsworks.rbac.nodeLabels.edit" title="Permanent link">#</a> { #helm.hopsworks.rbac.nodeLabels.edit }
+:   Type `bool`, default `false`.
+    Let admins add, change and remove node labels from Cluster settings, Kubernetes Scheduler: grants patch on nodes, cluster-wide. RBAC cannot limit the grant to labels, so it also covers taints and spec.unschedulable; Hopsworks itself changes only the labels it set and refuses keys under kubernetes.io, k8s.io, nvidia.com and feature.node.kubernetes.io. Needs variables.label_priority_write 'true'
+
+`hopsworks.rbac.priorityClasses.edit` <a class="headerlink" href="#helm.hopsworks.rbac.priorityClasses.edit" title="Permanent link">#</a> { #helm.hopsworks.rbac.priorityClasses.edit }
+:   Type `bool`, default `false`.
+    Let admins create and delete PriorityClasses from Cluster settings, Kubernetes Scheduler: grants create, update, patch and delete on priorityclasses. Hopsworks deletes only the classes it created. Needs variables.label_priority_write 'true'
 
 `hopsworks.rbac.useExistingRole` <a class="headerlink" href="#helm.hopsworks.rbac.useExistingRole" title="Permanent link">#</a> { #helm.hopsworks.rbac.useExistingRole }
 :   Type `bool`, default `false`.
@@ -2402,7 +2419,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         agent_deployment_otel_cpu: '0.5'
         agent_deployment_otel_enabled: 'true'
         agent_deployment_otel_image: otlp-sidecar
-        agent_deployment_otel_memory_mb: '1024'
+        agent_deployment_otel_memory_mb: '2048'
         agent_jobs_enabled: 'true'
         airflow_dir: /srv/hops/airflow
         airflow_enabled: true
@@ -2424,9 +2441,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_file_path: /audit-logs
         audit_log_file_type: io.hops.hopsworks.audit.helper.JSONLogFormatter
         audit_log_size_limit: '256000000'
-        base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless
+        base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.34.1-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.2.1
+        base_image_version: 5.2.3
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -2445,6 +2462,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         command_search_fs_reindex_queue_wait_as_ms: '1800000'
         command_search_fs_retry_per_clean_interval: '5'
         conda_default_repo: defaults
+        data_source_audit_retention_days: '7'
+        data_source_sync_job_cores: '0.5'
+        data_source_sync_job_memory: '1024'
+        data_source_sync_lifecycle_stale_minutes: '10'
+        data_source_sync_max_run_minutes: '0'
+        data_source_sync_min_interval_minutes: '5'
+        data_source_sync_stop_wait_seconds: '120'
+        data_source_sync_transfers: '4'
         default_jupyter_environment: pandas-training-pipeline
         default_python_job_environment: pandas-training-pipeline
         disable_password_login: 'false'
@@ -2517,12 +2542,15 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_feature_monitoring: 'true'
         enable_fix_receivers_timer: 'true'
         enable_gcs_storage_connectors: 'true'
+        enable_hopsworks_storage_connectors: 'true'
         enable_jupyter_python_kernel_non_kubernetes: 'false'
         enable_kafka_storage_connectors: 'true'
         enable_metadata_designer: ''
         enable_opensearch_storage_connectors: 'true'
+        enable_public_apps: false
         enable_read_only_git_repositories: 'false'
         enable_redshift_storage_connectors: 'true'
+        enable_sharepoint_storage_connectors: 'true'
         enable_snowflake_storage_connectors: 'true'
         enable_user_search: 'true'
         epipe_version: 0.20.0
@@ -2646,10 +2674,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kube_type: kube_cluster
         kube_user_workload_tolerations: ''
         kubernetes_installed: 'true'
+        kueue_history_retention_days: 90
         kueue_project_default_cluster_queue: other
         kueue_project_default_local_queue: other
+        kueue_reconcile_interval_s: 300
+        kueue_rollup_retention_days: 100
         kueue_system_jobs_cluster_queue: ''
         kueue_system_jobs_local_queue: ''
+        label_priority_write: 'true'
         ldap_account_status: '2'
         ldap_attr_binary: java.naming.ldap.attributes.binary
         ldap_dyn_group_target: memberOf
@@ -2763,6 +2795,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         pythonapp_idle_cooldown_seconds: '21600'
         pythonapp_memory: '2048'
         pythonapp_proxy_token_ttl_ms: '900000'
+        pythonapp_unready_timeout_seconds: '600'
         quotas_featuregroups_online_disabled: '-1'
         quotas_featuregroups_online_enabled: '-1'
         quotas_max_parallel_executions: '-1'
@@ -2792,6 +2825,16 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         rondb_quotas: ''
         rondb_usage_cache_ttl_seconds: '60'
         rondb_usage_query_timeout_seconds: '10'
+        run_ai_client_id: ''
+        run_ai_client_secret_key: clientSecret
+        run_ai_client_secret_name: ''
+        run_ai_cluster_name: ''
+        run_ai_default_department: default
+        run_ai_enable: false
+        run_ai_project_gpu_quota: 0
+        run_ai_ready_timeout_s: 30
+        run_ai_reconcile_interval_s: 600
+        run_ai_url: http://runai-backend-traefik.runai-backend.svc.cluster.local:8080
         saas_entry_point_url: ''
         scikit_learn_version: 1.3.2
         service_jwt_exp_leeway_sec: '172800000'
@@ -2892,7 +2935,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"otlp-sidecar"`.
 
 `hopsworks.variables.agent_deployment_otel_memory_mb` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_otel_memory_mb" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_otel_memory_mb }
-:   Type `string`, default `"1024"`.
+:   Type `string`, default `"2048"`.
 
 `hopsworks.variables.agent_jobs_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_jobs_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_jobs_enabled }
 :   Type `string`, default `"true"`.
@@ -2958,13 +3001,13 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"256000000"`.
 
 `hopsworks.variables.base_buildkit_image` <a class="headerlink" href="#helm.hopsworks.variables.base_buildkit_image" title="Permanent link">#</a> { #helm.hopsworks.variables.base_buildkit_image }
-:   Type `string`, default `"docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless"`.
+:   Type `string`, default `"docker.hops.works/hopsworks/moby/buildkit:v0.34.1-rootless"`.
 
 `hopsworks.variables.base_image_name` <a class="headerlink" href="#helm.hopsworks.variables.base_image_name" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_name }
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.2.1"`.
+:   Type `string`, default `"5.2.3"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -3020,6 +3063,38 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.conda_default_repo` <a class="headerlink" href="#helm.hopsworks.variables.conda_default_repo" title="Permanent link">#</a> { #helm.hopsworks.variables.conda_default_repo }
 :   Type `string`, default `"defaults"`.
+
+`hopsworks.variables.data_source_audit_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.data_source_audit_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_audit_retention_days }
+:   Type `string`, default `"7"`.
+    Days of audit logs kept per data source sync, cluster-wide. 0 keeps them forever.
+
+`hopsworks.variables.data_source_sync_job_cores` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_job_cores" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_job_cores }
+:   Type `string`, default `"0.5"`.
+    Cores given to a data source sync job when the sync is created.
+
+`hopsworks.variables.data_source_sync_job_memory` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_job_memory" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_job_memory }
+:   Type `string`, default `"1024"`.
+    Memory in MB given to a data source sync job when the sync is created.
+
+`hopsworks.variables.data_source_sync_lifecycle_stale_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_lifecycle_stale_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_lifecycle_stale_minutes }
+:   Type `string`, default `"10"`.
+    Minutes a data source sync may stay CREATING or DELETING before the UI offers Retry.
+
+`hopsworks.variables.data_source_sync_max_run_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_max_run_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_max_run_minutes }
+:   Type `string`, default `"0"`.
+    Longest a data source sync run may take in minutes. 0 is unlimited.
+
+`hopsworks.variables.data_source_sync_min_interval_minutes` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_min_interval_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_min_interval_minutes }
+:   Type `string`, default `"5"`.
+    Shortest interval in minutes a data source sync schedule may fire at.
+
+`hopsworks.variables.data_source_sync_stop_wait_seconds` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_stop_wait_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_stop_wait_seconds }
+:   Type `string`, default `"120"`.
+    Seconds a forced sync delete waits for the running execution to stop.
+
+`hopsworks.variables.data_source_sync_transfers` <a class="headerlink" href="#helm.hopsworks.variables.data_source_sync_transfers" title="Permanent link">#</a> { #helm.hopsworks.variables.data_source_sync_transfers }
+:   Type `string`, default `"4"`.
+    Default number of files a data source sync transfers in parallel.
 
 `hopsworks.variables.default_jupyter_environment` <a class="headerlink" href="#helm.hopsworks.variables.default_jupyter_environment" title="Permanent link">#</a> { #helm.hopsworks.variables.default_jupyter_environment }
 :   Type `string`, default `"pandas-training-pipeline"`.
@@ -3091,7 +3166,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.docker_operations_buildkit_extra_args` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_buildkit_extra_args" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_buildkit_extra_args }
 :   Type `string`, default `""`.
-    Extra arguments appended to every buildctl invocation.  Empty by default. This previously shipped an S3 --export-cache/--import-cache pair. BuildKit resolves S3 credentials at the daemon rather than at the client, so whether it worked depended entirely on what identity the daemon had. On an EKS install with defaultServiceAccount annotations wired for IRSA (see values.aws.yaml) the daemonless build pod carried a web-identity token and the exporter worked. On a cluster with no AWS identity it could not: observed as "no EC2 IMDS role found ... context deadline exceeded" on every build, costing an IMDS timeout per build while caching nothing, with ignore-error hiding the failure rather than avoiding it.  Defaulting it empty therefore removes a remote cache that some installs did have. That is deliberate, because it failed closed and expensively everywhere else, but it is a behaviour change on upgrade rather than the removal of something inert.  Before re-enabling it, give the daemon real credentials and confirm the cache is actually being read. With the daemon enabled it is no longer the build pod, so the build pod's identity no longer applies to it: set buildkitd.serviceAccountName to an account carrying the cloud identity you want the exporter to use. A persistent daemon already avoids the base image re-pull this was reaching for, and does so without leaving the cluster.
+    Extra arguments appended to every buildctl invocation.  Empty by default. This previously shipped an S3 --export-cache/--import-cache pair. BuildKit resolves S3 credentials at the daemon rather than at the client, so whether it worked depended entirely on what identity the daemon had. On an EKS install with defaultServiceAccount annotations wired for IRSA (an eks.amazonaws.com/role-arn annotation) the daemonless build pod carried a web-identity token and the exporter worked. On a cluster with no AWS identity it could not: observed as "no EC2 IMDS role found ... context deadline exceeded" on every build, costing an IMDS timeout per build while caching nothing, with ignore-error hiding the failure rather than avoiding it.  Defaulting it empty therefore removes a remote cache that some installs did have. That is deliberate, because it failed closed and expensively everywhere else, but it is a behaviour change on upgrade rather than the removal of something inert.  Before re-enabling it, give the daemon real credentials and confirm the cache is actually being read. With the daemon enabled it is no longer the build pod, so the build pod's identity no longer applies to it: set buildkitd.serviceAccountName to an account carrying the cloud identity you want the exporter to use. A persistent daemon already avoids the base image re-pull this was reaching for, and does so without leaving the cluster.
 
 `hopsworks.variables.docker_operations_buildkit_limit_cpu` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_buildkit_limit_cpu" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_buildkit_limit_cpu }
 :   Type `string`, default `"2"`.
@@ -3255,6 +3330,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.enable_gcs_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_gcs_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_gcs_storage_connectors }
 :   Type `string`, default `"true"`.
 
+`hopsworks.variables.enable_hopsworks_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_hopsworks_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_hopsworks_storage_connectors }
+:   Type `string`, default `"true"`.
+
 `hopsworks.variables.enable_jupyter_python_kernel_non_kubernetes` <a class="headerlink" href="#helm.hopsworks.variables.enable_jupyter_python_kernel_non_kubernetes" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_jupyter_python_kernel_non_kubernetes }
 :   Type `string`, default `"false"`.
 
@@ -3267,11 +3345,18 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.enable_opensearch_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_opensearch_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_opensearch_storage_connectors }
 :   Type `string`, default `"true"`.
 
+`hopsworks.variables.enable_public_apps` <a class="headerlink" href="#helm.hopsworks.variables.enable_public_apps" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_public_apps }
+:   Type `bool`, default `false`.
+
 `hopsworks.variables.enable_read_only_git_repositories` <a class="headerlink" href="#helm.hopsworks.variables.enable_read_only_git_repositories" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_read_only_git_repositories }
 :   Type `string`, default `"false"`.
 
 `hopsworks.variables.enable_redshift_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_redshift_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_redshift_storage_connectors }
 :   Type `string`, default `"true"`.
+
+`hopsworks.variables.enable_sharepoint_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_sharepoint_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_sharepoint_storage_connectors }
+:   Type `string`, default `"true"`.
+    Enables SharePoint data sources and their syncs into project datasets.
 
 `hopsworks.variables.enable_snowflake_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_snowflake_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_snowflake_storage_connectors }
 :   Type `string`, default `"true"`.
@@ -3664,17 +3749,33 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.kubernetes_installed` <a class="headerlink" href="#helm.hopsworks.variables.kubernetes_installed" title="Permanent link">#</a> { #helm.hopsworks.variables.kubernetes_installed }
 :   Type `string`, default `"true"`.
 
+`hopsworks.variables.kueue_history_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.kueue_history_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_history_retention_days }
+:   Type `int`, default `90`.
+    Days of Compute Allocation history (Audit tab operations and corrections) kept; older rows are deleted hourly on the primary
+
 `hopsworks.variables.kueue_project_default_cluster_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_project_default_cluster_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_project_default_cluster_queue }
 :   Type `string`, default `"other"`.
 
 `hopsworks.variables.kueue_project_default_local_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_project_default_local_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_project_default_local_queue }
 :   Type `string`, default `"other"`.
 
+`hopsworks.variables.kueue_reconcile_interval_s` <a class="headerlink" href="#helm.hopsworks.variables.kueue_reconcile_interval_s" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_reconcile_interval_s }
+:   Type `int`, default `300`.
+    Seconds between passes that put back Kueue objects changed outside Hopsworks, with global._hopsworks.kueue.queueModel per_project. Read when Hopsworks starts
+
+`hopsworks.variables.kueue_rollup_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.kueue_rollup_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_rollup_retention_days }
+:   Type `int`, default `100`.
+    Days of hourly Compute Allocation analytics rollups kept. The longest range Analytics shows is 90 days
+
 `hopsworks.variables.kueue_system_jobs_cluster_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_system_jobs_cluster_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_system_jobs_cluster_queue }
 :   Type `string`, default `""`.
 
 `hopsworks.variables.kueue_system_jobs_local_queue` <a class="headerlink" href="#helm.hopsworks.variables.kueue_system_jobs_local_queue" title="Permanent link">#</a> { #helm.hopsworks.variables.kueue_system_jobs_local_queue }
 :   Type `string`, default `""`.
+
+`hopsworks.variables.label_priority_write` <a class="headerlink" href="#helm.hopsworks.variables.label_priority_write" title="Permanent link">#</a> { #helm.hopsworks.variables.label_priority_write }
+:   Type `string`, default `"true"`.
+    'false' makes node labels and PriorityClasses read only in Cluster settings, Kubernetes Scheduler, whatever the RBAC, and leaves out the grants of rbac.nodeLabels.edit and rbac.priorityClasses.edit. With 'true', each is editable once its rbac.*.edit grant is on
 
 `hopsworks.variables.ldap_account_status` <a class="headerlink" href="#helm.hopsworks.variables.ldap_account_status" title="Permanent link">#</a> { #helm.hopsworks.variables.ldap_account_status }
 :   Type `string`, default `"2"`.
@@ -4040,6 +4141,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"900000"`.
     Milliseconds an app proxy token (POST /project/{id}/apps/{name}/proxy-token) stays valid. It is pinned to one app and not renewable: the client mints a new one when it expires.
 
+`hopsworks.variables.pythonapp_unready_timeout_seconds` <a class="headerlink" href="#helm.hopsworks.variables.pythonapp_unready_timeout_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.pythonapp_unready_timeout_seconds }
+:   Type `string`, default `"600"`.
+    Seconds an app that has been ready may go without a ready container before its execution ends and the app's pods, Deployment and KEDA objects are removed (HWORKS-3572). Above the kubelet's five-minute cap on the wait between restarts of a crashing container, so one such wait cannot end an app that is about to come back; the same 600 s as a Kubernetes Deployment's progressDeadlineSeconds. Before an app is first ready, `python_job_kube_waiting_timeout_ms` applies as for every job.
+
 `hopsworks.variables.quotas_featuregroups_online_disabled` <a class="headerlink" href="#helm.hopsworks.variables.quotas_featuregroups_online_disabled" title="Permanent link">#</a> { #helm.hopsworks.variables.quotas_featuregroups_online_disabled }
 :   Type `string`, default `"-1"`.
 
@@ -4136,6 +4241,46 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.rondb_usage_query_timeout_seconds` <a class="headerlink" href="#helm.hopsworks.variables.rondb_usage_query_timeout_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.rondb_usage_query_timeout_seconds }
 :   Type `string`, default `"10"`.
     Query timeout (seconds) for the ndbinfo memory usage scan. Scan duration grows with the cluster's table count; raise this on large clusters if usage stops showing in the project quotas UI.
+
+`hopsworks.variables.run_ai_client_id` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_client_id" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_client_id }
+:   Type `string`, default `""`.
+    Client id of the Run:ai service account Hopsworks authenticates as. Give it the System administrator role at cluster scope; Hopsworks uses its Clusters, Departments and Node pools View and Projects View, Create and Delete permissions
+
+`hopsworks.variables.run_ai_client_secret_key` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_client_secret_key" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_client_secret_key }
+:   Type `string`, default `"clientSecret"`.
+    Key of the client secret in run_ai_client_secret_name
+
+`hopsworks.variables.run_ai_client_secret_name` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_client_secret_name" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_client_secret_name }
+:   Type `string`, default `""`.
+    Secret in the release namespace that holds the Run:ai service account's client secret
+
+`hopsworks.variables.run_ai_cluster_name` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_cluster_name" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_cluster_name }
+:   Type `string`, default `""`.
+    Run:ai cluster to use; empty selects the only cluster the control plane knows
+
+`hopsworks.variables.run_ai_default_department` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_default_department" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_default_department }
+:   Type `string`, default `"default"`.
+    Run:ai department for projects in the default Hopsworks department, and in any department with no Run:ai department of the same name. It must already exist
+
+`hopsworks.variables.run_ai_enable` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_enable" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_enable }
+:   Type `bool`, default `false`.
+    Let NVIDIA Run:ai schedule the GPUs of Hopsworks projects: each project is bound to a Run:ai project on its namespace and GPU availability is read from Run:ai. Needs run_ai_client_id and run_ai_client_secret_name, and cannot be combined with global._hopsworks.kueue.enabled. Only this value enables Run:ai: Cluster settings refuses changing it
+
+`hopsworks.variables.run_ai_project_gpu_quota` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_project_gpu_quota" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_project_gpu_quota }
+:   Type `int`, default `0`.
+    Deserved GPUs of each Run:ai project Hopsworks creates; Run:ai admins change quotas in Run:ai afterwards
+
+`hopsworks.variables.run_ai_ready_timeout_s` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_ready_timeout_s" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_ready_timeout_s }
+:   Type `int`, default `30`.
+    Seconds project creation waits for a new Run:ai project to become Ready
+
+`hopsworks.variables.run_ai_reconcile_interval_s` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_reconcile_interval_s" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_reconcile_interval_s }
+:   Type `int`, default `600`.
+    Seconds between passes that bind projects created before Run:ai was enabled
+
+`hopsworks.variables.run_ai_url` <a class="headerlink" href="#helm.hopsworks.variables.run_ai_url" title="Permanent link">#</a> { #helm.hopsworks.variables.run_ai_url }
+:   Type `string`, default `"http://runai-backend-traefik.runai-backend.svc.cluster.local:8080"`.
+    Run:ai control-plane URL reachable from the Payara pods
 
 `hopsworks.variables.saas_entry_point_url` <a class="headerlink" href="#helm.hopsworks.variables.saas_entry_point_url" title="Permanent link">#</a> { #helm.hopsworks.variables.saas_entry_point_url }
 :   Type `string`, default `""`.
