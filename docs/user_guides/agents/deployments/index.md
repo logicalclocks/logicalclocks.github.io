@@ -491,6 +491,103 @@ For a client written from scratch, use [the chat contract][the-chat-contract] in
 
 Deleting the agent deletes its chat app.
 
+**The chat in an app of your own.**
+An app that already has a page of its own (a FastAPI or Flask app, say) can hold the chat instead of being one.
+This is opt-in per app and off by default: name the agent on the app, with `agent=` in `create_app()` or the **Agent** setting on the app's page, and Hopsworks starts the app as it starts a chat app, with the agent's in-cluster address in `CHAT_AGENT_URL` (and `CHAT_AGENT_HOST`) and the key it signs members' names with in `HOPSWORKS_APP_IDENTITY_KEY`.
+An app without an agent gets neither.
+Only an agent deployment of the same project can be named, and such an app is not the agent's chat app: the agent's page does not find it, and deleting the agent leaves it alone.
+
+The app then runs the chat server beside its own server and forwards a path of its own to it, so the chat server still decides who is chatting from the signed headers, keeps each person's conversations apart, and reaches the agent inside the cluster only.
+With FastAPI, on the `python-app-pipeline` environment (it has FastAPI, uvicorn, httpx and the `@hopsworks/agent-chat` package):
+
+```python
+apps = project.get_app_api()
+app = apps.create_app(
+    "support_ui",
+    app_path="Resources/support_ui/app.py",
+    app_kind="CUSTOM",
+    entrypoint_command=(
+        "bash -lc 'cd \"$APP_DIR\" "
+        '&& node -e "import(\\"@hopsworks/agent-chat\\")'
+        '.then((m) => m.buildPage(process.cwd(), \\"/tmp/chat-page\\"))" '
+        "&& (hopsworks-agent-chat --port 8081 --base-path chat/ &) "
+        "&& exec uvicorn app:app --host 0.0.0.0 --port \"$APP_PORT\"'"
+    ),
+    app_port=8000,
+    readiness_probe_path="/api/hello",
+    agent=agent,  # the Agent, or its id
+    db_access=False,
+)
+app.run()
+```
+
+The start command does three things: it builds the page from `web/main.jsx` with the package's `buildPage` (into the pod's temporary space, so nothing is written to the project), starts `hopsworks-agent-chat` (the chat server alone, no page; `--help` lists its options, `CHAT_PORT` and `CHAT_BASE_PATH` are the same as variables), and starts the app's own server on the app's port.
+`Resources/support_ui/app.py` serves the page and forwards `chat/*` to the chat server, as it is, streamed: the method and body, the `Cookie` header and the `Set-Cookie` headers coming back, and the headers the Hopsworks proxy set, which are how the chat server knows who is chatting.
+
+```python
+import httpx
+from fastapi import FastAPI, Request
+from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
+from starlette.background import BackgroundTask
+
+
+CHAT = "http://127.0.0.1:8081"  # hopsworks-agent-chat, beside this server
+FORWARDED = {
+    "x-hopsworks-user",
+    "x-hopsworks-user-time",
+    "x-hopsworks-user-signature",
+    "x-forwarded-for",
+    "cookie",
+    "content-type",
+    "accept",
+}
+RETURNED = {"content-type", "set-cookie", "cache-control"}
+
+app = FastAPI()
+chat = httpx.AsyncClient(base_url=CHAT, timeout=httpx.Timeout(600, connect=10))
+
+
+@app.api_route("/chat/{path:path}", methods=["GET", "POST"])
+async def forward(path: str, request: Request) -> StreamingResponse:
+    headers = {k: v for k, v in request.headers.items() if k.lower() in FORWARDED}
+    upstream = chat.build_request(
+        request.method,
+        f"/{path}",
+        params=request.query_params,
+        headers=headers,
+        content=request.stream(),
+    )
+    reply = await chat.send(upstream, stream=True)
+    return StreamingResponse(
+        reply.aiter_raw(),
+        status_code=reply.status_code,
+        headers={k: v for k, v in reply.headers.items() if k.lower() in RETURNED},
+        background=BackgroundTask(reply.aclose),
+    )
+
+
+@app.get("/api/hello")
+def hello() -> dict:
+    return {"hello": "world"}
+
+
+app.mount("/", StaticFiles(directory="/tmp/chat-page", html=True), name="page")
+```
+
+`Resources/support_ui/web/main.jsx` is the page, React, with the chat inside whatever else it shows; `apiBase` is the path the app forwards, the same as the server's `--base-path`, so the page's requests and the links in the replies the server streams (images, files) both go through it:
+
+```jsx
+import { HopsworksChat, mount } from "@hopsworks/agent-chat/react";
+
+mount(<HopsworksChat apiBase="chat/" headerStart={<span>Support</span>} />);
+```
+
+`<HopsworksChat />` takes the same slots and parts here as in a customized chat app, and `useChat()` and the exported parts (`Header`, `Sidebar`, `Questions`, `AssistantMessage`, …) are there for a page built from them instead; the package's `README.md` and the `AGENTS.md` of a customized app describe them.
+The forward must stream, since replies are server-sent events: a forward that buffers them holds a reply until the turn ends, and a long turn then hits the gateway's timeout.
+Keep the forward to the headers above: the chat server refuses a name the signature does not cover, so a page cannot claim to be someone, but a forward of its own choosing could.
+Turning on such an app's public link makes the agent reachable by anyone holding the link, as it does for a chat app, and the app's limits are the chat server's (`CHAT_MAX_RUNS_PER_MINUTE` and the rest, as variables of the app).
+
 ## Tracing
 
 With `tracing={"enabled": True}`, every turn is traced with OpenTelemetry: the turn, each model call with its tokens, and each tool call with its arguments and result.
