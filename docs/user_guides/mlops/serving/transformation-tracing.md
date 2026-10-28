@@ -103,6 +103,7 @@ A deployment created without tracing answers `400` with error code `240059`, as 
     - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
     - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
         - <code class="doc-symbol doc-symbol-method"></code> [`set_tracing`][hsml.deployment.Deployment.set_tracing]
+        - <code class="doc-symbol doc-symbol-method"></code> [`delete_traces`][hsml.deployment.Deployment.delete_traces]
         - <code class="doc-symbol doc-symbol-attribute"></code> [`tracing`][hsml.deployment.Deployment.tracing]
     - <code class="doc-symbol doc-symbol-class"></code> [`DeploymentTracingConfig`][hsml.deployment_tracing_config.DeploymentTracingConfig]
 
@@ -171,6 +172,29 @@ The settings are Helm values under `hopsworks.variables`; a changed cap reaches 
 Deleting a deployment deletes its traces.
 
 The `LowDiskDataFileExtents` alert fires when less than 20% of the tablespace is free.
+
+To delete a deployment's traces yourself, all of them or those created before a time:
+
+```python
+from datetime import datetime, timedelta
+
+deployment.delete_traces()
+deployment.delete_traces(
+    until_datetime=datetime.now() - timedelta(days=1), batch_size=1000
+)
+```
+
+Each request deletes at most `batch_size` rows (default 1000, at most 10000) from each trace table in one transaction, since RonDB caps the operations one transaction holds; `delete_traces` repeats it until none are left and returns the number of rows deleted.
+Over the REST API, one request deletes one batch and returns `{"deleted": <rows>}`; repeat it until `deleted` is 0.
+`until` is in epoch milliseconds and is optional:
+
+```bash
+curl -X DELETE \
+  -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
+  "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/otel/servings/$DEPLOYMENT_ID/traces?until=1793145600000&batchSize=1000"
+```
+
+A `batchSize` outside 1 to 10000 answers `400` with error code `240061`.
 
 ## Overhead
 
