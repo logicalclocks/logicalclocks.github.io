@@ -1,5 +1,8 @@
 ---
 releases:
+  "5.2.2":
+    released: "2026-10-28"
+    python_client: "5.2.2"
   "5.2.1":
     released: "2026-10-16"
     python_client: "5.2.1"
@@ -12,13 +15,141 @@ releases:
 
 The releases of Hopsworks 5.2, newest first.
 
+## 5.2.2 { #hopsworks-5-2-2 }
+
+### What's changed
+
+- [API] Addressed vulnerabilities in the ArrowFlight server.
+- [API] [FRONTEND] Addressed vulnerabilities in the Trino and Superset services of projects.
+- [API] Fixed the OTLP sidecar of agent deployments with tracing running out of memory under ordinary traffic, which took the deployment out of service while the sidecar restarted; the sidecar now drops telemetry it can't keep up with instead of buffering it ([OTLP sidecar][docs-upgrade-otlp]).
+- [API] [FRONTEND] [HELM] Fixed Python app pods staying in `ContainerCreating` after their execution ended; an app that was ready now ends only after `hopsworks.variables.pythonapp_unready_timeout_seconds` (600) without a ready container.
+- [API] [FRONTEND] [HELM] Added GPU scheduling through NVIDIA Run:ai (`hopsworks.variables.run_ai_enable`, off by default), which binds every project to a Run:ai project so that Run:ai quotas, fair share and preemption apply to its pods, shows the project's GPU quota in the UI and adds `Project.get_gpu_availability()` to the Python client, which reports the cluster's GPUs when Run:ai is off; it can't be combined with Kueue ([Run:ai][docs-run-ai]).
+- [API] [FRONTEND] [HELM] Added SharePoint data sources, which copy a folder of a SharePoint Online document library into a project dataset once or on a schedule, also with `SharePointConnector.create_sync` and `copy_folder` in the Python client and `hops datasource sharepoint`; `hopsworks.variables.enable_sharepoint_storage_connectors` turns them off ([SharePoint][docs-sharepoint]).
+- [API] [FRONTEND] [HELM] Added Hopsworks data sources, which read the feature groups of a project on another Hopsworks cluster through ArrowFlight, as external feature groups or with dltHub ingestion, also with `hops datasource create hopsworks`; `hopsworks.variables.enable_hopsworks_storage_connectors` turns them off ([Hopsworks data source][docs-ds-hopsworks]).
+- [API] [FRONTEND] Added Microsoft SQL Server and Azure SQL Database as SQL data sources, read through Spark, ArrowFlight, Trino catalogs and dltHub ingestion ([SQL Server][docs-ds-sqlserver]).
+- [API] [FRONTEND] Added departments, which group projects: administrators create them and move projects between them in the cluster settings, and `hopsworks.create_project` in the Python client takes a `department`.
+- [API] [FRONTEND] [HELM] Changed public (no-login) access to apps to cover every kind of app instead of only Streamlit apps, turned on by `hopsworks.variables.enable_public_apps` ([public access][docs-apps-public]).
+- [API] [FRONTEND] Added a table viewer to the Apps page, and the dropping of an app's tables when the app is deleted, for apps created from 5.2.2 on, which create their tables with `App.create_table` and change them with `App.alter_table` in the Python client ([database access][docs-apps-db]).
+- [API] Added `limit` to `FeatureGroup.read` and `ExternalFeatureGroup.read` in the Python client, and changed limited reads through ArrowFlight, such as `show(n)` and `hops fg preview`, to stop after that many rows instead of reading the whole feature group.
+- [API] [FRONTEND] Fixed starting a terminal, notebook, Python job, Python app or deployment without enough project quota being accepted and then failing without a reason; the start is now refused with `Project quota exceeded`, and the Jupyter, Jobs and Deployments pages show the project's quota.
+- [API] [FRONTEND] Fixed saving a Python app on a cluster with Kueue failing with `Queues in Kueue are not supported for:PythonApp`.
+- [API] [FRONTEND] Fixed the Spark properties of a job or a Jupyter server written with spaces around `=`, such as `spark.executor.cores = 2`, being ignored.
+- [API] Fixed `get_feature_groups` without a name in the Python client returning external feature groups and spine groups as managed ones, so `get_external_feature_groups` without a name returned none.
+- [API] Fixed `hops fg create-external` saving the feature group without its `--query` or `--path`, added `--features` and `--online` to it and `--type` to `hops fg list`, and changed the type label of managed feature groups in `hops fg list` and `hops fg info` from `cached` to `managed`.
+- [API] Fixed `hopsworks.login()` and Kafka inserts failing with `FileNotFoundError` on Windows, where the Python client used `/tmp`.
+- [API] Fixed waiting for an online ingestion of no rows in the Python client lasting until its timeout, or forever with `timeout` 0.
+- [FRONTEND] Addressed vulnerabilities in Jupyter, Python apps, the Spark UI and the Ray dashboard.
+- [FRONTEND] [HELM] Added **Compute Allocation** to the cluster settings of a cluster with Kueue, where administrators set the compute each department and project is guaranteed and can borrow, which Hopsworks applies as Kueue Cohorts and ClusterQueues, and follow its use.
+  It needs `global._hopsworks.kueue.queueModel: per_project`, set at install; moving a running cluster from `shared`, the default, is not supported.
+- [FRONTEND] [HELM] Added editing of node labels and priority classes to the **Kubernetes Scheduler** cluster settings, once `hopsworks.rbac.nodeLabels.edit` and `hopsworks.rbac.priorityClasses.edit` grant Hopsworks the permissions, both off by default.
+  `hopsworks.rbac.nodeLabels.edit` grants patch on every node, which Kubernetes RBAC can't limit to labels, so it also allows changing taints.
+- [FRONTEND] Changed **Extract** in the file browser to unzip or untar an archive in a background Terminal tab, instead of in a Spark job that copied it to a node's local disk and could fill it; without the Terminal it still runs the job.
+- [FRONTEND] Added the selection of several files in the file browser, by dragging, Ctrl or Cmd-click and Shift-click, and their deletion with **Delete** or the Delete key.
+- [FRONTEND] Added cancelling uploads in the file browser, per file or with **Cancel all**.
+- [FRONTEND] Added sorting a dataset in the file browser by **Last update** and **Author**, and fixed going up to the dataset root after sorting a folder failing with HTTP 404.
+- [FRONTEND] Added a **show shared** switch to the feature group list, which hides the feature groups shared with the project.
+- [FRONTEND] Fixed the **Add members** dialog saying every user is already a member on clusters with user search disabled.
+- [FRONTEND] Fixed the admin **Users** page not scrolling, which left most users out of reach, and added a sortable **Last login** column.
+- [FRONTEND] Fixed error messages that were empty or generic for many failed actions, and 502 and 503 errors showing the raw HTML page of the ingress.
+- [FRONTEND] Fixed a feature store shared with a project, or unshared from it, showing the change only after logging out and in again.
+- [FRONTEND] Fixed a failed Jupyter start showing an exception class name, such as `KubeException`, instead of the reason.
+- [HELM] Fixed Airflow on 5.2.0 and 5.2.1 having no `task_reschedule` table, and the upgrade from 5.1 emptying the Airflow tables after it, such as variables and XComs; the upgrade to 5.2.2 creates the missing table, and a failed conversion now fails the Airflow migrate Job.
+  Rows that an earlier upgrade to 5.2.0 or 5.2.1 lost are not restored: re-create them or restore them from a backup.
+- [HELM] Fixed an OpenSearch snapshot restore leaving the `.opendistro_security` index closed, after which OpenSearch crash-loops ([recover a cluster restored on 5.2.0 or 5.2.1][docs-os-restore-crash-loop]).
+- [HELM] Fixed a fresh `helm install --wait` hanging when it ran more than an hour after the Trino auth seed Job finished, because the Job's TTL deleted it; `trino.authSeeder.ttlSecondsAfterFinished` now defaults to `global._hopsworks.jobs.ttlSecondsAfterFinished` (1 day).
+- [HELM] Added support for Kubernetes 1.33, which the chart refused below 1.34.
+- [HELM] Changed the KEDA CRD upgrade hook to read the CRDs from the `hopsworks/keda-crds` image (`hw-keda.crdUpgradeJob.image`) instead of a hook ConfigMap, which took 13% of the 1 MiB Helm release Secret; mirror that image on an airgapped cluster ([KEDA CRDs][docs-keda-crds]).
+- [HELM] Moved the upgrade guide and the Helm 4 migration notes from the chart's `UPGRADE.md` and `HELM4_MIGRATION.md` to the docs ([upgrading Hopsworks][docs-upgrade], [upgrading with Helm 4][docs-helm4]).
+- [HELM] Fixed the Jobs of the VPA install and uninstall, the Kueue objects, the Trino auth seed, the Airflow key bootstrap, Velero backups, the OpenSearch reindex and the wipe ignoring `global._hopsworks.nodeSelector` and `global._hopsworks.tolerations` ([dedicated node pools][docs-node-pools]).
+- [HELM] Fixed the `TooManyShards` alert never firing; a cluster above 90% of its shard limit starts alerting after the upgrade.
+- Addressed vulnerabilities in the Hopsworks server image and its dependencies, the UI dependencies and the database migration image.
+- Addressed vulnerabilities in the Superset, Prometheus, Grafana, OpenSearch Dashboards, OpenSearch metrics exporter, Logstash and Trino images.
+- Addressed vulnerabilities in the Python environment base images and in the Airflow, terminal, Kafka, Vertical Pod Autoscaler, Spark operator CRD, KServe, KEDA HTTP add-on, remote shuffle service init and BuildKit images.
+- Fixed the statistics cleaner's query taking an hour or more per run on clusters with many feature statistics, during which it blocked the schema migrations of the statistics tables.
+- Fixed the Superset Redis being OOM-killed every few hours by zombie processes its health probes left behind.
+- Changed the RonDB REST server to size its buffer pool from its memory limit, return idle buffers after 15 minutes and opt out of transparent huge pages, so that its memory stays bounded.
+
+### Breaking changes
+
+- [API] [FRONTEND] [HELM] OnlineFS now drops a record that did not arrive on the online topic of its feature group, and a project can no longer use the online topic of another project (`TOPIC_IN_USE_BY_ANOTHER_PROJECT`), to address a vulnerability ([what this affects][docs-upgrade-onlinefs]).
+  Restart the producers that hold on to a topic after it changes; on a Kafka where records reach OnlineFS on a renamed topic, such as a mirrored secondary, set `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
+- [API] [FRONTEND] On a cluster with Kueue, Spark jobs are now queued by Kueue and run with static executors instead of dynamic allocation: a job saved with dynamic allocation runs its dynamic-allocation minimum, at least one executor, and `spark.dynamicAllocation.enabled=true` is refused; set `spark.executor.instances` for more executors ([what changes][docs-kueue-what-changes]).
+- [API] [FRONTEND] Apps created from 5.2.2 on can no longer create or alter tables in the online feature store database with their own SQL, which the apps of Data Owners could before; create them with `App.create_table` and change them with `App.alter_table` in the Python client, or with `createTable` and `alterTable` of `@hopsworks/app` in Node.js ([database access][docs-apps-db]).
+- [API] Python clients older than 5.2.2 fail to list the data sources of a feature store that has a Hopsworks or SharePoint data source; use the 5.2.2 client in the jobs and environments that list them ([client version][docs-sharepoint-client]).
+- [API] [FRONTEND] Ingestion from a MongoDB data source, and fetching its schema, now needs MongoDB 4.4 or later instead of 3.6.
+- [FRONTEND] A Jupyter server can no longer be opened through Hopsworks with only its `?token=` URL, to address a vulnerability; open it from the Hopsworks UI.
+- [FRONTEND] Python apps can no longer call Hopsworks with the session of the user who opens them, to address a vulnerability; give an app that calls Hopsworks credentials of its own, such as an API key.
+- [HELM] Hopsworks now uses Kueue 0.20.3 installed as its own release, `kueue` in `kueue-system`, instead of the Kueue 0.12.2 bundled in its namespace, and the chart refuses to render while the bundled Kueue still runs ([Kueue outside the Hopsworks namespace][docs-upgrade-kueue-external]).
+  With `global._hopsworks.kueue.enabled: true`, move Kueue with the 5.1 chart's `migrate-to-external.sh` before the upgrade, run the chart's `upgrade-kueue.sh` after it, and remove `hw-kueue.managerConfig`, `hw-kueue.nameOverride` and every `hw-kueue.kueue` value but `enabled` from your values, or the values schema rejects the upgrade.
+- [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
+- [HELM] The hopsworks, HopsFS and Hive schema migrations now run on the DDL SQL node instead of the application SQL nodes, so they no longer wait for application queries; a cluster that disables it (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `hopsworks.dependencies.mysql.ddlConsulServiceName`, `hopsfs.dependencies.mysql.ddlConsulServiceName` and `hive.metastore.dependencies.mysql.ddlConsulServiceName` to `mysql`, or the migrations wait for a SQL node that doesn't exist ([DDL SQL node][docs-upgrade-ddl]).
+- [HELM] The chart package no longer ships `values.aws.yaml`, `values.azure.yml`, `values.gcp.yaml`, `values.rhel8.yaml` and `values.nodeselector-tolerations.yaml`; keep a copy of the one you pass, or take its values from the [AWS][docs-setup-aws] or [Azure][docs-setup-azure] setup guide, [Python build performance][docs-buildkitd-rhel8] or [dedicated node pools][docs-node-pools].
+
+### Deprecations
+
+- [HELM] Deprecated `hopsworks.variables.streamlit_sharing`; use `hopsworks.variables.enable_public_apps`, which covers every kind of app, and `true` in either one turns public access on.
+
+### Upgrade steps
+
+Follow [Changes from 5.2.2][docs-upgrade-changes-from-522] in the upgrade guide.
+
+### Upgraded components
+
+| Component | 5.2.1 | 5.2.2 |
+| --------- | ----- | ----- |
+| Airflow image | 5.2.0 | 5.2.1 |
+| Alertmanager | 0.34.0-alpine-h1.1 | 0.34.0-alpine-h2.1 |
+| ArrowFlight server | 5.2.0 | 5.2.1 |
+| Base environment images | 5.2.1 | 5.2.3 |
+| BuildKit | v0.32.2 | v0.34.1 |
+| Grafana | 12.4.9-h12 | 12.4.13-h0 |
+| KEDA HTTP add-on | 0.16.0 | 0.16.0-h2 |
+| KServe RBAC proxy | v0.18.0 | v0.23.0 |
+| KServe utilities | 0.1.11 | 0.1.12 |
+| kube-state-metrics | v2.12.0 | 2.20.0-alpine-h2.0 |
+| Logstash | 7.17.29.6 | 7.17.29.7 |
+| MySQL Connector/J | 8.0.21.1 | 8.0.21.2 |
+| OnlineFS | 2.5 | 2.5.2 |
+| OpenSearch Dashboards | 3.8.0.0 | 3.8.0.1 |
+| OpenSearch metrics exporter | 1.11.0-alpine-h1.1 | 1.11.0-alpine-h2.1 |
+| Payara | 6.2025.11-jdk21.1 | 6.2025.11-jdk21.2 |
+| Prometheus | 3.14.0-alpine-h1.1 | 3.15.1-alpine-h2.0 |
+| Prometheus adapter | 0.12.0-alpine-h1.1 | 0.12.0-alpine-h2.1 |
+| Prometheus config reloader | 0.93.1-alpine-h1.1 | 0.93.1-alpine-h2.1 |
+| Prometheus node exporter | 1.12.1-alpine-h1.1 | 1.12.1-alpine-h2.1 |
+| Pushgateway | 1.11.3-alpine-h1.1 | 1.11.3-alpine-h2.1 |
+| Remote shuffle service init image | 0.9.2 | 0.9.3 |
+| RonDB | 26.02.11 | 26.02.12 |
+| Superset | 6.0.0p4.5 | 6.0.0p4.6 |
+| Superset init image | 0.14.0-alpine-h1.1 | 0.14.0-alpine-h2.1 |
+| Superset MySQL | 8.4.11-ubuntu24.04-h5 | 8.4.13-ubuntu24.04-h0 |
+| Superset MySQL metrics exporter | 0.20.0-alpine-h1.1 | 0.20.0-alpine-h2.1 |
+| Superset MySQL volume permissions image | 12-alpine-h1.1 | 12-alpine-h2.1 |
+| Superset Redis | 7.4.11-alpine-h2 | 7.4.11-alpine-h4 |
+| Superset Redis metrics exporter | 1.90.0-alpine-h1.1 | 1.90.0-alpine-h2.1 |
+| Trino | 483-v2 | 483-v3 |
+| Vertical Pod Autoscaler installer | 1.7.1-2 | 1.7.1-3 |
+
+### Configuration changes
+
+- [HELM] Changed the memory request and limit of the RonDB REST server pods (`rondb.rondb.resources.requests.memory.rdrsMiB`, `rondb.rondb.resources.limits.memory.rdrsMiB`) from 100 MiB and 500 MiB to 2 GiB; check node capacity before the upgrade.
+- [HELM] Changed the default of `hopsworks.variables.agent_deployment_otel_memory_mb`, the memory request and limit of the OTLP sidecar of traced agent deployments, from 1024 to 2048.
+  Each traced agent deployment reserves it on its node once it is recreated, so check node memory before you redeploy them ([OTLP sidecar][docs-upgrade-otlp]).
+- [HELM] Removed `hw-kueue.managerConfig`, `hw-kueue.nameOverride` and the `hw-kueue.kueue` values but `enabled`, which configured the Kueue the chart bundled until 5.2.1.
+- [HELM] Removed the Kueue image from `values.airgap.yaml`, because the chart no longer installs Kueue; pass the mirrored image and chart to `upgrade-kueue.sh` with `--kueue-image` and `--kueue-repo` instead.
+- [HELM] Added `global._hopsworks.kueue.namespace` (default `kueue-system`), the namespace of the Kueue release Hopsworks uses.
+- [HELM] Added `hw-kueue.enforcePrerequisiteCheck` (default `true`); `false` skips the check that refuses to render while the bundled Kueue 0.12 or its `v1alpha1` storage is still on the cluster, or while no Kueue serving `v1beta2` is installed.
+- [HELM] Added `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic` (default `true`), which turns off the OnlineFS check that a record arrived on the online topic of its feature group.
+- [HELM] Added `hopsworks.dependencies.mysql.ddlConsulServiceName`, `hopsfs.dependencies.mysql.ddlConsulServiceName` and `hive.metastore.dependencies.mysql.ddlConsulServiceName` (default `mysqlddl`), the SQL node the schema migrations connect to.
+- [HELM] Added the RonDB REST server settings the chart didn't expose, under `rondb.rondb.rdrs`, such as its buffer pool, its request, BLOB and batch size limits, its rate limit and its use of transparent huge pages.
+
 ## 5.2.1 { #hopsworks-5-2-1 }
 
 ### What's changed
 
 - [HELM] Fixed the 5.1 to 5.2 index pass failing with `field _id not found` on an index with an empty mapping, such as a `projects` index that was never written, and losing documents that were not yet refreshed when it copied an index.
 - [HELM] Addressed vulnerabilities in OpenSearch.
-  It applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as the chart's `UPGRADE.md` shows.
+  It applies once an OpenSearch pod logs `Security configuration applied` after the upgrade; if none does, run `run_security_admin.sh` as [Security configuration][docs-os-security] shows.
 - [HELM] Changed the OpenSearch index pass of the 5.1 to 5.2 upgrade to copy one index at a time behind a write block on that index alone, instead of refusing every OpenSearch client, reads included, for the whole pass; upgrade 5.1 clusters to 5.2.1 rather than 5.2.0 ([what keeps working][docs-os-what-works]).
 - [HELM] Fixed OpenSearch restarts and the 5.1 to 5.2 index pass deleting the OpenSearch roles behind restricted grants and feature group shares, which left a shared project with HTTP 403.
   Grants and shares made before the last OpenSearch restart on 5.2.0 lost their roles, and granting or sharing again is refused: revoke and grant again, or unshare and share again.
@@ -308,3 +439,24 @@ Follow [Before every upgrade][docs-upgrade-before] and [5.1.x to 5.2.x][docs-upg
 [docs-os]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/
 [docs-upgrade-before]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-before-every-upgrade
 [docs-upgrade-51-to-52]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-51-to-52
+[docs-upgrade-changes-from-522]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-changes-from-522
+[docs-upgrade-onlinefs]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-onlinefs-topics
+[docs-upgrade-ddl]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-ddl-sql-node
+[docs-upgrade-otlp]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-agent-otlp-sidecar
+[docs-upgrade-kueue-external]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-kueue-external
+[docs-upgrade]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/
+[docs-helm4]: https://docs.hopsworks.ai/5.2/setup_installation/admin/helm4/
+[docs-kueue-what-changes]: https://docs.hopsworks.ai/5.2/setup_installation/admin/kueue_external/#what-changes
+[docs-run-ai]: https://docs.hopsworks.ai/5.2/setup_installation/admin/run_ai/
+[docs-keda-crds]: https://docs.hopsworks.ai/5.2/setup_installation/admin/keda/#keda-crds
+[docs-os-restore-crash-loop]: https://docs.hopsworks.ai/5.2/setup_installation/admin/ha-dr/dr/#opensearch-restore-crash-loop
+[docs-os-security]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/#opensearch-security-configuration
+[docs-node-pools]: https://docs.hopsworks.ai/5.2/setup_installation/admin/node_pools/
+[docs-buildkitd-rhel8]: https://docs.hopsworks.ai/5.2/setup_installation/admin/build_performance/#buildkitd-rhel8
+[docs-sharepoint]: https://docs.hopsworks.ai/5.2/user_guides/fs/data_source/creation/sharepoint/
+[docs-sharepoint-client]: https://docs.hopsworks.ai/5.2/user_guides/fs/data_source/creation/sharepoint/#client-version
+[docs-ds-hopsworks]: https://docs.hopsworks.ai/5.2/user_guides/fs/data_source/creation/hopsworks/
+[docs-ds-sqlserver]: https://docs.hopsworks.ai/5.2/user_guides/fs/data_source/creation/sql/#sql-server-specific-notes
+[docs-apps-public]: https://docs.hopsworks.ai/5.2/user_guides/projects/apps/#public-access-for-streamlit-apps
+[docs-setup-aws]: https://docs.hopsworks.ai/5.2/setup_installation/aws/getting_started/
+[docs-setup-azure]: https://docs.hopsworks.ai/5.2/setup_installation/azure/getting_started/

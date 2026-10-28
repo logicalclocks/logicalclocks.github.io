@@ -92,7 +92,11 @@ COMPONENTS = {
         "charts/kafka/values.yaml:cluster.kafka.image.tag",
     ],
     "KEDA": ["charts/hw-keda/Chart.yaml:appVersion"],
-    "KEDA HTTP add-on": ["vendor/keda-add-ons-http/Chart.yaml:appVersion"],
+    "KEDA CRDs image": ["charts/hw-keda/values.yaml:crdUpgradeJob.image.tag"],
+    "KEDA HTTP add-on": [
+        "charts/hw-keda/values.yaml:keda-add-ons-http.images.tag",
+        "vendor/keda-add-ons-http/Chart.yaml:appVersion",
+    ],
     "Knative Serving": [f"{KSERVE}:knative.version"],
     "KServe": [
         f"{KSERVE}:kserve.version",
@@ -104,7 +108,12 @@ COMPONENTS = {
         f"{KSERVE}:kserve.router.tag",
         f"{KSERVE}:kserve.storage.tag",
     ],
+    "KServe RBAC proxy": [f"{KSERVE}:kserve.controller.rbacProxyImage"],
     "KServe utilities": [f"{KSERVE}:kserveUtilsImage.tag"],
+    "kube-state-metrics": [
+        f"{PROMETHEUS}:prometheus.kube-state-metrics.image.tag",
+        "upstream:charts/prometheus/Chart.yaml:prometheus",
+    ],
     "KubeRay operator": ["charts/ray/values.yaml:kuberay-operator.image.tag"],
     "Logstash": ["charts/olk/values.yaml:logstash.version"],
     "Model serving authenticator": [f"{KSERVE}:servingAuthenticator.tag"],
@@ -222,6 +231,7 @@ UPSTREAM_DEFAULTS = {
         "Prometheus": "v2.51.2",
         "Alertmanager": "v0.27.0",
         "Pushgateway": "v1.8.0",
+        "kube-state-metrics": "v2.12.0",
     },
 }
 
@@ -233,11 +243,13 @@ SHIPS = {
 
 # Version-like values that aren't a component's version: the chart versions, the
 # application version, which the line under the page title gives, and settings whose
-# name only looks like a version, such as the tag history variables.
+# name only looks like a version, such as the tag history variables and the Kueue API
+# version.
 IGNORED = re.compile(
     r"(^|.*/)Chart\.yaml:(version|apiVersion|kubeVersion|dependencies\[.*\]\.version)"
     r"|(charts/hopsworks/)?Chart\.yaml:appVersion"
     r"|charts/hopsworks/values\.yaml:variables\.tag_history_\w+"
+    r"|charts/hw-kueue/values\.yaml:kueueApiVersion"
 )
 VERSION_KEY = re.compile(r"tag|version|image|digest", re.IGNORECASE)
 RELEASE = re.compile(r"v(\d+)\.(\d+)\.(\d+)")
