@@ -55,6 +55,17 @@ deployment.start()
 `sampling_percentage` is the share of requests recorded as traces, from 0 to 100, and defaults to 10.
 Every request is counted in the metrics, whatever the sampling.
 
+Tracing stays on for `duration_days`, 7 by default, and then Hopsworks switches it off:
+
+```python
+deployment = model.deploy(
+    name="fraud",
+    tracing={"enabled": True, "duration_days": 30},
+)
+```
+
+A longer period stores more traces in the online feature store; making sure it has room for them is up to you.
+
 To add tracing to an existing deployment, update it; this restarts its pods:
 
 ```python
@@ -79,7 +90,12 @@ deployment = project.get_model_serving().get_deployment("fraud")
 
 deployment.set_tracing(active=False)
 deployment.set_tracing(active=True, sampling_percentage=50)
+deployment.set_tracing(active=True, duration_days=30)
 ```
+
+Switching tracing on, or changing `duration_days` while it is on, keeps it on for `duration_days` from now.
+`deployment.tracing.active_until` is when it will be switched off.
+Hopsworks checks every 5 minutes: once the period has ended it switches tracing off, sets `active` to `False` and records the end in `deployment.tracing.expired_at`.
 
 The deployment is not restarted.
 Its pods apply the change within about a minute, and pods started later begin with it.
@@ -92,11 +108,12 @@ The same change over the REST API, where a field left out keeps its value:
 curl -X PUT \
   -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"active": true, "samplingPercentage": 50}' \
+  -d '{"active": true, "samplingPercentage": 50, "durationDays": 30}' \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/serving/$DEPLOYMENT_ID/tracing"
 ```
 
-A deployment created without tracing answers `400` with error code `240059`, as does a `samplingPercentage` outside 0 to 100.
+A deployment created without tracing answers `400` with error code `240059`, as does a `samplingPercentage` outside 0 to 100 or a `durationDays` below 1.
+The response carries `activeUntil` and `expiredAt` in epoch milliseconds.
 
 !!! api "API reference"
 
@@ -114,7 +131,8 @@ A deployment created without tracing answers `400` with error code `240059`, as 
 The deployment page of a deployment that serves a feature view has a `Transformations` section.
 While tracing is on, the section lists the traced requests; expanding one shows its spans with their durations.
 While it is off, the section is titled `Feature View Transformations: Metrics` and shows `Tracing is disabled`; clicking it shows how to turn tracing on.
-On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the sampling.
+On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the sampling and the time tracing will be switched off.
+Once the period has ended, the section says when tracing was switched off.
 
 The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metrics` section, charts the metrics under `Feature view transformations`.
 
@@ -157,7 +175,7 @@ Only the first row of a request is traced, so a batch request records one `trans
 ## Trace storage limits
 
 Traces are stored in the online feature store's disk tablespace, which feature groups with disk columns share.
-Three cluster settings bound what model and feature view deployments store there:
+Each deployment's `duration_days` bounds how long it records traces; three cluster settings bound what model and feature view deployments store there:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
