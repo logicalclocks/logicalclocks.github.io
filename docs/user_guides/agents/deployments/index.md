@@ -423,14 +423,36 @@ Set these as the app's environment variables:
 | `CHAT_MAX_RUNS_PER_MINUTE` | Turns per visitor per minute; 20 by default |
 
 For a theme folder, upload a `theme.css` and a logo named `logo.svg`, `logo.png`, `logo.jpg` or `logo.webp` to it, set `CHAT_THEME_DIR`, and restart the app.
-`theme.css` is loaded after the page's own styles, so it can change anything they set; the page's colours are CSS variables such as `--accent`, `--bg` and `--surface`, so a theme can be as small as one line:
+`theme.css` is loaded after the page's own styles, so it can change anything they set; the page's colours are CSS variables such as `--hw-accent`, `--hw-bg` and `--hw-surface` (the chat itself takes its accent from `--primary`), so a theme can be as small as one line:
 
 ```css
-:root { --accent: #0b5fff; --bg: #f4f7ff; }
+:root { --hw-accent: #0b5fff; --primary: #0b5fff; --hw-bg: #f4f7ff; }
 ```
 
-The app's code comes with the platform, so it is updated with Hopsworks rather than copied into your project.
-For a page of your own design, write an AG-UI client against [the chat contract][the-chat-contract] instead.
+**Customizing it.**
+To change more than the variables and a theme allow, such as its layout, its header, what it shows around the chat, or routes of its own, run the app from a folder of your project.
+Select **Customize…** in the menu next to **Open in chat app**, or call it from Python:
+
+```python
+app = agent.customize_chat_app()  # runs from Resources/chat-apps/support_agent_chat
+```
+
+The app restarts and copies its template into `Resources/chat-apps/<app name>`, without overwriting anything already there, and runs from that folder from then on:
+
+| File | What it is |
+| --- | --- |
+| `server.mjs` | The app's server, with its settings and any routes of its own |
+| `web/main.jsx` | The page (React), which starts as the default chat page, whole |
+| `web/theme.css` | The page's look |
+| `AGENTS.md`, `CLAUDE.md` | How the app is put together and what to change where, for you and for coding agents |
+
+Open the folder in the Hopsworks terminal and change it, by hand or with a coding agent, which reads `AGENTS.md` first.
+Restart the app to see a change: `app.redeploy()` in Python, or from its page under **Apps**.
+The app rebuilds its page when `web/` changed; if the folder fails to load or build, the app logs why and serves the default page, so the chat stays up.
+
+The chat itself stays the platform's: who is chatting, whose conversations are whose, and how the agent is reached come from the `@hopsworks/agent-chat` package in the app's image, so a customized app keeps getting fixes with Hopsworks.
+To go back to the default app, remove the app's `CHAT_APP_DIR` variable and restart it; the folder stays.
+For a client written from scratch, use [the chat contract][the-chat-contract] instead.
 
 Deleting the agent deletes its chat app.
 
