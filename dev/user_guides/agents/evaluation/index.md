@@ -11,7 +11,7 @@ A **suite** is the set of tasks plus those checks, published as a version so a r
 
 Running a suite produces a **run**, and one graded attempt at one task is a **trial**.
 
-This guide assumes a deployment that speaks the chat contract, see [The Chat Contract For Conversational Agents][the-chat-contract-for-conversational-agents].
+This guide assumes a deployment that speaks the chat contract, see [the chat contract][the-chat-contract].
 
 ## Writing a suite
 

@@ -17,7 +17,7 @@ Memory is one store with four tiers, each switched on independently.
 Two terms that look alike are not the same thing.
 *Semantic memory* is the facts an agent stores, while *semantic search* is one way episodic memory retrieves past turns.
 
-This guide assumes an agent that speaks the chat contract, see [The Chat Contract For Conversational Agents][the-chat-contract-for-conversational-agents].
+This guide assumes an agent that speaks the chat contract, see [the chat contract][the-chat-contract].
 
 ## Turning memory on
 
@@ -75,7 +75,7 @@ agent_app = AgentApp(
 ```
 
 **Code wins.** The deployment's policy is applied only when the agent passed no `memory=` of its own, and an explicit `memory=None` stays off however the deployment is configured.
-The manifest reports which it was under `capabilities.memory.source`, as `code` or `deployment`.
+The manifest reports which it was under `capabilities.custom.hopsworks.memory.source`, as `code` or `deployment`.
 
 Inside a deployment `ManagedMemoryService()` needs no arguments: the project database URL comes from the platform-injected environment and the table names are derived from the deployment id.
 Outside one, pass any SQLAlchemy URL and install the extra, `pip install 'hopsworks[agents-memory]'`.
