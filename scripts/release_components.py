@@ -26,7 +26,9 @@ SUBSECTION = "### Upgraded components"
 # Where the chart sets each component's version: "<file>:<key>" in hopsworks-helm,
 # "rondb:<key>" in rondb-helm at the tag the rondb dependency names, or
 # "upstream:<Chart.yaml>:<dependency>" for the default of an upstream chart. The
-# first one set is the version; the rest are other places that set the same version.
+# first one set is the version; the rest are other places that set the same version,
+# or the component's other images, whose rebuild the table shows when the version
+# stays the same.
 COMPONENTS = {
     "Airflow image": ["charts/airflow/Chart.yaml:appVersion"],
     "Alertmanager": [
@@ -35,7 +37,11 @@ COMPONENTS = {
     ],
     "ArrowFlight server": ["charts/arrowflight/Chart.yaml:appVersion"],
     "Base environment images": [f"{HOPSWORKS}:variables.base_image_version"],
-    "Brewer": ["charts/brewer/Chart.yaml:appVersion"],
+    "Brewer": [
+        "charts/brewer/values.yaml:head.image.version",
+        "charts/brewer/values.yaml:worker.servingRuntime.version",
+        "charts/brewer/Chart.yaml:appVersion",
+    ],
     "BuildKit": [
         f"{HOPSWORKS}:dockerRegistry.buildkit.tag",
         f"{HOPSWORKS}:variables.base_buildkit_image",
@@ -224,6 +230,14 @@ COMPONENTS = {
     ],
 }
 
+# Refs of a component that are images of their own, such as a hook image, reported
+# when they are new or removed even when the component's version changes.
+IMAGES = {
+    "charts/spark/values.yaml:spark-operator.hook.image.tag",
+    "charts/spark/values.yaml:sparkOperatorUpgradeJob.crdImage.tag",
+    "charts/kafka/values.yaml:crdUpgradeJob.image.tag",
+}
+
 # The image tag an upstream chart deploys when the chart doesn't set one, by
 # (dependency, version).
 UPSTREAM_DEFAULTS = {
@@ -241,6 +255,10 @@ SHIPS = {
     "8.4.5-debian-12-r0-h3": "MySQL 8.4.11",
 }
 
+# Versions the chart sets wrong, by (tag, ref): ray_version at v4.8.2 names Ray 2.9.0,
+# while its base images install Ray 2.39.0.
+STALE = {("v4.8.2", f"{HOPSWORKS}:variables.ray_version"): "2.39.0"}
+
 # Version-like values that aren't a component's version: the chart versions, the
 # application version, which the line under the page title gives, and settings whose
 # name only looks like a version, such as the tag history variables and the Kueue API
@@ -254,6 +272,29 @@ IGNORED = re.compile(
 VERSION_KEY = re.compile(r"tag|version|image|digest", re.IGNORECASE)
 RELEASE = re.compile(r"v(\d+)\.(\d+)\.(\d+)")
 UMBRELLA = re.compile(r"charts/([^/]+)/values\.yaml")
+
+
+# The YAML files _load couldn't parse, so their values and versions are missing.
+SKIPPED = []
+
+
+class _Loader(yaml.BaseLoader):
+    """Lets a later anchor of the same name replace an earlier one, as Helm does."""
+
+    def compose_node(self, parent, index):
+        if not self.check_event(yaml.AliasEvent):
+            self.anchors.pop(self.peek_event().anchor, None)
+        return super().compose_node(parent, index)
+
+
+def _require(*checkouts):
+    missing = [c for c in checkouts if not (c / ".git").exists()]
+    for checkout in missing:
+        typer.echo(
+            f"ERROR: no checkout at {checkout}; clone it and run again.", err=True
+        )
+    if missing:
+        raise typer.Exit(1)
 
 
 def _git(repo, *args):
@@ -271,9 +312,9 @@ def _load(repo, tag, path):
         return None
     try:
         # Trailing tabs, as in charts/prometheus/values.yaml at v5.1.0, are invalid YAML.
-        return yaml.load(re.sub(r"[ \t]+$", "", text, flags=re.M), yaml.BaseLoader)
+        return yaml.load(re.sub(r"[ \t]+$", "", text, flags=re.M), _Loader)
     except yaml.YAMLError as error:
-        typer.echo(f"Skipped {tag}:{path}: {str(error).splitlines()[0]}", err=True)
+        SKIPPED.append(f"Skipped {tag}:{path}: {str(error).splitlines()[0]}")
         return None
 
 
@@ -331,18 +372,36 @@ def _clean(value):
 
 
 def _versions(helm, rondb, tag):
-    versions = {}
-    for component, refs in COMPONENTS.items():
-        values = (_clean(_value(helm, rondb, tag, ref, component)) for ref in refs)
-        versions[component] = next((v for v in values if v), None)
-    return versions
+    """The version of every component at ``tag``, one per ref, None where unset."""
+    return {
+        component: [
+            STALE.get((tag, ref)) or _clean(_value(helm, rondb, tag, ref, component))
+            for ref in refs
+        ]
+        for component, refs in COMPONENTS.items()
+    }
+
+
+def _change(before, after):
+    """The versions to show of a component, from its refs' versions in two releases.
+
+    Its version, or when that stays the same, the first ref set in both releases whose
+    version changed, such as a rebuilt image.
+    """
+    was = next((v for v in before if v), None)
+    now = next((v for v in after if v), None)
+    if was != now:
+        return was, now
+    return next(
+        ((b, a) for b, a in zip(before, after) if b and a and b != a), (was, now)
+    )
 
 
 def _flatten(node, prefix=""):
     if isinstance(node, dict):
         for key, value in node.items():
             yield from _flatten(value, f"{prefix}.{key}" if prefix else key)
-    elif isinstance(node, list):
+    elif isinstance(node, list) and any(isinstance(v, (dict, list)) for v in node):
         for index, value in enumerate(node):
             name = value.get("name") if isinstance(value, dict) else None
             yield from _flatten(value, f"{prefix}[{name or index}]")
@@ -455,31 +514,46 @@ def _marker(tag):
 
 
 def _table(helm, rondb, old, new, markers):
+    """The table, and the components and images new or removed in ``new`` it leaves out."""
     before, after = _versions(helm, rondb, old), _versions(helm, rondb, new)
     shipped = [(tag, _versions(helm, rondb, tag)) for tag in markers]
-    rows = []
+    rows, left_out = [], []
     for component in sorted(COMPONENTS, key=str.lower):
-        was, now = before[component], after[component]
+        was, now = _change(before[component], after[component])
+        # An image of the component, such as a new hook image, added or removed.
+        refs = zip(COMPONENTS[component], before[component], after[component])
+        for ref, b, a in refs:
+            image = was == now or (was and now and ref in IMAGES)
+            if image and bool(b) != bool(a):
+                state = "new" if a else "removed"
+                left_out.append(
+                    f"Left out {component} {ref} {b or a}: {state} in {new}"
+                )
         if was == now:
             continue
         if not (was and now):
-            typer.echo(
-                f"Left out {component}: {'new' if now else 'removed'} in {new}",
-                err=True,
-            )
+            state = f"new in {new}" if now else f"removed in {new}"
+            left_out.append(f"Left out {component} {was or now}: {state}")
             continue
-        marker = next((tag for tag, v in shipped if v[component] == now), None)
+        marker = next(
+            (
+                tag
+                for tag, v in shipped
+                if _change(before[component], v[component]) == (was, now)
+            ),
+            None,
+        )
         rows.append(
             f"| {component} | {_cell(was)} | {_cell(now)}{_marker(marker) if marker else ''} |"
         )
     if not rows:
-        return ""
+        return "", left_out
     old, new = old.removeprefix("v"), new.removeprefix("v")
     header = [
         f"| Component | {old} | {new} |",
         f"| --------- | {'-' * len(old)} | {'-' * len(new)} |",
     ]
-    return "\n".join(header + rows) + "\n"
+    return "\n".join(header + rows) + "\n", left_out
 
 
 def release_components(
@@ -505,9 +579,12 @@ def release_components(
     ] = False,
 ):
     """Print the Upgraded components table of a release page."""
+    _require(helm, rondb_helm)
     tag = f"v{release}"
     old, markers = (f"v{since}", []) if since else _baseline(helm, tag)
     uncovered = _uncovered(helm, rondb_helm, old, tag)
+    for line in SKIPPED:
+        typer.echo(line, err=True)
     if uncovered:
         typer.echo(
             "These versions changed but no component in scripts/release_components.py "
@@ -517,7 +594,9 @@ def release_components(
         for change in uncovered:
             typer.echo(f"  {change}", err=True)
         raise typer.Exit(1)
-    table = _table(helm, rondb_helm, old, tag, markers)
+    table, left_out = _table(helm, rondb_helm, old, tag, markers)
+    for line in left_out:
+        typer.echo(line, err=True)
     if not write:
         typer.echo(table, nl=False)
         return

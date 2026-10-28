@@ -6,7 +6,7 @@ matter, the commits of the chart, of ``rondb-helm``, of the application it ships
 component the chart deploys from a Hopsworks repo whose version changed (``REPOS``),
 the Helm values it adds, removes or changes,
 what the chart newly deprecates, the upgrade guide sections its Upgrade steps link,
-and the Upgraded components table, as
+its upstream chart dependency changes and the Upgraded components table, as
 ``.claude/docs/releases.md`` describes. The ``/release-notes`` skill writes the
 section from this; nothing here is published, so it names commits freely.
 """
@@ -14,17 +14,23 @@ section from this; nothing here is published, so it names commits freely.
 import json
 import re
 import subprocess
+from functools import cache
 from pathlib import Path
 from typing import Annotated
 
 import typer
 from hopsworks_docs.scripts.release_components import (
+    SKIPPED,
+    UMBRELLA,
     _baseline,
+    _change,
+    _covered,
     _dependency,
     _flatten,
     _git,
     _load,
     _release,
+    _require,
     _table,
     _uncovered,
     _versions,
@@ -36,8 +42,14 @@ HELM_REPO = "logicalclocks/hopsworks-helm"
 CHART = "charts/hopsworks/Chart.yaml"
 VALUES = "charts/hopsworks/values.yaml"
 RONDB_CHART = "charts/rondb/Chart.yaml"
-# A merge suffix such as "(#1234)", or a backport marker such as "(5.0)" or "[5.1]".
-SUBJECT_NOISE = re.compile(r"\s*(\(#\d+\)|\(\d+\.\d+\)|\[\d+\.\d+\])\s*")
+# Pins the Python client of the base images from before hopsworks-api-version.txt.
+CLIENT_PIN = "base-image/internal-base/python_install.sh"
+# A merge suffix such as "(#1234)", a backport marker such as "(5.0)", "[branch-5.1]"
+# or "(5.0 backport)", or a trailing Jira link.
+SUBJECT_NOISE = re.compile(
+    r"\s*(\(#\d+\)|\((\d+\.\d+|branch-\d+\.\d+)( backport)?\)|\[(branch-)?\d+\.\d+\]"
+    r"|\(backport to branch-\d+\.\d+\)|https://hopsworks\.atlassian\.net/browse/[A-Z]+-\d+)\s*"
+)
 # The checkouts default to siblings of this repo, as CI clones hopsworks-api.
 SOURCES = _DOCS_ROOT.parent
 # The repo that builds a component of the Upgraded components table, for the
@@ -63,12 +75,10 @@ REPOS = {
 # Forks of upstream projects: Upgraded components covers their upstream changes, so
 # only Hopsworks commits, whose subject starts with a ticket key, are listed.
 FORKS = {"hive", "hudi", "incubator-uniffle", "spark", "trino"}
-TICKET = re.compile(r"^\[?[A-Z][A-Z0-9]+-\d+\]")
-# A version setting; the Upgraded components table covers these.
-VERSION_LEAF = re.compile(r"(^|[._])(tag|version|image|digest)$", re.IGNORECASE)
+TICKET = re.compile(r"^(\[[A-Z][A-Z0-9]+-\d+\]|[A-Z][A-Z0-9]+-\d+:)")
 GUIDE = "docs/setup_installation/admin/upgrade.md"
 GUIDE_URL = "https://docs.hopsworks.ai/{}/setup_installation/admin/upgrade/#{}"
-# Every heading of the upgrade guide sets its anchor.
+# Only headings that set their anchor are seen, so every section heading but Introduction sets one.
 GUIDE_HEADING = re.compile(r"^(##+) (.+?) \{ #([\w-]+) \}$", re.MULTILINE)
 RELEASE_BRANCH = re.compile(r"^origin/branch-(\d+)\.(\d+)$")
 
@@ -98,11 +108,18 @@ def _range(repo, old, new, same_line):
     """The commits ``new`` adds over ``old``.
 
     A plain range on one branch, else the commits of ``new`` that ``old`` has no
-    equivalent of (``--cherry-pick``).
+    equivalent of (``--cherry-pick``), or no commit with the same subject since
+    their merge base, as a backport that needed conflicts resolved has.
     """
     if same_line:
         return _commits(repo, f"{old}..{new}")
-    return _commits(repo, "--cherry-pick", "--right-only", f"{old}...{new}")
+    commits = _commits(repo, "--cherry-pick", "--right-only", f"{old}...{new}")
+    try:
+        base = _git(repo, "merge-base", old, new).strip()
+    except subprocess.CalledProcessError:
+        return commits
+    shipped = {_key(subject) for _, subject in _commits(repo, f"{base}..{old}")}
+    return [(sha, subject) for sha, subject in commits if _key(subject) not in shipped]
 
 
 def _released(tag):
@@ -122,6 +139,7 @@ def _application(helm, tag):
     return (_load(helm, tag, CHART) or {}).get("appVersion")
 
 
+@cache
 def _python_client(helm, images, tag):
     """The hopsworks-api version of the base images the chart at ``tag`` deploys."""
     base = ((_load(helm, tag, VALUES) or {}).get("variables") or {}).get(
@@ -135,15 +153,26 @@ def _python_client(helm, images, tag):
         try:
             if _git(images, "show", f"{commit}:version.txt").strip() != base:
                 continue
-            client = _git(
-                images, "show", f"{commit}:base-image/hopsworks-api-version.txt"
-            )
         except subprocess.CalledProcessError:
             continue
-        return base, client.strip()
+        try:
+            return base, _git(
+                images, "show", f"{commit}:base-image/hopsworks-api-version.txt"
+            ).strip()
+        except subprocess.CalledProcessError:
+            pass
+        try:
+            pin = re.search(
+                r"hopsworks\[[^\]]*\]==([\w.]+)",
+                _git(images, "show", f"{commit}:{CLIENT_PIN}"),
+            )
+        except subprocess.CalledProcessError:
+            pin = None
+        return base, pin and pin[1]
     return base, None
 
 
+@cache
 def _release_commit(repo, branch, version):
     """The ``Release X.Y.Z`` (or ``Release for X.Y.Z``) commit of an application version."""
     pattern = rf"^Release (for )?{re.escape(version)}( \(#[0-9]+\))?$"
@@ -153,6 +182,7 @@ def _release_commit(repo, branch, version):
     return out.split()[0] if out.split() else None
 
 
+@cache
 def _version_ref(repo, version):
     """The tag or release commit of ``version`` in ``repo``, or None.
 
@@ -186,15 +216,37 @@ def _version_ref(repo, version):
     return _version_ref(repo, rebuild[1]) if rebuild else None
 
 
-def _fork_section(lines, title, repo, since, until):
-    """The Hopsworks commits of a fork made between two chart releases."""
+def _fork_branch(repo, version):
+    """The release branch of a fork that ``version`` is built from, or None.
+
+    The longest ``origin/branch-*`` or ``origin/release-*`` whose name starts the
+    version, such as ``origin/branch-4.1`` for Hive 4.1.0.0-v1.
+    """
+    refs = _git(
+        repo, "for-each-ref", "--format=%(refname:short)", "refs/remotes/origin"
+    ).split()
+    branches = [
+        ref
+        for ref in refs
+        if (name := re.fullmatch(r"origin/(?:branch|release)-(.+)", ref))
+        and re.match(rf"{re.escape(name[1])}([.-]|$)", version)
+    ]
+    return max(branches, key=len, default=None)
+
+
+def _fork_section(lines, title, repo, version, since, until):
+    """The Hopsworks commits of a fork made between two chart releases.
+
+    Those on the release branch ``version`` is built from, else on any branch.
+    """
+    branch = _fork_branch(repo, version)
     out = _git(
         repo,
         "log",
-        "--remotes=origin",
+        branch or "--remotes=origin",
         "--no-merges",
-        f"--since={since}",
-        f"--until={until}",
+        f"--since={since}T00:00:00",
+        f"--until={until}T23:59:59",
         "--format=%h\t%s",
     )
     seen, rows = set(), []
@@ -203,7 +255,10 @@ def _fork_section(lines, title, repo, since, until):
         if TICKET.match(subject) and _key(subject) not in seen:
             seen.add(_key(subject))
             rows.append(f"- {sha} {subject}")
-    note = "Approximate, by date and ticket key: check each against the release branch."
+    note = (
+        f"Approximate, by date and ticket key on {branch or 'every branch'}: "
+        "check each against the release branch."
+    )
     _section(
         lines,
         f"{title}: Hopsworks commits from {since} to {until} ({len(rows)})",
@@ -212,10 +267,11 @@ def _fork_section(lines, title, repo, since, until):
     )
 
 
-def _repo_section(lines, title, repo, old_version, new_version, window=None):
+def _repo_section(lines, title, repo, old_version, new_version, window=None, line=()):
     """The commits of ``repo`` between two versions, or why they can't be listed.
 
-    For a fork, the Hopsworks commits made within ``window``, two dates.
+    For a fork, the Hopsworks commits made within ``window``, two dates. ``line`` is
+    the (tag, version) of the baseline and of each marker, for ``[shipped in]``.
     """
     if not (repo / ".git").exists():
         _section(
@@ -223,7 +279,7 @@ def _repo_section(lines, title, repo, old_version, new_version, window=None):
         )
         return
     if repo.name in FORKS and window and all(window):
-        _fork_section(lines, title, repo, *window)
+        _fork_section(lines, title, repo, new_version, *window)
         return
     old_ref, new_ref = _version_ref(repo, old_version), _version_ref(repo, new_version)
     if not (old_ref and new_ref):
@@ -241,10 +297,11 @@ def _repo_section(lines, title, repo, old_version, new_version, window=None):
         )
         return
     commits = _range(repo, old_ref, new_ref, same_line=False)
+    shipped = _shipped_in(repo, [(t, v and _version_ref(repo, v)) for t, v in line])
     _section(
         lines,
         f"{title}: {old_ref}..{new_ref} ({len(commits)} commits)",
-        [f"- {sha} {subject}" for sha, subject in commits],
+        _rows(commits, shipped),
     )
 
 
@@ -275,13 +332,23 @@ def _parents(key):
     return [f"{chart}:{'.'.join(parts[: i + 1])}" for i in range(len(parts))]
 
 
+def _in_table():
+    """The values whose version the Upgraded components table shows, as ``chart:key``."""
+    keys = set()
+    for ref in _covered():
+        path, _, key = ref.partition(":")
+        if subchart := UMBRELLA.fullmatch(path):
+            keys.add(f"{subchart[1]}:{key}")
+        elif path == "values.yaml":
+            keys.add(f"(umbrella):{key}")
+    return keys
+
+
 def _subtrees(keys, other):
     """``keys`` with each subtree that ``other`` has nothing of collapsed to one line."""
     present = {parent for key in other for parent in _parents(key)}
     groups = {}
     for key in keys:
-        if VERSION_LEAF.search(key):
-            continue
         root = next(p for p in _parents(key) if p not in present)
         groups.setdefault(root, []).append(key)
     return sorted(
@@ -294,14 +361,30 @@ def _subtrees(keys, other):
 
 def _values_diff(helm, old, new):
     before, after = _values(helm, old), _values(helm, new)
+    table = _in_table()
     added = _subtrees(after.keys() - before.keys(), before)
     removed = _subtrees(before.keys() - after.keys(), after)
+    both = before.keys() & after.keys()
+    # A subchart default the umbrella sets in both releases isn't the one deployed.
     changed = sorted(
         (k, before[k], after[k])
-        for k in before.keys() & after.keys()
-        if before[k] != after[k] and not VERSION_LEAF.search(k)
+        for k in both
+        if before[k] != after[k]
+        and k not in table
+        and "(umbrella):" + k.replace(":", ".", 1) not in both
     )
     return added, removed, changed
+
+
+def _dependencies(helm, tag):
+    """``chart:dependency -> version`` of the upstream charts every chart depends on."""
+    return {
+        f"{path.split('/')[1]}:{d['name']}": d.get("version")
+        for path in _git(helm, "ls-tree", "-r", "--name-only", tag).split()
+        if re.fullmatch(r"charts/[^/]+/Chart\.yaml", path)
+        for d in (_load(helm, tag, path) or {}).get("dependencies") or []
+        if not d.get("repository", "").startswith("file://")
+    }
 
 
 def _added_lines(repo, old, new, *paths, pattern):
@@ -319,13 +402,32 @@ def _added_lines(repo, old, new, *paths, pattern):
     return hits
 
 
-def _shipped_in(repo, line_tags, keys_of):
-    """Map a commit subject key to the first tag of ``line_tags`` that has it."""
+def _shipped_in(repo, line):
+    """Map a commit subject key to the first marker whose ref has it.
+
+    ``line`` is the (tag, ref) of the baseline and then of each marker, oldest first,
+    with no ref where ``repo`` has none for that release.
+    """
     first = {}
-    for previous, tag in zip(line_tags, line_tags[1:]):
-        for _, subject in keys_of(repo, previous, tag):
+    if not (line and line[0][1]):
+        return first
+    refs = [(tag, ref) for tag, ref in line if ref]
+    for (_, previous), (tag, ref) in zip(refs, refs[1:]):
+        for _, subject in _commits(repo, f"{previous}..{ref}"):
             first.setdefault(_key(subject), tag)
     return first
+
+
+def _rows(commits, shipped):
+    return [
+        f"- {sha} {subject}"
+        + (
+            f"  [shipped in {shipped[_key(subject)]}]"
+            if _key(subject) in shipped
+            else ""
+        )
+        for sha, subject in commits
+    ]
 
 
 def _upgrade_guide(release, since):
@@ -397,12 +499,15 @@ def release_inputs(
     helm, rondb_helm = sources / "hopsworks-helm", sources / "rondb-helm"
     ee, front = sources / "hopsworks-ee", sources / "hopsworks-front"
     docker_images, api = sources / "docker-images", sources / "hopsworks-api"
+    _require(helm, rondb_helm, ee, front, docker_images, api)
     tag = f"v{release}"
     tags = _tags(helm)
     if tag not in tags:
         raise typer.BadParameter(f"{helm} has no tag {tag}; fetch its tags first")
     old, markers = _baseline(helm, tag)
     minor_zero = release.endswith(".0")
+    # The baseline and every marker, for [shipped in]; patches mark nothing.
+    line = [old, *markers] if minor_zero else []
     since = old.removeprefix("v")
     lines = [f"# Inputs for {release}", ""]
     lines.append(
@@ -438,23 +543,10 @@ def release_inputs(
 
     # Chart commits
     chart = _range(helm, old, tag, same_line=not minor_zero)
-    shipped = {}
-    if minor_zero:
-        shipped = _shipped_in(
-            helm, [old, *markers], lambda r, a, b: _commits(r, f"{a}..{b}")
-        )
     _section(
         lines,
         f"hopsworks-helm {old}..{tag} ({len(chart)} commits)",
-        [
-            f"- {sha} {subject}"
-            + (
-                f"  [shipped in {shipped[_key(subject)]}]"
-                if _key(subject) in shipped
-                else ""
-            )
-            for sha, subject in chart
-        ],
+        _rows(chart, _shipped_in(helm, [(t, t) for t in line])),
     )
 
     # RonDB chart
@@ -466,10 +558,11 @@ def release_inputs(
             rows.append(
                 "WARNING: the RonDB chart moves backwards; changes of the newer one are lost."
             )
-        rows += [
-            f"- {sha} {subject}"
-            for sha, subject in _commits(rondb_helm, f"v{rondb[0]}..v{rondb[1]}")
-        ]
+        rondb_line = [(t, _dependency(helm, t, RONDB_CHART, "rondb")) for t in line]
+        rows += _rows(
+            _commits(rondb_helm, f"v{rondb[0]}..v{rondb[1]}"),
+            _shipped_in(rondb_helm, [(t, d and f"v{d}") for t, d in rondb_line]),
+        )
     _section(lines, "rondb-helm", rows, empty=f"Unchanged ({rondb[1]}).")
 
     # Application commits
@@ -498,49 +591,45 @@ def release_inputs(
         commits = _range(
             repo, old_commit, new_commit, same_line=new_branch == old_branch
         )
-        app_shipped = {}
-        if minor_zero:
-            line = [old_commit] + [
-                c
-                for c in (
-                    _release_commit(repo, old_branch, _application(helm, m))
-                    for m in markers
-                )
-                if c
-            ]
-            app_shipped = _shipped_in(
-                repo,
-                list(dict.fromkeys(line)),
-                lambda r, a, b: _commits(r, f"{a}..{b}"),
-            )
-            app_of = {
-                _release_commit(repo, old_branch, _application(helm, m)): m
-                for m in markers
-            }
-            app_shipped = {k: app_of.get(v, v) for k, v in app_shipped.items()}
+        app_line = [
+            (t, _release_commit(repo, old_branch, _application(helm, t))) for t in line
+        ]
         _section(
             lines,
             f"{title}: {old_commit}..{new_commit} ({len(commits)} commits)",
-            [
-                f"- {sha} {subject}"
-                + (
-                    f"  [shipped in {app_shipped[_key(subject)]}]"
-                    if _key(subject) in app_shipped
-                    else ""
-                )
-                for sha, subject in commits
-            ],
+            _rows(commits, _shipped_in(repo, app_line)),
         )
 
     # Python client, base environment images and the other components
     old_base, old_client = _python_client(helm, docker_images, old)
-    if old_client and client and old_client != client:
+    images_line = [(t, _python_client(helm, docker_images, t)) for t in line]
+    no_base = f"ERROR: the chart sets no base_image_version at {old if base else tag}."
+    if not (old_base and base):
+        _section(lines, "hopsworks-api", [no_base])
+    elif not (old_client and client):
+        unresolved = old_base if client else base
+        _section(
+            lines,
+            "hopsworks-api",
+            [
+                f"ERROR: no hopsworks-api version for base_image_version {unresolved} "
+                f"in {docker_images}; fetch docker-images and run again."
+            ],
+        )
+    elif old_client != client:
         _repo_section(
-            lines, f"hopsworks-api {old_client} -> {client}", api, old_client, client
+            lines,
+            f"hopsworks-api {old_client} -> {client}",
+            api,
+            old_client,
+            client,
+            line=[(t, c) for t, (_, c) in images_line],
         )
     else:
         _section(lines, "hopsworks-api", [], empty=f"Unchanged ({client}).")
-    if old_base and base and old_base != base:
+    if not (old_base and base):
+        _section(lines, "docker-images", [no_base])
+    elif old_base != base:
         _repo_section(
             lines,
             f"docker-images {old_base} -> {base} (base environment images, and the "
@@ -548,6 +637,7 @@ def release_inputs(
             docker_images,
             old_base,
             base,
+            line=[(t, b) for t, (b, _) in images_line],
         )
     else:
         _section(
@@ -558,16 +648,12 @@ def release_inputs(
             "builds for other components may still have changed, see Upgraded components.",
         )
     before, after = _versions(helm, rondb_helm, old), _versions(helm, rondb_helm, tag)
+    shipped = [(t, _versions(helm, rondb_helm, t)) for t in line]
     by_repo = {}
     for component, repo_name in REPOS.items():
-        if (
-            before.get(component)
-            and after.get(component)
-            and before[component] != after[component]
-        ):
-            by_repo.setdefault(
-                (repo_name, before[component], after[component]), []
-            ).append(component)
+        was, now = _change(before[component], after[component])
+        if was and now and was != now:
+            by_repo.setdefault((repo_name, was, now), []).append(component)
     for (repo_name, was, now), components in sorted(by_repo.items()):
         _repo_section(
             lines,
@@ -576,6 +662,10 @@ def release_inputs(
             was,
             now,
             window=(_released(old), _released(tag)),
+            line=[
+                (t, _change(before[components[0]], v[components[0]])[1])
+                for t, v in shipped
+            ],
         )
     unchanged = sorted({REPOS[c] for c in REPOS} - {r for r, _, _ in by_repo})
     _section(lines, "Component repos with no version change", [", ".join(unchanged)])
@@ -611,17 +701,26 @@ def release_inputs(
     _section(lines, "Upgrade guide", _upgrade_guide(release, since))
 
     # Components
+    deps = _dependencies(helm, old), _dependencies(helm, tag)
+    _section(
+        lines,
+        "Upstream chart dependencies changed (the table covers only the images they "
+        "pin or UPSTREAM_DEFAULTS lists)",
+        [
+            f"- {k}: {deps[0].get(k) or 'none'} -> {deps[1].get(k) or 'removed'}"
+            for k in sorted(deps[0].keys() | deps[1].keys())
+            if deps[0].get(k) != deps[1].get(k)
+        ],
+    )
     uncovered = _uncovered(helm, rondb_helm, old, tag)
-    table = _table(helm, rondb_helm, old, tag, markers)
+    table, left_out = _table(helm, rondb_helm, old, tag, markers)
+    notes = [f"WARNING: no component covers {c}" for c in uncovered]
+    notes += [f"WARNING: {s}; its values and versions are missing" for s in SKIPPED]
+    notes += [f"{n}; it belongs in the notes" for n in left_out]
     _section(
         lines,
         "Upgraded components",
-        (
-            [f"WARNING: no component covers {c}" for c in uncovered] + [""]
-            if uncovered
-            else []
-        )
-        + [table.rstrip() or "No components changed."],
+        ([*notes, ""] if notes else []) + [table.rstrip() or "No components changed."],
     )
 
     # What an X.Y.0 includes from the previous minor version

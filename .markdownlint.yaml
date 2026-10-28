@@ -11,7 +11,7 @@ MD052: false
 MD012: false
 MD004:
   style: dash
-# The release notes repeat "### Breaking changes" and "### Release notes" under each
-# release; only sibling headings must differ.
+# The release notes repeat "### What's changed" and "### Breaking changes" under
+# each release; only sibling headings must differ.
 MD024:
   siblings_only: true

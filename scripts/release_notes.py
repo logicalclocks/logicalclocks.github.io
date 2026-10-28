@@ -14,14 +14,12 @@ from datetime import datetime, timedelta
 from typing import Annotated
 
 import typer
-from hopsworks_docs.scripts.releases_hook import digest
+from hopsworks_docs.scripts.releases_hook import FROM_MAIN, digest
 from hopsworks_docs.scripts.shared.docs_root import _DOCS_ROOT
 
 
 HOOK = "scripts/releases_hook.py"
-SOURCES = "docs/releases"
 WORKFLOW = "mkdocs-release.yml"
-ATTEMPTS = 3
 
 
 def _run(*args, binary=False):
@@ -32,21 +30,17 @@ def _run(*args, binary=False):
 
 
 def _fingerprint_at(ref):
-    paths = _run("git", "ls-tree", "-r", "-z", "--name-only", ref, "--", SOURCES)
-    sources = [
-        (
-            path.removeprefix(f"{SOURCES}/"),
-            _run("git", "show", f"{ref}:{path}", binary=True),
-        )
+    paths = _run("git", "ls-tree", "-r", "-z", "--name-only", ref, "--", *FROM_MAIN)
+    return digest(
+        (path, _run("git", "show", f"{ref}:{path}", binary=True))
         for path in paths.split("\0")
         if path
-    ]
-    return digest(_run("git", "show", f"{ref}:{HOOK}", binary=True), sources)
+    )
 
 
 def _accepted():
     """Fingerprints of main from HEAD to the latest origin/main."""
-    later = _run("git", "rev-list", "HEAD..origin/main", "--", SOURCES, HOOK).split()
+    later = _run("git", "rev-list", "HEAD..origin/main", "--", *FROM_MAIN).split()
     return {_fingerprint_at(ref) for ref in ["HEAD", *later]}
 
 
@@ -151,12 +145,12 @@ def sync_release_notes(
             # The main docs build deploys dev itself.
             if branch == "main":
                 continue
-            for attempt in range(1, ATTEMPTS + 1):
+            try:
                 run = _dispatch(branch)
-                print(f"{version}: rebuild {attempt} {run['conclusion']} {run['url']}")
-                # Another docs build can replace a queued run before it starts.
-                if run["conclusion"] != "cancelled":
-                    break
+            except subprocess.CalledProcessError as error:
+                print(f"{version}: rebuild failed: {error.stderr}", file=sys.stderr)
+                continue
+            print(f"{version}: rebuild {run['conclusion']} {run['url']}")
         stale = _stale(versions)
 
     for branch, version in versions:

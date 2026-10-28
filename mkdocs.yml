@@ -415,6 +415,7 @@ extra:
 
 extra_css:
   - css/custom.css
+  - css/releases.css
 
 extra_javascript:
   - js/quickstart-fullscreen.js
@@ -436,7 +437,8 @@ extra_javascript:
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
 # Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.
-# releases_hook first, so llms_hook exports the Markdown it generates.
+# llms_hook exports the release pages with the header lines and table that
+# releases_hook adds in on_files, before it renders their tags and client notes.
 hooks:
   - scripts/releases_hook.py
   - scripts/llms_hook.py

@@ -1,8 +1,9 @@
 name: mkdocs-release-notes
 
 # Every docs version shows the release pages of main (docs/releases/). After each
-# docs build of main, rebuild the release branch versions whose release pages are
-# stale with their own workflow, and fail if any version still doesn't match main.
+# successful docs build of main, rebuild the release branch versions whose release
+# pages are stale with their own workflow, and fail if any version still doesn't
+# match main.
 # See .claude/docs/releases.md.
 
 on:
@@ -19,6 +20,7 @@ on:
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
+  queue: max
 
 permissions:
   actions: write
@@ -26,6 +28,7 @@ permissions:
 
 jobs:
   sync-release-notes:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
 

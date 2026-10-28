@@ -16,7 +16,7 @@ Read first, in full:
   Read with `git log`, `git show`, `git diff`, `git grep`, `git cherry` and `git log --cherry-pick`.
 - Don't run a build; the machine's memory is shared with other jobs.
 - The docs are public: an entry never names a customer, a Jira key, a PR number, a commit or a source repo; it names the component, such as OnlineFS or the model serving webhook.
-  Link only the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute); never link a private GitHub repo, such as `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front` or `docker-images`, but name a chart file in text, such as "see `values.openshift.yaml` in the 5.2 chart".
+  Link only the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute), or of the oldest docs version that has the page when that version lacks it; never link a private GitHub repo, such as `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front` or `docker-images`, but name a chart file in text, such as "see `values.openshift.yaml` in the 5.2 chart".
 
 ## For each change in your slice
 
@@ -33,11 +33,11 @@ Read first, in full:
 3. Pick the subsection: What's changed, Breaking changes, Deprecations or Configuration changes, as the guide defines them.
    A feature that a value turns on stays in What's changed and names the value.
 4. Write the entry as the guide says: a past-tense verb first, one line, a second line only for what the reader must act on, the exact value, API or setting, and a docs link where one exists.
-   Check that a link's page and anchor exist in the docs branch of the release's minor version: `git -C <docs> show origin/branch-X.Y:docs/<path>.md`.
+   Check that a link's page and anchor exist in the docs branch of the version it links: `git -C <docs> show origin/branch-X.Y:docs/<path>.md`.
    The Helm values reference is generated at build time, so for a `#helm.<path>` anchor check instead that the value exists in the chart at the release tag.
 5. Note the steps an operator has to take at upgrade, if any, and whether the upgrade guide sections in `inputs.md` cover them; they go in the report, not on the page.
 
-Changes with the same ticket key in different repos are one entry.
+Changes with the same ticket key in different repos are one entry, unless the ticket bundles unrelated changes, which get one entry each.
 In a fork, only Hopsworks commits count; the upstream version change is in Upgraded components.
 
 Start each entry with its tags, as the guide defines them: how users reach the change, not the repo it is in.

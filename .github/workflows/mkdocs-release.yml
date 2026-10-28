@@ -17,6 +17,7 @@ on:
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   publish-release:
@@ -68,7 +69,10 @@ jobs:
         if: ${{ env.BRANCH != 'main' }}
         run: |
           if [ -f scripts/releases_hook.py ]; then
-            git checkout origin/main -- docs/releases scripts/releases_hook.py
+            paths="docs/releases docs/css/releases.css docs/js/client-release-notes.js scripts/releases_hook.py"
+            files=$(git ls-tree --name-only origin/main -- $paths)
+            rm -rf $paths
+            if [ -n "$files" ]; then git checkout origin/main -- $files; fi
           fi
 
       - name: Checkout the API repo

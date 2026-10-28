@@ -9,18 +9,28 @@
   var HTML = { Accept: "application/vnd.github.html+json" };
   var CACHE = "hops-client-releases";
   var TTL = 60 * 60 * 1000; // anonymous GitHub API calls are limited per reader
+  var RETRY = 10 * 60 * 1000; // after a failed fetch
+  // What GitHub renders release notes with; anything else is dropped.
+  var ALLOWED = "a, p, br, hr, ul, ol, li, strong, em, b, i, del, code, tt, pre, kbd, " +
+    "sub, sup, blockquote, table, thead, tbody, tr, th, td, div, span, details, summary, " +
+    "h1, h2, h3, h4, h5, h6";
 
+  // version -> { html, url, at } of its release, or { at } when fetching it failed
   function cached() {
+    var releases = {};
     try {
-      var entry = JSON.parse(sessionStorage.getItem(CACHE));
-      if (entry && Date.now() - entry.at < TTL) return entry.releases;
+      var stored = JSON.parse(sessionStorage.getItem(CACHE)) || {};
+      Object.keys(stored).forEach(function (v) {
+        var age = Date.now() - stored[v].at;
+        if (age < (stored[v].url ? TTL : RETRY)) releases[v] = stored[v];
+      });
     } catch (e) {}
-    return null;
+    return releases;
   }
 
   function store(releases) {
     try {
-      sessionStorage.setItem(CACHE, JSON.stringify({ at: Date.now(), releases: releases }));
+      sessionStorage.setItem(CACHE, JSON.stringify(releases));
     } catch (e) {}
   }
 
@@ -32,12 +42,16 @@
   }
 
   function add(releases, release) {
-    releases[release.tag_name] = { html: release.body_html || "", url: release.html_url };
+    releases[release.tag_name] = {
+      html: release.body_html || "",
+      url: release.html_url,
+      at: Date.now(),
+    };
   }
 
   // One call lists the latest releases; a version older than those costs one more.
   function load(versions) {
-    var releases = cached() || {};
+    var releases = cached();
     var missing = versions.filter(function (v) { return !releases[v]; });
     if (!missing.length) return Promise.resolve(releases);
     return json(REPO + "?per_page=100")
@@ -52,27 +66,27 @@
                 .catch(function () {});
             })
         );
-      })
+      }, function () {})
       .then(function () {
         // Keep only what this page shows: the notes of every release run to 1 MB.
-        var kept = cached() || {};
-        versions.forEach(function (v) { if (releases[v]) kept[v] = releases[v]; });
+        var kept = cached();
+        versions.forEach(function (v) { kept[v] = releases[v] || { at: Date.now() }; });
         store(kept);
         return releases;
       });
   }
 
-  // GitHub sanitizes body_html; this also drops anything active, and turns headings
-  // into bold paragraphs so the notes don't enter the page's own outline.
+  // GitHub sanitizes body_html; this also keeps only plain text markup and web
+  // links, and turns headings into bold paragraphs so the notes don't enter the
+  // page's own outline.
   function notes(html) {
     var doc = new DOMParser().parseFromString(html, "text/html");
-    doc.querySelectorAll("script, style, iframe, object, embed, form").forEach(function (el) {
-      el.remove();
-    });
-    doc.querySelectorAll("*").forEach(function (el) {
+    doc.body.querySelectorAll("*").forEach(function (el) {
+      if (!el.matches(ALLOWED)) return el.remove();
       Array.prototype.slice.call(el.attributes).forEach(function (attr) {
-        if (/^on/i.test(attr.name)) el.removeAttribute(attr.name);
+        if (!/^(href|colspan|rowspan)$/.test(attr.name)) el.removeAttribute(attr.name);
       });
+      if (el.hasAttribute("href") && !/^https?:$/.test(el.protocol)) el.removeAttribute("href");
     });
     doc.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach(function (heading) {
       var p = doc.createElement("p");
@@ -95,7 +109,7 @@
 
   function render(block, releases) {
     var versions = block.dataset.versions.split(" ");
-    if (!versions.every(function (v) { return releases[v]; })) return;
+    if (!versions.every(function (v) { return releases[v] && releases[v].url; })) return;
     var children = [];
     versions.slice().reverse().forEach(function (v) {
       var details = document.createElement("details");

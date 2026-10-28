@@ -14,7 +14,7 @@ A draft is never trusted: in the 2026-10 backfill, separate adversarial passes a
 
 ## 0. Main only
 
-Release notes are changed on `main` only, and reach the release branches from there: every docs version shows `main`'s `docs/releases/`, because the release branch builds copy it and the hook from `main` before they build, as `.claude/docs/releases.md` describes.
+Release notes are changed on `main` only, and reach the release branches from there: every docs version shows `main`'s `docs/releases/`, because the release branch builds copy it, the hook and the release pages' script and styles from `main` before they build, as `.claude/docs/releases.md` describes.
 Work on a branch of `main` whose pull request goes to `main`, and check it before anything else:
 
 ```sh
@@ -36,7 +36,7 @@ The facts come from every repo the release ships, read-only, all checked out sid
 - the components the chart deploys from a Hopsworks repo, as `REPOS` in `scripts/release_inputs.py` maps them: `flyingduck`, `clusterj-onlinefs`, `model-serving-webhook`, `model-serving-authenticator`, `hops-git`, `tools`, `sparkhistoryserver`, and the forks `trino`, `hive`, `hudi`, `incubator-uniffle` and `spark`.
 
 HopsFS and RonDB repos are left out on purpose; `rondb-helm` stays.
-They default to siblings of this repo; if one is missing, `release-inputs` says so, and you ask the user where it is or clone it.
+They default to siblings of this repo; if one is missing, `release-inputs` and `release-components` fail with `ERROR: no checkout at <path>`, or `release-inputs` reports it in the section of a component repo, and you ask the user where it is or clone it.
 Set `S` to the directory that holds them, and set up this repo's environment once; afterwards run every command with `uv run --no-sync`, because a plain `uv run` syncs again without the `cli` extra:
 
 ```sh
@@ -66,15 +66,18 @@ Read `inputs.md` in full. It gives:
 - the release it compares with, the front matter (release date, Python client), and the application version, which sets the `hopsworks-ee` and `hopsworks-front` ranges but isn't shown;
 - every commit of the chart, of `rondb-helm` when the RonDB chart moved, and of `hopsworks-ee` and `hopsworks-front` between the `Release X.Y.Z` commits of the two application versions;
 - the commits of `hopsworks-api` and `docker-images` between the Python client and base image versions of the two releases, and of each component repo whose version moved, between the tags or `Release` commits of its two versions;
-  for a fork, only the Hopsworks commits (a ticket key in the subject) made between the two release dates, because Upgraded components covers the upstream version;
+  for a fork, only the Hopsworks commits (a ticket key in the subject) made between the two release dates on the release branch the new version is built from, or on every branch when none matches, because Upgraded components covers the upstream version;
+  a fork checkout must fetch its release branches, which a narrow `remote.origin.fetch` doesn't (`git fetch origin +refs/heads/branch-483:refs/remotes/origin/branch-483`);
   a repo without a tag or release commit for a version says so, and you find its commits by hand;
-- on an X.Y.0, `[shipped in vX.Y.Z]` on each commit a patch release of the previous minor version already shipped, and which of those patch releases' chart commits the X.Y.0 lacks;
-- the Helm values added, removed and changed, added lines that mention a deprecation, and the changed `values.*.yaml` overlays;
+  on an X.Y.0, the ranges leave out the changes the previous X.Y.0 already shipped through a backport;
+- on an X.Y.0, `[shipped in vX.Y.Z]` on each commit of the charts, the application, `hopsworks-api`, `docker-images` and the component repos, except the forks, that a patch release of the previous minor version already shipped, naming the first one, also when the backport rewords the subject with `[branch-X.Y]`, `(branch-X.Y)`, `(X.Y backport)` or a trailing Jira URL, and which of those patch releases' chart commits the X.Y.0 lacks;
+- the Helm values added and removed, and those changed except the versions the Upgraded components table shows and the subchart defaults the umbrella chart overrides, added lines that mention a deprecation, and the changed `values.*.yaml` overlays;
   it doesn't say which removed values the values schema now rejects or which hooks changed, so check `values.schema.json` and the hook templates of the chart at the tag yourself;
 - the sections of the upgrade guide that `### Upgrade steps` links, with the docs version to link, or that the guide has none for the release;
-- the Upgraded components table, with a warning for a version no component covers.
+- the upstream chart dependencies whose version changed, of which the table covers only the images they pin or `UPSTREAM_DEFAULTS` lists;
+- the Upgraded components table, with a warning for a version no component covers and for a chart file it couldn't parse, and the components and images new or removed in the release, which belong in the notes.
 
-Stop and ask the user when it reports an `ERROR` (a release commit it can't find, or a checkout that is missing), a `released: "?"` (the GitHub release isn't published), or a RonDB chart that moves backwards.
+Stop and ask the user when it reports an `ERROR` (a release commit it can't find, a Python client it can't resolve, or a checkout that is missing), a `released: "?"` (the GitHub release isn't published), or a RonDB chart that moves backwards.
 
 ## 3. Draft
 
@@ -90,7 +93,7 @@ Account for every commit and every value change: in an entry, in an existing ent
 - An X.Y.0 repeats the entries of the previous minor version's patch releases rather than drafting new ones for the commits marked `[shipped in ...]`: copy each patch entry into the same subsection, end its first line with `(also in [X.Y.Z][hopsworks-X-Y-Z])`, point its docs links at the X.Y.0's minor version, and check that the change is in the X.Y.0 and still described correctly there.
   Leave out what the X.Y.0 lacks, as the "Patch releases" part of `inputs.md` shows, and say so in a breaking change.
   A commit shipped in a patch release that came out after the X.Y.0 gets an entry with the same marker.
-- Commits of different repos with the same ticket key (`[HWORKS-1234]`) are one entry.
+- Commits of different repos with the same ticket key (`[HWORKS-1234]`) are one entry, unless the ticket bundles unrelated changes, which get one entry each.
 - A change that also ships in a patch release of another minor version is listed in both releases, without a marker; check the ticket keys of a patch release against the other minor versions' patch releases of the same days.
 - Read the diff of every commit you turn into an entry; a subject can promise more than the code does, and a later commit in the range can change or revert it.
 
@@ -124,10 +127,11 @@ Check again, with a fresh agent, every entry a fix rewrote substantially or a fa
 
 ```sh
 uv run --no-sync hopsworks-docs markdownlint
-HOPSWORKS_DOCS_CHECK_CLIENT_TAGS=1 uv run --no-sync hopsworks-docs check
+uv run --no-sync hopsworks-docs check
 ```
 
-Both must pass; the strict build fails on a broken link, an anchor that doesn't exist and a front matter error.
+Both must pass; the strict build fails on a release cross-reference such as `[5.2.1][hopsworks-5-2-1]` that doesn't resolve, on a front matter or entry tag error and on a hopsworks-api tag missing for a linked client version.
+It doesn't check the absolute `https://docs.hopsworks.ai/X.Y/...` links or their anchors, so step 7 of the fact-check is their only check.
 
 ## Report
 
