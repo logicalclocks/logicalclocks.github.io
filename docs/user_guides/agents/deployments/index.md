@@ -213,6 +213,22 @@ The reply is a stream of AG-UI events:
 | `RUN_ERROR` | Why the run failed, see [refusals][refusals] |
 
 The trace id is in `RUN_STARTED` so that a client still has it when the run fails.
+A run that is quiet for a while (a long model call, a slow tool) sends an SSE comment line (`: keep-alive`) every 15 seconds, so a proxy in front does not close it; comments are not events.
+
+For a script or a quick check, `POST /v1/chat` answers the same turn in one JSON reply instead of a stream:
+
+```json
+{"message": {"role": "user", "content": [{"type": "text", "text": "Where is my order?"}]},
+ "conversation_id": "conv_01HZ...", "subject": "customer-7"}
+```
+
+```json
+{"id": "resp_...", "conversation_id": "conv_01HZ...", "status": "completed",
+ "message": {"id": "msg_...", "role": "assistant", "content": [{"type": "text", "text": "..."}]},
+ "citations": [], "usage": {"input_tokens": 120, "output_tokens": 40}, "metadata": {"trace_id": "..."}}
+```
+
+`status` is `interrupted` when the agent [asks a person first][asking-a-person-first] (the questions are under `interrupts`, and a request with `resume` answers them), and `failed` when the agent reported the turn as failed.
 
 In the handler, `request.text` is the message text, and `request.to_framework_messages()` returns the `[{"role", "content"}]` shape that LangChain, LangGraph and LlamaIndex accept.
 `request.conversation_id` is the run's thread, generated on the first turn, so it can be passed straight to a LangGraph checkpointer or a LlamaIndex chat store as a thread id.
@@ -309,6 +325,21 @@ The answer resumes the turn with a new run on the same thread whose `resume` ans
 - The stored question is deleted once it is answered, when a new message moves the conversation on instead, or when the conversation is deleted.
 - A turn may ask several times; each pause asks one question, and the client answers only what is open.
 - `answer.cancelled` is a person declining to answer; a refusal to go ahead is an answer with a payload that says so.
+- `ctx.interrupt` also takes `reason` (`confirmation`, the default, `input_required` or `tool_call`), `tool_call_id` for a question about a tool call, `expires_in` (seconds; an answer after that is refused) and `metadata` for the client.
+- A turn may pause at most 5 times in an evaluation trial; the runner fails the trial as the agent's when it keeps asking.
+
+A resume the agent refuses answers with an HTTP error before any event:
+
+| Status | Code | When |
+| --- | --- | --- |
+| 409 | `nothing_to_resume` | The conversation is not waiting on a question: it was answered already, or a new message moved it on |
+| 409 | `resume_in_progress` | Another answer to the same question is running; it is taken again after 15 minutes if that one never finished |
+| 400 | `unanswered_interrupts` | Not every open question was answered |
+| 400 | `unknown_interrupt` | An answer names a question that was not asked |
+| 400 | `interrupt_expired` | The question's `expires_in` passed |
+| 503 | `pending_unavailable` | The store holding the open questions could not be read or written; the question was not asked |
+
+A stored question is kept for a day past its expiry, or 30 days when it has none.
 
 From Python, a paused reply has `reply.interrupted` and `reply.interrupts`, and `agent.chat(None, conversation_id=reply.conversation_id, resume={"refund-42": {"approved": True}})` answers it.
 In an evaluation run nobody is there to answer: the runner answers from the task context's `interrupt_answers`, by question id, and cancels the rest.
@@ -392,6 +423,10 @@ The app streams the agent's replies and shows its tool calls, takes attachments,
 Its page is [CopilotKit](https://github.com/CopilotKit/CopilotKit)'s open-source chat, served with CopilotKit's runtime by the app itself: nothing is sent to CopilotKit.
 A new conversation opens with the agent's `welcome_message` and its `suggested_prompts` (the `AgentApp` arguments the chat panel also uses), and a sidebar lists each person's own conversations, so they can go back to one; an agent with [memory][agent-memory] keeps them across restarts of the app.
 It is an ordinary app otherwise: its logs, settings and resources are on its page under **Apps**, and it scales to zero when nobody uses it.
+
+**Who may do what.**
+A data owner or a data scientist creates, opens and customizes the chat app; deleting it (`agent.delete_chat_app()`, or deleting the agent) and turning its public link on or off take a data owner.
+The app takes 20 messages a minute from each person, and 100 a minute from all public visitors together (`CHAT_MAX_RUNS_PER_MINUTE`, `CHAT_MAX_PUBLIC_RUNS_PER_MINUTE`); a request, attachments included, may be 10 MB (`CHAT_MAX_BODY_BYTES`), and a text file attached to a message 256 KB.
 
 **Who can open it.**
 Project members open it with their Hopsworks login.
