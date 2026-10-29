@@ -33,7 +33,7 @@ Read first, in full:
 3. Pick the subsection: What's changed, Breaking changes, Deprecations or Configuration changes, as the guide defines them.
    A feature that a value turns on stays in What's changed and names the value.
 4. Write the entry as the guide says: a past-tense verb first, one line, a second line only for what the reader must act on, the exact value, API or setting, and a docs link where one exists.
-   Check that a link's page and anchor exist in the docs branch of the version it links: `git -C <docs> show origin/branch-X.Y:docs/<path>.md`.
+   Check that a link's page and anchor exist in the docs branch of the version it links: `git -C <docs> show $R/branch-X.Y:docs/<path>.md`, with `R` the remote that points at `logicalclocks`.
    The Helm values reference is generated at build time, so for a `#helm.<path>` anchor check instead that the value exists in the chart at the release tag.
 5. Note the steps an operator has to take at upgrade, if any, and whether the upgrade guide sections in `inputs.md` cover them; they go in the report, not on the page.
 

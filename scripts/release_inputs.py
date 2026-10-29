@@ -80,7 +80,20 @@ GUIDE = "docs/setup_installation/admin/upgrade.md"
 GUIDE_URL = "https://docs.hopsworks.ai/{}/setup_installation/admin/upgrade/#{}"
 # Only headings that set their anchor are seen, so every section heading but Introduction sets one.
 GUIDE_HEADING = re.compile(r"^(##+) (.+?) \{ #([\w-]+) \}$", re.MULTILINE)
-RELEASE_BRANCH = re.compile(r"^origin/branch-(\d+)\.(\d+)$")
+RELEASE_BRANCH = re.compile(r"^[^/]+/branch-(\d+)\.(\d+)$")
+
+
+@cache
+def _remote(repo):
+    """The remote of ``repo`` that points at logicalclocks, else ``origin``.
+
+    ``upstream`` in a project of the workspaces repo, whose ``origin`` is the user's fork.
+    """
+    for line in _git(repo, "remote", "-v").splitlines():
+        name, url = line.split()[:2]
+        if re.search(r"[/:]logicalclocks/[^/]+$", url):
+            return name
+    return "origin"
 
 
 def _tags(helm):
@@ -176,9 +189,8 @@ def _python_client(helm, images, tag):
 def _release_commit(repo, branch, version):
     """The ``Release X.Y.Z`` (or ``Release for X.Y.Z``) commit of an application version."""
     pattern = rf"^Release (for )?{re.escape(version)}( \(#[0-9]+\))?$"
-    out = _git(
-        repo, "log", f"origin/{branch}", "-E", f"--grep={pattern}", "--format=%h"
-    )
+    ref = f"{_remote(repo)}/{branch}"
+    out = _git(repo, "log", ref, "-E", f"--grep={pattern}", "--format=%h")
     return out.split()[0] if out.split() else None
 
 
@@ -187,7 +199,8 @@ def _version_ref(repo, version):
     """The tag or release commit of ``version`` in ``repo``, or None.
 
     A tag named after the version, else the newest ``Release <version>`` or
-    ``[maven-release-plugin] prepare release <version>`` commit on origin.
+    ``[maven-release-plugin] prepare release <version>`` commit on the logicalclocks
+    remote.
     """
     for name in (version, f"v{version}"):
         if _git(repo, "tag", "--list", name).strip():
@@ -196,16 +209,13 @@ def _version_ref(repo, version):
     pattern = (
         rf"^(Release (for )?v?{v}|\[maven-release-plugin\] prepare release {v})( |\(|$)"
     )
-    out = _git(
-        repo, "log", "--remotes=origin", "-E", f"--grep={pattern}", "--format=%h"
-    )
+    remotes = f"--remotes={_remote(repo)}"
+    out = _git(repo, "log", remotes, "-E", f"--grep={pattern}", "--format=%h")
     if out.split():
         return out.split()[0]
     # A repo that releases by setting its version file, newest such commit first.
     for path in ("version.txt", "VERSION"):
-        for commit in _git(
-            repo, "log", "--remotes=origin", "--format=%h", "--", path
-        ).split():
+        for commit in _git(repo, "log", remotes, "--format=%h", "--", path).split():
             try:
                 if _git(repo, "show", f"{commit}:{path}").strip() == version:
                     return commit
@@ -219,16 +229,17 @@ def _version_ref(repo, version):
 def _fork_branch(repo, version):
     """The release branch of a fork that ``version`` is built from, or None.
 
-    The longest ``origin/branch-*`` or ``origin/release-*`` whose name starts the
-    version, such as ``origin/branch-4.1`` for Hive 4.1.0.0-v1.
+    The longest ``branch-*`` or ``release-*`` of the logicalclocks remote whose name
+    starts the version, such as ``origin/branch-4.1`` for Hive 4.1.0.0-v1.
     """
+    remote = _remote(repo)
     refs = _git(
-        repo, "for-each-ref", "--format=%(refname:short)", "refs/remotes/origin"
+        repo, "for-each-ref", "--format=%(refname:short)", f"refs/remotes/{remote}"
     ).split()
     branches = [
         ref
         for ref in refs
-        if (name := re.fullmatch(r"origin/(?:branch|release)-(.+)", ref))
+        if (name := re.fullmatch(rf"{re.escape(remote)}/(?:branch|release)-(.+)", ref))
         and re.match(rf"{re.escape(name[1])}([.-]|$)", version)
     ]
     return max(branches, key=len, default=None)
@@ -243,7 +254,7 @@ def _fork_section(lines, title, repo, version, since, until):
     out = _git(
         repo,
         "log",
-        branch or "--remotes=origin",
+        branch or f"--remotes={_remote(repo)}",
         "--no-merges",
         f"--since={since}T00:00:00",
         f"--until={until}T23:59:59",
@@ -443,7 +454,10 @@ def _upgrade_guide(release, since):
     else:
         title = f"Changes from {release}"
     refs = _git(
-        _DOCS_ROOT, "for-each-ref", "--format=%(refname:short)", "refs/remotes/origin"
+        _DOCS_ROOT,
+        "for-each-ref",
+        "--format=%(refname:short)",
+        f"refs/remotes/{_remote(_DOCS_ROOT)}",
     ).split()
     branches = sorted(
         ((int(m[1]), int(m[2])), ref)
@@ -580,11 +594,12 @@ def release_inputs(
         new_commit = _release_commit(repo, new_branch, app)
         old_commit = _release_commit(repo, old_branch, old_app)
         if not (new_commit and old_commit):
+            remote = _remote(repo)
             _section(
                 lines,
                 title,
                 [
-                    f"ERROR: no `Release {app}` on origin/{new_branch} or `Release {old_app}` on origin/{old_branch}; fetch origin first."
+                    f"ERROR: no `Release {app}` on {remote}/{new_branch} or `Release {old_app}` on {remote}/{old_branch}; fetch {remote} first."
                 ],
             )
             continue

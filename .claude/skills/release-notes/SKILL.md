@@ -15,11 +15,13 @@ A draft is never trusted: in the 2026-10 backfill, separate adversarial passes a
 ## 0. Main only
 
 Release notes are changed on `main` only, and reach the release branches from there: every docs version shows `main`'s `docs/releases/`, because the release branch builds copy it, the hook and the release pages' script and styles from `main` before they build, as `.claude/docs/releases.md` describes.
-Work on a branch of `main` whose pull request goes to `main`, and check it before anything else:
+Work on a branch of `main` whose pull request goes to `main`, and check it before anything else.
+`R` is the remote that points at `logicalclocks`: `origin` in a plain clone, `upstream` in a project of the workspaces repo, whose `origin` is your fork; the same holds in every checkout below.
 
 ```sh
-git fetch origin main
-git log --oneline origin/main..HEAD
+R=origin   # or upstream, see git remote -v
+git fetch $R main
+git log --oneline $R/main..HEAD
 ```
 
 It lists the commits the branch adds to `main`, which are only those of your change; a long list, or release commits of a `branch-X.Y`, means the branch is based on a release branch.
@@ -47,8 +49,8 @@ uv sync --extra cli
 Fetch every branch and tag of each checkout, and of this repo (links are checked against its `branch-*`, and `release-inputs` reads the upgrade guide from them), because a release often came out after the last fetch; component repos name their release branches in different ways, so fetch them all:
 
 ```sh
-git -C <repo> fetch origin --tags
-git -C <repo> fetch origin
+git -C <repo> fetch $R --tags
+git -C <repo> fetch $R
 ```
 
 Never check out, commit or reset in those repos; read them with `git log`, `git show`, `git diff` and `git grep`.
@@ -67,7 +69,7 @@ Read `inputs.md` in full. It gives:
 - every commit of the chart, of `rondb-helm` when the RonDB chart moved, and of `hopsworks-ee` and `hopsworks-front` between the `Release X.Y.Z` commits of the two application versions;
 - the commits of `hopsworks-api` and `docker-images` between the Python client and base image versions of the two releases, and of each component repo whose version moved, between the tags or `Release` commits of its two versions;
   for a fork, only the Hopsworks commits (a ticket key in the subject) made between the two release dates on the release branch the new version is built from, or on every branch when none matches, because Upgraded components covers the upstream version;
-  a fork checkout must fetch its release branches, which a narrow `remote.origin.fetch` doesn't (`git fetch origin +refs/heads/branch-483:refs/remotes/origin/branch-483`);
+  a fork checkout must fetch its release branches, which a narrow `remote.$R.fetch` doesn't (`git fetch $R +refs/heads/branch-483:refs/remotes/$R/branch-483`);
   a repo without a tag or release commit for a version says so, and you find its commits by hand;
   on an X.Y.0, the ranges leave out the changes the previous X.Y.0 already shipped through a backport;
 - on an X.Y.0, `[shipped in vX.Y.Z]` on each commit of the charts, the application, `hopsworks-api`, `docker-images` and the component repos, except the forks, that a patch release of the previous minor version already shipped, naming the first one, also when the backport rewords the subject with `[branch-X.Y]`, `(branch-X.Y)`, `(X.Y backport)` or a trailing Jira URL, and which of those patch releases' chart commits the X.Y.0 lacks;

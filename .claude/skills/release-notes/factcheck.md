@@ -18,7 +18,7 @@ The hard rules of `draft.md` in this folder apply to you too: don't edit any fil
 5. Security fixes as "Addressed vulnerabilities in <component>" only: no entry says "Fixed a security issue in", and nothing in an entry, a breaking change or an upgrade step says what was exposed, who could exploit it or how.
    Check this first: it outweighs every other rule, because the notes are public.
 6. Written to the rules: a past-tense verb first, one line plus at most one to act on, no Jira key, PR, commit, customer, or link to a private GitHub repo (the guide lists which source repos are private), absolute docs links of the release's minor version, or of the oldest docs version that has the page, one sentence per line.
-7. Every link resolves: the page exists in `origin/branch-X.Y` of the docs repo, and so does the anchor.
+7. Every link resolves: the page exists in `branch-X.Y` of the docs repo, on its remote that points at `logicalclocks`, and so does the anchor.
    Material builds a heading's anchor from its text, lowercased, spaces as `-`, punctuation dropped; an explicit `{ #id }` overrides it.
    Helm values reference anchors look like `#helm.<path>`, and the value must exist in the chart at the release tag.
 
