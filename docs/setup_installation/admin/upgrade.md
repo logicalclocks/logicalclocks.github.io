@@ -180,8 +180,10 @@ An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
 - **No step before `helm upgrade`.**
   The `strimzi-crd-upgrade` hook applies the Strimzi 1.3.0 CRDs before the operator is replaced.
 - **The brokers and controllers are replaced once**, by the new operator, for the new image.
-  The chart stops the outgoing operator before it starts the new one, through `kafka.strimzi-kafka-operator.deploymentStrategy`.
-  An outgoing 1.2.0 operator that kept running would replace a pod onto the 1.3.0 image without the configuration that image reads, and the pod would restart until the new operator took over, so keep that setting.
+  The chart stops the outgoing operator before it starts the new one, through `kafka.strimzi-kafka-operator.deploymentStrategy`, so that the 1.2.0 operator does not act on the new image.
+  A pod the 1.2.0 operator replaces onto the 1.3.0 image lacks the configuration that image reads, and restarts until the new operator takes over, about a minute in tests.
+  The setting makes that unlikely rather than impossible: nothing waits for the old operator to exit.
+  If your values set `kafka.strimzi-kafka-operator.deploymentStrategy.type: Recreate`, also set `rollingUpdate: null` there, or the merged strategy is rejected.
   A single-broker cluster is unavailable while its broker is replaced, a single-controller cluster has no KRaft quorum while its controller is replaced, and OnlineFS catches up afterwards.
 - **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which `vendor_images.sh` lists.
 - **The operator deletes pods with background propagation during a rolling update.**
