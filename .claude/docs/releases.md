@@ -83,11 +83,12 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
 - Make each entry one coherent change; don't combine unrelated changes in one entry, even small ones.
 - Keep each entry to one line; add a second only for what a reader must act on, such as a value to set or a risk.
 - Leave out defaults, internals and explanations a reader doesn't act on; the values reference has the details.
-- Start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed; breaking changes are the exception, see below.
+- After its tags, start with a past-tense verb: Added, Changed, Deprecated, Removed, Fixed, Addressed; breaking changes are the exception, see below.
 - Put version upgrades in `### Upgraded components`, not under `### What's changed`; keep their effect as an entry, such as "Fixed writes to an online feature group failing after its table was truncated" or "Addressed vulnerabilities in the Strimzi operator and Kafka images".
 - Name the exact API, Helm value, config variable or CLI flag.
 - Link to the documentation for details and procedures instead of repeating them: say what changed and what to do, then link the page that explains it, such as an admin guide, a user guide or the Helm values reference.
   Release pages show in every docs version, so link the docs of the release's minor version with an absolute URL (`https://docs.hopsworks.ai/5.2/...`), which a relative link to a page missing from an older version would break.
+  The only autoref on a release page is a release, `[X.Y.Z][hopsworks-X-Y-Z]`; every other link is a reference link, `[text][docs-name]`, defined with its absolute URL at the end of the page, never `[text][heading-id]` to a docs heading, which resolves on `main` but fails the strict build of a release branch that lacks the heading.
   A page the release's minor version lacks is linked in the oldest docs version that has it, such as the 5.2 upgrade guide and Upgrading OpenSearch from a 5.1 release.
   For what no docs page covers, name the file of the chart that does, such as "see `values.openshift.yaml` in the 5.2 chart": the packaged chart ships its `README.md` and `values.*.yaml`, but `hopsworks-helm` is private.
   Up to 5.2.1 it also shipped `UPGRADE.md` and `HELM4_MIGRATION.md`; they are docs pages now, the upgrade guide and Upgrading with Helm 4, so link those.
@@ -97,7 +98,7 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
   Check a repo with `gh repo view <org>/<repo> --json visibility` before linking it.
 - Write a security fix as "Addressed vulnerabilities in <component>", such as "Addressed vulnerabilities in jobs", and nothing more: never write "Fixed a security issue in", and never say what was exposed, who could exploit it or how, because the notes are public and clusters on older releases stay vulnerable.
   Fixes of known vulnerabilities in dependencies and images stay one entry per group, such as "Addressed vulnerabilities in the Grafana and Superset images".
-  A breaking change or upgrade step that a security fix needs says what to do, and at most that it addresses a vulnerability.
+  A breaking change or upgrade step that a security fix needs says what to do, and at most that it addresses a vulnerability: never what users could do before or can no longer do, which names the issue, so "Share the whole feature group with a project that queries it in Trino, to address a vulnerability", not "can no longer be queried in Trino".
 
 `### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
 
@@ -132,7 +133,7 @@ Split an entry that does both, so each change is listed once.
 Breaking changes are changes that need users or operators to do something when they upgrade.
 Say in each one what changed, what the behaviour was before, who is affected and what to do, and link the docs page that has the procedure; it may start with what changed, such as "`helm upgrade` now stops ...", or with what to do, such as "Remove `<value>` from your values ...".
 Outline the behaviour before the change in a few words, such as "instead of `default`" or "which used to keep them", so a reader can tell whether they relied on it; check it against the previous release, not the commit message.
-A breaking change that a security fix needs leaves the behaviour before out, because it would describe the issue; it says only what users could do that they no longer can, such as "can no longer be queried in Trino".
+A breaking change that a security fix needs leaves out the behaviour before and what users can no longer do, because either describes the issue; it says only what to do, as the security rule above says.
 A fix that takes away something users rely on is a breaking change, also when it addresses a vulnerability.
 A breaking change is not repeated under `### What's changed`; a value it adds, removes or renames is still listed under `### Configuration changes`, which says what the value does, while the breaking change says what to do.
 A change that ships in patch releases of two minor versions at about the same time, such as 5.0.14 and 5.1.2, is listed in both releases, without a marker; the `(also in ...)` marker is only for an X.Y.0 entry.

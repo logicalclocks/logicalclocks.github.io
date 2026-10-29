@@ -77,7 +77,7 @@ The releases of Hopsworks 5.0, newest first.
 
 ### Breaking changes
 
-- [API] [FRONTEND] Data Scientists can no longer change a job another member created, other than its schedule, to address a vulnerability; ask its creator or a Data Owner of the project to change it.
+- [API] [FRONTEND] As a Data Scientist, ask the creator of a job or a Data Owner of the project to change it, other than its schedule, to address a vulnerability.
 - [HELM] The chart no longer turns on Trino's MySQL event listener, which crash-looped the Trino coordinator after a MySQL server restart, so the [Trino query history](https://docs.hopsworks.ai/5.0/setup_installation/admin/trino/#query-history) stops recording queries.
   To keep it, add the listener to your values as the chart's `README.md` shows; recorded queries now lose their text and plan after `hopsworks.variables.trino_events_strip_details_after_days`, from the first nightly cleanup, so set it to `61` or more to keep them.
 - [HELM] If your values restate `trino.trino.additionalConfigProperties` with its `event-listener.config-files` entry, which the 5.0.13 chart set by default, remove that entry or add the listener files as the chart's `README.md` shows, or Trino doesn't start.

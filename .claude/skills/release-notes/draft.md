@@ -15,7 +15,7 @@ Read first, in full:
 - No git writes in any repo: no checkout, switch, commit, stash, fetch, reset or worktree.
   Read with `git log`, `git show`, `git diff`, `git grep`, `git cherry` and `git log --cherry-pick`.
 - Don't run a build; the machine's memory is shared with other jobs.
-- The docs are public: an entry never names a customer, a Jira key, a PR number, a commit or a source repo; it names the component, such as OnlineFS or the model serving webhook.
+- The docs are public: an entry never names a customer, a Jira key, a PR number, a commit or a private source repo (the guide lists which are private); it names the component, such as OnlineFS or the model serving webhook.
   Link only the public docs of the release's minor version (`https://docs.hopsworks.ai/X.Y/...`, absolute), or of the oldest docs version that has the page when that version lacks it; never link a private GitHub repo, such as `hopsworks-helm`, `hopsworks-ee`, `hopsworks-front` or `docker-images`, but name a chart file in text, such as "see `values.openshift.yaml` in the 5.2 chart".
 
 ## For each change in your slice

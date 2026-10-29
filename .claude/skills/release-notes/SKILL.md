@@ -1,6 +1,6 @@
 ---
 name: release-notes
-description: Write the release notes of a hopsworks-helm release, such as 5.1.0, into docs/releases. Collects the changes of the release in the chart and in every Hopsworks repo whose component it moves, drafts its section, fact-checks every entry against the source and runs the strict build. Use when asked to write, add, regenerate or audit the release notes of a Hopsworks release.
+description: Write the release notes of a hopsworks-helm release, such as 5.1.0, into docs/releases. Collects the changes of the release in the chart and in every Hopsworks repo whose component it moves, drafts its section, fact-checks every entry against the source and runs the strict build. Use when asked to write or add the release notes of a Hopsworks release.
 argument-hint: <X.Y.Z>
 ---
 
@@ -39,11 +39,13 @@ The facts come from every repo the release ships, read-only, all checked out sid
 
 HopsFS and RonDB repos are left out on purpose; `rondb-helm` stays.
 They default to siblings of this repo; if one is missing, `release-inputs` and `release-components` fail with `ERROR: no checkout at <path>`, or `release-inputs` reports it in the section of a component repo, and you ask the user where it is or clone it.
-Set `S` to the directory that holds them, and set up this repo's environment once; afterwards run every command with `uv run --no-sync`, because a plain `uv run` syncs again without the `cli` extra:
+Set `S` to the directory that holds them, and set up this repo's environment once, with the Python API the strict build of step 5 needs, as CI does; `uv sync` is exact and removes a Python API installed before it, so install the API after it.
+Afterwards run every command with `uv run --no-sync`, because a plain `uv run` syncs the environment to the lock file again, which can change the packages the Python API installed:
 
 ```sh
 S=<directory holding the checkouts>
 uv sync --extra cli
+uv pip install $S/hopsworks-api/python
 ```
 
 Fetch every branch and tag of each checkout, and of this repo (links are checked against its `branch-*`, and `release-inputs` reads the upgrade guide from them), because a release often came out after the last fetch; component repos name their release branches in different ways, so fetch them all:
@@ -80,7 +82,7 @@ It gives:
 - the upstream chart dependencies whose version changed, of which the table covers only the images they pin or `UPSTREAM_DEFAULTS` lists;
 - the Upgraded components table, with a warning for a version no component covers and for a chart file it couldn't parse, and the components and images new or removed in the release, which belong in the notes.
 
-Stop and ask the user when it reports an `ERROR` (a release commit it can't find, a Python client it can't resolve, or a checkout that is missing), a `released: "?"` (the GitHub release isn't published), or a RonDB chart that moves backwards.
+Stop and ask the user when it reports an `ERROR` (a release commit it can't find, a Python client it can't resolve, or a checkout that is missing), a `released: "?"` (the GitHub release isn't published, or `gh` can't reach GitHub, which also leaves the fork sections without their date window), or a RonDB chart that moves backwards.
 
 ## 3. Draft
 
@@ -115,8 +117,11 @@ Generate the table last:
 uv run --no-sync hopsworks-docs release-components <X.Y.Z> --helm $S/hopsworks-helm --rondb-helm $S/rondb-helm --write
 ```
 
-If it fails on a version no component covers, add the component to `scripts/release_components.py` rather than editing the table by hand.
+If it fails on a version no component covers, add the component to `COMPONENTS` in `scripts/release_components.py`, or the setting to `IGNORED` when it only looks like a version, rather than editing the table by hand.
 Remove link definitions that no entry uses any more; markdownlint fails on them.
+
+A patch of a minor version that is no longer the newest also updates the X.Y.0 of the next minor version, which lists its backports with `(also in ...)`, as the guide says.
+Run `release-inputs` for that X.Y.0, which marks the commits the patch shipped with `[shipped in vX.Y.Z]`, add the marker to the entries of those commits, add an entry with the marker for a commit that has none, and regenerate its table with `release-components <X.Y.0> --write`.
 
 ## 4. Fact-check
 
@@ -135,6 +140,7 @@ uv run --no-sync hopsworks-docs check
 
 Both must pass; the strict build fails on a release cross-reference such as `[5.2.1][hopsworks-5-2-1]` that doesn't resolve, on a front matter or entry tag error and on a hopsworks-api tag missing for a linked client version.
 It doesn't check the absolute `https://docs.hopsworks.ai/X.Y/...` links or their anchors, so step 7 of the fact-check is their only check.
+The check of the client tags needs github.com.
 
 ## Report
 

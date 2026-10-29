@@ -42,5 +42,5 @@ Do not write prose in API reference pages in this repo — edit the docstrings i
 - @docs/content.md — writing conventions, Python code blocks, linking, assets
 - @docs/design-system.md — visual language: tokens, logo, nav, search, diagrams
 - @docs/captures.md — how UI screenshots and GIFs are taken: cluster, browser session, scoping, crop and GIF helpers
-- @docs/releases.md: the page shape of the release pages, and how to write release notes and breaking changes
+- `.claude/docs/releases.md`: the page shape of the release pages, and how to write release notes and breaking changes; read it before editing `docs/releases/` or the release tooling
 - @docs/caveats/README.md — known gotchas; add new ones as separate files

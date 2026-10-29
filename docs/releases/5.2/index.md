@@ -23,7 +23,6 @@ The releases of Hopsworks 5.2, newest first.
 - [API] [FRONTEND] Addressed vulnerabilities in the Trino and Superset services of projects.
 - [API] Fixed the OTLP sidecar of agent deployments with tracing running out of memory under ordinary traffic, which took the deployment out of service while the sidecar restarted; the sidecar now drops telemetry it can't keep up with instead of buffering it ([OTLP sidecar][docs-upgrade-otlp]).
 - [API] [FRONTEND] [HELM] Fixed Python app pods staying in `ContainerCreating` after their execution ended; an app that was ready now ends only after `hopsworks.variables.pythonapp_unready_timeout_seconds` (600) without a ready container.
-  After the upgrade, Hopsworks deletes the Deployment of every app whose executions have all ended, also one that still answers requests; start such an app again to keep it running.
 - [API] [FRONTEND] [HELM] Added GPU scheduling through NVIDIA Run:ai (`hopsworks.variables.run_ai_enable`, off by default), which binds every project to a Run:ai project so that Run:ai quotas, fair share and preemption apply to its pods, shows the project's GPU quota in the UI and adds `Project.get_gpu_availability()` to the Python client, which reports the cluster's GPUs when Run:ai is off; it can't be combined with Kueue ([Run:ai][docs-run-ai]).
 - [API] [FRONTEND] [HELM] Added SharePoint data sources, which copy a folder of a SharePoint Online document library into a project dataset once or on a schedule, also with `SharePointConnector.create_sync` and `copy_folder` in the Python client and `hops datasource sharepoint`; `hopsworks.variables.enable_sharepoint_storage_connectors` turns them off ([SharePoint][docs-sharepoint]).
 - [API] [FRONTEND] [HELM] Added Hopsworks data sources, which read the feature groups of a project on another Hopsworks cluster through ArrowFlight, as external feature groups or with dltHub ingestion, also with `hops datasource create hopsworks`; `hopsworks.variables.enable_hopsworks_storage_connectors` turns them off ([Hopsworks data source][docs-ds-hopsworks]).
@@ -75,14 +74,15 @@ The releases of Hopsworks 5.2, newest first.
 
 ### Breaking changes
 
-- [API] [FRONTEND] [HELM] OnlineFS now drops a record that did not arrive on the online topic of its feature group, and a project can no longer use the online topic of another project (`TOPIC_IN_USE_BY_ANOTHER_PROJECT`), to address a vulnerability ([what this affects][docs-upgrade-onlinefs]).
+- [API] [FRONTEND] [HELM] Changed how OnlineFS checks the topic of the records it writes, to address a vulnerability ([what this affects][docs-upgrade-onlinefs]).
   Restart the producers that hold on to a topic after it changes; on a Kafka where records reach OnlineFS on a renamed topic, such as a mirrored secondary, set `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
 - [API] [FRONTEND] On a cluster with Kueue, Spark jobs are now queued by Kueue and run with static executors instead of dynamic allocation: a job saved with dynamic allocation runs its dynamic-allocation minimum, at least one executor, and `spark.dynamicAllocation.enabled=true` is refused; set `spark.executor.instances` for more executors ([what changes][docs-kueue-what-changes]).
+- [API] [FRONTEND] The upgrade deletes the Deployment of every Python app whose executions have all ended, also one that still answers requests; start such an app again to keep it running.
 - [API] [FRONTEND] Apps created from 5.2.2 on can only read the online feature store database, apart from the tables they create with `App.create_table` and change with `App.alter_table` in the Python client, or with `createTable` and `alterTable` of `@hopsworks/app` in Node.js; before, the apps of Data Owners could create, alter and write to any of its tables with their own SQL ([database access][docs-apps-db]).
 - [API] Python clients older than 5.2.2 fail to list the data sources of a feature store that has a Hopsworks or SharePoint data source; use the 5.2.2 client in the jobs and environments that list them ([client version][docs-sharepoint-client]).
 - [API] [FRONTEND] Ingestion from a MongoDB data source, and fetching its schema, now needs MongoDB 4.4 or later instead of 4.2.
-- [FRONTEND] A Jupyter server can no longer be opened through Hopsworks with only its `?token=` URL, to address a vulnerability; open it from the Hopsworks UI.
-- [FRONTEND] Python apps can no longer call Hopsworks with the session of the user who opens them, to address a vulnerability; give an app that calls Hopsworks credentials of its own, such as an API key.
+- [FRONTEND] Open Jupyter servers from the Hopsworks UI, to address a vulnerability.
+- [FRONTEND] Give a Python app that calls Hopsworks credentials of its own, such as an API key, to address a vulnerability.
 - [HELM] Hopsworks now uses Kueue 0.20.3 installed as its own release, `kueue` in `kueue-system`, instead of the Kueue 0.12.2 bundled in its namespace, and the chart refuses to render while the bundled Kueue still runs ([Kueue outside the Hopsworks namespace][docs-upgrade-kueue-external]).
   With `global._hopsworks.kueue.enabled: true`, move Kueue with the 5.1 chart's `migrate-to-external.sh` before the upgrade, run the chart's `upgrade-kueue.sh` after it, and remove `hw-kueue.managerConfig`, `hw-kueue.nameOverride` and every `hw-kueue.kueue` value but `enabled` from your values, or the values schema rejects the upgrade.
 - [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
@@ -168,8 +168,8 @@ Follow [Changes from 5.2.2][docs-upgrade-changes-from-522] in the upgrade guide.
 
 ### Breaking changes
 
-- [API] [FRONTEND] [HELM] Feature groups shared with a subset of their features can no longer be queried in Trino, only read online and in similarity search, to address a vulnerability; share the whole feature group to query it in Trino.
-  `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` turns Trino access to them back on, which undoes that.
+- [API] [FRONTEND] [HELM] Share the whole feature group with a project that queries it in Trino, to address a vulnerability.
+  `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` keeps the behaviour of 5.2.0, without the fix.
 - [HELM] Remove `olk.opensearch.indexUpgrade.enabled` from your values, using `olk.opensearch.indexUpgrade.mode: report` in place of `false`, or the values schema rejects the upgrade.
 - [HELM] `helm upgrade` now stops before changing anything, also on a cluster already on 5.2.0, if an OpenSearch vector field would still be served by nmslib, which crashes OpenSearch 3.8 nodes on CPUs without AVX-512, where 5.2.0 upgraded without checking; apply the remedy the hook's log gives for each index or template it names ([nmslib fields][docs-os-nmslib]).
 
@@ -177,7 +177,7 @@ Follow [Changes from 5.2.2][docs-upgrade-changes-from-522] in the upgrade guide.
 
 - [HELM] Changed `olk.opensearch.indexUpgrade.enabled` to `olk.opensearch.indexUpgrade.mode`: `copy`, the default, or `report`, which lists the indices the 5.1 to 5.2 upgrade would copy and how long each stays blocked, and fails before anything changes, the Kafka migration included ([set the timeout][docs-os-timeout]).
   From 5.1.2 the 5.1 chart reads the same key to copy the indices before the 5.2 upgrade; pass it with `--set`, not in your values file ([copying on 5.1][docs-os-copy-51]).
-- [HELM] Added `hopsworks.variables.trino_feature_group_subset_shares_enabled` (default `"false"`), which lets Trino serve feature groups shared with a subset of their features.
+- [HELM] Added `hopsworks.variables.trino_feature_group_subset_shares_enabled` (default `"false"`), which turns off the fix of a vulnerability in Trino queries of shared feature groups.
 
 ## 5.2.0 { #hopsworks-5-2-0 }
 
@@ -307,7 +307,7 @@ Follow [Changes from 5.2.2][docs-upgrade-changes-from-522] in the upgrade guide.
 
 ### Breaking changes
 
-- [API] [FRONTEND] Data Scientists can no longer change a job another member created, other than its schedule, to address a vulnerability; ask its creator or a Data Owner of the project to change it (also in [5.1.1][hopsworks-5-1-1]).
+- [API] [FRONTEND] As a Data Scientist, ask the creator of a job or a Data Owner of the project to change it, other than its schedule, to address a vulnerability (also in [5.1.1][hopsworks-5-1-1]).
 - [API] `get_batch_data` and the training data methods of `FeatureView` in the Python client now raise `TypeError` on a keyword argument they don't take, which they used to ignore; remove such arguments.
 - [API] With `allow_missing=True`, `get_feature_vector` and `get_feature_vectors` in the Python client now return a serving key you pass in its slot of the vector when no row matches it, instead of `None`; code that detects a missing row by a `None` key must check the other features instead.
 - [API] `Deployment.read_logs` and `tail_logs` in the Python client, `hops deployment logs` and `hops agent logs` now read only the live pods of a deployment and ignore `until`, where 5.1 read the logs of stopped deployments from OpenSearch by default; get those with `Deployment.download_logs` or `--download`.

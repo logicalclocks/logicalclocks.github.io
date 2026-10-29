@@ -78,7 +78,7 @@ The releases of Hopsworks 5.1, newest first.
 
 ### Breaking changes
 
-- [API] [FRONTEND] Data Scientists can no longer change a job another member created, other than its schedule, to address a vulnerability; ask its creator or a Data Owner of the project to change it.
+- [API] [FRONTEND] As a Data Scientist, ask the creator of a job or a Data Owner of the project to change it, other than its schedule, to address a vulnerability.
 - [HELM] The post-upgrade search index rebuild signs in as the agent user, instead of with `hopsworks.variables.admin_email` and `admin_password`, and fails the `helm upgrade` if `hopsworks.agent_email` and `hopsworks.agent_password` (default `agent@hops.io`, `admin`) don't match that account.
   Set them, or turn the rebuild off with `hopsworks.opensearchReindex.enabled: false`.
 - [HELM] The RonDB REST server now uses a probe port and an upload path that need RonDB 26.02.11, where 5.1.0 probed its REST port and set no upload path.
@@ -310,7 +310,7 @@ The releases of Hopsworks 5.1, newest first.
 - [API] `hops fg keywords`, `add-keyword` and `remove-keyword` now work on keywords instead of tags, and `add-keyword --value` fails; use `hops fg tags`, `add-tag` and `remove-tag` for name/value tags.
 - [API] [FRONTEND] Hopsworks now rejects a KServe deployment that sets the `PYTHONPATH` environment variable, which 5.0 accepted and KServe 0.19 blocks, and a job, deployment or user environment variable named `PYTHON_BIN`, which Hopsworks now sets on deployments itself; remove them.
 - [API] [FRONTEND] Removed library installs from a conda channel, an `.egg` file or an `environment.yml` file, because the base environments are now uv virtualenvs without conda; use pip, a wheel, a Git repository, a `requirements.txt` file or custom commands instead ([installing libraries](https://docs.hopsworks.ai/5.1/user_guides/projects/python/python_install/)).
-- [FRONTEND] [HELM] Rebuild the environment images built from custom commands or with libraries from a private Git repository, and rotate the credentials in `hopsworks.dockerImage.packageAuth.secretName` and the Git tokens they use, to address a vulnerability.
+- [FRONTEND] [HELM] Rotate the credentials in `hopsworks.dockerImage.packageAuth.secretName` and the Git tokens of the private Git repositories that environments install libraries from, then rebuild the environments built from custom commands or from such a repository, to address a vulnerability.
 - [FRONTEND] Removed the Code Style, Testing and Security rules from the Coding Agents page of the cluster settings, and web terminals no longer give them to the coding agents (also in [5.0.10][hopsworks-5-0-10]).
   If you set them, move what you need to the new Business Glossary or the system-wide instructions of each agent.
 - [HELM] Raised the minimum Kubernetes version from 1.27 to 1.34; upgrade Kubernetes first, because Helm refuses to install or upgrade on an older cluster.

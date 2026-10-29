@@ -27,5 +27,5 @@ uv run hopsworks-docs linkchecker # check for broken links
 - @docs/content.md — writing conventions, code blocks, linking, and assets
 - @docs/design-system.md — visual language: tokens, logo, nav, search, diagrams; read before any CSS/nav/visual change
 - @docs/captures.md — UI screenshots and GIFs: where the pixels come from, browser session, scoping rules, helpers
-- @docs/releases.md — release pages: page shape and how to write release notes and breaking changes
+- `.claude/docs/releases.md` — release pages: page shape and how to write release notes and breaking changes; read it before editing `docs/releases/` or the release tooling
 - @docs/caveats/README.md — known gotchas; add new ones as separate files in this folder
