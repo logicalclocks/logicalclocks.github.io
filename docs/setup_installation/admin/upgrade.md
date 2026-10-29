@@ -15,7 +15,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -255,6 +255,123 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 - The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
 - A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
 
+### Bring your own Kafka: Hopsworks creates and deletes topics { #upgrade-byok-topics }
+
+From 5.3, with `enable_bring_your_own_kafka`, Hopsworks creates and deletes the topics it needs on the [external Kafka][external-kafka-cluster], as it does on the bundled one.
+It connects with each feature store's `kafka_connector`.
+Before, it created no topics there, so every topic had to exist before ingestion.
+
+- **The backend connects to the external brokers.**
+  The operations below make the Hopsworks pods call the brokers of the project's `kafka_connector`, also for a topic that already exists, so those brokers must be reachable from the Hopsworks pods with the connector's settings.
+  Otherwise the operations fail with `KAFKA_UNAVAILABLE` (190021) after 30 seconds, `TOPIC_FETCH_FAILED` (190023) when the broker refuses to describe the topic, or `KAFKA_GENERIC_ERROR` (190007) when the client cannot be set up.
+- **Topics that already exist are used as they are.**
+  Hopsworks describes a topic before creating it, and never deletes a topic it found already there.
+  Topics created before the upgrade keep working with the same `kafka_connector` credentials, which already need Describe on them to produce.
+- **Missing topics are created.**
+  Creating an online or stream feature group, changing a feature group's topic or notification topic, setting the project topic in `Project Settings` → `Kafka`, or creating a topic through the topic API creates the topic on the external cluster when it does not exist.
+  A stream feature group that is not online-enabled writes to a topic named after the project, with no suffix, unless the project or the feature group names one.
+  For that the `kafka_connector` principal needs Create on those topics, and Delete for Hopsworks to remove them again.
+  Without Create, these operations fail with `TOPIC_CREATION_FAILED` (190024) and the broker's reason; before 5.3 they succeeded and ingestion failed later on the missing topic.
+- **Hopsworks deletes only the topics it created**, with their feature group or project, or when a feature group moves to another topic, and only those no other project used when they were created.
+  A feature group's topic also stays while another feature group names it or while it is the project topic.
+  A topic Hopsworks created on the external cluster is deleted by name on the cluster the project's `kafka_connector` points at when it is deleted.
+  A delete that Kafka refuses keeps the topic in the project's topic list; one refused while deleting a project is logged by the backend with the topic's name and cluster.
+- **Topics recorded before the upgrade stay on the bundled Kafka.**
+  Before 5.3 Hopsworks created every topic it recorded on the bundled Kafka, also for projects that had no `kafka_connector` yet.
+  The upgrade adds the nullable column `project_topics.external_kafka` (migration V130, an online `ALTER`), and a row without it is deleted on the bundled Kafka, as before, never on the external cluster.
+  A project without a `kafka_connector` still creates its topics on the bundled Kafka, so create the connector before the project's first feature group.
+- **Partitions and replicas.**
+  The project topic and the online and stream feature group topics get `hopsworks.variables.onlinefs_service_thread_number` partitions (default 10) and `hopsworks.variables.kafka_num_replicas` replicas (default 1); topics created through the topic API get the partitions and replicas they ask for.
+  Where `min.insync.replicas` is above a topic's replicas, producers that write with `acks=all` fail with `NotEnoughReplicas`, so set `kafka_num_replicas` to the external cluster's replication factor.
+  The variable applies to every project: one without a `kafka_connector` creates its topics on the bundled Kafka, which refuses more replicas than it has brokers with `TOPIC_REPLICATION_ERROR` (190005).
+- **OnlineFS must subscribe by pattern.**
+  OnlineFS picks up new topics only through `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern` (default `.*_onlinefs`).
+  A non-empty `topicList` in the same section replaces the pattern and does not include the topics Hopsworks creates.
+  A cluster set up with a topic list sets `topicList: ""`, and widens `topicPattern` until it also matches the project topics it consumes that do not end in `_onlinefs`.
+- **Model serving does not log to an external Kafka.**
+  The inference logger reaches only the bundled Kafka, so a deployment created with inference logging gets no topic, and selecting an existing topic for it is refused.
+
+### Notification topics and shared feature stores { #upgrade-notification-topics }
+
+- **A notification topic belongs to its project.**
+  A feature group's notification topic (Change Data Capture) is a topic of its project from 5.3, like its ingestion topic.
+  Hopsworks creates it when the feature group is created or moves to another notification topic, if it does not exist yet, and deletes it with the feature group, or on such a move, when Hopsworks created it and no other feature group uses it.
+  A feature group whose notification topic is another project's topic is refused with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026).
+  A notification topic set before the upgrade is left as it is until its feature group moves to another one.
+- **Kafka changes through a shared feature store are refused.**
+  Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
+  Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
+  Reading through a shared feature store is unchanged.
+
+### Envoy Gateway { #upgrade-envoy-gateway }
+
+New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mode model deployments through the Kubernetes Gateway API, with Istio still the front door.
+
+- **Nothing moves unless you turn it on.**
+  An upgrade that leaves `global._hopsworks.envoyGateway` alone routes every request as before.
+- **Two components restart during the upgrade.**
+  The KServe controller restarts, and the running deployments keep serving meanwhile.
+  From 5.3 it also restarts on any later upgrade that changes its ingress configuration, such as turning Envoy Gateway routing on or off.
+  `model-serving-authenticator` restarts with a new listener for the Gateway.
+  While its old pod is replaced, a few requests can get a 403, because the 5.2 pod stops without waiting for the new one; from 5.3 its restarts wait, so later ones lose no request.
+
+To turn it on in a cluster with running deployments, upgrade twice, so that the Gateway is up before any deployment moves.
+Clients keep their endpoint, Knative-mode deployments stay on Istio, and no deployment restarts.
+
+1. **Prepare.**
+    List the Standard-mode deployments, to check them at the end:
+
+    ```bash
+    kubectl get isvc -A -o json | jq -r '.items[] | select(.metadata.annotations["serving.kserve.io/deploymentMode"] == "Standard") | .metadata.namespace + "/" + .metadata.name'
+    ```
+
+    !!! warning "OpenShift 4.19 or later, and GKE"
+
+        Set `hw-envoy-gateway.gatewayApiCrds.enabled: false` before you turn the feature on.
+        The platform owns the Gateway API CRDs there, and the chart must use them rather than install its own, as described in [CustomResourceDefinitions][envoy-gateway-crds].
+        `values.openshift.yaml` already sets it.
+        On GKE Standard, enable the Gateway API on the cluster first: GKE installs the CRDs only then, and the upgrade fails without them.
+
+    With `rbac.useExistingRole`, add the permissions listed under [Cluster requirements][envoy-gateway-requirements] to the backend role.
+
+2. **Install Envoy Gateway** with `helm upgrade` and these values:
+
+    ```yaml
+    global:
+      _hopsworks:
+        envoyGateway:
+          enabled: true
+          kserveStandardMode: false
+    ```
+
+    Set `kserveStandardMode: false` explicitly: it defaults to `true`, which would also move the deployments in this upgrade.
+    The deployments keep their Istio routes, so no traffic moves yet.
+    The Gateway is ready when it reports `Programmed`:
+
+    ```bash
+    kubectl get gateways.gateway.networking.k8s.io -n <namespace> kserve-ingress-gateway
+    ```
+
+    Hopsworks checks the rest itself before it moves a deployment: the Gateway's policy, the routes and a request through Envoy.
+    You can stay at this step for as long as you need.
+
+3. **Move the deployments** with `helm upgrade` and `kserveStandardMode: true`.
+    The KServe controller restarts, and Hopsworks starts moving the Standard-mode deployments within a minute.
+    Each one moves once its new routes are accepted, and its Istio route keeps serving until then; a deployment still waiting is retried every minute.
+    A deployment that is not ready is picked up after it becomes ready, at the next full pass, every ten minutes.
+    The backend log reports each deployment it moves.
+
+4. **Check** against the list from step 1:
+    - No Istio Ingress is left for a ready Standard-mode deployment, neither KServe's nor, for a deployment that scales to zero, the idle one:
+
+        ```bash
+        kubectl get ingress -A -l serving.kserve.io/inferenceservice
+        kubectl get ingress -A -l serving.hops.works/keda-idle=true
+        ```
+
+    - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
+    - The Knative-mode deployments are unchanged.
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
@@ -277,7 +394,8 @@ A record that fails the check is dropped, logged by OnlineFS (`Record dropped, i
   Creating a project, changing its topic, creating an online feature group or changing its topic, or creating a Kafka topic fails with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026) when the topic is the online topic of another project, the topic of another project's feature group, or a topic another project owns.
   The upgrade leaves a project or feature group already configured that way as it is, and updates that keep its topic still succeed.
   A project whose own topic is taken that way cannot create online feature groups until it gets a topic of its own, while the project that created the topic, or whose default `<project>_onlinefs` topic it is, keeps using it.
-  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, this is not enforced.
+  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, 5.2.2 does not enforce this.
+  From 5.3 a topic on an external Kafka is refused only when another project owns it because Hopsworks created it for that project, as described in [Bring your own Kafka][upgrade-byok-topics].
 - **After the upgrade**, check that the topic mismatch panels stay at zero.
   A drop from a legitimate producer means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
 
