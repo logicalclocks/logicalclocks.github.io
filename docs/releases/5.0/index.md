@@ -297,7 +297,7 @@ The releases of Hopsworks 5.0, newest first.
   The upgrade writes the value to the cluster, so a change made in the admin UI lasts until the next upgrade.
 - [API] [FRONTEND] Addressed vulnerabilities in feature views.
 - [API] [FRONTEND] Added deleting rows from a feature group with `remove_rows` in the Python client and `removeRows` in the Java client, which delete from both stores of an online feature group unless `storage` is `"offline"` or `"online"`; online ingestion results and the ingestion activity in the UI show them as deleted rows.
-- [API] Added project member management (`Project.get_members`, `add_member`, `remove_member`), feature group access for members with the Feature store restricted role (`FeatureGroup.grant_restricted_access`, `revoke_restricted_access`, `get_restricted_access`) and user administration (`hopsworks.get_users_api()`) to the Python client.
+- [API] Added project member management (`Project.get_members`, `add_member`, `remove_member`), feature group access for members with the Feature store restricted role (`FeatureGroup.grant_restricted_access`, `revoke_restricted_access`, `get_restricted_access`) and user administration (`hopsworks.get_users_api()`) to the Python client ([users](https://docs.hopsworks.ai/5.0/setup_installation/admin/user/#python-sdk), [members](https://docs.hopsworks.ai/5.0/user_guides/projects/project/manage_members/#python-sdk), [sharing](https://docs.hopsworks.ai/5.0/user_guides/fs/sharing/sharing/#using-the-api-to-share-a-feature-group)).
 - [API] Fixed `share`, `shared_with` and `unshare` of feature groups and feature stores, and `DatasetApi.unshare`, failing in the Python client.
 - [API] Fixed Arrow Flight queries of partitioned DELTA feature groups failing once the feature group is older than `delta.logRetentionDuration`.
 - [API] Fixed online feature vectors failing with a `ValueError` on `TIMESTAMP(n)` and `DATETIME(n)` features with fractional seconds, and similarity search results losing the milliseconds of timestamps.
@@ -437,7 +437,7 @@ The releases of Hopsworks 5.0, newest first.
 - [API] [FRONTEND] Added [mandatory tags](https://docs.hopsworks.ai/5.0/user_guides/fs/tags/mandatory_tags/) for models and deployments, and tags on deployments, which the Python client sets with `Deployment.add_tag` and reports in `missing_mandatory_tags` of a model or deployment.
   Model tags move from HopsFS to the database the first time a model is read or tagged after the upgrade, and a tag that no longer matches its schema is dropped.
 - [API] [FRONTEND] [HELM] Fixed deleting a feature group failing after many online ingestions; Hopsworks now keeps the latest 1000 online ingestions of each feature group (cluster variable `online_ingestion_max_per_featuregroup`).
-- [API] Fixed `get_tag` and `get_tags` of feature groups, feature views, training datasets, models and datasets in the Python client failing with a `TypeError` when a tag value is not a plain string.
+- [API] Fixed `get_tag` and `get_tags` of feature groups, feature views, training datasets, models and datasets in the Python client failing with a `TypeError` when a tag value is not a plain string, and `get_tag` of models always failing.
 - [API] Fixed random splits of training datasets with the Python engine ignoring `seed`, so they were not reproducible.
 - [API] Fixed importing the Python client reseeding Python's global `random` module.
 - [FRONTEND] Changed projects created without the `Users` dataset to get it, with a home folder for each member, automatically after the upgrade, instead of asking the data owner to enable private user directories.
@@ -480,9 +480,9 @@ The releases of Hopsworks 5.0, newest first.
 - [API] [FRONTEND] Fixed model deployments with images from the managed Docker registry failing to start.
 - [API] [FRONTEND] Fixed failed or partly deleted projects counting against the owner's maximum number of projects.
 - [API] [FRONTEND] Fixed ingestion with dltHub and schema fetching from NoSQL data sources failing when the project, data source or table names are long.
+- [API] [FRONTEND] Fixed adding a member to a project failing when feature groups are shared with that project.
 - [FRONTEND] [HELM] Added the online feature store (RonDB) quotas and memory usage to the project settings, a banner on project pages near or over quota, and a Quotas and Rate Limits page in the cluster settings for the defaults of new projects; HopsFS quotas are now labelled GB instead of TB, the unit they always had.
   Default RonDB quotas in `hopsworks.variables.rondb_quotas` now apply to new projects; usage refreshes every `hopsworks.variables.rondb_usage_cache_ttl_seconds`, and on a large cluster raise `rondb_usage_query_timeout_seconds` if usage stops showing.
-- [FRONTEND] Fixed adding a member to a project failing when feature groups are shared with that project.
 - [FRONTEND] Fixed environment variables set in an app's configuration not reaching the app, and not showing when you edit the app.
 - [FRONTEND] Fixed web terminals shutting down after about 30 minutes in a background browser tab or on a sleeping laptop; a terminal now stops only when its session expires.
 - [FRONTEND] Fixed giving project members access to Superset failing with HTTP 429 (Too Many Requests) errors.
