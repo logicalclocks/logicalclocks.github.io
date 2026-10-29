@@ -90,14 +90,18 @@ There you can also set the following configuration settings for a `PYTHON` job.
 - `Environment`: The python environment to use
 - `Container memory`: The amount of memory in MB to be allocated to the Python script
 - `Container cores`: The number of cores to be allocated for the Python script
+- `Container disk`: The local disk in GB the Python script's container may use, for example under `/tmp`.
+  Empty means no limit.
+  A container that writes more is evicted and the execution fails.
 - `Additional files`: List of files that will be locally accessible in the working directory of the application.
   Only recommended to use if project datasets are not mounted under `/hopsfs`.
   You can always modify the arguments in the job settings.
 - `Environment variables`: Custom `KEY=VALUE` pairs that are set on the container for every
   execution of this job. Read them in your Python code with `os.environ["MY_KEY"]`. See
   [Environment variables](#environment-variables) below.
-- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs`.
-  The fields show the cluster defaults and may need tuning when the job reads large datasets or does many concurrent reads or writes on `/hopsfs`.
+- `HopsFS mount`: Memory (MB), cores, namenode connections and disk (GB) of the container that serves `/hopsfs`.
+  The mount stages writes to `/hopsfs` on its local disk, which has no limit when the disk field is empty.
+  The other fields show the cluster defaults and may need tuning when the job reads large datasets or does many concurrent reads or writes on `/hopsfs`.
   If the project has a resource quota, the mount's memory and cores count towards it.
 
 <p align="center">
@@ -198,10 +202,11 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['resourceConfig']['cores']`</nobr> | float | Number of CPU cores to be allocated | `1.0` |
 | <nobr>`conf['resourceConfig']['memory']`</nobr> | int | Number of MBs to be allocated | `2048` |
 | <nobr>`conf['resourceConfig']['gpus']`</nobr> | int | Number of GPUs to be allocated | `0` |
+| <nobr>`conf['resourceConfig']['diskGb']`</nobr> | int | Local disk limit of the container in GB, `1` to `16384`. A container that writes more is evicted. Not set: no limit | `null` |
 | <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
-| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container. Each key is optional and falls back to the cluster default: `memory` (int, memory limit in MB, `512` to `1048576`), `cores` (float, CPU request, `0.001` to `64` and not above the cluster's mount CPU limit when one is set) and `namenodeConnections` (int, `1` to `32`). `get_configuration` returns the key only when the project's default configuration sets it, so assign the whole dict, for example `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container: `memory` (int, memory limit in MB, `512` to `1048576`), `cores` (float, CPU request, `0.001` to `64` and not above the cluster's mount CPU limit when one is set), `namenodeConnections` (int, `1` to `32`) and `diskGb` (int, local disk limit in GB, `1` to `16384`). Each key is optional: an unset `diskGb` means no limit, and the others fall back to the cluster default. `get_configuration` returns the key only when the project's default configuration sets it, so assign the whole dict, for example `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 
 ## Accessing project data
 
