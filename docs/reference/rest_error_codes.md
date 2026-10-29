@@ -112,6 +112,11 @@ Do not hand-edit the tables below; regenerate them instead.
 | 100077 | `RDRS_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The RonDB REST Server could not be reached. |
 | 100078 | `TTL_PURGE_TABLE_NOT_FOUND` | 404 NOT_FOUND | The TTL purge worker is not tracking this table. |
 | 100079 | `TERMINAL_INVALID_HOURS` | 400 BAD_REQUEST | The requested terminal session length is out of range. |
+| 100080 | `NPM_GIT_INSPECT_FAILED` | 400 BAD_REQUEST | The git repository could not be read. |
+| 100081 | `OPENCOST_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | OpenCost could not be reached. |
+| 100082 | `OPENCOST_BAD_REQUEST` | 400 BAD_REQUEST | Invalid cost query. |
+| 100083 | `OPENCOST_NOT_ENABLED` | 404 NOT_FOUND | Cost tracking with OpenCost is not enabled on this cluster. |
+| 100084 | `OPENCOST_NAMESPACE_SHARED` | 409 CONFLICT | The project's namespace is shared with other projects, so its costs cannot be told apart. |
 
 ## DatasetErrorCode
 
@@ -275,6 +280,9 @@ Do not hand-edit the tables below; regenerate them instead.
 | 130076 | `GIT_AUTO_REDEPLOY_NOT_SUPPORTED` | 400 BAD_REQUEST | Git auto-redeploy is only supported for apps deployed from a git repository |
 | 130077 | `JOB_DESCRIPTION_TOO_LONG` | 400 BAD_REQUEST | Job description is too long. |
 | 130078 | `INVALID_MEMORY_OVERHEAD_FACTOR` | 400 BAD_REQUEST | Memory overhead factor must be greater than zero. |
+| 130079 | `JOB_UPDATE_FORBIDDEN` | 403 FORBIDDEN | Only the job creator or a Data owner can update this job. |
+| 130080 | `PYTHON_APP_ENTRYPOINT_INVALID` | 400 BAD_REQUEST | The app file is missing or is not a file of the app type's kind. |
+| 130081 | `PYTHON_APP_IDLE_SCALE_TO_ZERO_INVALID` | 400 BAD_REQUEST | Invalid scale-to-zero configuration for the app. |
 
 ## RequestErrorCode
 
@@ -387,6 +395,25 @@ Do not hand-edit the tables below; regenerate them instead.
 | 150099 | `LAST_DATA_OWNER_NOT_ALLOWED` | 403 FORBIDDEN | Removing the last data owner of the project is not allowed. |
 | 150100 | `FILE_OWNER_NOT_DATA_OWNER` | 400 BAD_REQUEST | The member chosen to take over the removed member's files must be a data owner in this project. |
 | 150101 | `SYSTEM_PROJECT_REMOVAL_NOT_ALLOWED` | 400 BAD_REQUEST | This project is managed by Hopsworks and cannot be deleted. |
+| 150102 | `PROJECT_NAMESPACE_TOO_LONG` | 400 BAD_REQUEST | Project namespace is too long - cannot be longer than 25 characters. |
+| 150103 | `ML_SYSTEM_NOT_FOUND` | 404 NOT_FOUND | ML system not found in this project. |
+| 150104 | `ML_SYSTEM_PATH_INVALID` | 400 BAD_REQUEST | An ML system's code must be a directory in this project or a Git repository URL. |
+| 150105 | `FACTORY_NOT_FOUND` | 404 NOT_FOUND | Factory not found in this project. |
+| 150106 | `FACTORY_INVALID` | 400 BAD_REQUEST | The factory definition is not valid. |
+| 150107 | `FACTORY_EXISTS` | 409 CONFLICT | A factory of this name already exists in this project. |
+| 150108 | `FACTORY_BUILTIN_READ_ONLY` | 403 FORBIDDEN | A built-in factory cannot be changed or deleted; clone it instead. |
+| 150109 | `FACTORY_HAS_SYSTEMS` | 409 CONFLICT | The factory still has systems; delete them before the factory. |
+| 150110 | `FACTORY_VERSION_CONFLICT` | 409 CONFLICT | The factory changed since you read it; reload it and try again. |
+| 150111 | `ML_SYSTEM_FACTORY_VERSION_INVALID` | 400 BAD_REQUEST | The factory version or definition digest does not match a stored definition of the factory. |
+| 150112 | `ML_SYSTEM_PATH_FORBIDDEN` | 403 FORBIDDEN | You cannot write to this directory, so you cannot register it as a system. |
+| 150113 | `ML_SYSTEM_LIST_FAILED` | 500 INTERNAL_SERVER_ERROR | Could not list the systems of this project. |
+| 150114 | `ML_SYSTEM_PAGE_INVALID` | 400 BAD_REQUEST | offset and limit must not be negative. |
+| 150115 | `FACTORY_DISABLED` | 403 FORBIDDEN | The Factory is not enabled on this cluster. |
+| 150116 | `DEPARTMENT_NOT_FOUND` | 404 NOT_FOUND | Department not found. |
+| 150117 | `DEPARTMENT_ALREADY_EXISTS` | 409 CONFLICT | A department with this name already exists. |
+| 150118 | `DEPARTMENT_NAME_INVALID` | 400 BAD_REQUEST | Department names are 1-63 lowercase letters, digits and '-', starting and ending with a letter or digit. |
+| 150119 | `DEPARTMENT_DEFAULT_CANNOT_BE_DELETED` | 400 BAD_REQUEST | The default department cannot be deleted. |
+| 150120 | `DEPARTMENT_MOVE_REFUSED` | 409 CONFLICT | The project cannot be moved to this department now. |
 
 ## UserErrorCode
 
@@ -462,6 +489,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 160072 | `SECRET_VALUE_TOO_LARGE` | 400 BAD_REQUEST | Secret value is too large. |
 | 160073 | `ENV_VAR_INVALID_VALUE` | 400 BAD_REQUEST | Environment variable value is invalid. |
 | 160074 | `ACCOUNT_DELETION_PENDING_CLEANUP` | 409 CONFLICT | Account still has records awaiting background cleanup. Retry shortly. |
+| 160075 | `LLM_PROVIDER_NOT_FOUND` | 404 NOT_FOUND | LLM provider not found. |
+| 160076 | `LLM_API_KEY_MISSING` | 400 BAD_REQUEST | No API key is saved for this LLM provider. |
 
 ## MetadataErrorCode
 
@@ -484,7 +513,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 190000 | `TOPIC_NOT_FOUND` | 404 NOT_FOUND | No topics found |
 | 190001 | `BROKER_METADATA_ERROR` | 500 INTERNAL_SERVER_ERROR | An error occurred while retrieving topic metadata from broker |
 | 190002 | `TOPIC_ALREADY_EXISTS` | 409 CONFLICT | Kafka topic already exists in database. Pick a different topic name |
-| 190003 | `TOPIC_ALREADY_EXISTS_IN_ZOOKEEPER` | 409 CONFLICT | Kafka topic already exists in ZooKeeper. Pick a different topic name |
+| 190003 | `TOPIC_ALREADY_EXISTS_IN_ZOOKEEPER` | 409 CONFLICT | Kafka topic already exists in the broker. Pick a different topic name |
 | 190004 | `TOPIC_LIMIT_REACHED` | 412 PRECONDITION_FAILED | Topic limit reached. Contact your administrator to increase the number of topics that can be created for this project. |
 | 190005 | `TOPIC_REPLICATION_ERROR` | 400 BAD_REQUEST | Maximum topic replication factor exceeded |
 | 190006 | `SCHEMA_NOT_FOUND` | 404 NOT_FOUND | Topic has no schema attached to it. |
@@ -507,6 +536,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 190023 | `TOPIC_FETCH_FAILED` | 500 INTERNAL_SERVER_ERROR | Could not fetch topic details. |
 | 190024 | `TOPIC_CREATION_FAILED` | 500 INTERNAL_SERVER_ERROR | Could not create topic. |
 | 190025 | `BROKER_MISSING` | 404 NOT_FOUND | Could not find a broker endpoint. |
+| 190026 | `TOPIC_IN_USE_BY_ANOTHER_PROJECT` | 409 CONFLICT | Kafka topic is used by another project's feature store. Pick a different topic name |
+| 190027 | `CHANGE_THROUGH_SHARED_FEATURE_STORE` | 403 FORBIDDEN | Kafka topics and schemas can only be changed through the project's own feature store. |
 
 ## SecurityErrorCode
 
@@ -959,6 +990,18 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270331 | `ASOF_SPINE_FILTER_ON_SPINE_COLUMN` | 400 BAD_REQUEST | A filter references a column the inference spine supplies. |
 | 270332 | `ASOF_SPINE_NO_FEATURE_VIEW` | 400 BAD_REQUEST | The inference spine does not name a feature view that can be read. |
 | 270333 | `ASOF_MAX_FEATURE_AGE_INVALID` | 400 BAD_REQUEST | The feature view's max feature age is not a positive duration. |
+| 270334 | `DATA_SOURCE_CREDENTIALS_NOT_PROVIDED` | 400 BAD_REQUEST | You have not added your credentials for this data source. |
+| 270335 | `DATA_SOURCE_CREDENTIALS_INCOMPLETE` | 400 BAD_REQUEST | Your credentials for this data source reference a secret or env variable that no longer exists. |
+| 270336 | `DATA_SOURCE_CREDENTIALS_INVALID` | 400 BAD_REQUEST | The credentials were rejected by the data source. |
+| 270337 | `CREDENTIALS_MODE_NOT_SUPPORTED` | 400 BAD_REQUEST | Provided credentials are not supported for this data source type or operation. |
+| 270338 | `CREDENTIALS_MODE_IMMUTABLE` | 400 BAD_REQUEST | The credentials mode of a data source cannot be changed. |
+| 270339 | `INVALID_CREDENTIALS_MODE_ARGS` | 400 BAD_REQUEST | A data source with provided credentials cannot store credentials. |
+| 270340 | `INVALID_WALLET_PATH` | 400 BAD_REQUEST | The wallet must be in your home directory in this project. |
+| 270341 | `DATA_SOURCE_ENV_NAME_COLLISION` | 400 BAD_REQUEST | Another data source with provided credentials maps to the same env variable names. |
+| 270342 | `DATA_SOURCE_WALLET_DELETE_FAILED` | 500 INTERNAL_SERVER_ERROR | Could not delete a data source wallet. |
+| 270343 | `DATA_SOURCE_CREDENTIALS_RATE_LIMITED` | 429 TOO_MANY_REQUESTS | Too many credential checks against this data source; try again in a minute. |
+| 270344 | `ICEBERG_METASTORE_SYNC_NOT_SUPPORTED` | 400 BAD_REQUEST | Only ICEBERG feature groups on HopsFS are registered as Iceberg tables in the Hive metastore. |
+| 270345 | `ICEBERG_METASTORE_SYNC_ERROR` | 500 INTERNAL_SERVER_ERROR | Could not register the feature group's current Iceberg metadata in the Hive metastore. |
 
 ## AirflowErrorCode
 
@@ -1091,6 +1134,9 @@ Do not hand-edit the tables below; regenerate them instead.
 | 370008 | `INVALID_MANDATORY_TAG` | 400 BAD_REQUEST | Invalid mandatory tag |
 | 370009 | `TAG_MIGRATION_ONGOING` | 503 SERVICE_UNAVAILABLE | Tag migration in progress, wait for it to finish before issuing tag operations. |
 | 370010 | `TAG_ARCHIVE_TOO_MANY_ATTACHMENTS` | 400 BAD_REQUEST | The schema is attached to more artifacts than one archive transaction can cover. |
+| 370011 | `TAG_PATH_NOT_TAGGABLE` | 400 BAD_REQUEST | Only dataset roots can be tagged. Tagging a file or a directory inside a dataset is no longer supported. |
+| 370012 | `TAG_WRITE_DENIED` | 403 FORBIDDEN | Not allowed to change the tags of this dataset. |
+| 370013 | `TAG_MIGRATION_PENDING` | 409 CONFLICT | This dataset still has legacy tags in HopsFS that could not be migrated. Resolve them before changing its tags. |
 
 ## CloudErrorCode
 
@@ -1147,6 +1193,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 410007 | `NOT_IMPLEMENTED` | 501 NOT_IMPLEMENTED | Internal error dealing with new artifact type |
 | 410008 | `DB_QUERY_ERROR` | 500 INTERNAL_SERVER_ERROR | DB error on query |
 | 410009 | `ARTIFACT_DELETED` | 500 INTERNAL_SERVER_ERROR | Artifact was deleted before command could be executed |
+| 410010 | `REINDEX_IN_PROGRESS` | 409 CONFLICT | A featurestore reindex run is already in progress |
 
 ## GitOpErrorCode
 
@@ -1202,6 +1249,14 @@ Do not hand-edit the tables below; regenerate them instead.
 | 510002 | `LOCAL_QUEUE_ALREADY_EXISTS` | 400 BAD_REQUEST | Local queue already exists |
 | 510003 | `LOCAL_QUEUE_CREATION_FAILED` | 500 INTERNAL_SERVER_ERROR | Local queue creation failed |
 | 510004 | `ERROR_FETCHING_QUEUE` | 500 INTERNAL_SERVER_ERROR | Error fetching configured queue |
+| 510005 | `RUN_AI_DISABLED` | 400 BAD_REQUEST | Run:ai integration is not enabled |
+| 510006 | `RUN_AI_NOT_CONFIGURED` | 503 SERVICE_UNAVAILABLE | Run:ai integration is not configured |
+| 510007 | `RUN_AI_UNREACHABLE` | 503 SERVICE_UNAVAILABLE | Run:ai control plane is unreachable |
+| 510008 | `RUN_AI_REQUEST_FAILED` | 502 BAD_GATEWAY | Run:ai control plane rejected the request |
+| 510009 | `RUN_AI_PROJECT_CONFLICT` | 409 CONFLICT | A Run:ai project with this name is bound to another namespace |
+| 510010 | `RUN_AI_DEPARTMENT_NOT_FOUND` | 404 NOT_FOUND | Run:ai department not found |
+| 510011 | `RUN_AI_GPU_QUOTA_EXCEEDED` | 409 CONFLICT | Not enough GPUs left in the project's Run:ai quota |
+| 510012 | `RUN_AI_PROJECT_BUSY` | 409 CONFLICT | The Run:ai project has running workloads |
 
 ## PlatformIntelligenceErrorCode
 
@@ -1211,6 +1266,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 520013 | `METADATA_INFERENCE_FAILED` | 500 INTERNAL_SERVER_ERROR | Metadata inference failed. |
 | 520014 | `VLLM_CONFIG_GENERATION_FAILED` | 500 INTERNAL_SERVER_ERROR | vLLM config generation failed. |
 | 520015 | `DEPLOYMENT_GENERATION_FAILED` | 500 INTERNAL_SERVER_ERROR | Deployment generation failed. |
+| 520016 | `SOURCE_SUGGESTION_FAILED` | 500 INTERNAL_SERVER_ERROR | Source table suggestion failed. |
+| 520017 | `FACTORY_MATCH_FAILED` | 500 INTERNAL_SERVER_ERROR | Factory matching failed. |
 
 ## FeatureStoreMetricsErrorCode
 
@@ -1244,6 +1301,11 @@ Do not hand-edit the tables below; regenerate them instead.
 | 540017 | `CATALOG_MOUNT_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The Trino pods do not mount the credential-file store |
 | 540018 | `CATALOG_PROJECT_NOT_READY` | 503 SERVICE_UNAVAILABLE | A previous project of this name is still being deleted; catalogs cannot be created until that finishes |
 | 540019 | `DATASOURCE_NOT_MAPPABLE` | 400 BAD_REQUEST | This data source cannot be mapped to a Trino catalog |
+| 540020 | `TRINO_FILE_NOT_FOUND` | 404 NOT_FOUND | No such file in the Trino files tree |
+| 540021 | `CATALOG_SHARE_NOT_FOUND` | 404 NOT_FOUND | Trino catalog share not found |
+| 540022 | `CATALOG_SHARE_INVALID` | 400 BAD_REQUEST | Invalid Trino catalog share |
+| 540023 | `CATALOG_SHARE_NOT_ALLOWED` | 403 FORBIDDEN | Not allowed to share this Trino catalog |
+| 540024 | `CATALOG_CHANGE_NOT_ALLOWED` | 403 FORBIDDEN | Not allowed to change this Trino catalog |
 
 ## AiProviderErrorCode
 
