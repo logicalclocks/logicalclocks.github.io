@@ -201,9 +201,7 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
-| <nobr>`conf['hopsfsMountConfig']['memory']`</nobr> | int | Memory limit in MB of the `/hopsfs` mount container. Not set: the cluster default. At least `512` | `null` |
-| <nobr>`conf['hopsfsMountConfig']['cores']`</nobr> | float | CPU cores requested for the `/hopsfs` mount container. Not set: the cluster default | `null` |
-| <nobr>`conf['hopsfsMountConfig']['namenodeConnections']`</nobr> | int | Connections from the `/hopsfs` mount to the namenode, `1` to `32`. Not set: the cluster default | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container. Each key is optional and falls back to the cluster default: `memory` (int, MB, `512` to `1048576`), `cores` (float, CPU request, `0.001` to `64` and not above the cluster's mount CPU limit when one is set) and `namenodeConnections` (int, `1` to `32`). The key is absent until set, so assign the whole dict, for example `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 
 ## Accessing project data
 
