@@ -128,6 +128,11 @@ Runtime environment and Additional files required for the Ray job can also be pr
 - `Additional files`: List of other files required for the Ray job.
   These files will be placed in `/srv/hops/ray/job`.
 
+- `HopsFS mount`: Memory (MB), cores, namenode connections and disk (GB) of the container that serves `/hopsfs` in the head and in every worker.
+  The mount stages writes to `/hopsfs` on its local disk, which has no limit when the disk field is empty.
+  The other fields show the cluster defaults and may need tuning when the job reads large datasets or does many concurrent reads or writes on `/hopsfs`.
+  The settings apply only when HopsFS is mounted in the Ray containers.
+
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/jobs/ray_runtime_env_and_additional_files.png" alt="Runtime
@@ -257,6 +262,7 @@ The following table describes the job configuration parameters for a RAY job.
 | <nobr>`conf['workerGpus']`</nobr> | int | Number of GPUs to be allocated for each Ray worker process | `0` |
 | <nobr>`conf['driverDiskGb']`</nobr> | int | Local disk limit of the Ray head in GB, `1` to `16384`. Not set: no limit | `null` |
 | <nobr>`conf['workerDiskGb']`</nobr> | int | Local disk limit of each Ray worker in GB, `1` to `16384`. Not set: no limit | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container in the head and in every worker: `memory` (int, memory limit in MB, `512` to `1048576`), `cores` (float, CPU request, `0.001` to `64` and not above the cluster's mount CPU limit when one is set), `namenodeConnections` (int, `1` to `32`) and `diskGb` (int, local disk limit in GB, `1` to `16384`). Each key is optional: an unset `diskGb` means no limit, and the others fall back to the cluster default. `get_configuration` returns the key only when the project's default configuration sets it, so assign the whole dict, for example `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 | <nobr>`conf['workerMinInstances']`</nobr> | int | Minimum number of Ray workers | `1` |
 | <nobr>`conf['workerMaxInstances']`</nobr> | int | Maximum number of Ray workers | `1` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"RAY"` |
