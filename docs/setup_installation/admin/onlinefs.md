@@ -88,7 +88,7 @@ The chart mounts the Hopsworks certificates under `/certs`.
 
 Hopsworks stores the connection encrypted in its database with the master encryption password, and re-encrypts it when that password changes.
 A first connection saved while a master encryption password change is running can stay encrypted with the old password.
-OnlineFS then cannot fetch its settings, does not consume, and the [status][onlinefs-status] shows `CONNECTION_UNREADABLE`.
+An OnlineFS pod that starts then cannot fetch its settings and does not consume, and the [status][onlinefs-status] shows `CONNECTION_UNREADABLE`.
 
 <figure>
   <img src="../../../assets/images/admin/onlinefs/connection-unreadable.png" alt="The OnlineFS status card with the settings state Connection unreadable and an explanation of the recovery" />
@@ -254,7 +254,7 @@ The status shows the state of the OnlineFS Deployment, its desired, ready, updat
 | `PENDING` | Settings were saved or reset, or `Restart` was pressed, and the rollout has not completed yet. |
 | `FAILED` | The last restart stopped on an error, shown with the status. |
 | `NOT_FETCHED` | The pods were replaced, but none fetched the latest settings, because the OnlineFS image they run does not fetch settings from Hopsworks. |
-| `CONNECTION_UNREADABLE` | The pods were replaced, but cannot fetch the latest settings, because the saved Kafka connection does not decrypt with the current master encryption password. See [Credentials][onlinefs-kafka-credentials]. |
+| `CONNECTION_UNREADABLE` | The saved Kafka connection does not decrypt with the current master encryption password, so an OnlineFS pod that starts cannot fetch its settings. It takes precedence over the other states. See [Credentials][onlinefs-kafka-credentials]. |
 | `APPLIED` | The pods were replaced and fetched the latest settings. |
 
 `APPLIED` says nothing about whether OnlineFS reaches the Kafka cluster.
