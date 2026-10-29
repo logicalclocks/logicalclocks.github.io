@@ -40,13 +40,17 @@ configuration page and select `Ray`.
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
-- `Driver memory`: Number of cores to allocate for the Spark driver
+- `Driver memory`: Number of MBs to allocate for the Spark driver
 
-- `Driver virtual cores`: Number of MBs to allocate for the Spark driver
+- `Driver virtual cores`: Number of cores to allocate for the Spark driver
 
-- `Executor memory`: Number of cores to allocate for each Spark executor
+- `Executor memory`: Number of MBs to allocate for each Spark executor
 
-- `Executor virtual cores`: Number of MBs to allocate for each Spark executor
+- `Executor virtual cores`: Number of cores to allocate for each Spark executor
+
+- `Executor disk`: Local disk in GB each Spark executor may use.
+  Empty means no limit.
+  An executor that writes more is evicted.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
 
