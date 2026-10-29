@@ -96,6 +96,9 @@ There you can also set the following configuration settings for a `PYTHON` job.
 - `Environment variables`: Custom `KEY=VALUE` pairs that are set on the container for every
   execution of this job. Read them in your Python code with `os.environ["MY_KEY"]`. See
   [Environment variables](#environment-variables) below.
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs`.
+  They show the cluster defaults and may need tuning when the job reads large datasets or does many
+  concurrent reads or writes on `/hopsfs`.
 
 <p align="center">
   <figure>
@@ -198,6 +201,9 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
+| <nobr>`conf['hopsfsMountConfig']['memory']`</nobr> | int | Memory limit in MB of the `/hopsfs` mount container. Not set: the cluster default. At least `512` | `null` |
+| <nobr>`conf['hopsfsMountConfig']['cores']`</nobr> | float | CPU cores requested for the `/hopsfs` mount container. Not set: the cluster default | `null` |
+| <nobr>`conf['hopsfsMountConfig']['namenodeConnections']`</nobr> | int | Connections from the `/hopsfs` mount to the namenode, `1` to `32`. Not set: the cluster default | `null` |
 
 ## Accessing project data
 
