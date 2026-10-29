@@ -78,6 +78,9 @@ Users must pick an advertised tag only when they create a deployment or change i
 A deployment runs `<imageRegistry>/<image>:<deployment tag>`, so every tag that deployments use must exist in the configured repository.
 Keep the old tags in the repository when you change `imageRegistry` or `image`.
 
+Triton images cannot be pinned by digest in `global.imageDigests`: KServe does not change the tag of an image that carries a digest, so every deployment would run the pinned image whatever its tag.
+`helm upgrade` fails when `global.imageDigests` names a Triton image.
+
 ## Pull secret { #triton-pull-secret }
 
 A registry that requires credentials needs an image pull secret, for example an NVIDIA AI Enterprise image on `nvcr.io`, which takes an NGC API key.
