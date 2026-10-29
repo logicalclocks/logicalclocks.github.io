@@ -179,8 +179,10 @@ An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
 
 - **No step before `helm upgrade`.**
   The `strimzi-crd-upgrade` hook applies the Strimzi 1.3.0 CRDs before the operator is replaced.
-- **The brokers and controllers are replaced once**, for the new image.
-  A single-broker cluster is unavailable while its broker is replaced, and OnlineFS catches up afterwards.
+- **The brokers and controllers are replaced once**, by the new operator, for the new image.
+  The chart stops the outgoing operator before it starts the new one, through `kafka.strimzi-kafka-operator.deploymentStrategy`.
+  An outgoing 1.2.0 operator that kept running would replace a pod onto the 1.3.0 image without the configuration that image reads, and the pod would restart until the new operator took over, so keep that setting.
+  A single-broker cluster is unavailable while its broker is replaced, a single-controller cluster has no KRaft quorum while its controller is replaced, and OnlineFS catches up afterwards.
 - **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which `vendor_images.sh` lists.
 - **The operator deletes pods with background propagation during a rolling update.**
   Strimzi 1.3 turns its `UseBackgroundPodDeletion` feature gate on by default, so that CNI plugins which remove a pod's network endpoints when its object is deleted, such as Cilium, no longer cut a broker off before it has shut down.
