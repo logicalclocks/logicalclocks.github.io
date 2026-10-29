@@ -28,7 +28,7 @@ The release then replaces the operator with the Strimzi 1.x it ships and rolls t
   Helm's `--timeout` applies to each hook on its own: give it at least that budget plus room for the rest of the release.
   On timeout the hook fails rather than hangs, and re-running the upgrade resumes from wherever the operator got to.
 - **Broker pods are replaced about seven times**: during the migration, when the finalised cluster drops its ZooKeeper-era settings, and when the brokers move to Kafka 4.3.1.
-  The controller pods are replaced twice.
+  The controller pods are replaced three times after the migration creates them, the last time when they move to Kafka 4.3.1.
   Strimzi replaces pods rather than restarting containers, so `restartCount` stays 0 throughout; watch pod names and ages instead.
   A single-broker cluster is unavailable for the duration of each replacement, and OnlineFS catches up afterwards; clusters with a replication factor above 1 roll without interruption.
 - **ZooKeeper and the new controllers run side by side** until the migration is finalised.
@@ -40,7 +40,7 @@ The release then replaces the operator with the Strimzi 1.x it ships and rolls t
   Re-run the upgrade instead.
 - **One `helm upgrade` migrates the cluster and its CRDs.**
   The `strimzi-crd-upgrade` hook converts the resources still stored as `v1beta2` through the 0.51.0 CRDs, then applies the new operator's CRDs in the same upgrade, as described in [Strimzi CRDs][kafka4-strimzi-crds].
-- **ArgoCD needs one manual step**, and on a release with Strimzi 1.2 every Application needs an `ignoreDifferences` entry for the Kafka CRD, as described in [Under ArgoCD][kafka4-argocd].
+- **ArgoCD needs one manual step**, and on a release with Strimzi 1.2 an Application that shows the Kafka CRD OutOfSync needs an `ignoreDifferences` entry for it, as described in [Under ArgoCD][kafka4-argocd].
 
 ## Before you start { #kafka4-before-you-start }
 
@@ -177,9 +177,9 @@ The `strimzi-crd-upgrade` hook therefore stops the sync after the conversion, an
     Auto-sync does not retry a revision whose last attempt failed, so this sync is manual.
     It applies the new operator's CRDs, the operator and the `v1` resources, upgrades Kafka, and runs the PostSync hooks.
 
-5. **On a release with Strimzi 1.2, give the Application an `ignoreDifferences` entry for the Kafka CRD**, on a fresh install as much as on an upgrade.
+5. **On a release with Strimzi 1.2, if the Application shows the Kafka CRD OutOfSync, give it an `ignoreDifferences` entry for that CRD**, on a fresh install as much as on an upgrade.
     Upstream's 1.2.0 Kafka CRD declares an empty `properties: {}` map under `status.clusterSecurity`, and the apiserver drops an empty map when it stores a CRD, so the live object never matches the render.
-    Without the entry the Application never reaches Synced, and selfHeal re-applies that one CRD every five minutes.
+    Not every Application compares the two in a way that notices; one that does never reaches Synced without the entry, and selfHeal re-applies that one CRD every five minutes.
     The entry matches nothing on 5.1.x, so you can add it before the upgrade.
     Strimzi 1.3.0's Kafka CRD has no such map, so a release with Strimzi 1.3 does not need the entry, and it can stay because it matches nothing there either.
     `helm upgrade` is not affected.
