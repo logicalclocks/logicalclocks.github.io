@@ -21,8 +21,8 @@ from hopsworks_docs.scripts.shared.docs_root import _DOCS_ROOT
 
 HOOK = "scripts/releases_hook.py"
 WORKFLOW = "mkdocs-release.yml"
-# A branch build takes about 10 minutes; three stale branches fit the job's 120.
-RUN_DEADLINE = timedelta(minutes=30)
+# The job's 120 minutes, less room for the report; a branch build takes about 10.
+SYNC_TIME = timedelta(minutes=100)
 
 
 def _run(*args, binary=False):
@@ -94,11 +94,11 @@ def _stale(versions):
     ]
 
 
-def _dispatch(branch):
-    """Run the docs workflow of ``branch`` and wait for it.
+def _dispatch(branch, until):
+    """Run the docs workflow of ``branch`` and wait for it until ``until``.
 
-    Returns the finished run, or after ``RUN_DEADLINE`` a timed-out one, which keeps
-    running on GitHub, so the other branches are still rebuilt and reported.
+    Returns the finished run, or a timed-out one, which keeps running on GitHub, so
+    the sync still reports every version before the job's timeout.
     """
     started = datetime.now().astimezone() - timedelta(seconds=10)
     _run("gh", "workflow", "run", WORKFLOW, "--ref", branch)
@@ -126,7 +126,6 @@ def _dispatch(branch):
             break
     else:
         return {"conclusion": "not started", "url": ""}
-    deadline = datetime.now().astimezone() + RUN_DEADLINE
     while True:
         time.sleep(30)
         run = json.loads(
@@ -141,7 +140,7 @@ def _dispatch(branch):
         )
         if run["status"] == "completed":
             return run
-        if datetime.now().astimezone() > deadline:
+        if datetime.now().astimezone() > until:
             return {"conclusion": "timed out", "url": run["url"]}
 
 
@@ -157,12 +156,16 @@ def sync_release_notes(
     versions = _versions()
     stale = _stale(versions)
     if rebuild:
+        until = datetime.now().astimezone() + SYNC_TIME
         for branch, version in stale:
             # The main docs build deploys dev itself.
             if branch == "main":
                 continue
+            if datetime.now().astimezone() > until:
+                print(f"{version}: not rebuilt, out of time")
+                continue
             try:
-                run = _dispatch(branch)
+                run = _dispatch(branch, until)
             except subprocess.CalledProcessError as error:
                 print(f"{version}: rebuild failed: {error.stderr}", file=sys.stderr)
                 continue

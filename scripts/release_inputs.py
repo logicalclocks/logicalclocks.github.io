@@ -123,6 +123,7 @@ def _range(repo, old, new, same_line):
     return [(sha, subject) for sha, subject in commits if _key(subject) not in shipped]
 
 
+@cache
 def _released(tag):
     try:
         out = subprocess.run(
@@ -348,7 +349,8 @@ def _subtrees(keys, other):
     present = {parent for key in other for parent in _parents(key)}
     groups = {}
     for key in keys:
-        root = next(p for p in _parents(key) if p not in present)
+        # A value that is a leaf here and a map in ``other`` has every parent present.
+        root = next((p for p in _parents(key) if p not in present), key)
         groups.setdefault(root, []).append(key)
     return sorted(
         root
