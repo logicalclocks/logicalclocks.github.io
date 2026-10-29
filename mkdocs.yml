@@ -310,6 +310,7 @@ nav:
           - Dedicated Node Pools: setup_installation/admin/node_pools.md
           - KEDA Autoscaling: setup_installation/admin/keda.md
           - Envoy Gateway: setup_installation/admin/envoy_gateway.md
+          - Agent Router: setup_installation/admin/agent_router.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - OnlineFS Configuration: setup_installation/admin/onlinefs.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
