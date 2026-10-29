@@ -97,8 +97,8 @@ There you can also set the following configuration settings for a `PYTHON` job.
   execution of this job. Read them in your Python code with `os.environ["MY_KEY"]`. See
   [Environment variables](#environment-variables) below.
 - `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs`.
-  They show the cluster defaults and may need tuning when the job reads large datasets or does many
-  concurrent reads or writes on `/hopsfs`.
+  The fields show the cluster defaults and may need tuning when the job reads large datasets or does many concurrent reads or writes on `/hopsfs`.
+  If the project has a resource quota, the mount's memory and cores count towards it.
 
 <p align="center">
   <figure>
@@ -201,7 +201,7 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
-| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container. Each key is optional and falls back to the cluster default: `memory` (int, MB, `512` to `1048576`), `cores` (float, CPU request, `0.001` to `64` and not above the cluster's mount CPU limit when one is set) and `namenodeConnections` (int, `1` to `32`). The key is absent until set, so assign the whole dict, for example `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container. Each key is optional and falls back to the cluster default: `memory` (int, memory limit in MB, `512` to `1048576`), `cores` (float, CPU request, `0.001` to `64` and not above the cluster's mount CPU limit when one is set) and `namenodeConnections` (int, `1` to `32`). `get_configuration` returns the key only when the project's default configuration sets it, so assign the whole dict, for example `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 
 ## Accessing project data
 
