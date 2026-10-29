@@ -88,6 +88,11 @@ Runtime environment and Additional files required for the Ray job can also be pr
 - `Additional files`: List of other files required for the Ray job.
   These files will be placed in `/srv/hops/ray/job`.
 
+- `Ray cluster HopsFS mount`: Memory (MB), cores, namenode connections and disk (GB) of the container that serves `/hopsfs` in the Ray head and in every worker.
+  The mount stages writes to `/hopsfs` on its local disk, which has no limit when the disk field is empty.
+  The other fields show the cluster defaults and may need tuning when the notebook reads large datasets or does many concurrent reads or writes on `/hopsfs`.
+  The Jupyter server has its own HopsFS mount settings below the tabs, which do not apply to the Ray cluster.
+
 <p align="center">
   <figure>
     <img src="../../../../assets/images/guides/jobs/ray_runtime_env_and_additional_files.png" alt="Runtime
