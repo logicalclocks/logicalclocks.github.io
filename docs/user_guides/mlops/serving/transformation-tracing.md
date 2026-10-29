@@ -119,8 +119,8 @@ The response carries `activeUntil` and `expiredAt` in epoch milliseconds.
 
     - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
     - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
-        - <code class="doc-symbol doc-symbol-method"></code> [`set_tracing`][hsml.deployment.Deployment.set_tracing]
-        - <code class="doc-symbol doc-symbol-method"></code> [`delete_traces`][hsml.deployment.Deployment.delete_traces]
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsml.deployment.Deployment.set_tracing" optional><code>set_tracing</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsml.deployment.Deployment.delete_traces" optional><code>delete_traces</code></autoref>
         - <code class="doc-symbol doc-symbol-attribute"></code> [`tracing`][hsml.deployment.Deployment.tracing]
     - <code class="doc-symbol doc-symbol-class"></code> [`DeploymentTracingConfig`][hsml.deployment_tracing_config.DeploymentTracingConfig]
 
