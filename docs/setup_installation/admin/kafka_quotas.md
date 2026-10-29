@@ -67,7 +67,7 @@ That is usually what you want for the platform's own clients, such as OnlineFS a
 
 Optionally, set a default for the users without a quota under `quotas.kafka.*`.
 The Strimzi Cluster Operator writes and reconciles it as the default user quota, and a KafkaUser's own quota overrides it.
-Size it so that the platform's own clients still work: the default applies to internal users too, and this plugin has no way to exclude them, as [the Strimzi documentation](https://strimzi.io/docs/operators/1.2.0/configuring.html#type-QuotasPluginKafka-reference) warns.
+Size it so that the platform's own clients still work: the default applies to internal users too, and this plugin has no way to exclude them, as [the Strimzi documentation](https://strimzi.io/docs/operators/1.3.0/configuring.html#type-QuotasPluginKafka-reference) warns.
 
 ## Cluster-wide limits and the disk guard { #kafka-quotas-cluster-wide }
 
