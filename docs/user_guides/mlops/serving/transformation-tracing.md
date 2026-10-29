@@ -112,7 +112,7 @@ curl -X PUT \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/serving/$DEPLOYMENT_ID/tracing"
 ```
 
-A deployment created without tracing answers `400` with error code `240059`, as does a `samplingPercentage` outside 0 to 100 or a `durationDays` below 1.
+A deployment created without tracing answers `400` with error code `240062`, as does a `samplingPercentage` outside 0 to 100 or a `durationDays` below 1.
 The response carries `activeUntil` and `expiredAt` in epoch milliseconds.
 
 !!! api "API reference"
@@ -212,7 +212,7 @@ curl -X DELETE \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/otel/servings/$DEPLOYMENT_ID/traces?until=1793145600000&batchSize=1000"
 ```
 
-A `batchSize` outside 1 to 10000 answers `400` with error code `240061`.
+A `batchSize` outside 1 to 10000 answers `400` with error code `240064`.
 
 ## Overhead
 
