@@ -104,6 +104,10 @@ Resource allocation for the Spark driver and executors can be configured, also t
   Prefilled with 0.40.
   Clear the field to let Spark decide, which for a jar job is 0.10.
 
+- `Driver disk`: Local disk in GB the Spark driver may use.
+  Empty means no limit.
+  A driver that writes more is evicted and the job fails.
+
 - `Executor memory`: Number of MBs to allocate for each Spark executor
 
 - `Executor virtual cores`: Number of cores to allocate for each Spark executor
@@ -112,6 +116,10 @@ Resource allocation for the Spark driver and executors can be configured, also t
   Prefilled with 0.40.
   Clear the field to let Spark decide, which for a jar job is 0.10.
   Raise it when executors are OOMKilled.
+
+- `Executor disk`: Local disk in GB each Spark executor may use.
+  Empty means no limit.
+  An executor that writes more is evicted.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
   On a cluster that schedules jobs with Kueue, only static is allowed: a job with dynamic allocation is refused, and new jobs default to static ([Spark jobs and Kueue](../scheduling/kueue_details.md#spark-jobs)).
@@ -250,6 +258,8 @@ The following table describes the job configuration parameters for a SPARK job.
 | <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
 | <nobr>`conf['spark.driver.memoryOverheadFactor']`</nobr> | float | Fraction of the driver memory added to the driver pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
 | <nobr>`conf['spark.executor.memoryOverheadFactor']`</nobr> | float | Fraction of the executor memory added to each executor pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
+| <nobr>`conf['driverDiskGb']`</nobr> | int | Local disk limit of the driver in GB, `1` to `16384`. Not set: no limit | `null` |
+| <nobr>`conf['executorDiskGb']`</nobr> | int | Local disk limit of each executor in GB, `1` to `16384`. Not set: no limit | `null` |
 | <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors. Must be `false` on a cluster with Kueue | `true`, `false` with Kueue |
 | <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr> | int | Minimum number of executors with dynamic allocation | `1` |
 | <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr> | int | Maximum number of executors with dynamic allocation | `2` |

@@ -54,9 +54,15 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver GPUs`: Number of GPUs to allocate for the Driver
 
+- `Driver disk`: Local disk in GB the Driver may use.
+  Empty means no limit.
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
 - `Worker virtual cores`: Number of cores to allocate for each worker
+
+- `Worker disk`: Local disk in GB each worker may use.
+  Empty means no limit.
 
 - `Worker GPUs`: Number of GPUs to allocate for each worker
 

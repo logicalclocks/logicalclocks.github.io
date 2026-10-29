@@ -92,11 +92,19 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver GPUs`: Number of GPUs to allocate for the Driver
 
+- `Driver disk`: Local disk in GB the Driver may use.
+  Empty means no limit.
+  A Driver that writes more is evicted and the job fails.
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
 - `Worker virtual cores`: Number of cores to allocate for each worker
 
 - `Worker GPUs`: Number of GPUs to allocate for each worker
+
+- `Worker disk`: Local disk in GB each worker may use.
+  Empty means no limit.
+  A worker that writes more is evicted.
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -247,6 +255,8 @@ The following table describes the job configuration parameters for a RAY job.
 | <nobr>`conf['workerCores']`</nobr> | float | Number of CPU cores to be allocated for each Ray worker process | `1.0` |
 | <nobr>`conf['workerMemory']`</nobr> | int | Number of MBs to be allocated for each Ray worker process | `4096` |
 | <nobr>`conf['workerGpus']`</nobr> | int | Number of GPUs to be allocated for each Ray worker process | `0` |
+| <nobr>`conf['driverDiskGb']`</nobr> | int | Local disk limit of the Ray head in GB, `1` to `16384`. Not set: no limit | `null` |
+| <nobr>`conf['workerDiskGb']`</nobr> | int | Local disk limit of each Ray worker in GB, `1` to `16384`. Not set: no limit | `null` |
 | <nobr>`conf['workerMinInstances']`</nobr> | int | Minimum number of Ray workers | `1` |
 | <nobr>`conf['workerMaxInstances']`</nobr> | int | Maximum number of Ray workers | `1` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"RAY"` |
