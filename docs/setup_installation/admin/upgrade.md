@@ -8,6 +8,8 @@ description: What to do before and during each upgrade of a self-managed Hopswor
 
 Upgrade a self-managed Hopsworks cluster one minor release at a time, in order.
 Skipping a minor release is not supported, and for OpenSearch it fails at startup.
+Upgrade from the latest patch release of your current minor release to the latest patch release of the next one.
+Patch releases carry fixes for the upgrade itself, and these notes are written for the latest ones: the move to OpenSearch 3.8, for example, needs 5.2.1 or later.
 This page covers upgrades from 5.0.x and later.
 The commands assume Hopsworks is installed in the `hopsworks` namespace.
 
