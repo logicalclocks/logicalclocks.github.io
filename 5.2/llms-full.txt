@@ -39361,7 +39361,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 ## Common values { #helm-values-common }
 
@@ -39394,7 +39394,7 @@ _Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 222 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 975 |
+| [`hopsworks`][helm-values-hopsworks] |  | 976 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |
@@ -39440,7 +39440,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 ## General { #helm-values-global-general }
 
@@ -40545,7 +40545,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -41411,7 +41411,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -41693,7 +41693,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -41881,7 +41881,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -42214,7 +42214,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -42665,7 +42665,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43163,7 +43163,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43581,7 +43581,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44725,7 +44725,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -44995,7 +44995,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47774,6 +47774,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         pypi_indexer_timer_interval: 1d
         pypi_rest_endpoint: https://pypi.org/pypi/{package}/json
         pypi_simple_endpoint: https://pypi.org/simple/
+        python_app_envoy_image_version: v1.38.0
         python_job_cores: '1.0'
         python_job_gpus: '0'
         python_job_kube_waiting_timeout_ms: '300000'
@@ -49093,6 +49094,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.pypi_simple_endpoint` <a class="headerlink" href="#helm.hopsworks.variables.pypi_simple_endpoint" title="Permanent link">#</a> { #helm.hopsworks.variables.pypi_simple_endpoint }
 :   Type `string`, default `"https://pypi.org/simple/"`.
 
+`hopsworks.variables.python_app_envoy_image_version` <a class="headerlink" href="#helm.hopsworks.variables.python_app_envoy_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.python_app_envoy_image_version }
+:   Type `string`, default `"v1.38.0"`.
+    Tag of the Envoy sidecar in every Python app pod. The backend's `python_app_envoy_image` is `envoyproxy/envoy` at this tag under `global._hopsworks.imageRegistry`, so an air-gapped install pulls it from its own registry. Keep it equal to the `envoyproxy/envoy` tag in docker-images external.Jenkinsfile, which mirrors it.
+
 `hopsworks.variables.python_job_cores` <a class="headerlink" href="#helm.hopsworks.variables.python_job_cores" title="Permanent link">#</a> { #helm.hopsworks.variables.python_job_cores }
 :   Type `string`, default `"1.0"`.
 
@@ -49901,7 +49906,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -50308,7 +50313,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -50694,7 +50699,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -51177,7 +51182,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -51312,7 +51317,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -52182,7 +52187,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -53756,7 +53761,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -54011,7 +54016,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -54982,7 +54987,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Always deployed.
 
@@ -55492,7 +55497,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55652,7 +55657,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -55799,7 +55804,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Always deployed.
 
@@ -58717,7 +58722,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -60302,7 +60307,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -61385,7 +61390,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -61693,7 +61698,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

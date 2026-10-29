@@ -4,7 +4,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Always deployed.
 

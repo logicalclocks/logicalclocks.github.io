@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.2` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2783,6 +2783,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         pypi_indexer_timer_interval: 1d
         pypi_rest_endpoint: https://pypi.org/pypi/{package}/json
         pypi_simple_endpoint: https://pypi.org/simple/
+        python_app_envoy_image_version: v1.38.0
         python_job_cores: '1.0'
         python_job_gpus: '0'
         python_job_kube_waiting_timeout_ms: '300000'
@@ -4101,6 +4102,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.pypi_simple_endpoint` <a class="headerlink" href="#helm.hopsworks.variables.pypi_simple_endpoint" title="Permanent link">#</a> { #helm.hopsworks.variables.pypi_simple_endpoint }
 :   Type `string`, default `"https://pypi.org/simple/"`.
+
+`hopsworks.variables.python_app_envoy_image_version` <a class="headerlink" href="#helm.hopsworks.variables.python_app_envoy_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.python_app_envoy_image_version }
+:   Type `string`, default `"v1.38.0"`.
+    Tag of the Envoy sidecar in every Python app pod. The backend's `python_app_envoy_image` is `envoyproxy/envoy` at this tag under `global._hopsworks.imageRegistry`, so an air-gapped install pulls it from its own registry. Keep it equal to the `envoyproxy/envoy` tag in docker-images external.Jenkinsfile, which mirrors it.
 
 `hopsworks.variables.python_job_cores` <a class="headerlink" href="#helm.hopsworks.variables.python_job_cores" title="Permanent link">#</a> { #helm.hopsworks.variables.python_job_cores }
 :   Type `string`, default `"1.0"`.
