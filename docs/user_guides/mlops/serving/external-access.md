@@ -2,7 +2,7 @@
 description: Documentation on how to configure external access to a model deployment
 ---
 
-# How To Configure External Access To A Model Deployment
+# How To Configure External Access To A Model Deployment { #serving-external-access }
 
 ## Introduction
 
@@ -131,6 +131,12 @@ For detailed instructions on constructing requests and handling authentication, 
     <figcaption>Deployment endpoint</figcaption>
   </figure>
 </p>
+
+## LLM deployments and the project endpoint
+
+On a cluster where the [Agent Router][agent-router] is enabled, the groups granted on an LLM deployment also let external users call it through the project endpoint, `<inference endpoint>/v1/<project>/v1/chat/completions`, by setting the deployment name as the `model` of the request.
+Users granted on a deployment can use only that model there, and cannot list the project's models.
+A Data Owner can turn the project endpoint off for the project or for one deployment, which leaves the deployment's own path as it is.
 
 ## Refreshing External User Groups
 
