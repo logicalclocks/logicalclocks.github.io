@@ -304,6 +304,19 @@ def _git(repo, *args):
 
 
 @cache
+def _remote(repo):
+    """The remote of ``repo`` that points at logicalclocks, else ``origin``.
+
+    ``upstream`` in a project of the workspaces repo, whose ``origin`` is the user's fork.
+    """
+    for line in _git(repo, "remote", "-v").splitlines():
+        name, url = line.split()[:2]
+        if re.search(r"[/:]logicalclocks/[^/]+$", url):
+            return name
+    return "origin"
+
+
+@cache
 def _load(repo, tag, path):
     """The YAML at ``tag:path`` with every scalar as a string, or None."""
     try:

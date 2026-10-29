@@ -14,12 +14,15 @@ from datetime import datetime, timedelta
 from typing import Annotated
 
 import typer
+from hopsworks_docs.scripts.release_components import _remote
 from hopsworks_docs.scripts.releases_hook import FROM_MAIN, digest
 from hopsworks_docs.scripts.shared.docs_root import _DOCS_ROOT
 
 
 HOOK = "scripts/releases_hook.py"
 WORKFLOW = "mkdocs-release.yml"
+# A branch build takes about 10 minutes; three stale branches fit the job's 120.
+RUN_DEADLINE = timedelta(minutes=30)
 
 
 def _run(*args, binary=False):
@@ -39,19 +42,21 @@ def _fingerprint_at(ref):
 
 
 def _accepted():
-    """Fingerprints of main from HEAD to the latest origin/main."""
-    later = _run("git", "rev-list", "HEAD..origin/main", "--", *FROM_MAIN).split()
+    """Fingerprints of main from HEAD to the latest main of the logicalclocks remote."""
+    main = f"{_remote(_DOCS_ROOT)}/main"
+    later = _run("git", "rev-list", f"HEAD..{main}", "--", *FROM_MAIN).split()
     return {_fingerprint_at(ref) for ref in ["HEAD", *later]}
 
 
 def _versions():
     """(branch, docs version) of main and of every release branch with the hook."""
     versions = [("main", "dev")]
+    remote = _remote(_DOCS_ROOT)
     refs = _run(
         "git",
         "for-each-ref",
         "--format=%(refname:short)",
-        "refs/remotes/origin/branch-*",
+        f"refs/remotes/{remote}/branch-*",
     ).split()
     for ref in refs:
         has_hook = subprocess.run(
@@ -60,14 +65,18 @@ def _versions():
             capture_output=True,
         )
         if has_hook.returncode == 0:
-            branch = ref.removeprefix("origin/")
+            branch = ref.removeprefix(f"{remote}/")
             versions.append((branch, branch.removeprefix("branch-")))
     return versions
 
 
 def _deployed(version):
     shown = subprocess.run(
-        ["git", "show", f"origin/gh-pages:{version}/releases/fingerprint.txt"],
+        [
+            "git",
+            "show",
+            f"{_remote(_DOCS_ROOT)}/gh-pages:{version}/releases/fingerprint.txt",
+        ],
         cwd=_DOCS_ROOT,
         capture_output=True,
         text=True,
@@ -76,7 +85,7 @@ def _deployed(version):
 
 
 def _stale(versions):
-    _run("git", "fetch", "--quiet", "origin")
+    _run("git", "fetch", "--quiet", _remote(_DOCS_ROOT))
     accepted = _accepted()
     return [
         (branch, version)
@@ -86,7 +95,11 @@ def _stale(versions):
 
 
 def _dispatch(branch):
-    """Run the docs workflow of ``branch`` and wait for it; return the finished run."""
+    """Run the docs workflow of ``branch`` and wait for it.
+
+    Returns the finished run, or after ``RUN_DEADLINE`` a timed-out one, which keeps
+    running on GitHub, so the other branches are still rebuilt and reported.
+    """
     started = datetime.now().astimezone() - timedelta(seconds=10)
     _run("gh", "workflow", "run", WORKFLOW, "--ref", branch)
     for _ in range(30):
@@ -113,6 +126,7 @@ def _dispatch(branch):
             break
     else:
         return {"conclusion": "not started", "url": ""}
+    deadline = datetime.now().astimezone() + RUN_DEADLINE
     while True:
         time.sleep(30)
         run = json.loads(
@@ -127,6 +141,8 @@ def _dispatch(branch):
         )
         if run["status"] == "completed":
             return run
+        if datetime.now().astimezone() > deadline:
+            return {"conclusion": "timed out", "url": run["url"]}
 
 
 def sync_release_notes(

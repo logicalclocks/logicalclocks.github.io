@@ -14,6 +14,7 @@
   var ALLOWED = "a, p, br, hr, ul, ol, li, strong, em, b, i, del, code, tt, pre, kbd, " +
     "sub, sup, blockquote, table, thead, tbody, tr, th, td, div, span, details, summary, " +
     "h1, h2, h3, h4, h5, h6";
+  var DROP = "script, style, template, noscript, iframe, object, embed, svg, math, img";
 
   // version -> { html, url, at } of its release, or { at } when fetching it failed
   function cached() {
@@ -78,11 +79,13 @@
 
   // GitHub sanitizes body_html; this also keeps only plain text markup and web
   // links, and turns headings into bold paragraphs so the notes don't enter the
-  // page's own outline.
+  // page's own outline. Any other element, such as <g-emoji>, gives way to its
+  // content, except DROP ones, which go with it.
   function notes(html) {
     var doc = new DOMParser().parseFromString(html, "text/html");
     doc.body.querySelectorAll("*").forEach(function (el) {
-      if (!el.matches(ALLOWED)) return el.remove();
+      if (el.matches(DROP)) return el.remove();
+      if (!el.matches(ALLOWED)) return el.replaceWith.apply(el, Array.prototype.slice.call(el.childNodes));
       Array.prototype.slice.call(el.attributes).forEach(function (attr) {
         if (!/^(href|colspan|rowspan)$/.test(attr.name)) el.removeAttribute(attr.name);
       });

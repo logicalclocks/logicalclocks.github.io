@@ -63,7 +63,8 @@ uv run --no-sync hopsworks-docs release-inputs <X.Y.Z> --sources $S > .release-n
 ```
 
 `.release-notes/` is gitignored and lives in the repo, not in a temporary directory, so the work survives the session.
-Read `inputs.md` in full. It gives:
+Read `inputs.md` in full.
+It gives:
 
 - the release it compares with, the front matter (release date, Python client), and the application version, which sets the `hopsworks-ee` and `hopsworks-front` ranges but isn't shown;
 - every commit of the chart, of `rondb-helm` when the RonDB chart moved, and of `hopsworks-ee` and `hopsworks-front` between the `Release X.Y.Z` commits of the two application versions;

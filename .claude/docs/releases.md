@@ -24,7 +24,8 @@ After each successful docs build of `main`, `mkdocs-release-notes.yml` runs `hop
 A branch whose rebuild can't be started is reported and left stale, and the others are still rebuilt; a cancelled rebuild is not retried.
 `mkdocs-release-notes.yml` and `mkdocs-release.yml` set `queue: max` on their `concurrency:`, so a new run waits behind a pending one instead of replacing it.
 A red run means a version shows outdated release pages, usually because its docs build is broken; fix the build and run the workflow again.
-`uv run hopsworks-docs sync-release-notes` without `--rebuild` fetches `origin` and only reports.
+`uv run hopsworks-docs sync-release-notes` without `--rebuild` fetches the remote that points at `logicalclocks` and only reports.
+A rebuild still running after 30 minutes is reported as timed out, and the next branch is rebuilt.
 Run it on `main`: it accepts the release pages of `HEAD` and of later `main` commits, so on a branch that changed them it reports every version stale.
 
 To write the notes of a release, run the `/release-notes X.Y.Z` skill (`.claude/skills/release-notes/`).

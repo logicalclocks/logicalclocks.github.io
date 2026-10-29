@@ -30,6 +30,7 @@ from hopsworks_docs.scripts.release_components import (
     _git,
     _load,
     _release,
+    _remote,
     _require,
     _table,
     _uncovered,
@@ -81,19 +82,6 @@ GUIDE_URL = "https://docs.hopsworks.ai/{}/setup_installation/admin/upgrade/#{}"
 # Only headings that set their anchor are seen, so every section heading but Introduction sets one.
 GUIDE_HEADING = re.compile(r"^(##+) (.+?) \{ #([\w-]+) \}$", re.MULTILINE)
 RELEASE_BRANCH = re.compile(r"^[^/]+/branch-(\d+)\.(\d+)$")
-
-
-@cache
-def _remote(repo):
-    """The remote of ``repo`` that points at logicalclocks, else ``origin``.
-
-    ``upstream`` in a project of the workspaces repo, whose ``origin`` is the user's fork.
-    """
-    for line in _git(repo, "remote", "-v").splitlines():
-        name, url = line.split()[:2]
-        if re.search(r"[/:]logicalclocks/[^/]+$", url):
-            return name
-    return "origin"
 
 
 def _tags(helm):
