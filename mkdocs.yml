@@ -87,6 +87,7 @@ nav:
                   - Hopsworks: user_guides/fs/data_source/creation/hopsworks.md
                   - Gmail: user_guides/fs/data_source/creation/gmail.md
                   - Outlook: user_guides/fs/data_source/creation/outlook.md
+                  - SharePoint: user_guides/fs/data_source/creation/sharepoint.md
               - Usage: user_guides/fs/data_source/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
@@ -277,13 +278,13 @@ nav:
       - Agents:
           - user_guides/agents/index.md
           - Agent Tasks: user_guides/agents/tasks/index.md
-          - Agent Deployments: user_guides/agents/deployments/index.md
-          - Chat Contract: user_guides/agents/chat_contract/index.md
-          - Agent Memory: user_guides/agents/memory/index.md
-          - Feedback: user_guides/agents/feedback/index.md
-          - Evaluation: user_guides/agents/evaluation/index.md
-          - Monitoring: user_guides/agents/monitoring/index.md
-          - Failure Analysis: user_guides/agents/failure_analysis/index.md
+          - Agent Deployments:
+              - user_guides/agents/deployments/index.md
+              - Agent Memory: user_guides/agents/memory/index.md
+              - Feedback: user_guides/agents/feedback/index.md
+              - Evaluation: user_guides/agents/evaluation/index.md
+              - Monitoring: user_guides/agents/monitoring/index.md
+              - Failure Analysis: user_guides/agents/failure_analysis/index.md
       - Migration 3.X to 4.0: user_guides/migration/40_migration.md
   - Administration:
       - setup_installation/index.md
@@ -310,6 +311,7 @@ nav:
           - HopsFS CSI Driver: setup_installation/admin/hopsfs_csi.md
           - Dedicated Node Pools: setup_installation/admin/node_pools.md
           - KEDA Autoscaling: setup_installation/admin/keda.md
+          - Envoy Gateway: setup_installation/admin/envoy_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
           - Upgrades:
@@ -317,6 +319,7 @@ nav:
               - Upgrading with Helm 4: setup_installation/admin/helm4.md
               - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
               - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
+              - Kueue outside the Hopsworks namespace: setup_installation/admin/kueue_external.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
@@ -359,6 +362,7 @@ nav:
           - hopsfs: setup_installation/common/helm_chart_values/hopsfs.md
           - hopsfs-csi: setup_installation/common/helm_chart_values/hopsfs-csi.md
           - hopsworks: setup_installation/common/helm_chart_values/hopsworks.md
+          - hw-envoy-gateway: setup_installation/common/helm_chart_values/hw-envoy-gateway.md
           - hw-keda: setup_installation/common/helm_chart_values/hw-keda.md
           - hw-kueue: setup_installation/common/helm_chart_values/hw-kueue.md
           - hw-kyverno: setup_installation/common/helm_chart_values/hw-kyverno.md
@@ -476,6 +480,7 @@ plugins:
         user_guides/integrations/flink.md: user_guides/integrations/index.md
         tutorials/index.md: index.md
         setup_installation/common/arrow_flight_duckdb.md: user_guides/fs/feature_view/training-data.md
+        user_guides/agents/chat_contract/index.md: user_guides/agents/deployments/index.md#the-chat-contract
   - hopsworks-apigen:
       modules:
         - hopsworks_common
