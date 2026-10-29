@@ -311,6 +311,7 @@ nav:
           - KEDA Autoscaling: setup_installation/admin/keda.md
           - Envoy Gateway: setup_installation/admin/envoy_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
+          - OnlineFS Configuration: setup_installation/admin/onlinefs.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
           - Upgrades:
               - Upgrading Hopsworks: setup_installation/admin/upgrade.md
