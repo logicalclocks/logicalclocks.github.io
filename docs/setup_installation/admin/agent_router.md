@@ -91,7 +91,8 @@ Members and external users get all three.
 The rate limits, the traces, the access logs and the usage metrics are keyed on them.
 Clients cannot set them: the AI Gateway's ClientTrafficPolicy removes them from the incoming request before the check runs, so a client that sends them has them dropped, and only the authenticator's values reach the backend.
 The id comes from the label `serving.hops.works/project-id` of the ConfigMap `<namespace>-project-teams`, which the Hopsworks backend writes when it creates the ConfigMap and on every rebuild of a project's routes.
-When the label is missing, the id header is empty, the authenticator logs a warning and the request is still allowed, so the request is not limited, traced or logged per project until the next rebuild writes the label.
+When the label is missing, the id header is empty, the authenticator logs a warning and the request is still allowed, so the request is still limited, because the per-user rule keys on `x-hopsworks-user`, the per-deployment rule on the model and the project rule is per project.
+What is lost is that request's span, which the collector drops without a project id, and its access-log line, which Logstash routes only for a numeric id, until the next rebuild writes the label.
 
 ## Rate limits and token quotas { #agent-router-rate-limits }
 
@@ -109,13 +110,16 @@ There are two places to set them:
 
 - The cluster default is the Hopsworks variable `project_endpoint_rate_limits`, a comma-separated list of `SCOPE:KIND=VALUE/UNIT`, for example `PROJECT:TOKENS=1000000/HOUR,USER:REQUESTS=60/MINUTE`.
   When it is empty or unset, there are no limits.
-  An administrator edits it in the admin UI under quotas and rate limits.
-- An override per project is set on the admin page of that project, with the same scopes, kinds and units.
-  A value of `-1` makes the scope unlimited for that project, and removing the override makes the cluster default apply again.
+  The variable is seeded empty, and an upgrade keeps the value an administrator set.
+  An administrator edits it in the admin UI under Settings, Quotas & rate limits, in the Project endpoint section.
+  A change reaches the existing projects at the backend's next full pass, about 10 minutes later.
+- An override per project is set on the admin page that edits the project, under Project endpoint limits, with the same scopes, kinds and units, and applies immediately.
+  A value is from 1 to 4294967295, and `-1` makes the scope unlimited for that project.
+  Removing the override makes the cluster default apply again.
   The same limits are available as `projectEndpointLimits` of `projectQuotas` in `PUT /admin/projects/{id}`, and `GET /admin/projects/{id}?expand=quotas` returns the effective ones with a `source` of `DEFAULT` or `PROJECT`.
 
 The backend turns the effective limits into one BackendTrafficPolicy per project, `<namespace>-aiproject-ratelimit`, in the release namespace, and updates it when a limit or a deployment changes, with no restart.
-Project members see the limits of their project, read-only, in the project settings.
+Project members see the limits of their project, read-only, in the quotas of the project settings and on the Project endpoint card.
 
 A request over a limit gets `429` with the `x-ratelimit-*` headers.
 A token limit charges the request after the response: the sidecar reads the token counts from the response, and Envoy subtracts them from the bucket then.
@@ -129,15 +133,16 @@ The counters live in Redis memory only, so they reset when the Redis pod restart
 ## Tracing { #agent-router-tracing }
 
 The ext_proc sidecar writes an OpenTelemetry span for every request.
-The Agent Router controller adds `hopsworks.user`, `hopsworks.project.id` and `session.id`, from `x-hopsworks-user`, `x-hopsworks-project-id` and `agent-session-id`, to every span, and the sidecar sends them over OTLP/HTTP to the collector `agent-router-otlp`.
+The Agent Router controller, with the arguments under `hw-envoy-gateway.aiGateway.requestHeaderAttributes.span` and `.metrics`, adds `hopsworks.user`, `hopsworks.project.id` and `session.id`, from `x-hopsworks-user`, `x-hopsworks-project-id` and `agent-session-id`, to every span, and the sidecar sends them over OTLP/HTTP to the collector `agent-router-otlp`.
 The collector writes them to the table `agent_router.spans` in RonDB, through the `hopsworksroot` credential from the Secret `mysql-users-secrets`.
 It drops a span that has no `hopsworks.project.id`, and counts the drops in its log, because a span of no project cannot be shown to anyone.
 
-Two values of `kserve.envoyGateway.aiGateway.tracing` control it:
+Two values control it:
 
-- `ttlSeconds`, 604800 (seven days) by default, is the age after which RonDB's native TTL deletes a span row, from the column `created_at`.
+- `hopsworks.agentRouter.tracing.ttlSeconds`, 604800 (seven days) by default, is the age after which RonDB's native TTL deletes a span row, from the column `created_at`.
   The table is created by a Job when `aiGateway.enabled` is on, and the Job runs again when the value changes, with `ALTER TABLE ... ALGORITHM=INPLACE`.
-- `captureContent`, `false` by default, decides whether prompts and responses are stored.
+  The collector and the table Job are sized under `hopsworks.agentRouter.tracing.collector` and `.tableJob`.
+- `kserve.envoyGateway.aiGateway.tracing.captureContent`, `false` by default, decides whether prompts and responses are stored.
   While it is false, the sidecar gets `OPENINFERENCE_HIDE_INPUTS`, `OPENINFERENCE_HIDE_OUTPUTS` and `OPENINFERENCE_HIDE_EMBEDDINGS_TEXT` set to `true`, so the message contents, the output text and the embedding inputs are left out of the spans, and the `messages` column is empty.
   Model name, token counts, status, timing, user and session stay, because they are what usage and debugging need.
   Prompts carry user data, so turn it on only when the users of the cluster have agreed to the retention.
@@ -146,10 +151,10 @@ Two audiences read the table:
 
 - Administrators, in Grafana: the MySQL datasource `agent-router-traces` and the dashboard Agent Router traces, in the AgentRouter folder, list the spans of every project, filtered by project, deployment, user and time.
   The Hopsworks Grafana proxy refuses these queries to anyone who is not an administrator, because the table holds every project's spans.
-- Project members with the role Data Owner or Data Scientist, in the project settings under Agent Router traces, which shows only their project's traces, with a filter on the deployment.
+- Project members with the role Data Owner or Data Scientist, in Project settings, Agent Router traces, which shows only their project's traces, with a filter on the deployment.
   The backend adds the project's id to every query, so a member cannot read another project's spans.
 
-Turning the feature off leaves the table and its rows in RonDB, where the TTL keeps deleting them.
+Turning the feature off leaves the table `agent_router.spans` and its rows in RonDB, where the TTL keeps deleting them.
 Drop `agent_router.spans` by hand when it is no longer wanted.
 
 ## Access logs { #agent-router-access-logs }
@@ -175,7 +180,7 @@ The access logs carry the same user, model and token counts per request, for aud
 - Any member of the project can reach every one of its deployments through the endpoint, unless a Data Owner turns the endpoint off for the project or for a deployment, as described under [Access to the project endpoint][agent-router-access].
 - External providers, MCP and `InferencePool` backends are not part of it.
 - The span table relies on RonDB's native TTL, which deletes rows by the age of `created_at`, and it has `TEXT` columns for messages, attributes and events, so the rows of one span can be large when `captureContent` is on, and a shorter `ttlSeconds` bounds the table's size.
-- Enabling the feature, or changing `captureContent` or the tracing endpoint, changes the GatewayConfig, which rolls the AI Gateway's Envoy pods once, for the reason given under [What the chart installs][agent-router-components].
+- Enabling the feature, or changing `captureContent` or the tracing endpoint, changes the GatewayConfig environment, which rolls the AI Gateway's Envoy pods once, for the reason given under [What the chart installs][agent-router-components].
 - OpenShift: `values.openshift.yaml` leaves both values off, like Envoy Gateway itself.
 - The controller logs `Failed to add finalizer to object` once per ReferenceGrant it sees, the per-project grants of the Hopsworks Gateway included.
   The chart's Role refuses that write on purpose: a finalizer of the controller on those grants would block their deletion once the controller is gone, and the AI routes and backends never cross a namespace, so the controller needs nothing from the grants.
