@@ -36431,6 +36431,12 @@ hopsworks:
 Without KEDA, Standard-mode deployments fall back to KServe's own Horizontal Pod Autoscaler on CPU and memory, without the engine metrics and without scale to zero.
 The values are listed in [KEDA values][helm-values-hw-keda].
 
+## Satellite clusters { #keda-satellite-clusters }
+
+Set `kube_keda_installed` to `false` on a satellite cluster, as shown above.
+The chart installs KEDA whenever this value is `true`, which is the default, also when `global._hopsworks.full_platform` is `false`.
+KEDA is cluster-wide and the central cluster installs it, so a satellite's own KEDA makes the central cluster's upgrade to 5.2 fail on the `keda-operator` ClusterRole.
+
 ## What the chart installs { #keda-components }
 
 - KEDA 2.21: the operator, the metrics API server and the admission webhooks, in the Hopsworks namespace.
@@ -37329,6 +37335,8 @@ Source: https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade/
 
 Upgrade a self-managed Hopsworks cluster one minor release at a time, in order.
 Skipping a minor release is not supported, and for OpenSearch it fails at startup.
+Upgrade from the latest patch release of your current minor release to the latest patch release of the next one.
+Patch releases carry fixes for the upgrade itself, and these notes are written for the latest ones: the move to OpenSearch 3.8, for example, needs 5.2.1 or later.
 This page covers upgrades from 5.0.x and later.
 The commands assume Hopsworks is installed in the `hopsworks` namespace.
 
@@ -37343,7 +37351,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 1. Take a backup and check that it completed, as described in [Disaster Recovery][disaster-recovery].
 2. Pass `helm upgrade --timeout` long enough for the hooks of that upgrade.
    The upgrade from 5.1.x to 5.2.x has two that can run for hours: the [OpenSearch index pass][opensearch-set-the-timeout] and the [Kafka migration][kafka4-kraft-upgrade].
-3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start].
+3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start], and leave [KEDA][keda-satellite-clusters] out of them.
 4. If this is the first upgrade of the release with Helm 4, read [Upgrading with Helm 4][upgrading-with-helm-4] first.
 
 ## 5.0.x to 5.1.x { #upgrade-50-to-51 }
@@ -37370,6 +37378,25 @@ A release installed by Helm 3 stays client-side under Helm 4 unless you pass `--
 An upgrade from 5.0 to 5.1 also conflicted on the `trino-password-file` and `trino-groups-file` Secrets, whose fields the backend owns.
 Running it again with `--force-conflicts` overwrites the Trino user database that the backend wrote (`password.db` and `group.db`), so check the Trino users afterwards.
 `--force-conflicts` applies to the whole release, as [The RSS ConfigMap][helm4-rss-configmap] explains.
+
+### Satellite clusters on 5.0 { #upgrade-50-to-51-satellites }
+
+Upgrade the central cluster first, as described in [Satellite clusters][opensearch-satellite-clusters].
+Until a satellite is on 5.1, the central cluster's 5.1 Python client writes to the satellite's 5.0 online store and searches its OpenSearch 1.3.
+The following restrictions apply during this window, also for workloads that use no 5.1 feature:
+
+- Similarity search fails with `[knn] unknown token [START_OBJECT] after [filter]` on an embedding feature group created after the central upgrade.
+  The 5.1 central cluster creates its index on faiss, and the client puts the search filters inside the nearest-neighbor query for faiss, which OpenSearch 1.3 cannot parse.
+  Embedding feature groups created before the central upgrade keep working, and search recovers once the satellite is on 5.1.
+- In a stream feature group, an insert with several rows for one primary key leaves the last of those rows in the online store instead of the one with the latest event time.
+  The 5.1 client marks the older rows for the offline store only, in a way the 5.0 online store does not read.
+  The offline store is not affected, and feature groups that are not stream feature groups drop those rows in the client.
+  The rows stay as they are after the satellite's upgrade, so insert the newest values of the affected keys again once the satellite is on 5.1.
+- Creating a new cosine embedding feature group fails while the satellite runs OpenSearch 1.3, for both shared project indexes and dedicated indexes.
+  The central cluster creates the embedding fields with the faiss engine, whose OpenSearch 1.3 implementation does not support the `cosinesimil` space type.
+  Postpone creation of these feature groups until the target satellite is upgraded to 5.1 and runs OpenSearch 2.19.
+
+Deletes and `upsert_if_newer` work as on 5.1.
 
 ## 5.1.x to 5.2.x { #upgrade-51-to-52 }
 
@@ -38085,9 +38112,15 @@ AWS S3 does not need it.
 A satellite cluster runs its own OpenSearch and gets its own index pass when it upgrades to 5.2.
 Its write blocks are confined to that satellite's OpenSearch, and `activeDeadlineSeconds` is set per release, so a satellite holding large embedding indices sets its own value and its own `--timeout`.
 
+From 5.0.x to 5.1.x, upgrade the central cluster before its satellites.
+A 5.0 central cluster creates the embedding indices of new feature groups on nmslib, and on a satellite already on OpenSearch 2.19 those are indices that the index pass of 5.2.1 and later refuses until they are rebuilt on faiss, as described in [Vector fields that would stay on nmslib][opensearch-nmslib-fields].
+What changes for a satellite until it is on 5.1 is described in [Satellite clusters on 5.0][upgrade-50-to-51-satellites].
+
 Upgrade every satellite to 5.1.x before the central cluster moves to 5.2.x, because a satellite still on OpenSearch 1.3 would be two major versions behind a 5.2.x central cluster.
 Then upgrade every satellite to 5.2.x before the central cluster, because a satellite's Kafka has to move to KRaft before the central upgrade converts the Strimzi resources.
 Hopsworks clients on OpenSearch 2.19 against a satellite's OpenSearch 3.8 were verified.
+
+Upgrade each satellite to 5.1.2 or later too.
 
 To copy a satellite's indices on 5.1.x first, upgrade the satellite's release as described in the next section, since each release runs its own Job.
 
@@ -38400,6 +38433,9 @@ Then:
 - **A satellite cluster that shares the central operator** is upgraded before central.
   The CRD conversion re-stores every Kafka resource on the Kubernetes cluster, and a satellite still on ZooKeeper would lose its ZooKeeper configuration in the process.
   The conversion refuses while any other Kafka is not on KRaft, so the wrong order fails safely, but it blocks central's upgrade until the satellite is done.
+  Between a satellite's upgrade and the central cluster's, the satellite's Kafka runs 4.3.1, which the central cluster's previous operator does not run.
+  Its Kafka resource reports `NotReady` with `UnsupportedKafkaVersionException` and is not reconciled, while its brokers keep serving.
+  The central upgrade replaces the operator and clears this, so upgrade the central cluster soon after the last satellite.
 - **Record the topics**, so you can confirm nothing was lost:
 
     ```sh

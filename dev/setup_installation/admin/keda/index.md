@@ -19,6 +19,12 @@ hopsworks:
 Without KEDA, Standard-mode deployments fall back to KServe's own Horizontal Pod Autoscaler on CPU and memory, without the engine metrics and without scale to zero.
 The values are listed in [KEDA values][helm-values-hw-keda].
 
+## Satellite clusters { #keda-satellite-clusters }
+
+Set `kube_keda_installed` to `false` on a satellite cluster, as shown above.
+The chart installs KEDA whenever this value is `true`, which is the default, also when `global._hopsworks.full_platform` is `false`.
+KEDA is cluster-wide and the central cluster installs it, so a satellite's own KEDA makes the central cluster's upgrade to 5.2 fail on the `keda-operator` ClusterRole.
+
 ## What the chart installs { #keda-components }
 
 - KEDA 2.21: the operator, the metrics API server and the admission webhooks, in the Hopsworks namespace.
