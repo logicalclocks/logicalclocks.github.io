@@ -74,6 +74,7 @@ Every X.Y.0 has it: it links `Before every upgrade` and the section from the pre
 A patch release has it only when the guide has a `Changes from X.Y.Z` section for it, and links that section.
 The guide is in the docs from 5.2 on, so 5.1.0 links the 5.2 docs; `release-inputs` prints the sections and the docs version to link.
 A step the release needs that the guide lacks belongs in the guide, which changes on the release branches like any other docs page, not in the release notes.
+A guide section a release page links follows the security rule of the entries below, because it is public too: a step a security fix needs says what to do, and at most that it addresses a vulnerability.
 The hook appends a last one, `### Python client`, which links the GitHub release notes of every hopsworks-api version new in the release; `docs/js/client-release-notes.js` replaces the links with those notes, fetched from the GitHub API in the reader's browser, one collapsed block per version, and keeps the links when GitHub can't be reached.
 Never write it by hand: the notes are hopsworks-api's own, shown as they are on GitHub.
 

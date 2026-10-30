@@ -39,13 +39,15 @@ The facts come from every repo the release ships, read-only, all checked out sid
 
 HopsFS and RonDB repos are left out on purpose; `rondb-helm` stays.
 They default to siblings of this repo; if one is missing, `release-inputs` and `release-components` fail with `ERROR: no checkout at <path>`, or `release-inputs` reports it in the section of a component repo, and you ask the user where it is or clone it.
-Set `S` to the directory that holds them, and set up this repo's environment once, with the Python API the strict build of step 5 needs, as CI does; `uv sync` is exact and removes a Python API installed before it, so install the API after it.
+Set `S` to the directory that holds them, and set up this repo's environment once, with the Python API the strict build of step 5 needs.
+CI builds `main` against hopsworks-api `main`, so install that from GitHub rather than from `$S/hopsworks-api`, whose branch can be any and whose build writes into the checkout.
+`uv sync` is exact and removes a Python API installed before it, so install the API after it.
 Afterwards run every command with `uv run --no-sync`, because a plain `uv run` syncs the environment to the lock file again, which can change the packages the Python API installed:
 
 ```sh
 S=<directory holding the checkouts>
 uv sync --extra cli
-uv pip install $S/hopsworks-api/python
+uv pip install "git+https://github.com/logicalclocks/hopsworks-api@main#subdirectory=python"
 ```
 
 Fetch every branch and tag of each checkout, and of this repo (links are checked against its `branch-*`, and `release-inputs` reads the upgrade guide from them), because a release often came out after the last fetch; component repos name their release branches in different ways, so fetch them all:
@@ -108,6 +110,7 @@ Agents return entries with evidence and never edit the page; you merge their ent
 
 Write `### Upgrade steps` as the guide says, linking the upgrade guide sections `inputs.md` lists.
 Read those sections, and list in the report the steps the release needs at upgrade that they lack, from a migration Job or hook, or a breaking change that has to happen before or after the `helm upgrade`, so the user can add them to the guide.
+The guide is public too, so list also each sentence of those sections that says more about a security fix than the guide's security rule allows on a release page, with the rewording the rule gives.
 
 Sort the entries of each subsection by first tag and within a tag by significance, as the guide defines it, after merging; the agents' order only holds within their slice.
 
@@ -121,7 +124,21 @@ If it fails on a version no component covers, add the component to `COMPONENTS` 
 Remove link definitions that no entry uses any more; markdownlint fails on them.
 
 A patch of a minor version that is no longer the newest also updates the X.Y.0 of the next minor version, which lists its backports with `(also in ...)`, as the guide says.
-Run `release-inputs` for that X.Y.0, which marks the commits the patch shipped with `[shipped in vX.Y.Z]`, add the marker to the entries of those commits, add an entry with the marker for a commit that has none, and regenerate its table with `release-components <X.Y.0> --write`.
+Run `release-inputs` for that X.Y.0, which marks the commits the patch shipped with `[shipped in vX.Y.Z]`:
+
+```sh
+uv run --no-sync hopsworks-docs release-inputs <X.Y.0> --sources $S > .release-notes/<X.Y.0>/inputs.md
+```
+
+Add the marker to the entries of those commits, and add an entry with the marker for a commit that has none.
+For the chart commits of the patch that the X.Y.0 lacks, which the "Patch releases" part of that `inputs.md` lists, add a breaking change to the X.Y.0 that says what is missing and what to do, as the guide says.
+Then regenerate its table:
+
+```sh
+uv run --no-sync hopsworks-docs release-components <X.Y.0> --helm $S/hopsworks-helm --rondb-helm $S/rondb-helm --write
+```
+
+Give the X.Y.0 entries you changed or added to the fact-check of step 4 with the patch's section.
 
 ## 4. Fact-check
 
@@ -147,7 +164,7 @@ The check of the client tags needs github.com.
 Tell the user:
 
 - the release, what it compares with, and the number of entries per subsection;
-- the upgrade steps the release needs that the upgrade guide lacks;
+- the upgrade steps the release needs that the upgrade guide lacks, and the guide sentences to reword under the security rule;
 - what the fact-check changed;
 - every `UNSURE` item, as a question;
 - the commits left out as not user-visible, as one line of short SHAs per repo.

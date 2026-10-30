@@ -17,12 +17,13 @@ The hard rules of `draft.md` in this folder apply to you too: don't edit any fil
 4. In the right subsection, as the guide defines them.
 5. Security fixes as "Addressed vulnerabilities in <component>" only: no entry says "Fixed a security issue in", and nothing in an entry, a breaking change or an upgrade step says what was exposed, who could exploit it or how, or what users could do before the fix or can no longer do.
    Check this first: it outweighs every other rule, because the notes are public.
-6. Written to the rules: a past-tense verb first, one line plus at most one to act on, no Jira key, PR, commit, customer, or link to a private GitHub repo (the guide lists which source repos are private), absolute docs links of the release's minor version, or of the oldest docs version that has the page, one sentence per line.
+6. Written to the rules: after its tags a past-tense verb, except in a breaking change, one line plus at most one to act on, no Jira key, PR, commit, customer, or link to a private GitHub repo (the guide lists which source repos are private), absolute docs links of the release's minor version, or of the oldest docs version that has the page, one sentence per line.
 7. Every link resolves: the page exists in `branch-X.Y` of the docs repo, on its remote that points at `logicalclocks`, and so does the anchor.
    Material builds a heading's anchor from its text, lowercased, spaces as `-`, punctuation dropped; an explicit `{ #id }` overrides it.
    Helm values reference anchors look like `#helm.<path>`, and the value must exist in the chart at the release tag.
 
 For `### Upgrade steps`, check that it links the upgrade guide sections `inputs.md` lists and nothing else, and report as `UNSURE` a step the release needs that those sections lack.
+Read those sections against rule 5 as well, because the guide is public and the release page sends readers to it, and report each sentence that breaks it as `GUIDE <section>: <sentence> -> <rewording>`.
 
 Check that each entry carries a tag for every way users reach its change, and only those, and that each subsection is sorted by first tag and within a tag by significance, as the guide defines it; give the tags and the order you would use if not.
 
@@ -35,5 +36,6 @@ Then look for what is missing: a change in the range that users notice and no en
 - `MOVE <entry> -> <subsection>` with the reason;
 - `ADD <subsection>: <text>` with evidence;
 - `ORDER <subsection>: <first words of each entry, in the order they belong>` with the reason;
+- `GUIDE <section>: <sentence> -> <rewording>` for a linked upgrade guide section;
 - `UNSURE <question>`;
 - one line: how many entries you checked, and how many need a change.

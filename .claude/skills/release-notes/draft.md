@@ -28,11 +28,11 @@ Read first, in full:
    Include `hopsworks-api` changes users of the Python or Java client notice, such as new or changed methods and arguments, behaviour changes, fixes, breaking changes and deprecations; leave out its tests, CI, version bumps and refactors.
    Name the client when it isn't obvious ("in the Java client"), and link the API reference of the release's minor version where one exists.
    A client change and an application change for the same ticket are one entry.
-   A breaking change says, in a few words, what the behaviour was before, checked against the previous release.
+   A breaking change says, in a few words, what the behaviour was before, checked against the previous release, except one a security fix needs, which says only what to do, as the guide says.
    A security fix is written "Addressed vulnerabilities in <component>", such as "Addressed vulnerabilities in jobs", with no detail of the issue, as the guide says; never write "Fixed a security issue in". Describe the issue only in your report, for the evidence.
 3. Pick the subsection: What's changed, Breaking changes, Deprecations or Configuration changes, as the guide defines them.
    A feature that a value turns on stays in What's changed and names the value.
-4. Write the entry as the guide says: a past-tense verb first, one line, a second line only for what the reader must act on, the exact value, API or setting, and a docs link where one exists.
+4. Write the entry as the guide says: after its tags a past-tense verb, except in a breaking change, one line, a second line only for what the reader must act on, the exact value, API or setting, and a docs link where one exists.
    Check that a link's page and anchor exist in the docs branch of the version it links: `git -C <docs> show $R/branch-X.Y:docs/<path>.md`, with `R` the remote that points at `logicalclocks`.
    The Helm values reference is generated at build time, so for a `#helm.<path>` anchor check instead that the value exists in the chart at the release tag.
 5. Note the steps an operator has to take at upgrade, if any, and whether the upgrade guide sections in `inputs.md` cover them; they go in the report, not on the page.
