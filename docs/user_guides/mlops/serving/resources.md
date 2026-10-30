@@ -23,6 +23,7 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     The model files are downloaded to the predictor's local disk when an instance starts, so a disk limit on the predictor must fit them, plus whatever the model server writes.
     A component that uses more local disk than its limit is evicted and restarted.
     With no limit, a component can use the node's free disk, which the other pods on the node share.
+    A cluster can instead give LLM deployments a volume of a fixed size for their model files: the predictor's disk of an LLM deployment then shows that size and cannot be changed.
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
