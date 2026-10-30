@@ -154,7 +154,7 @@ Set the value to 61 or more to keep the details.
 
 ### Feature groups shared with a subset of their features { #upgrade-trino-subset-shares }
 
-From 5.2.1, share the whole feature group with a project that queries it in Trino through `delta_shared`, `hudi_shared` or `iceberg_shared`, to address a vulnerability.
+From 5.2.1, because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features.
 Shares of a whole feature group, and the online and embedding access of a subset share, are unchanged.
 `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` keeps the behaviour of 5.2.0, without the fix; keep its default, `"false"`.
 
@@ -297,7 +297,6 @@ Before, it created no topics there, so every topic had to exist before ingestion
   A notification topic set before the upgrade is left as it is until its feature group moves to another one.
 - **Kafka changes through a shared feature store are refused.**
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
-  Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
   Reading through a shared feature store is unchanged.
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
