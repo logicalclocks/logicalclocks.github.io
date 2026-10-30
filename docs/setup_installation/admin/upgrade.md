@@ -154,12 +154,9 @@ Set the value to 61 or more to keep the details.
 
 ### Feature groups shared with a subset of their features { #upgrade-trino-subset-shares }
 
-From 5.2.1, Trino serves feature groups shared with a subset of their features through `delta_shared`, `hudi_shared` and `iceberg_shared` only while `hopsworks.variables.trino_feature_group_subset_shares_enabled` is `"true"`.
-It defaults to `"false"`.
-Shares of a whole feature group, and the online and embedding access of a subset share, do not depend on it.
-
-Those catalogs read HopsFS as a superuser, and a data owner writes the table metadata that names a shared table's data files, so through the metastore they can point that table at another project's files.
-Keep the value at `"false"`.
+From 5.2.1, because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features.
+Shares of a whole feature group, and the online and embedding access of a subset share, are unchanged.
+`hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` keeps the behaviour of 5.2.0, without the fix; keep its default, `"false"`.
 
 ### `consul-server-acl-init` fails with `field is immutable` { #upgrade-consul-acl-init }
 
@@ -170,7 +167,7 @@ Delete that Job and run the upgrade again.
 
 OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
-An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which takes away the read access of restricted project members.
+An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
 
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 
@@ -300,7 +297,6 @@ Before, it created no topics there, so every topic had to exist before ingestion
   A notification topic set before the upgrade is left as it is until its feature group moves to another one.
 - **Kafka changes through a shared feature store are refused.**
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
-  Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
   Reading through a shared feature store is unchanged.
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
@@ -379,8 +375,7 @@ They apply to an upgrade from 5.1.x to 5.2.2 or later, from 5.2.0 or 5.2.1 to a 
 
 ### OnlineFS drops records that arrive on another topic { #upgrade-onlinefs-topics }
 
-OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
-Before, the headers alone decided, so a producer could write into another project's online feature groups.
+To address a vulnerability, OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
 A record that fails the check is dropped, logged by OnlineFS (`Record dropped, it did not arrive on the online topic of the feature group in its headers`) and counted in `onlinefs_topic_mismatch_total`, on the Topics row of the OnlineFS dashboard.
 
 - **Producers that hold on to an old topic.**
@@ -388,16 +383,15 @@ A record that fails the check is dropped, logged by OnlineFS (`Record dropped, i
   Producers that hold on to their topic include the inference logger of model deployments, streaming jobs and long-lived sessions.
 - **Records that reach OnlineFS on another topic name.**
   A Kafka where records reach OnlineFS on a topic other than the one Hopsworks resolves for their feature group, such as a multi-region secondary that reads topics renamed or prefixed by mirroring, needs `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
-  With the check off, OnlineFS logs a warning at startup and attributes records by their headers, as before.
-  Projects that share a topic need no change: their records arrive on the topic resolved for them.
-- **A project can no longer use another project's online topic.**
+  With the check off, OnlineFS logs a warning at startup and keeps the behaviour of 5.2.1, without the fix.
+- **Projects that use another project's topic.**
   Creating a project, changing its topic, creating an online feature group or changing its topic, or creating a Kafka topic fails with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026) when the topic is the online topic of another project, the topic of another project's feature group, or a topic another project owns.
-  The upgrade leaves a project or feature group already configured that way as it is, and updates that keep its topic still succeed.
+  Because of a security fix, give each project and online feature group that already uses another project's topic a topic of its own after the upgrade, then restart its producers as above; the upgrade leaves such a topic in place, and updates that keep it still succeed.
   A project whose own topic is taken that way cannot create online feature groups until it gets a topic of its own, while the project that created the topic, or whose default `<project>_onlinefs` topic it is, keeps using it.
-  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, 5.2.2 does not enforce this.
+  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics, the same security fix needs each project to have topics of its own there, and Kafka credentials that write only to them.
   From 5.3 a topic on an external Kafka is refused only when another project owns it because Hopsworks created it for that project, as described in [Bring your own Kafka][upgrade-byok-topics].
 - **After the upgrade**, check that the topic mismatch panels stay at zero.
-  A drop from a legitimate producer means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
+  A drop means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
 
 ### Schema migrations run on the DDL SQL node { #upgrade-ddl-sql-node }
 
