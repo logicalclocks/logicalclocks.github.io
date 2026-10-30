@@ -36943,12 +36943,9 @@ Set the value to 61 or more to keep the details.
 
 ### Feature groups shared with a subset of their features { #upgrade-trino-subset-shares }
 
-From 5.2.1, Trino serves feature groups shared with a subset of their features through `delta_shared`, `hudi_shared` and `iceberg_shared` only while `hopsworks.variables.trino_feature_group_subset_shares_enabled` is `"true"`.
-It defaults to `"false"`.
-Shares of a whole feature group, and the online and embedding access of a subset share, do not depend on it.
-
-Those catalogs read HopsFS as a superuser, and a data owner writes the table metadata that names a shared table's data files, so through the metastore they can point that table at another project's files.
-Keep the value at `"false"`.
+From 5.2.1, because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features.
+Shares of a whole feature group, and the online and embedding access of a subset share, are unchanged.
+`hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` keeps the behaviour of 5.2.0, without the fix; keep its default, `"false"`.
 
 ### `consul-server-acl-init` fails with `field is immutable` { #upgrade-consul-acl-init }
 
@@ -36959,7 +36956,7 @@ Delete that Job and run the upgrade again.
 
 OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
-An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which takes away the read access of restricted project members.
+An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
 
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 
@@ -37089,7 +37086,6 @@ Before, it created no topics there, so every topic had to exist before ingestion
   A notification topic set before the upgrade is left as it is until its feature group moves to another one.
 - **Kafka changes through a shared feature store are refused.**
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
-  Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
   Reading through a shared feature store is unchanged.
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
@@ -37168,8 +37164,7 @@ They apply to an upgrade from 5.1.x to 5.2.2 or later, from 5.2.0 or 5.2.1 to a 
 
 ### OnlineFS drops records that arrive on another topic { #upgrade-onlinefs-topics }
 
-OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
-Before, the headers alone decided, so a producer could write into another project's online feature groups.
+To address a vulnerability, OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
 A record that fails the check is dropped, logged by OnlineFS (`Record dropped, it did not arrive on the online topic of the feature group in its headers`) and counted in `onlinefs_topic_mismatch_total`, on the Topics row of the OnlineFS dashboard.
 
 - **Producers that hold on to an old topic.**
@@ -37177,16 +37172,15 @@ A record that fails the check is dropped, logged by OnlineFS (`Record dropped, i
   Producers that hold on to their topic include the inference logger of model deployments, streaming jobs and long-lived sessions.
 - **Records that reach OnlineFS on another topic name.**
   A Kafka where records reach OnlineFS on a topic other than the one Hopsworks resolves for their feature group, such as a multi-region secondary that reads topics renamed or prefixed by mirroring, needs `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
-  With the check off, OnlineFS logs a warning at startup and attributes records by their headers, as before.
-  Projects that share a topic need no change: their records arrive on the topic resolved for them.
-- **A project can no longer use another project's online topic.**
+  With the check off, OnlineFS logs a warning at startup and keeps the behaviour of 5.2.1, without the fix.
+- **Projects that use another project's topic.**
   Creating a project, changing its topic, creating an online feature group or changing its topic, or creating a Kafka topic fails with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026) when the topic is the online topic of another project, the topic of another project's feature group, or a topic another project owns.
-  The upgrade leaves a project or feature group already configured that way as it is, and updates that keep its topic still succeed.
+  Because of a security fix, give each project and online feature group that already uses another project's topic a topic of its own after the upgrade, then restart its producers as above; the upgrade leaves such a topic in place, and updates that keep it still succeed.
   A project whose own topic is taken that way cannot create online feature groups until it gets a topic of its own, while the project that created the topic, or whose default `<project>_onlinefs` topic it is, keeps using it.
-  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, 5.2.2 does not enforce this.
+  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics, the same security fix needs each project to have topics of its own there, and Kafka credentials that write only to them.
   From 5.3 a topic on an external Kafka is refused only when another project owns it because Hopsworks created it for that project, as described in [Bring your own Kafka][upgrade-byok-topics].
 - **After the upgrade**, check that the topic mismatch panels stay at zero.
-  A drop from a legitimate producer means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
+  A drop means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
 
 ### Schema migrations run on the DDL SQL node { #upgrade-ddl-sql-node }
 
@@ -37492,16 +37486,17 @@ The hook log lists each index or template, field, space type and remedy:
 At every pod start OpenSearch applies the security configuration that ships with the chart, once every node runs the same version (see below), and so does `run_security_admin.sh` when an operator runs it.
 From 5.1.2 on the 5.1 line, and from 5.2.1, this no longer replaces the roles and role mappings.
 The chart's own entries are created or updated one by one, and the `fls_` roles and mappings that Hopsworks creates for restricted grants and feature group shares stay.
-Up to 5.1.1, every restricted project member could read every field of the project's embedding indices, and every OpenSearch pod start removed the `fls_` roles, so a shared project got HTTP 403.
+The new configuration also addresses a vulnerability.
+Up to 5.1.1, every OpenSearch pod start removed the `fls_` roles, so a shared project got HTTP 403.
 On 5.1.0 and 5.1.1, the OpenSearch roles and mappings behind grants and shares made before the last OpenSearch restart are gone, while Hopsworks still records the grant or share.
 Granting or sharing again is therefore refused: revoke and grant again, or unshare and share again.
 The other configuration types are still applied from the chart's files.
 
-- A restricted project member without a grant gets HTTP 403 on the project's embedding indices.
+- Give a restricted project member that reads the project's embedding indices a grant or a share; without one it gets HTTP 403 on those indices.
   Read access comes only from a grant or a share, limited to the granted features.
 - At pod start nothing is applied until every OpenSearch node has joined and runs the same version, so the last pod of a rolling upgrade, or the last to start, applies it.
   A pod started while another is down logs a warning and skips it, and a skip is not retried before the next pod start.
-  On the upgrade to 5.1.2 or 5.2.1 this step is what takes away the restricted members' read access, so check after the roll that one pod applied it:
+  On the upgrade to 5.1.2 or 5.2.1 this step applies the vulnerability fix, so check after the roll that one pod applied it:
 
     ```bash
     for p in $(kubectl get pods -n hopsworks -l app=opensearch -o name); do
@@ -41044,14 +41039,11 @@ The chart ships two kinds of catalog over the feature store:
 
 - `delta`, `hudi`, `iceberg` and `hive` impersonate the querying user, so HopsFS permissions apply on top of the access-control rules.
   They serve a project's own feature groups, and feature groups or feature stores shared whole, which HopsFS grants the receiving project.
-- `delta_shared`, `hudi_shared` and `iceberg_shared` do not impersonate.
-  They read HopsFS as the `trino` user, which is a HopsFS superuser, because a feature group shared with a subset of its features grants the receiving project no HopsFS access.
+- `delta_shared`, `hudi_shared` and `iceberg_shared` serve feature groups shared with a subset of their features, only while `hopsworks.variables.trino_feature_group_subset_shares_enabled` is `"true"`.
+  From 5.2.1 it defaults to `"false"` because of a security fix, as [Feature groups shared with a subset of their features][upgrade-trino-subset-shares] describes.
 
-For the second kind the access-control rules are the only gate.
-The base policy grants nobody access to them, not even administrators, and Hopsworks adds a rule per subset share that allows the receiving project the shared features of that one table and denies the rest.
-They are read-only at the connector as well, so no rule can let a query write through them.
-Do not add rules for these catalogs to the base policy: any rule that reaches one of them reads every project's feature store.
-Administrators are denied them because Trino runs a view as the user recorded as its owner, so a view recorded as owned by an administrator would reach them too.
+The base policy grants nobody access to the second kind, administrators included, and while the value is `"true"` Hopsworks adds a rule per subset share that allows the receiving project the shared features of that one table and denies the rest.
+Because of the same security fix, do not add rules for these catalogs to the base policy.
 
 ### Reading the rules file
 
@@ -41140,7 +41132,7 @@ The list of denied columns in the rule is shortened here.
   A share of a private catalog also adds, before that deny, a rule letting the owner keep running the catalog's `system` functions.
 
 A feature group shared whole adds one table rule on `hive|iceberg|delta|hudi` for its table in the owner's feature store.
-A feature group shared with a subset of its features adds a catalog rule on the shared catalog of its format, such as `delta_shared`, and a table rule there that denies every unshared feature and hidden column, followed by the metadata table deny.
+While `trino_feature_group_subset_shares_enabled` is `"true"`, a feature group shared with a subset of its features adds a catalog rule on the shared catalog of its format, such as `delta_shared`, and a table rule there that denies every unshared feature and hidden column, followed by the metadata table deny.
 
 #### Debugging a share
 

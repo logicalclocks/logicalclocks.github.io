@@ -131,16 +131,17 @@ The hook log lists each index or template, field, space type and remedy:
 At every pod start OpenSearch applies the security configuration that ships with the chart, once every node runs the same version (see below), and so does `run_security_admin.sh` when an operator runs it.
 From 5.1.2 on the 5.1 line, and from 5.2.1, this no longer replaces the roles and role mappings.
 The chart's own entries are created or updated one by one, and the `fls_` roles and mappings that Hopsworks creates for restricted grants and feature group shares stay.
-Up to 5.1.1, every restricted project member could read every field of the project's embedding indices, and every OpenSearch pod start removed the `fls_` roles, so a shared project got HTTP 403.
+The new configuration also addresses a vulnerability.
+Up to 5.1.1, every OpenSearch pod start removed the `fls_` roles, so a shared project got HTTP 403.
 On 5.1.0 and 5.1.1, the OpenSearch roles and mappings behind grants and shares made before the last OpenSearch restart are gone, while Hopsworks still records the grant or share.
 Granting or sharing again is therefore refused: revoke and grant again, or unshare and share again.
 The other configuration types are still applied from the chart's files.
 
-- A restricted project member without a grant gets HTTP 403 on the project's embedding indices.
+- Give a restricted project member that reads the project's embedding indices a grant or a share; without one it gets HTTP 403 on those indices.
   Read access comes only from a grant or a share, limited to the granted features.
 - At pod start nothing is applied until every OpenSearch node has joined and runs the same version, so the last pod of a rolling upgrade, or the last to start, applies it.
   A pod started while another is down logs a warning and skips it, and a skip is not retried before the next pod start.
-  On the upgrade to 5.1.2 or 5.2.1 this step is what takes away the restricted members' read access, so check after the roll that one pod applied it:
+  On the upgrade to 5.1.2 or 5.2.1 this step applies the vulnerability fix, so check after the roll that one pod applied it:
 
     ```bash
     for p in $(kubectl get pods -n hopsworks -l app=opensearch -o name); do
