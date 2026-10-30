@@ -20,6 +20,7 @@ uv run hopsworks-docs linkchecker # check for broken links
 - Python code blocks in Markdown must be syntactically valid and pass snakeoil/ruff at line length 88
 - Do not write prose in API reference pages — edit docstrings in `hopsworks-api` instead
 - Never commit credentials, API keys, or tokens
+- Never write anything that helps exploit a vulnerability, fixed or not, in a page, a commit message or a PR: not what was exposed, who could exploit it, how or under which conditions, and not what users could do before a fix or can no longer do. A change a security fix needs says what to do, at most that it addresses a vulnerability, and only the effects an operator acts on, such as an error code or a value to set; an opt-out value "keeps the behaviour of X.Y.Z, without the fix". The docs and this repo are public, and clusters that haven't upgraded stay vulnerable.
 
 ## Agent Docs
 
