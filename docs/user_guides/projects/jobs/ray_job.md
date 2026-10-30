@@ -95,6 +95,7 @@ Resource allocation for the Driver and Workers can be configured.
 - `Driver disk`: Local disk in GB the Driver may use.
   Empty means no limit.
   A Driver that writes more is evicted and the job fails.
+  Without a HopsFS mount disk, the files the head's mount stages count against this disk too.
 
 - `Worker memory`: Memory in MBs to allocate for each worker
 
@@ -105,6 +106,7 @@ Resource allocation for the Driver and Workers can be configured.
 - `Worker disk`: Local disk in GB each worker may use.
   Empty means no limit.
   A worker that writes more is evicted.
+  Without a HopsFS mount disk, the files the worker's mount stages count against this disk too.
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -129,7 +131,8 @@ Runtime environment and Additional files required for the Ray job can also be pr
   These files will be placed in `/srv/hops/ray/job`.
 
 - `HopsFS mount`: Memory (MB), cores, namenode connections and disk (GB) of the container that serves `/hopsfs` in the head and in every worker.
-  The mount stages writes to `/hopsfs` on its local disk, which has no limit when the disk field is empty.
+  The mount stages writes to `/hopsfs` in a folder on its local disk; the disk field caps that folder, and empty means no cap.
+  A mount that stages more is evicted.
   The other fields show the cluster defaults and may need tuning when the job reads large datasets or does many concurrent reads or writes on `/hopsfs`.
   The settings apply only when HopsFS is mounted in the Ray containers.
 

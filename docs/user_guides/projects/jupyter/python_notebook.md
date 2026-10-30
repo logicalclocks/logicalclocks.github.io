@@ -31,9 +31,11 @@ Next step is to configure Jupyter, Click `edit configuration` to get to the conf
 - `Container disk`: Local disk in GB the Jupyter instance may use.
   Empty means no limit.
   An instance that writes more is evicted and its running kernels stop.
+  Without a HopsFS mount disk, the files the mount stages count against this disk too.
 
 - `HopsFS mount`: Memory (MB), cores, namenode connections and disk (GB) of the container that serves `/hopsfs`, for every kernel.
-  The mount stages writes to `/hopsfs` on its local disk, which has no limit when the disk field is empty.
+  The mount stages writes to `/hopsfs` in a folder on its local disk; the disk field caps that folder, and empty means no cap.
+  A mount that stages more is evicted.
   The other fields show the cluster defaults and may need tuning when notebooks read large datasets or do many concurrent reads or writes on `/hopsfs`.
   If the project has a resource quota, the mount's memory and cores count towards it.
 

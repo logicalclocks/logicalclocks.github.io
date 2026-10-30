@@ -93,6 +93,7 @@ There you can also set the following configuration settings for a `PYTHON` job.
 - `Container disk`: The local disk in GB the Python script's container may use, for example under `/tmp`.
   Empty means no limit.
   A container that writes more is evicted and the execution fails.
+  Without a HopsFS mount disk, the files the mount stages count against this disk too.
 - `Additional files`: List of files that will be locally accessible in the working directory of the application.
   Only recommended to use if project datasets are not mounted under `/hopsfs`.
   You can always modify the arguments in the job settings.
@@ -100,7 +101,8 @@ There you can also set the following configuration settings for a `PYTHON` job.
   execution of this job. Read them in your Python code with `os.environ["MY_KEY"]`. See
   [Environment variables](#environment-variables) below.
 - `HopsFS mount`: Memory (MB), cores, namenode connections and disk (GB) of the container that serves `/hopsfs`.
-  The mount stages writes to `/hopsfs` on its local disk, which has no limit when the disk field is empty.
+  The mount stages writes to `/hopsfs` in a folder on its local disk; the disk field caps that folder, and empty means no cap.
+  A mount that stages more is evicted.
   The other fields show the cluster defaults and may need tuning when the job reads large datasets or does many concurrent reads or writes on `/hopsfs`.
   If the project has a resource quota, the mount's memory and cores count towards it.
 

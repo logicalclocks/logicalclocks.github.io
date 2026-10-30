@@ -38,10 +38,25 @@ controllerManager:
 managerConfig:
   controllerManagerConfigYaml: |
     # the chart's default, with sparkoperator.k8s.io/sparkapplication
-    # added to integrations.frameworks
+    # added to integrations.frameworks, and:
+    resources:
+      excludeResourcePrefixes:
+        - ephemeral-storage
 ```
 
 That chart keeps its CRDs among its templates, so Argo CD upgrades them with a version bump.
+
+### Disk limits
+
+Jobs, notebooks and model deployments can set a disk limit, which requests `ephemeral-storage`.
+The Hopsworks queues do not cover that resource, so Kueue has to exclude it from its quota checks, or it never admits those workloads: they stay pending with `resource ephemeral-storage unavailable in ClusterQueue`.
+`upgrade-kueue.sh` adds the exclusion on install and upgrade; with Argo CD, the `resources` block above does.
+Leave the exclusion out in two cases:
+
+- **Your ClusterQueues or Cohorts budget `ephemeral-storage`.** Kueue then admits disk limits against that quota, and an exclusion would bypass it. The script detects this and leaves the exclusion out.
+- **The manager config sets `resources.quotaCheckStrategy: IgnoreUndeclared`.** That strategy already ignores resources no queue covers, and Kueue refuses to start with both.
+
+A cluster that already runs Kueue 0.20.3 gets the exclusion by running `bash hopsworks/charts/hw-kueue/files/upgrade-kueue.sh upgrade` from the new chart after upgrading Hopsworks, or by adding the `resources` block to its Argo CD values.
 Leave the `resources-finalizer.argocd.argoproj.io` finalizer off that Application: deleting it then leaves the CRDs, and every queue, in place.
 
 ## Why `helm upgrade` alone cannot do it
