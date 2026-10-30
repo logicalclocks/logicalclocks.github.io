@@ -11,19 +11,20 @@ For each component, you can set minimum (requests) and maximum (limits) resource
 
 ??? info "Resource defaults"
 
-    | Field              | Default Request | Default Limit    | Validation                                         |
-    | ------------------ | --------------- | ---------------- | -------------------------------------------------- |
-    | CPU (cores)        | 0.2             | -1 (unlimited)   | Request cannot exceed limit (unless -1, unlimited) |
-    | Memory (MB)        | 32              | -1 (unlimited)   | Request cannot exceed limit (unless -1, unlimited) |
-    | GPUs               | 0               | 0                | Request must equal limit                           |
-    | Shared Memory (MB) | 128             | n/a              | n/a                                                |
-    | Disk (GB)          | equals limit    | unset (no limit) | 1 to 16384, set on the limit only                  |
+    | Field              | Default Request | Default Limit    | Validation                                               |
+    | ------------------ | --------------- | ---------------- | -------------------------------------------------------- |
+    | CPU (cores)        | 0.2             | -1 (unlimited)   | Request cannot exceed limit (unless -1, unlimited)       |
+    | Memory (MB)        | 32              | -1 (unlimited)   | Request cannot exceed limit (unless -1, unlimited)       |
+    | GPUs               | 0               | 0                | Request must equal limit                                 |
+    | Shared Memory (MB) | 128             | n/a              | n/a                                                      |
+    | Disk (GB)          | n/a             | unset (no limit) | 1 to 16384, set on the limit only; the request equals it |
 
 !!! note "Local disk"
     The model files are downloaded to the predictor's local disk when an instance starts, so a disk limit on the predictor must fit them, plus whatever the model server writes.
     A component that uses more local disk than its limit is evicted and restarted.
     With no limit, a component can use the node's free disk, which the other pods on the node share.
-    A cluster can instead give LLM deployments a volume of a fixed size for their model files: the predictor's disk of an LLM deployment then shows that size and cannot be changed.
+    A cluster can instead give vLLM deployments a volume of a fixed size for their model files.
+    The predictor of a vLLM deployment then takes no disk: the form shows the cluster's size, and the API and the SDK refuse a predictor disk.
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
