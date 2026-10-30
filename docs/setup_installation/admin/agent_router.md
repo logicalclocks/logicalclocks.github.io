@@ -114,7 +114,7 @@ There are two places to set them:
   An administrator edits it in the admin UI under Settings, Quotas & rate limits, in the Project endpoint section.
   A change reaches the existing projects at the backend's next full pass, about 10 minutes later.
 - An override per project is set on the admin page that edits the project, under Project endpoint limits, with the same scopes, kinds and units, and applies immediately.
-  A value is from 1 to 4294967295, and `-1` makes the scope unlimited for that project.
+  A value is from 1 to 4294967295, because Envoy Gateway holds a rate-limit value as an unsigned 32-bit integer and cannot express a larger one, and `-1` makes the scope unlimited for that project.
   Removing the override makes the cluster default apply again.
   The same limits are available as `projectEndpointLimits` of `projectQuotas` in `PUT /admin/projects/{id}`, and `GET /admin/projects/{id}?expand=quotas` returns the effective ones with a `source` of `DEFAULT` or `PROJECT`.
 
