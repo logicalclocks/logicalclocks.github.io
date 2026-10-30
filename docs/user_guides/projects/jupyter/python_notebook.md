@@ -28,6 +28,16 @@ Next step is to configure Jupyter, Click `edit configuration` to get to the conf
 
 - `Container memory`: Number of MBs to allocate for the Jupyter instance
 
+- `Container disk`: Local disk in GB the Jupyter instance may use.
+  Empty means no limit.
+  An instance that writes more is evicted and its running kernels stop.
+  Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
+  While a file is open for writing, the HopsFS mount keeps a copy of it on the node's local disk until the file is closed.
+
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs`, for every kernel.
+  The fields show the cluster defaults and may need tuning when notebooks read large datasets or do many concurrent reads or writes on `/hopsfs`.
+  If the project has a resource quota, the mount's memory and cores count towards it.
+
 !!! notice "Configured resource pool is shared by all running kernels. If a kernel crashes while executing a cell, try increasing the Container memory."
 
 <p align="center">

@@ -54,9 +54,18 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver GPUs`: Number of GPUs to allocate for the Driver
 
+- `Driver disk`: Local disk in GB the Driver may use.
+  Empty means no limit.
+  Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
+  While a file is open for writing, the HopsFS mount keeps a copy of it on the node's local disk until the file is closed.
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
 - `Worker virtual cores`: Number of cores to allocate for each worker
+
+- `Worker disk`: Local disk in GB each worker may use.
+  Empty means no limit.
+  Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
 
 - `Worker GPUs`: Number of GPUs to allocate for each worker
 
@@ -81,6 +90,10 @@ Runtime environment and Additional files required for the Ray job can also be pr
 
 - `Additional files`: List of other files required for the Ray job.
   These files will be placed in `/srv/hops/ray/job`.
+
+- `Ray cluster HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the Ray head and in every worker.
+  The fields show the cluster defaults and may need tuning when the notebook reads large datasets or does many concurrent reads or writes on `/hopsfs`.
+  The Jupyter server has its own HopsFS mount settings below the tabs, which do not apply to the Ray cluster.
 
 <p align="center">
   <figure>
