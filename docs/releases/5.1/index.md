@@ -78,7 +78,7 @@ The releases of Hopsworks 5.1, newest first.
 
 ### Breaking changes
 
-- [API] [FRONTEND] As a Data Scientist, ask the creator of a job or a Data Owner of the project to change it, other than its schedule, to address a vulnerability.
+- [API] [FRONTEND] Because of a security fix, Data Scientists ask the creator of a job or a Data Owner of the project to change it, other than its schedule.
 - [HELM] The post-upgrade search index rebuild signs in as the agent user, instead of with `hopsworks.variables.admin_email` and `admin_password`, and fails the `helm upgrade` if `hopsworks.agent_email` and `hopsworks.agent_password` (default `agent@hops.io`, `admin`) don't match that account.
   Set them, or turn the rebuild off with `hopsworks.opensearchReindex.enabled: false`.
 - [HELM] The RonDB REST server now uses a probe port and an upload path that need RonDB 26.02.11, where 5.1.0 probed its REST port and set no upload path.

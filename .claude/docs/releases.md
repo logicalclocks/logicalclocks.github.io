@@ -99,7 +99,8 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
   Check a repo with `gh repo view <org>/<repo> --json visibility` before linking it.
 - Write a security fix as "Addressed vulnerabilities in <component>", such as "Addressed vulnerabilities in jobs", and nothing more: never write "Fixed a security issue in", and never say what was exposed, who could exploit it or how, because the notes are public and clusters on older releases stay vulnerable.
   Fixes of known vulnerabilities in dependencies and images stay one entry per group, such as "Addressed vulnerabilities in the Grafana and Superset images".
-  A breaking change or upgrade step that a security fix needs says what to do, and at most that it addresses a vulnerability: never what users could do before or can no longer do, which names the issue, so "Share the whole feature group with a project that queries it in Trino, to address a vulnerability", not "can no longer be queried in Trino".
+  A breaking change or upgrade step that a security fix needs says what to do and that a security fix needs it, never what users could do before or can no longer do, which names the issue, so "Because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features", not "can no longer be queried in Trino".
+  Keep "to address a vulnerability" for an action that is itself the fix, such as rotating credentials, and for an entry whose subject is the change, such as "Changed how OnlineFS checks the topic of the records it writes, to address a vulnerability"; after an action the reader takes to adjust, it reads as if that action were the fix.
 
 `### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
 

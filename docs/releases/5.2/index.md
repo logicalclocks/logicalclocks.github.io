@@ -81,8 +81,8 @@ The releases of Hopsworks 5.2, newest first.
 - [API] [FRONTEND] Apps created from 5.2.2 on can only read the online feature store database, apart from the tables they create with `App.create_table` and change with `App.alter_table` in the Python client, or with `createTable` and `alterTable` of `@hopsworks/app` in Node.js; before, the apps of Data Owners could create, alter and write to any of its tables with their own SQL ([database access][docs-apps-db]).
 - [API] Python clients older than 5.2.2 fail to list the data sources of a feature store that has a Hopsworks or SharePoint data source; use the 5.2.2 client in the jobs and environments that list them ([client version][docs-sharepoint-client]).
 - [API] [FRONTEND] Ingestion from a MongoDB data source, and fetching its schema, now needs MongoDB 4.4 or later instead of 4.2.
-- [FRONTEND] Open Jupyter servers from the Hopsworks UI, to address a vulnerability.
-- [FRONTEND] Give a Python app that calls Hopsworks credentials of its own, such as an API key, to address a vulnerability.
+- [FRONTEND] Because of a security fix, open Jupyter servers from the Hopsworks UI.
+- [FRONTEND] Because of a security fix, give a Python app that calls Hopsworks credentials of its own, such as an API key.
 - [HELM] Hopsworks now uses Kueue 0.20.3 installed as its own release, `kueue` in `kueue-system`, instead of the Kueue 0.12.2 bundled in its namespace, and the chart refuses to render while the bundled Kueue still runs ([Kueue outside the Hopsworks namespace][docs-upgrade-kueue-external]).
   With `global._hopsworks.kueue.enabled: true`, move Kueue with the 5.1 chart's `migrate-to-external.sh` before the upgrade, run the chart's `upgrade-kueue.sh` after it, and remove `hw-kueue.managerConfig`, `hw-kueue.nameOverride` and every `hw-kueue.kueue` value but `enabled` from your values, or the values schema rejects the upgrade.
 - [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
@@ -168,7 +168,7 @@ Follow [Changes from 5.2.2][docs-upgrade-changes-from-522] in the upgrade guide.
 
 ### Breaking changes
 
-- [API] [FRONTEND] [HELM] Share the whole feature group with a project that queries it in Trino, to address a vulnerability.
+- [API] [FRONTEND] [HELM] Because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features.
   `hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` keeps the behaviour of 5.2.0, without the fix.
 - [HELM] Remove `olk.opensearch.indexUpgrade.enabled` from your values, using `olk.opensearch.indexUpgrade.mode: report` in place of `false`, or the values schema rejects the upgrade.
 - [HELM] `helm upgrade` now stops before changing anything, also on a cluster already on 5.2.0, if an OpenSearch vector field would still be served by nmslib, which crashes OpenSearch 3.8 nodes on CPUs without AVX-512, where 5.2.0 upgraded without checking; apply the remedy the hook's log gives for each index or template it names ([nmslib fields][docs-os-nmslib]).
@@ -307,7 +307,7 @@ Follow [Changes from 5.2.2][docs-upgrade-changes-from-522] in the upgrade guide.
 
 ### Breaking changes
 
-- [API] [FRONTEND] As a Data Scientist, ask the creator of a job or a Data Owner of the project to change it, other than its schedule, to address a vulnerability (also in [5.1.1][hopsworks-5-1-1]).
+- [API] [FRONTEND] Because of a security fix, Data Scientists ask the creator of a job or a Data Owner of the project to change it, other than its schedule (also in [5.1.1][hopsworks-5-1-1]).
 - [API] `get_batch_data` and the training data methods of `FeatureView` in the Python client now raise `TypeError` on a keyword argument they don't take, which they used to ignore; remove such arguments.
 - [API] With `allow_missing=True`, `get_feature_vector` and `get_feature_vectors` in the Python client now return a serving key you pass in its slot of the vector when no row matches it, instead of `None`; code that detects a missing row by a `None` key must check the other features instead.
 - [API] `Deployment.read_logs` and `tail_logs` in the Python client, `hops deployment logs` and `hops agent logs` now read only the live pods of a deployment and ignore `until`, where 5.1 read the logs of stopped deployments from OpenSearch by default; get those with `Deployment.download_logs` or `--download`.
