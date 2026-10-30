@@ -1468,22 +1468,24 @@ A KServe model deployment can include the following components:
 
 **`Predictor (KServe component)`**
 
-:   A predictor runs a model server (Python, TensorFlow Serving, or vLLM) that loads a trained model, handles inference requests and returns predictions.
+:   A predictor runs a model server (Python, TensorFlow Serving, vLLM, or NVIDIA Triton Inference Server) that loads a trained model, handles inference requests and returns predictions.
+    Triton is available on clusters where the administrator has enabled it with a Triton image.
 
 **`Transformer (KServe component)`**
 
 :   A ^^pre-processing^^ and ^^post-processing^^ component that can transform model inputs before predictions are made, and predictions before these are delivered back to the client.
-    Not available for vLLM deployments.
+    Not available for vLLM and Triton deployments.
 
 **`Inference Logger`**
 
 :   Hopsworks logs inputs and outputs of transformers and predictors to a ^^Kafka topic^^ that is part of the same project as the model.
     This is for storing inference requests and responses for later consumption and analysis, and is separate from the feature logging that powers [Model Monitoring](model_monitoring.md).
-    Not available for vLLM deployments.
+    Not available for vLLM and Triton deployments.
 
 **`Inference Batcher`**
 
 :   Inference requests can be batched to improve throughput (at the cost of slightly higher latency).
+    Triton deployments batch inside Triton instead, with the dynamic batching set in the model configuration.
 
 **`Istio Model Endpoint`**
 
@@ -24665,7 +24667,7 @@ The guides below follow that path.
 - [Model registry](registry/index.md)
   Save a model with metrics, a schema and an input example, one version per save.
 - [Frameworks](registry/frameworks/python.md)
-  TensorFlow, PyTorch, scikit-learn, LLM and plain Python models.
+  TensorFlow, PyTorch, scikit-learn, LLM, Triton and plain Python models.
 - [Import from Hugging Face](registry/import_huggingface.md)
   Bring a Hub model into the registry without training it here.
 - [Evaluation images](registry/model_evaluation_images.md)
@@ -24755,6 +24757,14 @@ Follow these framework-specific guides to export a Model to the Model Registry.
     Export a large language model.
 
     [:octicons-arrow-right-24: Export guide](frameworks/llm.md)
+
+- :simple-nvidia:{ .lg .middle style="color:#76B900" } **Triton**
+
+    ---
+
+    Export a Triton model directory for NVIDIA Triton Inference Server.
+
+    [:octicons-arrow-right-24: Export guide](frameworks/triton.md)
 
 - :simple-python:{ .lg .middle style="color:#3776AB" } **Other Python frameworks**
 
@@ -25093,6 +25103,316 @@ Define a name, and attach optional metrics for your model, then invoke the `save
 ## Going Further
 
 You can attach an [Input Example](../input_example.md) and a [Model Schema](../model_schema.md) to your model to document the shape and type of the data the model was trained on.
+
+================================================================================
+# Triton
+Source: https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/triton/
+
+# How To Export a Triton Model { #triton-model-guide }
+
+## Introduction
+
+In this guide you will learn how to package a model for [NVIDIA Triton Inference Server](https://github.com/triton-inference-server/server), register it in the Model Registry, deploy it and send it inference requests.
+
+!!! info "Triton is enabled per cluster"
+    Triton deployments are available only on clusters where the administrator has enabled Triton and configured its image, see [Triton Inference Server][triton-admin].
+    On other clusters `ms.get_triton_image_tags()` returns an empty list, the UI does not offer the Triton model server, and the API rejects Triton deployments.
+
+!!! warning "Python client 5.3 or later"
+    Triton models need the Hopsworks Python client 5.3 or later, in the jobs and notebooks that read the model registry too.
+    An older client raises `ValueError: framework TRITON is not a supported framework` whenever it reads a Triton model, for example when it lists the models of a registry that holds one.
+
+## Model directory { #triton-model-directory }
+
+A Triton model in Hopsworks is one Triton model directory per model version.
+`save()` uploads the contents of the directory you pass to it, so `config.pbtxt` sits at the top of that directory:
+
+```text
+iris_onnx/
+├── config.pbtxt
+└── 1/
+    └── model.onnx
+```
+
+- `config.pbtxt` is the [Triton model configuration](https://github.com/triton-inference-server/server/blob/main/docs/user_guide/model_configuration.md).
+- Each numeric folder (`1/`, `2/`, ...) is a Triton model version and holds the model file of the backend, such as `model.onnx`, `model.pt`, `model.plan` or `model.py`.
+- A Python backend model can add a packed environment next to `config.pbtxt`, see [Python backend][triton-python-backend].
+
+Hopsworks rejects a Triton deployment whose model files have no `config.pbtxt` or no numeric version folder.
+In the predictor, the files are placed at `/mnt/models/<deployment-name>/`, and Triton serves the model under the name of the deployment.
+
+A minimal `config.pbtxt` for an ONNX model that takes four features and returns a label:
+
+```text
+backend: "onnxruntime"
+max_batch_size: 0
+input [
+  {
+    name: "input"
+    data_type: TYPE_FP32
+    dims: [ -1, 4 ]
+  }
+]
+output [
+  {
+    name: "label"
+    data_type: TYPE_INT64
+    dims: [ -1 ]
+  }
+]
+```
+
+### Model name
+
+Omit `name` in `config.pbtxt`.
+Triton then takes the model name from the directory, which is the deployment name, so the same model version can be deployed under any deployment name.
+A `name` that differs from the deployment name makes Triton fail to load the model, and the deployment fails to start.
+
+### Versions
+
+The Hopsworks model version and the numeric Triton version folders are independent of each other.
+Triton serves the highest numeric folder only, unless `version_policy` in `config.pbtxt` selects other versions:
+
+```text
+version_policy: { all: { } }
+```
+
+Hopsworks starts Triton with `--model-control-mode=none`.
+Triton loads the model at startup, and the model repository load and unload requests return errors.
+To serve a different model, register a new model version and deploy it.
+
+### Dynamic batching
+
+Triton batches requests in its own scheduler, configured in `config.pbtxt`.
+The KServe [inference batcher](../../serving/inference-batcher.md) is not available for Triton deployments, because Triton's scheduler already does this inside the model server.
+
+```text
+max_batch_size: 32
+dynamic_batching {
+  max_queue_delay_microseconds: 1000
+}
+```
+
+With `max_batch_size` above 0, `dims` leave out the batch dimension, and the first entry of `shape` in a request is the batch size.
+
+### GPUs
+
+Request GPUs in the deployment's [resources](../../serving/resources.md); Hopsworks gives Triton deployments no GPU by default.
+Which backends run on a GPU depends on the Triton image the administrator configured.
+Use `instance_group` in `config.pbtxt` to place model instances:
+
+```text
+instance_group [
+  {
+    count: 1
+    kind: KIND_GPU
+  }
+]
+```
+
+## Python backend { #triton-python-backend }
+
+A [Python backend](https://github.com/triton-inference-server/python_backend) model keeps its code in `model.py` inside the version folder.
+Dependencies that the Triton image does not contain ship as a [conda-pack](https://conda.github.io/conda-pack/) archive in the model directory:
+
+```text
+text_classifier/
+├── config.pbtxt
+├── environment.tar.gz
+└── 1/
+    └── model.py
+```
+
+Point `EXECUTION_ENV_PATH` in `config.pbtxt` at the archive:
+
+```text
+backend: "python"
+max_batch_size: 0
+input [
+  {
+    name: "text"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  }
+]
+output [
+  {
+    name: "scores"
+    data_type: TYPE_FP32
+    dims: [ -1, 2 ]
+  }
+]
+parameters: {
+  key: "EXECUTION_ENV_PATH"
+  value: { string_value: "$$TRITON_MODEL_DIRECTORY/environment.tar.gz" }
+}
+```
+
+Pack the environment with the same Python version as the Python backend of the Triton image, for example Python 3.12 for the NVIDIA 26.x images.
+The backend runs `model.py` with the interpreter of the archive, and a model whose archive has another Python version fails to load.
+
+```bash
+conda create -y -n triton-env python=3.12
+conda run -n triton-env pip install numpy torch transformers
+conda install -y -n base -c conda-forge conda-pack
+conda pack -n triton-env -o text_classifier/environment.tar.gz
+```
+
+A `model.py` implements `TritonPythonModel`:
+
+=== "Python"
+
+    ```python
+    import numpy as np
+    import triton_python_backend_utils as pb_utils
+
+
+    class TritonPythonModel:
+        def initialize(self, args):
+            # args["model_repository"] and args["model_version"] locate the files
+            self.model = ...
+
+        def execute(self, requests):
+            responses = []
+            for request in requests:
+                texts = pb_utils.get_input_tensor_by_name(request, "text").as_numpy()
+                scores = self.model([t.decode("utf-8") for t in texts])
+                output = pb_utils.Tensor("scores", np.asarray(scores, dtype=np.float32))
+                responses.append(pb_utils.InferenceResponse(output_tensors=[output]))
+            return responses
+    ```
+
+The Python backend hands input tensors to `model.py` on the CPU by default, so move them to the GPU in `model.py` when the model runs there.
+Hopsworks mounts a memory-backed `/dev/shm` in Triton predictors, which the Python backend uses to pass tensors between Triton and the model process.
+It counts against the memory of the deployment, so size the memory request for the tensors of the largest batch as well as the model.
+
+## Code
+
+### Step 1: Connect to Hopsworks
+
+=== "Python"
+
+    ```python
+    import hopsworks
+
+
+    project = hopsworks.login()
+
+    # get Hopsworks Model Registry handle
+    mr = project.get_model_registry()
+
+    # get Hopsworks Model Serving handle
+    ms = project.get_model_serving()
+    ```
+
+### Step 2: Register the model directory
+
+Use the `ModelRegistry.triton.create_model(..)` function to register a model as a Triton model, then invoke `save()` with the path to the local Triton model directory.
+
+=== "Python"
+
+    ```python
+    triton_model = mr.triton.create_model("irisonnx")
+
+    triton_model.save("iris_onnx")
+    ```
+
+### Step 3: Deploy the model
+
+The image version is the tag of the Triton image the deployment runs, see [Triton image version](../../serving/predictor.md#triton-image-version).
+`ms.get_triton_image_tags()` lists the tags the cluster advertises, highest first.
+Without `triton_image_tag`, the deployment gets the highest one.
+
+=== "Python"
+
+    ```python
+    from hsml.resources import PredictorResources, Resources
+
+
+    print(ms.get_triton_image_tags())
+
+    triton_deployment = triton_model.deploy(
+        name="irisonnx",
+        triton_image_tag="26.09-py3",
+        resources=PredictorResources(
+            num_instances=1,
+            requests=Resources(cores=1, memory=2048, gpus=0),
+            limits=Resources(cores=2, memory=4096, gpus=0),
+        ),
+    )
+    triton_deployment.start(await_running=600)
+    ```
+
+The deployment name is also the Triton model name, so it follows the deployment name rules: letters and digits only.
+
+!!! warning "Knative mode and large images"
+    Triton images are large: NVIDIA's `26.09-py3` image is 8.4 GiB compressed for amd64.
+    In [Knative mode](../../serving/autoscaling.md#deployment-mode) a deployment that scales up from zero on a node that has not pulled the image yet waits for the pull before it answers.
+
+### Step 4: Send an inference request
+
+Triton deployments use the Open Inference Protocol (KServe v2), over REST or gRPC.
+Pass one tensor per input named in `config.pbtxt`, with its `shape`, `datatype` and the values flattened in row-major order in `data`.
+
+=== "Python"
+
+    ```python
+    response = triton_deployment.predict(
+        inputs=[
+            {
+                "name": "input",
+                "shape": [1, 4],
+                "datatype": "FP32",
+                "data": [5.1, 3.5, 1.4, 0.2],
+            }
+        ]
+    )
+    print(response["outputs"])
+    ```
+
+The response is the v2 response of Triton:
+
+```json
+{
+  "model_name": "irisonnx",
+  "model_version": "1",
+  "outputs": [
+    {"name": "label", "datatype": "INT64", "shape": [1], "data": [0]}
+  ]
+}
+```
+
+See the [REST API guide][open-inference-protocol-v2] for the inference URL, the request through the Hopsworks REST API, and `curl` examples.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+    - <code class="doc-symbol doc-symbol-class"></code> [`PredictorResources`][hsml.resources.PredictorResources]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`start`][hsml.deployment.Deployment.start]
+        - <code class="doc-symbol doc-symbol-method"></code> [`predict`][hsml.deployment.Deployment.predict]
+    - <code class="doc-symbol doc-symbol-docs"></code> [Triton model configuration](https://github.com/triton-inference-server/server/blob/main/docs/user_guide/model_configuration.md)
+    - <code class="doc-symbol doc-symbol-docs"></code> [Triton Python backend](https://github.com/triton-inference-server/python_backend)
+
+    <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+## Supported features
+
+| Feature | Triton deployments | Why |
+| ------- | ------------------ | --- |
+| REST | Open Inference Protocol v2, JSON | Triton's HTTP endpoint |
+| gRPC | Open Inference Protocol v2 | Triton's gRPC endpoint, see [API protocol](../../serving/api-protocol.md) |
+| Binary tensor extension | Direct requests to the Istio gateway only | The Hopsworks REST API forwards JSON bodies only |
+| CPU and GPU | Yes, no GPU by default | The backends that run on a GPU depend on the image |
+| Standard and Knative modes | Yes | See [Deployment mode](../../serving/autoscaling.md#deployment-mode) |
+| Dynamic batching | `dynamic_batching` in `config.pbtxt` | Triton batches in its own scheduler |
+| KServe inference batcher | No | Triton batches in its own scheduler |
+| Predictor script | No | The model directory holds the model code, for example `model.py` |
+| Transformer | No | Over REST the transformer forwards requests in the KServe v1 format, which Triton does not serve; pre-process in the model directory, for example in `model.py` |
+| Inference logging and feature logging | No | The logger parses JSON only, and Triton requests can carry binary tensors or use gRPC |
+| Disk logging | No | The upload runs the Hopsworks library inside the serving container, which the Triton image does not have |
+| Several models or ensembles per deployment | No | A deployment serves one Triton model, named after the deployment |
+| Model load and unload requests | No | Triton runs with `--model-control-mode=none` |
 
 ================================================================================
 # Python
@@ -25728,6 +26048,11 @@ After selecting the model, select a model version and give your model deployment
     For vLLM deployments, a server configuration file is required.
     See the [Predictor Guide](predictor.md#server-configuration-file) for more details.
 
+!!! info "Triton models"
+    Triton models take no predictor script, and Triton reads its configuration from `config.pbtxt` in the model files rather than from a server configuration file.
+    The Triton model server is listed only on clusters where the administrator has enabled Triton.
+    See the [Triton guide][triton-model-guide].
+
 Lastly, click on `Create` to create the deployment for your model.
 
 ### Step 3 (Optional): Advanced configuration
@@ -25927,7 +26252,7 @@ Transformers are used to apply transformations on the model inputs before sendin
 To learn more about transformers and how to configure them, including [environment variables](transformer.md#environment-variables), [resources](transformer.md#resources), and [autoscaling](transformer.md#autoscaling), see the [Transformer (KServe) Guide](transformer.md).
 
 !!! warning
-    Transformers are not available for vLLM deployments.
+    Transformers are not available for vLLM and Triton deployments.
 
 ================================================================================
 # Deployment State
@@ -26149,6 +26474,7 @@ A version holds the configuration of the predictor and the transformer:
 | **Model** | The model and model version, for model deployments. |
 | **Artifact files** | The predictor and transformer scripts, and the server configuration file, as described in [Artifact files of a version](#artifact-files-of-a-version). |
 | **vLLM** | The vLLM settings for LLM deployments. |
+| **Triton image version** | The Triton image tag for Triton deployments. |
 | **Python environments** | The environments the predictor and the transformer run in. |
 | **Resources and scaling** | Resources, scaling configuration and environment variables. |
 | **Source and observability** | The git source, tracing and feature logging configuration. |
@@ -26714,14 +27040,15 @@ In each predictor, you can decide the following configuration:
     2. [Predictor script](#predictor-script)
     3. [Server configuration file](#server-configuration-file)
     4. [vLLM variant and image version](#vllm-variant-and-image-version)
-    5. [Python environments](#python-environments)
-    6. [Transformer script](#transformer-script)
-    7. [Inference Logger](#inference-logger)
-    8. [Inference Batcher](#inference-batcher)
-    9. [Resources](#resources)
-    10. [Autoscaling](#autoscaling)
-    11. [Scheduling](#scheduling)
-    12. [API protocol](#api-protocol)
+    5. [Triton image version](#triton-image-version)
+    6. [Python environments](#python-environments)
+    7. [Transformer script](#transformer-script)
+    8. [Inference Logger](#inference-logger)
+    9. [Inference Batcher](#inference-batcher)
+    10. [Resources](#resources)
+    11. [Autoscaling](#autoscaling)
+    12. [Scheduling](#scheduling)
+    13. [API protocol](#api-protocol)
 
 ## Web UI
 
@@ -26745,6 +27072,7 @@ The first step is to choose a ==model server== for your model deployment.
 The model server will filter the models shown below according to the framework that the model was registered with in the model registry.
 
 For example if you registered the model as a TensorFlow model using `ModelRegistry.tensorflow.create_model(...)` you select `Tensorflow Serving` in the dropdown.
+For a model registered with `ModelRegistry.triton.create_model(...)`, select `Triton Inference Server`, which is listed only when the administrator has enabled Triton on the cluster.
 
 <p align="center">
   <figure>
@@ -26824,13 +27152,14 @@ Here, you can further change the default values of the predictor:
 
 !!! info "Predictor configuration"
     1. [vLLM variant and image version](#vllm-variant-and-image-version)
-    2. [Transformer](#transformer-script)
-    3. [Inference logger](#inference-logger)
-    4. [Inference batcher](#inference-batcher)
-    5. [Resources](#resources)
-    6. [Autoscaling](#autoscaling)
-    7. [Scheduling](#scheduling)
-    8. [API protocol](#api-protocol)
+    2. [Triton image version](#triton-image-version)
+    3. [Transformer](#transformer-script)
+    4. [Inference logger](#inference-logger)
+    5. [Inference batcher](#inference-batcher)
+    6. [Resources](#resources)
+    7. [Autoscaling](#autoscaling)
+    8. [Scheduling](#scheduling)
+    9. [API protocol](#api-protocol)
 
 Once you are done with the changes, click on `Create new model deployment` at the bottom of the page to create the deployment for your model.
 
@@ -27031,6 +27360,7 @@ A script deployed with `schema=` or `passed_features=` still gets every request 
 ### Step 3: Pass predictor configuration to model deployment
 
 You can customize the default predictor settings when creating a model deployment.
+The model server follows from the framework the model was registered with, see [Model Server](#model-server).
 
 === "Python"
 
@@ -27039,7 +27369,6 @@ You can customize the default predictor settings when creating a model deploymen
 
     my_deployment = my_model.deploy(
       # predictor configuration
-      model_server="PYTHON",
       script_file=predictor_script_path,
     )
     ```
@@ -27058,7 +27387,8 @@ You can customize the default predictor settings when creating a model deploymen
 
 ## Model Server
 
-Hopsworks Model Serving supports deploying models with a Python model server for python-based models (scikit-learn, XGBoost , pytorch...), TensorFlow Serving for TensorFlow / Keras models and vLLM for Large Language Models (LLMs).
+Hopsworks Model Serving supports deploying models with a Python model server for python-based models (scikit-learn, XGBoost , pytorch...), TensorFlow Serving for TensorFlow / Keras models, vLLM for Large Language Models (LLMs) and NVIDIA Triton Inference Server for models packaged as a Triton model directory.
+The model server follows from the framework the model was registered with: `mr.tensorflow` models run on TensorFlow Serving, `mr.llm` models on vLLM, `mr.triton` models on Triton, and all others on the Python model server.
 
 !!! info "Supported model servers"
 
@@ -27068,6 +27398,11 @@ Hopsworks Model Serving supports deploying models with a Python model server for
     | KServe sklearnserver | Sklearn built-in KServe runtime               | Scikit-learn, XGBoost                                                                            |
     | TensorFlow Serving   | TensorFlow Serving runtime                    | Keras, TensorFlow                                                                                |
     | vLLM                 | vLLM openai-compatible server                 | vLLM-supported models (see [list](https://docs.vllm.ai/en/v0.28.0/models/supported_models.html)) |
+    | Triton               | Triton image configured by the administrator  | Any backend in that image, such as ONNX Runtime, PyTorch, TensorRT, OpenVINO or Python           |
+
+!!! note "Triton is enabled per cluster"
+    The Triton model server is available only on clusters where the administrator has enabled it and configured the Triton image, see [Triton Inference Server][triton-admin].
+    See the [Triton guide][triton-model-guide] for packaging and deploying a Triton model.
 
 !!! note "vLLM variants"
     The vLLM model server is available in two variants, standard **vLLM** and **vLLM-Omni**, and the image version can be pinned per deployment.
@@ -27083,6 +27418,7 @@ Each model server has specific requirements and supports different types of mode
     | KServe sklearnserver | Files with extensions `.joblib`, `.pkl`, `.pickle`        |
     | TensorFlow Serving   | Model artifact needs `variables/` and `.pb` file          |
     | vLLM                 | Model files supported by vLLM engine (e.g., .safetensors) |
+    | Triton               | `config.pbtxt` and at least one numeric version folder    |
 
 All deployments use [KServe](https://kserve.github.io/website/latest/) as the serving platform, providing autoscaling, fine-grained resource allocation, inference logging, inference batching, and transformers.
 KServe runs a deployment in either Knative or Standard mode, see [Deployment mode](autoscaling.md#deployment-mode).
@@ -27143,6 +27479,31 @@ If a version you need is not listed, contact your administrator.
 !!! tip "Python SDK"
     From the Python SDK, the image version is selected with the `vllm_image_tag`
     keyword argument. See [`Model.deploy()`][hsml.model.Model.deploy] in the API reference.
+
+## Triton image version
+
+For **Triton deployments**, the image version is the tag of the Triton image the deployment runs (for example `26.09-py3`).
+If not set, Hopsworks picks the **highest** tag the cluster advertises at creation time.
+The image repository is the one the cluster administrator configured; the deployment only chooses its tag.
+
+The tag is stored on the deployment.
+When the administrator moves the cluster to a new Triton image tag, existing deployments keep the tag they were created with, because a TensorRT plan only loads on the TensorRT version it was built with.
+Restarts and edits that leave the tag unchanged keep it, even after the administrator stops advertising it.
+Changing a deployment to another tag requires the new tag to be advertised.
+
+The tags are advertised by the cluster administrator through the `kube_serving_triton_versions` Hopsworks variable, see [Triton Inference Server][triton-admin].
+An empty list means Triton is not enabled on the cluster.
+
+=== "Python"
+
+    ```python
+    ms = project.get_model_serving()
+
+    # tags the cluster advertises, highest first
+    print(ms.get_triton_image_tags())
+
+    my_deployment = my_model.deploy(triton_image_tag="26.09-py3")
+    ```
 
 ## Environment variables
 
@@ -27227,6 +27588,7 @@ To create a new Python environment see [Python Environments](../../projects/pyth
     | KServe sklearnserver | `sklearnserver`                  | any `*-inference-pipeline` image |
     | TensorFlow Serving   | `tensorflow/serving`             | any `*-inference-pipeline` image |
     | vLLM                 | `vllm-openai`                    | Not supported                    |
+    | Triton               | the cluster's Triton image       | Not supported                    |
 
 A transformer that does not name an environment runs the predictor's.
 When the predictor runs a fixed runtime image, such as TensorFlow Serving or vLLM, it has no environment of its own and the transformer runs the one the deployment names.
@@ -27259,7 +27621,9 @@ Transformer scripts are Python scripts used to apply transformations on the mode
 To learn more about transformers, see the [Transformer (KServe) Guide](transformer.md).
 
 !!! note
-    Transformer scripts are ==not== supported in **vLLM deployments**
+    Transformer scripts are ==not== supported in **vLLM** and **Triton deployments**.
+    Over REST, the transformer forwards requests to the predictor in the KServe v1 format, which Triton does not serve.
+    Pre-process in the Triton model directory instead, for example in a Python backend `model.py`.
 
 ## Inference logger
 
@@ -27267,11 +27631,19 @@ Inference loggers are deployment components that log inference requests into a K
 
 To learn about the different logging modes, see the [Inference Logger Guide](inference-logger.md)
 
+!!! note
+    Inference logging is ==not== supported in **vLLM** and **Triton deployments**.
+    The logger parses JSON bodies only, and Triton requests can carry binary tensors or arrive over gRPC.
+
 ## Inference batcher
 
 Inference batcher are deployment component that apply batching to the incoming inference requests for a better throughput-latency trade-off.
 
 To learn about the different configuration available for the inference batcher, see the [Inference Batcher Guide](inference-batcher.md).
+
+!!! note
+    **Triton deployments** batch requests in Triton's own scheduler, configured with `dynamic_batching` in `config.pbtxt`, and do not take the KServe inference batcher.
+    See [Dynamic batching](../registry/frameworks/triton.md#dynamic-batching).
 
 ## Resources
 
@@ -27313,7 +27685,9 @@ In this guide, you will learn how to configure a transformer script in a model d
 Transformer scripts are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
 They are user-provided Python scripts (`.py` or `.ipynb`) implementing the [Transformer class](#step-2-implement-transformer-script).
 
-!!! info "Transformer scripts are not supported in vLLM deployments."
+!!! info "Transformer scripts are not supported in vLLM and Triton deployments."
+    Over REST, the transformer forwards requests to the predictor in the KServe v1 format, which Triton does not serve.
+    In Triton deployments, pre-process in the Triton model directory instead, for example in a Python backend `model.py`.
 
 !!! tip "Independent scaling"
     The transformer has independent resources and autoscaling configuration from the predictor.
@@ -27508,7 +27882,7 @@ A transformer script is a custom Python script to apply pre/post-processing on t
 This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment.
 The script must implement the `Transformer` class, as shown in [Step 2](#step-2-implement-transformer-script).
 
-!!! info "Transformer scripts are not supported in vLLM deployments."
+!!! info "Transformer scripts are not supported in vLLM and Triton deployments."
 
 ## Resources
 
@@ -27618,6 +27992,7 @@ To create a new Python environment see [Python Environments](../../projects/pyth
     | KServe sklearnserver | `sklearnserver`                  | any `*-inference-pipeline` image |
     | TensorFlow Serving   | `tensorflow/serving`             | any `*-inference-pipeline` image |
     | vLLM                 | `vllm-openai`                    | Not supported                    |
+    | Triton               | the cluster's Triton image       | Not supported                    |
 
 ================================================================================
 # Inference Logger
@@ -27631,7 +28006,9 @@ Once a model is deployed and starts making predictions as inference requests arr
 
 Hopsworks supports logging both inference requests and predictions as events to a Kafka topic for analysis.
 
-!!! warning "Inference logging is not supported for vLLM deployments."
+!!! warning "Inference logging is not supported for vLLM and Triton deployments."
+    The logger parses JSON bodies only, and Triton requests can carry binary tensors or arrive over gRPC.
+    Feature logging is not supported for Triton deployments either, because it runs through the same logger.
 
 !!! info "Inference logger vs. feature logging"
     The inference logger described here stores model inputs and predictions from inference requests and responses into a Kafka topic, for later consumption and analysis.
@@ -28037,7 +28414,8 @@ Source: https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-bat
 Inference batching can be enabled to increase inference request throughput at the cost of higher latencies.
 The configuration of the inference batcher depends on the model server used in the deployment.
 
-!!! warning "Inference batching is not supported for vLLM deployments."
+!!! warning "Inference batching is not supported for vLLM and Triton deployments."
+    Triton batches requests in its own scheduler, configured with `dynamic_batching` in `config.pbtxt`, see [Dynamic batching](../registry/frameworks/triton.md#dynamic-batching).
 
 ## Web UI
 
@@ -28827,7 +29205,7 @@ Source: https://docs.hopsworks.ai/latest/user_guides/mlops/serving/api-protocol/
 ## Introduction
 
 Hopsworks supports both REST and gRPC as API protocols for sending inference requests to model deployments.
-While REST API protocol is supported in all types of model deployments, gRPC is currently supported for **Python model deployments** only.
+While REST API protocol is supported in all types of model deployments, gRPC is supported for **Python** and **Triton** model deployments only.
 
 The protocol is chosen per deployment with `api_protocol`, in the creation form or in the Python API, and defaults to REST.
 REST is what `curl`, the published OpenAPI document and any client that is not the Python library use.
@@ -28840,6 +29218,23 @@ On gRPC the rows travel as one KServe v2 tensor per schema field, and `deploymen
 
 A deployment that runs your own predictor script has to stay on REST unless the script is written for gRPC.
 Under gRPC the model server hands `predict()` KServe v2 tensors rather than rows, which a script written for REST cannot read.
+
+A [Triton deployment][triton-model-guide] speaks the Open Inference Protocol on both: REST on `/v2/models/<name>/infer`, and gRPC through the `inference.GRPCInferenceService` service on port 9000.
+The model name is the deployment name, and the tensor names are the input and output names in `config.pbtxt`.
+`deployment.predict()` takes the same tensors with either protocol:
+
+```python
+response = deployment.predict(
+    inputs=[
+        {
+            "name": "input",
+            "shape": [1, 4],
+            "datatype": "FP32",
+            "data": [5.1, 3.5, 1.4, 0.2],
+        }
+    ]
+)
+```
 
 ## Web UI
 
@@ -28974,7 +29369,9 @@ authorization: ApiKey <API_KEY_VALUE>
 | Header          | Description                         | Example Value           |
 | --------------- | ----------------------------------- | ----------------------- |
 | `authorization` | API key for authentication.         | `ApiKey <your_api_key>` |
-| `content-type`  | Request payload type (always JSON). | `application/json`      |
+| `content-type`  | Request payload type (JSON).        | `application/json`      |
+
+Triton deployments also accept Triton's binary tensor extension on the Istio path, see [Binary tensor data](#binary-tensor-data).
 
 ## URL Paths
 
@@ -28985,7 +29382,7 @@ This URL is also provided on the model deployment page in the Hopsworks UI.
 !!! example ""
     **`<base_url>/<server-specific_suffix>`**
 
-Where `server-specific_suffix` depends on the model server type (see [ML Inference Paths](#ml-inference) or [OpenAI-compatible Paths](#openai-compatible)).
+Where `server-specific_suffix` depends on the model server type (see [ML Inference Paths](#ml-inference), [Open Inference Protocol (v2) Paths][open-inference-protocol-v2] or [OpenAI-compatible Paths](#openai-compatible)).
 
 ### Base URL
 
@@ -29024,6 +29421,36 @@ For model deployments using Python, KServe sklearnserver, or TensorFlow Serving,
     # Returns: https://<istio-host>/v1/<project>/<deployment>/v1/models/<name>:predict
     inference_url = deployment.get_inference_url()
     ```
+
+### Open Inference Protocol (v2) { #open-inference-protocol-v2 }
+
+==Triton deployments== follow the [Open Inference Protocol](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v2-protocol), also called the KServe V2 protocol.
+The model name in the path is the deployment name.
+
+!!! info "Supported verbs and path format"
+    | Model Server | Method | Path Format                         | Purpose          |
+    | ------------ | ------ | ----------------------------------- | ---------------- |
+    | Triton       | `POST` | `<base_url>/v2/models/<name>/infer` | Inference        |
+    | Triton       | `GET`  | `<base_url>/v2/models/<name>/ready` | Model readiness  |
+    | Triton       | `GET`  | `<base_url>/v2/models/<name>`       | Model metadata   |
+
+The model metadata response lists the input and output tensors from `config.pbtxt`, with their names, data types and shapes.
+
+!!! tip "Hopsworks Python API"
+
+    The inference url of a Triton deployment is retrieved the same way.
+
+    ```python
+    # Returns: https://<istio-host>/v1/<project>/<deployment>/v2/models/<name>/infer
+    inference_url = deployment.get_inference_url()
+    ```
+
+Requests can also go through the Hopsworks REST API, which forwards them to the deployment, with the `infer` verb in place of `predict`:
+
+!!! example ""
+    **`POST https://<HOPSWORKS_HOST>/hopsworks-api/api/project/<project_id>/inference/serving/<deployment_name>:infer`**
+
+The Hopsworks REST API accepts JSON bodies only, so binary tensor data works only on the Istio path.
 
 ### Deployment schema discovery
 
@@ -29097,6 +29524,104 @@ See [more information on the request format](https://kserve.github.io/website/do
               }'
         ```
 
+For Triton deployments, the request follows the [Open Inference Protocol](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v2-protocol) and is sent to the `infer` path.
+The body is a JSON object with an `inputs` list holding one tensor per model input named in `config.pbtxt`:
+
+| Field                 | Description                                                                      |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `inputs[].name`       | Input name from `config.pbtxt`.                                                  |
+| `inputs[].shape`      | Tensor shape, with the batch size first when the model has `max_batch_size > 0`. |
+| `inputs[].datatype`   | Tensor data type, such as `FP32`, `INT64` or `BYTES`.                            |
+| `inputs[].data`       | Tensor values, flattened in row-major order.                                     |
+| `inputs[].parameters` | Optional input parameters.                                                       |
+| `outputs`             | Optional list of `{"name": ...}` objects selecting the outputs to return.        |
+| `parameters`          | Optional request parameters.                                                     |
+
+!!! example "REST API example for Triton"
+    === "Python"
+
+        ```python
+        import requests
+
+
+        data = {
+            "inputs": [
+                {
+                    "name": "input",
+                    "shape": [1, 4],
+                    "datatype": "FP32",
+                    "data": [5.1, 3.5, 1.4, 0.2],
+                }
+            ],
+            "outputs": [{"name": "label"}],
+        }
+
+        headers = {"authorization": "ApiKey <your_api_key>", "content-type": "application/json"}
+
+        response = requests.post(
+            "https://<ISTIO_GATEWAY_IP>/v1/my_project/irisonnx/v2/models/irisonnx/infer",
+            headers=headers,
+            json=data,
+        )
+        print(response.json())
+        ```
+
+    === "Curl"
+
+        ```bash
+        curl -X POST "https://<ISTIO_GATEWAY_IP>/v1/my_project/irisonnx/v2/models/irisonnx/infer" \
+          -H "authorization: ApiKey <your_api_key>" \
+          -H "content-type: application/json" \
+          -d '{
+                "inputs": [
+                  {"name": "input", "shape": [1, 4], "datatype": "FP32", "data": [5.1, 3.5, 1.4, 0.2]}
+                ],
+                "outputs": [{"name": "label"}]
+              }'
+        ```
+
+    === "Hopsworks REST API"
+
+        ```bash
+        curl -X POST "https://<HOPSWORKS_HOST>/hopsworks-api/api/project/<project_id>/inference/serving/irisonnx:infer" \
+          -H "authorization: ApiKey <your_api_key>" \
+          -H "content-type: application/json" \
+          -d '{
+                "inputs": [
+                  {"name": "input", "shape": [1, 4], "datatype": "FP32", "data": [5.1, 3.5, 1.4, 0.2]}
+                ]
+              }'
+        ```
+
+    === "Hopsworks Python API"
+
+        ```python
+        response = deployment.predict(
+            inputs=[
+                {
+                    "name": "input",
+                    "shape": [1, 4],
+                    "datatype": "FP32",
+                    "data": [5.1, 3.5, 1.4, 0.2],
+                }
+            ]
+        )
+        ```
+
+Triton answers with the v2 response:
+
+```json
+{
+  "model_name": "irisonnx",
+  "model_version": "1",
+  "outputs": [
+    {"name": "label", "datatype": "INT64", "shape": [1], "data": [0]}
+  ]
+}
+```
+
+`model_version` is the Triton version folder that served the request, which is independent of the Hopsworks model version.
+
 For generative inference (vLLM), the request follows the [OpenAI specification](https://docs.vllm.ai/en/v0.28.0/serving/openai_compatible_server.html) supported by the vLLM OpenAI-compatible server.
 
 !!! example "vLLM chat completions"
@@ -29135,6 +29660,12 @@ For generative inference (vLLM), the request follows the [OpenAI specification](
             }'
         ```
 
+### Binary tensor data
+
+Triton's [binary tensor data extension](https://github.com/triton-inference-server/server/blob/main/docs/protocol/extension_binary_data.md) sends tensors as raw bytes after the JSON header, with the `Inference-Header-Content-Length` header giving the length of the JSON part.
+Send such requests to the Istio path only.
+The Hopsworks REST API takes the request body as JSON text, so it cannot forward binary tensor data.
+
 ## CORS
 
 The Istio EnvoyFilter handles CORS preflight (`OPTIONS`) requests automatically. Allowed origins can be configured via `istio.envoyFilter.corsAllowedOrigins` in the Helm chart configuration.
@@ -29143,6 +29674,7 @@ The Istio EnvoyFilter handles CORS preflight (`OPTIONS`) requests automatically.
 
 The model returns predictions in a JSON object.
 The response depends on the model server implementation.
+Triton deployments return the v2 response shown in [Request Format](#request-format).
 
 ================================================================================
 # Troubleshooting
@@ -29264,7 +29796,7 @@ When it is off, nothing is written.
 
 Disk logging is only available for deployments whose serving container runs a Hopsworks inference pipeline image, because the upload runs the Hopsworks Python library from inside that container.
 That means Python deployments, agent deployments included, and their transformers; Python predictors have it on by default.
-TensorFlow Serving and vLLM do not support it, and neither does a KServe Python deployment with no predictor script, which runs the sklearnserver runtime image.
+TensorFlow Serving, vLLM and Triton do not support it, and neither does a KServe Python deployment with no predictor script, which runs the sklearnserver runtime image.
 The API rejects the setting for those rather than deploying something that cannot archive.
 
 !!! note
@@ -41776,6 +42308,181 @@ Setting `run_ai_enable` back to `false` stops Hopsworks from calling Run:ai, but
 The GPU view reports `RUN_AI_BINDING_LEFT` for such projects.
 To leave Run:ai, delete the Run:ai projects of the Hopsworks namespaces in Run:ai, which stops their workloads, and remove the `runai/queue` and `hopsworks.ai/runai-project-id` namespace labels.
 Do this before you enable Kueue: neither the Helm check nor Cluster settings detects namespaces Run:ai still binds, and Run:ai's admission webhooks and Kueue would then both act on the same pods.
+
+================================================================================
+# Triton Inference Server
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/triton/
+
+# Triton Inference Server { #triton-admin }
+
+Hopsworks can serve model deployments with NVIDIA Triton Inference Server on KServe.
+Triton is off by default and is enabled per cluster through the Hopsworks Helm chart.
+Hopsworks ships the Triton serving runtime but no Triton image, so the administrator configures the image the runtime starts.
+The image and its licence are the customer's responsibility.
+
+With Triton off, the chart renders no Triton runtime and the `kube_serving_triton_versions` variable is empty.
+The UI then does not offer the Triton model server, `ms.get_triton_image_tags()` returns an empty list, and the API rejects Triton deployments.
+
+For packaging and deploying Triton models, see the [Triton guide][triton-model-guide].
+
+## Enable Triton
+
+Set these values on the Hopsworks chart and run `helm upgrade`:
+
+```yaml
+global:
+  _kserve:
+    servingruntime:
+      tritonserver:
+        enabled: true
+        imageRegistry: nvcr.io
+        image: nvidia/tritonserver
+        tag: "26.09-py3"
+```
+
+| Value | Default | Meaning |
+| --- | --- | --- |
+| `enabled` | `false` | Renders the `kserve-tritonserver` ClusterServingRuntime and advertises the image tags to Hopsworks |
+| `imageRegistry` | empty | Registry of the Triton image; required when enabled |
+| `image` | empty | Repository of the Triton image; required when enabled |
+| `tag` | empty | Tag of the Triton image; required when enabled |
+| `extraTags` | `[]` | Further tags deployments may use, see [Image tags][triton-image-tags] |
+| `imagePullSecrets` | `[]` | Pull secrets for the Triton runtime only; empty uses `global._hopsworks.imagePullSecrets` |
+| `env` | `[]` | Extra environment variables of the Triton container, as `name` and `value` pairs |
+
+With `enabled: true`, `helm upgrade` fails with a message naming the value when `imageRegistry`, `image` or `tag` is empty.
+There is no default image.
+
+The values are listed with the other global values in the [global Helm values][helm-values-global].
+
+## Image tags { #triton-image-tags }
+
+The chart sets the `kube_serving_triton_versions` Hopsworks variable to `tag` plus `extraTags`, as a comma-separated list.
+These are the tags users can choose for a Triton deployment, in the UI and with `triton_image_tag` in the Python client.
+A deployment that names no tag gets the highest of them.
+
+```yaml
+global:
+  _kserve:
+    servingruntime:
+      tritonserver:
+        tag: "26.09-py3"
+        extraTags:
+          - "26.06-py3"
+```
+
+The advertised tags are returned by the REST API:
+
+```bash
+curl -H "authorization: ApiKey <api_key>" \
+  "https://<HOPSWORKS_HOST>/hopsworks-api/api/project/<project_id>/serving/tritonImageTags"
+```
+
+```json
+{"tags": ["26.09-py3", "26.06-py3"], "defaultTag": "26.09-py3"}
+```
+
+Each deployment stores its tag and keeps it when `tag` changes, so changing `tag` never moves an existing deployment to another Triton release.
+A deployment also keeps its stored tag after the tag is no longer advertised, through restarts and edits that leave the tag unchanged.
+Users must pick an advertised tag only when they create a deployment or change its tag.
+
+A deployment runs `<imageRegistry>/<image>:<deployment tag>`, so every tag that deployments use must exist in the configured repository.
+Keep the old tags in the repository when you change `imageRegistry` or `image`.
+
+Triton images cannot be pinned by digest in `global.imageDigests`: KServe does not change the tag of an image that carries a digest, so every deployment would run the pinned image whatever its tag.
+`helm upgrade` fails when `global.imageDigests` names a Triton image.
+
+## Pull secret { #triton-pull-secret }
+
+A registry that requires credentials needs an image pull secret, for example an NVIDIA AI Enterprise image on `nvcr.io`, which takes an NGC API key.
+Name the secret on the Triton runtime:
+
+```yaml
+global:
+  _kserve:
+    servingruntime:
+      tritonserver:
+        imagePullSecrets:
+          - name: ngc-pull
+```
+
+Kubernetes looks up an image pull secret in the namespace of the pod, and Triton predictors run in the namespace of their project.
+The secret therefore has to exist in every project namespace that runs Triton deployments.
+
+Hopsworks copies the secrets named in the `docker_operations_image_pull_secrets` variable from the Hopsworks namespace into the namespace of each project it creates.
+Create the secret in the Hopsworks namespace and add its name to the variable:
+
+```bash
+kubectl -n hopsworks create secret docker-registry ngc-pull \
+  --docker-server=nvcr.io \
+  --docker-username='$oauthtoken' \
+  --docker-password='<NGC API key>'
+```
+
+```yaml
+hopsworks:
+  variables:
+    docker_operations_image_pull_secrets: "ngc-pull"
+```
+
+Projects created before that do not get the secret.
+Create it in each of their namespaces with the same `kubectl` command and `-n <project namespace>`.
+
+## Kyverno
+
+On a cluster that enforces Kyverno's restricted policies (`global._hopsworks.kyverno.enabled`), Kyverno rejects the predictor pods of a Triton image that does not pass them.
+Such an image needs a policy exception:
+
+```yaml
+hw-kyverno:
+  policyExceptions:
+    triton:
+      enabled: true
+```
+
+The exception applies to pods labelled `serving.hops.works/model-server: triton`, which Hopsworks sets on Triton predictors.
+
+## Knative
+
+In Knative mode, Knative resolves the image tag to a digest before it creates a revision.
+When the Knative controller cannot resolve the tag, for example because it cannot authenticate to the registry or verify its TLS certificate, the deployment fails before a pod is created.
+Registries listed in `registries-skipping-tag-resolving` of Knative's `config-deployment` ConfigMap skip this step.
+The chart adds the Triton `imageRegistry` to that list.
+
+Check the list on a running cluster:
+
+```bash
+kubectl -n hopsworks get configmap config-deployment \
+  -o jsonpath='{.data.registries-skipping-tag-resolving}'
+```
+
+## Image contract { #triton-image-contract }
+
+The `kserve-tritonserver` runtime starts the configured image as follows.
+An image that meets these requirements needs no Hopsworks components: Hopsworks places the model files, certificates and API key in the pod itself.
+
+- **Command.** Hopsworks sets the container's arguments and keeps the image's entrypoint, so the entrypoint must run its arguments as a command, as NVIDIA's `/opt/nvidia/nvidia_entrypoint.sh` does, or the image must have no entrypoint.
+  `tritonserver` must be on the `PATH`.
+  The arguments are:
+
+    ```text
+    tritonserver --model-store=/mnt/models --http-port=8080 --grpc-port=9000 --model-control-mode=none --allow-metrics=true --metrics-port=8002
+    ```
+
+    An image whose entrypoint is `tritonserver` itself would receive `tritonserver` again as its first argument, so give such an image an entrypoint script that runs its arguments.
+
+- **Ports.** HTTP on 8080 (Open Inference Protocol REST), gRPC on 9000 (Open Inference Protocol gRPC, served as h2c), and Prometheus metrics on 8002 at `/metrics`.
+  In Standard mode, Prometheus scrapes port 8002.
+- **Model files.** Before Triton starts, Hopsworks copies the model version's files to `/mnt/models/<deployment-name>/`, so the model repository holds one model named after the deployment.
+- **User.** With `global._hopsworks.securityContextEnabled`, the container runs as a non-root user (UID 1000, GID 1000) with privilege escalation disabled and all capabilities dropped, so the image must work as that user.
+- **Shared memory.** Hopsworks mounts a memory-backed volume at `/dev/shm`, used by the Python backend; it counts against the memory of the deployment.
+- **Backends.** The image contains the Triton backends the models need, for example `onnxruntime`, `pytorch`, `tensorrt`, `openvino` or `python`.
+  A Python backend model needs a packed environment with the Python version of the image's Python backend, see [Python backend][triton-python-backend].
+- **GPUs.** The runtime requests no GPU; a deployment gets GPUs from its own resource configuration.
+
+Hopsworks tests the runtime with NVIDIA's public `nvcr.io/nvidia/tritonserver:<yy.mm>-py3` images, unmodified.
+NVIDIA publishes no CPU-only image; its images run models on the CPU on nodes without a GPU.
+NVIDIA's `26.09-py3` image is 8.4 GiB compressed for amd64, so a Knative deployment that scales up from zero on a node without the image waits for the pull.
 
 ================================================================================
 # Helm chart values reference

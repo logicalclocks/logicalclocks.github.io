@@ -253,6 +253,10 @@
          <lastmod>2026-10-30</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/triton/</loc>
+         <lastmod>2026-10-30</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/</loc>
          <lastmod>2026-10-30</lastmod>
     </url>
@@ -906,6 +910,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/tf/</loc>
+         <lastmod>2026-10-30</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/mlops/registry/frameworks/triton/</loc>
          <lastmod>2026-10-30</lastmod>
     </url>
     <url>

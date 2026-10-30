@@ -114,7 +114,7 @@ When it is off, nothing is written.
 
 Disk logging is only available for deployments whose serving container runs a Hopsworks inference pipeline image, because the upload runs the Hopsworks Python library from inside that container.
 That means Python deployments, agent deployments included, and their transformers; Python predictors have it on by default.
-TensorFlow Serving and vLLM do not support it, and neither does a KServe Python deployment with no predictor script, which runs the sklearnserver runtime image.
+TensorFlow Serving, vLLM and Triton do not support it, and neither does a KServe Python deployment with no predictor script, which runs the sklearnserver runtime image.
 The API rejects the setting for those rather than deploying something that cannot archive.
 
 !!! note

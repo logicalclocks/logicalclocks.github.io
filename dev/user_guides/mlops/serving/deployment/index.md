@@ -68,6 +68,11 @@ After selecting the model, select a model version and give your model deployment
     For vLLM deployments, a server configuration file is required.
     See the [Predictor Guide](predictor.md#server-configuration-file) for more details.
 
+!!! info "Triton models"
+    Triton models take no predictor script, and Triton reads its configuration from `config.pbtxt` in the model files rather than from a server configuration file.
+    The Triton model server is listed only on clusters where the administrator has enabled Triton.
+    See the [Triton guide][triton-model-guide].
+
 Lastly, click on `Create` to create the deployment for your model.
 
 ### Step 3 (Optional): Advanced configuration
@@ -267,4 +272,4 @@ Transformers are used to apply transformations on the model inputs before sendin
 To learn more about transformers and how to configure them, including [environment variables](transformer.md#environment-variables), [resources](transformer.md#resources), and [autoscaling](transformer.md#autoscaling), see the [Transformer (KServe) Guide](transformer.md).
 
 !!! warning
-    Transformers are not available for vLLM deployments.
+    Transformers are not available for vLLM and Triton deployments.

@@ -18,14 +18,15 @@ In each predictor, you can decide the following configuration:
     2. [Predictor script](#predictor-script)
     3. [Server configuration file](#server-configuration-file)
     4. [vLLM variant and image version](#vllm-variant-and-image-version)
-    5. [Python environments](#python-environments)
-    6. [Transformer script](#transformer-script)
-    7. [Inference Logger](#inference-logger)
-    8. [Inference Batcher](#inference-batcher)
-    9. [Resources](#resources)
-    10. [Autoscaling](#autoscaling)
-    11. [Scheduling](#scheduling)
-    12. [API protocol](#api-protocol)
+    5. [Triton image version](#triton-image-version)
+    6. [Python environments](#python-environments)
+    7. [Transformer script](#transformer-script)
+    8. [Inference Logger](#inference-logger)
+    9. [Inference Batcher](#inference-batcher)
+    10. [Resources](#resources)
+    11. [Autoscaling](#autoscaling)
+    12. [Scheduling](#scheduling)
+    13. [API protocol](#api-protocol)
 
 ## Web UI
 
@@ -49,6 +50,7 @@ The first step is to choose a ==model server== for your model deployment.
 The model server will filter the models shown below according to the framework that the model was registered with in the model registry.
 
 For example if you registered the model as a TensorFlow model using `ModelRegistry.tensorflow.create_model(...)` you select `Tensorflow Serving` in the dropdown.
+For a model registered with `ModelRegistry.triton.create_model(...)`, select `Triton Inference Server`, which is listed only when the administrator has enabled Triton on the cluster.
 
 <p align="center">
   <figure>
@@ -128,13 +130,14 @@ Here, you can further change the default values of the predictor:
 
 !!! info "Predictor configuration"
     1. [vLLM variant and image version](#vllm-variant-and-image-version)
-    2. [Transformer](#transformer-script)
-    3. [Inference logger](#inference-logger)
-    4. [Inference batcher](#inference-batcher)
-    5. [Resources](#resources)
-    6. [Autoscaling](#autoscaling)
-    7. [Scheduling](#scheduling)
-    8. [API protocol](#api-protocol)
+    2. [Triton image version](#triton-image-version)
+    3. [Transformer](#transformer-script)
+    4. [Inference logger](#inference-logger)
+    5. [Inference batcher](#inference-batcher)
+    6. [Resources](#resources)
+    7. [Autoscaling](#autoscaling)
+    8. [Scheduling](#scheduling)
+    9. [API protocol](#api-protocol)
 
 Once you are done with the changes, click on `Create new model deployment` at the bottom of the page to create the deployment for your model.
 
@@ -335,6 +338,7 @@ A script deployed with `schema=` or `passed_features=` still gets every request 
 ### Step 3: Pass predictor configuration to model deployment
 
 You can customize the default predictor settings when creating a model deployment.
+The model server follows from the framework the model was registered with, see [Model Server](#model-server).
 
 === "Python"
 
@@ -343,7 +347,6 @@ You can customize the default predictor settings when creating a model deploymen
 
     my_deployment = my_model.deploy(
       # predictor configuration
-      model_server="PYTHON",
       script_file=predictor_script_path,
     )
     ```
@@ -362,7 +365,8 @@ You can customize the default predictor settings when creating a model deploymen
 
 ## Model Server
 
-Hopsworks Model Serving supports deploying models with a Python model server for python-based models (scikit-learn, XGBoost , pytorch...), TensorFlow Serving for TensorFlow / Keras models and vLLM for Large Language Models (LLMs).
+Hopsworks Model Serving supports deploying models with a Python model server for python-based models (scikit-learn, XGBoost , pytorch...), TensorFlow Serving for TensorFlow / Keras models, vLLM for Large Language Models (LLMs) and NVIDIA Triton Inference Server for models packaged as a Triton model directory.
+The model server follows from the framework the model was registered with: `mr.tensorflow` models run on TensorFlow Serving, `mr.llm` models on vLLM, `mr.triton` models on Triton, and all others on the Python model server.
 
 !!! info "Supported model servers"
 
@@ -372,6 +376,11 @@ Hopsworks Model Serving supports deploying models with a Python model server for
     | KServe sklearnserver | Sklearn built-in KServe runtime               | Scikit-learn, XGBoost                                                                            |
     | TensorFlow Serving   | TensorFlow Serving runtime                    | Keras, TensorFlow                                                                                |
     | vLLM                 | vLLM openai-compatible server                 | vLLM-supported models (see [list](https://docs.vllm.ai/en/v0.28.0/models/supported_models.html)) |
+    | Triton               | Triton image configured by the administrator  | Any backend in that image, such as ONNX Runtime, PyTorch, TensorRT, OpenVINO or Python           |
+
+!!! note "Triton is enabled per cluster"
+    The Triton model server is available only on clusters where the administrator has enabled it and configured the Triton image, see [Triton Inference Server][triton-admin].
+    See the [Triton guide][triton-model-guide] for packaging and deploying a Triton model.
 
 !!! note "vLLM variants"
     The vLLM model server is available in two variants, standard **vLLM** and **vLLM-Omni**, and the image version can be pinned per deployment.
@@ -387,6 +396,7 @@ Each model server has specific requirements and supports different types of mode
     | KServe sklearnserver | Files with extensions `.joblib`, `.pkl`, `.pickle`        |
     | TensorFlow Serving   | Model artifact needs `variables/` and `.pb` file          |
     | vLLM                 | Model files supported by vLLM engine (e.g., .safetensors) |
+    | Triton               | `config.pbtxt` and at least one numeric version folder    |
 
 All deployments use [KServe](https://kserve.github.io/website/latest/) as the serving platform, providing autoscaling, fine-grained resource allocation, inference logging, inference batching, and transformers.
 KServe runs a deployment in either Knative or Standard mode, see [Deployment mode](autoscaling.md#deployment-mode).
@@ -447,6 +457,31 @@ If a version you need is not listed, contact your administrator.
 !!! tip "Python SDK"
     From the Python SDK, the image version is selected with the `vllm_image_tag`
     keyword argument. See [`Model.deploy()`][hsml.model.Model.deploy] in the API reference.
+
+## Triton image version
+
+For **Triton deployments**, the image version is the tag of the Triton image the deployment runs (for example `26.09-py3`).
+If not set, Hopsworks picks the **highest** tag the cluster advertises at creation time.
+The image repository is the one the cluster administrator configured; the deployment only chooses its tag.
+
+The tag is stored on the deployment.
+When the administrator moves the cluster to a new Triton image tag, existing deployments keep the tag they were created with, because a TensorRT plan only loads on the TensorRT version it was built with.
+Restarts and edits that leave the tag unchanged keep it, even after the administrator stops advertising it.
+Changing a deployment to another tag requires the new tag to be advertised.
+
+The tags are advertised by the cluster administrator through the `kube_serving_triton_versions` Hopsworks variable, see [Triton Inference Server][triton-admin].
+An empty list means Triton is not enabled on the cluster.
+
+=== "Python"
+
+    ```python
+    ms = project.get_model_serving()
+
+    # tags the cluster advertises, highest first
+    print(ms.get_triton_image_tags())
+
+    my_deployment = my_model.deploy(triton_image_tag="26.09-py3")
+    ```
 
 ## Environment variables
 
@@ -531,6 +566,7 @@ To create a new Python environment see [Python Environments](../../projects/pyth
     | KServe sklearnserver | `sklearnserver`                  | any `*-inference-pipeline` image |
     | TensorFlow Serving   | `tensorflow/serving`             | any `*-inference-pipeline` image |
     | vLLM                 | `vllm-openai`                    | Not supported                    |
+    | Triton               | the cluster's Triton image       | Not supported                    |
 
 A transformer that does not name an environment runs the predictor's.
 When the predictor runs a fixed runtime image, such as TensorFlow Serving or vLLM, it has no environment of its own and the transformer runs the one the deployment names.
@@ -563,7 +599,9 @@ Transformer scripts are Python scripts used to apply transformations on the mode
 To learn more about transformers, see the [Transformer (KServe) Guide](transformer.md).
 
 !!! note
-    Transformer scripts are ==not== supported in **vLLM deployments**
+    Transformer scripts are ==not== supported in **vLLM** and **Triton deployments**.
+    Over REST, the transformer forwards requests to the predictor in the KServe v1 format, which Triton does not serve.
+    Pre-process in the Triton model directory instead, for example in a Python backend `model.py`.
 
 ## Inference logger
 
@@ -571,11 +609,19 @@ Inference loggers are deployment components that log inference requests into a K
 
 To learn about the different logging modes, see the [Inference Logger Guide](inference-logger.md)
 
+!!! note
+    Inference logging is ==not== supported in **vLLM** and **Triton deployments**.
+    The logger parses JSON bodies only, and Triton requests can carry binary tensors or arrive over gRPC.
+
 ## Inference batcher
 
 Inference batcher are deployment component that apply batching to the incoming inference requests for a better throughput-latency trade-off.
 
 To learn about the different configuration available for the inference batcher, see the [Inference Batcher Guide](inference-batcher.md).
+
+!!! note
+    **Triton deployments** batch requests in Triton's own scheduler, configured with `dynamic_batching` in `config.pbtxt`, and do not take the KServe inference batcher.
+    See [Dynamic batching](../registry/frameworks/triton.md#dynamic-batching).
 
 ## Resources
 

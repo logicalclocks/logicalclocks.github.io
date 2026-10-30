@@ -7,7 +7,9 @@ In this guide, you will learn how to configure a transformer script in a model d
 Transformer scripts are used to apply transformations on the model inputs before sending them to the predictor for making predictions using the model.
 They are user-provided Python scripts (`.py` or `.ipynb`) implementing the [Transformer class](#step-2-implement-transformer-script).
 
-!!! info "Transformer scripts are not supported in vLLM deployments."
+!!! info "Transformer scripts are not supported in vLLM and Triton deployments."
+    Over REST, the transformer forwards requests to the predictor in the KServe v1 format, which Triton does not serve.
+    In Triton deployments, pre-process in the Triton model directory instead, for example in a Python backend `model.py`.
 
 !!! tip "Independent scaling"
     The transformer has independent resources and autoscaling configuration from the predictor.
@@ -202,7 +204,7 @@ A transformer script is a custom Python script to apply pre/post-processing on t
 This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment.
 The script must implement the `Transformer` class, as shown in [Step 2](#step-2-implement-transformer-script).
 
-!!! info "Transformer scripts are not supported in vLLM deployments."
+!!! info "Transformer scripts are not supported in vLLM and Triton deployments."
 
 ## Resources
 
@@ -312,3 +314,4 @@ To create a new Python environment see [Python Environments](../../projects/pyth
     | KServe sklearnserver | `sklearnserver`                  | any `*-inference-pipeline` image |
     | TensorFlow Serving   | `tensorflow/serving`             | any `*-inference-pipeline` image |
     | vLLM                 | `vllm-openai`                    | Not supported                    |
+    | Triton               | the cluster's Triton image       | Not supported                    |

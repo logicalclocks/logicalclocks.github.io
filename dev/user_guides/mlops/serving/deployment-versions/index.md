@@ -32,6 +32,7 @@ A version holds the configuration of the predictor and the transformer:
 | **Model** | The model and model version, for model deployments. |
 | **Artifact files** | The predictor and transformer scripts, and the server configuration file, as described in [Artifact files of a version](#artifact-files-of-a-version). |
 | **vLLM** | The vLLM settings for LLM deployments. |
+| **Triton image version** | The Triton image tag for Triton deployments. |
 | **Python environments** | The environments the predictor and the transformer run in. |
 | **Resources and scaling** | Resources, scaling configuration and environment variables. |
 | **Source and observability** | The git source, tracing and feature logging configuration. |
